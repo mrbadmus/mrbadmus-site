@@ -496,6 +496,12 @@ B4_FAULT = "biology/breathing-and-gas-exchange/exercise-asthma-and-smoking.html"
 B4_LEAF = "biology/breathing-and-gas-exchange/stomata-and-gas-exchange-in-plants.html"
 # ═══ END B4 ═══
 
+# ═══ BEGIN B6 ═══
+B6_DOSE = "biology/health-and-drugs/what-drugs-do-to-the-body.html"
+B6_CLOCK = "biology/health-and-drugs/alcohol-and-smoking.html"
+B6_CLAIMS = "biology/health-and-drugs/substance-misuse-and-decisions.html"
+# ═══ END B6 ═══
+
 COMPONENTS = [
     # ── foundations ──
     dict(name="page ground + body type", on=LESSON, sel="body",
@@ -2789,6 +2795,169 @@ COMPONENTS = [
          drive="tpl-balanced", sel='.ks3-tpl-fill[data-fill="photo"]',
          props={"background-color": "#12A150"}),
     # ═══ END B4 ═══ rows
+    # ═══ BEGIN B6 ═══ rows
+    #
+    # Every value below is read out of `shared/tokens.css`, not estimated:
+    #   --ks3-alert #FFC53D · --ks3-on-dark #FBF3E6 · --ks3-on-dark-muted #C6B9A7
+    #   --ks3-on-dark-body #E7DECE · --ks3-dark-panel #3E3730 · --ks3-ink #221E1B
+    #   --ks3-ground #FBF3E6 · --ks3-accent-text #A93411
+    # Mutation-tested: each rule was deliberately broken in `shared/ks3.css` and
+    # the row confirmed to fail before it was kept.
+    #
+    # ⚠️ THE SAME ONE-RULE-THREE-TIMES HAZARD AS B4. All three B6 practicals are
+    # `ks3-block ks3-dark ks3-practical`, so `.ks3-dark p` at (0,1,1) beats a
+    # bare instrument class on all three pages at once, and each instrument has
+    # a panel that inverts to the cream ground inside the ink block. Measured on
+    # `.ks3-route-verdict` with the scope removed: #E7DECE on #FBF3E6, 1.21:1 —
+    # the same number `.ks3-bell-chainlabel` shipped at. Each of the three is
+    # pinned separately rather than one being taken as representative.
+
+    # ── route-tracer (b6-01 #s-dose) ──
+    #
+    # ⚖️ THE VERDICT IS THE ONE SENTENCE THAT SAYS WHAT THE ROUTE WAS FOR
+    # ("They were simply on the route."), and it is the unit's first
+    # cream-inside-ink element. Pinned on colour AND ground, because either one
+    # alone would pass with the panel painted the wrong way round.
+    dict(name="the closing verdict is ink on the cream panel", on=B6_DOSE,
+         drive="route-followed", sel=".ks3-route-verdict",
+         props={"color": "#221E1B", "background-color": "#FBF3E6",
+                "font-size": "18px"}),
+    dict(name="the closing panel is the nested dark panel, not the page ground",
+         on=B6_DOSE, drive="route-followed", sel=".ks3-route-else",
+         props={"background-color": "#3E3730"}),
+    # ⚖️ EXACTLY ONE ROW WEARS THE ALERT BORDER, and it is where the student
+    # is. The stage list is the only picture in the unit (NOTES-B6 flag 14: no
+    # figures anywhere, measured), so the border and the lit chip are doing the
+    # work a diagram would do elsewhere.
+    dict(name="the current stage is the alert-bordered row", on=B6_DOSE,
+         drive="route-followed", sel='.ks3-route-step[data-state="current"]',
+         props={"border-color": "#FFC53D", "border-width": "2px"}),
+    dict(name="a reached stage chip is alert with ink text", on=B6_DOSE,
+         drive="route-followed",
+         sel='.ks3-route-step[data-state] .ks3-route-num',
+         props={"background-color": "#FFC53D", "color": "#221E1B"}),
+    # ⚖️ THE STAGE BODY IS BODY COPY ON INK AND MUST NOT BE THE HEADLINE
+    # COLOUR: it is five paragraphs of reading, and #FBF3E6 at 18px over that
+    # length is the glare Design's on-dark-body token exists to avoid.
+    dict(name="the stage body reads in on-dark body", on=B6_DOSE,
+         drive="route-followed", sel=".ks3-route-stepbody",
+         props={"color": "#E7DECE", "font-size": "18px"}),
+    # ⚖️ A RESTING STAGE IS MUTED, AND ONLY A RESTING ONE. Level it with the
+    # reached rows and the block opens looking as though the dose has been
+    # taken. No drive: at rest every row is resting, so this is measured on the
+    # undriven load and a regression is reported before anything is clicked.
+    dict(name="a resting stage title is muted, and only a resting one",
+         on=B6_DOSE, sel='.ks3-route-step:not([data-state]) .ks3-route-steptitle',
+         props={"color": "#C6B9A7"}),
+    dict(name="the drug class is the alert mono line", on=B6_DOSE,
+         sel=".ks3-route-class",
+         props={"color": "#FFC53D", "font-family": "DM Mono",
+                "font-size": "15px"}),
+    # ⚖️ THE CHOSEN DRUG TAB IS ALERT AND NOTHING ELSE. R3: choosing a drug is
+    # not answering anything, so if this row ever resolves to `--ks3-ok`
+    # #12A150 the block has started marking a control that has no right answer.
+    dict(name="the chosen drug tab is alert with ink text", on=B6_DOSE,
+         sel='.ks3-route-tab[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+
+    # ── clearance-clock (b6-02 #s-clock) ──
+    #
+    # ⚖️ THE VERDICT IS WHERE THE BLOCK PAYS OFF — "which is exactly the number
+    # of units. Every route you tried gave the same number of hours" — and it
+    # is this instrument's cream-inside-ink element.
+    dict(name="the clock verdict is ink on the cream panel", on=B6_CLOCK,
+         drive="clock-run", sel=".ks3-clock-verdict",
+         props={"color": "#221E1B", "background-color": "#FBF3E6",
+                "font-size": "18px"}),
+    # ⚖️ THE HOURS ARE THE ONLY ALERT FIGURE IN THE PANEL, because they are the
+    # number that refuses to move. Level them with the units beside them and
+    # the readout becomes two facts rather than one claim.
+    dict(name="the hours-to-clear figure is the alert mono readout",
+         on=B6_CLOCK, sel=".ks3-clock-hours",
+         props={"color": "#FFC53D", "font-family": "DM Mono",
+                "font-size": "16px"}),
+    dict(name="the units drunk stay on-dark, not alert", on=B6_CLOCK,
+         sel=".ks3-clock-units", props={"color": "#FBF3E6"}),
+    # ⚠️ THE BLOOD BAR MUST BE DRAWN, and it must be the alert. If this ever
+    # resolves to the track colour the bar has become invisible and the only
+    # thing left saying anything is in the blood is a line of mono text.
+    dict(name="the blood bar is alert on a lifted track", on=B6_CLOCK,
+         sel=".ks3-clock-fill", props={"background-color": "#FFC53D"}),
+    # ⚖️ THE FIX NOTE IS EXPLANATION, NOT VERDICT: it reads in on-dark body on
+    # the lifted wash inside the dark panel, never in ink on cream. The two
+    # surfaces are different claims and must not converge.
+    dict(name="the fix note reads in on-dark body, not in ink", on=B6_CLOCK,
+         sel=".ks3-clock-note", props={"color": "#E7DECE", "font-size": "18px"}),
+    # ⚖️ A CHOSEN FIX IS ALERT AND NOTHING ELSE — never `--ks3-ok`, never
+    # `--ks3-danger`. Picking "black coffee" is not a wrong answer; the bench
+    # does not mark, and the note is what tells the student what it did.
+    dict(name="the chosen fix is alert with ink text, and is not marked",
+         on=B6_CLOCK, sel='.ks3-clock-fix[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+    # ⚖️ A DRINK NEVER LATCHES. Design draws every drink unpressed always: it
+    # is an action, not a selection. If a drink ever resolves to the alert
+    # ground it has become a choice the student appears to have made.
+    dict(name="a drink control is never the chosen-state ground", on=B6_CLOCK,
+         sel=".ks3-clock-drink",
+         props={"background-color": "rgba(0, 0, 0, 0)", "color": "#FBF3E6",
+                "min-height": "44px"}),
+
+    # ── claim-check (b6-03 #s-claims) ──
+    #
+    # ⚠️ FOUR CREAM-INSIDE-INK ELEMENTS IN ONE PANEL — the largest count in the
+    # unit, and exactly the shape of the B4 defect, where a panel was rescued
+    # and a paragraph inside it was not. All four are pinned separately.
+    dict(name="the claim reveal panel is the page ground on an ink block",
+         on=B6_CLAIMS, drive="claims-checked", sel=".ks3-ccheck-verdict",
+         props={"background-color": "#FBF3E6"}),
+    # ⚖️ THE VERDICT WORD IS NOT A MARK. It is the accent eyebrow whether the
+    # student named the fault or not — never `--ks3-ok` #12A150, never
+    # `--ks3-danger` #FF6B6B. The reveal opens either way and this row is what
+    # keeps it that way. The drive reaches it through a DELIBERATELY WRONG
+    # pick, which is the state a marking colour would appear in first.
+    dict(name="the verdict word is the accent eyebrow, not a marking colour",
+         on=B6_CLAIMS, drive="claims-checked", sel=".ks3-ccheck-word",
+         props={"color": "#A93411", "font-family": "DM Mono",
+                "font-size": "14px"}),
+    dict(name="the named fault is ink display type on the cream panel",
+         on=B6_CLAIMS, drive="claims-checked", sel=".ks3-ccheck-answer",
+         props={"color": "#221E1B", "font-family": "Bricolage Grotesque",
+                "font-size": "22px"}),
+    dict(name="the reveal reasoning reads in ink body, not on-dark body",
+         on=B6_CLAIMS, drive="claims-checked", sel=".ks3-ccheck-why",
+         props={"color": "#3B342E", "font-size": "18px"}),
+    dict(name="the what-would-settle-it line reads in ink body", on=B6_CLAIMS,
+         drive="claims-checked", sel=".ks3-ccheck-settle",
+         props={"color": "#3B342E", "font-size": "18px"}),
+    # ⚖️ R10, PINNED AS A COLOUR. A chosen fault takes the alert border and
+    # the alert letter, and its LABEL COLOUR DOES NOT MOVE — because a chosen
+    # option is not a right one. If either of these two rows ever resolves to
+    # `--ks3-ok` or `--ks3-danger`, the bench has started marking and the house
+    # rule Design states on the page has been lost.
+    dict(name="a chosen fault is alert-bordered and its label does not move",
+         on=B6_CLAIMS, drive="claims-checked",
+         sel='.ks3-ccheck-fault[aria-pressed="true"]',
+         props={"border-color": "#FFC53D", "color": "#FBF3E6",
+                "min-height": "44px"}),
+    dict(name="the chosen fault's letter is alert, and is not a tick",
+         on=B6_CLAIMS, drive="claims-checked",
+         sel='.ks3-ccheck-fault[aria-pressed="true"] .ks3-ccheck-mark',
+         props={"color": "#FFC53D", "border-color": "#FFC53D"}),
+    # ⚖️ THE FAULTS THAT WERE NOT PICKED DIM; THEY ARE NOT STRUCK THROUGH AND
+    # THEY ARE NOT RECOLOURED. Every one of them is a TRUE statement about
+    # evidence — the pool is one-to-one — so nothing here may present them as
+    # wrong answers.
+    dict(name="an unpicked fault dims and stays on-dark", on=B6_CLAIMS,
+         drive="claims-checked",
+         sel='.ks3-ccheck-fault[disabled][aria-pressed="false"]',
+         props={"opacity": "0.5", "color": "#FBF3E6"}),
+    dict(name="the claim itself is display type on ink", on=B6_CLAIMS,
+         sel=".ks3-ccheck-claim",
+         props={"color": "#FBF3E6", "font-family": "Bricolage Grotesque",
+                "font-size": "26px"}),
+    # ═══ END B6 ═══ rows
 ]
 
 
@@ -5359,6 +5528,392 @@ DRIVES = {
 })()
 """,
     # ═══ END B4 ═══ drives
+    # ═══ BEGIN B6 ═══ drives
+    #
+    # ⚠️ STRUCTURAL, NOT KEYED ON AN AUTHORED ID, for B4's reason: these reach
+    # the state they want through the instrument's own controls, by position,
+    # so a drive cannot fail as a colour regression on the day an author
+    # renames `caffeine` or reorders the drinks.
+
+    # Follows one dose all the way round, one stage at a time — and proves on
+    # the way that the route cannot be skipped, that the closing panel cannot
+    # arrive early, and that changing drug puts the student back at the start.
+    "route-followed": r"""
+(function () {
+  var sec = document.querySelector('[data-routeblock]');
+  if (!sec) { return "no route-tracer on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var w = sec.querySelector('[data-route]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var total = parseInt(w.getAttribute('data-total'), 10);
+  // ⚖️ FIVE. Stage 3 — once round the whole body — is the block (NOTES-B6
+  // §2.1), and a pass that collapses it into stage 2 to save space leaves an
+  // instrument that still works and no longer argues anything.
+  if (total !== 5) {
+    return "the tracer declares " + total + " stages, not five";
+  }
+  var tabs = w.querySelectorAll('[data-pick]');
+  if (tabs.length < 2) { return "the tracer offers fewer than two drugs"; }
+  var next = w.querySelector('[data-route-next]');
+  var reset = w.querySelector('[data-route-reset]');
+  if (!next) { return "the tracer has no advance control"; }
+  if (!reset) { return "the tracer has no reset control"; }
+  if (w.querySelectorAll('.ks3-route-stepbody:not([hidden])').length) {
+    return "a stage body was open before the dose was taken";
+  }
+  if (w.querySelectorAll('.ks3-route-else:not([hidden])').length) {
+    return "the closing panel was open before the route was followed";
+  }
+  if (w.querySelectorAll('.ks3-route-steps:not([hidden])').length !== 1) {
+    return "the tracer opens with more than one drug's stage list showing";
+  }
+
+  // ⚖️ CHANGING DRUG RESTARTS THE ROUTE. Done FIRST, so the measured state at
+  // the end of this drive is a route followed from its own beginning.
+  var second = tabs[1];
+  second.click();
+  next.click();
+  next.click();
+  if (w.getAttribute('data-step') !== '2') {
+    return "two stages were taken and the tracer reads step "
+      + w.getAttribute('data-step');
+  }
+  tabs[0].click();
+  if (w.getAttribute('data-step') !== '0') {
+    return "changing drug left the route at stage " + w.getAttribute('data-step');
+  }
+  if (w.querySelectorAll('.ks3-route-stepbody:not([hidden])').length) {
+    return "changing drug left a stage body open";
+  }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "changing drug left the stop ticked";
+  }
+
+  var live = w.querySelector('.ks3-route-steps:not([hidden])');
+  var rows = live.querySelectorAll('.ks3-route-step');
+  if (rows.length !== 5) {
+    return "the live stage list draws " + rows.length + " rows, not five";
+  }
+  for (var s = 1; s <= total; s++) {
+    next.click();
+    var open = live.querySelectorAll('.ks3-route-stepbody:not([hidden])');
+    if (open.length !== s) {
+      return "at stage " + s + ", " + open.length + " stage bodies are open";
+    }
+    var cur = live.querySelectorAll('.ks3-route-step[data-state="current"]');
+    if (cur.length !== 1 || cur[0].getAttribute('data-step') !== String(s)) {
+      return "at stage " + s + " the current row is not row " + s;
+    }
+    if (s < total && w.querySelectorAll('.ks3-route-else:not([hidden])').length) {
+      return "the closing panel opened at stage " + s;
+    }
+  }
+  // ⚠️ STAGES 2 AND 3 ARE TWO STAGES, AND THIS IS WHERE A COLLAPSE SHOWS UP.
+  // Nothing can check prose; what can be checked is that the two rows are not
+  // the same row twice.
+  var t2 = rows[1].querySelector('.ks3-route-steptitle').textContent.trim();
+  var t3 = rows[2].querySelector('.ks3-route-steptitle').textContent.trim();
+  var b2 = rows[1].querySelector('.ks3-route-stepbody').textContent.trim();
+  var b3 = rows[2].querySelector('.ks3-route-stepbody').textContent.trim();
+  if (!t3 || !b3) { return "stage 3 arrived with no text"; }
+  if (t2 === t3 || b2 === b3) {
+    return "stages 2 and 3 have collapsed into one stage";
+  }
+  var pan = w.querySelectorAll('.ks3-route-else:not([hidden])');
+  if (pan.length !== 1) {
+    return pan.length + " closing panels are showing; there must be exactly one";
+  }
+  if (!pan[0].querySelectorAll('.ks3-route-organrow').length) {
+    return "the closing panel opened with no organ rows";
+  }
+  if (!pan[0].querySelector('.ks3-route-verdict')) {
+    return "the closing panel opened without its verdict";
+  }
+  if (!next.disabled) {
+    return "the advance control is still live past the last stage";
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "the route was followed to the end and the stop did not tick";
+  }
+  return "";
+})()
+""",
+
+    # Runs the clock out — and on the way asserts the one thing this block
+    # exists to say. Every fix is selected in turn, at rest and again mid-clock,
+    # and the hours and the bar are required to be IDENTICAL across all of
+    # them. An implementation where any intervention moves the number fails
+    # here, on the page, in a browser.
+    "clock-run": r"""
+(function () {
+  var sec = document.querySelector('[data-clearblock]');
+  if (!sec) { return "no clearance-clock on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var w = sec.querySelector('[data-clearance]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var hoursEl = w.querySelector('[data-clock-hours]');
+  var remainEl = w.querySelector('[data-clock-remaining]');
+  var fillEl = w.querySelector('[data-clock-fill]');
+  var verdict = w.querySelector('[data-clock-verdict]');
+  var waitBtn = w.querySelector('[data-clock-wait]');
+  var resetBtn = w.querySelector('[data-clock-reset]');
+  var fixes = w.querySelectorAll('[data-fix]');
+  var drinks = w.querySelectorAll('[data-add]');
+  if (!hoursEl || !fillEl || !waitBtn || !resetBtn) {
+    return "the bench is missing one of its readouts or controls";
+  }
+  if (fixes.length < 2) { return "the bench offers fewer than two fixes"; }
+  if (!drinks.length) { return "the bench offers nothing to pour"; }
+  if (!verdict || !verdict.hasAttribute('hidden')) {
+    return "the verdict is showing before the clock was run";
+  }
+  if (w.querySelectorAll('.ks3-clock-note:not([hidden])').length !== 1) {
+    return "the bench opens showing " +
+      w.querySelectorAll('.ks3-clock-note:not([hidden])').length + " fix notes";
+  }
+
+  // Pour a known evening, so the assertion below is about the fixes and not
+  // about whatever the block happened to open on.
+  resetBtn.click();
+  drinks[0].click();
+  drinks[0].click();
+  var poured = Number(w.getAttribute('data-units'));
+  if (!(poured > 0)) { return "two drinks were poured and the glass reads " + poured; }
+  // ⚖️ ONE UNIT, ONE HOUR — asserted against the READOUT, not only against the
+  // number of presses it then takes. Halving the printed figure while leaving
+  // the model alone passes every other check on this drive and is a lie in the
+  // one place a student reads.
+  if (!(new RegExp('(^|\\D)' + poured + '(\\D|$)')).test(hoursEl.textContent)) {
+    return poured + " units were poured and the clock reads "
+      + hoursEl.textContent;
+  }
+
+  // ══ THE INSTRUMENT ══ every fix, same evening, same number.
+  var seen = {}, bars = {}, n = 0;
+  for (var i = 0; i < fixes.length; i++) {
+    fixes[i].click();
+    if (fixes[i].getAttribute('aria-pressed') !== 'true') {
+      return "a fix was chosen and did not light";
+    }
+    if (w.querySelectorAll('.ks3-clock-note:not([hidden])').length !== 1) {
+      return "choosing a fix showed more than one note";
+    }
+    if (!seen[hoursEl.textContent]) { seen[hoursEl.textContent] = 1; n += 1; }
+    bars[fillEl.style.width] = 1;
+  }
+  if (n !== 1) {
+    return "AN INTERVENTION MOVED THE CLOCK: " + Object.keys(seen).join(" / ");
+  }
+  if (Object.keys(bars).length !== 1) {
+    return "an intervention moved the blood bar: " + Object.keys(bars).join(" / ");
+  }
+
+  waitBtn.click();
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "an hour was waited and the stop did not tick";
+  }
+  if (verdict.hasAttribute('hidden')) {
+    return "the clock was run and no verdict appeared";
+  }
+  var mid = {}, m = 0;
+  for (var j = 0; j < fixes.length; j++) {
+    fixes[j].click();
+    var key = remainEl.textContent + "|" + fillEl.style.width;
+    if (!mid[key]) { mid[key] = 1; m += 1; }
+  }
+  if (m !== 1) {
+    return "AN INTERVENTION MOVED THE RUNNING CLOCK: " + Object.keys(mid).join(" / ");
+  }
+
+  // ⚠️ ANOTHER DRINK RESTARTS THE ELAPSED CLOCK — Design's own `hour: 0`.
+  // Leaving the hours where they were would credit the new units with hours
+  // that passed before they existed.
+  drinks[0].click();
+  if (w.getAttribute('data-hour') !== '0') {
+    return "pouring another drink left the elapsed clock at "
+      + w.getAttribute('data-hour');
+  }
+  poured = Number(w.getAttribute('data-units'));
+
+  // Run it out. The hours taken must equal the units poured — one an hour.
+  var hours = 0, guard = 0;
+  while (!waitBtn.disabled && guard < 60) { waitBtn.click(); hours += 1; guard += 1; }
+  if (hours !== poured) {
+    return poured + " units took " + hours + " hours to clear";
+  }
+  if (fillEl.getBoundingClientRect().width > 1) {
+    return "the blood is clear and the bar still has width";
+  }
+  if (!verdict.textContent.replace(/\s/g, '')) {
+    return "the clock cleared and the verdict is empty";
+  }
+  if (verdict.textContent.indexOf('{') >= 0) {
+    return "the verdict shipped an unfilled placeholder: " + verdict.textContent;
+  }
+  if (remainEl.textContent.indexOf('{') >= 0 ||
+      hoursEl.textContent.indexOf('{') >= 0) {
+    return "a readout shipped an unfilled placeholder";
+  }
+  return "";
+})()
+""",
+
+    # Commits a DELIBERATELY WRONG fault on the first claim and checks it. The
+    # wrong branch is the one a marking colour would appear in first, and it is
+    # also where the promise the block makes has to hold: the reveal opens
+    # anyway, and it names the right fault in full.
+    "claims-checked": r"""
+(function () {
+  var sec = document.querySelector('[data-ccheckblock]');
+  if (!sec) { return "no claim-check on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var w = sec.querySelector('[data-ccheck]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var tabs = w.querySelectorAll('[data-pick]');
+  var opts = w.querySelectorAll('.ks3-ccheck-fault');
+  var panels = w.querySelectorAll('.ks3-ccheck-verdict');
+  var btn = w.querySelector('[data-ccheck-open]');
+  var tally = w.querySelector('[data-ccheck-tally]');
+  if (tabs.length < 2) { return "the bench draws fewer than two claims"; }
+  if (opts.length < 2) { return "the bench offers fewer than two faults"; }
+  if (!btn) { return "the bench has no check button"; }
+  if (!btn.disabled) { return "the check button was live before a fault was picked"; }
+  if (w.querySelectorAll('.ks3-ccheck-verdict:not([hidden])').length) {
+    return "a verdict is showing before anything was checked";
+  }
+  if (w.querySelectorAll('.ks3-ccheck-fault[aria-pressed="true"]').length) {
+    return "a fault is already chosen on load";
+  }
+
+  // ⚖️ THE POOL IS ONE-TO-ONE, AND IT IS CHECKABLE FROM THE DOCUMENT. Every
+  // claim names an answer; the answers must be all different and there must be
+  // exactly as many faults as claims. A spare fault is an invented distractor
+  // and a repeated answer leaves one fault true of nothing on the bench.
+  if (panels.length !== tabs.length) {
+    return panels.length + " reveal panels for " + tabs.length + " claims";
+  }
+  if (opts.length !== tabs.length) {
+    return opts.length + " faults offered for " + tabs.length +
+      " claims; the pool is one-to-one";
+  }
+  var answers = {}, distinct = 0, ids = {};
+  for (var p = 0; p < opts.length; p++) { ids[opts[p].getAttribute('data-fault')] = 1; }
+  for (var q = 0; q < panels.length; q++) {
+    var ans = panels[q].getAttribute('data-answer');
+    if (!ids[ans]) { return "a claim answers " + ans + ", which is not on the bench"; }
+    if (!answers[ans]) { answers[ans] = 1; distinct += 1; }
+  }
+  if (distinct !== panels.length) {
+    return "the fault pool is not one-to-one: " + distinct +
+      " distinct answers across " + panels.length + " claims";
+  }
+  // ⚠️ AND EVERY PANEL NAMES ITS OWN ANSWER. Checked across all five rather
+  // than on the one the block opens on: an implementation that always prints
+  // the first fault in the list is correct for exactly one claim, and the
+  // opening claim is the one it happens to be correct for.
+  var byId = {};
+  for (var t0 = 0; t0 < opts.length; t0++) {
+    byId[opts[t0].getAttribute('data-fault')] =
+      opts[t0].querySelector('.ks3-ccheck-faulttext').textContent.trim();
+  }
+  for (var v = 0; v < panels.length; v++) {
+    var line = panels[v].querySelector('.ks3-ccheck-answer');
+    if (!line) { return "a reveal panel carries no answer line"; }
+    if (line.textContent.trim() !== byId[panels[v].getAttribute('data-answer')]) {
+      return "claim " + panels[v].getAttribute('data-verdict') +
+        " names a fault that is not its answer: " +
+        line.textContent.trim().slice(0, 60);
+    }
+  }
+
+  // Pick a fault that is NOT the answer to the claim showing.
+  var live = w.querySelector('.ks3-ccheck-verdict[data-answer]');
+  var current = w.getAttribute('data-claim');
+  var right = null;
+  for (var r = 0; r < panels.length; r++) {
+    if (panels[r].getAttribute('data-verdict') === current) {
+      right = panels[r].getAttribute('data-answer');
+    }
+  }
+  if (right === null) { return "the opening claim has no reveal panel"; }
+  var wrong = null;
+  for (var i = 0; i < opts.length; i++) {
+    if (opts[i].getAttribute('data-fault') !== right) { wrong = opts[i]; break; }
+  }
+  if (!wrong) { return "every fault is the answer to the opening claim"; }
+  wrong.click();
+  if (btn.disabled) { return "a fault was chosen and the check button is still locked"; }
+  btn.click();
+
+  var open = w.querySelectorAll('.ks3-ccheck-verdict:not([hidden])');
+  if (open.length !== 1) {
+    return open.length + " reveals are showing; there must be exactly one";
+  }
+  var words = open[0].querySelectorAll('[data-word]:not([hidden])');
+  if (words.length !== 1) {
+    return words.length + " verdict words are showing; there must be exactly one";
+  }
+  // ⚖️ THE REVEAL IS NOT WITHHELD FOR A WRONG PICK, and it names the RIGHT
+  // fault rather than repeating the one that was chosen.
+  var named = open[0].querySelector('.ks3-ccheck-answer');
+  if (!named || !named.textContent.replace(/\s/g, '')) {
+    return "the reveal opened without naming a fault";
+  }
+  if (named.textContent.trim() ===
+      wrong.querySelector('.ks3-ccheck-faulttext').textContent.trim()) {
+    return "the reveal named the fault the student picked, not the right one";
+  }
+  // ⚠️ AND IT NAMED THE RIGHT ONE, not merely a different one. Checking only
+  // that it differs from the pick passes an implementation that always prints
+  // the first fault in the list — which is correct for exactly one claim and
+  // wrong for the other four.
+  var rightOpt = w.querySelector('.ks3-ccheck-fault[data-fault="' + right + '"]');
+  if (!rightOpt) { return "the claim's own answer is not on the bench"; }
+  if (named.textContent.trim() !==
+      rightOpt.querySelector('.ks3-ccheck-faulttext').textContent.trim()) {
+    return "the reveal named a fault that is not this claim's answer: "
+      + named.textContent.trim().slice(0, 60);
+  }
+  if (!open[0].querySelector('.ks3-ccheck-why') ||
+      !open[0].querySelector('.ks3-ccheck-settle')) {
+    return "the reveal opened without its reasoning or its settle line";
+  }
+  // ⚖️ R10 — THE BENCH DOES NOT MARK. Read off every option, in the state a
+  // marking colour would appear in first.
+  var OK = 'rgb(18, 161, 80)', DANGER = 'rgb(255, 107, 107)';
+  for (var o = 0; o < opts.length; o++) {
+    var cs = getComputedStyle(opts[o]);
+    var mk = getComputedStyle(opts[o].querySelector('.ks3-ccheck-mark'));
+    var seen = [cs.color, cs.backgroundColor, cs.borderTopColor,
+                mk.color, mk.backgroundColor, mk.borderTopColor];
+    for (var c = 0; c < seen.length; c++) {
+      if (seen[c] === OK || seen[c] === DANGER) {
+        return "THE BENCH IS MARKING: option " + o + " resolved " + seen[c];
+      }
+    }
+    if (/is-correct|is-wrong/.test(opts[o].className)) {
+      return "THE BENCH IS MARKING: option " + o + " carries " + opts[o].className;
+    }
+  }
+  if (w.querySelectorAll('.ks3-ccheck-fault:not([disabled])').length) {
+    return "the faults did not lock when the claim was checked";
+  }
+  if (tally && tally.textContent.indexOf('{') >= 0) {
+    return "the tally shipped an unfilled placeholder: " + tally.textContent;
+  }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked with only one of the claims checked";
+  }
+  return "";
+})()
+""",
+    # ═══ END B6 ═══ drives
 }
 
 

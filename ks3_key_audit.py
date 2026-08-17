@@ -63,6 +63,13 @@ SOURCES = (
     "verify_ks3.py", "ks3_data/__init__.py", "ks3_data/structure.py",
     "ks3_statutory.py", "ks3_data/b1/__init__.py", "ks3_data/b2/__init__.py",
     "ks3_data/c1/__init__.py", "ks3_data/c2/__init__.py",
+    # ⊕ MRB-244 — B3, B4 and B6's normalisers were missing. Every unit built
+    # since C2 lifts instruments through its own `__init__.py`, and omitting
+    # one reports the keys THAT file consumes as dead. An omission here is a
+    # false POSITIVE, which is the failure that gets a gate switched off.
+    # (B5's is deliberately absent: the unit is parked and does not build.)
+    "ks3_data/b3/__init__.py", "ks3_data/b4/__init__.py",
+    "ks3_data/b6/__init__.py",
 )
 
 
@@ -86,6 +93,32 @@ def unit_keys(unit):
         _keys(lesson, ks)
         per[lesson.get("slug") or "?"] = ks
     return per
+
+
+def indirect_reads(node, out):
+    """Key names a renderer reaches through a POINTER rather than by name.
+
+    ⊕ MRB-244. b6-01 authored `drugs[].entry` and the audit called it dead.
+    It is not: `r_route_tracer` reads it as ``d[st["body_from"]]``, and the
+    authored `body_from` is the string ``"entry"``. The literal scan cannot
+    see through that, so a key whose text demonstrably reaches the built page
+    was reported as content that never reaches a student — the exact claim the
+    audit exists to make, made backwards.
+
+    A `*_from` value IS a read site, by construction: it is the author naming
+    which key the renderer should dereference. Counting it is narrower than an
+    exemption for `entry` would have been — nothing is waved through by name,
+    and a key stops counting the moment no pointer names it.
+    """
+    if isinstance(node, dict):
+        for k, v in node.items():
+            if isinstance(k, str) and k.endswith("_from") and isinstance(v, str):
+                out.add(v)
+            indirect_reads(v, out)
+    elif isinstance(node, (list, tuple)):
+        for v in node:
+            indirect_reads(v, out)
+    return out
 
 
 def read_sites():
@@ -125,6 +158,10 @@ def main(argv):
         return 1
 
     reads = read_sites()
+    # ⊕ MRB-244 — pointer-dereferenced keys, gathered from the authored data
+    # itself rather than from the source scan. See `indirect_reads`.
+    for _u in units.values():
+        indirect_reads(_u.get("lessons") or [], reads)
 
     def unread(code):
         out = {}

@@ -9916,3 +9916,639 @@ body.rd[data-mode="ks3"] {
 
 /* ═══ END B4 ═══ */
 
+/* ═══ BEGIN B6 ═══ */
+
+/* ── B6 · Health and drugs (⊕ MRB-244) ──
+   Three instruments, and every one of them on ink.
+
+   ⚠️ SPECIFICITY, AND ON THIS UNIT IT IS LOAD-BEARING THREE TIMES OVER.
+   `.ks3-dark p` is (0,1,1) and every bare class below is (0,1,0), so an
+   unscoped `color` LOSES. All three B6 practicals are
+   `ks3-block ks3-dark ks3-practical` — measured off Design's own markup on
+   b6-01 `#s-dose`, b6-02 `#s-clock` and b6-03 `#s-claims`, no exceptions — so
+   the trap takes the whole unit in one pass and each page still looks tidy.
+   Every colour rule below is written under `.ks3-dark …` at (0,2,0); geometry
+   is safe unscoped, because `.ks3-dark p` sets colour and nothing else.
+
+   ⊕ THE LIST BELOW IS OF ELEMENTS, NOT OF PANELS, and B4 is why. Counting
+   panels is what let `.ks3-bell-chainlabel` ship at 1.21:1: the panel was on
+   the list, its steps and its note were rescued, and a seventh `<p>` inside
+   the same panel taking a different colour was not. So — the CREAM-INSIDE-INK
+   ELEMENTS in B6, each with its own `.ks3-dark …` rule at (0,2,0):
+
+     `.ks3-route-verdict` · `.ks3-clock-verdict` · `.ks3-ccheck-word` ·
+     `.ks3-ccheck-answer` · `.ks3-ccheck-why` · `.ks3-ccheck-settle`
+
+   Add a text element to any cream panel in this unit and it joins this list in
+   the same commit. Adding it to the panel's rule is not the same thing.
+
+   ⚠️ AND RE-MEASURE THE TOKEN YOU CHOSE ON THE GROUND IT LANDS ON. B4 also
+   proved the cascade bug can MASK a wrong token: `.ks3-gas-cap` measured a
+   healthy 8.77:1 only because `.ks3-dark p` was winning, and the authored
+   colour would have been 1.78:1. Fixing the specificity alone would have
+   turned a lucky pass into a real failure and the fix would have looked
+   exactly like the defect.
+
+   ⚠️ NO `display` ON ANYTHING THAT ALSO TAKES `[hidden]`. An author `display`
+   beats the UA stylesheet's `[hidden] { display: none }` regardless of
+   specificity — the defect that has now cost eight builds. The elements hidden
+   at rest in this unit are: `.ks3-route-stepbody`, `.ks3-route-else`, the
+   per-drug `.ks3-route-name` / `-class` / `-where` / `.ks3-route-steps`,
+   `.ks3-clock-note`, `.ks3-clock-verdict`, `.ks3-ccheck-claim`,
+   `.ks3-ccheck-evidence`, `.ks3-ccheck-verdict` and the two
+   `.ks3-ccheck-word span`s. Not
+   one is given a `display` here — except `.ks3-ccheck-evlabel`, which carries
+   one and never carries `[hidden]`: it is a caption INSIDE a paragraph that
+   is hidden, so the attribute is on its parent and this rule can never
+   collide with it. `.ks3-route-stepbody` needs to be a block
+   when it is shown and gets it WITHOUT a `display` declaration, by being a
+   flex item of `.ks3-route-stepmain` — a flex item is blockified, and an
+   element the UA has set to `display: none` is not a flex item at all. */
+
+/* ═══ route-tracer (b6-01 #s-dose) ════════════════════════════════════════
+   Four drugs, one route, five stages, and a closing panel that is a
+   consequence rather than a list.
+
+   ⚖️ THE FIVE STAGE ROWS ARE THE PICTURE. There is no diagram in this unit
+   (NOTES-B6 flag 14: measured, not omitted) — the ordered rows, the numeral
+   chip filling in as each is reached and the alert border sitting on exactly
+   one of them ARE the drawing. Which is why the resting rows are drawn at all
+   rather than hidden: a student reads the whole journey before taking a single
+   step, and stage 3 is visible from the start. */
+.ks3-route { margin-top: 22px; }
+
+.ks3-route-doselabel {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.ks3-route-tabs {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+.ks3-route-tab {
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 10px 15px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+
+.ks3-route-panel {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-card);
+}
+.ks3-route-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-route-name { margin: 0; font-size: 21px; font-weight: 700; }
+.ks3-route-class {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+}
+.ks3-route-where { margin: 8px 0 0; font-size: 18px; line-height: 1.55; }
+
+.ks3-route-steps {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ks3-route-step {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border-radius: var(--ks3-r-panel);
+  border: 2px solid transparent;
+}
+.ks3-route-num {
+  flex: 0 0 30px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  border: 2px solid transparent;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 15px;
+}
+/* ⚠️ A FLEX CONTAINER, AND THAT IS WHAT KEEPS `[hidden]` WORKING ON THE BODY.
+   Design draws the title and the body as two blocks stacked in the row's
+   right-hand column. Writing that as `display: block` on the body would beat
+   the UA's `[hidden] { display: none }` at any specificity and the unreached
+   stages would ship visible — the eight-build defect. Making the parent a
+   column flex container blockifies both children for free, and a child the UA
+   has set to `display: none` never becomes a flex item. */
+.ks3-route-stepmain {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ks3-route-steptitle { font-size: 19px; font-weight: 700; }
+.ks3-route-stepbody { font-size: 18px; line-height: 1.55; }
+
+.ks3-route-foot {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  flex-wrap: wrap;
+}
+.ks3-route-next[disabled] { opacity: .45; cursor: default; }
+.ks3-route-next[disabled]:hover { transform: none; }
+
+/* ⚠️ NO `display` HERE. `.ks3-route-else` is emitted `hidden`. */
+.ks3-route-else {
+  margin-top: 18px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-card);
+}
+.ks3-route-elselabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.ks3-route-organs {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ks3-route-organrow {
+  display: grid;
+  grid-template-columns: minmax(120px, 170px) 1fr;
+  gap: 6px 18px;
+}
+.ks3-route-organ { margin: 0; font-size: 18px; font-weight: 700; }
+.ks3-route-effect { margin: 0; font-size: 18px; line-height: 1.55; }
+.ks3-route-verdict {
+  margin: 18px 0 0;
+  padding: 16px 18px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* The organ column stops being a column when there is no room for two. Below
+   this the effect would be reading in a 90px gutter beside a 170px name. */
+@media (max-width: 560px) {
+  .ks3-route-organrow { grid-template-columns: 1fr; }
+}
+
+/* ── route-tracer on ink ───────────────────────────────────────────────── */
+.ks3-dark .ks3-route-doselabel { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-route-tab {
+  border-color: var(--ks3-on-dark-muted);
+  background: transparent;
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-route-tab[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-route-panel,
+.ks3-dark .ks3-route-else { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-route-name,
+.ks3-dark .ks3-route-organ { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-route-class,
+.ks3-dark .ks3-route-elselabel { color: var(--ks3-alert); }
+.ks3-dark .ks3-route-where { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-route-num {
+  border-color: var(--ks3-on-dark-muted);
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-dark .ks3-route-steptitle { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-route-stepbody,
+.ks3-dark .ks3-route-effect { color: var(--ks3-on-dark-body); }
+/* ⚖️ A REACHED STAGE KEEPS ITS CHIP LIT AND ITS TITLE FULL-STRENGTH; the
+   CURRENT one additionally takes the alert border and the lifted ground. Two
+   states, not one, because a student at stage 4 has to be able to see that
+   stages 1–3 happened and that stage 4 is where they are. */
+.ks3-dark .ks3-route-step[data-state] { border-color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-route-step[data-state] .ks3-route-steptitle {
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-route-step[data-state] .ks3-route-num {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-route-step[data-state="current"] {
+  background: rgba(255, 255, 255, .10);
+  border-color: var(--ks3-alert);
+}
+/* ⚠️ (0,2,0). The verdict sits on the CREAM ground inside the ink block;
+   unscoped, `.ks3-dark p` paints it #E7DECE on #FBF3E6 at about 1.2:1 —
+   present, correct, spelt right and invisible. It is also the one sentence in
+   the block that says what the whole route was for. */
+.ks3-dark .ks3-route-verdict { color: var(--ks3-ink); }
+
+/* ═══ clearance-clock (b6-02 #s-clock) ════════════════════════════════════
+   Five drinks, six things people believe sober you up, and a clock that does
+   not care about any of them.
+
+   ⚖️ THE HOURS READOUT IS THE ONE ALERT FIGURE IN THE PANEL, because it is
+   the number the block is about and the number that refuses to move. The
+   units beside it are on-dark and the elapsed line under the bar is muted —
+   levelling the three would turn the readout into three facts rather than one
+   claim with two supports.
+
+   ⚠️ THE NOTE PANEL IS NOT A VERDICT PANEL. The chosen fix's note sits on the
+   lifted white wash inside the dark panel and reads in on-dark body; the
+   verdict sits on the CREAM ground and reads in ink. They are different
+   surfaces because they are different claims: the note explains what that one
+   trick does, the verdict states where the clock actually is. */
+.ks3-clock { margin-top: 22px; }
+
+.ks3-clock-group { margin-top: 20px; }
+.ks3-clock-grouplabel {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.ks3-clock-btns {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+.ks3-clock-drink,
+.ks3-clock-fix {
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 10px 15px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+
+.ks3-clock-panel {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-card);
+}
+.ks3-clock-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-clock-units { margin: 0; font-size: 21px; font-weight: 700; }
+.ks3-clock-hours {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 16px;
+  font-weight: 500;
+}
+.ks3-clock-bloodlabel {
+  margin: 16px 0 6px;
+  font-size: 17px;
+  font-weight: 600;
+}
+.ks3-clock-track {
+  display: block;
+  height: 22px;
+  border-radius: var(--ks3-r-pill);
+  overflow: hidden;
+}
+.ks3-clock-fill {
+  display: block;
+  height: 100%;
+  background: var(--ks3-alert);
+  transition: width .4s ease;
+}
+.ks3-clock-remaining {
+  margin: 8px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 16px;
+  font-weight: 500;
+}
+/* ⚠️ NO `display` HERE. Five of the six `.ks3-clock-note` elements are
+   emitted `hidden`, and a `<p>` needs nothing from this rule to be a block. */
+.ks3-clock-note {
+  margin: 16px 0 0;
+  padding: 15px 17px;
+  border-radius: var(--ks3-r-panel);
+  font-size: 18px;
+  line-height: 1.55;
+}
+.ks3-clock-foot {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  flex-wrap: wrap;
+}
+.ks3-clock-wait[disabled] { opacity: .45; cursor: default; }
+.ks3-clock-wait[disabled]:hover { transform: none; }
+/* ⚠️ NO `display` HERE EITHER. `.ks3-clock-verdict` is emitted `hidden`. */
+.ks3-clock-verdict {
+  margin: 18px 0 0;
+  padding: 17px 19px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* ── clearance-clock on ink ────────────────────────────────────────────── */
+.ks3-dark .ks3-clock-grouplabel { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-clock-drink,
+.ks3-dark .ks3-clock-fix {
+  border-color: var(--ks3-on-dark-muted);
+  background: transparent;
+  color: var(--ks3-on-dark);
+}
+/* ⚖️ A CHOSEN FIX IS LIT AND A DRINK NEVER IS. Design draws the drinks with
+   `seg(false)` on every one of them — they are an action, not a selection,
+   and each press pours another one. A drink that latched would read as a
+   choice a student had made rather than a thing they had done. */
+.ks3-dark .ks3-clock-fix[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-clock-panel { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-clock-units,
+.ks3-dark .ks3-clock-bloodlabel { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-clock-hours { color: var(--ks3-alert); }
+.ks3-dark .ks3-clock-remaining { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-clock-track { background: rgba(255, 255, 255, .08); }
+.ks3-dark .ks3-clock-note {
+  background: rgba(255, 255, 255, .06);
+  color: var(--ks3-on-dark-body);
+}
+/* ⚠️ (0,2,0). The verdict sits on the CREAM ground inside the ink block;
+   unscoped, `.ks3-dark p` paints it #E7DECE on #FBF3E6 at about 1.2:1. It is
+   the sentence that names how many hours it actually took. */
+.ks3-dark .ks3-clock-verdict { color: var(--ks3-ink); }
+
+/* ⊕ NO `prefers-reduced-motion` BLOCK FOR B6, AND THAT IS CHECKED RATHER THAN
+   FORGOTTEN. The unit carries exactly one transition — `.ks3-clock-fill`'s
+   width — and the platform-wide rule at the top of this file
+   (`*,*::before,*::after { transition-duration: .001ms !important }`) already
+   removes it. A per-instrument block here would be dead code, which is what
+   B4 removed after adding one. Nothing in B6 animates and nothing uses a
+   timer (NOTES-B6 §4), so there is no rAF loop to test the query inside
+   either, and the reduced-motion experience is the complete one: the blood
+   bar jumps to its new width and every figure and sentence is unchanged. */
+
+/* ═══ claim-check (b6-03 #s-claims) ═══════════════════════════════════════
+   Five claims, five faults, one-to-one.
+
+   ⚖️ NOTHING IN THIS BLOCK IS GREEN OR RED, AND THAT IS A RULE RATHER THAN A
+   PALETTE CHOICE (MRB-208 R10, restated on Design's own page: *the bench does
+   not mark right and wrong; it highlights the pick, and the verdict panel
+   names the answer*). There is no `is-correct` or `is-wrong` rule anywhere in
+   this component, and there must never be one. A chosen fault takes the alert
+   border and the alert letter — the same treatment a chosen anything takes
+   across the key stage — and once the claim is checked the four that were not
+   chosen drop to .5. That is a record of what was picked, not a mark on it.
+
+   ⚠️ FOUR CREAM-INSIDE-INK ELEMENTS IN ONE PANEL, which is the largest count
+   in the unit and exactly the shape of the B4 defect: `.ks3-ccheck-word`,
+   `-answer`, `-why` and `-settle` all sit on `--ks3-ground` inside the ink
+   block, and every one of them needs its own `.ks3-dark …` rule. Rescuing the
+   panel is not rescuing the paragraphs. */
+.ks3-ccheck { margin-top: 22px; }
+
+.ks3-ccheck-tabsgroup { margin-top: 22px; }
+.ks3-ccheck-tabslabel {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.ks3-ccheck-tabs {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+.ks3-ccheck-tab {
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 10px 15px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+
+.ks3-ccheck-panel {
+  margin-top: 20px;
+  padding: 24px 26px;
+  border-radius: var(--ks3-r-card);
+}
+/* ⚠️ NO `display` ON `.ks3-ccheck-claim` OR `-evidence`: four of each ship
+   `hidden`, and a `<p>` is a block without help. */
+.ks3-ccheck-claim {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+}
+.ks3-ccheck-evidence {
+  margin: 14px 0 0;
+  padding: 15px 17px;
+  border-radius: var(--ks3-r-panel);
+  font-size: 18px;
+  line-height: 1.55;
+}
+/* A caption INSIDE the evidence paragraph, so it needs a block of its own —
+   and it never carries `[hidden]`, its parent does. */
+.ks3-ccheck-evlabel {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.ks3-ccheck-ask {
+  margin: 20px 0 10px;
+  font-size: 17px;
+  font-weight: 600;
+}
+.ks3-ccheck-faults {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.ks3-ccheck-fault {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  font: inherit;
+  font-size: 18px;
+  line-height: 1.5;
+  padding: 14px 16px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-panel);
+  border: 2px solid var(--ks3-option-border);
+  background: transparent;
+  color: var(--ks3-ink);
+}
+.ks3-ccheck-fault[disabled] { cursor: default; }
+.ks3-ccheck-fault[disabled][aria-pressed="false"] { opacity: .5; }
+.ks3-ccheck-mark {
+  flex: 0 0 26px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: 2px solid var(--ks3-option-border);
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 14px;
+}
+.ks3-ccheck-faulttext { flex: 1 1 auto; min-width: 0; }
+.ks3-ccheck-foot {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  flex-wrap: wrap;
+}
+.ks3-ccheck-check[disabled] { opacity: .45; cursor: default; }
+.ks3-ccheck-check[disabled]:hover { transform: none; }
+.ks3-ccheck-tally {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+}
+/* ⚠️ NO `display` HERE. `.ks3-ccheck-verdict` is emitted `hidden`, and so is
+   each of the two words inside `.ks3-ccheck-word`. */
+.ks3-ccheck-verdict {
+  margin-top: 18px;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+}
+.ks3-ccheck-word {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.ks3-ccheck-answer {
+  margin: 9px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1.25;
+  letter-spacing: -.02em;
+}
+.ks3-ccheck-why { margin: 11px 0 0; font-size: 18px; line-height: 1.6; }
+.ks3-ccheck-settle {
+  margin: 14px 0 0;
+  padding-top: 14px;
+  border-top: 2px solid var(--ks3-rule);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* ── claim-check on ink ────────────────────────────────────────────────── */
+.ks3-dark .ks3-ccheck-tabslabel { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-ccheck-tab {
+  border-color: var(--ks3-on-dark-muted);
+  background: transparent;
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-ccheck-tab[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-ccheck-panel { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-ccheck-claim,
+.ks3-dark .ks3-ccheck-ask { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-ccheck-evidence {
+  background: rgba(255, 255, 255, .06);
+  color: var(--ks3-on-dark-body);
+}
+.ks3-dark .ks3-ccheck-evlabel { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-ccheck-tally { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-ccheck-fault {
+  border-color: var(--ks3-on-dark-muted);
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-ccheck-mark {
+  border-color: var(--ks3-on-dark-muted);
+  color: var(--ks3-on-dark-muted);
+}
+/* ⚖️ THE ONLY STATE A FAULT BUTTON HAS. Alert border, alert letter, a lifted
+   ground — and the label colour does not move, because a chosen option is not
+   a right one. If a rule below this line ever resolves to `--ks3-ok` #12A150
+   or `--ks3-danger` #FF6B6B, the bench has started marking. */
+.ks3-dark .ks3-ccheck-fault[aria-pressed="true"] {
+  border-color: var(--ks3-alert);
+  background: rgba(255, 255, 255, .10);
+}
+.ks3-dark .ks3-ccheck-fault[aria-pressed="true"] .ks3-ccheck-mark {
+  border-color: var(--ks3-alert);
+  color: var(--ks3-alert);
+}
+/* ⚠️ (0,2,0), FOUR TIMES. All four sit on the CREAM ground inside the ink
+   block; unscoped, `.ks3-dark p` paints each of them #E7DECE on #FBF3E6 at
+   about 1.2:1. The word is the accent eyebrow — never `--ks3-ok`, never
+   `--ks3-danger` — because the reveal opens whichever way the pick went. */
+.ks3-dark .ks3-ccheck-word { color: var(--ks3-accent-text); }
+.ks3-dark .ks3-ccheck-answer { color: var(--ks3-ink); }
+.ks3-dark .ks3-ccheck-why,
+.ks3-dark .ks3-ccheck-settle { color: var(--ks3-ink-body); }
+
+/* ═══ END B6 ═══ */
+

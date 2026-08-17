@@ -410,3 +410,74 @@ blood, not about particles in a room.
 opens the lesson and the belief is stated in the student's own answer before any
 instrument runs. Recorded because the pattern in this unit is otherwise
 instrument-elicited, and a wrong `elicited_by` is a join that looks right.
+
+---
+
+### `DRUG` — what a drug is, what it does once it is in the blood, and how a claim about one is judged
+
+Opened 17 Aug 2026 by B6 (MRB-244). Eight entries across three lessons. The
+family is unlike every other in this register: most of its beliefs are not wrong
+science a student worked out from experience, but wrong *categories* they were
+handed — that a drug is a legal classification rather than a description of what
+a molecule does, that "natural" is a claim about safety, that a story is
+evidence. Confronting them is closer to the nature-of-science pair `PART-12`/
+`PART-13` than to anything in `DIET` or `BREATH`.
+
+**The collision fix from `DIET` and `BREATH` was finally applied.** Three
+authors worked this unit in parallel with `DRUG-01/02`, `03/04` and `05/06`
+**pre-allocated per lesson before dispatch**, with a named spare each for a third
+belief. No id collided. This is the third unit to meet the edge and the first not
+to have to renumber afterwards — the fix was written down after B3, ignored
+before B4, and applied here.
+
+**⚠️ `DRUG-07` is deliberately unused and must stay unused.** It was the spare
+allocated to b6-01, whose third belief turned out to live in the *Going further*
+layer — that "poison" is a category of substance rather than a statement about
+quantity. That is stretch material and is confronted there rather than in a
+`#s-think` block, so it was not minted. Ids are permanent, and a gap is cheaper
+than a renumber; do not reuse `07` for something else.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `DRUG-01` | Drugs are illegal substances. | `hook` | `two-wrong-ideas` | `what-drugs-do-to-the-body` |
+| `DRUG-02` | A painkiller goes to the part that hurts. | `follow-the-dose` | `two-wrong-ideas` | `what-drugs-do-to-the-body` |
+| `DRUG-03` | Coffee, a cold shower or fresh air will sober you up. | `beat-the-liver` | `two-wrong-ideas` | `alcohol-and-smoking` |
+| `DRUG-04` | A few cigarettes now and then is basically fine. | `two-wrong-ideas` | `two-wrong-ideas` | `alcohol-and-smoking` |
+| `DRUG-05` | If it's natural, it's safe — it's the chemicals that hurt you. | `find-the-fault` | `two-wrong-ideas` | `substance-misuse-and-decisions` |
+| `DRUG-06` | Everyone my age is doing it. | `find-the-fault` | `two-wrong-ideas` | `substance-misuse-and-decisions` |
+| `DRUG-08` | Filters make cigarettes safer. | `two-wrong-ideas` | `two-wrong-ideas` | `alcohol-and-smoking` |
+| `DRUG-09` | One person who came to no harm disproves a risk. | `find-the-fault` | `find-the-fault` | `substance-misuse-and-decisions` |
+
+**`DRUG-01` reappears in both later lessons and is NOT re-declared — a ruling,
+because the two authors made opposite calls.**
+
+b6-02 opens on it (*legal for adults … more illness than every illegal drug put
+together*) and b6-03's hook offers it as option B (*it is legal to buy in this
+country*). One author declared a second `DRUG-01` row on their own lesson; the
+other cited it in a comment and declared nothing. Same instruction, opposite
+readings, and the register is where that has to be settled.
+
+**Ruled: cite, do not re-declare.** A `misconceptions` row is not a citation.
+`confronted_by` names the thing that does the confronting, and the declaring
+author had pointed it at a **lesson slug** — the first value in the key stage
+that names something on a different page. The other twenty-nine values in KS3
+all name a place on their own page (`hook`, `ladder`, `s-think`,
+`stretch-boundary`, or a real activity id), so a slug is a pointer no page can
+resolve and a join that reads as working precisely because nothing checks it.
+
+The precedent is `CELL-08` in the `DIET` table above: a borrowed id is
+re-declared only where the page genuinely **re-confronts** the belief with a real
+activity of its own. Neither b6-02 nor b6-03 does — they open on it and move on.
+So the reappearance lives here, which is what NOTES-B6 §5 asked for in the first
+place:
+
+> `DRUG-01` reappears in `alcohol-and-smoking` (its big question IS the belief)
+> and in `substance-misuse-and-decisions` (hook option B). Confronted once, in
+> `what-drugs-do-to-the-body`.
+
+**⚠️ Every `confronted_by` in this family except `DRUG-09` names
+`two-wrong-ideas`.** That is not a copy-paste error: Design draws exactly one
+"Think again" block per page in this unit, carrying two quotes, and the block is
+the activity. `DRUG-09` is the exception because b6-03 confronts it inside the
+claim bench itself and hits it again at the ladder — the only belief in the unit
+attacked twice.

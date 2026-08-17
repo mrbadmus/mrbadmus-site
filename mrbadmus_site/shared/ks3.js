@@ -5101,12 +5101,40 @@
       // is the label meaning what it says. What ticks is unchanged.
       var total = parseInt(el.getAttribute("data-total"), 10);
       if (!isNaN(total) && n > total) { n = total; }
+      /* ⊕ MRB-244 / B6 — `data-full`, the mirror of `data-zero`. b6-01's
+         readout is "not started" → "stage 3 of 5" → "all five stages", and
+         the top end is a bespoke sentence for the same reason the bottom end
+         is: "stage 5 of 5" says the student is standing on the last stage,
+         not that the dose has been followed the whole way round. Opt-in, and
+         read AFTER the clamp so it cannot be reached by an over-count. */
+      var full = el.getAttribute("data-full");
+      if (full && !isNaN(total) && total > 0 && n >= total) {
+        el.textContent = full;
+        return;
+      }
       el.textContent = fmt.replace("{n}", String(n))
         .replace("{total}", el.getAttribute("data-total") || "");
     } else {
       el.textContent = n ? (el.getAttribute("data-on") || "")
                          : (el.getAttribute("data-off") || "");
     }
+  }
+
+  /* ⊕ MRB-244 / B6 — the same head-row paragraph, driven by a NAMED STATE
+     rather than by a tally. b6-02's readout is "clock not started" → "clock
+     running" → "cleared": three authored sentences, no number in any of them,
+     and the transitions decided by two independent facts rather than by one
+     counter crossing a line. The instrument names its state and this prints
+     the author's sentence for it — nothing here composes a string, and a
+     state with no authored label is left alone rather than blanked, because a
+     blank readout is worse than a stale one. */
+  function setCountState(sec, name) {
+    var el = sec && sec.querySelector("[data-count]");
+    if (!el) { return; }
+    var label = el.getAttribute("data-state-" + name);
+    if (label === null) { return; }
+    el.setAttribute("data-state", name);
+    el.textContent = label;
   }
 
   /* C6's commit gate. Answered, the gate is GONE and the instrument
@@ -11839,6 +11867,382 @@
 
 /* ═══ END B4 ═══ */
 
+/* ═══ BEGIN B6 ═══ */
+
+  /* ── B6 · Health and drugs (⊕ MRB-244) ──
+     Three instruments, three wire functions, and the same discipline B4 set:
+     NOTHING HERE ANIMATES AND NOTHING HERE USES A TIMER. NOTES-B6 §4 says it
+     of the unit — "all DOM-only; nothing animates, nothing uses a timer, no
+     canvas" — so there is no rAF loop in this section to test
+     `prefers-reduced-motion` inside (MRB-220 R4), and the platform-wide
+     reduced-motion rule already removes the CSS transitions these carry.
+
+     ⚠️ AND NOTHING HERE COMPUTES A QUANTITY OF A SUBSTANCE. The unit's tone
+     gate reaches into the engine: no dose, no threshold, no method, anywhere.
+     Every sentence a student reads in these three was written by the author
+     and shipped in the document; what these functions do is decide which of
+     them is showing. */
+
+  /* ── route-tracer (b6-01 #s-dose) ──
+     ⚖️ FIVE STAGES IN ORDER, AND THE STUDENT CANNOT SKIP ONE. There is one
+     advance control and it moves by exactly one. `DRUG-02` — a painkiller goes
+     to the part that hurts — survives being told; it does not survive being
+     walked past stage 3 on the way to stage 4.
+
+     ⚖️ CHANGING DRUG RESETS TO STAGE 0. Design's own reset, and it is what
+     stops the closing panel being reachable without its route: the panel is
+     hidden unless BOTH the drug matches and the journey is complete, so there
+     is no order of taps that opens nicotine's consequences having followed
+     caffeine's dose.
+
+     ⚠️ THE STOP UNTICKS WHEN THE ROUTE IS RESTARTED, and that is deliberate
+     rather than an oversight. Design's `isDone` for this stop is `step >= 5`,
+     a pure function of the state, so a student who presses "New dose" is
+     mid-journey again and the rail says so. */
+  function wireRouteTracer(sec) {
+    var wrap = sec.querySelector("[data-route]");
+    if (!wrap) { return; }
+    var next = wrap.querySelector("[data-route-next]");
+    var reset = wrap.querySelector("[data-route-reset]");
+    var tabs = toArray(wrap.querySelectorAll("[data-pick]"));
+    var groups = toArray(wrap.querySelectorAll("[data-for]"));
+    var elses = toArray(wrap.querySelectorAll("[data-else]"));
+    var steps = toArray(wrap.querySelectorAll(".ks3-route-step"));
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || 0;
+    if (!next || !tabs.length || !total) { return; }
+
+    var LABELS = {
+      start: next.getAttribute("data-label-start") || "",
+      more: next.getAttribute("data-label-more") || "",
+      done: next.getAttribute("data-label-done") || ""
+    };
+    var drug = wrap.getAttribute("data-drug");
+    var step = 0;
+
+    function draw() {
+      wrap.setAttribute("data-drug", drug);
+      wrap.setAttribute("data-step", String(step));
+
+      each(tabs, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-pick") === drug ? "true" : "false");
+      });
+      each(groups, function (el) {
+        setHidden(el, el.getAttribute("data-for") !== drug);
+      });
+      /* Two conditions on one panel, and both are load-bearing: the right
+         drug's consequences, and only once its route has been followed. */
+      each(elses, function (el) {
+        setHidden(el, el.getAttribute("data-else") !== drug || step < total);
+      });
+      each(steps, function (li) {
+        var n = parseInt(li.getAttribute("data-step"), 10);
+        var reached = step >= n;
+        if (n === step) { li.setAttribute("data-state", "current"); }
+        else if (reached) { li.setAttribute("data-state", "reached"); }
+        else { li.removeAttribute("data-state"); }
+        setHidden(li.querySelector(".ks3-route-stepbody"), !reached);
+      });
+
+      next.disabled = step >= total;
+      next.textContent = step === 0
+        ? LABELS.start
+        : (step >= total ? LABELS.done : LABELS.more);
+      setCount(sec, step);
+      markStage(sec, step >= total);
+    }
+
+    each(tabs, function (b) {
+      b.addEventListener("click", function () {
+        var id = b.getAttribute("data-pick");
+        if (id === drug) { return; }
+        drug = id;
+        step = 0;
+        draw();
+      });
+    });
+    next.addEventListener("click", function () {
+      if (step >= total) { return; }
+      step += 1;
+      draw();
+    });
+    if (reset) {
+      reset.addEventListener("click", function () { step = 0; draw(); });
+    }
+
+    draw();
+  }
+
+  /* ── the B6 plural rule ──
+     ⚖️ `{s}` IS THE PLURAL SUFFIX OF THE NUMBER PLACEHOLDER IMMEDIATELY
+     BEFORE IT. Two of b6-02's templates carry two numbers and two suffixes,
+     and the pairing is crossed between them — "{h} hour{s} elapsed · {r}
+     unit{s} left" against "{r} unit{s} still in the blood after {h}
+     hour{s}." — so a single global plural would print "1 units" on one of
+     them whichever number it chose. Left to right, the suffix belongs to the
+     number it just followed, which is how the sentence is read. Identical to
+     `_plural_fill` in build_ks3.py, and it has to stay identical: the resting
+     render comes from there and every later one from here. */
+  function b6Fill(tpl, vals) {
+    var last = null;
+    return String(tpl).replace(/\{(n|r|h|s)\}/g, function (m, key) {
+      if (key === "s") { return last === 1 ? "" : "s"; }
+      if (!Object.prototype.hasOwnProperty.call(vals, key)) { return m; }
+      last = vals[key];
+      return String(vals[key]);
+    });
+  }
+
+  /* ── clearance-clock (b6-02 #s-clock) ──
+     ⚖️ NO INTERVENTION CHANGES THE NUMBER OF HOURS, AND THAT IS THE
+     INSTRUMENT. Not "most of them do not" — none of them does, and a student
+     finds that out by trying to beat it with six things people genuinely
+     believe in. This function is written so that it could not become
+     otherwise: `fix` is read in exactly one place below, to decide which
+     authored note is showing, and appears in no expression that produces a
+     number. `hours` is `units`, computed in one line, from one quantity.
+
+     ⚖️ THE ONE HONEST EXCEPTION IS A SENTENCE, NOT A BRANCH. *A big meal
+     first* lowers the PEAK and not the clock, and Design says exactly that in
+     that fix's own note. There is no code path here that treats it
+     differently from the other five, and there must never be one: a special
+     case would teach that one trick works.
+
+     ⚠️ THE BAR IS `remaining / units`, NOT `remaining / max`. Design's own,
+     and it means a two-unit evening and a twelve-unit evening both open full.
+     The bar says how far through THIS clearance you are; the hours readout
+     beside it is the only thing that says how long the evening is. */
+  function wireClearanceClock(sec) {
+    var wrap = sec.querySelector("[data-clearance]");
+    if (!wrap) { return; }
+    var waitBtn = wrap.querySelector("[data-clock-wait]");
+    var resetBtn = wrap.querySelector("[data-clock-reset]");
+    var unitsEl = wrap.querySelector("[data-clock-units]");
+    var hoursEl = wrap.querySelector("[data-clock-hours]");
+    var fillEl = wrap.querySelector("[data-clock-fill]");
+    var remainEl = wrap.querySelector("[data-clock-remaining]");
+    var verdictEl = wrap.querySelector("[data-clock-verdict]");
+    var notes = toArray(wrap.querySelectorAll("[data-fixnote]"));
+    var fixBtns = toArray(wrap.querySelectorAll("[data-fix]"));
+    var addBtns = toArray(wrap.querySelectorAll("[data-add]"));
+    if (!waitBtn) { return; }
+
+    var MAX = parseInt(wrap.getAttribute("data-max"), 10) || 0;
+    var T = {
+      units: wrap.getAttribute("data-units-label") || "",
+      hours: wrap.getAttribute("data-hours-label") || "",
+      none: wrap.getAttribute("data-hours-none") || "",
+      remaining: wrap.getAttribute("data-remaining-label") || "",
+      wait: wrap.getAttribute("data-wait-label") || "",
+      clear: wrap.getAttribute("data-clear-label") || "",
+      vEmpty: wrap.getAttribute("data-verdict-empty") || "",
+      vClear: wrap.getAttribute("data-verdict-clear") || "",
+      vRunning: wrap.getAttribute("data-verdict-running") || ""
+    };
+
+    var units = parseInt(wrap.getAttribute("data-units"), 10) || 0;
+    var hour = parseInt(wrap.getAttribute("data-hour"), 10) || 0;
+    var fix = wrap.getAttribute("data-fix");
+    var everRan = false;
+
+    function draw() {
+      /* ⚠️ THE WHOLE MODEL, AND `fix` IS NOT IN IT. One unit an hour: the
+         hours to clear ARE the units drunk, and what remains is what has not
+         yet had its hour. Three lines, one quantity, nothing to weight. */
+      var remaining = Math.max(0, units - hour);
+      var clear = remaining === 0;
+
+      wrap.setAttribute("data-units", String(units));
+      wrap.setAttribute("data-hour", String(hour));
+      wrap.setAttribute("data-fix", fix);
+
+      if (unitsEl) { unitsEl.textContent = b6Fill(T.units, {n: units}); }
+      if (hoursEl) {
+        hoursEl.textContent = units === 0 ? T.none : b6Fill(T.hours, {n: units});
+      }
+      if (fillEl) {
+        fillEl.style.width =
+          (units === 0 ? 0 : (remaining / units) * 100).toFixed(1) + "%";
+      }
+      if (remainEl) {
+        remainEl.textContent = b6Fill(T.remaining, {h: hour, r: remaining});
+      }
+      /* The ONE place `fix` is read. */
+      each(notes, function (p) {
+        setHidden(p, p.getAttribute("data-fixnote") !== fix);
+      });
+      each(fixBtns, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-fix") === fix ? "true" : "false");
+      });
+
+      waitBtn.disabled = units === 0 || clear;
+      waitBtn.textContent = clear ? T.clear : T.wait;
+
+      if (verdictEl) {
+        verdictEl.textContent = units === 0
+          ? b6Fill(T.vEmpty, {n: units, h: hour, r: remaining})
+          : (clear ? b6Fill(T.vClear, {n: units, h: hour, r: remaining})
+                   : b6Fill(T.vRunning, {n: units, h: hour, r: remaining}));
+        setHidden(verdictEl, !everRan);
+      }
+
+      setCountState(sec, everRan ? (clear ? "clear" : "running") : "idle");
+      /* Design's own `isDone`: the clock has been run. Not on load — the
+         block opens with an evening already poured, and ticking for that
+         would credit a student with a reading they were handed. */
+      markStage(sec, everRan);
+    }
+
+    each(addBtns, function (b) {
+      b.addEventListener("click", function () {
+        units = Math.min(MAX, units + (parseInt(b.getAttribute("data-add"), 10) || 0));
+        /* Design's own. Another drink means the clock is measuring a
+           different evening, and keeping the elapsed hours would credit the
+           new units with hours that passed before they existed. */
+        hour = 0;
+        draw();
+      });
+    });
+    each(fixBtns, function (b) {
+      b.addEventListener("click", function () {
+        fix = b.getAttribute("data-fix");
+        draw();
+      });
+    });
+    waitBtn.addEventListener("click", function () {
+      if (units === 0 || units - hour <= 0) { return; }
+      hour += 1;
+      everRan = true;
+      draw();
+    });
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        units = 0;
+        hour = 0;
+        draw();
+      });
+    }
+
+    draw();
+  }
+
+  /* ── claim-check (b6-03 #s-claims) ──
+     ⚖️ THE BENCH DOES NOT MARK RIGHT AND WRONG (MRB-208 R10, and Design's own
+     comment on the page). There is no line below that adds a class to a fault
+     button, and none that reads whether the pick was correct in order to style
+     one: a button shows that it was CHOSEN, the unchosen ones dim once the
+     claim is checked, and a separate cream panel NAMES the fault in a
+     sentence. Only the mastery ladder marks correctness.
+
+     ⚖️ THE REVEAL IS NEVER WITHHELD FOR A WRONG ANSWER, and the answer line
+     is the CORRECT fault's text either way. A student who picked wrongly is
+     shown the right fault named in full — the pool is one-to-one, so the one
+     they picked was a true statement about a different claim, and that is
+     worth knowing too.
+
+     ⚖️ EVERY CLAIM KEEPS ITS OWN PICK AND ITS OWN CHECKED FLAG, over ONE
+     shared fault list. Same arrangement as `wireFaultBench`, for the same
+     reason: moving away from a claim and back finds it exactly as it was. */
+  function wireClaimCheck(sec) {
+    var wrap = sec.querySelector("[data-ccheck]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-pick]"));
+    var groups = toArray(wrap.querySelectorAll("[data-for]"));
+    var options = toArray(wrap.querySelectorAll(".ks3-ccheck-fault"));
+    var reveals = toArray(wrap.querySelectorAll(".ks3-ccheck-verdict"));
+    var btn = wrap.querySelector("[data-ccheck-open]");
+    var tally = wrap.querySelector("[data-ccheck-tally]");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || tabs.length;
+    if (!tabs.length || !btn) { return; }
+
+    var CHECK = wrap.getAttribute("data-check-label") || "";
+    var CHECKED = wrap.getAttribute("data-checked-label") || "";
+    var TALLY = wrap.getAttribute("data-tally") || "";
+    var TALLY_DONE = wrap.getAttribute("data-tally-done") || "";
+    var picks = {};
+    var opened = {};
+    var current = wrap.getAttribute("data-claim");
+
+    function openedCount() {
+      var n = 0, k;
+      for (k in opened) { if (opened[k]) { n += 1; } }
+      return n;
+    }
+
+    function draw() {
+      var pick = picks[current];
+      var isOpen = !!opened[current];
+      var done = openedCount();
+
+      wrap.setAttribute("data-claim", current);
+      each(tabs, function (tab) {
+        tab.setAttribute("aria-pressed",
+          tab.getAttribute("data-pick") === current ? "true" : "false");
+      });
+      each(groups, function (el) {
+        setHidden(el, el.getAttribute("data-for") !== current);
+      });
+      each(options, function (opt) {
+        /* The ONLY state a fault button carries. Not is-correct, not
+           is-wrong, and never both halves of a mark. */
+        opt.setAttribute("aria-pressed",
+          pick && opt.getAttribute("data-fault") === pick ? "true" : "false");
+        opt.disabled = isOpen;
+      });
+      each(reveals, function (r) {
+        var on = isOpen && r.getAttribute("data-verdict") === current;
+        setHidden(r, !on);
+        if (!on) { return; }
+        var right = pick === r.getAttribute("data-answer");
+        each(r.querySelectorAll("[data-word]"), function (v) {
+          setHidden(v, v.getAttribute("data-word") !== (right ? "right" : "wrong"));
+        });
+        r.setAttribute("role", "status");
+      });
+
+      btn.disabled = isOpen || !pick;
+      btn.textContent = isOpen ? CHECKED : CHECK;
+      if (tally) {
+        /* Counts DOWN — how many claims are still to check — and the last one
+           is a sentence rather than "0 still to check". */
+        tally.textContent = done >= total
+          ? TALLY_DONE
+          : TALLY.split("{n}").join(String(total - done))
+                 .split("{total}").join(String(total));
+      }
+      setCount(sec, done);
+      /* ⚖️ ALL FIVE. Design's own `isDone`, and it is the right reading: the
+         block's argument is that five different-looking claims fail in five
+         different ways, and a student who has checked one has met a claim
+         rather than the comparison. */
+      markStage(sec, done >= total);
+    }
+
+    each(tabs, function (tab) {
+      tab.addEventListener("click", function () {
+        current = tab.getAttribute("data-pick");
+        draw();
+      });
+    });
+    each(options, function (opt) {
+      opt.addEventListener("click", function () {
+        if (opened[current]) { return; }
+        picks[current] = opt.getAttribute("data-fault");
+        draw();
+      });
+    });
+    btn.addEventListener("click", function () {
+      if (opened[current] || !picks[current]) { return; }
+      opened[current] = true;
+      draw();
+    });
+
+    draw();
+  }
+
+/* ═══ END B6 ═══ */
+
 
   function wireInstruments(root) {
     each(root.querySelectorAll("[data-board]"), wireBoard);
@@ -11911,6 +12315,11 @@
     each(root.querySelectorAll("[data-faultblock]"), wireFaultBench);
     each(root.querySelectorAll("[data-tplblock]"), wireTwoProcessLedger);
     // ═══ END B4 wiring ═══
+    // ═══ BEGIN B6 wiring ═══
+    each(root.querySelectorAll("[data-routeblock]"), wireRouteTracer);
+    each(root.querySelectorAll("[data-clearblock]"), wireClearanceClock);
+    each(root.querySelectorAll("[data-ccheckblock]"), wireClaimCheck);
+    // ═══ END B6 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
   }

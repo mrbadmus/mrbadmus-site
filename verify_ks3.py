@@ -1137,6 +1137,29 @@ def main():
         # anywhere in B4, including on this same lesson's other rungs, still
         # fails the build.
         ("alveoli-built-for-exchange", "ladder apply"),
+        # ⊕ MRB-244, B6. The tenth: correct answer 22 words against a longest
+        # distractor of 10, tripping both thresholds. Measured by the authoring
+        # pass with this function's own `length_tell()`, on the same reasoning
+        # as the B4 entry above — a distractor rewrite changes what a marked
+        # question measures, and that is Mide's gate. b6-01's rung 1 is clean
+        # (7 against 6), so this is the narrowest possible entry.
+        ("what-drugs-do-to-the-body", "ladder apply"),
+        # ⊕ MRB-244, B6. Eleventh and twelfth — BOTH marked rungs on one
+        # lesson: recall 12w against 5/8/4, apply 16w against 9/7/8.
+        #
+        # ⚠️ COMMANDER'S NOTE, AND THIS IS THE ENTRY THAT SHOULD BE READ.
+        # B6 alone adds three, taking the register from nine to twelve, and the
+        # authoring pass named the reason: on these pages the correct answer is
+        # long because it states a RULE ("a rate is not a case") while every
+        # distractor is a short wrong REASON. That is a property of how the
+        # ladder is drawn, not twelve independent slips, and it means the
+        # register will keep growing one unit at a time until the shape is
+        # ruled on rather than the instances.
+        #
+        # Registered rather than rewritten for the standing reason above:
+        # rewriting a distractor changes what a marked question measures.
+        ("substance-misuse-and-decisions", "ladder recall"),
+        ("substance-misuse-and-decisions", "ladder apply"),
     }
 
     tells, known_seen = [], set()
