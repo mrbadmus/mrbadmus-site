@@ -132,16 +132,20 @@ hash link into it still works.
    with the accent offset shadow, on the band section — and `card` is a valid
    `_GROUNDS` key. The words and the order are unchanged.
 
-4. **The tracer’s three-state progress readout becomes two states.**
+4. **⊕ RESOLVED (MRB-244) — the tracer’s three-state readout is intact.**
    Design’s `traceProgress` reads `not started` → `stage N of 5` →
-   `all five stages`. `_head_counter` has a count shape with a bespoke zero
-   (c2-01’s) and a two-state shape, and neither has a slot for a third label
-   at the top of the count. The count shape is taken, so the readout opens on
-   Design’s own `not started` and then counts; **`all five stages` is what is
-   given up**, and the fifth press reads `stage 5 of 5`. The alternative was
-   the two-state shape, which would have thrown away the count on a
-   five-stage walk — a worse loss on an instrument whose whole argument is the
-   order of the stages.
+   `all five stages`. `_head_counter` originally had a count shape with a
+   bespoke zero (c2-01’s) and a two-state shape, and neither had a slot for a
+   third label at the top of the count, so the closing state was given up and
+   the fifth press read `stage 5 of 5`.
+
+   The engine pass added `full` — the mirror of `zero` — in the same run, and
+   this record authors it. All three states are Design’s again. Kept here
+   rather than deleted because it is the useful half of the story: the loss
+   was reported as a limitation of the shell, the shell was widened, and the
+   authored key had to follow. **A widened engine is not a fixed page until
+   some record actually takes the new key** — b6-01 shipped without it and
+   read `stage 5 of 5` on a live page until this was noticed.
 
 5. **Design draws TWO endmatter link cards; the engine emits one for the
    forward links.** "Before this lesson" (`b3-07`, `b1-05`) is `requires` and
@@ -601,11 +605,16 @@ LESSON = {
          "eyebrow": "At the bench · one dose, one bloodstream",
          "heading": "Follow the dose",
 
-         # Design's readout is three-state; this shape is two. `all five
-         # stages` is what is given up — "What could not be lifted" 4.
+         # ⊕ MRB-244 — RESOLVED, and the note above it is no longer true.
+         # Design's readout is three-state (`not started` → `stage 3 of 5` →
+         # `all five stages`) and `_head_counter` had only two ends, so the
+         # closing state was given up. The engine pass added `full` as the
+         # mirror of `zero` in the same run; this authors it, and the readout
+         # is Design's again in all three states.
          "head_counter": {"format": "stage {n} of {total}",
                           "total": 5,
-                          "zero": "not started"},
+                          "zero": "not started",
+                          "full": "all five stages"},
          "prompt": "Pick a drug and follow one dose of it, one step at a "
                    "time. Watch step 3 carefully — it is the step everyone "
                    "skips, and it is the reason side effects exist at all.",

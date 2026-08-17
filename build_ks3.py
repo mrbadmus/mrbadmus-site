@@ -10580,6 +10580,1120 @@ def r_claim_check(a, act_id):
                reveals))
 # renderers: ═══ END B6 ═══
 
+# renderers: ═══ BEGIN B5 ═══
+#
+# ── B5 · Reproduction (⊕ MRB-244) ──
+#
+# Eight instruments, and ALL EIGHT ON INK. Measured off Design's own markup on
+# all eight pages — `ks3-block ks3-dark ks3-practical`, no exceptions — which
+# is what `ks3_data/b5/__init__.py::_INSTRUMENT_SEGMENTS` records and what
+# every colour rule under `/* ═══ BEGIN B5 ═══ */` in `shared/ks3.css` is
+# scoped for.
+#
+# NOTHING IN THIS UNIT ANIMATES, uses a timer, or draws to a canvas. NOTES-B5
+# §2 says it of the unit and the eight pages bear it out, so there is no rAF
+# tick here to consult `prefers-reduced-motion` inside (MRB-220 R4) — and, by
+# the same decision, not one `transition` or `@keyframes` is added by this
+# section either. Design's pages animate two things: `[data-arrive]` on a
+# panel the runtime is already unhiding, and `[data-scalebar]` on a bar whose
+# width never changes after load. Adopting either would create a reduced-motion
+# obligation in order to interpolate something no student can see move.
+#
+# ⚠️ THE PAYLOADS WERE NEVER SCHEMA-CHECKED. The seven surviving lesson
+# records were authored against Design's pages while the engine pass that owned
+# these renderers was killed by a session limit, so
+# `docs/ks3/b5-inventory/PAYLOAD-SCHEMA.md` is written FROM the records rather
+# than the other way round. Where records name one idea differently — and four
+# of them do — the helpers below accept every spelling that is actually
+# authored and the schema document lists the union. Nothing is renamed in
+# `ks3_data/`; a concurrent pass owns that tree.
+
+# Design's own template constant on b5-02 and b5-07: the `<strong>` that opens
+# the why line under an expanded comparison row. b5-02 authors it as
+# `why_label` and b5-07 does not, because on Design's pages it is markup on
+# both and data on neither. Lifting it here keeps the two blocks identical —
+# which NOTES-B5 §6 requires of them — without inventing a word.
+_WHY_LABEL = "Why:"
+
+# ⚖️ THE FOUR CYCLE PHASES ARE A BRANCH, NOT A LIST, and these ids are what
+# the branch is written in: day ≤ shed → `shed`; day < release → `build`;
+# day = release → `release`; otherwise → `held`. A renamed id is a phase that
+# can never show, in silence, so `r_cycle_dial` asserts the set both ways.
+_DIAL_PHASES = ("shed", "build", "release", "held")
+
+
+def _pctnum(v):
+    """A percentage as short a decimal as says the same thing."""
+    s = "%.4f" % float(v)
+    s = s.rstrip("0").rstrip(".")
+    return s or "0"
+
+
+def _dial_pct(day, length):
+    """Where day `n` sits along a `length`-day track, as a percentage.
+
+    Design's own `pct = (n - 0.5) / len * 100`: the marker sits in the MIDDLE
+    of its day rather than on the boundary, so day 1 is not flush against the
+    left edge and the last day is not off the right.
+    """
+    return ((day - 0.5) / float(length)) * 100.0
+
+
+def _dial_phase_at(day, length, shed, luteal):
+    """Which of the four phases day `n` falls in. The release day is DERIVED."""
+    release = length - luteal
+    if day <= shed:
+        return "shed"
+    if day < release:
+        return "build"
+    if day == release:
+        return "release"
+    return "held"
+
+
+# ── the commit family: five instruments, one chassis ─────────────────────
+#
+# ⚖️ b5-01, b5-04, b5-05, b5-06 and b5-08 are the SAME BLOCK five times, and
+# NOTES-B5 §6 makes the repetition load-bearing rather than incidental:
+# "b5-05 reuses b5-04's instrument shape deliberately … If Code refactors
+# either one, keep them identical — the repetition is the argument." So they
+# share one chassis, one stylesheet namespace and one wire function, and the
+# only thing that varies is what Design drew INSIDE the reveal.
+#
+# Design's five blocks are, in order: tabs → a panel naming the item → a mono
+# ask → the options → a check button with a hint beside it → a CREAM panel
+# carrying a verdict word, an answer and a why. b5-05 adds a 0–40 week window
+# under the why; b5-08 adds the deciding-feature line. Nothing else differs.
+#
+# ⚖️ EACH ITEM KEEPS ITS OWN PICK AND ITS OWN CHECKED FLAG, and the per-item
+# state is in the DOM rather than in the wiring: one option list, one reveal
+# and one panel row per item, all but the current one `hidden`. A student who
+# checks the testes and moves to the sperm duct finds the duct uncommitted and
+# the testes exactly as they left them.
+#
+# ⚖️ AND THE OPTIONS ARE NOT MARKED (MRB-196 R10, and Design's own pages). A
+# chosen option takes the alert border `.ks3-dark .ks3-option[aria-pressed]`
+# already gives it and nothing else — no green, no red, no `is-correct`, no
+# `is-wrong`, open or not. What names the verdict is a mono eyebrow on the
+# cream panel in `--ks3-accent-text`, and it appears whichever way the pick
+# went, because the reveal is never withheld for a wrong answer.
+
+
+def _b5_label(a, act_id, names, what):
+    """The first of `names` this payload actually authors.
+
+    ⚠️ THIS EXISTS BECAUSE THE PAYLOADS WERE NEVER SCHEMA-CHECKED, and it is
+    not a convenience. Five records author the same handful of ideas under nine
+    different key names — `check_label` on b5-01 and b5-05, `reveal_label` on
+    b5-06 and b5-08; `options_label` / `options_lead` / `commit_label` /
+    `choose_prompt` for the one mono line above the options. Renaming them in
+    `ks3_data/` is not this pass's to do, and picking one spelling would fail
+    four lessons for a defect that lives in the absent schema rather than in
+    the data.
+
+    So: accept every spelling that is authored, and RAISE if none is — a
+    missing label is still a missing label. `PAYLOAD-SCHEMA.md` lists the
+    accepted set per kind, which is what makes this a documented union rather
+    than a shrug.
+    """
+    for n in names:
+        if a.get(n):
+            return a[n]
+    raise ValueError(
+        "%s %r declares no %s. Authored under any one of %s; the payload has "
+        "none of them." % (a.get("kind") or "?", act_id, what,
+                           ", ".join(map(repr, names))))
+
+
+def _b5_roles(a, act_id, holders, roles, what):
+    """A small map authored under one of several names, read by ROLE.
+
+    `hints` is `{empty, ready, checked}` on b5-01, `{idle, ready, done}` on
+    b5-05 and `{idle, ready, opened}` on b5-06 and b5-08 — three spellings of
+    one three-state readout, under two container names. `roles` is a tuple of
+    accepted-name tuples, one per role, in the order they are returned.
+    """
+    src = None
+    for h in holders:
+        if a.get(h):
+            src = a[h]
+            break
+    if not isinstance(src, dict):
+        raise ValueError(
+            "%s %r declares no %s. Expected a map under one of %s."
+            % (a.get("kind") or "?", act_id, what,
+               ", ".join(map(repr, holders))))
+    out = []
+    for names in roles:
+        for n in names:
+            if src.get(n):
+                out.append(src[n])
+                break
+        else:
+            raise ValueError(
+                "%s %r's %s names none of %s. Every one of these states is on "
+                "screen at some point, and a blank one reads as the instrument "
+                "having stopped responding."
+                % (a.get("kind") or "?", act_id, what,
+                   ", ".join(map(repr, names))))
+    return out
+
+
+def _b5_choices(a, act_id, holders=("choices",)):
+    """`[{id, label}, …]` → `[(id, label), …]`, ORDER PRESERVED.
+
+    The order IS the option order on the page and the A/B/C letters follow it,
+    so this never sorts.
+    """
+    src = None
+    for h in holders:
+        if a.get(h):
+            src = a[h]
+            break
+    if not src:
+        raise ValueError(
+            "%s %r declares no choice list under %s. These blocks offer the "
+            "SAME options for every item, so the list is authored once."
+            % (a.get("kind") or "?", act_id, " / ".join(map(repr, holders))))
+    out, seen = [], set()
+    for c in src:
+        if not (c.get("id") and c.get("label")):
+            raise ValueError("%s %r choice %r needs both `id` and `label`."
+                             % (a.get("kind") or "?", act_id, c.get("id")))
+        if c["id"] in seen:
+            raise ValueError("%s %r declares choice id %r twice."
+                             % (a.get("kind") or "?", act_id, c["id"]))
+        seen.add(c["id"])
+        out.append((c["id"], c["label"]))
+    return out
+
+
+def _b5_commit(act_id, items, ask, check_label, hints, verdicts):
+    """The chassis. `items` is one dict per tab:
+
+        id       the DOM key — tab, panel row, option list and reveal all
+                 carry it, and it is what the wiring switches on
+        label    the tab's own short label
+        name     the panel's display-type heading
+        meta     the mono line beside it (system / group / kind / specimen no.)
+        context  an optional paragraph under the heading. Design draws one on
+                 b5-04, b5-05 and b5-08 and none at all on b5-01 and b5-06
+        options  [(key, text), …] in Design's own order
+        answer   the key of the correct option
+        line     the reveal's display-type answer line
+        why      the reveal's reasoning paragraph
+        extra    already-rendered HTML appended inside the reveal, or ""
+
+    Everything student-facing arrives already lifted from the record; this
+    invents no copy.
+    """
+    if len(items) < 2:
+        raise ValueError(
+            "%r offers %d item(s). A commit bench with one item has a tab row "
+            "that does nothing and a counter that reads 1 of 1."
+            % (act_id, len(items)))
+
+    ids = []
+    for it in items:
+        if it["id"] in ids:
+            raise ValueError("%r declares item id %r twice." % (act_id, it["id"]))
+        ids.append(it["id"])
+        keys = [k for k, _txt in it["options"]]
+        if len(set(keys)) != len(keys):
+            raise ValueError(
+                "%r item %r offers the same option twice." % (act_id, it["id"]))
+        if it["answer"] not in keys:
+            raise ValueError(
+                "%r item %r answers %r, which is not among the options it "
+                "offers %s. Every option would read as the wrong one and the "
+                "item would be unanswerable."
+                % (act_id, it["id"], it["answer"], keys))
+
+    start = items[0]["id"]
+
+    tabs = "".join(
+        '<button type="button" class="ks3-b5c-tab" data-b5c-pick="%s" '
+        'aria-pressed="%s">%s</button>'
+        % (e(it["id"]), "true" if it["id"] == start else "false", t(it["label"]))
+        for it in items)
+
+    # ⚠️ `.ks3-b5c-item` and `.ks3-b5c-opts` are the elements that carry
+    # `[hidden]`, and NEITHER takes a `display` declaration in the stylesheet
+    # (MRB-242 — an author `display` beats the UA's `[hidden]` rule regardless
+    # of specificity, and that defect has now shipped seven times). The flex
+    # row INSIDE the item takes one and never carries the attribute: its parent
+    # does. And the option list keeps `.ks3-options`, which IS `display: flex`,
+    # precisely because it is wrapped in a plain `<div>` that is hidden instead
+    # of being hidden itself.
+    panels = "".join(
+        '<div class="ks3-b5c-item" data-for="%s"%s>'
+        '<div class="ks3-b5c-headrow">'
+        '<p class="ks3-b5c-name">%s</p>'
+        '<p class="ks3-b5c-meta">%s</p></div>%s</div>'
+        % (e(it["id"]), "" if it["id"] == start else " hidden",
+           t(it["name"]), t(it["meta"]),
+           ('<p class="ks3-b5c-context">%s</p>' % rich(it["context"]))
+           if it.get("context") else "")
+        for it in items)
+
+    options = "".join(
+        '<div class="ks3-b5c-opts" data-for="%s"%s><ul class="ks3-options" '
+        'role="list">%s</ul></div>'
+        % (e(it["id"]), "" if it["id"] == start else " hidden",
+           "".join(
+               '<li><button type="button" class="ks3-option ks3-b5c-opt" '
+               'data-owner="%s" data-opt="%s" aria-pressed="false">'
+               '<span class="ks3-opt-mark" aria-hidden="true">%s</span>'
+               '<span class="ks3-opt-label">%s</span></button></li>'
+               % (e(it["id"]), e(key), t(option_letter(i)), t(txt))
+               for i, (key, txt) in enumerate(it["options"])))
+        for it in items)
+
+    reveals = "".join(
+        '<div class="ks3-b5c-reveal" data-b5c-reveal="%s" data-answer="%s" '
+        'hidden><p class="ks3-b5c-word">'
+        '<span data-word="right" hidden>%s</span>'
+        '<span data-word="wrong" hidden>%s</span></p>'
+        '<p class="ks3-b5c-answer">%s</p>'
+        '<p class="ks3-b5c-why">%s</p>%s</div>'
+        % (e(it["id"]), e(it["answer"]), t(verdicts[0]), t(verdicts[1]),
+           t(it["line"]), rich(it["why"]), it.get("extra") or "")
+        for it in items)
+
+    # ⚠️ NO `data-check-label`. The button's label is drawn once, in the
+    # markup, and the wiring never changes it — Design keeps "Check it" on the
+    # button at every state and moves the HINT beside it instead. Shipping the
+    # label as an attribute too would be a second copy of a string that nothing
+    # reads (R5).
+    return ('<div class="ks3-b5c" data-b5c data-total="%d" data-item="%s" '
+            'data-hint-idle="%s" data-hint-ready="%s" '
+            'data-hint-done="%s">'
+            '<div class="ks3-b5c-tabs">%s</div>'
+            '<div class="ks3-b5c-panel">%s</div>'
+            '<p class="ks3-b5c-ask">%s</p>%s'
+            '<div class="ks3-b5c-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-b5c-check" '
+            'data-b5c-check disabled>%s</button>'
+            '<span class="ks3-b5c-hint" data-b5c-hint role="status">%s</span>'
+            '</div>%s</div>'
+            % (len(items), e(start), e(hints[0]), e(hints[1]),
+               e(hints[2]), tabs, panels, t(ask), options, t(check_label),
+               t(hints[0]), reveals))
+
+
+def r_job_match(a, act_id):
+    """⊕ b5-01 `#s-jobs` — eight structures, nine functions, one shared pool.
+
+    ⚖️ EIGHT STRUCTURES, NINE FUNCTIONS, AND THE MISMATCH IS DELIBERATE — so
+    this deliberately does NOT assert the bijection `flower-jobs` does. Two of
+    the nine belong to organs that are not tabs on this bench (`receive` is the
+    vagina's job, and the oviduct owns two of its own), which is exactly what
+    the block's prompt warns about: "Only one structure has more than one job,
+    and the reveal says which." Asserting one-to-one here would fail Design's
+    own approved data, and softening the pool to make it fit would remove the
+    asymmetry the whole lesson is built on.
+
+    What IS asserted is that every option offered comes from the declared pool.
+    An option outside it is an invented distractor by another route, and the
+    pool is the only thing making a wrong guess informative.
+    """
+    functions = a.get("functions") or []
+    if len(functions) < 2:
+        raise ValueError(
+            "job-match %r declares %d function(s). The options are drawn from "
+            "a shared pool, so there has to be a pool."
+            % (act_id, len(functions)))
+    text = {}
+    for f in functions:
+        if not (f.get("id") and f.get("text")):
+            raise ValueError("job-match %r function %r needs `id` and `text`."
+                             % (act_id, f.get("id")))
+        if f["id"] in text:
+            raise ValueError("job-match %r declares function id %r twice."
+                             % (act_id, f["id"]))
+        text[f["id"]] = f["text"]
+
+    items = []
+    for s in a.get("structures") or []:
+        for key in ("id", "label", "name", "system", "func", "answer", "why",
+                    "options"):
+            if not s.get(key):
+                raise ValueError(
+                    "job-match %r structure %r is missing %r. `answer` is the "
+                    "sentence the reveal leads with and `why` is the reasoning "
+                    "under it; one without the other opens a panel that either "
+                    "states nothing or explains nothing."
+                    % (act_id, s.get("id"), key))
+        unknown = [k for k in s["options"] if k not in text]
+        if unknown:
+            raise ValueError(
+                "job-match %r structure %r offers option(s) %s that are not in "
+                "the declared function pool. Every option on this bench is "
+                "some organ's real job — one from outside the pool is an "
+                "invented wrong answer, and a guess then teaches nothing."
+                % (act_id, s["id"], unknown))
+        if s["func"] not in text:
+            raise ValueError(
+                "job-match %r structure %r answers %r, which is not in the "
+                "function pool." % (act_id, s["id"], s["func"]))
+        items.append(dict(
+            id=s["id"], label=s["label"], name=s["name"], meta=s["system"],
+            options=[(k, text[k]) for k in s["options"]],
+            answer=s["func"], line=s["answer"], why=s["why"]))
+
+    return _b5_commit(
+        act_id, items,
+        ask=_b5_label(a, act_id, ("options_label", "options_lead"),
+                      "options label"),
+        check_label=_b5_label(a, act_id, ("check_label", "reveal_label"),
+                              "check label"),
+        hints=_b5_roles(a, act_id, ("hints", "hint"),
+                        (("empty", "idle"), ("ready",),
+                         ("checked", "opened", "done")), "hints"),
+        verdicts=_b5_roles(a, act_id, ("verdicts", "verdict"),
+                           (("right",), ("wrong",)), "verdicts"))
+
+
+def r_flower_jobs(a, act_id):
+    """⊕ b5-06 `#s-parts` — nine parts, nine jobs, and here it IS a bijection.
+
+    ⚖️ EVERY DISTRACTOR IS THE CORRECT JOB OF A DIFFERENT PART. NOTES-B5 §2.4
+    states it as the rule for this block, and the block's own prompt promises
+    it to the student in as many words: "Every wrong option here is the right
+    answer for a different part, so a guess still teaches you something." Add
+    an invented distractor and that promise becomes false; drop a job and a
+    part becomes unanswerable. So this raises unless the mapping is one-to-one
+    and onto — which is the difference between this block and b5-01's, where
+    the pool deliberately over-runs the tabs.
+
+    ⚠️ THE REVEAL'S ANSWER LINE IS THE JOB'S OWN TEXT, not a per-part
+    sentence: Design reads `JOBS[part.answer]`, so a student who picked wrongly
+    is shown the right job named in full rather than only being told they were
+    wrong. That is the whole reason the reveal is not withheld.
+    """
+    jobs = a.get("jobs") or {}
+    if len(jobs) < 2:
+        raise ValueError(
+            "flower-jobs %r declares %d job(s). The options are drawn from a "
+            "shared pool." % (act_id, len(jobs)))
+
+    parts = a.get("parts") or []
+    items, answers = [], []
+    for p in parts:
+        for key in ("id", "label", "name", "group", "answer", "options", "why"):
+            if not p.get(key):
+                raise ValueError("flower-jobs %r part %r is missing %r."
+                                 % (act_id, p.get("id"), key))
+        unknown = [k for k in p["options"] if k not in jobs]
+        if unknown:
+            raise ValueError(
+                "flower-jobs %r part %r offers option(s) %s that are not in "
+                "the job pool — an invented distractor (NOTES-B5 §2.4)."
+                % (act_id, p["id"], unknown))
+        if p["answer"] not in jobs:
+            raise ValueError(
+                "flower-jobs %r part %r answers %r, which is not a declared "
+                "job." % (act_id, p["id"], p["answer"]))
+        answers.append(p["answer"])
+        items.append(dict(
+            id=p["id"], label=p["label"], name=p["name"], meta=p["group"],
+            options=[(k, jobs[k]) for k in p["options"]],
+            answer=p["answer"], line=jobs[p["answer"]], why=p["why"]))
+
+    # ⚖️ ONE-TO-ONE AND ONTO. Both halves are load-bearing and they fail
+    # differently, so they are reported differently.
+    if len(jobs) != len(parts):
+        raise ValueError(
+            "flower-jobs %r offers %d jobs for %d parts. The pool is exactly "
+            "the set of the parts' own answers (NOTES-B5 §2.4): a spare job is "
+            "an option true of nothing on the flower, and a missing one leaves "
+            "a part unanswerable." % (act_id, len(jobs), len(parts)))
+    duplicated = sorted({x for x in answers if answers.count(x) > 1})
+    if duplicated:
+        raise ValueError(
+            "flower-jobs %r has job(s) %s answering more than one part. With "
+            "nine of each that also means at least one job answers none — the "
+            "invented distractor the pool exists to avoid."
+            % (act_id, ", ".join(map(repr, duplicated))))
+
+    return _b5_commit(
+        act_id, items,
+        ask=_b5_label(a, act_id, ("options_lead", "options_label"),
+                      "options label"),
+        check_label=_b5_label(a, act_id, ("reveal_label", "check_label"),
+                              "check label"),
+        hints=_b5_roles(a, act_id, ("hints", "hint"),
+                        (("idle", "empty"), ("ready",),
+                         ("opened", "checked", "done")), "hints"),
+        verdicts=_b5_roles(a, act_id, ("verdict", "verdicts"),
+                           (("right",), ("wrong",)), "verdicts"))
+
+
+def r_crossing_bench(a, act_id):
+    """⊕ b5-04 `#s-cross` — six substances, and one rule doing all the work.
+
+    ⚖️ THE COMMIT IS A DIRECTION, NOT A YES/NO. Design draws two options,
+    "Mother's blood → foetus" and "Foetus → mother's blood", and every answer
+    on the bench comes from the same sentence: things move from where there is
+    more of them to where there is less. `why` always names the concentration
+    difference (NOTES-B5 §2.2), which is what makes the sixth substance
+    predictable from the first three.
+
+    ⚠️ `dir` NAMES THE ANSWER AND MAY BE EITHER SPELLING. Design's page stores
+    an INDEX (`dir: 0` / `dir: 1`) into a two-element list; NOTES-B5 §2.2 names
+    the key without saying which. This accepts an index into the declared
+    choices or a choice `id`, because the record that declares it was being
+    written by a concurrent pass while this renderer was — and a build that
+    died over the spelling of one integer would have parked the unit a second
+    time. Both forms are in `PAYLOAD-SCHEMA.md`.
+
+    ⚠️ THIS BLOCK IS b5-05's TWIN ON PURPOSE. NOTES-B5 §6: "b5-05 reuses
+    b5-04's instrument shape deliberately … If Code refactors either one, keep
+    them identical — the repetition is the argument." They share `_b5_commit`
+    for exactly that reason, and the only thing b5-05 adds is the week window.
+    """
+    choices = _b5_choices(a, act_id, ("choices", "directions"))
+    if len(choices) < 2:
+        raise ValueError(
+            "crossing-bench %r offers %d direction(s). It is a two-way commit "
+            "(NOTES-B5 §2.2); a single direction is not a decision."
+            % (act_id, len(choices)))
+    keys = [k for k, _lab in choices]
+
+    items = []
+    for s in a.get("subs") or []:
+        for key in ("id", "label", "name", "kind", "context", "answer", "why"):
+            if not s.get(key):
+                raise ValueError(
+                    "crossing-bench %r substance %r is missing %r. `context` "
+                    "is the line that makes the direction predictable and "
+                    "`why` always names the concentration difference "
+                    "(NOTES-B5 §2.2)." % (act_id, s.get("id"), key))
+        if "dir" not in s:
+            raise ValueError(
+                "crossing-bench %r substance %r declares no `dir`, so the "
+                "bench has nothing to check the commitment against."
+                % (act_id, s.get("id")))
+        d = s["dir"]
+        if isinstance(d, int) and not isinstance(d, bool):
+            if not 0 <= d < len(keys):
+                raise ValueError(
+                    "crossing-bench %r substance %r has dir %r, which is not "
+                    "an index into its %d directions."
+                    % (act_id, s["id"], d, len(keys)))
+            answer = keys[d]
+        else:
+            answer = d
+        items.append(dict(
+            id=s["id"], label=s["label"], name=s["name"], meta=s["kind"],
+            context=s["context"], options=list(choices), answer=answer,
+            line=s["answer"], why=s["why"]))
+
+    return _b5_commit(
+        act_id, items,
+        ask=_b5_label(a, act_id,
+                      ("commit_label", "options_label", "options_lead",
+                       "choose_prompt"), "commit label"),
+        check_label=_b5_label(a, act_id, ("check_label", "reveal_label"),
+                              "check label"),
+        hints=_b5_roles(a, act_id, ("hint", "hints"),
+                        (("idle", "empty"), ("ready",),
+                         ("done", "opened", "checked")), "hints"),
+        verdicts=_b5_roles(a, act_id, ("verdict", "verdicts"),
+                           (("right",), ("wrong",)), "verdicts"))
+
+
+def r_crosses_panel(a, act_id):
+    """⊕ b5-05 `#s-cross` — b5-04's bench again, and a week window under it.
+
+    ⚖️ FIVE OF THE SIX CROSS AND ONE DOES NOT, AND THE IMBALANCE IS THE
+    TEACHING POINT. NOTES-B5 §2.3: "five of the six cross and one does not.
+    That imbalance is the teaching point — the rule is about molecule size — so
+    do not 'balance' the set." A student who has met alcohol, carbon monoxide,
+    caffeine, rubella and prescribed medicines and then meets insulin has the
+    rule handed to them by the exception. Balance the set and the block becomes
+    six independent facts, and the placenta starts to look as though it sorts.
+
+    ⚠️ THE WINDOW IS A SECOND CLAIM AND IT IS NOT THE VERDICT. `win` is a
+    percentage span across a 0–40 week bar and `win_text` is the sentence that
+    reads it. Insulin's is [0, 0] and its sentence says so in words, which is
+    why the bar may legitimately draw nothing while the text may never be
+    empty.
+    """
+    choices = _b5_choices(a, act_id)
+    if len(choices) != 2:
+        raise ValueError(
+            "crosses-panel %r offers %d choices. Design draws a yes/no commit."
+            % (act_id, len(choices)))
+    yes_id, no_id = choices[0][0], choices[1][0]
+
+    window = a.get("window") or {}
+    if not (window.get("label") and window.get("ticks")):
+        raise ValueError(
+            "crosses-panel %r needs `window.label` and `window.ticks`. The "
+            "ticks caption the 0–40 week bar, and an uncaptioned bar is a "
+            "coloured rectangle." % act_id)
+    ticks = "".join("<span>%s</span>" % t(x) for x in window["ticks"])
+
+    items, crossing = [], 0
+    for s in a.get("subs") or []:
+        for key in ("id", "label", "name", "kind", "context", "answer", "why"):
+            if not s.get(key):
+                raise ValueError("crosses-panel %r substance %r is missing %r."
+                                 % (act_id, s.get("id"), key))
+        if "crosses" not in s:
+            raise ValueError("crosses-panel %r substance %r declares no "
+                             "`crosses`." % (act_id, s.get("id")))
+        win = s.get("win")
+        win_text = s.get("win_text") or s.get("winText")
+        if not (isinstance(win, (list, tuple)) and len(win) == 2):
+            raise ValueError(
+                "crosses-panel %r substance %r needs `win` as [start%%, end%%] "
+                "across the 0–40 week bar." % (act_id, s.get("id")))
+        if not win_text:
+            raise ValueError(
+                "crosses-panel %r substance %r declares no `win_text`. Insulin "
+                "draws an empty bar and its sentence is the only thing that "
+                "says why, so a blank one is not a legitimate empty state."
+                % (act_id, s.get("id")))
+        lo, hi = float(win[0]), float(win[1])
+        if not 0 <= lo <= hi <= 100:
+            raise ValueError(
+                "crosses-panel %r substance %r has win %r, which is not a "
+                "0–100 span in order." % (act_id, s["id"], list(win)))
+        if s["crosses"]:
+            crossing += 1
+        extra = ('<div class="ks3-b5c-window">'
+                 '<p class="ks3-b5c-winlabel">%s</p>'
+                 '<div class="ks3-b5c-wintrack">'
+                 '<span class="ks3-b5c-winfill" aria-hidden="true" '
+                 'style="left:%s%%;width:%s%%"></span></div>'
+                 '<div class="ks3-b5c-winticks">%s</div>'
+                 '<p class="ks3-b5c-wintext">%s</p></div>'
+                 % (t(window["label"]), _pctnum(lo), _pctnum(hi - lo), ticks,
+                    rich(win_text)))
+        items.append(dict(
+            id=s["id"], label=s["label"], name=s["name"], meta=s["kind"],
+            context=s["context"], options=list(choices),
+            answer=yes_id if s["crosses"] else no_id,
+            line=s["answer"], why=s["why"], extra=extra))
+
+    # ⚖️ NEVER BALANCE THE SET (NOTES-B5 §2.3). Both failure directions are
+    # named because they are different mistakes: an all-crossing set has no
+    # exception to prove the rule with, and a balanced one turns "it is about
+    # size" into "it is about which half of the list you are on".
+    if crossing == len(items):
+        raise ValueError(
+            "crosses-panel %r has every substance crossing. The rule is about "
+            "molecule size and insulin is what proves it — a set with no "
+            "exception cannot make the argument (NOTES-B5 §2.3)." % act_id)
+    if crossing * 2 == len(items):
+        raise ValueError(
+            "crosses-panel %r splits %d/%d. The imbalance IS the teaching "
+            "point: most things cross, and the one that does not is a large "
+            "protein. A balanced set teaches that the placenta sorts."
+            % (act_id, crossing, len(items) - crossing))
+
+    return _b5_commit(
+        act_id, items,
+        ask=_b5_label(a, act_id,
+                      ("commit_label", "options_label", "choose_prompt"),
+                      "commit label"),
+        check_label=_b5_label(a, act_id, ("check_label", "reveal_label"),
+                              "check label"),
+        hints=_b5_roles(a, act_id, ("hint", "hints"),
+                        (("idle", "empty"), ("ready",),
+                         ("done", "opened", "checked")), "hints"),
+        verdicts=_b5_roles(a, act_id, ("verdict", "verdicts"),
+                           (("right",), ("wrong",)), "verdicts"))
+
+
+def r_disperse_sort(a, act_id):
+    """⊕ b5-08 `#s-sort` — eight specimens, five methods, structure only.
+
+    ⚖️ THE DESCRIPTIONS NAME STRUCTURE AND NOTHING ELSE. NOTES-B5 §2.6: the
+    specimens "are described by structure only and never pictured or named in
+    the description text, so the sort has to be done on evidence". The TAB
+    carries the plant's name, because a student has to be able to come back to
+    one; the DESCRIPTION may not, or the classifying becomes a memory test.
+    This raises if a specimen's own name appears inside its description.
+
+    ⚖️ AND THE HARD CASE IS NOT SOFTENED. Three of the eight are wind-
+    dispersed and one of those three — the poppy — has neither wing nor
+    parachute. That is the block's argument, and it is why the deciding
+    feature gets a line of its own in the reveal rather than a clause inside
+    the why: the observable that settles it IS the thing being taught.
+
+    ⚠️ THE SPECIMEN NUMBER IS DERIVED FROM POSITION, exactly as Design derives
+    it (`String(idx + 1).padStart(2, '0')`). Authoring it would be a second
+    source of truth for a list's own order.
+    """
+    choices = _b5_choices(a, act_id, ("choices", "methods"))
+    if len(choices) < 3:
+        raise ValueError(
+            "disperse-sort %r offers %d method(s). A classification with two "
+            "boxes is a yes/no question." % (act_id, len(choices)))
+    labels = dict(choices)
+
+    tell_label = _b5_label(a, act_id, ("tell_label",), "deciding-feature label")
+    spec_label = _b5_label(a, act_id, ("specimen_label",), "specimen label")
+
+    items, used = [], set()
+    for i, s in enumerate(a.get("specimens") or []):
+        for key in ("id", "label", "name", "answer", "desc", "tell", "why"):
+            if not s.get(key):
+                raise ValueError(
+                    "disperse-sort %r specimen %r is missing %r. `tell` is the "
+                    "observable that settles it and is a line of its own in "
+                    "the reveal (NOTES-B5 §2.6)."
+                    % (act_id, s.get("id"), key))
+        if s["answer"] not in labels:
+            raise ValueError(
+                "disperse-sort %r specimen %r answers %r, which is not one of "
+                "the methods offered %s."
+                % (act_id, s["id"], s["answer"], sorted(labels)))
+        low = s["desc"].lower()
+        for word in (s["label"], s["name"]):
+            first = str(word).split()[0].strip(",.").lower()
+            if len(first) > 3 and first in low:
+                raise ValueError(
+                    "disperse-sort %r specimen %r names itself (%r) inside its "
+                    "description. The specimens are described by STRUCTURE "
+                    "only (NOTES-B5 §2.6) — naming the plant turns a "
+                    "classification on evidence into a recall question."
+                    % (act_id, s["id"], first))
+        used.add(s["answer"])
+        items.append(dict(
+            id=s["id"], label=s["label"], name=s["name"],
+            meta="%s %02d" % (spec_label, i + 1), context=s["desc"],
+            options=list(choices), answer=s["answer"],
+            line=labels[s["answer"]], why=s["why"],
+            extra='<p class="ks3-b5c-tell">'
+                  '<span class="ks3-b5c-telllabel">%s</span>%s</p>'
+                  % (t(tell_label), t(s["tell"]))))
+
+    unused = sorted(set(labels) - used)
+    if unused:
+        raise ValueError(
+            "disperse-sort %r offers method(s) %s that no specimen is sorted "
+            "into. An empty box is an option true of nothing on the bench."
+            % (act_id, ", ".join(map(repr, unused))))
+
+    return _b5_commit(
+        act_id, items,
+        ask=_b5_label(a, act_id, ("choose_prompt", "options_label"),
+                      "choose prompt"),
+        check_label=_b5_label(a, act_id, ("reveal_label", "check_label"),
+                              "check label"),
+        hints=_b5_roles(a, act_id, ("hints", "hint"),
+                        (("idle", "empty"), ("ready",),
+                         ("opened", "checked", "done")), "hints"),
+        verdicts=_b5_roles(a, act_id, ("verdicts", "verdict"),
+                           (("right",), ("wrong",)), "verdicts"))
+
+
+# ── the comparison-row family: two instruments, one chassis ──────────────
+
+
+def _b5_compare(act_id, rows, head, lead, why_label, tail=""):
+    """b5-02's and b5-07's shared table.
+
+    `head` is (row-name column, column A, column B); `lead` is 0 or 1 and says
+    which DATA column Design paints in the alert.
+
+    ⚖️ THE WHOLE ROW IS THE BUTTON. NOTES-B5 §2.5 states it for b5-07 — "the
+    whole row is the button, as in `gamete-compare`. No separate chevron
+    control" — and b5-02 is the block it points at. So the `<button>` wraps all
+    three cells rather than sitting beside them, and the tap target spans the
+    row's full width on a phone.
+
+    ⚠️ THE PER-CELL CAPTIONS ARE REAL ELEMENTS, NOT GENERATED CONTENT. Below
+    880px Design drops the header row and shows a caption inside each cell
+    instead. Those captions are what a screen reader reads at EVERY width, so
+    they ship in the markup and the media query only decides which of the two
+    is visible — `content:` on a pseudo-element is not reliably announced.
+    """
+    if len(rows) < 2:
+        raise ValueError(
+            "%r declares %d row(s). A comparison needs something to compare."
+            % (act_id, len(rows)))
+    ids = []
+    for r in rows:
+        if r["id"] in ids:
+            raise ValueError("%r declares row id %r twice." % (act_id, r["id"]))
+        ids.append(r["id"])
+
+    def cell(idx, value):
+        return ('<span class="ks3-cmp-cell"%s>'
+                '<span class="ks3-cmp-cap">%s</span>'
+                '<span class="ks3-cmp-val">%s</span></span>'
+                % (" data-lead" if idx == lead else "", t(head[idx + 1]),
+                   t(value)))
+
+    # ⚠️ THE ZEBRA IS AN ATTRIBUTE, NOT `:nth-child`. The header shares the
+    # table's element list, so a positional selector counts it and shades the
+    # wrong half — and it would go on being wrong quietly if the header ever
+    # moved. Design alternates on the ROW's own index; so does this.
+    body = "".join(
+        '<div class="ks3-cmp-row" data-cmp-row="%s"%s>'
+        '<button type="button" class="ks3-cmp-btn" data-cmp-open="%s" '
+        'aria-pressed="false"><span class="ks3-cmp-grid">'
+        '<span class="ks3-cmp-name">%s</span>%s%s</span></button>'
+        '<p class="ks3-cmp-why" data-cmp-why="%s" hidden>'
+        '<span class="ks3-cmp-whylabel">%s</span> %s</p></div>'
+        % (e(r["id"]), " data-alt" if i % 2 else "", e(r["id"]), t(r["name"]),
+           cell(0, r["a"]), cell(1, r["b"]), e(r["id"]), t(why_label),
+           rich(r["why"]))
+        for i, r in enumerate(rows))
+
+    return ('<div class="ks3-cmp" data-cmprows data-total="%d">'
+            '<div class="ks3-cmp-table">'
+            '<div class="ks3-cmp-head"><span class="ks3-cmp-grid">'
+            '<span class="ks3-cmp-name">%s</span>'
+            '<span class="ks3-cmp-cell"%s><span class="ks3-cmp-val">%s</span>'
+            '</span><span class="ks3-cmp-cell"%s>'
+            '<span class="ks3-cmp-val">%s</span></span></span></div>%s</div>%s'
+            '</div>'
+            % (len(rows), t(head[0]),
+               " data-lead" if lead == 0 else "", t(head[1]),
+               " data-lead" if lead == 1 else "", t(head[2]),
+               body, tail))
+
+
+def r_gamete_compare(a, act_id):
+    """⊕ b5-02 `#s-compare` — six features of two cells, and a why behind each.
+
+    ⚖️ THE ROW WHERE THEY ARE IDENTICAL IS WHY THIS IS A TABLE AND NOT A LIST
+    OF DIFFERENCES. Both cells carry 23 chromosomes, and that row is what makes
+    "half a set" mean anything at all. Nothing here reorders or drops rows.
+
+    ⚠️ THE SCALE BARS ARE DIAMETERS, AND THE NOTE DOES THE ARITHMETIC THEY
+    CANNOT. `pct` is a percentage of the widest bar; drawing them by volume
+    would make the sperm bar invisible and would contradict the note under
+    them, which is where the eight-thousandfold figure lives.
+    """
+    columns = a.get("columns") or {}
+    for key in ("feature", "sperm", "egg"):
+        if not columns.get(key):
+            raise ValueError("gamete-compare %r columns is missing %r."
+                             % (act_id, key))
+
+    # ⚖️ MRB-208 — NOTHING IS TICKED ON LOAD, and this block's stop is all six
+    # rows opened. A row open at build time is a rail stage part-completed
+    # before the student arrived, so the flag is read and refused rather than
+    # ignored.
+    if a.get("rows_open_on_load"):
+        raise ValueError(
+            "gamete-compare %r sets rows_open_on_load. MRB-208: nothing is "
+            "ticked on load, and this block's stop ticks on all six rows "
+            "opened — so opening any at build time completes part of a stage "
+            "the student has not touched." % act_id)
+
+    rows = []
+    for r in a.get("rows") or []:
+        for key in ("id", "name", "sperm", "egg", "why"):
+            if not r.get(key):
+                raise ValueError(
+                    "gamete-compare %r row %r is missing %r. The `why` is the "
+                    "reason the row exists — a difference with no reason "
+                    "behind it is the list this block replaced."
+                    % (act_id, r.get("id"), key))
+        rows.append(dict(id=r["id"], name=r["name"], a=r["sperm"], b=r["egg"],
+                         why=r["why"]))
+
+    scale = a.get("scale") or {}
+    tail = ""
+    if scale:
+        for key in ("label", "rows", "note"):
+            if not scale.get(key):
+                raise ValueError("gamete-compare %r scale is missing %r."
+                                 % (act_id, key))
+        bars = "".join(
+            '<li class="ks3-cmp-scalerow">'
+            '<div class="ks3-cmp-scalehead">'
+            '<p class="ks3-cmp-scalename">%s</p>'
+            '<p class="ks3-cmp-scalesize">%s</p></div>'
+            '<span class="ks3-cmp-scaletrack">'
+            '<span class="ks3-cmp-scalebar"%s style="width:%s%%"></span>'
+            '</span></li>'
+            % (t(s["name"]), t(s["size"]), " data-lead" if i else "",
+               _pctnum(float(s["pct"])))
+            for i, s in enumerate(scale["rows"]))
+        tail = ('<div class="ks3-cmp-scale">'
+                '<p class="ks3-cmp-scalelabel">%s</p>'
+                '<ul class="ks3-cmp-scalelist" role="list">%s</ul>'
+                '<p class="ks3-cmp-scalenote">%s</p></div>'
+                % (t(scale["label"]), bars, rich(scale["note"])))
+
+    return _b5_compare(
+        act_id, rows,
+        head=(columns["feature"], columns["sperm"], columns["egg"]), lead=0,
+        why_label=a.get("why_label") or _WHY_LABEL, tail=tail)
+
+
+def r_what_it_becomes(a, act_id):
+    """⊕ b5-07 `#s-becomes` — six parts, before and after, and why.
+
+    ⚖️ THE LEAD COLUMN IS *AFTER*, WHERE b5-02's IS THE FIRST. Design paints
+    the column the lesson is about in the alert, and on this page that is what
+    each part turns into. Mirroring b5-02's arrangement would put the emphasis
+    on the flower that no longer exists.
+
+    ⚖️ AND NOTHING IS OPEN ON LOAD. NOTES-B5 §2.5 authors `open: {}` as the
+    starting state, and the stop is all six rows opened — so a row open at
+    build time is a stage part-completed before the student arrived (MRB-208).
+    """
+    table = a.get("table") or {}
+    for key in ("name", "before", "after"):
+        if not table.get(key):
+            raise ValueError("what-it-becomes %r table is missing %r."
+                             % (act_id, key))
+
+    if a.get("rows_open_on_load") or a.get("open"):
+        raise ValueError(
+            "what-it-becomes %r opens a row at build time. MRB-208: nothing "
+            "is ticked on load, and this block's stop is all six rows opened."
+            % act_id)
+
+    rows = []
+    for r in a.get("rows") or []:
+        for key in ("id", "name", "before", "after", "why"):
+            if not r.get(key):
+                raise ValueError("what-it-becomes %r row %r is missing %r."
+                                 % (act_id, r.get("id"), key))
+        rows.append(dict(id=r["id"], name=r["name"], a=r["before"],
+                         b=r["after"], why=r["why"]))
+
+    return _b5_compare(
+        act_id, rows,
+        head=(table["name"], table["before"], table["after"]), lead=1,
+        why_label=a.get("why_label") or _WHY_LABEL)
+
+
+# ── cycle-dial ───────────────────────────────────────────────────────────
+
+
+def r_cycle_dial(a, act_id):
+    """⊕ b5-03 `#s-dial` — the release day is DERIVED and never stored.
+
+    ⚖️ `release = length − luteal`, COMPUTED, at build time and again in the
+    runtime, and there is nowhere in the payload to put one. NOTES-B5 §2.1:
+    "the release day is derived as `length − 14`, never stored. That is the
+    instrument's whole argument, and hard-coding release days would destroy
+    it." A stored 7 / 14 / 21 would render pixel-identical and teach that day
+    14 is a fact about people — which is `REPRO-05`, the misconception this
+    lesson exists to confront. So a length that stores a release day is a
+    build error, not a quietly ignored key.
+
+    ⚖️ THE STOP TICKS ON TWO DIFFERENT LENGTHS SEEN, not on reaching the end
+    of the slider. §2.1 again: "Rail credit is given for viewing two different
+    lengths, not for reaching the end of the slider." Walking 28 days proves
+    nothing; watching the release marker MOVE when the length changes is the
+    entire lesson.
+
+    ⚠️ AND THE OPENING LENGTH IS ALREADY SEEN. Design's state is
+    `seen: { 28: true }`, so the readout opens at "1 of 3 lengths tried" and
+    the stop is one length away rather than two. That is not a tick on load —
+    nothing is complete — but it does mean the head counter's RESTING text is
+    1 and not 0. See `_KIND_HEAD_START`, which is where that lands.
+    """
+    lengths = a.get("lengths") or []
+    if len(lengths) < 2:
+        raise ValueError(
+            "cycle-dial %r declares %d cycle length(s). The instrument's whole "
+            "argument is what happens to the release day when the length "
+            "changes (NOTES-B5 §2.1)." % (act_id, len(lengths)))
+
+    luteal, shed = a.get("luteal"), a.get("shed")
+    if not isinstance(luteal, int) or isinstance(luteal, bool) or luteal <= 0:
+        raise ValueError(
+            "cycle-dial %r declares no whole-day `luteal`. It is the one "
+            "number the release day is derived from." % act_id)
+    if not isinstance(shed, int) or isinstance(shed, bool) or shed <= 0:
+        raise ValueError(
+            "cycle-dial %r declares no whole-day `shed` — the bleeding window "
+            "the track draws and the first phase is bounded by." % act_id)
+
+    days = []
+    for L in lengths:
+        for key in ("days", "label", "note"):
+            if not L.get(key):
+                raise ValueError(
+                    "cycle-dial %r length %r is missing %r. The `note` reads "
+                    "the release marker's position and changes with the chosen "
+                    "length." % (act_id, L.get("days"), key))
+        for banned in ("release", "release_day", "ovulation", "ovulation_day"):
+            if banned in L:
+                raise ValueError(
+                    "cycle-dial %r length %r stores %r. The release day is "
+                    "DERIVED as length − luteal and never stored (NOTES-B5 "
+                    "§2.1): a stored one renders identically and teaches that "
+                    "the day is a fact about people, which is the "
+                    "misconception the lesson confronts."
+                    % (act_id, L["days"], banned))
+        n = int(L["days"])
+        if n <= luteal:
+            raise ValueError(
+                "cycle-dial %r length %d is not longer than the %d-day luteal "
+                "phase, so the derived release day is %d — not a day in the "
+                "cycle." % (act_id, n, luteal, n - luteal))
+        if n <= shed:
+            raise ValueError(
+                "cycle-dial %r length %d does not outlast its own %d-day "
+                "bleeding window." % (act_id, n, shed))
+        if n in days:
+            raise ValueError("cycle-dial %r declares length %d twice."
+                             % (act_id, n))
+        days.append(n)
+
+    by_id = {}
+    for p in a.get("phases") or []:
+        for key in ("id", "label", "ovary", "uterus"):
+            if not p.get(key):
+                raise ValueError(
+                    "cycle-dial %r phase %r is missing %r. Both panels are on "
+                    "screen at every day, and one of them reading blank says "
+                    "the organ has stopped." % (act_id, p.get("id"), key))
+        by_id[p["id"]] = p
+    missing = [k for k in _DIAL_PHASES if k not in by_id]
+    if missing:
+        raise ValueError(
+            "cycle-dial %r declares no phase %s. The four ids are a BRANCH, "
+            "not a list — day ≤ shed, day < release, day = release, otherwise "
+            "— so a missing or renamed id is a phase that can never show."
+            % (act_id, ", ".join(map(repr, missing))))
+    extra = sorted(set(by_id) - set(_DIAL_PHASES))
+    if extra:
+        raise ValueError(
+            "cycle-dial %r declares phase(s) %s that the day branch never "
+            "selects." % (act_id, ", ".join(map(repr, extra))))
+
+    panels = a.get("panels") or {}
+    for key in ("ovary", "uterus"):
+        if not panels.get(key):
+            raise ValueError("cycle-dial %r panels is missing %r."
+                             % (act_id, key))
+
+    track = a.get("track") or {}
+    for key in ("start", "release", "last"):
+        if not track.get(key):
+            raise ValueError(
+                "cycle-dial %r track is missing %r. The three labels under the "
+                "bar are what say where the release marker IS."
+                % (act_id, key))
+    if "{n}" not in track["release"]:
+        raise ValueError(
+            "cycle-dial %r track.release carries no {n}. It is the one label "
+            "that MOVES, and a fixed string there is a hard-coded release day "
+            "by another route." % act_id)
+
+    start_len = int(a.get("start_length") or days[0])
+    if start_len not in days:
+        raise ValueError(
+            "cycle-dial %r opens on start_length %d, which is not one of %s."
+            % (act_id, start_len, days))
+    start_day = int(a.get("start_day") or 1)
+    if not 1 <= start_day <= start_len:
+        raise ValueError("cycle-dial %r opens on day %d of a %d-day cycle."
+                         % (act_id, start_day, start_len))
+
+    credit = int(a.get("credit_lengths") or 2)
+    if not 2 <= credit <= len(days):
+        raise ValueError(
+            "cycle-dial %r credits the stop at %d length(s) seen. One is the "
+            "length the block OPENS on, so crediting at 1 ticks the stop on "
+            "load (MRB-208); crediting above %d makes it unreachable."
+            % (act_id, credit, len(days)))
+
+    day_format = a.get("day_format") or ""
+    if "{n}" not in day_format:
+        raise ValueError(
+            "cycle-dial %r declares no `day_format` carrying {n} — the "
+            "display-type readout of which day the student is standing on."
+            % act_id)
+
+    note_prompt = a.get("note_prompt")
+    if not note_prompt:
+        raise ValueError(
+            "cycle-dial %r declares no `note_prompt`. It is what the note says "
+            "BEFORE a second length has been tried, and it is the only line on "
+            "the page asking for the one action the stop credits." % act_id)
+
+    rel0 = start_len - luteal
+    phase0 = by_id[_dial_phase_at(start_day, start_len, shed, luteal)]
+
+    chips = "".join(
+        '<button type="button" class="ks3-dial-len" data-dial-len="%d" '
+        'data-note="%s" aria-pressed="%s">%s</button>'
+        % (int(L["days"]), e(L["note"]),
+           "true" if int(L["days"]) == start_len else "false", t(L["label"]))
+        for L in lengths)
+
+    cells = "".join(
+        '<div class="ks3-dial-cell">'
+        '<p class="ks3-dial-celllabel">%s</p>'
+        '<p class="ks3-dial-celltext" data-dial-%s>%s</p></div>'
+        % (t(panels[side]), side, t(phase0[side]))
+        for side in ("ovary", "uterus"))
+
+    # The four phases' text, carried as data rather than as four hidden copies
+    # of two paragraphs. `hidden` and empty, so there is nothing to hide badly.
+    phase_data = "".join(
+        '<span class="ks3-dial-phasedata" data-dial-phase="%s" '
+        'data-label="%s" data-ovary="%s" data-uterus="%s" hidden></span>'
+        % (e(p["id"]), e(p["label"]), e(p["ovary"]), e(p["uterus"]))
+        for p in a["phases"])
+
+    return ('<div class="ks3-dial" data-dial data-luteal="%d" data-shed="%d" '
+            'data-length="%d" data-day="%d" data-credit="%d" '
+            'data-day-format="%s" data-track-release="%s" '
+            'data-track-last="%s" data-note-prompt="%s">'
+            '<p class="ks3-dial-lenlabel">%s</p>'
+            '<div class="ks3-dial-lens">%s</div>'
+            '<div class="ks3-dial-panel">'
+            '<div class="ks3-dial-track">'
+            '<span class="ks3-dial-shed" aria-hidden="true" data-dial-shed '
+            'style="width:%s%%"></span>'
+            '<span class="ks3-dial-release" aria-hidden="true" '
+            'data-dial-release style="left:%s%%"></span>'
+            '<span class="ks3-dial-marker" aria-hidden="true" '
+            'data-dial-marker style="left:%s%%"></span></div>'
+            '<div class="ks3-dial-ticks"><span>%s</span>'
+            '<span data-dial-rellabel>%s</span>'
+            '<span data-dial-lastlabel>%s</span></div>'
+            '<div class="ks3-dial-controls">'
+            '<button type="button" class="ks3-dial-step" data-dial-prev '
+            'aria-label="%s">%s</button>'
+            '<label class="ks3-sr-only" for="%s-day">%s</label>'
+            '<input class="ks3-b4slider ks3-dial-slider" type="range" '
+            'id="%s-day" min="1" max="%d" step="1" value="%d" data-dial-day>'
+            '<button type="button" class="ks3-dial-step" data-dial-next '
+            'aria-label="%s">%s</button></div>'
+            '<div class="ks3-dial-readrow">'
+            '<p class="ks3-dial-day" data-dial-dayread>%s</p>'
+            '<p class="ks3-dial-phase" data-dial-phaseread>%s</p></div>'
+            '<div class="ks3-dial-cells">%s</div>'
+            '<p class="ks3-dial-note" data-dial-note>%s</p>%s</div></div>'
+            % (luteal, shed, start_len, start_day, credit, e(day_format),
+               e(track["release"]), e(track["last"]), e(note_prompt),
+               t(_b5_label(a, act_id, ("length_label",), "cycle-length label")),
+               chips,
+               _pctnum(shed * 100.0 / start_len),
+               _pctnum(_dial_pct(rel0, start_len)),
+               _pctnum(_dial_pct(start_day, start_len)),
+               t(track["start"]),
+               t(track["release"].replace("{n}", str(rel0))),
+               t(track["last"].replace("{n}", str(start_len))),
+               e(_b5_label(a, act_id, ("prev_label",), "previous-day label")),
+               t("−"), e(act_id),
+               t(_b5_label(a, act_id, ("day_label",), "day label")),
+               e(act_id), start_len, start_day,
+               e(_b5_label(a, act_id, ("next_label",), "next-day label")),
+               t("+"),
+               t(day_format.replace("{n}", str(start_day))),
+               t(phase0["label"]), cells, t(note_prompt), phase_data))
+# renderers: ═══ END B5 ═══
+
 ACTIVITY_KIND_RENDERERS = {
     "test-board":    ("ks3-board",
                       ' data-instrument data-board data-stage-done="0"'),
@@ -10705,6 +11819,36 @@ ACTIVITY_KIND_RENDERERS = {
     "clearance-clock": ("ks3-clock-block", ' data-instrument data-clearblock data-stage-done="0"'),
     "claim-check": ("ks3-ccheck-block", ' data-instrument data-ccheckblock data-stage-done="0"'),
     # ═══ END B6 dispatch ═══
+    # ═══ BEGIN B5 dispatch ═══
+    # All eight sit on a `practical` segment — measured off Design's own
+    # markup on all eight pages, no exceptions — so all eight are on ink and
+    # every colour rule they hang on is scoped `.ks3-dark …` at (0,2,0). All
+    # eight carry a completion contract, so all eight emit
+    # `data-stage-done="0"` and the rail reads the instrument's own predicate
+    # rather than guessing from `aria-pressed` — which on every one of the
+    # five commit benches would tick the stage on load, because a tab is
+    # pressed before anything has been decided.
+    #
+    # ⚖️ FIVE OF THE EIGHT SHARE ONE MARKER, and that is the point rather
+    # than an economy. `job-match`, `crossing-bench`, `crosses-panel`,
+    # `flower-jobs` and `disperse-sort` are the same block five times, and
+    # NOTES-B5 §6 requires b5-04's and b5-05's to stay identical: "the
+    # repetition is the argument." One `data-b5cblock` is what makes drifting
+    # apart impossible rather than merely discouraged. The BLOCK CLASS still
+    # differs per kind, because that is what a stylesheet and a parity row
+    # hang on.
+    "job-match": ("ks3-jmatch-block", ' data-instrument data-b5cblock data-stage-done="0"'),
+    "crossing-bench": ("ks3-xbench-block", ' data-instrument data-b5cblock data-stage-done="0"'),
+    "crosses-panel": ("ks3-xpanel-block", ' data-instrument data-b5cblock data-stage-done="0"'),
+    "flower-jobs": ("ks3-fjobs-block", ' data-instrument data-b5cblock data-stage-done="0"'),
+    "disperse-sort": ("ks3-dsort-block", ' data-instrument data-b5cblock data-stage-done="0"'),
+    # And two of the eight share the comparison-row chassis, for the same
+    # reason: b5-07 mirrors b5-02 deliberately so the plant and the animal sit
+    # in the same shape (NOTES-B5 §1).
+    "gamete-compare": ("ks3-gcmp-block", ' data-instrument data-cmpblock data-stage-done="0"'),
+    "what-it-becomes": ("ks3-becomes-block", ' data-instrument data-cmpblock data-stage-done="0"'),
+    "cycle-dial": ("ks3-dial-block", ' data-instrument data-dialblock data-stage-done="0"'),
+    # ═══ END B5 dispatch ═══
 }
 
 # Kinds that ARE the generic shell, and are not waiting for a component.
@@ -10833,7 +11977,40 @@ ACTIVITY_KIND_FN = {
     "clearance-clock":        r_clearance_clock,
     "claim-check":            r_claim_check,
     # ═══ END B6 renderfn ═══
+    # ═══ BEGIN B5 renderfn ═══
+    "job-match":              r_job_match,
+    "gamete-compare":         r_gamete_compare,
+    "cycle-dial":             r_cycle_dial,
+    "crossing-bench":         r_crossing_bench,
+    "crosses-panel":          r_crosses_panel,
+    "flower-jobs":            r_flower_jobs,
+    "what-it-becomes":        r_what_it_becomes,
+    "disperse-sort":          r_disperse_sort,
+    # ═══ END B5 renderfn ═══
 }
+
+
+# ── the head counter's RESTING count, where the block does not open at zero ──
+#
+# ⊕ MRB-244 / B5. `head_counter.start` already exists for exactly this and is
+# authored per block — but it is a fact about the INSTRUMENT, not about the
+# lesson, whenever the instrument's opening state is not empty. b5-03's dial
+# opens with one of its three cycle lengths already selected and therefore
+# already seen (Design's own state is `seen: { 28: true }`), so Design's page
+# renders "1 of 3 lengths tried" on first paint and the shipped HTML must say
+# the same thing.
+#
+# Without this the static page reads "0 of 3 lengths tried" until `wireCycleDial`
+# corrects it — a wrong number on screen for an instant, a wrong number
+# permanently in the bytes a crawler or a JS-off reader gets, and a
+# contradiction of the approved page. `head_counter.start` on the record would
+# fix it too, but the record cannot be edited by this pass and, more to the
+# point, the value is not the author's to choose: it is one because the dial
+# opens on a length, and it would still be one if the author picked a different
+# opening length.
+#
+# An authored `start` still wins. This only fills a blank.
+_KIND_HEAD_START = {"cycle-dial": 1}
 
 # The three that need the whole lesson, not just the activity, because they
 # read the lesson's equation or its misconception register.
@@ -11068,6 +12245,12 @@ def r_activity(lesson, block_type, act_id, block=None):
             "are two shapes of the SAME readout in the block's head row, so "
             "one of them would be rendered and the other would vanish without "
             "a trace." % (lesson.get("slug"), act_id))
+    # ⊕ MRB-244 / B5 — an instrument whose opening state is not empty fills the
+    # counter's resting number. See `_KIND_HEAD_START`; an authored `start`
+    # still wins, and `hc` is copied rather than mutated because the lesson
+    # record is shared with every gate that reads it afterwards.
+    if hc and kind in _KIND_HEAD_START and "start" not in hc:
+        hc = dict(hc, start=_KIND_HEAD_START[kind])
     head_emitted_content = False
     if block_type == "misconception":
         parts.append('<div class="ks3-mis-head">'

@@ -485,10 +485,18 @@ readings, and the register is where that has to be settled.
 **Ruled: cite, do not re-declare.** A `misconceptions` row is not a citation.
 `confronted_by` names the thing that does the confronting, and the declaring
 author had pointed it at a **lesson slug** — the first value in the key stage
-that names something on a different page. The other twenty-nine values in KS3
-all name a place on their own page (`hook`, `ladder`, `s-think`,
-`stretch-boundary`, or a real activity id), so a slug is a pointer no page can
-resolve and a join that reads as working precisely because nothing checks it.
+that names something on a different page. A slug is a pointer no page can
+resolve, and a join that reads as working precisely because nothing checks it.
+
+> ⊕ **Corrected after the sweep.** This paragraph originally went on to say that
+> *the other twenty-nine values in KS3 all name a place on their own page
+> (`hook`, `ladder`, `s-think`, `stretch-boundary`, or a real activity id)*.
+> That was written from reading the records, and it was wrong: when the question
+> was actually asked of the built pages, **`ladder` and `stretch-boundary` were
+> two of the three that failed** — see the gate note under *Entry format*. The
+> claim was true of `hook`, `s-think` and the activity ids only. It is left here,
+> corrected rather than deleted, because assuming a value resolves because it
+> looks like a name is the whole defect.
 
 The precedent is `CELL-08` in the `DIET` table above: a borrowed id is
 re-declared only where the page genuinely **re-confronts** the belief with a real
@@ -506,3 +514,67 @@ place:
 the activity. `DRUG-09` is the exception because b6-03 confronts it inside the
 claim bench itself and hits it again at the ladder — the only belief in the unit
 attacked twice.
+
+---
+
+### `REPRO` — reproduction, in animals and in flowering plants
+
+Opened 16–17 Aug 2026 by B5 (MRB-244). Twenty entries across eight lessons — the
+largest family in the register, and the only one covering two kingdoms, because
+B5 teaches the human and the plant halves of the same statutory idea in one unit.
+
+**Written from the authored records, not from NOTES-B5.** NOTES described these
+entries as already written when they were not; the table below is extracted from
+`ks3_data/b5/lesson_*.py` and every row is a value the build can resolve.
+
+**Eight authors, ranges pre-allocated `REPRO-01/02` … `15/16`, two per lesson,
+with a spare each.** Same discipline as `DRUG`, applied one unit earlier. Four
+spares went unclaimed and **`REPRO-17`, `REPRO-20`, `REPRO-21` and `REPRO-23`
+are permanent gaps** — do not reuse them. Four third beliefs did land, at `18`,
+`19`, `22` and `24`.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `REPRO-01` | The two systems are mirror images — every part has a matching part in the other. | `match-the-job` | `think-not-mirrors` | `human-reproductive-systems` |
+| `REPRO-02` | Egg cells are made all the time, like sperm cells. | `think-not-mirrors` | `think-not-mirrors` | `human-reproductive-systems` |
+| `REPRO-03` | Fertilisation is when the sperm reaches the egg. | `two-wrong-ideas` | `two-wrong-ideas` | `gametes-and-fertilisation` |
+| `REPRO-04` | Identical twins happen when two eggs are fertilised. | `two-wrong-ideas` | `two-wrong-ideas` | `gametes-and-fertilisation` |
+| `REPRO-05` | The cycle is 28 days and the egg comes out on day 14. | `hook` | `think-twenty-eight` | `the-menstrual-cycle` |
+| `REPRO-06` | A period is the unfertilised egg leaving the body. | `think-twenty-eight` | `think-twenty-eight` | `the-menstrual-cycle` |
+| `REPRO-07` | The baby breathes and eats inside the uterus. | `hook` | `two-wrong-ideas` | `gestation-placenta-and-birth` |
+| `REPRO-08` | The baby's blood mixes with the mother's blood in the placenta. | `hook` | `two-wrong-ideas` | `gestation-placenta-and-birth` |
+| `REPRO-09` | The placenta filters out anything harmful. | `does-it-cross` | `two-wrong-ideas` | `lifestyle-and-the-developing-foetus` |
+| `REPRO-10` | So anything that goes wrong is the mother's fault. | `two-wrong-ideas` | `two-wrong-ideas` | `lifestyle-and-the-developing-foetus` |
+| `REPRO-11` | Flowers are the pretty part of the plant. | `two-wrong-ideas` | `two-wrong-ideas` | `flowers-and-pollination` |
+| `REPRO-12` | All flowers are pollinated by insects. | `s-hook` | `two-wrong-ideas` | `flowers-and-pollination` |
+| `REPRO-13` | A tomato is a vegetable. | `two-wrong-ideas` | `two-wrong-ideas` | `fertilisation-seeds-and-fruit` |
+| `REPRO-14` | Pollination and fertilisation are the same thing. | `s-hook` | `two-wrong-ideas` | `fertilisation-seeds-and-fruit` |
+| `REPRO-15` | Plants disperse their seeds so the species can spread to new places. | `hook` | `two-wrong-ideas` | `seed-dispersal` |
+| `REPRO-16` | Fruit is food the plant provides for animals. | `two-wrong-ideas` | `two-wrong-ideas` | `seed-dispersal` |
+| `REPRO-18` | The egg is bigger than the sperm because it carries more genetic material. | `hook` | `two-cells` | `gametes-and-fertilisation` |
+| `REPRO-19` | Period blood is waste the body has been storing up and is getting rid of. | `think-twenty-eight` | `think-twenty-eight` | `the-menstrual-cycle` |
+| `REPRO-22` | The ovule and the ovary are the same thing. | `nine-parts` | `nine-parts` | `flowers-and-pollination` |
+| `REPRO-24` | A seed with no wing and no parachute cannot be dispersed by wind. | `sort-the-eight` | `sort-the-eight` | `seed-dispersal` |
+
+**`REPRO-09` is set up in `gestation-placenta-and-birth` and confronted in
+`lifestyle-and-the-developing-foetus` — cited, not re-declared.** b5-04's
+`drugs` substance carries the belief in Design's own words and hands it forward
+deliberately (*"What follows from that is the whole of the next lesson"*). Under
+the `CELL-08` precedent that is a **reappearance**, because b5-04 sets it up and
+moves on rather than re-confronting it with an activity of its own. It is
+declared once, on b5-05, which is the page that kills it.
+
+**`REPRO-15` and `REPRO-16` are the teleology pair, and they are the unit's
+hardest.** Both are the same error — that a plant structure exists *in order to*
+achieve an outcome — and NOTES-B5 flag 44 binds across both halves of the unit.
+b5-08's rung 3 marks down *wants* / *tries* / *so that*. ⚑ **Design's own copy in
+`fertilisation-seeds-and-fruit` contains seven instances of purposive language**,
+lifted unchanged under MRB-205 and reported as drift rather than silently
+corrected. Mide's to rule on.
+
+**`REPRO-10` is a safeguarding row, not just a science row.** "So anything that
+goes wrong is the mother's fault" is elicited and confronted inside the same
+block, and the anti-blame paragraph that does the confronting is load-bearing
+copy lifted whole. It is answerable only because b5-04 states the placenta's
+exchange rule neutrally first — the two lessons are a pair, and neither should
+be edited without the other in view.

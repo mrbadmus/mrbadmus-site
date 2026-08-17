@@ -502,6 +502,17 @@ B6_CLOCK = "biology/health-and-drugs/alcohol-and-smoking.html"
 B6_CLAIMS = "biology/health-and-drugs/substance-misuse-and-decisions.html"
 # ═══ END B6 ═══
 
+# ═══ BEGIN B5 ═══
+B5_JOBS = "biology/reproduction/human-reproductive-systems.html"
+B5_CMP = "biology/reproduction/gametes-and-fertilisation.html"
+B5_DIAL = "biology/reproduction/the-menstrual-cycle.html"
+B5_XBENCH = "biology/reproduction/gestation-placenta-and-birth.html"
+B5_XPANEL = "biology/reproduction/lifestyle-and-the-developing-foetus.html"
+B5_PARTS = "biology/reproduction/flowers-and-pollination.html"
+B5_BECOMES = "biology/reproduction/fertilisation-seeds-and-fruit.html"
+B5_SORT = "biology/reproduction/seed-dispersal.html"
+# ═══ END B5 ═══
+
 COMPONENTS = [
     # ── foundations ──
     dict(name="page ground + body type", on=LESSON, sel="body",
@@ -2958,6 +2969,297 @@ COMPONENTS = [
          props={"color": "#FBF3E6", "font-family": "Bricolage Grotesque",
                 "font-size": "26px"}),
     # ═══ END B6 ═══ rows
+
+    # ═══ BEGIN B5 ═══ rows
+    #
+    # Every value below is read out of `shared/tokens.css`, not estimated:
+    #   --ks3-alert #FFC53D · --ks3-on-dark #FBF3E6 · --ks3-on-dark-muted #C6B9A7
+    #   --ks3-on-dark-body #E7DECE · --ks3-dark-panel #3E3730 · --ks3-ink #221E1B
+    #   --ks3-ink-muted #5F564F · --ks3-ground #FBF3E6 · --ks3-accent #E4572E
+    #   --ks3-accent-text #A93411 · --ks3-band #F4E9D8
+    # Mutation-tested: each rule was deliberately broken in `shared/ks3.css`
+    # (the SOURCE — `verify_ks3.py` rebuilds before measuring and would
+    # overwrite a mutation applied to the built tree) and the row confirmed to
+    # fail before it was kept.
+    #
+    # ⚠️ THE SAME ONE-RULE-EIGHT-TIMES HAZARD AS B4 AND B6, AND HERE IT IS THE
+    # WHOLE UNIT. All eight B5 practicals are `ks3-block ks3-dark
+    # ks3-practical`, so `.ks3-dark p` at (0,1,1) beats a bare instrument class
+    # on eight pages at once. Five of them draw a panel that inverts to the
+    # CREAM ground inside the ink block — and it is the same component five
+    # times, which is why the cream rows below are measured on more than one
+    # page rather than one being taken as representative: a per-page override
+    # is exactly what "keep them identical" (NOTES-B5 §6) forbids, and only
+    # measuring twice can see it.
+
+    # ── the commit family · the cream reveal (b5-01 / b5-05 / b5-08) ──
+    #
+    # ⚖️ PINNED ON COLOUR AND BACKGROUND TOGETHER. Either alone passes with the
+    # panel painted the wrong way round — cream text on the ink panel measures
+    # a healthy contrast and is the wrong component.
+    dict(name="the reveal panel is the page ground on an ink block",
+         on=B5_JOBS, drive="b5-item-checked", sel=".ks3-b5c-reveal",
+         props={"background-color": "#FBF3E6"}),
+    # ⚖️ THE VERDICT WORD IS NOT A MARK (MRB-196 R10). It is the accent eyebrow
+    # whether the student had it or not — never `--ks3-ok` #12A150, never
+    # `--ks3-danger` #FF6B6B — because the reveal opens either way and names
+    # the right answer in full. The drive reaches it through a DELIBERATELY
+    # WRONG pick, which is the state a marking colour would appear in first.
+    dict(name="the verdict word is the accent eyebrow, not a marking colour",
+         on=B5_JOBS, drive="b5-item-checked", sel=".ks3-b5c-word",
+         props={"color": "#A93411", "font-family": "DM Mono",
+                "font-size": "14px"}),
+    dict(name="the answer line is ink display type on the cream panel",
+         on=B5_JOBS, drive="b5-item-checked", sel=".ks3-b5c-answer",
+         props={"color": "#221E1B", "font-family": "Bricolage Grotesque",
+                "font-size": "23px"}),
+    dict(name="the reveal reasoning reads in ink, not on-dark body",
+         on=B5_JOBS, drive="b5-item-checked", sel=".ks3-b5c-why",
+         props={"color": "#221E1B", "font-size": "18px"}),
+    # ⚖️ THE SAME COMPONENT, MEASURED AGAIN ON A SECOND PAGE. NOTES-B5 §6
+    # requires b5-04's bench and b5-05's to stay identical, and this is the
+    # only assertion that can see them diverge.
+    dict(name="the twin bench's reveal is the same cream panel, not a copy",
+         on=B5_XPANEL, drive="b5-item-checked", sel=".ks3-b5c-reveal",
+         props={"background-color": "#FBF3E6"}),
+    dict(name="the twin bench's reasoning is the same ink, not a copy",
+         on=B5_XPANEL, drive="b5-item-checked", sel=".ks3-b5c-why",
+         props={"color": "#221E1B", "font-size": "18px"}),
+    # ⚖️ AND THE OTHER HALF OF THE TWIN, on b5-04 itself. Measuring b5-05 alone
+    # would pass a b5-04 that had been given a treatment of its own — which is
+    # precisely what NOTES-B5 §6 forbids, and the direction the drift would
+    # most plausibly go, because b5-04's bench was authored by a different pass.
+    dict(name="b5-04's bench is the same component, measured on its own page",
+         on=B5_XBENCH, drive="b5-item-checked", sel=".ks3-b5c-reveal",
+         props={"background-color": "#FBF3E6"}),
+    dict(name="and its verdict word is the same accent eyebrow", on=B5_XBENCH,
+         drive="b5-item-checked", sel=".ks3-b5c-word",
+         props={"color": "#A93411", "font-family": "DM Mono",
+                "font-size": "14px"}),
+    dict(name="and its substance line is the same alert mono", on=B5_XBENCH,
+         sel=".ks3-b5c-meta",
+         props={"color": "#FFC53D", "font-family": "DM Mono",
+                "font-size": "15px"}),
+    # ⚖️ THE BIJECTION BLOCK'S OPTIONS ARE JOB SENTENCES, and they are on the
+    # dark panel rather than the page ground — b5-06 is the one commit bench
+    # whose options are long enough for the wrong ground to be unreadable
+    # rather than merely wrong.
+    dict(name="an option on the flower bench sits on the dark panel",
+         on=B5_PARTS, sel=".ks3-b5c-opt",
+         props={"background-color": "#3E3730", "color": "#FBF3E6",
+                "min-height": "44px"}),
+    dict(name="a chosen option is alert-bordered and its label does not move",
+         on=B5_PARTS, drive="b5-item-checked",
+         sel='.ks3-b5c-opt[aria-pressed="true"]',
+         props={"border-color": "#FFC53D", "color": "#FBF3E6"}),
+
+    # ── b5-05's week window, inside that cream panel ──
+    #
+    # ⚠️ FOUR MORE CREAM-INSIDE-INK ELEMENTS IN ONE PANEL — exactly the shape
+    # of the B4 defect, where a panel was rescued and a paragraph inside it was
+    # not. Each is pinned separately, because a rule on the panel is not a rule
+    # on its children.
+    dict(name="the window caption is ink-muted mono on the cream panel",
+         on=B5_XPANEL, drive="b5-item-checked", sel=".ks3-b5c-winlabel",
+         props={"color": "#5F564F", "font-family": "DM Mono",
+                "font-size": "12px"}),
+    dict(name="the window sentence reads in ink, not on-dark body",
+         on=B5_XPANEL, drive="b5-item-checked", sel=".ks3-b5c-wintext",
+         props={"color": "#221E1B", "font-size": "17px"}),
+    dict(name="the week ticks are ink-muted mono, not invisible",
+         on=B5_XPANEL, drive="b5-item-checked", sel=".ks3-b5c-winticks span",
+         props={"color": "#5F564F", "font-family": "DM Mono"}),
+    # ⚠️ THE WINDOW BAR MUST BE DRAWN, and on the band rather than on the cream
+    # it sits on. If the fill ever resolves to the track colour the window has
+    # become an empty rectangle and the only thing left saying when an exposure
+    # matters is a line of prose.
+    dict(name="the window fill is the accent on a band track", on=B5_XPANEL,
+         drive="b5-item-checked", sel=".ks3-b5c-winfill",
+         props={"background-color": "#E4572E"}),
+    dict(name="the window track is the band, not the cream it sits on",
+         on=B5_XPANEL, drive="b5-item-checked", sel=".ks3-b5c-wintrack",
+         props={"background-color": "#F4E9D8"}),
+
+    # ── b5-08's deciding-feature line, inside that cream panel ──
+    #
+    # ⚖️ THE OBSERVABLE THAT SETTLES IT IS THE THING BEING TAUGHT (NOTES-B5
+    # §2.6), which is why it is a line of its own rather than a clause inside
+    # the why — and why it is pinned rather than left to the panel's rule.
+    dict(name="the deciding feature is ink-muted mono on the cream panel",
+         on=B5_SORT, drive="b5-item-checked", sel=".ks3-b5c-tell",
+         props={"color": "#5F564F", "font-family": "DM Mono",
+                "font-size": "15px"}),
+    dict(name="its caption is a block, not a run-on with the feature",
+         on=B5_SORT, drive="b5-item-checked", sel=".ks3-b5c-telllabel",
+         props={"color": "#5F564F", "display": "block"}),
+
+    # ── the commit family · the ink chrome, measured at rest ──
+    #
+    # No drive: at rest every one of these is in its resting state, so a
+    # regression is reported before anything is clicked.
+    dict(name="the item name is display type on the nested dark panel",
+         on=B5_JOBS, sel=".ks3-b5c-name",
+         props={"color": "#FBF3E6", "font-family": "Bricolage Grotesque",
+                "font-size": "26px"}),
+    dict(name="the item's system line is the alert mono line", on=B5_JOBS,
+         sel=".ks3-b5c-meta",
+         props={"color": "#FFC53D", "font-family": "DM Mono",
+                "font-size": "15px"}),
+    dict(name="the bench panel is the nested dark panel, not the page ground",
+         on=B5_PARTS, sel=".ks3-b5c-panel",
+         props={"background-color": "#3E3730"}),
+    # ⚖️ THE SPECIMEN DESCRIPTION IS THE EVIDENCE THE SORT IS MADE ON, and it
+    # is body copy on ink at 18px — not the headline colour, which over that
+    # length is the glare `--ks3-on-dark-body` exists to avoid.
+    dict(name="the specimen description reads in on-dark body", on=B5_SORT,
+         sel=".ks3-b5c-context",
+         props={"color": "#E7DECE", "font-size": "18px"}),
+    dict(name="the mono ask above the options is muted, not headline",
+         on=B5_SORT, sel=".ks3-b5c-ask",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px"}),
+    # ⚖️ A CHOSEN TAB IS ALERT AND NOTHING ELSE (R10). Choosing which structure
+    # to look at is not answering anything, so if this row ever resolves to
+    # `--ks3-ok` #12A150 the bench has started marking a control that has no
+    # right answer.
+    dict(name="the chosen tab is alert with dark-panel text", on=B5_JOBS,
+         sel='.ks3-b5c-tab[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#3E3730",
+                "min-height": "44px"}),
+    dict(name="an unchosen tab is transparent and stays on-dark body",
+         on=B5_JOBS, sel='.ks3-b5c-tab[aria-pressed="false"]',
+         props={"background-color": "rgba(0, 0, 0, 0)", "color": "#E7DECE",
+                "min-height": "44px"}),
+    # ⊕ THE CORRECTION, PINNED. `.ks3-reveal-btn` is ink on an ink border, and
+    # this block's ground IS `--ks3-ink` — so the shipped rule paints an
+    # invisible control. If this row ever resolves to #221E1B the check button
+    # has disappeared into the block and the instrument cannot be operated.
+    dict(name="the check button is inverted on ink, not ink on ink",
+         on=B5_JOBS, sel=".ks3-b5c-check",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="the hint beside it is muted mono", on=B5_JOBS,
+         sel=".ks3-b5c-hint",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "15px"}),
+
+    # ── the comparison rows (b5-02 #s-compare · b5-07 #s-becomes) ──
+    #
+    # ⚖️ THE LEAD COLUMN IS NOT ALWAYS THE FIRST, and these four rows are what
+    # prove it. Design paints the column the lesson is ABOUT in the alert: the
+    # sperm on b5-02, and what each part turns into on b5-07. Measuring one
+    # page would pass an implementation that hard-codes the first data column
+    # and puts b5-07's emphasis on the flower that no longer exists.
+    dict(name="the lead column is the alert one", on=B5_CMP,
+         sel=".ks3-cmp-row .ks3-cmp-cell[data-lead] .ks3-cmp-val",
+         props={"color": "#FFC53D", "font-size": "17px"}),
+    dict(name="the other column stays on-dark body", on=B5_CMP,
+         sel=".ks3-cmp-row .ks3-cmp-cell:not([data-lead]) .ks3-cmp-val",
+         props={"color": "#E7DECE", "font-size": "17px"}),
+    dict(name="on the mirrored table the lead is the SECOND column",
+         on=B5_BECOMES,
+         sel=".ks3-cmp-row .ks3-cmp-cell:not([data-lead]) .ks3-cmp-val",
+         props={"color": "#E7DECE"}),
+    dict(name="and its alert column is the after-fertilisation one",
+         on=B5_BECOMES, sel=".ks3-cmp-row .ks3-cmp-cell[data-lead] .ks3-cmp-val",
+         props={"color": "#FFC53D"}),
+    # ⚖️ THE WHOLE ROW IS THE BUTTON (NOTES-B5 §2.5) — no separate chevron
+    # control. A block-level control at the row's full width is the difference
+    # between a 700px tap target and a 44px one, and it is drawn that way on
+    # both pages.
+    dict(name="the whole row is the button, at the row's full width",
+         on=B5_CMP, sel=".ks3-cmp-btn",
+         props={"display": "block", "min-height": "44px",
+                "background-color": "rgba(0, 0, 0, 0)"}),
+    dict(name="the row's name column is on-dark, not body", on=B5_CMP,
+         sel=".ks3-cmp-row .ks3-cmp-name",
+         props={"color": "#FBF3E6", "font-size": "17px"}),
+    dict(name="the table sits on the nested dark panel", on=B5_CMP,
+         sel=".ks3-cmp-table", props={"background-color": "#3E3730"}),
+    # ⚖️ THE WHY IS THE REASON THE ROW EXISTS, and it is on the ink table
+    # rather than on a cream panel — a different surface from the commit
+    # family's reveal, and the two must not converge.
+    dict(name="an opened row's why reads in on-dark body on ink", on=B5_CMP,
+         drive="b5-rows-opened", sel=".ks3-cmp-why",
+         props={"color": "#E7DECE", "font-size": "18px"}),
+    dict(name="its Why: label lifts to on-dark display type", on=B5_CMP,
+         drive="b5-rows-opened", sel=".ks3-cmp-whylabel",
+         props={"color": "#FBF3E6", "font-family": "Bricolage Grotesque"}),
+    # ⚖️ AN OPEN ROW IS TINTED, NOT MARKED. Every row's why is true, so opening
+    # one is not answering anything: this is the accent's own wash and never
+    # `--ks3-ok` or `--ks3-danger`.
+    dict(name="an open row takes the accent wash, not a marking colour",
+         on=B5_CMP, drive="b5-rows-opened", sel=".ks3-cmp-row[data-open]",
+         props={"background-color": "rgba(228, 87, 46, 0.1)"}),
+    # ⚠️ THE SCALE BARS MUST BE DRAWN. If either resolves to the track colour
+    # the "to scale" block has become two empty pills and the note under it —
+    # where the eight-thousandfold figure lives — is talking about nothing.
+    dict(name="the smaller scale bar is the alert one", on=B5_CMP,
+         sel=".ks3-cmp-scalebar[data-lead]",
+         props={"background-color": "#FFC53D"}),
+    dict(name="the reference scale bar is muted, not the alert", on=B5_CMP,
+         sel=".ks3-cmp-scalebar:not([data-lead])",
+         props={"background-color": "#C6B9A7"}),
+
+    # ── cycle-dial (b5-03 #s-dial) ──
+    #
+    # ⚖️ THE RELEASE MARKER IS THE INSTRUMENT. Everything else on this bench is
+    # scaffolding for one observation — change the length and the alert line
+    # moves. If this row ever resolves to the track colour the release day has
+    # become invisible and the block is a slider with two paragraphs under it.
+    dict(name="the release marker is the one alert line on the track",
+         on=B5_DIAL, sel=".ks3-dial-release",
+         props={"background-color": "#FFC53D"}),
+    # ⚖️ AND THE BLEEDING BAND IS NOT ALSO ALERT. Two alert regions on one 46px
+    # track and the eye cannot tell which one is being asked about.
+    dict(name="the bleeding band is the accent wash, not a second alert",
+         on=B5_DIAL, sel=".ks3-dial-shed",
+         props={"background-color": "rgba(228, 87, 46, 0.3)"}),
+    dict(name="the day marker is on-dark against both of them", on=B5_DIAL,
+         sel=".ks3-dial-marker", props={"background-color": "#FBF3E6"}),
+    dict(name="the day readout is display type on ink", on=B5_DIAL,
+         sel=".ks3-dial-day",
+         props={"color": "#FBF3E6", "font-family": "Bricolage Grotesque",
+                "font-size": "30px"}),
+    dict(name="the phase name is the alert mono line", on=B5_DIAL,
+         sel=".ks3-dial-phase",
+         props={"color": "#FFC53D", "font-family": "DM Mono",
+                "font-size": "15px"}),
+    # ⚖️ BOTH ORGAN PANELS ARE ON SCREEN AT EVERY DAY, and they read in body
+    # copy rather than the headline colour: they are two paragraphs the student
+    # re-reads at each day, and #FBF3E6 at 18px over that length is the glare
+    # `--ks3-on-dark-body` exists to avoid.
+    dict(name="the two organ panels read in on-dark body", on=B5_DIAL,
+         sel=".ks3-dial-celltext",
+         props={"color": "#E7DECE", "font-size": "18px"}),
+    dict(name="the organ captions are muted mono", on=B5_DIAL,
+         sel=".ks3-dial-celllabel",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "12px"}),
+    dict(name="a chosen cycle length is alert, and is not marked", on=B5_DIAL,
+         sel='.ks3-dial-len[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#3E3730",
+                "min-height": "44px"}),
+    # ⚖️ THE STEP BUTTONS ARE A 44px TAP TARGET. They exist for keyboard and
+    # for a phone, where a 12px slider thumb is not operable — so their size is
+    # the assertion, not their colour.
+    dict(name="the day step buttons are full tap targets", on=B5_DIAL,
+         sel=".ks3-dial-step",
+         props={"width": "44px", "height": "44px", "color": "#FBF3E6"}),
+    dict(name="the note under the panel is muted, not body", on=B5_DIAL,
+         sel=".ks3-dial-note",
+         props={"color": "#C6B9A7", "font-size": "18px"}),
+    # ⚖️ MEASURED AGAIN AFTER THE LENGTH HAS BEEN CHANGED, which is the state
+    # the whole instrument exists to produce. A release marker that is drawn
+    # correctly at rest and repainted on relengthening would pass every row
+    # above and still lose the lesson.
+    dict(name="the release marker survives a change of cycle length",
+         on=B5_DIAL, drive="b5-dial-relengthed", sel=".ks3-dial-release",
+         props={"background-color": "#FFC53D"}),
+    dict(name="and the note is still readable once a length has been tried",
+         on=B5_DIAL, drive="b5-dial-relengthed", sel=".ks3-dial-note",
+         props={"color": "#C6B9A7", "font-size": "18px"}),
+    # ═══ END B5 ═══ rows
 ]
 
 
@@ -5914,6 +6216,397 @@ DRIVES = {
 })()
 """,
     # ═══ END B6 ═══ drives
+
+    # ═══ BEGIN B5 ═══ drives
+    #
+    # ⚠️ STRUCTURAL, NOT KEYED ON AN AUTHORED ID, for B4's and B6's reason:
+    # these reach the state they want through the instrument's own controls, by
+    # POSITION, so a drive cannot fail as a colour regression on the day an
+    # author renames `oviduct` or reorders the specimens.
+    #
+    # ⚖️ AND ONE DRIVE SERVES FIVE PAGES. `b5-item-checked` is written against
+    # the commit chassis rather than against any one lesson, which is what lets
+    # b5-01, b5-04, b5-05, b5-06 and b5-08 be measured with the same assertions
+    # — the only thing that can see two of them drift apart, which NOTES-B5 §6
+    # forbids.
+
+    # Commits a DELIBERATELY WRONG answer on the opening item, checks it, and
+    # proves on the way that the reveal is withheld until the commitment, that
+    # it opens anyway when the pick was wrong, that the options lock, that the
+    # bench does not mark, that a second item is untouched by the first, and
+    # that one checked item is not a completed stage.
+    "b5-item-checked": r"""
+(function () {
+  var sec = document.querySelector('[data-b5cblock]');
+  if (!sec) { return "no commit bench on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var w = sec.querySelector('[data-b5c]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var total = parseInt(w.getAttribute('data-total'), 10);
+  var tabs = w.querySelectorAll('[data-b5c-pick]');
+  if (!(total > 1) || tabs.length !== total) {
+    return "the bench declares " + total + " items and draws " +
+      tabs.length + " tabs";
+  }
+  var btn = w.querySelector('[data-b5c-check]');
+  var hint = w.querySelector('[data-b5c-hint]');
+  if (!btn) { return "the bench has no check control"; }
+  if (!btn.disabled) {
+    return "the check button is live before anything has been chosen";
+  }
+
+  // ⚖️ ONE ITEM SHOWING, AND ONE ONLY — panel row, option list and reveal.
+  // A second visible option list is two benches on top of each other and
+  // every pick would land on whichever the wiring found first.
+  if (w.querySelectorAll('.ks3-b5c-item:not([hidden])').length !== 1) {
+    return "the bench opens with " +
+      w.querySelectorAll('.ks3-b5c-item:not([hidden])').length +
+      " item panels showing";
+  }
+  var lists = w.querySelectorAll('.ks3-b5c-opts:not([hidden])');
+  if (lists.length !== 1) {
+    return "the bench opens with " + lists.length + " option lists showing";
+  }
+  if (w.querySelectorAll('.ks3-b5c-reveal:not([hidden])').length) {
+    return "a reveal was open before anything was checked";
+  }
+  // ⚠️ AND THEY ARE REALLY HIDDEN, not merely marked hidden — MRB-242, asked
+  // of the CASCADE rather than of the painted page.
+  //
+  // ⚖️ THIS IS WHY THE ORDINARY MRB-242 AUDIT CANNOT SEE THIS COMPONENT, and
+  // it is worth writing down. That audit reads computed `display` on the
+  // undriven load; `wireB5Commit` draws once on load and `setHidden()` writes
+  // an INLINE `display: none`, which masks any author rule underneath it. So
+  // a stylesheet that gave `.ks3-b5c-opts` a `display` would ship a page that
+  // is correct the instant JS runs and broken before it — eight option lists
+  // stacked open for a reader with JS off, and invisible to every gate.
+  // Dropping the inline value for the length of one read asks the question
+  // the audit means to ask: does the ATTRIBUTE alone still hide it?
+  var cascade = w.querySelectorAll(
+    '.ks3-b5c-opts[hidden], .ks3-b5c-item[hidden], .ks3-b5c-reveal[hidden]');
+  for (var h = 0; h < cascade.length; h++) {
+    var el = cascade[h], prev = el.style.display;
+    el.style.display = '';
+    var shown = getComputedStyle(el).display;
+    el.style.display = prev;
+    if (shown !== 'none') {
+      return "MRB-242: " + el.className + " ships `hidden` but the stylesheet " +
+        "gives it display:" + shown + ", which beats the UA [hidden] rule";
+    }
+  }
+
+  var current = w.getAttribute('data-item');
+  var panel = w.querySelector('.ks3-b5c-reveal[data-b5c-reveal="' +
+                              current + '"]');
+  if (!panel) { return "the opening item has no reveal panel"; }
+  var right = panel.getAttribute('data-answer');
+  var opts = lists[0].querySelectorAll('.ks3-b5c-opt');
+  if (opts.length < 2) {
+    return "the opening item offers " + opts.length + " option(s)";
+  }
+  var wrong = null;
+  for (var i = 0; i < opts.length; i++) {
+    if (opts[i].getAttribute('data-opt') !== right) { wrong = opts[i]; break; }
+  }
+  if (!wrong) { return "every option is the answer to the opening item"; }
+
+  wrong.click();
+  if (btn.disabled) {
+    return "an option was chosen and the check button is still locked";
+  }
+  if (hint && !hint.textContent.replace(/\s/g, '')) {
+    return "the hint went blank once an option was chosen";
+  }
+  btn.click();
+
+  var open = w.querySelectorAll('.ks3-b5c-reveal:not([hidden])');
+  if (open.length !== 1) {
+    return open.length + " reveals are showing; there must be exactly one";
+  }
+  // ⚖️ THE REVEAL IS NOT WITHHELD FOR A WRONG PICK, and it names the answer in
+  // full. That is the only thing that makes a wrong guess worth making.
+  var words = open[0].querySelectorAll('[data-word]:not([hidden])');
+  if (words.length !== 1) {
+    return words.length + " verdict words are showing; there must be exactly one";
+  }
+  if (words[0].getAttribute('data-word') !== 'wrong') {
+    return "a deliberately wrong pick was reported as " +
+      words[0].getAttribute('data-word');
+  }
+  var line = open[0].querySelector('.ks3-b5c-answer');
+  if (!line || !line.textContent.replace(/\s/g, '')) {
+    return "the reveal opened without naming an answer";
+  }
+  if (!open[0].querySelector('.ks3-b5c-why')) {
+    return "the reveal opened without its reasoning";
+  }
+  if (lists[0].querySelectorAll('.ks3-b5c-opt:not([disabled])').length) {
+    return "the options did not lock when the item was checked";
+  }
+
+  // ⚖️ R10 — THE BENCH DOES NOT MARK. Read off every option, in the state a
+  // marking colour would appear in first: one chosen and wrong, the rest
+  // spent. Nothing here may be `--ks3-ok` or `--ks3-danger`, and nothing may
+  // carry the ladder's own classes.
+  var OK = 'rgb(18, 161, 80)', DANGER = 'rgb(255, 107, 107)';
+  for (var o = 0; o < opts.length; o++) {
+    var cs = getComputedStyle(opts[o]);
+    var mkEl = opts[o].querySelector('.ks3-opt-mark');
+    var mk = mkEl ? getComputedStyle(mkEl)
+                  : { color: '', backgroundColor: '', borderTopColor: '' };
+    var seen = [cs.color, cs.backgroundColor, cs.borderTopColor,
+                mk.color, mk.backgroundColor, mk.borderTopColor];
+    for (var c = 0; c < seen.length; c++) {
+      if (seen[c] === OK || seen[c] === DANGER) {
+        return "THE BENCH IS MARKING: option " + o + " resolved " + seen[c];
+      }
+    }
+    if (/is-correct|is-wrong/.test(opts[o].className)) {
+      return "THE BENCH IS MARKING: option " + o + " carries " +
+        opts[o].className;
+    }
+  }
+
+  // ⚖️ EVERY ITEM KEEPS ITS OWN PICK AND ITS OWN CHECKED FLAG. A student who
+  // checks one and moves on must find the next uncommitted and the first
+  // exactly as they left it.
+  var second = null;
+  for (var s = 0; s < tabs.length; s++) {
+    if (tabs[s].getAttribute('data-b5c-pick') !== current) {
+      second = tabs[s]; break;
+    }
+  }
+  if (!second) { return "the bench has no second item to switch to"; }
+  second.click();
+  if (w.querySelectorAll('.ks3-b5c-reveal:not([hidden])').length) {
+    return "switching item left a reveal open on the new item";
+  }
+  if (!btn.disabled) {
+    return "switching item left the check button live on an uncommitted item";
+  }
+  var live = w.querySelectorAll('.ks3-b5c-opts:not([hidden])')[0];
+  if (!live) { return "switching item showed no option list"; }
+  if (!live.querySelectorAll('.ks3-b5c-opt:not([disabled])').length) {
+    return "switching item found the new item's options already locked";
+  }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked with only one of " + total + " items checked";
+  }
+  // Back, so the measured state is the checked item with its reveal open.
+  for (var b = 0; b < tabs.length; b++) {
+    if (tabs[b].getAttribute('data-b5c-pick') === current) {
+      tabs[b].click(); break;
+    }
+  }
+  if (w.querySelectorAll('.ks3-b5c-reveal:not([hidden])').length !== 1) {
+    return "coming back to a checked item did not restore its reveal";
+  }
+  if (w.querySelectorAll('.ks3-b5c-opt[aria-pressed="true"]').length !== 1) {
+    return "coming back to a checked item did not restore its pick";
+  }
+  return "";
+})()
+""",
+
+    # Opens the first two rows of a comparison table, and proves that the row
+    # itself is the control, that the why arrives with it, and that the count
+    # does not fall when a row is closed again.
+    "b5-rows-opened": r"""
+(function () {
+  var sec = document.querySelector('[data-cmpblock]');
+  if (!sec) { return "no comparison table on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var w = sec.querySelector('[data-cmprows]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var total = parseInt(w.getAttribute('data-total'), 10);
+  var btns = w.querySelectorAll('[data-cmp-open]');
+  if (!(total > 1) || btns.length !== total) {
+    return "the table declares " + total + " rows and draws " +
+      btns.length + " controls";
+  }
+  // ⚖️ NOTHING IS OPEN ON LOAD (MRB-208, and NOTES-B5 §2.5's `open: {}`).
+  if (w.querySelectorAll('.ks3-cmp-why:not([hidden])').length) {
+    return "a why was open before any row was tapped";
+  }
+  if (w.querySelectorAll('.ks3-cmp-row[data-open]').length) {
+    return "a row was tinted open before any row was tapped";
+  }
+  // ⚖️ THE WHOLE ROW IS THE BUTTON — one control per row, and it is the row.
+  // A chevron would be a second control inside it.
+  if (w.querySelectorAll('.ks3-cmp-row').length !== total) {
+    return "the table draws " + w.querySelectorAll('.ks3-cmp-row').length +
+      " rows for " + total + " declared";
+  }
+  for (var r = 0; r < btns.length; r++) {
+    var row = btns[r].closest('.ks3-cmp-row');
+    if (!row) { return "a row control is not inside a row"; }
+    if (row.querySelectorAll('button').length !== 1) {
+      return "row " + r + " carries " +
+        row.querySelectorAll('button').length +
+        " controls; the whole row is the button (NOTES-B5 §2.5)";
+    }
+  }
+
+  btns[0].click();
+  if (w.querySelectorAll('.ks3-cmp-why:not([hidden])').length !== 1) {
+    return "tapping a row opened " +
+      w.querySelectorAll('.ks3-cmp-why:not([hidden])').length + " whys";
+  }
+  var first = btns[0].closest('.ks3-cmp-row');
+  if (!first.hasAttribute('data-open')) {
+    return "an opened row is not marked open";
+  }
+  if (btns[0].getAttribute('aria-pressed') !== 'true') {
+    return "an opened row's control is not aria-pressed";
+  }
+  var why = first.querySelector('.ks3-cmp-why');
+  if (!why || !why.textContent.replace(/\s/g, '')) {
+    return "the row opened with no reasoning in it";
+  }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked with one of " + total + " rows opened";
+  }
+
+  // ⚠️ THE COUNT IS OF ROWS EVER OPENED. Closing a row must not untick
+  // progress — Design's `open` map never deletes a key — or the rail punishes
+  // a student for tidying up after themselves.
+  btns[1].click();
+  btns[1].click();
+  if (first.querySelectorAll('.ks3-cmp-why:not([hidden])').length !== 1) {
+    return "opening and closing a second row disturbed the first";
+  }
+  var read = sec.querySelector('[data-count]');
+  if (read && /\b0\b/.test(read.textContent)) {
+    return "closing a row took the readout back to zero: " + read.textContent;
+  }
+  return "";
+})()
+""",
+
+    # Walks the dial: proves the release day MOVES with the length, that it is
+    # derived rather than stored, that the stop needs two lengths and not the
+    # end of the slider, and that the day is clamped when the cycle shortens.
+    "b5-dial-relengthed": r"""
+(function () {
+  var sec = document.querySelector('[data-dialblock]');
+  if (!sec) { return "no cycle dial on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var w = sec.querySelector('[data-dial]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var luteal = parseInt(w.getAttribute('data-luteal'), 10);
+  var credit = parseInt(w.getAttribute('data-credit'), 10);
+  var chips = w.querySelectorAll('[data-dial-len]');
+  var slider = w.querySelector('[data-dial-day]');
+  var rel = w.querySelector('[data-dial-release]');
+  var mark = w.querySelector('[data-dial-marker]');
+  var relLabel = w.querySelector('[data-dial-rellabel]');
+  var phase = w.querySelector('[data-dial-phaseread]');
+  var ovary = w.querySelector('[data-dial-ovary]');
+  var uterus = w.querySelector('[data-dial-uterus]');
+  var note = w.querySelector('[data-dial-note]');
+  if (!(luteal > 0)) { return "the dial declares no luteal phase"; }
+  if (chips.length < 2) { return "the dial offers fewer than two lengths"; }
+  if (!slider || !rel || !mark) { return "the dial is missing its track controls"; }
+  // ⚖️ CREDIT IS TWO OR MORE. One is the length the block opens on, so
+  // crediting at one would tick the stop on load (MRB-208).
+  if (!(credit >= 2)) {
+    return "the dial credits its stop at " + credit + " length(s)";
+  }
+
+  function leftOf(el) { return parseFloat(el.style.left); }
+
+  // ⚖️ DERIVED, NOT STORED — and the assertion is arithmetic, not a label
+  // match. For every length the dial offers, the release tick must read
+  // `length - luteal`. A lookup table of 7 / 14 / 21 would render identically
+  // and would teach that day 14 is a fact about people (REPRO-05), which is
+  // the misconception this lesson exists to confront.
+  var seenLefts = [];
+  for (var i = 0; i < chips.length; i++) {
+    chips[i].click();
+    var len = parseInt(chips[i].getAttribute('data-dial-len'), 10);
+    var want = len - luteal;
+    var txt = relLabel ? relLabel.textContent : '';
+    if (txt.indexOf(String(want)) < 0) {
+      return "at " + len + " days the release tick reads \"" + txt +
+        "\" and the derived day is " + want;
+    }
+    if (String(slider.max) !== String(len)) {
+      return "at " + len + " days the slider tops out at " + slider.max;
+    }
+    seenLefts.push(leftOf(rel));
+  }
+  // ⚖️ AND IT MOVED. Every offered length must put the marker somewhere
+  // different, or the block's whole argument is invisible.
+  for (var a = 0; a < seenLefts.length; a++) {
+    for (var b = a + 1; b < seenLefts.length; b++) {
+      if (Math.abs(seenLefts[a] - seenLefts[b]) < 0.5) {
+        return "two cycle lengths put the release marker in the same place";
+      }
+    }
+  }
+
+  // ⚠️ THE DAY IS CLAMPED WHEN THE CYCLE SHORTENS. Standing on day 30 of a
+  // 35-day cycle and switching to 21 must not leave the marker off its track.
+  var longest = chips[0], shortest = chips[0];
+  for (var c = 0; c < chips.length; c++) {
+    var n = parseInt(chips[c].getAttribute('data-dial-len'), 10);
+    if (n > parseInt(longest.getAttribute('data-dial-len'), 10)) { longest = chips[c]; }
+    if (n < parseInt(shortest.getAttribute('data-dial-len'), 10)) { shortest = chips[c]; }
+  }
+  longest.click();
+  slider.value = slider.max;
+  slider.dispatchEvent(new Event('input', { bubbles: true }));
+  shortest.click();
+  var shortLen = parseInt(shortest.getAttribute('data-dial-len'), 10);
+  if (parseInt(slider.value, 10) > shortLen) {
+    return "shortening the cycle left the student on day " + slider.value +
+      " of " + shortLen;
+  }
+  if (leftOf(mark) > 100 || leftOf(mark) < 0) {
+    return "the day marker sits at " + leftOf(mark) + "% of its own track";
+  }
+
+  // ⚖️ BOTH ORGAN PANELS SAY SOMETHING AT EVERY DAY, and the release day has
+  // its own phase. A blank panel reads as the organ having stopped.
+  var release = shortLen - luteal;
+  slider.value = String(release);
+  slider.dispatchEvent(new Event('input', { bubbles: true }));
+  if (!phase || !phase.textContent.replace(/\s/g, '')) {
+    return "the release day has no phase name";
+  }
+  if (!ovary || !ovary.textContent.replace(/\s/g, '') ||
+      !uterus || !uterus.textContent.replace(/\s/g, '')) {
+    return "an organ panel is blank on the release day";
+  }
+  var atRelease = phase.textContent;
+  slider.value = '1';
+  slider.dispatchEvent(new Event('input', { bubbles: true }));
+  if (phase.textContent === atRelease) {
+    return "day 1 and the release day report the same phase: " + atRelease;
+  }
+
+  // ⚖️ THE STOP TICKS ON LENGTHS SEEN, NOT ON THE END OF THE SLIDER — and by
+  // now every length has been tried, so it must be ticked.
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "every cycle length was tried and the stop did not tick";
+  }
+  if (note && !note.textContent.replace(/\s/g, '')) {
+    return "the note under the panel went blank";
+  }
+  var read = sec.querySelector('[data-count]');
+  if (read && read.textContent.indexOf('{') >= 0) {
+    return "the readout shipped an unfilled placeholder: " + read.textContent;
+  }
+  return "";
+})()
+""",
+    # ═══ END B5 ═══ drives
 }
 
 

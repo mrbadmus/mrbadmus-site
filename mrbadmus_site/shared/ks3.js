@@ -12243,6 +12243,344 @@
 
 /* ═══ END B6 ═══ */
 
+/* ═══ BEGIN B5 ═══ */
+
+  /* ── B5 · Reproduction (⊕ MRB-244) ──
+     Eight instruments, THREE wire functions, and the same discipline B4 and
+     B6 set: NOTHING HERE ANIMATES AND NOTHING HERE USES A TIMER. NOTES-B5 §2
+     says it of the unit — "All six are DOM-only. Nothing in this unit
+     animates, nothing uses a timer, and there is no canvas" — so there is no
+     rAF loop in this section to test `prefers-reduced-motion` inside
+     (MRB-220 R4, the b2-03 slip), and the B5 stylesheet deliberately adds no
+     transition for the platform-wide rule to have to remove.
+
+     ⚖️ THREE FUNCTIONS FOR EIGHT INSTRUMENTS, and the sharing is the point.
+     Five of the eight are the SAME BLOCK — b5-01, b5-04, b5-05, b5-06 and
+     b5-08 — and NOTES-B5 §6 says so in terms: "b5-05 reuses b5-04's
+     instrument shape deliberately … If Code refactors either one, keep them
+     identical — the repetition is the argument." Two more, b5-02 and b5-07,
+     are one comparison table drawn twice so the plant and the animal sit in
+     the same shape. Writing them out eight times would let them drift; one
+     function each is what makes drifting impossible.
+
+     ⚠️ AND NONE OF THESE THREE MARKS ANYTHING (MRB-196 R10). A chosen option
+     shows that it was CHOSEN and takes no verdict class, no green, no red,
+     ever — open or not. What names the verdict is a mono eyebrow on the cream
+     panel, and it appears whichever way the pick went. Only the mastery
+     ladder marks correctness. */
+
+  /* ── the commit family (b5-01 #s-jobs · b5-04 / b5-05 #s-cross ·
+     b5-06 #s-parts · b5-08 #s-sort) ──
+
+     ⚖️ EVERY ITEM KEEPS ITS OWN PICK AND ITS OWN CHECKED FLAG, and the whole
+     per-item state is in the DOM: one option list, one panel row and one
+     reveal per item, all but the current one `hidden`. A student who checks
+     the testes and moves to the sperm duct finds the duct uncommitted and the
+     testes exactly as they left them, and coming back is a class change
+     rather than a re-render.
+
+     ⚖️ THE STOP TICKS ON ALL OF THEM. Design's own `isDone` for every one of
+     these five blocks is the full count — eight structures, six substances,
+     nine parts, eight specimens — and it is the right reading: the block's
+     argument is the SET, not any one member of it. A student who has checked
+     one has met a structure rather than the system.
+
+     ⚖️ AND THE REVEAL IS NEVER WITHHELD FOR A WRONG PICK. It opens either
+     way and names the right answer in full, which is the only thing that
+     makes a wrong guess worth making. */
+  function wireB5Commit(sec) {
+    var w = sec.querySelector("[data-b5c]");
+    if (!w) { return; }
+    var tabs = toArray(w.querySelectorAll("[data-b5c-pick]"));
+    var groups = toArray(w.querySelectorAll("[data-for]"));
+    var opts = toArray(w.querySelectorAll(".ks3-b5c-opt"));
+    var reveals = toArray(w.querySelectorAll("[data-b5c-reveal]"));
+    var btn = w.querySelector("[data-b5c-check]");
+    var hint = w.querySelector("[data-b5c-hint]");
+    var total = parseInt(w.getAttribute("data-total"), 10) || tabs.length;
+    if (!tabs.length || !btn) { return; }
+
+    var H_IDLE = w.getAttribute("data-hint-idle") || "";
+    var H_READY = w.getAttribute("data-hint-ready") || "";
+    var H_DONE = w.getAttribute("data-hint-done") || "";
+    var picks = {};
+    var opened = {};
+    var current = w.getAttribute("data-item");
+
+    function openedCount() {
+      var n = 0, k;
+      for (k in opened) { if (opened[k]) { n += 1; } }
+      return n;
+    }
+
+    function draw() {
+      var pick = picks[current];
+      var isOpen = !!opened[current];
+      var done = openedCount();
+
+      w.setAttribute("data-item", current);
+      each(tabs, function (tab) {
+        tab.setAttribute("aria-pressed",
+          tab.getAttribute("data-b5c-pick") === current ? "true" : "false");
+      });
+      each(groups, function (el) {
+        setHidden(el, el.getAttribute("data-for") !== current);
+      });
+      each(opts, function (opt) {
+        var owner = opt.getAttribute("data-owner");
+        /* The ONLY state an option carries. Not is-correct, not is-wrong, and
+           never both halves of a mark — R10. */
+        opt.setAttribute("aria-pressed",
+          picks[owner] && opt.getAttribute("data-opt") === picks[owner]
+            ? "true" : "false");
+        opt.disabled = !!opened[owner];
+      });
+      each(reveals, function (r) {
+        var id = r.getAttribute("data-b5c-reveal");
+        var on = !!opened[id] && id === current;
+        setHidden(r, !on);
+        if (!on) { return; }
+        var right = picks[id] === r.getAttribute("data-answer");
+        each(r.querySelectorAll("[data-word]"), function (v) {
+          setHidden(v,
+            v.getAttribute("data-word") !== (right ? "right" : "wrong"));
+        });
+        r.setAttribute("role", "status");
+      });
+
+      btn.disabled = isOpen || !pick;
+      if (hint) {
+        hint.textContent = isOpen ? H_DONE : (pick ? H_READY : H_IDLE);
+      }
+      setCount(sec, done);
+      markStage(sec, done >= total);
+    }
+
+    each(tabs, function (tab) {
+      tab.addEventListener("click", function () {
+        current = tab.getAttribute("data-b5c-pick");
+        draw();
+      });
+    });
+    each(opts, function (opt) {
+      opt.addEventListener("click", function () {
+        var owner = opt.getAttribute("data-owner");
+        if (opened[owner]) { return; }
+        picks[owner] = opt.getAttribute("data-opt");
+        draw();
+      });
+    });
+    btn.addEventListener("click", function () {
+      if (opened[current] || !picks[current]) { return; }
+      opened[current] = true;
+      draw();
+    });
+
+    draw();
+  }
+
+  /* ── the comparison rows (b5-02 #s-compare · b5-07 #s-becomes) ──
+
+     ⚖️ THE WHOLE ROW IS THE BUTTON — NOTES-B5 §2.5: "the whole row is the
+     button, as in `gamete-compare`. No separate chevron control." So there is
+     one control per row and it is the row.
+
+     ⚠️ THE COUNT IS OF ROWS EVER OPENED, NOT OF ROWS CURRENTLY OPEN, and it
+     is Design's own semantics rather than a convenience: `open` is a map whose
+     keys are never deleted, so `Object.keys(s.open).length` counts every row
+     the student has touched. Counting the open ones would untick the rail stop
+     when a student tidied up after themselves, which is a rail that punishes
+     reading twice. */
+  function wireCompareRows(sec) {
+    var w = sec.querySelector("[data-cmprows]");
+    if (!w) { return; }
+    var btns = toArray(w.querySelectorAll("[data-cmp-open]"));
+    if (!btns.length) { return; }
+    var total = parseInt(w.getAttribute("data-total"), 10) || btns.length;
+    var everOpened = {};
+
+    function count() {
+      var n = 0, k;
+      for (k in everOpened) { if (everOpened[k]) { n += 1; } }
+      return n;
+    }
+
+    each(btns, function (b) {
+      var id = b.getAttribute("data-cmp-open");
+      var row = w.querySelector('[data-cmp-row="' + id + '"]');
+      var why = w.querySelector('[data-cmp-why="' + id + '"]');
+      b.addEventListener("click", function () {
+        var open = b.getAttribute("aria-pressed") !== "true";
+        b.setAttribute("aria-pressed", open ? "true" : "false");
+        setHidden(why, !open);
+        if (row) {
+          if (open) { row.setAttribute("data-open", ""); }
+          else { row.removeAttribute("data-open"); }
+        }
+        if (why) { why.setAttribute("role", "status"); }
+        if (open) { everOpened[id] = true; }
+        var n = count();
+        setCount(sec, n);
+        markStage(sec, n >= total);
+      });
+    });
+  }
+
+  /* ── cycle-dial (b5-03 #s-dial) ──
+
+     ⚖️ THE RELEASE DAY IS DERIVED HERE TOO — `length - luteal`, every draw,
+     and there is nowhere in the markup it could have been stored. NOTES-B5
+     §2.1: "the release day is derived as `length − 14`, never stored. That is
+     the instrument's whole argument, and hard-coding release days would
+     destroy it." A lookup table of 7 / 14 / 21 would behave identically and
+     would teach that day 14 is a fact about people — `REPRO-05`, the
+     misconception this lesson exists to confront.
+
+     ⚖️ THE STOP TICKS ON TWO DIFFERENT LENGTHS SEEN, NOT ON REACHING THE END
+     OF THE SLIDER. §2.1 again: "Rail credit is given for viewing two
+     different lengths, not for reaching the end of the slider." Walking all
+     28 days proves nothing; watching the alert line MOVE when the length
+     changes is the lesson.
+
+     ⚠️ AND THE OPENING LENGTH IS ALREADY SEEN. Design's state is
+     `seen: { 28: true }`, so the readout opens at "1 of 3 lengths tried".
+     Nothing is TICKED on load — the stop needs two — but the counter does not
+     open at zero, which is why `_KIND_HEAD_START` fills the resting number in
+     the built HTML as well.
+
+     ⚠️ THE DAY IS CLAMPED WHEN THE LENGTH SHORTENS. A student on day 30 of a
+     35-day cycle who switches to 21 days would otherwise be standing on a day
+     that no longer exists, and the marker would sit off the end of its own
+     track. */
+  function wireCycleDial(sec) {
+    var w = sec.querySelector("[data-dial]");
+    if (!w) { return; }
+    var chips = toArray(w.querySelectorAll("[data-dial-len]"));
+    var slider = w.querySelector("[data-dial-day]");
+    if (!chips.length || !slider) { return; }
+
+    var LUTEAL = parseInt(w.getAttribute("data-luteal"), 10);
+    var SHED = parseInt(w.getAttribute("data-shed"), 10);
+    var CREDIT = parseInt(w.getAttribute("data-credit"), 10) || 2;
+    var DAY_FMT = w.getAttribute("data-day-format") || "";
+    var REL_FMT = w.getAttribute("data-track-release") || "";
+    var LAST_FMT = w.getAttribute("data-track-last") || "";
+    var NOTE_PROMPT = w.getAttribute("data-note-prompt") || "";
+
+    var shedEl = w.querySelector("[data-dial-shed]");
+    var relEl = w.querySelector("[data-dial-release]");
+    var markEl = w.querySelector("[data-dial-marker]");
+    var relLabel = w.querySelector("[data-dial-rellabel]");
+    var lastLabel = w.querySelector("[data-dial-lastlabel]");
+    var dayRead = w.querySelector("[data-dial-dayread]");
+    var phaseRead = w.querySelector("[data-dial-phaseread]");
+    var ovaryEl = w.querySelector("[data-dial-ovary]");
+    var uterusEl = w.querySelector("[data-dial-uterus]");
+    var noteEl = w.querySelector("[data-dial-note]");
+
+    var phases = {};
+    each(w.querySelectorAll("[data-dial-phase]"), function (p) {
+      phases[p.getAttribute("data-dial-phase")] = {
+        label: p.getAttribute("data-label") || "",
+        ovary: p.getAttribute("data-ovary") || "",
+        uterus: p.getAttribute("data-uterus") || ""
+      };
+    });
+    var notes = {};
+    each(chips, function (c) {
+      notes[c.getAttribute("data-dial-len")] = c.getAttribute("data-note") || "";
+    });
+
+    var length = parseInt(w.getAttribute("data-length"), 10);
+    var day = parseInt(w.getAttribute("data-day"), 10) || 1;
+    /* Design's own opening state: the length the block opens on has been
+       seen, because the student is looking at it. */
+    var seen = {};
+    seen[String(length)] = true;
+
+    function seenCount() {
+      var n = 0, k;
+      for (k in seen) { if (seen[k]) { n += 1; } }
+      return n;
+    }
+
+    function pct(n) { return ((n - 0.5) / length) * 100; }
+
+    function phaseAt(n, release) {
+      if (n <= SHED) { return "shed"; }
+      if (n < release) { return "build"; }
+      if (n === release) { return "release"; }
+      return "held";
+    }
+
+    function draw() {
+      /* ⚖️ DERIVED. Not looked up, not stored, not cached. */
+      var release = length - LUTEAL;
+      if (day > length) { day = length; }
+      if (day < 1) { day = 1; }
+
+      each(chips, function (c) {
+        c.setAttribute("aria-pressed",
+          parseInt(c.getAttribute("data-dial-len"), 10) === length
+            ? "true" : "false");
+      });
+      if (shedEl) { shedEl.style.width = (SHED / length) * 100 + "%"; }
+      if (relEl) { relEl.style.left = pct(release) + "%"; }
+      if (markEl) { markEl.style.left = pct(day) + "%"; }
+      if (relLabel) {
+        relLabel.textContent = REL_FMT.split("{n}").join(String(release));
+      }
+      if (lastLabel) {
+        lastLabel.textContent = LAST_FMT.split("{n}").join(String(length));
+      }
+      slider.max = String(length);
+      if (slider.value !== String(day)) { slider.value = String(day); }
+      if (dayRead) {
+        dayRead.textContent = DAY_FMT.split("{n}").join(String(day));
+      }
+      var ph = phases[phaseAt(day, release)] || { label: "", ovary: "", uterus: "" };
+      if (phaseRead) { phaseRead.textContent = ph.label; }
+      if (ovaryEl) { ovaryEl.textContent = ph.ovary; }
+      if (uterusEl) { uterusEl.textContent = ph.uterus; }
+
+      var n = seenCount();
+      if (noteEl) {
+        noteEl.textContent = n < CREDIT
+          ? NOTE_PROMPT
+          : (notes[String(length)] || NOTE_PROMPT);
+      }
+      w.setAttribute("data-length", String(length));
+      w.setAttribute("data-day", String(day));
+      setCount(sec, n);
+      markStage(sec, n >= CREDIT);
+    }
+
+    each(chips, function (c) {
+      c.addEventListener("click", function () {
+        length = parseInt(c.getAttribute("data-dial-len"), 10);
+        seen[String(length)] = true;
+        draw();
+      });
+    });
+    /* MRB-210 §2 — bound on `input` AND `change`, through the one helper. */
+    onRange(slider, function () {
+      day = parseInt(slider.value, 10) || 1;
+      draw();
+    });
+    var prev = w.querySelector("[data-dial-prev]");
+    var next = w.querySelector("[data-dial-next]");
+    if (prev) {
+      prev.addEventListener("click", function () { day -= 1; draw(); });
+    }
+    if (next) {
+      next.addEventListener("click", function () { day += 1; draw(); });
+    }
+
+    draw();
+  }
+
+/* ═══ END B5 ═══ */
+
 
   function wireInstruments(root) {
     each(root.querySelectorAll("[data-board]"), wireBoard);
@@ -12320,6 +12658,14 @@
     each(root.querySelectorAll("[data-clearblock]"), wireClearanceClock);
     each(root.querySelectorAll("[data-ccheckblock]"), wireClaimCheck);
     // ═══ END B6 wiring ═══
+    // ═══ BEGIN B5 wiring ═══
+    // Eight instruments, three wire functions. Five kinds share
+    // `data-b5cblock` and two share `data-cmpblock`, which is what stops
+    // b5-04's bench and b5-05's drifting apart (NOTES-B5 §6).
+    each(root.querySelectorAll("[data-b5cblock]"), wireB5Commit);
+    each(root.querySelectorAll("[data-cmpblock]"), wireCompareRows);
+    each(root.querySelectorAll("[data-dialblock]"), wireCycleDial);
+    // ═══ END B5 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
   }

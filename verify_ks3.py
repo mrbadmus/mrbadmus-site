@@ -1222,6 +1222,49 @@ def main():
         # rewriting a distractor changes what a marked question measures.
         ("substance-misuse-and-decisions", "ladder recall"),
         ("substance-misuse-and-decisions", "ladder apply"),
+        # ⊕ MRB-244, B5. Thirteenth to twentieth — EIGHT, across six of the
+        # unit's eight lessons.
+        #
+        # ⛔ COMMANDER'S NOTE — THE B6 PREDICTION CAME TRUE, AND THIS IS NOW
+        # THE FINDING RATHER THAN THE ENTRIES.
+        #
+        # The note directly above said the register "will keep growing one unit
+        # at a time until the SHAPE is ruled on rather than the instances." One
+        # unit later it has gone from twelve to twenty, and B5 was authored by
+        # eight people who never spoke to each other. Eight independent authors
+        # do not make the same slip eight times. It is one property of how the
+        # ladder is drawn, measured twenty times.
+        #
+        # The shape, stated once so Mide can rule on it rather than on twenty
+        # option sets: on a KS3 recall or apply rung the correct answer states
+        # a RULE and each distractor states a short wrong REASON. A rule needs
+        # a subject, a condition and a consequence; a wrong reason needs a
+        # clause. The correct answer is therefore longer BY CONSTRUCTION, and
+        # `length_tell()` is measuring the construction, not a defect in any
+        # one question.
+        #
+        # Two things follow, and both are Mide's:
+        #   1. If the shape is right, the GATE's threshold is wrong for
+        #      rule-stating rungs and should be re-specified — not suppressed
+        #      per lesson, which is what this register has become.
+        #   2. If the gate is right, then twenty marked rungs across five units
+        #      are scoreable without reading them, and that is a marking
+        #      problem no distractor rewrite reaches one lesson at a time.
+        #
+        # Registered, not rewritten, for the standing reason: rewriting a
+        # distractor changes what a marked question measures, and on B5 every
+        # option is Design's own science copy under MRB-205. Entries stay
+        # narrow — this slug, this rung — so a NEW tell anywhere in B5, on
+        # these same lessons' other rungs included, still fails the build.
+        # b5-01 and b5-08 measure clean and are deliberately absent.
+        ("gametes-and-fertilisation", "ladder recall"),          # 12w vs 8w
+        ("the-menstrual-cycle", "ladder recall"),                # 11w vs 6w
+        ("the-menstrual-cycle", "ladder apply"),                 # 12w vs 8w
+        ("gestation-placenta-and-birth", "ladder recall"),       # 16w vs 10w
+        ("gestation-placenta-and-birth", "ladder apply"),        # 13w vs 9w
+        ("lifestyle-and-the-developing-foetus", "ladder recall"),# 15w vs 9w
+        ("flowers-and-pollination", "ladder apply"),             # 14w vs 10w
+        ("fertilisation-seeds-and-fruit", "ladder recall"),      # 11w vs 7w
     }
 
     tells, known_seen = [], set()

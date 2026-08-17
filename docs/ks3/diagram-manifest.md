@@ -20,8 +20,8 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 |---|---|
 | `drafted` | 1 |
 | `final` | 1 |
-| `needed` | 5 |
-| **Total** | **7** |
+| `needed` | 15 |
+| **Total** | **17** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -36,3 +36,13 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | B3 | `absorption-and-the-small-intestine` | `b3-villus-labelled` | diagram | `needed` | A single villus, labelled: the wall one cell thick, the capillary network running through it, and the microvilli on the outer surface of each covering cell. |
 | B3 | `the-digestive-system` | `b3-gut-labelled` | diagram | `needed` | The human digestive system, labelled: mouth, oesophagus, stomach, small intestine, large intestine, rectum and anus, with the pancreas, liver and gall bladder shown feeding into the small intestine without food passing through them. |
 | B4 | `the-gas-exchange-system` | `b4-gas-exchange-labelled` | diagram | `needed` | The human gas exchange system, labelled: nose and mouth, trachea, bronchi, bronchioles and alveoli, with the ribs, intercostal muscles and diaphragm drawn around the lungs rather than as part of the airway. |
+| B5 | `fertilisation-seeds-and-fruit` | `b5-pollen-tube` | diagram | `needed` | A pollen grain on the stigma, the pollen tube extending down through the style, and the male gamete nucleus reaching an ovule inside the ovary. |
+| B5 | `flowers-and-pollination` | `b5-flower-parts-labelled` | diagram | `needed` | A generalised flower cut in half and labelled: sepal and petal on the outside, the anther and filament together as the stamen, the stigma, style, ovary and ovules together as the carpel, and the nectary at the base. |
+| B5 | `flowers-and-pollination` | `b5-wind-vs-insect` | diagram | `needed` | An insect-pollinated flower and a wind-pollinated flower side by side, showing petals, nectary, the position of the anthers, the texture of the stigma and the grains of pollen for each. |
+| B5 | `gametes-and-fertilisation` | `b5-gametes-labelled` | diagram | `needed` | A sperm cell and an egg cell drawn to the same scale and labelled: the sperm’s head, mitochondria and tail, and the egg’s nucleus, cytoplasm, food store and outer layer, with each cell’s diameter given — about 0.005 mm and about 0.1 mm. |
+| B5 | `gestation-placenta-and-birth` | `b5-placenta-exchange` | diagram | `needed` | The placenta drawn as an exchange surface: the mother's blood on one side, the foetus's blood on the other in the folded finger-like projections, the two brought within a fraction of a millimetre and never joined, with the umbilical cord carrying the foetus's own blood to and from it. Arrows labelled for direction — oxygen and glucose crossing in, carbon dioxide and urea crossing out. |
+| B5 | `human-reproductive-systems` | `b5-female-system-labelled` | diagram | `needed` | The female reproductive system, labelled: the ovaries, the oviducts, the uterus, the cervix and the vagina. |
+| B5 | `human-reproductive-systems` | `b5-male-system-labelled` | diagram | `needed` | The male reproductive system, labelled: the testes, the sperm duct, the glands that add fluid, the urethra and the penis. |
+| B5 | `lifestyle-and-the-developing-foetus` | `b5-what-crosses` | diagram | `needed` | What crosses the placenta and what does not: small soluble molecules — oxygen, glucose, alcohol, nicotine, carbon monoxide, caffeine — diffusing across the exchange surface, with large molecules such as insulin shown too big to pass and antibodies shown carried across using energy. The two blood supplies are drawn separately and never mixing. |
+| B5 | `seed-dispersal` | `b5-dispersal-specimens` | diagram | `needed` | The eight specimens drawn to scale from their structures and left unlabelled by method: dandelion, sycamore key, poppy capsule, blackberry, goosegrass, burdock burr, coconut and gorse pod. |
+| B5 | `the-menstrual-cycle` | `b5-cycle-timeline` | diagram | `needed` | One cycle drawn as a timeline for each of the three lengths, 21, 28 and 35 days: the bleeding window at the start, the building phase, release a fortnight before the end, and the fortnight in which the lining is held ready — with the release marker landing on a different day in each of the three. |
