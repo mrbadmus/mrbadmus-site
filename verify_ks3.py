@@ -297,8 +297,17 @@ def main():
     for u in units:
         here = year_of_unit[u["code"]]
         for l in u["lessons"]:
-            # hard prerequisites on authored lessons
-            for r in (l.get("requires") or []):
+            # hard prerequisites on authored lessons.
+            #
+            # ⊕ MRB-245 — through `B._require_slug`, because a `requires` edge
+            # may now be a `{unit, lesson}` record as well as a bare slug (the
+            # shape `references` has taken since B1, and the one b7-03 uses to
+            # require B3's `food-tests`). Reading the raw entry here raised
+            # `unhashable type: 'dict'` out of a dict lookup, three functions
+            # from the record — the same failure the generator's own cycle
+            # check hit. One normaliser, so the gate and the build cannot
+            # disagree about what a prerequisite is.
+            for r in map(B._require_slug, l.get("requires") or []):
                 ru = slug_unit.get(r)
                 if ru and year_of_unit[ru] > here:
                     forward.add((l["slug"], ru))
@@ -1157,115 +1166,41 @@ def main():
     def _opt_text(o):
         return o.get("text", "") if isinstance(o, dict) else o
 
-    # ── the register of tells already live, 16 Aug 2026 ──────────────────
+    # ── the register of tells: EMPTY, and it stays that way ──────────────
     #
-    # The measurement found nine. One was C1's and is fixed in the same pass
-    # (`solids-liquids-and-gases · ladder apply` — the distractors were
-    # completed, the correct answer untouched). The other eight are on pages
-    # students are using now, across three units this run does not own.
+    # ⊕ MRB-177 RULED 17 Aug 2026 (Mide). All twenty entries are gone because
+    # all twenty rungs are FIXED, not because the gate was relaxed. The
+    # threshold below is untouched and no correct answer was shortened.
     #
-    # They are registered rather than silently tolerated, and registered
-    # individually rather than as a count, because the two behave differently
-    # under change: a count lets a new tell replace a fixed one with the gate
-    # still green, and a named entry cannot. Fixing one means deleting its
-    # line. A tell not on this list fails the build.
+    # ── THE SHAPE, kept as the standing finding ──────────────────────────
     #
-    # ⚠️ This is NOT a decision that they are acceptable. Rewriting a
-    # distractor changes what a marked question measures, which is Mide's gate
-    # and not this script's — all nine are on the science worklist. The
-    # register exists so the finding survives until he rules on it, instead of
-    # being either forgotten or used to block six unrelated lessons.
-    KNOWN_TELLS = {
-        ("animal-and-plant-cells", "ladder apply"),
-        ("specialised-cells", "ladder apply"),
-        ("levels-of-organisation", "ladder apply"),
-        ("unicellular-organisms", "ladder apply"),
-        ("what-the-skeleton-does", "ladder recall"),
-        ("joints", "ladder apply"),
-        ("the-atom-daltons-model", "ladder apply"),
-        ("formulae", "ladder apply"),
-        # ⊕ MRB-244, B4. The ninth, and the first found in a unit being built
-        # rather than inherited: correct answer 14 words against a longest
-        # distractor of 7. It is a tell exactly as Design drew it.
-        #
-        # Registered rather than rewritten for the reason this whole register
-        # exists, stated two comments up: rewriting a distractor changes what a
-        # marked question measures, and that is Mide's gate, not this script's.
-        # The alternative was to let one option set block a five-lesson unit
-        # whose other nine marked rungs measure clean.
-        #
-        # It is NOT a decision that it is acceptable, and it is deliberately
-        # the narrowest possible entry — this slug, this rung. A second tell
-        # anywhere in B4, including on this same lesson's other rungs, still
-        # fails the build.
-        ("alveoli-built-for-exchange", "ladder apply"),
-        # ⊕ MRB-244, B6. The tenth: correct answer 22 words against a longest
-        # distractor of 10, tripping both thresholds. Measured by the authoring
-        # pass with this function's own `length_tell()`, on the same reasoning
-        # as the B4 entry above — a distractor rewrite changes what a marked
-        # question measures, and that is Mide's gate. b6-01's rung 1 is clean
-        # (7 against 6), so this is the narrowest possible entry.
-        ("what-drugs-do-to-the-body", "ladder apply"),
-        # ⊕ MRB-244, B6. Eleventh and twelfth — BOTH marked rungs on one
-        # lesson: recall 12w against 5/8/4, apply 16w against 9/7/8.
-        #
-        # ⚠️ COMMANDER'S NOTE, AND THIS IS THE ENTRY THAT SHOULD BE READ.
-        # B6 alone adds three, taking the register from nine to twelve, and the
-        # authoring pass named the reason: on these pages the correct answer is
-        # long because it states a RULE ("a rate is not a case") while every
-        # distractor is a short wrong REASON. That is a property of how the
-        # ladder is drawn, not twelve independent slips, and it means the
-        # register will keep growing one unit at a time until the shape is
-        # ruled on rather than the instances.
-        #
-        # Registered rather than rewritten for the standing reason above:
-        # rewriting a distractor changes what a marked question measures.
-        ("substance-misuse-and-decisions", "ladder recall"),
-        ("substance-misuse-and-decisions", "ladder apply"),
-        # ⊕ MRB-244, B5. Thirteenth to twentieth — EIGHT, across six of the
-        # unit's eight lessons.
-        #
-        # ⛔ COMMANDER'S NOTE — THE B6 PREDICTION CAME TRUE, AND THIS IS NOW
-        # THE FINDING RATHER THAN THE ENTRIES.
-        #
-        # The note directly above said the register "will keep growing one unit
-        # at a time until the SHAPE is ruled on rather than the instances." One
-        # unit later it has gone from twelve to twenty, and B5 was authored by
-        # eight people who never spoke to each other. Eight independent authors
-        # do not make the same slip eight times. It is one property of how the
-        # ladder is drawn, measured twenty times.
-        #
-        # The shape, stated once so Mide can rule on it rather than on twenty
-        # option sets: on a KS3 recall or apply rung the correct answer states
-        # a RULE and each distractor states a short wrong REASON. A rule needs
-        # a subject, a condition and a consequence; a wrong reason needs a
-        # clause. The correct answer is therefore longer BY CONSTRUCTION, and
-        # `length_tell()` is measuring the construction, not a defect in any
-        # one question.
-        #
-        # Two things follow, and both are Mide's:
-        #   1. If the shape is right, the GATE's threshold is wrong for
-        #      rule-stating rungs and should be re-specified — not suppressed
-        #      per lesson, which is what this register has become.
-        #   2. If the gate is right, then twenty marked rungs across five units
-        #      are scoreable without reading them, and that is a marking
-        #      problem no distractor rewrite reaches one lesson at a time.
-        #
-        # Registered, not rewritten, for the standing reason: rewriting a
-        # distractor changes what a marked question measures, and on B5 every
-        # option is Design's own science copy under MRB-205. Entries stay
-        # narrow — this slug, this rung — so a NEW tell anywhere in B5, on
-        # these same lessons' other rungs included, still fails the build.
-        # b5-01 and b5-08 measure clean and are deliberately absent.
-        ("gametes-and-fertilisation", "ladder recall"),          # 12w vs 8w
-        ("the-menstrual-cycle", "ladder recall"),                # 11w vs 6w
-        ("the-menstrual-cycle", "ladder apply"),                 # 12w vs 8w
-        ("gestation-placenta-and-birth", "ladder recall"),       # 16w vs 10w
-        ("gestation-placenta-and-birth", "ladder apply"),        # 13w vs 9w
-        ("lifestyle-and-the-developing-foetus", "ladder recall"),# 15w vs 9w
-        ("flowers-and-pollination", "ladder apply"),             # 14w vs 10w
-        ("fertilisation-seeds-and-fruit", "ladder recall"),      # 11w vs 7w
-    }
+    # This register grew nine → twelve → twenty across five units, and the
+    # twenty were authored by people who never spoke to each other. That is
+    # not twenty slips; it is one construct, measured twenty times:
+    #
+    #     on a KS3 recall or apply rung the correct answer states a RULE
+    #     (subject, condition, consequence) while each distractor states a
+    #     short wrong REASON — one clause. A rule needs three parts and a
+    #     wrong reason needs one, so the correct answer is longer BY
+    #     CONSTRUCTION and `length_tell()` measures the construction.
+    #
+    # The ruling fixes the CONSTRUCT rather than the threshold: distractors on
+    # a rule-stating rung now state WRONG RULES — the same three-part shape,
+    # with the misconception as the consequence. Length parity then follows
+    # from how the question is built instead of being imposed on top of it.
+    # On the two "which of these is X?" rungs the correct answer names an
+    # EVENT rather than a rule, so its distractors name events; same
+    # principle, different shape.
+    #
+    # ⚠️ READ THIS BEFORE ADDING A TWENTY-FIRST ENTRY. If a new tell appears,
+    # it is almost certainly this construct again and NOT a one-off. Rewrite
+    # the distractors as wrong rules. Adding a line here is what turned a
+    # finding into a nine-month exemption the first time, and the register is
+    # deliberately left empty so that reaching for it feels like the
+    # regression it would be.
+    #
+    # A stale entry still fails below, so this set cannot quietly refill.
+    KNOWN_TELLS = set()
 
     tells, known_seen = [], set()
     for u in _B.ks3_data.build_units():
@@ -1312,8 +1247,9 @@ def main():
     check("MRB-177 · no option set gives its answer away by length",
           not tells and not stale,
           "measured every ladder rung and every activity option set in the "
-          "key stage — no NEW length tell; %d registered and awaiting Mide's "
-          "ruling (16 Aug 2026)" % len(KNOWN_TELLS)
+          "key stage — no length tell anywhere, and %d registered "
+          "exemptions: MRB-177 was ruled on 17 Aug 2026 and all twenty were "
+          "fixed at the distractor" % len(KNOWN_TELLS)
           if not tells and not stale else
           "; ".join(
               (["%d option set(s) where the correct answer is a length tell — "
@@ -1379,7 +1315,7 @@ def main():
                "headless Chrome not available on this machine; run "
                "`python3 verify_ks3.py` where it is. NOT counted as a pass.")
     else:
-        style_problems, style_rows, contrast_rows, hidden_audit = \
+        style_problems, style_rows, contrast_rows, hidden_audit, dark_audit = \
             PARITY.run_browser_layers(KS3_OUT, ks3_browser)
         css_fails = [r for r in style_rows if not r[4]]
 
@@ -1387,15 +1323,41 @@ def main():
         # hidden. Its own check, not folded into `style_problems`: that list
         # means "a registered component stopped being rendered", and a staged
         # step that is showing when it should not be is the opposite problem.
+        #
+        # ⊕ GATE C — this now asks the CASCADE, not the painted page. A chassis
+        # that draws on load writes an inline `display:none`, which masks any
+        # author rule beneath it; the audit drops the inline value for the
+        # length of one read so a stylesheet that un-hides the element cannot
+        # hide behind JS having already run.
         hidden_problems, n_hidden = hidden_audit
-        check("⊕ MRB-242 · every element shipped `hidden` loads hidden",
+        check("⊕ MRB-242 · every element shipped `hidden` loads hidden "
+              "(asked of the cascade, not of the painted page)",
               not hidden_problems,
-              "%d hidden element(s) across the key stage, all display:none"
-              % n_hidden if not hidden_problems
-              else "%d of %d VISIBLE on load — an author `display` is beating "
-                   "the UA [hidden] rule: %s"
+              "%d hidden element(s) across the key stage, all display:none "
+              "with their inline styles lifted" % n_hidden
+              if not hidden_problems
+              else "%d of %d un-hidden by the stylesheet — an author `display` "
+                   "is beating the UA [hidden] rule: %s"
                    % (len(hidden_problems), n_hidden,
                       "; ".join(hidden_problems[:3])))
+
+        # ⊕ GATE A — `.ks3-dark p` is (0,1,1) and a bare instrument class is
+        # (0,1,0), so on an ink-dark block the component's own colour loses
+        # silently and the text ships present, correct and invisible. It has
+        # happened ten times. Every previous fix scoped one instance; this
+        # asks the browser which colour rule actually WON, on every element on
+        # every ink-dark ground, and fails when a generic on-dark type rule
+        # beat a `.ks3-*` rule the element carries.
+        dark_problems, n_dark = dark_audit
+        check("⊕ GATE A · no component's own colour loses to a generic "
+              "`.ks3-dark <type>` rule",
+              not dark_problems,
+              "%d element(s) on ink-dark grounds resolved against the full "
+              "cascade" % n_dark if not dark_problems
+              else "%d of %d painted by a generic on-dark rule that beat the "
+                   "component's own colour: %s"
+                   % (len(dark_problems), n_dark,
+                      "; ".join(dark_problems[:3])))
 
         # ⊕ MRB-228 — `style_problems` was ASSIGNED AND NEVER READ, and that is
         # the whole of this defect.

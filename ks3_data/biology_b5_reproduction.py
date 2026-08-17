@@ -1,39 +1,3 @@
-"""⏸ PARKED — B5 Reproduction is INCOMPLETE and must not build. MRB-244.
-
-Renamed with a leading underscore so `ks3_data/__init__.py::_authored_modules`
-skips it (`if mod in _NON_UNIT_MODULES or mod.startswith("_")`). Nothing else
-imports `ks3_data.b5`, so the seven authored lesson modules under `ks3_data/b5/`
-are inert while this file is named this way.
-
-WHY. Eight authoring passes and the engine pass that owned B5's eight
-instrument renderers were killed together by a session limit on 16 Aug 2026.
-Seven of the eight lesson records survived and are good work — every
-student-facing string lifted byte-identical. The engine pass died before
-writing a single renderer.
-
-WHAT IS MISSING, exactly:
-  - `ks3_data/b5/lesson_04_gestation_placenta_and_birth.py` — never written.
-  - ALL EIGHT renderers: `r_job_match`, `r_gamete_compare`, `r_cycle_dial`,
-    `r_crossing_bench`, `r_crosses_panel`, `r_flower_jobs`, `r_what_it_becomes`,
-    `r_disperse_sort` — plus their `ACTIVITY_KIND_RENDERERS` /
-    `ACTIVITY_KIND_FN` rows, CSS, `wire*` functions and parity rows.
-  - `docs/ks3/b5-inventory/PAYLOAD-SCHEMA.md` — never written, so the seven
-    surviving records authored their instrument payloads against Design's
-    pages and `ks3_data/b5/__init__.py` rather than against an agreed schema.
-    RE-CHECK EVERY PAYLOAD against the renderers when they land.
-
-TO RESUME: build the eight instruments, write lesson_04, rename this file back
-to `biology_b5_reproduction.py`, then run the full gate set. Do not rename it
-back first — B5 currently fails the build BY DESIGN, via the empty-activity
-gate added in this same commit, which is exactly the gate that caught this.
-
-The misconception ids are pre-allocated and must not be re-derived:
-REPRO-01/02 b5-01 · 03/04 b5-02 · 05/06 b5-03 · 07/08 b5-04 · 09/10 b5-05 ·
-11/12 b5-06 · 13/14 b5-07 · 15/16 b5-08, with 17+ for any third belief.
-The REPRO section of `docs/ks3/misconception-register.md` is NOT yet written —
-write it from the authored data once the unit is complete, as BREATH was.
-"""
-
 """B5 — Reproduction. Eight lessons, Year 8 Biology.
 
 The thin unit wrapper. The lesson records live one per module under
@@ -93,6 +57,53 @@ build blocker) rather than losing them.
 longer gates publishing: §5.10.1's carve-out is revoked and no page carries a
 review marker. It records review position, nothing more.
 """
+
+# ⛔ SUPERSEDED 17 Aug 2026 (MRB-245). The block below was this module's
+# DOCSTRING until now, which meant `ks3_data.biology_b5_reproduction.__doc__`
+# read "PARKED — must not build" for a unit that shipped in 52942df18, and the
+# real docstring underneath it was a dead string expression that no tool ever
+# saw. Kept, marked, per §12's reversal rule — not deleted, because it records
+# why the unit was parked and what it took to bring it back.
+#
+# Two of its claims are now simply false and would mislead anyone who read it:
+# the file is NOT renamed with a leading underscore (it is imported and it
+# builds), and lesson_04 and all eight renderers DO exist.
+#
+# """⏸ PARKED — B5 Reproduction is INCOMPLETE and must not build. MRB-244.
+#
+# Renamed with a leading underscore so `ks3_data/__init__.py::_authored_modules`
+# skips it (`if mod in _NON_UNIT_MODULES or mod.startswith("_")`). Nothing else
+# imports `ks3_data.b5`, so the seven authored lesson modules under `ks3_data/b5/`
+# are inert while this file is named this way.
+#
+# WHY. Eight authoring passes and the engine pass that owned B5's eight
+# instrument renderers were killed together by a session limit on 16 Aug 2026.
+# Seven of the eight lesson records survived and are good work — every
+# student-facing string lifted byte-identical. The engine pass died before
+# writing a single renderer.
+#
+# WHAT IS MISSING, exactly:
+#   - `ks3_data/b5/lesson_04_gestation_placenta_and_birth.py` — never written.
+#   - ALL EIGHT renderers: `r_job_match`, `r_gamete_compare`, `r_cycle_dial`,
+#     `r_crossing_bench`, `r_crosses_panel`, `r_flower_jobs`, `r_what_it_becomes`,
+#     `r_disperse_sort` — plus their `ACTIVITY_KIND_RENDERERS` /
+#     `ACTIVITY_KIND_FN` rows, CSS, `wire*` functions and parity rows.
+#   - `docs/ks3/b5-inventory/PAYLOAD-SCHEMA.md` — never written, so the seven
+#     surviving records authored their instrument payloads against Design's
+#     pages and `ks3_data/b5/__init__.py` rather than against an agreed schema.
+#     RE-CHECK EVERY PAYLOAD against the renderers when they land.
+#
+# TO RESUME: build the eight instruments, write lesson_04, rename this file back
+# to `biology_b5_reproduction.py`, then run the full gate set. Do not rename it
+# back first — B5 currently fails the build BY DESIGN, via the empty-activity
+# gate added in this same commit, which is exactly the gate that caught this.
+#
+# The misconception ids are pre-allocated and must not be re-derived:
+# REPRO-01/02 b5-01 · 03/04 b5-02 · 05/06 b5-03 · 07/08 b5-04 · 09/10 b5-05 ·
+# 11/12 b5-06 · 13/14 b5-07 · 15/16 b5-08, with 17+ for any third belief.
+# The REPRO section of `docs/ks3/misconception-register.md` is NOT yet written —
+# write it from the authored data once the unit is complete, as BREATH was.
+# """
 
 from .b5 import lessons as _b5_lessons
 

@@ -218,15 +218,23 @@ writes it.**
 
 ⚑ Two findings of my own, both reported rather than ruled on:
 
-  A. **MRB-177 length parity: rung 2 is a NEW length tell.** Measured with
-     `verify_ks3.py`’s own `length_tell()`: the correct option is 22 words
-     against a longest distractor of 10, which trips both thresholds. Rung 1
-     is clean (7 against 6 — strictly longest, but inside both). No distractor
-     was rewritten and the correct option was not trimmed: rewriting a
-     distractor changes what a marked question measures and MRB-177’s own
-     register says that is Mide’s gate, not an author’s. It needs a
-     `KNOWN_TELLS` entry — `("what-drugs-do-to-the-body", "ladder apply")` —
-     or Mide’s ruling. `verify_ks3.py` is not this module’s file to edit.
+  A. **⊕ MRB-177 RULED, 17 Aug 2026 — rung 2’s distractors now state wrong
+     RULES.** Measured with `verify_ks3.py`’s own `length_tell()`, the correct
+     option was 22 words against a longest distractor of 10 and tripped both
+     thresholds. Mide ruled the construct rather than the instance: the
+     correct answer states a rule and the distractors stated one-clause wrong
+     reasons, so the correct answer was longer by construction. His
+     replacement distractors state wrong rules in the same shape, and length
+     parity follows — 22 against 20 / 17 / 19. **The correct option, its
+     index and the gate’s threshold are all unchanged.**
+
+     ⛔ Superseded, kept: this finding used to read *"No distractor was
+     rewritten and the correct option was not trimmed: rewriting a distractor
+     changes what a marked question measures and MRB-177’s own register says
+     that is Mide’s gate, not an author’s. It needs a `KNOWN_TELLS` entry —
+     `("what-drugs-do-to-the-body", "ladder apply")` — or Mide’s ruling."*
+     The ruling arrived; the register entry is now stale and the commander
+     deletes it. `verify_ks3.py` is still not this module’s file to edit.
 
   B. **The page’s third wrong idea has no confrontation block and no id
      here.** The *Going further* layer names two beliefs and corrects both —
@@ -746,18 +754,36 @@ LESSON = {
 
     # ── the mastery ladder (Law 8, §5.8) ───────────────────────────────────
     #
-    # ⚖️ MRB-177 LENGTH PARITY — MEASURED, AND RUNG 2 IS A TELL.
+    # ⊕ MRB-177 RULED BY MIDE, 17 Aug 2026 — RUNG 2'S DISTRACTORS ARE REPAIRED.
+    #
+    # The ruling: on a recall or apply rung the correct answer states a RULE
+    # (subject, condition, consequence) while the distractors state one-clause
+    # wrong REASONS, so the correct answer is longer BY CONSTRUCTION and a
+    # student can score the question without reading it. The fix is that a
+    # distractor states a WRONG RULE — the same shape as the correct answer,
+    # with the misconception as the consequence. Length parity then follows
+    # from the construct rather than from trimming anything.
+    #
+    # Rung 2's three distractors are Mide's own replacement copy, applied
+    # verbatim. **The correct option is unchanged, its index is unchanged
+    # (`answer: 1`), and the threshold in verify_ks3.py is unchanged.**
+    # Measured after: correct 22w against 20 / 17 / 19 — gap 2 and ratio 1.10,
+    # inside both limbs of `length_tell()`.
+    #
+    # ⛔ SUPERSEDED, KEPT AS HISTORY — the paragraph this replaced read:
+    #   "rung 2: correct 22w against distractors of 10 / 10 / 7. Trips both.
+    #    A NEW TELL, and it is a tell exactly as Design drew it. NOTHING WAS
+    #    REWRITTEN. Rewriting a distractor changes what a marked question
+    #    measures, which MRB-177's own register in verify_ks3.py says is
+    #    Mide's gate and not an author's."
+    # That was correct while the gate was unruled. It has been ruled, and the
+    # `("what-drugs-do-to-the-body", "ladder apply")` register entry is now
+    # stale — the commander deletes it in verify_ks3.py, which this module
+    # still does not own.
+    #
     #   rung 1: correct 7w against distractors of 3 / 6 / 5. Strictly longest,
     #           but 7 − 6 = 1 (< 4) and 7 < 1.4 × 6, so it clears both
-    #           thresholds. Clean.
-    #   rung 2: correct 22w against distractors of 10 / 10 / 7. Trips both.
-    #           ⚠️ A NEW TELL, and it is a tell exactly as Design drew it.
-    #
-    # NOTHING WAS REWRITTEN. Rewriting a distractor changes what a marked
-    # question measures, which MRB-177's own register in verify_ks3.py says
-    # is Mide's gate and not an author's. It needs either his ruling or a
-    # KNOWN_TELLS entry — ("what-drugs-do-to-the-body", "ladder apply") — and
-    # verify_ks3.py is not this module's file to edit. Reported.
+    #           thresholds. Clean, and untouched by the ruling.
     "ladder":        {"recall": {"title": "Rung 1 · What the word means",
                                  "q": "Which statement is true of every drug "
                                       "— prescribed, bought in a shop, or "
@@ -788,15 +814,21 @@ LESSON = {
                       "apply": {"title": "Rung 2 · The one that catches people",
                                 "q": "You swallow a paracetamol tablet for a "
                                      "headache. Where does the drug go?",
-                                "options": ["To the head, because that is "
-                                            "where the pain is",
+                                "options": ["A painkiller travels through the "
+                                            "blood to the part that hurts, "
+                                            "because that is the part sending "
+                                            "the pain signal",
                                             "Everywhere the blood goes — it "
                                             "acts on your head because that "
                                             "is where there is something for "
                                             "it to act on",
-                                            "To the stomach only, since that "
-                                            "is where it dissolved",
-                                            "Only to the organs that need it"],
+                                            "A tablet works where it "
+                                            "dissolves, so a swallowed "
+                                            "painkiller acts on the stomach "
+                                            "and nowhere else",
+                                            "The body sends a drug only to "
+                                            "the organs that need it, and "
+                                            "keeps it away from the rest"],
                                 "answer": 1,
                                 "feedback": {0: "Nothing in the tablet knows "
                                                 "where your head is. Follow "

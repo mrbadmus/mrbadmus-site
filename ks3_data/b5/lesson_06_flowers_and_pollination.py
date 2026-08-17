@@ -120,24 +120,43 @@ so every hash link into it still works.
 5. **`ks4_links` gives way to `ks4_becomes`.** Design's third endmatter card is
    authored prose and §4.8.1 D makes the two mutually exclusive.
 
-⚑ MRB-177 LENGTH PARITY — MEASURED, AND RUNG 2 IS A TELL. NOT REWRITTEN.
-  rung 1 (recall): correct 9w against distractors of 8 / 7 / 7. Clean.
-  rung 2 (apply):  correct **14w** against a longest distractor of **10w**.
-  `verify_ks3.length_tell` fires at a gap of ≥4, so this trips it.
+⊕ MRB-177 LENGTH PARITY — RULED 17 Aug 2026, AND RUNG 2 IS REPAIRED.
+  rung 1 (recall): correct 9w against distractors of 8 / 7 / 7. Clean, and
+                   untouched by the ruling.
+  rung 2 (apply):  correct 14w against 15 / 16 / 16 — no longer the longest
+                   option at all.
 
-  It is a tell exactly as Design drew it, and it is NOT rewritten here, for the
-  reason the `KNOWN_TELLS` register itself gives: rewriting a distractor
-  changes what a marked question measures, and that is Mide's gate, not an
-  authoring pass's. `verify_ks3.py` is also an engine-owned file this pass does
-  not edit. The entry that registers it is
+  Mide ruled the CONSTRUCT rather than the instance: on a recall or apply rung
+  the correct answer states a RULE — subject, condition, consequence — while the
+  distractors stated one-clause wrong REASONS, so the correct answer was longer
+  BY CONSTRUCTION and a student could score the rung without reading it. A
+  distractor must state a WRONG RULE instead, in the same shape, with the
+  misconception as the consequence. Length parity then follows from the
+  construct rather than from trimming anything.
+
+  Rung 2's three distractors are Mide's own replacement copy, applied verbatim.
+  **The correct option is unchanged, `answer: 1` is unchanged, and the gate's
+  threshold is unchanged.** One correction in `feedback` moved with its
+  distractor — option C's, which used to answer "It reproduces without
+  pollination" and now answers a claim that every flower needs an insect. The
+  other two already fitted and are byte-identical.
+
+  ⛔ SUPERSEDED, KEPT AS HISTORY. This section used to record rung 2 as a tell
+  at 14w against 10w and close: *"It is a tell exactly as Design drew it, and it
+  is NOT rewritten here, for the reason the `KNOWN_TELLS` register itself gives:
+  rewriting a distractor changes what a marked question measures, and that is
+  Mide's gate, not an authoring pass's … The entry that registers it is
   `("flowers-and-pollination", "ladder apply")`, and adding it is the
-  commander's call.
+  commander's call."* The entry was added; the ruling has now made it stale, and
+  the commander deletes it. `verify_ks3.py` is still engine-owned and untouched
+  here.
 
-  Worth knowing before that call is taken: the correct option is
-  *"It is wind-pollinated — it has nothing to attract with because it attracts
-  nothing"*, and the em dash counts as a token under `[^\\s]+`. Without it the
-  option measures 13w against 10w and does not trip the gate at all. The tell
-  is one punctuation mark wide.
+  One observation from that old note is worth keeping, because it is about the
+  gate rather than about this question: the em dash in the correct option counts
+  as a token under `[^\\s]+`, so before the repair the option measured 14w with
+  it and 13w without, and 13 against 10 does not trip the gate. The tell was one
+  punctuation mark wide. That is an argument about the threshold, which is the
+  half of the ruling still open.
 
 ⚑ For Mide's science gate — NOTES-B5 §3 flags landing on THIS lesson:
   * flag 31 — the nectary as a part in its own right, one of nine. Not every
@@ -659,8 +678,15 @@ LESSON = {
 
     # ── the mastery ladder (Law 8, §5.8) ────────────────────────────────────
     #
-    # ⚖️ MRB-177 LENGTH PARITY — MEASURED. Rung 1 is clean; rung 2 is a tell at
-    # 14w against 10w and is NOT rewritten. Full reasoning in the docstring.
+    # ⊕ MRB-177 LENGTH PARITY — RULED 17 Aug 2026. Rung 1 is clean and
+    # untouched; rung 2's three distractors are Mide's own replacement copy,
+    # applied verbatim, and each now states a WRONG RULE in the same shape as
+    # the correct answer. Correct option, `answer: 1` and the gate's threshold
+    # all unchanged; 14w against 15 / 16 / 16 after. Full ruling in the
+    # docstring.
+    #
+    # ⛔ Superseded, kept: this line used to read "rung 2 is a tell at 14w
+    # against 10w and is NOT rewritten."
     "ladder": {
         "recall": {
             "title": "Rung 1 · Define it precisely",
@@ -688,18 +714,26 @@ LESSON = {
                  "anthers hanging outside on long filaments. What can you "
                  "conclude?",
             "options": [
-                "It is a dead or damaged flower",
+                "A flower with no petals has lost them, so this one is "
+                "damaged or dying",
                 "It is wind-pollinated — it has nothing to attract with "
                 "because it attracts nothing",
-                "It reproduces without pollination",
-                "It is pollinated at night, so colour would be wasted",
+                "Every flower is pollinated by insects, so this one must "
+                "attract them in some other way",
+                "A flower that attracts nothing is pollinated at night, when "
+                "colour and scent would be wasted",
             ],
             "answer": 1,
             "feedback": {
                 0: "It is a perfectly healthy flower. Every grass in the "
                    "country looks like this.",
-                2: "It is pollinated like any other flowering plant. Only the "
-                   "delivery method differs.",
+                # ⊕ MRB-177, 17 Aug 2026. Rewritten with the distractor above
+                # it: the old correction said "It is pollinated like any other
+                # flowering plant", which the new option already concedes —
+                # what it now denies is that every flower needs an insect.
+                2: "Most of the plant material around you is wind-pollinated "
+                   "— every grass, and most large trees. There is nobody to "
+                   "attract, so nothing advertises.",
                 3: "Night-pollinated flowers do exist — and they are "
                    "usually pale and strongly scented, because scent works in "
                    "the dark. This flower has given up on attraction "

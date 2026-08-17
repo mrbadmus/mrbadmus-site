@@ -67,8 +67,12 @@ The five strings that carry it, all below and all byte-identical:
   · `s-settle` case c3, feature 2's `why` — "A red blood cell can never divide
     again."
   · `ladder.apply` — the whole rung: question, correct option, and the
-    distractor correction "That is the red blood cell. The bacterium never had
-    a nucleus at any point."
+    distractor correction "The bacterium never had a nucleus at any point."
+    ⊕ MRB-177, ruled 17 Aug 2026 — option 1 was rewritten to state a wrong
+    RULE, and its correction now opens "Having had one does not help: the red
+    blood cell destroyed its nucleus and lost the DNA with it." The contract
+    sentence above is unchanged and still closes that correction; the
+    superseded opener was "That is the red blood cell."
 
 Shipped apart, in either order, a student is taught something false. If
 b1-04's hook changes, all five must be re-read against it, and vice versa.
@@ -807,19 +811,27 @@ LESSON = {
             "q": "A red blood cell has no nucleus and can never divide. A "
                  "bacterium has no nucleus and divides every twenty minutes. "
                  "What explains the difference?",
+            # ⊕ MRB-177, ruled 17 Aug 2026 — the three distractors now state
+            # wrong RULES, in the same shape as the correct option. The
+            # correct option and its index are unchanged, and the option-1
+            # correction still carries the CELL-08 pair verbatim.
             "options": [
-                "The bacterium is smaller, so dividing is easier",
-                "The bacterium destroyed its nucleus later in life",
+                "A smaller cell divides more easily, so the smallest cells "
+                "are the ones that divide fastest",
+                "A cell that loses its nucleus later in life can still "
+                "divide, because it had one to begin with",
                 "The bacterium still has its DNA, loose in the cytoplasm; the "
                 "red blood cell lost its DNA with its nucleus",
-                "Bacteria do not need instructions to divide",
+                "Dividing needs no instructions at all, so any cell without "
+                "a nucleus can still copy itself freely",
             ],
             "answer": 2,
             "feedback": {
                 0: "Size has nothing to do with it. The difference is about "
                    "the instructions, not the effort.",
-                1: "That is the red blood cell. The bacterium never had a "
-                   "nucleus at any point.",
+                1: "Having had one does not help: the red blood cell "
+                   "destroyed its nucleus and lost the DNA with it. The "
+                   "bacterium never had a nucleus at any point.",
                 3: "Nothing copies itself without instructions. Every new "
                    "bacterium gets a full copy of the loop.",
             }},

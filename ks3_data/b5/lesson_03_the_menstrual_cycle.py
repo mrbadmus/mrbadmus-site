@@ -168,21 +168,41 @@ Design's dropped stop is `{id: 's-events', label: 'Four events'}`, short
    words verbatim. Flagged because they are the only student-reachable strings
    in this file that Design did not write.
 
-── ⚑ MRB-177 LENGTH PARITY — MEASURED, AND BOTH MARKED RUNGS FAIL ───────
+── ⊕ MRB-177 LENGTH PARITY — RULED 17 Aug 2026, BOTH RUNGS REPAIRED ─────
 
-Measured with `verify_ks3.py`'s own `length_tell()` heuristic, not by eye:
+Mide ruled the CONSTRUCT rather than the twenty instances the register had
+collected. The ruling, because it is what the option sets below are now built
+to: on a recall or apply rung the correct answer states a RULE — subject,
+condition, consequence — while the distractors stated one-clause wrong REASONS.
+The correct answer was therefore longer by construction, and a student could
+score the rung without reading it. A distractor must state a WRONG RULE
+instead: the same shape as the correct answer, with the misconception as the
+consequence. Length parity then follows from the construct, so nothing was
+trimmed.
 
-    ladder recall (rung 1): correct 11w against a longest distractor of 6w
-                            → flagged (gap 5 ≥ 4)
-    ladder apply  (rung 2): correct 12w against a longest distractor of 8w
-                            → flagged (gap 4 ≥ 4)
+Six distractors across the two marked rungs are Mide's own replacement copy,
+applied verbatim. **Neither correct option was touched, neither `answer` index
+moved, and `verify_ks3.py`'s threshold is unchanged.** Measured after with the
+same `length_tell()`:
 
-Both are Design's option sets exactly as drawn. **Nothing here is rewritten.**
-Rewriting a distractor changes what a marked question measures, which
-verify_ks3.py's own register says in as many words is Mide's gate and not an
-authoring pass's — and `verify_ks3.py` is the engine pass's file under build
-contract §0, so this pass neither rewrites the options nor registers the
-exemption. Reported with the measurements so it can be ruled on.
+    ladder recall (rung 1): correct 11w against 15 / 15 / 11 — no longer the
+                            longest option at all
+    ladder apply  (rung 2): correct 12w against 12 / 12 / 10 — no longer
+                            STRICTLY the longest
+
+All six of the corrections in `feedback` already answered the new wording and
+are byte-identical; rung 1's option D correction ("the pattern is not random")
+now answers a distractor that says "at random" in as many words.
+
+⛔ SUPERSEDED, KEPT AS HISTORY. This section used to record both rungs as
+failing — recall 11w against 6w, apply 12w against 8w — and closed: *"Both are
+Design's option sets exactly as drawn. **Nothing here is rewritten.** Rewriting
+a distractor changes what a marked question measures, which verify_ks3.py's own
+register says in as many words is Mide's gate and not an authoring pass's."*
+It was his gate; he has ruled, and the replacement copy is his. The two
+`the-menstrual-cycle` entries in `KNOWN_TELLS` are consequently stale — the
+commander deletes them, and `verify_ks3.py` is still the engine pass's file
+under build contract §0 and is not touched here.
 
 ── Figures are declared and NOT drawn (§4.10) ───────────────────────────
 
@@ -675,9 +695,16 @@ LESSON = {
 
     # ── the mastery ladder (Law 8, §5.8) ────────────────────────────────────
     #
-    # ⚑ MRB-177 LENGTH PARITY — MEASURED, AND BOTH MARKED RUNGS FAIL. Neither
-    # option set is rewritten; see the docstring for the measurements and for
-    # why the repair is not this pass's to make.
+    # ⊕ MRB-177 LENGTH PARITY — RULED 17 Aug 2026, AND BOTH RUNGS ARE FIXED.
+    # Six distractors are Mide's own replacement copy, applied verbatim; each
+    # now states a WRONG RULE in the same shape as the correct answer, which is
+    # where the parity comes from. Both correct options, both `answer` indices
+    # and the gate's threshold are untouched. See the docstring for the ruling
+    # and the measurements.
+    #
+    # ⛔ Superseded, kept: this block used to read "MEASURED, AND BOTH MARKED
+    # RUNGS FAIL. Neither option set is rewritten … the repair is not this
+    # pass's to make." The repair was Mide's, and he has made it.
     #
     # Rungs 3 and 4 are Design's `SELF_RUNGS`: the student marks themselves
     # against her criteria, and only the ladder scores.
@@ -687,10 +714,13 @@ LESSON = {
             "q": "Someone’s cycles are 24 days long. Roughly which day is the "
                  "egg released?",
             "options": [
-                "Day 12 — halfway through",
+                "Day 12 — exactly halfway through the cycle, because release "
+                "is always in the middle",
                 "About day 10 — roughly a fortnight before the next period",
-                "Day 14, the same as everybody",
-                "It is completely unpredictable",
+                "Day 14 — the same day for everybody, whatever the length of "
+                "the cycle",
+                "It cannot be worked out at all, because release happens at "
+                "random",
             ],
             "answer": 1,
             "feedback": {
@@ -707,11 +737,12 @@ LESSON = {
             "title": "Rung 2 · The one that catches people",
             "q": "What leaves the body during a period?",
             "options": [
-                "The unfertilised egg cell",
+                "The unfertilised egg cell, leaving the body because it was "
+                "never used",
                 "The lining of the uterus, built up during the previous few "
                 "weeks",
-                "Blood the body has no further use for",
-                "Part of the ovary",
+                "Blood the body has stored up and has no further use for",
+                "Part of the ovary, shed once the egg has gone",
             ],
             "answer": 1,
             "feedback": {

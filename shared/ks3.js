@@ -5127,12 +5127,29 @@
      counter crossing a line. The instrument names its state and this prints
      the author's sentence for it — nothing here composes a string, and a
      state with no authored label is left alone rather than blanked, because a
-     blank readout is worse than a stale one. */
-  function setCountState(sec, name) {
+     blank readout is worse than a stale one.
+
+     ⊕ MRB-245 / B7 — `extra`, and it is the same idea `setCount` already has.
+     b7-03's readout is "not run yet" → "full method" → "{n} steps skipped":
+     four named states, two of which quote a number, and the transitions are
+     decided by two independent facts (has the bench been run, how many steps
+     differ from the full method) rather than by one counter crossing a line.
+     Composing "3 steps skipped" out of a count would need a denominator that
+     appears nowhere on the page; substituting into the author's own sentence
+     needs nothing but the number. Opt-in, so every shipped readout that names
+     no placeholder is byte-identical across the change. */
+  function setCountState(sec, name, extra) {
     var el = sec && sec.querySelector("[data-count]");
     if (!el) { return; }
     var label = el.getAttribute("data-state-" + name);
     if (label === null) { return; }
+    if (extra) {
+      for (var k in extra) {
+        if (Object.prototype.hasOwnProperty.call(extra, k)) {
+          label = label.split("{" + k + "}").join(String(extra[k]));
+        }
+      }
+    }
     el.setAttribute("data-state", name);
     el.textContent = label;
   }
@@ -12581,6 +12598,577 @@
 
 /* ═══ END B5 ═══ */
 
+/* ═══ BEGIN B7 ═══ */
+
+  /* ── B7 · Photosynthesis (⊕ MRB-245) ──
+     Four instruments, four wire functions, and NOTHING SHARED — because
+     nothing in this unit is the same block twice. Where B5 had one commit
+     chassis five times over and NOTES-B5 §6 made the repetition the argument,
+     B7's four benches ask four different questions: take one thing away, tune
+     two readouts against each other, break a working method, and walk a chain
+     backwards. A shared chassis here would be a coincidence enforced.
+
+     ⚠️ NOTHING HERE ANIMATES AND NOTHING HERE USES A TIMER. NOTES-B7 §3 says
+     it of the unit and all four pages bear it out, so there is no rAF loop in
+     this section to test `prefers-reduced-motion` inside (MRB-220 R4, the
+     b2-03 slip), and the B7 stylesheet deliberately adds no transition for the
+     platform-wide reduced-motion rule to have to remove.
+
+     ⚠️ AND NONE OF THESE FOUR MARKS ANYTHING (MRB-196 R10). A chosen dial
+     setting shows that it was CHOSEN — the alert ground Design paints — and
+     takes no verdict class, no green, no red, ever. What these benches show is
+     a CONSEQUENCE: the starch a leaf did or did not make, the habitat a leaf
+     could live in, what a broken method licenses you to conclude, and where a
+     meal came from. None of that is a mark on the student. Only the mastery
+     ladder marks correctness.
+
+     ⚠️ THE STAGE PREDICATE IS MONOTONIC ON ALL FOUR, and on b7-02 that is a
+     deliberate divergence from Design. Her `isDone('s-tuner')` is `s.moved`,
+     and `Start again` sets `moved: false` — so the rail stop UNTICKS when a
+     student tidies up after themselves. MRB-208 ruled the rail records
+     participation; B5's compare rows count rows EVER opened for the same
+     reason. So `everMoved` drives the rail while `moved` drives the counter,
+     which is what keeps Design's own readout ("nothing changed yet" after a
+     reset) intact without a rail that punishes starting over. */
+
+  /* ── reactant-remover (b7-01 #s-bench) ──
+
+     ⚖️ RATE IS THE PRODUCT OF THE FOUR DIALS, so removing any one takes it to
+     zero. Not a weighted sum: the four are jointly necessary, and a sum would
+     let a student switch the light off and still make three-quarters of the
+     starch.
+
+     ⚖️ SEVEN BRANCHES, AND THE ORDER BELOW IS DESIGN'S. Each single-dial
+     branch is guarded by exactly one thing missing, so at most one can match
+     and precedence cannot change an outcome — unlike b7-03, where it is the
+     whole pedagogy. `< 50` is Design's own threshold for the faint reading and
+     is kept as she wrote it. */
+  function wireReactantRemover(sec) {
+    var w = sec.querySelector("[data-rr]");
+    if (!w) { return; }
+    var opts = toArray(w.querySelectorAll(".ks3-rr-opt"));
+    var setupEl = w.querySelector("[data-rr-setup]");
+    var rateEl = w.querySelector("[data-rr-rate]");
+    var testBtn = w.querySelector("[data-rr-test]");
+    var resetBtn = w.querySelector("[data-rr-reset]");
+    var readouts = toArray(w.querySelectorAll("[data-rr-readout]"));
+    var bars = toArray(w.querySelectorAll("[data-rr-bar]"));
+    var panels = toArray(w.querySelectorAll("[data-rr-verdict]"));
+    if (!opts.length || !testBtn) { return; }
+
+    var ALL = w.getAttribute("data-all-present") || "";
+    var PREFIX = w.getAttribute("data-missing-prefix") || "";
+    var RATE_SUFFIX = w.getAttribute("data-rate-suffix") || "";
+    var TEST = w.getAttribute("data-test-label") || "";
+    var TESTED = w.getAttribute("data-tested-label") || "";
+
+    /* The opening state IS the markup: the bench opens intact and every dial's
+       first option is already pressed, so there is nothing to seed here and no
+       second copy of the defaults to fall out of step with the page. */
+    var start = {}, order = [], names = {};
+    each(opts, function (o) {
+      var d = o.getAttribute("data-dial");
+      if (order.indexOf(d) < 0) {
+        order.push(d);
+        start[d] = o.getAttribute("data-opt");
+        var label = w.querySelector('.ks3-rr-dialname[data-dial="' + d + '"]');
+        names[d] = label ? label.textContent : d;
+      }
+    });
+    var picks = {}, k;
+    for (k in start) {
+      if (Object.prototype.hasOwnProperty.call(start, k)) { picks[k] = start[k]; }
+    }
+    var tested = false, everTested = false;
+
+    function factor(dial) {
+      for (var i = 0; i < opts.length; i++) {
+        if (opts[i].getAttribute("data-dial") === dial &&
+            opts[i].getAttribute("data-opt") === picks[dial]) {
+          return parseFloat(opts[i].getAttribute("data-f"));
+        }
+      }
+      return 1;
+    }
+
+    /* Design lower-cases the dial names inside the sentence — "Missing: light"
+       — because the name is a heading elsewhere and a clause here. */
+    function missing() {
+      var out = [], i;
+      for (i = 0; i < order.length; i++) {
+        if (factor(order[i]) === 0) { out.push(names[order[i]].toLowerCase()); }
+      }
+      return out;
+    }
+
+    function branchFor(rate, ratePct, gone) {
+      if (gone.length === 1) {
+        for (var i = 0; i < order.length; i++) {
+          if (factor(order[i]) === 0) { return order[i]; }
+        }
+      }
+      if (rate === 0) { return "multiple"; }
+      if (ratePct < 50) { return "low"; }
+      return "none";
+    }
+
+    function draw() {
+      var rate = 1, i;
+      for (i = 0; i < order.length; i++) { rate *= factor(order[i]); }
+      var ratePct = Math.round(rate * 100);
+      var gone = missing();
+
+      each(opts, function (o) {
+        o.setAttribute("aria-pressed",
+          picks[o.getAttribute("data-dial")] === o.getAttribute("data-opt")
+            ? "true" : "false");
+      });
+      if (setupEl) {
+        setupEl.textContent = gone.length ? (PREFIX + gone.join(", ")) : ALL;
+      }
+      if (rateEl) { rateEl.textContent = ratePct + RATE_SUFFIX; }
+
+      each(readouts, function (el) {
+        var scale = parseFloat(el.getAttribute("data-scale"));
+        var zero = el.getAttribute("data-zero") || "";
+        var suffix = el.getAttribute("data-suffix") || "";
+        if (ratePct === 0) { el.textContent = zero; return; }
+        var value = Math.round(rate * scale);
+        el.textContent = value +
+          (/^[A-Za-z0-9]/.test(suffix) ? " " : "") + suffix;
+      });
+      /* The BAR is the rate percentage on all three, independent of `scale` —
+         Design's own arithmetic, and it is what says the three readouts are
+         three views of one number. */
+      each(bars, function (b) { b.style.width = ratePct + "%"; });
+
+      var branch = branchFor(rate, ratePct, gone);
+      each(panels, function (p) {
+        setHidden(p, !tested || p.getAttribute("data-rr-verdict") !== branch);
+      });
+      if (tested) {
+        var open = w.querySelector('[data-rr-verdict="' + branch + '"]');
+        if (open) {
+          /* `{missing}` is filled from the template the paragraph itself
+             shipped with, cached on first read. One copy of the string in the
+             bytes, and the un-filled form only ever exists inside a panel that
+             is `hidden`. */
+          var why = open.querySelector(".ks3-rr-why");
+          if (why) {
+            if (why.getAttribute("data-tmpl") === null) {
+              why.setAttribute("data-tmpl", why.innerHTML);
+            }
+            why.innerHTML = why.getAttribute("data-tmpl")
+              .split("{missing}").join(gone.join(" and "));
+          }
+          open.setAttribute("role", "status");
+        }
+      }
+
+      testBtn.textContent = tested ? TESTED : TEST;
+      testBtn.disabled = tested;
+      setCountState(sec, everTested ? "after" : "before");
+      markStage(sec, everTested);
+    }
+
+    each(opts, function (o) {
+      o.addEventListener("click", function () {
+        picks[o.getAttribute("data-dial")] = o.getAttribute("data-opt");
+        /* Turning a dial un-tests the leaf: the verdict on screen belonged to
+           the jar as it was. `everTested` is untouched — the stop stays
+           ticked, because the student HAS run the test. */
+        tested = false;
+        draw();
+      });
+    });
+    testBtn.addEventListener("click", function () {
+      tested = true;
+      everTested = true;
+      draw();
+    });
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        var key;
+        for (key in start) {
+          if (Object.prototype.hasOwnProperty.call(start, key)) {
+            picks[key] = start[key];
+          }
+        }
+        tested = false;
+        draw();
+      });
+    }
+
+    draw();
+  }
+
+  /* ── leaf-tuner (b7-02 #s-tuner) ──
+
+     ⚖️ THE CASCADE IS SHIPPED, NOT WRITTEN TWICE. `data-rules` is the ordered
+     list `build_ks3.py` used to decide which verdict the OPENING leaf earns,
+     so the static page and the live page cannot disagree about which habitat a
+     leaf can live in. There is no expression to parse: a rule is a set of
+     bounds and this is four comparisons.
+
+     ⚖️ AND THE BAR IS THE PERCENTAGE HALVED, CLAMPED AT 100 — a full bar means
+     200% of an oak leaf. Design's arithmetic, and it is the only reason the
+     opening leaf's water bar can be seen to be off the end of the scale. */
+  function wireLeafTuner(sec) {
+    var w = sec.querySelector("[data-lt]");
+    if (!w) { return; }
+    var opts = toArray(w.querySelectorAll(".ks3-lt-opt"));
+    var oakBtn = w.querySelector("[data-lt-oak]");
+    var resetBtn = w.querySelector("[data-lt-reset]");
+    var panels = toArray(w.querySelectorAll("[data-lt-verdict]"));
+    if (!opts.length) { return; }
+
+    var rules = [], start = {}, oak = {};
+    try { rules = JSON.parse(w.getAttribute("data-rules") || "[]"); } catch (x) {}
+    try { start = JSON.parse(w.getAttribute("data-start") || "{}"); } catch (x) {}
+    try { oak = JSON.parse(w.getAttribute("data-oak") || "{}"); } catch (x) {}
+    if (!rules.length) { return; }
+
+    var picks = {}, order = [], k;
+    each(opts, function (o) {
+      var d = o.getAttribute("data-dial");
+      if (order.indexOf(d) < 0) { order.push(d); }
+    });
+    function apply(preset) {
+      for (k in preset) {
+        if (Object.prototype.hasOwnProperty.call(preset, k)) {
+          picks[k] = preset[k];
+        }
+      }
+    }
+    apply(start);
+    var moved = false, everMoved = false;
+
+    function factor(dial, key) {
+      for (var i = 0; i < opts.length; i++) {
+        if (opts[i].getAttribute("data-dial") === dial &&
+            opts[i].getAttribute("data-opt") === picks[dial]) {
+          return parseFloat(opts[i].getAttribute("data-" + key));
+        }
+      }
+      return 1;
+    }
+
+    function product(key) {
+      var out = 1, i;
+      for (i = 0; i < order.length; i++) { out *= factor(order[i], key); }
+      return out;
+    }
+
+    function verdictFor(ratePct, waterPct) {
+      for (var i = 0; i < rules.length; i++) {
+        var rule = rules[i], ok = true, key;
+        for (key in rule) {
+          if (!Object.prototype.hasOwnProperty.call(rule, key)) { continue; }
+          if (key === "id") { continue; }
+          var value = key.indexOf("rate") === 0 ? ratePct : waterPct;
+          var bound = rule[key], test = key.split("_")[1];
+          if (test === "gt" && !(value > bound)) { ok = false; }
+          else if (test === "gte" && !(value >= bound)) { ok = false; }
+          else if (test === "lt" && !(value < bound)) { ok = false; }
+          else if (test === "lte" && !(value <= bound)) { ok = false; }
+        }
+        if (ok) { return rule.id; }
+      }
+      return rules[rules.length - 1].id;
+    }
+
+    function draw() {
+      var ratePct = Math.round(product("r") * 100);
+      var waterPct = Math.round(product("w") * 100);
+
+      each(opts, function (o) {
+        o.setAttribute("aria-pressed",
+          picks[o.getAttribute("data-dial")] === o.getAttribute("data-opt")
+            ? "true" : "false");
+      });
+      each(w.querySelectorAll("[data-lt-readout]"), function (el) {
+        var id = el.getAttribute("data-lt-readout");
+        var pct = id === "rate" ? ratePct : waterPct;
+        var suffix = el.getAttribute("data-suffix") || "";
+        el.textContent = pct +
+          (/^[A-Za-z0-9]/.test(suffix) ? " " : "") + suffix;
+      });
+      each(w.querySelectorAll("[data-lt-bar]"), function (b) {
+        var pct = b.getAttribute("data-lt-bar") === "rate" ? ratePct : waterPct;
+        b.style.width = Math.min(100, pct / 2) + "%";
+      });
+
+      var id = verdictFor(ratePct, waterPct);
+      each(panels, function (p) {
+        setHidden(p, p.getAttribute("data-lt-verdict") !== id);
+      });
+
+      /* Design's own readout: the two percentages once the leaf has been
+         touched, and her fixed sentence before it. `moved` follows her and
+         resets with `Start again`; `everMoved` drives the rail, which does
+         not — see the section note. */
+      setCount(sec, moved ? 1 : 0, { rate: ratePct, water: waterPct });
+      markStage(sec, everMoved);
+    }
+
+    each(opts, function (o) {
+      o.addEventListener("click", function () {
+        picks[o.getAttribute("data-dial")] = o.getAttribute("data-opt");
+        moved = true;
+        everMoved = true;
+        draw();
+      });
+    });
+    if (oakBtn) {
+      oakBtn.addEventListener("click", function () {
+        apply(oak);
+        moved = true;
+        everMoved = true;
+        draw();
+      });
+    }
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        apply(start);
+        moved = false;
+        draw();
+      });
+    }
+
+    draw();
+  }
+
+  /* ── method-breaker (b7-03 #s-bench) ──
+
+     ⚖️ PRECEDENCE IS READ FROM THE PAGE AND IT IS THE PEDAGOGY. Safety first —
+     a naked flame stops the bench outright — then the faults that DESTROY the
+     result, then the ones that only OBSCURE it. Report "the leaf crumbled"
+     ahead of "you skipped the destarching" and the bench has taught that a torn
+     leaf and an undatable result are the same size of mistake.
+
+     ⚠️ THE SUB-STEP DIMS WITH ITS PARENT. Skip the ethanol and there is
+     nothing to heat, so there is no fire to have — which is why the flame
+     branch's own condition names the ethanol step as well as the heat one, and
+     why the row goes to `.45`. Both fall out of `data-parent`, which
+     `build_ks3.py` derived from the authored step number `3b`. */
+  function wireMethodBreaker(sec) {
+    var w = sec.querySelector("[data-mb]");
+    if (!w) { return; }
+    var opts = toArray(w.querySelectorAll(".ks3-mb-opt"));
+    var rows = toArray(w.querySelectorAll(".ks3-mb-step"));
+    var runBtn = w.querySelector("[data-mb-run]");
+    var resetBtn = w.querySelector("[data-mb-reset]");
+    var panels = toArray(w.querySelectorAll("[data-mb-verdict]"));
+    if (!opts.length || !runBtn) { return; }
+
+    var precedence = [], conditions = {}, full = {};
+    try {
+      precedence = JSON.parse(w.getAttribute("data-precedence") || "[]");
+      conditions = JSON.parse(w.getAttribute("data-conditions") || "{}");
+      full = JSON.parse(w.getAttribute("data-full") || "{}");
+    } catch (x) { return; }
+
+    var RUN = w.getAttribute("data-run-label") || "";
+    var RUN_DONE = w.getAttribute("data-run-done-label") || "";
+
+    var picks = {}, k;
+    function reset() {
+      for (k in full) {
+        if (Object.prototype.hasOwnProperty.call(full, k)) { picks[k] = full[k]; }
+      }
+    }
+    reset();
+    var ran = false, everRan = false;
+
+    function outcome() {
+      for (var i = 0; i < precedence.length; i++) {
+        var branch = precedence[i], cond = conditions[branch] || [], ok = true;
+        for (var j = 0; j < cond.length; j++) {
+          if (picks[cond[j].step] !== cond[j].is) { ok = false; }
+        }
+        if (ok && cond.length) { return branch; }
+      }
+      return "full";
+    }
+
+    function faults() {
+      var n = 0, key;
+      for (key in full) {
+        if (Object.prototype.hasOwnProperty.call(full, key) &&
+            picks[key] !== full[key]) { n += 1; }
+      }
+      return n;
+    }
+
+    function draw() {
+      each(opts, function (o) {
+        o.setAttribute("aria-pressed",
+          picks[o.getAttribute("data-step")] === o.getAttribute("data-opt")
+            ? "true" : "false");
+      });
+      /* A sub-step whose parent was skipped is dimmed, not disabled: a student
+         may still press it, and the bench simply has no fire to report. */
+      each(rows, function (r) {
+        var parent = r.getAttribute("data-parent");
+        if (!parent) { return; }
+        if (picks[parent] !== full[parent]) { r.setAttribute("data-dim", ""); }
+        else { r.removeAttribute("data-dim"); }
+      });
+
+      var branch = outcome();
+      each(panels, function (p) {
+        setHidden(p, !ran || p.getAttribute("data-mb-verdict") !== branch);
+      });
+      if (ran) {
+        var open = w.querySelector('[data-mb-verdict="' + branch + '"]');
+        if (open) { open.setAttribute("role", "status"); }
+      }
+
+      runBtn.textContent = ran ? RUN_DONE : RUN;
+      runBtn.disabled = ran;
+
+      /* Four named states, and the two that count carry `{n}`. Before the
+         first run the readout says so; after it, it reports the method
+         currently set, which is what makes the counter answer "what am I about
+         to run" rather than "what did I run once". */
+      var n = faults();
+      if (!everRan) { setCountState(sec, "idle"); }
+      else if (!n) { setCountState(sec, "full"); }
+      else { setCountState(sec, n === 1 ? "one" : "many", { n: n }); }
+      markStage(sec, everRan);
+    }
+
+    each(opts, function (o) {
+      o.addEventListener("click", function () {
+        picks[o.getAttribute("data-step")] = o.getAttribute("data-opt");
+        /* Changing the method un-runs it: the result on screen belonged to the
+           method as it was. `everRan` is untouched. */
+        ran = false;
+        draw();
+      });
+    });
+    runBtn.addEventListener("click", function () {
+      ran = true;
+      everRan = true;
+      draw();
+    });
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        reset();
+        ran = false;
+        draw();
+      });
+    }
+
+    draw();
+  }
+
+  /* ── trace-it-back (b7-04 #s-trace) ──
+
+     ⚖️ THE CHAIN IS WALKED BACKWARDS, ONE LINK PER PRESS, and the verdict
+     lands only when it is complete. Every link is drawn from the start and
+     only its NOTE arrives, so a student reads how far there is to go before
+     taking a step — which is the sentence the prompt makes to them: the number
+     of steps changes and the destination does not.
+
+     ⚠️ THE DENOMINATOR MOVES WITH THE TAB. Six chains of three, four and five
+     links, so `data-total` on the head counter is rewritten per food; the
+     shipped bytes carry the FIRST food's length so the resting page is not
+     "step 1 of 0". And Design's own readout says "chain traced" from the
+     moment one chain has been walked, on every food after it, which is
+     `everArrived` rather than a count reaching its total. */
+  function wireTraceItBack(sec) {
+    var w = sec.querySelector("[data-tb]");
+    if (!w) { return; }
+    var tabs = toArray(w.querySelectorAll("[data-tb-food]"));
+    var foods = toArray(w.querySelectorAll("[data-tb-panel]"));
+    var backBtn = w.querySelector("[data-tb-back]");
+    var resetBtn = w.querySelector("[data-tb-reset]");
+    if (!tabs.length || !foods.length || !backBtn) { return; }
+
+    var STEP = w.getAttribute("data-step-label") || "";
+    var DONE = w.getAttribute("data-done-label") || "";
+    var IDLE = w.getAttribute("data-steps-idle") || "";
+    var STEPS_DONE = w.getAttribute("data-steps-done") || "";
+
+    var current = w.getAttribute("data-food");
+    var shown = 1, everArrived = false;
+
+    function panel() {
+      return w.querySelector('[data-tb-panel="' + current + '"]');
+    }
+    function total() {
+      var p = panel();
+      return p ? (parseInt(p.getAttribute("data-total"), 10) || 1) : 1;
+    }
+
+    function draw() {
+      var t = total(), arrived = shown >= t;
+
+      each(tabs, function (tab) {
+        tab.setAttribute("aria-pressed",
+          tab.getAttribute("data-tb-food") === current ? "true" : "false");
+      });
+      each(foods, function (f) {
+        setHidden(f, f.getAttribute("data-tb-panel") !== current);
+      });
+
+      var p = panel();
+      if (p) {
+        each(p.querySelectorAll(".ks3-tb-link"), function (li) {
+          var i = parseInt(li.getAttribute("data-i"), 10);
+          var on = i < shown;
+          if (on) { li.setAttribute("data-shown", ""); }
+          else { li.removeAttribute("data-shown"); }
+          setHidden(li.querySelector(".ks3-tb-note"), !on);
+        });
+        var steps = p.querySelector("[data-tb-steps]");
+        if (steps) {
+          steps.textContent = arrived
+            ? STEPS_DONE.split("{n}").join(String(t - 1))
+            : IDLE;
+        }
+        var verdict = p.querySelector("[data-tb-verdict]");
+        setHidden(verdict, !arrived);
+        if (verdict && arrived) { verdict.setAttribute("role", "status"); }
+      }
+
+      backBtn.textContent = arrived ? DONE : STEP;
+      backBtn.disabled = arrived;
+
+      /* The head counter's denominator is this food's chain length, and
+         `data-full` fires at the top of the count — so passing the total once
+         a chain has been traced reproduces Design's "chain traced", which
+         persists across a food change. */
+      var count = sec.querySelector("[data-count]");
+      if (count) { count.setAttribute("data-total", String(t)); }
+      setCount(sec, everArrived ? t : Math.min(shown, t));
+      markStage(sec, everArrived);
+    }
+
+    each(tabs, function (tab) {
+      tab.addEventListener("click", function () {
+        current = tab.getAttribute("data-tb-food");
+        w.setAttribute("data-food", current);
+        shown = 1;
+        draw();
+      });
+    });
+    backBtn.addEventListener("click", function () {
+      shown = Math.min(total(), shown + 1);
+      if (shown >= total()) { everArrived = true; }
+      draw();
+    });
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () { shown = 1; draw(); });
+    }
+
+    draw();
+  }
+
+/* ═══ END B7 ═══ */
+
+
 
   function wireInstruments(root) {
     each(root.querySelectorAll("[data-board]"), wireBoard);
@@ -12666,6 +13254,15 @@
     each(root.querySelectorAll("[data-cmpblock]"), wireCompareRows);
     each(root.querySelectorAll("[data-dialblock]"), wireCycleDial);
     // ═══ END B5 wiring ═══
+    // ═══ BEGIN B7 wiring ═══
+    // Four instruments, four markers, four functions. Nothing is shared,
+    // because nothing in this unit is the same block twice — see the section
+    // note above `wireReactantRemover`.
+    each(root.querySelectorAll("[data-rrblock]"), wireReactantRemover);
+    each(root.querySelectorAll("[data-ltblock]"), wireLeafTuner);
+    each(root.querySelectorAll("[data-mbblock]"), wireMethodBreaker);
+    each(root.querySelectorAll("[data-tbblock]"), wireTraceItBack);
+    // ═══ END B7 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
   }

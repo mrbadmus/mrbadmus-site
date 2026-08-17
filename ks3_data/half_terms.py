@@ -975,7 +975,17 @@ def check_authored_requires(units):
             if slot not in _PLACEMENT:
                 continue
             dy, dht = _PLACEMENT[slot]
-            for req in (lesson.get("requires") or []):
+            # ⊕ MRB-245 — a `requires` edge may be a bare slug or a
+            # `{unit, lesson}` record, which is the shape `references` has
+            # taken since B1 and the one b7-03 uses to require B3's
+            # `food-tests`. Only the slug is a key here: `_OWNER` and
+            # `_PLACEMENT` are keyed by slug and already know which unit owns
+            # it, so the `unit` field is confirmation rather than information.
+            # Normalised locally rather than imported from `build_ks3`, because
+            # this module deliberately imports nothing from the package it
+            # describes — see the module docstring.
+            for req in [r.get("lesson") if isinstance(r, dict) else r
+                        for r in (lesson.get("requires") or [])]:
                 owner = _OWNER.get(req)
                 if owner is None:
                     problems.append(

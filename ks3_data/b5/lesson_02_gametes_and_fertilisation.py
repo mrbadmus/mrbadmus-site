@@ -165,17 +165,33 @@ tutor card's `#s-fert` link and every hash link into it still resolve.
 
 ⚑ Findings of my own, all reported rather than repaired:
 
-  A. **MRB-177 LENGTH TELL ON RUNG 1, MEASURED — and NOT rewritten.**
-     Rung 1's correct option is 12 words against a longest distractor of 8:
-     gap 4 (threshold ≥4) and ratio 1.50 (threshold ≥1.4), so it trips
-     `verify_ks3.py`'s `length_tell` on both limbs. Rung 2 measures clean
-     (13 against 10 — gap 3, ratio 1.30). Rewriting a distractor changes what a
-     marked question measures, which is Mide's gate and not an author's, and
-     the copy is lifted byte-identical, so the tell is authored AS DRAWN. It
-     needs either Mide's rewrite or a `("gametes-and-fertilisation", "ladder
-     recall")` entry in `verify_ks3.py`'s `KNOWN_TELLS` — the tenth, and the
-     second found in a unit being built rather than inherited. Both of those
-     are decisions above this module; neither file is touched here.
+  A. **⊕ MRB-177 RULED BY MIDE, 17 Aug 2026 — RUNG 1 IS REPAIRED.**
+     Rung 1's correct option was 12 words against a longest distractor of 8:
+     gap 4 (threshold ≥4) and ratio 1.50 (threshold ≥1.4), tripping
+     `verify_ks3.py`'s `length_tell` on both limbs. Rung 2 measured clean
+     (13 against 10 — gap 3, ratio 1.30) and is untouched.
+
+     The ruling is about the CONSTRUCT, not this question: on a recall or
+     apply rung the correct answer states a RULE — subject, condition,
+     consequence — while the distractors stated one-clause wrong REASONS, so
+     the correct answer was longer by construction and a student could score
+     the rung without reading it. A distractor must state a WRONG RULE
+     instead, in the same shape, with the misconception as the consequence.
+     Length parity then follows from the construct.
+
+     Rung 1's three distractors are Mide's own replacement copy, applied
+     verbatim. **The correct option is unchanged, `answer: 1` is unchanged,
+     and the gate's threshold is unchanged.** Measured after: 12 against
+     10 / 10 / 8. All three of rung 1's corrections already answered the new
+     wording and are byte-identical.
+
+     ⛔ Superseded, kept as history: this finding used to read *"NOT rewritten
+     … Rewriting a distractor changes what a marked question measures, which
+     is Mide's gate and not an author's … It needs either Mide's rewrite or a
+     `("gametes-and-fertilisation", "ladder recall")` entry in
+     `verify_ks3.py`'s `KNOWN_TELLS`."* He rewrote it. The register entry is
+     now stale and the commander deletes it; `verify_ks3.py` is still not
+     touched here.
 
   B. **The page is internally inconsistent about emphasis markup, and is
      lifted as it stands.** The first confrontation writes *"Use *reaches* and
@@ -627,24 +643,30 @@ LESSON = {
 
     # ── the mastery ladder (Law 8, §5.8) ────────────────────────────────────
     #
-    # ⚖️ MRB-177 LENGTH PARITY — MEASURED, AND RUNG 1 FAILS. See finding A in
-    # the docstring.
-    #   rung 1 (recall): correct 12w against distractors of 7 / 8 / 7 — gap 4,
-    #           ratio 1.50. A TELL on both limbs of the heuristic.
+    # ⊕ MRB-177 LENGTH PARITY — RULED 17 Aug 2026, AND RUNG 1 IS FIXED. See
+    # finding A in the docstring for the ruling in full.
+    #   rung 1 (recall): correct 12w against distractors of 10 / 10 / 8 —
+    #           gap 2, ratio 1.20. Inside both limbs.
     #   rung 2 (apply):  correct 13w against distractors of 10 / 10 / 9 —
-    #           gap 3, ratio 1.30. Clean.
-    # No distractor was rewritten. The copy is Design's, the tell is Design's,
-    # and repairing it would change what a marked question measures — Mide's
-    # gate, not an author's.
+    #           gap 3, ratio 1.30. Clean, and untouched by the ruling.
+    # Rung 1's three distractors are Mide's replacement copy, applied verbatim.
+    # The correct option, its index (`answer: 1`) and the gate's threshold are
+    # all unchanged.
+    #
+    # ⛔ Superseded, kept as history — this block used to close: "No distractor
+    # was rewritten. The copy is Design's, the tell is Design's, and repairing
+    # it would change what a marked question measures — Mide's gate, not an
+    # author's." It was his gate. He has ruled on it, and the fix is his own
+    # words rather than an author's.
     "ladder": {
         "recall": {
             "title": "Rung 1 · Define it precisely",
             "q": "Which of these is fertilisation?",
             "options": [
-                "A sperm cell reaching the egg cell",
+                "A sperm cell reaching the outside of the egg cell",
                 "The nucleus of a sperm fusing with the nucleus of an egg",
-                "The fertilised egg embedding in the uterus lining",
-                "The egg being released from the ovary",
+                "The fertilised egg embedding in the lining of the uterus",
+                "The egg cell being released from the ovary",
             ],
             "answer": 1,
             "feedback": {

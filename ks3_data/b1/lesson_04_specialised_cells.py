@@ -1075,14 +1075,22 @@ LESSON = {
                          "q": "A student says a red blood cell is not "
                               "really a cell, because it has no nucleus. "
                               "What is the best reply?",
+                         # ⊕ MRB-177, ruled 17 Aug 2026 — the three
+                         # distractors now state wrong RULES, in the same
+                         # shape as the correct option. The correct option
+                         # and its index are unchanged.
                          "options": [
-                             "They are right — it is just a bag of "
-                             "haemoglobin",
-                             "It has a nucleus, it is only too small to see",
+                             "Every cell in your body keeps its nucleus, so "
+                             "anything without one is a fragment rather "
+                             "than a cell",
+                             "A red blood cell keeps its nucleus all its "
+                             "life, and it is only too small to see under a "
+                             "school microscope",
                              "It started with a nucleus and destroyed it as "
                              "it matured, which is why it cannot repair "
                              "itself and lasts about 120 days",
-                             "It keeps the nucleus but switches it off",
+                             "A cell can switch its nucleus off when it is "
+                             "not needed, and switch it back on when it is",
                          ],
                          "answer": 2,
                          "feedback": {0: "It has a membrane and cytoplasm "

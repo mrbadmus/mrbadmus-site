@@ -333,6 +333,24 @@ body.rd[data-mode="ks3"] {
   line-height: 1.35;
   color: var(--ks3-alert);
 }
+/* ⊕ GATE A — the amber above had never once landed. `.ks3-commit` is (0,1,0)
+   and `.ks3-dark p` is (0,1,1), so on every ink block the commit line resolved
+   to `--ks3-on-dark-body` and read as ordinary body copy. The reasoning at
+   :6432 ("B2's three gates sit on ink where `.ks3-commit`'s amber is legible")
+   was right about the ground and wrong about the cascade.
+
+   Every `.ks3-commit` inside `.ks3-dark` was walked in a browser and all of
+   them resolve to the same ground, `--ks3-ink` #221E1B: the hook's
+   `.ks3-hook-commit` on 46 pages, the six bare `.ks3-benchgate`s (bal, dish,
+   fb, joint, lever, muscle), and the removal / sabotage / test-bench predicts.
+   None of those wrappers paints a background of its own. Amber #FFC53D on
+   #221E1B measures 10.48:1 ✓ AAA, so the author's intent is both intended and
+   legible and this makes it land.
+
+   (0,2,0), so `.ks3-walk-block .ks3-benchgate .ks3-commit` and its `.ks3-sbench-block`
+   twin at (0,3,0) still win — those two gates sit on CREAM inset panels, where
+   amber would be 1.4:1 and Design paints `--ks3-accent-text` instead.) */
+.ks3-dark .ks3-commit { color: var(--ks3-alert); }
 .ks3-hook-commit {
   margin-top: 26px;
   padding-top: 22px;
@@ -2472,8 +2490,18 @@ body.rd[data-mode="ks3"] {
   list-style: none;
 }
 /* --ks3-option-border, NOT ink — that is what separates these from the
-   misconception block's cards. */
-.ks3-rule-cards li {
+   misconception block's cards.
+
+   ⚠️ `> li`, AND THE CHILD COMBINATOR IS LOAD-BEARING (⊕ MRB-245). This was a
+   descendant selector, so at (0,1,1) it reached every `<li>` at any depth
+   inside the grid — including the named-part PILLS a card can now carry, which
+   are (0,1,0) and lost. Same cascade trap as `.ks3-dark p`, in the light half
+   of the stylesheet: the pills shipped on the card ground with the option
+   border, looking almost right and not being it. A card is a DIRECT child of
+   the grid and always was, so every shipped card is byte-identical across the
+   change. Caught by the parity row that pins the pill, on the first run after
+   the pill existed. */
+.ks3-rule-cards > li {
   padding: 17px 19px;
   background: var(--ks3-card);
   border: 2px solid var(--ks3-option-border);
@@ -2485,6 +2513,69 @@ body.rd[data-mode="ks3"] {
   font-size: 17px;
   line-height: 1.5;
   color: var(--ks3-ink-body);
+}
+/* ⊕ MRB-245 — the three card parts that were AUTHORED AND NEVER DRAWN. See
+   `_rule_card` for what shipped empty and on which pages. Every value here is
+   measured off Design's own markup (b1-03 lines 230–248, b1-04 lines 218–223,
+   b7-01 lines 173–178), and each rule reaches only a card that authors its
+   key, so no shipped `term` + `gloss` card moves.
+
+   ⚠️ THE ROLE LINE TAKES TWO TONES AND THE RECORD CHOOSES. b1-03 draws the
+   "In both · 4" card's label in `--ks3-ink-muted` and the "Plant only · 3"
+   card's in `--ks3-accent-text` — the difference IS the claim the panel makes,
+   that the plant's list is the animal's plus three, so it is data
+   (`label_tone`) and not a constant. Accent is the default, because b1-04's
+   four problems and b7-01's four parts all take it. */
+.ks3-rule-role {
+  margin: 0 0 6px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+.ks3-rule-role[data-tone="muted"] { color: var(--ks3-ink-muted); }
+.ks3-rule-chips {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+/* Ink, not `--ks3-option-border`: these are not controls and never were, and
+   the 2px ink outline is what makes a pill read as a named part rather than
+   as something to press. */
+.ks3-rule-chip {
+  padding: 8px 14px;
+  border-radius: var(--ks3-r-pill);
+  border: 2px solid var(--ks3-ink);
+  background: var(--ks3-inset);
+  color: var(--ks3-ink);
+  font-size: 17px;
+  font-weight: 700;
+}
+.ks3-rule-chips[data-tone="accent-tint"] .ks3-rule-chip {
+  background: var(--ks3-accent-tint);
+}
+/* The card's foot line: the cells that answer the problem it names. Mono and
+   muted, so it reads as evidence for the card rather than as more of it. */
+.ks3-rule-eg {
+  margin: 12px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+/* A card carrying a role line and a display name is the THREE-part card
+   Design draws on b1-04 and b7-01: the name is the headline, not a label. */
+.ks3-rule-role + .ks3-rule-term {
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 23px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
 }
 .ks3-rule-close {
   margin: 22px 0 0;
@@ -2898,6 +2989,19 @@ body.rd[data-mode="ks3"] {
   line-height: 1.55;
   color: var(--ks3-ink-body);
 }
+/* ⊕ GATE A — and the one place in this sweep where the author's own colour
+   could NOT simply be made to land. Two of the three self-checks sit in a
+   `.ks3-check` block on cream, where `--ks3-ink-body` is right. The third,
+   `when-diet-goes-wrong` #s-cases, sits inside `.ks3-clinic-block`, which is
+   `.ks3-dark` — walked in a browser, `.ks3-selfcheck` paints nothing, so the
+   note's real ground is the block's own `--ks3-ink` #221E1B. `--ks3-ink-body`
+   #3B342E on that measures 1.35:1: unreadable. So the on-dark TWIN of the same
+   token is the faithful translation of "softened body copy" — `--ks3-ink-body`
+   and `--ks3-on-dark-body` are the same role on the two grounds — and it
+   measures 12.40:1 ✓ AAA. It is also exactly what `.ks3-dark p` has been
+   painting, so nothing on the page moves; what changes is that the colour is
+   now chosen rather than inherited by accident. */
+.ks3-dark .ks3-selfcheck-note { color: var(--ks3-on-dark-body); }
 
 /* ── b1-02: MRB-204's four formula components + critique-steps ──────
    Ruled by Mide: wherever a KS3 lesson uses a formula it gets all four, in
@@ -3744,6 +3848,30 @@ body.rd[data-mode="ks3"] {
 }
 .ks3-removal-principle strong { font-family: var(--ks3-font-display); }
 
+/* ⊕ GATE A — every colour above is (0,1,0) and this whole engine lives inside
+   `.ks3-dark`, so `.ks3-dark p` (0,1,1) took all eight of them and painted the
+   lot `--ks3-on-dark-body`. The block spans THREE grounds and each one was
+   walked in a browser rather than guessed from the class name:
+
+     · `.ks3-removal` itself paints nothing → the ink block, `--ks3-ink` #221E1B
+       — `.ks3-removal-progress`, on-dark-muted #C6B9A7 → 8.58:1 ✓
+     · `.ks3-removal-what` is `--ks3-dark-panel` #3E3730, a panel nested in the
+       ink block — label on-dark-muted 6.08:1 ✓, text on-dark 10.63:1 ✓,
+       intact on-dark-body 8.77:1 ✓
+     · `.ks3-removal-out` is `--ks3-ground` #FBF3E6 — the consequence LEAVES the
+       cell and lands on cream, so ink is right here and re-declaring ink is the
+       fix: headline 15.02:1 ✓, principle 15.02:1 ✓, body ink-body 11.11:1 ✓
+     · `.ks3-removal-lost` paints its OWN `--ks3-alert-tint` #FFF3D4 pill on that
+       cream panel — ink on the tint, 14.98:1 ✓ */
+.ks3-dark .ks3-removal-progress   { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-removal-what-label { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-removal-what-text  { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-removal-intact     { color: var(--ks3-on-dark-body); }
+.ks3-dark .ks3-removal-lost       { color: var(--ks3-ink); }
+.ks3-dark .ks3-removal-headline   { color: var(--ks3-ink); }
+.ks3-dark .ks3-removal-body       { color: var(--ks3-ink-body); }
+.ks3-dark .ks3-removal-principle  { color: var(--ks3-ink); }
+
 /* ── SYSTEM's bench and its sabotage engine (⊕ 14 Aug 2026) ─────────
    b1-04 is the approved reference screen for SYSTEM, 32 slots, and both of
    its instruments rendered as empty sections. Together they were 58% of the
@@ -3968,6 +4096,29 @@ body.rd[data-mode="ks3"] {
   line-height: 1.6;
   color: var(--ks3-on-dark-body);
 }
+
+/* ⊕ GATE A — the same trap as the removal engine, and the same three grounds.
+   Eight bare (0,1,0) colours above, all of them inside `.ks3-dark`, all of them
+   taken by `.ks3-dark p` (0,1,1). Grounds walked in a browser:
+
+     · the ink block, `--ks3-ink` #221E1B — `.ks3-sab-progress` and
+       `.ks3-sab-pick` sit on it directly, on-dark-muted → 8.58:1 ✓
+     · `--ks3-dark-panel` #3E3730 — `.ks3-sab-what` carries it (label
+       on-dark-muted 6.08:1 ✓, text on-dark 10.63:1 ✓), and `.ks3-sab-caption`
+       and `.ks3-sab-close` each paint it themselves (caption on-dark-muted
+       6.08:1 ✓, close on-dark-body 8.77:1 ✓)
+     · `.ks3-chain-link` is a LIGHT card on the ink block — `--ks3-ground`
+       #FBF3E6, and `--ks3-band` #F4E9D8 for the first link, which is the cell
+       itself. So the chain's INK is correct and re-declaring ink is the fix:
+       scale ink-muted 6.51:1 / 5.97:1 ✓, text ink 15.02:1 / 13.78:1 ✓ */
+.ks3-dark .ks3-sab-progress   { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-sab-what-label { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-sab-what-text  { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-sab-caption    { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-sab-pick       { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-sab-close      { color: var(--ks3-on-dark-body); }
+.ks3-dark .ks3-chain-scale    { color: var(--ks3-ink-muted); }
+.ks3-dark .ks3-chain-text     { color: var(--ks3-ink); }
 
 /* ── CONTRAST's flagship: settles-it (⊕ 14 Aug 2026) ────────────────
    Four mystery cells, four true facts each, sixteen judgements. Inherited by
@@ -10024,6 +10175,16 @@ body.rd[data-mode="ks3"] {
 }
 .ks3-route-where { margin: 8px 0 0; font-size: 18px; line-height: 1.55; }
 
+/* ⊕ MRB-242 — the same trap again (see `.ks3-card-back[hidden]`,
+   `.ks3-ticks[hidden]`, `.ks3-picker-panel[hidden]`, `.ks3-hb [hidden]`,
+   `.ks3-sortcards [hidden]`, `.ks3-fifa-chipped[hidden]`). An AUTHOR `display`
+   beats the UA stylesheet's `[hidden] { display: none }` at ANY specificity,
+   so the `display: flex` below un-hid all three of
+   `what-drugs-do-to-the-body`'s route-step lists. `ks3.js` writes an inline
+   `display:none` over them on load, which is the only reason nobody saw it —
+   with JS off, or in the moment before it runs, every drug's route stacked
+   open. The guard goes FIRST so the attribute keeps winning. */
+.ks3-route-steps[hidden] { display: none; }
 .ks3-route-steps {
   list-style: none;
   margin: 20px 0 0;
@@ -11157,3 +11318,602 @@ body.rd[data-mode="ks3"] {
 
 /* ═══ END B5 ═══ */
 
+
+/* ═══ BEGIN B7 ═══ */
+
+/* ── B7 · Photosynthesis (⊕ MRB-245) ──
+   Four instruments, and every one of them on ink.
+
+   ⚠️ SPECIFICITY, AND ON THIS UNIT IT IS LOAD-BEARING FOUR TIMES OVER.
+   `.ks3-dark p` is (0,1,1) and every bare class below is (0,1,0), so an
+   unscoped `color` LOSES. All four B7 practicals are
+   `ks3-block ks3-dark ks3-practical` — measured off Design's own markup on
+   b7-01 `#s-bench`, b7-02 `#s-tuner`, b7-03 `#s-bench` and b7-04 `#s-trace`,
+   no exceptions — so the trap takes the whole unit in one pass. Every colour
+   rule below is written under `.ks3-dark …` at (0,2,0); geometry is safe
+   unscoped, because `.ks3-dark p` sets colour and nothing else.
+
+   ⊕ THE LIST BELOW IS OF ELEMENTS, NOT OF PANELS, and B4 is why. Counting
+   panels is what let `.ks3-bell-chainlabel` ship at 1.21:1: the panel was on
+   the list, its steps and its note were rescued, and a seventh `<p>` inside
+   the same panel taking a different colour was not. So — the CREAM-INSIDE-INK
+   ELEMENTS in B7, each with its own `.ks3-dark …` rule at (0,2,0):
+
+     `.ks3-rr-tag` · `.ks3-rr-head` · `.ks3-rr-why` ·
+     `.ks3-lt-verdictlabel` · `.ks3-lt-head` · `.ks3-lt-why` ·
+     `.ks3-mb-tag` · `.ks3-mb-head` · `.ks3-mb-why` · `.ks3-mb-conclude` ·
+     `.ks3-tb-verdict`
+
+   Add a text element to any cream panel in this unit and it joins this list in
+   the same commit. Adding it to the panel's rule is not the same thing.
+
+   ⚠️ AND RE-MEASURE THE TOKEN YOU CHOSE ON THE GROUND IT LANDS ON. B4 proved
+   the cascade bug can MASK a wrong token: `.ks3-gas-cap` measured a healthy
+   8.77:1 only because `.ks3-dark p` was winning, and the authored colour would
+   have been 1.78:1. Fixing the specificity alone would have turned a lucky
+   pass into a real failure, and the fix would have looked exactly like the
+   defect.
+
+   ⚠️ NO `display` ON ANYTHING THAT ALSO TAKES `[hidden]`. An author `display`
+   beats the UA stylesheet's `[hidden] { display: none }` regardless of
+   specificity — the defect that has now cost eight builds, and which
+   `_JS_HIDDEN_AUDIT` now catches by dropping the inline `display` ks3.js
+   writes and asking the stylesheet directly. The elements hidden at rest in
+   this unit are `.ks3-rr-verdict`, `.ks3-lt-verdict`, `.ks3-mb-verdict`,
+   `.ks3-tb-food`, `.ks3-tb-verdict` and `.ks3-tb-note`. Three of them need a
+   `display` when they ARE shown and take a `[hidden]` guard first;
+   `.ks3-tb-note` needs one and gets it for free, by being a flex item of
+   `.ks3-tb-linkmain` — a flex item is blockified, and an element the UA has
+   set to `display: none` is not a flex item at all.
+
+   ⚠️ NOTHING HERE TRANSITIONS OR ANIMATES. NOTES-B7 §3 says it of the unit and
+   all four pages bear it out, so there is no reduced-motion obligation created
+   by this section. `.ks3-option`'s own 160ms background transition is the
+   platform's and is inherited by the dials; gate 7 exists because of it. */
+
+/* The dial rows shared by the remover and the tuner, and the step rows on the
+   method breaker. `.ks3-options` is a COLUMN by default, because an answer
+   list is a column; a dial is a segmented control and reads across. */
+.ks3-rr-dials,
+.ks3-lt-dials {
+  margin-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 30px;
+}
+.ks3-rr-dialname,
+.ks3-lt-dialname {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.ks3-rr-opts,
+.ks3-lt-opts,
+.ks3-mb-opts,
+.ks3-tb-tabs {
+  margin-top: 0;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.ks3-rr-opt,
+.ks3-lt-opt,
+.ks3-mb-opt,
+.ks3-tb-tab {
+  width: auto;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: 700;
+}
+/* ⚖️ A CHOSEN SETTING IS THE ALERT GROUND, NOT THE ALERT BORDER, and that is
+   Design's measurement rather than a preference: her `seg()` paints the
+   chosen segment `background: var(--ks3-alert); color: var(--ks3-ink)`. The
+   platform's `.ks3-dark .ks3-option[aria-pressed="true"]` gives an alert
+   BORDER on the dark panel, which is right for an answer that has been
+   committed to and wrong for a switch that is currently on: four dials with
+   four thin borders do not read as a state at a glance. Same specificity
+   (0,3,0), later in the file, so source order decides — deliberately, because
+   this is a narrowing of the platform rule to one unit and not a replacement
+   of it.
+
+   ⚠️ AND IT IS STILL NOT A MARK (MRB-196 R10). Alert is "this is the setting
+   you have chosen", never "this is correct". Nothing on these benches is
+   right or wrong; only the ladder marks. */
+.ks3-dark .ks3-rr-opt[aria-pressed="true"],
+.ks3-dark .ks3-lt-opt[aria-pressed="true"],
+.ks3-dark .ks3-mb-opt[aria-pressed="true"],
+.ks3-dark .ks3-tb-tab[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+/* The four bench buttons are `.ks3-reveal-btn`, which is INK ON INK — on a
+   `ks3-dark` block that paints an invisible control. Inverted here, exactly as
+   `.ks3-dark .ks3-b5c-check` is. */
+.ks3-dark .ks3-rr-test,
+.ks3-dark .ks3-rr-reset,
+.ks3-dark .ks3-lt-oak,
+.ks3-dark .ks3-lt-reset,
+.ks3-dark .ks3-mb-run,
+.ks3-dark .ks3-mb-reset,
+.ks3-dark .ks3-tb-back,
+.ks3-dark .ks3-tb-reset {
+  background: var(--ks3-on-dark);
+  border-color: var(--ks3-on-dark);
+  color: var(--ks3-ink);
+}
+
+/* The nested dark panel every one of the four benches puts its readouts in. */
+.ks3-rr-panel,
+.ks3-lt-panel,
+.ks3-mb-panel,
+.ks3-tb-panel {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-card);
+}
+.ks3-dark .ks3-rr-panel,
+.ks3-dark .ks3-lt-panel,
+.ks3-dark .ks3-mb-panel,
+.ks3-dark .ks3-tb-panel { background: var(--ks3-dark-panel); }
+
+.ks3-rr-foot,
+.ks3-lt-foot,
+.ks3-mb-foot,
+.ks3-tb-foot {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  flex-wrap: wrap;
+}
+
+/* ⚖️ THE THREE BAR TRACKS ARE ONE COMPONENT. Design draws them at 18px on the
+   remover and 20px on the tuner; one height is taken, because a 2px difference
+   between two pages nobody sees side by side is not worth a second component,
+   and the two would drift. The track is a wash of the block's own ink rather
+   than a token, which is Design's `rgba(255,255,255,.08)` — measured. */
+.ks3-rr-track,
+.ks3-lt-track {
+  display: block;
+  margin-top: 6px;
+  height: 19px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, .08);
+  overflow: hidden;
+}
+.ks3-rr-fill,
+.ks3-lt-fill { display: block; height: 100%; }
+
+/* ═══ reactant-remover (b7-01 #s-bench) ══════════════════════════════════
+   Four dials, three readouts, one iodine verdict, and rate is the PRODUCT of
+   the four — so removing any one takes every readout to its zero string at
+   once. The three bars are always the same width as each other, which is the
+   whole picture: they are three views of one number. */
+.ks3-rr-setuprow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-rr-setup { margin: 0; font-size: 20px; font-weight: 700; }
+.ks3-rr-rate {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 16px;
+  font-weight: 500;
+}
+.ks3-rr-readouts {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+.ks3-rr-readrow,
+.ks3-lt-readrow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ks3-rr-rolabel { margin: 0; font-size: 17px; font-weight: 600; }
+.ks3-rr-rovalue {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 17px;
+  font-weight: 500;
+}
+/* ⚖️ THREE BARS, THREE COLOURS, AND THE DISTINCTION IS THE SCIENCE. Design
+   gives the oxygen bar `--ks3-ok` because it is the readout you can actually
+   watch — bubbles coming off pondweed — and the other two the alert and the
+   muted. Three identical bars would say the three readouts are one thing. */
+.ks3-rr-readout[data-tone="alert"] .ks3-rr-fill { background: var(--ks3-alert); }
+.ks3-rr-readout[data-tone="ok"] .ks3-rr-fill { background: var(--ks3-ok); }
+.ks3-rr-readout[data-tone="muted"] .ks3-rr-fill {
+  background: var(--ks3-on-dark-muted);
+}
+
+/* ⚠️ NO `display` HERE — the verdict panels are emitted `hidden` and the guard
+   goes first, so the attribute keeps winning. */
+.ks3-rr-verdict[hidden] { display: none; }
+.ks3-rr-verdict {
+  margin-top: 18px;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+}
+.ks3-rr-tag {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.ks3-rr-head {
+  margin: 9px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 23px;
+  line-height: 1.22;
+  letter-spacing: -.02em;
+}
+.ks3-rr-why { margin: 11px 0 0; font-size: 18px; line-height: 1.6; }
+
+/* ── reactant-remover on ink ───────────────────────────────────────────── */
+.ks3-dark .ks3-rr-dialname { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-rr-setup { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-rr-rate { color: var(--ks3-alert); }
+.ks3-dark .ks3-rr-rolabel { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-rr-rovalue { color: var(--ks3-on-dark-muted); }
+/* The cream-inside-ink elements. Each one separately, never the panel alone. */
+.ks3-dark .ks3-rr-tag { color: var(--ks3-accent-text); }
+.ks3-dark .ks3-rr-head { color: var(--ks3-ink); }
+.ks3-dark .ks3-rr-why { color: var(--ks3-ink); }
+
+/* ═══ leaf-tuner (b7-02 #s-tuner) ════════════════════════════════════════
+   ⚖️ THE BAR IS THE PERCENTAGE HALVED AND CLAMPED AT 100, so a full bar means
+   200% of an oak leaf and the OPENING leaf's water bar is already hard against
+   the end of its track while its rate bar sits near the middle. That picture is
+   the trade-off, drawn, before a word of the verdict is read — which is why the
+   two bars take different colours and why neither of them is the accent. */
+.ks3-lt-readouts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.ks3-lt-rolabel { margin: 0; font-size: 18px; font-weight: 700; }
+.ks3-lt-rovalue {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 17px;
+  font-weight: 500;
+}
+.ks3-lt-readout[data-tone="ok"] .ks3-lt-fill { background: var(--ks3-ok); }
+.ks3-lt-readout[data-tone="alert"] .ks3-lt-fill { background: var(--ks3-alert); }
+
+/* ⚠️ NO `display` — five of the six verdicts ship `hidden`, and the sixth is
+   the one the opening leaf earns. */
+.ks3-lt-verdict[hidden] { display: none; }
+.ks3-lt-verdict {
+  margin-top: 20px;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+}
+.ks3-lt-verdictlabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.ks3-lt-head {
+  margin: 9px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 23px;
+  line-height: 1.22;
+  letter-spacing: -.02em;
+}
+.ks3-lt-why { margin: 11px 0 0; font-size: 18px; line-height: 1.6; }
+
+/* ── leaf-tuner on ink ─────────────────────────────────────────────────── */
+.ks3-dark .ks3-lt-dialname { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-lt-rolabel { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-lt-rovalue { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-lt-verdictlabel { color: var(--ks3-accent-text); }
+.ks3-dark .ks3-lt-head { color: var(--ks3-ink); }
+.ks3-dark .ks3-lt-why { color: var(--ks3-ink); }
+
+/* ═══ method-breaker (b7-03 #s-bench) ════════════════════════════════════
+   Five steps, six outcomes, and an ordered precedence that is the pedagogy:
+   safety first, then the faults that DESTROY the result, then the ones that
+   only OBSCURE it.
+
+   ⚖️ THE SUB-STEP DIMS WITH ITS PARENT. Step 3b is how the ethanol is heated,
+   and skipping step 3 leaves nothing to heat — Design dims the row to `.45`
+   and this does the same, from the same fact (`data-parent`, derived from the
+   authored `num`). It is not disabled: a student may still press it, and the
+   bench simply has no fire to report. */
+.ks3-mb-steps {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ks3-mb-step {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: var(--ks3-r-panel);
+  background: rgba(255, 255, 255, .05);
+}
+.ks3-mb-step[data-dim] { opacity: .45; }
+.ks3-mb-num {
+  flex: 0 0 34px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 15px;
+}
+.ks3-mb-stepmain {
+  flex: 1 1 240px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ks3-mb-steptitle { font-size: 19px; font-weight: 700; }
+.ks3-mb-stepdetail { font-size: 17px; line-height: 1.5; }
+.ks3-mb-opts { flex: 0 0 auto; }
+
+/* ⚠️ NO `display` — every verdict ships `hidden`. */
+.ks3-mb-verdict[hidden] { display: none; }
+.ks3-mb-verdict {
+  margin-top: 18px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+  border: 2px solid transparent;
+}
+/* ⚖️ THE SAFETY BRANCH IS DRAWN AS A SAFETY BRANCH. Its own words say the
+   practical has ended and the test never happened; giving it the same panel as
+   "the leaf crumbled" would file a fire at head height alongside a spoiled
+   pattern. The accent outline is the only per-branch treatment on this bench,
+   and it is on the one branch that is not about the quality of the data.
+   NOTES-B7 flag 14, MRB-233. */
+.ks3-mb-verdict[data-kind="safety"] {
+  border-color: var(--ks3-accent);
+  box-shadow: var(--ks3-shadow-block);
+}
+.ks3-mb-tag {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.ks3-mb-head {
+  margin: 9px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 23px;
+  line-height: 1.22;
+  letter-spacing: -.02em;
+}
+.ks3-mb-why { margin: 11px 0 0; font-size: 18px; line-height: 1.6; }
+.ks3-mb-conclude {
+  margin: 14px 0 0;
+  padding-top: 14px;
+  border-top: 2px solid var(--ks3-rule);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* ── method-breaker on ink ─────────────────────────────────────────────── */
+.ks3-dark .ks3-mb-num {
+  border-color: var(--ks3-on-dark-muted);
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-dark .ks3-mb-steptitle { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-mb-stepdetail { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-mb-tag { color: var(--ks3-accent-text); }
+.ks3-dark .ks3-mb-head { color: var(--ks3-ink); }
+.ks3-dark .ks3-mb-why { color: var(--ks3-ink); }
+.ks3-dark .ks3-mb-conclude { color: var(--ks3-ink); }
+
+/* ═══ trace-it-back (b7-04 #s-trace) ═════════════════════════════════════
+   Six foods, six chains of different lengths, one destination. The chain is
+   revealed BACKWARDS, one link per press.
+
+   ⚖️ EVERY LINK IS DRAWN FROM THE START and only the NOTE arrives on a press.
+   A student reads how far there is to go before taking a step, which is the
+   sentence the prompt makes to them — the number of steps changes and the
+   destination does not — and it is why an unreached link dims rather than
+   being absent. */
+.ks3-tb-tabsgroup { margin-top: 22px; }
+.ks3-tb-tabslabel {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+/* ⚠️ NO `display` — five of the six food panels ship `hidden`. */
+.ks3-tb-food[hidden] { display: none; }
+.ks3-tb-headrow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-tb-name { margin: 0; font-size: 21px; font-weight: 700; }
+.ks3-tb-steps {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 16px;
+  font-weight: 500;
+}
+.ks3-tb-chain {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ks3-tb-link {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border-radius: var(--ks3-r-panel);
+  border: 2px solid transparent;
+  opacity: .45;
+}
+.ks3-tb-link[data-shown] { opacity: 1; }
+.ks3-tb-num {
+  flex: 0 0 30px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  border: 2px solid transparent;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 15px;
+}
+/* ⚠️ A FLEX CONTAINER, AND THAT IS WHAT KEEPS `[hidden]` WORKING ON THE NOTE.
+   Design draws the link name and its note as two blocks stacked in the row's
+   right-hand column. Writing that as `display: block` on the note would beat
+   the UA's `[hidden] { display: none }` at any specificity and every unrevealed
+   note would ship visible — the eight-build defect, and on this instrument it
+   would give away every answer on the page. Making the parent a column flex
+   container blockifies both children for free, and a child the UA has set to
+   `display: none` never becomes a flex item. */
+.ks3-tb-linkmain {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.ks3-tb-linkname { font-size: 19px; font-weight: 700; }
+.ks3-tb-note { font-size: 18px; line-height: 1.55; }
+.ks3-tb-back[disabled] { opacity: .45; cursor: default; }
+.ks3-tb-back[disabled]:hover { transform: none; }
+/* ⚠️ NO `display` — the verdict lands only when the chain is complete. */
+.ks3-tb-verdict[hidden] { display: none; }
+.ks3-tb-verdict {
+  margin: 18px 0 0;
+  padding: 17px 19px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* ── trace-it-back on ink ──────────────────────────────────────────────── */
+.ks3-dark .ks3-tb-tabslabel { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-tb-name { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-tb-steps { color: var(--ks3-alert); }
+.ks3-dark .ks3-tb-num {
+  border-color: var(--ks3-on-dark-muted);
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-dark .ks3-tb-linkname { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-tb-note { color: var(--ks3-on-dark-body); }
+/* ⚖️ A REVEALED LINK LIGHTS ITS CHIP AND ITS NAME; the LAST one additionally
+   takes the alert border and the lifted ground, because arriving at the
+   producer is the thing the instrument is for. Two states, not one. */
+.ks3-dark .ks3-tb-link[data-shown] { border-color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-tb-link[data-shown] .ks3-tb-linkname { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-tb-link[data-shown] .ks3-tb-num {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-tb-link[data-shown][data-last] {
+  background: rgba(255, 255, 255, .10);
+  border-color: var(--ks3-alert);
+}
+.ks3-dark .ks3-tb-verdict { color: var(--ks3-ink); }
+
+/* ═══ the word summary (b7-01 #s-summary) ════════════════════════════════
+   ⚠️ THE ARROW IS DRAWN AND `currentColor` IS WHAT COLOURS IT. The `<svg>` is
+   stroked `currentColor`, so this one rule is the whole of Design's
+   `style="color: var(--ks3-accent-text)"` on the element. A typed U+2192 is
+   refused by `r_equation` — the design system's fonts have no glyph for it. */
+.ks3-eqn {
+  margin-top: 24px;
+  padding: 26px 28px;
+  border-radius: var(--ks3-r-card);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 18px;
+}
+.ks3-eqn-side {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.4vw, 27px);
+  letter-spacing: -.02em;
+  color: var(--ks3-ink);
+}
+.ks3-eqn-arrowwrap {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  color: var(--ks3-accent-text);
+}
+.ks3-eqn-arrow { display: block; }
+/* Full width beneath the row, which is what makes the condition a CONDITION
+   rather than a third term in the summary. */
+.ks3-eqn-condition {
+  margin: 0;
+  flex: 1 1 100%;
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+
+/* The two dial columns stop being columns when there is no room for two, and
+   the method breaker's option pair drops under its own step. Below this the
+   settings would be reading in a 90px gutter beside a 240px title. */
+@media (max-width: 560px) {
+  .ks3-rr-dials,
+  .ks3-lt-dials { gap: 18px; }
+  .ks3-mb-step { align-items: flex-start; }
+}
+
+/* ═══ END B7 ═══ */

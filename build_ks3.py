@@ -2779,8 +2779,21 @@ def _head_counter(spec):
     ⊕ `constants` / `start` / `start_extra` (MRB-220, C2) let one format string
     carry more than one live number — c2-02's budget line quotes three — while
     keeping every value authored exactly once.
+
+    ⊕ MRB-245 / B7 — `idle` and `done` are ACCEPTED SPELLINGS of `zero` and
+    `full`. b7-02's counter is "nothing changed yet" → "110% rate · 363% water"
+    and b7-04's is "step 2 of 4" → "chain traced": the two bespoke ends this
+    already has, under the names Design's own pages give them (`tunerProgress`
+    tests `s.moved`, `traceProgress` tests `s.everArrived`). This is the
+    `_b5_label` union, one level down — accept every spelling that is
+    authored, keep one element and one updater, and never rename anything in
+    `ks3_data/`. It is a widening, so no shipped counter moves.
     """
     if spec.get("format"):
+        spec = dict(spec)
+        for authored, canonical in (("idle", "zero"), ("done", "full")):
+            if spec.get(authored) and not spec.get(canonical):
+                spec[canonical] = spec[authored]
         total = int(spec.get("total") or 0)
         fmt = spec["format"]
         # ⊕ `constants` — placeholders that never move, BAKED INTO THE FORMAT
@@ -11694,6 +11707,843 @@ def r_cycle_dial(a, act_id):
                t(phase0["label"]), cells, t(note_prompt), phase_data))
 # renderers: ═══ END B5 ═══
 
+# renderers: ═══ BEGIN B7 ═══
+#
+# ── B7 · Photosynthesis (⊕ MRB-245) ──
+#
+# Four instruments, and ALL FOUR ON INK. Measured off Design's own markup on
+# all four pages — `ks3-block ks3-dark ks3-practical`, no exceptions — which is
+# what `ks3_data/b7/__init__.py::_INSTRUMENT_SEGMENTS` records and what every
+# colour rule under `/* ═══ BEGIN B7 ═══ */` in `shared/ks3.css` is scoped for.
+#
+# NOTHING IN THIS UNIT ANIMATES, uses a timer, or draws to a canvas — NOTES-B7
+# §3 says it of the unit and all four pages bear it out. So there is no rAF tick
+# here to consult `prefers-reduced-motion` inside (MRB-220 R4), and, by the same
+# decision as B5, not one `transition` or `@keyframes` is added by this section.
+# Design's pages animate one thing, `[data-arrive]` on a panel the runtime is
+# already unhiding; adopting it would create a reduced-motion obligation in
+# order to interpolate the arrival of a panel that was not there before.
+#
+# ⚠️ EVERY CONTROL IS SERVER-RENDERED, and on `#s-tuner` that is load-bearing
+# rather than tidy. `ks3_parity.check_rail_reachable()` searches the built
+# page's STATIC html for one of five literal signals, and Design builds all four
+# benches' controls in JavaScript (`let cls = 'ks3-option'`), which does not
+# match `class="ks3-option`. A bench whose whole UI arrives at runtime has a
+# rail stop that can never tick and cannot be seen to be broken by anything
+# except a browser. So the dials, the steps and the food tabs are drawn here, in
+# HTML, inside `<ul class="ks3-options">` — which also puts them under the
+# existing `.ks3-dark .ks3-option` tone rules, where an ink-dark bench belongs.
+#
+# ⚠️ AND NO TEXT RULE IN THIS UNIT IS WRITTEN BARE. `.ks3-dark p` is (0,1,1) and
+# a bare component class is (0,1,0), so an unscoped `color` LOSES and the text
+# ships present, correct and invisible. Ten builds have now paid for that.
+# `ks3_parity.check_dark_text_specificity()` resolves the real cascade winner on
+# every element on every ink ground and fails when a generic `.ks3-dark <type>`
+# rule beats a component's own colour, so the trap is a red build rather than a
+# thing to remember — but the rules are still written at (0,2,0), because a
+# gate that fires is not the same as a defect that never happened.
+
+
+def _b7_need(a, act_id, keys, why=""):
+    """Every one of `keys` is authored, or the build stops here."""
+    for k in keys:
+        if not a.get(k):
+            raise ValueError(
+                "%s %r declares no %r.%s"
+                % (a.get("kind") or "?", act_id, k, (" " + why) if why else ""))
+
+
+def _b7_dials(a, act_id, factors):
+    """`dials[]`, validated. `factors` are the numeric keys every option carries.
+
+    A dial with one setting is a label, and a factor missing from one option is
+    a readout that silently reads `NaN%` for exactly one combination — which is
+    the shape of defect a browser finds and a grep does not.
+    """
+    dials = a.get("dials") or []
+    if len(dials) < 2:
+        raise ValueError(
+            "%s %r declares %d dial(s). The whole argument of these benches is "
+            "that the readouts move against each other, which needs more than "
+            "one thing to move." % (a.get("kind") or "?", act_id, len(dials)))
+    seen = set()
+    for d in dials:
+        if not (d.get("id") and d.get("name")):
+            raise ValueError("%s %r dial %r needs `id` and `name`."
+                             % (a.get("kind") or "?", act_id, d.get("id")))
+        if d["id"] in seen:
+            raise ValueError("%s %r declares dial id %r twice."
+                             % (a.get("kind") or "?", act_id, d["id"]))
+        seen.add(d["id"])
+        opts = d.get("options") or []
+        if len(opts) < 2:
+            raise ValueError(
+                "%s %r dial %r offers %d setting(s). A dial that cannot be "
+                "changed is a caption."
+                % (a.get("kind") or "?", act_id, d["id"], len(opts)))
+        oseen = set()
+        for o in opts:
+            if not (o.get("id") and o.get("label")):
+                raise ValueError(
+                    "%s %r dial %r has an option missing `id` or `label`."
+                    % (a.get("kind") or "?", act_id, d["id"]))
+            if o["id"] in oseen:
+                raise ValueError(
+                    "%s %r dial %r declares option id %r twice."
+                    % (a.get("kind") or "?", act_id, d["id"], o["id"]))
+            oseen.add(o["id"])
+            for f in factors:
+                if f not in o:
+                    raise ValueError(
+                        "%s %r dial %r option %r declares no %r. Every option "
+                        "carries every factor, or one combination of the dials "
+                        "computes a readout out of nothing."
+                        % (a.get("kind") or "?", act_id, d["id"], o["id"], f))
+    return dials
+
+
+def _b7_verdict_ids(a, act_id, expected, what):
+    """`verdicts` names exactly `expected`, both ways.
+
+    Both directions fail differently and are reported differently. A MISSING
+    branch is a state the bench can reach with nothing to say; a SPARE one is
+    authored copy — lifted from Design's page, under R5 — that no student can
+    ever reach.
+    """
+    verdicts = a.get("verdicts") or {}
+    missing = [k for k in expected if k not in verdicts]
+    if missing:
+        raise ValueError(
+            "%s %r has no verdict for %s. %s"
+            % (a.get("kind") or "?", act_id, ", ".join(map(repr, missing)), what))
+    spare = sorted(set(verdicts) - set(expected))
+    if spare:
+        raise ValueError(
+            "%s %r declares verdict(s) %s that the bench can never reach. "
+            "Design's copy is lifted byte-identical, so an unreachable branch "
+            "is a paragraph of hers that no student will read."
+            % (a.get("kind") or "?", act_id, ", ".join(map(repr, spare))))
+    return verdicts
+
+
+def _b7_dial_block(ns, act_id, dials, chosen, extra):
+    """The dials, as static server-rendered options. See the section note.
+
+    `extra` is called per (dial, option) and returns the numeric data
+    attributes that option contributes — `data-f` on the remover, `data-r` and
+    `data-w` on the tuner. The numbers live on the buttons rather than in a
+    JSON blob because the button IS the thing that carries them, and a student
+    reading the DOM sees the model rather than a payload.
+    """
+    return ('<div class="ks3-%s-dials">%s</div>'
+            % (ns, "".join(
+                '<div class="ks3-%s-dial">'
+                '<p class="ks3-%s-dialname" id="%s-%s-name" '
+                'data-dial="%s">%s</p>'
+                '<ul class="ks3-options ks3-%s-opts" role="list" '
+                'aria-labelledby="%s-%s-name">%s</ul></div>'
+                % (ns, ns, e(act_id), e(d["id"]), e(d["id"]), t(d["name"]), ns,
+                   e(act_id), e(d["id"]), "".join(
+                       '<li><button type="button" class="ks3-option ks3-%s-opt" '
+                       'data-dial="%s" data-opt="%s"%s aria-pressed="%s">'
+                       '<span class="ks3-opt-label">%s</span></button></li>'
+                       % (ns, e(d["id"]), e(o["id"]), extra(d, o),
+                          "true" if chosen.get(d["id"]) == o["id"] else "false",
+                          t(o["label"]))
+                       for o in d["options"]))
+                for d in dials)))
+
+
+def _b7_suffix(value, suffix):
+    """A number and its unit, joined the way the unit is written.
+
+    Design writes `100% of maximum` and `40 per minute` from the same code
+    path: a suffix that opens with a symbol is set tight against the number and
+    a suffix that opens with a word takes a space. Getting this wrong reads as
+    a typo in a readout the student is asked to watch move.
+    """
+    s = str(suffix or "")
+    return "%s%s%s" % (value, "" if (s[:1] and not s[:1].isalnum()) else " ", s)
+
+
+# ── b7-01 `#s-bench` · reactant-remover ──────────────────────────────────
+
+def r_reactant_remover(a, act_id):
+    """⊕ b7-01 `#s-bench` — four things it needs, and rate is their PRODUCT.
+
+    ⚖️ THE MODEL IS A PRODUCT, NOT A SUM, and that is the whole bench: remove
+    any one of the four and the rate is zero, because the four are not weighted
+    contributors but jointly necessary. A sum would let a student switch the
+    light off and still make three-quarters of the starch, which is the belief
+    the lesson exists to kill.
+
+    ⚖️ SEVEN BRANCHES, NOT SIX. The schema declares one per dial plus
+    `multiple` and `none`; the page has a seventh, because "nothing removed"
+    splits in two. Dim light is a REDUCTION rather than a removal and has its
+    own verdict — "the plant is limited, not stopped" — and it is the only
+    place on the page a student meets a rate between zero and full. Design's
+    own threshold is `ratePct < 50`, kept here character for character rather
+    than rewritten as "rate < 1": the two agree on the authored dial values and
+    only one of them is what the approved page does.
+
+    ⚠️ PRECEDENCE IS NOT LOAD-BEARING HERE, and it is on b7-03. Every
+    single-dial branch is guarded by `missing.length === 1` on Design's page, so
+    at most one can ever match. The sibling instrument's ordering IS
+    load-bearing, and the two must not be maintained as though they were the
+    same problem — which is why this says so rather than leaving the reader to
+    infer it from an absence.
+
+    ⚠️ THE BENCH OPENS INTACT — the first option of every dial, which is
+    Design's own `DEFAULTS` and what `chosen()` falls back to. This is the
+    OPPOSITE of b7-02's tuner, which opens on a deliberately bad leaf: here the
+    student's move is to take something away, so the opening state has to be
+    whole. Asserted rather than assumed, because an opening state that is
+    already broken puts the bench in a verdict before the student has touched
+    it.
+    """
+    dials = _b7_dials(a, act_id, ("f",))
+    _b7_need(a, act_id, ("test_label", "tested_label", "reset_label",
+                         "setup", "rate", "readouts"))
+
+    start = {d["id"]: d["options"][0]["id"] for d in dials}
+    intact = 1.0
+    for d in dials:
+        intact *= float(d["options"][0]["f"])
+    if intact != 1.0:
+        raise ValueError(
+            "reactant-remover %r opens at %g of its maximum rate. The first "
+            "option of every dial is the opening state and the bench opens "
+            "INTACT — a bench already in a verdict has answered its own "
+            "question." % (act_id, intact))
+
+    for d in dials:
+        if not any(float(o["f"]) == 0 for o in d["options"]):
+            raise ValueError(
+                "reactant-remover %r dial %r offers no setting with f = 0, so "
+                "its own verdict can never be reached. Every dial on this "
+                "bench is a thing that can be taken away."
+                % (act_id, d["id"]))
+    if not any(0 < float(o["f"]) < 1
+               for d in dials for o in d["options"]):
+        raise ValueError(
+            "reactant-remover %r offers no partial setting, so the `low` "
+            "verdict — the only non-binary reading on the page — can never be "
+            "reached." % act_id)
+
+    verdicts = _b7_verdict_ids(
+        a, act_id, [d["id"] for d in dials] + ["multiple", "low", "none"],
+        "One branch per dial, plus `multiple` (more than one thing removed), "
+        "`low` (nothing removed and the light dim) and `none`.")
+    for key, v in sorted(verdicts.items()):
+        for f in ("tag", "head", "why"):
+            if not v.get(f):
+                raise ValueError(
+                    "reactant-remover %r verdict %r declares no %r."
+                    % (act_id, key, f))
+
+    setup = a["setup"]
+    for f in ("all_present", "missing_prefix"):
+        if not setup.get(f):
+            raise ValueError(
+                "reactant-remover %r setup declares no %r. The line names what "
+                "the jar is holding, and both states of it are on screen."
+                % (act_id, f))
+    rate = a["rate"]
+    for f in ("label", "suffix"):
+        if not rate.get(f):
+            raise ValueError("reactant-remover %r rate declares no %r."
+                             % (act_id, f))
+
+    readouts = a["readouts"]
+    if len(readouts) < 2:
+        raise ValueError(
+            "reactant-remover %r draws %d readout(s). The block's own prompt "
+            "promises three." % (act_id, len(readouts)))
+    tones, rows = [], []
+    for r in readouts:
+        for f in ("id", "label", "suffix", "zero", "tone"):
+            if not r.get(f):
+                raise ValueError(
+                    "reactant-remover %r readout %r declares no %r. `zero` is "
+                    "NOT uniform across the three — two read \"none\" and the "
+                    "bubbles read \"0 per minute\" — and `tone` is the only "
+                    "thing telling three identical bars apart."
+                    % (act_id, r.get("id"), f))
+        if "scale" not in r:
+            raise ValueError(
+                "reactant-remover %r readout %r declares no `scale`. Without "
+                "it the oxygen counter reads 100 bubbles a minute at full rate "
+                "instead of 40." % (act_id, r["id"]))
+        if r["tone"] in tones:
+            raise ValueError(
+                "reactant-remover %r gives tone %r to two readouts. Design "
+                "paints each bar its own colour and the distinction is the "
+                "only thing separating three bars of identical width."
+                % (act_id, r["tone"]))
+        tones.append(r["tone"])
+        # The opening render is the INTACT bench, so every readout is at full
+        # scale and none of them is at its `zero` string.
+        rows.append(
+            '<li class="ks3-rr-readout" data-tone="%s">'
+            '<div class="ks3-rr-readrow">'
+            '<p class="ks3-rr-rolabel">%s</p>'
+            '<p class="ks3-rr-rovalue" data-rr-readout data-scale="%s" '
+            'data-suffix="%s" data-zero="%s">%s</p></div>'
+            '<span class="ks3-rr-track"><span class="ks3-rr-fill" '
+            'data-rr-bar style="width:100%%"></span></span></li>'
+            % (e(r["tone"]), t(r["label"]), e(_pctnum(r["scale"])),
+               e(r["suffix"]), e(r["zero"]),
+               t(_b7_suffix(int(round(float(r["scale"]))), r["suffix"]))))
+
+    panels = "".join(
+        '<div class="ks3-rr-verdict" data-rr-verdict="%s" hidden>'
+        '<p class="ks3-rr-tag">%s</p>'
+        '<p class="ks3-rr-head">%s</p>'
+        '<p class="ks3-rr-why">%s</p></div>'
+        % (e(key), t(verdicts[key]["tag"]), t(verdicts[key]["head"]),
+           rich(verdicts[key]["why"]))
+        for key in sorted(verdicts))
+
+    return ('<div class="ks3-rr" data-rr data-all-present="%s" '
+            'data-missing-prefix="%s" data-rate-suffix="%s" '
+            'data-test-label="%s" data-tested-label="%s">%s'
+            '<div class="ks3-rr-panel">'
+            '<div class="ks3-rr-setuprow">'
+            '<p class="ks3-rr-setup" data-rr-setup>%s</p>'
+            '<p class="ks3-rr-rate"><span class="ks3-rr-ratelabel">%s</span> '
+            '<span data-rr-rate>%s</span></p></div>'
+            '<ul class="ks3-rr-readouts" role="list">%s</ul>'
+            '<div class="ks3-rr-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-rr-test" '
+            'data-rr-test>%s</button>'
+            '<button type="button" class="ks3-reveal-btn ks3-rr-reset" '
+            'data-rr-reset>%s</button></div>%s</div></div>'
+            % (e(setup["all_present"]), e(setup["missing_prefix"]),
+               e(rate["suffix"]), e(a["test_label"]), e(a["tested_label"]),
+               _b7_dial_block("rr", act_id, dials, start,
+                              lambda d, o: ' data-f="%s"' % e(_pctnum(o["f"]))),
+               t(setup["all_present"]), t(rate["label"]),
+               t(_b7_suffix(100, rate["suffix"])),
+               "".join(rows), t(a["test_label"]), t(a["reset_label"]),
+               panels))
+
+
+# ── b7-02 `#s-tuner` · leaf-tuner ────────────────────────────────────────
+#
+# ⚖️ THE CASCADE IS AUTHORED HERE, ONCE, AND SERIALISED. Design evaluates the
+# six habitats as an if/else chain on the two percentages, so an earlier branch
+# wins outright and the ORDER is the instrument. The thresholds are the
+# renderer's — the record records them in a comment and deliberately does not
+# author them, because a key with no read site is a dead key (R5) — and they are
+# needed in two places: the resting render, which must show the verdict the
+# opening leaf actually earns, and the runtime. Writing them twice is how the
+# static page and the live page come to disagree about which habitat a leaf can
+# live in, so they are written once, in Python, and shipped to the runtime as
+# `data-rules`. There is no expression to parse at either end: a rule is a set
+# of bounds and the matcher is four comparisons.
+# Design's own template constant above the verdict panel (b7-02 page line 142).
+# It is the SAME on all six branches, so it is the block's chrome rather than
+# per-branch data — the record says so and deliberately authors no `tag`.
+# Lifting it here keeps it authored exactly once without pretending it varies;
+# `_WHY_LABEL` in the B5 section is the same decision for the same reason.
+_LT_VERDICT_LABEL = "Where this leaf could live"
+
+_LEAF_RULES = (
+    {"id": "swamp",    "water_gt": 150, "rate_gte": 90},
+    {"id": "worst",    "water_gt": 150},
+    {"id": "desert",   "rate_lt": 45, "water_lt": 60},
+    {"id": "oak",      "rate_gte": 85, "water_lte": 115},
+    {"id": "slow",     "rate_lt": 45},
+    {"id": "middling"},
+)
+
+
+def _leaf_verdict(rate_pct, water_pct):
+    """The first rule whose bounds the leaf satisfies. Order is the cascade."""
+    for rule in _LEAF_RULES:
+        ok = True
+        for key, bound in rule.items():
+            if key == "id":
+                continue
+            value = rate_pct if key.startswith("rate") else water_pct
+            test = key.split("_", 1)[1]
+            if test == "gt" and not value > bound:
+                ok = False
+            elif test == "gte" and not value >= bound:
+                ok = False
+            elif test == "lt" and not value < bound:
+                ok = False
+            elif test == "lte" and not value <= bound:
+                ok = False
+        if ok:
+            return rule["id"]
+    raise ValueError("the leaf-tuner cascade has no final branch")
+
+
+def r_leaf_tuner(a, act_id):
+    """⊕ b7-02 `#s-tuner` — two readouts that disagree, and no winning setting.
+
+    ⚖️ THE INSTRUMENT OPENS ON A DELIBERATELY BAD LEAF. `start` is enormous,
+    thick, many stomata, no cuticle — 110% rate at 363% water — and that is not
+    a default anybody forgot to tidy, it IS the lesson: the student's first
+    instinct pushes the water readout further up, and `Set it to a real oak
+    leaf` is the REVEAL rather than the starting point. The opposite of b7-01's
+    bench, deliberately, and asserted here: an opening leaf that already lands
+    on `oak` would have answered the question before it was asked.
+
+    ⚖️ THE BAR IS THE PERCENTAGE HALVED AND CLAMPED AT 100, so a FULL bar means
+    200% of an oak leaf. Design's own arithmetic, and it is what makes the
+    opening leaf's water bar sit hard against the end of its track while its
+    rate bar sits at 55% — the picture of the trade-off, before a word of the
+    verdict is read.
+
+    ⚠️ NO PER-BRANCH `tag`. The label above the verdict is "Where this leaf
+    could live" and it is the SAME on all six, so it is the block's chrome
+    rather than per-branch data and the ENGINE emits it. Authoring it six times
+    would pretend it varies.
+    """
+    dials = _b7_dials(a, act_id, ("r", "w"))
+    _b7_need(a, act_id, ("start", "oak", "oak_label", "reset_label",
+                         "readouts"))
+
+    dial_ids = [d["id"] for d in dials]
+    for name in ("start", "oak"):
+        preset = a[name]
+        if sorted(preset) != sorted(dial_ids):
+            raise ValueError(
+                "leaf-tuner %r's `%s` sets %s but the bench has dials %s. A "
+                "preset that misses a dial leaves it wherever it was, and a "
+                "preset naming a dial that is not there is a setting nothing "
+                "can apply." % (act_id, name, sorted(preset), sorted(dial_ids)))
+        for d in dials:
+            if preset[d["id"]] not in [o["id"] for o in d["options"]]:
+                raise ValueError(
+                    "leaf-tuner %r's `%s` sets dial %r to %r, which is not one "
+                    "of its settings."
+                    % (act_id, name, d["id"], preset[d["id"]]))
+
+    def product(preset, key):
+        out = 1.0
+        for d in dials:
+            opt = next(o for o in d["options"] if o["id"] == preset[d["id"]])
+            out *= float(opt[key])
+        return out
+
+    def pcts(preset):
+        return (int(round(product(preset, "r") * 100)),
+                int(round(product(preset, "w") * 100)))
+
+    start_rate, start_water = pcts(a["start"])
+    oak_rate, oak_water = pcts(a["oak"])
+    if _leaf_verdict(start_rate, start_water) == _leaf_verdict(oak_rate,
+                                                               oak_water):
+        raise ValueError(
+            "leaf-tuner %r opens on a leaf that lands in the same habitat as "
+            "the oak shortcut. The opening leaf is deliberately BAD and the "
+            "oak button is the reveal; if the two agree, pressing it reveals "
+            "nothing." % act_id)
+
+    verdicts = _b7_verdict_ids(
+        a, act_id, [r["id"] for r in _LEAF_RULES],
+        "One branch per habitat in the cascade, in the renderer's own order.")
+    for key, v in sorted(verdicts.items()):
+        for f in ("head", "why"):
+            if not v.get(f):
+                raise ValueError("leaf-tuner %r verdict %r declares no %r."
+                                 % (act_id, key, f))
+
+    readouts = a["readouts"]
+    if len(readouts) != 2:
+        raise ValueError(
+            "leaf-tuner %r draws %d readout(s). The bench is two readouts "
+            "pulling against each other." % (act_id, len(readouts)))
+    tone_for = {"rate": "ok", "water": "alert"}
+    rows = []
+    for r in readouts:
+        for f in ("id", "label", "suffix"):
+            if not r.get(f):
+                raise ValueError("leaf-tuner %r readout %r declares no %r."
+                                 % (act_id, r.get("id"), f))
+        if r["id"] not in tone_for:
+            raise ValueError(
+                "leaf-tuner %r readout %r is neither `rate` nor `water`. The "
+                "renderer keys the product it shows and the colour it takes "
+                "off the readout's own id." % (act_id, r["id"]))
+        pct = start_rate if r["id"] == "rate" else start_water
+        rows.append(
+            '<li class="ks3-lt-readout" data-tone="%s">'
+            '<div class="ks3-lt-readrow">'
+            '<p class="ks3-lt-rolabel">%s</p>'
+            '<p class="ks3-lt-rovalue" data-lt-readout="%s" data-suffix="%s">'
+            '%s</p></div>'
+            '<span class="ks3-lt-track"><span class="ks3-lt-fill" '
+            'data-lt-bar="%s" style="width:%s%%"></span></span></li>'
+            % (e(tone_for[r["id"]]), t(r["label"]), e(r["id"]), e(r["suffix"]),
+               t(_b7_suffix(pct, r["suffix"])), e(r["id"]),
+               _pctnum(min(100, pct / 2.0))))
+
+    opening = _leaf_verdict(start_rate, start_water)
+    panels = "".join(
+        '<div class="ks3-lt-verdict" data-lt-verdict="%s"%s>'
+        '<p class="ks3-lt-verdictlabel">%s</p>'
+        '<p class="ks3-lt-head">%s</p>'
+        '<p class="ks3-lt-why">%s</p></div>'
+        % (e(rule["id"]), "" if rule["id"] == opening else " hidden",
+           t(_LT_VERDICT_LABEL), t(verdicts[rule["id"]]["head"]),
+           rich(verdicts[rule["id"]]["why"]))
+        for rule in _LEAF_RULES)
+
+    return ('<div class="ks3-lt" data-lt data-rules="%s" data-start="%s" '
+            'data-oak="%s">%s'
+            '<div class="ks3-lt-panel">'
+            '<ul class="ks3-lt-readouts" role="list">%s</ul>%s'
+            '<div class="ks3-lt-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-lt-oak" '
+            'data-lt-oak>%s</button>'
+            '<button type="button" class="ks3-reveal-btn ks3-lt-reset" '
+            'data-lt-reset>%s</button></div></div></div>'
+            % (e(json.dumps(list(_LEAF_RULES), separators=(",", ":"),
+                            sort_keys=True)),
+               e(json.dumps(a["start"], separators=(",", ":"), sort_keys=True)),
+               e(json.dumps(a["oak"], separators=(",", ":"), sort_keys=True)),
+               _b7_dial_block(
+                   "lt", act_id, dials, a["start"],
+                   lambda d, o: ' data-r="%s" data-w="%s"'
+                   % (e(_pctnum(o["r"])), e(_pctnum(o["w"])))),
+               "".join(rows), panels,
+               t(a["oak_label"]), t(a["reset_label"])))
+
+
+# ── b7-03 `#s-bench` · method-breaker ────────────────────────────────────
+
+def _mb_parent(num):
+    """The step a SUB-step belongs to: `3b` → `3`. `None` for a whole step.
+
+    ⚖️ THE SUB-STEP RELATIONSHIP IS AUTHORED, in `num`, and it is the only
+    thing in the data that says the flame branch depends on the ethanol step.
+    Design's page encodes the same fact twice — the fault fires on
+    `ethanol === 'yes' && heat === 'flame'`, and the `heat` row is DIMMED when
+    the ethanol is skipped — and both fall out of this one derivation. Skip the
+    ethanol and there is no fire to have; hard-coding that pair here instead
+    would be a fact about b7-03 living in the engine.
+    """
+    digits = "".join(ch for ch in str(num) if ch.isdigit())
+    return digits if digits and digits != str(num) else None
+
+
+def r_method_breaker(a, act_id):
+    """⊕ b7-03 `#s-bench` — break a working method and read what you get.
+
+    ⚖️ THIS BENCH OPENS ON THE GOOD METHOD, which is the opposite of b7-02's
+    tuner and the reason every verdict is a consequence of the student's own
+    choice rather than a repair of somebody else's. `full` is both the opening
+    state and the reset target, and it is authored rather than derived: it is
+    the map behind the button labelled "Fresh leaf, full method".
+
+    ⚖️ FAULT PRECEDENCE IS THE PEDAGOGY AND IT IS AUTHORED AS AN ORDERED LIST.
+    Safety first — a naked flame stops the bench outright — then the faults that
+    DESTROY the result, then the ones that only OBSCURE it. Report "the leaf
+    crumbled" ahead of "you skipped the destarching" and the bench has taught
+    that a torn leaf and an undatable result are the same size of mistake. Dict
+    order would have said the same thing today and stopped saying it the first
+    time somebody re-sorted a literal, so the order is read from `precedence`
+    and never from the map.
+
+    ⚠️ THE FLAME BRANCH IS A SAFETY BRANCH, NOT A DATA FAULT, and it is drawn
+    as one. Its own `why` says the practical has ended and its `conclude` says
+    the test never happened; rendering it in the same treatment as "the leaf
+    crumbled" would file a fire at head height alongside a spoiled pattern.
+    It takes `data-kind="safety"` and its own border, and it is the only
+    branch that does. NOTES-B7 flag 14, MRB-233.
+    """
+    steps = a.get("steps") or []
+    if len(steps) < 2:
+        raise ValueError(
+            "method-breaker %r declares %d step(s). The bench is a method, and "
+            "a method with one step cannot be broken in more than one way."
+            % (act_id, len(steps)))
+    _b7_need(a, act_id, ("full", "precedence", "run_label", "run_done_label",
+                         "reset_label", "conclude_label"))
+
+    step_ids, opts_of, num_of = [], {}, {}
+    for s in steps:
+        for f in ("id", "num", "title", "detail", "options"):
+            if not s.get(f):
+                raise ValueError(
+                    "method-breaker %r step %r declares no %r. `detail` is the "
+                    "line that tells a student what the step actually is, and "
+                    "a row without one is a switch with no label."
+                    % (act_id, s.get("id"), f))
+        if s["id"] in step_ids:
+            raise ValueError("method-breaker %r declares step id %r twice."
+                             % (act_id, s["id"]))
+        step_ids.append(s["id"])
+        num_of[s["id"]] = str(s["num"])
+        ids = []
+        for o in s["options"]:
+            if not (o.get("id") and o.get("label")):
+                raise ValueError(
+                    "method-breaker %r step %r has an option missing `id` or "
+                    "`label`." % (act_id, s["id"]))
+            ids.append(o["id"])
+        if len(set(ids)) != len(ids):
+            raise ValueError(
+                "method-breaker %r step %r offers the same option twice."
+                % (act_id, s["id"]))
+        opts_of[s["id"]] = ids
+
+    full = a["full"]
+    if sorted(full) != sorted(step_ids):
+        raise ValueError(
+            "method-breaker %r's `full` answers %s but the method has steps "
+            "%s. `full` is the opening state AND the reset target, so a step "
+            "it does not name opens with no setting at all."
+            % (act_id, sorted(full), sorted(step_ids)))
+    for sid, choice in sorted(full.items()):
+        if choice not in opts_of[sid]:
+            raise ValueError(
+                "method-breaker %r's `full` sets step %r to %r, which is not "
+                "one of its options." % (act_id, sid, choice))
+
+    # A branch id is either a STEP id — the branch fires when that step is
+    # skipped — or an OPTION id of a step, which is the SAFETY branch: `heat` is
+    # never skipped, it is answered one of two ways, and naming the branch after
+    # the wrong ANSWER keeps "the id names the fault" true for all five.
+    by_option = {}
+    for sid in step_ids:
+        for oid in opts_of[sid]:
+            by_option.setdefault(oid, []).append(sid)
+
+    precedence, conditions = list(a["precedence"]), {}
+    for branch in precedence:
+        if branch in step_ids:
+            skip = [o for o in opts_of[branch] if o != full[branch]]
+            if len(skip) != 1:
+                raise ValueError(
+                    "method-breaker %r branch %r names a step offering %d "
+                    "settings other than the full method's. The branch fires "
+                    "when the step is SKIPPED, which needs exactly one way to "
+                    "skip it." % (act_id, branch, len(skip)))
+            conditions[branch] = [{"step": branch, "is": skip[0]}]
+            continue
+        owners = [s for s in by_option.get(branch, []) if full.get(s) != branch]
+        if len(owners) != 1:
+            raise ValueError(
+                "method-breaker %r branch %r is neither a step id nor the "
+                "wrong answer to exactly one step. A branch id names the "
+                "fault, and a fault nothing on the bench can produce is a "
+                "verdict no student will reach." % (act_id, branch))
+        owner = owners[0]
+        cond = [{"step": owner, "is": branch}]
+        # The sub-step's parent, if it has one — see `_mb_parent`.
+        parent_num = _mb_parent(num_of[owner])
+        if parent_num:
+            parents = [s for s in step_ids if num_of[s] == parent_num]
+            if len(parents) != 1:
+                raise ValueError(
+                    "method-breaker %r step %r is numbered %r, so it is a "
+                    "sub-step of step %r — and %d steps carry that number. The "
+                    "numbering is what says which step this one depends on."
+                    % (act_id, owner, num_of[owner], parent_num, len(parents)))
+            cond.append({"step": parents[0], "is": full[parents[0]]})
+        conditions[branch] = cond
+
+    verdicts = _b7_verdict_ids(
+        a, act_id, precedence + ["full"],
+        "One branch per entry in `precedence`, plus `full` — the fallback when "
+        "nothing is broken.")
+    for key, v in sorted(verdicts.items()):
+        for f in ("tag", "head", "why", "conclude"):
+            if not v.get(f):
+                raise ValueError(
+                    "method-breaker %r verdict %r declares no %r. `conclude` "
+                    "is the field the lesson turns on — it is what the result "
+                    "licenses, and Design gives it its own rule and its own "
+                    "label." % (act_id, key, f))
+
+    # The SAFETY branch: the one whose id is an option rather than a step. It is
+    # identified structurally rather than by name, so the treatment follows the
+    # shape of the fault and not the spelling of `flame`.
+    safety = [b for b in precedence if b not in step_ids]
+
+    rows = "".join(
+        '<li class="ks3-mb-step" data-step="%s"%s>'
+        '<span class="ks3-mb-num" aria-hidden="true">%s</span>'
+        '<span class="ks3-mb-stepmain">'
+        '<span class="ks3-mb-steptitle" id="%s-%s-title">%s</span>'
+        '<span class="ks3-mb-stepdetail">%s</span></span>'
+        '<ul class="ks3-options ks3-mb-opts" role="list" '
+        'aria-labelledby="%s-%s-title">%s</ul></li>'
+        % (e(s["id"]),
+           (' data-parent="%s"'
+            % e(next(x for x in step_ids
+                     if num_of[x] == _mb_parent(num_of[s["id"]])))
+            ) if _mb_parent(num_of[s["id"]]) else "",
+           t(s["num"]), e(act_id), e(s["id"]), t(s["title"]), t(s["detail"]),
+           e(act_id), e(s["id"]),
+           "".join(
+               '<li><button type="button" class="ks3-option ks3-mb-opt" '
+               'data-step="%s" data-opt="%s" aria-pressed="%s">'
+               '<span class="ks3-opt-label">%s</span></button></li>'
+               % (e(s["id"]), e(o["id"]),
+                  "true" if full[s["id"]] == o["id"] else "false",
+                  t(o["label"]))
+               for o in s["options"]))
+        for s in steps)
+
+    panels = "".join(
+        '<div class="ks3-mb-verdict" data-mb-verdict="%s"%s hidden>'
+        '<p class="ks3-mb-tag">%s</p>'
+        '<p class="ks3-mb-head">%s</p>'
+        '<p class="ks3-mb-why">%s</p>'
+        '<p class="ks3-mb-conclude"><strong>%s</strong> %s</p></div>'
+        % (e(key), ' data-kind="safety"' if key in safety else "",
+           t(verdicts[key]["tag"]), t(verdicts[key]["head"]),
+           rich(verdicts[key]["why"]), t(a["conclude_label"]),
+           rich(verdicts[key]["conclude"]))
+        for key in sorted(verdicts))
+
+    return ('<div class="ks3-mb" data-mb data-precedence="%s" '
+            'data-conditions="%s" data-full="%s" data-run-label="%s" '
+            'data-run-done-label="%s">'
+            '<ul class="ks3-mb-steps" role="list">%s</ul>'
+            '<div class="ks3-mb-panel">'
+            '<div class="ks3-mb-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-mb-run" '
+            'data-mb-run>%s</button>'
+            '<button type="button" class="ks3-reveal-btn ks3-mb-reset" '
+            'data-mb-reset>%s</button></div>%s</div></div>'
+            % (e(json.dumps(precedence, separators=(",", ":"))),
+               e(json.dumps(conditions, separators=(",", ":"),
+                            sort_keys=True)),
+               e(json.dumps(full, separators=(",", ":"), sort_keys=True)),
+               e(a["run_label"]), e(a["run_done_label"]), rows,
+               t(a["run_label"]), t(a["reset_label"]), panels))
+
+
+# ── b7-04 `#s-trace` · trace-it-back ─────────────────────────────────────
+
+def r_trace_it_back(a, act_id):
+    """⊕ b7-04 `#s-trace` — six foods, one destination, six different distances.
+
+    ⚖️ THE CHAIN IS REVEALED BACKWARDS, one link per press, each with its own
+    note, and the food's verdict lands only when the chain is complete. The
+    chains are deliberately different LENGTHS — bread 3 links, salmon 5 — so the
+    step count varies and the destination does not, which is the sentence the
+    prompt makes to the student. Padding them to a common length would delete
+    the argument.
+
+    ⚖️ HONEY AND MUSHROOM ARE WHY THE INSTRUMENT EXISTS. The mushroom's first
+    link says a fungus cannot photosynthesise at all and its last says the
+    molecules it lives on were built in a leaf; honey is the shortest chemical
+    journey on the plate and belongs to the food that looks least like one.
+    Neither is smoothed into the shape of the other four, and nothing here
+    sorts, groups or ranks the six.
+
+    ⚠️ EVERY LINK OF EVERY CHAIN IS IN THE DOCUMENT, and the notes are hidden
+    rather than absent. The row is drawn from the start — a student reads how
+    far there is to go before taking a step — and what arrives on a press is the
+    note, which is the answer to "where did that come from?".
+    """
+    foods = a.get("foods") or []
+    if len(foods) < 2:
+        raise ValueError(
+            "trace-it-back %r declares %d food(s). The block's argument is that "
+            "the number of steps changes and the destination does not, which "
+            "needs more than one chain." % (act_id, len(foods)))
+    _b7_need(a, act_id, ("options_label", "step_label", "done_label",
+                         "reset_label", "steps_label"))
+
+    steps_label = a["steps_label"]
+    for f in ("idle", "done"):
+        if not steps_label.get(f):
+            raise ValueError(
+                "trace-it-back %r steps_label declares no %r. Both are on "
+                "screen — `idle` before a press and `done` when the producer "
+                "is reached — and a blank one reads as the bench having "
+                "stopped responding." % (act_id, f))
+    if "{n}" not in steps_label["done"]:
+        raise ValueError(
+            "trace-it-back %r steps_label.done names no {n}. The count of "
+            "steps back is the one number this instrument is for." % act_id)
+
+    seen, tabs, panels = [], [], []
+    for i, f in enumerate(foods):
+        for key in ("id", "label", "name", "chain", "verdict"):
+            if not f.get(key):
+                raise ValueError(
+                    "trace-it-back %r food %r declares no %r."
+                    % (act_id, f.get("id"), key))
+        if f["id"] in seen:
+            raise ValueError("trace-it-back %r declares food id %r twice."
+                             % (act_id, f["id"]))
+        seen.append(f["id"])
+        chain = f["chain"]
+        if len(chain) < 3:
+            raise ValueError(
+                "trace-it-back %r food %r has a chain of %d link(s). A chain "
+                "that arrives at a producer in one step is a caption, not a "
+                "trace." % (act_id, f["id"], len(chain)))
+        for link in chain:
+            if not (link.get("name") and link.get("note")):
+                raise ValueError(
+                    "trace-it-back %r food %r has a link missing `name` or "
+                    "`note`. The note is the whole reveal — a link that "
+                    "unhides nothing is a press that does nothing."
+                    % (act_id, f["id"]))
+
+        first = i == 0
+        tabs.append(
+            '<li><button type="button" class="ks3-option ks3-tb-tab" '
+            'data-tb-food="%s" aria-pressed="%s">'
+            '<span class="ks3-opt-label">%s</span></button></li>'
+            % (e(f["id"]), "true" if first else "false", t(f["label"])))
+
+        links = "".join(
+            '<li class="ks3-tb-link" data-i="%d"%s%s>'
+            '<span class="ks3-tb-num" aria-hidden="true">%d</span>'
+            '<span class="ks3-tb-linkmain">'
+            '<span class="ks3-tb-linkname">%s</span>'
+            '<span class="ks3-tb-note"%s>%s</span></span></li>'
+            % (j, ' data-shown=""' if j == 0 else "",
+               ' data-last=""' if j == len(chain) - 1 else "",
+               j + 1, t(link["name"]), "" if j == 0 else " hidden",
+               t(link["note"]))
+            for j, link in enumerate(chain))
+
+        panels.append(
+            '<div class="ks3-tb-food" data-tb-panel="%s" data-total="%d"%s>'
+            '<div class="ks3-tb-headrow">'
+            '<p class="ks3-tb-name">%s</p>'
+            '<p class="ks3-tb-steps" data-tb-steps>%s</p></div>'
+            '<ol class="ks3-tb-chain" role="list">%s</ol>'
+            '<p class="ks3-tb-verdict" data-tb-verdict hidden>%s</p></div>'
+            % (e(f["id"]), len(chain), "" if first else " hidden",
+               t(f["name"]), t(steps_label["idle"]), links,
+               rich(f["verdict"])))
+
+    # ⚠️ `ks3-reveal-btn` ON THE STEP BUTTON — Design's own class, and it is
+    # also one of the five signals `check_rail_reachable` reads out of the
+    # static page. The food tabs carry `class="ks3-option` for the same reason.
+    return ('<div class="ks3-tb" data-tb data-food="%s" data-step-label="%s" '
+            'data-done-label="%s" data-steps-idle="%s" data-steps-done="%s">'
+            '<div class="ks3-tb-tabsgroup">'
+            '<p class="ks3-tb-tabslabel" id="%s-plate">%s</p>'
+            '<ul class="ks3-options ks3-tb-tabs" role="list" '
+            'aria-labelledby="%s-plate">%s</ul></div>'
+            '<div class="ks3-tb-panel">%s'
+            '<div class="ks3-tb-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-tb-back" '
+            'data-tb-back>%s</button>'
+            '<button type="button" class="ks3-reveal-btn ks3-tb-reset" '
+            'data-tb-reset>%s</button></div></div></div>'
+            % (e(foods[0]["id"]), e(a["step_label"]), e(a["done_label"]),
+               e(steps_label["idle"]), e(steps_label["done"]),
+               e(act_id), t(a["options_label"]), e(act_id), "".join(tabs),
+               "".join(panels), t(a["step_label"]), t(a["reset_label"])))
+# renderers: ═══ END B7 ═══
+
+
 ACTIVITY_KIND_RENDERERS = {
     "test-board":    ("ks3-board",
                       ' data-instrument data-board data-stage-done="0"'),
@@ -11849,6 +12699,32 @@ ACTIVITY_KIND_RENDERERS = {
     "what-it-becomes": ("ks3-becomes-block", ' data-instrument data-cmpblock data-stage-done="0"'),
     "cycle-dial": ("ks3-dial-block", ' data-instrument data-dialblock data-stage-done="0"'),
     # ═══ END B5 dispatch ═══
+
+    # ═══ BEGIN B7 dispatch ═══
+    #
+    # ── B7 · Photosynthesis (⊕ MRB-245) ──
+    #
+    # Four instruments, four markers, four wire functions, four stylesheet
+    # namespaces — nothing is shared here, because nothing in this unit is the
+    # same block twice. All four are `ks3-block ks3-dark ks3-practical`,
+    # measured off Design's own markup on all four pages, so all four are on
+    # ink and every colour rule they hang on is scoped `.ks3-dark …` at
+    # (0,2,0).
+    #
+    # All four carry a completion contract, so all four emit
+    # `data-stage-done="0"` and the rail reads the instrument's own predicate
+    # rather than guessing from `aria-pressed` — which on every one of them
+    # would tick the stage on load, because every dial, every step and the
+    # first food tab is pressed before the student has decided anything.
+    "reactant-remover": ("ks3-rr-block",
+                         ' data-instrument data-rrblock data-stage-done="0"'),
+    "leaf-tuner":       ("ks3-lt-block",
+                         ' data-instrument data-ltblock data-stage-done="0"'),
+    "method-breaker":   ("ks3-mb-block",
+                         ' data-instrument data-mbblock data-stage-done="0"'),
+    "trace-it-back":    ("ks3-tb-block",
+                         ' data-instrument data-tbblock data-stage-done="0"'),
+    # ═══ END B7 dispatch ═══
 }
 
 # Kinds that ARE the generic shell, and are not waiting for a component.
@@ -11987,6 +12863,12 @@ ACTIVITY_KIND_FN = {
     "what-it-becomes":        r_what_it_becomes,
     "disperse-sort":          r_disperse_sort,
     # ═══ END B5 renderfn ═══
+    # ═══ BEGIN B7 renderfn ═══
+    "reactant-remover":       r_reactant_remover,
+    "leaf-tuner":             r_leaf_tuner,
+    "method-breaker":         r_method_breaker,
+    "trace-it-back":          r_trace_it_back,
+    # ═══ END B7 renderfn ═══
 }
 
 
@@ -12010,7 +12892,27 @@ ACTIVITY_KIND_FN = {
 # opening length.
 #
 # An authored `start` still wins. This only fills a blank.
-_KIND_HEAD_START = {"cycle-dial": 1}
+_KIND_HEAD_START = {"cycle-dial": 1, "trace-it-back": 1}
+
+# ── and the counter's DENOMINATOR, where it is a property of the payload ──
+#
+# ⊕ MRB-245 / B7. `head_counter.total` is authored on every counter in the key
+# stage because every one of them counts against a fixed number the author
+# knows. b7-04's does not: "step {n} of {total}" runs over SIX chains of three,
+# four and five links, so the denominator changes with the tab and belongs to
+# the food rather than to the block. `wireTraceItBack` rewrites `data-total` on
+# every food change and would have been the only thing that ever knew it — so
+# the shipped bytes would have read "step 1 of 0" until JS ran, which is a
+# wrong number on screen and a wrong number for a crawler or a JS-off reader.
+#
+# A callable rather than an int for the same reason `_KIND_HEAD_START` is a
+# constant: the value is not the author's to choose. It is the length of the
+# first food's chain, and it would still be that if the author reordered the
+# plate. An authored `total` still wins; this only fills a blank.
+_KIND_HEAD_TOTAL = {
+    "trace-it-back":
+        lambda a: len(((a.get("foods") or [{}])[0]).get("chain") or []),
+}
 
 # The three that need the whole lesson, not just the activity, because they
 # read the lesson's equation or its misconception register.
@@ -12195,6 +13097,30 @@ def r_activity(lesson, block_type, act_id, block=None):
     # instrument owns every option inside it, and the generic Law 4 wiring
     # would otherwise unhide the first `[data-reveal]` it found, which on the
     # board is specimen one's verdict panel.
+    # ⊕ MRB-245 — an activity may DECLARE the shell it expects, and a
+    # disagreement is a build failure rather than a silent repaint.
+    #
+    # Every unit since B5 lifts its instruments out of `core` with a
+    # `_INSTRUMENT_SEGMENTS` map in its own `__init__.py`, and that map is what
+    # decides the shell. b7-01's record also states the segment on the block
+    # itself — measured off Design's own markup, `ks3-block ks3-dark
+    # ks3-practical`, and written down beside the measurement. Unread, that is
+    # a dead key (R5) and, worse, a SECOND statement of the shell that can
+    # disagree with the first: a lesson could declare `practical` and be lifted
+    # into a `check`, and the page would ship the wrong ground with nothing
+    # anywhere saying so. §4 of the build contract records that B1 got two of
+    # six shells wrong by inferring them from the kind name — this is the
+    # assertion that would have caught it.
+    declared = a.get("segment")
+    if declared and declared != block_type:
+        raise ValueError(
+            "%s: activity %r declares segment %r and was rendered into a %r "
+            "shell. The segment is MEASURED off Design's markup, so the two "
+            "disagreeing means either the measurement or the unit's "
+            "_INSTRUMENT_SEGMENTS map is wrong — and the page would ship the "
+            "other one's ground in silence."
+            % (lesson.get("slug"), act_id, declared, block_type))
+
     instrument = ACTIVITY_KIND_RENDERERS.get(kind)
     marker = ""
     if instrument:
@@ -12251,6 +13177,10 @@ def r_activity(lesson, block_type, act_id, block=None):
     # record is shared with every gate that reads it afterwards.
     if hc and kind in _KIND_HEAD_START and "start" not in hc:
         hc = dict(hc, start=_KIND_HEAD_START[kind])
+    # ⊕ MRB-245 / B7 — and its denominator, where that is a fact about the
+    # payload rather than a number an author chose. See `_KIND_HEAD_TOTAL`.
+    if hc and kind in _KIND_HEAD_TOTAL and "total" not in hc:
+        hc = dict(hc, total=_KIND_HEAD_TOTAL[kind](a))
     head_emitted_content = False
     if block_type == "misconception":
         parts.append('<div class="ks3-mis-head">'
@@ -12676,6 +13606,84 @@ def r_key_fact(lesson, block):
                rich(spec.get("text", ""))))
 
 
+def _rule_card(block, i, c):
+    """One statement-panel card — ⊕ MRB-245, and a CONTENT-LOSS repair.
+
+    ⚠️ **THIS RENDERED THREE PAGES' CARDS AS EMPTY `<li>`s, TWO OF THEM LIVE.**
+    The card was `term` + `gloss` and nothing else, and three lesson records
+    authored a card Design had drawn with more parts than that:
+
+      b1-03 `#s-rule`  `label` + `chips[]` + `chip_tone` + `close`  — the
+                       "In both · 4" / "Plant only · 3" pills. SIX pills and
+                       two closing sentences, on an approved page in front of
+                       students, rendering as two empty boxes.
+      b1-04 `#s-rule`  `label` + `title` + `body` + `examples` — the four
+                       "Problem 1…4" cards, likewise live, likewise empty.
+      b7-01 `#s-summary` `role` + `name` + `body` — the four part cards
+                       sorting the reaction into reactants and products, which
+                       is what rung 1 marks.
+
+    Nothing failed. The `<li>`s were emitted, the grid laid out, the panel
+    looked deliberate, and `ks3_key_audit.py` was clean because `name`, `body`,
+    `label` and `title` are string literals in half the generator — the audit
+    is a lint on NAMES and cannot see that THIS `name` reached no page. It is
+    the `r_activity` empty-block defect one level down, and it is why the raise
+    at the end of this function exists.
+
+    Every shape below is MEASURED off Design's own markup — b1-03 lines
+    230–248, b1-04 lines 218–223, b7-01 lines 173–178 — and every string was
+    already authored. Nothing is invented and no copy is written here.
+
+    Shipped `term` + `gloss` cards are byte-identical across this change: each
+    new part renders only when its key is authored, and no live card authors
+    one.
+    """
+    role_tone = c.get("label_tone") or "accent"
+    role = c.get("role") or c.get("label")
+    # `term` is the shipped spelling. `name` (b7-01) and `title` (b1-04) are
+    # the same slot under the words their own records use — the `_b5_label`
+    # union, and the alternative was failing two live lessons over a synonym.
+    term = c.get("term") or c.get("name") or c.get("title")
+    # `gloss` shipped; `body` is b1-04's and b7-01's; `close` is b1-03's
+    # closing sentence, which sits in the same place and does the same job.
+    gloss = c.get("gloss") or c.get("body") or c.get("close")
+    chips = c.get("chips") or []
+    # b1-04's foot line: the cells that answer the problem the card names.
+    examples = c.get("examples")
+
+    parts = []
+    if role:
+        parts.append('<p class="ks3-rule-role" data-tone="%s">%s</p>'
+                     % (e(role_tone), t(role)))
+    if term:
+        parts.append('<p class="ks3-rule-term">%s</p>' % t(term))
+    if chips:
+        parts.append('<ul class="ks3-rule-chips" data-tone="%s" role="list">%s'
+                     '</ul>'
+                     % (e(c.get("chip_tone") or "inset"),
+                        "".join('<li class="ks3-rule-chip">%s</li>' % t(ch)
+                                for ch in chips)))
+    if gloss:
+        parts.append('<p class="ks3-rule-gloss">%s</p>' % rich(gloss))
+    if examples:
+        parts.append('<p class="ks3-rule-eg">%s</p>' % t(examples))
+
+    # ⊕ MRB-245 — A CARD THAT RENDERS NOTHING IS A BUILD FAILURE, for the same
+    # reason `r_activity` raises on an activity that renders nothing: the box
+    # is still drawn, the grid still lays out, and the page looks intentional.
+    # Ten empty cards shipped across three lessons behind a green build; this
+    # is the assertion that would have caught the first one.
+    if not parts:
+        raise ValueError(
+            "%s: statement-panel card %d renders NOTHING — it authors %s and "
+            "this component reads role/label, term/name/title, chips, "
+            "gloss/body/close and examples. An empty card is still a drawn box "
+            "on a laid-out grid, so it ships looking deliberate."
+            % (block.get("anchor") or block.get("id") or "rule", i,
+               sorted(c) or "no keys at all"))
+    return "<li>%s</li>" % "".join(parts)
+
+
 def r_rule(lesson, block):
     """⊕ §5.1.1 — the statement panel: the lesson's rule, in the student's words.
 
@@ -12689,19 +13697,99 @@ def r_rule(lesson, block):
     page's own. b1-02's formula statement and b1-05's instrument readout are
     excluded from that role and are different components.
     """
-    cards = "".join(
-        '<li><p class="ks3-rule-term">%s</p><p class="ks3-rule-gloss">%s</p></li>'
-        % (t(c.get("term", "")), rich(c.get("gloss", "")))
-        for c in block.get("cards") or [])
+    cards = "".join(_rule_card(block, i, c)
+                    for i, c in enumerate(block.get("cards") or []))
     close = ('<p class="ks3-rule-close">%s</p>' % rich(block["close"])
              if block.get("close") else "")
+    # ⊕ MRB-245 / B7 — the WORD SUMMARY, drawn between the statement and the
+    # cards, which is where Design puts it (b7-01 page lines 165–170).
+    equation = r_equation(block["equation"]) if block.get("equation") else ""
+    # ⊕ MRB-245 / B7 — a NESTED key fact, exactly as `r_comparison` has taken
+    # one since B1. Design nests the box inside three of the four B7 band
+    # panels; two of those lessons resolved it by lifting the box to a
+    # top-level `key-fact` block, and b7-01 authored it in place because its
+    # box is on the CARD ground rather than the band and lifting it would have
+    # changed the treatment. Defaulting to `card` is `r_comparison`'s own
+    # default, for its own reason: this panel is already `--ks3-band`, and band
+    # on band is invisible.
+    nested = block.get("key_fact")
+    kf = (r_key_fact(lesson, dict(nested, ground=nested.get("ground", "card")))
+          if nested else "")
     return ('<section class="ks3-rule"%s><p class="ks3-eyebrow">%s</p>'
             '<p class="ks3-rule-statement">%s</p>'
-            '%s%s</section>'
+            '%s%s%s%s</section>'
             % (_id_attr(block), t(block.get("eyebrow") or "What settles it"),
-               rich(block.get("statement", "")),
+               rich(block.get("statement", "")), equation,
                ('<ul class="ks3-rule-cards">%s</ul>' % cards) if cards else "",
-               close))
+               kf, close))
+
+
+# Design's arrow, measured off b7-01 page line 167 and redrawn here rather than
+# retyped: viewBox `0 0 60 24`, `M2 12h48M42 5l8 7-8 7`, no fill, 3px stroke,
+# round caps and joins, on `var(--ks3-accent-text)`. That geometry belongs to
+# the engine exactly as `_BEAM` does — it is Design's drawing, not content.
+_EQN_ARROW = (
+    '<svg class="ks3-eqn-arrow" viewBox="0 0 60 24" width="60" height="24" '
+    'aria-hidden="true" focusable="false">'
+    '<path d="M2 12h48M42 5l8 7-8 7" fill="none" stroke="currentColor" '
+    'stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>'
+    '</svg>')
+
+
+def r_equation(eq):
+    """⊕ MRB-204 as amended · b7-01 `#s-summary` — the word summary.
+
+    ⚠️ **THE ARROW IS DRAWN, AND THERE IS NO SLOT TO TYPE ONE INTO.** The
+    design system's five latin woff2 subsets contain no U+2192 — the same fact
+    that makes `MARK_ARROW` a drawing — so a typed arrow drops to a system font
+    mid-line inside a 27px Bricolage-800 row. `arrow` therefore holds the WORD
+    the arrow MEANS, "gives", and that word is the component's accessible name
+    and nothing else. Three consequences, all deliberate: there is no field an
+    author could put a character into that would render between the two halves;
+    the accessible name is composed out of the same four strings a sighted
+    student reads, so it cannot drift from them; and "gives" is the word the
+    page itself uses everywhere the summary is spoken aloud — the key note and
+    all four options of rung 1.
+
+    ⚖️ **NO TRIANGLE AND NO COVER-BAR, BY DECISION.** MRB-204 as amended gives
+    the triangle to a product (`A = B × C`) and the balance beam plus part–whole
+    bar to a sum or a conservation statement. A chemical change is neither: two
+    substances are consumed and two different ones are produced, and no quantity
+    on the left is recoverable by covering a quantity on the right. A triangle
+    over `carbon dioxide + water → glucose + oxygen` would teach that
+    `water = glucose × oxygen ÷ carbon dioxide`, which is not merely unhelpful
+    but false, and a part–whole bar would teach the conservation-of-mass claim
+    c2-06 owns rather than what a word summary says. So this block carries the
+    equation and nothing else, and the two cover components are absent by
+    decision rather than by omission.
+
+    Geometry follows Design's own markup: a wrapping flex row of reactants,
+    arrow, products, with `condition` full-width beneath it. Not a stack —
+    measured, because a horizontal arrow between two stacked labels points at
+    nothing.
+    """
+    for key in ("reactants", "arrow", "products", "condition"):
+        if not eq.get(key):
+            raise ValueError(
+                "the word summary declares no %r. `arrow` is the WORD the drawn "
+                "arrow means and is the component's accessible name; the "
+                "character itself is never authored." % key)
+    for key in ("reactants", "arrow", "products"):
+        if "→" in eq[key]:
+            raise ValueError(
+                "the word summary's %r contains a typed U+2192. The arrow is "
+                "DRAWN — the design system's fonts have no glyph for it, so a "
+                "typed one falls back to a system font mid-line. `arrow` holds "
+                "the word it means." % key)
+    return ('<div class="ks3-eqn" role="img" aria-label="%s">'
+            '<p class="ks3-eqn-side">%s</p>'
+            '<span class="ks3-eqn-arrowwrap" aria-hidden="true">%s</span>'
+            '<p class="ks3-eqn-side">%s</p>'
+            '<p class="ks3-eqn-condition">%s</p></div>'
+            % (e("%s %s %s, %s" % (eq["reactants"], eq["arrow"], eq["products"],
+                                   eq["condition"])),
+               t(eq["reactants"]), _EQN_ARROW, t(eq["products"]),
+               t(eq["condition"])))
 
 
 def r_formula(lesson, block):
@@ -12963,6 +14051,28 @@ def _id_attr(block):
     return (' id="%s"' % e(anchor)) if anchor else ""
 
 
+def _require_slug(entry):
+    """A `requires` edge as the slug the registry is keyed by.
+
+    ⊕ MRB-245 / B7. `references` has accepted both a bare slug and a
+    `{unit, lesson, why}` record since B1 — the dict form is REQUIRED there the
+    moment an edge crosses a unit boundary — and `requires` accepted only the
+    bare slug. b7-03 requires `food-tests`, which is B3's, and authored it in
+    the shape §4.6 taught it for a cross-unit edge. The build did not report a
+    schema violation: it raised `cannot use 'dict' as a dict key` out of the
+    cycle check, three functions away from the record.
+
+    Both fields name a lesson and both resolve against the same slug-keyed
+    registry, so one spelling now works in both. `requires` still needs no unit
+    code to find its target — the registry is flat — so the `unit` key is
+    accepted and ignored rather than checked, exactly as a same-unit
+    `references` string is.
+    """
+    if isinstance(entry, dict):
+        return entry.get("lesson") or entry.get("slug") or ""
+    return entry
+
+
 BLOCK_RENDERERS = {
     "hook": r_hook,
     "key-fact": r_key_fact,
@@ -13219,7 +14329,7 @@ def lesson_page(unit, lesson, registry, units_by_code):
 
     # Prerequisites (§4.9) — student-facing use of the graph.
     prereqs = []
-    for slug in lesson.get("requires", []):
+    for slug in [_require_slug(x) for x in lesson.get("requires", [])]:
         r = registry.get(slug)
         if not r:
             continue
@@ -14225,7 +15335,8 @@ def validate(units, registry):
     problems = []
 
     # 1. Prerequisite graph must be acyclic.
-    graph = {s: [r for r in (l.get("requires") or []) if r in registry]
+    graph = {s: [r for r in map(_require_slug, l.get("requires") or [])
+                 if r in registry]
              for s, l in registry.items()}
     WHITE, GREY, BLACK = 0, 1, 2
     colour = {n: WHITE for n in graph}
@@ -14246,7 +15357,7 @@ def validate(units, registry):
 
     # 2. `requires` must point at lessons that exist.
     for slug, l in sorted(registry.items()):
-        for r in l.get("requires") or []:
+        for r in map(_require_slug, l.get("requires") or []):
             if r not in registry:
                 problems.append("UNKNOWN PREREQUISITE: %s requires %r" % (slug, r))
 

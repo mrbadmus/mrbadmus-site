@@ -97,25 +97,33 @@ this page could only ever tick on the bench's state.
    *Diffusion* — another discipline entirely — as the next lesson. Same
    resolution as b3-07.
 
-── ⚑ A LENGTH TELL IS PRESENT ON RUNG 2, AND IT IS AUTHORED AS DRAWN ────
+── ⊕ THE RUNG 2 LENGTH TELL — RULED AND FIXED, 17 Aug 2026 ──────────────
 
-Measured with `verify_ks3.py`'s own `length_tell()` heuristic (MRB-177):
+MRB-177 was ruled by Mide on 17 Aug 2026. The ruling: on a recall or apply
+rung the correct answer states a RULE (subject, condition, consequence) while
+distractors stated one-clause wrong REASONS, so the correct answer was longer
+BY CONSTRUCTION and could be scored without being read. The fix is that
+distractors state wrong RULES — the same shape as the correct answer, with the
+misconception as the consequence. Length parity then follows from the
+construct.
 
-    rung 1 · correct 9w against distractors of 4 / 5 / 7 — clears the longest
-             by 2 words and by ×1.29. **Under both thresholds. PASSES.**
-    rung 2 · correct 14w against distractors of 6 / 7 / 5 — clears the longest
-             by 7 words. **FAILS: ≥4-word gap.**
+Rung 2's three distractors are Mide's own replacements, applied verbatim. The
+correct option is unchanged, its index is unchanged, and the `length_tell()`
+threshold in `verify_ks3.py` is unchanged.
 
-Rung 2's correct option is a length tell as Design drew it. It is authored
-unchanged, for two reasons. Rewriting a distractor changes what a marked
-question measures, and `verify_ks3.py` says in as many words that this is
-Mide's gate and not a script's. And the fix is not this file's to make: the
-`KNOWN_TELLS` register lives in `verify_ks3.py`, which an authoring pass does
-not edit (build contract §0).
+    rung 1 · untouched. correct 9w against distractors of 4 / 5 / 7 — clears
+             the longest by 2 words and by ×1.29. Under both thresholds.
+    rung 2 · correct 14w (unchanged) against distractors now 16 / 17 / 13.
+             The correct option is no longer the longest. PASSES.
 
-⚑ **This WILL fail `verify_ks3.py` until the commander either registers it or
-Mide rules a rewrite.** Reported rather than worked around; a failing gate is a
-finding.
+⛔ SUPERSEDED, kept for the record — this block used to read "⚑ A LENGTH TELL
+IS PRESENT ON RUNG 2, AND IT IS AUTHORED AS DRAWN", measured the tell (correct
+14w against 6 / 7 / 5, failing the ≥4-word gap), and argued the fix was not
+this file's to make because rewriting a distractor changes what a marked
+question measures — Mide's gate, not a script's — and the `KNOWN_TELLS`
+register lives in `verify_ks3.py`, which an authoring pass does not edit
+(build contract §0). That reasoning was correct at the time and held the
+finding open until Mide ruled. He has now ruled, and the rewrite is his.
 
 ⚑ For Mide's science gate — NOTES-B4 flags this lesson carries:
   * **flag 4** — ~500 million alveoli and ~70 m² total surface. Both are quoted
@@ -524,9 +532,11 @@ LESSON = {
 
     # ── the mastery ladder (Law 8, §5.8) ────────────────────────────────────
     #
-    # ⚖️ MRB-177 LENGTH PARITY — MEASURED. Rung 1 passes; RUNG 2 DOES NOT, and
-    # is authored as drawn. Both measurements and the reasoning are in the
-    # docstring. This is a reported finding, not a silent acceptance.
+    # ⊕ MRB-177 RULED 17 Aug 2026 — rung 2's three distractors now state wrong
+    # RULES, the same shape as the correct option, and parity follows from the
+    # construct. Superseded note, kept: "⚖️ MRB-177 LENGTH PARITY — MEASURED.
+    # Rung 1 passes; RUNG 2 DOES NOT, and is authored as drawn." The correct
+    # option, its index and the threshold were not touched. See the docstring.
     "ladder": {
         "recall": {
             "title": "Rung 1 · Why so many",
@@ -553,11 +563,14 @@ LESSON = {
             "q": "You hold your breath. Blood keeps flowing. After a while, "
                  "net oxygen absorption falls close to zero. Why?",
             "options": [
-                "The oxygen molecules have stopped moving",
-                "The oxygen has finished spreading out evenly",
+                "Diffusion stops when the molecules stop moving, and with no "
+                "fresh air they come to rest",
+                "Oxygen moves in order to spread out evenly, and once it "
+                "has, the process is finished",
                 "The alveolar and blood concentrations have become nearly "
                 "equal, so crossings each way balance",
-                "The alveolus wall has closed",
+                "The alveolus wall closes when no air arrives, so nothing "
+                "can cross it",
             ],
             "answer": 2,
             "feedback": {

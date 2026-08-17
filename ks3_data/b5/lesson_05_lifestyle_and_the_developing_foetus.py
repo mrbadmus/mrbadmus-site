@@ -170,14 +170,37 @@ class otherwise takes away from this lesson.
    by nothing and dispatching on which key is present instead; R5 says a key
    with no read site is not authored. The hook is a narrative one either way.
 
-⚑ **A LENGTH TELL ON RUNG 1, LIFTED ANYWAY (MRB-177).** Measured: the correct
-option is 15 words against distractors of 9 / 9 / 8, so it is the longest by
-some margin and a student who reads nothing could pick it on that alone. B4's
-parity note says no distractor was rewritten because there was nothing to
-repair; here there IS something to repair and it is still not repaired,
-because every option is Design's science copy and MRB-205 says the page wins.
-Reported for Mide. Rung 2 is clean — the correct option is one word against
-5 / 1 / 1.
+⊕ **THE RUNG 1 LENGTH TELL IS REPAIRED — MRB-177 RULED 17 Aug 2026.**
+Measured before: the correct option was 15 words against distractors of
+9 / 9 / 8, the longest by some margin, so a student who read nothing could pick
+it on that alone.
+
+Mide ruled the CONSTRUCT rather than this instance: on a recall or apply rung
+the correct answer states a RULE — subject, condition, consequence — while the
+distractors stated one-clause wrong REASONS, so the correct answer was longer by
+construction. A distractor must state a WRONG RULE instead, in the same shape,
+with the misconception as the consequence; length parity then follows from the
+construct rather than from trimming the correct answer.
+
+Rung 1's three distractors are Mide's own replacement copy, applied verbatim.
+**The correct option is unchanged, `answer: 1` is unchanged, and the gate's
+threshold is unchanged.** Measured after: 15 against 15 / 17 / 15 — no longer
+strictly the longest. All three corrections in `feedback` already answered the
+new wording and are byte-identical. Rung 2 is untouched and still clean — the
+correct option is one word against 5 / 1 / 1.
+
+⛔ Superseded, kept as history: this note used to read *"here there IS something
+to repair and it is still not repaired, because every option is Design's science
+copy and MRB-205 says the page wins. Reported for Mide."* It was reported, and
+he has ruled — the replacement copy is his, so MRB-205's "the page wins" is not
+overridden by an author. The
+`("lifestyle-and-the-developing-foetus", "ladder recall")` entry in
+`verify_ks3.py`'s `KNOWN_TELLS` is now stale; the commander deletes it.
+
+⚠️ Typographic note, reported rather than corrected: Mide's replacement copy
+uses STRAIGHT apostrophes ("the mother's blood") where this page's JS-constant
+convention is CURLY, so rung 1 now carries both forms. His instruction was to
+apply the copy exactly as given, so it is applied exactly.
 
 ⚑ For Mide's science gate — NOTES-B5 flags landing on THIS lesson:
   * flag 26 — **the six crossing claims as one block**: alcohol, carbon
@@ -708,10 +731,17 @@ LESSON = {
 
     # ── the mastery ladder (Law 8, §5.8) ────────────────────────────────────
     #
-    # ⚖️ MRB-177 LENGTH PARITY — MEASURED, AND RUNG 1 FAILS IT. The correct
-    #   option is 15 words against 9 / 9 / 8. Lifted unrepaired and reported:
-    #   every option is Design's science copy and MRB-205 says the page wins.
-    #   rung 2: correct is 1 word against 5 / 1 / 1 — clean.
+    # ⊕ MRB-177 LENGTH PARITY — RULED 17 Aug 2026, AND RUNG 1 IS FIXED. Its
+    #   three distractors are Mide's own replacement copy, applied verbatim,
+    #   and each now states a WRONG RULE in the same shape as the correct
+    #   answer. The correct option, `answer: 1` and the gate's threshold are
+    #   untouched. Measured after: 15 against 15 / 17 / 15.
+    #   rung 2: correct is 1 word against 5 / 1 / 1 — clean, and untouched.
+    #
+    #   ⛔ Superseded, kept: this block used to read "MEASURED, AND RUNG 1
+    #   FAILS IT … Lifted unrepaired and reported: every option is Design's
+    #   science copy and MRB-205 says the page wins." It was reported; he
+    #   ruled. See the docstring.
     #
     # Design's rung titles are kept verbatim, including "Apply the rule" on the
     # `recall` slot: the engine's slot names are internal and the student reads
@@ -721,11 +751,14 @@ LESSON = {
             "title": "Rung 1 · Apply the rule",
             "q": "Why does alcohol reach a developing foetus?",
             "options": [
-                "Because the mother’s blood and the foetus’s blood mix",
+                "Because the mother's blood and the foetus's blood mix, so "
+                "anything in hers reaches it",
                 "Because it is a small molecule dissolved in blood, so it "
                 "diffuses across the placenta",
-                "Because the placenta cannot break it down quickly enough",
-                "It does not — the placenta filters it out",
+                "Because the placenta breaks alcohol down slowly, so some of "
+                "it gets past before it is destroyed",
+                "It does not — the placenta filters out anything harmful "
+                "before it can reach the foetus",
             ],
             "answer": 1,
             "feedback": {

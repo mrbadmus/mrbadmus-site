@@ -227,22 +227,44 @@ the built page.
     make. "uterus" and "cervix" are deliberately absent: `b5-01` owns both, and
     a term defined twice in one unit is a term that can drift.
 
-── ⚑ MRB-177 LENGTH PARITY — MEASURED, AND RUNG 1 FAILS ─────────────────
+── ⊕ MRB-177 LENGTH PARITY — RULED 17 Aug 2026, BOTH RUNGS REPAIRED ─────
 
-Measured with `verify_ks3.py`'s own `length_tell()` heuristic, not by eye:
+The unit-wide pattern this section used to report has been ruled on as a
+pattern. Mide's ruling: on a recall or apply rung the correct answer states a
+RULE — subject, condition, consequence — while the distractors stated one-clause
+wrong REASONS, so the correct answer was longer BY CONSTRUCTION and a student
+could score the rung without reading it. A distractor must state a WRONG RULE
+instead: the same shape as the correct answer, with the misconception as the
+consequence. Length parity then follows from the construct; nothing was trimmed.
 
-    ladder recall (rung 1): correct 15w against a longest distractor of 9w
-                            → flagged (gap 6 ≥ 4)
-    ladder apply  (rung 2): correct 12w against a longest distractor of 8w
-                            → flagged (gap 4 ≥ 4)
+Six distractors across the two marked rungs are Mide's own replacement copy,
+applied verbatim. **Neither correct option was touched, neither `answer` index
+moved, and `verify_ks3.py`'s threshold is unchanged.** Measured after:
 
-Both are Design's option sets exactly as drawn. **Nothing here is rewritten.**
-Rewriting a distractor changes what a marked question measures, which is Mide's
-gate and not an authoring pass's — and `verify_ks3.py` is the engine pass's file
-under build contract §0, so this pass neither rewrites the options nor registers
-an exemption. Reported with the measurements so it can be ruled on. b5-03 fails
-both rungs on the same heuristic and b5-05 fails rung 1; this is a unit-wide
-pattern, not a defect in one page.
+    ladder recall (rung 1): correct 16w against 14 / 14 / 16 — no longer
+                            STRICTLY the longest
+    ladder apply  (rung 2): correct 13w against 16 / 14 / 13 — no longer the
+                            longest option at all
+
+All six corrections in `feedback` already answered the new wording and are
+byte-identical.
+
+⛔ SUPERSEDED, KEPT AS HISTORY. This section used to record rung 1 at 15w
+against 9w and rung 2 at 12w against 8w, and closed: *"Both are Design's option
+sets exactly as drawn. **Nothing here is rewritten.** Rewriting a distractor
+changes what a marked question measures, which is Mide's gate and not an
+authoring pass's."* It was his gate. The two `gestation-placenta-and-birth`
+entries in `KNOWN_TELLS` are now stale; the commander deletes them, and
+`verify_ks3.py` remains the engine pass's file under build contract §0 and is
+not touched here.
+
+⚠️ One typographic note, reported rather than corrected. Mide's replacement
+copy uses STRAIGHT apostrophes ("the mother's blood", "the baby's lungs") while
+this rung's surviving strings use Design's CURLY ones ("the foetus’s own
+blood"), so one option set now carries both forms. His instruction was to apply
+the copy exactly as given and not to adjust it, so it is applied exactly. It is
+a one-character fix in either direction whenever he rules which convention this
+rung takes.
 
 ── Figures are declared and NOT drawn (§4.10) ───────────────────────────
 
@@ -830,9 +852,16 @@ LESSON = {
 
     # ── the mastery ladder (Law 8, §5.8) ────────────────────────────────────
     #
-    # ⚑ MRB-177 LENGTH PARITY — MEASURED, AND BOTH MARKED RUNGS FAIL. Neither
-    # option set is rewritten; see the docstring for the measurements and for
-    # why the repair is not this pass's to make.
+    # ⊕ MRB-177 LENGTH PARITY — RULED 17 Aug 2026, AND BOTH RUNGS ARE FIXED.
+    # Six distractors are Mide's own replacement copy, applied verbatim; each
+    # now states a WRONG RULE in the same shape as the correct answer, which is
+    # where the parity comes from. Both correct options, both `answer` indices
+    # and the gate's threshold are untouched. See the docstring for the ruling,
+    # the measurements, and the straight/curly apostrophe note.
+    #
+    # ⛔ Superseded, kept: this block used to read "MEASURED, AND BOTH MARKED
+    # RUNGS FAIL. Neither option set is rewritten … the repair is not this
+    # pass's to make." The repair was Mide's, and he has made it.
     #
     # Rungs 3 and 4 are Design's `SELF_RUNGS`: the student marks themselves
     # against her criteria, and only the ladder scores. Her rung titles are kept
@@ -844,11 +873,14 @@ LESSON = {
             "q": "Why does oxygen move from the mother’s blood into the "
                  "foetus’s blood at the placenta?",
             "options": [
-                "The mother’s heart pumps it across",
+                "The mother's heart pumps blood hard enough to push oxygen "
+                "across into the foetus",
                 "There is more oxygen in her blood than in the foetal blood, "
                 "so it diffuses across",
-                "The placenta chooses what the foetus needs and sends it",
-                "The two blood supplies mix, so the oxygen is shared",
+                "The placenta works out what the foetus needs and sends "
+                "exactly that across to it",
+                "The two blood supplies mix in the placenta, so whatever she "
+                "has the foetus has too",
             ],
             "answer": 1,
             "feedback": {
@@ -872,11 +904,14 @@ LESSON = {
             "q": "A student says the umbilical cord carries the mother’s blood "
                  "into the baby. What is wrong with that?",
             "options": [
-                "Nothing — that is what the cord is for",
+                "The cord carries the mother’s blood into the baby, which is "
+                "exactly what it is for",
                 "The cord carries the foetus’s own blood out to the placenta "
                 "and back",
-                "The cord carries food rather than blood",
-                "The cord carries air to the lungs",
+                "The cord carries food rather than blood, because the baby is "
+                "being fed through it",
+                "The cord carries air to the baby’s lungs, because it has to "
+                "breathe somehow",
             ],
             "answer": 1,
             "feedback": {

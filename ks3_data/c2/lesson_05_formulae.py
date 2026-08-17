@@ -337,11 +337,14 @@ LESSON = {
             }},
         "apply": {
             "q": "What is the difference between 2CO₂ and C₂O₄?",
+            # ⊕ MRB-177, ruled 17 Aug 2026 — the three distractors now state
+            # wrong RULES, in the same shape as the correct option. The
+            # correct option and its index are unchanged.
             "options": [
                 "2CO₂ is two particles of carbon dioxide; C₂O₄ would be a single particle with twice as much in it",
-                "Nothing — they contain the same atoms, so they are the same",
-                "2CO₂ has more atoms in total",
-                "2CO₂ is a mixture and C₂O₄ is a compound",
+                "The same atoms in the same numbers make the same substance, however the formula is written",
+                "The big number counts particles and the small number counts atoms, so 2CO₂ holds more atoms altogether",
+                "A number written in front makes a mixture, and a number written below makes a compound",
             ],
             "answer": 0,
             "feedback": {

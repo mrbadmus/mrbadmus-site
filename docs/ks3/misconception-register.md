@@ -94,11 +94,15 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `BODY` | Body systems, and how they do mechanical work | 2026-08-16, by B2 |
 | `ATOM` | Atoms having kinds, and substances versus their ingredients | 2026-08-16, by B2's sibling delivery, C2 |
 | `DIET` | Food, what a body needs from it, and what the gut does to it | 2026-08-16, by B3 |
+| `PLANT` | Plant nutrition, photosynthesis, and what a leaf is for | 2026-08-17, by B7 |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
-— **not yet opened, listed so numbering starts consistently**: `PART` (particles and states),
-`FORCE` (forces and motion), `ENERGY` (energy and temperature), `PLANT` (plant nutrition and
-photosynthesis), `CIRC` (current and circuits).
+— **not yet opened, listed so numbering starts consistently**: `FORCE` (forces and motion),
+`ENERGY` (energy and temperature), `CIRC` (current and circuits).
+
+⊕ **`PLANT` opened 17 Aug 2026 by B7** (MRB-245), and `PART` was opened earlier by C1 — both have
+been removed from the not-yet-opened list above rather than left there to contradict the entries
+below. `PLANT` is added to the prefix table.
 
 `NOS` (nature of science — how models, evidence and theories actually work) is a **candidate family,
 not yet opened**. The call belongs before `B10 how-we-worked-out-dna` and `C8 mendeleev` are
@@ -578,3 +582,52 @@ block, and the anti-blame paragraph that does the confronting is load-bearing
 copy lifted whole. It is answerable only because b5-04 states the placenta's
 exchange rule neutrally first — the two lessons are a pair, and neither should
 be edited without the other in view.
+
+---
+
+### `PLANT` — plant nutrition, photosynthesis, and what a leaf is for
+
+Opened by **B7 *Photosynthesis*** (2026-08-17, MRB-245). Eight entries, two per lesson, all
+`review_state: draft` — `statement` is science-bearing under §5.10 and needs Mide's review before
+any of these freeze.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `PLANT-01` | Plants get their food from the soil. | `s-hook` | `s-think` | `the-photosynthesis-reaction` |
+| `PLANT-02` | Photosynthesis makes energy. | `s-think` | `s-think` | `the-photosynthesis-reaction` |
+| `PLANT-03` | Leaves are green because chlorophyll uses green light. | `s-think` | `s-think` | `leaves-built-for-the-job` |
+| `PLANT-04` | The bigger the leaf, the better the plant. | `s-tuner` | `s-think` | `leaves-built-for-the-job` |
+| `PLANT-05` | The leaf goes black because the iodine reacts with the chlorophyll. | `s-think` | `s-think` | `testing-a-leaf-for-starch` |
+| `PLANT-06` | Just pick a leaf and test it — the destarching is a waste of two days. | `s-think` | `s-bench` | `testing-a-leaf-for-starch` |
+| `PLANT-07` | Plants do the photosynthesising — trees are the lungs of the planet. | `s-think` | `s-think` | `why-almost-all-life-depends-on-it` |
+| `PLANT-08` | Plants make oxygen for us to breathe. | `s-jobs` | `s-think` | `why-almost-all-life-depends-on-it` |
+
+**`PLANT-09` to `PLANT-12` are pre-allocated spares that were never claimed, and they stay
+permanently unused.** One was reserved per lesson before the authoring passes were dispatched, so
+that a pass finding a third belief on its page had an id to take without asking. None of the four
+took one. They are the same discipline as `DRUG-07` and `REPRO-17`/`20`/`21`/`23`: a gap in the
+numbering is the cheap outcome, and re-using a spare later would silently move a permanent id.
+
+**`PLANT-06` is the only entry in this family confronted somewhere other than `s-think`,** and
+deliberately. `method-breaker` lets the student skip the destarching and then read a verdict that
+says the positive result proves nothing — the belief is killed by running it, not by being told.
+The register's rule is that `confronted_by` names the activity that *kills* it, so it names the
+bench.
+
+**`PLANT-08` is deliberately distinct from `BREATH-12`, and the line between them is purpose.**
+`BREATH-12` ("plants take in carbon dioxide and give out oxygen; animals do the opposite") is about
+the *direction* of gas exchange and is `b4-05`'s to keep. `PLANT-08` is about oxygen being a **waste
+product rather than a service** — a plant that gave away useful material on purpose would be
+out-competed by one that did not. B7 does not restate `BREATH-12` or `BREATH-13`; it cites them.
+
+**`PLANT-02` is confronted by pointing out of biology.** The page answers "photosynthesis makes
+energy" with conservation of energy from `p1-01` and forward at B8's respiration — energy is
+transferred between stores and never created, and a plant is not an exception to the laws of
+physics. That cross-disciplinary move is NOTES-B7 flag 7 and is on Mide's list.
+
+⚑ **NOTES-B7 §4 states these eight were already "written into
+`docs/ks3/misconception-register.md` with a new prefix row".** They were not — the file carried no
+`PLANT` prefix and no `PLANT` entry when B7 was picked up, and `PLANT` was still listed among the
+families *not yet opened*. The entries above are written from the four authored pages, not from
+NOTES. This is the second delivery to describe register work as done when it was not; `NOTES-B5`
+did the same thing and the B5 run recorded it. Worth one process note rather than eight.

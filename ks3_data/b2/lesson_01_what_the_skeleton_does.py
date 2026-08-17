@@ -394,11 +394,14 @@ LESSON = {
     "ladder": {
         "recall": {
             "q": "Where are new red blood cells made?",
+            # ⊕ MRB-177, ruled 17 Aug 2026 — the three distractors now take
+            # the same SHAPE as the correct option (place, then where it
+            # sits). The correct option and its index are unchanged.
             "options": [
                 "In the marrow inside the bones",
-                "In the heart",
-                "In the lungs",
-                "In the liver",
+                "In the chambers of the heart",
+                "In the air sacs of the lungs",
+                "In the liver, beside the gut",
             ],
             "answer": 0,
             "feedback": {

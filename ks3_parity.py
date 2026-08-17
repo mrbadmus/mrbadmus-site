@@ -338,6 +338,11 @@ B1_PARTS = "biology/cells-and-organisation/levels-of-organisation.html"
 # component measured on a page that lacks it reports "selector not present" and
 # passes, which is the absence-of-assertion failure this gate exists to close.
 B1_LIFE = "biology/cells-and-organisation/life-processes.html"
+# ⊕ MRB-245 — the two live pages whose statement-panel cards shipped EMPTY.
+# See `_rule_card` in build_ks3.py: six pills, two closing sentences and four
+# problem cards were authored, drawn by Design, and rendered as blank `<li>`s.
+B1_CELLS = "biology/cells-and-organisation/animal-and-plant-cells.html"
+B1_SPEC = "biology/cells-and-organisation/specialised-cells.html"
 B1_UNI = "biology/cells-and-organisation/unicellular-organisms.html"
 
 # ⊕ B2 · Movement (MRB-220). Same rule as B1's: a component is registered on
@@ -502,6 +507,13 @@ B6_CLOCK = "biology/health-and-drugs/alcohol-and-smoking.html"
 B6_CLAIMS = "biology/health-and-drugs/substance-misuse-and-decisions.html"
 # ═══ END B6 ═══
 
+# ═══ BEGIN B7 ═══
+B7_BENCH  = "biology/photosynthesis/the-photosynthesis-reaction.html"
+B7_TUNER  = "biology/photosynthesis/leaves-built-for-the-job.html"
+B7_METHOD = "biology/photosynthesis/testing-a-leaf-for-starch.html"
+B7_TRACE  = "biology/photosynthesis/why-almost-all-life-depends-on-it.html"
+# ═══ END B7 ═══
+
 # ═══ BEGIN B5 ═══
 B5_JOBS = "biology/reproduction/human-reproductive-systems.html"
 B5_CMP = "biology/reproduction/gametes-and-fertilisation.html"
@@ -604,6 +616,45 @@ COMPONENTS = [
          props={"background-color": "#FFFCF5",
                 "border-top-color": "#DDCFB6", "border-top-width": "2px",
                 "border-top-left-radius": "22px"}),
+    # ⊕ MRB-245 — THE CARD PARTS THAT WERE AUTHORED AND NEVER DRAWN. Each of
+    # these is registered against a page that actually renders it, and each
+    # would have been "selector not present" for as long as the defect stood —
+    # which is the point: a component the page does not draw fails HERE, and
+    # ten empty `<li>`s did not fail anywhere.
+    #
+    # ⚖️ THE ROLE LINE'S TONE IS DATA, AND BOTH VALUES ARE MEASURED. b1-03
+    # paints "In both · 4" muted and "Plant only · 3" accent, and the
+    # difference IS the panel's claim — the plant's list is the animal's plus
+    # three. One rule for both would erase the claim while looking correct.
+    dict(name="a card's role line is mono accent-text", on=B1_SPEC,
+         sel=".ks3-rule-role",
+         props={"color": "#A93411", "font-family": "DM Mono",
+                "font-size": "14px"}),
+    dict(name="and it takes the MUTED tone where the record asks for it",
+         on=B1_CELLS, sel='.ks3-rule-role[data-tone="muted"]',
+         props={"color": "#5F564F", "font-family": "DM Mono"}),
+    # A card with a role line above it makes its name the HEADLINE, not a
+    # label — the three-part card Design draws on b1-04 and b7-01.
+    dict(name="a three-part card's name is display 800, not the 18px label",
+         on=B1_SPEC, sel=".ks3-rule-role + .ks3-rule-term",
+         props={"font-family": "Bricolage Grotesque", "font-weight": "800",
+                "font-size": "23px"}),
+    dict(name="the card's examples line is muted mono at the foot",
+         on=B1_SPEC, sel=".ks3-rule-eg",
+         props={"color": "#5F564F", "font-family": "DM Mono",
+                "font-size": "15px"}),
+    # ⚖️ A PILL IS NOT A CONTROL. Ink outline, not `--ks3-option-border`: six
+    # of these sit inside a card and none of them is pressable, and the option
+    # border is what the key stage uses for something a student can tap.
+    dict(name="a named-part pill is an ink outline on the inset, not a control",
+         on=B1_CELLS, sel=".ks3-rule-chip",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "color": "#221E1B",
+                "font-size": "17px"}),
+    dict(name="the plant-only pills take the accent tint the record names",
+         on=B1_CELLS,
+         sel='.ks3-rule-chips[data-tone="accent-tint"] .ks3-rule-chip',
+         props={"background-color": "#FCE7DE"}),
     # The formula. Centred with NO max-width is the entire difference between
     # this and `rule`'s left-aligned 20ch measure — the shells are otherwise
     # identical and a future tidy-up will try to merge them.
@@ -3260,6 +3311,279 @@ COMPONENTS = [
          on=B5_DIAL, drive="b5-dial-relengthed", sel=".ks3-dial-note",
          props={"color": "#C6B9A7", "font-size": "18px"}),
     # ═══ END B5 ═══ rows
+
+    # ═══ BEGIN B7 ═══ rows
+    #
+    # Every value below is read out of `shared/tokens.css`, not estimated:
+    #   --ks3-alert #FFC53D · --ks3-on-dark #FBF3E6 · --ks3-on-dark-muted #C6B9A7
+    #   --ks3-on-dark-body #E7DECE · --ks3-dark-panel #3E3730 · --ks3-ink #221E1B
+    #   --ks3-ink-muted #5F564F · --ks3-ground #FBF3E6 · --ks3-accent #E4572E
+    #   --ks3-accent-text #A93411 · --ks3-card #FFFCF5 · --ks3-ok #12A150
+    # Mutation-tested: each rule was deliberately broken in `shared/ks3.css`
+    # (the SOURCE — `verify_ks3.py` rebuilds before measuring and would
+    # overwrite a mutation applied to the built tree) and the row confirmed to
+    # fail before it was kept.
+    #
+    # ⚠️ THE SAME ONE-RULE-FOUR-TIMES HAZARD AS B4, B5 AND B6, AND HERE IT IS
+    # AGAIN THE WHOLE UNIT. All four B7 practicals are `ks3-block ks3-dark
+    # ks3-practical`, so `.ks3-dark p` at (0,1,1) beats a bare instrument class
+    # on four pages at once. All four draw a panel that inverts to the CREAM
+    # ground inside the ink block, and the elements INSIDE those panels are
+    # pinned one at a time — because a rule on the panel is not a rule on its
+    # children, which is exactly how `.ks3-bell-chainlabel` shipped at 1.21:1
+    # inside a panel that had already been rescued.
+
+    # ── b7-01 · reactant-remover, the cream verdict inside the ink bench ──
+    #
+    # ⚖️ PINNED ON COLOUR AND BACKGROUND TOGETHER. Either alone passes with the
+    # panel painted the wrong way round — cream text on the ink panel measures
+    # a healthy contrast and is the wrong component.
+    dict(name="the iodine verdict is the page ground on an ink block",
+         on=B7_BENCH, drive="b7-leaf-tested", sel=".ks3-rr-verdict",
+         props={"background-color": "#FBF3E6"}),
+    # ⚖️ THE IODINE TAG IS NOT A MARK (MRB-196 R10). It is the accent eyebrow
+    # on every one of the seven branches — never `--ks3-ok` #12A150, never
+    # `--ks3-danger` #FF6B6B — because the bench shows a CONSEQUENCE and never
+    # a verdict on the student. The drive reaches it through a REMOVAL, which
+    # is the state a marking colour would appear in first.
+    dict(name="the iodine tag is the accent eyebrow, not a marking colour",
+         on=B7_BENCH, drive="b7-leaf-tested", sel=".ks3-rr-tag",
+         props={"color": "#A93411", "font-family": "DM Mono",
+                "font-size": "14px"}),
+    dict(name="the starch headline is ink display type on the cream panel",
+         on=B7_BENCH, drive="b7-leaf-tested", sel=".ks3-rr-head",
+         props={"color": "#221E1B", "font-family": "Bricolage Grotesque",
+                "font-size": "23px"}),
+    dict(name="the iodine reasoning reads in ink, not on-dark body",
+         on=B7_BENCH, drive="b7-leaf-tested", sel=".ks3-rr-why",
+         props={"color": "#221E1B", "font-size": "18px"}),
+    # ── b7-01 · the ink chrome, measured at rest ──
+    #
+    # No drive: at rest every one of these is in its resting state, so a
+    # regression is reported before anything is clicked.
+    dict(name="the setup line is on-dark, not swallowed by the panel",
+         on=B7_BENCH, sel=".ks3-rr-setup",
+         props={"color": "#FBF3E6", "font-size": "20px"}),
+    dict(name="the rate readout is the alert mono line", on=B7_BENCH,
+         sel=".ks3-rr-rate",
+         props={"color": "#FFC53D", "font-family": "DM Mono",
+                "font-size": "16px"}),
+    dict(name="a dial's name is muted mono on ink", on=B7_BENCH,
+         sel=".ks3-rr-dialname",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px"}),
+    dict(name="a readout's label is on-dark and its value muted mono",
+         on=B7_BENCH, sel=".ks3-rr-rovalue",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "17px"}),
+    dict(name="the bench panel is the nested dark panel, not the page ground",
+         on=B7_BENCH, sel=".ks3-rr-panel",
+         props={"background-color": "#3E3730"}),
+    # ⚖️ A CHOSEN DIAL SETTING IS THE ALERT GROUND — Design's own `seg()`, and
+    # a NARROWING of the platform's `.ks3-dark .ks3-option[aria-pressed]`,
+    # which gives an alert border on the dark panel. Four dials with four thin
+    # borders do not read as a state at a glance. If this row ever resolves to
+    # #3E3730 the narrowing has been lost to source order and every bench in
+    # the unit is showing its settings the platform's way.
+    dict(name="a chosen dial setting is the alert ground with ink on it",
+         on=B7_BENCH, sel='.ks3-rr-opt[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="an unchosen dial setting stays on the dark panel",
+         on=B7_BENCH, sel='.ks3-rr-opt[aria-pressed="false"]',
+         props={"background-color": "#3E3730", "color": "#FBF3E6",
+                "min-height": "44px"}),
+    # ⊕ THE CORRECTION, PINNED. `.ks3-reveal-btn` is ink on an ink border, and
+    # this block's ground IS `--ks3-ink` — so the shipped rule paints an
+    # invisible control. If this row ever resolves to #221E1B the test button
+    # has disappeared into the block and the bench cannot be operated.
+    dict(name="the test button is inverted on ink, not ink on ink",
+         on=B7_BENCH, sel=".ks3-rr-test",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "min-height": "44px"}),
+    # ⚖️ THREE BARS, THREE COLOURS. The three readouts are three views of ONE
+    # number and their widths are always identical, so colour is the only thing
+    # telling them apart — the oxygen bar is the green one because it is the
+    # readout you can actually watch. Measured on two of the three, because a
+    # single rule painting all three would pass on one.
+    dict(name="the oxygen bar is the ok green", on=B7_BENCH,
+         sel='.ks3-rr-readout[data-tone="ok"] .ks3-rr-fill',
+         props={"background-color": "#12A150"}),
+    dict(name="the glucose bar is the alert, not the same green", on=B7_BENCH,
+         sel='.ks3-rr-readout[data-tone="alert"] .ks3-rr-fill',
+         props={"background-color": "#FFC53D"}),
+
+    # ── b7-01 · the word summary, and the drawn arrow ──
+    #
+    # ⚠️ THE ARROW IS AN SVG STROKED `currentColor`, so this row is the whole
+    # of Design's `color: var(--ks3-accent-text)` on the wrapper. If it ever
+    # resolves to the ink the arrow has stopped being the accent; if the
+    # element is absent the arrow has been typed, which the generator refuses
+    # and the glyph audit would catch second.
+    dict(name="the drawn reaction arrow is the accent text colour",
+         on=B7_BENCH, sel=".ks3-eqn-arrowwrap",
+         props={"color": "#A93411"}),
+    dict(name="the summary's two sides are ink display type on the card",
+         on=B7_BENCH, sel=".ks3-eqn-side",
+         props={"color": "#221E1B", "font-family": "Bricolage Grotesque"}),
+    dict(name="the reaction condition is a muted mono line under the row",
+         on=B7_BENCH, sel=".ks3-eqn-condition",
+         props={"color": "#5F564F", "font-family": "DM Mono",
+                "font-size": "15px"}),
+    dict(name="the equation sits on the card inside the band panel",
+         on=B7_BENCH, sel=".ks3-eqn",
+         props={"background-color": "#FFFCF5", "border-top-width": "2px",
+                "border-top-color": "#221E1B"}),
+
+    # ── b7-02 · leaf-tuner ──
+    #
+    # ⚖️ NO DRIVE ON THE VERDICT, and that is the instrument. The tuner has no
+    # reveal: the opening leaf already earns a habitat and the panel is on
+    # screen from the first paint. Measured at rest is measured in the state a
+    # student meets.
+    dict(name="the habitat verdict is the page ground on an ink block",
+         on=B7_TUNER, sel=".ks3-lt-verdict:not([hidden])",
+         props={"background-color": "#FBF3E6"}),
+    dict(name="the verdict label is the accent eyebrow, not a marking colour",
+         on=B7_TUNER, sel=".ks3-lt-verdict:not([hidden]) .ks3-lt-verdictlabel",
+         props={"color": "#A93411", "font-family": "DM Mono",
+                "font-size": "14px"}),
+    dict(name="the habitat headline is ink display type on the cream panel",
+         on=B7_TUNER, sel=".ks3-lt-verdict:not([hidden]) .ks3-lt-head",
+         props={"color": "#221E1B", "font-family": "Bricolage Grotesque",
+                "font-size": "23px"}),
+    dict(name="the habitat reasoning reads in ink, not on-dark body",
+         on=B7_TUNER, sel=".ks3-lt-verdict:not([hidden]) .ks3-lt-why",
+         props={"color": "#221E1B", "font-size": "18px"}),
+    # ⚖️ THE TWO BARS PULL AGAINST EACH OTHER AND ARE COLOURED FOR IT. Rate is
+    # the ok green and water the alert; one colour on both would say the two
+    # readouts are the same kind of number, which is the belief the whole
+    # lesson exists to break.
+    dict(name="the rate bar is the ok green", on=B7_TUNER,
+         sel='.ks3-lt-readout[data-tone="ok"] .ks3-lt-fill',
+         props={"background-color": "#12A150"}),
+    dict(name="the water bar is the alert, not the same green", on=B7_TUNER,
+         sel='.ks3-lt-readout[data-tone="alert"] .ks3-lt-fill',
+         props={"background-color": "#FFC53D"}),
+    dict(name="the tuner's readout labels are on-dark at 18px", on=B7_TUNER,
+         sel=".ks3-lt-rolabel", props={"color": "#FBF3E6", "font-size": "18px"}),
+    dict(name="the tuner's readout values are muted mono", on=B7_TUNER,
+         sel=".ks3-lt-rovalue",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "17px"}),
+    # ⚖️ THE SAME NARROWING, MEASURED ON A SECOND PAGE. One rule serves all four
+    # benches' dials, and measuring it on b7-01 alone would pass a b7-02 that
+    # had been given a treatment of its own — which is the direction drift goes
+    # when four instruments are written in one pass.
+    dict(name="the tuner's chosen setting is the same alert ground",
+         on=B7_TUNER, sel='.ks3-lt-opt[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+    # ⚖️ THE OAK BUTTON IS THE REVEAL, so the panel is measured once more AFTER
+    # it — the only state on this instrument that a student reaches by pressing
+    # something, and the one the whole lesson turns on.
+    dict(name="the oak leaf's verdict is the same cream panel after the reveal",
+         on=B7_TUNER, drive="b7-oak-pressed",
+         sel=".ks3-lt-verdict:not([hidden])",
+         props={"background-color": "#FBF3E6"}),
+    dict(name="and its habitat reasoning is the same ink, not a copy",
+         on=B7_TUNER, drive="b7-oak-pressed",
+         sel=".ks3-lt-verdict:not([hidden]) .ks3-lt-why",
+         props={"color": "#221E1B", "font-size": "18px"}),
+    dict(name="the oak button is inverted on ink, not ink on ink",
+         on=B7_TUNER, sel=".ks3-lt-oak",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "min-height": "44px"}),
+
+    # ── b7-03 · method-breaker ──
+    dict(name="the method verdict is the page ground on an ink block",
+         on=B7_METHOD, drive="b7-method-run", sel=".ks3-mb-verdict",
+         props={"background-color": "#FBF3E6"}),
+    dict(name="the result tag is the accent eyebrow, not a marking colour",
+         on=B7_METHOD, drive="b7-method-run", sel=".ks3-mb-tag",
+         props={"color": "#A93411", "font-family": "DM Mono",
+                "font-size": "14px"}),
+    dict(name="the result headline is ink display type on the cream panel",
+         on=B7_METHOD, drive="b7-method-run", sel=".ks3-mb-head",
+         props={"color": "#221E1B", "font-family": "Bricolage Grotesque",
+                "font-size": "23px"}),
+    dict(name="the result reasoning reads in ink, not on-dark body",
+         on=B7_METHOD, drive="b7-method-run", sel=".ks3-mb-why",
+         props={"color": "#221E1B", "font-size": "18px"}),
+    # ⚖️ `conclude` IS THE FIELD THE LESSON TURNS ON — what the result licenses
+    # you to say — and Design gives it its own rule above it. A fifth paragraph
+    # inside the same cream panel is exactly the element B4 lost, so it is
+    # pinned separately rather than left to the panel's rule.
+    dict(name="the conclusion is ink under its own rule inside the panel",
+         on=B7_METHOD, drive="b7-method-run", sel=".ks3-mb-conclude",
+         props={"color": "#221E1B", "font-size": "18px",
+                "border-top-width": "2px"}),
+    # ⚠️⚠️ THE SAFETY BRANCH IS DRAWN AS A SAFETY BRANCH, AND THIS IS THE ROW
+    # THAT SAYS SO. Its own words are "the test never happened"; if this ever
+    # resolves to a transparent border the fire has been filed alongside a
+    # spoiled pattern, which is precisely what NOTES-B7 flag 14 and MRB-233
+    # exist to prevent. The drive reaches it by choosing the flame.
+    dict(name="the safety branch takes the accent outline a data fault does not",
+         on=B7_METHOD, drive="b7-method-flamed",
+         sel='.ks3-mb-verdict[data-kind="safety"]',
+         props={"border-top-color": "#E4572E", "border-top-width": "2px"}),
+    dict(name="a step's title is on-dark and its detail muted", on=B7_METHOD,
+         sel=".ks3-mb-stepdetail",
+         props={"color": "#C6B9A7", "font-size": "17px"}),
+    dict(name="a step's number chip is a muted outline, not a filled mark",
+         on=B7_METHOD, sel=".ks3-mb-num",
+         props={"color": "#C6B9A7", "border-top-color": "#C6B9A7",
+                "font-family": "Bricolage Grotesque"}),
+    dict(name="the run button is inverted on ink, not ink on ink",
+         on=B7_METHOD, sel=".ks3-mb-run",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "min-height": "44px"}),
+
+    # ── b7-04 · trace-it-back ──
+    dict(name="the chain verdict is the page ground on an ink block",
+         on=B7_TRACE, drive="b7-chain-traced", sel=".ks3-tb-verdict",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "font-size": "18px"}),
+    dict(name="the steps-back line is the alert mono line", on=B7_TRACE,
+         sel=".ks3-tb-food:not([hidden]) .ks3-tb-steps",
+         props={"color": "#FFC53D", "font-family": "DM Mono",
+                "font-size": "16px"}),
+    dict(name="the food's name is on-dark at 21px", on=B7_TRACE,
+         sel=".ks3-tb-food:not([hidden]) .ks3-tb-name",
+         props={"color": "#FBF3E6", "font-size": "21px"}),
+    # ⚖️ AN UNREACHED LINK DIMS AND STAYS ON-DARK. It is not a wrong answer and
+    # it is not absent: the whole chain is drawn from the start so a student
+    # reads how far there is to go. If the opacity ever resolves to 1 the
+    # instrument has given away where the chain ends before the first press.
+    dict(name="an unreached link dims and keeps its on-dark name", on=B7_TRACE,
+         sel=".ks3-tb-food:not([hidden]) .ks3-tb-link:not([data-shown])",
+         props={"opacity": "0.45"}),
+    dict(name="an unreached link's name is muted, not headline", on=B7_TRACE,
+         sel=(".ks3-tb-food:not([hidden]) "
+              ".ks3-tb-link:not([data-shown]) .ks3-tb-linkname"),
+         props={"color": "#C6B9A7", "font-size": "19px"}),
+    # ⚖️ A REVEALED LINK LIGHTS ITS CHIP AND ITS NAME, and the note under it is
+    # on-dark BODY rather than the headline colour — over four lines that is
+    # the glare `--ks3-on-dark-body` exists to avoid.
+    dict(name="a revealed link's chip is the alert with ink on it", on=B7_TRACE,
+         sel=".ks3-tb-food:not([hidden]) .ks3-tb-link[data-shown] .ks3-tb-num",
+         props={"background-color": "#FFC53D", "color": "#221E1B"}),
+    dict(name="a revealed link's note reads in on-dark body", on=B7_TRACE,
+         sel=".ks3-tb-food:not([hidden]) .ks3-tb-link[data-shown] .ks3-tb-note",
+         props={"color": "#E7DECE", "font-size": "18px"}),
+    dict(name="the plate label is muted mono on ink", on=B7_TRACE,
+         sel=".ks3-tb-tabslabel",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px"}),
+    dict(name="the chosen food tab is the same alert ground", on=B7_TRACE,
+         sel='.ks3-tb-tab[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="the step button is inverted on ink, not ink on ink",
+         on=B7_TRACE, sel=".ks3-tb-back",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "min-height": "44px"}),
+    # ═══ END B7 ═══ rows
 ]
 
 
@@ -6607,6 +6931,594 @@ DRIVES = {
 })()
 """,
     # ═══ END B5 ═══ drives
+
+    # ═══ BEGIN B7 ═══ drives
+    #
+    # ⚠️ STRUCTURAL, NOT KEYED ON AN AUTHORED ID, for B4's, B5's and B6's
+    # reason: each of these reaches the state it wants through the instrument's
+    # own controls, BY POSITION, so a drive cannot fail as a colour regression
+    # on the day an author renames a dial or reorders the plate. The one
+    # exception is `b7-method-flamed`, which has to find the flame — and it
+    # finds it through the bench's own `data-conditions`, which is the
+    # generator's derivation rather than a name typed here.
+    #
+    # ⚠️ AND FOUR DRIVES, FOUR PAGES, NOTHING SHARED. B5's one drive served
+    # five pages because five of its blocks were the same block; nothing in B7
+    # is the same block twice, so a shared drive here would be a coincidence
+    # enforced.
+
+    # b7-01. Removes the CARBON DIOXIDE — one dial, so the bench lands on a
+    # single-factor branch — then tests the leaf. Proves on the way that the
+    # bench opens intact and un-tested, that the verdict is withheld until the
+    # test, that the three readouts fall to their own zero strings (which are
+    # NOT uniform), that the bench does not mark, that turning a dial afterwards
+    # un-tests the leaf without unticking the stop, and that the head readout
+    # is a named state rather than a shipped placeholder.
+    "b7-leaf-tested": r"""
+(function () {
+  var sec = document.querySelector('[data-rrblock]');
+  if (!sec) { return "no reactant remover on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var w = sec.querySelector('[data-rr]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var opts = w.querySelectorAll('.ks3-rr-opt');
+  if (opts.length < 4) {
+    return "the bench draws " + opts.length + " dial settings";
+  }
+  // ⚠️ THE CONTROLS ARE SERVER-RENDERED. `check_rail_reachable` reads
+  // `class="ks3-option` out of the STATIC html, so a bench whose dials arrive
+  // from JavaScript has a rail stop that can never tick and no gate but this
+  // one can see it.
+  if (!/class="[^"]*\bks3-option\b/.test(sec.innerHTML)) {
+    return "the dials are not server-rendered options";
+  }
+  if (w.querySelectorAll('.ks3-rr-verdict:not([hidden])').length) {
+    return "an iodine verdict was open before the leaf was tested";
+  }
+  // ⚠️ AND THEY ARE REALLY HIDDEN, not merely marked hidden — MRB-242, asked
+  // of the CASCADE rather than of the painted page. `wireReactantRemover`
+  // draws once on load and `setHidden()` writes an INLINE `display: none`,
+  // which masks any author rule underneath it; dropping the inline value for
+  // the length of one read asks the question the audit means to ask.
+  var cascade = w.querySelectorAll('.ks3-rr-verdict[hidden]');
+  for (var h = 0; h < cascade.length; h++) {
+    var el = cascade[h], prev = el.style.display;
+    el.style.display = '';
+    var shown = getComputedStyle(el).display;
+    el.style.display = prev;
+    if (shown !== 'none') {
+      return "MRB-242: " + el.className + " ships `hidden` but the stylesheet " +
+        "gives it display:" + shown + ", which beats the UA [hidden] rule";
+    }
+  }
+
+  // ⚖️ THE BENCH OPENS INTACT — every dial on its first setting, and the rate
+  // therefore at its maximum. A bench already in a verdict has answered its
+  // own question.
+  var rate = w.querySelector('[data-rr-rate]');
+  if (!rate || rate.textContent.indexOf('100') !== 0) {
+    return "the bench does not open at full rate: " +
+      (rate ? rate.textContent : "no rate readout");
+  }
+
+  // Remove exactly ONE thing: the first setting anywhere whose factor is zero.
+  var zero = null;
+  for (var i = 0; i < opts.length; i++) {
+    if (parseFloat(opts[i].getAttribute('data-f')) === 0) { zero = opts[i]; break; }
+  }
+  if (!zero) { return "no dial offers a setting that removes anything"; }
+  zero.click();
+
+  var gone = zero.getAttribute('data-dial');
+  if (w.querySelectorAll('.ks3-rr-opt[aria-pressed="true"]').length !== 4) {
+    return "one dial per setting is not being held after a removal";
+  }
+  if (rate.textContent.indexOf('0') !== 0) {
+    return "one thing was removed and the rate is " + rate.textContent +
+      " — rate is the PRODUCT of the four dials, so it must be zero";
+  }
+  var reads = w.querySelectorAll('[data-rr-readout]');
+  for (var r = 0; r < reads.length; r++) {
+    var want = reads[r].getAttribute('data-zero');
+    if (reads[r].textContent !== want) {
+      return "a readout at zero rate reads " + reads[r].textContent +
+        " and its authored zero string is " + want;
+    }
+  }
+  var bars = w.querySelectorAll('[data-rr-bar]');
+  for (var b = 0; b < bars.length; b++) {
+    if (parseFloat(bars[b].style.width) !== 0) {
+      return "a readout bar is still drawn at " + bars[b].style.width +
+        " with the rate at zero";
+    }
+  }
+
+  var test = w.querySelector('[data-rr-test]');
+  if (!test) { return "the bench has no test control"; }
+  test.click();
+  var open = w.querySelectorAll('.ks3-rr-verdict:not([hidden])');
+  if (open.length !== 1) {
+    return open.length + " verdicts are showing; there must be exactly one";
+  }
+  if (open[0].getAttribute('data-rr-verdict') !== gone) {
+    return "one dial was removed and the bench reported branch " +
+      open[0].getAttribute('data-rr-verdict') + " rather than " + gone;
+  }
+  if (open[0].textContent.indexOf('{') >= 0) {
+    return "the verdict shipped an unfilled placeholder: " + open[0].textContent;
+  }
+  // ⚖️ THE BENCH DOES NOT MARK (R10). Nothing here is right or wrong: a
+  // student has removed something and is being shown what happened.
+  for (var o = 0; o < opts.length; o++) {
+    if (/is-correct|is-wrong/.test(opts[o].className)) {
+      return "THE BENCH IS MARKING: a dial carries " + opts[o].className;
+    }
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "the leaf was tested and the stop did not tick";
+  }
+  // The head readout is a NAMED STATE and the name has to be one the markup
+  // declares — `setCountState` silently does nothing for a name it cannot
+  // find, so a renamed state would be a readout frozen on "not tested yet".
+  var count = sec.querySelector('[data-count]');
+  if (count) {
+    var after = count.getAttribute('data-state-after');
+    if (after === null) { return "the head readout declares no `after` state"; }
+    if (count.textContent !== after) {
+      return "the leaf was tested and the head readout still reads " +
+        count.textContent;
+    }
+  }
+
+  // Turning a dial afterwards un-tests the leaf — the verdict on screen
+  // belonged to the jar as it was — and the stop STAYS ticked, because the
+  // student has run the test.
+  zero.click();
+  var back = null;
+  for (var q = 0; q < opts.length; q++) {
+    if (opts[q].getAttribute('data-dial') === gone &&
+        parseFloat(opts[q].getAttribute('data-f')) !== 0) { back = opts[q]; break; }
+  }
+  if (back) {
+    back.click();
+    if (w.querySelectorAll('.ks3-rr-verdict:not([hidden])').length) {
+      return "a dial was turned after the test and the old verdict stayed open";
+    }
+    if (sec.getAttribute('data-stage-done') !== '1') {
+      return "turning a dial after the test unticked the stop";
+    }
+    // Put it back so the measured state is the one the rows describe.
+    zero.click();
+    w.querySelector('[data-rr-test]').click();
+  }
+  return "";
+})()
+""",
+
+    # b7-03. Runs the FULL method first — the bench opens on the good one, which
+    # is the opposite of b7-02 — then skips one step and runs it again, so the
+    # measured panel is a real fault rather than the fallback. Proves the
+    # precedence is read from the page, that the result is withheld until the
+    # iodine goes on, that changing a step un-runs it, and that the four-state
+    # readout fills its own placeholder.
+    "b7-method-run": r"""
+(function () {
+  var sec = document.querySelector('[data-mbblock]');
+  if (!sec) { return "no method breaker on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var w = sec.querySelector('[data-mb]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var full, precedence, conditions;
+  try {
+    full = JSON.parse(w.getAttribute('data-full'));
+    precedence = JSON.parse(w.getAttribute('data-precedence'));
+    conditions = JSON.parse(w.getAttribute('data-conditions'));
+  } catch (x) { return "the bench ships no full method or no precedence"; }
+  if (!precedence.length) { return "the bench declares no fault precedence"; }
+  if (!/class="[^"]*\bks3-option\b/.test(sec.innerHTML)) {
+    return "the steps are not server-rendered options";
+  }
+  if (w.querySelectorAll('.ks3-mb-verdict:not([hidden])').length) {
+    return "a result was open before the iodine was added";
+  }
+  var cascade = w.querySelectorAll('.ks3-mb-verdict[hidden]');
+  for (var h = 0; h < cascade.length; h++) {
+    var el = cascade[h], prev = el.style.display;
+    el.style.display = '';
+    var shown = getComputedStyle(el).display;
+    el.style.display = prev;
+    if (shown !== 'none') {
+      return "MRB-242: " + el.className + " ships `hidden` but the stylesheet " +
+        "gives it display:" + shown + ", which beats the UA [hidden] rule";
+    }
+  }
+
+  // ⚖️ THE BENCH OPENS ON THE GOOD METHOD. Every step is on its `full`
+  // setting, which is what makes every verdict a consequence of the student's
+  // own choice rather than a repair of somebody else's.
+  var key;
+  for (key in full) {
+    if (!Object.prototype.hasOwnProperty.call(full, key)) { continue; }
+    var on = w.querySelector('.ks3-mb-opt[data-step="' + key +
+                             '"][aria-pressed="true"]');
+    if (!on || on.getAttribute('data-opt') !== full[key]) {
+      return "the bench does not open on the full method at step " + key;
+    }
+  }
+
+  var run = w.querySelector('[data-mb-run]');
+  if (!run) { return "the bench has no run control"; }
+  run.click();
+  var open = w.querySelectorAll('.ks3-mb-verdict:not([hidden])');
+  if (open.length !== 1 || open[0].getAttribute('data-mb-verdict') !== 'full') {
+    return "running the untouched method did not report the full-method result";
+  }
+  if (run.disabled !== true) {
+    return "the iodine was added and the run button is still live";
+  }
+
+  // Now break the LAST fault in the precedence — the least severe one — and
+  // run again. Anything earlier would be reported ahead of it, which is the
+  // ordering this bench exists to teach.
+  var last = precedence[precedence.length - 1];
+  var wrong = w.querySelector('.ks3-mb-opt[data-step="' + last +
+                              '"][aria-pressed="false"]');
+  if (!wrong) { return "the least severe fault " + last + " cannot be chosen"; }
+  wrong.click();
+  if (w.querySelectorAll('.ks3-mb-verdict:not([hidden])').length) {
+    return "a step was changed after the run and the old result stayed open";
+  }
+  if (run.disabled === true) {
+    return "a step was changed after the run and the button stayed spent";
+  }
+  run.click();
+  open = w.querySelectorAll('.ks3-mb-verdict:not([hidden])');
+  if (open.length !== 1) {
+    return open.length + " results are showing; there must be exactly one";
+  }
+  if (open[0].getAttribute('data-mb-verdict') !== last) {
+    return "step " + last + " was skipped and the bench reported " +
+      open[0].getAttribute('data-mb-verdict');
+  }
+  if (!open[0].querySelector('.ks3-mb-conclude')) {
+    return "the result opened without saying what it licenses you to conclude";
+  }
+
+  // ⚖️ AND NOW THE ORDERING ITSELF. Break a MORE severe fault as well and the
+  // bench must report that one — the least severe is still broken and must not
+  // win. This is the assertion that makes `precedence` load-bearing rather than
+  // decorative: without it, a bench that reported the last matching fault would
+  // pass every other check on this page while teaching that a torn leaf and an
+  // undatable result are the same size of mistake.
+  var severe = precedence[0];
+  var scond = conditions[severe] || [];
+  var settable = scond.length > 0;
+  for (var sc = 0; sc < scond.length; sc++) {
+    if (!w.querySelector('.ks3-mb-opt[data-step="' + scond[sc].step +
+                         '"][data-opt="' + scond[sc].is + '"]')) {
+      settable = false;
+    }
+  }
+  if (settable) {
+    // ⚠️ SET IT THROUGH ITS CONDITION, not through a step id. The most severe
+    // fault on this bench is named after an OPTION rather than a step — `heat`
+    // is never skipped, it is answered one of two ways — so a drive that
+    // looked for `.ks3-mb-opt[data-step="flame"]` would find nothing, skip
+    // this whole assertion, and report green. It did, once.
+    for (var sd = 0; sd < scond.length; sd++) {
+      w.querySelector('.ks3-mb-opt[data-step="' + scond[sd].step +
+                      '"][data-opt="' + scond[sd].is + '"]').click();
+    }
+    run.click();
+    open = w.querySelectorAll('.ks3-mb-verdict:not([hidden])');
+    if (!open.length || open[0].getAttribute('data-mb-verdict') !== severe) {
+      return "two faults were broken and the bench reported " +
+        (open.length ? open[0].getAttribute('data-mb-verdict') : "nothing") +
+        " rather than the more severe " + severe;
+    }
+    // Put the bench back where the measured rows expect it: one fault, the
+    // least severe, reported.
+    w.querySelector('[data-mb-reset]').click();
+    wrong.click();
+    run.click();
+  }
+  var opts = w.querySelectorAll('.ks3-mb-opt');
+  for (var o = 0; o < opts.length; o++) {
+    if (/is-correct|is-wrong/.test(opts[o].className)) {
+      return "THE BENCH IS MARKING: a step carries " + opts[o].className;
+    }
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "the iodine was added and the stop did not tick";
+  }
+  var count = sec.querySelector('[data-count]');
+  if (count && count.textContent.indexOf('{') >= 0) {
+    return "the head readout shipped an unfilled placeholder: " +
+      count.textContent;
+  }
+  if (count && count.textContent === count.getAttribute('data-state-idle')) {
+    return "the bench has been run and the head readout still says " +
+      count.textContent;
+  }
+  return "";
+})()
+""",
+
+    # b7-03, the SAFETY branch. Reaches the fire by reading the bench's own
+    # `data-conditions` for the one branch whose id is not a step — the
+    # generator's derivation, so nothing here types the word `flame` — and
+    # setting every step the condition names. That condition includes the
+    # ETHANOL step, because skipping the ethanol leaves nothing to catch fire;
+    # a drive that only pressed the flame button would measure a data fault
+    # while believing it had measured the hazard.
+    "b7-method-flamed": r"""
+(function () {
+  var sec = document.querySelector('[data-mbblock]');
+  if (!sec) { return "no method breaker on the page"; }
+  var w = sec.querySelector('[data-mb]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var precedence, conditions, full;
+  try {
+    precedence = JSON.parse(w.getAttribute('data-precedence'));
+    conditions = JSON.parse(w.getAttribute('data-conditions'));
+    full = JSON.parse(w.getAttribute('data-full'));
+  } catch (x) { return "the bench ships no precedence or conditions"; }
+
+  var safety = null;
+  for (var i = 0; i < precedence.length; i++) {
+    if (!Object.prototype.hasOwnProperty.call(full, precedence[i])) {
+      safety = precedence[i]; break;
+    }
+  }
+  if (!safety) { return "no branch on this bench is a safety branch"; }
+  // ⚖️ FIRST IN PRECEDENCE, ALWAYS. A hazard reported after a spoiled pattern
+  // teaches that the two are the same size of mistake.
+  if (precedence[0] !== safety) {
+    return "the safety branch is " + (precedence.indexOf(safety) + 1) +
+      "th in precedence; it has to be first";
+  }
+  var cond = conditions[safety] || [];
+  if (cond.length < 2) {
+    return "the safety branch's condition names " + cond.length +
+      " step(s); it depends on the ethanol step as well as the heat one";
+  }
+  for (var c = 0; c < cond.length; c++) {
+    var btn = w.querySelector('.ks3-mb-opt[data-step="' + cond[c].step +
+                              '"][data-opt="' + cond[c].is + '"]');
+    if (!btn) { return "the bench cannot be set to " + cond[c].is; }
+    btn.click();
+  }
+  w.querySelector('[data-mb-run]').click();
+  var open = w.querySelectorAll('.ks3-mb-verdict:not([hidden])');
+  if (open.length !== 1 || open[0].getAttribute('data-mb-verdict') !== safety) {
+    return "the ethanol was heated over a flame and the bench reported " +
+      (open.length ? open[0].getAttribute('data-mb-verdict') : "nothing");
+  }
+  if (open[0].getAttribute('data-kind') !== 'safety') {
+    return "the safety branch is drawn as an ordinary data fault";
+  }
+  return "";
+})()
+""",
+
+    # b7-02's tuner needs no drive — see the rows: the opening leaf already
+    # earns a habitat and the verdict is on screen at first paint. What it does
+    # need is proof that the OPENING LEAF IS THE BAD ONE and that the oak
+    # button changes it, which is the whole lesson, so that lives here and is
+    # summoned by the one row measured after a press.
+    "b7-oak-pressed": r"""
+(function () {
+  var sec = document.querySelector('[data-ltblock]');
+  if (!sec) { return "no leaf tuner on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var w = sec.querySelector('[data-lt]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  if (!/class="[^"]*\bks3-option\b/.test(sec.innerHTML)) {
+    return "the dials are not server-rendered options — #s-tuner's rail stop " +
+      "reads `class=\"ks3-option` out of the STATIC html and could never tick";
+  }
+  var open = w.querySelectorAll('.ks3-lt-verdict:not([hidden])');
+  if (open.length !== 1) {
+    return open.length + " habitat verdicts are showing at rest; the tuner " +
+      "has no reveal and exactly one is always on screen";
+  }
+  var first = open[0].getAttribute('data-lt-verdict');
+
+  // ⚖️ THE OPENING LEAF IS DELIBERATELY BAD, and the water readout is what
+  // says so: over 150% of an oak leaf, with its bar clamped hard against the
+  // end of a track that only reaches 200%.
+  var water = w.querySelector('[data-lt-readout="water"]');
+  var bar = w.querySelector('[data-lt-bar="water"]');
+  if (!water || !bar) { return "the tuner draws no water readout"; }
+  var pct = parseFloat(water.textContent);
+  if (!(pct > 150)) {
+    return "the tuner opens on a leaf losing " + pct + "% of an oak leaf's " +
+      "water. The opening leaf is deliberately BAD; a sensible one deletes " +
+      "the lesson.";
+  }
+  if (parseFloat(bar.style.width) !== 100) {
+    return "the water bar is drawn at " + bar.style.width +
+      " at " + pct + "% — it is the percentage HALVED and clamped at 100";
+  }
+  var count = sec.querySelector('[data-count]');
+  if (count && count.textContent !== count.getAttribute('data-zero')) {
+    return "nothing has been touched and the counter reads " + count.textContent;
+  }
+
+  var oak = w.querySelector('[data-lt-oak]');
+  if (!oak) { return "the tuner has no oak shortcut"; }
+  oak.click();
+  open = w.querySelectorAll('.ks3-lt-verdict:not([hidden])');
+  if (open.length !== 1) {
+    return open.length + " habitat verdicts are showing after the oak button";
+  }
+  if (open[0].getAttribute('data-lt-verdict') === first) {
+    return "the oak button left the leaf in the same habitat (" + first +
+      "), so pressing it reveals nothing";
+  }
+  if (count) {
+    if (count.textContent === count.getAttribute('data-zero')) {
+      return "the oak button was pressed and the counter still says nothing " +
+        "has changed";
+    }
+    if (count.textContent.indexOf('{') >= 0) {
+      return "the counter shipped an unfilled placeholder: " + count.textContent;
+    }
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "a dial was moved and the stop did not tick";
+  }
+  // ⚖️ AND `Start again` DOES NOT UNTICK IT. Design's own predicate is
+  // `s.moved`, which her reset clears — so her rail stop unticks when a
+  // student tidies up after themselves. MRB-208 ruled the rail records
+  // participation, and B5's compare rows count rows EVER opened for the same
+  // reason: `everMoved` drives the stop, `moved` drives Design's counter.
+  var reset = w.querySelector('[data-lt-reset]');
+  if (reset) {
+    reset.click();
+    if (sec.getAttribute('data-stage-done') !== '1') {
+      return "starting again unticked a stop the student had already reached";
+    }
+    if (count && count.textContent !== count.getAttribute('data-zero')) {
+      return "starting again left the counter reading " + count.textContent;
+    }
+    oak.click();
+  }
+  return "";
+})()
+""",
+
+    # b7-04. Walks the opening food's chain to its producer one press at a
+    # time, proving that the verdict is withheld until the chain is complete,
+    # that each press reveals exactly one more note, that the counter's
+    # denominator is THIS food's chain length, and that switching food
+    # afterwards restarts the chain without untelling what has been reached.
+    "b7-chain-traced": r"""
+(function () {
+  var sec = document.querySelector('[data-tbblock]');
+  if (!sec) { return "no trace bench on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var w = sec.querySelector('[data-tb]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var tabs = w.querySelectorAll('[data-tb-food]');
+  if (tabs.length < 2) {
+    return "the plate offers " + tabs.length + " food(s)";
+  }
+  if (!/class="[^"]*\bks3-option\b/.test(sec.innerHTML)) {
+    return "the food tabs are not server-rendered options";
+  }
+  var panels = w.querySelectorAll('.ks3-tb-food:not([hidden])');
+  if (panels.length !== 1) {
+    return "the bench opens with " + panels.length + " food panels showing";
+  }
+  var cascade = w.querySelectorAll(
+    '.ks3-tb-food[hidden], .ks3-tb-verdict[hidden], .ks3-tb-note[hidden]');
+  for (var h = 0; h < cascade.length; h++) {
+    var el = cascade[h], prev = el.style.display;
+    el.style.display = '';
+    var shown = getComputedStyle(el).display;
+    el.style.display = prev;
+    if (shown !== 'none') {
+      return "MRB-242: " + el.className + " ships `hidden` but the stylesheet " +
+        "gives it display:" + shown + ", which beats the UA [hidden] rule";
+    }
+  }
+
+  var panel = panels[0];
+  var total = parseInt(panel.getAttribute('data-total'), 10);
+  if (!(total >= 3)) { return "the opening chain has " + total + " link(s)"; }
+  // ⚖️ THE FOOD IS ON THE PLATE AND NOTHING ELSE IS. One note showing, and the
+  // rest of the chain drawn but dim — a student reads how far there is to go.
+  if (panel.querySelectorAll('.ks3-tb-note:not([hidden])').length !== 1) {
+    return "the chain opens with " +
+      panel.querySelectorAll('.ks3-tb-note:not([hidden])').length +
+      " notes showing; there must be exactly one";
+  }
+  if (panel.querySelectorAll('.ks3-tb-link').length !== total) {
+    return "the chain declares " + total + " links and draws " +
+      panel.querySelectorAll('.ks3-tb-link').length;
+  }
+  if (panel.querySelector('.ks3-tb-verdict:not([hidden])')) {
+    return "the verdict landed before the chain was complete";
+  }
+
+  var back = w.querySelector('[data-tb-back]');
+  if (!back) { return "the bench has no step control"; }
+  for (var i = 1; i < total; i++) {
+    if (back.disabled) {
+      return "the step button locked at link " + i + " of " + total;
+    }
+    back.click();
+    var shownNotes = panel.querySelectorAll('.ks3-tb-note:not([hidden])').length;
+    if (shownNotes !== i + 1) {
+      return "press " + i + " revealed " + shownNotes +
+        " notes; each press reveals exactly one more";
+    }
+    if (i < total - 1 && panel.querySelector('.ks3-tb-verdict:not([hidden])')) {
+      return "the verdict landed at link " + (i + 1) + " of " + total;
+    }
+  }
+  if (!panel.querySelector('.ks3-tb-verdict:not([hidden])')) {
+    return "the chain reached its producer and no verdict landed";
+  }
+  if (!back.disabled) {
+    return "the chain is complete and the step button is still live";
+  }
+  var steps = panel.querySelector('[data-tb-steps]');
+  if (steps && steps.textContent.indexOf('{') >= 0) {
+    return "the steps line shipped an unfilled placeholder: " + steps.textContent;
+  }
+  if (steps && steps.textContent.indexOf(String(total - 1)) < 0) {
+    return "a chain of " + total + " links reported " + steps.textContent;
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "a chain was traced to its producer and the stop did not tick";
+  }
+  var count = sec.querySelector('[data-count]');
+  if (count && parseInt(count.getAttribute('data-total'), 10) !== total) {
+    return "the head counter's denominator is " +
+      count.getAttribute('data-total') + " and this chain has " + total +
+      " links";
+  }
+
+  // ⚖️ SWITCHING FOOD RESTARTS THE CHAIN AND UNTELLS NOTHING. The chains are
+  // deliberately different lengths, so the denominator has to move with the
+  // tab; and Design's readout says "chain traced" from the moment ONE chain
+  // has been walked, on every food after it.
+  for (var q = 0; q < tabs.length; q++) {
+    if (tabs[q].getAttribute('aria-pressed') === 'false') {
+      tabs[q].click();
+      var next = w.querySelector('.ks3-tb-food:not([hidden])');
+      if (!next) { return "switching food left no panel showing"; }
+      if (next.querySelectorAll('.ks3-tb-note:not([hidden])').length !== 1) {
+        return "switching food did not restart the chain";
+      }
+      var nTotal = parseInt(next.getAttribute('data-total'), 10);
+      if (count && parseInt(count.getAttribute('data-total'), 10) !== nTotal) {
+        return "the head counter's denominator did not follow the tab";
+      }
+      if (sec.getAttribute('data-stage-done') !== '1') {
+        return "switching food unticked a stop the student had reached";
+      }
+      break;
+    }
+  }
+  // Put the opening food back, walked to its producer, so the measured state
+  // is the one the rows describe.
+  tabs[0].click();
+  for (var j = 1; j < total; j++) { back.click(); }
+  return "";
+})()
+""",
+    # ═══ END B7 ═══ drives
 }
 
 
@@ -6766,23 +7678,71 @@ _JS_HIDDEN_AUDIT = r"""
   // weakest rule in the cascade: ANY author `display` beats it at ANY
   // specificity, so a component that gives itself `display: flex` un-hides its
   // own hidden children and nothing anywhere says so.
-  var out = [], n = 0;
+  //
+  // ⊕ GATE C — ASK THE CASCADE, NOT THE PAINTED PAGE.
+  //
+  // Reading computed `display` straight off the loaded document answers a
+  // different question from the one this audit means to ask, and the
+  // difference has already hidden a real defect. A chassis that draws itself
+  // on load — B5's commit bench is the one that caught us — writes an INLINE
+  // `display: none` through its own `setHidden()`. An inline declaration beats
+  // every author rule at every specificity, so it MASKS whatever the
+  // stylesheet says underneath it. Give `.ks3-b5c-opts` a `display: flex` in
+  // `shared/ks3.css` and the page is correct the instant JS runs and broken
+  // before it — eight option lists stacked open for a reader with JS off, or
+  // for the moment between paint and script — and this audit, reading the
+  // painted result, reports display:none and zero problems.
+  //
+  // So for each element: drop its inline `display` for the length of one
+  // read, ask the cascade what it says on its own, and put the inline value
+  // back exactly as it was (value AND priority — `el.style.display` as a
+  // getter silently loses `!important`). Judge on the cascade's answer.
+  //
+  // The two findings are NOT the same defect and are reported apart:
+  //   plain         — the stylesheet openly un-hides it; visible right now.
+  //   inline-masked — it looks hidden only because JS wrote an inline value
+  //                   over a stylesheet that un-hides it. Invisible to a
+  //                   screenshot, invisible to computed style, and the exact
+  //                   shape this audit was blind to.
+  // This technique lived in ONE drive (the B5 commit bench's local check) and
+  // covered one component on one page; here it covers every `[hidden]`
+  // element on every page.
+  var out = [], n = 0, masked = 0;
   var els = document.querySelectorAll("[hidden]");
   for (var i = 0; i < els.length; i++) {
     var el = els[i];
     n++;
-    var cs = getComputedStyle(el);
-    if (cs.display === "none") { continue; }
+
+    var painted = getComputedStyle(el).display;
+    var inlineVal = el.style.getPropertyValue("display");
+    var inlinePri = el.style.getPropertyPriority("display");
+
+    // One read with the element's own inline `display` lifted out of the way.
+    if (inlineVal) { el.style.removeProperty("display"); }
+    var cascade = getComputedStyle(el).display;
+    if (inlineVal) { el.style.setProperty("display", inlineVal, inlinePri); }
+
+    if (cascade === "none") { continue; }
+
     // Name it the way an author would recognise it: the class that is most
     // likely carrying the offending `display` rule.
     var cls = (el.className && el.className.baseVal !== undefined)
       ? el.className.baseVal : (el.className || "");
-    out.push((el.tagName.toLowerCase() +
-             (cls ? "." + String(cls).trim().split(/\s+/).join(".") : "")) +
-             " computes display:" + cs.display +
+    var name = el.tagName.toLowerCase() +
+      (cls ? "." + String(cls).trim().split(/\s+/).join(".") : "");
+
+    var isMasked = (painted === "none");
+    if (isMasked) { masked++; }
+    out.push(name +
+             (isMasked
+               ? " [INLINE-MASKED] looks hidden only because an inline " +
+                 "display:" + (inlineVal || "none") + " was written over it; " +
+                 "the stylesheet alone gives it display:" + cascade +
+                 " — with JS off, or before JS runs, it is OPEN"
+               : " [PLAIN] computes display:" + cascade) +
              (el.hasAttribute("data-step") ? " [staged reveal step]" : ""));
   }
-  return { problems: out, checked: n };
+  return { problems: out, checked: n, masked: masked };
 })()
 """
 
@@ -6804,6 +7764,430 @@ def check_hidden_stays_hidden(page):
     """
     info = page.eval(_JS_HIDDEN_AUDIT)
     return (["HIDDEN: " + p for p in info["problems"]], info)
+
+
+# ── GATE A: the `.ks3-dark p` specificity trap, made structural ────────────
+#
+# `shared/ks3.css` declares `.ks3-dark p { color: var(--ks3-on-dark-body) }`.
+# That selector is (0,1,1). Every bare instrument text class — `.ks3-fit-badge`,
+# `.ks3-plate-note`, `.ks3-tbench-why` — is (0,1,0), so on an ink-dark block the
+# author's own colour LOSES, silently, and the text ships present, correct and
+# invisible. There is no console error, no missing element, no failed selector:
+# the component is rendered, the rule is in the sheet, and the paint is wrong.
+#
+# This has now happened TEN times in one stylesheet. The comment blocks at
+# ks3.css:1256, :3422 and :3510 are three separate authors writing down the same
+# discovery, each scoping their own instance and leaving the trap armed for the
+# next one. Scoping an instance fixes a page. Only a gate fixes the trap.
+#
+# So this asks the question structurally, in the browser, on the undriven load:
+# for every element inside a `.ks3-dark` subtree, which colour rule actually
+# WINS — and did an author write a colour for this component that lost? If the
+# winner is a generic descendant rule whose rightmost compound is a bare type
+# (`.ks3-dark p`, `.ks3-dark h2`) and a losing matched selector's rightmost
+# compound is a `.ks3-*` class the element really carries, that is the trap
+# exactly: somebody meant this component to have its own colour and the generic
+# on-dark rule beat them to it.
+#
+# Three things a naive version of this gets wrong, all of them mirrored from
+# `ks3_mutation.py:209`'s `_JS_MUTATOR`, which already solved the same walk:
+#
+#   1. Grouping rules. `@media`, `@supports`, `@layer` and `@container` hold
+#      their own `cssRules`. KS3 ships 25 `@media` blocks and the responsive
+#      colour work lives inside them, so a top-level-only walk would miss the
+#      rules that are actually painting at this viewport. Recursed — but a
+#      grouping rule whose condition does NOT currently match is not in the
+#      cascade at all, and counting it would invent losers that never ran.
+#   2. Selector lists. `selectorText` is one string for `a, b, c`; each of the
+#      three has its own specificity, and only the ones that match this element
+#      are in the running. Split on TOP-LEVEL commas — a comma inside `:is(…)`
+#      or `[attr="a,b"]` is not a list separator.
+#   3. Selectors this engine cannot parse. `el.matches()` throws on an unknown
+#      pseudo rather than returning false, and one such rule anywhere in the
+#      sheet would take the whole audit down. Every match is guarded; an
+#      unparseable selector is skipped and counted, never fatal.
+#
+# `!important` is honoured as its own cascade tier, because an author who
+# reached for it DID win and reporting them as a loser would be a lie. An
+# element carrying an inline `color` is skipped outright — inline is explicit
+# author intent and beats every rule here anyway.
+_JS_DARK_TEXT_SPECIFICITY = r"""
+(function () {
+
+  // ── selector-string helpers ───────────────────────────────────────────
+  // A hand-rolled scanner rather than a regex: KS3 selectors carry attribute
+  // values, functional pseudos and nested selector lists, and a regex that
+  // handles those is a parser written badly.
+
+  function skipString(s, i) {                 // s[i] is the opening quote
+    var q = s[i]; i++;
+    while (i < s.length) {
+      if (s[i] === "\\") { i += 2; continue; }
+      if (s[i] === q) { return i + 1; }
+      i++;
+    }
+    return i;
+  }
+
+  function skipBalanced(s, i, open, close) {  // s[i] is `open`
+    var depth = 0;
+    while (i < s.length) {
+      var ch = s[i];
+      if (ch === "\\") { i += 2; continue; }
+      if (ch === '"' || ch === "'") { i = skipString(s, i); continue; }
+      if (ch === open) { depth++; }
+      else if (ch === close) { depth--; if (depth === 0) { return i + 1; } }
+      i++;
+    }
+    return i;
+  }
+
+  function isIdentChar(ch) {
+    return /[A-Za-z0-9_\- -￿\\]/.test(ch);
+  }
+
+  function skipIdent(s, i) {
+    while (i < s.length && isIdentChar(s[i])) {
+      if (s[i] === "\\") { i += 2; } else { i++; }
+    }
+    return i;
+  }
+
+  // Split a selector LIST on top-level commas only.
+  function splitList(s) {
+    var out = [], start = 0, i = 0;
+    while (i < s.length) {
+      var ch = s[i];
+      if (ch === "\\") { i += 2; continue; }
+      if (ch === '"' || ch === "'") { i = skipString(s, i); continue; }
+      if (ch === "(") { i = skipBalanced(s, i, "(", ")"); continue; }
+      if (ch === "[") { i = skipBalanced(s, i, "[", "]"); continue; }
+      if (ch === ",") { out.push(s.slice(start, i)); start = i + 1; }
+      i++;
+    }
+    out.push(s.slice(start));
+    var trimmed = [];
+    for (var k = 0; k < out.length; k++) {
+      var t = out[k].trim();
+      if (t) { trimmed.push(t); }
+    }
+    return trimmed;
+  }
+
+  // Split a COMPLEX selector into its compounds, on top-level combinators
+  // (descendant space, `>`, `+`, `~`). Returns the compounds in order.
+  function compounds(sel) {
+    var out = [], start = 0, i = 0;
+    function flush(end) {
+      var t = sel.slice(start, end).trim();
+      if (t) { out.push(t); }
+    }
+    while (i < sel.length) {
+      var ch = sel[i];
+      if (ch === "\\") { i += 2; continue; }
+      if (ch === '"' || ch === "'") { i = skipString(sel, i); continue; }
+      if (ch === "(") { i = skipBalanced(sel, i, "(", ")"); continue; }
+      if (ch === "[") { i = skipBalanced(sel, i, "[", "]"); continue; }
+      if (ch === " " || ch === "\t" || ch === "\n" ||
+          ch === ">" || ch === "+" || ch === "~") {
+        flush(i);
+        while (i < sel.length && /[\s>+~]/.test(sel[i])) { i++; }
+        start = i;
+        continue;
+      }
+      i++;
+    }
+    flush(sel.length);
+    return out;
+  }
+
+  function rightmost(sel) {
+    var c = compounds(sel);
+    return c.length ? c[c.length - 1] : sel.trim();
+  }
+
+  // ── specificity, (a, b, c) ────────────────────────────────────────────
+  // a = #ids
+  // b = classes + attribute selectors + pseudo-classes
+  // c = type selectors + pseudo-elements
+  // `:where()` contributes nothing; `:is()`, `:not()` and `:has()` contribute
+  // the specificity of their most specific argument (CSS Selectors 4).
+  var LEGACY_PSEUDO_ELEMENTS = {
+    "before": 1, "after": 1, "first-line": 1, "first-letter": 1
+  };
+  var MATCHES_ARG = {
+    "is": 1, "not": 1, "has": 1, "matches": 1, "-webkit-any": 1, "any": 1
+  };
+
+  function maxSpec(list) {
+    var best = [0, 0, 0];
+    for (var i = 0; i < list.length; i++) {
+      var s = specificity(list[i]);
+      if (cmpSpec(s, best) > 0) { best = s; }
+    }
+    return best;
+  }
+
+  function specificity(sel) {
+    var a = 0, b = 0, c = 0, i = 0;
+    while (i < sel.length) {
+      var ch = sel[i];
+      if (ch === "\\") { i += 2; continue; }
+      if (ch === '"' || ch === "'") { i = skipString(sel, i); continue; }
+      if (ch === "#") { a++; i = skipIdent(sel, i + 1); continue; }
+      if (ch === ".") { b++; i = skipIdent(sel, i + 1); continue; }
+      if (ch === "[") { b++; i = skipBalanced(sel, i, "[", "]"); continue; }
+      if (ch === ":") {
+        var dbl = (sel[i + 1] === ":");
+        var start = i + (dbl ? 2 : 1);
+        var j = skipIdent(sel, start);
+        var name = sel.slice(start, j).toLowerCase();
+        var args = null;
+        if (sel[j] === "(") {
+          var k = skipBalanced(sel, j, "(", ")");
+          args = sel.slice(j + 1, k - 1);
+          j = k;
+        }
+        if (dbl || LEGACY_PSEUDO_ELEMENTS[name]) {
+          c++;                                   // pseudo-element
+        } else if (name === "where") {
+          /* contributes nothing, by definition */
+        } else if (MATCHES_ARG[name]) {
+          if (args) {
+            var m = maxSpec(splitList(args));
+            a += m[0]; b += m[1]; c += m[2];
+          }
+        } else if (name === "nth-child" || name === "nth-last-child") {
+          b++;
+          if (args) {                            // `nth-child(2 of .foo)`
+            var of = args.toLowerCase().indexOf(" of ");
+            if (of >= 0) {
+              var m2 = maxSpec(splitList(args.slice(of + 4)));
+              a += m2[0]; b += m2[1]; c += m2[2];
+            }
+          }
+        } else {
+          b++;                                   // ordinary pseudo-class
+        }
+        i = j;
+        continue;
+      }
+      if (ch === "*" || ch === ">" || ch === "+" || ch === "~" ||
+          ch === "," || ch === "|" || /\s/.test(ch)) { i++; continue; }
+      if (isIdentChar(ch)) {                     // type / element selector
+        c++;
+        i = skipIdent(sel, i);
+        continue;
+      }
+      i++;
+    }
+    return [a, b, c];
+  }
+
+  function cmpSpec(x, y) {
+    if (x[0] !== y[0]) { return x[0] < y[0] ? -1 : 1; }
+    if (x[1] !== y[1]) { return x[1] < y[1] ? -1 : 1; }
+    if (x[2] !== y[2]) { return x[2] < y[2] ? -1 : 1; }
+    return 0;
+  }
+
+  // ── collect every colour-declaring rule that is currently in the cascade ──
+  var candidates = [], order = 0, unreadableSheets = 0, badSelectors = 0;
+
+  function groupApplies(rule) {
+    // A grouping rule whose condition does not hold right now contributes
+    // nothing to the cascade, and counting its rules would invent losers that
+    // never ran. @layer and @container carry no condition we can evaluate
+    // here, so they are recursed into unconditionally.
+    try {
+      var head = String(rule.cssText || "").slice(0, 12);
+      if (head.indexOf("@media") === 0) {
+        var mt = (rule.media && rule.media.mediaText) || rule.conditionText || "";
+        return mt ? window.matchMedia(mt).matches : true;
+      }
+      if (head.indexOf("@supports") === 0) {
+        var ct = rule.conditionText || "";
+        if (!ct || !window.CSS || !CSS.supports) { return true; }
+        return CSS.supports(ct);
+      }
+    } catch (e) { return true; }
+    return true;                                 // @layer, @container, unknown
+  }
+
+  function walk(rules, sheetIndex, href) {
+    for (var i = 0; i < rules.length; i++) {
+      var r = rules[i], kids = null;
+      try { kids = r.cssRules; } catch (e) { kids = null; }
+      // @keyframes is NOT a grouping rule in the cascade sense: its children
+      // are keyframe selectors ("0%", "to"), not element selectors, and
+      // `el.matches("0%")` throws. Four of them ship in `shared/ks3.css`.
+      if (r.keyText !== undefined) { continue; }
+      if (String(r.cssText || "").indexOf("@keyframes") === 0 ||
+          String(r.cssText || "").indexOf("@-webkit-keyframes") === 0) {
+        continue;
+      }
+      if (r.selectorText && r.style) {
+        var v = "";
+        try { v = r.style.getPropertyValue("color"); } catch (e) { v = ""; }
+        if (v) {
+          var pri = "";
+          try { pri = r.style.getPropertyPriority("color"); } catch (e) { pri = ""; }
+          var list = splitList(r.selectorText);
+          for (var s = 0; s < list.length; s++) {
+            candidates.push({
+              sel: list[s],
+              value: v,
+              important: pri === "important",
+              order: order++,
+              sheet: sheetIndex,
+              href: href,
+              spec: specificity(list[s])
+            });
+          }
+        } else {
+          order++;
+        }
+      } else if (kids && kids.length) {
+        if (groupApplies(r)) { walk(kids, sheetIndex, href); }
+      }
+    }
+  }
+
+  for (var s = 0; s < document.styleSheets.length; s++) {
+    var sheet = document.styleSheets[s], rules = null;
+    try { rules = sheet.cssRules; } catch (e) { unreadableSheets++; continue; }
+    if (!rules) { continue; }
+    walk(rules, s, sheet.href || "(inline <style>)");
+  }
+
+  // ── judge every element on an ink-dark ground ─────────────────────────
+  function classesOf(el) {
+    var cls = (el.className && el.className.baseVal !== undefined)
+      ? el.className.baseVal : (el.className || "");
+    return String(cls).trim() ? String(cls).trim().split(/\s+/) : [];
+  }
+
+  function describe(el) {
+    var c = classesOf(el);
+    return el.tagName.toLowerCase() + (c.length ? "." + c.join(".") : "");
+  }
+
+  // Is this compound a BARE TYPE selector — `p`, `h2`, `li` — with nothing
+  // else attached? That is what makes a rule GENERIC: it claims every element
+  // of that tag on the dark ground, regardless of what component it belongs to.
+  function isBareType(compound) {
+    return /^[A-Za-z][A-Za-z0-9-]*$/.test(compound);
+  }
+
+  // Does this compound hang on a `.ks3-*` class the element actually carries?
+  // That is what makes a rule the COMPONENT AUTHOR'S: they named this thing.
+  function ownedKs3Class(compound, own) {
+    var i = 0, found = null;
+    while (i < compound.length) {
+      var ch = compound[i];
+      if (ch === "\\") { i += 2; continue; }
+      if (ch === '"' || ch === "'") { i = skipString(compound, i); continue; }
+      if (ch === "(") { i = skipBalanced(compound, i, "(", ")"); continue; }
+      if (ch === "[") { i = skipBalanced(compound, i, "[", "]"); continue; }
+      if (ch === ".") {
+        var j = skipIdent(compound, i + 1);
+        var name = compound.slice(i + 1, j);
+        if (name.indexOf("ks3-") === 0 && own.indexOf(name) >= 0) { found = name; }
+        i = j;
+        continue;
+      }
+      i++;
+    }
+    return found;
+  }
+
+  var out = [], checked = 0, withRules = 0, skippedInline = 0;
+  var all = document.querySelectorAll("*");
+
+  for (var e = 0; e < all.length; e++) {
+    var el = all[e];
+    if (!el.closest) { continue; }
+    if (!el.closest(".ks3-dark")) { continue; }
+
+    // Rule 7: an inline `color` is explicit author intent and outranks every
+    // rule considered here. Nothing to say about it.
+    var inlineColor = "";
+    try { inlineColor = el.style.getPropertyValue("color"); } catch (x) { inlineColor = ""; }
+    if (inlineColor) { skippedInline++; continue; }
+
+    checked++;
+
+    var matched = [];
+    for (var ci = 0; ci < candidates.length; ci++) {
+      var cand = candidates[ci];
+      try {
+        if (el.matches(cand.sel)) { matched.push(cand); }
+      } catch (x) {
+        badSelectors++;                          // unsupported — skip, never crash
+      }
+    }
+    if (!matched.length) { continue; }
+    withRules++;
+
+    // Cascade winner: !important tier first, then (a,b,c), then source order.
+    var winner = matched[0];
+    for (var mi = 1; mi < matched.length; mi++) {
+      var m = matched[mi];
+      if (m.important !== winner.important) {
+        if (m.important) { winner = m; }
+        continue;
+      }
+      var c2 = cmpSpec(m.spec, winner.spec);
+      if (c2 > 0 || (c2 === 0 && m.order > winner.order)) { winner = m; }
+    }
+
+    if (!isBareType(rightmost(winner.sel))) { continue; }
+
+    var own = classesOf(el), losers = [];
+    for (var li = 0; li < matched.length; li++) {
+      if (matched[li] === winner) { continue; }
+      var owned = ownedKs3Class(rightmost(matched[li].sel), own);
+      if (owned) { losers.push(matched[li]); }
+    }
+    if (!losers.length) { continue; }
+
+    var resolved = getComputedStyle(el).color;
+    var lost = [];
+    for (var lj = 0; lj < losers.length; lj++) {
+      lost.push("`" + losers[lj].sel + "` {color:" + losers[lj].value.trim() +
+                "} (" + losers[lj].spec.join(",") + ")");
+    }
+    out.push(describe(el) +
+             " — `" + winner.sel + "` (" + winner.spec.join(",") +
+             ") wins with color:" + winner.value.trim() +
+             " → resolved " + resolved +
+             "; the component's own rule LOST: " + lost.join(", "));
+  }
+
+  return { problems: out, checked: checked, withRules: withRules,
+           colourRules: candidates.length, skippedInline: skippedInline,
+           badSelectors: badSelectors, unreadableSheets: unreadableSheets };
+})()
+"""
+
+
+def check_dark_text_specificity(page):
+    """⊕ GATE A — a component's own colour must not lose to `.ks3-dark p`.
+
+    Ten times now, an instrument's text class has been written bare at (0,1,0)
+    on an ink-dark block, where `.ks3-dark p` is (0,1,1) and takes it. The text
+    ships present, correct and invisible; nothing fails, because nothing is
+    missing. Every previous fix scoped one instance — this one asks the browser
+    which rule actually won, on every element on every ink-dark ground, so the
+    eleventh cannot ship.
+
+    Asserted on the UNDRIVEN load: no click has changed a class yet, so the
+    cascade being measured is the one a student meets first.
+
+    Returns (problems, info). Read-only — safe on the pass-1 page.
+    """
+    info = page.eval(_JS_DARK_TEXT_SPECIFICITY)
+    return (["DARK-TEXT: " + p for p in info["problems"]], info)
 
 
 def check_r3_runtime(page):
@@ -7409,6 +8793,8 @@ def run_browser_layers(ks3_root, browser_mod):
 
     n_hidden_checked = 0
     hidden_problems = []
+    n_dark_checked = 0
+    dark_problems = []
     server, port = browser_mod.serve(served_root)
     try:
         # ⊕ MRB-242 — a FRESH Chrome PER PAGE, which is what the build contract
@@ -7441,6 +8827,12 @@ def run_browser_layers(ks3_root, browser_mod):
                 # their own channel and get their own check.
                 hidden_problems.extend("/%s — %s" % (rel, h) for h in hid)
                 n_hidden_checked += hidinfo["checked"]
+                # ⊕ GATE A — same undriven load, same reasoning, its own
+                # channel. A component whose colour lost to `.ks3-dark p` is
+                # not a vanished component and must not be reported as one.
+                drk, drkinfo = check_dark_text_specificity(page)
+                dark_problems.extend("/%s — %s" % (rel, d) for d in drk)
+                n_dark_checked += drkinfo["checked"]
                 measure_c(page, rel, None)
                 measure_d(page, rel, None)
 
@@ -7453,7 +8845,35 @@ def run_browser_layers(ks3_root, browser_mod):
                     if page is None:
                         continue
                     page.eval(_JS_SETTLE)
-                    err = page.eval(DRIVES[drive])
+                    # ⊕ MRB-245 — A DRIVE THAT THROWS IS A FAILURE, NOT A
+                    # CRASH, and this `try` is the difference between one red
+                    # gate and a total blackout of every browser-asserted gate
+                    # in the key stage.
+                    #
+                    # The branch below has always handled a drive that RETURNS
+                    # an error string. A drive that throws — one undeclared
+                    # variable is enough — raises `JSError` out of `page.eval`,
+                    # and that propagated straight out of this function: the
+                    # loop stopped where it stood, and GATE A, the MRB-242
+                    # hidden-element audit and all 56 contrast pairs never ran
+                    # at all. `verify_ks3.py` exits 1 either way, so **a total
+                    # outage of the browser layer was indistinguishable from
+                    # one honest red gate**. That is the exact class of defect
+                    # this ticket exists to close: a gate that has stopped
+                    # enforcing and does not say so. Found by a typo in a B7
+                    # drive, which is the cheapest way it will ever be found.
+                    #
+                    # So: the throw becomes a `problems.append` like any other
+                    # — the build still goes red — and every other drive and
+                    # every other page still runs. A broken drive costs its own
+                    # assertions and nobody else's, and the message says
+                    # plainly that they did not run, because a SKIPPED
+                    # assertion must never be able to read as a passed one.
+                    try:
+                        err = page.eval(DRIVES[drive])
+                    except browser_mod.JSError as exc:
+                        err = ("the drive itself threw, so it never reached "
+                               "the state it was written to measure: %s" % exc)
                     if err:
                         problems.append(
                             "DRIVE: %s could not reach its state on /%s — %s. "
@@ -7516,4 +8936,5 @@ def run_browser_layers(ks3_root, browser_mod):
         server.shutdown()
 
     return (problems, style_rows, contrast_rows,
-            (hidden_problems, n_hidden_checked))
+            (hidden_problems, n_hidden_checked),
+            (dark_problems, n_dark_checked))

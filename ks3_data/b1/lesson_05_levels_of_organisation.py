@@ -688,12 +688,18 @@ LESSON = {
             "q": "A dish of living stomach cells cannot digest a sandwich, "
                  "even though every cell is healthy and doing its job. Why "
                  "not?",
+            # ⊕ MRB-177, ruled 17 Aug 2026 — the three distractors now state
+            # wrong RULES, in the same shape as the correct option. The
+            # correct option and its index are unchanged.
             "options": [
-                "There are not enough cells in the dish",
+                "Digestion needs a big enough mass of cells, so a small dish "
+                "can never manage it",
                 "They are not organised into tissues and layers that work on "
                 "the food together",
-                "They are the wrong kind of cell for digestion",
-                "Cells cannot make enzymes outside the body",
+                "Stomach cells only line the stomach, so digesting food is a "
+                "job for a different kind of cell",
+                "Enzymes only work inside a living body, so cells in a dish "
+                "cannot digest anything at all",
             ],
             "answer": 1,
             "feedback": {
@@ -701,8 +707,9 @@ LESSON = {
                    "anything. The problem is not quantity.",
                 2: "They are exactly the right cells — the same ones that are "
                    "doing it in you right now.",
-                3: "They can, and they do. The enzymes are being made; they "
-                   "are just being made into a dish.",
+                3: "They do work outside one. These enzymes are being made "
+                   "and released — just into a dish rather than into a "
+                   "stomach.",
             }},
         "explain": {
             "title": "Rung 3 · Explain it",

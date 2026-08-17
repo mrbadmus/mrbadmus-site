@@ -342,14 +342,18 @@ LESSON = {
         "apply": {
             "q": "Two of Dalton’s three claims are now known to be wrong. Why "
                  "is his model still taught and still used?",
+            # ⊕ MRB-177, ruled 17 Aug 2026 — the three distractors now state
+            # wrong RULES, in the same shape as the correct option. The
+            # correct option and its index are unchanged.
             "options": [
                 "It still explains everything it was built to explain, and "
                 "the parts that are wrong are outside chemistry",
-                "Because it is simpler, and students are not ready for the "
-                "truth",
-                "Because nobody has managed to replace it",
-                "Because the experiments that disproved it were later shown "
-                "to be faulty",
+                "A model is kept while it is simple enough to teach, and "
+                "swapped for the truth later on",
+                "A model stays in use until someone replaces it, so a wrong "
+                "model survives while no better one exists",
+                "A model is only disproved by a perfect experiment, so "
+                "faulty results leave it standing",
             ],
             "answer": 0,
             "feedback": {
@@ -358,8 +362,8 @@ LESSON = {
                 2: "It has been replaced, several times over, for the "
                    "questions it cannot answer. It is still the right tool "
                    "for reactions.",
-                3: "They were not. Electrons and isotopes are both real; "
-                   "Dalton was genuinely wrong about them.",
+                3: "The results were not faulty. Electrons and isotopes are "
+                   "both real; Dalton was genuinely wrong about them.",
             }},
         "explain": {
             "q": "Explain why the failure of alchemy is evidence for Dalton’s "

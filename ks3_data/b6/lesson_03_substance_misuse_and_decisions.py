@@ -110,24 +110,40 @@ its anchor, so every hash link into it still works.
    words are unchanged and the emphasis is what is given up; b4-01 and b5-03
    resolve the identical escaped foot line the identical way.
 
-── ⚠️ MRB-177 · BOTH marked rungs are length tells, exactly as drawn ────
+── ⊕ MRB-177 · RULED 17 Aug 2026 · BOTH marked rungs are repaired ───────
 
-Measured with `verify_ks3.py`'s own `length_tell()` (correct strictly longest
-AND clearing the longest distractor by ≥4 words or ≥1.4×):
+Mide ruled the SHAPE rather than the twenty instances. The ruling, because it
+is what the option sets below are now built to: on a recall or apply rung the
+correct answer states a RULE — subject, condition, consequence — while the
+distractors stated one-clause wrong REASONS. The correct answer was therefore
+longer by construction, and a student could score the question without reading
+it. A distractor must state a WRONG RULE instead: the same shape as the correct
+answer, with the misconception as the consequence. Length parity then follows
+from the construct, so nothing had to be trimmed.
 
-  * `ladder recall` — correct **12w** ("There is no comparison group, and the
-    company chose which reviews appeared") against a longest distractor of
-    **8w**. Gap 4, ratio 1.50. A tell on both thresholds.
-  * `ladder apply` — correct **16w** ("Because a risk is about rates across
-    many people, and one case cannot contradict a rate") against a longest
-    distractor of **9w**. Gap 7, ratio 1.78. A tell on both thresholds.
+Six distractors across the two marked rungs are Mide's own replacement copy,
+applied verbatim. **Neither correct option was touched, neither `answer` index
+moved, and `verify_ks3.py`'s threshold is unchanged.** Measured after:
 
-NOT rewritten, and NOT registered here: `KNOWN_TELLS` lives in `verify_ks3.py`,
-which this author does not own, and the register's own comment says rewriting a
-distractor changes what a marked question measures — "that is Mide's gate, not
-this script's". Both are reported. Note what makes them awkward to repair: on
-rung 2 every distractor is a *shorter* wrong reason, and the correct answer is
-long because it states the rule (a rate is not a case) rather than a fact.
+  * `ladder recall` — correct **12w** against 16 / 15 / 17. No longer the
+    longest option at all.
+  * `ladder apply` — correct **16w** against 16 / 17 / 17. No longer strictly
+    the longest.
+
+⛔ SUPERSEDED, KEPT AS HISTORY. This section used to record the two rungs as
+tells "exactly as drawn" — recall 12w against 8w (gap 4, ratio 1.50), apply 16w
+against 9w (gap 7, ratio 1.78) — and closed: *"NOT rewritten, and NOT registered
+here: `KNOWN_TELLS` lives in `verify_ks3.py`, which this author does not own,
+and the register's own comment says rewriting a distractor changes what a marked
+question measures — that is Mide's gate, not this script's."* It was his gate,
+and he has now passed through it. The two `substance-misuse-and-decisions`
+entries in `KNOWN_TELLS` are consequently stale; the commander deletes them, and
+`verify_ks3.py` is still not this author's file.
+
+One feedback string moved with its distractor: rung 2's correction for option D
+answered a claim about "other healthy habits" that is no longer offered, and was
+rewritten in the same voice and length band. The other five corrections already
+answered the new wording and were left byte-identical.
 
 ⚑ For Mide's science gate — NOTES-B6 §3 flags landing on THIS lesson:
   * **flag 12 — the five claims are INVENTED, and so are their study numbers.**
@@ -643,14 +659,19 @@ LESSON = {
 
     # ── the mastery ladder (Law 8, §5.8) ────────────────────────────────────
     #
-    # ⚠️ MRB-177 LENGTH PARITY — MEASURED, AND BOTH MARKED RUNGS FAIL.
-    #   rung 1 (recall): correct 12w against distractors of 5 / 8 / 4.
-    #   rung 2 (apply):  correct 16w against distractors of 9 / 7 / 8.
-    # Both clear the longest distractor by ≥4 words AND by ≥1.4×, which is
-    # `verify_ks3.py`'s `length_tell()` on both thresholds. NOT rewritten —
-    # rewriting a distractor changes what a marked question measures, and that
-    # is Mide's gate. Reported; the register entry, if he rules for one, goes
-    # in `verify_ks3.py`'s `KNOWN_TELLS`, which this author does not own.
+    # ⊕ MRB-177 LENGTH PARITY — RULED 17 Aug 2026, AND BOTH RUNGS ARE FIXED.
+    # Six distractors are Mide's replacement copy, applied verbatim; both
+    # correct options, both `answer` indices and the gate's threshold are
+    # untouched. Each distractor now states a WRONG RULE in the same shape as
+    # the correct answer, so length parity follows from the construct.
+    #   rung 1 (recall): correct 12w against distractors of 16 / 15 / 17.
+    #   rung 2 (apply):  correct 16w against distractors of 16 / 17 / 17.
+    #
+    # ⛔ Superseded, kept: this block used to read "MEASURED, AND BOTH MARKED
+    # RUNGS FAIL … 12w against 5 / 8 / 4 … 16w against 9 / 7 / 8 … NOT
+    # rewritten — rewriting a distractor changes what a marked question
+    # measures, and that is Mide's gate." It was, and he ruled. See the
+    # docstring for the ruling in full.
     "ladder": {
         "recall": {
             "title": "Rung 1 · Name the fault",
@@ -660,9 +681,12 @@ LESSON = {
             "options": [
                 "There is no comparison group, and the company chose which "
                 "reviews appeared",
-                "The sample is too small",
-                "A supplement is natural, so it cannot work",
-                "Sleep cannot be measured",
+                "A result only counts when the sample is large, and this one "
+                "was far too small",
+                "A natural supplement cannot change the body, so any effect "
+                "people report must be imagined",
+                "Sleep is a feeling rather than a measurement, so no claim "
+                "about it can ever be tested",
             ],
             "answer": 0,
             "feedback": {
@@ -685,11 +709,14 @@ LESSON = {
                  "“my grandad drank every day and lived to 90”. Why "
                  "does that not weaken the warning?",
             "options": [
-                "Because his grandad probably drank less than he says",
+                "A person who beats a risk has usually understated the habit, "
+                "so the story is unreliable",
                 "Because a risk is about rates across many people, and one "
                 "case cannot contradict a rate",
-                "Because alcohol affects everybody the same way",
-                "Because he must have had other healthy habits",
+                "Alcohol affects every body in exactly the same way, so what "
+                "happened to him happens to everyone",
+                "One person who came to no harm shows the risk was never "
+                "real, whatever the figures say",
             ],
             "answer": 1,
             "feedback": {
@@ -698,9 +725,13 @@ LESSON = {
                    "point worth understanding.",
                 2: "It does not — people differ. That is exactly why the "
                    "evidence has to be about many people rather than one.",
-                3: "He may have. But even if nothing else about him was "
-                   "unusual, one survivor tells you nothing about the rate, "
-                   "because some people survive dangerous things.",
+                # ⊕ MRB-177, 17 Aug 2026. Rewritten with the distractor above
+                # it: the old correction opened "He may have" and answered a
+                # distractor about other healthy habits, which no longer
+                # exists. Same voice, same length band, same job.
+                3: "A survivor does not cancel a figure. A risk that is not a "
+                   "certainty predicts survivors — finding one is what the "
+                   "rate said would happen, not evidence against it.",
             }},
         "explain": {
             "title": "Rung 3 · Design the test",

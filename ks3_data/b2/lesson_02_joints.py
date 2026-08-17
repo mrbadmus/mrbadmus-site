@@ -342,12 +342,18 @@ LESSON = {
             }},
         "apply": {
             "q": "Why can your shoulder rotate when your elbow cannot?",
+            # ⊕ MRB-177, ruled 17 Aug 2026 — the three distractors now state
+            # wrong RULES, in the same shape as the correct option. The
+            # correct option and its index are unchanged.
             "options": [
                 "The shape of the bone ends: a round ball in a socket turns, a "
                 "groove does not",
-                "The muscles around the elbow are not strong enough to turn it",
-                "The elbow has less cartilage",
-                "The ligaments at the elbow have never been stretched enough",
+                "A joint turns when the muscles around it are strong enough, "
+                "and the elbow's are not",
+                "Cartilage is what lets a joint turn, so a joint with less of "
+                "it turns less",
+                "Ligaments stretch with use, so a joint you have never "
+                "trained to rotate will not rotate",
             ],
             "answer": 0,
             "feedback": {

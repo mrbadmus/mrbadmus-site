@@ -156,12 +156,30 @@ in b5-07 and b5-08 or the unit teaches a rule it breaks on the facing page.
      never marked, so nothing here is a correctness fault — but it is a hook that
      answers itself, and moving one sentence would fix it.
 
-  b. **Rung 1 fails MRB-177 length parity, and it is not repairable by lift.**
-     Measured: the correct option is 11 words against distractors of 6 / 7 / 7 —
-     nearly twice the longest wrong answer, and the only one naming both nuclei.
-     Length is a tell here. No distractor was rewritten, because rewriting one
-     means authoring science-bearing copy Design did not write, which this build
-     is closed to. Rung 2 passes (2 / 2 / 2 / 4, correct is 2).
+  b. **⊕ RESOLVED — MRB-177 RULED 17 Aug 2026, and rung 1 is repaired.**
+     Measured before: the correct option was 11 words against distractors of
+     6 / 7 / 7 — nearly twice the longest wrong answer, and the only one naming
+     both nuclei.
+
+     Mide ruled the CONSTRUCT rather than the instance: on a recall or apply
+     rung the correct answer states a RULE — subject, condition, consequence —
+     while the distractors stated one-clause wrong REASONS, so the correct
+     answer was longer by construction and a student could score the rung
+     without reading it. His three replacement distractors are applied verbatim.
+     **The correct option is unchanged, `answer: 1` is unchanged, and the gate's
+     threshold is unchanged.** Measured after: 11 against 10 / 9 / 9 — gap 1,
+     ratio 1.10, inside both limbs. All three corrections in `feedback` already
+     answered the new wording and are byte-identical.
+
+     ⛔ Superseded, kept as history: this flag used to read *"not repairable by
+     lift … No distractor was rewritten, because rewriting one means authoring
+     science-bearing copy Design did not write, which this build is closed to."*
+     That was right — and the copy that repairs it is Mide's, not an author's,
+     so the build's closure was never breached. The
+     `("fertilisation-seeds-and-fruit", "ladder recall")` entry in
+     `verify_ks3.py`'s `KNOWN_TELLS` is now stale; the commander deletes it.
+
+     Rung 2 is untouched and still passes (2 / 2 / 2 / 4, correct is 2).
 
   c. **`becomeProgress` counts opens, and an open row can be shut again.** Page
      line 468 reads `Object.keys(s.open).length + ' of 6 opened'` while
@@ -583,23 +601,27 @@ LESSON = {
 
     # ── the mastery ladder (Law 8, §5.8) ────────────────────────────────────
     #
-    # ⚖️ MRB-177 LENGTH PARITY — MEASURED, AND RUNG 1 FAILS.
-    #   rung 1: correct 11w against distractors of 6 / 3 / 7 words counted as
-    #           Design writes them — the correct option is the longest by a wide
-    #           margin and is the only one naming both nuclei. Length is a tell.
-    #           NOT repaired: rewriting a distractor means authoring
-    #           science-bearing copy Design did not write. Flagged for Mide.
-    #   rung 2: correct 2w against distractors of 2 / 2 / 4 — passes.
+    # ⊕ MRB-177 LENGTH PARITY — RULED 17 Aug 2026, AND RUNG 1 IS REPAIRED.
+    #   rung 1: correct 11w against distractors of 10 / 9 / 9. The three
+    #           distractors are Mide's own replacement copy, applied verbatim;
+    #           the correct option, `answer: 1` and the gate's threshold are all
+    #           unchanged. See design flag (b) in the docstring for the ruling.
+    #   rung 2: correct 2w against distractors of 2 / 2 / 4 — passes, untouched.
+    #
+    # ⛔ Superseded, kept: this block used to read "MEASURED, AND RUNG 1 FAILS …
+    # NOT repaired: rewriting a distractor means authoring science-bearing copy
+    # Design did not write. Flagged for Mide." It was flagged; he ruled, and the
+    # copy is his.
     "ladder": {
         "recall": {
             "title": "Rung 1 · Define it precisely",
             "q": "In a flowering plant, which of these is fertilisation?",
             "options": [
-                "A pollen grain landing on a stigma",
+                "A pollen grain landing on the stigma of the flower",
                 "A pollen nucleus fusing with an ovule nucleus inside the "
                 "ovary",
-                "The ovary swelling to become a fruit",
-                "A seed being carried away and germinating",
+                "The ovary swelling and ripening to become a fruit",
+                "A seed being carried away and starting to grow",
             ],
             "answer": 1,
             "feedback": {

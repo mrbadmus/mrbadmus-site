@@ -765,15 +765,21 @@ LADDER = {"recall": {"title": "Rung 1 · Read the list",
                     "q": "A student says a root hair cell cannot be a plant "
                          "cell, because it is not green. What is wrong with "
                          "the reasoning?",
-                    "options": ["Root cells do have chloroplasts, but with "
-                                "no chlorophyll inside them",
+                    # ⊕ MRB-177, ruled 17 Aug 2026 — the three distractors
+                    # now state wrong RULES, in the same shape as the
+                    # correct option. The correct option and its index are
+                    # unchanged.
+                    "options": ["Root cells build chloroplasts like every "
+                                "other plant cell, but leave the green "
+                                "pigment out of them",
                                 "Chloroplasts are only built where light "
                                 "reaches, so a plant cell without them is "
                                 "still a plant cell",
-                                "Roots are green, just not where you can "
-                                "see them",
-                                "The green comes from the vacuole, not from "
-                                "chloroplasts"],
+                                "Roots are green under the soil, so a root "
+                                "cell is green wherever you dig it up",
+                                "The green is stored in the vacuole, so a "
+                                "cell with a clear vacuole is not a plant "
+                                "cell"],
                     "answer": 1,
                     "feedback": {0: "Close to something true about other "
                                     "structures in a root, but not this. A "
