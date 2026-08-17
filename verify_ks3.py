@@ -989,6 +989,68 @@ def main():
           else "%d unreachable: %s" % (len(reach_problems),
                                        reach_problems[0][:200]))
 
+    # ── ⊕ MRB-244: a `confronted_by` pointing at another page ───────────
+    #
+    # The same question as the two gates above, asked of the misconception
+    # register's own join. `confronted_by` names WHERE a wrong idea is taken
+    # apart, and Law 3's existing check (in the per-lesson done-list) only asks
+    # whether AT LEAST ONE misconception on a lesson names a real activity. A
+    # lesson can therefore satisfy Law 3 on its first entry and carry two more
+    # that point at nothing, which is exactly what happened.
+    #
+    # B6 surfaced the shape of it: b6-02's first cut named a LESSON SLUG,
+    # because that page's big question IS b6-01's belief and the honest thing
+    # felt like pointing at b6-01. But a cross-page pointer is one no page can
+    # resolve — the student is on THIS page, and the claim "this belief is
+    # confronted here" has to be true HERE. It reads as working precisely
+    # because nothing checked it.
+    #
+    # Two more failed once the question was asked of all thirty values:
+    #   b2-02 BODY-06  -> "ladder"           the page declares `s-ladder`
+    #   c2-01 ATOM-02  -> "stretch-boundary" authored on the block's `id` key,
+    #                                        which names an ACTIVITY, not a
+    #                                        section — see `_id_attr`
+    # Both named a real place in the author's head and no element in the
+    # document. Neither is a typo; both are the register drifting away from the
+    # page while every gate stayed green.
+    #
+    # Resolution is measured against the BUILT PAGE rather than the record, so
+    # the gate cannot be satisfied by a key that renders to nothing: a value
+    # counts only if it is emitted as `id="…"` (a section anchor, via
+    # `_id_attr`) or `data-activity="…"` (an activity, via `r_activity`). That
+    # is the whole universe of names a student's browser can reach.
+    conf_problems, conf_count = [], 0
+    _ID_RE = re.compile(r'\bid="([^"]+)"')
+    _ACT_RE = re.compile(r'\bdata-activity="([^"]+)"')
+    for _u in ks3_data.build_units():
+        for _l in _u.get("lessons") or []:
+            _mis = _l.get("misconceptions") or []
+            if not _mis:
+                continue
+            _p = os.path.join(KS3_OUT, _u["discipline"], _u["slug"],
+                              _l["slug"] + ".html")
+            if not os.path.exists(_p):
+                continue
+            _html = open(_p, encoding="utf-8").read()
+            _names = set(_ID_RE.findall(_html)) | set(_ACT_RE.findall(_html))
+            for _m in _mis:
+                conf_count += 1
+                _v = _m.get("confronted_by")
+                if not _v:
+                    conf_problems.append(
+                        "%s/%s: %s declares no confronted_by"
+                        % (_u["code"], _l["slug"], _m.get("id")))
+                elif _v not in _names:
+                    conf_problems.append(
+                        "%s/%s: %s confronted_by %r names no element on its "
+                        "own page" % (_u["code"], _l["slug"], _m.get("id"), _v))
+    check("⊕ MRB-244 · every `confronted_by` names a place on its OWN page",
+          not conf_problems,
+          "%d misconception(s) across the key stage, every one confronted on "
+          "the page that declares it" % conf_count if not conf_problems
+          else "%d unresolvable: %s" % (len(conf_problems),
+                                        "; ".join(conf_problems[:3])))
+
     # ── MRB-203, one level down: an activity KIND with no renderer ──────
     #
     # MRB-203's registry asks whether a BLOCK TYPE has a registered component.

@@ -408,8 +408,15 @@ LESSON = {
     # ── the stretch layer (§5.6) — visible and opt-in to all ────────────────
     # ATOM-02's confrontation lives here: wrong in a way you can draw a line
     # around is how most good models end up.
+    #
+    # ⊕ MRB-244 — `anchor`, not `id`. This block was authored with the name on
+    # the `id` key, which `_id_attr` documents as naming the ACTIVITY a block
+    # renders; an explainer renders no activity, so the name was read by
+    # nothing and emitted nowhere, and ATOM-02's `confronted_by` pointed at a
+    # section that existed on the page and had no name in the document. It is
+    # a SECTION anchor, which is what `anchor` means, and now it is one.
     "stretch": [
-        {"type": "explainer", "id": "stretch-boundary",
+        {"type": "explainer", "anchor": "stretch-boundary",
          "text": "Dalton said atoms cannot be split. A century later J. J. "
                  "Thomson knocked pieces off them and found electrons, and it "
                  "turned out that atoms of the same element can have different "

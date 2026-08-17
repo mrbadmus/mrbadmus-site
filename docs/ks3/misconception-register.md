@@ -54,6 +54,31 @@ Per §5.3, an entry is:
 `statement` is a **science-bearing field** under §5.10 — it requires Mide's examiner review before
 publish, and is frozen afterwards.
 
+### ⊕ MRB-244 — `confronted_by` must name a place on its OWN page, and this is now gated
+
+`confronted_by` is a claim about where a student is standing when a wrong idea is taken apart, so
+it has to be true **on the page the student is on**. It may name an activity id from that lesson's
+`activities[]`, or a block `anchor` that lesson declares. It may **never** name a lesson slug, an
+element on another page, or a place that exists only in the author's description of the page.
+
+B6 surfaced the shape of it: `b6-02`'s first cut named a lesson slug, because that page's big
+question *is* `b6-01`'s belief and pointing back at `b6-01` felt like the honest thing. It is not —
+a cross-page pointer is one no page can resolve, and it reads as working precisely because nothing
+checked it. Asking the question of all thirty values found two more that had drifted the same way,
+`BODY-06` and `ATOM-02`, both naming a real place in the author's head and no element in the
+document.
+
+`verify_ks3.py` now resolves every value against the **built page**, so a name that renders to
+nothing cannot satisfy it: a value counts only where it is emitted as `id="…"` or
+`data-activity="…"`. Note the two keys are not interchangeable in authored data — `id` on a block
+names the **activity** it renders, `anchor` names the **section**; `ATOM-02` failed because a
+section name had been authored on the activity key and was therefore emitted nowhere.
+
+**And the standing rule this sits under: CITE, DO NOT RE-DECLARE.** A `misconceptions` row is not a
+citation. A borrowed id is re-declared only where the page genuinely **re-confronts** the belief
+with an activity of its own — the `CELL-08` precedent. Opening on a belief and moving on is a
+*reappearance*, and reappearances live in `reappears_in`, here, not in a second declaration.
+
 ---
 
 ## ID family prefixes
@@ -230,7 +255,7 @@ referenced; the family is opened here, and the IDs below are now permanent (§5.
 | `BODY-03` | How bad a break is depends on how big the bone is. | `hook-two-breaks` | `hook-reveal` | `what-the-skeleton-does` |
 | `BODY-04` | Muscles hold the bones together at a joint. | `think-commit-achilles` | `think-reveal-achilles` | `joints` |
 | `BODY-05` | All joints work the same way; some are just stiffer than others. | `bench-gate-knee-shoulder` | `joint-bench` | `joints` |
-| `BODY-06` | A joint could rotate further if the muscles were stronger or the ligaments looser. | `ladder-r2` | `ladder-r2-feedback` | `joints` |
+| `BODY-06` | A joint could rotate further if the muscles were stronger or the ligaments looser. | `s-ladder` | `s-ladder` | `joints` |
 | `BODY-07` | Muscles push as well as pull. | `hook-commit-door` | `muscle-pair` | `antagonistic-muscle-pairs` |
 | `BODY-08` | When a muscle relaxes it stretches itself back out. | `think-commit-stretch` | `think-reveal-stretch` | `antagonistic-muscle-pairs` |
 | `BODY-09` | If both muscles of a pair contract, the movement is faster or stronger. | `bench-gate-both` | `muscle-pair-both` | `antagonistic-muscle-pairs` |

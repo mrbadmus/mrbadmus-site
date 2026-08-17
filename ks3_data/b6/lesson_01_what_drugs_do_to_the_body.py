@@ -909,6 +909,14 @@ LESSON = {
     # rather than naming a helpline, because a named helpline goes stale and
     # naming one is a safeguarding decision rather than an authoring one.
     # Carried as drawn. Nothing added, nothing softened.
+    #
+    # ⊕ MRB-244 — `support_heading` now exists and this lesson takes it. The
+    # engine used to hard-code "Need a hand?" over every support layer, which
+    # had never rendered anywhere because B6 is the first unit in KS3 with a
+    # non-empty `support[]`. A study-support phrase over a referral block about
+    # somebody's drug use is not a styling nit; it changes who thinks the block
+    # is addressed to them. Design's eyebrow, lifted byte-identical.
+    "support_heading": "If any of this is about you or someone you know",
     "support":       [{"type": "explainer",
                        "id": "if-this-is-about-you",
                        "text": "This lesson covers the biology only. "

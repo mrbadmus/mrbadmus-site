@@ -102,6 +102,11 @@ LESSON = {
     # ── misconceptions (Law 3) ──────────────────────────────────────────────
     # BODY-04's statement is the PAGE's line (line 227), which the register
     # paraphrases identically here.
+    #
+    # ⊕ MRB-244 — BODY-06 named "ladder", and the ladder's section is emitted
+    # as `s-ladder` (its `anchor`). The belief is genuinely confronted there —
+    # only the name was one the document does not carry. `s-ladder` is what a
+    # student's browser can reach, so `s-ladder` is what the register says.
     "misconceptions": [
         {"id": "BODY-04",
          "statement": "Muscles hold the bones together at a joint.",
@@ -115,8 +120,8 @@ LESSON = {
         {"id": "BODY-06",
          "statement": "A joint could rotate further if the muscles were "
                       "stronger or the ligaments looser.",
-         "elicited_by": "ladder",
-         "confronted_by": "ladder"},
+         "elicited_by": "s-ladder",
+         "confronted_by": "s-ladder"},
     ],
 
     # ── core, in the approved page's document order ─────────────────────────
