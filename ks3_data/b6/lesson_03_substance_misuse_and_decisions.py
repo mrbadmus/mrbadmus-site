@@ -803,8 +803,12 @@ LESSON = {
     # Nothing is softened, no dose or threshold appears, and no warning is
     # added that Design did not draw.
     #
-    # ⚠️ The block's EYEBROW is lost — `r_layer` hard-codes "Need a hand?" for
-    # the support layer. See "What could not be lifted" 2; the body is intact.
+    # ⊕ MRB-244 — RESOLVED. The eyebrow is no longer lost: `r_layer` gained a
+    # `support_heading` override (falling back to the old hard-coded string, so
+    # no shipped page moves), and this lesson takes it. Design's eyebrow,
+    # lifted byte-identical. Two authors flagged the loss independently, which
+    # is what made it a defect rather than a preference.
+    "support_heading": "If any of this is about you or someone you know",
     "support": [
         {"type": "explainer", "id": "if-this-is-about-you",
          "text": "This lesson teaches how to test a claim, which is the "
