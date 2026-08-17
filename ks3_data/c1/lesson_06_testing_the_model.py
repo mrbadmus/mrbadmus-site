@@ -72,7 +72,17 @@ the lesson in one line. WS statements are exempt from the exactly-once rule
     particular way"), so it holds — but it is the sentence the whole C1 → C2
     bridge rests on.
   * Bohr's `broke` reads "Nothing yet, for chemistry." The timeline stops short
-    of "and now we know" on purpose (NOTES §3 flag 10, PART-13).
+    of "and now we know" on purpose (NOTES §3 flag 10, NOS-02).
+
+⊕ MRB-248 — RE-HOMED TO `NOS`. This lesson's two beliefs were minted as
+`PART-12` and `PART-13` because C1 opened the register, and both are about how
+models and evidence work rather than about particles. The 26 Jul 2026 ruling
+kept them where they were; the commander has now reversed it and opened the
+`NOS` family. `PART-12` → **`NOS-01`**, `PART-13` → **`NOS-02`**. `PART-12` and
+`PART-13` are permanent gaps and are never reissued. Every reference in this
+module moved with them; NOTES-C1 and PAYLOAD-MAP are frozen delivery records
+and still say `PART-12`/`PART-13`, which is what they said when they were
+written.
 """
 
 # ── the evidence bench · seven observations ─────────────────────────────
@@ -190,7 +200,7 @@ HISTORY = [
      "body": "This is the model behind the periodic table, chemical bonding "
              "and every reaction you will meet at GCSE and beyond.",
      # ⚑ NOTES §3 flag 10, verified: the timeline deliberately stops short of
-     # "and now we know". PART-13 is the reason.
+     # "and now we know". NOS-02 (ex-`PART-13`) is the reason.
      "broke": "Nothing yet, for chemistry. It has limits of its own at very "
               "high energies, and the search for what lies past them is a live "
               "field of research right now."},
@@ -337,24 +347,29 @@ LESSON = {
     },
 
     # ── misconceptions (Law 3) ──────────────────────────────────────────────
-    # Both IDs are permanent and pre-existing (misconception-register.md, ruled
-    # 26 Jul 2026). PAYLOAD-MAP §7.4 confirms the rebuild moves neither. The
-    # statements below are the register's wording; where Design's page quotes
-    # the wrong idea in different words, the ACTIVITY carries `statements` and
-    # wins over the register — which is the b1-01 lesson, learned once.
+    # ⊕ MRB-248 — these two were `PART-12` and `PART-13` and are now `NOS-01`
+    # and `NOS-02`. The 26 Jul 2026 ruling that froze them under `PART` has
+    # been reversed by the commander and the `NOS` family is open; the old
+    # numbers are permanent gaps and are never reissued. The statements below
+    # are unchanged, byte for byte — a re-home moves the label, never the
+    # science.
+    #
+    # The statements are the register's wording; where Design's page quotes the
+    # wrong idea in different words, the ACTIVITY carries `statements` and wins
+    # over the register — which is the b1-01 lesson, learned once.
     "misconceptions": [
-        {"id": "PART-12",
+        {"id": "NOS-01",
          "statement": "A scientific model is either true or false, and one "
                       "exception proves it wrong.",
          "elicited_by": "the-verdict",
          "confronted_by": "the-verdict"},
-        {"id": "PART-13",
+        {"id": "NOS-02",
          "statement": "Scientists' models never change once they are agreed.",
-         # ⚑ NOTES §1 names the five-model timeline as PART-13's confrontation,
-         # and it is the evidence — but the block that asks the student to
-         # commit and then answers them is `#s-think`, which is why both fields
-         # name it. `five-models` runs immediately before it and is what the
-         # reveal points back at ("the timeline above").
+         # ⚑ NOTES §1 names the five-model timeline as this belief's
+         # confrontation, and it is the evidence — but the block that asks the
+         # student to commit and then answers them is `#s-think`, which is why
+         # both fields name it. `five-models` runs immediately before it and is
+         # what the reveal points back at ("the timeline above").
          "elicited_by": "settled-science",
          "confronted_by": "settled-science"},
     ],
@@ -478,7 +493,7 @@ LESSON = {
         # attached per option (PAYLOAD-MAP §6.5.2).
         {"type": "keyed-commit", "id": "the-verdict", "anchor": "s-verdict",
          "demand": "evaluate",
-         "targets": "PART-12",
+         "targets": "NOS-01",
          "eyebrow": "The verdict · this is the real question",
          "heading": "Three failures. What should be done?",
          "prompt": "Commit to one. Then read what scientists actually did, "
@@ -528,7 +543,7 @@ LESSON = {
          "broke_label": "What broke it:"},
 
         {"type": "misconception", "id": "settled-science", "anchor": "s-think",
-         "targets": "PART-13"},
+         "targets": "NOS-02"},
         {"type": "quiz", "ref": "ladder", "anchor": "s-ladder"},
         {"type": "summary", "ref": "key_note"},
     ],
@@ -557,13 +572,13 @@ LESSON = {
         # and it DOES tick its rail stage. It is not B1's static confrontation.
         #
         # `statements` carries Design's own wording of the wrong idea (page
-        # line 208), which differs from the register's PART-13 statement. An
+        # line 208), which differs from the register's NOS-02 statement. An
         # authored statement wins over the register — the b1-01 defect, where
         # the register's line rendered and Design's did not.
         {"id": "settled-science",
          "kind": "predict",
          "demand": "explain",
-         "targets": "PART-13",
+         "targets": "NOS-02",
          "statements": [
              "Once scientists agree on something, it is settled — that is what "
              "makes it science.",

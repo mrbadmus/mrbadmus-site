@@ -74,6 +74,24 @@ nothing cannot satisfy it: a value counts only where it is emitted as `id="…"`
 names the **activity** it renders, `anchor` names the **section**; `ATOM-02` failed because a
 section name had been authored on the activity key and was therefore emitted nowhere.
 
+### ⊕ MRB-248 — `elicited_by` is gated by the same rule, with one difference
+
+`elicited_by` carries the identical defect and was never checked when `confronted_by` was fixed:
+the ticket said `confronted_by`, and the sibling key on the same dict line went past three audits
+untouched. It now resolves against the same universe of names on the same built page.
+
+**The difference, and it is deliberate: absence is LEGAL for `elicited_by` and is not legal for
+`confronted_by`.** Law 3 requires a wrong idea to be taken apart somewhere the student is standing,
+so a missing `confronted_by` is itself the failure. Eliciting is a different claim. This register
+already documents pages where a belief is stated in static markup with nothing in front of it
+asking the student to commit — `CELL-13`'s row carries `—` and the note under it calls that honest
+rather than an omission, and `CELL-08` has the same shape. Recording the gap is the right answer
+there, and a gate that demanded a value would be a gate that made an author invent one. So: absent
+or empty passes; a value that is **present** must be true.
+
+The gate reports both counts separately, so a reader can see that both keys were measured and how
+many of each declared a value.
+
 **And the standing rule this sits under: CITE, DO NOT RE-DECLARE.** A `misconceptions` row is not a
 citation. A borrowed id is re-declared only where the page genuinely **re-confronts** the belief
 with an activity of its own — the `CELL-08` precedent. Opening on a belief and moving on is a
@@ -95,6 +113,7 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `ATOM` | Atoms having kinds, and substances versus their ingredients | 2026-08-16, by B2's sibling delivery, C2 |
 | `DIET` | Food, what a body needs from it, and what the gut does to it | 2026-08-16, by B3 |
 | `PLANT` | Plant nutrition, photosynthesis, and what a leaf is for | 2026-08-17, by B7 |
+| `NOS` | Nature of science — how models, evidence and theories actually work | 2026-08-17, by MRB-248 (commander's ruling), populated by re-homing from `PART` and `DRUG` |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
 — **not yet opened, listed so numbering starts consistently**: `FORCE` (forces and motion),
@@ -104,10 +123,12 @@ Suggested starting families, from the misconception fields architecture.md §1 a
 been removed from the not-yet-opened list above rather than left there to contradict the entries
 below. `PLANT` is added to the prefix table.
 
-`NOS` (nature of science — how models, evidence and theories actually work) is a **candidate family,
-not yet opened**. The call belongs before `B10 how-we-worked-out-dna` and `C8 mendeleev` are
-authored; see the ruling under the `PART` entries below. Note that opening it would not move
-`PART-12`/`PART-13` — IDs are permanent.
+⊕ **`NOS` OPENED 17 Aug 2026 (MRB-248), and the ids in it MOVED.** This paragraph used to read
+*"`NOS` … is a candidate family, not yet opened … opening it would not move `PART-12`/`PART-13` —
+IDs are permanent."* The commander has ruled the other way, on the deadline the 26 Jul 2026 entry
+itself set: the call was to be made before `B10 how-we-worked-out-dna` and `C8 mendeleev` were
+authored, B10 is now imminent, and the family is opened **with** the three entries that belong in
+it rather than alongside them. See `NOS` below for the re-homes, the reservations and the gaps.
 
 ---
 
@@ -136,8 +157,12 @@ before any of these freeze.
 | `PART-09` | Heating a gas makes the particles themselves get bigger, which is why the pressure rises. | `predict-heated-can` | `speed-not-size` | `gas-pressure` |
 | `PART-10` | Diffusion needs a draught, a current, or someone to waft it — something has to push the particles along. | `predict-still-room` | `random-walk-sim` | `diffusion` |
 | `PART-11` | Particles move in order to spread out — they 'want' to fill the space. | `why-spread` | `both-directions-sim` | `diffusion` |
-| `PART-12` | A scientific model is either true or false, and one exception proves it wrong. | `verdict-vote` | `model-limits-sort` | `testing-the-model` |
-| `PART-13` | Scientists' models never change once they are agreed. | `predict-history` | `model-history-timeline` | `testing-the-model` |
+
+⊕ **`PART-12` and `PART-13` are gone from this table and are PERMANENT GAPS.** They were re-homed
+to `NOS-01` and `NOS-02` on 17 Aug 2026 by MRB-248; their rows now live in the `NOS` section below,
+with the same statements and the same lesson. **Never reissue `PART-12` or `PART-13`** — a number
+that has meant one thing and is later given to another is exactly the silent broken join §5.3
+exists to prevent, and the fact that these two moved does not make the numbers free.
 
 **Where these are expected to resurface** (`reappears_in`, filled as the units are authored):
 
@@ -149,38 +174,34 @@ before any of these freeze.
 - `PART-09` (heating makes particles bigger) → P5 `pressure-in-liquids`, P11 `density`.
 - `PART-10`/`PART-11` (diffusion needs a push / particles intend to spread) → B1 `specialised-cells`
   and B4 `alveoli-built-for-exchange`, where diffusion does real biological work.
-- `PART-12`/`PART-13` (how models and theories work) → C2 `the-atom-daltons-model`, C8 `mendeleev`,
-  B10 `how-we-worked-out-dna`. These are the nature-of-science pair and they recur in every
-  INVESTIGATION lesson.
+- The nature-of-science pair that used to sit at `PART-12`/`PART-13` is now `NOS-01`/`NOS-02`, and
+  its reappearances are listed in the `NOS` section below.
 
-### `PART-12` / `PART-13` — RULED: stay as they are; a `NOS` family may be wanted later
+### ⊖ `PART-12` / `PART-13` — the 26 Jul 2026 ruling, REVERSED 17 Aug 2026 (MRB-248)
 
-**Decision, 26 Jul 2026 — `PART-12` and `PART-13` keep their IDs permanently. They are not renamed,
-not renumbered, and not moved.** IDs are permanent once assigned (§5.3, and the `id` row in the entry
-format above); an ID that has been referenced anywhere cannot be reissued, and these two are already
-referenced by `testing-the-model`'s authored activities. Renaming to tidy a taxonomy is precisely the
-failure §5.3 exists to prevent — it breaks the join silently, with no error anywhere.
+**This section is kept, marked, rather than deleted, per the reversal rule.** It ruled that
+`PART-12` and `PART-13` keep their IDs permanently — not renamed, not renumbered, not moved — on
+the ground that an ID once referenced cannot be reissued, and that renaming to tidy a taxonomy is
+the failure §5.3 exists to prevent.
 
-The observation behind the flag stands and is worth recording: neither one is a misconception about
-*particles*. `PART-12` ("a model is either true or false") and `PART-13` ("scientists' models never
-change") are misconceptions about **how science works** — nature of science, not matter. They sit
-under `PART` only because C1 was the unit that opened the register, which is an accident of build
-order rather than a conceptual claim.
+**What it got right, and what the reversal keeps.** The reasoning about reissue is correct and is
+not weakened by the reversal: `PART-12` and `PART-13` are **permanent gaps** and will never be
+given to anything else. What the ruling conflated is two different operations. *Reissuing* a number
+— giving `PART-12` to a new belief — silently breaks a join. *Re-homing* a belief — moving one
+statement from `PART-12` to `NOS-01` and never reusing `PART-12` — breaks nothing silently, because
+every reference to the old number is updated in the same change and any that is missed is a name
+that resolves to nothing. The register did not distinguish them, so the safe half of the rule was
+applied to the whole.
 
-**What this means for future authoring, not for these two entries:**
+**What it got right and the reversal acts on.** Its own observation stands, and is now the reason
+it was reversed: neither belief is about *particles*. They sat under `PART` because C1 opened the
+register — an accident of build order, not a conceptual claim. The ruling set the decision point at
+*"before `B10 how-we-worked-out-dna` and `C8 mendeleev` are authored"*, and named the cost of
+deciding late: **either a third home for the same idea or a rename**. B10 is now imminent. The
+commander took the deadline the ruling set, and chose the rename while the count was three rather
+than a third home for the same idea.
 
-- A separate **`NOS` (nature of science) family may be wanted**, and the moment to decide is **before
-  `B10 how-we-worked-out-dna` and `C8 mendeleev` are authored** — those are the next two lessons
-  whose central wrong ideas are nature-of-science ones, and they are where a `NOS` family would
-  either earn its place or prove unnecessary. Deciding then costs nothing; deciding after they are
-  authored means either a third home for the same idea or a rename that §5.3 forbids.
-- If `NOS` is opened, `PART-12` and `PART-13` **still do not move**. They stay where they are, and
-  the register carries a cross-reference instead. A family boundary that is slightly wrong is a much
-  smaller problem than an ID that means two different things depending on when you read it.
-- Until that call is made, nature-of-science misconceptions discovered while authoring should be
-  noted here rather than assigned an ID, so nothing is minted into the wrong family in the meantime.
-
-This is recorded as a decision rather than a question so the next author does not re-open it.
+The re-homes and the gaps are recorded in the `NOS` section below. Nothing else in `PART` moves.
 
 ### `LIFE` — what counts as living
 
@@ -288,7 +309,7 @@ before the IDs were referenced; it is opened here and the IDs are permanent.
 | ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
 |---|---|---|---|---|
 | `ATOM-01` | An atom of a substance has the properties of the substance — a copper atom is orange and conducts. | `think-commit-copper` | `think-reveal-copper` | `the-atom-daltons-model` |
-| `ATOM-02` | A model that turns out to be wrong about something has been disproved and should be discarded. | `ladder-r2` | `stretch-boundary` | `the-atom-daltons-model` |
+| `ATOM-02` | A model that turns out to be wrong about something has been disproved and should be discarded. | `s-ladder` | `stretch-boundary` | `the-atom-daltons-model` |
 | `ATOM-03` | If it looks like a metal, it is an element. | `think-commit-brass` | `think-reveal-brass` | `elements` |
 | `ATOM-04` | An element is a pure substance, so anything pure is an element. | `sample-water` | `sample-reveal` | `elements` |
 | `ATOM-05` | Reacting violently means being broken down. | `sample-sodium` | `sample-reveal` | `elements` |
@@ -304,10 +325,18 @@ before the IDs were referenced; it is opened here and the IDs are permanent.
 - `ATOM-01` (an atom is a tiny lump of the substance) is the big one → C4
   `reactions-rearrange-atoms`, C8 `metals-and-non-metals`, P11 `density`, and every bonding lesson
   at KS4.
-- `ATOM-02` belongs with `PART-12`/`PART-13` and is **the third piece of evidence that a `NOS`
-  family is wanted**. The ruling under the `PART` entries says the call should be made before
-  `C8 mendeleev` is authored; `the-atom-daltons-model` has now made the same shape of argument a
-  second time. The call is still open and is Mide's.
+- `ATOM-02` belongs with `NOS-01`/`NOS-02` and was **the third piece of evidence that a `NOS`
+  family was wanted**. The call has since been made — see `NOS` below — and `ATOM-02` was **not**
+  re-homed with them: unlike the three that moved, it is load-bearing on a page whose whole subject
+  is a specific model's boundary, and the commander's re-home list named three ids and only three.
+  It stays in `ATOM` and is cross-referenced from `NOS`. If a later pass wants it moved, that is a
+  fresh ruling, not a tidy-up.
+
+  ⊕ **MRB-248 also corrected its `elicited_by`.** It read `ladder-r2` — the author's name for the
+  apply rung, which is emitted inside the ladder's section and carries no id of its own. The rung
+  is genuinely where the belief is committed to (all three of its distractors are versions of it),
+  so only the name was wrong; it now reads `s-ladder`, which is what the page emits. Identical
+  shape to `BODY-06` under MRB-244, one key across.
 
 **Cross-family note — `ATOM-11` is `PART-05` in a chemical costume.** Exactly as the `PART` list
 predicted when it wrote that *"the puddle dried up"* becomes *"the mass went down when it burned"*.
@@ -449,8 +478,10 @@ family is unlike every other in this register: most of its beliefs are not wrong
 science a student worked out from experience, but wrong *categories* they were
 handed — that a drug is a legal classification rather than a description of what
 a molecule does, that "natural" is a claim about safety, that a story is
-evidence. Confronting them is closer to the nature-of-science pair `PART-12`/
-`PART-13` than to anything in `DIET` or `BREATH`.
+evidence. Confronting them is closer to the nature-of-science pair `NOS-01`/
+`NOS-02` (which is what `PART-12`/`PART-13` are now) than to anything in `DIET`
+or `BREATH` — and one of this family's own entries has since been re-homed there
+for exactly that reason. See `NOS-05` below.
 
 **The collision fix from `DIET` and `BREATH` was finally applied.** Three
 authors worked this unit in parallel with `DRUG-01/02`, `03/04` and `05/06`
@@ -466,6 +497,10 @@ quantity. That is stretch material and is confronted there rather than in a
 `#s-think` block, so it was not minted. Ids are permanent, and a gap is cheaper
 than a renumber; do not reuse `07` for something else.
 
+**⚠️ `DRUG-09` is a second permanent gap, for the opposite reason.** It was
+minted, and then re-homed to `NOS-05` on 17 Aug 2026 by MRB-248 — see `NOS`
+below. The number is now vacant and stays vacant.
+
 | ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
 |---|---|---|---|---|
 | `DRUG-01` | Drugs are illegal substances. | `hook` | `two-wrong-ideas` | `what-drugs-do-to-the-body` |
@@ -475,7 +510,6 @@ than a renumber; do not reuse `07` for something else.
 | `DRUG-05` | If it's natural, it's safe — it's the chemicals that hurt you. | `find-the-fault` | `two-wrong-ideas` | `substance-misuse-and-decisions` |
 | `DRUG-06` | Everyone my age is doing it. | `find-the-fault` | `two-wrong-ideas` | `substance-misuse-and-decisions` |
 | `DRUG-08` | Filters make cigarettes safer. | `two-wrong-ideas` | `two-wrong-ideas` | `alcohol-and-smoking` |
-| `DRUG-09` | One person who came to no harm disproves a risk. | `find-the-fault` | `find-the-fault` | `substance-misuse-and-decisions` |
 
 **`DRUG-01` reappears in both later lessons and is NOT re-declared — a ruling,
 because the two authors made opposite calls.**
@@ -512,12 +546,15 @@ place:
 > and in `substance-misuse-and-decisions` (hook option B). Confronted once, in
 > `what-drugs-do-to-the-body`.
 
-**⚠️ Every `confronted_by` in this family except `DRUG-09` names
-`two-wrong-ideas`.** That is not a copy-paste error: Design draws exactly one
-"Think again" block per page in this unit, carrying two quotes, and the block is
-the activity. `DRUG-09` is the exception because b6-03 confronts it inside the
-claim bench itself and hits it again at the ladder — the only belief in the unit
-attacked twice.
+**⚠️ Every `confronted_by` in this family names `two-wrong-ideas`.** That is not
+a copy-paste error: Design draws exactly one "Think again" block per page in
+this unit, carrying two quotes, and the block is the activity. The one exception
+was `DRUG-09`, which b6-03 confronts inside the claim bench itself and hits
+again at the ladder — the only belief in the unit attacked twice — and it has
+since left the family as `NOS-05`. With it gone the rule is now exceptionless,
+which is worth noting rather than quietly enjoying: an exceptionless rule here
+means a future b6 page whose `confronted_by` is anything else is either a new
+block Design drew or a mistake, and it is worth checking which.
 
 ---
 
@@ -631,3 +668,106 @@ physics. That cross-disciplinary move is NOTES-B7 flag 7 and is on Mide's list.
 families *not yet opened*. The entries above are written from the four authored pages, not from
 NOTES. This is the second delivery to describe register work as done when it was not; `NOTES-B5`
 did the same thing and the B5 run recorded it. Worth one process note rather than eight.
+
+---
+
+### `NOS` — nature of science: how models, evidence and theories actually work
+
+**Opened 17 Aug 2026 by MRB-248, on the commander's ruling.** It is the first family in the
+register opened by a ruling rather than by a unit, and the first populated by **re-homing ids that
+already existed** rather than by minting new ones. The 26 Jul 2026 entry under `PART` set the
+decision point at *"before `B10 how-we-worked-out-dna` and `C8 mendeleev` are authored"* and named
+the cost of missing it — *"either a third home for the same idea or a rename"*. B10 is imminent,
+three beliefs of this shape are already on the record, and a fourth and fifth are about to be
+written. The rename was taken while the count was three.
+
+The family is not disciplinary and is not meant to be. Its members are the beliefs a student holds
+about **what science is and how a claim gets settled** — that a model is true or false, that
+agreement ends the argument, that one case decides a general question. They surface in chemistry,
+in biology and in PSHE-adjacent health material, which is precisely why they need one home: a wrong
+idea fought in three subjects under three prefixes is fought three times from scratch.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `NOS-01` | A scientific model is either true or false, and one exception proves it wrong. | `the-verdict` | `the-verdict` | `testing-the-model` |
+| `NOS-02` | Scientists' models never change once they are agreed. | `settled-science` | `settled-science` | `testing-the-model` |
+| `NOS-05` | One person who came to no harm disproves a risk. | `find-the-fault` | `find-the-fault` | `substance-misuse-and-decisions` |
+
+#### The three re-homes, and where each came from
+
+| Was | Is | Why it moved |
+|---|---|---|
+| `PART-12` | `NOS-01` | Not a belief about particles. It sat under `PART` because C1 opened the register. |
+| `PART-13` | `NOS-02` | The same, and its twin — both are about what happens to a model under evidence. |
+| `DRUG-09` | `NOS-05` | Not a belief about drugs. "One person came to no harm" is `NOS-01` in a health costume: one case taken to settle a general claim. |
+
+**⚠️ `DRUG-06` was named in the first cut of this re-home and STAYS IN `DRUG`. Recorded so it is
+not re-argued.** The list handed down read `DRUG-06`; the correct entry is `DRUG-09`. `DRUG-06` is
+*"Everyone my age is doing it."* — a belief about social norms, about what other people are
+assumed to be doing. It is wrong about the world, not about how evidence works, and nothing in it
+concerns models, samples or what a single case can settle. Putting it in `NOS` would make the
+family mean "beliefs b6-03 confronts", which is the accident-of-build-order failure the family
+exists to undo. `DRUG-09` is the entry that is `NOS-01`'s exact twin — a single case taken to
+settle a general claim — and it is the one that moved.
+
+#### Reserved, not minted here
+
+These numbers are **allocated and must not be given to anything else.** Each is a belief a
+forthcoming lesson will confront; each would otherwise have been minted into a family it does not
+belong in, which is the whole reason this family exists. They are minted by the pass that authors
+the page, not by this one — nothing is registered ahead of the lesson that needs it (the standing
+rule at the top of this file).
+
+| ID | Belief | Lesson | Would otherwise have been |
+|---|---|---|---|
+| `NOS-03` | A great discovery is one person's flash of insight. | B10 `how-we-worked-out-dna` | `GENE-06` |
+| `NOS-04` | A large sample is an accurate sample. | B9 `sampling-an-ecosystem` | `ECO-12` |
+| `NOS-06` | *(reserved)* | a future chemistry reactions unit | `REACT-18` |
+
+#### Permanent gaps — never allocate any of these
+
+Two different kinds of gap, and both are permanent.
+
+**Vacated by this re-home** — these numbers were minted, referenced, and are now empty. Never
+reuse them:
+
+- **`PART-12`** — its belief is `NOS-01`.
+- **`PART-13`** — its belief is `NOS-02`.
+- **`DRUG-09`** — its belief is `NOS-05`.
+
+**Re-homed before they were minted** — these numbers were never issued at all, and must never be.
+A future author reaching for the next free number in `GENE`, `ECO` or `REACT` must skip them,
+because the belief that would have taken each one is now recorded elsewhere and a second id for one
+belief is exactly what this register exists to prevent:
+
+- **`GENE-06`** — is `NOS-03`.
+- **`ECO-12`** — is `NOS-04`.
+- **`REACT-18`** — is `NOS-06`.
+
+These join the existing permanent gaps: `DRUG-07`, `REPRO-17`/`20`/`21`/`23`, and
+`PLANT-09`–`PLANT-12`.
+
+#### `ATOM-02` is cross-referenced, not re-homed
+
+`ATOM-02` (*"a model that turns out to be wrong … should be discarded"*) is the same shape as
+`NOS-01` and was named, in the `ATOM` notes above, as the third piece of evidence that this family
+was wanted. It has **not** moved. The commander's re-home list named three ids; `ATOM-02` was not
+among them, and a pass does not widen its own ruling. It is also doing work `NOS-01` is not — it is
+about one named model's boundary on the page that draws that boundary. Cross-referenced from both
+ends; if it should move, that is a fresh ruling.
+
+#### ⚠️ The `PART-12`/`PART-13` register-vs-code drift, resolved 17 Aug 2026
+
+The rows above carry `the-verdict` and `settled-science`. Until this pass the register recorded
+`verdict-vote`/`model-limits-sort` and `predict-history`/`model-history-timeline` for these two —
+**four values, none of which exists anywhere in the codebase or on the built page.** They were
+written before `testing-the-model` was rebuilt (contract §3: C1 is a rebuild over a live unit), and
+they describe the *superseded* body's activities. The rebuild renamed the instruments and nobody
+updated the register, because nothing read it.
+
+Resolved **in favour of the code**, per the standing rule that the built page is the authority:
+`the-verdict` is the `keyed-commit` block's id and `settled-science` is the `#s-think` activity's,
+and both are emitted as `data-activity="…"` on the page a student loads. The four register values
+resolve to nothing. This is the same defect MRB-244 and MRB-248 gate for, caught one layer up — in
+the markdown rather than in the Python — and it is the argument for the gate reading the Python and
+the Python alone.

@@ -144,10 +144,19 @@ LESSON = {
                       "and it conducts electricity.",
          "elicited_by": "think-commit-copper",
          "confronted_by": "think-commit-copper"},
+        # ⊕ MRB-248 — `elicited_by` named `ladder-r2`, which is how the author
+        # referred to the apply rung and is not a name the document carries: a
+        # rung is emitted inside the ladder's section and has no id of its own.
+        # The rung IS the elicitation — "Two of Dalton's three claims are now
+        # known to be wrong. Why is his model still taught?" makes the student
+        # commit, and all three distractors are versions of this belief — so
+        # the place is real and only the name was wrong. The ladder's section
+        # is emitted as `s-ladder`, which is what a browser can reach. Same
+        # shape and same fix as `BODY-06` under MRB-244.
         {"id": "ATOM-02",
          "statement": "A model that turns out to be wrong about something has "
                       "been disproved and should be discarded.",
-         "elicited_by": "ladder-r2",
+         "elicited_by": "s-ladder",
          "confronted_by": "stretch-boundary"},
     ],
 

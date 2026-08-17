@@ -41,10 +41,18 @@ does, and legal, because WS is exempt from the exactly-once rule (§5.7). That
 was raised by this slice as a design decision, ruled 26 Jul 2026, and promoted
 to a general rule so all 18 INVESTIGATION lessons follow one pattern.
 
-**Misconception coverage is unchanged too.** PART-01 to PART-13 are elicited
-and confronted in both the superseded and the rebuilt version, and each lands
-in the same lesson in both (PAYLOAD-MAP §7.4). Nothing in
-`docs/ks3/misconception-register.md` moves.
+**Misconception coverage is unchanged too.** All thirteen of the unit's beliefs
+are elicited and confronted in both the superseded and the rebuilt version, and
+each lands in the same lesson in both (PAYLOAD-MAP §7.4).
+
+⊕ MRB-248 — the last two of those thirteen have since been **re-homed**, and
+the numbering above is why this paragraph no longer says "PART-01 to PART-13".
+`PART-12` → `NOS-01` and `PART-13` → `NOS-02`, both in `testing-the-model`,
+when the commander opened the `NOS` (nature of science) family and reversed the
+26 Jul 2026 ruling that had frozen them under `PART`. The unit now declares
+`PART-01`…`PART-11` plus `NOS-01`/`NOS-02`; `PART-12` and `PART-13` are
+permanent gaps and are never reissued. No statement changed and no lesson moved
+— only the label.
 
 **review_state is `draft` on every lesson.** Mide is the sole science gate
 (§5.10); `draft` → `examiner-reviewed` → `frozen`. ⊕ MRB-221 — the field no

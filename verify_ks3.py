@@ -1028,7 +1028,38 @@ def main():
     # counts only if it is emitted as `id="…"` (a section anchor, via
     # `_id_attr`) or `data-activity="…"` (an activity, via `r_activity`). That
     # is the whole universe of names a student's browser can reach.
+    # ── ⊕ MRB-248: `elicited_by` carries the IDENTICAL defect ───────────
+    #
+    # MRB-244 asked the question of `confronted_by` and stopped there. The
+    # other half of the same join was never checked, and it drifts the same
+    # way for the same reason: an author writes down the place where the
+    # student commits to the belief, describing the page from memory rather
+    # than reading it, and nothing anywhere disagrees.
+    #
+    # A parallel session found it on ALL EIGHT `PLANT` entries at once —
+    # every one of B7's `elicited_by` values named something the built page
+    # does not emit. Eight out of eight is not a slip; it is a field that has
+    # never been read by anything. `confronted_by` was fixed in isolation
+    # because the ticket said `confronted_by`, and the sibling key sitting on
+    # the same dict line went past three separate audits untouched.
+    #
+    # ⚠️ ONE RULE DIFFERS, DELIBERATELY: absence is LEGAL for `elicited_by`
+    # and is NOT legal for `confronted_by`. Law 3 requires a wrong idea to be
+    # taken apart somewhere the student is standing, so a missing
+    # `confronted_by` is itself the failure. Eliciting is a different claim:
+    # the register documents pages where a belief is stated in static markup
+    # with no gate in front of it and nothing asks the student to commit —
+    # `CELL-13`'s row carries "—" in the Elicited-by column and the note
+    # under it calls that honest rather than an omission. Recording the gap
+    # is the right answer there, and a gate that forced a value would be a
+    # gate that forced an author to invent one. So: absent or empty passes;
+    # a value that is PRESENT must resolve, against the same universe of
+    # names — `id="…"` and `data-activity="…"` on the built page.
+    #
+    # Both counts are reported separately so a future reader can see that
+    # both keys were measured and how many of each.
     conf_problems, conf_count = [], 0
+    elic_problems, elic_count = [], 0
     _ID_RE = re.compile(r'\bid="([^"]+)"')
     _ACT_RE = re.compile(r'\bdata-activity="([^"]+)"')
     for _u in ks3_data.build_units():
@@ -1053,12 +1084,33 @@ def main():
                     conf_problems.append(
                         "%s/%s: %s confronted_by %r names no element on its "
                         "own page" % (_u["code"], _l["slug"], _m.get("id"), _v))
+                # ⊕ MRB-248 — absence is legal here, a present value is not
+                # exempt from having to be true.
+                _e = _m.get("elicited_by")
+                if not _e:
+                    continue
+                elic_count += 1
+                if _e not in _names:
+                    elic_problems.append(
+                        "%s/%s: %s elicited_by %r names no element on its "
+                        "own page" % (_u["code"], _l["slug"], _m.get("id"), _e))
     check("⊕ MRB-244 · every `confronted_by` names a place on its OWN page",
           not conf_problems,
           "%d misconception(s) across the key stage, every one confronted on "
           "the page that declares it" % conf_count if not conf_problems
           else "%d unresolvable: %s" % (len(conf_problems),
                                         "; ".join(conf_problems[:3])))
+    check("⊕ MRB-248 · every `elicited_by` present names a place on its OWN "
+          "page",
+          not elic_problems,
+          "%d of %d misconception(s) declare an `elicited_by`, every one "
+          "elicited on the page that declares it; %d declare none, which is "
+          "legal" % (elic_count, conf_count, conf_count - elic_count)
+          if not elic_problems
+          else "%d unresolvable of %d declared (%d declare none, which is "
+               "legal): %s" % (len(elic_problems), elic_count,
+                               conf_count - elic_count,
+                               "; ".join(elic_problems[:3])))
 
     # ── MRB-203, one level down: an activity KIND with no renderer ──────
     #

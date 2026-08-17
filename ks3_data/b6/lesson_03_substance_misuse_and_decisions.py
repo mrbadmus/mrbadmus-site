@@ -439,13 +439,26 @@ LESSON = {
     # (`docs/ks3/misconception-register.md`) is maintained centrally and does
     # not yet carry a `DRUG` row; that is the commander's file, not this one.
     #
-    # ⊕ `DRUG-09` is the THIRD belief this page confronts, and it is outside
-    # the two-per-lesson block by allocation rather than by drift. It is the
-    # subject of claim c5 AND of ladder rung 2 — the only belief on the page
-    # attacked twice — and rung 2's own title calls it "The one that catches
-    # people". `elicited_by` and `confronted_by` are both the bench, honestly:
-    # the student picks a fault for the grandad claim before the verdict panel
-    # names survivorship bias, and no other block touches it.
+    # ⊕ `NOS-05` (ex-`DRUG-09`) is the THIRD belief this page confronts, and it
+    # is outside the two-per-lesson block by allocation rather than by drift.
+    # It is the subject of claim c5 AND of ladder rung 2 — the only belief on
+    # the page attacked twice — and rung 2's own title calls it "The one that
+    # catches people". `elicited_by` and `confronted_by` are both the bench,
+    # honestly: the student picks a fault for the grandad claim before the
+    # verdict panel names survivorship bias, and no other block touches it.
+    #
+    # ⊕ MRB-248 — RE-HOMED. It was minted `DRUG-09` because b6-03 was where it
+    # was met, but it is not a belief about drugs at all: "one person who came
+    # to no harm disproves a risk" is a claim about what a single case can
+    # settle, which is exactly `NOS-01`'s ("one exception proves it wrong") in
+    # a different costume. The commander opened the `NOS` family and moved it
+    # to **`NOS-05`**. `DRUG-09` is a permanent gap and is never reissued.
+    #
+    # `DRUG-06` on this same page was named in the first cut of that re-home
+    # and STAYS IN `DRUG`: "Everyone my age is doing it" is a belief about
+    # social norms, not about how evidence or models work. Its fault at the
+    # bench is that the claim describes what people do, not what a substance
+    # does — which is a `DRUG` argument, and the reason it is not `NOS`.
     #
     # `DRUG-01` ("Drugs are illegal substances.", b6-01's, confronted there) is
     # NOT declared — see the docstring's second page observation.
@@ -461,7 +474,7 @@ LESSON = {
          "statement": "Everyone my age is doing it.",
          "elicited_by": "find-the-fault",
          "confronted_by": "two-wrong-ideas"},
-        {"id": "DRUG-09",
+        {"id": "NOS-05",
          "statement": "One person who came to no harm disproves a risk.",
          "elicited_by": "find-the-fault",
          "confronted_by": "find-the-fault"},
@@ -527,7 +540,7 @@ LESSON = {
         # lands with different names, this block is the only thing that moves.
         {"type": "claim-check", "id": "find-the-fault", "anchor": "s-claims",
          "demand": "evaluate",
-         "targets": "DRUG-09",
+         "targets": "NOS-05",
          "eyebrow": "At the bench · five claims, five faults",
          "heading": "Find the fault in the evidence",
          "head_counter": {"format": "{n} of 5 checked", "total": 5},
