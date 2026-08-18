@@ -114,6 +114,7 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `DIET` | Food, what a body needs from it, and what the gut does to it | 2026-08-16, by B3 |
 | `PLANT` | Plant nutrition, photosynthesis, and what a leaf is for | 2026-08-17, by B7 |
 | `RESP` | Respiration: what it is, where it happens, and what it is not | 2026-08-18, by B8 |
+| `ECO` | Ecosystems, feeding relationships and interdependence | 2026-08-18, by B9 |
 | `NOS` | Nature of science — how models, evidence and theories actually work | 2026-08-17, by MRB-248 (commander's ruling), populated by re-homing from `PART` and `DRUG` |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
@@ -672,6 +673,44 @@ did the same thing and the B5 run recorded it. Worth one process note rather tha
 
 ---
 
+### `ECO` — ecosystems, feeding relationships and interdependence
+
+Opened by **B9 *Ecosystems and interdependence*** (2026-08-18, MRB-248). Eleven entries — two per
+lesson for five lessons, one for `sampling-an-ecosystem`, whose second belief is a nature-of-science
+fault and lives in `NOS` as `NOS-04`. All `review_state: draft`; `statement` is science-bearing
+under §5.10 and needs Mide's review before any of these freeze.
+
+Every statement is Claude Design's own quoted belief from the approved page, lifted byte-identical.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `ECO-01` | The arrow points at what the animal eats. | `s-ladder` | `s-think` | `food-chains-and-food-webs` |
+| `ECO-02` | Ninety per cent of the energy is lost at each level. | `s-ladder` | `s-think` | `food-chains-and-food-webs` |
+| `ECO-03` | The two peaks happen at the same time — more rabbits, more foxes. | `s-ladder` | `s-think` | `predator-and-prey` |
+| `ECO-04` | Remove the predators and the prey will do brilliantly. | `s-ladder` | `s-think` | `predator-and-prey` |
+| `ECO-05` | Removing a species only affects the things directly above and below it. | `s-hook` | `s-think` | `disturbing-a-food-web` |
+| `ECO-06` | If it goes wrong, you just put the species back. | `s-bench` | `s-think` | `disturbing-a-food-web` |
+| `ECO-07` | No bees, no food — we would starve within a few years. | `s-hook` | `s-think` | `pollinators-and-food-security` |
+| `ECO-08` | Save the bees — keep a hive of honeybees. | — | `s-think` | `pollinators-and-food-security` |
+| `ECO-09` | The poison gets stronger as it goes up the chain. | `s-hook` | `s-think` | `toxic-build-up-in-a-food-chain` |
+| `ECO-10` | If the level in the water is safe, the ecosystem is safe. | `s-bench` | `s-think` | `toxic-build-up-in-a-food-chain` |
+| `ECO-11` | Throwing the quadrat over your shoulder makes the placement random. | — | `s-think` | `sampling-an-ecosystem` |
+
+**`ECO-06` is elicited by a button, not a sentence.** The bench's reset is labelled *"Put it back"* —
+Design's own words, and the confrontation quotes them back. Pressing it restores the wood instantly
+and completely, so the belief is PERFORMED rather than stated, and that is a real elicitation.
+
+**`ECO-08` and `ECO-11` declare no `elicited_by`, and that is measured rather than lazy.** Nothing on
+either page asks a student to commit to the belief — `ECO-08`'s page never offers keeping a hive as
+an option, and `ECO-11`'s hook asks how you get a number at all. Absence is legal under MRB-248 and
+is the honest answer; inventing an anchor to fill the column would fail the gate that checks the
+anchor names a real place.
+
+⛔ **`ECO-12` is a permanent gap and is never minted.** Its belief — *a large sample is an accurate
+sample* — is a nature-of-science fault, not an ecology one, and it lives as `NOS-04`. B9's own
+`NOTES-B9.md` §4 asks for twelve entries, two per lesson; the register supersedes it and the family
+stops at eleven.
+
 ### `NOS` — nature of science: how models, evidence and theories actually work
 
 **Opened 17 Aug 2026 by MRB-248, on the commander's ruling.** It is the first family in the
@@ -692,6 +731,7 @@ idea fought in three subjects under three prefixes is fought three times from sc
 |---|---|---|---|---|
 | `NOS-01` | A scientific model is either true or false, and one exception proves it wrong. | `the-verdict` | `the-verdict` | `testing-the-model` |
 | `NOS-02` | Scientists' models never change once they are agreed. | `settled-science` | `settled-science` | `testing-the-model` |
+| `NOS-04` | A large sample is an accurate sample. | `s-ladder` | `s-think` | `sampling-an-ecosystem` |
 | `NOS-05` | One person who came to no harm disproves a risk. | `find-the-fault` | `find-the-fault` | `substance-misuse-and-decisions` |
 
 #### The three re-homes, and where each came from
@@ -722,8 +762,13 @@ rule at the top of this file).
 | ID | Belief | Lesson | Would otherwise have been |
 |---|---|---|---|
 | `NOS-03` | A great discovery is one person's flash of insight. | B10 `how-we-worked-out-dna` | `GENE-06` |
-| `NOS-04` | A large sample is an accurate sample. | B9 `sampling-an-ecosystem` | `ECO-12` |
 | `NOS-06` | *(reserved)* | a future chemistry reactions unit | `REACT-18` |
+
+⊕ **`NOS-04` MINTED 18 Aug 2026 by B9** and struck from the reserved table above, which is
+what that table said would happen: a reserved id is minted by the pass that authors its page.
+It is elicited at `s-ladder` — rung 2's first option is the belief in a student's own words —
+and confronted at `s-think`. It reappears in `substance-misuse-and-decisions`, whose
+claim-check bench holds the same fault in a health costume. `ECO-12` stays a permanent gap.
 
 #### Permanent gaps — never allocate any of these
 
