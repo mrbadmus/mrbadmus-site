@@ -309,13 +309,23 @@ carries it, so a design can be specified against something concrete.
 
 | State | Signal | What renders |
 |---|---|---|
-| **Artwork exists** | Figure status is "drafted" or "final" | A normal `<figure>` with an image and a caption. **Zero figures are in this state today.** |
-| **Figure declared but pending** | Figure status is "needed" | An honest placeholder: a dashed-border box with a "Diagram coming soon" tag, plus the real caption underneath, and the caption also serves as the accessible description. **All 11 figures in existence are in this state.** |
+| **Drawn** ⊕ | Figure status is "drawn" | An inline `<svg>` the generator drew itself, in the same 2px ink frame and 24px radius the image branch uses, carrying `<title>` and `<desc>`, announced as one image via `role="img"` and `aria-labelledby`, with the caption below. Every colour is a `--ks3-*` token; every distinction the drawing makes in ink is also stated in words in its legend. **Two figures are in this state — the oak wood web on b9-01 and b9-03.** |
+| **Artwork exists** | Figure status is "drafted" or "final" | A normal `<figure>` with an image and a caption, sourced from `ks3/figures/<id>.svg`. **Zero figures are in this state today, and the directory that branch reads has never existed** — which is why naming a diagram slot could only ever produce the placeholder below, and why the `drawn` state above exists. |
+| **Figure declared but pending** | Figure status is "needed" | An honest placeholder: a dashed-border box with a "Diagram coming soon" tag, plus the real caption underneath, and the caption also serves as the accessible description. **15 figures are in this state**, across B3, B4 and B5 — and none of those lessons authors a `figure` BLOCK to render one through, so the placeholder is reachable code with nowhere it currently appears. |
+
+⊕ **The `drawn` state is Mide's ruling of 18 Aug 2026 (MRB-248): code draws the diagrams
+itself, Design does not author a pass for them.** Inline SVG only — no raster, no external
+asset, no new font. A drawer lives in `build_ks3.py`'s `SVG_ART`, a closed registry that
+raises on an unknown name, and it must register components in §10.2 and carry parity rows or
+the gate cannot see it. The bindings that are enforced in code rather than trusted:
+`--ks3-accent` (3.4:1) raises if it is given text under 24px, and a link that would be drawn
+through a third node's box raises rather than being drawn — on a food web that is not a
+tidiness problem but a feeding relationship the data does not contain.
 
 Every figure a lesson declares is also written into a generated sourcing worklist,
-`docs/ks3/diagram-manifest.md`. Of the 11: 6 are schematic diagrams, 4 are apparatus diagrams, 1 is
-a graph. A fourth kind, "photo", is legal but unused. These are **schematic** assets — a photograph
-of a beaker does not substitute for a particle diagram.
+`docs/ks3/diagram-manifest.md`. These are **schematic** assets — a photograph of a beaker does not
+substitute for a particle diagram, which is also why the `drawn` state can discharge one and a
+photography commission cannot.
 
 ### Simulation states
 
@@ -961,7 +971,7 @@ Every block type the generator can emit must map to at least one component regis
 |---|---|
 | hook | `hook is ink-dark, accent shadow`, `hook art sits on its own night ground`, `Motion control clears the 44px tap target` |
 | explainer | `body prose (type row 4)`, `page ground + body type` |
-| figure | `figure frame`, `figure caption`, `figure pending slot` |
+| figure | `figure frame`, `figure caption`, `figure pending slot`, `drawn figure takes the photograph's frame`, `drawn figure scrolls rather than shrinking`, `drawn figure carries the page ground`, `thread label is accent-TEXT, never accent`, `thread badge is a drawn ring, not a tint` |
 | keyword | `vocabulary card`, `card term type` |
 | quiz | `ladder shell`, `ladder heading`, `page-marked rung is accent`, `page-marked rung heading`, `self-marked rung is violet`, `ladder option CHOSEN-CORRECT`, `ladder option CHOSEN-CORRECT badge`, `ladder option CHOSEN-WRONG`, `ladder option CHOSEN-WRONG badge`, `ladder option SPENT`, `ladder option SPENT badge`, `ladder feedback CORRECT`, `ladder feedback WRONG` |
 | summary | `key note is ink-dark`, `key note type drops to 700` |

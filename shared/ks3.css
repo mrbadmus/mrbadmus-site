@@ -836,6 +836,37 @@ body.rd[data-mode="ks3"] {
   line-height: 1.5;
   color: var(--ks3-ink-body);
 }
+/* ⊕ A DRAWN figure (Mide's diagram ruling, 18 Aug 2026). The frame is the
+   `img` rule's frame — same 2px ink outline and same 24px radius — because a
+   drawing and a photograph are the same object on the page and only one of
+   them arrives as a file. It carries its own ground rather than inheriting
+   the block's: a web drawn in ink needs the paper under it to be the paper,
+   not whichever panel the figure happens to sit in.
+
+   No motion rule below, and that is deliberate rather than an omission: the
+   drawings are static by ruling, so there is no animation for
+   `prefers-reduced-motion` to switch off. A drawer that wants motion has to
+   come back through this comment. */
+.ks3-figure-scroll {
+  overflow-x: auto;
+  border-radius: 24px;
+  /* The focus ring belongs on the scroll box, because the scroll box is the
+     thing that takes focus. Inset so it is not clipped by the rounding. */
+  outline-offset: -3px;
+}
+.ks3-figure-svg {
+  display: block;
+  width: 100%;
+  /* Below this the labels stop being labels — see the note beside the scroll
+     wrapper in build_ks3.py. On a full-width column the figure is wider than
+     this and the minimum never engages. */
+  min-width: 700px;
+  height: auto;
+  border-radius: 24px;
+  border: 2px solid var(--ks3-ink);
+  background: var(--ks3-ground);
+}
+
 /* An honest placeholder, and it has to read as deliberate rather than
    broken — hence a drawn dashed frame and a labelled pill. */
 .ks3-figure-slot {

@@ -590,6 +590,431 @@ _CANDLE = (
 CSS_ART = {"candle-flame": _CANDLE}
 
 
+# ── SVG ART · code draws the diagrams (Mide's ruling, 18 Aug 2026) ────────
+#
+# The third figure state. `r_figure` had two: `needed` printed an honest
+# "Diagram coming soon" placeholder, and anything else printed
+# `<img src="/ks3/figures/<id>.svg">`. Seventeen figures were declared across
+# B1–B5 and fifteen sat at `needed`, because the second branch needs an asset
+# nobody had drawn — `ks3/figures/` does not exist and never has, so the only
+# reachable branch was the placeholder.
+#
+# Mide's ruling closes that: code draws them itself, Design does not author a
+# pass for it, and the drawing is INLINE SVG with no external asset, no raster
+# and no new font. So the `<img>` branch is not the one that gets used; a new
+# `drawn` status is, and it dispatches into a closed registry exactly as
+# `_css_art` does for the hook.
+#
+# Closed, with a raise on an unknown name, for `_css_art`'s reason: a figure
+# that silently renders nothing is a hole the page hides. `status: "drawn"`
+# with no `art`, or an `art` the registry does not know, fails the build.
+#
+# WHAT THE RULING BINDS, and where each clause is honoured below:
+#   · inline only, no external asset      — every drawer returns markup; no
+#                                           `<image>`, no `url(`, no @font-face
+#   · --ks3-* tokens for every colour     — `_SVG_INK` … `_SVG_TINTS`; not one
+#                                           literal hex in a drawer
+#   · --st-accent-text under 24px         — `_SVG_ACCENT_TEXT`. `--ks3-accent`
+#                                           is 3.4:1 and is never given to a
+#                                           label; the token comment in
+#                                           shared/tokens.css says so and this
+#                                           is the second place it is enforced
+#   · never colour-alone                  — every distinction carries a second
+#                                           channel. The thread is accent AND
+#                                           a 3px stroke AND a numbered badge;
+#                                           a non-feeding link is dashed AND
+#                                           labelled in words
+#   · <title> and <desc> on every figure  — `_svg_open` requires both and
+#                                           raises without them
+#   · sensible screen-reader order        — `role="img"` +
+#                                           `aria-labelledby="<t> <d>"` makes
+#                                           the figure ONE announced image
+#                                           carrying the whole description,
+#                                           and the drawers still emit rows
+#                                           top-down so a traversing AT reads
+#                                           the web in trophic order
+
+# Tokens, once. A drawer that wants a colour takes it from here, so "every
+# colour is a --ks3-* token" is checkable by grepping this block rather than
+# by reading every drawer.
+_SVG_INK         = "var(--ks3-ink)"
+_SVG_INK_BODY    = "var(--ks3-ink-body)"
+_SVG_INK_MUTED   = "var(--ks3-ink-muted)"
+_SVG_GROUND      = "var(--ks3-ground)"
+_SVG_CARD        = "var(--ks3-card)"
+_SVG_BAND        = "var(--ks3-band)"
+_SVG_INSET       = "var(--ks3-inset)"
+_SVG_ACCENT      = "var(--ks3-accent)"
+_SVG_ACCENT_TEXT = "var(--ks3-accent-text)"
+_SVG_ACCENT_TINT = "var(--ks3-accent-tint)"
+_SVG_OK_TINT     = "var(--ks3-ok-tint)"
+_SVG_RULE_STRONG = "var(--ks3-rule-strong)"
+
+
+def _svg_open(fig, width, height):
+    """The wrapper every drawer opens with. `title` and `desc` are REQUIRED.
+
+    Not defaulted to the caption: the caption is a sentence for a sighted
+    reader who can already see the drawing, and a `<desc>` has to carry what
+    the drawing SHOWS to someone who cannot. Defaulting one to the other would
+    satisfy the grep and fail the reader, so an absent `desc` raises.
+    """
+    for key in ("title", "desc"):
+        if not fig.get(key):
+            raise ValueError(
+                "figure %r is status 'drawn' but has no %r. Mide's diagram "
+                "ruling requires <title> AND <desc> on every figure, and the "
+                "caption is not a substitute: the caption addresses a reader "
+                "who can see the drawing." % (fig.get("id"), key))
+    fid = fig["id"]
+    return (
+        '<svg class="ks3-figure-svg" viewBox="0 0 %d %d" role="img" '
+        'aria-labelledby="%s-t %s-d" preserveAspectRatio="xMidYMid meet">'
+        '<title id="%s-t">%s</title><desc id="%s-d">%s</desc>'
+        % (width, height, e(fid), e(fid), e(fid), e(fig["title"]),
+           e(fid), e(fig["desc"])))
+
+
+def _svg_text(x, y, s, size=15, fill=_SVG_INK, weight="600", anchor="middle",
+              family="'Plus Jakarta Sans', sans-serif", spacing=None, cls=None):
+    """One text node, with the under-24px accent rule enforced at the source.
+
+    `--ks3-accent` measures 3.4:1 on the ground. It is legal for large display
+    type and illegal for a label, and the whole point of routing every drawer's
+    text through one function is that the rule is checked once, in code, rather
+    than trusted fifty times in markup.
+    """
+    if fill == _SVG_ACCENT and size < 24:
+        raise ValueError(
+            "text %r is %dpx in --ks3-accent. Accent is 3.4:1 and is never a "
+            "contrast partner for text under 24px — use --ks3-accent-text "
+            "(6.0:1). This is the ruling, and shared/tokens.css says the same "
+            "thing beside the token." % (s, size))
+    extra = ' letter-spacing="%s"' % e(spacing) if spacing else ""
+    # ⚠️ COLOUR GOES IN `style`, NEVER IN `fill="…"`. A custom property is only
+    # substituted inside a CSS declaration; `fill="var(--ks3-ink)"` is an SVG
+    # PRESENTATION attribute, `var(--ks3-ink)` is not a valid <paint>, and the
+    # attribute is dropped — so the element falls back to the initial value,
+    # which is opaque black. Nothing warns. The first render of this drawing
+    # came out as five black bars with black text inside them, and the token
+    # grep was clean the whole time because the tokens were all there, in the
+    # one place where they do nothing. Every drawer in this file routes paint
+    # through `style` for that reason.
+    return ('<text%s x="%s" y="%s" font-family="%s" font-size="%s" '
+            'font-weight="%s" style="fill:%s" text-anchor="%s"%s>%s</text>'
+            % (' class="%s"' % e(cls) if cls else "",
+               x, y, family, size, weight, fill, anchor, extra, e(s)))
+
+
+_SVG_MONO = "'DM Mono', monospace"
+
+
+def _food_web(fig):
+    """A food web: trophic rows bottom-up, arrows pointing the way energy goes.
+
+    ⚖️ ARROW DIRECTION IS THE SCIENCE, not a drawing convention. `ECO-01` — the
+    first misconception in the family — is *"the arrow points at what the animal
+    eats"*, and b9-01's own confrontation says examiners mark arrow direction
+    and it is the most commonly lost mark in the topic. So every arrowhead here
+    sits at the EATER, the marker is named `eats-arrow` so a misuse is legible
+    in the markup, and the legend states the rule in words on the drawing
+    itself. A food-web figure that got this backwards would teach the
+    misconception the lesson beside it exists to remove.
+
+    Rows are authored top-down (top predator first) because that is the
+    document order a screen reader traversing the SVG would meet, and reading
+    "tertiary consumers … producers" down the web is the sense-making order.
+    They are DRAWN bottom-up from the same list, which is the sense-making
+    order for the eye — energy climbing.
+
+    `thread` optionally names one chain through the web. It is drawn in accent
+    with a 3px stroke AND a numbered badge on each node AND a legend entry:
+    three channels, because the never-colour-alone rule means a student who
+    cannot separate the orange from the ink still sees which nodes are on the
+    thread and in what order.
+    """
+    d = fig.get("data") or {}
+    rows = d.get("rows") or []
+    if not rows:
+        raise ValueError("food-web figure %r has no rows." % fig.get("id"))
+
+    GUTTER, PAD_X, PAD_TOP = 132, 22, 30
+    W, ROW_H, NODE_H = 760, 84, 42
+    thread = list(d.get("thread") or [])
+    tpos = {nid: i + 1 for i, nid in enumerate(thread)}
+
+    # Geometry first, markup second — the links need every node's box before
+    # any of them can be routed, so nothing is emitted until all of it is known.
+    box, order = {}, []
+    for r, row in enumerate(rows):
+        nodes = row.get("nodes") or []
+        # ⚠️ NO INVERSION HERE, and the first version had one. The rows are
+        # already authored in the order they are drawn — tertiary consumers
+        # first, producers and then decomposers last — so `r` IS the visual row
+        # and `(len(rows) - 1 - r)` flipped the whole web upside down: the
+        # decomposers came out along the top and the sparrowhawk along the
+        # bottom, with every arrow pointing the wrong way up the page. The
+        # arrowheads were still on the eaters, so nothing about the data was
+        # wrong; the drawing simply taught the opposite of it. Only visible by
+        # looking at it.
+        y = PAD_TOP + r * ROW_H
+        span = W - GUTTER - PAD_X
+        for i, n in enumerate(nodes):
+            # Even spacing per row. A label's width is estimated from its
+            # length at 15px/600 — 8.6px per character against the shipped Plus
+            # Jakarta Sans — and the box is padded either side, so a long name
+            # widens its box rather than overflowing it. A node on the thread
+            # gets 26px more, because the numbered badge is inside the box and
+            # `Sparrowhawk` at the old width printed its label straight through
+            # its own badge.
+            w = max(96, int(8.6 * len(n["name"])) + 34
+                    + (26 if n["id"] in tpos else 0))
+            # ⚠️ CLAMPED, so a wide first node cannot reach back into the
+            # gutter. Even spacing puts the leftmost box's centre at
+            # GUTTER + span/2n, which is fine until the box is 26px wider for a
+            # thread badge: `Caterpillars` then printed its left edge over the
+            # row label "eats a producer". The label owns the gutter.
+            cx = max(GUTTER + w / 2.0 + 6, GUTTER + span * (i + 0.5) / len(nodes))
+            box[n["id"]] = {"cx": cx, "cy": y + NODE_H / 2.0, "w": w,
+                            "h": NODE_H, "name": n["name"], "row": r}
+            order.append(n["id"])
+
+    # Height follows the legend's OWN row count. A fixed reserve was what let
+    # two keys overlap without the box growing to notice.
+    n_keys = 1 + (1 if thread else 0) + (1 if d.get("other") else 0)
+    H = PAD_TOP + len(rows) * ROW_H + 22 + n_keys * 24
+
+    out = [_svg_open(fig, W, H)]
+
+    # One marker per link treatment. Both point at the eater; the open one is
+    # for a link that is NOT a feeding link, so the head shape differs as well
+    # as the dash.
+    out.append(
+        '<defs>'
+        '<marker id="%s-eats" viewBox="0 0 10 10" refX="9" refY="5" '
+        'markerWidth="6" markerHeight="6" orient="auto-start-reverse">'
+        '<path d="M0,0 L10,5 L0,10 z" style="fill:%s"/></marker>'
+        '<marker id="%s-eats-thread" viewBox="0 0 10 10" refX="9" refY="5" '
+        'markerWidth="6" markerHeight="6" orient="auto-start-reverse">'
+        '<path d="M0,0 L10,5 L0,10 z" style="fill:%s"/></marker>'
+        '<marker id="%s-other" viewBox="0 0 10 10" refX="9" refY="5" '
+        'markerWidth="7" markerHeight="7" orient="auto-start-reverse">'
+        '<path d="M0.5,0.5 L9.5,5 L0.5,9.5" style="fill:none;stroke:%s" '
+        'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'
+        '</marker></defs>'
+        % (e(fig["id"]), _SVG_INK, e(fig["id"]), _SVG_ACCENT,
+           e(fig["id"]), _SVG_INK_MUTED))
+
+    # Row bands, then row labels. The band is a tint and the label is words:
+    # the trophic level is never carried by the tint alone.
+    # ⚠️ THE SAME `y`, and it has to be derived the same way. The row order
+    # defect was fixed in the geometry loop above and NOT here, so the nodes
+    # moved and the bands and their labels did not: the sparrowhawk sat on a
+    # band captioned DECOMPOSERS and the oak on one captioned SECONDARY. Two
+    # loops sharing one coordinate is the hazard; the fix is that both read
+    # `r` directly, and a future third loop must too.
+    for r, row in enumerate(rows):
+        y = PAD_TOP + r * ROW_H
+        tint = row.get("tint") or _SVG_INSET
+        out.append('<rect x="0" y="%s" width="%d" height="%s" rx="14" '
+                   'style="fill:%s"/>' % (y - 13, W, ROW_H - 16, tint))
+        out.append(_svg_text(18, y + NODE_H / 2.0 - 3, row["label"], size=13,
+                             fill=_SVG_INK_BODY, weight="700", anchor="start",
+                             family=_SVG_MONO, spacing="0.06em"))
+        if row.get("note"):
+            out.append(_svg_text(18, y + NODE_H / 2.0 + 15, row["note"],
+                                 size=12, fill=_SVG_INK_MUTED, weight="500",
+                                 anchor="start", family=_SVG_MONO))
+
+    # Links before nodes, so a line never draws over a name.
+    def edge(a, b):
+        """Route from the top or bottom edge of each box, not from its centre."""
+        pa, pb = box[a], box[b]
+        ay = pa["cy"] - pa["h"] / 2.0 if pb["cy"] < pa["cy"] else pa["cy"] + pa["h"] / 2.0
+        by = pb["cy"] + pb["h"] / 2.0 if pb["cy"] < pa["cy"] else pb["cy"] - pb["h"] / 2.0
+        return pa["cx"], ay, pb["cx"], by
+
+    def _blocked(pts, skip):
+        """The first node any of `pts` lands inside, ignoring the endpoints."""
+        for nid, q in box.items():
+            if nid in skip:
+                continue
+            for x, y in pts:
+                if (abs(x - q["cx"]) <= q["w"] / 2.0 + 5
+                        and abs(y - q["cy"]) <= q["h"] / 2.0 + 5):
+                    return q
+        return None
+
+    def _samples(x1, y1, x2, y2, cx=None, cy=None):
+        """Points along the link — a straight segment, or a quadratic if bowed."""
+        out_pts = []
+        for k in range(1, 48):
+            t = k / 48.0
+            if cx is None:
+                out_pts.append((x1 + (x2 - x1) * t, y1 + (y2 - y1) * t))
+            else:
+                u = 1.0 - t
+                out_pts.append((u * u * x1 + 2 * u * t * cx + t * t * x2,
+                                u * u * y1 + 2 * u * t * cy + t * t * y2))
+        return out_pts
+
+    def path(a, b, shift=0.0):
+        """The link's `d`, bowed aside when a straight line would cross a node.
+
+        ⚖️ THIS IS A SCIENCE PROBLEM WEARING A LAYOUT PROBLEM'S CLOTHES. A link
+        drawn through a third organism's box does not look untidy — it reads as
+        two different feeding relationships that the web does not contain. Two
+        of them were in the first draft of this drawing: `sparrowhawk → fungi`
+        ran straight down through the ladybirds, and `mice → sparrowhawk` clipped
+        the ladybirds' right-hand end. Both appeared to say the sparrowhawk eats
+        ladybirds. Neither is in Design's eight sentences.
+
+        So the route is CHECKED rather than trusted. A straight segment is
+        sampled against every other node's box; if it lands in one, the link is
+        bowed away from that node and re-sampled; if both bows still cross
+        something, this RAISES rather than drawing a line that lies. A build
+        failure names the pair and can be fixed in the data; a quietly wrong
+        arrow cannot be seen by any gate that is not a pair of eyes.
+        """
+        x1, y1, x2, y2 = edge(a, b)
+        x1 += shift
+        x2 += shift
+        skip = {a, b}
+        hit = _blocked(_samples(x1, y1, x2, y2), skip)
+        if hit is None:
+            return "M%.1f,%.1f L%.1f,%.1f" % (x1, y1, x2, y2)
+        mx, my = (x1 + x2) / 2.0, (y1 + y2) / 2.0
+        # Bow AWAY from the node in the way, and if that side is also occupied,
+        # try the other. Magnitudes are the two that clear a 42px-tall box at
+        # this row pitch; a third guess would be a search, and a search that
+        # can fail should fail loudly at the second try instead.
+        for bow in (58.0, -58.0, 104.0, -104.0):
+            away = bow if hit["cx"] <= mx else -bow
+            cx, cy = mx + away, my
+            if _blocked(_samples(x1, y1, x2, y2, cx, cy), skip) is None:
+                return ("M%.1f,%.1f Q%.1f,%.1f %.1f,%.1f"
+                        % (x1, y1, cx, cy, x2, y2))
+        raise ValueError(
+            "food-web figure %r cannot route the link %s \u2192 %s without "
+            "crossing %r, on either side. An arrow through a third organism's "
+            "box reads as a feeding relationship the web does not claim, so "
+            "this fails the build. Reorder that row's nodes, or split the "
+            "figure." % (fig.get("id"), a, b, hit["name"]))
+
+    for prey, eater in d.get("eats") or []:
+        for nid in (prey, eater):
+            if nid not in box:
+                raise ValueError(
+                    "food-web figure %r has a feeding link naming %r, which "
+                    "is not a node in any row." % (fig.get("id"), nid))
+        on = prey in tpos and eater in tpos and abs(tpos[prey] - tpos[eater]) == 1
+        out.append('<path d="%s" style="fill:none;stroke:%s" stroke-width="%s" '
+                   'stroke-linecap="round" marker-end="url(#%s-%s)"/>'
+                   % (path(prey, eater), _SVG_ACCENT if on else _SVG_INK,
+                      "3" if on else "2", e(fig["id"]),
+                      "eats-thread" if on else "eats"))
+
+    for a, b, label in d.get("other") or []:
+        for nid in (a, b):
+            if nid not in box:
+                raise ValueError(
+                    "food-web figure %r has a non-feeding link naming %r, "
+                    "which is not a node in any row." % (fig.get("id"), nid))
+        # ⚠️ SHIFTED 18px, because a non-feeding link between two organisms
+        # that also feed each other lands on exactly the same geometry. The
+        # wildflowers feed the bees and the bees pollinate the wildflowers, so
+        # the solid arrow and the dashed one were drawn one on top of the other
+        # and read as a single line — which erased the distinction the dash
+        # exists to make. Parallel, not coincident.
+        x1, y1, x2, y2 = edge(a, b)
+        x1 += 18
+        x2 += 18
+        out.append('<path d="%s" style="fill:none;stroke:%s" stroke-width="2" '
+                   'stroke-dasharray="7 5" stroke-linecap="round" '
+                   'marker-end="url(#%s-other)"/>'
+                   % (path(a, b, shift=18), _SVG_INK_MUTED, e(fig["id"])))
+        # A backing plate under the word. `pollinates` printed across the
+        # bottom edge of the bees' box and was unreadable against the outline;
+        # a label with no ground of its own is at the mercy of whatever the
+        # link happens to pass. Width from the same per-character estimate the
+        # boxes use, at the mono 12px this text is set in.
+        lx, ly = (x1 + x2) / 2.0 + 10, (y1 + y2) / 2.0 + 5
+        out.append('<rect x="%.1f" y="%.1f" width="%d" height="18" rx="6" '
+                   'style="fill:%s"/>'
+                   % (lx - 5, ly - 13, int(7.4 * len(label)) + 10, _SVG_GROUND))
+        out.append(_svg_text(lx, ly, label, size=12, fill=_SVG_INK_MUTED,
+                             weight="600", anchor="start", family=_SVG_MONO))
+
+    # Nodes, in the authored top-down order.
+    for nid in order:
+        p = box[nid]
+        x, y = p["cx"] - p["w"] / 2.0, p["cy"] - p["h"] / 2.0
+        on = nid in tpos
+        out.append('<rect x="%.1f" y="%.1f" width="%s" height="%s" rx="13" '
+                   'style="fill:%s;stroke:%s" stroke-width="%s"/>'
+                   % (x, y, p["w"], p["h"],
+                      _SVG_ACCENT_TINT if on else _SVG_CARD,
+                      _SVG_ACCENT if on else _SVG_INK, "3" if on else "2"))
+        # ⚠️ THE CLASS IS A GATE HOOK, not styling. `thread label is
+        # accent-TEXT, never accent` selected `text[style*='accent-text']` at
+        # first, and the mutation test showed why that is not an assertion:
+        # repainting every thread label to ink left the LEGEND's accent-text
+        # key matching the same selector, so the row still resolved and the
+        # gate stayed green over a drawing that had lost the distinction it
+        # measures. A named hook is the difference between a row that pins the
+        # thread label and a row that pins "some orange text, somewhere".
+        out.append(_svg_text(p["cx"] + (13 if on else 0), p["cy"] + 5, p["name"],
+                             fill=_SVG_ACCENT_TEXT if on else _SVG_INK,
+                             cls="ks3-web-thread-label" if on else None))
+        if on:
+            # The third channel. A number is not a colour, and it also carries
+            # the ORDER of the chain, which the tint could not.
+            out.append('<circle cx="%.1f" cy="%.1f" r="10" '
+                       'style="fill:%s;stroke:%s" stroke-width="2"/>'
+                       % (x + 15, p["cy"], _SVG_CARD, _SVG_ACCENT))
+            out.append(_svg_text(x + 15, p["cy"] + 4, str(tpos[nid]), size=12,
+                                 fill=_SVG_ACCENT_TEXT, weight="700",
+                                 family=_SVG_MONO))
+
+    # The legend states in words every distinction the drawing makes in ink —
+    # which is the never-colour-alone rule discharged for the whole figure.
+    #
+    # ⚠️ ONE ROW PER ENTRY, and it is a fix rather than a preference. The first
+    # version drew the thread key and the not-feeding key at the same `y`, so on
+    # b9-01 — the only figure that has both — two sentences printed on top of
+    # each other and neither was readable. Seen in a browser, not reasoned
+    # about; the arithmetic looked fine.
+    keys = [("eats", "2", None, _SVG_INK, _SVG_INK_BODY,
+             d.get("legend_eats")
+             or "points from the eaten to the eater — the way the energy goes")]
+    if thread:
+        keys.append(("eats-thread", "3", None, _SVG_ACCENT, _SVG_ACCENT_TEXT,
+                     d.get("legend_thread")
+                     or "one numbered chain, pulled out of the web"))
+    if d.get("other"):
+        keys.append(("other", "2", "7 5", _SVG_INK_MUTED, _SVG_INK_MUTED,
+                     d.get("legend_other")
+                     or "dashed: a link that is not feeding"))
+
+    top = PAD_TOP + len(rows) * ROW_H
+    out.append('<line x1="0" y1="%s" x2="%d" y2="%s" style="stroke:%s" '
+               'stroke-width="2"/>' % (top, W, top, _SVG_RULE_STRONG))
+    for i, (marker, wid, dash, ink, textink, label) in enumerate(keys):
+        ly = top + 26 + i * 24
+        out.append('<line x1="18" y1="%s" x2="52" y2="%s" style="stroke:%s" '
+                   'stroke-width="%s"%s marker-end="url(#%s-%s)"/>'
+                   % (ly, ly, ink, wid,
+                      ' stroke-dasharray="%s"' % dash if dash else "",
+                      e(fig["id"]), marker))
+        out.append(_svg_text(62, ly + 4, label, size=13, fill=textink,
+                             weight="600", anchor="start"))
+    out.append('</svg>')
+    return "".join(out)
+
+
+SVG_ART = {"food-web": _food_web}
+
+
 def r_explainer(lesson, block):
     """Prose, carrying no card at all.
 
@@ -628,6 +1053,34 @@ def r_figure(lesson, block):
   </div>
   <figcaption>%s</figcaption>
 </figure>""" % (e(fig["caption"]), t(fig["caption"])))
+    # ⊕ `drawn` — Mide's diagram ruling of 18 Aug 2026. Code draws it, inline,
+    # from tokens. Dispatched through a closed registry with a raise on an
+    # unknown name, exactly as `_css_art` does, and for the same reason.
+    if status == "drawn":
+        art = fig.get("art")
+        if art not in SVG_ART:
+            raise ValueError(
+                "figure %r is status 'drawn' but declares art %r, which the "
+                "generator cannot draw. Known: %s. A drawn figure with no "
+                "drawer would render an empty <figure> — the hole the status "
+                "exists to close." % (fig["id"], art, ", ".join(sorted(SVG_ART))))
+        # ⚠️ THE SCROLL REGION IS NOT A NICETY. A drawing sized for a column
+        # is 358px wide on a 390px phone, which scales a 760-unit viewBox to
+        # 47% and puts every label at about 7px. That is not a small diagram,
+        # it is an unreadable one, and most of these students are on a phone.
+        # So the drawing keeps a readable minimum width and the narrow reader
+        # scrolls it sideways instead — which is what WCAG 1.4.10 allows for
+        # content that genuinely needs two dimensions, and a food web does.
+        #
+        # `tabindex="0"` because a scrollable region that only a mouse or a
+        # finger can reach is unreachable from a keyboard (WCAG 2.1.1); the
+        # `role`/`aria-label` give that focus stop something to announce, so it
+        # does not arrive as a nameless tab stop.
+        return ('<figure class="ks3-figure ks3-figure-drawn">'
+                '<div class="ks3-figure-scroll" tabindex="0" role="group" '
+                'aria-label="%s — scrollable diagram">%s</div>'
+                '<figcaption>%s</figcaption></figure>'
+                % (e(fig["title"]), SVG_ART[art](fig), t(fig["caption"])))
     return ('<figure class="ks3-figure"><img src="/ks3/figures/%s.svg" alt="%s"/>'
             '<figcaption>%s</figcaption></figure>'
             % (e(fig["id"]), e(fig["caption"]), t(fig["caption"])))

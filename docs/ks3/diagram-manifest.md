@@ -19,9 +19,10 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | Status | Figures |
 |---|---|
 | `drafted` | 1 |
+| `drawn` | 2 |
 | `final` | 1 |
 | `needed` | 15 |
-| **Total** | **17** |
+| **Total** | **19** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -46,3 +47,5 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | B5 | `lifestyle-and-the-developing-foetus` | `b5-what-crosses` | diagram | `needed` | What crosses the placenta and what does not: small soluble molecules — oxygen, glucose, alcohol, nicotine, carbon monoxide, caffeine — diffusing across the exchange surface, with large molecules such as insulin shown too big to pass and antibodies shown carried across using energy. The two blood supplies are drawn separately and never mixing. |
 | B5 | `seed-dispersal` | `b5-dispersal-specimens` | diagram | `needed` | The eight specimens drawn to scale from their structures and left unlabelled by method: dandelion, sycamore key, poppy capsule, blackberry, goosegrass, burdock burr, coconut and gorse pod. |
 | B5 | `the-menstrual-cycle` | `b5-cycle-timeline` | diagram | `needed` | One cycle drawn as a timeline for each of the three lengths, 21, 28 and 35 days: the bleeding window at the start, the building phase, release a fortnight before the end, and the fortnight in which the lining is held ready — with the release marker landing on a different day in each of the three. |
+| B9 | `disturbing-a-food-web` | `b9-oak-wood-web` | diagram | `drawn` | The wood, before anything is taken out of it. Count the arrows into and out of each organism before you choose one to remove — the ones with a single line are not always the ones that matter least. |
+| B9 | `food-chains-and-food-webs` | `b9-oak-wood-web-thread` | diagram | `drawn` | One oak wood. Every arrow points the way the energy travels, from the eaten to the eater. The numbered orange chain is one route through it — the same four steps the bench above climbs. |

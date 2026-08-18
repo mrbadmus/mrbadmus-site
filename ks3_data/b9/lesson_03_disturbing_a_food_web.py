@@ -312,6 +312,9 @@ ledger there is no `start` key to author, and its absence is measured rather
 than forgotten.
 """
 
+from ._oak_wood import oak_wood
+
+
 # ── the web (page lines 321–330) ─────────────────────────────────────────
 #
 # ⚖️ PROSE, NOT A GRAPH. Eight lines, and line 7 is the one the unit turns on:
@@ -686,7 +689,49 @@ LESSON = {
     # asks for one and is not dropped by this; declaring a slot here would
     # invent a sourcing task in `docs/ks3/diagram-manifest.md` for a drawing
     # nobody has commissioned.
-    "figures": [],
+    # ⊕ DRAWN, 18 Aug 2026 — Mide's diagram ruling. The same wood as b9-01,
+    # this time with no thread marked, because this lesson is not about one
+    # route through the web: it is about what happens to the whole web when a
+    # species leaves it.
+    #
+    # This is the page that most needed a drawing. Design's bench states the
+    # web as eight sentences under the heading "Who eats whom", and then asks
+    # the student to remove a species and follow the consequence three rounds
+    # out. Following a consequence through a web means holding the web in your
+    # head; the eight sentences are the web ENCODED, and a student who has to
+    # decode them first is spending their working memory on the decoding rather
+    # than on the reasoning the bench is for. The diagram is that decoding done
+    # once, on the page, before the bench asks for it.
+    #
+    # It is placed BEFORE `#s-bench` for that reason, which is the one point
+    # where the document order departs from Design's. Nothing is displaced —
+    # hook still comes first, the bench still follows, and the eight sentences
+    # stay exactly where and as they are.
+    "figures": [
+        oak_wood(
+            "b9-oak-wood-web",
+            title="The food web of the oak wood the bench works on",
+            desc="Organisms in an oak wood arranged in rows by what they eat, "
+                 "the same wood the bench below removes a species from. "
+                 "Producers at the bottom: the oak and wildflowers. Above "
+                 "them the plant eaters: caterpillars and aphids on the oak, "
+                 "mice on acorns and seeds, and bees. Above those, animals "
+                 "that eat plant eaters: blue tits on caterpillars and aphids, "
+                 "ladybirds on aphids alone, owls on mice. At the top a "
+                 "sparrowhawk, eating blue tits — and also mice, a line that "
+                 "reaches down past a whole row. Fungi and bacteria sit in "
+                 "their own row off the ladder, feeding on dead material from "
+                 "every level. Every arrow points from the organism being "
+                 "eaten towards the one eating it, because that is the "
+                 "direction the energy travels. A dashed line from the bees to "
+                 "the wildflowers is labelled pollinates, and carries no "
+                 "energy — which is why removing the bees does not starve "
+                 "anything directly.",
+            caption="The wood, before anything is taken out of it. Count the "
+                    "arrows into and out of each organism before you choose "
+                    "one to remove — the ones with a single line are not "
+                    "always the ones that matter least."),
+    ],
 
     # ── core, in the approved page's document order ─────────────────────────
     "core": [
@@ -700,6 +745,11 @@ LESSON = {
         # Payload keys follow docs/ks3/b9-inventory/PAYLOAD-SCHEMA.md §7, plus
         # the two headline labels §7 did not anticipate. Read sites are listed
         # in the docstring.
+        # The web the bench operates on, shown before it is worked. See the
+        # `figures` note above for why this one block sits ahead of the
+        # flagship rather than after it.
+        {"type": "figure", "ref": "b9-oak-wood-web", "anchor": "s-web"},
+
         {"type": "remove-a-species", "id": "take-one-out",
          "anchor": "s-bench", "segment": "practical",
          "demand": "investigate",

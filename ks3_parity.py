@@ -443,6 +443,21 @@ _PARKED_SYSTEM_PARTS = (
 #                      them, so the first of those units to land un-parks it.
 #   `.ks3-sim-figure` — the generic sim's live readout. B1's microscope draws
 #                      its readout inside its own `.ks3-micro-*` tree.
+# ⛔ DISCHARGED 18 Aug 2026 (MRB-248, Mide's diagram ruling). Kept in place and
+# marked, per the build contract §12 reversal rule: the prediction in it came
+# true and the record of that is worth more than the tidiness of deleting it.
+#
+# It said the first delivered unit to name a diagram slot would un-park these,
+# and named B4 and B5 as the candidates. It was neither. B4 and B5 name twelve
+# slots between them and every one is still `status: "needed"` — the second
+# branch of `r_figure` wanted an asset under `ks3/figures/`, a directory that
+# has never existed, so naming a slot could only ever produce a placeholder.
+# What un-parked them is the ruling that code draws the diagram itself: b9-01
+# and b9-03 now render a real `figure` block with a real drawing in it, so all
+# three rows below are measured on b9-01 for the first time.
+#
+# The constant stays defined because it is what a future re-park would reach
+# for, and because nothing should have to re-derive why these were ever parked.
 _PARKED_NO_FIGURE = (
     "no lesson in the key stage renders a `figure` block — the C1 rebuild's "
     "six lessons carry `figures: []` and draw everything on canvas. Un-park "
@@ -892,17 +907,72 @@ COMPONENTS = [
     # asks "does every rendered block type map to something registered?"
     # found it on its first run, which is the whole argument for the
     # registry being authoritative rather than descriptive.
-    dict(name="figure frame", on=LESSON, parked=_PARKED_NO_FIGURE,
+    # ⊕ UN-PARKED 18 Aug 2026 and repointed at b9-01, the first page in the key
+    # stage to render a `figure` block. `LESSON` (the rebuilt c1-04) authors
+    # `figures: []`, so these three measured nothing there and said so.
+    dict(name="figure frame", on=B9_CHAIN,
          sel=".ks3-figure",
          props={"margin-top": "28px"}),
-    dict(name="figure caption", on=LESSON, parked=_PARKED_NO_FIGURE,
+    dict(name="figure caption", on=B9_CHAIN,
          sel=".ks3-figure figcaption",
          props={"font-size": "17px", "color": "#3B342E",
                 "margin-top": "12px"}),
+    # ⚠️ STILL PARKED, and for a different reason from the two above: the
+    # pending slot is the `status: "needed"` placeholder, and no page that
+    # renders a `figure` block is at that status. B9's two are `drawn`. The
+    # fifteen slots still at `needed` are in B3, B4 and B5, which author no
+    # `figure` BLOCK to render them through — so the placeholder is reachable
+    # code with no page to measure it on. It un-parks the moment one of those
+    # units adds the block, drawn or not.
     dict(name="figure pending slot", on=LESSON, parked=_PARKED_NO_FIGURE,
          sel=".ks3-figure-slot",
          props={"border-top-width": "3px", "border-top-style": "dashed",
                 "border-top-color": "#C3B191"}),
+
+    # ── the DRAWN figure (MRB-248, Mide's diagram ruling of 18 Aug 2026) ──
+    #
+    # Registered because the ruling requires it: "a diagram is a COMPONENT —
+    # register it in §10 of the coverage manifest and give it parity rows, or
+    # the gate cannot see it." Four rows, each pinning the property that makes
+    # the drawing what it is rather than a property it shares with everything.
+    #
+    # The frame is asserted to be the SAME frame the `img` branch draws — 2px
+    # ink, 24px radius — because a drawing and a photograph are one object on
+    # the page and only one of them arrives as a file. If a later change gives
+    # drawn figures their own frame, this row is what says so out loud.
+    dict(name="drawn figure takes the photograph's frame", on=B9_CHAIN,
+         sel=".ks3-figure-svg",
+         props={"border-top-width": "2px", "border-top-color": "#221E1B",
+                "border-top-left-radius": "24px"}),
+    # ⚖️ The scroll region, and the row exists because losing it is invisible
+    # on the machine anyone builds this on. Drop `overflow-x` and a desktop
+    # browser shows no change at all; a phone shows a diagram at 47% with 7px
+    # labels, or a page that scrolls sideways as a whole. Measured, so it
+    # cannot be dropped quietly.
+    dict(name="drawn figure scrolls rather than shrinking", on=B9_CHAIN,
+         sel=".ks3-figure-scroll",
+         props={"overflow-x": "auto"}),
+    # The drawing carries its own ground rather than inheriting the block's. A
+    # web drawn in ink needs the paper under it to be the paper.
+    dict(name="drawn figure carries the page ground", on=B9_CHAIN,
+         sel=".ks3-figure-svg",
+         props={"background-color": "#FBF3E6"}),
+    # ⚖️ THE ACCENT-TEXT ROW, and it is the one that matters most. A thread node
+    # names an organism at 15px. `--ks3-accent` is 3.4:1 and may not carry text
+    # that small; `--ks3-accent-text` is 6.0:1 and is the only orange allowed
+    # under 24px. `_svg_text` raises on the wrong one at build time and this
+    # measures the right one at render time, because a build-time check can only
+    # see what it was asked to draw.
+    dict(name="thread label is accent-TEXT, never accent", on=B9_CHAIN,
+         sel=".ks3-figure-svg .ks3-web-thread-label",
+         props={"fill": "#A93411"}),
+    # The thread's third channel. Never-colour-alone means the numbered badge is
+    # load-bearing, not decoration: it survives for a reader who cannot separate
+    # the orange from the ink, and it carries the chain's ORDER, which no tint
+    # could.
+    dict(name="thread badge is a drawn ring, not a tint", on=B9_CHAIN,
+         sel=".ks3-figure-svg circle",
+         props={"stroke": "#E4572E", "stroke-width": "2px"}),
 
     # ── R4: the dog-ear card ──
     # ⊕ MRB-228 — repointed off the rebuilt c1-04, which authors no vocabulary

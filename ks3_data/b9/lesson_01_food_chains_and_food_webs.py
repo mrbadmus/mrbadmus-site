@@ -331,6 +331,9 @@ the ordering is reported. Nothing is joined, dropped or invented — the same fo
 strings and the same paragraph ship, one slot apart.
 """
 
+from ._oak_wood import oak_wood
+
+
 # ── the three chains (page lines 324–345) ────────────────────────────────
 #
 # Field 4 levels, oak wood 4, open sea 5. The DIFFERENT LENGTHS are the
@@ -624,7 +627,51 @@ LESSON = {
     # flag 17 asks for a drawn food web and is not dropped by this; declaring a
     # slot the page never references would invent a sourcing task in
     # `docs/ks3/diagram-manifest.md`.
-    "figures": [],
+    # ⊕ DRAWN, 18 Aug 2026 — Mide's diagram ruling. This lesson's last
+    # paragraph is *"A food web is all the routes at once, drawn on top of each
+    # other"*, and until now the page said that and then drew nothing. The idea
+    # is spatial in the strictest sense: "all the routes at once" is a claim
+    # about a shape, and the sentence is the only place in the lesson that says
+    # what a web IS.
+    #
+    # The thread is the wood chain the bench beside it climbs — oak, then
+    # caterpillars, then blue tits, then the sparrowhawk — numbered 1 to 4 and
+    # drawn in accent over the web it was pulled out of. That is the sentence
+    # after it, made visible: *"the chain is a single thread pulled out of it so
+    # it can be talked about."*
+    #
+    # The wood is `_oak_wood.py`'s, shared with b9-03, so the web a student
+    # removes a species from two lessons later is recognisably this one.
+    "figures": [
+        oak_wood(
+            "b9-oak-wood-web-thread",
+            title="A food web in an oak wood, with one food chain marked "
+                  "through it",
+            # The `<desc>`, and it does the whole job for a reader who cannot
+            # see the drawing: the rows, what is on each, the marked chain in
+            # order, and the two links that are not ordinary feeding links.
+            desc="Organisms in an oak wood arranged in rows by what they eat. "
+                 "Producers at the bottom: the oak and wildflowers. Above them "
+                 "the plant eaters: caterpillars and aphids on the oak, mice "
+                 "on acorns and seeds, and bees. Above those, animals that eat "
+                 "plant eaters: blue tits on caterpillars and aphids, "
+                 "ladybirds on aphids alone, owls on mice. At the top a "
+                 "sparrowhawk, eating blue tits — and also mice, a line that "
+                 "reaches down past a whole row, which is why a web is not a "
+                 "ladder. Fungi and bacteria sit in their own row off the "
+                 "ladder, feeding on dead material from every level. Every "
+                 "arrow points from the organism being eaten towards the one "
+                 "eating it, because that is the direction the energy travels. "
+                 "One chain is marked in orange and numbered: 1 the oak, 2 "
+                 "caterpillars, 3 blue tits, 4 the sparrowhawk. A dashed line "
+                 "from the bees to the wildflowers is labelled pollinates, and "
+                 "carries no energy.",
+            caption="One oak wood. Every arrow points the way the energy "
+                    "travels, from the eaten to the eater. The numbered orange "
+                    "chain is one route through it — the same four steps the "
+                    "bench above climbs.",
+            thread=["oak", "caterpillars", "bluetits", "hawk"]),
+    ],
 
     # ── core, in the approved page's document order ─────────────────────────
     "core": [
@@ -705,6 +752,13 @@ LESSON = {
                   "nothing is eaten by only one thing. The web is the truthful "
                   "picture; the chain is a single thread pulled out of it so "
                   "it can be talked about."},
+
+        # The drawing of the sentence immediately above it. Placed after
+        # `#s-roles` rather than inside it: `r_rule` renders a statement, cards,
+        # a nested key fact and a close, in that order, and a figure is none of
+        # those. `figure` is an existing registered block type (§10.2), so this
+        # invents nothing — it renders one.
+        {"type": "figure", "ref": "b9-oak-wood-web-thread", "anchor": "s-web"},
 
         {"type": "misconception", "id": "the-arrow-and-the-ninety-per-cent",
          "anchor": "s-think", "targets": "ECO-01"},
