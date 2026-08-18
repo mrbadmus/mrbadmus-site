@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Food tests · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b302-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b302-arrive .34s ease-out both; }
+  [data-tube] { transition: background .55s ease, border-color .55s ease; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } [data-tube] { transition: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Nutrition and digestion</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Food tests</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Nutrition and digestion · Investigation</p>
+        <h1>Food tests</h1>
+        <p class="ks3-bigq">Four tests, four colour changes. Each one answers exactly one question — and three questions you will want to ask, none of them can answer.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Two tubes of milk. One goes brick red, one stays blue.</h2>
+        <p class="ks3-hook-prompt">Same bottle of milk, same Benedict's solution, same water bath. Tube 1 comes out brick red. Tube 2 comes out blue. Nobody made a mistake — the difference is that tube 1 was heated for five minutes and tube 2 for thirty seconds.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What can you conclude from tube 2 on its own?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Nothing. A blue tube means <em>this test did not detect sugar here</em> — which is not the same claim as <em>there is no sugar in milk</em>. Every negative result in this lesson is a statement about the test, not about the food.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · five foods, four tests</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Predict, then run it</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Pick a food, pick a test, say what you expect, then run it. The tube shows what you would actually see.</p>
+
+        <div style="margin-top: 22px; display: flex; flex-wrap: wrap; gap: 20px 30px;">
+          <div>
+            <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Food</p>
+            <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+              <sc-for list="{{ foodTabs }}" as="t" hint-placeholder-count="5">
+                <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div>
+            <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Test</p>
+            <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+              <sc-for list="{{ testTabs }}" as="t" hint-placeholder-count="4">
+                <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 22px; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; align-items: start;">
+          <div style="padding: 20px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); display: flex; gap: 20px; align-items: center;">
+            <div aria-hidden="true" style="flex: 0 0 62px; height: 168px; border-radius: 8px 8px 30px 30px; border: 3px solid var(--ks3-on-dark-muted); overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; background: rgba(255,255,255,.05);">
+              <span data-tube="1" style="{{ tubeStyle }}"></span>
+            </div>
+            <div>
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">In the tube</p>
+              <p style="margin: 6px 0 0; font-size: 19px; font-weight: 700; line-height: 1.35; color: var(--ks3-on-dark);">{{ tubeLabel }}</p>
+              <p style="margin: 8px 0 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-alert);">{{ tubeState }}</p>
+            </div>
+          </div>
+          <div style="padding: 20px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Method</p>
+            <p style="margin: 6px 0 0; font-size: 18px; line-height: 1.5; color: var(--ks3-on-dark-body);">{{ testMethod }}</p>
+            <p style="margin: 12px 0 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; color: var(--ks3-on-dark-muted);">Detects: {{ testDetects }}</p>
+          </div>
+        </div>
+
+        <sc-if value="{{ predictOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 22px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">{{ predictPrompt }}</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ predictOptions }}" as="opt" hint-placeholder-count="2">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ resultOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ resultVerdict }}</p>
+            <p style="margin: 9px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1.2; letter-spacing: -.02em;">{{ resultHeadline }}</p>
+            <p style="margin: 11px 0 0; font-size: 18px; line-height: 1.6;">{{ resultWhy }}</p>
+            <p style="margin: 12px 0 0; padding-top: 12px; border-top: 2px solid var(--ks3-rule); font-size: 18px; line-height: 1.6;"><strong style="font-family: var(--ks3-font-display);">What you may write down:</strong> {{ resultClaim }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-limits" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">What a colour change is worth</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 26ch;">Three questions these tests cannot answer.</p>
+
+        <ul style="list-style: none; margin: 24px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px;">
+          <sc-for list="{{ limits }}" as="l" hint-placeholder-count="3">
+            <li style="padding: 22px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ l.tag }}</p>
+              <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 20px; line-height: 1.3; letter-spacing: -.015em;">{{ l.q }}</p>
+              <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body);">{{ l.a }}</p>
+            </li>
+          </sc-for>
+        </ul>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">A food test is qualitative: it says present or not detected. It never says how much, and “not detected” is a fact about your test, not about the food.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“The redder the Benedict's went, the more sugar there was.”</p>
+        <p>Tempting, and almost useful, but not something you may claim from a school test. The colour does move through green, yellow and orange to brick red as more sugar is present — but it also moves that way if you heat it for longer, use more Benedict's, or start with a warmer bath. In your experiment those things were not controlled, so a redder tube is not evidence of more sugar; it is evidence that something was different, and you cannot say what. To make the colour mean an amount you would have to fix the volume, the concentration of Benedict's, the temperature and the time, and compare against tubes of known sugar concentration. That is a different experiment, and it is the one a laboratory actually runs.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“The iodine stayed orange, so there is no starch in it.”</p>
+          <p>Write the two sentences next to each other and the gap is obvious. <em>The test did not detect starch</em> is what you observed. <em>There is no starch</em> is a claim about the food. Between them sit at least four ways the first can be true while the second is false: too little starch to see, iodine too dilute, the sample not crushed so the iodine never reached the inside, or the starch already broken down to sugar — which is exactly what happens if you chew bread for two minutes before testing it. Negative results are the ones that need the most care, because a negative feels like nothing happened, and nothing happening is very easy to achieve by accident.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Iodine turns blue-black with starch. Benedict's solution turns from blue to brick red with reducing sugar, on heating. Ethanol then water turns cloudy white with lipid. Biuret solution turns from blue to lilac with protein. Each result is positive or not detected — never an amount.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Benedict's test does not detect all sugars. It needs a sugar that can hand an electron to copper — a reducing sugar — which glucose and fructose can do and sucrose, ordinary table sugar, cannot. So a spoonful of caster sugar in water gives a blue tube and a perfectly negative result, and a student who concludes there is no sugar in sugar has followed the method correctly and reasoned wrongly. Boil the same solution with a little acid first, splitting the sucrose into glucose and fructose, and it goes brick red. The test was never asking “is there sugar here” — it was asking a narrower question that happens to be easy to confuse with that one.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b3-01-a-balanced-diet.html">A balanced diet<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b3-06-enzymes-in-digestion.html">Enzymes in digestion<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="c1-06-testing-the-model.html">Testing the model<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Required practical: qualitative food tests, plus quantitative comparison against known standards.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Unsure what a negative result lets you write down?</p>
+          <a class="ks3-tutor-cta" href="#s-limits">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">Benedict's and Biuret solutions are irritants and Biuret contains sodium hydroxide — wear eye protection, use a water bath rather than a naked flame, and never taste anything on the bench. Ethanol is highly flammable: no Bunsen alight while it is open.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startTest&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;iodine&quot;,&quot;benedict&quot;,&quot;emulsion&quot;,&quot;biuret&quot;],&quot;default&quot;:&quot;iodine&quot;,&quot;tsType&quot;:&quot;'iodine' | 'benedict' | 'emulsion' | 'biuret'&quot;,&quot;section&quot;:&quot;The bench&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Two tubes' },
+  { id: 's-bench', label: 'Run the tests' },
+  { id: 's-limits', label: 'What it is worth' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'BENCH', 'LIMITS', 'LADDER'];
+
+const TESTS = [
+  { id: 'iodine', label: 'Iodine', detects: 'starch',
+    method: 'A few drops of iodine solution straight onto the food. No heating.',
+    neg: { colour: '#B4762A', name: 'orange-brown \u2014 unchanged' },
+    pos: { colour: '#1B1B3A', name: 'blue-black' } },
+  { id: 'benedict', label: "Benedict's", detects: 'reducing sugar (glucose, fructose)',
+    method: 'Equal volumes of food solution and Benedict\u2019s, then five minutes in a water bath at 80 \u00b0C.',
+    neg: { colour: '#2E63B8', name: 'blue \u2014 unchanged' },
+    pos: { colour: '#B03A16', name: 'brick red' } },
+  { id: 'emulsion', label: 'Ethanol emulsion', detects: 'lipid (fat and oil)',
+    method: 'Shake the food with ethanol, let it settle, then pour the ethanol into water.',
+    neg: { colour: '#E8E2D2', name: 'clear \u2014 unchanged' },
+    pos: { colour: '#FBFBF6', name: 'cloudy white' } },
+  { id: 'biuret', label: 'Biuret', detects: 'protein',
+    method: 'Equal volumes of food solution and Biuret solution, shaken. No heating.',
+    neg: { colour: '#3E7ACB', name: 'blue \u2014 unchanged' },
+    pos: { colour: '#7B4CA8', name: 'lilac purple' } }
+];
+
+const FOODS = [
+  { id: 'potato', label: 'Potato',
+    has: { iodine: true, benedict: false, emulsion: false, biuret: false },
+    notes: {
+      iodine: 'Potato is mostly starch, and starch is what iodine is for. A strong blue-black comes up within seconds.',
+      benedict: 'Raw potato stores its carbohydrate as starch, not as free glucose, so there is very little reducing sugar to find. Leave a potato in a warm cupboard for a fortnight and this test starts to go positive \u2014 the starch is being broken down.',
+      emulsion: 'Potato has almost no lipid. Under a hundredth of its mass.',
+      biuret: 'A potato is about 2% protein \u2014 present, but too dilute for the school test to show. This is a false negative, and it is the most common one in the lesson.'
+    } },
+  { id: 'milk', label: 'Milk',
+    has: { iodine: false, benedict: true, emulsion: true, biuret: true },
+    notes: {
+      iodine: 'No starch in milk. This is a true negative \u2014 there really is none.',
+      benedict: 'Lactose, the sugar in milk, is a reducing sugar. Brick red if you heat it long enough; green or orange if you rush it.',
+      emulsion: 'Whole milk is a suspension of fat droplets in water. Strong cloudiness.',
+      biuret: 'Milk is rich in casein and whey proteins. Clear lilac.'
+    } },
+  { id: 'eggwhite', label: 'Egg white',
+    has: { iodine: false, benedict: false, emulsion: false, biuret: true },
+    notes: {
+      iodine: 'None. Egg white has essentially no carbohydrate.',
+      benedict: 'Negative, and truly so \u2014 egg white is about 90% water and 10% protein, with no sugar to speak of.',
+      emulsion: 'The lipid in an egg is all in the yolk. Separate them and the white gives a clean negative.',
+      biuret: 'The clearest positive in the lesson. Egg white is almost pure protein in water.'
+    } },
+  { id: 'applejuice', label: 'Apple juice',
+    has: { iodine: false, benedict: true, emulsion: false, biuret: false },
+    notes: {
+      iodine: 'No starch \u2014 in a ripe apple it has all been converted to sugar. An unripe apple would test positive, which is a nice reminder that a food is not a fixed thing.',
+      benedict: 'Fructose and glucose, both reducing sugars. Rapid brick red.',
+      emulsion: 'Nothing. Fruit juice is sugar and water.',
+      biuret: 'Under 0.3% protein. Negative on the school test, and not quite zero in the fruit.'
+    } },
+  { id: 'oliveoil', label: 'Olive oil',
+    has: { iodine: false, benedict: false, emulsion: true, biuret: false },
+    notes: {
+      iodine: 'No starch.',
+      benedict: 'No sugar. Note that a negative here tells you nothing about the energy in the tube \u2014 olive oil carries more energy per gram than anything else on the bench.',
+      emulsion: 'Textbook positive: a dense white cloud the moment the ethanol hits the water.',
+      biuret: 'No protein.'
+    } }
+];
+
+const LIMITS = [
+  { tag: 'It cannot say', q: 'How much is there?', a: 'The test is qualitative. Colour intensity also changes with heating time, volume and concentration, none of which you controlled \u2014 so a deeper colour is not evidence of more nutrient.' },
+  { tag: 'It cannot say', q: 'Is there really none?', a: 'A negative means below what this test can detect, with this sample, prepared this way. Potato does contain protein; Biuret cannot see it at 2%.' },
+  { tag: 'It cannot say', q: 'Is this food healthy?', a: 'Nothing in a colour change is about health. Olive oil is one positive out of four and is a required nutrient; a glucose solution is one positive and is nothing but fuel.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Read the result',
+    question: 'A student crushes a peanut, shakes it with ethanol, pours the ethanol into water and gets a thick white cloud. What may they write down?',
+    options: [
+      { text: 'The peanut contains lipid', correct: true },
+      { text: 'The peanut is high in fat', correction: 'Almost right, and \u2018high\u2019 is the word that fails. The emulsion test detects lipid; it does not measure how much, so \u2018high\u2019 is not supported by this result.' },
+      { text: 'The peanut contains lipid and no protein', correction: 'This test says nothing at all about protein. One test answers one question \u2014 you would need Biuret to make any claim about protein.' },
+      { text: 'The peanut is unhealthy', correction: 'No food test is a judgement about health. Lipid is one of the seven required nutrients.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'Bread gives a strong blue-black with iodine. A student chews a piece for two minutes, spits it out, tests it again, and now gets orange-brown and a positive Benedict\u2019s. What happened?',
+    options: [
+      { text: 'The iodine was too dilute the second time', correction: 'Same iodine, same drops. Something changed in the bread, not in the reagent \u2014 and the Benedict\u2019s result tells you what.' },
+      { text: 'Saliva broke the starch down into sugar', correct: true },
+      { text: 'Chewing squashed the starch into smaller pieces so the iodine could not find it', correction: 'Crushing a sample makes a test more likely to work, not less. And crushing cannot create the reducing sugar that Benedict\u2019s just found.' },
+      { text: 'The starch dissolved in the saliva', correction: 'Dissolving starch does not stop iodine detecting it \u2014 the standard method uses starch solution. The starch is not dissolved, it is gone: converted to something else.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Write the honest conclusion',
+    question: 'A group tests potato with Biuret and gets no colour change. They conclude \u201cpotato contains no protein\u201d. Potato is in fact about 2% protein. Explain what is wrong with their conclusion, write a version you could defend, and say what you would change to detect the protein.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Their conclusion goes further than the evidence because\u2026',
+    criteria: [
+      'Says the observation only supports \u2018protein not detected\u2019, not \u2018no protein present\u2019.',
+      'Gives the reason: the concentration is below what the test can detect.',
+      'Writes a defensible conclusion using wording such as \u2018no protein was detected under these conditions\u2019.',
+      'Suggests a workable change \u2014 more concentrated sample, larger mass of potato in less water, or a more sensitive method.',
+      'Does not claim the test was done wrongly; the method was followed correctly and still gave a false negative.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A company claims its cereal bar is \u201cprotein-packed and sugar-free\u201d. You have iodine, Benedict\u2019s, ethanol and Biuret. Say which tests you would run, what result would support each claim, and which of the two claims you could never fully check with this equipment.',
+    fieldLabel: 'Your answer',
+    placeholder: 'I would run\u2026 because\u2026',
+    criteria: [
+      'Picks Biuret for the protein claim and Benedict\u2019s for the sugar claim.',
+      'States that a lilac Biuret result supports protein being present but not \u2018packed\u2019, because the test gives no amount.',
+      'Identifies \u2018protein-packed\u2019 as the claim that cannot be checked, since it is a quantity claim and these tests are qualitative.',
+      'Notes that a blue Benedict\u2019s does not prove sugar-free either \u2014 sucrose is not a reducing sugar and would not show up.'
+    ] }
+];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return Object.keys(s.ran).length >= 4;
+  if (id === 's-limits') return Object.keys(s.ran).length >= 4;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    food: 'potato',
+    test: this.props.startTest || 'iodine',
+    predictions: {},
+    ran: {},
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark) {
+    if (dark) {
+      return 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 17px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+        (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 17px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const food = FOODS.find((f) => f.id === s.food) || FOODS[0];
+    const test = TESTS.find((t) => t.id === s.test) || TESTS[0];
+    const key = food.id + ':' + test.id;
+    const positive = !!food.has[test.id];
+    const ran = !!s.ran[key];
+    const predicted = s.predictions[key];
+    const swatch = ran ? (positive ? test.pos : test.neg) : test.neg;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'That milk contains no sugar' },
+        { letter: 'B', text: 'That milk contains less sugar than tube 1 suggested' },
+        { letter: 'C', text: 'Nothing about the milk at all' },
+        { letter: 'D', text: 'That the Benedict\u2019s solution had gone off' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      benchProgress: Object.keys(s.ran).length + ' of 20 combinations run',
+      foodTabs: FOODS.map((f) => ({
+        label: f.label, pressed: f.id === s.food, style: this.seg(f.id === s.food, true),
+        onClick: () => this.setState({ food: f.id })
+      })),
+      testTabs: TESTS.map((t) => ({
+        label: t.label, pressed: t.id === s.test, style: this.seg(t.id === s.test, true),
+        onClick: () => this.setState({ test: t.id })
+      })),
+
+      tubeStyle: 'display:block;height:' + (ran ? '74%' : '62%') + ';background:' + swatch.colour + ';border-top:2px solid rgba(0,0,0,.22);',
+      tubeLabel: food.label + ' + ' + test.label,
+      tubeState: ran ? swatch.name : 'not run yet',
+      testMethod: test.method,
+      testDetects: test.detects,
+
+      predictOpen: !ran,
+      predictPrompt: 'Before you run it \u2014 will ' + test.label + ' detect ' + test.detects.split(' (')[0] + ' in ' + food.label.toLowerCase() + '?',
+      predictOptions: [
+        { letter: 'A', text: 'Yes \u2014 it will change colour' },
+        { letter: 'B', text: 'No \u2014 it will stay as it started' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: predicted === i,
+        onClick: () => this.setState((st) => ({
+          predictions: Object.assign({}, st.predictions, { [key]: i }),
+          ran: Object.assign({}, st.ran, { [key]: true })
+        }))
+      })),
+
+      resultOpen: ran,
+      resultVerdict: predicted === (positive ? 0 : 1) ? 'You predicted this' : 'Not what you predicted',
+      resultHeadline: positive
+        ? test.pos.name.charAt(0).toUpperCase() + test.pos.name.slice(1) + ' \u2014 ' + test.detects.split(' (')[0] + ' detected.'
+        : swatch.name.charAt(0).toUpperCase() + swatch.name.slice(1) + ' \u2014 not detected.',
+      resultWhy: food.notes[test.id],
+      resultClaim: positive
+        ? '\u201c' + food.label + ' contains ' + test.detects.split(' (')[0] + '.\u201d Nothing about how much.'
+        : '\u201cNo ' + test.detects.split(' (')[0] + ' was detected in ' + food.label.toLowerCase() + ' under these conditions.\u201d Not \u201cthere is none\u201d.',
+
+      limits: LIMITS,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === correctIndex, isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: done,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

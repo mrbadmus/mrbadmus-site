@@ -1,7 +1,7 @@
 """B9 — Ecosystems and interdependence. Six lessons, Biology.
 
 One module per lesson, authored against Claude Design's approved pages in
-`KS3 B9 lessons/`, her `NOTES-B9.md`, and the payload schema written before
+`docs/ks3/design-reference/b9/`, her `NOTES-B9.md`, and the payload schema written before
 dispatch at `docs/ks3/b9-inventory/PAYLOAD-SCHEMA.md`, under the MRB-220 build
 contract.
 

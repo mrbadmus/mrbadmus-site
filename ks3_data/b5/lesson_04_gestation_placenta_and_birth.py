@@ -1,8 +1,8 @@
 """B5 L4 — Gestation, the placenta and birth (PROCESS).
 
 Authored against Claude Design's approved page,
-`KS3 B5 lessons/b5-04-gestation-placenta-and-birth.dc.html` (579 lines), its
-author's notes `KS3 B5 lessons/NOTES-B5.md` (§2.2, §3 flags 20–25, §4 read
+`docs/ks3/design-reference/b5/b5-04-gestation-placenta-and-birth.dc.html` (579 lines), its
+author's notes `docs/ks3/design-reference/b5/NOTES-B5.md` (§2.2, §3 flags 20–25, §4 read
 whole rather than by flag), and the MRB-220 build contract
 (`docs/ks3/mrb-220-build-contract.md`).
 

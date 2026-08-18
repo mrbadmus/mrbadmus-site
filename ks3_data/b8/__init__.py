@@ -1,7 +1,7 @@
 """B8 — Respiration, as one module per lesson.
 
 Authored against Claude Design's approved reference screens in
-`KS3 B8 lessons/`, under the MRB-220 build contract
+`docs/ks3/design-reference/b8/`, under the MRB-220 build contract
 (`docs/ks3/mrb-220-build-contract.md`) and the payload schema written for this
 run at `docs/ks3/b8-inventory/PAYLOAD-SCHEMA.md`. Shape follows `ks3_data/b7/`,
 which follows B5, B4, B3, C1, C2, B2 and B1: each module exports a single

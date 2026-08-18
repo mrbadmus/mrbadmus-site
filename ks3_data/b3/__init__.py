@@ -1,7 +1,7 @@
 """B3 — Nutrition and digestion, as one module per lesson.
 
 Authored against Claude Design's approved reference screens in
-`KS3 B3 lessons/` and under the MRB-220 build contract
+`docs/ks3/design-reference/b3/` and under the MRB-220 build contract
 (`docs/ks3/mrb-220-build-contract.md`). Shape follows `ks3_data/c1/`, which
 follows `ks3_data/c2/`, `ks3_data/b2/` and `ks3_data/b1/`: each module exports
 a single `LESSON` dict and this file collects them.

@@ -551,9 +551,36 @@ def main():
     git = subprocess.run(["git", "status", "--porcelain"],
                          capture_output=True, text=True).stdout.splitlines()
     touched = [l[3:] for l in git if l[3:].endswith(".html")]
+
+    # ⊕ MRB-248, 18 Aug 2026 — `docs/` is excluded, and that is a SCOPE
+    # correction, not a loosening.
+    #
+    # This gate asks one question: did a KS3 change alter a page a KS4 student
+    # is served? It answered it by taking every touched `.html` outside `ks3/`
+    # to be a KS4 page. Design's delivered lesson references are `.dc.html`
+    # under `docs/ks3/design-reference/`, so they satisfied that test while
+    # being neither KS4 nor served — they are the SOURCE the KS3 build is
+    # measured against.
+    #
+    # It never fired before because the gate only inspects files `git status`
+    # reports, and the four frozen units sat unchanged. MRB-248 checked in the
+    # remaining nine deliveries, every one of them an addition, and the gate
+    # reported Design's own reference pages as KS4 drift.
+    #
+    # The exclusion is guarded rather than trusted: `docs/` is asserted below
+    # to be absent from the published tree. If that ever stops being true the
+    # assertion fails, instead of this filter quietly hiding a real page.
+    published_docs = os.path.isdir(os.path.join("mrbadmus_site", "docs"))
+    check("the tree excluded from the KS4-drift scan is genuinely not published",
+          not published_docs,
+          "mrbadmus_site/docs/ does not exist" if not published_docs else
+          "mrbadmus_site/docs/ EXISTS — docs/ is now served, so excluding it "
+          "from the KS4-drift scan would hide student-facing pages")
+
     candidates = [t for t in touched
                   if not t.startswith("ks3/")
-                  and not t.startswith("mrbadmus_site/ks3/")]
+                  and not t.startswith("mrbadmus_site/ks3/")
+                  and not t.startswith("docs/")]
 
     stamp_only, content_changed = [], []
     for t in candidates:

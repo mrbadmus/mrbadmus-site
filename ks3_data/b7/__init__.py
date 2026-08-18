@@ -1,7 +1,7 @@
 """B7 — Photosynthesis, as one module per lesson.
 
 Authored against Claude Design's approved reference screens in
-`KS3 B7 lessons/`, under the MRB-220 build contract
+`docs/ks3/design-reference/b7/`, under the MRB-220 build contract
 (`docs/ks3/mrb-220-build-contract.md`) and the payload schema written for this
 run at `docs/ks3/b7-inventory/PAYLOAD-SCHEMA.md`. Shape follows `ks3_data/b5/`,
 which follows B4, B3, C1, C2, B2 and B1: each module exports a single `LESSON`

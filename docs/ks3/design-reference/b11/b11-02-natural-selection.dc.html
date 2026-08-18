@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Natural selection · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b1102-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b1102-arrive .34s ease-out both; }
+  [data-fill] { transition: width .35s linear, height .35s linear; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } [data-fill] { transition: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Evolution, extinction and biodiversity</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Natural selection</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Evolution, extinction and biodiversity · Process</p>
+        <h1>Natural selection</h1>
+        <p class="ks3-bigq">Not one animal in the population changes. The population changes, because of which animals had offspring — and that is a completely different mechanism from the one most people imagine.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Giraffes have long necks. How did that happen?</h2>
+        <p class="ks3-hook-prompt">The obvious story is that giraffes stretched for high leaves, their necks lengthened a little, and they passed the extra length on. It is a clear, sensible explanation, it was the mainstream scientific view for fifty years, and it is wrong in a way worth understanding precisely.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What actually happened over those generations?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Neck length already varied. In hard times the longer-necked animals reached food the others could not, survived better, and had more offspring — who inherited the versions of the genes that made necks long. No individual giraffe ever grew a longer neck. The average moved because of who had calves and who did not.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · a hundred moths on a tree trunk</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Run the generations</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ genLabel }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Pale and dark moths resting on tree bark, hunted by birds that find whatever they can see. Choose the bark, run the generations, and watch the population change while no individual moth changes at all.</p>
+
+        <div style="margin-top: 22px;">
+          <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The tree bark</p>
+          <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+            <sc-for list="{{ barkTabs }}" as="t" hint-placeholder-count="3">
+              <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);">
+          <p style="margin: 0; font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-muted);">{{ barkNote }}</p>
+
+          <div style="margin-top: 18px; display: flex; align-items: flex-end; gap: 4px; height: 150px; padding: 12px; border-radius: var(--ks3-r-panel); background: rgba(255,255,255,.06);">
+            <sc-for list="{{ history }}" as="h" hint-placeholder-count="10">
+              <span style="flex: 1 1 0; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; min-width: 0; gap: 2px;">
+                <span data-fill="1" style="{{ h.paleStyle }}"></span>
+                <span data-fill="1" style="{{ h.darkStyle }}"></span>
+              </span>
+            </sc-for>
+          </div>
+          <p style="margin: 8px 0 0; font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">pale on top, dark below \u00b7 one column per generation \u00b7 oldest on the left</p>
+
+          <div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 12px 28px;">
+            <p style="margin: 0; font-size: 19px; font-weight: 700; color: var(--ks3-on-dark-muted);">Pale {{ palePct }}%</p>
+            <p style="margin: 0; font-size: 19px; font-weight: 700; color: var(--ks3-alert);">Dark {{ darkPct }}%</p>
+          </div>
+
+          <p style="margin: 16px 0 0; padding: 15px 17px; border-radius: var(--ks3-r-panel); background: rgba(255,255,255,.06); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ note }}</p>
+
+          <div style="margin-top: 18px; display: flex; align-items: center; gap: 13px; flex-wrap: wrap;">
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onOne }}">One generation</button>
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onTen }}">Ten generations</button>
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onReset }}">Start again at fifty-fifty</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-steps" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The process, in five steps</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 28ch;">Every step is something you have already met.</p>
+
+        <ol style="list-style: none; margin: 24px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ stepCards }}" as="c" hint-placeholder-count="5">
+            <li style="display: grid; grid-template-columns: auto 1fr; gap: 8px 18px; padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <span aria-hidden="true" style="grid-row: span 2; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; background: var(--ks3-accent); color: var(--ks3-on-dark); font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;">{{ c.num }}</span>
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.2; letter-spacing: -.02em;">{{ c.name }}</p>
+              <p style="margin: 0; font-size: 18px; line-height: 1.55;">{{ c.body }}</p>
+            </li>
+          </sc-for>
+        </ol>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Natural selection: individuals vary; those whose variations suit the conditions survive and reproduce more; they pass those variations to their offspring; over many generations the population changes. Individuals do not change — populations do.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Animals change themselves to suit their environment, and pass the change on.”</p>
+        <p>This is Lamarck's idea, and it deserves respect rather than mockery: it was a serious scientific theory, it explained the observations available in 1809, and Lamarck was right about the big thing — that species change over time — when most people still thought they did not. It fails on the mechanism. A blacksmith's children are not born with thick arms; a mouse that loses its tail has ordinary tailed offspring; and generations of people cutting their hair has produced nobody born bald. What an organism does during its life does not rewrite the DNA in its gametes, so it cannot be inherited. What natural selection needs instead is variation that is <em>already there</em>, arriving before the environment changes rather than in response to it. The moths on the bench above were not turned dark by soot; some were already dark and the soot changed which ones got eaten.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“The population needed to change, so it did.”</p>
+          <p>Nothing in this process is aiming at anything. There is no need, no goal, no trying — natural selection is the accumulated arithmetic of who happened to leave more offspring, and it cannot look ahead. The language makes this hard: it is almost impossible to describe evolution without saying a species <em>developed</em> a feature <em>in order to</em> do something, and every one of those phrases smuggles in a purpose that is not there. Watch the wording in the mastery ladder and in your own answers. The consequences of getting it right are real: a population facing a change it has no existing variation for does not conjure one up, it dies, and that is why extinction is common rather than rare. And it is why antibiotic resistance appears within years of a new drug — the resistant bacteria were already in the population before the drug arrived.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Natural selection needs four things: variation that already exists in the population, competition because more are born than can survive, a difference in who survives and reproduces, and inheritance so the surviving variations are passed on. Repeat over many generations and the population changes. No individual adapts during its own life, and the process has no goal.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Ask <em>how do we know?</em> about the moths and you get the best answer in this book. Bernard Kettlewell tested the idea directly in the 1950s: he released marked pale and dark moths into a polluted wood near Birmingham and an unpolluted one in Dorset, recaptured what he could, and in each wood the better-hidden form came back in greater numbers. It was in every textbook within a decade — and then the method was taken apart. He had released moths by day, at densities no real wood would hold, and often onto exposed trunks, when peppered moths mostly rest higher up beneath branches. Those criticisms were fair, and for a while they were reported as though the conclusion had fallen with the method. It had not. Michael Majerus spent the 2000s running the experiment the way the critics said it should be run — moths in natural resting positions, at natural densities, with birds watched taking them — and got the same result, more strongly; the findings were published in 2012, after his death. That sequence is not an embarrassment for science, it is the whole of science in one example. A conclusion is only ever as good as the method behind it, so someone attacks the method, and a conclusion that survives a better test than the one that first produced it is standing on firmer ground than before.</p>
+          <p>Antibiotic resistance is natural selection happening fast enough to be a public health emergency. In any large population of bacteria a few individuals happen to carry a version of a gene that lets them survive a particular antibiotic — they were there before the drug was ever used, produced by ordinary random mutation. Give the antibiotic and it kills the rest, which leaves the resistant few with no competition and an empty patient to reproduce into. Bacteria divide every twenty minutes, so a population that is almost entirely susceptible in the morning can be almost entirely resistant within days. This is exactly the moth bench with the generation time reduced from a year to twenty minutes, and it is why finishing a course as prescribed, and not demanding antibiotics for a virus, are not fussiness. Every use of an antibiotic is a selection pressure applied to every bacterium in the person taking it.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b11-01-variation-and-competitive-success.html">Variation and competitive success<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b10-04-passing-it-on-heredity.html">Passing it on: heredity<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b11-03-when-the-environment-changes-extinction.html">When the environment changes: extinction<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b10-05-what-makes-a-species.html">What makes a species<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Darwin and Wallace, the evidence for evolution, speciation, mutation as the source of new variation, and selective breeding as the contrast case.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to check whether your explanation smuggles in a purpose?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The moth bench is a teaching model: survival differences are fixed percentages, the population size is held constant, and there is no mutation, migration or chance beyond the survival rates themselves.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The giraffe' },
+  { id: 's-bench', label: 'Run generations' },
+  { id: 's-steps', label: 'Five steps' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'BENCH', 'STEPS', 'LADDER'];
+
+const HISTORY = 24;
+
+const BARKS = [
+  { id: 'clean', label: 'Clean, lichen-covered', paleSurv: 0.85, darkSurv: 0.45,
+    note: 'Pale, mottled lichen on the trunks \u2014 the state of most woodland before industry, and again in many places today.' },
+  { id: 'sooty', label: 'Blackened by soot', paleSurv: 0.45, darkSurv: 0.85,
+    note: 'Soot from coal-burning factories has killed the lichen and darkened the bark, as it did across industrial Britain in the nineteenth century.' },
+  { id: 'mixed', label: 'Patchy, partly recovered', paleSurv: 0.7, darkSurv: 0.7,
+    note: 'Some lichen returning, some bark still dark. Neither colour has an advantage, which makes this the control.' }
+];
+
+const STEP_CARDS = [
+  { num: '1', name: 'Variation already exists', body: 'Individuals in the population differ, and the differences are there before anything changes. In the moths, pale and dark forms both existed long before the factories were built \u2014 dark ones were simply rare.' },
+  { num: '2', name: 'More are born than survive', body: 'Every population produces far more offspring than the food, space and shelter can support, so most of them will not live to breed. This is where b11-01\u2019s competition comes in.' },
+  { num: '3', name: 'Some survive better than others', body: 'Whichever variations happen to suit the current conditions make survival more likely. Nothing is choosing; the environment simply kills a higher proportion of one kind.' },
+  { num: '4', name: 'Survivors reproduce and pass it on', body: 'The survivors are the ones that breed, and they pass on the versions of the genes they carry \u2014 which are, on average, the ones that helped them survive. This is b10-04\u2019s heredity doing the work.' },
+  { num: '5', name: 'Repeat, and the population shifts', body: 'A small change each generation, accumulated over many generations. Nothing dramatic happens in any single generation, and after fifty the population looks different.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 What changes',
+    question: 'After fifty generations on sooty bark, most of the moths are dark. What changed?',
+    options: [
+      { text: 'The proportions in the population \u2014 more of the moths born were dark, because dark parents survived to breed', correct: true },
+      { text: 'The moths gradually darkened to match the bark', correction: 'No moth changed colour at any point. A moth is the colour it hatched, and it stays that colour.' },
+      { text: 'The soot stained the moths dark', correction: 'Then washing one would turn it pale, and its offspring would be pale anyway. The colour is inherited, not applied.' },
+      { text: 'The pale moths learned to hide better', correction: 'Learning is not inherited, and it is not what the graph shows \u2014 the pale ones did not survive better, there were simply fewer of them being born.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'Why is "giraffes stretched their necks and passed the extra length to their calves" wrong?',
+    options: [
+      { text: 'Because giraffes cannot stretch their necks at all', correction: 'They can stretch, and it makes no difference \u2014 stretching does not change the DNA in the gametes.' },
+      { text: 'Because changes made during an animal\u2019s life do not alter the genetic information it passes on', correct: true },
+      { text: 'Because giraffes do not eat from tall trees', correction: 'They do. The feeding is real; the mechanism of inheritance in the story is what fails.' },
+      { text: 'Because necks got shorter, not longer', correction: 'They got longer. The question is how \u2014 by animals changing, or by which animals bred.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain it properly',
+    question: 'Explain how a population of mainly pale moths became a population of mainly dark moths after the bark was blackened by soot. Use all five steps, and be careful not to say the moths changed.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Both pale and dark moths already existed\u2026',
+    criteria: [
+      'Says both pale and dark moths already existed before the bark darkened.',
+      'Says birds could see the pale moths more easily against the dark bark, so more of them were eaten.',
+      'Says more dark moths therefore survived to reproduce.',
+      'Says the surviving dark moths passed on the genes for dark colour to their offspring.',
+      'Says the proportion of dark moths increased over many generations \u2014 and does not say that any moth changed colour.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A farmer sprays a pesticide that kills 99% of the insect pests. Within three years it barely works at all. Explain what has happened, why spraying more of it makes the problem worse, and what this shares with the moth bench.',
+    fieldLabel: 'Your answer',
+    placeholder: 'A few insects in the original population\u2026',
+    criteria: [
+      'Says a few insects in the original population happened to be resistant, before the pesticide was used.',
+      'Says the pesticide killed the others, leaving the resistant ones with little competition.',
+      'Says those survivors bred and passed resistance on, so the proportion of resistant insects rose each generation.',
+      'Says spraying more applies the same selection pressure harder and speeds the process up.',
+      'Identifies the shared mechanism: existing variation plus a change in what survives, with no individual insect becoming resistant during its life.'
+    ] }
+];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return s.gen >= 10;
+  if (id === 's-steps') return s.gen >= 10;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    bark: 'sooty',
+    pale: 0.9,
+    gen: 0,
+    history: [{ pale: 0.9 }],
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on) {
+    return 'cursor:pointer;font:inherit;font-size:16px;font-weight:700;padding:10px 15px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+      (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+  }
+
+  advance(n) {
+    this.setState((st) => {
+      const bark = BARKS.find((b) => b.id === st.bark) || BARKS[1];
+      let pale = st.pale;
+      const hist = st.history.slice();
+      for (let i = 0; i < n; i++) {
+        const survPale = pale * bark.paleSurv;
+        const survDark = (1 - pale) * bark.darkSurv;
+        pale = survPale / (survPale + survDark);
+        hist.push({ pale: pale });
+      }
+      while (hist.length > HISTORY) hist.shift();
+      return { pale: pale, gen: st.gen + n, history: hist };
+    });
+  }
+
+  renderVals() {
+    const s = this.state;
+    const bark = BARKS.find((b) => b.id === s.bark) || BARKS[1];
+    const palePct = Math.round(s.pale * 100);
+    const darkPct = 100 - palePct;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    let note;
+    if (s.gen === 0) note = 'Nine moths in ten are pale, which is where the British population started. Choose a bark and run some generations.';
+    else if (s.bark === 'mixed') note = 'Neither colour has an advantage on patchy bark, so the proportions barely move however long you run it. This is the control: without a difference in survival there is no selection, only a population sitting where it already was.';
+    else if (darkPct > 85) note = 'The population is now overwhelmingly dark, and not one moth ever changed colour. Every moth that has ever lived in this simulation was born its colour and died its colour. What moved was the proportion, generation by generation, decided entirely by who was eaten.';
+    else if (palePct > 85 && s.bark === 'clean') note = 'On clean lichen the pale form is nearly invisible and the dark form stands out, so the population stays pale \u2014 or returns to pale, if you have switched back after running it sooty. Selection has no memory and no direction.';
+    else note = 'The proportions are shifting. Notice how little changes in any single generation and how much has changed after ten \u2014 that is the whole reason evolution is hard to see happening.';
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'Giraffes stretched, and their calves inherited the extra length' },
+        { letter: 'B', text: 'Neck length already varied, and longer-necked animals survived and bred more' },
+        { letter: 'C', text: 'The species needed longer necks, so they developed' },
+        { letter: 'D', text: 'Short-necked giraffes moved somewhere else' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      genLabel: s.gen === 0 ? 'generation 0' : 'generation ' + s.gen,
+      barkTabs: BARKS.map((b) => ({
+        label: b.label, pressed: b.id === s.bark, style: this.seg(b.id === s.bark),
+        onClick: () => this.setState({ bark: b.id })
+      })),
+      barkNote: bark.note,
+      history: s.history.map((h) => ({
+        paleStyle: 'display:block;width:100%;height:' + (h.pale * 100) + '%;background:var(--ks3-on-dark-muted);border-radius:3px 3px 0 0;',
+        darkStyle: 'display:block;width:100%;height:' + ((1 - h.pale) * 100) + '%;background:var(--ks3-alert);border-radius:0 0 3px 3px;'
+      })),
+      palePct: palePct,
+      darkPct: darkPct,
+      note: note,
+      onOne: () => this.advance(1),
+      onTen: () => this.advance(10),
+      onReset: () => this.setState({ pale: 0.5, gen: 0, history: [{ pale: 0.5 }] }),
+
+      stepCards: STEP_CARDS,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const answered = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: answered,
+          isRight: answered && chosen === correctIndex, isWrong: answered && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (answered ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = answered && i === correctIndex;
+            const isWrong = answered && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (answered) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: answered,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 """B7 L1 — The photosynthesis reaction (PROCESS).
 
 Authored against Design's approved page,
-`KS3 B7 lessons/b7-01-the-photosynthesis-reaction.dc.html` (588 lines), under
+`docs/ks3/design-reference/b7/b7-01-the-photosynthesis-reaction.dc.html` (588 lines), under
 the MRB-220 build contract and `docs/ks3/b7-inventory/PAYLOAD-SCHEMA.md`.
 
 Every student-facing string is lifted byte-identical from the approved page

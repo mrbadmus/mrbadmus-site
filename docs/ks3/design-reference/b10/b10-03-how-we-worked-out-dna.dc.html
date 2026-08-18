@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How we worked out DNA's structure · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b1003-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b1003-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Inheritance and DNA</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">How we worked out DNA's structure</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Inheritance and DNA · Investigation</p>
+        <h1>How we worked out DNA's structure</h1>
+        <p class="ks3-bigq">Nobody has ever seen a DNA molecule. Its structure was deduced from a photograph of scattered X-rays, a table of chemical ratios, and a set of metal models built on a bench in Cambridge.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>A molecule far too small to see, worked out in 1953.</h2>
+        <p class="ks3-hook-prompt">DNA is a hundred thousand times thinner than a hair. No microscope of the 1950s could resolve it, and no microscope today can show you the shape of a single molecule directly. Yet by April 1953 the structure was published, and it was right.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What kind of evidence could possibly show the shape?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">X-ray diffraction. Fire X-rays at a crystal or fibre and they scatter off the atoms in a pattern; the pattern is not a picture of the molecule, but its geometry can be worked backwards to the arrangement that produced it. Rosalind Franklin was one of the best in the world at it, and the image known as Photo 51 is the reason this lesson exists.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · the evidence available in 1952</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Build a model that fits all of it</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Three decisions to make, and four pieces of evidence that each rule something out. Exactly one combination survives all four — which is what Watson and Crick were doing with pieces of cardboard and bent metal.</p>
+
+        <div style="margin-top: 22px; display: flex; flex-wrap: wrap; gap: 20px 30px;">
+          <sc-for list="{{ dials }}" as="d" hint-placeholder-count="3">
+            <div>
+              <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">{{ d.name }}</p>
+              <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ d.options }}" as="o" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" style="{{ o.style }}">{{ o.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);">
+          <p style="margin: 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ modelLine }}</p>
+
+          <ul style="list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+            <sc-for list="{{ evidence }}" as="e" hint-placeholder-count="4">
+              <li style="{{ e.rowStyle }}">
+                <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px;">
+                  <p style="margin: 0; font-size: 18px; font-weight: 700; color: var(--ks3-on-dark);">{{ e.name }}</p>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .05em; text-transform: uppercase; color: {{ e.verdictColour }};">{{ e.verdict }}</p>
+                </div>
+                <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5; color: var(--ks3-on-dark-body);">{{ e.what }}</p>
+                <sc-if value="{{ e.failed }}"><p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5; color: var(--ks3-alert);">{{ e.why }}</p></sc-if>
+              </li>
+            </sc-for>
+          </ul>
+
+          <div style="margin-top: 20px; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ verdictTag }}</p>
+            <p style="margin: 11px 0 0; font-size: 18px; line-height: 1.6;">{{ verdictBody }}</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-who" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Who did what</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 28ch;">Four names, two laboratories, one structure.</p>
+
+        <ol style="list-style: none; margin: 24px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ peopleCards }}" as="p" hint-placeholder-count="4">
+            <li style="display: grid; grid-template-columns: auto 1fr; gap: 8px 18px; padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <span aria-hidden="true" style="grid-row: span 3; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--ks3-accent); color: var(--ks3-on-dark); font-family: var(--ks3-font-display); font-weight: 800; font-size: 16px;">{{ p.initials }}</span>
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.2; letter-spacing: -.02em;">{{ p.name }}</p>
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .05em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ p.role }}</p>
+              <p style="margin: 0; font-size: 18px; line-height: 1.55;">{{ p.body }}</p>
+            </li>
+          </sc-for>
+        </ol>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">DNA is a double helix: two strands twisted round each other, with the bases paired on the inside — A always with T, C always with G. The structure was deduced in 1953 from X-ray diffraction images taken by Rosalind Franklin and Maurice Wilkins, and from Erwin Chargaff's base ratios, by James Watson and Francis Crick.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Watson and Crick discovered DNA.”</p>
+        <p>DNA was discovered in 1869 by Friedrich Miescher, who isolated it from the pus on used surgical bandages and called it nuclein — eighty-four years before 1953. By the 1940s Avery, MacLeod and McCarty had shown it was the material carrying inherited information, which was the genuinely surprising result, since most biochemists had assumed the genetic material must be protein. What Watson and Crick worked out was the <em>structure</em>, and even that was model-building from other people's measurements: they did no experiments on DNA themselves. Getting this right is not pedantry about credit. It is the difference between imagining science as a series of individual discoveries and understanding it as what it is — a slow accumulation where the person who assembles the final piece is standing on twenty years of other people's work.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“A great discovery is one person's flash of insight.”</p>
+          <p>Look at what 1953 actually required. Franklin and Wilkins produced the diffraction images at King's College London and Franklin calculated the measurements from them. Chargaff, in New York, had published the base ratios years earlier without seeing what they meant. Linus Pauling in California published a triple-helix model that was wrong, which mattered, because ruling out a serious rival narrows the field. Watson and Crick built physical models in Cambridge and tested them against everyone else's numbers until one fitted. Five laboratories, three countries, two decades. The flash-of-insight story survives because it is easier to tell, and it gives students a false picture of what doing science looks like: mostly it looks like checking whether your idea is consistent with someone else's data.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>DNA's structure — a double helix with paired bases inside — was deduced in 1953 from evidence nobody could see directly. Franklin and Wilkins produced the X-ray diffraction images; Franklin's measurements showed the helix's dimensions and that the phosphates lie outside; Chargaff's ratios showed A pairs with T and C with G; Watson and Crick built the model that fitted all of it. The structure immediately suggested how DNA could be copied.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The paper announcing the structure ran to about a page, and it closed with a single sentence, phrased with deliberate understatement, noting that the pairing they had proposed immediately suggested a way the material could copy itself. That sentence is the reason the structure mattered so much. If A always pairs with T and C always with G, then each strand carries the full information: unzip the double helix and each half specifies exactly what must be built alongside it. A structure that explains, in its own geometry, how inheritance can work is a rare thing in science — most structures have to have their function worked out afterwards. Five years later Meselson and Stahl showed experimentally that copying does happen that way, and the model stopped being a proposal.</p>
+        </div>
+      </section>
+
+      <section class="ks3-layer ks3-support">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">A note on the credit</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Photo 51 was taken in Franklin's laboratory by her research student Raymond Gosling. It was shown to Watson by Wilkins without her knowledge, and a report containing her unpublished measurements reached Crick through a research council committee, also without her being asked. Watson and Crick's 1953 paper acknowledged only that they had been "stimulated by" unpublished results from King's. Franklin died of ovarian cancer in 1958, aged 37, probably from her exposure to X-rays; the Nobel Prize was awarded to Watson, Crick and Wilkins in 1962, and the rules do not allow it to be given posthumously. Historians still argue about how much of this was ordinary scientific rivalry, how much was the treatment of a woman in a hostile department, and how much was the Nobel's own rules. What is not in dispute is that the data were used without permission and that the acknowledgement understated what was owed.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b10-02-chromosomes-genes-and-dna.html">Chromosomes, genes and DNA<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="c1-06-testing-the-model.html">Testing the model<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b10-04-passing-it-on-heredity.html">Passing it on: heredity<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b6-03-substance-misuse-and-decisions.html">Substance misuse and decisions<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>The structure of DNA in detail, the history of the model as an example of how science works, and DNA replication.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to talk through what Photo 51 actually shows?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a simplification of a two-year argument into three decisions and four tests. The real work involved crystallography mathematics well beyond this level, several intermediate wrong models by everyone concerned, and evidence not listed here. The historical account in the credit note follows the mainstream of what historians of science have established; several details remain contested.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Too small to see' },
+  { id: 's-bench', label: 'Build the model' },
+  { id: 's-who', label: 'Who did what' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'BENCH', 'WHO', 'LADDER'];
+
+const DIALS = [
+  { id: 'strands', name: 'How many strands', options: [
+    { id: '1', label: 'One' }, { id: '2', label: 'Two' }, { id: '3', label: 'Three' }
+  ] },
+  { id: 'bases', name: 'Where the bases sit', options: [
+    { id: 'in', label: 'Inside, facing each other' }, { id: 'out', label: 'Outside, facing the water' }
+  ] },
+  { id: 'pairing', name: 'How the bases pair', options: [
+    { id: 'specific', label: 'A with T, C with G' }, { id: 'any', label: 'Any base with any base' }
+  ] }
+];
+
+const START = { strands: '3', bases: 'out', pairing: 'any' };
+const CORRECT = { strands: '2', bases: 'in', pairing: 'specific' };
+
+const EVIDENCE = [
+  { id: 'photo', name: 'Photo 51 \u00b7 Franklin and Gosling, 1952',
+    what: 'An X-ray diffraction image of DNA fibres. The cross-shaped pattern of spots is the signature of a helix, and the spacing of the spots gives its width and the distance per turn.',
+    test: (m) => m.strands === '2',
+    why: 'The measured width does not fit this. A single strand is too narrow and three strands are too wide \u2014 the pattern says two.' },
+  { id: 'water', name: 'Franklin\u2019s water measurements',
+    what: 'DNA takes up a great deal of water, which means its water-attracting parts \u2014 the phosphate groups \u2014 must be on the outside of the molecule, in contact with it.',
+    test: (m) => m.bases === 'in',
+    why: 'If the bases are on the outside then the phosphates are on the inside, which contradicts the water measurements \u2014 and the negative phosphates would repel each other.' },
+  { id: 'chargaff', name: 'Chargaff\u2019s ratios, 1950',
+    what: 'In DNA from any organism, the amount of A always equals the amount of T, and the amount of C always equals the amount of G \u2014 while the ratio of A to C varies from species to species.',
+    test: (m) => m.pairing === 'specific',
+    why: 'If any base could pair with any other there would be no reason for A and T to come in equal amounts in every organism ever measured.' },
+  { id: 'pauling', name: 'Pauling\u2019s triple helix, early 1953',
+    what: 'The most respected chemist alive published a model with three strands and the bases facing outwards. It was wrong, and seeing why it was wrong narrowed the field for everyone else.',
+    test: (m) => !(m.strands === '3' && m.bases === 'out'),
+    why: 'This is Pauling\u2019s model, and it has already been ruled out. Its phosphates were crowded into the centre where their negative charges would push the molecule apart.' }
+];
+
+const PEOPLE = [
+  { initials: 'RF', name: 'Rosalind Franklin', role: 'King\u2019s College London \u00b7 X-ray crystallography',
+    body: 'Produced the diffraction images, including Photo 51 with her student Raymond Gosling, and calculated from them that the molecule was a helix of a particular width with the phosphates on the outside. Hers is the evidence the model had to fit.' },
+  { initials: 'MW', name: 'Maurice Wilkins', role: 'King\u2019s College London \u00b7 X-ray crystallography',
+    body: 'Began the X-ray work on DNA and continued it alongside Franklin, in a working relationship that was difficult from the start. He showed Photo 51 to Watson.' },
+  { initials: 'EC', name: 'Erwin Chargaff', role: 'Columbia University \u00b7 biochemistry',
+    body: 'Measured the amounts of the four bases in DNA from many species and found the equalities that carry his name \u2014 without proposing what they meant. The pairing rule was sitting in his tables for three years.' },
+  { initials: 'WC', name: 'Watson and Crick', role: 'Cambridge \u00b7 model building',
+    body: 'Built physical models and tested them against everyone else\u2019s measurements until one fitted all of them. They did no experiments on DNA themselves, which is not a criticism \u2014 model building is a legitimate method, and it was the right one here.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 What the evidence showed',
+    question: 'What did Chargaff\u2019s ratios contribute to the model?',
+    options: [
+      { text: 'That A pairs with T and C pairs with G', correct: true },
+      { text: 'That DNA is a helix', correction: 'That came from the X-ray diffraction pattern. Chargaff worked with chemical amounts, not images.' },
+      { text: 'That there are two strands', correction: 'The number of strands came from the measured width in the diffraction pattern.' },
+      { text: 'That the phosphates are on the outside', correction: 'That came from Franklin\u2019s work on how much water DNA takes up.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'What did Watson and Crick actually do in 1953?',
+    options: [
+      { text: 'They discovered DNA', correction: 'DNA was discovered in 1869 by Miescher. It had been known for over eighty years.' },
+      { text: 'They worked out its structure, by building models that fitted other people\u2019s measurements', correct: true },
+      { text: 'They proved DNA carries genetic information', correction: 'Avery, MacLeod and McCarty had shown that in 1944 \u2014 which is why the structure was worth chasing.' },
+      { text: 'They took the X-ray photographs that revealed the double helix', correction: 'Those were taken at King\u2019s College London by Franklin and Gosling. Watson and Crick did no experiments on DNA at all.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Match evidence to conclusion',
+    question: 'For each of the three features of the DNA model \u2014 two strands, bases on the inside, and A pairing with T \u2014 say which piece of evidence established it and how.',
+    fieldLabel: 'Your answer',
+    placeholder: 'The two strands came from\u2026',
+    criteria: [
+      'Links the two strands to the X-ray diffraction pattern, and says the spacing gave the width.',
+      'Says the cross-shaped pattern in the image showed the molecule was a helix.',
+      'Links the bases being on the inside to Franklin\u2019s water measurements and the phosphates being outside.',
+      'Links the A-with-T and C-with-G pairing to Chargaff\u2019s ratios.',
+      'Explains why equal amounts of A and T in every species implies they must pair with each other.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'The 1953 paper acknowledged only that the authors had been "stimulated by" unpublished results from King\u2019s College. Using what you know about how the structure was worked out, write what you think a fair acknowledgement would have said \u2014 and explain what rule about using other people\u2019s data you would draw from this episode.',
+    fieldLabel: 'Your answer',
+    placeholder: 'A fair acknowledgement would have named\u2026',
+    criteria: [
+      'Names Franklin specifically, and what her contribution was \u2014 the diffraction images and the measurements taken from them.',
+      'Notes that the data was seen without her knowledge or permission.',
+      'Recognises that Watson and Crick\u2019s own contribution \u2014 assembling a model that fitted everything \u2014 was real and worth credit too.',
+      'States a general rule, such as: data should be credited to whoever produced it, and used only with their knowledge.',
+      'Avoids treating the episode as a simple story of heroes and villains \u2014 acknowledges that the history is contested or that several factors were involved.'
+    ] }
+];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return s.solved;
+  if (id === 's-who') return s.solved;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    model: Object.assign({}, START),
+    solved: false,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on) {
+    return 'cursor:pointer;font:inherit;font-size:16px;font-weight:700;padding:10px 15px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+      (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const m = s.model;
+    const results = EVIDENCE.map((e) => ({ e: e, pass: e.test(m) }));
+    const passes = results.filter((r) => r.pass).length;
+    const allPass = passes === EVIDENCE.length;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    const strandWord = m.strands === '1' ? 'A single strand' : (m.strands === '2' ? 'Two strands' : 'Three strands');
+    const baseWord = m.bases === 'in' ? 'bases on the inside' : 'bases on the outside';
+    const pairWord = m.pairing === 'specific' ? 'A with T and C with G' : 'any base with any base';
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'A very powerful light microscope' },
+        { letter: 'B', text: 'The pattern X-rays make when they scatter off it' },
+        { letter: 'C', text: 'A chemical test that changes colour' },
+        { letter: 'D', text: 'A computer simulation' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      benchProgress: passes + ' of ' + EVIDENCE.length + ' tests passed',
+      dials: DIALS.map((d) => ({
+        name: d.name,
+        options: d.options.map((o) => ({
+          label: o.label, pressed: m[d.id] === o.id, style: this.seg(m[d.id] === o.id),
+          onClick: () => this.setState((st) => {
+            const next = Object.assign({}, st.model, { [d.id]: o.id });
+            const ok = next.strands === CORRECT.strands && next.bases === CORRECT.bases && next.pairing === CORRECT.pairing;
+            return { model: next, solved: st.solved || ok };
+          })
+        }))
+      })),
+      modelLine: strandWord + ', ' + baseWord + ', ' + pairWord,
+      evidence: results.map((r) => ({
+        name: r.e.name, what: r.e.what, why: r.e.why, failed: !r.pass,
+        verdict: r.pass ? 'consistent' : 'rules this model out',
+        verdictColour: r.pass ? 'var(--ks3-ok)' : 'var(--ks3-alert)',
+        rowStyle: 'padding:15px 17px;border-radius:var(--ks3-r-panel);background:rgba(255,255,255,.06);border:2px solid ' +
+          (r.pass ? 'var(--ks3-ok)' : 'var(--ks3-alert)') + ';'
+      })),
+      verdictTag: allPass ? 'Every test passed' : (EVIDENCE.length - passes) + ' test' + (EVIDENCE.length - passes === 1 ? '' : 's') + ' still failing',
+      verdictBody: allPass
+        ? 'Two strands, bases paired on the inside, A with T and C with G. This is the only combination on the bench that survives all four pieces of evidence, and it is the structure published in April 1953. Notice what just happened: the evidence did not show you the answer \u2014 it eliminated everything else.'
+        : 'Read the red lines. Each failing test is telling you which decision to change, and none of them requires you to know the answer in advance \u2014 which is exactly the position everyone was in during 1952.',
+
+      peopleCards: PEOPLE,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const answered = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: answered,
+          isRight: answered && chosen === correctIndex, isWrong: answered && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (answered ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = answered && i === correctIndex;
+            const isWrong = answered && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (answered) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: answered,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>When the environment changes: extinction · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b1103-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b1103-arrive .34s ease-out both; }
+  [data-fill] { transition: width .3s linear; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } [data-fill] { transition: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Evolution, extinction and biodiversity</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">When the environment changes: extinction</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Evolution, extinction and biodiversity · System</p>
+        <h1>When the environment changes: extinction</h1>
+        <p class="ks3-bigq">More than nine in ten of all the species that have ever lived are gone. Extinction is not a failure of the system — it is the system, and the question worth asking is what makes a species vulnerable to it.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Two species meet the same change. One survives it.</h2>
+        <p class="ks3-hook-prompt">A woodland is cleared to half its size. The wood mice are fine within a few years. The dormice, living in the same wood, eating from the same trees, do not come back. Both faced exactly the same event.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What is most likely to decide which species survives a change?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">How quickly it can produce a new generation with the variation the new conditions favour. A wood mouse breeds several times a year and eats almost anything; a dormouse has one small litter, eats a narrow range of foods and will not cross open ground. Natural selection needs generations and variation to work with, and the dormouse has less of both.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · four species, five pressures</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Who survives what</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Each species is described by four things that decide its resilience. Apply a pressure and see how it copes — and note that no species is robust against everything.</p>
+
+        <div style="margin-top: 22px; display: flex; flex-wrap: wrap; gap: 20px 30px;">
+          <div>
+            <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The species</p>
+            <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+              <sc-for list="{{ speciesTabs }}" as="t" hint-placeholder-count="4">
+                <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div>
+            <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What happens</p>
+            <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+              <sc-for list="{{ pressureTabs }}" as="t" hint-placeholder-count="5">
+                <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);">
+          <p style="margin: 0; font-size: 21px; font-weight: 700; color: var(--ks3-on-dark);">{{ speciesName }}</p>
+          <ul style="list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 8px 20px;">
+            <sc-for list="{{ traits }}" as="t" hint-placeholder-count="4">
+              <li style="font-size: 17px; line-height: 1.5; color: var(--ks3-on-dark-body);"><span style="font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-on-dark-muted); display: block;">{{ t.label }}</span>{{ t.value }}</li>
+            </sc-for>
+          </ul>
+
+          <div style="margin-top: 20px; padding-top: 18px; border-top: 2px solid rgba(255,255,255,.12);">
+            <p style="margin: 0; font-size: 19px; font-weight: 700; color: var(--ks3-on-dark);">{{ pressureName }}</p>
+            <p style="margin: 6px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-muted);">{{ pressureNote }}</p>
+
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: 16px;">
+              <p style="margin: 0; font-size: 17px; font-weight: 600; color: var(--ks3-on-dark);">Population after fifty years</p>
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; color: {{ outcomeColour }};">{{ outcomePct }}</p>
+            </div>
+            <span style="display: block; margin-top: 6px; height: 18px; border-radius: 99px; background: rgba(255,255,255,.08); overflow: hidden;"><span data-fill="1" style="{{ outcomeBar }}"></span></span>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink); font-size: 18px; line-height: 1.6;">{{ outcomeWhy }}</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-risk" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">What makes a species vulnerable</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 28ch;">Four properties, and the same four every time.</p>
+
+        <div style="margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px;">
+          <sc-for list="{{ riskCards }}" as="r" hint-placeholder-count="4">
+            <div style="padding: 24px 26px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ r.kind }}</p>
+              <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 23px; line-height: 1.2; letter-spacing: -.02em;">{{ r.name }}</p>
+              <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.5;">{{ r.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">A species becomes extinct when the environment changes faster than it can adapt, or in ways its existing variation cannot cope with. Specialists, slow breeders, species with small ranges and populations with little genetic variation are the most vulnerable. Extinction is permanent.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Extinction is unnatural — it only happens because of us.”</p>
+        <p>Over ninety-nine per cent of all species that have ever existed are extinct, and the overwhelming majority died out long before there were any humans. There have been five mass extinctions in the fossil record; the largest, at the end of the Permian, removed something like nine tenths of marine species, and the most famous ended the non-bird dinosaurs sixty-six million years ago after an asteroid impact. Species go extinct in ordinary times too, at a slow background rate, simply because environments change. None of that lets anybody off. What is different now is the <em>rate</em>: current extinction rates are estimated at tens to hundreds of times the background rate, driven by habitat loss, introduced species, hunting and a changing climate. The argument for acting is not that extinction is unnatural — it is that we have made it happen far faster than it otherwise would, which is a claim you can check with numbers.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“If a species goes extinct, another one just takes its place.”</p>
+          <p>Something usually does move into the space, eventually, and eventually is doing a great deal of work in that sentence. After each mass extinction the recovery of diversity took millions of years — not centuries. In the meantime the ecosystem runs without whatever the missing species was doing, and as <a href="b9-03-disturbing-a-food-web.html">Disturbing a food web</a> showed, the effects reach species that had no obvious connection to it. There is also the matter of what is lost: an extinct species takes with it a genetic combination that took millions of years to assemble and that nothing else has. Two thirds of modern medicines can be traced back to compounds found in living organisms, and the ones in a species that dies out unstudied are not recoverable. De-extinction projects exist and are technically interesting; none has restored a functioning population of a lost species, and none is a reason to be relaxed about losing one.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Environments change, and a species survives only if its existing variation allows some individuals to cope and it can produce new generations fast enough. Specialists, slow breeders, small ranges and low genetic variation all raise the risk. Extinction has happened throughout Earth's history, including five mass extinctions; what is different now is how fast it is happening and why.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Kakapo are large flightless parrots from New Zealand, and every one of their vulnerabilities is a feature that used to be an advantage. New Zealand had no land mammals, so there was nothing to run from: flight was an unnecessary expense and the kakapo gave it up, freezing when threatened instead — a superb defence against a hunting eagle that looks for movement, and a fatal one against a stoat that hunts by smell. They breed only in years when a particular tree fruits heavily, which can be two to four years apart, and lay very few eggs. Every one of those traits was well fitted to New Zealand before humans arrived with rats, cats and stoats. The population fell to 51 birds. Every living kakapo is now individually named, radio-tagged and monitored, and the population is slowly climbing — which tells you both that recovery is possible and roughly what it costs.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b11-02-natural-selection.html">Natural selection<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b9-03-disturbing-a-food-web.html">Disturbing a food web<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b11-04-biodiversity-and-gene-banks.html">Biodiversity and gene banks<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b9-04-pollinators-and-food-security.html">Pollinators and food security<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Causes of extinction, the fossil record as evidence, and the biological and economic arguments for maintaining biodiversity.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to work out which pressures a species you know would survive?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The four species are real and their traits are accurately described; the fifty-year population figures are illustrative outcomes for a single pressure applied in isolation, not projections. Real extinctions almost always involve several pressures at once, which is one reason they are hard to predict.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Same wood' },
+  { id: 's-bench', label: 'Who survives' },
+  { id: 's-risk', label: 'Four risks' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'BENCH', 'RISK', 'LADDER'];
+
+const SPECIES = [
+  { id: 'rat', name: 'Brown rat', diet: 'Anything at all', breeding: 'Up to five litters a year', range: 'Every continent except Antarctica', variation: 'Very high',
+    scores: { habitat: 85, climate: 80, predator: 70, disease: 65, hunting: 75 } },
+  { id: 'dormouse', name: 'Hazel dormouse', diet: 'Hazelnuts, flowers and insects, in a strict seasonal order', breeding: 'One small litter a year', range: 'Fragments of southern English woodland', variation: 'Low, and falling as populations are cut off',
+    scores: { habitat: 15, climate: 30, predator: 45, disease: 35, hunting: 80 } },
+  { id: 'panda', name: 'Giant panda', diet: 'Bamboo, almost exclusively', breeding: 'One cub every two years at best', range: 'Mountain forest in central China', variation: 'Low',
+    scores: { habitat: 20, climate: 25, predator: 70, disease: 40, hunting: 35 } },
+  { id: 'gull', name: 'Herring gull', diet: 'Fish, waste, chips, almost anything', breeding: 'A clutch a year, long-lived', range: 'Coasts and increasingly towns across the northern hemisphere', variation: 'High',
+    scores: { habitat: 80, climate: 70, predator: 75, disease: 60, hunting: 65 } }
+];
+
+const PRESSURES = [
+  { id: 'habitat', label: 'Habitat loss', name: 'Half the habitat is cleared',
+    note: 'The commonest cause of extinction today. What remains is also broken into fragments that populations cannot move between.' },
+  { id: 'climate', label: 'Climate shift', name: 'The climate warms by two degrees',
+    note: 'Seasons shift, so food appears earlier or later than the species expects, and the suitable zone moves \u2014 usually polewards or uphill.' },
+  { id: 'predator', label: 'A new predator', name: 'A predator arrives that was never here before',
+    note: 'Introduced by people, usually. The local species has no evolved defence against it, because nothing like it has ever hunted them.' },
+  { id: 'disease', label: 'A new disease', name: 'A disease sweeps through',
+    note: 'Survival depends on whether anyone in the population happens to carry resistance \u2014 which is a question about genetic variation, not about strength.' },
+  { id: 'hunting', label: 'Hunting', name: 'The species is hunted or collected',
+    note: 'Direct removal by people, for food, for trade or as a pest. The only pressure on this bench that can be switched off by a decision.' }
+];
+
+const OUTCOMES = {
+  rat: {
+    habitat: 'Rats eat anything and live anywhere, including places people build. Half the woodland gone is barely an inconvenience \u2014 they move into the other half and into the town beside it.',
+    climate: 'A generalist with a huge range simply shifts. There is nowhere it currently lives that it could not leave.',
+    predator: 'High numbers, fast breeding and no fussiness. A new predator takes a lot of rats and the population replaces them within a season.',
+    disease: 'A large, varied population almost certainly contains resistant individuals. Numbers crash and then recover from the survivors \u2014 which is natural selection doing exactly what b11-02 described.',
+    hunting: 'People have been trying to eliminate rats for centuries with poison, traps and dogs, and have never managed it anywhere they have not first eliminated the food and shelter.'
+  },
+  dormouse: {
+    habitat: 'The worst case on the bench. Dormice will not cross open ground, so clearing half the wood does not halve the population \u2014 it strands the remainder in fragments too small to be viable, each one slowly losing variation.',
+    climate: 'A warmer winter interrupts hibernation, which burns fat reserves the animal cannot replace, and shifting seasons break the strict order of foods it depends on.',
+    predator: 'Nocturnal and arboreal, so it avoids some new predators \u2014 but with one litter a year it replaces losses very slowly.',
+    disease: 'Small, isolated populations with low variation are unlikely to contain resistant individuals, and there is no route for survivors to recolonise from elsewhere.',
+    hunting: 'Not hunted, and legally protected. This is the one pressure it is safe from \u2014 which is why the population is still falling for the other four reasons.'
+  },
+  panda: {
+    habitat: 'Bamboo forest cleared for farmland and roads, and pandas will not cross the gaps. The remaining populations are isolated from each other, which is a genetic problem as well as a spatial one.',
+    climate: 'Bamboo is slow to move and much of the suitable zone would shift uphill beyond where the mountains stop. A specialist can only follow its food if the food can move.',
+    predator: 'A large adult panda has essentially no natural predators. This is the one pressure it handles well, and it explains nothing about why the species is in trouble.',
+    disease: 'Low genetic variation across a small isolated population is the textbook setup for a disease outbreak with no resistant survivors.',
+    hunting: 'Hunting was a serious historical cause and is now heavily suppressed by protection \u2014 an example of the one pressure a decision can actually remove.'
+  },
+  gull: {
+    habitat: 'Gulls have responded to habitat loss by moving into towns, where the food is abundant and the roofs make excellent cliffs. Generalists convert a problem into an opportunity.',
+    climate: 'A wide range and a varied diet mean a warming climate shifts where they are rather than whether they are.',
+    predator: 'Large, aggressive, colonial and quite capable of driving off most things. Not a species that struggles with predators.',
+    disease: 'Dense colonies spread disease efficiently, which pulls the score down \u2014 but the population is large and varied enough to contain resistance.',
+    hunting: 'Legally protected in the UK and widely disliked; culls are local and the population is not limited by them.'
+  }
+};
+
+const RISK_CARDS = [
+  { kind: 'Risk factor one', name: 'Specialist diet or habitat', body: 'A species that needs one food or one habitat has nothing to fall back on when that thing changes. Generalists survive changes that wipe out specialists in the same place.' },
+  { kind: 'Risk factor two', name: 'Slow reproduction', body: 'Natural selection works through generations. A species producing one offspring every two years gets very few attempts before conditions change again.' },
+  { kind: 'Risk factor three', name: 'Small or fragmented range', body: 'A species in one valley can be wiped out by one event. Fragmenting a range also stops populations mixing, so each fragment loses variation separately.' },
+  { kind: 'Risk factor four', name: 'Low genetic variation', body: 'The most important and the least visible. Selection can only work with variation that already exists \u2014 a population that has lost it has nothing to select from.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Read the risk',
+    question: 'Which of these makes a species most likely to become extinct when its environment changes?',
+    options: [
+      { text: 'It eats only one kind of food and breeds slowly', correct: true },
+      { text: 'It is small and not very strong', correction: 'Size and strength are neither here nor there. Rats are small and among the most resilient animals alive.' },
+      { text: 'It has a large population spread over several countries', correction: 'That is one of the safest positions to be in. A wide range means a local disaster is survivable.' },
+      { text: 'It has many predators', correction: 'Species live alongside their predators indefinitely \u2014 that is b9-02\u2019s cycle. A *new* predator is a different matter.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'Is extinction a natural process?',
+    options: [
+      { text: 'Yes \u2014 over 99% of all species that ever lived are extinct, mostly long before humans existed', correct: true },
+      { text: 'No \u2014 species only die out when people damage the environment', correction: 'There have been five mass extinctions in the fossil record, and the most famous of them predates humans by sixty-six million years.' },
+      { text: 'Yes, and that means current extinctions are nothing to worry about', correction: 'The first half is right and the conclusion does not follow. What matters is the rate, which is now estimated at tens to hundreds of times the background level.' },
+      { text: 'Only for species that were badly adapted in the first place', correction: 'Species that go extinct were usually well adapted \u2014 to conditions that then changed. Being well fitted to one environment is what makes a specialist vulnerable.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain the difference',
+    question: 'A brown rat and a hazel dormouse live in the same wood, and half of it is cleared. Explain why the rat population recovers and the dormouse population may not, referring to at least three of the four risk factors.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The rat eats almost anything, so\u2026',
+    criteria: [
+      'Says the rat is a generalist and the dormouse a specialist, and explains why that matters when habitat changes.',
+      'Says the rat breeds several times a year and the dormouse once, so the rat replaces losses far faster.',
+      'Says the dormouse will not cross open ground, so the remaining wood is fragmented into isolated populations.',
+      'Says isolated populations lose genetic variation, leaving less for selection to act on.',
+      'Concludes that the rat population recovers while the dormouse population may decline to nothing even though the event was identical.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A conservation team can do one of three things for an endangered woodland species: increase the size of the reserve, plant hedgerows linking the reserve to another population twenty miles away, or start a captive breeding programme. Argue for one, using what you know about the risk factors, and say what the other two would and would not fix.',
+    fieldLabel: 'Your answer',
+    placeholder: 'The problem I would prioritise is\u2026',
+    criteria: [
+      'Identifies which risk factor each option addresses \u2014 range, fragmentation and genetic variation, or numbers.',
+      'Makes a clear choice and gives a reason grounded in the risk factors rather than in preference.',
+      'Recognises that linking populations addresses genetic variation as well as space, which the other two do not.',
+      'Notes a limitation of captive breeding \u2014 that it does not fix the habitat the animals would return to, or that captive populations lose variation too.',
+      'Acknowledges that the options are not equally cheap or equally quick, and that a real decision involves a trade-off.'
+    ] }
+];
+
+function isDone(id, s) {
+  const n = Object.keys(s.seen).filter((k) => s.seen[k]).length;
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return n >= 4;
+  if (id === 's-risk') return n >= 4;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    species: 'dormouse',
+    pressure: 'habitat',
+    seen: { 'dormouse-habitat': true },
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on) {
+    return 'cursor:pointer;font:inherit;font-size:16px;font-weight:700;padding:10px 15px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+      (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const sp = SPECIES.find((x) => x.id === s.species) || SPECIES[0];
+    const pr = PRESSURES.find((x) => x.id === s.pressure) || PRESSURES[0];
+    const score = sp.scores[pr.id];
+    const nSeen = Object.keys(s.seen).filter((k) => s.seen[k]).length;
+
+    let mark = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) mark += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) mark += 1;
+    });
+
+    const band = score >= 65 ? 'ok' : (score >= 40 ? 'mid' : 'bad');
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'Which species is larger and stronger' },
+        { letter: 'B', text: 'How quickly it can produce generations with variation that suits the new conditions' },
+        { letter: 'C', text: 'Which species was there first' },
+        { letter: 'D', text: 'Whether the species is protected by law' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      benchProgress: nSeen + ' combination' + (nSeen === 1 ? '' : 's') + ' tried',
+      speciesTabs: SPECIES.map((x) => ({
+        label: x.name, pressed: x.id === s.species, style: this.seg(x.id === s.species),
+        onClick: () => this.setState((st) => ({ species: x.id, seen: Object.assign({}, st.seen, { [x.id + '-' + st.pressure]: true }) }))
+      })),
+      pressureTabs: PRESSURES.map((x) => ({
+        label: x.label, pressed: x.id === s.pressure, style: this.seg(x.id === s.pressure),
+        onClick: () => this.setState((st) => ({ pressure: x.id, seen: Object.assign({}, st.seen, { [st.species + '-' + x.id]: true }) }))
+      })),
+      speciesName: sp.name,
+      traits: [
+        { label: 'Diet', value: sp.diet },
+        { label: 'Breeding rate', value: sp.breeding },
+        { label: 'Range', value: sp.range },
+        { label: 'Genetic variation', value: sp.variation }
+      ],
+      pressureName: pr.name,
+      pressureNote: pr.note,
+      outcomePct: score + '% of the original population',
+      outcomeColour: band === 'ok' ? 'var(--ks3-ok)' : (band === 'bad' ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)'),
+      outcomeBar: 'display:block;height:100%;width:' + score + '%;background:' +
+        (band === 'ok' ? 'var(--ks3-ok)' : (band === 'bad' ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)')) + ';',
+      outcomeWhy: OUTCOMES[sp.id][pr.id],
+
+      riskCards: RISK_CARDS,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const answered = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: answered,
+          isRight: answered && chosen === correctIndex, isWrong: answered && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (answered ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = answered && i === correctIndex;
+            const isWrong = answered && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (answered) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: answered,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + mark + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+</script>
+</body>
+</html>

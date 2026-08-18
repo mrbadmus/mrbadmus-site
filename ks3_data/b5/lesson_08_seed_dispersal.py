@@ -1,7 +1,7 @@
 """B5 L8 — Seed dispersal (CLASSIFY).
 
 Authored against Design's approved page,
-`KS3 B5 lessons/b5-08-seed-dispersal.dc.html` (595 lines), under the MRB-220
+`docs/ks3/design-reference/b5/b5-08-seed-dispersal.dc.html` (595 lines), under the MRB-220
 build contract. Every student-facing string is lifted byte-identical from that
 page except the items listed under "What could not be lifted", none of which is
 a sentence of science. The eight specimens, the five methods, the five method

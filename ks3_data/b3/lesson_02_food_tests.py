@@ -1,7 +1,7 @@
 """B3 L2 — Food tests (INVESTIGATION).
 
 Authored against Design's approved page,
-`KS3 B3 lessons/b3-02-food-tests.dc.html` (643 lines), under the MRB-220 build
+`docs/ks3/design-reference/b3/b3-02-food-tests.dc.html` (643 lines), under the MRB-220 build
 contract.
 
 Every student-facing string is lifted from the approved page except the three

@@ -1,7 +1,7 @@
 """B2 L4 — Biomechanics: forces in the body (QUANTITATIVE).
 
 Authored against Claude Design's approved page,
-`KS3 B2 lessons/b2-04-biomechanics-forces-in-the-body.dc.html` (1,028 lines),
+`docs/ks3/design-reference/b2/b2-04-biomechanics-forces-in-the-body.dc.html` (1,028 lines),
 read in full. Every student-facing string below is lifted from it character for
 character unless a `⊕ CORRECTION` says otherwise and says why.
 

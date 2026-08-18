@@ -1,8 +1,8 @@
 """B7 L4 — Why almost all life depends on it (SYSTEM).
 
 Authored against Claude Design's approved page,
-`KS3 B7 lessons/b7-04-why-almost-all-life-depends-on-it.dc.html` (443 lines),
-her author's notes `KS3 B7 lessons/NOTES-B7.md`, and the B7 payload schema
+`docs/ks3/design-reference/b7/b7-04-why-almost-all-life-depends-on-it.dc.html` (443 lines),
+her author's notes `docs/ks3/design-reference/b7/NOTES-B7.md`, and the B7 payload schema
 `docs/ks3/b7-inventory/PAYLOAD-SCHEMA.md` §5, under the MRB-220 build contract.
 
 Every student-facing string is lifted byte-identical from the approved page

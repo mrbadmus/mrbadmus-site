@@ -1,8 +1,8 @@
 """B3 L4 — When diet goes wrong (CONTRAST).
 
 Authored against Claude Design's approved page,
-`KS3 B3 lessons/b3-04-when-diet-goes-wrong.dc.html` (604 lines), and its
-author's notes, `KS3 B3 lessons/NOTES-B3.md`. Every student-facing string is
+`docs/ks3/design-reference/b3/b3-04-when-diet-goes-wrong.dc.html` (604 lines), and its
+author's notes, `docs/ks3/design-reference/b3/NOTES-B3.md`. Every student-facing string is
 lifted byte-identical from the approved page except where this docstring says
 otherwise, and every exception is here.
 

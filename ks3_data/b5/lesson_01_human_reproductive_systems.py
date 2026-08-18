@@ -1,7 +1,7 @@
 """B5 L1 — Human reproductive systems (SYSTEM).
 
 Authored against Design's approved page,
-`KS3 B5 lessons/b5-01-human-reproductive-systems.dc.html` (601 lines), under the
+`docs/ks3/design-reference/b5/b5-01-human-reproductive-systems.dc.html` (601 lines), under the
 MRB-220 build contract (`docs/ks3/mrb-220-build-contract.md`).
 
 Every student-facing string is lifted byte-identical from the approved page

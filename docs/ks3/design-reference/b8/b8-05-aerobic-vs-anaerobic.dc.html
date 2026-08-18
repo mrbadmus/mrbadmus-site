@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aerobic vs anaerobic · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b805-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b805-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (max-width: 720px) { [data-compare] { grid-template-columns: 1fr !important; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Respiration</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Aerobic vs anaerobic</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Respiration · Contrast</p>
+        <h1>Aerobic vs anaerobic</h1>
+        <p class="ks3-bigq">Two ways to get energy out of the same sugar molecule. One releases far more of it. The other releases it far faster. Almost everything alive uses both, and knowing which is running when is the whole point of this unit.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>One route gets about twenty times more out of the same glucose.</h2>
+        <p class="ks3-hook-prompt">If that were the only thing that mattered, the other route would have disappeared long ago — a twentyfold waste of food is not a small disadvantage. It has not disappeared. Every organism in this unit, from a sprinter to a yeast cell, keeps it available.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">So why does anaerobic respiration exist at all?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Because it is faster, and it does not have to wait for a delivery. Aerobic respiration wins on how much energy it gets from each glucose molecule; anaerobic respiration wins on how quickly it can supply energy, and it works when there is no oxygen to be had. Those are two different questions, and confusing them is where most of the trouble in this topic comes from.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · five situations</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Which route is running here?</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Commit to an answer before you check it. Three of the five are not the answer most people give first, and one of them has no aerobic respiration in it at all.</p>
+
+        <div style="margin-top: 22px;">
+          <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The situation</p>
+          <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+            <sc-for list="{{ caseTabs }}" as="t" hint-placeholder-count="5">
+              <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 24px 26px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; line-height: 1.22; letter-spacing: -.02em; color: var(--ks3-on-dark);">{{ caseText }}</p>
+
+          <p style="margin: 20px 0 10px; font-size: 17px; font-weight: 600; color: var(--ks3-on-dark);">Which route is supplying the energy?</p>
+          <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px;">
+            <sc-for list="{{ routeOptions }}" as="r" hint-placeholder-count="3">
+              <li>
+                <button type="button" onClick="{{ r.onClick }}" aria-pressed="{{ r.pressed }}" style="{{ r.style }}">
+                  <span aria-hidden="true" style="{{ r.markStyle }}">{{ r.letter }}</span>
+                  <span style="flex: 1 1 auto;">{{ r.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+
+          <div style="margin-top: 18px; display: flex; align-items: center; gap: 13px; flex-wrap: wrap;">
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onCheck }}" disabled="{{ checkDisabled }}" style="{{ checkStyle }}">{{ checkLabel }}</button>
+            <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ tallyLabel }}</span>
+          </div>
+
+          <sc-if value="{{ opened }}">
+            <div data-arrive="1" style="margin-top: 18px; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ verdictWord }}</p>
+              <p style="margin: 9px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25; letter-spacing: -.02em;">{{ answerLine }}</p>
+              <p style="margin: 11px 0 0; font-size: 18px; line-height: 1.6;">{{ caseWhy }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-table" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Side by side</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 26ch;">Six differences, and the last one is the one that matters.</p>
+
+        <div data-compare="1" style="margin-top: 24px; display: grid; grid-template-columns: minmax(140px, 190px) 1fr 1fr; gap: 2px; border-radius: var(--ks3-r-card); overflow: hidden; border: 2px solid var(--ks3-ink); background: var(--ks3-ink);">
+          <p style="margin: 0; padding: 14px 16px; background: var(--ks3-ink); color: var(--ks3-on-dark); font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase;">Compared on</p>
+          <p style="margin: 0; padding: 14px 16px; background: var(--ks3-ink); color: var(--ks3-on-dark); font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px; letter-spacing: -.02em;">Aerobic</p>
+          <p style="margin: 0; padding: 14px 16px; background: var(--ks3-ink); color: var(--ks3-on-dark); font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px; letter-spacing: -.02em;">Anaerobic</p>
+          <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+            <p style="margin: 0; padding: 15px 16px; background: var(--ks3-inset); font-size: 17px; font-weight: 700;">{{ r.label }}</p>
+            <p style="margin: 0; padding: 15px 16px; background: var(--ks3-card); font-size: 18px; line-height: 1.5;">{{ r.aerobic }}</p>
+            <p style="margin: 0; padding: 15px 16px; background: var(--ks3-card); font-size: 18px; line-height: 1.5;">{{ r.anaerobic }}</p>
+          </sc-for>
+        </div>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Aerobic respiration uses oxygen, breaks glucose down completely to carbon dioxide and water, and releases far more energy per molecule. Anaerobic respiration uses no oxygen, breaks glucose down only partly, releases much less energy per molecule — and can do it faster, and without waiting.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Aerobic respiration is the fast one, because that is the one athletes train for.”</p>
+        <p>Two different meanings of fast are being run together, and separating them settles most of this topic. Aerobic respiration releases more energy <em>per glucose molecule</em> — about twenty times more — which is a statement about yield. Anaerobic respiration releases energy <em>per second</em> at a higher rate, because it involves fewer steps and does not depend on oxygen arriving from outside the cell. A sprinter needs power now and does not care what it costs in sugar; a marathon runner needs to keep going for two hours and cannot afford waste, so the whole race is run just below the pace where the anaerobic route would take over. Both athletes have the same two systems. What differs is which constraint their event puts them under, and their training moves the line between the two.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“Anaerobic respiration is the emergency backup — something has gone wrong when it happens.”</p>
+          <p>It is a strategy, not a failure. Yeast in a sealed vat is not in trouble: it is doing the only thing available and doing it deliberately, and we built an industry on the result. Bacteria in a cow's rumen, in a bog, in a sealed jar of sauerkraut and in your own gut live anaerobically as a matter of routine, and some of them are killed by oxygen — for them, air is the emergency. Even in your muscles the anaerobic route is not a fault: it is what lets you sprint for a bus, and the burning that stops you is a control mechanism protecting the muscle, not a breakdown. There is also a historical point worth knowing. Anaerobic respiration is the older process by a long way, because for the first two billion years of life on Earth there was almost no oxygen to respire with — the aerobic route is the newcomer, made possible by <a href="b7-04-why-almost-all-life-depends-on-it.html">photosynthesis</a> filling the atmosphere with a gas that was, at the time, a poison.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Aerobic respiration: uses oxygen, glucose broken down completely, products carbon dioxide and water, far more energy per glucose. Anaerobic respiration: no oxygen, glucose broken down partly, lactic acid in humans or ethanol and carbon dioxide in yeast, much less energy per glucose but supplied faster. Organisms use both, and which one dominates depends on how fast energy is needed and whether oxygen can reach the cell.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Some organisms have never made the switch. Obligate anaerobes are bacteria for which oxygen is toxic, and they are not rare curiosities — they live in the mud of a pond, in the deep layers of a compost heap, in a cow's rumen and in the oxygen-free depths of your own large intestine, where they are part of the community you met in <a href="b3-08-bacteria-in-the-gut.html">Bacteria in the gut</a>. Their existence is a fossil of the world they evolved in. For roughly the first two billion years of life there was no oxygen worth speaking of, so every living thing respired anaerobically; when photosynthetic bacteria began filling the atmosphere with oxygen, they caused what is arguably the largest mass extinction in Earth's history by poisoning almost everything alive. The survivors either retreated to places the oxygen could not reach, where their descendants still are, or found a way to use the poison — and using it turned out to release twenty times more energy, which is most of the reason anything larger than a bacterium exists.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b8-03-anaerobic-respiration-in-humans.html">Anaerobic respiration in humans<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b8-04-fermentation.html">Fermentation and what we use it for<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b7-04-why-almost-all-life-depends-on-it.html">Why almost all life depends on it<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b3-08-bacteria-in-the-gut.html">Bacteria in the gut<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>ATP yields compared numerically, metabolism as a whole, and the biotechnology built on anaerobic organisms.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to test a situation that is not one of the five?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">"About twenty times more energy" is the usual teaching comparison and comes from the ATP yields met at GCSE; the exact ratio depends on how the accounting is done. The five situations are simplified: in every living example both routes are running at once, and the labels describe which one is supplying most of the energy.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Twenty times' },
+  { id: 's-bench', label: 'Which route' },
+  { id: 's-table', label: 'Side by side' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'BENCH', 'TABLE', 'LADDER'];
+
+const ROUTES = [
+  { id: 'aerobic', text: 'Almost entirely aerobic' },
+  { id: 'both', text: 'Aerobic, with anaerobic making up a shortfall' },
+  { id: 'anaerobic', text: 'Entirely anaerobic \u2014 no oxygen is being used' }
+];
+
+const CASES = [
+  { id: 'sitting', label: 'Sitting in class', answer: 'aerobic',
+    text: 'You are sitting still, reading this page.',
+    why: 'Demand is low and the oxygen supply covers it easily, so the glucose is broken down completely and no lactic acid is produced. Almost all the respiration you do in a lifetime is this, which is worth remembering when the topic makes it sound like an emergency measure.' },
+  { id: 'marathon', label: 'Marathon runner', answer: 'aerobic',
+    text: 'A marathon runner, two hours into a race, holding a steady pace.',
+    why: 'This is the answer people get wrong because the runner is working hard. Hard is not the question \u2014 whether the oxygen supply keeps up is. A marathon is run deliberately just below the pace at which the anaerobic route would take over, because at twenty times the fuel cost nobody could sustain it for two hours.' },
+  { id: 'sprint', label: '100 m sprinter', answer: 'both',
+    text: 'A sprinter in the last three seconds of a 100 m race.',
+    why: 'Aerobic respiration is running flat out and is nowhere near enough. The shortfall is covered anaerobically, lactic acid accumulates, and the runner pays it back afterwards \u2014 the oxygen debt from b8-03. Note that aerobic respiration never stopped; nothing switched off.' },
+  { id: 'yeast', label: 'Yeast in dough', answer: 'anaerobic',
+    text: 'Yeast in a sealed ball of bread dough, rising on a warm shelf.',
+    why: 'No oxygen reaches most of the dough, so the yeast ferments: glucose to ethanol and carbon dioxide. The gas is what raises the loaf. This is the one case on the bench with no aerobic respiration in it at all \u2014 and it is not an emergency for the yeast, it is a living.' },
+  { id: 'root', label: 'Roots in flooded soil', answer: 'anaerobic',
+    text: 'The root cells of a houseplant standing in waterlogged soil.',
+    why: 'Water has filled the air spaces in the soil, so no oxygen reaches the roots. The cells respire anaerobically, which gives them nowhere near enough energy for active transport, and they begin to die \u2014 which is why an overwatered plant shows the symptoms of a plant with no water at all.' }
+];
+
+const ROWS = [
+  { label: 'Oxygen', aerobic: 'Required.', anaerobic: 'Not used at all.' },
+  { label: 'Glucose', aerobic: 'Broken down completely.', anaerobic: 'Broken down only partly \u2014 there is energy left in the product.' },
+  { label: 'Products', aerobic: 'Carbon dioxide and water.', anaerobic: 'Lactic acid in humans; ethanol and carbon dioxide in yeast.' },
+  { label: 'Energy per glucose', aerobic: 'About twenty times more.', anaerobic: 'A small fraction of the aerobic yield.' },
+  { label: 'Where in the cell', aerobic: 'In the mitochondria.', anaerobic: 'Outside them, which is why cells with few mitochondria can still do it.' },
+  { label: 'What it is for', aerobic: 'Everything, all the time \u2014 the default.', anaerobic: 'Energy needed faster than oxygen arrives, or no oxygen available at all.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Tell them apart',
+    question: 'Which statement is true of anaerobic respiration in humans but not of aerobic respiration?',
+    options: [
+      { text: 'The glucose is only partly broken down, so a product is left that still holds energy', correct: true },
+      { text: 'It releases energy', correction: 'Both do \u2014 that is the point of respiring. What differs is how much, and how fast.' },
+      { text: 'It happens in the mitochondria', correction: 'The other way round. Aerobic respiration is the one that happens in the mitochondria.' },
+      { text: 'It produces carbon dioxide', correction: 'In humans it produces lactic acid and no carbon dioxide. In yeast it does produce carbon dioxide, which is a good reason to name the organism when you answer.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'Which describes the difference correctly?',
+    options: [
+      { text: 'Aerobic gets more energy from each glucose; anaerobic supplies energy at a faster rate', correct: true },
+      { text: 'Aerobic is faster; anaerobic is slower but more efficient', correction: 'Both halves are the wrong way round. Aerobic is the efficient one; anaerobic is the quick one.' },
+      { text: 'Anaerobic releases more energy overall, which is why sprinters use it', correction: 'It releases much less per glucose. Sprinters use it because it arrives quickly, not because there is more of it.' },
+      { text: 'They release the same energy, but anaerobic makes a harmful waste product', correction: 'The yields are about twentyfold apart. And the lactic acid is not waste \u2014 the liver deals with it and recovers the energy left in it.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Two athletes',
+    question: 'A 100 m sprinter and a marathon runner have the same two respiration systems. Explain why their events depend on them so differently, and why the marathon runner paces the race instead of running as fast as possible.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The sprinter needs energy\u2026',
+    criteria: [
+      'Says the sprinter needs energy far faster than oxygen can be delivered, so a large part comes anaerobically.',
+      'Says this produces lactic acid, which builds up and forces them to slow down \u2014 tolerable over ten seconds.',
+      'Says the marathon runner cannot do this, because lactic acid would accumulate long before the finish.',
+      'Says aerobic respiration gets about twenty times more energy from each glucose, so it is the only affordable route over two hours.',
+      'Concludes that pacing means holding a speed at which the oxygen supply still covers the demand.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'Some bacteria are killed by oxygen and live only where there is none \u2014 in mud, in a compost heap, in the gut. Explain how an organism can live entirely without oxygen, what it gives up by doing so, and what their existence suggests about the order in which the two kinds of respiration appeared on Earth.',
+    fieldLabel: 'Your answer',
+    placeholder: 'They respire anaerobically, which means\u2026',
+    criteria: [
+      'Says they respire anaerobically, breaking glucose down partly without oxygen.',
+      'Says they get far less energy from each glucose molecule than an aerobic organism would.',
+      'Says they must therefore use much more food for the same amount of work, or live at a low rate of activity.',
+      'Says anaerobic respiration must be the older process, because for a long period early in Earth\u2019s history there was almost no oxygen in the atmosphere.',
+      'Links the appearance of oxygen to photosynthesis \u2014 the oxygen these organisms avoid was put there by other living things.'
+    ] }
+];
+
+function isDone(id, s) {
+  const opened = Object.keys(s.opened).filter((k) => s.opened[k]).length;
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return opened >= CASES.length;
+  if (id === 's-table') return opened >= CASES.length;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    caseId: 'sitting',
+    picks: {},
+    opened: {},
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on) {
+    return 'cursor:pointer;font:inherit;font-size:16px;font-weight:700;padding:10px 15px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+      (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const c = CASES.find((x) => x.id === s.caseId) || CASES[0];
+    const pick = s.picks[c.id];
+    const opened = !!s.opened[c.id];
+    const right = pick === c.answer;
+    const openedCount = Object.keys(s.opened).filter((k) => s.opened[k]).length;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'It only exists in yeast and bacteria, not in humans' },
+        { letter: 'B', text: 'It releases energy faster, and without waiting for oxygen' },
+        { letter: 'C', text: 'It releases more energy in total' },
+        { letter: 'D', text: 'It is the only way a cell can break down glucose' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      benchProgress: openedCount + ' of ' + CASES.length + ' settled',
+      caseTabs: CASES.map((x) => ({
+        label: x.label, pressed: x.id === s.caseId, style: this.seg(x.id === s.caseId),
+        onClick: () => this.setState({ caseId: x.id })
+      })),
+      caseText: c.text,
+      caseWhy: c.why,
+      routeOptions: ROUTES.map((r, i) => {
+        const chosen = pick === r.id;
+        return {
+          text: r.text, letter: String.fromCharCode(65 + i), pressed: chosen,
+          style: 'display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;cursor:' + (opened ? 'default' : 'pointer') +
+            ';font:inherit;font-size:18px;line-height:1.5;padding:14px 16px;min-height:44px;border-radius:var(--ks3-r-panel);border:2px solid ' +
+            (chosen ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (chosen ? 'rgba(255,255,255,.10)' : 'transparent') +
+            ';color:var(--ks3-on-dark);opacity:' + (opened && !chosen ? '.5' : '1') + ';',
+          markStyle: 'flex:0 0 26px;display:grid;place-items:center;width:26px;height:26px;border-radius:8px;font-family:var(--ks3-font-display);font-weight:800;font-size:14px;border:2px solid ' +
+            (chosen ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';color:' + (chosen ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';',
+          onClick: () => this.setState((st) => st.opened[c.id] ? null : ({ picks: Object.assign({}, st.picks, { [c.id]: r.id }) }))
+        };
+      }),
+      checkDisabled: !pick || opened,
+      checkStyle: (!pick || opened) ? 'opacity:.45;cursor:default;' : '',
+      checkLabel: opened ? 'Settled' : 'Check it',
+      tallyLabel: openedCount === CASES.length ? 'all five settled' : (CASES.length - openedCount) + ' still to settle',
+      onCheck: () => this.setState((st) => (!st.picks[c.id] || st.opened[c.id]) ? null : ({ opened: Object.assign({}, st.opened, { [c.id]: true }) })),
+      opened: opened,
+      verdictWord: right ? 'That is the one' : 'Not this time',
+      answerLine: (ROUTES.find((r) => r.id === c.answer) || ROUTES[0]).text,
+
+      rows: ROWS,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === correctIndex, isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: done,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+</script>
+</body>
+</html>

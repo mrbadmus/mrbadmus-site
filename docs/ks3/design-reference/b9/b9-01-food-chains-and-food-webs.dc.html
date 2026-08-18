@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Food chains and food webs · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b901-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b901-arrive .34s ease-out both; }
+  [data-fill] { transition: width .35s linear; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } [data-fill] { transition: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Ecosystems and interdependence</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Food chains and food webs</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Ecosystems and interdependence · System</p>
+        <h1>Food chains and food webs</h1>
+        <p class="ks3-bigq">Nobody has ever found a food chain with ten links in it. There is a reason, it is arithmetic, and it decides the shape of every ecosystem on Earth.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Why is there no animal that eats the animal that eats the eagle?</h2>
+        <p class="ks3-hook-prompt">Chains stop. Grass, rabbit, fox — and then nothing. Four or five links is about the limit anywhere in the world, on land or at sea, and the rule holds whether the organisms are enormous or microscopic.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What stops food chains getting longer?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">There is not enough energy left. Only about a tenth of what one level holds passes to the next, so after four steps you are down to a ten-thousandth of what the plants captured. A predator at the sixth level would have to hunt an area the size of a county to feed itself, and no such animal exists — the arithmetic forbids it.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · climb the chain</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Follow the energy up</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Ten thousand kilojoules of sunlight energy captured by the producers at the bottom. Step up one level at a time and watch what arrives — and where the rest of it went.</p>
+
+        <div style="margin-top: 22px;">
+          <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The chain</p>
+          <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+            <sc-for list="{{ chainTabs }}" as="t" hint-placeholder-count="3">
+              <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);">
+          <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column-reverse; gap: 10px;">
+            <sc-for list="{{ levels }}" as="l" hint-placeholder-count="4">
+              <li style="{{ l.rowStyle }}">
+                <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px;">
+                  <p style="margin: 0; font-size: 19px; font-weight: 700; color: {{ l.nameColour }};">{{ l.name }}</p>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 16px; color: var(--ks3-on-dark-muted);">{{ l.role }}</p>
+                </div>
+                <sc-if value="{{ l.shown }}">
+                  <div>
+                    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: 8px;">
+                      <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-alert);">{{ l.energy }}</p>
+                      <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-on-dark-muted);">{{ l.pct }}</p>
+                    </div>
+                    <span style="display: block; margin-top: 6px; height: 16px; border-radius: 99px; background: rgba(255,255,255,.08); overflow: hidden;"><span data-fill="1" style="{{ l.barStyle }}"></span></span>
+                    <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.5; color: var(--ks3-on-dark-body);">{{ l.note }}</p>
+                  </div>
+                </sc-if>
+              </li>
+            </sc-for>
+          </ol>
+
+          <div style="margin-top: 20px; display: flex; align-items: center; gap: 13px; flex-wrap: wrap;">
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onUp }}" disabled="{{ upDisabled }}" style="{{ upStyle }}">{{ upLabel }}</button>
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onReset }}">Back to the producers</button>
+          </div>
+
+          <sc-if value="{{ topped }}">
+            <p data-arrive="1" style="margin: 18px 0 0; padding: 17px 19px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink); font-size: 18px; line-height: 1.6;">{{ verdictText }}</p>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-roles" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Everyone has a job title</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 28ch;">A web is chains that share their members.</p>
+
+        <div style="margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px;">
+          <sc-for list="{{ roleCards }}" as="r" hint-placeholder-count="4">
+            <div style="padding: 24px 26px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ r.kind }}</p>
+              <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 23px; line-height: 1.2; letter-spacing: -.02em;">{{ r.name }}</p>
+              <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.5;">{{ r.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+
+        <p style="margin: 22px 0 0; font-size: 19px; line-height: 1.65; max-width: 62ch;">A food chain is one route through an ecosystem. A food web is all the routes at once, drawn on top of each other, because almost nothing eats only one thing and almost nothing is eaten by only one thing. The web is the truthful picture; the chain is a single thread pulled out of it so it can be talked about.</p>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">The arrows in a food chain show the direction energy travels, so they point from the organism being eaten to the organism eating it. Only about a tenth of the energy at each level reaches the next, which is why chains are short and top predators are rare.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“The arrow points at what the animal eats.”</p>
+        <p>Draw it that way and every arrow in the diagram is backwards. The arrow is not saying <em>eats</em>; it is saying <em>energy travels this way</em>, so it always points from the eaten towards the eater — grass to rabbit, rabbit to fox. The fox does not send anything to the rabbit. Once you read arrows as energy rather than as appetite, several things become easy: you can see instantly which organisms are producers, because nothing points into them from another organism; you can count how many steps energy has taken from the Sun; and a food web stops looking like a tangle and starts looking like a map of where the energy goes. Examiners mark arrow direction, and it is the single most common lost mark in this topic.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“Ninety per cent of the energy is lost at each level.”</p>
+          <p>Lost is the wrong word, and you have already met why in <a href="p1-03-conservation-of-energy.html">Conservation of energy</a>: energy is never destroyed, so it has to be somewhere. Follow it. Most of it was released by respiration and ended up warming the surroundings — a rabbit spends most of what it eats simply staying alive and staying warm. Some passes out undigested and goes to the decomposers, along with everything in the rabbit when it eventually dies. A little is in parts the fox does not eat. Nothing has gone missing; it has left this chain, which is a different claim. The reason the number matters is not bookkeeping but shape: it makes each level about a tenth the size of the one below, and after four or five levels there is nothing left to build an animal out of.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Producers capture energy from sunlight; consumers get theirs by eating; decomposers release the rest back. Arrows point in the direction energy travels, from eaten to eater. About a tenth of the energy at each level reaches the next, the rest having been used in respiration or passed to decomposers, which is why food chains are short and a food web has far more organisms at the bottom than at the top.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The same arithmetic decides what a country can feed itself on. A hectare of wheat eaten as bread feeds people at the first consumer level; the same hectare grown as feed for cattle and eaten as beef feeds them at the second, with about a tenth as much arriving. That is not an argument that nobody should eat beef — cattle graze land that will not grow wheat, and grass is inedible to us — but it is why the two are not interchangeable, and why the question of how much land a diet requires has a hard number attached to it. The same rule explains something odder at sea: whales are enormous, and the largest of them feed on krill, only two levels up. An animal that size at the fifth level is impossible, so the biggest animals that have ever existed eat some of the smallest.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b7-04-why-almost-all-life-depends-on-it.html">Why almost all life depends on it<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p1-03-conservation-of-energy.html">Conservation of energy<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b9-02-predator-and-prey.html">Predator and prey<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b8-01-aerobic-respiration.html">Aerobic respiration<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Trophic levels, pyramids of biomass, and calculating the efficiency of energy transfer between levels.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to build a chain from your own local wildlife?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The tenth-of-the-energy rule is a teaching average. Real transfer efficiencies range from a few per cent to around twenty depending on the organisms and the ecosystem, and the figures on the bench are rounded to make the pattern readable rather than taken from a particular study.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startChain&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;field&quot;,&quot;wood&quot;,&quot;sea&quot;],&quot;default&quot;:&quot;field&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;The bench&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Why chains stop' },
+  { id: 's-bench', label: 'Climb the chain' },
+  { id: 's-roles', label: 'Job titles' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'BENCH', 'ROLES', 'LADDER'];
+
+const START_KJ = 10000;
+
+const CHAINS = [
+  { id: 'field', label: 'A field', levels: [
+    { name: 'Grass', role: 'Producer', note: 'Ten thousand kilojoules captured from sunlight and built into plant material.' },
+    { name: 'Rabbits', role: 'Primary consumer', note: 'Most of what a rabbit eats is respired to stay alive and stay warm, or passes straight through. Only a tenth becomes rabbit.' },
+    { name: 'Foxes', role: 'Secondary consumer', note: 'A fox is a warm, active hunter, so its bill for simply existing is high. A tenth again reaches this level.' },
+    { name: 'Golden eagle', role: 'Tertiary consumer', note: 'Ten kilojoules of the original ten thousand. This is why eagles hold territories of many square kilometres and why there are so few of them.' }
+  ] },
+  { id: 'wood', label: 'An oak wood', levels: [
+    { name: 'Oak leaves', role: 'Producer', note: 'One large oak supports the whole of the rest of this chain, and hundreds of other species besides.' },
+    { name: 'Caterpillars', role: 'Primary consumer', note: 'Caterpillars are unusually efficient eaters \u2014 they do little but eat \u2014 but most of the leaf still goes to respiration and droppings.' },
+    { name: 'Blue tits', role: 'Secondary consumer', note: 'A pair of blue tits needs something like a hundred caterpillars a day to raise a brood, which is why they time their nesting to the caterpillar peak.' },
+    { name: 'Sparrowhawk', role: 'Tertiary consumer', note: 'Ten kilojoules. One sparrowhawk needs the small birds of a whole wood, and the wood can support one pair.' }
+  ] },
+  { id: 'sea', label: 'The open sea', levels: [
+    { name: 'Phytoplankton', role: 'Producer', note: 'Microscopic algae doing the photosynthesis you met in b7-04 \u2014 roughly half the world\u2019s total.' },
+    { name: 'Zooplankton', role: 'Primary consumer', note: 'Drifting animals grazing the algae, in numbers nobody can count.' },
+    { name: 'Herring', role: 'Secondary consumer', note: 'A hundred kilojoules of the original ten thousand.' },
+    { name: 'Seals', role: 'Tertiary consumer', note: 'Ten kilojoules. A seal eats several kilograms of fish a day and it is already scraping the bottom of the barrel.' },
+    { name: 'Orca', role: 'Quaternary consumer', note: 'One kilojoule of the ten thousand \u2014 a ten-thousandth. This is about as far as any chain on Earth goes, and orcas hunt across whole oceans to make it work.' }
+  ] }
+];
+
+const ROLE_CARDS = [
+  { kind: 'Bottom of every chain', name: 'Producers', body: 'Plants and algae. They do not eat \u2014 they build their own food, so they are the point where energy enters the living world.' },
+  { kind: 'Level two', name: 'Primary consumers', body: 'Herbivores: the animals that eat producers. The most numerous animals in almost every ecosystem, because this is where the food is.' },
+  { kind: 'Levels three and up', name: 'Secondary and tertiary consumers', body: 'Predators, and the predators of predators. Rarer at every step up, and each one needs a larger area to feed from.' },
+  { kind: 'Everywhere at once', name: 'Decomposers', body: 'Bacteria and fungi feeding on dead material and droppings from every level. They are not the end of the chain \u2014 they are underneath all of it, returning the minerals to the soil.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Read the arrows',
+    question: 'A food chain is written: lettuce, slug, hedgehog. Which way do the arrows point, and why?',
+    options: [
+      { text: 'Lettuce to slug to hedgehog \u2014 the arrows follow the energy', correct: true },
+      { text: 'Hedgehog to slug to lettuce \u2014 the arrows show what each animal eats', correction: 'That is the most common error in this topic. The arrow means energy travels this way, not this one eats that one.' },
+      { text: 'Both ways, because energy moves in both directions', correction: 'Energy does not move back down a chain. A hedgehog gives nothing to a slug except, eventually, material for the decomposers.' },
+      { text: 'It does not matter as long as the organisms are in order', correction: 'It matters, and it is marked. An arrow drawn the wrong way says something false about where the energy goes.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'Only about 10% of the energy at one level reaches the next. What happened to the other 90%?',
+    options: [
+      { text: 'It was destroyed', correction: 'Energy is never destroyed \u2014 that rule has no exceptions, including in biology. It went somewhere; the question is where.' },
+      { text: 'Most was released by respiration and warmed the surroundings; the rest went to decomposers in droppings and dead material', correct: true },
+      { text: 'It stayed in the parts of the plant the animal could not reach', correction: 'Some did, and that is a real part of the answer \u2014 but most of the loss is respiration, not leftovers.' },
+      { text: 'It was used up in movement and no longer exists', correction: 'Movement transfers energy to the surroundings by friction and warming. Used up is not a thing energy can be.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain the shape',
+    question: 'In almost every ecosystem there are far more producers than primary consumers, and far more primary consumers than top predators. Explain why, and say what would have to be true for an ecosystem to have more foxes than rabbits.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Only about a tenth of the energy\u2026',
+    criteria: [
+      'Says only about a tenth of the energy at each level is passed on to the next.',
+      'Says the rest is used in respiration or passed to decomposers rather than destroyed.',
+      'Says each level therefore has far less energy available to it than the one below.',
+      'Concludes that fewer organisms, or smaller ones, can be supported at each step up.',
+      'Says more foxes than rabbits is impossible in a stable ecosystem \u2014 there would not be enough food energy to support them \u2014 rather than merely unusual.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A country wants to feed more people from the same farmland. An adviser suggests converting land currently used to raise cattle over to growing wheat. Explain the energy argument in favour, and give one honest limitation of it.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Eating the wheat directly means\u2026',
+    criteria: [
+      'Says eating crops directly puts people at the first consumer level rather than the second.',
+      'Says a level is lost when the crop is fed to cattle, so about a tenth as much energy reaches people.',
+      'Concludes the same land therefore feeds more people as wheat than as beef.',
+      'Gives a genuine limitation \u2014 for example that much grazing land is too poor, steep or wet to grow crops on, or that a diet needs more than energy.',
+      'Avoids treating the 10% figure as exact, or notes that it is an average rather than a measurement.'
+    ] }
+];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return s.everTopped;
+  if (id === 's-roles') return s.everTopped;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    chain: CHAINS.some((c) => c.id === this.props.startChain) ? this.props.startChain : 'field',
+    shown: 1,
+    everTopped: false,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on) {
+    return 'cursor:pointer;font:inherit;font-size:16px;font-weight:700;padding:10px 15px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+      (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const chain = CHAINS.find((c) => c.id === s.chain) || CHAINS[0];
+    const total = chain.levels.length;
+    const topped = s.shown >= total;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    const topKJ = START_KJ / Math.pow(10, total - 1);
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'Top predators are too big for anything to hunt' },
+        { letter: 'B', text: 'There is not enough energy left to support another level' },
+        { letter: 'C', text: 'Animals higher up are too fast to catch' },
+        { letter: 'D', text: 'Nothing wants to eat a predator' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      benchProgress: topped ? 'top of the chain' : 'level ' + s.shown + ' of ' + total,
+      chainTabs: CHAINS.map((c) => ({
+        label: c.label, pressed: c.id === s.chain, style: this.seg(c.id === s.chain),
+        onClick: () => this.setState({ chain: c.id, shown: 1 })
+      })),
+      levels: chain.levels.map((l, i) => {
+        const shown = i < s.shown;
+        const kJ = START_KJ / Math.pow(10, i);
+        const top = i === s.shown - 1;
+        return {
+          name: l.name, role: l.role, note: l.note, shown: shown,
+          energy: kJ >= 1 ? kJ.toLocaleString() + ' kJ' : kJ + ' kJ',
+          pct: (100 / Math.pow(10, i)) + '% of the original',
+          nameColour: shown ? 'var(--ks3-on-dark)' : 'var(--ks3-on-dark-muted)',
+          rowStyle: 'padding:14px 16px;border-radius:var(--ks3-r-panel);background:' + (top ? 'rgba(255,255,255,.10)' : 'transparent') +
+            ';border:2px solid ' + (top ? 'var(--ks3-alert)' : (shown ? 'var(--ks3-on-dark-muted)' : 'transparent')) + ';opacity:' + (shown ? '1' : '.45') + ';',
+          barStyle: 'display:block;height:100%;width:' + Math.max(0.6, 100 / Math.pow(10, i)) + '%;background:var(--ks3-alert);'
+        };
+      }),
+      upDisabled: topped,
+      upStyle: topped ? 'opacity:.45;cursor:default;' : '',
+      upLabel: topped ? 'Nothing above this' : 'Who eats them?',
+      onUp: () => this.setState((st) => {
+        const next = Math.min(total, st.shown + 1);
+        return { shown: next, everTopped: st.everTopped || next >= total };
+      }),
+      onReset: () => this.setState({ shown: 1 }),
+      topped: topped,
+      verdictText: 'Ten thousand kilojoules entered at the bottom and ' + (topKJ >= 1 ? topKJ.toLocaleString() : topKJ) +
+        ' arrived here \u2014 ' + (100 / Math.pow(10, total - 1)).toFixed(2).replace(/\.?0+$/, '') +
+        '% of it. Add one more level and there would be a tenth of that again, which is not enough to build an animal out of. That is the whole reason chains stop.',
+
+      roleCards: ROLE_CARDS,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === correctIndex, isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: done,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+</script>
+</body>
+</html>

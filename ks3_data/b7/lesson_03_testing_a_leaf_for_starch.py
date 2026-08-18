@@ -1,7 +1,7 @@
 """B7 L3 — Testing a leaf for starch (INVESTIGATION).
 
 Authored against Design's approved page,
-`KS3 B7 lessons/b7-03-testing-a-leaf-for-starch.dc.html` (584 lines), under the
+`docs/ks3/design-reference/b7/b7-03-testing-a-leaf-for-starch.dc.html` (584 lines), under the
 MRB-220 build contract and `docs/ks3/b7-inventory/PAYLOAD-SCHEMA.md`.
 
 Every student-facing string is lifted byte-identical from the approved page

@@ -1,8 +1,8 @@
 """B8 L3 — Anaerobic respiration in humans (PROCESS).
 
 Authored against Claude Design's approved page,
-`KS3 B8 lessons/b8-03-anaerobic-respiration-in-humans.dc.html` (582 lines), her
-author's notes `KS3 B8 lessons/NOTES-B8.md`, and the B8 payload schema
+`docs/ks3/design-reference/b8/b8-03-anaerobic-respiration-in-humans.dc.html` (582 lines), her
+author's notes `docs/ks3/design-reference/b8/NOTES-B8.md`, and the B8 payload schema
 `docs/ks3/b8-inventory/PAYLOAD-SCHEMA.md` §4, §7, §8, §9 and §10, under the
 MRB-220 build contract.
 

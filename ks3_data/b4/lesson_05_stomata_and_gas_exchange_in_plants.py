@@ -1,8 +1,8 @@
 """B4 L5 — Stomata and gas exchange in plants (CONTRAST).
 
 Authored against Claude Design's approved page,
-`KS3 B4 lessons/b4-05-stomata-and-gas-exchange-in-plants.dc.html` (565 lines),
-its author's notes `KS3 B4 lessons/NOTES-B4.md`, and the B4 payload schema
+`docs/ks3/design-reference/b4/b4-05-stomata-and-gas-exchange-in-plants.dc.html` (565 lines),
+its author's notes `docs/ks3/design-reference/b4/NOTES-B4.md`, and the B4 payload schema
 `docs/ks3/b4-inventory/PAYLOAD-SCHEMA.md` §5, under the MRB-220 build contract.
 
 Every student-facing string is lifted byte-identical from the approved page

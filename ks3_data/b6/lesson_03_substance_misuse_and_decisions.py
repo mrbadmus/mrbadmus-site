@@ -1,7 +1,7 @@
 """B6 L3 — Substance misuse and decisions (INVESTIGATION).
 
 Authored against Design's approved page,
-`KS3 B6 lessons/b6-03-substance-misuse-and-decisions.dc.html` (597 lines),
+`docs/ks3/design-reference/b6/b6-03-substance-misuse-and-decisions.dc.html` (597 lines),
 under the MRB-220 build contract.
 
 Every student-facing string is lifted byte-identical from the approved page

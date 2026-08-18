@@ -1,8 +1,8 @@
 """B3 L7 — Absorption and the small intestine (MODEL).
 
 Authored against Claude Design's approved page,
-`KS3 B3 lessons/b3-07-absorption-and-the-small-intestine.dc.html` (533 lines),
-and its author's notes, `KS3 B3 lessons/NOTES-B3.md` §3.5 and flags 17–19.
+`docs/ks3/design-reference/b3/b3-07-absorption-and-the-small-intestine.dc.html` (533 lines),
+and its author's notes, `docs/ks3/design-reference/b3/NOTES-B3.md` §3.5 and flags 17–19.
 Schema per architecture.md §4.8 as amended by §4.8.1 and §4.8.2; shape follows
 `ks3_data/c1/lesson_02_solids_liquids_and_gases.py`.
 

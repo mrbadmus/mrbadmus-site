@@ -63,3 +63,14 @@ ds-bundle/
 # The live side-by-side on localhost is the sign-off surface; these are
 # the record of one run and do not belong in a repo Mide pushes.
 docs/ks3/b1-comparison/*/*.png
+
+# Claude Design's `_ds/` bundles, shipped alongside every KS3 lesson delivery
+# (MRB-248, 18 Aug 2026). Not load-bearing and never were: React components,
+# an oxlint adherence config, and a CSS/JS bundle that re-ships this repo's own
+# shared/ks3.css. The seven woff2 files are byte-identical to shared/fonts/.
+# Nothing in this repo runs that toolchain — build_ks3.py reads the .dc.html
+# pages and nothing else. The pages are the delivery; _ds is its packaging.
+# Kept on disk so a reviewer can still open a .dc.html locally and see it
+# styled; never tracked, because 568K x 15 units of duplicate fonts is not a
+# record of anything.
+docs/ks3/design-reference/*/_ds/

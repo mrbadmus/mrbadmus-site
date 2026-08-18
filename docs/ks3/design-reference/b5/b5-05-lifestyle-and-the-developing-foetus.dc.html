@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lifestyle and the developing foetus · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b505-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b505-arrive .34s ease-out both; }
+  [data-window] { transition: left .3s ease, width .3s ease; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } [data-window] { transition: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Reproduction</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Lifestyle and the developing foetus</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Reproduction · System</p>
+        <h1>Lifestyle and the developing foetus</h1>
+        <p class="ks3-bigq">The placenta is an exchange surface, not a filter. What crosses it is decided by the molecule — not by whether the foetus would be better off without it.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>The placenta cannot tell the difference between oxygen and alcohol.</h2>
+        <p class="ks3-hook-prompt">It is a surface built for one job: letting small dissolved molecules move from where there is more of them to where there is less. It has no sorting mechanism, no sense of what is wanted, and no way of stopping something simply because it is harmful.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Which of these reaches the foetus within minutes of entering the mother's blood?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">All four. Every one of them is a small molecule that dissolves in blood, and that is the only qualification the crossing requires. Within a few minutes the concentration in the foetus's blood is close to the concentration in the mother's. The interesting question is therefore not <em>does it get through</em> — it is <em>what does it do when it arrives, and does it matter more at some weeks than others</em>.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-cross" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">Six substances · one rule</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Does it cross, and what does it reach?</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ crossProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Commit to an answer before you check. By the third one you should be able to predict the rest — the rule turns out to be about the molecule, not about the substance's reputation.</p>
+
+        <div style="margin-top: 22px; display: flex; gap: 9px; flex-wrap: wrap;">
+          <sc-for list="{{ subTabs }}" as="t" hint-placeholder-count="6">
+            <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 26px; line-height: 1.15; letter-spacing: -.025em; color: var(--ks3-on-dark);">{{ subName }}</p>
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-alert);">{{ subKind }}</p>
+          </div>
+          <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ subContext }}</p>
+        </div>
+
+        <p style="margin: 20px 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Does it reach the foetus?</p>
+        <ul class="ks3-options">
+          <sc-for list="{{ dirOptions }}" as="opt" hint-placeholder-count="2">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <div style="margin-top: 18px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onCheck }}" disabled="{{ checkLocked }}" style="{{ checkBtnStyle }}">Check it</button>
+          <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ checkHint }}</span>
+        </div>
+
+        <sc-if value="{{ subOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ subVerdict }}</p>
+            <p style="margin: 9px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 23px; line-height: 1.22; letter-spacing: -.02em;">{{ subAnswer }}</p>
+            <p style="margin: 11px 0 0; font-size: 18px; line-height: 1.6;">{{ subWhy }}</p>
+            <div style="margin-top: 16px; padding-top: 14px; border-top: 2px solid var(--ks3-rule);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">When it matters most</p>
+              <div style="position: relative; height: 22px; margin-top: 8px; border-radius: 8px; background: var(--ks3-band); overflow: hidden;">
+                <span data-window="1" aria-hidden="true" style="{{ subWindowStyle }}"></span>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-top: 5px; font-family: var(--ks3-font-mono); font-size: 12px; color: var(--ks3-ink-muted);">
+                <span>Week 0</span><span>Week 20</span><span>Week 40</span>
+              </div>
+              <p style="margin: 9px 0 0; font-size: 17px; line-height: 1.5;">{{ subWindow }}</p>
+            </div>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-windows" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Timing · three windows</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 30ch;">The same exposure does different things in different weeks.</p>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6; max-width: 56ch;">Read down the middle column. What an exposure can affect depends entirely on what is being built at the time.</p>
+
+        <div style="margin-top: 24px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-ink); background: var(--ks3-card); overflow: hidden;">
+          <sc-for list="{{ windows }}" as="row" hint-placeholder-count="3">
+            <div style="{{ row.style }}">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ row.when }}</p>
+              <div style="margin-top: 9px; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px;">
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">What is happening</p>
+                  <p style="margin: 4px 0 0; font-size: 18px; line-height: 1.5;">{{ row.building }}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">What an exposure can affect</p>
+                  <p style="margin: 4px 0 0; font-size: 18px; line-height: 1.5;">{{ row.effect }}</p>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Whether a substance reaches the foetus depends on the size of its molecules and whether they dissolve in blood — not on whether it is harmful. The placenta has no filtering ability. What the substance then does depends on what is being built that week.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“The placenta filters out anything harmful.”</p>
+        <p>It filters nothing. Read the word <em>barrier</em> — which is how the placenta is often described — and it is easy to picture a sieve deciding what to admit. What is actually there is a very thin, very large surface designed to let small dissolved molecules through as fast as possible, because oxygen and glucose have to arrive at the rate a growing organism uses them. Anything else small enough and soluble enough gets the same easy passage: it is using the door built for the food. The one real rule is size. Large molecules such as insulin do not cross in any useful quantity, which is why insulin can be used to treat diabetes during pregnancy; antibodies are large too, and cross only because the placenta spends energy carrying them over deliberately. Everything else is physics, and physics has no opinion about what is good for a foetus.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“So anything that goes wrong is the mother's fault.”</p>
+          <p>That does not follow from any of the biology on this page, and it is worth saying why. Much exposure is not a choice: second-hand smoke, air pollution at the roadside, an infection caught from someone else, a medicine that must be continued because stopping it would be more dangerous than taking it. Some are choices constrained by circumstances — what food is affordable and near enough to buy. Addiction is a condition of the nervous system rather than a decision repeated daily, which is the point <a href="b6-01-what-drugs-do-to-the-body.html">What drugs do to the body</a> spends a whole lesson establishing. And a great many pregnancy complications have no identified cause at all. There is also the shape of the evidence: what studies measure is <em>risk</em> — a probability across large numbers of pregnancies — so an exposed pregnancy that comes to no harm and an unexposed one that does are both entirely ordinary results. Risk is a statement about populations. It is not a verdict on a person.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>The placenta lets small dissolved molecules diffuse across, and cannot distinguish useful ones from harmful ones. Alcohol, nicotine, carbon monoxide, caffeine and most medicines all reach the foetus; large molecules such as insulin do not. Carbon monoxide from smoke reduces the oxygen the blood can carry, which is why smoking lowers birth weight. Alcohol affects the developing brain and nervous system throughout. Organs are laid down in weeks three to eight, so that window matters most for structure, and the brain is being built for the whole pregnancy. Risk is a probability across many pregnancies, not a certainty about one.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Almost everything on this page is known because of thalidomide. It was sold from 1957 as a safe sedative, prescribed widely for morning sickness, and marketed as harmless partly because a large dose did not kill laboratory animals — which was, at the time, most of what safe testing meant. Thousands of babies were born with severely shortened or absent limbs. Two doctors working separately, William McBride in Australia and Widukind Lenz in Germany, traced the pattern back to the drug, and it was withdrawn in 1961. What made the case scientifically decisive was the timing: the damage depended on which days of the pregnancy the tablets were taken, in a window of only a few weeks while the limbs were forming, and the specific malformation shifted with the day. That is how precisely the sensitive window of development came to be mapped. The disaster is the reason drugs are now tested on pregnancy specifically, why licensing exists in the form it does, and why a pharmacist will not hand over an ordinary medicine to someone who is pregnant without checking first. Thalidomide itself is still in use today, under tight controls, for conditions including a cancer of the blood — which is the second lesson: the substance was never the villain, the missing knowledge was.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="b5-06-flowers-and-pollination.html">Flowers and pollination<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b5-04-gestation-placenta-and-birth.html">Gestation, the placenta and birth<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b6-02-alcohol-and-smoking.html">Alcohol and smoking<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b6-03-substance-misuse-and-decisions.html">Substance misuse and decisions<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Substances that affect development, the epidemiology behind public health advice, and how risk is estimated from large studies.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to check why molecule size decides what crosses?</p>
+          <a class="ks3-tutor-cta" href="#s-cross">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">This lesson describes exposures and risk. Risk is a probability measured across large numbers of pregnancies, not a prediction about any one of them, and nothing here is a judgement about any person or family. Anyone who is pregnant or might be should speak to a midwife, doctor or pharmacist before starting or stopping anything, including prescribed medicines; that advice is free and confidential. Relationships and consent are covered in your RSE and PSHE lessons. The what-crosses diagram is declared in the lesson record as <span style="font-family: var(--ks3-font-mono);">b5-what-crosses</span>, awaiting illustration.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Not a filter' },
+  { id: 's-cross', label: 'Does it cross?' },
+  { id: 's-windows', label: 'Three windows' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'CROSS', 'TIMING', 'LADDER'];
+
+const SUBS = [
+  { id: 'alcohol', label: 'Alcohol', name: 'Alcohol', kind: 'Small molecule \u00b7 dissolves readily', crosses: true,
+    context: 'A small molecule that dissolves in both water and fat \u2014 which is what lets it into every tissue in an adult too.',
+    answer: 'Yes \u2014 freely, and within minutes.',
+    why: 'The foetus ends up with roughly the same concentration in its blood as the mother has in hers, but a much less developed liver to break it down, so it stays there longer. Its clearest effects are on the developing brain and nervous system, and on growth. UK advice is that no amount is known to be safe, which is a statement about missing knowledge as much as about the alcohol.',
+    win: [0, 100], winText: 'The whole pregnancy. The brain and nervous system are being built and rebuilt from the first weeks to the last, so there is no window in which alcohol has nothing to reach.' },
+  { id: 'co', label: 'Carbon monoxide', name: 'Carbon monoxide, from smoke', kind: 'Small molecule \u00b7 diffusion', crosses: true,
+    context: 'Produced whenever tobacco burns \u2014 and breathed in by anyone in the room, not only the smoker.',
+    answer: 'Yes \u2014 and it works by taking up space.',
+    why: 'Carbon monoxide binds to haemoglobin far more tightly than oxygen does, so every molecule of it in the blood is a seat oxygen cannot use. Less oxygen reaches the placenta, less crosses it, and a foetus short of oxygen grows more slowly \u2014 which is why smoking during pregnancy lowers birth weight measurably. Nicotine crosses too, and narrows blood vessels, which reduces the supply again.',
+    win: [10, 100], winText: 'Mostly the growth half of the pregnancy, because this is a supply problem rather than a building problem \u2014 though the supply matters throughout.' },
+  { id: 'caffeine', label: 'Caffeine', name: 'Caffeine', kind: 'Small molecule \u00b7 diffusion', crosses: true,
+    context: 'In coffee, tea, cola and energy drinks. A stimulant, and the most widely used drug in the world.',
+    answer: 'Yes \u2014 and this one is about dose.',
+    why: 'Caffeine crosses easily and the foetus breaks it down slowly. Unlike alcohol, the advice here is a limit rather than a ban: UK guidance is to stay under about 200 mg a day, roughly two mugs of instant coffee. It is a useful case, because it shows that <em>crosses the placenta</em> and <em>harmful at any amount</em> are two different statements, and the second one has to be established separately for every substance.',
+    win: [0, 100], winText: 'No sharply defined window. What the evidence associates with high intake is reduced growth, which can happen at any stage.' },
+  { id: 'rubella', label: 'Rubella virus', name: 'Rubella virus', kind: 'Virus \u00b7 not by diffusion', crosses: true,
+    context: 'A mild illness in a child \u2014 a few days of rash and fever \u2014 and a serious one for an embryo.',
+    answer: 'Yes \u2014 but by a completely different route.',
+    why: 'A virus is far too large to diffuse anywhere. It crosses by infecting the placenta\u2019s own cells and being made again on the other side, cell by cell. Catching rubella early in pregnancy can damage the developing eyes, ears and heart, which is why the MMR vaccination given in childhood is as much a protection for future pregnancies as for the child receiving it.',
+    win: [0, 30], winText: 'Overwhelmingly the first twelve weeks, when the eyes, ears and heart are being formed. After about twenty weeks the risk is very low.' },
+  { id: 'meds', label: 'Prescribed medicines', name: 'Prescribed medicines', kind: 'Varies \u00b7 depends on the molecule', crosses: true,
+    context: 'Someone may need treatment for epilepsy, diabetes, asthma, an infection or a mental health condition while pregnant.',
+    answer: 'Many do \u2014 and stopping is often the greater risk.',
+    why: 'Each medicine has to be judged separately, and the judgement is not simply <em>does it cross</em>. An untreated seizure, an untreated infection or uncontrolled asthma can be far more dangerous to a pregnancy than the drug that prevents it. This is precisely why the decision belongs to a doctor or pharmacist who knows the case, and why nobody should stop a prescribed medicine on their own.',
+    win: [5, 25], winText: 'Weeks three to eight are the most sensitive for structural effects, which is why the first appointment asks what someone is already taking.' },
+  { id: 'insulin', label: 'Insulin', name: 'Insulin', kind: 'Large protein \u00b7 too big', crosses: false,
+    context: 'The hormone that controls blood glucose, and the treatment for diabetes.',
+    answer: 'No \u2014 not in any useful amount.',
+    why: 'Insulin is a protein, and proteins are enormous compared with alcohol or caffeine. The placenta lets small dissolved molecules through and effectively does not pass this one, which is exactly why insulin is the standard treatment for diabetes in pregnancy: it controls the mother\u2019s glucose without reaching the foetus. It is the clearest proof that the rule is about size, not about safety \u2014 nothing has decided that insulin should be kept out.',
+    win: [0, 0], winText: 'Not applicable: it does not arrive. Glucose, on the other hand, crosses freely, which is why controlling the mother\u2019s blood glucose still matters a great deal.' }
+];
+
+const WINDOWS = [
+  { id: 'w1', when: 'Weeks 1\u20132 \u00b7 before most people know', promoted: false,
+    building: 'The ball of cells divides, implants and begins to build the placenta. There are as yet no organs to damage.',
+    effect: 'Very little, or everything. An exposure at this stage tends either to have no lasting effect at all, or to stop the pregnancy continuing.' },
+  { id: 'w2', when: 'Weeks 3\u20138 \u00b7 the embryo', promoted: true,
+    building: 'Heart, brain, spine, limbs, eyes and ears are all laid down, in an organism smaller than your thumb.',
+    effect: 'Structure. This is the window in which an exposure can change how an organ is built rather than how well it works \u2014 and it is largely over by week eight.' },
+  { id: 'w3', when: 'Weeks 9\u201340 \u00b7 the foetus', promoted: false,
+    building: 'The organs that exist grow and mature. The brain keeps developing right up to birth and beyond.',
+    effect: 'Growth and function. Birth weight, lung readiness and brain development \u2014 changes in how well something works rather than whether it formed.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Apply the rule',
+    question: 'Why does alcohol reach a developing foetus?',
+    options: [
+      { text: 'Because the mother\u2019s blood and the foetus\u2019s blood mix', correction: 'They never mix. Every crossing happens across a surface, between two separate circulations.' },
+      { text: 'Because it is a small molecule dissolved in blood, so it diffuses across the placenta', correct: true },
+      { text: 'Because the placenta cannot break it down quickly enough', correction: 'The placenta is not trying to break it down. It is a surface for exchange, and small soluble molecules cross it as a matter of course.' },
+      { text: 'It does not \u2014 the placenta filters it out', correction: 'The placenta has no filtering ability. Within minutes the foetal concentration is close to the mother\u2019s.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'Which of these does NOT cross the placenta in any useful amount?',
+    options: [
+      { text: 'Carbon monoxide from cigarette smoke', correction: 'It crosses easily and takes up space on haemoglobin that oxygen would otherwise use.' },
+      { text: 'Caffeine', correction: 'It crosses easily, and the foetus breaks it down slowly. The advice on caffeine is a limit, not a ban \u2014 but it does arrive.' },
+      { text: 'Insulin', correct: true },
+      { text: 'Alcohol', correction: 'A small molecule that dissolves in water and fat \u2014 it crosses within minutes.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain the rule',
+    question: 'Explain what decides whether a substance reaches a developing foetus. Give two examples that cross and one that does not, and say why the placenta cannot protect the foetus from harmful substances.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'What decides it is\u2026',
+    criteria: [
+      'Says the deciding factor is the size of the molecule and whether it dissolves in blood.',
+      'Gives two correct examples that cross \u2014 for instance alcohol, nicotine, carbon monoxide, caffeine.',
+      'Gives a correct example that does not cross, such as insulin, and says it is too large.',
+      'Says the placenta is an exchange surface, not a filter, and has no mechanism for sorting.',
+      'Says harmful small molecules use the same route as oxygen and glucose.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A headline says: \u201cCoffee in pregnancy harms babies.\u201d Using what you know about crossing, dose and evidence, set out three questions you would need answered before deciding what to make of it.',
+    fieldLabel: 'Your answer',
+    placeholder: 'First I would want to know how much\u2026',
+    criteria: [
+      'Asks about dose \u2014 how much caffeine, since crossing the placenta and being harmful at a given amount are separate claims.',
+      'Asks how the effect was measured and how large it was, rather than accepting \u201charms\u201d as all-or-nothing.',
+      'Asks about the study: how many pregnancies, over how long, and what else differed between the groups compared.',
+      'Says the result would be a change in risk across a population rather than a prediction about one pregnancy.'
+    ] }
+];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-cross') return Object.keys(s.opened).length >= 6;
+  if (id === 's-windows') return Object.keys(s.opened).length >= 6;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    sub: 'alcohol',
+    picks: {},
+    opened: {},
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on) {
+    return 'cursor:pointer;font:inherit;font-family:var(--ks3-font-mono);font-size:15px;font-weight:500;padding:10px 16px;min-height:44px;border-radius:11px;border:2px solid ' +
+      (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-dark-panel)' : 'var(--ks3-on-dark-body)') + ';';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const sub = SUBS.find((x) => x.id === s.sub) || SUBS[0];
+    const pick = s.picks[sub.id];
+    const opened = !!s.opened[sub.id];
+    const hasPick = pick === 0 || pick === 1;
+    const correctPick = sub.crosses ? 0 : 1;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'Alcohol only' },
+        { letter: 'B', text: 'Alcohol and nicotine' },
+        { letter: 'C', text: 'Alcohol, nicotine, caffeine and carbon monoxide' },
+        { letter: 'D', text: 'None of them \u2014 the placenta blocks all four' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      crossProgress: Object.keys(s.opened).length + ' of 6 checked',
+      subTabs: SUBS.map((x) => ({
+        label: x.label, pressed: x.id === s.sub, style: this.seg(x.id === s.sub),
+        onClick: () => this.setState({ sub: x.id })
+      })),
+      subName: sub.name,
+      subKind: sub.kind,
+      subContext: sub.context,
+      dirOptions: ['Yes \u2014 it reaches the foetus', 'No \u2014 it does not cross'].map((text, i) => ({
+        letter: String.fromCharCode(65 + i), text: text, pressed: pick === i, disabled: opened,
+        onClick: () => this.setState((st) => ({ picks: Object.assign({}, st.picks, { [sub.id]: i }) }))
+      })),
+      onCheck: () => this.setState((st) => ({ opened: Object.assign({}, st.opened, { [sub.id]: true }) })),
+      checkLocked: !hasPick || opened,
+      checkBtnStyle: 'cursor:' + (!hasPick || opened ? 'default' : 'pointer') + ';opacity:' + (!hasPick || opened ? '.45' : '1') + ';',
+      checkHint: opened ? 'Now try another substance.' : (hasPick ? 'Ready.' : 'Choose an answer first.'),
+      subOpen: opened,
+      subVerdict: opened ? (pick === correctPick ? 'Correct' : 'Not this time') : '',
+      subAnswer: sub.answer,
+      subWhy: sub.why,
+      subWindow: sub.winText,
+      subWindowStyle: 'position:absolute;top:0;bottom:0;left:' + sub.win[0] + '%;width:' + (sub.win[1] - sub.win[0]) + '%;background:var(--ks3-accent);',
+
+      windows: WINDOWS.map((row, i) => ({
+        when: row.when, building: row.building, effect: row.effect,
+        style: 'padding: 18px 22px;' + (i > 0 ? ' border-top: 2px solid var(--ks3-rule);' : '') +
+          (row.promoted ? ' background: var(--ks3-inset);' : '')
+      })),
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === correctIndex, isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: done,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+</script>
+</body>
+</html>

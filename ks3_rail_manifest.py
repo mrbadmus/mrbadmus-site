@@ -5,10 +5,19 @@ The manifest records the rail **as Design drew it**, so that
 built rail against. Without one, the rail gate could only ever ask "can the
 stops we emitted tick?" — and the defect it missed was a stop we never emitted.
 
-Reads `KS3 B*/<stem>.dc.html`, which are Design's delivered working files and
-are deliberately NOT in git. That is why the manifest is: the delivery is the
-source, the manifest is the checked-in record of what it said. A machine
-without the deliveries can still run the gate.
+Reads `docs/ks3/design-reference/<unit>/<stem>.dc.html` — Design's delivered
+pages, which ARE in git. ⊕ Amended 18 Aug 2026 (MRB-248). This used to read
+the deliveries from `KS3 B*/` at the repo root and note that they were
+"deliberately NOT in git". They were not deliberately anything: they were ten
+untracked folders that existed on one laptop, and this gate's reference source
+therefore existed nowhere else. A gate whose input is missing does not fail
+loudly — `main()` prints "nothing to do" and returns 0. So on every machine
+but that one, the rail gate passed by having nothing to check.
+
+The manifest is still the checked-in record, and still the thing
+`ks3_parity.check_rail_matches_design` reads. The difference is that the
+source it is derived FROM is now checked in too, so `--write` is reproducible
+and the drift report is meaningful anywhere.
 
     python3 ks3_rail_manifest.py            # report drift, exit 1 if any
     python3 ks3_rail_manifest.py --write    # rewrite §1
@@ -40,14 +49,14 @@ def _slug(stem):
 
 def drawn_rails(repo_root="."):
     """{slug: (design_stem, [anchors] | None, {mirror: target})} from Design."""
-    # Two delivery locations, and both are real. The units Design delivered
-    # most recently sit in `KS3 <unit> lessons/` at the repo root; B1, B2, C1
-    # and C2 were frozen earlier into `docs/ks3/design-reference/`. B2, C1 and
-    # C2 exist in BOTH — same bytes, and a conflict raises rather than letting
-    # one location quietly win.
-    sources = (sorted(glob.glob(os.path.join(repo_root, "KS3 B*", "*.dc.html")))
-               + sorted(glob.glob(os.path.join(
-                   repo_root, "docs", "ks3", "design-reference", "*", "*.dc.html"))))
+    # One delivery location. There used to be two — the root `KS3 B*/` folders
+    # and the frozen reference set — and B2 lived in both with identical bytes.
+    # MRB-248 folded the root folders in, so the frozen set is now the whole
+    # record. The duplicate-detection below is kept anyway: it costs nothing
+    # and it is the thing that would catch a unit being delivered twice under
+    # two stems, which is a real way for a redelivery to go wrong.
+    sources = sorted(glob.glob(os.path.join(
+        repo_root, "docs", "ks3", "design-reference", "*", "*.dc.html")))
     out = {}
     for path in sources:
         stem = os.path.basename(path)[:-len(".dc.html")]
@@ -136,9 +145,15 @@ def main(argv):
     write = "--write" in argv
     rails = drawn_rails()
     if not rails:
-        print("no Design deliveries found under 'KS3 B*/' — nothing to do.")
-        print("The manifest is the checked-in record; it is left untouched.")
-        return 0
+        # Not "nothing to do" and not 0. An empty source set is the exact
+        # shape of the defect MRB-248 found: the reference the gate derives
+        # from went missing, and a green exit code reported that as health.
+        print("no Design deliveries found under "
+              "'docs/ks3/design-reference/*/*.dc.html'.")
+        print("The manifest is derived from those pages, so an empty source "
+              "set means the gate has nothing to check — which is a failure, "
+              "not a pass.")
+        return 1
     recorded = manifest_rails()
     drift = []
     for slug, (stem, ids, mirrors) in sorted(rails.items()):

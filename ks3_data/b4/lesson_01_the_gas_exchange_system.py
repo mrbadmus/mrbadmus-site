@@ -1,7 +1,7 @@
 """B4 L1 — The gas exchange system (SYSTEM).
 
 Authored against Design's approved page,
-`KS3 B4 lessons/b4-01-the-gas-exchange-system.dc.html` (577 lines), under the
+`docs/ks3/design-reference/b4/b4-01-the-gas-exchange-system.dc.html` (577 lines), under the
 MRB-220 build contract, with the instrument authored against
 `docs/ks3/b4-inventory/PAYLOAD-SCHEMA.md` §1.
 

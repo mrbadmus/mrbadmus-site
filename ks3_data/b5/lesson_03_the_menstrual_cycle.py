@@ -1,8 +1,8 @@
 """B5 L3 — The menstrual cycle (PROCESS).
 
 Authored against Claude Design's approved page,
-`KS3 B5 lessons/b5-03-the-menstrual-cycle.dc.html` (594 lines), its author's
-notes `KS3 B5 lessons/NOTES-B5.md`, and the MRB-220 build contract
+`docs/ks3/design-reference/b5/b5-03-the-menstrual-cycle.dc.html` (594 lines), its author's
+notes `docs/ks3/design-reference/b5/NOTES-B5.md`, and the MRB-220 build contract
 (`docs/ks3/mrb-220-build-contract.md`).
 
 Every student-facing string is lifted byte-identical from the approved page

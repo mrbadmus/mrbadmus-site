@@ -1,8 +1,8 @@
 """B3 L6 — Enzymes in digestion (PROCESS).
 
 Authored against Claude Design's approved page,
-`KS3 B3 lessons/b3-06-enzymes-in-digestion.dc.html` (657 lines), and its
-author's notes, `KS3 B3 lessons/NOTES-B3.md`. Every student-facing string is
+`docs/ks3/design-reference/b3/b3-06-enzymes-in-digestion.dc.html` (657 lines), and its
+author's notes, `docs/ks3/design-reference/b3/NOTES-B3.md`. Every student-facing string is
 lifted byte-identical from the approved page except where this docstring says
 otherwise, and every exception is here.
 

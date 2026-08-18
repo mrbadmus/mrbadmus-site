@@ -2,7 +2,7 @@
 
 The thin unit wrapper. The lesson records live one per module under
 `ks3_data/b8/`, authored against Claude Design's approved reference screens in
-`KS3 B8 lessons/` under the MRB-220 build contract, and against the payload
+`docs/ks3/design-reference/b8/` under the MRB-220 build contract, and against the payload
 schema written before dispatch at `docs/ks3/b8-inventory/PAYLOAD-SCHEMA.md`.
 
     L1 aerobic-respiration                 mass-ledger

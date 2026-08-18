@@ -1,8 +1,8 @@
 """B7 L2 — Leaves built for the job (MODEL).
 
 Authored against Claude Design's approved page,
-`KS3 B7 lessons/b7-02-leaves-built-for-the-job.dc.html` (579 lines), its
-author's notes `KS3 B7 lessons/NOTES-B7.md` (§1.2, flags 8–12, §3) and
+`docs/ks3/design-reference/b7/b7-02-leaves-built-for-the-job.dc.html` (579 lines), its
+author's notes `docs/ks3/design-reference/b7/NOTES-B7.md` (§1.2, flags 8–12, §3) and
 `docs/ks3/b7-inventory/PAYLOAD-SCHEMA.md`, under the MRB-220 build contract.
 
 Every student-facing string is lifted byte-identical from the approved page

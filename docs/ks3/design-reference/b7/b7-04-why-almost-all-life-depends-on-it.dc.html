@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why almost all life depends on it · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b704-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b704-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Photosynthesis</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Why almost all life depends on it</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Photosynthesis · System</p>
+        <h1>Why almost all life depends on it</h1>
+        <p class="ks3-bigq">One reaction, running in leaves and in water you cannot see into, is the doorway through which almost all the energy in the living world arrives — and the source of every breath you have ever taken.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Every meal you have ever eaten was once a leaf.</h2>
+        <p class="ks3-hook-prompt">A steak is a cow, and a cow is grass. That one is easy. The awkward cases are the ones that look nothing like a plant — a fish finger, a slice of cheese, a mushroom — and they are where the rule is either true or not.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Which of these did not begin with photosynthesis?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">All of them did. Every chain runs back to something that took in carbon dioxide and built a sugar out of it — grass, wheat, or microscopic algae drifting in the sea. The mushroom is the interesting one: fungi cannot photosynthesise at all, so they feed on material that something else built, which puts them further down the same chain rather than outside it.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-trace" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · follow it back</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Trace a meal to a leaf</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ traceProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Pick something off the plate and step backwards through the chain that supplied it. Count the steps — and notice that the number changes while the destination never does.</p>
+
+        <div style="margin-top: 22px;">
+          <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">On the plate</p>
+          <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+            <sc-for list="{{ foodTabs }}" as="t" hint-placeholder-count="6">
+              <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+            <p style="margin: 0; font-size: 21px; font-weight: 700; color: var(--ks3-on-dark);">{{ foodName }}</p>
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 16px; font-weight: 500; color: var(--ks3-alert);">{{ stepsLabel }}</p>
+          </div>
+
+          <ol style="list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px;">
+            <sc-for list="{{ chain }}" as="c" hint-placeholder-count="4">
+              <li style="{{ c.rowStyle }}">
+                <span aria-hidden="true" style="{{ c.numStyle }}">{{ c.num }}</span>
+                <span style="flex: 1 1 auto;">
+                  <span style="{{ c.titleStyle }}">{{ c.name }}</span>
+                  <sc-if value="{{ c.shown }}"><span style="display: block; margin-top: 5px; font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ c.note }}</span></sc-if>
+                </span>
+              </li>
+            </sc-for>
+          </ol>
+
+          <div style="margin-top: 20px; display: flex; align-items: center; gap: 13px; flex-wrap: wrap;">
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onBack }}" disabled="{{ backDisabled }}" style="{{ backStyle }}">{{ backLabel }}</button>
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onReset }}">Start again</button>
+          </div>
+
+          <sc-if value="{{ arrived }}">
+            <p data-arrive="1" style="margin: 18px 0 0; padding: 17px 19px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink); font-size: 18px; line-height: 1.6;">{{ verdictText }}</p>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-jobs" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Three things it does for everything else</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 28ch;">Food, air, and the balance between them.</p>
+
+        <div style="margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px;">
+          <sc-for list="{{ jobCards }}" as="j" hint-placeholder-count="3">
+            <div style="padding: 24px 26px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ j.kind }}</p>
+              <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 23px; line-height: 1.2; letter-spacing: -.02em;">{{ j.name }}</p>
+              <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.5;">{{ j.body }}</p>
+              <p style="margin: 12px 0 0; padding: 13px 15px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); font-size: 17px; line-height: 1.5;">{{ j.without }}</p>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Photosynthetic organisms — plants on land, algae and plankton in the sea — are the producers. They build the organic molecules that almost every other living thing eats, they released the oxygen in the atmosphere, and they take carbon dioxide back out of it.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Plants do the photosynthesising — trees are the lungs of the planet.”</p>
+        <p>Roughly half of all photosynthesis on Earth happens in the sea, carried out by algae and phytoplankton, most of them single cells too small to see without a microscope. A drifting organism a hundredth of a millimetre across, in numbers no one can count, matches every forest and grassland on land put together. Rainforests are irreplaceable for a long list of reasons, and being the planet's only oxygen supply is not one of them — a mature forest also consumes much of what it produces, since every one of its cells respires day and night. Keep the vocabulary honest and this stays clear: the group that matters is <em>photosynthetic organisms</em>, which includes plants, algae and some bacteria. Restricting the idea to green things with roots leaves out half the planet's production and most of its producers.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“Plants make oxygen for us to breathe.”</p>
+          <p>Not for us, and not for anything. Oxygen is a waste product: the plant is building glucose, and oxygen is what is left over from splitting water to do it. There was no oxygen worth mentioning in the atmosphere for the first two billion years of Earth's history, and the organisms that eventually filled it with the stuff were bacteria releasing a gas that was, at the time, poisonous to almost everything alive. Breathing animals appeared afterwards, in an atmosphere that was already there — the sequence runs the other way round from the way the sentence implies. Nothing in biology is done <em>for</em> another organism's benefit, and a plant that gave away useful material on purpose would be out-competed by one that did not. Plants also respire continuously, which is <a href="b4-05-stomata-and-gas-exchange-in-plants.html">b4-05's subject</a> and worth having straight before this claim is repeated.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Photosynthetic organisms are producers: they build organic molecules from carbon dioxide and water using light, and everything that cannot do this depends on them, directly or through a chain. They also released the oxygen in the atmosphere and continue to take carbon dioxide out of it. Roughly half of the world's photosynthesis happens in the sea.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The word <em>almost</em> in this lesson's title is doing real work. Two and a half kilometres down, where no light has ever reached, hot water loaded with dissolved chemicals pours out of cracks in the sea floor and whole communities live around it — tube worms two metres long, crabs, clams. At the base of those food chains are bacteria that build sugars using energy released from chemical reactions instead of energy from light, a process called chemosynthesis. They were found in 1977, and they mattered immediately: until then, sunlight was assumed to be the only way energy could enter a living system. It is a useful thing to know when people speculate about life on a moon with a frozen ocean and no daylight at all.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b7-01-the-photosynthesis-reaction.html">The photosynthesis reaction<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p1-01-energy-stores.html">Energy stores<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p2-05-fuels-and-energy-resources.html">Fuels and energy resources<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b4-05-stomata-and-gas-exchange-in-plants.html">Stomata and gas exchange in plants<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Trophic levels and biomass transfer, the carbon cycle, and the evidence behind human effects on atmospheric carbon dioxide.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to trace something that is not on the plate above?</p>
+          <a class="ks3-tutor-cta" href="#s-trace">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The chains are simplified to one line each: real diets are webs, a farmed salmon eats feed made from several sources, and a cow's rumen bacteria sit between the grass and the cow. The land-and-sea split of global photosynthesis is an approximate figure that varies between estimates and with the season.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startFood&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;steak&quot;,&quot;bread&quot;,&quot;salmon&quot;,&quot;cheese&quot;,&quot;mushroom&quot;,&quot;honey&quot;],&quot;default&quot;:&quot;steak&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;The bench&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Every meal' },
+  { id: 's-trace', label: 'Trace it back' },
+  { id: 's-jobs', label: 'Three jobs' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'TRACE', 'JOBS', 'LADDER'];
+
+const FOODS = [
+  { id: 'steak', label: 'Steak', name: 'Steak',
+    chain: [
+      { name: 'Steak on the plate', note: 'Muscle tissue, built from protein the animal assembled.' },
+      { name: 'The cow', note: 'Everything in it was built from what it ate. A cow eats no meat at all.' },
+      { name: 'Grass', note: 'Around ten kilograms of grass for every kilogram of cow \u2014 most of what the cow eats is respired away to keep the cow alive.' },
+      { name: 'Photosynthesis in the grass leaf', note: 'Carbon dioxide from the air, water from the soil, energy from sunlight falling on a field.' }
+    ],
+    verdict: 'Three steps from a field to a plate, and every gram of it was carbon dioxide before the grass got hold of it.' },
+  { id: 'bread', label: 'Bread', name: 'Bread',
+    chain: [
+      { name: 'A slice of bread', note: 'Mostly starch, plus the protein that makes the dough stretch.' },
+      { name: 'Wheat grain', note: 'A seed \u2014 a store of starch the plant packed for its own seedling, which we intercept.' },
+      { name: 'Photosynthesis in the wheat leaf', note: 'Glucose made in the leaves, moved to the developing grain and stored as starch.' }
+    ],
+    verdict: 'Two steps, the shortest chain on the plate. Eating a producer directly is the most efficient thing you can do with a field.' },
+  { id: 'salmon', label: 'Salmon', name: 'Salmon',
+    chain: [
+      { name: 'A salmon fillet', note: 'From the sea, and nothing green anywhere near it.' },
+      { name: 'Small fish and shrimp-like animals', note: 'What a salmon hunts.' },
+      { name: 'Zooplankton', note: 'Tiny drifting animals, each a fraction of a millimetre across, eaten in enormous numbers.' },
+      { name: 'Phytoplankton', note: 'Microscopic algae drifting in the sunlit surface water. They photosynthesise exactly as a leaf does, with chlorophyll and the same reaction.' },
+      { name: 'Sunlight on the top hundred metres of ocean', note: 'Below that depth there is not enough light, which is why almost all sea life lives in a thin layer at the top.' }
+    ],
+    verdict: 'Four steps, and the producer at the end is invisible. Roughly half the world\u2019s photosynthesis is done by organisms like these.' },
+  { id: 'cheese', label: 'Cheese', name: 'Cheese',
+    chain: [
+      { name: 'Cheese', note: 'Milk protein and fat, curdled and matured \u2014 bacteria do the maturing.' },
+      { name: 'Milk from a cow', note: 'Produced from what the cow ate, by an animal that eats only plants.' },
+      { name: 'Grass and silage', note: 'Silage is preserved grass, which is how a dairy herd is fed in winter.' },
+      { name: 'Photosynthesis in the grass leaf', note: 'The same field as the steak, and the same reaction.' }
+    ],
+    verdict: 'Three steps. The bacteria that ripen the cheese are living on the same sugars and proteins, one further down the chain again.' },
+  { id: 'mushroom', label: 'Mushroom', name: 'Mushroom',
+    chain: [
+      { name: 'A mushroom', note: 'Not a plant. Fungi have no chlorophyll and cannot photosynthesise at all.' },
+      { name: 'Threads through compost or dead wood', note: 'The mushroom is the fruiting body; the organism is a network of threads digesting dead material from the outside in.' },
+      { name: 'Dead plant material', note: 'Straw, wood, leaf litter \u2014 built by a plant that is no longer alive.' },
+      { name: 'Photosynthesis, some time ago', note: 'The molecules the fungus is living on were assembled in a leaf, possibly years earlier.' }
+    ],
+    verdict: 'Three steps, and it is the case that looks like an exception and is not. A decomposer is not outside the chain \u2014 it is at the end of it.' },
+  { id: 'honey', label: 'Honey', name: 'Honey',
+    chain: [
+      { name: 'Honey', note: 'Concentrated sugar, and almost nothing else.' },
+      { name: 'Bees', note: 'They collect nectar and evaporate the water off it. They add enzymes; they do not add sugar.' },
+      { name: 'Nectar in a flower', note: 'A sugar solution the plant manufactures deliberately, to pay pollinators for a delivery service.' },
+      { name: 'Photosynthesis in the plant', note: 'The sugar in nectar is glucose the plant made from carbon dioxide.' }
+    ],
+    verdict: 'Three steps, and the shortest chemical journey of the six: the sugar you taste is close to the sugar the leaf built.' }
+];
+
+const JOB_CARDS = [
+  { kind: 'Job one', name: 'The way in for energy', body: 'Energy enters almost every food chain on Earth at one point: a photosynthetic organism capturing sunlight. Everything above that is spending what a producer captured.',
+    without: 'Without it: nothing above the producers has any source of energy at all, and the chains empty from the bottom up.' },
+  { kind: 'Job two', name: 'The oxygen in the air', body: 'The atmosphere is about a fifth oxygen and all of it is biological in origin \u2014 released over billions of years as a waste product of splitting water.',
+    without: 'Without it: no new oxygen is added, while every respiring organism keeps consuming what is there.' },
+  { kind: 'Job three', name: 'Taking carbon back out', body: 'Respiration, decay and burning all put carbon dioxide into the air. Photosynthesis is the only large-scale process that removes it, locking carbon into wood, roots and ocean sediment.',
+    without: 'Without it: carbon dioxide only ever rises, because the one route out of the atmosphere has been closed.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Producers',
+    question: 'What does it mean to call a plant a producer?',
+    options: [
+      { text: 'It builds its own organic molecules from simple raw materials, instead of eating something else\u2019s', correct: true },
+      { text: 'It produces oxygen for other organisms to breathe', correction: 'Oxygen is a waste product, and it is not made for anyone. Producer is about food, not about air.' },
+      { text: 'It produces more offspring than it needs', correction: 'That is true of most organisms and has nothing to do with the term.' },
+      { text: 'It is at the top of the food chain', correction: 'It is at the bottom \u2014 the base that everything else is standing on.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'A mushroom is not green and cannot photosynthesise. Does it depend on photosynthesis?',
+    options: [
+      { text: 'No \u2014 it makes its own food from the compost it grows in', correction: 'Feeding on something is not making your own food. The compost is dead plant material, and a fungus is digesting what a plant built.' },
+      { text: 'Yes \u2014 it feeds on dead material that a photosynthetic organism built, so it sits at the end of the same chain', correct: true },
+      { text: 'No \u2014 fungi get their energy from the soil minerals', correction: 'Minerals supply no energy, to a fungus or to anything else. That is the same mistake as thinking plants feed on soil.' },
+      { text: 'Only if it is growing on a living plant', correction: 'Dead or alive makes no difference to where the molecules came from. Either way they were assembled by photosynthesis.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Follow the energy',
+    question: 'Explain how the energy in a beef burger got there, starting from the Sun. Use the words producer, photosynthesis, glucose and respiration.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Light from the Sun fell on\u2026',
+    criteria: [
+      'Says light energy from the Sun was absorbed by chlorophyll in grass leaves.',
+      'Says photosynthesis used that energy to build glucose from carbon dioxide and water \u2014 so the grass is the producer.',
+      'Says the energy is now stored chemically in molecules the plant built.',
+      'Says the cow ate the grass and used some of that energy, storing the rest in its own tissues.',
+      'Says most of what the cow ate was released again by respiration rather than passed on, which is why a field feeds far more people as wheat than as beef.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'Coal is often described as "ancient sunlight". Explain what that means, where the carbon in a lump of coal came from, and what burning it does to the atmosphere.',
+    fieldLabel: 'Your answer',
+    placeholder: 'The coal formed from\u2026',
+    criteria: [
+      'Says coal formed from plants that lived and photosynthesised hundreds of millions of years ago.',
+      'Says the carbon in those plants came from carbon dioxide in the atmosphere of the time.',
+      'Says the energy stored chemically in the coal is energy those plants captured from sunlight.',
+      'Says the plant material was buried before it could fully decay, so the carbon was locked away instead of returning to the air.',
+      'Says burning it returns that carbon dioxide to the atmosphere \u2014 releasing in a moment what was removed over millions of years, faster than photosynthesis can take it back out.'
+    ] }
+];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-trace') return s.everArrived;
+  if (id === 's-jobs') return s.everArrived;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    food: FOODS.some((f) => f.id === this.props.startFood) ? this.props.startFood : 'steak',
+    shown: 1,
+    everArrived: false,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on) {
+    return 'cursor:pointer;font:inherit;font-size:16px;font-weight:700;padding:10px 15px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+      (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const food = FOODS.find((f) => f.id === s.food) || FOODS[0];
+    const total = food.chain.length;
+    const arrived = s.shown >= total;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'A fish finger, from a fish that ate other fish' },
+        { letter: 'B', text: 'A glass of milk' },
+        { letter: 'C', text: 'A mushroom, which is not a plant at all' },
+        { letter: 'D', text: 'None of them \u2014 every one traces back to photosynthesis' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      traceProgress: s.everArrived ? 'chain traced' : 'step ' + Math.min(s.shown, total) + ' of ' + total,
+      foodTabs: FOODS.map((f) => ({
+        label: f.label, pressed: f.id === s.food, style: this.seg(f.id === s.food),
+        onClick: () => this.setState({ food: f.id, shown: 1 })
+      })),
+      foodName: food.name,
+      stepsLabel: arrived ? (total - 1) + ' steps back to a producer' : 'follow it back',
+      chain: food.chain.map((c, i) => {
+        const shown = i < s.shown;
+        const last = i === total - 1;
+        return {
+          num: String(i + 1), name: c.name, note: c.note, shown: shown,
+          rowStyle: 'display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-radius:var(--ks3-r-panel);background:' +
+            (shown && last ? 'rgba(255,255,255,.10)' : 'transparent') + ';border:2px solid ' +
+            (shown ? (last ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') : 'transparent') + ';opacity:' + (shown ? '1' : '.45') + ';',
+          numStyle: 'flex:0 0 30px;display:grid;place-items:center;width:30px;height:30px;border-radius:9px;font-family:var(--ks3-font-display);font-weight:800;font-size:15px;background:' +
+            (shown ? 'var(--ks3-alert)' : 'transparent') + ';border:2px solid ' + (shown ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') +
+            ';color:' + (shown ? 'var(--ks3-ink)' : 'var(--ks3-on-dark-muted)') + ';',
+          titleStyle: 'display:block;font-size:19px;font-weight:700;color:' + (shown ? 'var(--ks3-on-dark)' : 'var(--ks3-on-dark-muted)') + ';'
+        };
+      }),
+      backDisabled: arrived,
+      backStyle: arrived ? 'opacity:.45;cursor:default;' : '',
+      backLabel: arrived ? 'You have reached a producer' : 'Where did that come from?',
+      onBack: () => this.setState((st) => {
+        const next = Math.min(total, st.shown + 1);
+        return { shown: next, everArrived: st.everArrived || next >= total };
+      }),
+      onReset: () => this.setState({ shown: 1 }),
+      arrived: arrived,
+      verdictText: food.verdict,
+
+      jobCards: JOB_CARDS,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === correctIndex, isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: done,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+</script>
+</body>
+</html>

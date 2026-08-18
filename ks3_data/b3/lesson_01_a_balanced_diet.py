@@ -1,7 +1,7 @@
 """B3 L1 — A balanced diet (CLASSIFY).
 
 Authored against Design's approved page,
-`KS3 B3 lessons/b3-01-a-balanced-diet.dc.html` (594 lines), under the MRB-220
+`docs/ks3/design-reference/b3/b3-01-a-balanced-diet.dc.html` (594 lines), under the MRB-220
 build contract. Shape follows `ks3_data/c1/lesson_02_solids_liquids_and_gases.py`.
 
 Every student-facing string is lifted from the approved page. The four

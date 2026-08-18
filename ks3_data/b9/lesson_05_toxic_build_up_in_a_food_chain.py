@@ -1,8 +1,8 @@
 """B9 L5 — Toxic build-up in a food chain (PROCESS).
 
 Authored against Claude Design's approved page,
-`KS3 B9 lessons/b9-05-toxic-build-up-in-a-food-chain.dc.html` (575 lines), her
-author's notes `KS3 B9 lessons/NOTES-B9.md`, and the B9 payload schema
+`docs/ks3/design-reference/b9/b9-05-toxic-build-up-in-a-food-chain.dc.html` (575 lines), her
+author's notes `docs/ks3/design-reference/b9/NOTES-B9.md`, and the B9 payload schema
 `docs/ks3/b9-inventory/PAYLOAD-SCHEMA.md` §0, §1, §2, §4, §9, §11, §12 and §14,
 under the MRB-220 build contract.
 

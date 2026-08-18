@@ -1,7 +1,7 @@
 """B4 L2 — How breathing works (MODEL).
 
 Authored against Design's approved page,
-`KS3 B4 lessons/b4-02-how-breathing-works.dc.html` (581 lines), under the
+`docs/ks3/design-reference/b4/b4-02-how-breathing-works.dc.html` (581 lines), under the
 MRB-220 build contract, with the instrument payload authored against
 `docs/ks3/b4-inventory/PAYLOAD-SCHEMA.md` §2 (the engine pass's own contract —
 it existed by the time this record reached the instrument, so `r_bell_jar` was

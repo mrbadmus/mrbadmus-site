@@ -7,7 +7,7 @@ shipped without one and five records then spelled the same four labels nine diff
 this document wins on NAMING (what we call it).** Where the page needs something this schema has
 not anticipated, follow the page and say so in the report.
 
-Everything below is measured from the four approved `.dc.html` files in `KS3 B11 lessons/`, not
+Everything below is measured from the four approved `.dc.html` files in `docs/ks3/design-reference/b11/`, not
 inferred from `NOTES-B11.md`. Where the notes and the delivered bytes disagree, §9 says so.
 
 ---

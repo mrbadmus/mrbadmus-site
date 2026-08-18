@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exercise, asthma and smoking · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b404-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b404-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Breathing and gas exchange</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Exercise, asthma and smoking</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Breathing and gas exchange · System</p>
+        <h1>Exercise, asthma and smoking</h1>
+        <p class="ks3-bigq">Three things that change how well you breathe, and they act on three different parts of the system. Naming which part is most of the answer.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>An asthma inhaler works in a room full of perfectly good air.</h2>
+        <p class="ks3-hook-prompt">Someone having an asthma attack is standing outdoors. The air around them is 21% oxygen, the same as everyone else's. They cannot get enough of it. A puff from a blue inhaler helps within minutes, and it contains no oxygen at all.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">If the air is fine, what has gone wrong?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">The route in has narrowed. Muscle in the walls of the bronchioles has contracted, the lining has swollen and produced extra mucus, and air cannot get through fast enough — with 21% oxygen sitting right outside the mouth. The inhaler relaxes that muscle. Nothing about the air needed fixing.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">Locate the fault · three factors</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Which part of the system does each one hit?</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Commit to a part of the system before opening each one. The four options are the same every time, and only one of the three factors hits the same part twice.</p>
+
+        <div style="margin-top: 22px; display: flex; gap: 9px; flex-wrap: wrap;">
+          <sc-for list="{{ factorTabs }}" as="t" hint-placeholder-count="3">
+            <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">{{ factorTag }}</p>
+          <p style="margin: 8px 0 0; font-size: 20px; line-height: 1.5; color: var(--ks3-on-dark);">{{ factorScenario }}</p>
+        </div>
+
+        <p style="margin: 20px 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Which part of the system is affected?</p>
+        <ul class="ks3-options">
+          <sc-for list="{{ partOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <div style="margin-top: 18px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onOpen }}" disabled="{{ openLocked }}" style="{{ openBtnStyle }}">Show what happens</button>
+          <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ openHint }}</span>
+        </div>
+
+        <sc-if value="{{ factorOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ factorVerdict }}</p>
+            <p style="margin: 9px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1.2; letter-spacing: -.02em;">{{ factorAnswer }}</p>
+            <dl style="margin: 16px 0 0;">
+              <sc-for list="{{ factorRows }}" as="r" hint-placeholder-count="4">
+                <div style="padding: 13px 0; border-top: 2px solid var(--ks3-rule);">
+                  <dt style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ r.k }}</dt>
+                  <dd style="margin: 5px 0 0; font-size: 18px; line-height: 1.55;">{{ r.v }}</dd>
+                </div>
+              </sc-for>
+            </dl>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-smoke" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Four substances, four different damages</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 28ch;">Cigarette smoke is not one thing doing one thing.</p>
+
+        <ul style="list-style: none; margin: 24px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px;">
+          <sc-for list="{{ smokeParts }}" as="p" hint-placeholder-count="4">
+            <li style="padding: 22px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px; line-height: 1.2; letter-spacing: -.02em;">{{ p.name }}</p>
+              <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ p.where }}</p>
+              <p style="margin: 11px 0 0; font-size: 18px; line-height: 1.55;">{{ p.what }}</p>
+            </li>
+          </sc-for>
+        </ul>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Exercise changes how fast you ventilate and is fully reversible. An asthma attack narrows the airways and is reversible with treatment. Smoking damages the cilia, the alveolar walls and the blood, and the alveolar damage is permanent.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Being out of breath means your lungs cannot hold enough air.”</p>
+        <p>Lung capacity is almost never the limit. During hard exercise your muscles are respiring far faster, producing far more carbon dioxide, and it is the <em>carbon dioxide</em> in your blood that your brain measures and responds to — not a shortage of oxygen and not the size of your lungs. That is why holding your breath becomes unbearable long before your blood oxygen has fallen dangerously, and why breathing hard after a sprint continues after you have stopped running: there is a backlog of carbon dioxide to clear. Trained athletes do not generally have much larger lungs than untrained people; what they have is a heart, a circulation and a set of muscles that use oxygen better once it arrives.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“During an asthma attack there is not enough oxygen in the air.”</p>
+          <p>The air is unchanged — 21% oxygen, exactly as it was a minute earlier. What has changed is the diameter of the bronchioles, and a small change in diameter has a very large effect on flow: halving the radius of a tube reduces the flow through it by about a factor of sixteen. That is why an attack can go from mild to serious quickly, why a blue inhaler containing a muscle relaxant helps rather than an oxygen cylinder, and why the correct first response is the inhaler and, if it does not work, emergency help. Handing someone oxygen while their airway is shut solves nothing.</p>
+        </div>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“Tar is the harmful part of cigarette smoke.”</p>
+          <p>Tar is one of at least four separate problems, and it is not the one that acts fastest. Carbon monoxide binds to haemoglobin roughly 200 times more strongly than oxygen does, so it takes red blood cells out of service immediately — a heavy smoker may have a tenth of their haemoglobin unavailable at any moment, which is a circulation problem rather than a lung one. Nicotine narrows blood vessels and raises heart rate. The heat and irritants paralyse and destroy the cilia, so mucus is no longer swept out and has to be coughed instead. And the enzymes released during the resulting chronic inflammation break down alveolar walls, merging many small alveoli into few large ones and destroying exchange surface that never grows back. Four mechanisms, four organs affected, one of them irreversible.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Exercise raises breathing rate and depth, triggered by rising carbon dioxide, and is fully reversible. Asthma narrows the bronchioles through muscle contraction, swelling and mucus, and is treated by relaxing that muscle. Smoking paralyses and destroys cilia, introduces carbon monoxide that occupies haemoglobin, and destroys alveolar walls — reducing exchange surface permanently.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The link between smoking and lung cancer was established without any experiment on humans, which is a genuinely interesting problem in how science proves things. Richard Doll and Austin Bradford Hill began by surveying hospital patients in 1950, then followed 40 000 British doctors for decades — watching who smoked, who stopped, and who died of what. Correlation alone is never proof, so the case was built from several independent strands: the risk rose with the number smoked, fell when people stopped, appeared in every country studied, and had a mechanism identifiable in the chemistry of tar. Doll himself smoked when the study began and gave up two years in, on his own evidence. That is what changing your mind in response to data actually looks like, and it is rarer than it should be.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="b4-05-stomata-and-gas-exchange-in-plants.html">Stomata and gas exchange in plants<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b4-03-alveoli-built-for-exchange.html">Alveoli: built for exchange<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b2-03-antagonistic-muscle-pairs.html">Antagonistic muscle pairs<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Risk factors for non-communicable disease, correlation and cause, and the effect of exercise on respiration.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to check which part of the system each factor affects?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">This lesson describes the biology of asthma and of smoking. It is not medical advice and does not replace an asthma plan: if you have asthma, follow the plan your doctor or nurse gave you, and treat a reliever inhaler that is not working as an emergency. For help stopping smoking, a GP or pharmacist is the right place to start.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The inhaler' },
+  { id: 's-bench', label: 'Locate the fault' },
+  { id: 's-smoke', label: 'Four substances' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'LOCATE', 'SMOKE', 'LADDER'];
+
+const PARTS = [
+  { id: 'muscles', text: 'The breathing muscles \u2014 diaphragm and intercostals' },
+  { id: 'airways', text: 'The airways \u2014 bronchi and bronchioles' },
+  { id: 'alveoli', text: 'The alveoli \u2014 the exchange surface itself' },
+  { id: 'blood', text: 'The blood \u2014 what carries the oxygen away' }
+];
+
+const FACTORS = [
+  { id: 'exercise', label: 'Exercise', tag: 'Factor 1 \u00b7 during and after hard exercise',
+    scenario: 'Someone runs 400 metres flat out. Their breathing rate rises from about 14 breaths a minute to over 40, and each breath is far deeper. They keep breathing hard for several minutes after stopping.',
+    part: 'muscles',
+    answer: 'The breathing muscles \u2014 working harder and faster.',
+    rows: [
+      { k: 'What actually changes', v: 'The diaphragm and intercostal muscles contract more forcefully and more often. Nothing about the airways, the alveoli or the blood is altered.' },
+      { k: 'What triggers it', v: 'Rising carbon dioxide in the blood, detected in the brain stem. Not a shortage of oxygen \u2014 the body monitors the waste product, not the fuel.' },
+      { k: 'Effect on gas exchange', v: 'Alveolar air is refreshed more often, so the concentration difference across the alveolar wall stays steeper and more oxygen diffuses per second.' },
+      { k: 'Reversible?', v: 'Completely, within minutes. The continued hard breathing after stopping is clearing the carbon dioxide backlog.' }
+    ] },
+  { id: 'asthma', label: 'Asthma attack', tag: 'Factor 2 \u00b7 during an asthma attack',
+    scenario: 'A pupil with asthma starts wheezing on a cold morning. Breathing out is harder than breathing in, there is a tight feeling in the chest, and a blue reliever inhaler helps within minutes.',
+    part: 'airways',
+    answer: 'The airways \u2014 narrowed bronchioles.',
+    rows: [
+      { k: 'What actually changes', v: 'Three things at once: muscle in the bronchiole walls contracts, the lining swells, and extra mucus is produced. All three reduce the diameter of the tube.' },
+      { k: 'Why it matters so much', v: 'Flow through a tube depends steeply on its radius \u2014 halve the radius and flow drops around sixteenfold. A modest narrowing has a dramatic effect.' },
+      { k: 'Effect on gas exchange', v: 'The alveoli are undamaged and the blood is fine. Not enough air is reaching the exchange surface, which is a delivery problem, not an exchange problem.' },
+      { k: 'Reversible?', v: 'Yes, with treatment. A reliever inhaler relaxes the airway muscle. An attack that does not respond to it is a medical emergency.' }
+    ] },
+  { id: 'smoking', label: 'Long-term smoking', tag: 'Factor 3 \u00b7 after years of smoking',
+    scenario: 'An adult who has smoked for twenty-five years is breathless walking uphill, coughs most mornings, and a lung function test shows reduced gas transfer that does not improve with an inhaler.',
+    part: 'alveoli',
+    answer: 'The alveoli \u2014 and the airways and the blood as well.',
+    rows: [
+      { k: 'What actually changes', v: 'Alveolar walls are broken down, merging many small alveoli into fewer large ones. The volume is similar; the surface area is not. This is emphysema.' },
+      { k: 'And elsewhere', v: 'Cilia are paralysed and destroyed, so mucus must be coughed out instead of swept out \u2014 the morning cough. Carbon monoxide occupies haemoglobin, so the blood carries less oxygen.' },
+      { k: 'Effect on gas exchange', v: 'Less surface, so less exchange per second, and less carrying capacity in the blood arriving. Two of the four requirements from the last lesson are damaged at once.' },
+      { k: 'Reversible?', v: 'The cilia recover over months after stopping and the carbon monoxide clears within a day. The lost alveolar walls do not grow back \u2014 that part is permanent.' }
+    ] }
+];
+
+const SMOKE_PARTS = [
+  { name: 'Tar', where: 'Airways and alveoli', what: 'A sticky mixture containing carcinogens. It coats the airway lining, paralyses and then destroys cilia, and its irritation drives the chronic inflammation that damages alveolar walls.' },
+  { name: 'Carbon monoxide', where: 'The blood', what: 'Binds to haemoglobin about 200 times more strongly than oxygen and does not readily let go, taking red blood cells out of service. This is a circulation effect and it happens immediately, not after decades.' },
+  { name: 'Nicotine', where: 'Blood vessels and heart', what: 'Narrows blood vessels and raises heart rate and blood pressure. It is also the substance that makes stopping physically difficult, which is why stopping is a medical matter and not simply a decision.' },
+  { name: 'Particulates and heat', where: 'Airways', what: 'Irritate the lining directly, increasing mucus production while the cilia that would clear it are being disabled. The result is mucus accumulating with no way out except coughing.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 What drives faster breathing',
+    question: 'What does your body actually detect that makes you breathe faster during exercise?',
+    options: [
+      { text: 'Falling oxygen in the blood', correction: 'Blood oxygen changes remarkably little during ordinary exercise. The body monitors the waste product instead \u2014 it is a far more sensitive early signal.' },
+      { text: 'Rising carbon dioxide in the blood', correct: true },
+      { text: 'The lungs becoming empty', correction: 'Lung volume is not what is sensed. Nothing measures how full the lungs are in order to set the rate.' },
+      { text: 'Muscles signalling that they are tired', correction: 'Breathing rate rises before any tiredness, and stays raised after you stop. It tracks a blood chemical, not muscle fatigue.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'Which of these effects of smoking is permanent?',
+    options: [
+      { text: 'Carbon monoxide occupying haemoglobin', correction: 'This clears within about a day of the last cigarette. It is serious and it is not permanent.' },
+      { text: 'Paralysed cilia', correction: 'Cilia recover over weeks to months after stopping \u2014 which is why a smoker\u2019s cough often gets temporarily worse first, as clearance restarts.' },
+      { text: 'Destroyed alveolar walls', correct: true },
+      { text: 'Extra mucus production', correction: 'This reduces once the irritation stops. The irreversible loss is structural.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain the inhaler',
+    question: 'Explain why a reliever inhaler helps during an asthma attack even though it contains no oxygen, and why giving someone oxygen instead would not fix the underlying problem.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The inhaler works because\u2026',
+    criteria: [
+      'Says the air already contains 21% oxygen, so the air is not the problem.',
+      'Identifies the problem as narrowed bronchioles \u2014 muscle contraction, swelling and mucus.',
+      'Says the inhaler relaxes the airway muscle, widening the tube so air can flow again.',
+      'Explains that oxygen cannot help much if air cannot reach the alveoli in the first place.',
+      'Notes that an attack not responding to a reliever needs emergency help.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A patient with emphysema has almost normal lung volume but greatly reduced gas transfer. Explain how both can be true, using what you learnt about alveoli, and say which of the four requirements for a good exchange surface has been lost.',
+    fieldLabel: 'Your answer',
+    placeholder: 'The volume is normal because\u2026',
+    criteria: [
+      'Says alveolar walls have broken down, merging small alveoli into fewer larger ones.',
+      'Explains that this keeps total volume similar while reducing total surface area sharply.',
+      'Identifies large surface area as the requirement that has been lost.',
+      'Connects this back to the hook of the alveoli lesson \u2014 the patient has moved partway towards the smooth bag.'
+    ] }
+];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return Object.keys(s.opened).length >= 3;
+  if (id === 's-smoke') return Object.keys(s.opened).length >= 3;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    factor: 'exercise',
+    picks: {},
+    opened: {},
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  renderVals() {
+    const s = this.state;
+    const factor = FACTORS.find((f) => f.id === s.factor) || FACTORS[0];
+    const pick = s.picks[factor.id];
+    const opened = !!s.opened[factor.id];
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'The oxygen in the air around them has dropped' },
+        { letter: 'B', text: 'Their alveoli have stopped working' },
+        { letter: 'C', text: 'The tubes carrying air to the alveoli have narrowed' },
+        { letter: 'D', text: 'Their diaphragm has stopped contracting' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      benchProgress: Object.keys(s.opened).length + ' of 3 opened',
+      factorTabs: FACTORS.map((f) => ({
+        label: f.label, pressed: f.id === s.factor,
+        style: 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 17px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+          (f.id === s.factor ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (f.id === s.factor ? 'var(--ks3-alert)' : 'transparent') +
+          ';color:' + (f.id === s.factor ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';',
+        onClick: () => this.setState({ factor: f.id })
+      })),
+      factorTag: factor.tag,
+      factorScenario: factor.scenario,
+      partOptions: PARTS.map((p, i) => ({
+        letter: String.fromCharCode(65 + i), text: p.text,
+        pressed: pick === p.id, disabled: opened,
+        onClick: () => this.setState((st) => st.opened[factor.id] ? null : ({ picks: Object.assign({}, st.picks, { [factor.id]: p.id }) }))
+      })),
+      openLocked: !pick || opened,
+      openBtnStyle: (!pick || opened) ? 'opacity:.45;cursor:default;' : '',
+      openHint: opened ? 'opened' : (pick ? 'ready' : 'choose a part first'),
+      onOpen: () => this.setState((st) => st.picks[factor.id] ? ({ opened: Object.assign({}, st.opened, { [factor.id]: true }) }) : null),
+      factorOpen: opened,
+      factorVerdict: pick === factor.part ? 'You located it' : 'Not the part you chose',
+      factorAnswer: factor.answer,
+      factorRows: factor.rows,
+
+      smokeParts: SMOKE_PARTS,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === correctIndex, isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: done,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

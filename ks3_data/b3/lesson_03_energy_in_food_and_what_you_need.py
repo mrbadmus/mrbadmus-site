@@ -1,7 +1,7 @@
 """B3 L3 — Energy in food and what you need (QUANTITATIVE).
 
 Authored against Design's approved page,
-`KS3 B3 lessons/b3-03-energy-in-food-and-what-you-need.dc.html` (602 lines),
+`docs/ks3/design-reference/b3/b3-03-energy-in-food-and-what-you-need.dc.html` (602 lines),
 under the MRB-220 build contract.
 
 ── `KS3.B.NUT.02` IS SPLIT, AND THIS LESSON OWNS B3'S HALF ──────────────

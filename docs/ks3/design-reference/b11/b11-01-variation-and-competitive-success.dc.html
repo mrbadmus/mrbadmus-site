@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Variation and competitive success · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b1101-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b1101-arrive .34s ease-out both; }
+  [data-fill] { transition: width .3s linear; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } [data-fill] { transition: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Evolution, extinction and biodiversity</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Variation and competitive success</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Evolution, extinction and biodiversity · System</p>
+        <h1>Variation and competitive success</h1>
+        <p class="ks3-bigq">No two individuals in a population are identical. Most of the time that is a curiosity. When something goes wrong — a drought, a cold winter, a new predator — it becomes the most important fact about them.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>A thick coat is an advantage. Until it is not.</h2>
+        <p class="ks3-hook-prompt">Two mice in the same litter, one with a noticeably thicker coat. Which of them does better depends entirely on what happens next — and the same is true of every difference between them: size, speed, appetite, colour, boldness.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Which variation in a population is the best one to have?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">There is no best one. An advantage is only ever an advantage <em>in a particular set of conditions</em>, and the conditions change. Being large helps you win fights and costs you more food; a thick coat saves you in a cold winter and overheats you in a warm one. The bench below runs the same population through five different environments and the winner changes every time.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · one population, five conditions</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Change the world, not the mice</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">The same five mice every time. Only the conditions change, and the survival column changes with them. Watch one mouse across all five and see how often the same animal is at the top and at the bottom.</p>
+
+        <div style="margin-top: 22px;">
+          <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The conditions</p>
+          <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+            <sc-for list="{{ envTabs }}" as="t" hint-placeholder-count="5">
+              <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);">
+          <p style="margin: 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ envName }}</p>
+          <p style="margin: 6px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-muted);">{{ envNote }}</p>
+
+          <ul style="list-style: none; margin: 20px 0 0; padding: 0; display: flex; flex-direction: column; gap: 13px;">
+            <sc-for list="{{ mice }}" as="m" hint-placeholder-count="5">
+              <li>
+                <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px;">
+                  <p style="margin: 0; font-size: 18px; font-weight: 700; color: var(--ks3-on-dark);">{{ m.name }}</p>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 16px; color: {{ m.colour }};">{{ m.chance }}</p>
+                </div>
+                <span style="display: block; margin-top: 5px; height: 16px; border-radius: 99px; background: rgba(255,255,255,.08); overflow: hidden;"><span data-fill="1" style="{{ m.barStyle }}"></span></span>
+                <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5; color: var(--ks3-on-dark-body);">{{ m.why }}</p>
+              </li>
+            </sc-for>
+          </ul>
+
+          <p style="margin: 18px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink); font-size: 18px; line-height: 1.6;">{{ verdictText }}</p>
+        </div>
+      </section>
+
+      <section id="s-three" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">What they are competing for</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 28ch;">More are born than can possibly survive.</p>
+
+        <div style="margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px;">
+          <sc-for list="{{ competeCards }}" as="c" hint-placeholder-count="4">
+            <div style="padding: 24px 26px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ c.kind }}</p>
+              <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 23px; line-height: 1.2; letter-spacing: -.02em;">{{ c.name }}</p>
+              <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.5;">{{ c.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Individuals of a species vary, and resources are limited, so some compete more successfully than others. Which variation gives an advantage depends entirely on the conditions, and the conditions change — so there is no such thing as a generally superior individual.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Survival of the fittest means the strongest survive.”</p>
+        <p>Fittest here means <em>best fitted to these conditions</em>, in the sense that a key fits a lock — not fittest in the sense of a gym. It is regularly the small, the drab and the unimpressive that come through. In a drought, the animal that needs least water wins; in a famine, the one that survives on least food; against a new disease, the one that happens to be resistant, which may be the sickliest animal in the group in every other respect. A stag with enormous antlers wins fights and starves in a hard winter carrying them. And the measure is not survival at all in the end — it is how many surviving offspring an individual leaves. An organism that lives fifty years and never breeds has a fitness of zero; a mayfly that lives one day and lays five hundred eggs has done everything that counts.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“Some individuals are just better than others.”</p>
+          <p>Better at what, and in what conditions? Change the environment on the bench above and the ranking reshuffles, using the same five animals with the same five sets of characteristics. A large mouse dominates a food pile and needs more of it; a bold mouse finds new food first and meets the owl first; a thick coat is life in January and a burden in July. This is why biologists are careful to say <em>well adapted to a particular environment</em> rather than <em>advanced</em> or <em>superior</em>, and it is not a politeness. A species that is superbly suited to one place is, by that same specialisation, badly placed if the place changes — which is precisely how extinctions happen, and it is <a href="b11-03-when-the-environment-changes-extinction.html">the subject two lessons from here</a>.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Individuals within a species vary, and more offspring are produced than the resources can support, so they compete — for food, water, space, mates and escape from predators. Variations that suit the current conditions make an individual more likely to survive and reproduce. Which variations those are depends on the conditions, so no variation is an advantage in general.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Peter and Rosemary Grant spent forty years measuring finches on Daphne Major, a small island in the Galápagos, catching and weighing essentially every bird on it year after year. In the drought of 1977 the small soft seeds ran out and only the large tough ones were left, and the finches with slightly deeper, stronger beaks survived at a much higher rate. The average beak depth in the population measurably increased in a single generation. Then in 1983 came exceptional rains, the small soft seeds returned in abundance, and the average beak size went back down. That is the whole of this lesson in one data set: the same variation, an advantage in one year and a disadvantage six years later, with no bird ever changing its own beak. It is also one of the few places where evolution has been watched happening rather than reconstructed afterwards.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b10-01-variation-continuous-and-discontinuous.html">Variation: continuous and discontinuous<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b9-02-predator-and-prey.html">Predator and prey<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b11-02-natural-selection.html">Natural selection<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b7-02-leaves-built-for-the-job.html">Leaves built for the job<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Selection pressures, adaptation, and the evidence for evolution from the fossil record and from living populations.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to test a variation against conditions of your own?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The survival percentages are teaching values chosen to show how the ranking changes, not measurements. Real fitness depends on many characteristics at once, on chance, and on what the rest of the population is doing; the bench isolates one variation per mouse to make the point readable.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Until it is not' },
+  { id: 's-bench', label: 'Change the world' },
+  { id: 's-three', label: 'Competing for' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'BENCH', 'COMPETE', 'LADDER'];
+
+const MICE = [
+  { id: 'big', name: 'Large, heavy build' },
+  { id: 'thick', name: 'Thick coat' },
+  { id: 'fast', name: 'Small and quick' },
+  { id: 'bold', name: 'Bold and exploratory' },
+  { id: 'pale', name: 'Pale sandy fur' }
+];
+
+const ENVS = [
+  { id: 'winter', label: 'A hard winter', name: 'A hard winter, snow for eight weeks',
+    note: 'Food is scarce and buried, and the cold is relentless. Losing heat is now the main way to die.',
+    chances: { big: 70, thick: 90, fast: 45, bold: 55, pale: 75 },
+    whys: {
+      big: 'A large body loses heat more slowly than a small one, and fat reserves last. It also needs more food, which is scarce.',
+      thick: 'Insulation is exactly what this winter demands, and it costs almost nothing to carry.',
+      fast: 'A small body loses heat fast relative to its mass, and speed is no defence against cold.',
+      bold: 'Willing to search further for buried food, which helps \u2014 and is exposed to the cold while doing it.',
+      pale: 'Pale fur against snow is difficult for an owl to see, which is worth a great deal in a winter with no cover.' },
+    verdict: 'The thick coat wins, and it is the mouse that will suffer most in the next environment on the list.' },
+  { id: 'drought', label: 'A long drought', name: 'A long drought, no rain for months',
+    note: 'Water is the limit, and heat is the danger. Every gram of body has to be kept cool and supplied.',
+    chances: { big: 40, thick: 25, fast: 85, bold: 60, pale: 70 },
+    whys: {
+      big: 'A big body needs more water and more food, and there is neither. Size is now a bill rather than an asset.',
+      thick: 'The insulation that saved this mouse in winter now traps heat it cannot lose. The worst place on the bench to be.',
+      fast: 'Small, light, needs little water and cools easily. The animal that struggled in January is thriving.',
+      bold: 'Finds the few remaining water sources, and takes risks doing it.',
+      pale: 'Pale fur reflects sunlight and matches dry ground, so it stays cooler and stays hidden.' },
+    verdict: 'The thick coat has gone from best to worst, and the small quick mouse from worst to best. Nothing about either animal changed.' },
+  { id: 'owl', label: 'An owl moves in', name: 'A barn owl takes up residence',
+    note: 'A new predator hunting at night by sight and sound. The ground is dark peaty soil.',
+    chances: { big: 35, thick: 55, fast: 80, bold: 20, pale: 25 },
+    whys: {
+      big: 'Slower to reach cover and a larger target. Being conspicuous has suddenly become expensive.',
+      thick: 'Neither helped nor harmed by the coat. This mouse survives on average.',
+      fast: 'Quick to cover and a small target. Speed is worth more tonight than anything else.',
+      bold: 'Bold means out in the open more often, which is precisely the wrong habit to have when something is hunting.',
+      pale: 'Pale fur on dark peat is the most visible thing in the field. The camouflage that saved it in snow now advertises it.' },
+    verdict: 'Boldness and pale fur are the liabilities here \u2014 and pale fur was an advantage in the snow. The variation has not changed; the background has.' },
+  { id: 'crowded', label: 'Overcrowding', name: 'A mild year, and the population doubles',
+    note: 'No shortage of weather to worry about \u2014 but too many mice, too little food, and constant competition for burrows.',
+    chances: { big: 80, thick: 50, fast: 45, bold: 75, pale: 50 },
+    whys: {
+      big: 'Wins direct confrontations over food and burrows. In a crowd, size finally pays for itself.',
+      thick: 'No advantage and no cost in a mild year. Average.',
+      fast: 'Quick, but repeatedly displaced from food by larger mice. Speed does not win an argument.',
+      bold: 'Explores beyond the crowded area and finds unoccupied ground and untouched food.',
+      pale: 'Colour is irrelevant to this problem, so this mouse sits in the middle.' },
+    verdict: 'Size wins where the competition is with your own kind rather than with the weather. Note that the drought\u2019s loser is this environment\u2019s winner.' },
+  { id: 'disease', label: 'A new disease', name: 'A virus sweeps through the population',
+    note: 'Nothing to outrun and nothing to hide from. Resistance is decided by which versions of certain genes an animal happens to carry.',
+    chances: { big: 45, thick: 45, fast: 45, bold: 30, pale: 45 },
+    whys: {
+      big: 'No protection. Size is irrelevant to a virus.',
+      thick: 'No protection. The coat does nothing here.',
+      fast: 'No protection. You cannot outrun an infection.',
+      bold: 'Actively worse \u2014 more contact with more mice means more chance of catching it.',
+      pale: 'No protection, and no penalty.' },
+    verdict: 'None of the visible variations helps. Whatever decides who survives this is something none of these mice can be seen to have \u2014 which is why a population needs variation it is not currently using.' }
+];
+
+const COMPETE_CARDS = [
+  { kind: 'Between members of one species', name: 'Food and water', body: 'The most common competition, and the one that bites first. Every organism eating the same thing in the same place is a rival.' },
+  { kind: 'Between members of one species', name: 'Space and shelter', body: 'Territory, a burrow, a nest site, a place on the rock. Often more limiting than food, and usually settled by size or by who arrived first.' },
+  { kind: 'Between members of one species', name: 'Mates', body: 'Only some individuals breed. This is where fitness is finally counted, because surviving without reproducing contributes nothing to the next generation.' },
+  { kind: 'Against everything else', name: 'Predators and disease', body: 'Not competition exactly, but the same filter: whichever variations happen to help you avoid being eaten or infected are the ones that get passed on.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Advantage in context',
+    question: 'Pale sandy fur is an advantage in snow and a disadvantage on dark soil. What does that show?',
+    options: [
+      { text: 'Whether a variation is an advantage depends on the environment', correct: true },
+      { text: 'That pale fur is generally a poor variation to have', correction: 'It is excellent in one of the two environments described. General is the word that does not apply.' },
+      { text: 'That the mouse can change its fur colour to suit the ground', correction: 'It cannot. The fur an animal has is the fur it has \u2014 the environment does the choosing, not the mouse.' },
+      { text: 'That camouflage matters more than anything else', correction: 'It mattered against the owl and was irrelevant to the disease. That is the same point again.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'What does "fittest" mean in "survival of the fittest"?',
+    options: [
+      { text: 'The strongest and healthiest individuals', correction: 'Strength is one variation among many, and it is often the wrong one. In a drought the animal that needs least water wins.' },
+      { text: 'Best fitted to the current conditions, and leaving the most surviving offspring', correct: true },
+      { text: 'The individuals that live the longest', correction: 'Length of life counts for nothing on its own. An organism that lives fifty years and never breeds leaves nothing behind.' },
+      { text: 'The most advanced or highly evolved', correction: 'There is no ranking of advancement in biology. A bacterium that thrives where nothing else can is superbly fitted to it.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain a reversal',
+    question: 'On the bench, the thick-coated mouse is the most likely to survive the winter and the least likely to survive the drought. Explain both results, and say what this means for the idea of a "better" animal.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'In winter the thick coat\u2026',
+    criteria: [
+      'Says the thick coat reduces heat loss, which is the main danger in a hard winter.',
+      'Says in a drought the same coat traps heat the animal needs to lose.',
+      'Makes clear the mouse itself did not change \u2014 only the conditions did.',
+      'Concludes that an advantage is relative to a particular environment.',
+      'States that there is therefore no generally better individual, only one better suited to current conditions.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'On the disease bench, none of the five visible variations protects the mice. Explain why a population still benefits from having lots of variation it is not currently using, and what that implies for a population reduced to very few individuals.',
+    fieldLabel: 'Your answer',
+    placeholder: 'The variation that matters against a new disease\u2026',
+    criteria: [
+      'Says the variation that will matter against a future threat cannot be known in advance.',
+      'Says a population with more variation is more likely to contain some individuals that happen to survive it.',
+      'Says those survivors pass their versions on, so the population recovers.',
+      'Says a population reduced to very few individuals has lost most of its variation.',
+      'Concludes that such a population is much more likely to be wiped out by a change it happens to be unsuited to.'
+    ] }
+];
+
+function isDone(id, s) {
+  const n = Object.keys(s.seen).filter((k) => s.seen[k]).length;
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return n >= 3;
+  if (id === 's-three') return n >= 3;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    env: 'winter',
+    seen: { winter: true },
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on) {
+    return 'cursor:pointer;font:inherit;font-size:16px;font-weight:700;padding:10px 15px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+      (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const env = ENVS.find((e) => e.id === s.env) || ENVS[0];
+    const best = Math.max.apply(null, MICE.map((m) => env.chances[m.id]));
+    const worst = Math.min.apply(null, MICE.map((m) => env.chances[m.id]));
+    const nSeen = Object.keys(s.seen).filter((k) => s.seen[k]).length;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'Being the largest and strongest' },
+        { letter: 'B', text: 'Being the fastest' },
+        { letter: 'C', text: 'Being best camouflaged' },
+        { letter: 'D', text: 'It depends entirely on the conditions' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      benchProgress: nSeen + ' of ' + ENVS.length + ' conditions tried',
+      envTabs: ENVS.map((e) => ({
+        label: e.label, pressed: e.id === s.env, style: this.seg(e.id === s.env),
+        onClick: () => this.setState((st) => ({ env: e.id, seen: Object.assign({}, st.seen, { [e.id]: true }) }))
+      })),
+      envName: env.name,
+      envNote: env.note,
+      mice: MICE.map((m) => {
+        const c = env.chances[m.id];
+        const isBest = c === best, isWorst = c === worst;
+        return {
+          name: m.name, why: env.whys[m.id],
+          chance: c + '% survive' + (isBest ? ' \u00b7 best here' : (isWorst ? ' \u00b7 worst here' : '')),
+          colour: isBest ? 'var(--ks3-ok)' : (isWorst ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)'),
+          barStyle: 'display:block;height:100%;width:' + c + '%;background:' + (isBest ? 'var(--ks3-ok)' : (isWorst ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)')) + ';'
+        };
+      }),
+      verdictText: env.verdict,
+
+      competeCards: COMPETE_CARDS,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const answered = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: answered,
+          isRight: answered && chosen === correctIndex, isWrong: answered && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (answered ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = answered && i === correctIndex;
+            const isWrong = answered && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (answered) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: answered,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+</script>
+</body>
+</html>

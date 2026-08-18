@@ -1,8 +1,8 @@
 """B8 L5 — Aerobic vs anaerobic (CONTRAST).
 
 Authored against Claude Design's approved page,
-`KS3 B8 lessons/b8-05-aerobic-vs-anaerobic.dc.html` (569 lines), her author's
-notes `KS3 B8 lessons/NOTES-B8.md`, and the B8 payload schema
+`docs/ks3/design-reference/b8/b8-05-aerobic-vs-anaerobic.dc.html` (569 lines), her author's
+notes `docs/ks3/design-reference/b8/NOTES-B8.md`, and the B8 payload schema
 `docs/ks3/b8-inventory/PAYLOAD-SCHEMA.md` §6, §7, §8, §9 and §10, under the
 MRB-220 build contract.
 
@@ -292,7 +292,7 @@ correction is already *"Both halves are the wrong way round."*
 
   * flag 21   **No diagrams in the unit, and I MEASURED it.**
               `grep -c "<img\\|<figure\\|<picture"` over
-              `KS3 B8 lessons/b8-05-aerobic-vs-anaerobic.dc.html` returns **0**.
+              `docs/ks3/design-reference/b8/b8-05-aerobic-vs-anaerobic.dc.html` returns **0**.
               The only SVG on the page is UI furniture: the nav chevron, the
               rail tick, the endmatter link arrows and the ladder tick/cross
               marks. No placeholder, no empty frame, no caption with nothing

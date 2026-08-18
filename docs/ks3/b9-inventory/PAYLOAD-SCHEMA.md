@@ -12,8 +12,8 @@ ways**. That is the cost of deciding a key name eight times instead of once.
 this document wins on NAMING (what we call it).** Where the page needs something this schema has
 not anticipated, follow the page and say so in the report.
 
-Every line below is measured from the six delivered `.dc.html` files in `KS3 B9 lessons/`, dated
-16 Aug, and from `KS3 B9 lessons/support.js`. Nothing is inferred from `NOTES-B9.md`; where NOTES
+Every line below is measured from the six delivered `.dc.html` files in `docs/ks3/design-reference/b9/`, dated
+16 Aug, and from `docs/ks3/design-reference/b9/support.js`. Nothing is inferred from `NOTES-B9.md`; where NOTES
 and the page disagree, §10 records it.
 
 ---

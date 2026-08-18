@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Predator and prey · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b902-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b902-arrive .34s ease-out both; }
+  [data-fill] { transition: width .3s linear, height .3s linear; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } [data-fill] { transition: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Ecosystems and interdependence</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Predator and prey</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Ecosystems and interdependence · Model</p>
+        <h1>Predator and prey</h1>
+        <p class="ks3-bigq">A fox eating rabbits is bad news for the rabbits. A fox population eating a rabbit population is something stranger: two numbers chasing each other round in a circle, neither able to win.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Foxes have eaten rabbits for thousands of years. There are still rabbits.</h2>
+        <p class="ks3-hook-prompt">Every predator is better at hunting than its prey is at escaping, at least sometimes, or it would starve. Run that forward for a few thousand generations and you might expect the prey to be gone and the predator with it. Instead both are still here.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Why do predators not wipe out their prey?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Because the prey running out is the predator's problem too. As rabbits become scarce the foxes go hungry, fewer cubs survive, and the fox population falls — which takes the pressure off the rabbits, who recover, and the whole thing goes round again. Nobody is managing this. It falls out of the arithmetic, and the bench below runs it.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · one field, two populations</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Run the years and watch the lag</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ yearLabel }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Two rules, and nothing else. Rabbits breed and are eaten; foxes eat and die. Run a few decades and look at when each peak happens — not how high, when.</p>
+
+        <div style="margin-top: 22px; padding: 22px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);">
+          <div style="display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: baseline;">
+            <p style="margin: 0; font-size: 20px; font-weight: 700; color: var(--ks3-alert);">Rabbits {{ preyNow }}</p>
+            <p style="margin: 0; font-size: 20px; font-weight: 700; color: var(--ks3-ok);">Foxes {{ predNow }}</p>
+          </div>
+
+          <div style="margin-top: 18px; display: flex; align-items: flex-end; gap: 3px; height: 150px; padding: 10px 12px; border-radius: var(--ks3-r-panel); background: rgba(255,255,255,.06);">
+            <sc-for list="{{ history }}" as="h" hint-placeholder-count="12">
+              <span style="flex: 1 1 0; display: flex; align-items: flex-end; gap: 2px; height: 100%; min-width: 0;">
+                <span data-fill="1" style="{{ h.preyStyle }}"></span>
+                <span data-fill="1" style="{{ h.predStyle }}"></span>
+              </span>
+            </sc-for>
+          </div>
+          <p style="margin: 8px 0 0; font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">{{ chartCaption }}</p>
+
+          <p style="margin: 18px 0 0; padding: 15px 17px; border-radius: var(--ks3-r-panel); background: rgba(255,255,255,.06); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ note }}</p>
+
+          <div style="margin-top: 18px; display: flex; align-items: center; gap: 13px; flex-wrap: wrap;">
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onYear }}">One year</button>
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onTen }}">Ten years</button>
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onCull }}">{{ cullLabel }}</button>
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onReset }}">Reset the field</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-cycle" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The cycle, in four steps</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 26ch;">It has no beginning, so start anywhere.</p>
+
+        <ol style="list-style: none; margin: 24px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ cycleCards }}" as="c" hint-placeholder-count="4">
+            <li style="display: grid; grid-template-columns: auto 1fr; gap: 8px 18px; padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <span aria-hidden="true" style="grid-row: span 2; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; background: var(--ks3-accent); color: var(--ks3-on-dark); font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;">{{ c.num }}</span>
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.2; letter-spacing: -.02em;">{{ c.name }}</p>
+              <p style="margin: 0; font-size: 18px; line-height: 1.55;">{{ c.body }}</p>
+            </li>
+          </sc-for>
+        </ol>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Predator and prey numbers rise and fall in a repeating cycle, and the predator peak always comes after the prey peak. Each population limits the other, so neither wipes the other out and neither grows without limit.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“The two peaks happen at the same time — more rabbits, more foxes.”</p>
+        <p>More rabbits does eventually mean more foxes, and <em>eventually</em> is the entire content of this lesson. A fox that finds plenty of food this spring cannot turn that into extra foxes until its cubs are born and survive, so the fox numbers respond to last year's rabbits, not this year's. Look at the chart on the bench: the green peak sits to the right of the amber one every single time. That delay is what makes the pattern a cycle rather than two lines moving together. Without a lag the populations would simply settle at a steady value and stay there; with one, each overshoots the level it could sustain, corrects, overshoots the other way, and goes round again. Delayed feedback producing oscillation is not just biology — it is why a shower runs hot then cold when the tap is slow to respond.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“Remove the predators and the prey will do brilliantly.”</p>
+          <p>Press <em>remove every fox</em> on the bench and watch what actually happens. The rabbits climb steeply, exactly as expected, and then they stop — not because anything is eating them, but because there is only so much grass. Every environment has a ceiling set by food, water, space and disease, and a population that reaches it stays there in a state that is nothing like doing brilliantly: crowded, hungry and vulnerable to any disease that gets in. Predators are one limit among several, and often not the tightest one. This is why removing a predator to help a prey species so rarely works as intended, and it is the beginning of <a href="b9-03-disturbing-a-food-web.html">the next lesson</a>, where the consequences spread outwards to species nobody was thinking about.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Predator and prey populations cycle. Plenty of prey lets predator numbers rise; rising predator numbers push prey numbers down; scarce prey starves the predators; falling predator numbers let the prey recover. The predator peak always follows the prey peak, because breeding takes time. Prey numbers are also limited by food and space, so removing the predators does not let them rise for ever.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The best-known data on this were not collected by scientists. The Hudson's Bay Company bought furs in Canada for two centuries and kept careful records of how many lynx and snowshoe hare pelts came in each year, and when ecologists later plotted those ledgers they found two wavy lines rising and falling on a cycle of roughly ten years, with the lynx peak trailing the hare peak. A linked cycle in two species, recovered from a company's account books: that is what the data show, and it is the thing worth learning from them. What they do not show is one animal governing the other. Hare numbers rise and fall for reasons that reach well past lynx — the shoots and twigs they feed on are stripped after a peak and take years to grow back, and hares living under heavy pressure raise fewer young. Lynx move within that cycle as much as they drive it. The record itself also needs reading with care: those ledgers count pelts brought in by trappers, not hares alive in the forest, so the price of fur and the number of people out trapping are in the line too. A ten-year rhythm that survives all of that is a real rhythm. It is still not a census.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b9-01-food-chains-and-food-webs.html">Food chains and food webs<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b9-03-disturbing-a-food-web.html">Disturbing a food web<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="c1-06-testing-the-model.html">Testing the model<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Population dynamics, carrying capacity, and interpreting real predator–prey data with its irregularities.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to predict what your own change to the field would do?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench runs a two-species model with a fixed grass supply and no weather, disease, migration or alternative prey. Real populations are affected by all of those, cycle less tidily, and sometimes do not cycle at all. The model is here to show why a lag produces a cycle, not to predict a real field.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Still rabbits' },
+  { id: 's-bench', label: 'Run the years' },
+  { id: 's-cycle', label: 'The cycle' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'BENCH', 'CYCLE', 'LADDER'];
+
+// A damped predator-prey model. K is the grass supply: it is what stops the
+// prey rising for ever when the predators are removed, which is the point of
+// the cull button.
+const R = 0.6, K = 2000, A = 0.0015, B = 0.35, M = 0.35;
+const START = { prey: 800, pred: 120 };
+const HISTORY = 26;
+
+const CYCLE_CARDS = [
+  { num: '1', name: 'Plenty of prey', body: 'Rabbits are numerous, so foxes are well fed. More cubs survive their first winter, and the fox population starts to climb.' },
+  { num: '2', name: 'Predators rise', body: 'More foxes hunting means more rabbits eaten than are born. The rabbit population turns and begins to fall \u2014 while the fox population is still rising.' },
+  { num: '3', name: 'Prey becomes scarce', body: 'Now there are many foxes and few rabbits. Foxes go hungry, fewer cubs survive, and the fox population falls in its turn.' },
+  { num: '4', name: 'Predators rise no longer', body: 'With few foxes left, the surviving rabbits breed almost unchecked and the population recovers. Which returns you to step 1, some years later.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Read the cycle',
+    question: 'Rabbit numbers in a field have been falling for two years. What is the fox population most likely to do next?',
+    options: [
+      { text: 'Fall, because there is not enough prey to support the current number of foxes', correct: true },
+      { text: 'Keep rising, because foxes are still eating rabbits', correction: 'They rise for a while after the rabbits turn \u2014 that is the lag \u2014 but they cannot keep rising once the food runs short.' },
+      { text: 'Stay the same, since foxes eat other things too', correction: 'In this model rabbits are the only food. In a real web there are other routes, which is b9-03\u2019s subject, but the population still tracks its main prey.' },
+      { text: 'Rise, then fall, then rise again within the same year', correction: 'A cycle takes several years, because it is limited by how fast animals can breed.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'On a predator\u2013prey graph, how do the two peaks line up?',
+    options: [
+      { text: 'They coincide \u2014 both populations peak in the same year', correction: 'Then the graph would show two lines moving together and no cycle. Look at the bench: the green peak is always to the right.' },
+      { text: 'The predator peak comes shortly after the prey peak', correct: true },
+      { text: 'The prey peak comes shortly after the predator peak', correction: 'That has the cause and the effect the wrong way round. Predators can only increase after there has been plenty to eat.' },
+      { text: 'There is no consistent pattern', correction: 'There is, and it comes from one fact: breeding takes time, so a population responds to conditions some months or years earlier.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain one full cycle',
+    question: 'Describe one complete predator\u2013prey cycle in a field of rabbits and foxes, starting from a year when rabbits are plentiful. Explain what causes each change rather than just describing it.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'When rabbits are plentiful\u2026',
+    criteria: [
+      'Says plentiful prey means more food for predators, so more of their young survive and predator numbers rise.',
+      'Says more predators eat more prey than are born, so prey numbers fall.',
+      'Says the falling prey population leaves predators short of food, so predator numbers fall in turn.',
+      'Says fewer predators allow the prey population to recover, returning to the start.',
+      'States explicitly that the predator peak comes after the prey peak, and gives the reason \u2014 breeding takes time.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A farmer plans to remove every fox from her land to protect her chickens. Using the model, predict what will happen to the rabbit population over the next few years, what else on the farm might be affected, and name one thing the model does not account for.',
+    fieldLabel: 'Your answer',
+    placeholder: 'With no foxes, the rabbits\u2026',
+    criteria: [
+      'Predicts the rabbit population rising quickly at first, with nothing hunting it.',
+      'Says the rise will level off, because food and space set a limit even with no predators.',
+      'Identifies a knock-on effect \u2014 more rabbits grazing means less grass or crop, or damage to the land.',
+      'Notes that a crowded population at its limit is more vulnerable to disease or starvation.',
+      'Names a genuine limitation of the model \u2014 for example that foxes eat more than rabbits, that other predators exist, that foxes will move in from neighbouring land, or that weather and disease are ignored.'
+    ] }
+];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return s.year >= 10;
+  if (id === 's-cycle') return s.year >= 10;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    prey: START.prey,
+    pred: START.pred,
+    year: 0,
+    culled: false,
+    history: [{ prey: START.prey, pred: START.pred }],
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  advance(n) {
+    this.setState((st) => {
+      let prey = st.prey, pred = st.pred;
+      const hist = st.history.slice();
+      for (let i = 0; i < n; i++) {
+        const nextPrey = prey + R * prey * (1 - prey / K) - A * prey * pred;
+        const nextPred = pred + B * A * prey * pred - M * pred;
+        prey = Math.max(0, Math.min(K * 1.1, nextPrey));
+        pred = Math.max(0, Math.min(K, nextPred));
+        if (pred < 1) pred = 0;
+        hist.push({ prey: prey, pred: pred });
+      }
+      while (hist.length > HISTORY) hist.shift();
+      return { prey: prey, pred: pred, year: st.year + n, history: hist };
+    });
+  }
+
+  renderVals() {
+    const s = this.state;
+    const prey = Math.round(s.prey), pred = Math.round(s.pred);
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    let note;
+    if (s.year === 0) note = 'Year zero: eight hundred rabbits, a hundred and twenty foxes. Nothing has happened yet. Run ten years and look at the shape before you read anything else.';
+    else if (pred === 0 && prey > K * 0.9) note = 'No foxes, and the rabbits have stopped climbing anyway \u2014 they have hit the limit the grass sets. This is what a population at its ceiling looks like: not thriving, just full. Predators were never the only thing holding them back.';
+    else if (pred === 0) note = 'No foxes left. The rabbits are climbing fast, and they will keep climbing until the grass runs short \u2014 run another ten years to find the ceiling.';
+    else if (prey > 1200 && pred < 200) note = 'Rabbits high and foxes still low. This is the easy part of the cycle for the foxes, and their numbers will follow \u2014 next year, not this one.';
+    else if (prey < 500) note = 'Rabbits scarce. The foxes are now the ones in trouble, and their numbers will fall until the pressure comes off the rabbits.';
+    else note = 'Both populations moving. Watch the chart rather than the numbers: the green bars peak a year or two after the amber ones, every time.';
+
+    const maxPrey = Math.max(600, ...s.history.map((h) => h.prey));
+    const maxPred = Math.max(150, ...s.history.map((h) => h.pred));
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'Predators only take the old and the sick' },
+        { letter: 'B', text: 'Prey breed faster than predators can eat them' },
+        { letter: 'C', text: 'When prey become scarce the predators starve, so their numbers fall too' },
+        { letter: 'D', text: 'Predators deliberately leave enough prey to breed' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      yearLabel: 'year ' + s.year,
+      preyNow: prey,
+      predNow: pred,
+      history: s.history.map((h) => ({
+        preyStyle: 'display:block;flex:1 1 0;height:' + Math.max(2, (h.prey / maxPrey) * 100) + '%;background:var(--ks3-alert);border-radius:2px 2px 0 0;',
+        predStyle: 'display:block;flex:1 1 0;height:' + Math.max(2, (h.pred / maxPred) * 100) + '%;background:var(--ks3-ok);border-radius:2px 2px 0 0;'
+      })),
+      chartCaption: 'amber = rabbits \u00b7 green = foxes \u00b7 each pair is one year, oldest on the left \u00b7 the two are scaled separately',
+      note: note,
+      onYear: () => this.advance(1),
+      onTen: () => this.advance(10),
+      cullLabel: pred === 0 ? 'Let foxes back in' : 'Remove every fox',
+      onCull: () => this.setState((st) => {
+        const pred = st.pred === 0 ? 120 : 0;
+        const hist = st.history.slice();
+        hist.push({ prey: st.prey, pred: pred });
+        while (hist.length > HISTORY) hist.shift();
+        return { pred: pred, culled: true, year: st.year + 1, history: hist };
+      }),
+      onReset: () => this.setState({ prey: START.prey, pred: START.pred, year: 0, culled: false, history: [{ prey: START.prey, pred: START.pred }] }),
+
+      cycleCards: CYCLE_CARDS,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === correctIndex, isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: done,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+</script>
+</body>
+</html>

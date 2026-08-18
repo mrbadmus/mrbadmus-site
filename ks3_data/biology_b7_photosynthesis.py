@@ -2,7 +2,7 @@
 
 The thin unit wrapper. The lesson records live one per module under
 `ks3_data/b7/`, authored against Claude Design's approved reference screens in
-`KS3 B7 lessons/` under the MRB-220 build contract, and against the payload
+`docs/ks3/design-reference/b7/` under the MRB-220 build contract, and against the payload
 schema written before dispatch at `docs/ks3/b7-inventory/PAYLOAD-SCHEMA.md`.
 
 **Statutory coverage: all three PHOT statements, three lessons, no split.**

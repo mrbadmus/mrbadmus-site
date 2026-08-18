@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alcohol and smoking · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b602-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b602-arrive .34s ease-out both; }
+  [data-fill] { transition: width .35s linear; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } [data-fill] { transition: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Health and drugs</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Alcohol and smoking</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Health and drugs · System</p>
+        <h1>Alcohol and smoking</h1>
+        <p class="ks3-bigq">Two drugs that are legal for adults, sold openly, and between them responsible for more illness in this country than every illegal drug put together. Both are worth understanding as biology before anyone argues about them.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Black coffee, a cold shower, a walk in the fresh air.</h2>
+        <p class="ks3-hook-prompt">Three things people are certain will sober someone up. Two of them do nothing at all to the alcohol in their blood, and the third does nothing either. The alcohol is not on their skin or in their lungs — it is in the blood, and only one organ can take it out.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What actually lowers the alcohol in someone's blood?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">The liver, working at its own fixed rate of roughly one unit an hour. Nothing raises that rate. Coffee makes a drunk person more awake without making them less drunk, which is worse than useless — it is an alert person with the judgement and reaction times of a drunk one.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-clock" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · one liver, one clock</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Try to beat the liver</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ clockProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Build an evening's drinks, pick something to speed the clearing up, then run the clock. Every trick on this bench is one people genuinely believe in. Only one of them changes anything, and not the thing they think.</p>
+
+        <div style="margin-top: 22px;">
+          <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Add a drink</p>
+          <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+            <sc-for list="{{ drinkButtons }}" as="d" hint-placeholder-count="4">
+              <button type="button" onClick="{{ d.onClick }}" style="{{ d.style }}">{{ d.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">And to sober up faster</p>
+          <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+            <sc-for list="{{ fixTabs }}" as="t" hint-placeholder-count="6">
+              <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+            <p style="margin: 0; font-size: 21px; font-weight: 700; color: var(--ks3-on-dark);">{{ unitsLabel }}</p>
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 16px; font-weight: 500; color: var(--ks3-alert);">{{ hoursLabel }}</p>
+          </div>
+
+          <p style="margin: 16px 0 6px; font-size: 17px; font-weight: 600; color: var(--ks3-on-dark);">Alcohol still in the blood</p>
+          <span style="display: block; height: 22px; border-radius: 99px; background: rgba(255,255,255,.08); overflow: hidden;"><span data-fill="1" style="{{ bloodBarStyle }}"></span></span>
+          <p style="margin: 8px 0 0; font-family: var(--ks3-font-mono); font-size: 16px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ remainingLabel }}</p>
+
+          <p style="margin: 16px 0 0; padding: 15px 17px; border-radius: var(--ks3-r-panel); background: rgba(255,255,255,.06); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ fixNote }}</p>
+
+          <div style="margin-top: 20px; display: flex; align-items: center; gap: 13px; flex-wrap: wrap;">
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onHour }}" disabled="{{ hourDisabled }}" style="{{ hourStyle }}">{{ hourLabel }}</button>
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onReset }}">Empty the glass</button>
+          </div>
+
+          <sc-if value="{{ verdictShown }}">
+            <p data-arrive="1" style="margin: 18px 0 0; padding: 17px 19px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink); font-size: 18px; line-height: 1.6;">{{ verdictText }}</p>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-years" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Not one night — years of nights</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 28ch;">Each one damages a different set of organs.</p>
+
+        <div style="margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;">
+          <sc-for list="{{ longTermCards }}" as="c" hint-placeholder-count="2">
+            <div style="padding: 24px 26px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ c.kind }}</p>
+              <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; line-height: 1.2; letter-spacing: -.02em;">{{ c.name }}</p>
+              <ul style="list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; gap: 11px;">
+                <sc-for list="{{ c.rows }}" as="r" hint-placeholder-count="4">
+                  <li>
+                    <p style="margin: 0; font-size: 17px; font-weight: 700;">{{ r.organ }}</p>
+                    <p style="margin: 2px 0 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body);">{{ r.effect }}</p>
+                  </li>
+                </sc-for>
+              </ul>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Alcohol is a depressant: it slows the nervous system, and the liver clears it at about one unit an hour whatever anyone does. Nicotine is a stimulant and is what makes smoking hard to stop; carbon monoxide in the same smoke takes the places oxygen should occupy in the blood.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Coffee, a cold shower or fresh air will sober you up.”</p>
+        <p>Alcohol leaves the body almost entirely through the liver, which breaks it down at a rate set by how much enzyme it contains — about one unit an hour, and that rate does not respond to encouragement. Cold water on the skin does not reach the liver. Breathing harder does not either, because only a trace leaves through the lungs, which is precisely why a breath test can measure what is in the blood. Coffee is the dangerous one, because it works on a different organ: caffeine is a stimulant and makes the person feel awake, so the outward signs of being drunk fade while the impairment is untouched. Someone who feels capable and is not is more likely to drive than someone who feels terrible. The only variable that matters is time, and a large evening does not fit inside a night's sleep: six units finished at midnight are not cleared until around six in the morning.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“A few cigarettes now and then is basically fine, and filters make them safer.”</p>
+          <p>There is no threshold below which smoke stops damaging tissue — the risk rises from the first cigarette, and social smokers develop dependence too, because nicotine's grip is about how quickly it reaches the brain rather than how many are smoked in a week. The filter is the more interesting half of the claim. It removes some tar, and it was introduced when the link with cancer became public, but it does nothing to carbon monoxide, and by making the smoke smoother it encourages deeper inhaling. Ventilation holes in the paper also inflate the tar figures measured by machines above what a human hand covering the filter actually receives. So a filter changes the taste, changes the number in the test, and does not make the habit safe. What smoke does to the airways and to the alveoli themselves is the subject of <a href="b4-04-exercise-asthma-and-smoking.html">Exercise, asthma and smoking</a>.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Alcohol is a depressant. It slows nerve signals, so reactions, coordination and judgement all worsen, and only the liver removes it — at about one unit an hour, whatever anyone tries. Long term it scars the liver and damages the brain. In tobacco smoke, nicotine is the stimulant that makes stopping hard, carbon monoxide takes oxygen's place in the blood, and tar and the other substances damage the airways.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>A vape has no tar and no carbon monoxide, because nothing is burned — so a smoker who switches removes two of the three harms in the list above. It still delivers nicotine, often faster and in larger amounts than a cigarette, so the dependence is the same or stronger, and a person who has never smoked gains nothing at all and takes on the dependence for nothing. The honest position is the one a scientist has to be comfortable with: vapes are very likely less harmful than cigarettes and are not known to be safe, because the long-term studies do not exist yet — the devices are too new for anyone to have used one for forty years. Selling either to under-18s is illegal in the UK. This is a good example of a question where the evidence is genuinely incomplete and where <em>less harmful than the worst option</em> and <em>harmless</em> are miles apart.</p>
+        </div>
+      </section>
+
+      <section class="ks3-layer ks3-support">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">If any of this is about you or someone you know</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>This lesson covers the biology only. Pressure from friends, family drinking, and what the law says belong in your PSHE and RSE lessons, and they are worth raising there. If something here is about your own home or your own habits, talk to a trusted adult, the school nurse, a pharmacist or a GP — stopping smoking in particular is one of the few things where free NHS help genuinely doubles the success rate. Your school's PSHE materials list the national confidential services by name.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b6-01-what-drugs-do-to-the-body.html">What drugs do to the body<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b4-04-exercise-asthma-and-smoking.html">Exercise, asthma and smoking<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b3-06-enzymes-in-digestion.html">Enzymes in digestion<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Risk factors for non-communicable disease, the difference between correlation and cause in population studies, and how a causal link is established.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to work out why the liver's rate cannot be hurried?</p>
+          <a class="ks3-tutor-cta" href="#s-clock">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The clock is a simplified model: one unit an hour, cleared in whole hours, ignoring body mass, sex, medication, food already eaten and how quickly the drinks were finished. Real clearance varies between people and is slower, not faster, than this model when the liver is already damaged. It is a teaching model and must not be used to judge whether anyone is fit to drive.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startUnits&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:4,&quot;min&quot;:0,&quot;max&quot;:12,&quot;unit&quot;:&quot;units&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;The bench&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Three tricks' },
+  { id: 's-clock', label: 'Beat the liver' },
+  { id: 's-years', label: 'Years of nights' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'CLOCK', 'YEARS', 'LADDER'];
+
+const DRINKS = [
+  { id: 'beer', label: 'Half of beer', units: 1 },
+  { id: 'shot', label: 'Single shot', units: 1 },
+  { id: 'cider', label: 'Can of cider', units: 2 },
+  { id: 'wine', label: 'Large wine', units: 3 },
+  { id: 'lager', label: 'Pint of strong lager', units: 3 }
+];
+
+const FIXES = [
+  { id: 'time', label: 'Nothing but time',
+    note: 'The only thing on this bench that moves the number. One unit an hour, set by how much enzyme the liver has, and it is the same rate whether the person is asleep, awake, worried or in a hurry.' },
+  { id: 'coffee', label: 'Black coffee',
+    note: 'Caffeine is a stimulant, so they feel more awake. The alcohol is untouched. You have converted a sleepy drunk person into an alert drunk person, and the alert one is the one who thinks they can drive.' },
+  { id: 'shower', label: 'Cold shower',
+    note: 'Cold skin, sharp intake of breath, no change whatever in the blood. The liver is not on the outside of the body.' },
+  { id: 'air', label: 'Fresh air and a walk',
+    note: 'Only a trace of alcohol leaves through the lungs \u2014 which is exactly why a breath test works, and why breathing harder cannot clear it. The rest goes through the liver.' },
+  { id: 'food', label: 'A big meal first',
+    note: 'This one does something real, and it is not what people claim. Food in the stomach slows absorption, so the peak in the blood is lower and the person is less impaired at their worst. The total amount to break down has not changed, so the hours have not changed.' },
+  { id: 'water', label: 'Pints of water',
+    note: 'Genuinely helps the dehydration, the headache and the thirst. Does nothing at all to the alcohol \u2014 you cannot dilute your way out of a fixed amount.' }
+];
+
+const LONG_TERM = [
+  { kind: 'Depressant', name: 'Alcohol, over years', rows: [
+    { organ: 'Liver', effect: 'Working cells are replaced by scar tissue. Early damage recovers if drinking stops; scarring does not.' },
+    { organ: 'Brain', effect: 'Tissue is lost, and memory and judgement are affected long before anyone would call the person unwell.' },
+    { organ: 'Stomach and gut', effect: 'Lining irritated and inflamed, which is why heavy drinkers bleed and vomit.' },
+    { organ: 'Whole body', effect: 'Raised risk of several cancers, high blood pressure and stroke \u2014 and, because judgement goes first, a large share of accidents and injuries.' }
+  ] },
+  { kind: 'Stimulant plus a poison plus tar', name: 'Tobacco smoke, over years', rows: [
+    { organ: 'Brain', effect: 'Nicotine reaches it in about ten seconds and the reward pathways adapt to expect it. That adaptation is why stopping is hard, and it is not what causes the disease.' },
+    { organ: 'Blood', effect: 'Carbon monoxide binds to haemoglobin in place of oxygen and holds on. Less oxygen is delivered to every tissue, and a smoker is out of breath sooner for that reason alone.' },
+    { organ: 'Heart and vessels', effect: 'Vessels narrow, blood pressure rises, and clots form more readily \u2014 heart attack and stroke risk both climb.' },
+    { organ: 'Airways and alveoli', effect: 'Damaged by tar and by the other substances in the smoke. Which substance does which damage is b4-04\u2019s subject, not this lesson\u2019s.' }
+  ] }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Read the clock',
+    question: 'Someone drinks six units, finishing at midnight. Roughly when is the alcohol cleared from their blood?',
+    options: [
+      { text: 'About six in the morning', correct: true },
+      { text: 'Within an hour or two, since alcohol is absorbed quickly', correction: 'Absorbed quickly, cleared slowly. Getting in is fast; getting out runs at one unit an hour.' },
+      { text: 'As soon as they fall asleep', correction: 'Sleep passes time and nothing more. The liver works at the same rate whether they are asleep or awake.' },
+      { text: 'It depends whether they drink water and coffee', correction: 'Neither changes the rate. Water helps the headache, coffee helps them feel awake, and the clock is unmoved by both.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'A drunk person drinks two strong black coffees. What has changed?',
+    options: [
+      { text: 'The alcohol is broken down faster, so they sober up sooner', correction: 'Caffeine acts on the brain and heart, not on the liver enzymes that break alcohol down. The rate is unchanged.' },
+      { text: 'They feel more awake, and are exactly as impaired as before', correct: true },
+      { text: 'Nothing at all has changed', correction: 'Something has \u2014 and it is the dangerous half. Feeling capable while still impaired is worse than feeling as bad as you are.' },
+      { text: 'Their reactions improve because caffeine is a stimulant', correction: 'A stimulant raises alertness; it does not undo a depressant. The two drugs are both in the blood at once, and the impairment stays.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain the carbon monoxide',
+    question: 'A smoker gets out of breath climbing stairs sooner than a non-smoker of the same fitness, even before any lung damage has developed. Explain why, using what the blood carries.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Carbon monoxide in the smoke\u2026',
+    criteria: [
+      'Says carbon monoxide is in the smoke and is absorbed into the blood.',
+      'Says it binds to haemoglobin in the red blood cells, in the places oxygen would occupy.',
+      'Says it holds on, so those places are unavailable for oxygen.',
+      'Says less oxygen therefore reaches the working muscles.',
+      'Concludes the muscles cannot respire aerobically as fast, so the person is out of breath sooner \u2014 without any lung damage being needed to explain it.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'An energy drink is advertised as a mixer for spirits, and someone claims it "keeps you sober because caffeine cancels out alcohol". Judge the claim using the two drug classes, say what actually happens to the person, and explain why this combination is more dangerous than the alcohol alone.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Alcohol is a depressant and caffeine is a stimulant\u2026',
+    criteria: [
+      'Identifies alcohol as a depressant and caffeine as a stimulant.',
+      'Says the two act on different things, so neither cancels the other \u2014 both drugs are in the blood doing their own job.',
+      'Says the liver still clears alcohol at about one unit an hour, so the person is as impaired as the units say.',
+      'Says the caffeine hides the tiredness, so the person does not feel drunk and keeps drinking or takes risks they otherwise would not.',
+      'Concludes that masking the signs of impairment without removing the impairment is what makes the mixture more dangerous.'
+    ] }
+];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-clock') return s.everRan;
+  if (id === 's-years') return s.everRan;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    units: Number.isFinite(this.props.startUnits) ? Math.max(0, Math.min(12, this.props.startUnits)) : 4,
+    fix: 'coffee',
+    hour: 0,
+    everRan: false,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on) {
+    return 'cursor:pointer;font:inherit;font-size:16px;font-weight:700;padding:10px 15px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+      (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const fix = FIXES.find((f) => f.id === s.fix) || FIXES[0];
+    const remaining = Math.max(0, s.units - s.hour);
+    const clear = remaining === 0;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    let verdict;
+    if (s.units === 0) verdict = 'Nothing drunk, nothing to clear.';
+    else if (clear) verdict = 'Clear \u2014 after ' + s.units + ' hour' + (s.units === 1 ? '' : 's') + ', which is exactly the number of units. Every route you tried gave the same number of hours, because the liver sets the rate and nothing else has a vote.';
+    else verdict = remaining + ' unit' + (remaining === 1 ? '' : 's') + ' still in the blood after ' + s.hour + ' hour' + (s.hour === 1 ? '' : 's') + '. Reactions, coordination and judgement are still affected, whatever the person says about feeling fine.';
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'Strong black coffee' },
+        { letter: 'B', text: 'Cold air and a walk home' },
+        { letter: 'C', text: 'Time, and nothing else' },
+        { letter: 'D', text: 'A large meal afterwards' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      clockProgress: s.everRan ? (clear ? 'cleared' : 'clock running') : 'clock not started',
+      drinkButtons: DRINKS.map((d) => ({
+        label: d.label + ' \u00b7 ' + d.units, style: this.seg(false),
+        onClick: () => this.setState((st) => ({ units: Math.min(12, st.units + d.units), hour: 0 }))
+      })),
+      fixTabs: FIXES.map((f) => ({
+        label: f.label, pressed: f.id === s.fix, style: this.seg(f.id === s.fix),
+        onClick: () => this.setState({ fix: f.id })
+      })),
+      unitsLabel: s.units + ' unit' + (s.units === 1 ? '' : 's') + ' drunk',
+      hoursLabel: s.units === 0 ? 'nothing to clear' : s.units + ' hour' + (s.units === 1 ? '' : 's') + ' to clear',
+      bloodBarStyle: 'display:block;height:100%;width:' + (s.units === 0 ? 0 : (remaining / s.units) * 100).toFixed(1) + '%;background:var(--ks3-alert);',
+      remainingLabel: s.hour + ' hour' + (s.hour === 1 ? '' : 's') + ' elapsed \u00b7 ' + remaining + ' unit' + (remaining === 1 ? '' : 's') + ' left',
+      fixNote: fix.note,
+      hourDisabled: s.units === 0 || clear,
+      hourStyle: (s.units === 0 || clear) ? 'opacity:.45;cursor:default;' : '',
+      hourLabel: clear ? 'Blood is clear' : 'Wait an hour',
+      onHour: () => this.setState((st) => ({ hour: st.hour + 1, everRan: true })),
+      onReset: () => this.setState({ units: 0, hour: 0 }),
+      verdictShown: s.everRan,
+      verdictText: verdict,
+
+      longTermCards: LONG_TERM,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === correctIndex, isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: done,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+</script>
+</body>
+</html>

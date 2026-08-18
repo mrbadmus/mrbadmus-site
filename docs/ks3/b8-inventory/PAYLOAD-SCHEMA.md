@@ -8,7 +8,7 @@ table unchanged; only the additions are restated here.
 this document wins on NAMING (what we call it).** Where the page needs something this schema has
 not anticipated, follow the page and say so in the report.
 
-Everything below is measured off the five approved pages in `KS3 B8 lessons/`, not off `NOTES-B8.md`.
+Everything below is measured off the five approved pages in `docs/ks3/design-reference/b8/`, not off `NOTES-B8.md`.
 Where the two disagree, §9 says so.
 
 ---

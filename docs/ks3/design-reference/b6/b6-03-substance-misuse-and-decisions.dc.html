@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Substance misuse and decisions · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b603-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b603-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Health and drugs</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Substance misuse and decisions</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Health and drugs · Investigation</p>
+        <h1>Substance misuse and decisions</h1>
+        <p class="ks3-bigq">Nobody decides anything from a table of facts. They decide from what they have heard, from what they think everyone else is doing, and from claims that sound like evidence and are not. This lesson is about telling the difference.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>“It's natural, so it can't do you much harm.”</h2>
+        <p class="ks3-hook-prompt">Deadly nightshade is natural. Foxglove is natural. Tobacco is a plant, and so is the source of the strongest painkillers in the hospital. Every one of them grew out of the ground without human help, and the ground has no opinion about your health.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Which of these actually tells you whether a substance will harm you?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Only the last one. Where a molecule came from, what a shop is allowed to sell, and how many people you know who use it are all facts about the world around the substance. What it does to a body, at that amount, is the only question with a biological answer — and answering it takes evidence of a particular shape.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-claims" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · five claims, five faults</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Find the fault in the evidence</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ claimProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Each claim comes with the evidence someone offered for it. Every fault in the list below is the real fault of one of these five claims, so a wrong answer still teaches you something about the claim you picked it for.</p>
+
+        <div style="margin-top: 22px;">
+          <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The claim</p>
+          <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+            <sc-for list="{{ claimTabs }}" as="t" hint-placeholder-count="5">
+              <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 24px 26px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 26px; line-height: 1.2; letter-spacing: -.02em; color: var(--ks3-on-dark);">{{ claimText }}</p>
+          <p style="margin: 14px 0 0; padding: 15px 17px; border-radius: var(--ks3-r-panel); background: rgba(255,255,255,.06); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);"><span style="font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted); display: block; margin-bottom: 6px;">The evidence offered</span>{{ claimEvidence }}</p>
+
+          <p style="margin: 20px 0 10px; font-size: 17px; font-weight: 600; color: var(--ks3-on-dark);">What is wrong with that evidence?</p>
+          <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px;">
+            <sc-for list="{{ faultOptions }}" as="f" hint-placeholder-count="5">
+              <li>
+                <button type="button" onClick="{{ f.onClick }}" aria-pressed="{{ f.pressed }}" style="{{ f.style }}">
+                  <span aria-hidden="true" style="{{ f.markStyle }}">{{ f.letter }}</span>
+                  <span style="flex: 1 1 auto;">{{ f.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+
+          <div style="margin-top: 18px; display: flex; align-items: center; gap: 13px; flex-wrap: wrap;">
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onCheck }}" disabled="{{ checkDisabled }}" style="{{ checkStyle }}">{{ checkLabel }}</button>
+            <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ tallyLabel }}</span>
+          </div>
+
+          <sc-if value="{{ opened }}">
+            <div data-arrive="1" style="margin-top: 18px; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ verdictWord }}</p>
+              <p style="margin: 9px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25; letter-spacing: -.02em;">{{ claimAnswerLine }}</p>
+              <p style="margin: 11px 0 0; font-size: 18px; line-height: 1.6;">{{ claimWhy }}</p>
+              <p style="margin: 14px 0 0; padding-top: 14px; border-top: 2px solid var(--ks3-rule); font-size: 18px; line-height: 1.6;"><strong>What would settle it:</strong> {{ claimSettle }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-four" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Four questions, asked in this order</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 28ch;">You do not need to know the science to test the evidence.</p>
+
+        <div style="margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px;">
+          <sc-for list="{{ testCards }}" as="c" hint-placeholder-count="4">
+            <div style="padding: 24px 26px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ c.num }}</p>
+              <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 23px; line-height: 1.2; letter-spacing: -.02em;">{{ c.name }}</p>
+              <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.5;">{{ c.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">A claim about a drug is only as good as the evidence behind it. Ask how many people were studied, whether there was a group to compare against, who paid for the answer, and whether two things happening together has been mistaken for one causing the other.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“If it's natural, it's safe — it's the chemicals that hurt you.”</p>
+        <p>Every substance in this lesson is a chemical, including the water you drank at break. A plant does not manufacture its molecules for your benefit; several of them are made specifically to poison whatever tries to eat the plant, which is why nicotine exists at all. Ricin, cyanide and the digitalis in foxglove leaves are natural, and the purest paracetamol in the pharmacy is made in a factory to a known dose, which is precisely what makes it safe to use. So <em>natural</em> and <em>synthetic</em> tell you about a molecule's history and nothing about its effects; the questions that matter are what it does in the body and in what amount. Herbal products carry an extra problem the pharmacy does not: the dose in a leaf varies with the plant, the season and the soil, so even a genuinely useful herbal remedy is a medicine of unknown strength.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“Everyone my age is doing it.”</p>
+          <p>Ask a year group to estimate what fraction of them drinks, smokes or vapes regularly, and the average guess comes out far above the real figure — every time this is measured, in every country it is measured in. The reason is a sampling fault you have already met: the people doing it are visible and talk about it, the people not doing it are not doing anything noticeable, so your sample is the loud end of the room. National surveys of tens of thousands of pupils consistently put regular use in a clear minority at this age. This is not a comfort exercise. The misjudged figure does real work, because believing something is normal is one of the strongest predictors of starting it — which means an inaccurate estimate is a genuine cause, and correcting it changes behaviour on its own.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Substance misuse means using a substance in a way that damages health — including legal ones, and including medicines taken wrongly. Claims about drugs are tested the same way as any other claim: how many people, compared with whom, reported by whom, and does the evidence show a cause or only two things happening together. Where a substance came from tells you nothing, and what you think everyone else is doing is usually wrong.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>In 1950 the link between smoking and lung cancer was an argument, not a fact — plenty of doctors smoked, and tobacco companies pointed out, correctly, that a correlation is not a cause. Richard Doll and Austin Bradford Hill answered it properly: they recruited around 40,000 British doctors, recorded what each one smoked, and then waited. Following the same people forward for decades meant the smoking was recorded <em>before</em> anyone became ill, so it could not be explained away as sick people misremembering. The death rate climbed with the number of cigarettes, and it fell in the doctors who stopped. That study design — large, prospective, dose-related, reversible on stopping — is why the link is now considered settled, and it is the standard every claim in this lesson is measured against.</p>
+        </div>
+      </section>
+
+      <section class="ks3-layer ks3-support">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">If any of this is about you or someone you know</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>This lesson teaches how to test a claim, which is the science. What to do about pressure from people you like, and what the law says, belong in your PSHE and RSE lessons and are worth taking there. If any of this is about your own home, your own use, or someone you are worried about, talk to a trusted adult, the school nurse, a pharmacist or a GP — and a pharmacist will answer a question about a substance without an appointment and without a lecture. Your school's PSHE materials list the national confidential services by name.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b6-01-what-drugs-do-to-the-body.html">What drugs do to the body<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b6-02-alcohol-and-smoking.html">Alcohol and smoking<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="c1-06-testing-the-model.html">Testing the model<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b3-02-food-tests.html">Food tests<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Evaluating evidence: sample size, control groups, placebo and double-blind trials, peer review, and the difference between correlation and cause.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to test a claim you have actually seen?</p>
+          <a class="ks3-tutor-cta" href="#s-claims">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The five claims are written for this lesson. They are the shapes of arguments people really make, not quotations from named sources, and the studies described in them are invented examples with invented numbers. The doctors' study in <em>Going further</em> is real. Nothing on this page is medical or legal advice.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'It is natural' },
+  { id: 's-claims', label: 'Find the fault' },
+  { id: 's-four', label: 'Four questions' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'CLAIMS', 'FOUR', 'LADDER'];
+
+// Every fault is the correct answer for exactly one claim, so a wrong pick is
+// still a true statement about evidence — it is simply the wrong claim's fault.
+const FAULTS = [
+  { id: 'origin', text: 'Where the substance came from is not evidence about what it does.' },
+  { id: 'sample', text: 'The people asked are not a fair sample of the group being described.' },
+  { id: 'cause', text: 'Two things happening together has been treated as one causing the other.' },
+  { id: 'control', text: 'There is no comparison group, and the people asked were chosen by the seller.' },
+  { id: 'single', text: 'One person\u2019s story cannot tell you the risk for anyone else.' }
+];
+
+const CLAIMS = [
+  { id: 'c1', label: 'Natural', answer: 'origin',
+    text: '\u201cCannabis is safe \u2014 it is a plant, and people have used it for thousands of years.\u201d',
+    evidence: 'It grows in the ground with no chemicals added, and it has been used in many cultures for centuries.',
+    why: 'Both halves of the evidence are about the history of the plant rather than its effect on a body. Deadly nightshade also grows in the ground and has also been known for centuries. Long use tells you a substance does not kill most people quickly, which is a much weaker claim than safe \u2014 the harms being argued about here are effects on the developing brain that appear over years.',
+    settle: 'Studies following large numbers of users and non-users forward over years, recording mental and physical health outcomes, with the users\u2019 use recorded before anything went wrong.' },
+  { id: 'c2', label: 'Everyone does', answer: 'sample',
+    text: '\u201cMost people our age vape \u2014 it is normal now.\u201d',
+    evidence: 'Twenty-two of the thirty people in my friendship group and my form have tried it, and I see people vaping outside school every day.',
+    why: 'Your friendship group is not a random sample of your age, and neither is the group standing outside school \u2014 people who vape are visible and talk about it, people who do not are doing nothing you would notice. This is the same fault as testing a new drug only on people who volunteered because they already liked it.',
+    settle: 'A national survey that samples tens of thousands of pupils chosen at random rather than by who is easy to see, and asks about regular use rather than about ever trying it once.' },
+  { id: 'c3', label: 'Energy drinks', answer: 'cause',
+    text: '\u201cEnergy drinks improve your exam results.\u201d',
+    evidence: 'A study of 500 sixth-formers found that those who drank energy drinks during study leave scored on average four marks higher than those who did not.',
+    why: 'The two groups chose themselves, and they differ in more than the drink. Students who revise for long hours late at night are exactly the students who buy energy drinks, so revision hours could produce the whole difference. The study is large and still cannot tell you which way the arrow points \u2014 size fixes noise, not confusion.',
+    settle: 'Take one group of students, split them at random into two, give one the drink and the other an identical-tasting drink with no caffeine, and compare. Randomising is what breaks the link between the drink and everything else about the person.' },
+  { id: 'c4', label: 'Herbal cure', answer: 'control',
+    text: '\u201cThis herbal supplement cures anxiety \u2014 nine out of ten users agree.\u201d',
+    evidence: 'Reviews on the seller\u2019s own website: 90% of the people they asked said they felt calmer after taking it for a month.',
+    why: 'Nobody was compared with anything. Anxiety varies week to week and improves for many people anyway, so \u201cfelt calmer after a month\u201d would be reported by a good fraction of people given a tablet with nothing in it. On top of that, the seller chose which reviews to publish and profits from the answer, and no dose is stated at all.',
+    settle: 'A trial where neither the patients nor the assessors know who received the supplement and who received an identical dummy, with the results published by someone with nothing to sell.' },
+  { id: 'c5', label: 'My grandad', answer: 'single',
+    text: '\u201cDrinking every day cannot be that harmful \u2014 my grandad did it and lived to 90.\u201d',
+    evidence: 'One person, known personally, who drank daily for sixty years and stayed well.',
+    why: 'Risk is a statement about how often something happens across many people, so a single case can never contradict it \u2014 people survive things that are dangerous all the time. There is also a hidden bias in who you get to hear about: the drinkers who died at 55 are not around to be anyone\u2019s example, so the survivors are the only ones telling you their story.',
+    settle: 'Death and illness rates for many thousands of daily drinkers compared with similar non-drinkers, which is how the risk was estimated in the first place.' }
+];
+
+const TEST_CARDS = [
+  { num: 'Question 1', name: 'How many, and who?', body: 'Thirty friends is not a sample of a nation. Ask how the people were chosen, not just how many there were.' },
+  { num: 'Question 2', name: 'Compared with what?', body: 'A result with nothing to compare it against is not a result. Who was the group that did not get the thing?' },
+  { num: 'Question 3', name: 'Who is telling me?', body: 'Someone who profits from the answer is not disqualified, but their evidence needs checking by someone who does not.' },
+  { num: 'Question 4', name: 'Together, or because?', body: 'Two things rising at once is where investigations start, not where they finish. Something else may be causing both.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Name the fault',
+    question: 'An advert says a sleep supplement works because 94% of the customers who reviewed it on the company\u2019s website slept better. What is the main fault?',
+    options: [
+      { text: 'There is no comparison group, and the company chose which reviews appeared', correct: true },
+      { text: 'The sample is too small', correction: 'It might be large \u2014 and that would not help. Thousands of self-selected reviews with nothing to compare them against are still not evidence.' },
+      { text: 'A supplement is natural, so it cannot work', correction: 'Plenty of natural substances have real effects; that is why the pharmacy is full of them. The problem here is the shape of the evidence, not the origin of the pill.' },
+      { text: 'Sleep cannot be measured', correction: 'It can, in a sleep laboratory or with a simple diary. The study did not fail for lack of a measurement \u2014 it failed for lack of a control.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'Someone answers a warning about daily drinking with \u201cmy grandad drank every day and lived to 90\u201d. Why does that not weaken the warning?',
+    options: [
+      { text: 'Because his grandad probably drank less than he says', correction: 'Do not attack the story \u2014 assume it is completely true. It still does not touch the claim, and that is the point worth understanding.' },
+      { text: 'Because a risk is about rates across many people, and one case cannot contradict a rate', correct: true },
+      { text: 'Because alcohol affects everybody the same way', correction: 'It does not \u2014 people differ. That is exactly why the evidence has to be about many people rather than one.' },
+      { text: 'Because he must have had other healthy habits', correction: 'He may have. But even if nothing else about him was unusual, one survivor tells you nothing about the rate, because some people survive dangerous things.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Design the test',
+    question: 'A company claims its drink improves reaction times. Design a fair test of that claim, and say why each feature of your design is there.',
+    fieldLabel: 'Your design',
+    placeholder: 'I would take one large group and\u2026',
+    criteria: [
+      'Uses a large group of people rather than a few volunteers who already like the drink.',
+      'Splits them at random into two groups \u2014 and says that randomising is what stops the groups differing in other ways.',
+      'Gives the second group an identical-looking, identical-tasting drink without the active ingredient.',
+      'Measures reaction time the same way, at the same time of day, for both groups.',
+      'Says the people measuring the results should not know who had which drink, and explains why that matters.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A video shared in a group chat has someone in a white coat saying a substance is \u201ccompletely safe, and the studies prove it\u201d. It has two million views and thousands of agreeing comments. Work out what you actually know from this, and list what you would check before believing it.',
+    fieldLabel: 'Your answer',
+    placeholder: 'What I know from the video itself is\u2026',
+    criteria: [
+      'Says the number of views and comments measures popularity, not accuracy.',
+      'Says a white coat and the word "studies" are not the same as a named study anyone can read.',
+      'Asks who made the video and whether they gain from the claim.',
+      'Says \u201csafe\u201d needs an amount attached to it \u2014 safe at what dose, for how long, for whom.',
+      'Names a way to check: look for the study itself, or ask a pharmacist, a GP, the school nurse or a teacher rather than the group chat.'
+    ] }
+];
+
+function isDone(id, s) {
+  const opened = Object.keys(s.opened).filter((k) => s.opened[k]).length;
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-claims') return opened >= CLAIMS.length;
+  if (id === 's-four') return opened >= CLAIMS.length;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    claim: 'c1',
+    picks: {},
+    opened: {},
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on) {
+    return 'cursor:pointer;font:inherit;font-size:16px;font-weight:700;padding:10px 15px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+      (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const claim = CLAIMS.find((c) => c.id === s.claim) || CLAIMS[0];
+    const pick = s.picks[claim.id];
+    const opened = !!s.opened[claim.id];
+    const right = pick === claim.answer;
+    const openedCount = Object.keys(s.opened).filter((k) => s.opened[k]).length;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'It comes from a plant rather than a factory' },
+        { letter: 'B', text: 'It is legal to buy it in this country' },
+        { letter: 'C', text: 'Lots of people you know use it and seem fine' },
+        { letter: 'D', text: 'Evidence about what it does to a body, at that dose' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      claimProgress: openedCount + ' of ' + CLAIMS.length + ' checked',
+      claimTabs: CLAIMS.map((c) => ({
+        label: c.label, pressed: c.id === s.claim, style: this.seg(c.id === s.claim),
+        onClick: () => this.setState({ claim: c.id })
+      })),
+      claimText: claim.text,
+      claimEvidence: claim.evidence,
+      claimWhy: claim.why,
+      claimSettle: claim.settle,
+
+      // House rule: the bench does not mark right and wrong. It highlights the
+      // pick, then the verdict panel names the fault in a sentence (as b5-01 does).
+      faultOptions: FAULTS.map((f, i) => {
+        const chosen = pick === f.id;
+        return {
+          text: f.text, letter: String.fromCharCode(65 + i), pressed: chosen,
+          style: 'display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;cursor:' + (opened ? 'default' : 'pointer') +
+            ';font:inherit;font-size:18px;line-height:1.5;padding:14px 16px;min-height:44px;border-radius:var(--ks3-r-panel);border:2px solid ' +
+            (chosen ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') +
+            ';background:' + (chosen ? 'rgba(255,255,255,.10)' : 'transparent') +
+            ';color:var(--ks3-on-dark);opacity:' + (opened && !chosen ? '.5' : '1') + ';',
+          markStyle: 'flex:0 0 26px;display:grid;place-items:center;width:26px;height:26px;border-radius:8px;font-family:var(--ks3-font-display);font-weight:800;font-size:14px;border:2px solid ' +
+            (chosen ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';color:' + (chosen ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';',
+          onClick: () => this.setState((st) => st.opened[claim.id] ? null : ({ picks: Object.assign({}, st.picks, { [claim.id]: f.id }) }))
+        };
+      }),
+      checkDisabled: !pick || opened,
+      checkStyle: (!pick || opened) ? 'opacity:.45;cursor:default;' : '',
+      checkLabel: opened ? 'Checked' : 'Check it',
+      tallyLabel: openedCount === CLAIMS.length ? 'all five claims checked' : (CLAIMS.length - openedCount) + ' still to check',
+      onCheck: () => this.setState((st) => (!st.picks[claim.id] || st.opened[claim.id]) ? null : ({ opened: Object.assign({}, st.opened, { [claim.id]: true }) })),
+      opened: opened,
+      verdictWord: right ? 'That is the fault' : 'Not the main fault here',
+      claimAnswerLine: (FAULTS.find((f) => f.id === claim.answer) || FAULTS[0]).text,
+
+      testCards: TEST_CARDS,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === correctIndex, isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: done,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+</script>
+</body>
+</html>

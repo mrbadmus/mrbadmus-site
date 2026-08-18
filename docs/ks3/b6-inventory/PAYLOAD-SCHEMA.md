@@ -5,7 +5,7 @@ One section per instrument kind. Every key below is a key the renderer in `build
 reads; keys marked **required** raise a `ValueError` at build time when missing, and the build is
 red. Nothing here is aspirational — if the renderer stops reading a key, this file changes with it.
 
-**Source of truth for the copy.** `KS3 B6 lessons/b6-0N-*.dc.html`, Design's approved delivery.
+**Source of truth for the copy.** `docs/ks3/design-reference/b6/b6-0N-*.dc.html`, Design's approved delivery.
 Every string quoted below is lifted from those files verbatim. **Never retype a science-bearing
 string** — `node tools/extract_design_payload.js <page> [CONST...]` extracts the constants, and the
 static markup prose is in the page body.

@@ -1,7 +1,7 @@
 """B6 — Health and drugs, as one module per lesson.
 
 Authored against Claude Design's approved reference screens in
-`KS3 B6 lessons/` and under the MRB-220 build contract. Shape follows
+`docs/ks3/design-reference/b6/` and under the MRB-220 build contract. Shape follows
 `ks3_data/b4/`: each module exports a single `LESSON` dict and this file
 collects them.
 

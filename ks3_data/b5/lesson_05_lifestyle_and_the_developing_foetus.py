@@ -1,7 +1,7 @@
 """B5 L5 — Lifestyle and the developing foetus (SYSTEM).
 
 Authored against Design's approved page,
-`KS3 B5 lessons/b5-05-lifestyle-and-the-developing-foetus.dc.html` (597 lines),
+`docs/ks3/design-reference/b5/b5-05-lifestyle-and-the-developing-foetus.dc.html` (597 lines),
 under the MRB-220 build contract, with `NOTES-B5.md` §2.3, §3 flags 26–30 and
 §4 read whole rather than by flag, as Design's own README asks.
 

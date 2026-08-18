@@ -1,8 +1,8 @@
 """B8 L2 — Why every cell respires (SYSTEM).
 
 Authored against Claude Design's approved page,
-`KS3 B8 lessons/b8-02-why-every-cell-respires.dc.html` (559 lines), her author's
-notes `KS3 B8 lessons/NOTES-B8.md`, and the B8 payload schema
+`docs/ks3/design-reference/b8/b8-02-why-every-cell-respires.dc.html` (559 lines), her author's
+notes `docs/ks3/design-reference/b8/NOTES-B8.md`, and the B8 payload schema
 `docs/ks3/b8-inventory/PAYLOAD-SCHEMA.md` §3, under the MRB-220 build contract.
 
 Every student-facing string is lifted byte-identical from the approved page

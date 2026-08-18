@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Disturbing a food web · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b903-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b903-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Ecosystems and interdependence</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Disturbing a food web</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Ecosystems and interdependence · System</p>
+        <h1>Disturbing a food web</h1>
+        <p class="ks3-bigq">Pull one thread out of a web and the whole thing moves. The species that end up in trouble are usually not the ones anybody was thinking about.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Kill every ladybird in the wood. What happens to the oak tree?</h2>
+        <p class="ks3-hook-prompt">A ladybird has never touched an oak leaf, and an oak tree has no opinion about ladybirds. There are three organisms in between them. The question is whether an effect can travel that far.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What is your prediction?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">It reaches the oak. No ladybirds means aphids multiply; aphids drain sap from the young shoots and the tree grows less. Along the way the blue tits get an easy meal of aphids and neglect the caterpillars, so caterpillar numbers rise as well — a second attack on the same tree, arriving from a different direction. Effects in a web do not stop at the organisms you would have drawn a line to.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · one oak wood, eight species</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Take one out and follow it</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+
+        <div style="margin-top: 18px; padding: 18px 20px; border-radius: var(--ks3-r-card); background: rgba(255,255,255,.06);">
+          <p style="margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Who eats whom</p>
+          <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 8px 20px;">
+            <sc-for list="{{ webLines }}" as="w" hint-placeholder-count="6">
+              <li style="font-size: 17px; line-height: 1.5; color: var(--ks3-on-dark-body);">{{ w }}</li>
+            </sc-for>
+          </ul>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Remove</p>
+          <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+            <sc-for list="{{ speciesTabs }}" as="t" hint-placeholder-count="6">
+              <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);">
+          <p style="margin: 0; font-size: 21px; font-weight: 700; color: var(--ks3-on-dark);">{{ removedLine }}</p>
+          <p style="margin: 6px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-muted);">{{ removedWhy }}</p>
+
+          <ol style="list-style: none; margin: 20px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px;">
+            <sc-for list="{{ rounds }}" as="r" hint-placeholder-count="3">
+              <li style="{{ r.rowStyle }}">
+                <span aria-hidden="true" style="{{ r.numStyle }}">{{ r.num }}</span>
+                <span style="flex: 1 1 auto;">
+                  <span style="{{ r.titleStyle }}">{{ r.title }}</span>
+                  <sc-if value="{{ r.shown }}"><span style="display: block; margin-top: 6px; font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ r.body }}</span></sc-if>
+                </span>
+              </li>
+            </sc-for>
+          </ol>
+
+          <div style="margin-top: 18px; display: flex; align-items: center; gap: 13px; flex-wrap: wrap;">
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onNext }}" disabled="{{ nextDisabled }}" style="{{ nextStyle }}">{{ nextLabel }}</button>
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onReset }}">Put it back</button>
+          </div>
+
+          <sc-if value="{{ done }}">
+            <p data-arrive="1" style="margin: 18px 0 0; padding: 17px 19px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink); font-size: 18px; line-height: 1.6;">{{ verdictText }}</p>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-rules" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Three things a web does</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 28ch;">Connected does not mean fragile, and it does not mean safe.</p>
+
+        <div style="margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px;">
+          <sc-for list="{{ ruleCards }}" as="r" hint-placeholder-count="3">
+            <div style="padding: 24px 26px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ r.kind }}</p>
+              <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 23px; line-height: 1.2; letter-spacing: -.02em;">{{ r.name }}</p>
+              <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.5;">{{ r.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Removing one species changes the numbers of species it never touched, because every organism in a web is connected to every other through some route. A web with many alternative routes absorbs the change; a web with few does not.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Removing a species only affects the things directly above and below it.”</p>
+        <p>That is what a food <em>chain</em> would predict, and it is why the chain is a teaching device rather than a description. In a web, an effect travels along every route out of the missing species and keeps going, and the routes that matter most are often sideways rather than up and down. Take the blue tits out of the wood: caterpillars increase, obviously — but so do aphids, because blue tits were eating those too, and the ladybirds now have more food than they can use while the sparrowhawks have lost their main prey and start taking mice instead, which affects the owls. Three or four species deep, and none of them shares a line with a blue tit on a simple diagram. The practical consequence is that you cannot predict the result of a removal by looking only at what the species ate and what ate it.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“If it goes wrong, you just put the species back.”</p>
+          <p>Sometimes you can, and it is expensive, slow and often only partly successful. Frequently you cannot, because while the species was absent the ecosystem rearranged itself: another organism moved into the space, the plants it depended on died out, or the population that would have been the source is extinct. Extinction has no undo — that is what the word means, and it is <a href="b11-03-when-the-environment-changes-extinction.html">B11's subject</a>. Even where a return is possible, the wood you put the species back into is not the wood it left. This is the reason ecologists argue for caution rather than confidence: not because every disturbance is a disaster, but because the outcome genuinely cannot be predicted in advance, and the experiment cannot be run twice.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Every organism in a food web is connected to every other by some route, so removing one changes the numbers of species it never touched. Effects travel sideways as well as up and down, and they take time to appear. A web with many alternative feeding routes absorbs a loss more easily than one with few, and a species that has gone cannot reliably be put back.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Wolves were hunted out of Yellowstone National Park by the 1920s and reintroduced in 1995, and what the park has shown since is how far past its own prey a top predator reaches. Elk numbers fell. Elk behaviour changed too — they stopped feeding for long spells in the open valley bottoms where they were easiest to ambush. Willow and aspen, the plants elk browse hardest, began growing back along those streams. Beavers need willow, and beavers returned to the stretches where it recovered; their dams then changed what could live in the water. Follow the links: a wolf never touches a willow, and never touches a beaver. It is joined to the willow through the elk and to the beaver through the willow, and that is enough. This is the difference between a chain and a web. Pull one strand hard and things you were not watching move — which is why <em>remove the predator and there will simply be more prey</em> is never the whole answer.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b9-01-food-chains-and-food-webs.html">Food chains and food webs<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b9-02-predator-and-prey.html">Predator and prey<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b9-04-pollinators-and-food-security.html">Pollinators and food security<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b6-03-substance-misuse-and-decisions.html">Substance misuse and decisions<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Trophic cascades, keystone species, and the effect of biodiversity on the stability of an ecosystem.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to trace a removal through a web of your own?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The wood is a teaching web of eight species. Real woodland webs contain hundreds, the outcomes described are plausible directions rather than predictions, and effects that appear here in three rounds take years in a real ecosystem and do not always arrive.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The ladybirds' },
+  { id: 's-bench', label: 'Take one out' },
+  { id: 's-rules', label: 'Three rules' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'BENCH', 'RULES', 'LADDER'];
+
+const WEB_LINES = [
+  'Caterpillars and aphids feed on oak leaves and sap',
+  'Ladybirds eat aphids, and nothing else',
+  'Blue tits eat caterpillars and aphids',
+  'Mice eat acorns and seeds from the wildflowers',
+  'Owls eat mice',
+  'Sparrowhawks eat blue tits, and mice when they must',
+  'Bees pollinate the wildflowers',
+  'Fungi and bacteria decompose everything that dies'
+];
+
+const SPECIES = [
+  { id: 'ladybirds', label: 'Ladybirds',
+    why: 'They eat aphids and nothing else, so on a simple diagram they have exactly one line coming out of them.',
+    rounds: [
+      { title: 'Straight away', body: 'Nothing is eating aphids except the blue tits, and aphids breed extremely fast. Aphid numbers climb steeply within a season.' },
+      { title: 'A season or two later', body: 'Blue tits switch towards the easy aphid supply and take fewer caterpillars, so caterpillar numbers rise as well. The oak is now losing sap to aphids and leaves to caterpillars at the same time.' },
+      { title: 'Further out', body: 'A tree under that much pressure grows less and produces fewer acorns. Fewer acorns means fewer mice, and fewer mice means the owls have a bad year \u2014 four steps from an insect that never went near an owl.' }
+    ],
+    verdict: 'Six of the eight species changed, and the two that started the story \u2014 ladybirds and aphids \u2014 are the least interesting part of it.' },
+  { id: 'bluetits', label: 'Blue tits',
+    why: 'They sit in the middle of this web, eating two things and being eaten by one.',
+    rounds: [
+      { title: 'Straight away', body: 'Both caterpillars and aphids increase, because their main bird predator has gone. The oak comes under pressure from two directions at once.' },
+      { title: 'A season or two later', body: 'Ladybirds do well on the aphid glut, but they cannot eat caterpillars and cannot make up the difference. Sparrowhawks have lost their main prey and hunt mice instead.' },
+      { title: 'Further out', body: 'Mice are now hunted by both owls and sparrowhawks, so mouse numbers fall, and the owls \u2014 who eat nothing else \u2014 are squeezed out by a competitor that arrived because of a change three species away.' }
+    ],
+    verdict: 'Every species in the wood except the bees and the decomposers changed, and the owls suffered most from losing a bird they never competed with.' },
+  { id: 'owls', label: 'Owls',
+    why: 'A top predator. Nothing eats an owl, so it looks like the safest species to remove.',
+    rounds: [
+      { title: 'Straight away', body: 'Mouse numbers rise, held back only by the sparrowhawks, who take mice occasionally rather than as a main food.' },
+      { title: 'A season or two later', body: 'More mice means more acorns and wildflower seeds eaten. Fewer seeds germinate, and the flowers begin to thin out.' },
+      { title: 'Further out', body: 'Fewer wildflowers means less for the bees, whose numbers drop \u2014 and the flowers that remain are pollinated less, so they set fewer seeds again. Removing the top of the web has damaged the bottom of it.' }
+    ],
+    verdict: 'The effect ran from a predator down to the plants and then to an insect that has nothing to do with either. Top predators are usually the species whose removal travels furthest.' },
+  { id: 'caterpillars', label: 'Caterpillars',
+    why: 'A pest, from the tree\u2019s point of view. This is the removal a gardener would choose.',
+    rounds: [
+      { title: 'Straight away', body: 'The oak loses fewer leaves and grows better for a season. So far, exactly what was wanted.' },
+      { title: 'A season or two later', body: 'Blue tits lose the food they raise their chicks on \u2014 a pair needs hundreds of caterpillars a day in spring \u2014 and far fewer chicks survive. Blue tit numbers fall sharply.' },
+      { title: 'Further out', body: 'With fewer blue tits, aphids are barely predated and increase; the oak is attacked by sap-suckers instead of leaf-eaters. Sparrowhawks, short of blue tits, turn to mice, and owl numbers fall.' },
+      { title: '', body: '' }
+    ],
+    verdict: 'The tree gained one good season and then lost the birds that were protecting it from something else. Removing a pest is not the same as solving a problem.' },
+  { id: 'bees', label: 'Bees',
+    why: 'They eat nothing in this web and nothing in it eats them. They are here for a different reason.',
+    rounds: [
+      { title: 'Straight away', body: 'The wildflowers are not pollinated, so they set almost no seed. Nothing looks wrong for a year, because the plants are already grown.' },
+      { title: 'A season or two later', body: 'The next generation of wildflowers barely appears. Ground cover thins, and the seeds mice depend on become scarce.' },
+      { title: 'Further out', body: 'Mouse numbers fall, and the owls with them. An insect connected to this web only by a service, not by a feeding line, turns out to hold up two vertebrates \u2014 which is b9-04\u2019s subject.' }
+    ],
+    verdict: 'The bees are in no food chain here and their removal still empties the web. Feeding is not the only kind of dependence.' },
+  { id: 'oak', label: 'The oak',
+    why: 'The producer. Everything else here ultimately runs on it.',
+    rounds: [
+      { title: 'Straight away', body: 'Caterpillars and aphids have nothing to eat and collapse. Acorns stop, so the mice lose their main winter food.' },
+      { title: 'A season or two later', body: 'Blue tits and ladybirds lose their prey; owls lose the mice. Every consumer in the wood is now short of food, and there is no alternative producer at this scale.' },
+      { title: 'Further out', body: 'The decomposers have a brief glut of dead wood and leaf litter and then nothing arriving. Without a producer the web does not reorganise \u2014 it empties.' }
+    ],
+    verdict: 'Every other removal redistributed the energy in the wood. Removing the producer removes the energy itself, which is the one loss a web cannot absorb.' }
+];
+
+const RULE_CARDS = [
+  { kind: 'Rule one', name: 'Effects travel sideways', body: 'Not only up and down the chain. The species that suffers most is often a competitor, or something that shared a predator, rather than anything the removed species touched.' },
+  { kind: 'Rule two', name: 'Alternative routes absorb shocks', body: 'A predator that eats six things barely notices losing one. A specialist that eats one thing does not survive losing it. Which is why webs with more connections are steadier.' },
+  { kind: 'Rule three', name: 'Effects are delayed', body: 'Populations take seasons or years to respond, so the damage from a removal often appears long after anyone is still watching for it.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Follow one step',
+    question: 'All the ladybirds in the wood are killed by a pesticide. What is the immediate effect?',
+    options: [
+      { text: 'Aphid numbers rise, because their main predator has gone', correct: true },
+      { text: 'Aphid numbers fall, because ladybirds were controlling them', correction: 'Read that one again \u2014 controlling means keeping numbers down. Remove the control and the numbers go up.' },
+      { text: 'The oak grows better, with fewer insects in the wood', correction: 'One fewer insect species, and it was the one eating another insect. The oak gets worse, not better.' },
+      { text: 'Nothing, because ladybirds are not eaten by anything', correction: 'What eats a species is only half of its connections. What it eats matters just as much.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'Owls are removed from the wood. Which species is affected that most people would not predict?',
+    options: [
+      { text: 'The mice, whose numbers rise', correction: 'True, and everyone predicts it. The question is asking what happens after that.' },
+      { text: 'The bees, because more mice eat more wildflower seeds and the flowers thin out', correct: true },
+      { text: 'The sparrowhawks, because owls were their competitors', correction: 'A reasonable thought, but in this web sparrowhawks eat blue tits mainly and take mice only when they must \u2014 more mice is if anything a small gain.' },
+      { text: 'None \u2014 owls are at the top, so nothing depends on them', correction: 'That is exactly the assumption the bench is built to break. Removing the top of a web changes the bottom of it.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Trace a chain of effects',
+    question: 'Blue tits disappear from the wood. Trace the effects through at least three further species, saying what causes each step, and finish by explaining why a food chain diagram would not have predicted the last one.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'With no blue tits\u2026',
+    criteria: [
+      'Says caterpillars and aphids both increase, because blue tits ate both.',
+      'Says the oak is affected, losing leaves to caterpillars and sap to aphids.',
+      'Says sparrowhawks lose their main prey and hunt mice more.',
+      'Says mouse numbers fall, so owls are affected \u2014 a species with no direct link to a blue tit.',
+      'Explains that a chain shows one route only, while the effect travelled sideways through a shared predator.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A farmer sprays an insecticide on a field bordering the wood. It kills aphids, and it also kills ladybirds and most other insects. Predict what happens over the following two years, and explain why the aphid problem often comes back worse than before.',
+    fieldLabel: 'Your answer',
+    placeholder: 'In the first weeks\u2026',
+    criteria: [
+      'Says aphid numbers crash immediately, along with everything else the spray reached.',
+      'Says the aphids recover quickly, because they breed far faster than their predators do.',
+      'Says the predators \u2014 ladybirds especially \u2014 recover slowly, and start from a much smaller number.',
+      'Concludes the aphids can therefore reach higher numbers than before, with nothing left to control them.',
+      'Identifies a wider consequence \u2014 insect-eating birds losing food, or pollinators being killed along with the pest.'
+    ] }
+];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return s.everDone;
+  if (id === 's-rules') return s.everDone;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    species: 'ladybirds',
+    shown: 0,
+    everDone: false,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on) {
+    return 'cursor:pointer;font:inherit;font-size:16px;font-weight:700;padding:10px 15px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+      (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const sp = SPECIES.find((x) => x.id === s.species) || SPECIES[0];
+    const rounds = sp.rounds.filter((r) => r.title);
+    const total = rounds.length;
+    const done = s.shown >= total;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const isd = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: isd, showNum: !isd, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (isd ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (isd || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (isd ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : isd ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (isd ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'Nothing \u2014 ladybirds and oaks are not connected' },
+        { letter: 'B', text: 'The oak does better, with one fewer insect in the wood' },
+        { letter: 'C', text: 'The oak does worse, and from two directions at once' },
+        { letter: 'D', text: 'The oak is affected, but only after twenty years' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      benchProgress: s.shown === 0 ? 'nothing removed yet' : (done ? 'all three rounds' : 'round ' + s.shown + ' of ' + total),
+      webLines: WEB_LINES,
+      speciesTabs: SPECIES.map((x) => ({
+        label: x.label, pressed: x.id === s.species, style: this.seg(x.id === s.species),
+        onClick: () => this.setState({ species: x.id, shown: 0 })
+      })),
+      removedLine: s.shown === 0 ? sp.label + ' \u2014 still in the wood' : sp.label + ' removed',
+      removedWhy: sp.why,
+      rounds: rounds.map((r, i) => {
+        const shown = i < s.shown;
+        const cur = i === s.shown - 1;
+        return {
+          num: String(i + 1), title: r.title, body: r.body, shown: shown,
+          rowStyle: 'display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-radius:var(--ks3-r-panel);background:' +
+            (cur ? 'rgba(255,255,255,.10)' : 'transparent') + ';border:2px solid ' +
+            (cur ? 'var(--ks3-alert)' : (shown ? 'var(--ks3-on-dark-muted)' : 'transparent')) + ';opacity:' + (shown ? '1' : '.45') + ';',
+          numStyle: 'flex:0 0 30px;display:grid;place-items:center;width:30px;height:30px;border-radius:9px;font-family:var(--ks3-font-display);font-weight:800;font-size:15px;background:' +
+            (shown ? 'var(--ks3-alert)' : 'transparent') + ';border:2px solid ' + (shown ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') +
+            ';color:' + (shown ? 'var(--ks3-ink)' : 'var(--ks3-on-dark-muted)') + ';',
+          titleStyle: 'display:block;font-size:19px;font-weight:700;color:' + (shown ? 'var(--ks3-on-dark)' : 'var(--ks3-on-dark-muted)') + ';'
+        };
+      }),
+      nextDisabled: done,
+      nextStyle: done ? 'opacity:.45;cursor:default;' : '',
+      nextLabel: s.shown === 0 ? 'Remove it' : (done ? 'Followed to the end' : 'And then?'),
+      onNext: () => this.setState((st) => {
+        const next = Math.min(total, st.shown + 1);
+        return { shown: next, everDone: st.everDone || next >= total };
+      }),
+      onReset: () => this.setState({ shown: 0 }),
+      done: done,
+      verdictText: sp.verdict,
+
+      ruleCards: RULE_CARDS,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const answered = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: answered,
+          isRight: answered && chosen === correctIndex, isWrong: answered && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (answered ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = answered && i === correctIndex;
+            const isWrong = answered && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (answered) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: answered,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+</script>
+</body>
+</html>

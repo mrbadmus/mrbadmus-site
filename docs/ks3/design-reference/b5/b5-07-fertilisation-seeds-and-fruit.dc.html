@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fertilisation, seeds and fruit · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b507-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b507-arrive .34s ease-out both; }
+  [data-cmp-grid] { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: flex-start; }
+  [data-cmp-grid] > [data-cmp-name] { flex: 0 0 168px; }
+  [data-cmp-grid] > [data-cmp-cell] { flex: 1 1 210px; min-width: 0; }
+  [data-cmp-cap] { display: none; }
+  @media (max-width: 880px) {
+    [data-cmp-grid] > [data-cmp-name] { flex: 1 1 100%; }
+    [data-cmp-head] { display: none; }
+    [data-cmp-cap] { display: block; margin: 0 0 3px; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-accent-text); }
+  }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Reproduction</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Fertilisation, seeds and fruit</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Reproduction · Process</p>
+        <h1>Fertilisation, seeds and fruit</h1>
+        <p class="ks3-bigq">Pollen has landed. The two gametes are still several centimetres apart, and neither of them can move.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>A pollen grain solves the problem by growing a tunnel.</h2>
+        <p class="ks3-hook-prompt">There is no sperm here, nothing swims, and nothing is carried. The gametes are at opposite ends of a solid stalk of plant tissue, and the plant has to get one of them to the other.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">So how does the male gamete reach the ovule?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">The grain grows. Once it lands on a stigma of the right species it puts out a pollen tube — a single cell extending down through the tissue of the style, digesting its way towards an ovary it cannot see — and the male gamete nucleus travels down inside it. The journey takes hours in some plants and months in others. Only when the tube reaches an ovule does anything fuse, and that is the moment this lesson is about.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-becomes" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">Before and after · six parts</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">What each part turns into</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ becomeProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">A fertilised flower does not build a fruit from nothing — it converts the parts it already has. Tap a row to see why.</p>
+
+        <div style="margin-top: 22px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-on-dark-muted); background: var(--ks3-dark-panel); overflow: hidden;">
+          <div data-cmp-grid="1" data-cmp-head="1" style="padding: 13px 16px; background: rgba(0,0,0,.28);">
+            <p data-cmp-name="1" style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Part of the flower</p>
+            <p data-cmp-cell="1" style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 17px; color: var(--ks3-on-dark);">Before</p>
+            <p data-cmp-cell="1" style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 17px; color: var(--ks3-alert);">After fertilisation</p>
+          </div>
+          <sc-for list="{{ becomeRows }}" as="row" hint-placeholder-count="6">
+            <div style="{{ row.wrapStyle }}">
+              <button type="button" onClick="{{ row.onClick }}" aria-pressed="{{ row.open }}" style="{{ row.btnStyle }}">
+                <span data-cmp-grid="1" style="width: 100%;">
+                  <span data-cmp-name="1" style="display: block; font-size: 17px; font-weight: 700; color: var(--ks3-on-dark);">{{ row.name }}</span>
+                  <span data-cmp-cell="1" style="display: block;">
+                    <span data-cmp-cap="1">Before</span>
+                    <span style="display: block; font-size: 17px; line-height: 1.45; color: var(--ks3-on-dark-body);">{{ row.before }}</span>
+                  </span>
+                  <span data-cmp-cell="1" style="display: block;">
+                    <span data-cmp-cap="1">After fertilisation</span>
+                    <span style="display: block; font-size: 17px; line-height: 1.45; color: var(--ks3-alert);">{{ row.after }}</span>
+                  </span>
+                </span>
+              </button>
+              <sc-if value="{{ row.open }}">
+                <p data-arrive="1" style="margin: 0; padding: 15px 18px 18px; font-size: 18px; line-height: 1.6; color: var(--ks3-on-dark-body);"><strong style="font-family: var(--ks3-font-display); color: var(--ks3-on-dark);">Why:</strong> {{ row.why }}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-steps" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The process, in order</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 28ch;">Five steps, and only one of them is fertilisation.</p>
+
+        <ol style="list-style: none; margin: 24px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ steps }}" as="st" hint-placeholder-count="5">
+            <li style="{{ st.style }}">
+              <span aria-hidden="true" style="{{ st.numStyle }}">{{ st.num }}</span>
+              <div style="flex: 1 1 auto; min-width: 0;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
+                  <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px; line-height: 1.2; letter-spacing: -.02em;">{{ st.name }}</p>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; color: var(--ks3-accent-text);">{{ st.where }}</p>
+                </div>
+                <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.55;">{{ st.what }}</p>
+              </div>
+            </li>
+          </sc-for>
+        </ol>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Pollination is delivery to the stigma. Fertilisation is fusion at the ovule, later, at the bottom of a tube the pollen grain had to grow. A fertilised ovule becomes a seed and the ovary around it becomes the fruit.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Pollination and fertilisation are the same thing.”</p>
+        <p>They are separated by a distance, a delay and a definition — and this is the single most common error in the whole of plant reproduction. Pollination is transport: a grain of pollen arrives on a stigma. Nothing has joined, nothing is fertilised, and the plant may still end up with no seeds at all. Fertilisation is the fusion of the pollen's gamete nucleus with the ovule's, which happens somewhere else entirely — down inside the ovary — after the grain has grown a tube the whole length of the style to get there. Hours later in some species; in an oak, months. It is the same distinction you drew in <a href="b5-02-gametes-and-fertilisation.html">Gametes and fertilisation</a> between a sperm reaching an egg and a sperm fusing with one. Arriving is not fusing, in an animal or in a plant.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“A tomato is a vegetable.”</p>
+          <p>In a kitchen, certainly. In biology the word <em>fruit</em> has a definition and it has nothing to do with sweetness: a fruit is the structure that develops from the ovary of a flower, and it contains the seeds. Cut anything open and the seeds settle it. Tomatoes, cucumbers, peppers, courgettes, pea pods, aubergines and — the one that surprises everybody — the tough case around a grain of wheat are all fruits. Carrots are roots, potatoes are underground stems, celery is a leaf stalk, and none of those has ever been near an ovary. <em>Vegetable</em> is a culinary word covering any plant part we happen to eat savoury; it draws no biological line at all. This is worth having straight for a reason beyond pub quizzes: once you know a fruit is a converted ovary, you can look at any one and read backwards to the flower it used to be.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>After pollination, the pollen grain grows a pollen tube down through the style to an ovule. The male gamete nucleus travels down the tube and fuses with the female gamete nucleus inside the ovule: that fusion is fertilisation. The fertilised ovule becomes a seed containing an embryo plant and a food store, inside a tough coat. The ovary around it becomes the fruit. Petals, stamens and stigma have done their jobs and wither.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Flowering plants fertilise twice, with the same pollen tube. Two nuclei travel down it: one fuses with the egg nucleus and becomes the embryo, and the second fuses with other nuclei in the ovule to make a tissue called endosperm — the seed's food store. Nothing else on Earth does this, and it solves an accounting problem elegantly. A food store is expensive, so a plant that built one for every ovule would waste most of them; here the store is only started once fertilisation has actually happened, and an unfertilised ovule costs almost nothing. Then consider what that tissue is. A grain of wheat, rice, maize, barley or oats is mostly endosperm; white flour is very nearly pure endosperm with the embryo and the coat milled away. Most of the calories eaten by most people who have ever lived have been a plant's packed lunch for a seedling, redirected — and none of it would have been made at all if a pollen tube had not arrived.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="b5-08-seed-dispersal.html">Seed dispersal<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b5-06-flowers-and-pollination.html">Flowers and pollination<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b5-02-gametes-and-fertilisation.html">Gametes and fertilisation<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Seed structure and germination, plant hormones, and the genetics of self- and cross-fertilisation.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to check the difference between pollination and fertilisation?</p>
+          <a class="ks3-tutor-cta" href="#s-steps">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">Timings vary enormously between species: a pollen tube may reach the ovule in a few hours or, in some trees, after several months. The pollen tube diagram is declared in the lesson record as <span style="font-family: var(--ks3-font-mono);">b5-pollen-tube</span>, awaiting illustration.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'A tunnel' },
+  { id: 's-becomes', label: 'What it becomes' },
+  { id: 's-steps', label: 'Five steps' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'BECOMES', 'STEPS', 'LADDER'];
+
+const BECOMES = [
+  { id: 'ovule', name: 'Ovule', before: 'A tiny structure inside the ovary, holding one female gamete nucleus', after: 'A seed',
+    why: 'One ovule becomes one seed, which is why counting the seeds in a fruit counts the ovules that were fertilised. The seed contains an embryo plant, a food store, and a tough coat around both.' },
+  { id: 'ovary', name: 'Ovary', before: 'A chamber at the base of the carpel containing the ovules', after: 'The fruit',
+    why: 'It swells, and what it swells into depends on the species: fleshy in a tomato or a plum, dry and papery in a pea pod, hard in a hazelnut. All of them are ovaries doing the same job \u2014 protecting the seeds and getting them moved.' },
+  { id: 'zygote', name: 'The fused nuclei', before: 'One nucleus from the pollen, one from the ovule', after: 'The embryo plant',
+    why: 'This is the fertilised cell, and it divides to become a miniature plant with the beginnings of a root and a shoot, folded up inside the seed and waiting. It is the only part of all this that is genuinely new.' },
+  { id: 'petals', name: 'Petals', before: 'Coloured, scented, advertising for visitors', after: 'Wither and fall',
+    why: 'The advertising budget is cut the moment the sale is made. A flower whose ovules are fertilised has nothing to gain from further insect visits, so the petals \u2014 which were expensive to build \u2014 are abandoned.' },
+  { id: 'stamens', name: 'Stamens', before: 'Anthers making and releasing pollen', after: 'Wither and fall',
+    why: 'Same reasoning. The male parts of this flower have already sent their pollen out into the world, and it is other flowers they have to reach, not this one.' },
+  { id: 'sepals', name: 'Sepals', before: 'Green flaps enclosing the bud', after: 'Often stay, sometimes hardly change',
+    why: 'Look at the top of a strawberry or a tomato: that little green star is the sepals, still there long after everything else has gone. They protected the bud and in many species they go on protecting the fruit.' }
+];
+
+const STEPS = [
+  { num: '01', name: 'Pollen lands', where: 'On the stigma \u2014 this is pollination',
+    what: 'A grain arrives, carried by an insect or the wind. If it is the wrong species the stigma usually does not respond at all; if it is the right one, the grain begins to grow.' },
+  { num: '02', name: 'The pollen tube grows', where: 'Down through the style',
+    what: 'The grain extends a single tube down through the tissue of the style towards the ovary, digesting its way through as it goes. The male gamete nucleus travels down inside it.' },
+  { num: '03', name: 'Fertilisation', where: 'Inside an ovule \u2014 and nowhere else',
+    what: 'The tube reaches an ovule and the male gamete nucleus fuses with the female gamete nucleus. That fusion, and only that fusion, is fertilisation. Every ovule that is going to become a seed needs its own pollen tube.' },
+  { num: '04', name: 'Seeds form', where: 'From the fertilised ovules',
+    what: 'Each fertilised ovule becomes a seed: an embryo plant, a store of food to start it off, and a tough coat around both. The seed can survive conditions that would kill the parent plant.' },
+  { num: '05', name: 'The fruit forms', where: 'From the ovary around them',
+    what: 'The ovary wall swells and becomes the fruit, and the rest of the flower withers away. Whether it ends up fleshy, dry, hooked or winged depends on how that species intends to move its seeds \u2014 which is the next lesson.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Define it precisely',
+    question: 'In a flowering plant, which of these is fertilisation?',
+    options: [
+      { text: 'A pollen grain landing on a stigma', correction: 'That is pollination \u2014 delivery to the front door. The gametes are still centimetres apart.' },
+      { text: 'A pollen nucleus fusing with an ovule nucleus inside the ovary', correct: true },
+      { text: 'The ovary swelling to become a fruit', correction: 'That happens because fertilisation has already occurred. Effect, not event.' },
+      { text: 'A seed being carried away and germinating', correction: 'That is dispersal and germination, both much later, and both possible only because fertilisation happened first.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'Which of these is a fruit, biologically?',
+    options: [
+      { text: 'A carrot', correction: 'A root. It is a food store the plant built for itself, and it has never been part of a flower.' },
+      { text: 'A tomato', correct: true },
+      { text: 'A potato', correction: 'An underground stem \u2014 a tuber. The eyes on it are buds, which is why a potato can sprout.' },
+      { text: 'A stick of celery', correction: 'A leaf stalk. Follow it up and you find the leaf still attached at the top.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain the sequence',
+    question: 'Describe what happens from a pollen grain landing on a stigma to a fruit forming. Make clear which single step is fertilisation, and say what the ovule and the ovary each become.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The pollen grain lands on the stigma and\u2026',
+    criteria: [
+      'Says the pollen grain grows a pollen tube down through the style.',
+      'Says the male gamete nucleus travels down the tube to an ovule.',
+      'Identifies fertilisation as the fusion of the two nuclei, inside the ovule.',
+      'Says the fertilised ovule becomes a seed containing an embryo and a food store.',
+      'Says the ovary becomes the fruit, and that the petals and stamens wither.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A gardener pinches off every flower on a tomato plant as soon as it opens, to keep the plant tidy. Explain why they will get no tomatoes, using the words pollination, fertilisation, ovule and ovary.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Removing the flower removes\u2026',
+    criteria: [
+      'Says removing the flower removes the ovary, and the fruit can only develop from an ovary.',
+      'Says pollen never reaches the stigma, so pollination cannot happen.',
+      'Says without fertilisation the ovules do not become seeds.',
+      'Concludes that a tomato is a converted ovary, so no flower means no tomato.'
+    ] }
+];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-becomes') return Object.keys(s.open).length >= 6;
+  if (id === 's-steps') return Object.keys(s.open).length >= 6;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    open: {},
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  renderVals() {
+    const s = this.state;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'The stigma absorbs it and passes it down to the ovary' },
+        { letter: 'B', text: 'The grain grows a tube down through the style, and the nucleus travels along it' },
+        { letter: 'C', text: 'Rain washes it down the inside of the style' },
+        { letter: 'D', text: 'It does not need to \u2014 fertilisation happens on the stigma' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      becomeProgress: Object.keys(s.open).length + ' of 6 opened',
+      becomeRows: BECOMES.map((row, i) => ({
+        name: row.name, before: row.before, after: row.after, why: row.why, open: !!s.open[row.id],
+        wrapStyle: 'border-top: 2px solid rgba(255,255,255,.12); background: ' + (s.open[row.id] ? 'rgba(228,87,46,.10)' : (i % 2 ? 'rgba(255,255,255,.03)' : 'transparent')) + ';',
+        btnStyle: 'display: block; width: 100%; text-align: left; cursor: pointer; font: inherit; padding: 15px 16px; min-height: 44px; border: 0; background: transparent; color: inherit;',
+        onClick: () => this.setState((st) => ({ open: Object.assign({}, st.open, { [row.id]: !st.open[row.id] }) }))
+      })),
+
+      steps: STEPS.map((st) => ({
+        num: st.num, name: st.name, where: st.where, what: st.what,
+        style: 'padding: 20px 22px; border-radius: var(--ks3-r-card); background: ' + (st.num === '03' ? 'var(--ks3-inset)' : 'var(--ks3-card)') +
+          '; border: ' + (st.num === '03' ? '3px' : '2px') + ' solid var(--ks3-ink); display: flex; gap: 18px; align-items: flex-start;',
+        numStyle: 'flex: 0 0 40px; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: ' +
+          (st.num === '03' ? 'var(--ks3-accent)' : 'var(--ks3-ink)') + '; color: var(--ks3-on-dark); font-family: var(--ks3-font-display); font-weight: 800; font-size: 18px;'
+      })),
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === correctIndex, isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: done,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+</script>
+</body>
+</html>

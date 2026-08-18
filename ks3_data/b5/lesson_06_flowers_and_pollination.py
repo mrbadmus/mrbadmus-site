@@ -1,7 +1,7 @@
 """B5 L6 — Flowers and pollination (SYSTEM).
 
 Authored against Design's approved page,
-`KS3 B5 lessons/b5-06-flowers-and-pollination.dc.html` (584 lines), under the
+`docs/ks3/design-reference/b5/b5-06-flowers-and-pollination.dc.html` (584 lines), under the
 MRB-220 build contract.
 
 Every student-facing string is lifted byte-identical from the approved page

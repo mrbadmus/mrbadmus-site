@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why every cell respires · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b802-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b802-arrive .34s ease-out both; }
+  [data-fill] { transition: width .3s linear; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } [data-fill] { transition: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Respiration</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Why every cell respires</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Respiration · System</p>
+        <h1>Why every cell respires</h1>
+        <p class="ks3-bigq">Weeks without food. Days without water. Minutes without oxygen. The gap between those three numbers is the whole subject of this lesson.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Three weeks, three days, four minutes.</h2>
+        <p class="ks3-hook-prompt">A person can survive around three weeks without food and three days without water. Without oxygen the number collapses to about four minutes before permanent damage begins. Nothing else the body needs has a deadline anything like that short.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Why is oxygen on such a different timescale?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Because there is no store of it and every cell needs it every second. Fat is a store of fuel that lasts weeks. There is no oxygen tank anywhere in the body — a few seconds' worth is dissolved in the blood and that is all. Stop the supply and every cell in the body stops respiring at once, which means every process in the body stops at once.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · five cells, one reaction</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">What is the energy actually for?</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Five very different cells, including one from a plant. For each: what it spends energy on, how many mitochondria it carries, and what fails first when respiration stops.</p>
+
+        <div style="margin-top: 22px;">
+          <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The cell</p>
+          <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+            <sc-for list="{{ cellTabs }}" as="t" hint-placeholder-count="5">
+              <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+            <p style="margin: 0; font-size: 21px; font-weight: 700; color: var(--ks3-on-dark);">{{ cellName }}</p>
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-alert);">{{ cellOrigin }}</p>
+          </div>
+          <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-muted);">{{ cellJob }}</p>
+
+          <p style="margin: 20px 0 8px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Where its energy goes</p>
+          <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 11px;">
+            <sc-for list="{{ spend }}" as="p" hint-placeholder-count="3">
+              <li>
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <p style="margin: 0; font-size: 17px; font-weight: 600; color: var(--ks3-on-dark);">{{ p.name }}</p>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 16px; color: var(--ks3-on-dark-muted);">{{ p.share }}</p>
+                </div>
+                <span style="display: block; margin-top: 5px; height: 16px; border-radius: 99px; background: rgba(255,255,255,.08); overflow: hidden;"><span data-fill="1" style="{{ p.barStyle }}"></span></span>
+              </li>
+            </sc-for>
+          </ul>
+
+          <div style="margin-top: 18px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: rgba(255,255,255,.06);">
+            <p style="margin: 0; font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);"><span style="font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted); display: block; margin-bottom: 6px;">Mitochondria</span>{{ cellMito }}</p>
+          </div>
+
+          <div style="margin-top: 18px; display: flex; align-items: center; gap: 13px; flex-wrap: wrap;">
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onCut }}">{{ cutLabel }}</button>
+          </div>
+
+          <sc-if value="{{ cutShown }}">
+            <p data-arrive="1" style="margin: 18px 0 0; padding: 17px 19px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink); font-size: 18px; line-height: 1.6;">{{ cellFails }}</p>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-jobs" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Four things the energy pays for</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 28ch;">Only one of them is moving.</p>
+
+        <div style="margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px;">
+          <sc-for list="{{ jobCards }}" as="j" hint-placeholder-count="4">
+            <div style="padding: 24px 26px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ j.kind }}</p>
+              <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 23px; line-height: 1.2; letter-spacing: -.02em;">{{ j.name }}</p>
+              <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.5;">{{ j.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Every living cell in every living organism respires continuously, because every other chemical process in a cell — movement, growth, repair, active transport and keeping warm — has to be paid for out of the energy respiration releases.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Plants photosynthesise, animals respire.”</p>
+        <p>A plant is made of living cells, and a living cell that does not respire is a dead one. Every root cell, every stem cell, every leaf cell respires continuously, day and night, using oxygen and producing carbon dioxide exactly as yours do. Photosynthesis is not an alternative to respiration; it is an extra process that a plant can also do, in the cells that have chloroplasts, when there is light. Put the two together and the arithmetic works out like this: in bright light a leaf photosynthesises faster than it respires, so the net movement of gases looks like the opposite of an animal's, which is where the wrong idea comes from. Look at a root instead — buried, dark, no chloroplasts, and entirely dependent on sugar sent down from the leaves — and the plant looks exactly like you. The day-and-night version of this is <a href="b4-05-stomata-and-gas-exchange-in-plants.html">b4-05's</a>.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“You respire when you need energy — when you exercise.”</p>
+          <p>You respire fastest when you exercise. You respire all the time, and most of what you use in a day is spent while you are doing nothing you would describe as activity. Sitting still, your heart is contracting, your kidneys are filtering, your gut is transporting, your liver is running thousands of reactions, your brain is signalling, and every cell you own is pumping ions across its membrane to stay alive. That last one alone is a large and permanent bill. The clearest evidence is the four-minute figure at the top of this page: if respiration only mattered during effort, someone sitting quietly could hold their breath for an hour, and they cannot. Rest is not the state of not respiring — it is the state of respiring at your lowest rate, and that rate is still enough to keep you at 37 °C in a cold room.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Respiration happens in every living cell of every living organism, plants included, continuously. The energy it releases pays for movement, for building large molecules from small ones during growth and repair, for active transport, and in mammals and birds for keeping the body warm. There is no store of oxygen, which is why the supply cannot be interrupted for more than a few minutes.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>A dormouse in October has a problem an arithmetic teacher would recognise. Keeping a small warm body at 37 °C through a British winter costs more energy than a winter's food supply can provide, because a small animal loses heat quickly relative to its mass. Hibernation is the accounting solution: it abandons the temperature. Body temperature falls to a few degrees above the surroundings, the heart slows to a handful of beats a minute, and respiration drops to a tiny fraction of its normal rate — slow enough that a store of fat laid down in autumn can last until spring. The animal is not asleep in any ordinary sense and cannot simply wake up; getting back to operating temperature takes hours and costs a serious fraction of the reserve, which is why a hibernating animal disturbed too often in winter can starve before spring.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b8-01-aerobic-respiration.html">Aerobic respiration<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b1-04-specialised-cells.html">Specialised cells<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b4-05-stomata-and-gas-exchange-in-plants.html">Stomata and gas exchange in plants<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p1-04-heating-and-thermal-equilibrium.html">Heating and thermal equilibrium<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Metabolism, ATP, active transport across membranes, and calculating metabolic rate from oxygen consumption.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to work out what a cell spends its energy on?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The energy shares on the bench are illustrative proportions chosen to show what each cell type is mainly doing, not measured values — real figures vary with the organism, its age and what it is doing at the time. Mitochondria counts are given as broad comparisons rather than exact numbers.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startCell&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;muscle&quot;,&quot;nerve&quot;,&quot;root&quot;,&quot;sperm&quot;,&quot;white&quot;],&quot;default&quot;:&quot;muscle&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;The bench&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Four minutes' },
+  { id: 's-bench', label: 'Five cells' },
+  { id: 's-jobs', label: 'Four jobs' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'CELLS', 'JOBS', 'LADDER'];
+
+const CELLS = [
+  { id: 'muscle', label: 'Muscle cell', name: 'Heart muscle cell', origin: 'Animal',
+    job: 'Contracts about once a second, every second, for a lifetime, and never gets a rest day.',
+    spend: [{ name: 'Contracting', pct: 70 }, { name: 'Pumping ions across the membrane', pct: 20 }, { name: 'Repair and rebuilding', pct: 10 }],
+    mito: 'Enormous numbers \u2014 by some counts a third of the cell\u2019s volume. The hardest-working cell in the body has the most machinery for the job.',
+    fails: 'Contraction stops within seconds. A heart deprived of oxygen for a few minutes suffers permanent damage, and it is heart muscle\u2019s inability to be replaced afterwards that makes a heart attack so serious.' },
+  { id: 'nerve', label: 'Nerve cell', name: 'Nerve cell', origin: 'Animal',
+    job: 'Carries signals along a fibre that may be a metre long, hundreds of times a second.',
+    spend: [{ name: 'Pumping ions back across the membrane after each signal', pct: 65 }, { name: 'Making transmitter chemicals', pct: 20 }, { name: 'Maintenance', pct: 15 }],
+    mito: 'Many, and concentrated at the ends where signals are passed on. The brain is about a fiftieth of your body mass and uses roughly a fifth of your resting energy.',
+    fails: 'Fastest failure of any cell here. Brain cells begin to die within about four minutes, which is where the number at the top of this page comes from.' },
+  { id: 'root', label: 'Root hair cell', name: 'Root hair cell', origin: 'Plant',
+    job: 'Absorbs water and mineral ions from the soil, and pulls the minerals in against the concentration gradient.',
+    spend: [{ name: 'Active transport of mineral ions', pct: 75 }, { name: 'Growth of the hair itself', pct: 15 }, { name: 'Maintenance', pct: 10 }],
+    mito: 'Plenty \u2014 more than most plant cells, and the reason is on the line above. Active transport is expensive and this cell does almost nothing else.',
+    fails: 'Mineral uptake stops immediately, because moving ions from a low concentration to a high one cannot happen without an energy supply. Water still moves in by osmosis, which needs no energy, so the plant goes short of minerals long before it goes short of water.' },
+  { id: 'sperm', label: 'Sperm cell', name: 'Sperm cell', origin: 'Animal',
+    job: 'Swims, and does nothing else at all. Everything not needed for the journey has been stripped out.',
+    spend: [{ name: 'Beating the tail', pct: 90 }, { name: 'Everything else', pct: 10 }],
+    mito: 'A tight spiral of them wrapped around the base of the tail \u2014 the engine placed directly next to the propeller. You met this cell in b5-02.',
+    fails: 'It stops swimming and cannot start again. There is no store to fall back on, which is one reason so few of the hundreds of millions that set out arrive.' },
+  { id: 'white', label: 'White blood cell', name: 'White blood cell', origin: 'Animal',
+    job: 'Crawls out of blood vessels, chases bacteria and engulfs them.',
+    spend: [{ name: 'Crawling and engulfing', pct: 55 }, { name: 'Making antibodies and enzymes', pct: 30 }, { name: 'Dividing rapidly during an infection', pct: 15 }],
+    mito: 'Numerous, and they multiply along with the cell when an infection begins \u2014 a cell that is about to work harder builds more of the machinery first.',
+    fails: 'It stops moving and stops engulfing. Everything on its list \u2014 crawling, swallowing a bacterium, building an antibody molecule \u2014 is work, and work has to be paid for.' }
+];
+
+const JOB_CARDS = [
+  { kind: 'Job one', name: 'Movement', body: 'Muscle contraction in animals, but also a white blood cell crawling and a sperm cell swimming. The only job on this list that is visible from outside.' },
+  { kind: 'Job two', name: 'Building molecules', body: 'Joining small molecules into large ones: amino acids into proteins, glucose into starch or cellulose. Growth and repair are this job, running for years.' },
+  { kind: 'Job three', name: 'Active transport', body: 'Moving a substance from where there is less of it to where there is more \u2014 the opposite of diffusion, and impossible without an energy supply. Root hairs and the gut lining both live on it.' },
+  { kind: 'Job four', name: 'Keeping warm', body: 'Mammals and birds hold their body temperature above their surroundings, and the energy comes from respiration. A reptile does not pay this bill, and eats far less as a result.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 What needs energy',
+    question: 'Which of these processes could not happen at all without respiration?',
+    options: [
+      { text: 'Active transport of minerals into a root hair cell', correct: true },
+      { text: 'Water moving into a root by osmosis', correction: 'Osmosis is diffusion of water down its own gradient and needs no energy supply. That is exactly why a plant short of energy goes short of minerals before it goes short of water.' },
+      { text: 'Oxygen diffusing from the alveoli into the blood', correction: 'Diffusion is passive \u2014 particles move down a gradient without anything pushing them, as you established in b4-03.' },
+      { text: 'Carbon dioxide leaving a cell', correction: 'Also diffusion. There is more carbon dioxide inside the cell than outside it, so it leaves without being pushed.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'A potted plant is left in a completely dark cupboard. What is happening in its cells?',
+    options: [
+      { text: 'Nothing \u2014 without light a plant shuts down until morning', correction: 'A cell that shuts down is dead. Photosynthesis stops in the dark; respiration does not, and cannot.' },
+      { text: 'Respiration continues in every cell, using oxygen and releasing carbon dioxide', correct: true },
+      { text: 'The plant respires instead of photosynthesising, which is the swap plants make at night', correction: 'Close, and the word instead is the problem. Respiration never stopped \u2014 it was running all day too, underneath the photosynthesis.' },
+      { text: 'Only the root cells respire, because the leaves photosynthesise', correction: 'Every living cell respires, leaves included. A leaf cell does both when there is light and just the one when there is not.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain the root hair',
+    question: 'A root hair cell absorbs mineral ions from soil where those minerals are far more dilute than they are inside the cell. Explain why this needs respiration, and why a root hair cell is packed with mitochondria.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The minerals are more concentrated inside the cell than outside, so\u2026',
+    criteria: [
+      'Says the mineral ions are more concentrated inside the cell than in the soil water.',
+      'Says diffusion moves substances the other way, from high to low, so it cannot do this job.',
+      'Names active transport as the process that moves substances against the concentration gradient.',
+      'Says active transport requires energy, and that the energy comes from respiration.',
+      'Concludes that the cell holds many mitochondria because active transport is its main and continuous activity.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A houseplant that is watered too often dies, and the leaves go yellow and droop as if it were short of water. Gardeners say the roots have "drowned". Explain what has actually happened, using respiration.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Waterlogged soil has no\u2026',
+    criteria: [
+      'Says soil normally contains air spaces, and that waterlogging fills them with water.',
+      'Says root cells need oxygen because they respire, just as animal cells do.',
+      'Says without oxygen the root cells cannot respire aerobically, so they have little or no energy available.',
+      'Says active transport of minerals stops, and the root cells begin to die.',
+      'Explains the apparent contradiction: dead or dying roots cannot take up water, so a plant standing in water shows exactly the symptoms of a plant with none.'
+    ] }
+];
+
+function isDone(id, s) {
+  const seen = Object.keys(s.cut).filter((k) => s.cut[k]).length;
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return seen >= 3;
+  if (id === 's-jobs') return seen >= 3;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    cell: CELLS.some((c) => c.id === this.props.startCell) ? this.props.startCell : 'muscle',
+    cut: {},
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on) {
+    return 'cursor:pointer;font:inherit;font-size:16px;font-weight:700;padding:10px 15px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+      (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const cell = CELLS.find((c) => c.id === s.cell) || CELLS[0];
+    const seen = Object.keys(s.cut).filter((k) => s.cut[k]).length;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'Because the brain needs oxygen in order to think' },
+        { letter: 'B', text: 'Because there is no store of oxygen, and every cell needs it every second' },
+        { letter: 'C', text: 'Because blood is mostly made of oxygen' },
+        { letter: 'D', text: 'Because the lungs collapse without air in them' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      benchProgress: seen === 0 ? 'no cells cut off yet' : seen + ' of ' + CELLS.length + ' cut off',
+      cellTabs: CELLS.map((c) => ({
+        label: c.label, pressed: c.id === s.cell, style: this.seg(c.id === s.cell),
+        onClick: () => this.setState({ cell: c.id })
+      })),
+      cellName: cell.name,
+      cellOrigin: cell.origin,
+      cellJob: cell.job,
+      spend: cell.spend.map((p) => ({
+        name: p.name, share: p.pct + '%',
+        barStyle: 'display:block;height:100%;width:' + p.pct + '%;background:var(--ks3-alert);'
+      })),
+      cellMito: cell.mito,
+      cutLabel: s.cut[cell.id] ? 'Oxygen cut off' : 'Cut off the oxygen',
+      onCut: () => this.setState((st) => ({ cut: Object.assign({}, st.cut, { [cell.id]: true }) })),
+      cutShown: !!s.cut[cell.id],
+      cellFails: cell.fails,
+
+      jobCards: JOB_CARDS,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === correctIndex, isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: done,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+</script>
+</body>
+</html>

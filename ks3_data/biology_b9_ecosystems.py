@@ -2,7 +2,7 @@
 
 The thin unit wrapper. The lesson records live one per module under
 `ks3_data/b9/`, authored against Claude Design's approved reference screens in
-`KS3 B9 lessons/` under the MRB-220 build contract, and against the payload
+`docs/ks3/design-reference/b9/` under the MRB-220 build contract, and against the payload
 schema written before dispatch at `docs/ks3/b9-inventory/PAYLOAD-SCHEMA.md`.
 
     L1 food-chains-and-food-webs        chain-ledger

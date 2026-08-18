@@ -1,8 +1,8 @@
 """B9 L3 — Disturbing a food web (SYSTEM).
 
 Authored against Claude Design's approved page,
-`KS3 B9 lessons/b9-03-disturbing-a-food-web.dc.html` (610 lines), her author's
-notes `KS3 B9 lessons/NOTES-B9.md`, and the B9 payload schema
+`docs/ks3/design-reference/b9/b9-03-disturbing-a-food-web.dc.html` (610 lines), her author's
+notes `docs/ks3/design-reference/b9/NOTES-B9.md`, and the B9 payload schema
 `docs/ks3/b9-inventory/PAYLOAD-SCHEMA.md` §0, §1, §2, §4, §7, §11, §12 and §14,
 under the MRB-220 build contract.
 

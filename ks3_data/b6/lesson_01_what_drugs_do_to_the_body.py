@@ -1,7 +1,7 @@
 """B6 L1 — What drugs do to the body (SYSTEM).
 
 Authored against Design's approved page,
-`KS3 B6 lessons/b6-01-what-drugs-do-to-the-body.dc.html` (618 lines), under
+`docs/ks3/design-reference/b6/b6-01-what-drugs-do-to-the-body.dc.html` (618 lines), under
 the MRB-220 build contract.
 
 Every student-facing string is lifted byte-identical from that page except the

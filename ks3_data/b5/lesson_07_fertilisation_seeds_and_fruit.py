@@ -1,7 +1,7 @@
 """B5 L7 — Fertilisation, seeds and fruit (PROCESS).
 
 Authored against Claude Design's approved page,
-`KS3 B5 lessons/b5-07-fertilisation-seeds-and-fruit.dc.html` (536 lines), under
+`docs/ks3/design-reference/b5/b5-07-fertilisation-seeds-and-fruit.dc.html` (536 lines), under
 the MRB-220 build contract, with the instrument authored against
 `r_what_it_becomes` in `build_ks3.py` — see "The instrument" below for which of
 the two sources was used and why.

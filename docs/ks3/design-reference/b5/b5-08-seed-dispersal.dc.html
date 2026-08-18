@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seed dispersal · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b508-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b508-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Reproduction</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Seed dispersal</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Reproduction · Classify</p>
+        <h1>Seed dispersal</h1>
+        <p class="ks3-bigq">The worst place a seed can land is directly underneath the plant that made it. Everything on this page follows from that.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Parachutes, hooks, wings, explosives and bribes. All for a journey of a few metres.</h2>
+        <p class="ks3-hook-prompt">A plant that has just spent a season building a fruit then spends more on getting rid of it. Whatever the seeds are being moved away from must be costing them something.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Why is it worth so much to a plant to move its seeds away?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Because the parent is the competition. A seedling germinating in its parent's shade is asking for light that is already taken, water from soil that is already being drained, and minerals from ground that has been stripped for years — against an opponent a thousand times its size that got there first. It loses. Spreading into new territory is a consequence of dispersal, not the reason for it; the immediate problem is much closer to home.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-sort" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">Sort the specimens · eight fruits and seeds</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Classify by what you can see</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ sortProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Read the description, choose a method, then check it. Judge each one on its structure alone — the plant's name tells you nothing, and three of these eight are wind-dispersed although only two look it.</p>
+
+        <div style="margin-top: 22px; display: flex; gap: 9px; flex-wrap: wrap;">
+          <sc-for list="{{ specTabs }}" as="t" hint-placeholder-count="8">
+            <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 26px; line-height: 1.15; letter-spacing: -.025em; color: var(--ks3-on-dark);">{{ specName }}</p>
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-alert);">Specimen {{ specNum }}</p>
+          </div>
+          <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ specDesc }}</p>
+        </div>
+
+        <p style="margin: 20px 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How is it dispersed?</p>
+        <ul class="ks3-options">
+          <sc-for list="{{ methodOptions }}" as="opt" hint-placeholder-count="5">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <div style="margin-top: 18px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onOpen }}" disabled="{{ openLocked }}" style="{{ openBtnStyle }}">Check it</button>
+          <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ openHint }}</span>
+        </div>
+
+        <sc-if value="{{ specOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ specVerdict }}</p>
+            <p style="margin: 9px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 23px; line-height: 1.22; letter-spacing: -.02em;">{{ specAnswer }}</p>
+            <p style="margin: 11px 0 0; font-size: 18px; line-height: 1.6;">{{ specWhy }}</p>
+            <p style="margin: 12px 0 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">Deciding feature: {{ specTell }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-methods" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">One problem · five answers</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 30ch;">Nothing here is free. Read what each method costs.</p>
+
+        <div style="margin-top: 24px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-ink); background: var(--ks3-card); overflow: hidden;">
+          <sc-for list="{{ methods }}" as="row" hint-placeholder-count="5">
+            <div style="{{ row.style }}">
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px; line-height: 1.2; letter-spacing: -.02em;">{{ row.name }}</p>
+              <div style="margin-top: 9px; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px;">
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">The structure that gives it away</p>
+                  <p style="margin: 4px 0 0; font-size: 18px; line-height: 1.5;">{{ row.tell }}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">What it costs the plant</p>
+                  <p style="margin: 4px 0 0; font-size: 18px; line-height: 1.5;">{{ row.cost }}</p>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Every dispersal structure is a solution to one problem: a seed that germinates beneath its parent competes with a large established plant for light, water and minerals, and usually loses. Classify a specimen by the structure you can see, not by the plant it came from.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Plants disperse their seeds so the species can spread to new places.”</p>
+        <p>Nothing in a plant intends anything, and the sentence quietly assumes a plan. What actually happened has no foresight in it at all: among the seeds of long-dead plants, some happened to have a slightly better wing, a stickier hook, sweeter flesh. Those seeds landed further from the parent more often, more of them survived, and more of them grew into plants carrying the same feature. Repeat for a few million generations and every plant around you has dispersal machinery — not because any of them wanted to travel, but because the ones whose seeds did not travel left fewer descendants. This is <a href="b11-02-natural-selection.html">natural selection</a> again, and the test of whether you have the idea is whether you can describe a dandelion parachute without using the words <em>so that</em>, <em>wants</em> or <em>tries</em>.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“Fruit is food the plant provides for animals.”</p>
+          <p>The flesh is a fee, and the seed is what is being smuggled. Look at how carefully the arrangement is engineered against the animal's interest: the seed inside has a coat tough enough to survive the whole journey through a gut and come out able to grow, in the middle of a small heap of fertiliser some distance from the parent. Notice also the timing. An unripe blackberry is green, hard, sour and often mildly toxic, and it becomes sweet, soft and black only when the seeds inside are finished — the colour change is a signal that says <em>now</em>, and everything before it says <em>not yet</em>. And plenty of fruits are lethal to us while being perfectly good bird food, because we are not the customer they are advertising to. Payment, not generosity.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Seeds are dispersed because a seedling under its parent competes with it and loses. Wind dispersal uses parachutes, wings or a shaker capsule and needs a very light seed. Water dispersal needs a buoyant waterproof case. Animal dispersal comes in two forms: hooks that catch on fur, and edible flesh around a seed with a coat tough enough to survive being eaten. Some plants fling their own seeds from a pod that dries and splits. Classify by the structure in front of you, not by the plant's name.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>How far does a seed actually go? You cannot follow one, so for most of the history of the subject the answer was a guess. The method that settled it borrows from <a href="b10-02-chromosomes-genes-and-dna.html">DNA</a>: take a plot of forest, take a small sample from every adult tree of one species and record each tree's genetic fingerprint, then fingerprint the seedlings on the ground. Because each seedling's DNA carries a combination that could only have come from particular parents, every seedling can be matched to the tree it came from — and the distance between them measured. What comes back is always the same shape of graph. Most seeds land within a few metres of the parent, the numbers fall away sharply with distance, and there is a long thin tail of seeds that travelled hundreds of metres or further. That tail is small and it matters more than all the rest: it is how a species reaches a new wood, recolonises after a fire, and shifts its range as the climate changes. The rare events are the ones doing the important work, which is a hard thing to see if you only measure the average.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b5-07-fertilisation-seeds-and-fruit.html">Fertilisation, seeds and fruit<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b11-01-variation-and-competitive-success.html">Variation and competitive success<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b11-02-natural-selection.html">Natural selection<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Adaptation, competition and the way populations spread through an environment.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to check how to classify a specimen you have never seen?</p>
+          <a class="ks3-tutor-cta" href="#s-sort">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The specimens are typical British examples described from their structures. Several of them are strictly fruits rather than seeds — a dandelion “seed” and a sycamore “key” are both single-seeded fruits — which is the distinction drawn in the previous lesson. The specimen plate is declared in the lesson record as <span style="font-family: var(--ks3-font-mono);">b5-dispersal-specimens</span>, awaiting illustration.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Why move?' },
+  { id: 's-sort', label: 'Sort the eight' },
+  { id: 's-methods', label: 'Five methods' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'SORT', 'METHODS', 'LADDER'];
+
+const METHOD_LABELS = {
+  wind: 'Wind',
+  water: 'Water',
+  inside: 'Inside an animal \u2014 eaten',
+  on: 'On an animal \u2014 hooked to fur',
+  flung: 'Flung by the plant itself'
+};
+const METHOD_KEYS = ['wind', 'water', 'inside', 'on', 'flung'];
+
+const SPECIMENS = [
+  { id: 'dandelion', label: 'Dandelion', name: 'Dandelion', answer: 'wind',
+    desc: 'A single tiny seed, a few milligrams, carrying a spray of fine white hairs on a thin stalk above it.',
+    tell: 'A parachute of hairs on a seed light enough for it to matter.',
+    why: 'The hairs give a large surface area against the air and almost no extra mass, so the whole thing falls very slowly. Falling slowly is the entire trick: the longer it takes to reach the ground, the longer the wind has to carry it sideways. On a dry breezy day some travel a kilometre.' },
+  { id: 'sycamore', label: 'Sycamore', name: 'Sycamore key', answer: 'wind',
+    desc: 'A hard seed at one end of a stiff papery blade about four centimetres long, curved along its length.',
+    tell: 'One asymmetric wing, which makes it spin rather than drop.',
+    why: 'The off-centre wing makes it autorotate on the way down, like a helicopter rotor with the engine off, and that slows the fall by a factor of several. A heavier seed than a dandelion\u2019s can then still be moved by wind \u2014 not a kilometre, but well clear of the parent tree\u2019s shade.' },
+  { id: 'poppy', label: 'Poppy', name: 'Poppy capsule', answer: 'wind',
+    desc: 'A dry pepper-pot capsule on a long thin stem, with a ring of small holes opening under the rim. Hundreds of dust-fine seeds inside.',
+    tell: 'Holes near the top of a capsule on a long springy stem.',
+    why: 'This is the one that catches people, because there is no parachute and no wing. The stem sways in the wind and the seeds are shaken out through the holes a few at a time, then blown along the ground. The long stem and the small high holes are both essential: the capsule only empties when something is moving it, so the seeds leave on windy days and stay put on still ones.' },
+  { id: 'blackberry', label: 'Blackberry', name: 'Blackberry', answer: 'inside',
+    desc: 'Sweet dark flesh in clustered segments, each holding one small hard pip. Green, hard and sour a fortnight earlier.',
+    tell: 'Edible flesh around a seed with a very tough coat.',
+    why: 'The flesh is payment and the pip is the cargo. Its coat survives the whole passage through a bird or a mammal, and it is deposited some distance away in a small heap of fertiliser. The timing is part of the design: the fruit stays hard, sour and green until the seeds inside are ready, and only then turns black and sweet.' },
+  { id: 'goosegrass', label: 'Goosegrass', name: 'Goosegrass, or cleavers', answer: 'on',
+    desc: 'Small round green fruits in pairs, covered in tiny stiff hooked bristles. The whole plant sticks to clothing.',
+    tell: 'Hooks on the outside, and nothing edible anywhere.',
+    why: 'No flesh, no reward and no cooperation required \u2014 this one is stealing the ride. The hooks catch in fur or wool, the animal carries the fruit until it grooms or brushes past something, and the seed is dropped wherever that happens. Cheap for the plant, since hooks cost far less to build than sugar.' },
+  { id: 'burdock', label: 'Burdock', name: 'Burdock burr', answer: 'on',
+    desc: 'A dense round burr, two centimetres across, made of many stiff bracts each ending in a backward-facing hook.',
+    tell: 'The same hook principle, built at a larger scale.',
+    why: 'Worth knowing for what it caused. In 1941 a Swiss engineer, George de Mestral, pulled burdock burrs out of his dog\u2019s coat, looked at one under a microscope, saw hooks catching in loops of fur \u2014 and spent the next decade turning that into Velcro. A dispersal mechanism, copied exactly.' },
+  { id: 'coconut', label: 'Coconut', name: 'Coconut', answer: 'water',
+    desc: 'A very large seed inside a thick fibrous husk, waterproof and full of air spaces, with its own store of liquid inside.',
+    tell: 'A buoyant, waterproof case around a seed too heavy for anything else to move.',
+    why: 'Far too heavy for wind and far too big for an animal to carry, so the husk does the work: it floats, keeps salt water out, and can survive months at sea before washing up on a beach and germinating. Every coconut palm on a remote island arrived that way.' },
+  { id: 'gorse', label: 'Gorse', name: 'Gorse pod', answer: 'flung',
+    desc: 'A small dry pod that twists as it dries in hot sun and splits open with an audible crack.',
+    tell: 'A pod that dries, twists and tears itself apart.',
+    why: 'The two halves of the drying pod pull against each other until the seam gives way, and the sudden release flings the seeds several metres. On a hot still afternoon a gorse bank crackles continuously. This is the only method on the list that needs no wind, no water and no animal \u2014 the plant supplies the energy itself, stored in the way the pod dried.' }
+];
+
+const METHODS = [
+  { id: 'wind', name: 'Wind', tell: 'A parachute of hairs, a stiff wing, or a shaker capsule on a long stem. Always a very light seed.',
+    cost: 'Cheap per seed, but almost all of them land somewhere useless, so the plant makes very large numbers.' },
+  { id: 'water', name: 'Water', tell: 'A buoyant, waterproof case \u2014 fibrous, corky or air-filled.',
+    cost: 'Expensive to build and only available to plants growing by water, but it moves seeds no other method could shift at all.' },
+  { id: 'inside', name: 'Inside an animal', tell: 'Sweet, coloured flesh around a seed with a very tough coat.',
+    cost: 'The most expensive of all \u2014 the plant gives away sugar it made itself \u2014 and the most reliable, because the courier travels a long way and leaves the seed with fertiliser.' },
+  { id: 'on', name: 'On an animal', tell: 'Hooks, barbs or a sticky surface. No reward offered.',
+    cost: 'Very cheap: hooks cost almost nothing compared with flesh. The trade-off is no control over where the animal goes or when it grooms.' },
+  { id: 'flung', name: 'Flung by the plant', tell: 'A dry pod that twists and splits, often audibly.',
+    cost: 'Cheap, and independent of weather, wind and animals \u2014 but the range is metres rather than kilometres.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Read the structure',
+    question: 'A fruit you have never seen before is covered in small stiff hooks and has no flesh on it. How is it dispersed?',
+    options: [
+      { text: 'By wind \u2014 the hooks catch the air', correction: 'Hooks add mass and no lift. A wind-dispersed fruit needs a parachute or a wing, and needs to be light.' },
+      { text: 'On the outside of an animal, caught in fur or feathers', correct: true },
+      { text: 'Inside an animal, after being eaten', correction: 'Nothing about it is edible. A fruit dispersed that way pays with flesh; this one pays nothing.' },
+      { text: 'By hooking itself into the soil where it falls', correction: 'That would place the seed directly under its parent \u2014 the one outcome every dispersal mechanism exists to avoid.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'Which of these is wind-dispersed?',
+    options: [
+      { text: 'A blackberry', correction: 'Sweet flesh around a hard pip \u2014 dispersed inside an animal that eats it.' },
+      { text: 'A poppy capsule', correct: true },
+      { text: 'A coconut', correction: 'Far too heavy for wind. The buoyant fibrous husk is the clue: this one floats.' },
+      { text: 'A gorse pod', correction: 'The pod twists as it dries and flings its own seeds. The plant provides the energy itself.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain the whole idea',
+    question: 'Explain why seed dispersal matters to a plant, then describe three different methods, giving for each the structure that identifies it and why that structure works.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'A seed that lands under its parent\u2026',
+    criteria: [
+      'Says a seedling under its parent competes with it for light, water and minerals, and usually loses.',
+      'Describes three genuinely different methods from the five.',
+      'Gives the identifying structure for each one \u2014 parachute or wing, buoyant husk, flesh, hooks, splitting pod.',
+      'Explains how each structure achieves the movement, not just that it does.',
+      'Avoids saying the plant wants or tries to do anything.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'You find an unfamiliar seed: four millimetres across, hard, smooth, with no wings or hooks, and it came out of a bright red fleshy fruit. Say how it is most likely dispersed, state the evidence you used, and give one prediction you could test to check.',
+    fieldLabel: 'Your answer',
+    placeholder: 'The evidence I would use is\u2026',
+    criteria: [
+      'Concludes it is dispersed inside an animal that eats the fruit.',
+      'Uses the evidence: fleshy fruit, bright colour as a signal, small hard seed with a tough coat.',
+      'Rules out at least one other method using the absent structures \u2014 no wing, no hook, too heavy for wind.',
+      'Gives a testable prediction \u2014 for example that the seeds still germinate after passing through a bird, or that unripe fruits are green and sour.'
+    ] }
+];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-sort') return Object.keys(s.opened).length >= 8;
+  if (id === 's-methods') return Object.keys(s.opened).length >= 8;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    spec: 'dandelion',
+    picks: {},
+    opened: {},
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on) {
+    return 'cursor:pointer;font:inherit;font-family:var(--ks3-font-mono);font-size:15px;font-weight:500;padding:10px 16px;min-height:44px;border-radius:11px;border:2px solid ' +
+      (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-dark-panel)' : 'var(--ks3-on-dark-body)') + ';';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const idx = SPECIMENS.findIndex((x) => x.id === s.spec);
+    const spec = SPECIMENS[idx < 0 ? 0 : idx];
+    const pick = s.picks[spec.id];
+    const opened = !!s.opened[spec.id];
+    const hasPick = pick !== undefined && pick !== null;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'So the species can spread into new areas' },
+        { letter: 'B', text: 'Because a seedling under its parent competes with it and loses' },
+        { letter: 'C', text: 'To get the seeds away from animals that would eat them' },
+        { letter: 'D', text: 'So the seeds can find soil with more minerals in it' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      sortProgress: Object.keys(s.opened).length + ' of 8 checked',
+      specTabs: SPECIMENS.map((x) => ({
+        label: x.label, pressed: x.id === s.spec, style: this.seg(x.id === s.spec),
+        onClick: () => this.setState({ spec: x.id })
+      })),
+      specName: spec.name,
+      specNum: String((idx < 0 ? 0 : idx) + 1).padStart(2, '0'),
+      specDesc: spec.desc,
+      methodOptions: METHOD_KEYS.map((key, i) => ({
+        letter: String.fromCharCode(65 + i), text: METHOD_LABELS[key], pressed: pick === key, disabled: opened,
+        onClick: () => this.setState((st) => ({ picks: Object.assign({}, st.picks, { [spec.id]: key }) }))
+      })),
+      onOpen: () => this.setState((st) => ({ opened: Object.assign({}, st.opened, { [spec.id]: true }) })),
+      openLocked: !hasPick || opened,
+      openBtnStyle: 'cursor:' + (!hasPick || opened ? 'default' : 'pointer') + ';opacity:' + (!hasPick || opened ? '.45' : '1') + ';',
+      openHint: opened ? 'Now try another specimen.' : (hasPick ? 'Ready.' : 'Choose a method first.'),
+      specOpen: opened,
+      specVerdict: opened ? (pick === spec.answer ? 'Correct' : 'Not this one') : '',
+      specAnswer: METHOD_LABELS[spec.answer],
+      specWhy: spec.why,
+      specTell: spec.tell,
+
+      methods: METHODS.map((row, i) => ({
+        name: row.name, tell: row.tell, cost: row.cost,
+        style: 'padding: 18px 22px;' + (i > 0 ? ' border-top: 2px solid var(--ks3-rule);' : '') + (i % 2 ? ' background: var(--ks3-inset);' : '')
+      })),
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === correctIndex, isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: done,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+</script>
+</body>
+</html>

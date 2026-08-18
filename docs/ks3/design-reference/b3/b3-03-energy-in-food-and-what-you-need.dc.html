@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Energy in food and what you need · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b303-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b303-arrive .34s ease-out both; }
+  [data-bar] { transition: width .4s ease, background .4s ease; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } [data-bar] { transition: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Nutrition and digestion</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Energy in food and what you need</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Nutrition and digestion · Quantitative</p>
+        <h1>Energy in food and what you need</h1>
+        <p class="ks3-bigq">A label says 1050 kJ. Your body needs about 9500 kJ a day. Neither number means anything until you know whose day it is.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Two people eat exactly the same food for a month.</h2>
+        <p class="ks3-hook-prompt">Same meals, same portions, same times — about 11 000 kJ a day each. One is a 68-year-old who spends the day reading. The other is a 25-year-old cyclist covering 120 km a day. After a month, one has gained mass and one has lost it.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Same food in. Why the different outcome?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">There is no such thing as the right amount of food. There is only the amount that matches what a particular body transfers in a day — and that number differs by a factor of two between the two people in this paragraph.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-ledger" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · feed a person for a day</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Pick who you are feeding, then add food</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ ledgerProgress }}</p>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Who is eating</p>
+          <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+            <sc-for list="{{ personTabs }}" as="t" hint-placeholder-count="5">
+              <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+            <p style="margin: 0; font-size: 21px; font-weight: 700; color: var(--ks3-on-dark);">{{ personName }}</p>
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-alert);">Needs {{ personNeed }} kJ / day</p>
+          </div>
+          <p style="margin: 9px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ personWhy }}</p>
+
+          <div style="margin-top: 18px; height: 30px; border-radius: 99px; border: 2px solid var(--ks3-on-dark-muted); background: rgba(255,255,255,.06); overflow: hidden; position: relative;">
+            <span data-bar="1" style="{{ barStyle }}"></span>
+          </div>
+          <div style="margin-top: 11px; display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ totalLabel }}</p>
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 16px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ balanceLabel }}</p>
+          </div>
+        </div>
+
+        <p style="margin: 20px 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Tap to add a portion · tap again to remove one</p>
+        <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 11px;">
+          <sc-for list="{{ foods }}" as="f" hint-placeholder-count="9">
+            <li>
+              <button type="button" onClick="{{ f.onAdd }}" style="{{ f.style }}">
+                <span style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px;">
+                  <span style="font-size: 18px; font-weight: 700;">{{ f.name }}</span>
+                  <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500;">{{ f.countLabel }}</span>
+                </span>
+                <span style="display: block; margin-top: 5px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; opacity: .82;">{{ f.kjLabel }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <div style="margin-top: 18px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onClear }}">Empty the day</button>
+          <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ portionCount }}</span>
+        </div>
+
+        <sc-if value="{{ matched }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">Within 5% of the target</p>
+            <p style="margin: 9px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1.2; letter-spacing: -.02em;">{{ matchedHead }}</p>
+            <p style="margin: 11px 0 0; font-size: 18px; line-height: 1.6;">{{ matchedWhy }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-maths" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Doing it on paper</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 28ch;">Three sums, and the units that make them behave.</p>
+
+        <ul style="list-style: none; margin: 24px 0 0; padding: 0; display: flex; flex-direction: column; gap: 14px;">
+          <sc-for list="{{ sums }}" as="w" hint-placeholder-count="3">
+            <li style="padding: 22px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ w.tag }}</p>
+              <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 21px; line-height: 1.3; letter-spacing: -.015em;">{{ w.title }}</p>
+              <p style="margin: 12px 0 0; padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); font-family: var(--ks3-font-mono); font-size: 17px; line-height: 1.6; color: var(--ks3-ink);">{{ w.working }}</p>
+              <p style="margin: 11px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body);">{{ w.note }}</p>
+            </li>
+          </sc-for>
+        </ul>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Energy requirement is not a property of food. It is a property of the person eating it — set by their size, their age, their growth and how much they move.</p>
+        </div>
+
+        <div style="margin: 18px 0 0; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px dashed var(--ks3-rule-strong);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Forward pointer · Year 9</p>
+          <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.6;">You have used kJ here as a bookkeeping unit — energy in versus energy needed. The full treatment belongs to Physics: what a joule actually is, how energy is transferred rather than used up, and how to calculate it from power and time. You will meet that in Year 9, in <a href="p2-01-energy-in-food.html">Energy in food</a> and <a href="p2-03-calculating-energy-transferred.html">Calculating energy transferred</a>. Nothing here contradicts it; it is the same joule, counted less formally.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Everyone needs about 2000 calories a day.”</p>
+        <p>That figure is a labelling convention, not a fact about a person. It exists so packets can print a percentage, and it is the rounded average for an adult woman doing moderate activity. Run the bench above through all five people and the honest range is roughly 5000 to 20 000 kJ a day — a fourfold spread, and the top of it is a professional athlete rather than an extreme case. A 4-year-old fed an adult's day would be badly overfed; a rower fed a 4-year-old's day would collapse in a week. When a question gives you a number for a requirement, that number belongs to somebody, and part of the answer is saying who.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“The energy in food gets used up and disappears.”</p>
+          <p>You met this in <a href="p1-01-energy-stores.html">Energy stores</a> and it comes back wearing a chef's hat. Nothing about eating destroys energy. The chemical store in your food is transferred: some to movement when you walk, some to the chemical store of new tissue while you grow, and — this is the part people miss — the great majority of it to the thermal store of your surroundings. You are a 70-watt heater. Sit in a small room with the door shut and the temperature rises measurably, and that rise is the energy from your breakfast, still entirely present, just no longer anywhere useful. “Where did the energy go” always has an answer.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Energy in food is measured in kilojoules. A person's daily requirement depends on their age, size, sex, rate of growth and level of activity, so there is no single correct figure. Take in more than you transfer and the surplus is stored; take in less and stores are broken down.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The numbers on a food packet were originally obtained by burning the food. A weighed sample goes into a sealed steel vessel packed with oxygen, the vessel sits in a known mass of water, and the sample is ignited electrically; the rise in water temperature gives the energy released. The device is called a bomb calorimeter, and the name is literal enough that early ones occasionally lived up to it. It measures the total chemical energy in the sample, which is why the figure for dietary fibre had to be corrected downwards later — a calorimeter happily burns cellulose, and your gut cannot digest a gram of it. The instrument was answering a chemistry question when what was wanted was a biology one.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b3-01-a-balanced-diet.html">A balanced diet<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Continues in Year 9</h2>
+          <ul>
+            <li><a href="p2-01-energy-in-food.html">Energy in food (Physics)<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p2-03-calculating-energy-transferred.html">Calculating energy transferred<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Energy budgets, metabolic rate, and the effect of exercise and body composition on requirement.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to check a requirement calculation of your own?</p>
+          <a class="ks3-tutor-cta" href="#s-maths">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">Requirement figures are rounded typical values used to teach the principle. They are not a guide for anyone's own eating, and this lesson does not set targets for any individual. Questions about your own diet belong with a doctor or a registered dietitian.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startPerson&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;child&quot;,&quot;teen&quot;,&quot;adult&quot;,&quot;builder&quot;,&quot;rower&quot;],&quot;default&quot;:&quot;teen&quot;,&quot;tsType&quot;:&quot;'child' | 'teen' | 'adult' | 'builder' | 'rower'&quot;,&quot;section&quot;:&quot;The ledger&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Same food' },
+  { id: 's-ledger', label: 'Feed a day' },
+  { id: 's-maths', label: 'On paper' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'LEDGER', 'MATHS', 'LADDER'];
+
+const PEOPLE = [
+  { id: 'child', label: '4-year-old', name: 'A 4-year-old', need: 5800,
+    why: 'Small body, so little tissue to keep warm and fuel \u2014 but growing fast, and a surprising share of the total goes into building new tissue rather than moving about.' },
+  { id: 'teen', label: '13-year-old', name: 'A 13-year-old', need: 9500,
+    why: 'Almost an adult\u2019s requirement, in a body that is still smaller than one. Adolescent growth is the most energy-expensive period of a human life after infancy.' },
+  { id: 'adult', label: 'Office worker', name: 'An adult with a desk job', need: 9000,
+    why: 'Full adult size, no growth to pay for, and very little movement. Roughly three quarters of this goes on simply staying alive and at 37 \u00b0C.' },
+  { id: 'builder', label: 'Bricklayer', name: 'An adult doing heavy manual work', need: 13500,
+    why: 'The same body as the office worker, doing eight hours of lifting. The difference between these two rows is activity and nothing else.' },
+  { id: 'rower', label: 'Olympic rower', name: 'An Olympic rower in training', need: 25000,
+    why: 'Large muscular body plus six hours of hard training. Athletes at this level struggle to eat enough, which is a problem most people never have.' }
+];
+
+const FOODS = [
+  { id: 'toast', name: 'Toast and butter', kj: 780 },
+  { id: 'cereal', name: 'Bowl of cereal with milk', kj: 1100 },
+  { id: 'banana', name: 'Banana', kj: 450 },
+  { id: 'apple', name: 'Apple', kj: 320 },
+  { id: 'sandwich', name: 'Cheese sandwich', kj: 1750 },
+  { id: 'pasta', name: 'Plate of pasta and sauce', kj: 2400 },
+  { id: 'chicken', name: 'Chicken breast and rice', kj: 2100 },
+  { id: 'yoghurt', name: 'Pot of yoghurt', kj: 520 },
+  { id: 'nuts', name: 'Handful of nuts', kj: 1250 },
+  { id: 'juice', name: 'Glass of orange juice', kj: 380 },
+  { id: 'chocolate', name: 'Chocolate bar', kj: 1050 },
+  { id: 'water', name: 'Glass of water', kj: 0 }
+];
+
+const SUMS = [
+  { tag: 'Sum 1', title: 'Total the day up',
+    working: '4 slices toast and butter  4 \u00d7 780 = 3120 kJ\n1 plate of pasta            = 2400 kJ\n1 banana                    =  450 kJ\n1 chocolate bar             = 1050 kJ\n\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\ntotal                       = 7020 kJ',
+    note: 'Nothing clever \u2014 multiply each portion by how many, then add. Marks are lost far more often on arithmetic and on forgetting a portion than on method.' },
+  { tag: 'Sum 2', title: 'Compare with the requirement',
+    working: 'requirement (13-year-old) = 9500 kJ\nintake                    = 7020 kJ\n\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\nshortfall = 9500 \u2212 7020  = 2480 kJ',
+    note: 'A shortfall is not automatically a fault in the day \u2014 it is a statement that stores will be drawn on. Over one day that is normal. Over a month it becomes mass loss.' },
+  { tag: 'Sum 3', title: 'Turn a label into a share',
+    working: 'bar = 1050 kJ\nrequirement = 9500 kJ\n\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\n1050 \u00f7 9500 \u00d7 100 = 11%',
+    note: 'The same bar is 18% of a 4-year-old\u2019s day and 4% of a rower\u2019s. A percentage on a packet is only meaningful once you say whose requirement it is a percentage of \u2014 which is exactly what packets do not say.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Do the sum',
+    question: 'A 13-year-old needing 9500 kJ eats: cereal (1100 kJ), a cheese sandwich (1750 kJ), an apple (320 kJ), pasta (2400 kJ) and two chocolate bars (1050 kJ each). What is their intake, and how does it compare?',
+    options: [
+      { text: '7670 kJ \u2014 about 1800 kJ short of the requirement', correct: true },
+      { text: '6620 kJ \u2014 they forgot to count the second chocolate bar', correction: 'That is the total with only one bar. Read the portion counts before adding \u2014 this is the single most common slip in this kind of question.' },
+      { text: '7670 kJ \u2014 about 1800 kJ more than the requirement', correction: 'The arithmetic is right and the comparison is the wrong way round. 7670 is less than 9500, so it is a shortfall.' },
+      { text: '9500 kJ \u2014 the intake always matches the requirement', correction: 'Nothing makes intake match requirement automatically. The whole point of the sum is that it usually does not.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'A chocolate bar label says \u201c1050 kJ \u2014 11% of your daily needs\u201d. A 4-year-old eats one. What share of their day is it?',
+    options: [
+      { text: '11% \u2014 the label states it', correction: 'The label states a percentage of a standard adult figure. It cannot know who is holding the bar, and the 4-year-old\u2019s requirement is far lower.' },
+      { text: 'About 18%, because their requirement is much lower', correct: true },
+      { text: 'About 6%, because a smaller person gets more from the same food', correction: 'A smaller body does not extract more energy from a bar. The bar\u2019s energy is fixed; what changes is the size of the requirement it is being compared against.' },
+      { text: 'You cannot say without knowing their mass exactly', correction: 'You cannot be precise, but you can absolutely say the share is bigger. Refusing to reason from an approximate figure is its own mistake.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain the pair',
+    question: 'The office worker and the bricklayer in the bench above are the same age and size, but their requirements differ by 4500 kJ a day. Explain where that difference goes, and why the 4-year-old needs less than either despite growing fastest.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The bricklayer needs more because\u2026',
+    criteria: [
+      'Attributes the 4500 kJ difference to activity \u2014 muscles contracting for hours require energy transfer.',
+      'Says the two bodies are otherwise identical, so activity is the only variable.',
+      'Explains the 4-year-old\u2019s lower total by their much smaller body: less tissue to keep warm and to maintain.',
+      'Notes that growth does claim a share of a child\u2019s requirement, and that it is still smaller in total than an adult\u2019s maintenance.',
+      'Avoids saying anyone \u2018uses up\u2019 energy \u2014 uses transferred, or stored, instead.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A school wants one standard lunch, the same portion for every pupil aged 11 to 16. Using what you now know about requirements, say what is wrong with the plan, what you would do instead, and one thing you would need to find out first.',
+    fieldLabel: 'Your answer',
+    placeholder: 'One portion cannot work because\u2026',
+    criteria: [
+      'Says requirements vary substantially across this age range, so one portion cannot match all of them.',
+      'Names at least two things the requirement depends on \u2014 age, size, sex, growth, activity.',
+      'Proposes something workable: variable portions, second helpings, or a base meal plus add-ons.',
+      'Names a real thing to find out \u2014 the age spread, activity levels, or how much pupils actually eat rather than are served.'
+    ] }
+];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-ledger') return Object.keys(s.plate).length > 0;
+  if (id === 's-maths') return Object.keys(s.plate).length > 0;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    person: this.props.startPerson || 'teen',
+    plate: {},
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on) {
+    return 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 17px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+      (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const person = PEOPLE.find((p) => p.id === s.person) || PEOPLE[1];
+    const total = FOODS.reduce((sum, f) => sum + (s.plate[f.id] || 0) * f.kj, 0);
+    const portions = FOODS.reduce((n, f) => n + (s.plate[f.id] || 0), 0);
+    const frac = person.need ? total / person.need : 0;
+    const diff = total - person.need;
+    const matched = portions > 0 && Math.abs(diff) <= person.need * 0.05;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'The cyclist digests food more efficiently' },
+        { letter: 'B', text: 'They transfer very different amounts of energy in a day' },
+        { letter: 'C', text: 'The older person\u2019s body stores food instead of using it' },
+        { letter: 'D', text: '11 000 kJ is the wrong amount for both of them' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      ledgerProgress: portions + ' portions on the plate',
+      personTabs: PEOPLE.map((p) => ({
+        label: p.label, pressed: p.id === s.person, style: this.seg(p.id === s.person),
+        onClick: () => this.setState({ person: p.id })
+      })),
+      personName: person.name,
+      personNeed: person.need.toLocaleString('en-GB'),
+      personWhy: person.why,
+      barStyle: 'position:absolute;top:0;left:0;bottom:0;display:block;width:' + Math.min(100, frac * 100).toFixed(1) + '%;background:' +
+        (matched ? 'var(--ks3-ok)' : frac > 1.05 ? 'var(--ks3-accent)' : 'var(--ks3-alert)') + ';',
+      totalLabel: total.toLocaleString('en-GB') + ' kJ of ' + person.need.toLocaleString('en-GB') + ' kJ',
+      balanceLabel: portions === 0 ? 'empty plate' : (Math.abs(diff) <= person.need * 0.05 ? 'balanced for this person' : (diff > 0 ? (diff).toLocaleString('en-GB') + ' kJ surplus \u2014 stored' : Math.abs(diff).toLocaleString('en-GB') + ' kJ short \u2014 stores drawn on')),
+
+      foods: FOODS.map((f) => {
+        const n = s.plate[f.id] || 0;
+        return {
+          name: f.name,
+          countLabel: n > 0 ? '\u00d7' + n : '',
+          kjLabel: f.kj === 0 ? '0 kJ' : f.kj + ' kJ each',
+          style: 'width:100%;text-align:left;cursor:pointer;font:inherit;padding:15px 17px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+            (n > 0 ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (n > 0 ? 'var(--ks3-alert)' : 'transparent') +
+            ';color:' + (n > 0 ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';',
+          onAdd: () => this.setState((st) => {
+            const cur = st.plate[f.id] || 0;
+            const next = Object.assign({}, st.plate);
+            if (cur >= 6) { delete next[f.id]; } else { next[f.id] = cur + 1; }
+            return { plate: next };
+          })
+        };
+      }),
+      portionCount: portions === 0 ? 'nothing added yet' : portions + ' portions, ' + total.toLocaleString('en-GB') + ' kJ',
+      onClear: () => this.setState({ plate: {} }),
+
+      matched: matched,
+      matchedHead: 'That day matches ' + person.name.toLowerCase() + '.',
+      matchedWhy: 'Now switch person without changing the food. The same plate is a surplus for one body and a shortfall for another, and nothing about the food has changed \u2014 which is the whole idea.',
+
+      sums: SUMS,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === correctIndex, isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: done,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

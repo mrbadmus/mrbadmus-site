@@ -18,7 +18,7 @@ Renaming them is a follow-up, and it is a data change with a full gate run behin
 missing, and the build is red. Nothing here is aspirational — if a renderer stops reading a key,
 this file changes with it.
 
-**Source of truth for the copy.** `KS3 B5 lessons/b5-0N-*.dc.html`, Design's approved delivery.
+**Source of truth for the copy.** `docs/ks3/design-reference/b5/b5-0N-*.dc.html`, Design's approved delivery.
 Every student-facing string in the records is lifted from those files byte-identical. **On this unit
 that is not a style preference: it is a safeguarding one.** Five of the eight lessons are human
 reproduction, read by 12- and 13-year-olds. `lifestyle-and-the-developing-foetus` carries the

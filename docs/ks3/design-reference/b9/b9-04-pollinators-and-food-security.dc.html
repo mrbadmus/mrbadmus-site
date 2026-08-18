@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pollinators and food security · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b904-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b904-arrive .34s ease-out both; }
+  [data-fill] { transition: width .3s linear; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } [data-fill] { transition: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Ecosystems and interdependence</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Pollinators and food security</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Ecosystems and interdependence · System</p>
+        <h1>Pollinators and food security</h1>
+        <p class="ks3-bigq">If every insect pollinator vanished tonight, you would not starve. You would also never eat an apple, a strawberry, an almond, a tomato or a square of chocolate again. Both halves of that sentence matter.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>“If bees disappeared, humans would have four years to live.”</h2>
+        <p class="ks3-hook-prompt">You have probably seen this on a poster, usually attributed to Einstein, who never said it. It is repeated because people want a reason to care about bees. The real reason is more interesting than the invented one, and it survives being checked.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What would actually happen to the world's food supply?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">The staples would survive. Wheat, rice and maize are pollinated by wind and need no insect at all, and they supply most of the world's calories. What would collapse is almost everything else: the fruit, the nuts, the vegetables, the coffee and the chocolate — the foods that carry the vitamins and minerals a diet needs. You would have enough energy and a diet that made you ill, which is the distinction <a href="b3-04-when-diet-goes-wrong.html" style="color: var(--ks3-alert);">b3-04</a> was about.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · empty the shelves</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Which foods survive?</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Twelve foods from an ordinary shop. Remove the insect pollinators and see what is left, then read what has happened to the two numbers underneath — because they do not fall by the same amount, and that is the whole lesson.</p>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);">
+          <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px;">
+            <sc-for list="{{ foods }}" as="f" hint-placeholder-count="12">
+              <li style="{{ f.style }}">
+                <p style="margin: 0; font-size: 18px; font-weight: 700;">{{ f.name }}</p>
+                <p style="margin: 3px 0 0; font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .05em; text-transform: uppercase; opacity: .85;">{{ f.status }}</p>
+              </li>
+            </sc-for>
+          </ul>
+
+          <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;">
+            <div>
+              <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                <p style="margin: 0; font-size: 17px; font-weight: 600; color: var(--ks3-on-dark);">Calories still available</p>
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; color: var(--ks3-on-dark-muted);">{{ calLabel }}</p>
+              </div>
+              <span style="display: block; margin-top: 6px; height: 18px; border-radius: 99px; background: rgba(255,255,255,.08); overflow: hidden;"><span data-fill="1" style="{{ calBar }}"></span></span>
+            </div>
+            <div>
+              <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                <p style="margin: 0; font-size: 17px; font-weight: 600; color: var(--ks3-on-dark);">Vitamins and minerals</p>
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; color: var(--ks3-on-dark-muted);">{{ vitLabel }}</p>
+              </div>
+              <span style="display: block; margin-top: 6px; height: 18px; border-radius: 99px; background: rgba(255,255,255,.08); overflow: hidden;"><span data-fill="1" style="{{ vitBar }}"></span></span>
+            </div>
+          </div>
+
+          <p style="margin: 18px 0 0; padding: 15px 17px; border-radius: var(--ks3-r-panel); background: rgba(255,255,255,.06); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ note }}</p>
+
+          <div style="margin-top: 18px; display: flex; align-items: center; gap: 13px; flex-wrap: wrap;">
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onToggle }}">{{ toggleLabel }}</button>
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onHalf }}">{{ halfLabel }}</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-who" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Who actually does the pollinating</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 28ch;">Mostly not the insect on the poster.</p>
+
+        <div style="margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px;">
+          <sc-for list="{{ whoCards }}" as="w" hint-placeholder-count="4">
+            <div style="padding: 24px 26px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ w.kind }}</p>
+              <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 23px; line-height: 1.2; letter-spacing: -.02em;">{{ w.name }}</p>
+              <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.5;">{{ w.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Insect pollination is a service one group of organisms provides to another, and human food supply depends on it. Wind-pollinated cereals supply most of our calories; insect-pollinated crops supply most of the variety, the vitamins and the minerals.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“No bees, no food — we would starve within a few years.”</p>
+        <p>Overstating a real problem is not a harmless way of getting people to care, because the overstatement is the part that gets checked. Wheat, rice, maize, barley and oats are wind-pollinated and between them provide the majority of the calories eaten on Earth; they would be entirely unaffected. What the exaggeration hides is a genuine and more specific problem: the crops that do depend on insects are the fruit, nuts and vegetables that supply vitamin C, vitamin A, folate, iron and calcium, and losing them means a population with enough energy and widespread deficiency diseases — the situation <a href="b3-04-when-diet-goes-wrong.html">When diet goes wrong</a> describes. That is worth acting on, it is defensible against anyone who checks it, and it does not need a fake quotation from Einstein attached to it.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“Save the bees — keep a hive of honeybees.”</p>
+          <p>Honeybees are a farmed animal. There are more managed honeybee colonies in the world now than there were fifty years ago, and a beekeeper adding a hive is doing roughly what a farmer does by keeping chickens — useful, but not conservation. The pollinators actually in decline are the wild ones: solitary bees, of which Britain has around 250 species, along with bumblebees, hoverflies, moths and beetles. Several studies find these wild insects pollinate crops more effectively than honeybees do, and a dense hive in a poor landscape can compete with them for the few flowers there are. What wild pollinators need is flowers through the whole season, undisturbed ground and hedges to nest in, and fewer insecticides. Those are landscape decisions, which is why this appears in a lesson about food security rather than a lesson about pets.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Many crops depend on insects to transfer pollen between flowers, and without it those plants set little or no fruit or seed. Cereals are wind-pollinated and supply most of our calories, so a loss of pollinators would not cause starvation — it would remove most of the fruit, nuts and vegetables, and with them most of the vitamins and minerals in the diet. Wild pollinators, not managed honeybees, are the ones in decline.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>In parts of Sichuan in China, apple and pear growers have pollinated their orchards by hand for decades, climbing the trees with pots of pollen and brushes made from cigarette filters and chicken feathers. It works, the fruit sets, and it takes a person a day to do what a few hundred bees would do in an afternoon. Why it started is disputed — heavy pesticide use, loss of wild habitat and the profitability of hand pollination in a region with plentiful labour all appear in different accounts — and it is worth being careful with the story rather than using it as a simple parable. What it does establish is a price. Insect pollination is a service that has always been free, and where it has been lost, the replacement cost has been measured in human working days per hectare. That is what makes it a food security question and not only a wildlife one.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b9-03-disturbing-a-food-web.html">Disturbing a food web<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b3-01-a-balanced-diet.html">A balanced diet<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b3-04-when-diet-goes-wrong.html">When diet goes wrong<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b9-05-toxic-build-up-in-a-food-chain.html">Toxic build-up in a food chain<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Food security, the biological factors threatening it, and the trade-offs in intensive and sustainable farming.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to check a claim you have seen about bees?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The shelf is a teaching model. The calorie and nutrient bars are illustrative proportions for these twelve foods, not a calculation for a real diet or a national food supply, and crops differ in how completely they depend on insects — many set a reduced crop rather than none. Published estimates of the share of global food production that depends on animal pollination vary widely with how the question is asked.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The poster' },
+  { id: 's-bench', label: 'The shelves' },
+  { id: 's-who', label: 'Who pollinates' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'SHELF', 'WHO', 'LADDER'];
+
+// dep: how much of the crop is lost without insect pollinators.
+// cal / vit: this food's share of the shelf's calories and of its vitamins and minerals.
+const FOODS = [
+  { name: 'Bread (wheat)', dep: 0, cal: 22, vit: 4, how: 'wind-pollinated' },
+  { name: 'Rice', dep: 0, cal: 20, vit: 3, how: 'wind-pollinated' },
+  { name: 'Sweetcorn (maize)', dep: 0, cal: 14, vit: 4, how: 'wind-pollinated' },
+  { name: 'Potatoes', dep: 0, cal: 12, vit: 8, how: 'grown from tubers' },
+  { name: 'Milk', dep: 0.15, cal: 8, vit: 9, how: 'cattle feed partly insect-pollinated' },
+  { name: 'Apples', dep: 0.9, cal: 4, vit: 10, how: 'insect-pollinated' },
+  { name: 'Strawberries', dep: 0.9, cal: 2, vit: 11, how: 'insect-pollinated' },
+  { name: 'Tomatoes', dep: 0.7, cal: 3, vit: 12, how: 'bumblebee-pollinated' },
+  { name: 'Almonds', dep: 1, cal: 6, vit: 9, how: 'entirely insect-pollinated' },
+  { name: 'Broccoli', dep: 0.8, cal: 2, vit: 12, how: 'insect-pollinated' },
+  { name: 'Coffee', dep: 0.5, cal: 1, vit: 3, how: 'partly insect-pollinated' },
+  { name: 'Chocolate (cocoa)', dep: 1, cal: 6, vit: 15, how: 'pollinated by midges' }
+];
+
+const WHO_CARDS = [
+  { kind: 'Farmed, not wild', name: 'Honeybees', body: 'Kept in hives and moved to crops by lorry. Numerous, useful, and not the group that is disappearing \u2014 there are more managed colonies now than fifty years ago.' },
+  { kind: 'The ones in trouble', name: 'Wild bees', body: 'Around 250 solitary bee species in Britain, plus the bumblebees. Several are better at pollinating crops than honeybees, and several are in serious decline.' },
+  { kind: 'Overlooked', name: 'Hoverflies, moths and beetles', body: 'Hoverflies work in colder weather than bees will, moths pollinate at night, and cocoa depends on tiny midges. Pollination is not a bee monopoly.' },
+  { kind: 'What they need', name: 'Flowers, nests, fewer sprays', body: 'Flowers across the whole season rather than one crop\u2019s brief bloom, rough ground and hedges to nest in, and insecticides used sparingly.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Which crops depend on insects',
+    question: 'Which of these would be least affected if all insect pollinators disappeared?',
+    options: [
+      { text: 'Wheat', correct: true },
+      { text: 'Apples', correction: 'Apple trees need insects to carry pollen between flowers, and orchards are often stocked with hives at blossom time for exactly that reason.' },
+      { text: 'Almonds', correction: 'Almonds are the extreme case \u2014 entirely dependent, and the crop that hires more hives than any other in the world.' },
+      { text: 'Strawberries', correction: 'Poorly pollinated strawberries do form, but they come out small and misshapen. The crop is not lost so much as ruined.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'A poster says losing bees would mean worldwide starvation within four years. What is wrong with the claim?',
+    options: [
+      { text: 'Nothing \u2014 almost all our food is insect-pollinated', correction: 'Look at the shelf. The four foods supplying most of the calories are pollinated by wind or grown from tubers.' },
+      { text: 'Most calories come from wind-pollinated cereals, so the real loss would be vitamins and variety rather than energy', correct: true },
+      { text: 'Bees are not really in decline, so the question does not arise', correction: 'Managed honeybees are doing reasonably well; wild pollinators are genuinely declining. The claim is exaggerated, not baseless.' },
+      { text: 'Farmers would simply pollinate everything by hand', correction: 'It is done in a few places and it is enormously expensive in labour. It is a measure of the loss, not a solution to it.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain the two numbers',
+    question: 'On the bench, removing insect pollinators takes far more from the vitamin bar than from the calorie bar. Explain why, and say what a population living on the remaining food would suffer from.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The foods that supply most of the calories\u2026',
+    criteria: [
+      'Says the main calorie foods are cereals and potatoes, which are wind-pollinated or grown without pollination.',
+      'Says the insect-pollinated foods are mainly fruit, nuts and vegetables.',
+      'Says those foods supply a large share of the vitamins and minerals in a diet.',
+      'Concludes that the energy supply survives while the nutrient supply collapses.',
+      'Names deficiency disease, or the distinction between having enough to eat and having a balanced diet.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A farm grows one crop across every field \u2014 oilseed rape, which flowers for three weeks in spring and is insect-pollinated. The farmer cannot understand why wild bee numbers on the land keep falling despite so much blossom. Explain the problem, and suggest two changes.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Three weeks of flowers means\u2026',
+    criteria: [
+      'Says the bees have an enormous food supply for three weeks and almost nothing for the rest of the year.',
+      'Says pollinators are active across many months and need flowers throughout that period.',
+      'Identifies a second problem \u2014 nowhere to nest, or the effect of insecticides on the crop.',
+      'Suggests a concrete change: wildflower margins, hedgerows, later mowing, a second flowering crop, or reduced spraying.',
+      'Links it back to the farmer\u2019s own interest \u2014 the crop needs the pollinators, so this is not only a conservation argument.'
+    ] }
+];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return s.level !== 'all';
+  if (id === 's-who') return s.level !== 'all';
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    level: 'all',
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  renderVals() {
+    const s = this.state;
+    const loss = s.level === 'none' ? 1 : (s.level === 'half' ? 0.5 : 0);
+
+    let cal = 0, vit = 0, calMax = 0, vitMax = 0;
+    const foods = FOODS.map((f) => {
+      const remaining = 1 - f.dep * loss;
+      cal += f.cal * remaining; vit += f.vit * remaining;
+      calMax += f.cal; vitMax += f.vit;
+      const gone = remaining < 0.2, reduced = remaining < 0.85;
+      return {
+        name: f.name,
+        status: loss === 0 ? f.how : (gone ? 'gone' : (reduced ? Math.round(remaining * 100) + '% of the crop' : 'unaffected')),
+        style: 'padding:13px 15px;border-radius:var(--ks3-r-panel);border:2px solid ' +
+          (gone ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' +
+          (gone ? 'rgba(255,255,255,.04)' : 'rgba(255,255,255,.08)') + ';color:' +
+          (gone ? 'var(--ks3-on-dark-muted)' : 'var(--ks3-on-dark)') + ';opacity:' + (gone ? '.6' : '1') +
+          ';text-decoration:' + (gone ? 'line-through' : 'none') + ';'
+      };
+    });
+
+    const calPct = Math.round((cal / calMax) * 100);
+    const vitPct = Math.round((vit / vitMax) * 100);
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    let note;
+    if (loss === 0) note = 'The shelf as it is. Four of these twelve foods need no insect at all, and between them they carry most of the calories.';
+    else if (loss === 1) note = 'Calories down to ' + calPct + '%, vitamins and minerals down to ' + vitPct + '%. Nobody starves on what is left, and nobody stays healthy on it either. That gap between the two bars is the honest version of the argument for pollinators.';
+    else note = 'Halve the pollinators rather than removing them, and the effect is a partial one \u2014 smaller crops, misshapen fruit, higher prices. This is closer to what is actually happening than the all-or-nothing version.';
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'Almost all crops would fail and there would be famine' },
+        { letter: 'B', text: 'Very little would change \u2014 farmers would manage' },
+        { letter: 'C', text: 'The staple cereals would survive; the fruit and vegetables would not' },
+        { letter: 'D', text: 'Only honey would disappear' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      benchProgress: s.level === 'all' ? 'shelf intact' : (s.level === 'half' ? 'half the pollinators' : 'no pollinators'),
+      foods: foods,
+      calLabel: calPct + '%',
+      vitLabel: vitPct + '%',
+      calBar: 'display:block;height:100%;width:' + calPct + '%;background:var(--ks3-ok);',
+      vitBar: 'display:block;height:100%;width:' + vitPct + '%;background:var(--ks3-alert);',
+      note: note,
+      toggleLabel: s.level === 'none' ? 'Bring the pollinators back' : 'Remove every insect pollinator',
+      onToggle: () => this.setState((st) => ({ level: st.level === 'none' ? 'all' : 'none' })),
+      halfLabel: 'Lose half of them',
+      onHalf: () => this.setState({ level: 'half' }),
+
+      whoCards: WHO_CARDS,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const answered = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: answered,
+          isRight: answered && chosen === correctIndex, isWrong: answered && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (answered ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = answered && i === correctIndex;
+            const isWrong = answered && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (answered) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: answered,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+</script>
+</body>
+</html>

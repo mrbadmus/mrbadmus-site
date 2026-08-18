@@ -1,7 +1,7 @@
 """B4 L4 — Exercise, asthma and smoking (SYSTEM).
 
 Authored against Design's approved page,
-`KS3 B4 lessons/b4-04-exercise-asthma-and-smoking.dc.html` (578 lines), under
+`docs/ks3/design-reference/b4/b4-04-exercise-asthma-and-smoking.dc.html` (578 lines), under
 the MRB-220 build contract and MRB-244.
 
 Every student-facing string is lifted byte-identical from the approved page

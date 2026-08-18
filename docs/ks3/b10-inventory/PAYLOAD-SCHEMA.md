@@ -8,7 +8,7 @@ five of them named the same four labels nine different ways.
 this document wins on NAMING (what we call it).** Where the page needs something this schema has
 not anticipated, follow the page and say so in the report.
 
-Everything below is measured from the five approved pages in `KS3 B10 lessons/`, not inferred from
+Everything below is measured from the five approved pages in `docs/ks3/design-reference/b10/`, not inferred from
 `NOTES-B10.md`. Where the two disagree, §10 says so.
 
 ---

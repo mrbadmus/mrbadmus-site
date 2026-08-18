@@ -1,8 +1,8 @@
 """B9 L4 — Pollinators and food security (SYSTEM).
 
 Authored against Claude Design's approved page,
-`KS3 B9 lessons/b9-04-pollinators-and-food-security.dc.html` (521 lines), her
-author's notes `KS3 B9 lessons/NOTES-B9.md`, and the B9 payload schema
+`docs/ks3/design-reference/b9/b9-04-pollinators-and-food-security.dc.html` (521 lines), her
+author's notes `docs/ks3/design-reference/b9/NOTES-B9.md`, and the B9 payload schema
 `docs/ks3/b9-inventory/PAYLOAD-SCHEMA.md` §0, §1, §2, §3, §4, §8, §11, §12,
 §14 and §15, under the MRB-220 build contract.
 

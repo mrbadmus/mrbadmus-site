@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gestation, the placenta and birth · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b504-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b504-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Reproduction</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Gestation, the placenta and birth</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Reproduction · Process</p>
+        <h1>Gestation, the placenta and birth</h1>
+        <p class="ks3-bigq">For nine months one organism lives inside another and takes everything it needs from it — without their blood ever meeting.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>The mother's blood and the foetus's blood never mix.</h2>
+        <p class="ks3-hook-prompt">They are two separate circulations, kept separate for the whole of the pregnancy. And yet the foetus does not breathe, does not eat, and does not use its kidneys — everything it needs arrives, and everything it produces leaves.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">So how does oxygen get from one to the other?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">It diffuses. In the placenta the two blood supplies are brought within a fraction of a millimetre of each other across an enormous surface, and substances move between them from where there is more to where there is less. No pumping, no mixing, no decision — the same process you met in the <a href="b4-03-alveoli-built-for-exchange.html" style="color: var(--ks3-alert);">alveoli</a> and the <a href="b3-07-absorption-and-the-small-intestine.html" style="color: var(--ks3-alert);">small intestine</a>, solving a third version of the same problem.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-cross" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the exchange surface · six substances</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Which way does it cross?</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ crossProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Pick a substance, commit to a direction, then check it. Every answer comes from the same rule: things move from where there is more of them to where there is less.</p>
+
+        <div style="margin-top: 22px; display: flex; gap: 9px; flex-wrap: wrap;">
+          <sc-for list="{{ subTabs }}" as="t" hint-placeholder-count="6">
+            <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 26px; line-height: 1.15; letter-spacing: -.025em; color: var(--ks3-on-dark);">{{ subName }}</p>
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-alert);">{{ subKind }}</p>
+          </div>
+          <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ subContext }}</p>
+        </div>
+
+        <p style="margin: 20px 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Which way does it cross the placenta?</p>
+        <ul class="ks3-options">
+          <sc-for list="{{ dirOptions }}" as="opt" hint-placeholder-count="2">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <div style="margin-top: 18px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onCheck }}" disabled="{{ checkLocked }}" style="{{ checkBtnStyle }}">Check it</button>
+          <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ checkHint }}</span>
+        </div>
+
+        <sc-if value="{{ subOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ subVerdict }}</p>
+            <p style="margin: 9px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 23px; line-height: 1.22; letter-spacing: -.02em;">{{ subAnswer }}</p>
+            <p style="margin: 11px 0 0; font-size: 18px; line-height: 1.6;">{{ subWhy }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-stages" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Forty weeks, in five stages</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 30ch;">Building the supply line comes first. Everything else depends on it.</p>
+
+        <ol style="list-style: none; margin: 24px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ stages }}" as="st" hint-placeholder-count="5">
+            <li style="{{ st.style }}">
+              <span aria-hidden="true" style="{{ st.numStyle }}">{{ st.num }}</span>
+              <div style="flex: 1 1 auto; min-width: 0;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
+                  <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px; line-height: 1.2; letter-spacing: -.02em;">{{ st.name }}</p>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; color: var(--ks3-accent-text);">{{ st.when }}</p>
+                </div>
+                <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.55;">{{ st.what }}</p>
+              </div>
+            </li>
+          </sc-for>
+        </ol>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">The placenta is an exchange surface, built to the same specification as the alveoli and the villi: a very large surface area, a very thin barrier, and a blood supply on both sides to keep the concentration difference up. The two blood supplies come close enough for substances to diffuse across, and never mix.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“The baby's blood mixes with the mother's blood in the placenta.”</p>
+        <p>Two circulations, side by side, never joined. If they did mix, two things would go wrong immediately. The first is blood groups: a mother and her baby often have different ones, and mixing incompatible blood makes it clot. The second is pressure — an adult heart pushes blood far harder than a foetal one, and the delicate vessels of the placenta would simply be destroyed. What the placenta does instead is bring the two supplies within a fraction of a millimetre of each other over an enormous folded surface, so that dissolved substances can diffuse across the gap. Everything the foetus receives arrives that way, one molecule at a time, down a concentration difference. The cord is not a pipe carrying the mother's blood; it carries the foetus's own blood out to the exchange surface and back.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“The baby breathes and eats inside the uterus.”</p>
+          <p>It does neither, and the reason is the same both times: there is nowhere for either to happen. The lungs are full of fluid for the whole pregnancy and no gas exchange takes place in them — the first breath at birth is genuinely the first time they are used, which is why the lungs are among the last organs to be ready and why babies born very early often need help with breathing. Food is the same story in a different organ. Nothing that could be called a meal goes down the umbilical cord: what crosses the placenta is glucose, amino acids and other small molecules already dissolved in blood, which is what the mother's digestive system has spent hours turning food into. The foetus is supplied at the end of somebody else's digestion.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Gestation is the time from implantation to birth, about 40 weeks in humans. The placenta is the exchange surface between two separate circulations: oxygen, glucose and other small molecules diffuse in from the mother's blood, carbon dioxide and urea diffuse out into it, and the two never mix. The umbilical cord carries the foetus's own blood to and from the placenta. Organs are laid down in the first eight weeks; the rest is growth. At birth the uterus muscle contracts, the cervix opens, the baby is delivered, and the placenta follows.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The placenta is not the mother's organ. It grows from the same ball of cells as the embryo, so its cells carry the embryo's chromosomes — half of them from the father — and it is the only organ a human being ever builds, uses and then discards. That raises a question nobody has fully answered. An immune system attacks tissue whose cells it does not recognise; that is why transplanted organs are rejected without drugs to prevent it. Yet here is an organ, and an entire foetus, carrying a set of foreign proteins, growing inside another person's body for nine months, pressed right up against her blood supply, and normally not attacked at all. Several mechanisms are known — the outer layer of the placenta displays unusual surface proteins, and the immune response in the uterus is locally dialled down — but how they add up to nine months of tolerance is still an active research question. The most ordinary event in biology is also one of its stranger unsolved problems.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="b5-05-lifestyle-and-the-developing-foetus.html">Lifestyle and the developing foetus<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b5-02-gametes-and-fertilisation.html">Gametes and fertilisation<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b4-03-alveoli-built-for-exchange.html">Alveoli: built for exchange<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b3-07-absorption-and-the-small-intestine.html">Absorption and the small intestine<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Exchange surfaces compared quantitatively, the hormones of pregnancy and birth, and the ethics of antenatal screening.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to check why the two bloods must stay apart?</p>
+          <a class="ks3-tutor-cta" href="#s-cross">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">Times are typical values. Pregnancy is dated in weeks from the first day of the last period rather than from fertilisation, so the familiar forty weeks is about two weeks longer than the time the foetus has existed. This lesson covers the biology; anything personal belongs with your school nurse, doctor or midwife, and relationships and consent are covered in RSE and PSHE. The labelled placenta diagram is declared in the lesson record as <span style="font-family: var(--ks3-font-mono);">b5-placenta-exchange</span>, awaiting illustration.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Never mix' },
+  { id: 's-cross', label: 'Which way?' },
+  { id: 's-stages', label: 'Forty weeks' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'CROSS', 'STAGES', 'LADDER'];
+
+const IN = 'Mother\u2019s blood \u2192 foetus';
+const OUT = 'Foetus \u2192 mother\u2019s blood';
+
+const SUBS = [
+  { id: 'o2', label: 'Oxygen', name: 'Oxygen', kind: 'Small molecule \u00b7 diffusion', dir: 0,
+    context: 'The foetus respires like any other organism and cannot use its own lungs \u2014 they are full of fluid.',
+    answer: 'Into the foetus, from the mother\u2019s blood.',
+    why: 'The mother\u2019s blood arrives at the placenta freshly oxygenated from her lungs; the foetal blood arrives having just delivered its oxygen to foetal tissue. More on one side, less on the other, so oxygen diffuses across. Foetal haemoglobin also holds oxygen more tightly than the adult kind, which keeps the difference up.' },
+  { id: 'glucose', label: 'Glucose', name: 'Glucose', kind: 'Small molecule \u00b7 carried across', dir: 0,
+    context: 'The foetus needs glucose for respiration and raw material for building, and does not eat.',
+    answer: 'Into the foetus, from the mother\u2019s blood.',
+    why: 'This is the far end of the mother\u2019s digestion: her small intestine absorbed the glucose hours earlier and her blood is carrying it. The placenta moves it across into foetal blood, where the concentration is lower because the foetus is continually using it up.' },
+  { id: 'co2', label: 'Carbon dioxide', name: 'Carbon dioxide', kind: 'Small molecule \u00b7 diffusion', dir: 1,
+    context: 'Respiration in the foetus produces it continuously, and the foetus cannot breathe it out.',
+    answer: 'Out to the mother\u2019s blood \u2014 and she breathes it out.',
+    why: 'Carbon dioxide builds up in foetal blood, so there is more of it there than in the mother\u2019s blood arriving at the placenta. It diffuses across the other way and leaves her body at her alveoli. Two organisms, one set of lungs.' },
+  { id: 'urea', label: 'Urea', name: 'Urea', kind: 'Waste \u00b7 diffusion', dir: 1,
+    context: 'Breaking down surplus amino acids produces urea, which is toxic if it accumulates.',
+    answer: 'Out to the mother\u2019s blood \u2014 and her kidneys remove it.',
+    why: 'The foetus has kidneys, and they do make urine, which passes into the amniotic fluid. But the urea itself has to leave the system altogether, and the only route out is across the placenta into the mother\u2019s blood. Her kidneys are doing the work for both.' },
+  { id: 'anti', label: 'Antibodies', name: 'Antibodies', kind: 'Large protein \u00b7 actively carried', dir: 0,
+    context: 'A newborn\u2019s immune system has never met anything, and takes months to become useful.',
+    answer: 'Into the foetus \u2014 but not by diffusion.',
+    why: 'Antibodies are large proteins, far too big to slip across an exchange surface built for small molecules. The placenta carries them across deliberately, using energy, and stocks the foetus with a copy of the mother\u2019s immunity that lasts for the first few months of life. It is the one crossing on this list that the placenta chooses to make.' },
+  { id: 'drugs', label: 'Nicotine and alcohol', name: 'Nicotine, alcohol and many drugs', kind: 'Small molecules \u00b7 diffusion', dir: 0,
+    context: 'These are small molecules dissolved in the blood, exactly like oxygen and glucose.',
+    answer: 'Into the foetus \u2014 for the same reason oxygen crosses.',
+    why: 'The placenta is not a filter and has no way of telling a useful small molecule from a harmful one. Anything small enough and dissolved in the mother\u2019s blood crosses down its concentration difference, and within minutes the foetus has it too. What follows from that is the whole of the next lesson.' }
+];
+
+const STAGES = [
+  { num: '01', name: 'Implantation', when: 'About five days after fertilisation',
+    what: 'The ball of cells embeds in the thickened lining of the uterus. Part of it will become the embryo; another part immediately begins building the structure that will supply it.' },
+  { num: '02', name: 'The exchange surface is built', when: 'Weeks 1\u201312',
+    what: 'The placenta grows into the uterus wall, folding into thousands of finger-like projections until its surface area is enormous, and the umbilical cord connects it to the embryo. Two circulations are brought within a fraction of a millimetre of each other. Nothing that follows is possible without this.' },
+  { num: '03', name: 'Organs are laid down', when: 'Weeks 3\u20138 \u00b7 the embryo',
+    what: 'Heart, brain, spine, limbs and every other organ are formed while the embryo is smaller than your thumb. This is the shortest stage and the one where anything crossing the placenta has the largest effect.' },
+  { num: '04', name: 'Growth and maturing', when: 'Weeks 9\u201340 \u00b7 the foetus',
+    what: 'The organs that exist get bigger and finish developing. The lungs are among the last to be ready, which is why being born early is mostly a breathing problem.' },
+  { num: '05', name: 'Birth', when: 'Around 40 weeks',
+    what: 'The muscular wall of the uterus begins contracting and the cervix opens. The contractions push the baby out through the vagina, the umbilical cord is cut, and the placenta \u2014 no longer needed \u2014 is delivered afterwards.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Read the surface',
+    question: 'Why does oxygen move from the mother\u2019s blood into the foetus\u2019s blood at the placenta?',
+    options: [
+      { text: 'The mother\u2019s heart pumps it across', correction: 'Nothing is pumped across. The two circulations are separate, and her heart moves her blood only.' },
+      { text: 'There is more oxygen in her blood than in the foetal blood, so it diffuses across', correct: true },
+      { text: 'The placenta chooses what the foetus needs and sends it', correction: 'The placenta does actively carry a few things, such as antibodies. Oxygen is not one of them \u2014 it simply diffuses.' },
+      { text: 'The two blood supplies mix, so the oxygen is shared', correction: 'They never mix. If they did, differing blood groups and adult blood pressure would both cause serious harm.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'A student says the umbilical cord carries the mother\u2019s blood into the baby. What is wrong with that?',
+    options: [
+      { text: 'Nothing \u2014 that is what the cord is for', correction: 'Then a mother and baby with different blood groups could not survive a pregnancy together, and they routinely do.' },
+      { text: 'The cord carries the foetus\u2019s own blood out to the placenta and back', correct: true },
+      { text: 'The cord carries food rather than blood', correction: 'It carries blood. What it does not carry is anybody else\u2019s blood, and nothing in it is food in any recognisable sense.' },
+      { text: 'The cord carries air to the lungs', correction: 'The foetal lungs are full of fluid and are not used. Oxygen arrives dissolved in blood, from the placenta.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain the surface',
+    question: 'Explain how the placenta supplies a foetus with oxygen and glucose and removes its carbon dioxide and urea, without the two bloods mixing. Name the three features that make it a good exchange surface.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The two circulations are brought close together\u2026',
+    criteria: [
+      'Says the two blood supplies are brought very close together but stay separate.',
+      'Says substances move by diffusion, from where there is more to where there is less.',
+      'Gets both directions right: oxygen and glucose in, carbon dioxide and urea out.',
+      'Names a large surface area, a thin barrier and a good blood supply on both sides.',
+      'Says the umbilical cord carries the foetus\u2019s own blood to and from the placenta.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'Alveoli, villi and the placenta are three different organs in three different systems. Explain what problem all three are solving, what design features they share, and one way the placenta\u2019s problem is harder than the other two.',
+    fieldLabel: 'Your answer',
+    placeholder: 'All three have to move substances\u2026',
+    criteria: [
+      'Says all three move substances between two places by diffusion, and need a big enough rate.',
+      'Names the shared features: large surface area, thin barrier, good blood supply maintaining the difference.',
+      'Gives a correct example of what crosses at each of the three.',
+      'Says what is harder at the placenta \u2014 the two supplies belong to two different individuals and must not mix.'
+    ] }
+];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-cross') return Object.keys(s.opened).length >= 6;
+  if (id === 's-stages') return Object.keys(s.opened).length >= 6;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    sub: 'o2',
+    picks: {},
+    opened: {},
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on) {
+    return 'cursor:pointer;font:inherit;font-family:var(--ks3-font-mono);font-size:15px;font-weight:500;padding:10px 16px;min-height:44px;border-radius:11px;border:2px solid ' +
+      (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-dark-panel)' : 'var(--ks3-on-dark-body)') + ';';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const sub = SUBS.find((x) => x.id === s.sub) || SUBS[0];
+    const pick = s.picks[sub.id];
+    const opened = !!s.opened[sub.id];
+    const hasPick = pick === 0 || pick === 1;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'The two bloods mix in the placenta and share it' },
+        { letter: 'B', text: 'It diffuses across from one blood supply to the other' },
+        { letter: 'C', text: 'The mother breathes it down the umbilical cord' },
+        { letter: 'D', text: 'The foetus takes it from the fluid around it, using its lungs' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      crossProgress: Object.keys(s.opened).length + ' of 6 checked',
+      subTabs: SUBS.map((x) => ({
+        label: x.label, pressed: x.id === s.sub, style: this.seg(x.id === s.sub),
+        onClick: () => this.setState({ sub: x.id })
+      })),
+      subName: sub.name,
+      subKind: sub.kind,
+      subContext: sub.context,
+      dirOptions: [IN, OUT].map((text, i) => ({
+        letter: String.fromCharCode(65 + i), text: text, pressed: pick === i, disabled: opened,
+        onClick: () => this.setState((st) => ({ picks: Object.assign({}, st.picks, { [sub.id]: i }) }))
+      })),
+      onCheck: () => this.setState((st) => ({ opened: Object.assign({}, st.opened, { [sub.id]: true }) })),
+      checkLocked: !hasPick || opened,
+      checkBtnStyle: 'cursor:' + (!hasPick || opened ? 'default' : 'pointer') + ';opacity:' + (!hasPick || opened ? '.45' : '1') + ';',
+      checkHint: opened ? 'Now try another substance.' : (hasPick ? 'Ready.' : 'Choose a direction first.'),
+      subOpen: opened,
+      subVerdict: opened ? (pick === sub.dir ? 'Correct' : 'Other way round') : '',
+      subAnswer: sub.answer,
+      subWhy: sub.why,
+
+      stages: STAGES.map((st) => ({
+        num: st.num, name: st.name, when: st.when, what: st.what,
+        style: 'padding: 20px 22px; border-radius: var(--ks3-r-card); background: ' + (st.num === '02' ? 'var(--ks3-inset)' : 'var(--ks3-card)') +
+          '; border: ' + (st.num === '02' ? '3px' : '2px') + ' solid var(--ks3-ink); display: flex; gap: 18px; align-items: flex-start;',
+        numStyle: 'flex: 0 0 40px; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: ' +
+          (st.num === '02' ? 'var(--ks3-accent)' : 'var(--ks3-ink)') + '; color: var(--ks3-on-dark); font-family: var(--ks3-font-display); font-weight: 800; font-size: 18px;'
+      })),
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === correctIndex, isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: done,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+</script>
+</body>
+</html>

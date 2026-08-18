@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How breathing works · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b402-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b402-arrive .34s ease-out both; }
+  [data-chest] { transition: height .35s ease, background .35s ease; }
+  [data-lung] { transition: transform .35s ease; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } [data-chest], [data-lung] { transition: none !important; } }
+  input[type="range"].b402-dia { -webkit-appearance: none; appearance: none; width: 100%; height: 38px; background: transparent; }
+  input[type="range"].b402-dia::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].b402-dia::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 30px; height: 30px; margin-top: -12px; border-radius: 50%; background: var(--ks3-alert); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].b402-dia::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].b402-dia::-moz-range-thumb { width: 30px; height: 30px; border-radius: 50%; background: var(--ks3-alert); border: 3px solid var(--ks3-ink); cursor: pointer; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Breathing and gas exchange</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">How breathing works</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Breathing and gas exchange · Model</p>
+        <h1>How breathing works</h1>
+        <p class="ks3-bigq">Your lungs contain no muscle at all. They cannot pull air in, and they never have. Something else moves, and the air follows.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>A puncture wound between two ribs, and the lung collapses.</h2>
+        <p class="ks3-hook-prompt">A narrow wound opens the space between the chest wall and the lung to the outside air. Nothing has touched the lung itself — it is undamaged, and the airway is completely clear. Within seconds that lung has emptied and will not reinflate.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Nothing is blocking it. Why can it not fill?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Because a lung has never inflated itself. It is filled by being at a lower pressure than the outside air, and that difference is produced by muscles enlarging the chest. Let air into the space around the lung and the difference vanishes — the lung is intact, the airway is clear, and it still cannot fill.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-model" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">The bell-jar model · work the diaphragm</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Pull the sheet down and read the pressure</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ modelProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">A sealed jar, a rubber sheet across the bottom, and a balloon on a tube through the lid. Move the sheet and watch the order in which things change.</p>
+
+        <div style="margin-top: 22px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 18px; align-items: start;">
+          <div style="padding: 22px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);">
+            <p style="margin: 0 0 14px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The jar</p>
+            <div aria-hidden="true" style="height: 220px; display: flex; flex-direction: column; justify-content: flex-end; border: 3px solid var(--ks3-on-dark-muted); border-radius: 6px 6px 14px 14px; overflow: hidden; background: rgba(255,255,255,.04);">
+              <div data-chest="1" style="{{ chestStyle }}">
+                <span data-lung="1" style="{{ lungStyle }}"></span>
+              </div>
+            </div>
+            <p style="margin: 12px 0 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-alert);">{{ phaseLabel }}</p>
+          </div>
+
+          <div style="padding: 22px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Readouts</p>
+            <dl style="margin: 12px 0 0;">
+              <sc-for list="{{ readouts }}" as="r" hint-placeholder-count="4">
+                <div style="padding: 11px 0; border-top: 2px solid rgba(255,255,255,.12); display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <dt style="margin: 0; font-size: 17px; color: var(--ks3-on-dark-body);">{{ r.k }}</dt>
+                  <dd style="margin: 0; font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; color: var(--ks3-on-dark); text-align: right;">{{ r.v }}</dd>
+                </div>
+              </sc-for>
+            </dl>
+          </div>
+        </div>
+
+        <div style="margin-top: 18px; padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Diaphragm</p>
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-alert);">{{ diaLabel }}</p>
+          </div>
+          <label class="ks3-answer-label" for="b402dia" style="position: absolute; left: -9999px;">Diaphragm position</label>
+          <input class="b402-dia" type="range" id="b402dia" min="0" max="100" step="1" value="{{ diaValue }}" onChange="{{ onDia }}" onInput="{{ onDia }}">
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px;">
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onBreatheIn }}">Breathe in</button>
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onBreatheOut }}">Breathe out</button>
+          </div>
+        </div>
+
+        <div style="margin-top: 18px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">The order of events</p>
+          <ol style="margin: 12px 0 0; padding-left: 24px; font-size: 18px; line-height: 1.65;">
+            <sc-for list="{{ chain }}" as="c" hint-placeholder-count="4">
+              <li style="{{ c.style }}">{{ c.text }}</li>
+            </sc-for>
+          </ol>
+          <p style="margin: 14px 0 0; font-size: 18px; line-height: 1.6;">{{ chainNote }}</p>
+        </div>
+      </section>
+
+      <section id="s-limits" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Where the model fails</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 28ch;">Four things the bell jar gets wrong, and why it is still the right model.</p>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6; max-width: 56ch;">A model that got everything right would be a chest. Knowing precisely where a model stops being true is what makes it usable — the same argument as in <a href="c1-06-testing-the-model.html">Testing the model</a>.</p>
+
+        <ul style="list-style: none; margin: 24px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px;">
+          <sc-for list="{{ limits }}" as="l" hint-placeholder-count="4">
+            <li style="padding: 22px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ l.tag }}</p>
+              <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 20px; line-height: 1.3; letter-spacing: -.015em;">{{ l.name }}</p>
+              <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.55;">{{ l.wrong }}</p>
+              <p style="margin: 10px 0 0; padding-top: 10px; border-top: 2px solid var(--ks3-rule); font-size: 17px; line-height: 1.5; color: var(--ks3-ink-body);"><strong style="font-family: var(--ks3-font-display);">Still worth having because:</strong> {{ l.worth }}</p>
+            </li>
+          </sc-for>
+        </ul>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Muscles change the volume of the chest. Changing the volume changes the pressure. Air then moves from higher pressure to lower pressure. Volume first, pressure second, air last — always in that order.</p>
+        </div>
+
+        <div style="margin: 18px 0 0; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px dashed var(--ks3-rule-strong);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Leans on · Physics</p>
+          <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.6;">The pressure reasoning here is the same as in <a href="c1-04-gas-pressure.html">Gas pressure</a>: pressure comes from particles colliding with the walls, so the same number of particles in a bigger space collide less often and the pressure falls. Physics P5 <em>Pressure</em> owns the full quantitative treatment; this lesson uses only the qualitative rule, and nothing here needs to be unlearnt when you meet it.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“The lungs expand and pull the air in.”</p>
+        <p>The lungs have no muscle tissue anywhere in them, so there is nothing in a lung that could pull. They are elastic bags that are stretched by the space around them growing, in the way a plastic bag pressed against the inside of a widening box is stretched by the box. The muscles that do the work are the diaphragm underneath and the intercostals between the ribs, and neither of them is part of a lung. This is not a technicality: it is the whole explanation of the collapsed lung in the hook, of why a ventilator has to push rather than persuade, and of why paralysis of the diaphragm stops breathing while leaving perfectly healthy lungs in place.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“Air rushes in, and that is what makes the chest get bigger.”</p>
+          <p>This gets the causation exactly backwards, and it is the most common wrong answer in the topic. Watch the readouts on the model: the volume changes <em>first</em>, the pressure changes <em>because</em> of it, and the air moves <em>last</em>, in response. Nothing about incoming air can enlarge a chest — if it could, you would inflate when the wind blew. The test that settles it is the sealed jar: clamp the tube so no air can enter, pull the sheet down, and the volume still increases and the pressure still falls. The chest moving is the cause; the air arriving is the consequence.</p>
+        </div>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“Something sucks the air in.”</p>
+          <p>Sucking is not a thing that exists. There is no force that reaches out and draws air towards a low pressure; there is only air at higher pressure being pushed by its own particles into a space where fewer particles are pushing back. The atmosphere does all the work of every breath you take, and your muscles only ever make room for it. This matters for the same reason it mattered in <a href="c1-05-diffusion.html">Diffusion</a> — describing a pressure difference as a pull invents a mechanism that is not there, and then you cannot explain why a straw stops working at the top of a very tall glass.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Breathing in: the diaphragm contracts and flattens, the intercostal muscles contract and lift the ribs up and out, chest volume increases, pressure inside falls below atmospheric, and air moves in. Breathing out reverses it, mostly by the muscles relaxing and the chest recoiling elastically. Volume changes first; air moves last.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The iron lungs used during polio epidemics worked on exactly the principle this lesson describes, and worked on the outside of the patient. The machine sealed the body from the neck down and cycled the pressure in the tank: drop it, and the patient's chest expands because the outside pressure is now lower than the pressure in their airway, so air flows in through the mouth. No tube, no pushing, nothing entering the body — the ventilator enlarged the chest and let the atmosphere do the rest. Modern ventilators reverse the geometry and push air in under positive pressure through a tube, which is more practical and, unlike the iron lung, is not how a healthy person breathes at all.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b4-01-the-gas-exchange-system.html">The gas exchange system<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="c1-04-gas-pressure.html">Gas pressure<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="c1-06-testing-the-model.html">Testing the model<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Ventilation, lung volumes and spirometer traces, with pressure and volume treated quantitatively.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to check you have the order of events the right way round?</p>
+          <a class="ks3-tutor-cta" href="#s-model">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">Pressure values on the model are illustrative, in kilopascals relative to an atmosphere of about 101 kPa. Real intrapulmonary pressure swings during quiet breathing are under 1 kPa.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Collapsed lung' },
+  { id: 's-model', label: 'Bell jar' },
+  { id: 's-limits', label: 'Model limits' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'MODEL', 'LIMITS', 'LADDER'];
+
+const LIMITS = [
+  { tag: 'Wrong 1', name: 'No ribs, no intercostal muscles',
+    wrong: 'The jar is rigid, so the only thing that can move is the base. In you, the ribs swing up and out at the same time, and the intercostal muscles supply roughly a third of quiet breathing.',
+    worth: 'It isolates one variable. Seeing what the diaphragm alone does is easier than seeing two muscle groups act at once.' },
+  { tag: 'Wrong 2', name: 'Balloons are bags, not alveoli',
+    wrong: 'A balloon has one smooth inner surface. A lung ends in 500 million alveoli, which is the entire reason gas exchange can happen fast enough to keep you alive.',
+    worth: 'This model is not about exchange \u2014 it is about ventilation. The next lesson takes the alveoli seriously.' },
+  { tag: 'Wrong 3', name: 'A flat sheet, not a dome',
+    wrong: 'The rubber sheet is pulled down into a cone. A real diaphragm is a dome at rest and <em>flattens</em> when it contracts \u2014 so it moves down by flattening, not by being pulled.',
+    worth: 'The direction of movement and its effect on volume are still right, which is what the model is for.' },
+  { tag: 'Wrong 4', name: 'Nothing is alive',
+    wrong: 'The jar has no elastic recoil to speak of, no surfactant keeping the alveoli from sticking shut, no nerves, and nothing regulating the rate.',
+    worth: 'A model with all of that in it would be a chest, and you could not see inside it.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Get the order right',
+    question: 'Put these in the order they happen when you breathe in.',
+    options: [
+      { text: 'Muscles contract \u2192 chest volume increases \u2192 pressure falls \u2192 air moves in', correct: true },
+      { text: 'Air moves in \u2192 chest volume increases \u2192 muscles contract \u2192 pressure falls', correction: 'This has the air as the cause. Clamp the tube on the model so no air can enter: the volume still increases and the pressure still falls.' },
+      { text: 'Pressure falls \u2192 muscles contract \u2192 air moves in \u2192 chest volume increases', correction: 'Nothing can make the pressure fall before the volume changes. The muscles are always first.' },
+      { text: 'Lungs expand \u2192 air moves in \u2192 muscles contract', correction: 'The lungs contain no muscle and cannot expand themselves. They are stretched by the space around them growing.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'You seal the tube on the bell-jar model so no air can get in or out, then pull the rubber sheet down. What happens?',
+    options: [
+      { text: 'Nothing at all \u2014 without air movement there is no change', correction: 'The sheet still moves and the space still enlarges. Something must change, and it is the pressure.' },
+      { text: 'The volume increases and the pressure inside falls; the balloon does not inflate', correct: true },
+      { text: 'The balloon inflates anyway, using the air already in it', correction: 'The air already inside is what is being spread over a larger volume \u2014 that is why the pressure falls. There is nothing extra to inflate it with.' },
+      { text: 'The pressure rises because the sheet is being stretched', correction: 'Same number of particles in a larger space means fewer collisions per second with the walls, so the pressure falls. Stretching the rubber is irrelevant to the gas.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain the collapsed lung',
+    question: 'Explain why a small wound between the ribs can collapse an undamaged lung with a clear airway. Use the words volume, pressure and diaphragm, and say why enlarging the chest no longer helps.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The lung collapses because\u2026',
+    criteria: [
+      'States that a lung is inflated by being at lower pressure than the outside air, not by its own effort.',
+      'Says the wound lets air into the space around the lung, equalising the pressure across its surface.',
+      'Explains that enlarging the chest now draws air through the wound instead of through the airway.',
+      'Says the lung and airway are both undamaged, so the failure is in the pressure difference, not the structure.',
+      'Names the diaphragm and intercostals as the muscles doing the work, and notes the lung has none.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A snorkel 2 m long is used to breathe while lying on the bottom of a pool. Explain, using pressure, why this is far harder than snorkelling at the surface \u2014 and why the difficulty is about the chest rather than the tube.',
+    fieldLabel: 'Your answer',
+    placeholder: 'At 2 m deep the water pressure on the chest is\u2026',
+    criteria: [
+      'Says water pressure squeezes the chest from outside, and that pressure increases with depth.',
+      'Says the air at the top of the snorkel is still at atmospheric pressure.',
+      'Explains that the muscles must now work against the water pressure to enlarge the chest at all.',
+      'Concludes the tube is not the problem \u2014 the pressure difference the muscles must overcome is.'
+    ] }
+];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-model') return s.moved;
+  if (id === 's-limits') return s.moved;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    dia: 20,
+    moved: false,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  renderVals() {
+    const s = this.state;
+    // dia 0 = fully relaxed (dome up, small chest); 100 = fully contracted (flat, large chest).
+    const f = s.dia / 100;
+    const volume = 2.2 + f * 3.3;              // litres
+    const pressure = -(f - 0.2) * 1.1;          // kPa relative to atmosphere
+    const inhaling = s.dia > 20;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    const chainActive = s.dia > 20 ? 'in' : (s.dia < 20 ? 'out' : 'rest');
+    const chainText = chainActive === 'in'
+      ? ['Diaphragm contracts and flattens; intercostals lift the ribs.',
+         'Chest volume increases \u2014 now ' + volume.toFixed(1) + ' litres.',
+         'The same air fills a bigger space, so pressure falls to ' + pressure.toFixed(2) + ' kPa below atmospheric.',
+         'Air moves in, from higher pressure outside to lower pressure inside.']
+      : chainActive === 'out'
+        ? ['Diaphragm relaxes and domes upwards; ribs drop.',
+           'Chest volume decreases \u2014 now ' + volume.toFixed(1) + ' litres.',
+           'The same air fills a smaller space, so pressure rises to ' + Math.abs(pressure).toFixed(2) + ' kPa above atmospheric.',
+           'Air moves out, from higher pressure inside to lower pressure outside.']
+        : ['Diaphragm at rest, domed upwards.',
+           'Chest volume steady at ' + volume.toFixed(1) + ' litres.',
+           'Pressure inside equals atmospheric.',
+           'No net air movement in either direction.'];
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'The wound is letting air escape faster than it can go in' },
+        { letter: 'B', text: 'The lung needs the pressure around it to be lower than the air inside it' },
+        { letter: 'C', text: 'The lung muscles have been cut' },
+        { letter: 'D', text: 'Blood has filled the alveoli' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      modelProgress: s.moved ? 'model worked' : 'not moved yet',
+      chestStyle: 'position: relative; display: block; height: ' + (28 + f * 58).toFixed(1) + '%; background: ' +
+        (inhaling ? 'rgba(228,87,46,.20)' : 'rgba(255,255,255,.07)') + '; border-top: 4px solid var(--ks3-alert);',
+      lungStyle: 'position: absolute; left: 50%; top: 12px; width: 54px; height: 54px; margin-left: -27px; border-radius: 50%; border: 3px solid var(--ks3-on-dark); background: rgba(255,255,255,.10); transform: scale(' + (0.62 + f * 0.55).toFixed(2) + ');',
+      phaseLabel: chainActive === 'in' ? 'Diaphragm contracted \u2014 breathing in' : chainActive === 'out' ? 'Diaphragm relaxed \u2014 breathing out' : 'At rest between breaths',
+      readouts: [
+        { k: 'Chest volume', v: volume.toFixed(1) + ' L' },
+        { k: 'Pressure inside', v: (pressure >= 0 ? '+' : '') + pressure.toFixed(2) + ' kPa' },
+        { k: 'Pressure outside', v: '0.00 kPa (atmospheric)' },
+        { k: 'Air movement', v: chainActive === 'in' ? 'inwards' : chainActive === 'out' ? 'outwards' : 'none' }
+      ],
+      diaValue: s.dia,
+      diaLabel: s.dia > 20 ? 'contracted, flattened' : s.dia < 20 ? 'relaxed, domed up' : 'resting position',
+      onDia: (e) => this.setState({ dia: Number(e.target.value), moved: true }),
+      onBreatheIn: () => this.setState({ dia: 92, moved: true }),
+      onBreatheOut: () => this.setState({ dia: 4, moved: true }),
+
+      chain: chainText.map((t, i) => ({
+        text: t,
+        style: 'margin: 0 0 7px; color: ' + (chainActive === 'rest' ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink)') + ';'
+      })),
+      chainNote: chainActive === 'rest'
+        ? 'Move the diaphragm and this list fills in with real numbers. Notice which line changes first.'
+        : 'Read the list downwards. The muscles are the cause, the pressure difference is the mechanism, and the air moving is the result \u2014 never the other way round.',
+
+      limits: LIMITS,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === correctIndex, isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: done,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

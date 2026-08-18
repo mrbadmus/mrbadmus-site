@@ -1,7 +1,7 @@
 """B6 L2 — Alcohol and smoking (SYSTEM).
 
 Authored against Design's approved page,
-`KS3 B6 lessons/b6-02-alcohol-and-smoking.dc.html` (588 lines), under the
+`docs/ks3/design-reference/b6/b6-02-alcohol-and-smoking.dc.html` (588 lines), under the
 MRB-220 build contract, with `NOTES-B6.md` §1, §2.2, §3 and §4 as the
 delivery's own notes.
 

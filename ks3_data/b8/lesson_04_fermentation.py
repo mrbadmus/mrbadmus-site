@@ -1,8 +1,8 @@
 """B8 L4 — Fermentation and what we use it for (PROCESS).
 
 Authored against Claude Design's approved page,
-`KS3 B8 lessons/b8-04-fermentation.dc.html` (604 lines), her author's notes
-`KS3 B8 lessons/NOTES-B8.md`, and the B8 payload schema
+`docs/ks3/design-reference/b8/b8-04-fermentation.dc.html` (604 lines), her author's notes
+`docs/ks3/design-reference/b8/NOTES-B8.md`, and the B8 payload schema
 `docs/ks3/b8-inventory/PAYLOAD-SCHEMA.md` §5, §7, §8, §9 and §10, under the
 MRB-220 build contract.
 

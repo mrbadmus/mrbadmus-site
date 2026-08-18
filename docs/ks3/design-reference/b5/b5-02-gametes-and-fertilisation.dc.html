@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gametes and fertilisation · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b502-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b502-arrive .34s ease-out both; }
+  [data-scalebar] { transition: width .4s ease; }
+  [data-cmp-grid] { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: flex-start; }
+  [data-cmp-grid] > [data-cmp-name] { flex: 0 0 158px; }
+  [data-cmp-grid] > [data-cmp-cell] { flex: 1 1 210px; min-width: 0; }
+  [data-cmp-cap] { display: none; }
+  @media (max-width: 880px) {
+    [data-cmp-grid] > [data-cmp-name] { flex: 1 1 100%; }
+    [data-cmp-head] { display: none; }
+    [data-cmp-cap] { display: block; margin: 0 0 3px; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-accent-text); }
+  }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } [data-scalebar] { transition: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Reproduction</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Gametes and fertilisation</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Reproduction · Process</p>
+        <h1>Gametes and fertilisation</h1>
+        <p class="ks3-bigq">Two cells fuse and become one. Each brought half a set of instructions; neither brought anything like half the material.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>An egg cell has several thousand times the volume of a sperm cell.</h2>
+        <p class="ks3-hook-prompt">An egg is around 0.1 mm across — just visible without a microscope, the largest cell in the human body. A sperm's head is about 0.005 mm. They contribute exactly the same number of chromosomes: twenty-three each.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Equal instructions, wildly unequal size. Where has all the extra gone?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Into everything the new organism needs for its first few days: cytoplasm, mitochondria, a food store, and all the machinery for building a body. The sperm brings chromosomes and a means of arriving. Equal genetic contribution, radically unequal material contribution — and both of those facts matter.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-compare" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">Two specialised cells · six features</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Every difference has a reason</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ compareProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">These are the specialised cells from <a href="b1-04-specialised-cells.html" style="color: var(--ks3-alert);">Specialised cells</a>, doing the clearest job in the body. Tap a row to see why each cell has what it has.</p>
+
+        <div style="margin-top: 22px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-on-dark-muted); background: var(--ks3-dark-panel); overflow: hidden;">
+          <div data-cmp-grid="1" data-cmp-head="1" style="padding: 13px 16px; background: rgba(0,0,0,.28);">
+            <p data-cmp-name="1" style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Feature</p>
+            <p data-cmp-cell="1" style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 17px; color: var(--ks3-alert);">Sperm cell</p>
+            <p data-cmp-cell="1" style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 17px; color: var(--ks3-on-dark);">Egg cell</p>
+          </div>
+          <sc-for list="{{ cmpRows }}" as="row" hint-placeholder-count="6">
+            <div style="{{ row.wrapStyle }}">
+              <button type="button" onClick="{{ row.onClick }}" aria-pressed="{{ row.open }}" style="{{ row.btnStyle }}">
+                <span data-cmp-grid="1" style="width: 100%;">
+                  <span data-cmp-name="1" style="display: block; font-size: 17px; font-weight: 700; color: var(--ks3-on-dark);">{{ row.name }}</span>
+                  <span data-cmp-cell="1" style="display: block;">
+                    <span data-cmp-cap="1">Sperm cell</span>
+                    <span style="display: block; font-size: 17px; line-height: 1.45; color: var(--ks3-alert);">{{ row.sperm }}</span>
+                  </span>
+                  <span data-cmp-cell="1" style="display: block;">
+                    <span data-cmp-cap="1">Egg cell</span>
+                    <span style="display: block; font-size: 17px; line-height: 1.45; color: var(--ks3-on-dark-body);">{{ row.egg }}</span>
+                  </span>
+                </span>
+              </button>
+              <sc-if value="{{ row.open }}">
+                <p data-arrive="1" style="margin: 0; padding: 15px 18px 18px; font-size: 18px; line-height: 1.6; color: var(--ks3-on-dark-body);"><strong style="font-family: var(--ks3-font-display); color: var(--ks3-on-dark);">Why:</strong> {{ row.why }}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Relative diameter, to scale</p>
+          <ul style="list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+            <sc-for list="{{ scaleRows }}" as="r" hint-placeholder-count="2">
+              <li>
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <p style="margin: 0; font-size: 17px; font-weight: 600; color: var(--ks3-on-dark);">{{ r.name }}</p>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 16px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ r.size }}</p>
+                </div>
+                <span style="display: block; margin-top: 6px; height: 20px; border-radius: 99px; background: rgba(255,255,255,.08); overflow: hidden;"><span data-scalebar="1" style="{{ r.barStyle }}"></span></span>
+              </li>
+            </sc-for>
+          </ul>
+          <p style="margin: 14px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-on-dark-body);">Those bars are diameters. Because volume goes as the cube of the diameter, a twentyfold difference in width is roughly an eight-thousandfold difference in volume — and the egg's cytoplasm is where nearly all of that sits.</p>
+        </div>
+      </section>
+
+      <section id="s-fert" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The process, in order</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 28ch;">Five steps, and only one of them is fertilisation.</p>
+
+        <ol style="list-style: none; margin: 24px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ steps }}" as="st" hint-placeholder-count="5">
+            <li style="{{ st.style }}">
+              <span aria-hidden="true" style="{{ st.numStyle }}">{{ st.num }}</span>
+              <div style="flex: 1 1 auto; min-width: 0;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
+                  <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px; line-height: 1.2; letter-spacing: -.02em;">{{ st.name }}</p>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; color: var(--ks3-accent-text);">{{ st.where }}</p>
+                </div>
+                <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.55;">{{ st.what }}</p>
+              </div>
+            </li>
+          </sc-for>
+        </ol>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Fertilisation is the moment the nucleus of a sperm fuses with the nucleus of an egg, forming a single cell with a full set of chromosomes. It happens in the oviduct, and everything before and after it is a different step with a different name.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Fertilisation is when the sperm reaches the egg.”</p>
+        <p>Arriving is not fertilising. Many sperm reach the egg and touch its surface; fertilisation is the single event in which one sperm's nucleus fuses with the egg's nucleus, and it happens once. The distinction is not fussiness — the moment of fusion is what triggers the egg to change its outer layer so that no second sperm can enter, and it is what produces the full set of forty-six chromosomes. Use *reaches* and you have described a crowd; use *fuses* and you have described the event. The same care applies to the words either side of it: <em>implantation</em> is a different step, days later and in a different organ, and <em>pregnancy</em> begins there rather than at fertilisation.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“Identical twins happen when two eggs are fertilised.”</p>
+          <p>That is the recipe for non-identical twins, and it is worth having both straight because the two arise at completely different moments. Non-identical twins: two eggs released, two sperm, two separate fertilisations — two ordinary siblings who happen to share a pregnancy, and they can be different sexes. Identical twins: <em>one</em> egg, <em>one</em> sperm, one fertilisation — and then, within the first fortnight, the ball of cells splits in two and each half continues as a whole embryo. Same chromosomes in both, always the same sex. Notice what that means: identical twins are not caused by anything about the gametes at all. The cause happens after fertilisation is over.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>A gamete is a sex cell with half a set of chromosomes — 23 in humans. Sperm are small, mobile and numerous; egg cells are large, immobile and few, and carry the food store and cytoplasm. Fertilisation is the fusion of the two nuclei, in the oviduct, producing a single cell with 46 chromosomes. It divides as it travels and implants in the uterus lining several days later.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Every mitochondrion in your body came from your mother. The egg supplies all the cytoplasm and everything in it; the sperm's few mitochondria power its journey and are destroyed after fusion. Mitochondria carry a small loop of their own DNA, so that DNA passes down an unbroken line of mothers — and because it is not shuffled with anything each generation, it changes only by slow mutation. That makes it a clock. Comparing mitochondrial DNA across living humans traces every one of us back to a common maternal ancestor in Africa, and it is how the deep structure of human migration was worked out before anyone could sequence a whole genome. A cell's leftover packing material turned out to be the archive.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="b5-03-the-menstrual-cycle.html">The menstrual cycle<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b5-01-human-reproductive-systems.html">Human reproductive systems<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b1-04-specialised-cells.html">Specialised cells<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Meiosis, sexual and asexual reproduction compared, and inherited variation.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to check the difference between reaching and fusing?</p>
+          <a class="ks3-tutor-cta" href="#s-fert">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">Cell sizes are typical values: egg about 0.1 mm diameter, sperm head about 0.005 mm. This is the biology of the cells and the process; relationships and consent are covered in your RSE and PSHE lessons. The labelled gamete diagram is declared in the lesson record as <span style="font-family: var(--ks3-font-mono);">b5-gametes-labelled</span>, awaiting illustration.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Unequal sizes' },
+  { id: 's-compare', label: 'Two cells' },
+  { id: 's-fert', label: 'Five steps' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'CELLS', 'STEPS', 'LADDER'];
+
+const CMP = [
+  { id: 'size', name: 'Size', sperm: 'Head about 0.005 mm', egg: 'About 0.1 mm \u2014 the largest cell in the body',
+    why: 'The egg is large because of what it carries, not because of what it does. A sperm only has to travel, and travelling is easier the smaller you are.' },
+  { id: 'motion', name: 'Movement', sperm: 'A tail, and it swims', egg: 'None \u2014 it is moved for it',
+    why: 'The egg is carried along the oviduct by cilia and by muscle in the wall. Only one of the two gametes needs its own propulsion, and it is the cheap one.' },
+  { id: 'mito', name: 'Mitochondria', sperm: 'Many, packed behind the head', egg: 'Many \u2014 and these are the ones you inherit',
+    why: 'The sperm\u2019s mitochondria release energy for swimming and are destroyed after fusion. Every mitochondrion in your body came from the egg.' },
+  { id: 'food', name: 'Food store', sperm: 'Almost none \u2014 it uses sugar in the fluid around it', egg: 'A large store in the cytoplasm',
+    why: 'The fertilised egg has to survive several days of dividing before it implants and can be supplied. Everything it spends in that time was loaded before fertilisation.' },
+  { id: 'chrom', name: 'Chromosomes', sperm: '23 \u2014 half a set', egg: '23 \u2014 half a set',
+    why: 'The one row where the two are identical. Half a set is only useful if it is going to be added to another half \u2014 which is why a gamete cannot live independently.' },
+  { id: 'number', name: 'Numbers', sperm: 'Hundreds of millions at a time', egg: 'One at a time, about 400 in a lifetime',
+    why: 'A direct consequence of cost. Something cheap to make can be made in vast numbers and mostly wasted; something expensive cannot.' }
+];
+
+const STEPS = [
+  { num: '01', name: 'Release', where: 'Ovary \u2192 oviduct',
+    what: 'One mature egg cell leaves an ovary and enters the oviduct, where cilia and muscle begin moving it along. It remains able to be fertilised for roughly a day.' },
+  { num: '02', name: 'Transfer and travel', where: 'Vagina \u2192 uterus \u2192 oviduct',
+    what: 'Semen is transferred into the vagina. Sperm swim through the cervix and uterus into the oviduct \u2014 a journey of several inches for a cell 0.005 mm long. Hundreds of millions set out; a few hundred arrive.' },
+  { num: '03', name: 'Fertilisation', where: 'Oviduct \u2014 and nowhere else',
+    what: 'One sperm passes through the egg\u2019s outer layer and its nucleus fuses with the egg\u2019s nucleus. 23 plus 23 makes 46. The outer layer then changes so no other sperm can enter. This step, and only this step, is fertilisation.' },
+  { num: '04', name: 'Dividing', where: 'Travelling down the oviduct',
+    what: 'The single fertilised cell divides into two, then four, then eight, over about five days, while still travelling. It is a ball of cells before it has arrived anywhere.' },
+  { num: '05', name: 'Implantation', where: 'Uterus lining',
+    what: 'The ball of cells embeds itself in the thickened lining of the uterus, where it can be supplied. This is a separate event from fertilisation, several days later and in a different organ \u2014 and it is where pregnancy begins.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Define it precisely',
+    question: 'Which of these is fertilisation?',
+    options: [
+      { text: 'A sperm cell reaching the egg cell', correction: 'Many sperm reach the egg. Reaching describes a crowd arriving; fertilisation is one specific event.' },
+      { text: 'The nucleus of a sperm fusing with the nucleus of an egg', correct: true },
+      { text: 'The fertilised egg embedding in the uterus lining', correction: 'That is implantation, several days later and in a different organ. Two different events with two different names.' },
+      { text: 'The egg being released from the ovary', correction: 'That is release, and it happens whether or not any sperm are present.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'A sperm and an egg each carry 23 chromosomes, but an egg has thousands of times more material. What is the extra material for?',
+    options: [
+      { text: 'Extra copies of the chromosomes, in case some are damaged', correction: 'There are no spare copies. Exactly 23 in each, and the fertilised cell has exactly 46.' },
+      { text: 'Cytoplasm, mitochondria and a food store for the first few days of dividing', correct: true },
+      { text: 'It makes the egg easier for the sperm to find', correction: 'Size does help the sperm locate it, but that is a side effect. The material is there for what happens after fusion, not before.' },
+      { text: 'Nothing in particular \u2014 egg cells are simply bigger', correction: 'Every feature of both gametes has a reason. That is the point of the comparison table.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain the two designs',
+    question: 'Explain why a sperm cell is small with a tail and many mitochondria, while an egg cell is large and immobile with a food store. Say what each is specialised for, and name the one feature they share.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'A sperm is specialised for\u2026 an egg is specialised for\u2026',
+    criteria: [
+      'Says the sperm is specialised for travelling \u2014 small, tail, mitochondria for energy.',
+      'Says the egg is specialised for supplying the first days of development \u2014 cytoplasm and food store.',
+      'Explains why the egg does not need to move: it is carried by cilia and muscle.',
+      'Names the shared feature: each carries 23 chromosomes, half a set.',
+      'Connects the number of each gamete to how expensive it is to make.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A student says identical twins must come from two eggs, because there are two babies. Say whether they are right, explain what actually causes each kind of twin, and give one observation that would tell the two kinds apart.',
+    fieldLabel: 'Your answer',
+    placeholder: 'They are describing\u2026',
+    criteria: [
+      'Says they have described non-identical twins: two eggs, two sperm, two fertilisations.',
+      'Says identical twins come from one egg and one sperm, with the ball of cells splitting after fertilisation.',
+      'Makes clear that the cause of identical twins happens after fertilisation, not in the gametes.',
+      'Gives a usable observation \u2014 identical twins always share the same sex and the same chromosomes; non-identical twins need not.'
+    ] }
+];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-compare') return Object.keys(s.open).length >= 6;
+  if (id === 's-fert') return Object.keys(s.open).length >= 6;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    open: {},
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  renderVals() {
+    const s = this.state;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'The egg carries more copies of the chromosomes' },
+        { letter: 'B', text: 'The egg carries cytoplasm, mitochondria and a food store' },
+        { letter: 'C', text: 'The sperm loses most of itself on the journey' },
+        { letter: 'D', text: 'The egg is bigger because it is older' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      compareProgress: Object.keys(s.open).length + ' of 6 opened',
+      cmpRows: CMP.map((row, i) => ({
+        name: row.name, sperm: row.sperm, egg: row.egg, why: row.why, open: !!s.open[row.id],
+        wrapStyle: 'border-top: 2px solid rgba(255,255,255,.12); background: ' + (s.open[row.id] ? 'rgba(228,87,46,.10)' : (i % 2 ? 'rgba(255,255,255,.03)' : 'transparent')) + ';',
+        btnStyle: 'display: block; width: 100%; text-align: left; cursor: pointer; font: inherit; padding: 15px 16px; min-height: 44px; border: 0; background: transparent; color: inherit;',
+        onClick: () => this.setState((st) => ({ open: Object.assign({}, st.open, { [row.id]: !st.open[row.id] }) }))
+      })),
+      scaleRows: [
+        { name: 'Egg cell', size: '0.1 mm across',
+          barStyle: 'display:block;height:100%;width:100%;background:var(--ks3-on-dark-muted);' },
+        { name: 'Sperm cell head', size: '0.005 mm across',
+          barStyle: 'display:block;height:100%;width:5%;background:var(--ks3-alert);' }
+      ],
+
+      steps: STEPS.map((st) => ({
+        num: st.num, name: st.name, where: st.where, what: st.what,
+        style: 'padding: 20px 22px; border-radius: var(--ks3-r-card); background: ' + (st.num === '03' ? 'var(--ks3-inset)' : 'var(--ks3-card)') +
+          '; border: ' + (st.num === '03' ? '3px' : '2px') + ' solid var(--ks3-ink); display: flex; gap: 18px; align-items: flex-start;',
+        numStyle: 'flex: 0 0 40px; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: ' +
+          (st.num === '03' ? 'var(--ks3-accent)' : 'var(--ks3-ink)') + '; color: var(--ks3-on-dark); font-family: var(--ks3-font-display); font-weight: 800; font-size: 18px;'
+      })),
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === correctIndex, isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: done,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

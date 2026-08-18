@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The menstrual cycle · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b503-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b503-arrive .34s ease-out both; }
+  [data-track] { transition: left .25s ease, width .25s ease; }
+  input[type="range"][data-day] { width: 100%; height: 34px; accent-color: var(--ks3-accent); cursor: pointer; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } [data-track] { transition: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Reproduction</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">The menstrual cycle</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Reproduction · Process</p>
+        <h1>The menstrual cycle</h1>
+        <p class="ks3-bigq">Two organs, one repeating month. An egg matures in an ovary while a lining is built in the uterus — and the two are timed against each other.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Day 14 is not when the egg is released. It is when the egg is released in a 28-day cycle.</h2>
+        <p class="ks3-hook-prompt">Ordinary cycles run anywhere from about 21 days to about 35, and the same person's cycles vary between themselves. So the day the egg is released cannot be the same number for everybody.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">A person's cycle is 32 days long. Roughly when is the egg released?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Around day 18 — and you get there by counting <em>backwards</em>. The gap between the egg being released and the next period is close to a fortnight in almost everyone. The part that stretches or shrinks is the building phase before release. So a 21-day cycle releases around day 7, a 28-day cycle around day 14, a 35-day cycle around day 21, and the famous number turns out to be one case rather than the rule.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-dial" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">Set a cycle · walk the days</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">One month, two organs</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ dialProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Choose a cycle length, then move through the days. Watch where the release day lands each time you change the length.</p>
+
+        <div style="margin-top: 22px;">
+          <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Cycle length</p>
+          <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+            <sc-for list="{{ lengthTabs }}" as="t" hint-placeholder-count="3">
+              <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);">
+          <div style="position: relative; height: 46px; border-radius: 12px; background: rgba(255,255,255,.07); overflow: hidden;">
+            <span data-track="1" aria-hidden="true" style="{{ shedStyle }}"></span>
+            <span data-track="1" aria-hidden="true" style="{{ releaseStyle }}"></span>
+            <span data-track="1" aria-hidden="true" style="{{ markerStyle }}"></span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-top: 7px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">
+            <span>Day 1</span>
+            <span>{{ releaseLabel }}</span>
+            <span>{{ lastDayLabel }}</span>
+          </div>
+
+          <div style="margin-top: 16px; display: flex; align-items: center; gap: 12px;">
+            <button type="button" onClick="{{ onPrev }}" aria-label="Previous day" style="{{ stepBtnStyle }}">−</button>
+            <input type="range" data-day="1" min="1" max="{{ dayMax }}" step="1" value="{{ day }}" onChange="{{ onDay }}" aria-label="Day of cycle">
+            <button type="button" onClick="{{ onNext }}" aria-label="Next day" style="{{ stepBtnStyle }}">+</button>
+          </div>
+
+          <div style="margin-top: 18px; display: flex; align-items: baseline; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 30px; line-height: 1.1; letter-spacing: -.03em; color: var(--ks3-on-dark);">{{ dayHeading }}</p>
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-alert);">{{ phaseLabel }}</p>
+          </div>
+
+          <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px;">
+            <div style="padding: 18px 20px; border-radius: var(--ks3-r-panel); background: rgba(0,0,0,.24);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">In an ovary</p>
+              <p style="margin: 7px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ ovaryText }}</p>
+            </div>
+            <div style="padding: 18px 20px; border-radius: var(--ks3-r-panel); background: rgba(0,0,0,.24);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">In the uterus</p>
+              <p style="margin: 7px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ uterusText }}</p>
+            </div>
+          </div>
+
+          <p style="margin: 16px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-on-dark-muted);">{{ dialNote }}</p>
+        </div>
+      </section>
+
+      <section id="s-events" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The cycle, in four events</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 30ch;">It ends where it starts, which is why it is drawn as a circle.</p>
+
+        <ol style="list-style: none; margin: 24px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ events }}" as="ev" hint-placeholder-count="4">
+            <li style="{{ ev.style }}">
+              <span aria-hidden="true" style="{{ ev.numStyle }}">{{ ev.num }}</span>
+              <div style="flex: 1 1 auto; min-width: 0;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
+                  <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px; line-height: 1.2; letter-spacing: -.02em;">{{ ev.name }}</p>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; color: var(--ks3-accent-text);">{{ ev.when }}</p>
+                </div>
+                <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.55;">{{ ev.what }}</p>
+              </div>
+            </li>
+          </sc-for>
+        </ol>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">The menstrual cycle is two things happening at once in two different organs: one egg cell maturing and being released from an ovary, and the lining of the uterus being built up and then broken down. Day 1 is the first day of bleeding — a place to start counting, not the start of the process.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“The cycle is 28 days and the egg comes out on day 14.”</p>
+        <p>Twenty-eight is an average of many people's cycles, and averages are not rules — no more than <em>the average family has 1.7 children</em> describes an actual family. Cycles from about 21 to about 35 days are entirely ordinary, and one person's own cycles vary from month to month, which is the part most often left out. What is fairly steady is the other end: the gap from release to the next period is close to a fortnight in almost everyone. That is why the arithmetic runs backwards from the end of the cycle rather than forwards from day 1, and it is why a calendar alone predicts this badly. If you take one number away from this lesson, take the range rather than the average.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“A period is the unfertilised egg leaving the body.”</p>
+          <p>It is not, and the sizes make that obvious once you have them. An egg cell is about 0.1 mm across — barely visible, and nothing you could ever see leave. What leaves is the lining of the uterus: the layer of tissue and blood vessels that was built up over the previous few weeks, breaking down and passing out through the vagina because no fertilised egg implanted in it. The egg itself simply breaks down where it is, unnoticed. Nor is any of it waste the body was storing up: it is a lining that was built for a job, kept ready for about a fortnight, and cleared when the job did not arrive. Then it is built again. The uterus is not disposing of something; it is resetting.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>In the ovaries, one egg cell finishes maturing and is released roughly a fortnight before the next period. In the uterus, the lining thickens ready to receive a fertilised egg, is held for about a fortnight, and breaks down if none implants — which is the period, and day 1 of the next cycle. Cycle lengths of about 21 to 35 days are ordinary and vary within one person; 28 days is an average, not a rule.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Where did 28 come from? It is close to the average of a large number of cycles, it is close to a lunar month, and those two coincidences together gave it a grip on the subject that the evidence never supported. When researchers began tracking large numbers of real cycles — first with daily temperature and hormone tests, more recently with app data from millions of users — the picture that came back was a spread, not a number: most cycles somewhere in the twenties or low thirties, the same person often varying by several days between one cycle and the next, and the day of release scattered accordingly. The steadier interval is the one after release. This is a good example of a general problem with averages in biology: the average is a real fact about the population and can still describe almost nobody in it. Anything personal about your own cycle is a question for a school nurse, doctor or pharmacist rather than a calculation.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="b5-04-gestation-placenta-and-birth.html">Gestation, the placenta and birth<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b5-01-human-reproductive-systems.html">Human reproductive systems<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b5-02-gametes-and-fertilisation.html">Gametes and fertilisation<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>The four hormones that control the cycle, the graphs that go with them, and how contraception and fertility treatment work on that control.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to check why the counting runs backwards?</p>
+          <a class="ks3-tutor-cta" href="#s-dial">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">Cycle lengths and the day of release are typical values: about 21 to 35 days is ordinary, and one person's cycles vary between themselves. Hormone names and hormone graphs are deliberately outside Key Stage 3 and are met at GCSE. This lesson covers the biology; anything personal belongs with your school nurse, doctor or a trusted adult, and relationships and consent are covered in RSE and PSHE. The labelled cycle diagram is declared in the lesson record as <span style="font-family: var(--ks3-font-mono);">b5-cycle-timeline</span>, awaiting illustration.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Not day 14' },
+  { id: 's-dial', label: 'Walk the days' },
+  { id: 's-events', label: 'Four events' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'DIAL', 'EVENTS', 'LADDER'];
+
+const LENGTHS = [21, 28, 35];
+const LUTEAL = 14;
+const SHED = 5;
+
+const EVENTS = [
+  { num: '01', name: 'The lining breaks down', when: 'Days 1\u20135 \u2014 the period',
+    what: 'The lining built during the last cycle is no longer being held, so it breaks down and passes out through the vagina. By convention the first day of bleeding is day 1 of the cycle, which is simply the easiest day to notice.' },
+  { num: '02', name: 'Building, and one egg maturing', when: 'From about day 5 to release',
+    what: 'The uterus lining thickens again with tissue and blood vessels, while in one ovary a single egg cell finishes maturing. This is the stretchy part of the cycle: it is longer in a long cycle and shorter in a short one.' },
+  { num: '03', name: 'Release', when: 'About a fortnight before the next period',
+    what: 'The mature egg cell leaves the ovary and is drawn into the oviduct, where it can be fertilised for roughly a day. In a 28-day cycle that falls near day 14; in a 21-day cycle nearer day 7; in a 35-day cycle nearer day 21.' },
+  { num: '04', name: 'Held ready', when: 'The fortnight after release',
+    what: 'The lining is at its thickest and is kept that way. If a fertilised egg implants, it stays and the cycle stops here. If none does, it breaks down \u2014 and that is event 1 of the next cycle.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Use the rule',
+    question: 'Someone\u2019s cycles are 24 days long. Roughly which day is the egg released?',
+    options: [
+      { text: 'Day 12 \u2014 halfway through', correction: 'Halfway is a guess that only works by accident. The steady interval is the one after release, not the one before it.' },
+      { text: 'About day 10 \u2014 roughly a fortnight before the next period', correct: true },
+      { text: 'Day 14, the same as everybody', correction: 'Day 14 is release in a 28-day cycle only. In a 24-day cycle it would leave just ten days before the next period.' },
+      { text: 'It is completely unpredictable', correction: 'The exact day cannot be pinned down, but the pattern is not random \u2014 counting back about a fortnight gets you close.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'What leaves the body during a period?',
+    options: [
+      { text: 'The unfertilised egg cell', correction: 'An egg is 0.1 mm across \u2014 far too small to see, and it breaks down where it is. What you can see is not the egg.' },
+      { text: 'The lining of the uterus, built up during the previous few weeks', correct: true },
+      { text: 'Blood the body has no further use for', correction: 'Nothing is being disposed of. A lining was built for a job, held ready, and cleared when no fertilised egg arrived \u2014 then built again.' },
+      { text: 'Part of the ovary', correction: 'The ovary is not shed. It releases one egg cell and stays where it is.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Describe one whole cycle',
+    question: 'Describe what happens in the ovary and in the uterus across one complete cycle. Say what event day 1 is counted from, and make clear which two things are happening at the same time.',
+    fieldLabel: 'Your description',
+    placeholder: 'Day 1 is counted from\u2026',
+    criteria: [
+      'Says day 1 is the first day of bleeding, and that this is a counting convention.',
+      'Says the uterus lining breaks down and passes out over roughly the first five days.',
+      'Says the lining then thickens again while one egg cell matures in an ovary \u2014 both at once.',
+      'Says the mature egg is released into the oviduct roughly a fortnight before the next period.',
+      'Says the lining is held ready, and breaks down again if no fertilised egg implants.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'Two people have cycles of 26 and 34 days. Working from day 1, say roughly when each releases an egg, explain why the eight-day difference is not shared evenly across the cycle, and give one reason a calendar still cannot predict the day reliably.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Counting back a fortnight from the end\u2026',
+    criteria: [
+      'Gives roughly day 12 and roughly day 20, by counting back about a fortnight from the end.',
+      'Says the interval from release to the next period is close to a fortnight in both.',
+      'Says the difference therefore falls almost entirely in the building phase before release.',
+      'Gives a reason a calendar fails \u2014 one person\u2019s cycles vary between themselves, so the next length is not known in advance.'
+    ] }
+];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-dial') return Object.keys(s.seen).length >= 2;
+  if (id === 's-events') return Object.keys(s.seen).length >= 2;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    length: 28,
+    day: 1,
+    seen: { 28: true },
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on) {
+    return 'cursor:pointer;font:inherit;font-family:var(--ks3-font-mono);font-size:15px;font-weight:500;padding:10px 16px;min-height:44px;border-radius:11px;border:2px solid ' +
+      (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-dark-panel)' : 'var(--ks3-on-dark-body)') + ';';
+  }
+
+  setLength(n) {
+    this.setState((st) => {
+      const day = Math.min(st.day, n);
+      return { length: n, day: day, seen: Object.assign({}, st.seen, { [n]: true }) };
+    });
+  }
+
+  renderVals() {
+    const s = this.state;
+    const len = s.length;
+    const rel = len - LUTEAL;
+    const day = Math.min(s.day, len);
+    const pct = (n) => ((n - 0.5) / len) * 100;
+
+    let phase, ovary, uterus;
+    if (day <= SHED) {
+      phase = 'Period';
+      ovary = 'Nothing has been released. Egg cells are present, and one of them will begin the run of maturing that ends in this cycle\u2019s release.';
+      uterus = 'The lining built during the last cycle is breaking down and passing out through the vagina. This is the bleeding, and it is why day 1 is easy to identify.';
+    } else if (day < rel) {
+      phase = 'Building';
+      ovary = 'One egg cell is completing its maturing inside the ovary. It has been there, immature, since before birth.';
+      uterus = 'The lining is thickening again \u2014 new tissue and new blood vessels, built ready in case a fertilised egg arrives.';
+    } else if (day === rel) {
+      phase = 'Release';
+      ovary = 'The mature egg cell leaves the ovary and is drawn into the oviduct. It can be fertilised for roughly a day from now.';
+      uterus = 'The lining is nearly at full thickness. Nothing about it has changed today \u2014 the event is happening in the other organ.';
+    } else {
+      phase = 'Held ready';
+      ovary = 'The egg is in the oviduct, or has already broken down. No further egg is released this cycle.';
+      uterus = 'The lining is at its thickest and is being held that way. If a fertilised egg implants it stays; if not, it breaks down and the next cycle begins.';
+    }
+
+    let dialNote;
+    const seenCount = Object.keys(s.seen).length;
+    if (seenCount < 2) dialNote = 'Now change the cycle length and watch the release marker move. That movement is the point of this instrument.';
+    else if (rel === 7) dialNote = 'A 21-day cycle releases around day 7 \u2014 and still has about a fortnight left afterwards. The short cycle is short at the front.';
+    else if (rel === 21) dialNote = 'A 35-day cycle releases around day 21, two weeks later than a 21-day cycle does, and the fortnight after release is the same. All the extra length sits in the building phase.';
+    else dialNote = 'The 28-day case, where release lands on day 14. Every other cycle length moves that number, which is why day 14 is not a fact about people.';
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'Day 14 \u2014 it is the same day for everyone' },
+        { letter: 'B', text: 'Day 16 \u2014 halfway through the cycle' },
+        { letter: 'C', text: 'Around day 18 \u2014 about a fortnight before the next period' },
+        { letter: 'D', text: 'There is no way to say even roughly' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      dialProgress: seenCount + ' of 3 lengths tried',
+      lengthTabs: LENGTHS.map((n) => ({
+        label: n + ' days', pressed: n === len, style: this.seg(n === len),
+        onClick: () => this.setLength(n)
+      })),
+      dayMax: len,
+      day: day,
+      onDay: (e) => this.setState({ day: Number(e.target.value) }),
+      onPrev: () => this.setState((st) => ({ day: Math.max(1, Math.min(st.day, st.length) - 1) })),
+      onNext: () => this.setState((st) => ({ day: Math.min(st.length, st.day + 1) })),
+      stepBtnStyle: 'flex:0 0 44px;width:44px;height:44px;display:grid;place-items:center;cursor:pointer;font:inherit;font-size:22px;font-weight:700;border-radius:12px;border:2px solid var(--ks3-on-dark-muted);background:transparent;color:var(--ks3-on-dark);',
+
+      shedStyle: 'position:absolute;top:0;bottom:0;left:0;width:' + ((SHED / len) * 100) + '%;background:rgba(228,87,46,.30);',
+      releaseStyle: 'position:absolute;top:0;bottom:0;left:' + pct(rel) + '%;width:2px;background:var(--ks3-alert);',
+      markerStyle: 'position:absolute;top:4px;bottom:4px;left:' + pct(day) + '%;width:12px;margin-left:-6px;border-radius:6px;background:var(--ks3-on-dark);box-shadow:0 0 0 3px rgba(0,0,0,.35);',
+      releaseLabel: 'Release \u00b7 day ' + rel,
+      lastDayLabel: 'Day ' + len,
+      dayHeading: 'Day ' + day,
+      phaseLabel: phase,
+      ovaryText: ovary,
+      uterusText: uterus,
+      dialNote: dialNote,
+
+      events: EVENTS.map((ev) => ({
+        num: ev.num, name: ev.name, when: ev.when, what: ev.what,
+        style: 'padding: 20px 22px; border-radius: var(--ks3-r-card); background: ' + (ev.num === '03' ? 'var(--ks3-inset)' : 'var(--ks3-card)') +
+          '; border: ' + (ev.num === '03' ? '3px' : '2px') + ' solid var(--ks3-ink); display: flex; gap: 18px; align-items: flex-start;',
+        numStyle: 'flex: 0 0 40px; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: ' +
+          (ev.num === '03' ? 'var(--ks3-accent)' : 'var(--ks3-ink)') + '; color: var(--ks3-on-dark); font-family: var(--ks3-font-display); font-weight: 800; font-size: 18px;'
+      })),
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === correctIndex, isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: done,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+</script>
+</body>
+</html>

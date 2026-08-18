@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>When diet goes wrong · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b304-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b304-arrive .34s ease-out both; }
+  [data-three] { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  @media (max-width: 900px) { [data-three] { grid-template-columns: minmax(0, 1fr); } }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Nutrition and digestion</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">When diet goes wrong</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Nutrition and digestion · Contrast</p>
+        <h1>When diet goes wrong</h1>
+        <p class="ks3-bigq">Three different things can be wrong with a diet, and they are not three degrees of the same thing. Two of them can happen at once, in the same person, on a full plate.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>A patient is eating 13 000 kJ a day and is severely malnourished.</h2>
+        <p class="ks3-hook-prompt">Not going short of food. Not skipping meals. Taking in more energy than an adult needs, every day, and a doctor has diagnosed malnutrition. The diagnosis is correct and the intake figure is correct.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">How can both be true at once?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Malnutrition means the balance is wrong, not that the quantity is small. Seven nutrients have to arrive; energy is only what three of them carry. A diet can be generous in kilojoules and missing iron, or vitamin D, or fibre entirely — and the body fails at the missing thing regardless of how much of everything else showed up.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-three" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Three separate failures</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 27ch;">Not one problem with a dial on it.</p>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6; max-width: 56ch;">Each column has a different cause, a different mechanism inside the body, and a different remedy. Reading across the rows is the point of this lesson.</p>
+
+        <div data-three="1" style="margin-top: 24px;">
+          <sc-for list="{{ columns }}" as="col" hint-placeholder-count="3">
+            <div style="padding: 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ col.tag }}</p>
+              <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 23px; line-height: 1.2; letter-spacing: -.02em;">{{ col.name }}</p>
+              <dl style="margin: 18px 0 0;">
+                <sc-for list="{{ col.rows }}" as="r" hint-placeholder-count="4">
+                  <div style="padding: 12px 0; border-top: 2px solid var(--ks3-rule);">
+                    <dt style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ r.k }}</dt>
+                    <dd style="margin: 5px 0 0; font-size: 18px; line-height: 1.5;">{{ r.v }}</dd>
+                  </div>
+                </sc-for>
+              </dl>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Too much energy, too little energy and a missing nutrient are three different imbalances. A deficiency can occur at any level of energy intake, because a specific nutrient cannot be substituted by more of the others.</p>
+        </div>
+      </section>
+
+      <section id="s-cases" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">Your turn · five clinics</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Which imbalance is this?</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ caseProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Each description gives you a diet and a set of signs. Say which of the three imbalances fits. Two of the five have more than one answer, and being unwilling to pick two is itself a mistake.</p>
+
+        <div style="margin-top: 22px; display: flex; gap: 9px; flex-wrap: wrap;">
+          <sc-for list="{{ caseTabs }}" as="t" hint-placeholder-count="5">
+            <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">{{ caseLabel }}</p>
+          <p style="margin: 8px 0 0; font-size: 20px; line-height: 1.5; color: var(--ks3-on-dark);">{{ caseDesc }}</p>
+          <p style="margin: 12px 0 0; font-family: var(--ks3-font-mono); font-size: 16px; font-weight: 500; color: var(--ks3-alert);">{{ caseIntake }}</p>
+        </div>
+
+        <p style="margin: 20px 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Tick every imbalance that applies</p>
+        <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+          <sc-for list="{{ pickTabs }}" as="t" hint-placeholder-count="3">
+            <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" disabled="{{ t.disabled }}" style="{{ t.style }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 18px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onDiagnose }}" disabled="{{ diagnoseLocked }}" style="{{ diagnoseBtnStyle }}">Show the diagnosis</button>
+          <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ pickCount }}</span>
+        </div>
+
+        <sc-if value="{{ caseOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ caseVerdict }}</p>
+            <p style="margin: 10px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 26px; line-height: 1.18; letter-spacing: -.025em;">{{ caseAnswer }}</p>
+            <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6;">{{ caseWhy }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Malnourished means not having enough to eat.”</p>
+        <p>The word means badly nourished, not under-nourished, and the distinction is not pedantry — it changes what you look for and what you do. Rickets was widespread in industrial British cities among children who were fed enough, because vitamin D needs either oily fish or sunlight and a smoke-filled street supplies neither. Iron deficiency is the most common nutritional disorder in the world and it is not concentrated in places where food is scarce. If you diagnose every dietary problem as a shortage of food, you will treat these by handing over more of the same food, and nothing will improve, because the missing nutrient is still missing.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“Deficiency diseases are all in the past.”</p>
+          <p>Scurvy still appears in hospitals. So does rickets, so does severe iron deficiency, and vitamin B12 deficiency is common enough that it is a routine blood test. The reason is not that food is unavailable; it is that a nutrient needed in milligrams can be absent from a diet that looks entirely ordinary, and the early signs — tiredness, aching, slow healing, low mood — are the least specific symptoms in medicine. A deficiency is easy to miss precisely because it does not announce itself as a food problem.</p>
+        </div>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“You can tell what someone eats by looking at them.”</p>
+          <p>You cannot, and this is the most important sentence in the lesson. Body mass is affected by genetics, by illness, by medication, by how much someone can move, by sleep, by stress and by whether they can afford or reach particular foods — as well as by what they eat. Two people on identical diets can differ substantially, which is exactly what the hook in the energy lesson showed. The three imbalances in this lesson are described by measurements and by clinical signs, not by appearance, and a biologist reasons from the measurements.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>An imbalanced diet can mean a long-term energy surplus, a long-term energy shortfall, or a specific nutrient missing. Obesity raises the risk of type 2 diabetes, heart disease and joint damage. Prolonged energy shortfall breaks down first fat and then muscle, and stops growth. Deficiency diseases — scurvy, rickets, anaemia — are caused by one missing nutrient and can occur at any level of energy intake.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>In 1747 the naval surgeon James Lind ran what is often called the first controlled clinical trial, on twelve scurvy patients divided into six pairs, each pair given a different treatment: cider, sulfuric acid, vinegar, seawater, a paste of herbs, or two oranges and a lemon. The citrus pair recovered. The trial was tiny, it was not blinded, and Lind himself did not fully accept the result — he thought the fruit worked by helping digestion and later recommended a boiled-down concentrate that destroyed the vitamin C entirely. The Navy took another forty years to adopt lemon juice, and it saved more sailors than any battle of the period. Good evidence and correct interpretation are different achievements, and the gap between them is measured in lives.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b3-03-energy-in-food-and-what-you-need.html">Energy in food and what you need<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b3-01-a-balanced-diet.html">A balanced diet<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b3-08-bacteria-in-the-gut.html">Bacteria in the gut<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Risk factors for non-communicable disease, and the evidence linking diet to cardiovascular disease and type 2 diabetes.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to work through why a deficiency can happen on a full plate?</p>
+          <a class="ks3-tutor-cta" href="#s-three">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">This lesson describes conditions clinically, as biology. It is not advice about anybody's own body or eating, and it sets no targets. If any of it worries you about yourself or someone you know, speak to a trusted adult, your school nurse or a doctor — that is the right next step, not a change to what you eat.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startCase&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;k1&quot;,&quot;k2&quot;,&quot;k3&quot;,&quot;k4&quot;,&quot;k5&quot;],&quot;default&quot;:&quot;k1&quot;,&quot;tsType&quot;:&quot;'k1' | 'k2' | 'k3' | 'k4' | 'k5'&quot;,&quot;section&quot;:&quot;The clinics&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Full plate' },
+  { id: 's-three', label: 'Three failures' },
+  { id: 's-cases', label: 'Five clinics' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+const RAIL_SHORT = ['HOOK', 'THREE', 'CLINIC', 'LADDER'];
+
+const KINDS = [
+  { id: 'surplus', label: 'Energy surplus' },
+  { id: 'shortfall', label: 'Energy shortfall' },
+  { id: 'missing', label: 'A nutrient missing' }
+];
+
+const COLUMNS = [
+  { tag: 'Imbalance 1', name: 'Long-term energy surplus', rows: [
+    { k: 'What is wrong', v: 'Energy taken in is greater than energy transferred, day after day, for months or years.' },
+    { k: 'What the body does', v: 'The surplus is stored as lipid in adipose tissue. Storage is a normal, healthy mechanism; the problem is only the size of the store when it keeps growing.' },
+    { k: 'What follows', v: 'Obesity raises the risk of type 2 diabetes, high blood pressure, heart disease and joint damage. Risk raised, not certainty \u2014 these are probabilities, not verdicts.' },
+    { k: 'What changes it', v: 'Any lasting change to the balance between intake and activity. Slow, because the store took a long time to build.' }
+  ] },
+  { tag: 'Imbalance 2', name: 'Long-term energy shortfall', rows: [
+    { k: 'What is wrong', v: 'Energy taken in is less than energy transferred, for weeks or months. Causes range from food being unavailable to illness that prevents eating or absorbing.' },
+    { k: 'What the body does', v: 'Lipid stores are broken down first. When those are gone it breaks down its own protein \u2014 muscle, including heart muscle.' },
+    { k: 'What follows', v: 'Growth stops, the immune system weakens, and body temperature is hard to maintain. In children the effect on growth may not be recoverable.' },
+    { k: 'What changes it', v: 'Refeeding, done carefully and medically \u2014 restarting food too fast after prolonged starvation is itself dangerous.' }
+  ] },
+  { tag: 'Imbalance 3', name: 'A specific nutrient missing', rows: [
+    { k: 'What is wrong', v: 'One nutrient is absent or too low. Energy intake can be high, normal or low \u2014 it is a separate question.' },
+    { k: 'What the body does', v: 'Whatever that nutrient was needed for stops working properly. Nothing else can substitute: no amount of carbohydrate replaces 14 mg of iron.' },
+    { k: 'What follows', v: 'A named deficiency disease. No vitamin C, scurvy. No vitamin D, rickets. No iron, anaemia. Each has its own signs.' },
+    { k: 'What changes it', v: 'Supplying that one nutrient. Often a fast and complete recovery, which is what makes deficiency diseases so striking to treat.' }
+  ] }
+];
+
+const CASES = [
+  { id: 'k1', label: 'Clinic 1',
+    desc: 'An adult reports tiredness, breathlessness on stairs and pale skin. Blood tests show low haemoglobin. Their diet is bread, pasta, cheese and fruit, with no meat, fish or leafy vegetables. They are not losing mass.',
+    intake: 'Intake about 10 000 kJ / day \u2014 close to requirement',
+    kinds: ['missing'],
+    answer: 'Iron-deficiency anaemia. A nutrient missing, and nothing else.',
+    why: 'Energy intake is fine, mass is stable, and the signs all point at haemoglobin. Iron is needed in milligrams and this diet supplies almost none. Adding more of the same food would change nothing.' },
+  { id: 'k2', label: 'Clinic 2',
+    desc: 'A 14-year-old has stopped growing in height over eighteen months, feels cold constantly, and bruises easily. Their family has been unable to afford regular meals.',
+    intake: 'Intake about 4500 kJ / day \u2014 far below requirement',
+    kinds: ['shortfall', 'missing'],
+    answer: 'Energy shortfall, and almost certainly deficiencies alongside it.',
+    why: 'Both apply, and this is the pair most students refuse to tick together. Too little food means too little of everything in it \u2014 so a prolonged shortfall drags specific deficiencies along behind it. The growth arrest is the shortfall; the bruising suggests vitamin C or K as well.' },
+  { id: 'k3', label: 'Clinic 3',
+    desc: 'An adult has gained mass steadily over ten years. Blood glucose is raised and a doctor has diagnosed type 2 diabetes. They eat large portions, mostly processed food, and have a desk job and a car commute.',
+    intake: 'Intake about 14 000 kJ / day \u2014 well above requirement',
+    kinds: ['surplus'],
+    answer: 'Long-term energy surplus.',
+    why: 'Ten years of intake above requirement, stored as lipid, and one of the risks that follow has now appeared. Note what this case is not: it is not a moral failure, and the fix is a change in the long-term balance, not a punishment.' },
+  { id: 'k4', label: 'Clinic 4',
+    desc: 'A toddler in a smoky northern city in 1900 has soft, bowed leg bones and a delayed walk. They are fed bread, potatoes, tea and a little meat. They are not thin.',
+    intake: 'Intake roughly at requirement',
+    kinds: ['missing'],
+    answer: 'Rickets \u2014 vitamin D missing.',
+    why: 'Enough food, enough energy, no vitamin D. It comes from oily fish or from sunlight on skin, and a smoke-darkened street supplies neither. Calcium cannot be absorbed properly without it, so the bones stay soft. This is the classic case of a deficiency in a fed child.' },
+  { id: 'k5', label: 'Clinic 5',
+    desc: 'An adult recovering from major surgery cannot absorb nutrients properly from their shortened intestine. They eat willingly and in normal quantities but are losing mass and have low levels of several vitamins.',
+    intake: 'Intake about 9500 kJ / day \u2014 at requirement',
+    kinds: ['shortfall', 'missing'],
+    answer: 'Both \u2014 and the cause is not the diet at all.',
+    why: 'The plate is fine. What has failed is absorption, so what reaches the blood is a shortfall even though what reaches the mouth is not. This is the case that shows why \u2018diet\u2019 and \u2018nutrition\u2019 are not the same word: the next three lessons are about the part of the system that has broken here.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Name the imbalance',
+    question: 'A patient eats 12 000 kJ a day, is gaining mass slowly, and has been diagnosed with scurvy. Which imbalance or imbalances apply?',
+    options: [
+      { text: 'A nutrient missing, only', correct: true },
+      { text: 'An energy shortfall', correction: 'They are gaining mass on 12 000 kJ a day. There is no shortfall of energy here \u2014 scurvy is about vitamin C, which carries no energy at all.' },
+      { text: 'A nutrient missing and an energy shortfall', correction: 'The deficiency is right; the shortfall is not. Nothing in the case suggests too little energy, and gaining mass rules it out.' },
+      { text: 'None \u2014 you cannot have scurvy while eating that much', correction: 'You can, and people do. Vitamin C is needed in milligrams and is absent from a great many otherwise generous diets.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'Two children are the same age and height. Child A eats 6000 kJ a day; child B eats 11 000 kJ. Both have been diagnosed with iron-deficiency anaemia. What does this tell you?',
+    options: [
+      { text: 'Child B must have been misdiagnosed', correction: 'There is no contradiction to resolve. A deficiency is a statement about one nutrient, and it is independent of the total energy intake.' },
+      { text: 'Iron deficiency does not depend on how much energy a diet supplies', correct: true },
+      { text: 'Child A\u2019s anaemia is more serious because they eat less', correction: 'Severity depends on how low the iron is, which the case does not tell you. The energy figures are not evidence about the anaemia either way.' },
+      { text: 'Both children need to eat more food', correction: 'This is the trap the lesson exists to set. More of a diet that lacks iron delivers more of everything except iron.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain why more food does not fix it',
+    question: 'A charity responds to a region with widespread anaemia by shipping large quantities of white rice. Explain why this will reduce hunger but not reduce the anaemia, and what would need to be added.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Rice will help with\u2026 but not with\u2026',
+    criteria: [
+      'Says rice supplies carbohydrate and so addresses an energy shortfall.',
+      'Says rice supplies very little iron, so the specific deficiency is untouched.',
+      'States the general principle: a missing nutrient cannot be substituted by more of the others.',
+      'Names something that would supply iron \u2014 pulses, leafy greens, meat, or fortified flour.',
+      'Recognises that both problems can be present at once and both need addressing.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'The UK adds calcium, iron and B vitamins to white flour by law. Using the three imbalances, explain what problem this policy targets, why it works at the flour rather than at the person, and one limitation you would expect it to have.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Fortification targets\u2026',
+    criteria: [
+      'Identifies the target as specific nutrient deficiencies, not energy imbalance.',
+      'Explains that flour is eaten by almost everyone, so fortifying it reaches people who would never seek treatment.',
+      'Notes that it requires no change in behaviour, which is why it works where advice does not.',
+      'Gives a real limitation \u2014 it misses people who avoid wheat, cannot be targeted to those who need it, and the dose cannot be adjusted per person.'
+    ] }
+];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-three') return s.hookChoice !== null;
+  if (id === 's-cases') return Object.keys(s.opened).length >= 5;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    caseId: CASES.some((k) => k.id === this.props.startCase) ? this.props.startCase : 'k1',
+    picks: {},
+    opened: {},
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark) {
+    if (dark) {
+      return 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 17px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+        (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 17px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const kase = CASES.find((k) => k.id === s.caseId) || CASES[0];
+    const picks = s.picks[kase.id] || [];
+    const opened = !!s.opened[kase.id];
+    const exact = picks.length === kase.kinds.length && kase.kinds.every((k) => picks.indexOf(k) >= 0);
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' + (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') +
+            ';color:' + (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'The intake figure must have been measured wrongly' },
+        { letter: 'B', text: 'Malnutrition is about balance, not quantity' },
+        { letter: 'C', text: 'Their body is failing to digest any of the food' },
+        { letter: 'D', text: '13 000 kJ is not actually very much' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text, pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      columns: COLUMNS,
+
+      caseProgress: Object.keys(s.opened).length + ' of 5 diagnosed',
+      caseTabs: CASES.map((k) => ({
+        label: k.label, pressed: k.id === s.caseId, style: this.seg(k.id === s.caseId, true),
+        onClick: () => this.setState({ caseId: k.id })
+      })),
+      caseLabel: kase.label,
+      caseDesc: kase.desc,
+      caseIntake: kase.intake,
+      pickTabs: KINDS.map((k) => ({
+        label: k.label, pressed: picks.indexOf(k.id) >= 0, disabled: opened,
+        style: this.seg(picks.indexOf(k.id) >= 0, true) + (opened && picks.indexOf(k.id) < 0 ? 'opacity:.45;cursor:default;' : ''),
+        onClick: () => this.setState((st) => {
+          if (st.opened[kase.id]) return null;
+          const cur = (st.picks[kase.id] || []).slice();
+          const at = cur.indexOf(k.id);
+          if (at >= 0) cur.splice(at, 1); else cur.push(k.id);
+          return { picks: Object.assign({}, st.picks, { [kase.id]: cur }) };
+        })
+      })),
+      diagnoseLocked: picks.length === 0 || opened,
+      diagnoseBtnStyle: (picks.length === 0 || opened) ? 'opacity:.45;cursor:default;' : '',
+      pickCount: opened ? 'Diagnosed' : (picks.length === 0 ? 'nothing ticked yet' : picks.length + ' ticked'),
+      onDiagnose: () => this.setState((st) => ((st.picks[kase.id] || []).length === 0) ? null : ({ opened: Object.assign({}, st.opened, { [kase.id]: true }) })),
+      caseOpen: opened,
+      caseVerdict: exact ? 'You had it exactly' : (kase.kinds.length > 1 ? 'Two imbalances apply here' : 'Not quite'),
+      caseAnswer: kase.answer,
+      caseWhy: kase.why,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === correctIndex, isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong, disabled: done,
+              onClick: () => this.setState((st) => (st.answers[r.id] !== null && st.answers[r.id] !== undefined) ? null : ({ answers: Object.assign({}, st.answers, { [r.id]: i }) }))
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question, fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 """B5 L2 — Gametes and fertilisation (PROCESS).
 
 Authored against Design's approved page,
-`KS3 B5 lessons/b5-02-gametes-and-fertilisation.dc.html` (561 lines), under the
+`docs/ks3/design-reference/b5/b5-02-gametes-and-fertilisation.dc.html` (561 lines), under the
 MRB-220 build contract, with `NOTES-B5.md` and `README.txt` read whole.
 
 Every student-facing string is lifted byte-identical from the approved page

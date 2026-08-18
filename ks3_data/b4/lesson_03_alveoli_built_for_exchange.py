@@ -1,8 +1,8 @@
 """B4 L3 — Alveoli: built for exchange (MODEL).
 
 Authored against Claude Design's approved page,
-`KS3 B4 lessons/b4-03-alveoli-built-for-exchange.dc.html` (569 lines), its
-author's notes `KS3 B4 lessons/NOTES-B4.md` §3.3 and flags 4 and 20, and the
+`docs/ks3/design-reference/b4/b4-03-alveoli-built-for-exchange.dc.html` (569 lines), its
+author's notes `docs/ks3/design-reference/b4/NOTES-B4.md` §3.3 and flags 4 and 20, and the
 MRB-220 build contract. Schema per architecture.md §4.8 as amended by §4.8.1
 and §4.8.2; shape follows `ks3_data/b3/lesson_02_food_tests.py`.
 

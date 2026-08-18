@@ -2,7 +2,7 @@
 
 The thin unit wrapper. The lesson records live one per module under
 `ks3_data/b4/`, authored against Claude Design's approved reference screens in
-`KS3 B4 lessons/` under the MRB-220 build contract.
+`docs/ks3/design-reference/b4/` under the MRB-220 build contract.
 
 **Statutory coverage: four statements, five lessons, and one SPLIT.**
 
