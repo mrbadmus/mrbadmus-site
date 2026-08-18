@@ -2608,6 +2608,92 @@ body.rd[data-mode="ks3"] {
   line-height: 1.2;
   letter-spacing: -.02em;
 }
+/* ⊕ MRB-248 / B10 — THE ACCENT BADGE, drawn twice at two sizes.
+   b10-03's `#s-who` cards carry initials (`RF`, `WC`) at 44px/12px/16px,
+   spanning three rows; b10-04's `#s-steps` cards carry a step number at
+   38px/11px/19px, spanning two. Measured off Design's own markup, page lines
+   158 and 172. A badged card is a two-column grid with the badge in the first
+   column and every text row in the second — which is a different card from the
+   flow one above, and is why the `<li>` carries `data-badge` rather than the
+   badge being detected by presence.
+
+   ⚠️ `grid-row: 1 / -1` RATHER THAN A COUNTED SPAN. Design writes `span 3` on
+   b10-03 and `span 2` on b10-04 because those cards have three and two text
+   rows; a card that authors a `role` on b10-04's shape, or drops one on
+   b10-03's, would then leave the badge short or overrunning. `1 / -1` is the
+   same drawing on both and cannot go out of step with the card's contents. */
+/* ⚠️ A BADGED LIST IS ONE COLUMN OF FULL-WIDTH ROWS, not the auto-fit grid.
+   Design draws both `#s-who` and `#s-steps` as a `flex-direction: column`
+   list (b10-03 line 153, b10-04 line 169) and the reason is the shape of the
+   card: badge on the left, three stacked rows on the right, each of them a
+   sentence. Dropped into a 220px auto-fit track the body wraps to one or two
+   words per line and the card becomes a column of fragments. Keyed on the
+   LIST, because CSS cannot select a parent from a child's attribute. */
+.ks3-rule-cards[data-badged] {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ks3-rule-cards > li[data-badge] {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 18px;
+  padding: 20px 24px;
+  align-items: start;
+}
+/* ⚠️ THE BADGE IS PINNED TO COLUMN 1 ROW 1 AND EVERY TEXT ROW TO COLUMN 2.
+   Design writes `grid-row: span 3` / `span 2` on the badge and lets the rest
+   auto-place, which only works while the card has exactly the rows she drew —
+   a card with one row fewer leaves auto-placement dropping the ROLE line into
+   column 1 under the badge, where the `auto` track is then sized by a long
+   mono string and the badge stops being a badge. Seen in a browser on b10-03,
+   where the role is the longest line on the card. Pinning both sides is the
+   same drawing and cannot go out of step with the card's contents. */
+.ks3-rule-badge {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
+  display: grid;
+  place-items: center;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  background: var(--ks3-accent);
+  color: var(--ks3-on-dark);
+}
+.ks3-rule-badge[data-badge="initials"] {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  font-size: 16px;
+}
+.ks3-rule-badge[data-badge="num"] {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  font-size: 19px;
+}
+/* A badged card's rows sit in the second column and carry no top margin of
+   their own — the grid's own row gap is the spacing, and a stacked margin
+   would push the first row off the badge it is meant to sit beside. */
+.ks3-rule-cards > li[data-badge] > .ks3-rule-role,
+.ks3-rule-cards > li[data-badge] > .ks3-rule-term,
+.ks3-rule-cards > li[data-badge] > .ks3-rule-gloss,
+.ks3-rule-cards > li[data-badge] > .ks3-rule-chips,
+.ks3-rule-cards > li[data-badge] > .ks3-rule-eg {
+  grid-column: 2;
+  margin: 0;
+}
+/* ⚠️ ON A BADGED CARD THE ROLE IS NOT THE HEADLINE'S LABEL — it sits UNDER
+   the name (page line 160: name, then role, then body). So the display-weight
+   promotion that `.ks3-rule-role + .ks3-rule-term` gives a b1-04 card must not
+   apply here, and the name takes it directly instead. */
+.ks3-rule-cards > li[data-badge] > .ks3-rule-term {
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+}
 .ks3-rule-close {
   margin: 22px 0 0;
   max-width: var(--ks3-measure);
@@ -13446,3 +13532,890 @@ body.rd[data-mode="ks3"] {
 }
 
 /* ═══ END B9 ═══ */
+
+/* ═══ BEGIN B10 ═══════════════════════════════════════════════════════════
+   B10 · Inheritance and DNA (⊕ MRB-248)
+
+   Five instruments, one per lesson, every one of them on
+   `ks3-block ks3-dark ks3-practical` — measured off Design's own `#s-bench`
+   class attribute on all five delivered pages, not inferred from the kind
+   name (schema §0.2).
+
+   ⚠️ SO EVERY COLOUR RULE HERE IS WRITTEN UNDER `.ks3-dark …`. `.ks3-dark p`
+   is (0,1,1) and a bare component class is (0,1,0), so a rule written as
+   `.ks3-vp-axis { color: … }` LOSES to the dark-ground default and ships a
+   caption at roughly 1.2:1 that no grep will ever find, because the CSS is
+   right there saying the correct thing. Only a computed read catches it, and
+   `ks3_parity.check_dark_text_specificity()` does exactly that.
+
+   ⚠️ AND NOTHING HERE IS A MARK (MRB-196 R10). An alert ground on a tab says
+   "this is the characteristic you are looking at", never "this is correct".
+   Three B10 benches DO adjudicate a student's commitment (schema §0.6) and
+   every one of them does it in WORDS on a cream verdict panel — the same
+   tone whichever way it went. No green, no red, no badge, and never the
+   amber `is-wrong` ladder treatment on a bench.
+
+   ⚠️ AND `--ks3-accent` IS 3.4:1 — LARGE TEXT ONLY. Every mono caption,
+   tag and label below 24px takes `--ks3-accent-text` (6.0:1) instead. On ink
+   the accent is unusable at any size and the alert takes its place, which is
+   what the `.ks3-dark` blocks below do.
+
+   ⊖ AND THERE IS NO B10 REDUCED-MOTION BLOCK, DELIBERATELY. The unit's one
+   piece of motion is the `[data-fill]` height transition on the bars, and
+   R6's platform rule (`*, *::before, *::after { transition-duration: .001ms
+   !important }`) already covers every transition on every page — `!important`
+   beats a later bare declaration, so a B10 block could never win and never
+   needed to. Verified in a browser under emulated `prefers-reduced-motion:
+   reduce` rather than asserted. Nothing in this unit animates on a timer:
+   there is no canvas, no rAF and no `setTimeout` in any of the five wire
+   functions, so there is no tick that would have to test the query inside
+   itself (contract R4, the b2-03 slip). */
+
+/* ── b10-01 `#s-bench` · variation-plotter ─────────────────────────────── */
+
+.ks3-vp { margin-top: 22px; }
+.ks3-vp-tabslabel {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.ks3-vp-tabs {
+  margin-top: 0;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.ks3-vp-tab,
+.ks3-vp-pred {
+  width: auto;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: 700;
+}
+.ks3-vp-panel {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-card);
+}
+.ks3-vp-name {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+.ks3-vp-predictlabel {
+  margin: 14px 0 10px;
+  font-size: 17px;
+  font-weight: 600;
+}
+.ks3-vp-preds {
+  margin-top: 0;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+/* ⚖️⚖️ THE CHART IS SIX EQUAL COLUMNS AND THE BAR DOES NOT FILL ITS COLUMN
+   UNLESS THE DATA IS CONTINUOUS. This pair of rules IS the histogram /
+   bar-chart convention, and it is a pure function of `data_type` — schema §2
+   is explicit that there is no `gap` key, no `spacing` key and no
+   `chart_type` key, because an authored one would let a record ship touching
+   bars for blood group. The column is `flex: 1 1 0`, so `width: 100%` on the
+   bar makes neighbouring bars MEET and `calc(100% - 6px)` makes them stand
+   apart. If the discontinuous rule ever resolves to 100% the bench is drawing
+   a histogram of blood groups and telling the student that is what one looks
+   like. */
+/* ⚑ THE COLUMN GAP IS ZERO, AND THAT IS A DELIBERATE DEPARTURE FROM DESIGN'S
+   MEASUREMENT — reported, not taken quietly. Her chart row carries `gap: 4px`
+   of its own, on top of the derived bar width. Measured in a browser at
+   1280px: a continuous characteristic's bars then stand 4px apart while her
+   own axis caption underneath reads "bars touch because the categories are
+   ranges", and the verdict line above says "a histogram, bars touching". The
+   page contradicts itself, so "follow the page" has no single answer — and the
+   half that is wrong is the half a student takes away as a rule, because
+   touching bars are WHAT MAKES A HISTOGRAM A HISTOGRAM.
+   With the row gap at zero, every separation on this chart comes from the one
+   place schema §2 says it may come from: `data_type`. Continuous bars meet at
+   0px; discontinuous bars stand exactly 6px apart. The caption becomes true,
+   the derived rule becomes the only rule, and `b10-plot-both` asserts both
+   numbers on painted geometry. */
+.ks3-vp-chart {
+  margin-top: 18px;
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  height: 170px;
+  padding: 12px;
+  border-radius: var(--ks3-r-panel);
+}
+.ks3-vp-col {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
+  min-width: 0;
+  gap: 5px;
+}
+.ks3-vp-bar {
+  display: block;
+  border-radius: 3px 3px 0 0;
+  transition: height .3s;
+}
+.ks3-vp-chart[data-vp-type="continuous"] .ks3-vp-bar { width: 100%; }
+.ks3-vp-chart[data-vp-type="discontinuous"] .ks3-vp-bar {
+  width: calc(100% - 6px);
+}
+.ks3-vp-n {
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+}
+.ks3-vp-binlabel {
+  font-family: var(--ks3-font-mono);
+  font-size: 11px;
+  letter-spacing: .02em;
+  text-align: center;
+  line-height: 1.2;
+}
+.ks3-vp-axis {
+  margin: 10px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+/* ⚖️ THE VERDICT PANEL IS CREAM INSIDE INK — the one place in this block
+   where the text has to be INK and not on-dark. It is what the whole
+   commitment was for, and it is the element that carries the lesson's SECOND
+   question under a rule. */
+.ks3-vp-verdict {
+  margin-top: 16px;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+}
+.ks3-vp-tag {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.ks3-vp-kind {
+  margin: 9px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1.25;
+  letter-spacing: -.02em;
+}
+.ks3-vp-shape {
+  margin: 11px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+}
+/* ⚖️ THE RULE ABOVE `What causes it:` IS THE LESSON'S ARGUMENT DRAWN AS A
+   LINE. Shape and cause are two questions and the panel asks them separately;
+   a merge of these two paragraphs would delete `#s-think`, whose whole
+   confrontation is that a smooth curve says nothing about the cause. */
+.ks3-vp-cause {
+  margin: 14px 0 0;
+  padding-top: 14px;
+  border-top: 2px solid var(--ks3-rule);
+  font-size: 18px;
+  line-height: 1.6;
+}
+.ks3-vp-foot {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  flex-wrap: wrap;
+}
+.ks3-vp-plot[disabled] { opacity: .45; cursor: default; }
+.ks3-vp-plot[disabled]:hover { transform: none; }
+
+/* ── variation-plotter on ink ──────────────────────────────────────────── */
+.ks3-dark .ks3-vp-tabslabel { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-vp-panel { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-vp-name { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-vp-predictlabel { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-vp-chart { background: rgba(255, 255, 255, .06); }
+.ks3-dark .ks3-vp-bar { background: var(--ks3-alert); }
+.ks3-dark .ks3-vp-n { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-vp-binlabel { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-vp-axis { color: var(--ks3-on-dark-muted); }
+/* ⚖️ A CHOSEN TAB IS THE ALERT GROUND, NOT THE ALERT BORDER — Design's `seg()`
+   paints `background: var(--ks3-alert); color: var(--ks3-ink)`. The platform's
+   `.ks3-dark .ks3-option[aria-pressed="true"]` gives an alert BORDER, which is
+   right for an answer committed to and wrong for a switch that is currently
+   on. Same specificity (0,3,0) and later in the file, so source order decides
+   — deliberately, because this narrows one unit rather than replacing the
+   platform rule. Still not a mark: it says which characteristic is on the
+   bench, never that the student is right. */
+.ks3-dark .ks3-vp-tab[aria-pressed="true"],
+.ks3-dark .ks3-vp-pred[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+/* `.ks3-reveal-btn` is INK ON INK, which on a `ks3-dark` block paints an
+   invisible control. Inverted, exactly as B9's bench buttons are. */
+.ks3-dark .ks3-vp-plot {
+  background: var(--ks3-on-dark);
+  border-color: var(--ks3-on-dark);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-vp-verdict {
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+/* ⚠️ (0,2,0) — the verdict is cream inside ink, so these four re-declare INK
+   against `.ks3-dark p` rather than inheriting the on-dark body colour. */
+.ks3-dark .ks3-vp-kind { color: var(--ks3-ink); }
+.ks3-dark .ks3-vp-shape { color: var(--ks3-ink-body); }
+.ks3-dark .ks3-vp-cause { color: var(--ks3-ink-body); }
+/* ⛔ ACCENT-TEXT, NOT ACCENT. The tag is 14px mono — `--ks3-accent` is 3.4:1
+   and legal for large text only. And it is ONE TONE for both verdicts: the
+   bench says whether the prediction held, and says it the same way whichever
+   way it went (schema §0.6). Green for right and red for wrong would make a
+   bench into a marker, which only the mastery ladder is. */
+.ks3-dark .ks3-vp-tag { color: var(--ks3-accent-text); }
+
+/* ── b10-02 `#s-bench` · zoom-bench ────────────────────────────────────── */
+
+.ks3-zb { margin-top: 22px; }
+.ks3-zb-panel {
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-card);
+}
+.ks3-zb-levels {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+/* ⚖️⚖️ AN UNREACHED LEVEL IS DIMMED AND STILL DRAWN. It is not absent and it
+   is not a wrong answer: the whole ladder is on screen from the first paint so
+   a student can see how far down there is to go, and — the part that matters —
+   can read the SCALE COLUMN as a column. That column is the lesson's argument.
+   If this opacity ever resolves to 1 the bench has given away every body
+   paragraph before the first press; if the row is hidden instead, the column
+   stops existing and the bench becomes six facts in a list. */
+.ks3-zb-level {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border-radius: var(--ks3-r-panel);
+  border: 2px solid transparent;
+  background: transparent;
+  opacity: .45;
+}
+.ks3-zb-level[data-shown] { opacity: 1; }
+.ks3-zb-num {
+  flex: 0 0 30px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 15px;
+  border: 2px solid transparent;
+}
+.ks3-zb-cell { flex: 1 1 auto; }
+.ks3-zb-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+}
+.ks3-zb-name {
+  font-size: 19px;
+  font-weight: 700;
+}
+.ks3-zb-scale {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+}
+/* ⚠️ `:not([hidden])` ON THE `display`, AND IT IS NOT TIDINESS. The body is a
+   `<span>`, so it needs `display: block` to sit under the name — and a bare
+   `.ks3-zb-body { display: block }` BEATS the UA's `[hidden] { display: none }`
+   at (0,1,0) against (0,1,0) on source order, which would put all six body
+   paragraphs on screen for a reader with JS off and for anything that quotes
+   the page. `setHidden` also writes an inline `display:none`, so the live page
+   would have looked perfect. MRB-242, found here by `b10-zoom-bottomed`. */
+.ks3-zb-body:not([hidden]) {
+  display: block;
+  margin-top: 6px;
+  font-size: 18px;
+  line-height: 1.55;
+}
+.ks3-zb-foot {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  flex-wrap: wrap;
+}
+.ks3-zb-in[disabled] { opacity: .45; cursor: default; }
+.ks3-zb-in[disabled]:hover { transform: none; }
+.ks3-zb-close {
+  margin: 18px 0 0;
+  padding: 17px 19px;
+  border-radius: var(--ks3-r-panel);
+  font-size: 18px;
+  line-height: 1.6;
+}
+/* ⚠️ THE SAY-IT-BACK PANEL IS PART OF THE BENCH, not a block of its own —
+   measured, it is inside `<section id="s-bench">`. It sits on the translucent
+   well rather than on the nested panel, which is what tells the eye it is a
+   second thing on the same bench and not a second bench. */
+.ks3-zb-say {
+  margin-top: 18px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-card);
+}
+.ks3-zb-saylabel {
+  margin: 0 0 10px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.ks3-zb-qtabs {
+  margin-top: 0;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.ks3-zb-qtab {
+  width: auto;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: 700;
+}
+.ks3-zb-answer {
+  margin: 14px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+}
+
+/* ── zoom-bench on ink ─────────────────────────────────────────────────── */
+.ks3-dark .ks3-zb-panel { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-zb-name { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-zb-level[data-shown] .ks3-zb-name { color: var(--ks3-on-dark); }
+/* ⚖️ THE SCALE FIGURE IS THE ALERT, ON EVERY ROW, REACHED OR NOT. It is the
+   column the lesson is about, and dimming it per row would leave the journey
+   unreadable before it starts. The row's own 45% opacity is what says
+   "not yet" — a second treatment on the figure would say "not important". */
+.ks3-dark .ks3-zb-scale { color: var(--ks3-alert); }
+.ks3-dark .ks3-zb-body { color: var(--ks3-on-dark-body); }
+.ks3-dark .ks3-zb-num {
+  border-color: var(--ks3-on-dark-muted);
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-dark .ks3-zb-level[data-shown] .ks3-zb-num {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+/* ⚖️ THE LEVEL JUST REACHED TAKES THE ALERT OUTLINE AND A LIT GROUND. Still
+   not a mark (MRB-196 R10): it says where the student is standing, and there
+   is nothing on this bench to be right or wrong about. */
+.ks3-dark .ks3-zb-level[data-here] {
+  border-color: var(--ks3-alert);
+  background: rgba(255, 255, 255, .1);
+}
+.ks3-dark .ks3-zb-level[data-shown]:not([data-here]) {
+  border-color: var(--ks3-on-dark-muted);
+}
+.ks3-dark .ks3-zb-in,
+.ks3-dark .ks3-zb-out {
+  background: var(--ks3-on-dark);
+  border-color: var(--ks3-on-dark);
+  color: var(--ks3-ink);
+}
+/* ⚖️ THE BOTTOM-OUT PARAGRAPH IS THE PAGE GROUND ON AN INK BLOCK — cream
+   inside ink, the one element on this bench whose text is INK. It is what the
+   whole climb down exists to reach, and it is the sentence that says nothing
+   was swapped for anything else on the way. */
+.ks3-dark .ks3-zb-close {
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-zb-say { background: rgba(255, 255, 255, .06); }
+.ks3-dark .ks3-zb-saylabel { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-zb-answer { color: var(--ks3-on-dark-body); }
+.ks3-dark .ks3-zb-qtab[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+
+/* ── b10-03 `#s-bench` · model-builder ─────────────────────────────────── */
+
+.ks3-dh { margin-top: 22px; }
+.ks3-dh-dials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 30px;
+}
+.ks3-dh-dialname {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.ks3-dh-opts {
+  margin-top: 0;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.ks3-dh-opt {
+  width: auto;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: 700;
+}
+.ks3-dh-panel {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-card);
+}
+.ks3-dh-modelline {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+.ks3-dh-cards {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+/* ⚖️⚖️ THE CARD OUTLINE IS THE VERDICT, AND IT IS ON THE MODEL. This is one of
+   the three B10 benches that adjudicate a commitment (schema §0.6), shipped as
+   Design drew it: green when the evidence is consistent with the model on the
+   bench, alert when it rules that model out. The DIAL BUTTONS never take a
+   mark — amber there means "this is the model you have built", and amber here
+   means "this piece of evidence says no". A wrong IDEA is what is being
+   confronted, never the student. */
+.ks3-dh-card {
+  padding: 15px 17px;
+  border-radius: var(--ks3-r-panel);
+  border: 2px solid transparent;
+}
+.ks3-dh-cardhead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 16px;
+}
+.ks3-dh-cardname {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+.ks3-dh-tag {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.ks3-dh-what {
+  margin: 6px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+}
+/* The ELIMINATION TEXT — the line that names what this evidence rules out, and
+   the only thing on the bench that tells a student which decision to change.
+   Amber because it is a wrong idea being confronted. */
+.ks3-dh-why {
+  margin: 6px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+}
+.ks3-dh-verdict {
+  margin-top: 20px;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+}
+.ks3-dh-verdicttag {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.ks3-dh-verdictbody {
+  margin: 11px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* ── model-builder on ink ──────────────────────────────────────────────── */
+.ks3-dark .ks3-dh-dialname { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-dh-panel { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-dh-modelline { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-dh-card { background: rgba(255, 255, 255, .06); }
+.ks3-dark .ks3-dh-card[data-pass] { border-color: var(--ks3-ok); }
+.ks3-dark .ks3-dh-card:not([data-pass]) { border-color: var(--ks3-alert); }
+.ks3-dark .ks3-dh-cardname { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-dh-tag[data-dh-tag="pass"] { color: var(--ks3-ok); }
+.ks3-dark .ks3-dh-tag[data-dh-tag="fail"] { color: var(--ks3-alert); }
+.ks3-dark .ks3-dh-what { color: var(--ks3-on-dark-body); }
+.ks3-dark .ks3-dh-why { color: var(--ks3-alert); }
+.ks3-dark .ks3-dh-opt[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-dh-verdict {
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-dh-verdicttag { color: var(--ks3-accent-text); }
+.ks3-dark .ks3-dh-verdictbody { color: var(--ks3-ink-body); }
+
+/* ── b10-04 `#s-bench` · pea-cross ─────────────────────────────────────── */
+
+.ks3-pc { margin-top: 22px; }
+.ks3-pc-parents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 30px;
+}
+.ks3-pc-parentname {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.ks3-pc-genos {
+  margin-top: 0;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.ks3-pc-geno {
+  width: auto;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: 700;
+}
+.ks3-pc-panel {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-card);
+}
+.ks3-pc-crossline {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+/* ⚠️ THE SINGLE-SEED CARD AND THE HUNDRED-SEED TALLY ARE NEVER ON SCREEN
+   TOGETHER, and that is the instrument's argument rather than a layout
+   choice: one seed is the "chance decides each one" story, a hundred is the
+   "only totals show the pattern" story. Growing a hundred CLEARS this card
+   (Design's `last: n === 1 ? last : null`). */
+.ks3-pc-last {
+  margin-top: 16px;
+  padding: 16px 18px;
+  border-radius: var(--ks3-r-panel);
+}
+.ks3-pc-lastlabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.ks3-pc-lastline {
+  margin: 8px 0 0;
+  font-size: 19px;
+  line-height: 1.5;
+}
+.ks3-pc-tally { margin-top: 18px; }
+.ks3-pc-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ks3-pc-rowhead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ks3-pc-rowname {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+.ks3-pc-rowvalue {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 16px;
+}
+.ks3-pc-track {
+  display: block;
+  margin-top: 5px;
+  height: 16px;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.ks3-pc-bar {
+  display: block;
+  height: 100%;
+  transition: width .3s;
+}
+.ks3-pc-ratio {
+  margin: 12px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 16px;
+  font-weight: 500;
+}
+.ks3-pc-note {
+  margin: 18px 0 0;
+  padding: 15px 17px;
+  border-radius: var(--ks3-r-panel);
+  font-size: 18px;
+  line-height: 1.55;
+}
+.ks3-pc-foot {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  flex-wrap: wrap;
+}
+
+/* ── pea-cross on ink ──────────────────────────────────────────────────── */
+.ks3-dark .ks3-pc-parentname { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-pc-panel { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-pc-crossline { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-pc-last { background: rgba(255, 255, 255, .06); }
+.ks3-dark .ks3-pc-lastlabel { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-pc-lastline { color: var(--ks3-on-dark-body); }
+.ks3-dark .ks3-pc-rowname { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-pc-rowvalue { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-pc-track { background: rgba(255, 255, 255, .08); }
+/* ⚖️ THE TWO BARS ARE TWO COLOURS AND NEITHER IS A MARK. Purple-flowered takes
+   the alert and white-flowered the muted, exactly as Design paints them —
+   which is a quantity being distinguished from another quantity, not a right
+   answer being distinguished from a wrong one. There is nothing on this bench
+   to be right about: chance decides each seed. */
+.ks3-dark .ks3-pc-bar[data-pc-bar] { background: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-pc-row[data-pc-row="dominant"] .ks3-pc-bar {
+  background: var(--ks3-alert);
+}
+.ks3-dark .ks3-pc-ratio { color: var(--ks3-alert); }
+.ks3-dark .ks3-pc-note {
+  background: rgba(255, 255, 255, .06);
+  color: var(--ks3-on-dark-body);
+}
+.ks3-dark .ks3-pc-geno[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-pc-one,
+.ks3-dark .ks3-pc-many,
+.ks3-dark .ks3-pc-clear {
+  background: var(--ks3-on-dark);
+  border-color: var(--ks3-on-dark);
+  color: var(--ks3-ink);
+}
+
+/* ── b10-05 `#s-bench` · species-cases ─────────────────────────────────── */
+
+.ks3-sc { margin-top: 22px; }
+.ks3-sc-tabslabel {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.ks3-sc-tabs {
+  margin-top: 0;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.ks3-sc-tab {
+  width: auto;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: 700;
+}
+.ks3-sc-panel {
+  margin-top: 20px;
+  padding: 24px 26px;
+  border-radius: var(--ks3-r-card);
+}
+.ks3-sc-title {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 25px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+}
+.ks3-sc-facts {
+  margin: 12px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+}
+.ks3-sc-commit {
+  margin: 20px 0 10px;
+  font-size: 17px;
+  font-weight: 600;
+}
+.ks3-sc-verdicts {
+  margin-top: 0;
+  flex-direction: column;
+  gap: 9px;
+}
+.ks3-sc-verdict {
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 18px;
+  line-height: 1.5;
+  padding: 14px 16px;
+  border-radius: var(--ks3-r-panel);
+}
+.ks3-sc-letter {
+  flex: 0 0 26px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 14px;
+  border: 2px solid transparent;
+}
+/* ⛔ ONCE THE CASE IS OPENED THE UNCHOSEN VERDICTS DIM AND THE CHOSEN ONE
+   KEEPS EXACTLY THE GROUND IT HAD. That is the whole treatment: no green on
+   the right one, no red on the wrong one, no badge. The bench says whether the
+   commitment held in WORDS, on the cream panel below (schema §0.6), and the
+   student's own button is never marked (MRB-196 R10). */
+.ks3-sc-case[data-sc-opened] .ks3-sc-verdict { cursor: default; }
+.ks3-sc-case[data-sc-opened] .ks3-sc-verdict[aria-pressed="false"] {
+  opacity: .5;
+}
+.ks3-sc-check[disabled] { opacity: .45; cursor: default; }
+.ks3-sc-check[disabled]:hover { transform: none; }
+.ks3-sc-foot {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  flex-wrap: wrap;
+}
+.ks3-sc-tally {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+}
+.ks3-sc-out {
+  margin-top: 18px;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+}
+.ks3-sc-tag {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.ks3-sc-answer {
+  margin: 9px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1.25;
+  letter-spacing: -.02em;
+}
+.ks3-sc-why {
+  margin: 11px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* ── species-cases on ink ──────────────────────────────────────────────── */
+.ks3-dark .ks3-sc-tabslabel { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-sc-panel { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-sc-title { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-sc-facts { color: var(--ks3-on-dark-body); }
+.ks3-dark .ks3-sc-commit { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-sc-tab[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+/* A verdict is a full-width ROW on the panel ground, not a segment — three
+   sentences that have to be read, not three chips to be scanned. */
+.ks3-dark .ks3-sc-verdict {
+  background: transparent;
+  border-color: var(--ks3-on-dark-muted);
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-sc-verdict[aria-pressed="true"] {
+  background: rgba(255, 255, 255, .1);
+  border-color: var(--ks3-alert);
+}
+.ks3-dark .ks3-sc-letter {
+  border-color: var(--ks3-on-dark-muted);
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-dark .ks3-sc-verdict[aria-pressed="true"] .ks3-sc-letter {
+  border-color: var(--ks3-alert);
+  color: var(--ks3-alert);
+}
+.ks3-dark .ks3-sc-check {
+  background: var(--ks3-on-dark);
+  border-color: var(--ks3-on-dark);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-sc-tally { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-sc-out {
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+/* ⛔ ACCENT-TEXT AT 6.0:1, NEVER `--ks3-accent` AT 3.4:1 — the tag is 14px
+   mono. And ONE TONE for both verdicts: the bench says whether the commitment
+   held and says it the same way whichever way it went. */
+.ks3-dark .ks3-sc-tag { color: var(--ks3-accent-text); }
+.ks3-dark .ks3-sc-answer { color: var(--ks3-ink); }
+.ks3-dark .ks3-sc-why { color: var(--ks3-ink-body); }
+
+/* ═══ END B10 ═══ */

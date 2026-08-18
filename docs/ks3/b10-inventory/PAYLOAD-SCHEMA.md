@@ -536,14 +536,32 @@ around this by reading the *bench's* state for the band stop — `n >= 3` plotte
 i.e. Design deliberately mirrors stop 2 into stop 3. `doneByDom()` cannot read across blocks, so it
 cannot reproduce that.
 
-**Draw three stops per page, not four** — hook, bench, ladder — which is what B7 landed on for the
+⛔ **REVERSED by MRB-249. The paragraph below is kept, marked, and is NOT what to build.** It read:
+*"Draw three stops per page, not four — hook, bench, ladder — which is what B7 landed on for the
 same reason. Twenty stops across five lessons, all twenty of which can tick. The alternative
 (emitting a mirrored `data-stage-done` on a static band) invents a completion signal for a section
-the student cannot complete, and the B1 finding quoted inside `doneByDom()` is that guessing at
-completion is exactly how a stop ticks when it should not.
+the student cannot complete."* Every clause of that is about the runtime, and none of it was ever a
+reason to drop a stop Design drew. `mirrors` is now resolved in `wireRail`'s `paint()` at rail
+level — where Design resolves it — so the band stop ticks the moment its target does, and nothing
+is invented: the completion signal is the instrument's own.
 
-This is a NOTES disagreement in effect, not in wording: NOTES §3 says "Rail stops: four in all five
-lessons", which is true of what Design drew and false of what can be honoured.
+**AUTHOR FOUR STOPS PER PAGE. TWENTY ACROSS THE UNIT.** The third is a mirror, exactly as B9's
+shipped:
+
+    {"anchor": "s-two", "short": "TWO", "label": "…",
+     "mirrors": "s-bench", "done_when": "<the bench's own condition>"},
+
+Per lesson the mirror's anchor and `done_when` are: b10-01 `s-two` / three plotted · b10-02
+`s-model` / all six levels shown · b10-03 `s-who` / solved · b10-04 `s-steps` / twenty seeds ·
+b10-05 `s-test` / five cases opened. Those are Design's own `isDone()` thresholds, recorded in the
+paragraph above this one.
+
+`ks3_parity.check_rail_matches_design` gates the built rail against `docs/ks3/rail-manifest.md`,
+which is generated from Design's delivered pages — so a rail of three now FAILS THE BUILD naming
+the page. Thirty-five pages shipped with a stop missing before that gate existed.
+
+The NOTES are right and this section was wrong: NOTES §3's "Rail stops: four in all five lessons"
+is true of what Design drew and true of what we build.
 
 ## 9. `#s-think` is `confrontation`, not `predict` — on all five pages
 
@@ -606,20 +624,71 @@ Mapped against the two beliefs each page's `#s-think` actually confronts:
 |---|---|---|
 | b10-01 | `GENE-01`, `GENE-02` | continuous = environmental / discontinuous = genetic · "if you can measure it with a ruler it is continuous" |
 | b10-02 | `GENE-03`, `GENE-04` | chromosomes, genes and DNA are three different things · only the cells that need a gene contain it |
-| b10-03 | `GENE-05`, `GENE-06` | "Watson and Crick discovered DNA" · "a great discovery is one person's flash of insight" |
+| b10-03 | `GENE-05`, **`NOS-03`** ⊕ | "Watson and Crick discovered DNA" · "a great discovery is one person's flash of insight" |
 | b10-04 | `GENE-07`, `GENE-08` | characteristics blend · "it skipped a generation, so the gene disappeared and came back" |
 | b10-05 | `GENE-09`, `GENE-10` | organisms that look alike are the same species · "if two animals can have a baby, they are the same species" |
 
-⚠️ **No spare is minted.** B7 pre-allocated one spare per lesson (`PLANT-09`…`PLANT-12`) and B10
-does not, so a pass that finds a sixth belief must mint a new id at that point and record it — it
-must not re-point one of the ten. Ids are permanent; `DRUG-07` and `REPRO-17`/`20`/`21`/`23` stay
-permanently unused and so would any spare here.
+⊕ **SPARES ARE PRE-ALLOCATED, 18 Aug 2026 — reversing the line below on Mide's instruction that
+the range be fixed per lesson, with a named spare, BEFORE parallel authors are dispatched.**
 
-`GENE-06` carries NOTES §4's live caveat: it is a nature-of-science belief that would sit in a `NOS`
-family if one existed, the candidate-family ruling under the `PART` entries is still outstanding,
-and it cross-references `testing-the-model` in its `reappears_in`. **If `NOS` is ever opened this is
-the first entry that should move, and because ids are permanent that decision must be taken before
-publish, not after.**
+| Lesson | Entries | Spare |
+|---|---|---|
+| b10-01 | `GENE-01`, `GENE-02` | `GENE-11` |
+| b10-02 | `GENE-03`, `GENE-04` | `GENE-12` |
+| b10-03 | `GENE-05`, `GENE-06` | `GENE-13` |
+| b10-04 | `GENE-07`, `GENE-08` | `GENE-14` |
+| b10-05 | `GENE-09`, `GENE-10` | `GENE-15` |
+
+The reason is concurrency, not generosity. Five authors work five files at once and none of them
+can see the others; an author who finds a third belief and has to "mint a new id at that point"
+mints it from the same next-free number as everyone else, and two different beliefs arrive holding
+`GENE-11`. Ids are permanent, so that collision cannot be tidied afterwards — one of the two
+beliefs would have to be renumbered in a register that has already promised the number is fixed.
+A pre-allocated spare per lesson makes the collision impossible.
+
+An unclaimed spare stays **permanently unused**, exactly like `DRUG-07` and
+`REPRO-17`/`20`/`21`/`23`. That is the cost, it is nil, and it is much smaller than the cost of the
+collision it prevents. Never re-point a spare at a different belief.
+
+⛔ The line this replaces, kept per §12: *"No spare is minted. B7 pre-allocated one spare per lesson
+(`PLANT-09`…`PLANT-12`) and B10 does not, so a pass that finds a sixth belief must mint a new id at
+that point and record it — it must not re-point one of the ten."* The instruction to mint on the
+spot is what changed; the prohibition on re-pointing has not.
+
+⊕ **RULED 18 Aug 2026 — `GENE-06` IS A PERMANENT GAP. b10-03's second belief is `NOS-03`.**
+
+This section was wrong and it is mine, so it is the one that gets corrected. It pre-allocated
+`GENE-06` to *"a great discovery is one person's flash of insight"* and said that if a `NOS` family
+were ever opened, this would be the first entry that should move. The family had ALREADY been
+opened — `docs/ks3/misconception-register.md`'s `NOS` section, written 17 Aug 2026, records that
+belief as `NOS-03` and lists `GENE-06` among the numbers that must never be issued. This section is
+dated a day later and contradicted it, and it was about to hand the contradiction to five parallel
+authors who cannot see each other.
+
+The ruling is not a new decision; it is the third application of one this repo already made twice:
+
+| unit-family id | becomes | status of the unit id |
+|---|---|---|
+| `ECO-12` | `NOS-04` — minted 18 Aug by b9-06 | permanent gap |
+| `REACT-18` | `NOS-06` — reserved | permanent gap |
+| **`GENE-06`** | **`NOS-03`** — minted by b10-03 | **permanent gap** |
+
+A nature-of-science belief lives in `NOS`. That is what the family is for, and it is the whole
+reason it was opened. The unit-family number is not reissued to anything else, ever — it is a gap
+in the same class as `DRUG-07` and `REPRO-17`/`20`/`21`/`23`.
+
+**What the b10-03 author authors: `GENE-05` and `NOS-03`.** An id from another family in a lesson's
+`misconceptions` list is normal and already shipped — `ks3_data/b9/lesson_06_sampling_an_ecosystem.py`
+carries `ECO-11` and `NOS-04` together, and its own docstring explains why `ECO-12` does not exist.
+Follow that file.
+
+**The spare is unaffected: b10-03's spare is still `GENE-13`.**
+
+⚠️ A standing note that came out of this, worth more than the ruling itself: `NOTES-B10 §4` states
+its entries were "written into `docs/ks3/misconception-register.md` with a new prefix row". They
+were not. `NOTES-B11 §4` says the same of `EVOL` and it was not either, and `NOTES-B5` and
+`NOTES-B7` said it before them. **Read a delivery's §4 as an allocation PROPOSAL and check the
+register itself.** Four occurrences is a pattern, not four slips.
 
 `confronted_by` and `elicited_by` **must name an element on that lesson's own page** — an activity
 `id` or a block `anchor` the page actually emits. Gated under MRB-244 and resolved against the BUILT
@@ -679,3 +748,119 @@ the hook, band, ladder and keynote chassis. Ten activity records for the unit.
 `startCharacteristic` (b10-01) and preset parent genotypes (b10-04) as the natural second tweaks;
 neither is drawn. **Do not add them.** Note that the b10-04 one would collide with the `start` key
 in §5 if it were ever added, and the `start` key wins — it is content, not a tweak.
+
+---
+
+## 16. Science rulings — the three NOTES flags the delivery held for an answer ⊕
+
+`docs/ks3/design-reference/b10/README.txt` names three flags as needing an answer before publish.
+All three are ruled here, 18 Aug 2026, under this run's standing authority over KS3 science. **No
+lesson waits on them and no author re-opens them.** All three come out as *ship as drawn*, which is
+the point of writing them down: an unanswered flag stops a build, and an answered one that nobody
+recorded stops the next one.
+
+### Flag 9 — the credit note on Photo 51 (b10-03, `ks3-support` layer). SHIP AS DRAWN.
+
+Every fact in it is right, and I checked each one rather than the passage as a whole: Raymond
+Gosling took Photo 51 working under Franklin at King's; Wilkins showed it to Watson without her
+knowledge; Franklin's unpublished MRC report reached Crick through the MRC Biophysics Committee; the
+1953 *Nature* paper acknowledged only having been *"stimulated by a knowledge of the general nature
+of the unpublished experimental results and ideas"* of the King's group; Franklin died in 1958, aged
+37; the prize was 1962 and a Nobel cannot be awarded posthumously.
+
+The treatment is also right, and the reason is worth stating because it is the part a later pass
+would be tempted to "improve". The statutory point names Watson, Crick, Wilkins **and** Franklin, so
+the history is statutory content rather than enrichment — it has to be taught, and taught
+accurately. Design's passage does that, says historians still disagree about interpretation, and
+names no villain. It specifically does **not** claim Franklin was denied the prize because of the
+credit dispute; she was ineligible because she had died. That distinction is the single most
+important sentence in the passage and it is already correct. Do not sharpen it into a grievance and
+do not soften it into a coincidence.
+
+⚠️ One observation that is NOT a science point and is Mide's if he wants it: `ks3-support` is the
+*"Need a hand?"* layer, which is scaffolding for a student who is stuck. A credit note is neither
+scaffolding nor stretch. Design drew it there and MRB-205 says the page wins, so it ships there.
+Recorded as a layer-semantics question, not a blocker.
+
+### Flag 10 — a values judgement in a marked rung (b10-03 rung 4). SHIP AS DRAWN, with a check.
+
+The statutory clause is *"the part played by"* the four scientists. A rung that asks a student to
+write a fairer acknowledgement is assessing whether they can attribute contributions accurately,
+which is exactly that clause. It is not marking their values.
+
+**The criteria are what make that true, so the b10-03 author must verify them rather than assume
+them:** every criterion must reward accuracy of attribution — who did what, what was published, what
+was not — and none may reward arriving at a particular moral conclusion. NOTES §2 flag 10 says the
+criteria "explicitly reward *not* treating it as heroes and villains", which is a rule about
+reasoning rather than about a verdict, and that is the right side of the line. If any criterion
+turns out to reward a stance instead of a fact, report it and do not ship that criterion.
+
+### Flag 13 — hold "dominant" and "recessive" back to GCSE (b10-04). CONFIRMED. HOLD THEM BACK.
+
+The KS3 programme of study asks for heredity as the process by which genetic information is
+transmitted between generations. It does not name dominant or recessive; those are GCSE vocabulary.
+Design's lesson says *"overrides"* and *"hidden"* and names neither term. That is correct and it
+stays.
+
+The test that matters is not whether the words are absent but whether anything taught here becomes
+**wrong** later, and nothing does. "Hidden" is a true description of an allele that is present and
+not expressed. "Overrides" is a true description of the relationship. What would break is calling
+the hidden version *weaker*, *lost* or *used up* — and that is precisely the belief `GENE-08`
+confronts on this page (*"it skipped a generation, so the gene disappeared and came back"*), so the
+lesson already argues against its own worst failure mode. P/p, clean dominance and a 3:1 expectation
+are standard and correct for Mendel's peas at this level.
+
+**Do not introduce either term as a synonym "for later", not even in a support layer.** A term
+introduced without the machinery to use it is a word to be memorised, and the whole reason to hold
+it back is that at GCSE it arrives attached to genotypes, gametes and Punnett squares that this
+lesson deliberately does not have.
+
+⊕ **The wording above is tightened, 18 Aug 2026, because the b10-04 author measured the page
+against it and found it too absolute.** This ruling first said the lesson "names neither term". It
+does not literally: `convention_note` says *"a clean dominance rule"* twice, and the *At GCSE this
+becomes* card reads *"Alleles, dominant and recessive…"*. Both ship, and a later pass reading the
+old phrasing against the page would have reported a defect that is not one.
+
+The real test is not whether the string appears. It is **whether the term is TAUGHT or MARKED**:
+
+| where it appears | verdict | why |
+|---|---|---|
+| a chip, a bench label, a ladder option, a correction, a criterion | ⛔ **never** | that is teaching it, or marking a student on it |
+| `ks4_becomes` — *"At GCSE this becomes"* | ✅ correct, and the opposite of a leak | naming what arrives later is that card's entire job; a student is told the word exists and is not asked to use it |
+| `convention_note` — describing the MODEL's scope | ✅ allowed | metalanguage about the simplification, not vocabulary the student is asked to hold. It is the honest admission that peas are tidier than people |
+
+What must stay true either way is the thing the whole ruling protects: nothing taught here becomes
+wrong at GCSE. Never describe the hidden version as weaker, lost or used up.
+
+### The histogram's bars TOUCH. Ruled 18 Aug 2026, and it overrides Design's measured pixels.
+
+The engine pass found b10-01's chart row carrying `gap: 4px` on top of the derived bar width, so
+continuous bars stood 4px apart — while the same page's axis caption reads *"bars touch because the
+categories are ranges"* and its verdict line reads *"a histogram, bars touching"*. It set the row
+gap to 0 and flagged it as its one deviation from Design's measurement. **The deviation is correct
+and it is confirmed.**
+
+"Follow the page" has no answer here, because the page contradicts itself: its pixels say one thing
+and two of its own sentences say the other. When a page disagrees with itself, the tie is broken by
+the science, and the science is not ambiguous. **Touching bars are what make a histogram a
+histogram.** The gap between bars is the notation for a gap between categories, and continuous data
+has none — that is the entire distinction this lesson exists to teach, and it is the distinction
+`GENE-01` gets wrong. A four-pixel gap on the continuous chart teaches the discontinuous case in the
+one place a student is looking for the difference.
+
+So separation now comes from exactly one place, which is the place schema §2 allows: continuous
+bars meet at 0px, discontinuous bars stand at 6px. Both are asserted on painted geometry rather than
+on the stylesheet, so a future change to either has to argue with a gate.
+
+This is a rendering correction, not a copy change: Design's caption and verdict are lifted
+byte-identical and are now true of the drawing beside them.
+
+### Flags 8, 11, 12, 14, 15, 16 — checked, correct, ship as drawn.
+
+Not in the README's list of three, checked anyway because they are science and this run rules it.
+The Pauling triple-helix card earns its place: a wrong model that was useful evidence is a true and
+unusually valuable thing to teach. Miescher 1869 and Avery–MacLeod–McCarty 1944 are correct and at
+the right depth. Meselson and Stahl paraphrased rather than quoted is the better choice for this
+age. Mendel's figures are right. Horse 64 / donkey 62 / mule 63 is right, and "almost always
+infertile" with fertile female mules in the legal line is the honest form of it. The pipistrelle
+split is real and was recognised on echolocation frequency in the 1990s.

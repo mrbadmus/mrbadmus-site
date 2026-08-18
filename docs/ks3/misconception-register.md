@@ -116,6 +116,8 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `RESP` | Respiration: what it is, where it happens, and what it is not | 2026-08-18, by B8 |
 | `ECO` | Ecosystems, feeding relationships and interdependence | 2026-08-18, by B9 |
 | `NOS` | Nature of science — how models, evidence and theories actually work | 2026-08-17, by MRB-248 (commander's ruling), populated by re-homing from `PART` and `DRUG` |
+| `GENE` | Variation, inheritance, and what a gene actually is | 2026-08-18, by B10 |
+| `EVOL` | Natural selection, extinction and biodiversity | 2026-08-18, by B11 |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
 — **not yet opened, listed so numbering starts consistently**: `FORCE` (forces and motion),
@@ -731,6 +733,7 @@ idea fought in three subjects under three prefixes is fought three times from sc
 |---|---|---|---|---|
 | `NOS-01` | A scientific model is either true or false, and one exception proves it wrong. | `the-verdict` | `the-verdict` | `testing-the-model` |
 | `NOS-02` | Scientists' models never change once they are agreed. | `settled-science` | `settled-science` | `testing-the-model` |
+| `NOS-03` | A great discovery is one person's flash of insight. | — | `s-think` | `how-we-worked-out-dna` |
 | `NOS-04` | A large sample is an accurate sample. | `s-ladder` | `s-think` | `sampling-an-ecosystem` |
 | `NOS-05` | One person who came to no harm disproves a risk. | `find-the-fault` | `find-the-fault` | `substance-misuse-and-decisions` |
 
@@ -761,7 +764,6 @@ rule at the top of this file).
 
 | ID | Belief | Lesson | Would otherwise have been |
 |---|---|---|---|
-| `NOS-03` | A great discovery is one person's flash of insight. | B10 `how-we-worked-out-dna` | `GENE-06` |
 | `NOS-06` | *(reserved)* | a future chemistry reactions unit | `REACT-18` |
 
 ⊕ **`NOS-04` MINTED 18 Aug 2026 by B9** and struck from the reserved table above, which is
@@ -769,6 +771,57 @@ what that table said would happen: a reserved id is minted by the pass that auth
 It is elicited at `s-ladder` — rung 2's first option is the belief in a student's own words —
 and confronted at `s-think`. It reappears in `substance-misuse-and-decisions`, whose
 claim-check bench holds the same fault in a health costume. `ECO-12` stays a permanent gap.
+
+⊕ **`NOS-03` MINTED 18 Aug 2026 by B10 `how-we-worked-out-dna`**, and struck from the reserved
+table above — the same treatment as `NOS-04` one entry earlier, and for the same reason: a reserved
+id is minted by the pass that authors its page. It declares no `elicited_by`, and that is measured
+rather than lazy. Nothing on `how-we-worked-out-dna` asks the student to commit to the belief: the
+hook asks how you see something too small to see, and the model-builder bench requires all four
+people's evidence to solve, which *performs* the counter rather than surfacing the belief. Absence
+is legal under MRB-248 and is the honest answer; inventing an anchor would fail the gate that
+checks it names a real place. Its `reappears_in` carries `testing-the-model`, where `NOS-01` and
+`NOS-02` live. **`GENE-06` is now a permanent gap** — see below.
+
+#### ⚖️ THE `NOS-03` / `GENE-06` RULING — DECIDED 18 Aug 2026 by the commander. Do not re-open.
+
+The register and B10's schema contradicted each other and the register was carrying one side
+silently. This section, written 17 Aug 2026, reserved `NOS-03` for b10-03's second belief and
+listed `GENE-06` among the numbers never to be issued.
+`docs/ks3/b10-inventory/PAYLOAD-SCHEMA.md` §12, written 18 Aug 2026, allocated `GENE-06` to that
+same belief and handed the allocation to five parallel authoring passes who could not see each
+other. Both could not stand.
+
+**Ruled: `NOS-03` wins. `GENE-06` is a permanent gap and is never issued to anything.** The
+reasoning is recorded because a future pass has to be able to see WHY, not only what:
+
+1. **The belief is a nature-of-science belief.** *"A great discovery is one person's flash of
+   insight"* is about how a claim gets settled and who settles it — not about genes, inheritance or
+   variation. That is what `NOS` exists for, and it is why the family was opened at all.
+2. **The precedent is already law here, and this is its third application, not a new decision.**
+   `ECO-12`'s belief became `NOS-04` and `ECO-12` is a permanent gap. `REACT-18` → `NOS-06` is the
+   same shape, reserved ahead of its unit. `GENE-06` → `NOS-03` is that pattern a third time. A
+   register that applied it twice and then declined it once would mean the family boundary is
+   negotiable, which is precisely the accident-of-build-order failure `NOS` was opened to undo.
+3. **The schema is the document that was wrong, and it is the commander's own.** §12 is dated a day
+   after this section and contradicts it; the commander is correcting §12 directly. **No pass edits
+   §12 on the strength of this entry** — read the ruling here and build against it.
+
+`NOS-01`, `NOS-02`, `NOS-04` and `NOS-05` are unaffected, and nothing else in the re-home list
+moves.
+
+⚠️ **b10-03's two beliefs are `GENE-05` and `NOS-03`.** Not `GENE-05` and `GENE-06`. An author
+picking up `how-we-worked-out-dna` before the §12 correction lands will read the old allocation
+there; **this file wins**. The `GENE` table below carries the same warning at the point of the gap,
+because that is the other place an author will look. b10-03's pre-allocated spare is `GENE-13` and
+is unaffected by the ruling — it remains an unclaimed permanent spare like the other four.
+
+⚠️ **`NOTES-B11.md` §5 item 3 reproduces the `DRUG-06` error and must not be followed.** It lists
+the open `NOS` question as affecting *"`PART-12`/`PART-13` in C1, `GENE-06` in B10, and arguably
+`ECO-12`/`DRUG-06`"*. `DRUG-06` is a SOCIAL-NORM belief — *"Everyone my age is doing it."* — and
+stays in `DRUG`, for the reasons already argued above; `ECO-12` is not open at all, it was settled
+as `NOS-04` on 18 Aug; and `GENE-06` was settled as `NOS-03` on the same day. **None of the three
+the note names is open.** The note stays uncorrected — Design's notes are not ours to edit — so a
+pass reading it must come here rather than act on it.
 
 #### Permanent gaps — never allocate any of these
 
@@ -786,7 +839,8 @@ A future author reaching for the next free number in `GENE`, `ECO` or `REACT` mu
 because the belief that would have taken each one is now recorded elsewhere and a second id for one
 belief is exactly what this register exists to prevent:
 
-- **`GENE-06`** — is `NOS-03`.
+- **`GENE-06`** — is `NOS-03`. **Settled 18 Aug 2026, see the ruling above.** Never issued, to this
+  belief or to any other.
 - **`ECO-12`** — is `NOS-04`.
 - **`REACT-18`** — is `NOS-06`.
 
@@ -860,3 +914,174 @@ faked with an invented anchor.
 | `RESP-08` | Yeast is a powder — a raising agent, like baking powder. | `s-bench` | `s-think` | `fermentation` |
 | `RESP-09` | Aerobic respiration is the fast one, because that is the one athletes train for. | `s-bench` | `s-think` | `aerobic-vs-anaerobic` |
 | `RESP-10` | Anaerobic respiration is the emergency backup — something has gone wrong when it happens. | `s-hook` | `s-think` | `aerobic-vs-anaerobic` |
+
+---
+
+### `GENE` — variation, inheritance, and what a gene actually is
+
+Opened 18 Aug 2026 by **B10 *Inheritance and variation*** (MRB-248). **Nine
+entries across five lessons — two per lesson except b10-03, whose second belief
+is a nature-of-science fault and lives in `NOS` as `NOS-03`.** Exactly the shape
+`ECO` has, and for the same reason. All `review_state: draft` —
+`statement` is science-bearing under §5.10 and needs Mide's review before any
+of these freeze.
+
+**Ids were pre-allocated per lesson before dispatch**, two per lesson with a
+named spare each, in `docs/ks3/b10-inventory/PAYLOAD-SCHEMA.md` §12, so five
+parallel authoring passes could not collide. Same discipline as `REPRO`,
+`DRUG` and `RESP`. No id collided.
+
+Every statement is Claude Design's own quoted belief, lifted byte-identical
+from the two `.ks3-mis-quote` elements in each page's `#s-think`.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `GENE-01` | Continuous variation is caused by the environment; discontinuous variation is genetic. | `s-ladder` | `s-think` | `variation-continuous-and-discontinuous` |
+| `GENE-02` | If you can measure it with a ruler it is continuous. | `s-hook` | `s-think` | `variation-continuous-and-discontinuous` |
+| `GENE-03` | Chromosomes, genes and DNA are three different things in the nucleus. | `s-ladder` | `s-think` | `chromosomes-genes-and-dna` |
+| `GENE-04` | Only the cells that need a gene contain it. | `s-ladder` | `s-think` | `chromosomes-genes-and-dna` |
+| `GENE-05` | Watson and Crick discovered DNA. | `s-ladder` | `s-think` | `how-we-worked-out-dna` |
+| ~~`GENE-06`~~ | **PERMANENT GAP — the belief is `NOS-03`.** Never issued. See below. | — | — | — |
+| `GENE-07` | Characteristics blend — a tall parent and a short parent give a medium child. | `s-hook` | `s-think` | `passing-it-on-heredity` |
+| `GENE-08` | It skipped a generation, so the gene must have disappeared and come back. | `s-ladder` | `s-think` | `passing-it-on-heredity` |
+| `GENE-09` | Organisms that look alike are the same species. | `s-hook` | `s-think` | `what-makes-a-species` |
+| `GENE-10` | If two animals can have a baby together, they are the same species. | `s-hook` | `s-think` | `what-makes-a-species` |
+
+⛔ **`GENE-06` IS A PERMANENT GAP AND IS NEVER ISSUED. Ruled 18 Aug 2026 by the commander.** Its
+belief — *"A great discovery is one person's flash of insight."* — is a nature-of-science belief
+and lives in `NOS` as `NOS-03`. The row is struck through above rather than deleted, so that the
+gap at `06` reads as a decision and not as an id somebody forgot; a family that simply skipped a
+number would invite the next author to assume it was free. It is in the same class as `ECO-12`,
+`DRUG-07` and `REPRO-17`/`20`/`21`/`23`: **never re-pointed at a different belief, in this family
+or any other.** The ruling and its three-case precedent are recorded in full in the `NOS` section
+above.
+
+⚠️ **b10-03's two beliefs are therefore `GENE-05` and `NOS-03` — not `GENE-05` and `GENE-06`.**
+`docs/ks3/b10-inventory/PAYLOAD-SCHEMA.md` §12 still shows the old allocation until the commander's
+correction to it lands, so an author picking up `how-we-worked-out-dna` may read `GENE-06` there.
+**This file wins.** b10-03's pre-allocated spare, `GENE-13`, is untouched by the ruling and remains
+an unclaimed permanent spare exactly like the other four.
+
+**`NOS-03` declares no `elicited_by`, and that is measured rather than lazy.** Nothing on
+`how-we-worked-out-dna` asks the student to commit to the flash-of-insight belief: the hook asks
+how you see something too small to see, and the model-builder bench requires all four people's
+evidence to solve — which *performs* the counter rather than surfacing the belief. Absence is legal
+under MRB-248 and is the honest answer here; inventing an anchor to fill the column would fail the
+gate that checks it names a real place. Same shape as `ECO-08`, `ECO-11`, `RESP-01` and `RESP-05`.
+
+**⚠️ `GENE-11` to `GENE-15` are ALL deliberately unused and must stay unused.** One spare was
+pre-allocated per lesson before dispatch so that a pass finding a third belief had an id to take
+without asking; the pages carry two confrontable beliefs each and no pass claimed one. Ids are
+permanent and a gap is cheaper than a renumber. **Never re-point a spare at a different belief** —
+same rule as `DRUG-07`, `REPRO-17`/`20`/`21`/`23` and `PLANT-09`–`PLANT-12`, and the schema that
+allocated them says so in the same words.
+
+**`GENE-01` and `GENE-02` are two halves of one confusion and are deliberately separate.**
+`GENE-01` is about *cause* — that a smooth range must be environmental — and is elicited at rung 2,
+whose first distractor is the belief in a student's own words. `GENE-02` is about *how you tell*,
+and is elicited at the hook, whose option B offers measurement-with-an-instrument as the test. The
+page's KEY FACT keeps them apart in one sentence: whether variation is continuous is a question
+about the data, and what caused it is a separate question with a separate answer.
+
+**`CELL-05` reappears in `chromosomes-genes-and-dna` and is NOT re-minted.** The `CELL` list above
+predicted it would land here, *"where it does real damage"*, and the prediction is now met — but
+only glancingly. The page's ladder says *"every cell **with a nucleus** carries the complete set"*,
+which presupposes the correction rather than confronting it; `GENE-04` is the belief this page
+actually takes apart, and it is a different one. Under the cite-do-not-re-declare rule that makes
+this a reappearance, recorded here rather than a second `CELL-05` row.
+
+### ⚑ STANDING NOTE — a delivery's §4 is an ALLOCATION PROPOSAL, not a record of register work
+
+Recorded once here, and it applies to every unit past, present and future. Four deliveries have now
+stated that their misconception entries were *"written into `docs/ks3/misconception-register.md`
+with a new prefix row"* when no such row and no such entry existed: **`NOTES-B5`, `NOTES-B7`,
+`NOTES-B10` and `NOTES-B11`.** In the B11 case the delivery's own
+`docs/ks3/b11-inventory/PAYLOAD-SCHEMA.md` §11 item 5 caught it independently — `grep -n "EVOL"`
+on this file returned nothing.
+
+**Four occurrences is a pattern, not four slips**, and the pattern has a cause worth naming: a
+delivery's §4 is written by the pass that *decides* the ids, and deciding them feels like recording
+them. It is not. This file is hand-maintained, has no generator, and nothing writes to it except a
+pass that opens it and types.
+
+So the rule for every pass that reads a NOTES §4 or a schema §12:
+
+- Read it as **the allocation being proposed** — which ids, for which beliefs, on which lessons.
+- **Never read it as evidence the register contains them.** Check this file. `grep` the prefix.
+- If the family is absent, the register work is outstanding and is yours; write it from the
+  approved pages, which are the authority on wording, not from NOTES.
+- If NOTES and this file disagree on an id, **this file wins** — see the `NOS-03`/`GENE-06` ruling
+  above for what happens when they do, and how expensive it is once authors are already building.
+
+---
+
+### `EVOL` — natural selection, extinction and biodiversity
+
+Opened 18 Aug 2026 by **B11 *Evolution and inheritance*** (MRB-248). Eight
+entries across four lessons, two per lesson. All `review_state: draft`, as
+above.
+
+The family sits directly on top of `GENE` and is the point of it: `GENE`
+establishes that variation exists and is inherited unchanged, and `EVOL` is
+what follows once an environment does the choosing. The unit's hardest problem
+is **agency in the wrong place** — the idea that an organism or a population
+changes itself because it needs to. `EVOL-03` and `EVOL-04` are that instinct
+undisguised, `EVOL-02` is its cousin, and it is the Lamarckian error the whole
+of `natural-selection` is built to take apart.
+
+Every statement is Claude Design's own quoted belief, lifted byte-identical
+from the two `.ks3-mis-quote` elements in each page's `#s-think`.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `EVOL-01` | Survival of the fittest means the strongest survive. | `s-hook` | `s-think` | `variation-and-competitive-success` |
+| `EVOL-02` | Some individuals are just better than others. | `s-ladder` | `s-think` | `variation-and-competitive-success` |
+| `EVOL-03` | Animals change themselves to suit their environment, and pass the change on. | `s-hook` | `s-think` | `natural-selection` |
+| `EVOL-04` | The population needed to change, so it did. | `s-hook` | `s-think` | `natural-selection` |
+| `EVOL-05` | Extinction is unnatural — it only happens because of us. | `s-ladder` | `s-think` | `when-the-environment-changes-extinction` |
+| `EVOL-06` | If a species goes extinct, another one just takes its place. | — | `s-think` | `when-the-environment-changes-extinction` |
+| `EVOL-07` | Biodiversity means how many different species there are. | `s-ladder` | `s-think` | `biodiversity-and-gene-banks` |
+| `EVOL-08` | We have gene banks, so it does not matter if species are lost in the wild. | `s-ladder` | `s-think` | `biodiversity-and-gene-banks` |
+
+**⚠️ `EVOL-09` to `EVOL-12` are ALL deliberately unused and must stay unused.** One spare per
+lesson, pre-allocated in `docs/ks3/b11-inventory/PAYLOAD-SCHEMA.md` §12 before any author started;
+none was claimed. **Never re-point a spare at a different belief** — the same rule as `DRUG-07`,
+`REPRO-17`/`20`/`21`/`23`, `PLANT-09`–`PLANT-12` and `RESP-11`–`RESP-15`. The schema also records
+the escalation an author must take instead: a pass needing a SECOND spare stops and reports rather
+than reaching past the table, because two lessons minting from the same next-free number is a
+collision permanent ids cannot undo.
+
+**`EVOL-06` declares no `elicited_by`, and that is measured.** *"Takes its place"* occurs exactly
+once on `when-the-environment-changes-extinction`, in the `#s-think` quote itself. The hook asks
+which species survives a change, the ladder's two marked rungs are about risk factors and about
+whether extinction is natural, and the pressure bench has no commit gate. Nothing asks the student
+to state the belief before it is taken apart. Absence is legal under MRB-248 and the honest answer;
+inventing an anchor would fail the gate.
+
+**Two `reappears_in` edges are load-bearing and were asked for by name.**
+
+- `EVOL-01` (strongest survive) → `natural-selection`. The moth runner is the same claim under a
+  live counter: no moth is strong, and the one that survives is the one that happens to match the
+  bark.
+- `EVOL-06` (another species takes its place) → B9 `disturbing-a-food-web`, which owns `ECO-05`
+  (*removing a species only affects the things directly above and below it*). They are the same
+  instinct at two scales — that a web absorbs a loss — and B9's removal bench is where a student
+  has already watched it fail.
+
+**`EVOL-03` and `EVOL-04` are the Lamarckian pair and are elicited at the hook, together.** The
+giraffe hook offers stretching-and-inheriting as option A and needed-so-it-developed as option C,
+which is Design putting both costumes of one wrong idea in front of the student before the lesson
+starts. They carry separate ids because the confrontations differ — `EVOL-03` fails on the
+mechanism of inheritance, `EVOL-04` on a population having no way to want anything — but an author
+touching either should have both in view.
+
+**`EVOL-02` is `REPRO-15`/`REPRO-16`'s relative, and the family's quietest problem.** It is
+teleology again: that there is a general ranking of organisms and that being *better* is a property
+an animal carries around. The page kills it by reversal rather than by assertion — the thick-coated
+mouse is best in winter and worst in the drought, and the same mouse did not change. Rung 3 asks
+the student to say what that means for the idea of a *better* animal, which is where the belief is
+committed to; the confrontation is `#s-think` as everywhere else in this unit.
+
+⚑ **NOTES-B11 §4 states these eight were already written into this file "with a new prefix row".**
+They were not. See the standing note under `GENE` above — B11 is the fourth delivery to say so, and
+the rows above are written from the approved pages rather than from NOTES.

@@ -187,6 +187,76 @@ def main():
           "marker is back on %s" % marker_back if marker_back
           else "%d authored lessons swept, none marked" % swept)
 
+    # ⊕ MRB-248 — SEQUENCE MUST NOT LEAK ONTO A LESSON PAGE, and until now
+    # nothing checked it.
+    #
+    # "Sequence is data — year and half-term never appear in a lesson URL or in
+    # a lesson page's bytes. Write 'a student your age', never 'a Year 7'" has
+    # been settled law since MRB-220. Grepped before writing this: there was no
+    # assertion anywhere in this file that a page's bytes are free of either.
+    # It has been kept for thirty lessons by authors reading the contract, which
+    # is an arrangement that holds exactly until the first pass that does not —
+    # and unlike most drift, this kind is invisible in review, because "Year 9
+    # should already know this" reads as a helpful sentence rather than a defect.
+    #
+    # It matters because a school teaches these units in ITS OWN order. A page
+    # that names a year contradicts the timetable of every school that sequences
+    # differently, and the whole point of holding sequence in `half_terms.py`
+    # and `school_schemes.py` is that the pages stay neutral.
+    #
+    # ⚖️ WHAT IT MUST NOT CATCH, and this is the harder half. b10-01's bench
+    # prompt opens "Data from one year group." — ruled ALLOWED on 18 Aug 2026.
+    # It names no year, pins the lesson nowhere, and describes the SAMPLE: sixty
+    # people of roughly one age, which is why the height data has the spread it
+    # has and is doing real teaching in a lesson about variation. The test is
+    # the discernment §8.10 uses, not a word list: does the sentence say WHERE
+    # THIS LESSON SITS, or something about the science in front of the student?
+    # So the pattern requires a NUMBER beside the year — "Year 9" — and does not
+    # fire on the bare phrase. A four-digit year is not matched either, or
+    # b10-03's 1953 and 1962 would fail a gate about timetables.
+    #
+    # Swept over every authored lesson in the key stage, for the reason the
+    # marker gate above gives: a gate whose coverage stops growing with the
+    # build is the same defect as no gate. Lesson pages only — the browse layer
+    # is ORGANISED by year and is where sequence legitimately lives.
+    # ⚠️ THE PATTERN IS NARROW ON PURPOSE, and its first firing is why. Written
+    # as `[Yy]ears?\s+[1-9]` it reported b6-02 `alcohol-and-smoking` leaking
+    # "YEARS 4" — which is the PROGRESS RAIL: stop 3 is labelled YEARS (that
+    # lesson's band is about years of life lost) and the 4 is the next stop's
+    # number. Two separate elements, welded into a phrase by tag-stripping.
+    #
+    # Both halves of that are fixed below. Tags are replaced with a NEWLINE
+    # rather than a space, so text from two elements can never form a phrase
+    # that neither element contains. And the pattern wants capitalised singular
+    # `Year` followed by a school year, which "YEARS" is not.
+    #
+    # Restricted to 7–11 because those are the school years this content could
+    # plausibly name; a bare `[1-9]` would fire on every duration in the key
+    # stage ("4 years", "one year 9 times over") and a gate that cries wolf gets
+    # switched off. `half-term` needs no number and is never anything but
+    # sequence, so it matches on its own, case-insensitively.
+    YEAR_LEAK = re.compile(r"\bYear\s+(?:7|8|9|10|11)\b|\bhalf[-\s]?terms?\b",
+                           re.M)
+    seq_leaks = []
+    for u in units:
+        for l in u["lessons"]:
+            if not l.get("authored"):
+                continue
+            page = ("mrbadmus_site/ks3/%s/%s/%s.html"
+                    % (u["discipline"], u["slug"], l["slug"]))
+            if not os.path.exists(page):
+                continue
+            # Tags stripped first: `data-year` and the like are structure, not
+            # something a student reads, and the rule is about what is READ.
+            text = re.sub(r"<[^>]+>", "\n", open(page).read())
+            for hit in YEAR_LEAK.findall(text):
+                seq_leaks.append("%s: %r" % (l["slug"], hit))
+    check("no lesson page leaks a year or a half-term (sequence is data)",
+          not seq_leaks,
+          "%s" % seq_leaks[:5] if seq_leaks
+          else "%d authored lessons swept, none names a year or a half-term"
+               % swept)
+
     # ⊕ MRB-228 · the rung heading a student actually reads.
     #
     # `ladder.<rung>.title` was authored on four live B1 lessons and read by

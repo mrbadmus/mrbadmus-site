@@ -14516,6 +14516,683 @@
 
 /* ═══ END B9 ═══ */
 
+/* ═══ BEGIN B10 ═══ */
+
+  /* ── B10 · Inheritance and DNA (⊕ MRB-248) ──
+     Five instruments, five wire functions. All five are DOM-only: no canvas,
+     no `requestAnimationFrame`, no `setTimeout`, no `setInterval` — grepped
+     across all five of Design's approved pages and zero on every term
+     (schema §0.1). So there is no rAF loop in this section to test
+     `prefers-reduced-motion` inside (contract R4, the b2-03 slip), and the
+     unit's one transition is covered by R6's platform rule.
+
+     ⚠️ AND THE STAGE PREDICATE IS MONOTONIC ON ALL FIVE. MRB-208 ruled the
+     rail records PARTICIPATION: what a student found out cannot be un-found
+     by switching tabs or starting again. Every threshold below counts a
+     STICKY set, never live state.
+
+     ⚠️ AND EACH BENCH'S MARKER IS READ TWICE (MRB-249). The band section
+     beside it — `s-two`, `s-model`, `s-who`, `s-steps`, `s-test` — carries no
+     control of its own and its rail entry MIRRORS `s-bench`, resolved in
+     `wireRail`'s `paint()`. So a threshold moved for convenience here moves
+     two stops, not one. Design states each one in her own `isDone()` and the
+     renderer in `build_ks3.py` refuses a payload that cannot reach it.
+
+     ⛔ AND THREE OF THE FIVE ADJUDICATE A COMMITMENT — b10-01's prediction,
+     b10-03's evidence, b10-05's verdict — which is a deliberate departure
+     from B7 §0.6, recorded in schema §0.6 and measured off Design's own
+     pages. The verdict is WORDS on a cream panel, in one tone whichever way
+     it went. No green, no red, no badge, no mark on an option button, and
+     never the amber `is-wrong` ladder treatment. Only the mastery ladder
+     marks correctness (MRB-196 R10). */
+
+  /* ── variation-plotter (b10-01 #s-bench) ──
+
+     ⚖️ THE STUDENT CANNOT SEE THE GRAPH BEFORE COMMITTING TO A SHAPE. The
+     plot button is disabled until this characteristic has a prediction, and
+     once plotted it cannot be re-run and its predict buttons go away. That is
+     Law 4 built into the instrument rather than layered over it, and it is
+     why there is NO RESET: six characteristics, one prediction each, is the
+     whole exercise.
+
+     ⚖️ THE BAR GAP IS NOT SET HERE AND MUST NOT BE. It is a pure function of
+     `data-vp-type` in the stylesheet — continuous bars fill their column and
+     touch, discontinuous bars are 6px narrower and stand apart — so the
+     histogram / bar-chart convention cannot be overridden by a payload or by
+     a runtime branch. See the rule pair in `shared/ks3.css`.
+
+     ⚖️ THE VERDICT JUDGES THE PREDICTION, IN WORDS, IN ONE TONE. Both tags
+     are already in the document; this only chooses which one is shown. It
+     never adds a class to an option button, and the prediction the student
+     made keeps exactly the ground it had — a wrong idea is corrected on the
+     cream panel, not marked on the button. */
+  function wireVariationPlotter(sec) {
+    var w = sec.querySelector("[data-vp]");
+    if (!w) { return; }
+    var tabs = toArray(w.querySelectorAll(".ks3-vp-tab"));
+    var panels = toArray(w.querySelectorAll("[data-vp-charpanel]"));
+    var plotBtn = w.querySelector("[data-vp-plot]");
+    if (!tabs.length || !panels.length || !plotBtn) { return; }
+
+    var RUN = w.getAttribute("data-run-label") || "";
+    var RUN_DONE = w.getAttribute("data-run-done-label") || "";
+    /* Design's own `isDone()` threshold, emitted by the renderer rather than
+       written twice. The `s-two` band stop mirrors this stop, so the number
+       is read by two rail entries. */
+    var NEED = parseInt(w.getAttribute("data-threshold"), 10) || 0;
+
+    /* The opening state IS the markup: the characteristic Design opens on is
+       already pressed, so there is no second copy of the default here to fall
+       out of step with the shipped bytes. */
+    var current = tabs[0];
+    each(tabs, function (tb) {
+      if (tb.getAttribute("aria-pressed") === "true") { current = tb; }
+    });
+    /* `plotted` is STICKY and there is no control that clears it. */
+    var plotted = {};
+
+    function panelFor(id) {
+      var found = panels[0], i;
+      for (i = 0; i < panels.length; i++) {
+        if (panels[i].getAttribute("data-vp-charpanel") === id) {
+          found = panels[i];
+        }
+      }
+      return found;
+    }
+
+    function predictionIn(panel) {
+      var chosen = panel.querySelector('.ks3-vp-pred[aria-pressed="true"]');
+      return chosen ? chosen.getAttribute("data-vp-pred") : null;
+    }
+
+    function draw() {
+      var id = current.getAttribute("data-vp-char");
+      var panel = panelFor(id);
+      var done = !!plotted[id];
+      var n = 0, k;
+      for (k in plotted) { if (plotted[k]) { n += 1; } }
+
+      each(tabs, function (tb) {
+        tb.setAttribute("aria-pressed", tb === current ? "true" : "false");
+      });
+      each(panels, function (p) { setHidden(p, p !== panel); });
+
+      /* Once plotted the prediction is spent: the buttons go, and the graph
+         and its verdict arrive in the space they were holding. */
+      setHidden(panel.querySelector("[data-vp-predict]"), done);
+      setHidden(panel.querySelector("[data-vp-graph]"), !done);
+
+      /* ⚖️ ONE TAG, CHOSEN, NEVER COMPOSED. Both sentences are in the
+         document already, so nothing science-bearing is assigned to
+         `textContent` and a reader with JS off has both. */
+      var right = predictionIn(panel) ===
+        panel.querySelector(".ks3-vp-chart").getAttribute("data-vp-type");
+      setHidden(panel.querySelector('[data-vp-tag="right"]'),
+                !done || !right);
+      setHidden(panel.querySelector('[data-vp-tag="wrong"]'),
+                !done || right);
+
+      plotBtn.textContent = done ? RUN_DONE : RUN;
+      plotBtn.disabled = done || !predictionIn(panel);
+
+      setCount(sec, n);
+      /* ⚠️ MONOTONIC, and free to be: `plotted` is sticky and there is no
+         reset on this bench. Switching characteristic cannot untick a stop a
+         student has already reached — and two stops read this one call. */
+      markStage(sec, n >= NEED);
+    }
+
+    each(tabs, function (tb) {
+      tb.addEventListener("click", function () { current = tb; draw(); });
+    });
+
+    each(w.querySelectorAll(".ks3-vp-pred"), function (btn) {
+      btn.addEventListener("click", function () {
+        var panel = btn.closest ? btn.closest("[data-vp-charpanel]") : null;
+        if (!panel) { return; }
+        /* A prediction already made cannot be changed once it has been
+           plotted — the buttons are gone by then, and this is the guard for
+           a keyboard or assistive path that reaches one anyway. */
+        if (plotted[panel.getAttribute("data-vp-charpanel")]) { return; }
+        each(panel.querySelectorAll(".ks3-vp-pred"), function (other) {
+          other.setAttribute("aria-pressed",
+                             other === btn ? "true" : "false");
+        });
+        draw();
+      });
+    });
+
+    plotBtn.addEventListener("click", function () {
+      var id = current.getAttribute("data-vp-char");
+      /* The gate again, in the handler. `disabled` is the drawn half of it
+         and this is the half a synthetic click cannot get past. */
+      if (plotted[id] || !predictionIn(panelFor(id))) { return; }
+      plotted[id] = true;
+      draw();
+    });
+
+    draw();
+  }
+
+  /* ── zoom-bench (b10-02 #s-bench) ──
+
+     ⚖️ EVERY LEVEL IS DRAWN FROM THE START AND ONLY THE `body` ARRIVES. The
+     name and the scale are on screen at 45% from the first paint, so the
+     SCALE COLUMN — which is the lesson's argument — is readable as a column
+     before the journey begins. Nothing here hides a row.
+
+     ⚠️ `Back out` GOES TO LEVEL ONE AND UNTELLS NOTHING. It resets the view,
+     not the record: `everBottomed` is sticky, so a student who has been all
+     the way down keeps the stop they reached (MRB-208, and the `s-model` band
+     stop mirrors it, so an unticking reset would move two).
+
+     ⚠️ AND THE SAY-IT-BACK PANEL GATES NOTHING AND MARKS NOTHING. The answers
+     are already in the document, one per question; choosing a tab chooses
+     which is shown. A pressed tab says which question is being looked at,
+     never that anyone was right (MRB-196 R10). */
+  function wireZoomBench(sec) {
+    var w = sec.querySelector("[data-zb]");
+    if (!w) { return; }
+    var levels = toArray(w.querySelectorAll(".ks3-zb-level"));
+    var inBtn = w.querySelector("[data-zb-in]");
+    var outBtn = w.querySelector("[data-zb-out]");
+    var closeEl = w.querySelector("[data-zb-close]");
+    if (!levels.length || !inBtn) { return; }
+
+    var IN = w.getAttribute("data-in-label") || "";
+    var IN_DONE = w.getAttribute("data-in-done-label") || "";
+    var TOTAL = levels.length;
+    var shown = 1, everBottomed = false;
+
+    function draw() {
+      if (shown > TOTAL) { shown = TOTAL; }
+      if (shown < 1) { shown = 1; }
+      each(levels, function (li, i) {
+        var on = i < shown;
+        if (on) { li.setAttribute("data-shown", ""); }
+        else { li.removeAttribute("data-shown"); }
+        if (i === shown - 1) { li.setAttribute("data-here", ""); }
+        else { li.removeAttribute("data-here"); }
+        setHidden(li.querySelector(".ks3-zb-body"), !on);
+      });
+
+      var bottomed = shown >= TOTAL;
+      inBtn.textContent = bottomed ? IN_DONE : IN;
+      inBtn.disabled = bottomed;
+      setHidden(closeEl, !bottomed);
+
+      setCount(sec, shown);
+      if (bottomed) { everBottomed = true; }
+      /* ⚠️ MONOTONIC. Design's own `isDone()` is `s.shown >= LEVELS.length`,
+         which UNTICKS the moment a student presses `Back out`. MRB-208 ruled
+         the rail records participation, and two stops read this one — so what
+         ticks is unchanged and what unticks is nothing. */
+      markStage(sec, everBottomed);
+    }
+
+    inBtn.addEventListener("click", function () { shown += 1; draw(); });
+    if (outBtn) {
+      outBtn.addEventListener("click", function () { shown = 1; draw(); });
+    }
+
+    /* The say-it-back panel. Its opening question is `opens_on` and it is
+       ALREADY PRESSED in the markup — the second question, not the first,
+       because that one states the whole nesting (schema §3.2). Nothing here
+       needs to know which id that was. */
+    var qtabs = toArray(w.querySelectorAll(".ks3-zb-qtab"));
+    var answers = toArray(w.querySelectorAll("[data-zb-answer]"));
+    each(qtabs, function (tb) {
+      tb.addEventListener("click", function () {
+        var id = tb.getAttribute("data-zb-q");
+        each(qtabs, function (other) {
+          other.setAttribute("aria-pressed", other === tb ? "true" : "false");
+        });
+        each(answers, function (p) {
+          setHidden(p, p.getAttribute("data-zb-answer") !== id);
+        });
+      });
+    });
+
+    draw();
+  }
+
+  /* ── model-builder (b10-03 #s-bench) ──
+
+     ⚖️⚖️ THE FOUR CARDS RE-EVALUATE LIVE ON EVERY DIAL PRESS. There is no run
+     button and no reset button (schema §4.3) — the bench opens on Pauling's
+     wrong model with all four cards red, and every dial the student touches
+     can only improve it. Elimination as a monotone descent.
+
+     ⚖️ A CARD PASSES WHEN EVERY `requires` PAIR MATCHES **AND** THE `forbids`
+     MAP IS NOT MATCHED IN FULL. Three of Design's tests are a single equality;
+     Pauling's is a negated conjunction, `!(strands==='3' && bases==='out')`.
+     Read `forbids` as an OR and it fires on three strands alone — which would
+     rule out a model the evidence does not rule out and break the
+     "exactly one of twelve" claim `build_ks3.py` proves at build time.
+
+     ⛔ THE VERDICT IS ON THE MODEL, NEVER ON THE STUDENT. A failing card takes
+     the alert outline and unhides the elimination line; a passing one takes
+     the green. The DIAL BUTTONS take no verdict class at any point — a pressed
+     dial is "this is the model on the bench" and nothing more (MRB-196 R10).
+
+     ⚠️ `solved` IS STICKY, by Design's own construction. A student who reaches
+     the double helix and then goes back to break the model on purpose keeps
+     the stop, and the `s-who` band stop mirrors it (MRB-249). */
+  function wireModelBuilder(sec) {
+    var w = sec.querySelector("[data-dh]");
+    if (!w) { return; }
+    var opts = toArray(w.querySelectorAll(".ks3-dh-opt"));
+    var cards = toArray(w.querySelectorAll("[data-dh-card]"));
+    var lineEl = w.querySelector("[data-dh-modelline]");
+    var tagEl = w.querySelector("[data-dh-verdicttag]");
+    var bodyEl = w.querySelector("[data-dh-verdictbody]");
+    if (!opts.length || !cards.length) { return; }
+
+    var CORRECT = b9Json(w, "data-target") || {};
+    var TAG_PASS = w.getAttribute("data-tag-pass") || "";
+    var TAG_ONE = w.getAttribute("data-tag-fail-one") || "";
+    var TAG_MANY = w.getAttribute("data-tag-fail-many") || "";
+    var V_PASS = w.getAttribute("data-verdict-pass") || "";
+    var V_FAIL = w.getAttribute("data-verdict-fail") || "";
+    var solved = false;
+
+    /* The opening model IS the markup: the dials Design opens on are already
+       pressed, so there is no second copy of Pauling's preset here to fall out
+       of step with the shipped bytes. */
+    function model() {
+      var m = {};
+      each(opts, function (b) {
+        if (b.getAttribute("aria-pressed") === "true") {
+          m[b.getAttribute("data-dh-dial")] = b.getAttribute("data-dh-opt");
+        }
+      });
+      return m;
+    }
+
+    function passes(m, card) {
+      var req = b9Json(card, "data-dh-requires") || {};
+      var forb = b9Json(card, "data-dh-forbids") || {};
+      var k, any = false, all = true;
+      for (k in req) { if (m[k] !== req[k]) { return false; } }
+      for (k in forb) { any = true; if (m[k] !== forb[k]) { all = false; } }
+      return !(any && all);
+    }
+
+    function draw() {
+      var m = model(), nFail = 0, phrases = [];
+
+      /* The model line, `", ".join(phrase)` in DIAL ORDER — the order the
+         decisions are drawn in, which is the order the sentence reads in.
+         Built from the same `data-dh-phrase` attributes `build_ks3.py` used
+         for the resting render, so the two cannot disagree. */
+      each(opts, function (b) {
+        if (b.getAttribute("aria-pressed") === "true") {
+          phrases.push(b.getAttribute("data-dh-phrase") || "");
+        }
+      });
+      if (lineEl) { lineEl.textContent = phrases.join(", "); }
+
+      each(cards, function (card) {
+        var ok = passes(m, card);
+        if (ok) { card.setAttribute("data-pass", ""); }
+        else { card.removeAttribute("data-pass"); nFail += 1; }
+        setHidden(card.querySelector('[data-dh-tag="pass"]'), !ok);
+        setHidden(card.querySelector('[data-dh-tag="fail"]'), ok);
+        setHidden(card.querySelector(".ks3-dh-why"), ok);
+      });
+
+      if (tagEl) {
+        tagEl.textContent = nFail === 0 ? TAG_PASS
+          : (nFail === 1 ? TAG_ONE : TAG_MANY).replace("{n}", String(nFail));
+      }
+      if (bodyEl) { bodyEl.textContent = nFail === 0 ? V_PASS : V_FAIL; }
+
+      setCount(sec, cards.length - nFail);
+      var ok = true, k;
+      for (k in CORRECT) { if (m[k] !== CORRECT[k]) { ok = false; } }
+      if (ok) { solved = true; }
+      markStage(sec, solved);
+    }
+
+    each(opts, function (b) {
+      b.addEventListener("click", function () {
+        var dial = b.getAttribute("data-dh-dial");
+        each(opts, function (other) {
+          if (other.getAttribute("data-dh-dial") === dial) {
+            other.setAttribute("aria-pressed", other === b ? "true" : "false");
+          }
+        });
+        draw();
+      });
+    });
+
+    draw();
+  }
+
+  /* ── pea-cross (b10-04 #s-bench) ──
+
+     ⚖️⚖️ THE RANDOMNESS IS REAL AND UNSEEDED AND STAYS THAT WAY (schema §5.1).
+     One `Math.random()` per gamete, per parent, per seed. No PRNG, no seed,
+     and no seed key — `r_pea_cross` refuses one. A 3:1 ratio is a SAMPLING
+     result, not a property of any one litter, and a bench that delivered
+     75/25 on cue would teach exactly the belief the page's legal line and rung
+     4 are written to break. No student sees the same cross twice.
+
+     ⚠️ CHANGING EITHER PARENT CLEARS THE TALLY AND THE LAST SEED. Without it a
+     student accumulates counts across two DIFFERENT crosses and reads a ratio
+     that describes neither. Design wires the clear on her own handler; so does
+     this, and the drive asserts it.
+
+     ⚠️ GROWING A HUNDRED HIDES THE MOST-RECENT-SEED CARD. One seed is the
+     "chance decides each one" story, a hundred is the "only totals show the
+     pattern" story, and they are never on screen together.
+
+     ⚖️ AND THE LAST SEED'S GENOTYPE IS NORMALISED DOMINANT-FIRST: a seed that
+     received `p` then `P` prints `Pp`, never `pP`. Two spellings of one
+     genotype on one bench is two things as far as a student is concerned. */
+  function wirePeaCross(sec) {
+    var w = sec.querySelector("[data-pc]");
+    if (!w) { return; }
+    var genoBtns = toArray(w.querySelectorAll(".ks3-pc-geno"));
+    var rows = toArray(w.querySelectorAll("[data-pc-row]"));
+    var oneBtn = w.querySelector("[data-pc-one]");
+    var manyBtn = w.querySelector("[data-pc-many]");
+    var clearBtn = w.querySelector("[data-pc-clear]");
+    if (!genoBtns.length || !rows.length || !oneBtn) { return; }
+
+    var G = b9Json(w, "data-genotypes") || {};
+    var DOM = w.getAttribute("data-dominant");
+    var REC = w.getAttribute("data-recessive");
+    var MANY = parseInt(w.getAttribute("data-many-n"), 10) || 100;
+    var JOIN = w.getAttribute("data-cross-join") || "";
+    var LAST_T = w.getAttribute("data-last-template") || "";
+    var P_DOM = w.getAttribute("data-pheno-dominant") || "";
+    var P_REC = w.getAttribute("data-pheno-recessive") || "";
+    var RATIO_T = w.getAttribute("data-ratio-template") || "";
+    var NOREC_T = w.getAttribute("data-no-recessive-template") || "";
+    var SUF_ONE = w.getAttribute("data-suffix-one") || "";
+    var SUF_MANY = w.getAttribute("data-suffix-many") || "";
+
+    var crossEl = w.querySelector("[data-pc-crossline]");
+    var lastEl = w.querySelector("[data-pc-last]");
+    var lastLine = w.querySelector("[data-pc-lastline]");
+    var tallyEl = w.querySelector("[data-pc-tally]");
+    var ratioEl = w.querySelector("[data-pc-ratio]");
+    var notes = toArray(w.querySelectorAll("[data-pc-note]"));
+
+    var tally = { dominant: 0, recessive: 0 };
+    var last = null, everTwenty = false;
+    var NEED = 20;
+
+    function chosen(parentId) {
+      var got = null;
+      each(genoBtns, function (b) {
+        if (b.getAttribute("data-pc-parent") === parentId &&
+            b.getAttribute("aria-pressed") === "true") {
+          got = b.getAttribute("data-pc-geno");
+        }
+      });
+      return got;
+    }
+
+    function parentIds() {
+      var ids = [];
+      each(genoBtns, function (b) {
+        var p = b.getAttribute("data-pc-parent");
+        if (ids.indexOf(p) < 0) { ids.push(p); }
+      });
+      return ids;
+    }
+
+    /* Design's four-branch chain, in HER order, first match wins.
+       `both_carriers` before `mixed` or Pp × Pp stops being Mendel's 3:1 and
+       becomes the generic line. */
+    function noteId(g1, g2) {
+      var a = G[g1] || [], b = G[g2] || [];
+      function has(x, ch) { return x.indexOf(ch) >= 0; }
+      function pure(x, ch) { return x.length === 2 && x[0] === ch && x[1] === ch; }
+      if (!(has(a, REC) && has(b, REC)) && (pure(a, DOM) || pure(b, DOM))) {
+        return "one_pure_dominant";
+      }
+      if (pure(a, REC) && pure(b, REC)) { return "both_pure_recessive"; }
+      if (has(a, DOM) && has(a, REC) && has(b, DOM) && has(b, REC)) {
+        return "both_carriers";
+      }
+      return "mixed";
+    }
+
+    function grow(n) {
+      var ids = parentIds();
+      var a = G[chosen(ids[0])] || [], b = G[chosen(ids[1])] || [];
+      var i, g1, g2, seed = null;
+      for (i = 0; i < n; i++) {
+        /* ⚖️ ONE `Math.random()` PER GAMETE, PER PARENT, PER SEED. This is the
+           lesson: each parent passes one of its two copies, chosen by chance.
+           Nothing here is seeded and nothing here may become seeded. */
+        g1 = a[Math.floor(Math.random() * a.length)];
+        g2 = b[Math.floor(Math.random() * b.length)];
+        if (g1 === REC && g2 === REC) { tally.recessive += 1; }
+        else { tally.dominant += 1; }
+        seed = { g1: g1, g2: g2 };
+      }
+      /* Growing more than one clears the single-seed card: the two stories are
+         never on screen together. */
+      last = n === 1 ? seed : null;
+      draw();
+    }
+
+    function draw() {
+      var ids = parentIds();
+      var g1 = chosen(ids[0]), g2 = chosen(ids[1]);
+      var total = tally.dominant + tally.recessive;
+
+      if (crossEl) { crossEl.textContent = g1 + " " + JOIN + " " + g2; }
+
+      setHidden(lastEl, !last);
+      if (last && lastLine) {
+        /* Dominant-first, always. `pP` is never printed. */
+        var geno = (last.g1 === REC && last.g2 === DOM)
+          ? DOM + REC : last.g1 + last.g2;
+        var pheno = (last.g1 === REC && last.g2 === REC) ? P_REC : P_DOM;
+        lastLine.textContent = LAST_T
+          .replace("{g1}", last.g1).replace("{g2}", last.g2)
+          .replace("{genotype}", geno).replace("{phenotype}", pheno);
+      }
+
+      setHidden(tallyEl, total === 0);
+      each(rows, function (row) {
+        var key = row.getAttribute("data-pc-row");
+        var n = tally[key] || 0;
+        var pct = total ? (n / total) * 100 : 0;
+        row.querySelector("[data-pc-value]").textContent =
+          total ? (n + " · " + Math.round(pct) + "%") : String(n);
+        row.querySelector("[data-pc-bar]").style.width = pct + "%";
+      });
+      if (ratioEl) {
+        ratioEl.textContent = tally.recessive === 0
+          ? (total ? NOREC_T.replace("{total}", String(total)) : "")
+          : RATIO_T.replace("{ratio}",
+              (tally.dominant / tally.recessive).toFixed(2));
+      }
+
+      var want = noteId(g1, g2);
+      each(notes, function (p) {
+        setHidden(p, p.getAttribute("data-pc-note") !== want);
+      });
+
+      /* ⚠️ THE ONE READOUT IN THE KEY STAGE THAT NEEDS A SINGULAR. "1 seeds
+         grown" would undercut the sentence beside it, and one seed is a state
+         a student reaches here on purpose. */
+      var count = sec.querySelector("[data-count]");
+      if (count) {
+        count.setAttribute("data-format",
+                           "{n} " + (total === 1 ? SUF_ONE : SUF_MANY));
+      }
+      setCount(sec, total);
+
+      if (total >= NEED) { everTwenty = true; }
+      /* ⚠️ MONOTONIC. Clearing the plot is a view reset, not a record reset —
+         MRB-208, and the `s-steps` band stop mirrors this marker. */
+      markStage(sec, everTwenty);
+    }
+
+    each(genoBtns, function (b) {
+      b.addEventListener("click", function () {
+        var p = b.getAttribute("data-pc-parent");
+        each(genoBtns, function (other) {
+          if (other.getAttribute("data-pc-parent") === p) {
+            other.setAttribute("aria-pressed", other === b ? "true" : "false");
+          }
+        });
+        /* ⚠️ A NEW CROSS IS A NEW EXPERIMENT. Counts from the old one would
+           make the ratio describe neither. */
+        tally = { dominant: 0, recessive: 0 };
+        last = null;
+        draw();
+      });
+    });
+    oneBtn.addEventListener("click", function () { grow(1); });
+    if (manyBtn) {
+      manyBtn.addEventListener("click", function () { grow(MANY); });
+    }
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        tally = { dominant: 0, recessive: 0 };
+        last = null;
+        draw();
+      });
+    }
+
+    draw();
+  }
+
+  /* ── species-cases (b10-05 #s-bench) ──
+
+     ⚖️⚖️ THREE VERDICTS, AND THE THIRD IS THE INSTRUMENT. "The test does not
+     settle it" is the correct answer for three of the seven cases, and a
+     student who never selects it cannot score above four out of seven.
+
+     ⚖️ COMMIT THEN REVEAL, PER CASE. The check button is disabled until a
+     verdict is chosen; once pressed the pick is FROZEN and the unchosen
+     verdicts drop to half opacity. Same gate as `variation-plotter`.
+
+     ⛔ AND THE BENCH ADJUDICATES IN WORDS ONLY (schema §0.6). `That is the
+     answer` or `Not quite` on the cream panel, one tone either way, above the
+     verdict it should have been. The three buttons take NO verdict class: the
+     chosen one keeps the alert outline it had, right or wrong, and the others
+     dim. A wrong idea is corrected on the panel, never marked on the button
+     (MRB-196 R10). */
+  function wireSpeciesCases(sec) {
+    var w = sec.querySelector("[data-sc]");
+    if (!w) { return; }
+    var tabs = toArray(w.querySelectorAll(".ks3-sc-tab"));
+    var panels = toArray(w.querySelectorAll("[data-sc-panel]"));
+    var checkBtn = w.querySelector("[data-sc-check]");
+    var tallyEl = w.querySelector("[data-sc-tally]");
+    if (!tabs.length || !panels.length || !checkBtn) { return; }
+
+    var RUN = w.getAttribute("data-run-label") || "";
+    var RUN_DONE = w.getAttribute("data-run-done-label") || "";
+    var TALLY_ALL = w.getAttribute("data-tally-all") || "";
+    var TALLY_SUF = w.getAttribute("data-tally-suffix") || "";
+    var TOTAL = panels.length;
+    var NEED = parseInt(w.getAttribute("data-threshold"), 10) || 0;
+
+    var current = tabs[0];
+    each(tabs, function (tb) {
+      if (tb.getAttribute("aria-pressed") === "true") { current = tb; }
+    });
+    /* `opened` is STICKY per case and nothing clears it. */
+    var opened = {};
+
+    function panelFor(id) {
+      var found = panels[0], i;
+      for (i = 0; i < panels.length; i++) {
+        if (panels[i].getAttribute("data-sc-panel") === id) {
+          found = panels[i];
+        }
+      }
+      return found;
+    }
+
+    function pickIn(panel) {
+      var b = panel.querySelector('.ks3-sc-verdict[aria-pressed="true"]');
+      return b ? b.getAttribute("data-sc-verdict") : null;
+    }
+
+    function draw() {
+      var id = current.getAttribute("data-sc-case");
+      var panel = panelFor(id);
+      var isOpen = !!opened[id];
+      var n = 0, k;
+      for (k in opened) { if (opened[k]) { n += 1; } }
+
+      each(tabs, function (tb) {
+        tb.setAttribute("aria-pressed", tb === current ? "true" : "false");
+      });
+      each(panels, function (p) { setHidden(p, p !== panel); });
+
+      each(panels, function (p) {
+        if (opened[p.getAttribute("data-sc-panel")]) {
+          p.setAttribute("data-sc-opened", "");
+        } else {
+          p.removeAttribute("data-sc-opened");
+        }
+      });
+
+      setHidden(panel.querySelector("[data-sc-out]"), !isOpen);
+      var right = pickIn(panel) === panel.getAttribute("data-sc-answer");
+      setHidden(panel.querySelector('[data-sc-tag="right"]'),
+                !isOpen || !right);
+      setHidden(panel.querySelector('[data-sc-tag="wrong"]'),
+                !isOpen || right);
+
+      checkBtn.textContent = isOpen ? RUN_DONE : RUN;
+      checkBtn.disabled = isOpen || !pickIn(panel);
+      if (tallyEl) {
+        tallyEl.textContent = n >= TOTAL
+          ? TALLY_ALL : (TOTAL - n) + " " + TALLY_SUF;
+      }
+
+      setCount(sec, n);
+      /* Sticky by construction, so monotonic for free — and the `s-test` band
+         stop mirrors this marker (MRB-249). */
+      markStage(sec, n >= NEED);
+    }
+
+    each(tabs, function (tb) {
+      tb.addEventListener("click", function () { current = tb; draw(); });
+    });
+
+    each(w.querySelectorAll(".ks3-sc-verdict"), function (btn) {
+      btn.addEventListener("click", function () {
+        var panel = btn.closest ? btn.closest("[data-sc-panel]") : null;
+        if (!panel) { return; }
+        /* Once the case is opened the commitment is frozen. */
+        if (opened[panel.getAttribute("data-sc-panel")]) { return; }
+        each(panel.querySelectorAll(".ks3-sc-verdict"), function (other) {
+          other.setAttribute("aria-pressed",
+                             other === btn ? "true" : "false");
+        });
+        draw();
+      });
+    });
+
+    checkBtn.addEventListener("click", function () {
+      var id = current.getAttribute("data-sc-case");
+      /* The gate again, in the handler: `disabled` is the drawn half and this
+         is the half a synthetic click cannot get past. */
+      if (opened[id] || !pickIn(panelFor(id))) { return; }
+      opened[id] = true;
+      draw();
+    });
+
+    draw();
+  }
+
+/* ═══ END B10 ═══ */
+
 
 
   function wireInstruments(root) {
@@ -14761,6 +15438,17 @@
     each(root.querySelectorAll("[data-bablock]"), wireBioaccumulation);
     each(root.querySelectorAll("[data-qbblock]"), wireQuadratBench);
     // ═══ END B9 wiring ═══
+    // ═══ BEGIN B10 wiring ═══
+    // Five instruments, five markers. A kind that reaches the dispatch table
+    // and not this list ships as static markup that never responds — the
+    // contract §6.6 failure, and this list is the JS half of the gate that
+    // catches it.
+    each(root.querySelectorAll("[data-vpblock]"), wireVariationPlotter);
+    each(root.querySelectorAll("[data-zbblock]"), wireZoomBench);
+    each(root.querySelectorAll("[data-dhblock]"), wireModelBuilder);
+    each(root.querySelectorAll("[data-pcblock]"), wirePeaCross);
+    each(root.querySelectorAll("[data-scblock]"), wireSpeciesCases);
+    // ═══ END B10 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
   }

@@ -319,7 +319,8 @@ def check_structure(ks3_root):
     #
     # A page may be waited on only if it is a lesson slot the build knows about
     # and Design delivered — the slug has to be in `_B9_SLUGS`, which comes
-    # from `docs/ks3/rail-manifest.md`. Anything else is a typo in a page
+    # from `docs/ks3/rail-manifest.md`, or in `_B10_SLUGS`, which comes from
+    # `ks3_data/structure.py`. Anything else is a typo in a page
     # constant, and a typo would otherwise buy every row on it permanent
     # silence: the browser layer would skip it for ever and the count would
     # look like honest progress.
@@ -329,7 +330,7 @@ def check_structure(ks3_root):
                    if spec["on"] in waiting)
         for rel in waiting:
             slug = os.path.basename(rel)[:-5]
-            if slug not in _B9_SLUGS:
+            if slug not in _B9_SLUGS + _B10_SLUGS:
                 problems.append(
                     "PARITY: %d row(s) are registered on /%s, which is neither "
                     "an authored lesson nor a slot this run is waiting on. A "
@@ -601,6 +602,35 @@ _B9_SLUGS = ("food-chains-and-food-webs", "predator-and-prey",
              "disturbing-a-food-web", "pollinators-and-food-security",
              "toxic-build-up-in-a-food-chain", "sampling-an-ecosystem")
 # ═══ END B9 ═══
+
+
+# ═══ BEGIN B10 ═══
+# ⊕ MRB-248. The same shape as B9's block above and for the same reason: the
+# engine pass registers these rows BEFORE the five authoring passes write the
+# lesson records that render them. B8 shipped five instruments with twelve
+# assertions between them because the rows were left until "after", and after
+# never came. `_pages_needed` skips a page that has not been authored yet and
+# `check_structure` reports the wait out loud, with a count and by name, so a
+# row cannot sit unmeasured in silence. The moment an authoring pass lands the
+# page, every row on it starts measuring — nothing to remember, nothing to
+# edit, no flag to clear.
+#
+# ⚠️ THE SLUGS ARE `ks3_data/structure.py`'s, CHARACTER FOR CHARACTER. It is
+# the law on what a page is called, and L3's is `how-we-worked-out-dna` while
+# the lesson's title is "How we worked out DNA's structure" — a plausible
+# `how-we-worked-out-dnas-structure` here would be a typo that buys every row
+# on that page permanent silence, which is what `_B10_SLUGS` refuses.
+_B10_UNIT = "biology/inheritance-and-dna/"
+B10_PLOT    = _B10_UNIT + "variation-continuous-and-discontinuous.html"
+B10_ZOOM    = _B10_UNIT + "chromosomes-genes-and-dna.html"
+B10_MODEL   = _B10_UNIT + "how-we-worked-out-dna.html"
+B10_CROSS   = _B10_UNIT + "passing-it-on-heredity.html"
+B10_SPECIES = _B10_UNIT + "what-makes-a-species.html"
+
+_B10_SLUGS = ("variation-continuous-and-discontinuous",
+              "chromosomes-genes-and-dna", "how-we-worked-out-dna",
+              "passing-it-on-heredity", "what-makes-a-species")
+# ═══ END B10 ═══
 
 
 # ═══ BEGIN B5 ═══
@@ -966,6 +996,24 @@ COMPONENTS = [
     dict(name="thread label is accent-TEXT, never accent", on=B9_CHAIN,
          sel=".ks3-figure-svg .ks3-web-thread-label",
          props={"fill": "#A93411"}),
+    # ── the SECOND drawn figure: b10-03's base pairs (MRB-248) ──
+    #
+    # Registered on its own page rather than leaning on b9-01's rows, because
+    # the two drawings assert different things and a shared row would pin
+    # neither. What this pair pins is the drawing's ARGUMENT, not its decoration:
+    # the constant-width guide is the reason the pairing rule exists, and the
+    # size difference between a big base and a small one is what makes the
+    # constant width true. Lose either and the figure still renders — as a
+    # picture of an arbitrary rule, which is the version students already
+    # memorise badly.
+    dict(name="base-pair width guide is accent-TEXT", on=B10_MODEL,
+         sel=".ks3-figure-svg text[style*='accent-text']",
+         props={"fill": "#A93411"}),
+    dict(name="the drawn figure frame holds on b10-03 too", on=B10_MODEL,
+         sel=".ks3-figure-svg",
+         props={"border-top-width": "2px", "border-top-color": "#221E1B",
+                "background-color": "#FBF3E6"}),
+
     # The thread's third channel. Never-colour-alone means the numbered badge is
     # load-bearing, not decoration: it survives for a reader who cannot separate
     # the orange from the ink, and it carries the chain's ORDER, which no tint
@@ -4293,6 +4341,494 @@ COMPONENTS = [
          props={"background-color": "#FBF3E6", "color": "#221E1B",
                 "font-size": "18px"}),
     # ═══ END B9 ═══ rows
+
+    # ═══ BEGIN B10 ═══ rows
+    # ⚠️ THESE ROWS EXIST BECAUSE B8 SHIPPED WITHOUT THEM and B9 was the
+    # correction. A dispatch entry is not a component (contract §6.6); a green
+    # kinds gate over an unmeasured instrument says nothing at all. Every B10
+    # instrument below carries a full state sweep: resting, chosen, gated,
+    # revealed, spent — and every state the science depends on.
+    #
+    # ⚠️ AND THEY ARE AIMED AT THE SPECIFICITY TRAP. All five B10 instruments
+    # sit on `ks3-dark`. `.ks3-dark p` is (0,1,1) and beats a bare instrument
+    # class at (0,1,0) — so a rule written as `.ks3-vp-axis { color: … }` LOSES
+    # to the dark-ground default and ships a caption at roughly 1.2:1 that no
+    # grep will ever find, because the CSS is right there saying the correct
+    # thing. Every row below is asserted against the element as the BROWSER
+    # resolves it, not as the stylesheet declares it.
+
+    # ── b10-01 · variation-plotter ──
+    dict(name="B10 variation-plotter · the characteristic label is muted mono",
+         on=B10_PLOT, sel=".ks3-vp-tabslabel",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px"}),
+    # ⚖️ A CHOSEN TAB IS THE ALERT GROUND, which is Design's own `seg()` and
+    # NOT the platform's alert border. Still not a mark: it says "this is the
+    # characteristic on the bench", never "this is correct".
+    dict(name="B10 variation-plotter · the chosen characteristic is the alert ground",
+         on=B10_PLOT, sel='.ks3-vp-tab[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="B10 variation-plotter · an unchosen characteristic stays on the panel ground",
+         on=B10_PLOT, sel='.ks3-vp-tab[aria-pressed="false"]',
+         props={"background-color": "#3E3730", "color": "#FBF3E6"}),
+    dict(name="B10 variation-plotter · the bench sits on the nested dark panel",
+         on=B10_PLOT, sel=".ks3-vp-panel",
+         props={"background-color": "#3E3730"}),
+    dict(name="B10 variation-plotter · the characteristic name is on-dark at 20px",
+         on=B10_PLOT,
+         sel="[data-vp-charpanel]:not([hidden]) .ks3-vp-name",
+         props={"color": "#FBF3E6", "font-size": "20px",
+                "font-weight": "700"}),
+    dict(name="B10 variation-plotter · the predict ask is on-dark, not muted",
+         on=B10_PLOT,
+         sel="[data-vp-charpanel]:not([hidden]) .ks3-vp-predictlabel",
+         props={"color": "#FBF3E6", "font-size": "17px"}),
+    dict(name="B10 variation-plotter · a predict button clears the tap target",
+         on=B10_PLOT,
+         sel="[data-vp-charpanel]:not([hidden]) .ks3-vp-pred",
+         props={"min-height": "44px", "font-size": "16px"}),
+    # ⚖️ THE PLOT BUTTON IS DISABLED ON THE RESTING PAGE, and dimmed so the
+    # student can see there IS a control being withheld. This is Law 4 drawn:
+    # the graph cannot be reached before a shape has been committed to.
+    dict(name="B10 variation-plotter · the plot button is dimmed until a shape is committed",
+         on=B10_PLOT, sel=".ks3-vp-plot[disabled]",
+         props={"opacity": "0.45"}),
+    dict(name="B10 variation-plotter · the plot button is inverted on ink",
+         on=B10_PLOT, sel=".ks3-vp-plot",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "min-height": "44px"}),
+    # ── driven: one characteristic predicted and plotted ──
+    dict(name="B10 variation-plotter · the chosen prediction takes the alert ground",
+         on=B10_PLOT, drive="b10-plot-run",
+         sel='[data-vp-charpanel]:not([hidden]) .ks3-vp-pred[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B"}),
+    # ⚖️⚖️ THE GAP IS THE LESSON, and it is asserted on PAINTED GEOMETRY inside
+    # `b10-plot-both`, not here. A continuous characteristic's bars fill their
+    # column and MEET; a discontinuous one's are 6px narrower and stand apart.
+    # Neither width is a fixed number — the column is `flex: 1 1 0` and a
+    # six-bin chart's column is not a seven-bin chart's — so the claim is
+    # "the bar is exactly as wide as its column" and "the bar is exactly 6px
+    # narrower", which is a relation between two measurements and not a value
+    # a `props` row can hold. If the discontinuous rule ever resolves to the
+    # full column width the bench is drawing a histogram of blood groups and
+    # telling a student that is what one looks like; nothing else in the build
+    # would notice.
+    dict(name="B10 variation-plotter · the bars are drawn to the derived gap",
+         on=B10_PLOT, drive="b10-plot-both",
+         sel="[data-vp-charpanel]:not([hidden]) .ks3-vp-col",
+         props={"min-width": "0px"}),
+    dict(name="B10 variation-plotter · the bar is the alert fill",
+         on=B10_PLOT, drive="b10-plot-run",
+         sel="[data-vp-charpanel]:not([hidden]) .ks3-vp-bar",
+         props={"background-color": "#FFC53D"}),
+    dict(name="B10 variation-plotter · the chart sits in a translucent well",
+         on=B10_PLOT, drive="b10-plot-run",
+         sel="[data-vp-charpanel]:not([hidden]) .ks3-vp-chart",
+         props={"height": "170px",
+                "background-color": "rgba(255, 255, 255, 0.06)"}),
+    dict(name="B10 variation-plotter · the bin count is muted mono at 12px",
+         on=B10_PLOT, drive="b10-plot-run",
+         sel="[data-vp-charpanel]:not([hidden]) .ks3-vp-n",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "12px"}),
+    dict(name="B10 variation-plotter · the bin label is muted mono at 11px",
+         on=B10_PLOT, drive="b10-plot-run",
+         sel="[data-vp-charpanel]:not([hidden]) .ks3-vp-binlabel",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "11px"}),
+    dict(name="B10 variation-plotter · the axis caption is muted mono, uppercase",
+         on=B10_PLOT, drive="b10-plot-run",
+         sel="[data-vp-charpanel]:not([hidden]) .ks3-vp-axis",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px", "text-transform": "uppercase"}),
+    # ⚖️ THE VERDICT IS THE PAGE GROUND ON AN INK BLOCK — cream inside ink,
+    # which is the one place in this instrument where the text has to be INK
+    # and not on-dark. It is the element the whole commitment exists to reach.
+    dict(name="B10 variation-plotter · the verdict is the page ground on an ink block",
+         on=B10_PLOT, drive="b10-plot-run",
+         sel="[data-vp-charpanel]:not([hidden]) .ks3-vp-verdict",
+         props={"background-color": "#FBF3E6", "color": "#221E1B"}),
+    # ⛔ ACCENT-TEXT AT 6.0:1, NEVER `--ks3-accent` AT 3.4:1. The tag is 14px
+    # mono, which is small text, and it is ONE TONE for both verdicts — a
+    # bench says whether the prediction held, in words, and says it the same
+    # way whichever way it went (schema §0.6). Green for right and red for
+    # wrong would make a bench into a marker, which only the ladder is.
+    dict(name="B10 variation-plotter · the verdict tag is accent-TEXT mono, never accent",
+         on=B10_PLOT, drive="b10-plot-run",
+         sel="[data-vp-charpanel]:not([hidden]) .ks3-vp-tag:not([hidden])",
+         props={"color": "#A93411", "font-family": "DM Mono",
+                "font-size": "14px"}),
+    dict(name="B10 variation-plotter · the kind line is display 800 at 22px",
+         on=B10_PLOT, drive="b10-plot-run",
+         sel="[data-vp-charpanel]:not([hidden]) .ks3-vp-kind",
+         props={"color": "#221E1B", "font-weight": "800",
+                "font-size": "22px"}),
+    dict(name="B10 variation-plotter · the shape answer reads in ink body",
+         on=B10_PLOT, drive="b10-plot-run",
+         sel="[data-vp-charpanel]:not([hidden]) .ks3-vp-shape",
+         props={"color": "#3B342E", "font-size": "18px"}),
+    # ⚖️⚖️ SHAPE AND CAUSE ARE TWO QUESTIONS AND THE RULE IS THE LINE BETWEEN
+    # THEM. `#s-think`'s whole confrontation is that a smooth curve says
+    # nothing about the cause; a merge of these two paragraphs would delete the
+    # lesson's second half while leaving every word of it on the page.
+    dict(name="B10 variation-plotter · the cause answer is divided off by a rule",
+         on=B10_PLOT, drive="b10-plot-run",
+         sel="[data-vp-charpanel]:not([hidden]) .ks3-vp-cause",
+         props={"color": "#3B342E", "font-size": "18px",
+                "border-top-color": "#E0D2B9", "border-top-width": "2px"}),
+    dict(name="B10 variation-plotter · the spent plot button dims",
+         on=B10_PLOT, drive="b10-plot-run",
+         sel=".ks3-vp-plot[disabled]",
+         props={"opacity": "0.45"}),
+
+    # ── b10-02 · zoom-bench ──
+    dict(name="B10 zoom-bench · the ladder sits on the nested dark panel",
+         on=B10_ZOOM, sel=".ks3-zb-panel",
+         props={"background-color": "#3E3730"}),
+    # ⚖️⚖️ AN UNREACHED LEVEL IS DIMMED AND STILL DRAWN, and this is the row
+    # that says so. The whole ladder is on screen from the first paint so the
+    # SCALE COLUMN can be read as a column — that column is the lesson's
+    # argument. If this ever resolves to 1 the bench has given away every body
+    # paragraph before the first press; if the row is hidden instead, the
+    # column stops existing and six levels become six facts in a list.
+    dict(name="B10 zoom-bench · an unreached level dims and takes no outline",
+         on=B10_ZOOM, sel=".ks3-zb-level:not([data-shown])",
+         props={"opacity": "0.45", "border-top-color": "rgba(0, 0, 0, 0)"}),
+    dict(name="B10 zoom-bench · an unreached level's name is muted",
+         on=B10_ZOOM, sel=".ks3-zb-level:not([data-shown]) .ks3-zb-name",
+         props={"color": "#C6B9A7", "font-size": "19px",
+                "font-weight": "700"}),
+    dict(name="B10 zoom-bench · a reached level's name is on-dark headline",
+         on=B10_ZOOM, sel=".ks3-zb-level[data-shown] .ks3-zb-name",
+         props={"color": "#FBF3E6", "font-size": "19px",
+                "font-weight": "700"}),
+    # ⚖️⚖️ THE SCALE FIGURE IS THE ALERT ON EVERY ROW, REACHED OR NOT. It is
+    # the column the lesson is about — 1.6 m down to 0.0000003 mm apart — and
+    # dimming it per row would leave the journey unreadable before it starts.
+    # The row's own 45% is what says "not yet"; a second treatment on the
+    # figure would say "not important".
+    dict(name="B10 zoom-bench · the scale figure is alert mono on every row",
+         on=B10_ZOOM, sel=".ks3-zb-level:not([data-shown]) .ks3-zb-scale",
+         props={"color": "#FFC53D", "font-family": "DM Mono",
+                "font-size": "15px"}),
+    dict(name="B10 zoom-bench · the level just reached takes the alert outline",
+         on=B10_ZOOM, sel=".ks3-zb-level[data-here]",
+         props={"border-top-color": "#FFC53D", "border-top-width": "2px",
+                "background-color": "rgba(255, 255, 255, 0.1)"}),
+    dict(name="B10 zoom-bench · a reached level's number is the alert chip",
+         on=B10_ZOOM, sel=".ks3-zb-level[data-shown] .ks3-zb-num",
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "width": "30px", "height": "30px"}),
+    dict(name="B10 zoom-bench · an unreached number is a muted outline",
+         on=B10_ZOOM, sel=".ks3-zb-level:not([data-shown]) .ks3-zb-num",
+         props={"background-color": "rgba(0, 0, 0, 0)", "color": "#C6B9A7",
+                "border-top-color": "#C6B9A7"}),
+    dict(name="B10 zoom-bench · a revealed level body reads in on-dark body",
+         on=B10_ZOOM, sel=".ks3-zb-level[data-shown] .ks3-zb-body",
+         props={"color": "#E7DECE", "font-size": "18px"}),
+    dict(name="B10 zoom-bench · the zoom button is inverted on ink",
+         on=B10_ZOOM, sel=".ks3-zb-in",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="B10 zoom-bench · the back-out button is inverted on ink",
+         on=B10_ZOOM, sel=".ks3-zb-out",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "min-height": "44px"}),
+    # ⚠️ THE SAY-IT-BACK PANEL IS PART OF THE BENCH, not a block of its own —
+    # measured, inside `<section id="s-bench">`. Its own translucent ground is
+    # what tells the eye it is a second thing on the same bench.
+    dict(name="B10 zoom-bench · the say-it-back panel is a well on the ink block",
+         on=B10_ZOOM, sel=".ks3-zb-say",
+         props={"background-color": "rgba(255, 255, 255, 0.06)"}),
+    dict(name="B10 zoom-bench · the say-it-back label is muted mono, uppercase",
+         on=B10_ZOOM, sel=".ks3-zb-saylabel",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px", "text-transform": "uppercase"}),
+    # ⛔ A PRESSED QUESTION TAB SAYS WHICH QUESTION IS BEING LOOKED AT, and
+    # nothing else. This panel gates nothing and marks nothing: every answer is
+    # visible the moment its question is chosen, and there is no right one.
+    dict(name="B10 zoom-bench · the chosen question is the alert ground",
+         on=B10_ZOOM, sel='.ks3-zb-qtab[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="B10 zoom-bench · an unchosen question stays on the panel ground",
+         on=B10_ZOOM, sel='.ks3-zb-qtab[aria-pressed="false"]',
+         props={"background-color": "#3E3730", "color": "#FBF3E6"}),
+    dict(name="B10 zoom-bench · the answer reads in on-dark body",
+         on=B10_ZOOM, sel="[data-zb-answer]:not([hidden])",
+         props={"color": "#E7DECE", "font-size": "18px"}),
+    # ── driven: all six levels open ──
+    dict(name="B10 zoom-bench · the spent zoom button dims",
+         on=B10_ZOOM, drive="b10-zoom-bottomed", sel=".ks3-zb-in[disabled]",
+         props={"opacity": "0.45"}),
+    # ⚖️ THE BOTTOM-OUT PARAGRAPH IS THE PAGE GROUND ON AN INK BLOCK — cream
+    # inside ink, the one element on this bench whose text is INK. It is the
+    # sentence that says nothing was swapped for anything else on the way down,
+    # which is the whole of `#s-think` on this page.
+    dict(name="B10 zoom-bench · the close is the page ground on an ink block",
+         on=B10_ZOOM, drive="b10-zoom-bottomed",
+         sel=".ks3-zb-close:not([hidden])",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "font-size": "18px"}),
+    dict(name="B10 zoom-bench · the last level is the one lit at the bottom",
+         on=B10_ZOOM, drive="b10-zoom-bottomed",
+         sel=".ks3-zb-level[data-here] .ks3-zb-num",
+         props={"background-color": "#FFC53D", "color": "#221E1B"}),
+
+    # ── the accent BADGE, drawn on two pages at two sizes (⊕ MRB-248) ──
+    # ⚠️ REGISTERED BECAUSE THE KEYS WERE DEAD WITHOUT IT. b10-03 authored
+    # `initials` and b10-04 authored `num`, `_rule_card` read neither, and
+    # under contract R5 an authored key with no read site fails the audit —
+    # while the page looked entirely deliberate, because the cards still
+    # rendered their other parts. Same shape as MRB-245's ten empty cards, one
+    # slot smaller.
+    dict(name="badged card is one column of full-width rows, not the auto grid",
+         on=B10_MODEL, sel=".ks3-rule-cards[data-badged]",
+         props={"display": "flex", "flex-direction": "column"}),
+    dict(name="badged card is a two-column grid", on=B10_MODEL,
+         sel=".ks3-rule-cards > li[data-badge]",
+         props={"display": "grid"}),
+    dict(name="initials badge is a 44px accent square", on=B10_MODEL,
+         sel='.ks3-rule-badge[data-badge="initials"]',
+         props={"width": "44px", "height": "44px",
+                "background-color": "#E4572E", "color": "#FBF3E6",
+                "font-size": "16px"}),
+    # ⚠️ ON A BADGED CARD THE NAME IS THE HEADLINE AND THE ROLE SITS UNDER IT,
+    # which is the reverse of a b1-04 card. The badge already does the
+    # labelling the role line does there, so promoting the role would give the
+    # card a laboratory for a title and a person for a subtitle.
+    dict(name="badged card's name is display 800 at 22px", on=B10_MODEL,
+         sel=".ks3-rule-cards > li[data-badge] > .ks3-rule-term",
+         props={"font-family": "Bricolage Grotesque", "font-weight": "800",
+                "font-size": "22px"}),
+    dict(name="badged card's role is accent-TEXT mono under the name",
+         on=B10_MODEL,
+         sel=".ks3-rule-cards > li[data-badge] > .ks3-rule-role",
+         props={"color": "#A93411", "font-family": "DM Mono",
+                "font-size": "14px"}),
+
+    # ── b10-03 · model-builder ──
+    dict(name="B10 model-builder · the dial name is muted mono, uppercase",
+         on=B10_MODEL, sel=".ks3-dh-dialname",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px", "text-transform": "uppercase"}),
+    # ⛔ A PRESSED DIAL IS THE ALERT GROUND AND IT IS NOT A MARK. It says "this
+    # is the model on the bench" — the bench opens on PAULING'S WRONG MODEL
+    # with all three dials pressed, so a dial that read as a verdict would open
+    # by telling the student their model was right.
+    dict(name="B10 model-builder · the chosen dial is the alert ground",
+         on=B10_MODEL, sel='.ks3-dh-opt[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="B10 model-builder · an unchosen dial stays on the panel ground",
+         on=B10_MODEL, sel='.ks3-dh-opt[aria-pressed="false"]',
+         props={"background-color": "#3E3730", "color": "#FBF3E6"}),
+    dict(name="B10 model-builder · the bench sits on the nested dark panel",
+         on=B10_MODEL, sel=".ks3-dh-panel",
+         props={"background-color": "#3E3730"}),
+    dict(name="B10 model-builder · the model line is on-dark at 20px",
+         on=B10_MODEL, sel=".ks3-dh-modelline",
+         props={"color": "#FBF3E6", "font-size": "20px",
+                "font-weight": "700"}),
+    dict(name="B10 model-builder · an evidence card sits in a translucent well",
+         on=B10_MODEL, sel=".ks3-dh-card",
+         props={"background-color": "rgba(255, 255, 255, 0.06)"}),
+    # ⚖️⚖️ THE CARD OUTLINE IS THE VERDICT AND IT IS ON THE MODEL, NOT ON THE
+    # STUDENT. One of the three B10 benches that adjudicate a commitment
+    # (schema §0.6), shipped as Design drew it: green when the evidence is
+    # consistent with the model, alert when it rules that model out. These two
+    # rows are what stop the treatment migrating onto a dial button.
+    dict(name="B10 model-builder · a failing card takes the alert outline",
+         on=B10_MODEL, sel=".ks3-dh-card:not([data-pass])",
+         props={"border-top-color": "#FFC53D", "border-top-width": "2px"}),
+    dict(name="B10 model-builder · a failing card's verdict is alert mono",
+         on=B10_MODEL,
+         sel='.ks3-dh-card:not([data-pass]) [data-dh-tag="fail"]',
+         props={"color": "#FFC53D", "font-family": "DM Mono",
+                "font-size": "14px", "text-transform": "uppercase"}),
+    dict(name="B10 model-builder · the evidence name is on-dark at 18px",
+         on=B10_MODEL, sel=".ks3-dh-cardname",
+         props={"color": "#FBF3E6", "font-size": "18px",
+                "font-weight": "700"}),
+    dict(name="B10 model-builder · what the evidence IS reads in on-dark body",
+         on=B10_MODEL, sel=".ks3-dh-what",
+         props={"color": "#E7DECE", "font-size": "17px"}),
+    # ⚖️ THE ELIMINATION TEXT IS AMBER, AND AMBER IS A WRONG IDEA BEING
+    # CONFRONTED. It is the only line on the bench that tells a student which
+    # decision to change, and it is about the MODEL.
+    dict(name="B10 model-builder · the elimination line is amber",
+         on=B10_MODEL, sel=".ks3-dh-card:not([data-pass]) .ks3-dh-why",
+         props={"color": "#FFC53D", "font-size": "17px"}),
+    dict(name="B10 model-builder · the verdict is the page ground on an ink block",
+         on=B10_MODEL, sel=".ks3-dh-verdict",
+         props={"background-color": "#FBF3E6", "color": "#221E1B"}),
+    dict(name="B10 model-builder · the verdict tag is accent-TEXT mono, never accent",
+         on=B10_MODEL, sel=".ks3-dh-verdicttag",
+         props={"color": "#A93411", "font-family": "DM Mono",
+                "font-size": "14px"}),
+    dict(name="B10 model-builder · the verdict body reads in ink body",
+         on=B10_MODEL, sel=".ks3-dh-verdictbody",
+         props={"color": "#3B342E", "font-size": "18px"}),
+    # ── driven: the double helix built ──
+    dict(name="B10 model-builder · a passing card takes the green outline",
+         on=B10_MODEL, drive="b10-model-solved",
+         sel=".ks3-dh-card[data-pass]",
+         props={"border-top-color": "#12A150", "border-top-width": "2px"}),
+    dict(name="B10 model-builder · a passing card's verdict is green mono",
+         on=B10_MODEL, drive="b10-model-solved",
+         sel='.ks3-dh-card[data-pass] [data-dh-tag="pass"]:not([hidden])',
+         props={"color": "#12A150", "font-family": "DM Mono",
+                "font-size": "14px"}),
+
+    # ── b10-04 · pea-cross ──
+    dict(name="B10 pea-cross · the parent name is muted mono, uppercase",
+         on=B10_CROSS, sel=".ks3-pc-parentname",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px", "text-transform": "uppercase"}),
+    dict(name="B10 pea-cross · the chosen genotype is the alert ground",
+         on=B10_CROSS, sel='.ks3-pc-geno[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="B10 pea-cross · an unchosen genotype stays on the panel ground",
+         on=B10_CROSS, sel='.ks3-pc-geno[aria-pressed="false"]',
+         props={"background-color": "#3E3730", "color": "#FBF3E6"}),
+    dict(name="B10 pea-cross · the plot sits on the nested dark panel",
+         on=B10_CROSS, sel=".ks3-pc-panel",
+         props={"background-color": "#3E3730"}),
+    dict(name="B10 pea-cross · the cross line is on-dark at 20px",
+         on=B10_CROSS, sel=".ks3-pc-crossline",
+         props={"color": "#FBF3E6", "font-size": "20px",
+                "font-weight": "700"}),
+    dict(name="B10 pea-cross · the note reads in on-dark body on a well",
+         on=B10_CROSS, sel="[data-pc-note]:not([hidden])",
+         props={"color": "#E7DECE", "font-size": "18px",
+                "background-color": "rgba(255, 255, 255, 0.06)"}),
+    dict(name="B10 pea-cross · the grow buttons are inverted on ink",
+         on=B10_CROSS, sel=".ks3-pc-one",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="B10 pea-cross · the clear button is inverted on ink",
+         on=B10_CROSS, sel=".ks3-pc-clear",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "min-height": "44px"}),
+    # ── driven: one seed grown ──
+    dict(name="B10 pea-cross · the most-recent-seed card is a well",
+         on=B10_CROSS, drive="b10-cross-grown",
+         sel="[data-pc-last]:not([hidden])",
+         props={"background-color": "rgba(255, 255, 255, 0.06)"}),
+    dict(name="B10 pea-cross · the seed label is muted mono, uppercase",
+         on=B10_CROSS, drive="b10-cross-grown", sel=".ks3-pc-lastlabel",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px", "text-transform": "uppercase"}),
+    dict(name="B10 pea-cross · the seed line reads in on-dark body",
+         on=B10_CROSS, drive="b10-cross-grown", sel=".ks3-pc-lastline",
+         props={"color": "#E7DECE", "font-size": "19px"}),
+    dict(name="B10 pea-cross · the tally name is on-dark at 17px",
+         on=B10_CROSS, drive="b10-cross-grown", sel=".ks3-pc-rowname",
+         props={"color": "#FBF3E6", "font-size": "17px"}),
+    dict(name="B10 pea-cross · the tally figure is muted mono",
+         on=B10_CROSS, drive="b10-cross-grown", sel="[data-pc-value]",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "16px"}),
+    # ⚖️ TWO BARS, TWO COLOURS, AND NEITHER IS A MARK. Purple-flowered takes
+    # the alert and white-flowered the muted — a quantity distinguished from
+    # another quantity, not a right answer from a wrong one. There is nothing
+    # on this bench to be right about: chance decides each seed.
+    dict(name="B10 pea-cross · the purple bar is the alert fill",
+         on=B10_CROSS, drive="b10-cross-grown",
+         sel='.ks3-pc-row[data-pc-row="dominant"] .ks3-pc-bar',
+         props={"background-color": "#FFC53D"}),
+    dict(name="B10 pea-cross · the white bar is the muted fill, not a second alert",
+         on=B10_CROSS, drive="b10-cross-grown",
+         sel='.ks3-pc-row[data-pc-row="recessive"] .ks3-pc-bar',
+         props={"background-color": "#C6B9A7"}),
+    dict(name="B10 pea-cross · the bars sit in a translucent well",
+         on=B10_CROSS, drive="b10-cross-grown", sel=".ks3-pc-track",
+         props={"height": "16px",
+                "background-color": "rgba(255, 255, 255, 0.08)"}),
+    dict(name="B10 pea-cross · the ratio line is alert mono",
+         on=B10_CROSS, drive="b10-cross-grown", sel="[data-pc-ratio]",
+         props={"color": "#FFC53D", "font-family": "DM Mono",
+                "font-size": "16px"}),
+
+    # ── b10-05 · species-cases ──
+    dict(name="B10 species-cases · the case label is muted mono, uppercase",
+         on=B10_SPECIES, sel=".ks3-sc-tabslabel",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px", "text-transform": "uppercase"}),
+    dict(name="B10 species-cases · the chosen case is the alert ground",
+         on=B10_SPECIES, sel='.ks3-sc-tab[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="B10 species-cases · the bench sits on the nested dark panel",
+         on=B10_SPECIES, sel=".ks3-sc-panel",
+         props={"background-color": "#3E3730"}),
+    dict(name="B10 species-cases · the case title is display 800 at 25px",
+         on=B10_SPECIES, sel="[data-sc-panel]:not([hidden]) .ks3-sc-title",
+         props={"color": "#FBF3E6", "font-family": "Bricolage Grotesque",
+                "font-weight": "800", "font-size": "25px"}),
+    dict(name="B10 species-cases · the facts read in on-dark body",
+         on=B10_SPECIES, sel="[data-sc-panel]:not([hidden]) .ks3-sc-facts",
+         props={"color": "#E7DECE", "font-size": "18px"}),
+    # ⚖️ A VERDICT IS A FULL-WIDTH ROW ON THE PANEL GROUND, not a segment.
+    # Three sentences that have to be READ — one of them is "the test does not
+    # settle it", which is the whole instrument — and a chip row would invite
+    # them to be scanned.
+    dict(name="B10 species-cases · a verdict is a full-width row, not a segment",
+         on=B10_SPECIES,
+         sel='[data-sc-panel]:not([hidden]) .ks3-sc-verdict[aria-pressed="false"]',
+         props={"background-color": "rgba(0, 0, 0, 0)", "color": "#FBF3E6",
+                "font-size": "18px", "min-height": "44px"}),
+    dict(name="B10 species-cases · the verdict letter is a drawn ring, not a tint",
+         on=B10_SPECIES, sel="[data-sc-panel]:not([hidden]) .ks3-sc-letter",
+         props={"width": "26px", "height": "26px", "color": "#C6B9A7",
+                "border-top-color": "#C6B9A7"}),
+    dict(name="B10 species-cases · the check button is dimmed until a verdict is chosen",
+         on=B10_SPECIES, sel=".ks3-sc-check[disabled]",
+         props={"opacity": "0.45"}),
+    dict(name="B10 species-cases · the tally beside it is muted mono",
+         on=B10_SPECIES, sel="[data-sc-tally]",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "15px"}),
+    # ── driven: one case committed and checked ──
+    dict(name="B10 species-cases · the chosen verdict takes the alert outline",
+         on=B10_SPECIES, drive="b10-species-checked",
+         sel='[data-sc-panel]:not([hidden]) .ks3-sc-verdict[aria-pressed="true"]',
+         props={"border-top-color": "#FFC53D", "border-top-width": "2px",
+                "background-color": "rgba(255, 255, 255, 0.1)"}),
+    # ⛔ AND THE UNCHOSEN VERDICTS DIM RATHER THAN BEING MARKED. No green on
+    # the right one, no red on the wrong one, no badge — the bench says whether
+    # the commitment held in WORDS on the cream panel (schema §0.6) and the
+    # student's own button is never marked (MRB-196 R10).
+    dict(name="B10 species-cases · a spent unchosen verdict dims and takes no mark",
+         on=B10_SPECIES, drive="b10-species-checked",
+         sel=('[data-sc-panel]:not([hidden])[data-sc-opened] '
+              '.ks3-sc-verdict[aria-pressed="false"]'),
+         props={"opacity": "0.5", "background-color": "rgba(0, 0, 0, 0)"}),
+    dict(name="B10 species-cases · the outcome is the page ground on an ink block",
+         on=B10_SPECIES, drive="b10-species-checked",
+         sel="[data-sc-panel]:not([hidden]) [data-sc-out]:not([hidden])",
+         props={"background-color": "#FBF3E6", "color": "#221E1B"}),
+    dict(name="B10 species-cases · the outcome tag is accent-TEXT mono, never accent",
+         on=B10_SPECIES, drive="b10-species-checked",
+         sel="[data-sc-panel]:not([hidden]) .ks3-sc-tag:not([hidden])",
+         props={"color": "#A93411", "font-family": "DM Mono",
+                "font-size": "14px"}),
+    dict(name="B10 species-cases · the answer is display 800 at 22px",
+         on=B10_SPECIES, drive="b10-species-checked",
+         sel="[data-sc-panel]:not([hidden]) .ks3-sc-answer",
+         props={"color": "#221E1B", "font-family": "Bricolage Grotesque",
+                "font-weight": "800", "font-size": "22px"}),
+    dict(name="B10 species-cases · the reasoning reads in ink body",
+         on=B10_SPECIES, drive="b10-species-checked",
+         sel="[data-sc-panel]:not([hidden]) .ks3-sc-why",
+         props={"color": "#3B342E", "font-size": "18px"}),
+    dict(name="B10 species-cases · the spent check button dims",
+         on=B10_SPECIES, drive="b10-species-checked",
+         sel=".ks3-sc-check[disabled]",
+         props={"opacity": "0.45"}),
+    # ═══ END B10 ═══ rows
 ]
 
 
@@ -8986,6 +9522,821 @@ DRIVES = {
   return "";
 })()
 """,
+
+    # ═══ BEGIN B10 drives ═══
+    # ⚖️ ONE CHARACTERISTIC PREDICTED AND PLOTTED, and the whole gate proved on
+    # the way. b10-01 is Law 4 built into an instrument: the graph cannot be
+    # reached until a shape has been committed to, the commitment cannot be
+    # taken back once plotted, and there is no reset. Each of those is checked
+    # here rather than described, and the driven rows below then measure the
+    # verdict panel that arrives.
+    "b10-plot-run": r"""
+(function () {
+  var sec = document.querySelector('[data-vpblock]');
+  if (!sec) { return "no variation plotter on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') { return "the stop ticked on load"; }
+  var w = sec.querySelector('[data-vp]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var tabs = w.querySelectorAll('[data-vp-char]');
+  if (tabs.length < 3) { return "the bench offers " + tabs.length + " characteristic(s)"; }
+  // ⚠️ NARROWED, BY MUTATION. This used to test the whole section's innerHTML
+  // for any `ks3-option`, and the predict buttons carry the class too — so
+  // stripping it from every tab left the assertion green. Ask each tab.
+  for (var c = 0; c < tabs.length; c++) {
+    if (!/\bks3-option\b/.test(tabs[c].className)) {
+      return "characteristic tab " + c + " is not a platform option: " + tabs[c].className;
+    }
+    if (tabs[c].getAttribute('aria-pressed') === null) {
+      return "characteristic tab " + c + " carries no aria-pressed";
+    }
+  }
+  var count = sec.querySelector('[data-count]');
+  if (count && count.textContent.indexOf('{') >= 0) {
+    return "the head readout shipped an unfilled placeholder: " + count.textContent;
+  }
+  // MRB-242: a stylesheet `display` on a `hidden` element beats the UA rule
+  // and every hidden panel on this bench would be on screen at once.
+  var cascade = w.querySelectorAll(
+    '[data-vp-charpanel][hidden], [data-vp-graph][hidden], .ks3-vp-tag[hidden]');
+  for (var h = 0; h < cascade.length; h++) {
+    var el = cascade[h], prev = el.style.display;
+    el.style.display = '';
+    var shown = getComputedStyle(el).display;
+    el.style.display = prev;
+    if (shown !== 'none') {
+      return "MRB-242: " + el.className + " ships `hidden` but the stylesheet " +
+        "gives it display:" + shown + ", which beats the UA [hidden] rule";
+    }
+  }
+  var open = w.querySelectorAll('[data-vp-charpanel]:not([hidden])');
+  if (open.length !== 1) {
+    return "the bench opens with " + open.length + " characteristics showing";
+  }
+  var panel = open[0];
+  // ⚖️ LAW 4, IN THE SHIPPED BYTES. No prediction, no graph, and the control
+  // that would produce one is disabled before any JS has run.
+  var plot = w.querySelector('[data-vp-plot]');
+  if (!plot.disabled) {
+    return "the plot button is live before any shape has been predicted";
+  }
+  if (panel.querySelector('[data-vp-graph]:not([hidden])')) {
+    return "the graph is on screen before the student committed to a shape";
+  }
+  if (!panel.querySelector('[data-vp-predict]:not([hidden])')) {
+    return "the bench opens with no prediction to make";
+  }
+  var preds = panel.querySelectorAll('.ks3-vp-pred');
+  if (preds.length !== 2) { return "the panel offers " + preds.length + " shape(s)"; }
+  plot.click();
+  if (panel.querySelector('[data-vp-graph]:not([hidden])')) {
+    return "a click on the disabled plot button revealed the graph anyway";
+  }
+  preds[0].click();
+  if (plot.disabled) { return "a shape was predicted and the plot button stayed dead"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on a prediction, before anything was plotted";
+  }
+  plot.click();
+  var graph = panel.querySelector('[data-vp-graph]:not([hidden])');
+  if (!graph) { return "the data was plotted and no graph arrived"; }
+  if (panel.querySelector('[data-vp-predict]:not([hidden])')) {
+    return "the prediction is spent and its buttons are still on screen";
+  }
+  if (!plot.disabled) { return "the graph is drawn and the plot button is still live"; }
+  // ⚠️ AND THE BUTTON SAYS SO. `run_done_label` is authored, emitted and read;
+  // without this the spent state is a dead label and the page reads
+  // "Plot the data" over a graph that has already been plotted. Added by
+  // mutation — swapping the runtime to `RUN` for ever passed everything else.
+  var doneLabel = w.getAttribute('data-run-done-label');
+  var runLabel = w.getAttribute('data-run-label');
+  if (doneLabel === runLabel) {
+    return "the bench authors one label for both states of the plot button";
+  }
+  if (plot.textContent.trim() !== doneLabel.trim()) {
+    return "the plot button is spent and still reads " + JSON.stringify(plot.textContent);
+  }
+  // ⛔ ONE TAG, AND IT IS WORDS. The bench says whether the prediction held
+  // (schema §0.6) and says it in one tone; it never marks the button.
+  var tags = graph.querySelectorAll('.ks3-vp-tag:not([hidden])');
+  if (tags.length !== 1) { return "the verdict shows " + tags.length + " tag(s)"; }
+  var chosen = panel.querySelector('.ks3-vp-pred[aria-pressed="true"]');
+  var want = chosen.getAttribute('data-vp-pred') ===
+    graph.querySelector('.ks3-vp-chart').getAttribute('data-vp-type') ? 'right' : 'wrong';
+  if (tags[0].getAttribute('data-vp-tag') !== want) {
+    return "the prediction was " + want + " and the bench showed the other tag";
+  }
+  if (/is-correct|is-wrong|is-spent/.test(chosen.className)) {
+    return "MRB-196 R10: the bench marked the prediction button — " + chosen.className;
+  }
+  // ⚖️ SHAPE AND CAUSE ARE TWO PARAGRAPHS AND THE RULE IS BETWEEN THEM.
+  if (!graph.querySelector('.ks3-vp-shape') || !graph.querySelector('.ks3-vp-cause')) {
+    return "the verdict panel merged the shape answer and the cause answer";
+  }
+  if (graph.querySelector('.ks3-vp-cause').textContent.indexOf(
+        graph.querySelector('.ks3-vp-shape').textContent) >= 0) {
+    return "the cause paragraph repeats the shape paragraph";
+  }
+  // ⚖️ AND THE PREDICTION CANNOT BE TAKEN BACK. There is no reset on this
+  // bench: six characteristics, one prediction each.
+  preds[1].click();
+  if (panel.querySelector('.ks3-vp-pred[aria-pressed="true"]') !== chosen) {
+    return "a plotted prediction was changed after the fact";
+  }
+  return "";
+})()
+""",
+
+    # ⚖️⚖️ BOTH GAPS, MEASURED, ON THE SAME PAGE. This is the histogram /
+    # bar-chart convention read off painted geometry rather than off the
+    # stylesheet, and it is the one claim on this bench that a student takes
+    # away as a rule. The column is `flex: 1 1 0`, so neither width is a fixed
+    # number and both are a RELATION: a continuous bar is exactly its column
+    # wide and its neighbour therefore touches it; a discontinuous bar is
+    # exactly 6px narrower and its neighbour therefore does not. Schema §2
+    # forbids an authored gap key precisely so that no record can ship
+    # touching bars for blood group — this is what makes that stick.
+    "b10-plot-both": r"""
+(function () {
+  var sec = document.querySelector('[data-vpblock]');
+  if (!sec) { return "no variation plotter on the page"; }
+  var w = sec.querySelector('[data-vp]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var tabs = document.querySelectorAll('[data-vp-char]');
+  var seen = {}, apart = {};
+  function plotCurrent() {
+    var panel = w.querySelector('[data-vp-charpanel]:not([hidden])');
+    var pred = panel.querySelector('.ks3-vp-pred');
+    if (!pred) { return "a characteristic panel offers no shape to predict"; }
+    pred.click();
+    w.querySelector('[data-vp-plot]').click();
+    var graph = panel.querySelector('[data-vp-graph]:not([hidden])');
+    if (!graph) { return "a characteristic was plotted and no graph arrived"; }
+    var chart = graph.querySelector('.ks3-vp-chart');
+    var type = chart.getAttribute('data-vp-type');
+    var cols = chart.querySelectorAll('.ks3-vp-col');
+    if (cols.length < 2) { return type + " drew " + cols.length + " column(s)"; }
+    var colW = cols[0].getBoundingClientRect().width;
+    var barW = cols[0].querySelector('.ks3-vp-bar').getBoundingClientRect().width;
+    var want = type === 'continuous' ? colW : colW - 6;
+    if (Math.abs(barW - want) > 0.6) {
+      return type + " bars are " + barW.toFixed(2) + "px in a " +
+        colW.toFixed(2) + "px column; the derived gap wants " + want.toFixed(2) + "px";
+    }
+    // ⚖️⚖️ THE CLAIM THE WIDTH IS FOR: DO NEIGHBOURING BARS MEET, OR NOT.
+    // Touching bars are what makes a histogram a histogram, and the axis
+    // caption under this chart says so in words. Read off painted geometry,
+    // because the stylesheet saying the right thing is not evidence that the
+    // browser drew it.
+    var a = cols[0].querySelector('.ks3-vp-bar').getBoundingClientRect();
+    var b = cols[1].querySelector('.ks3-vp-bar').getBoundingClientRect();
+    apart[type] = b.left - a.right;
+    if (type === 'continuous' && apart[type] > 0.6) {
+      return "continuous bars stand " + apart[type].toFixed(2) +
+        "px apart, and the caption under them says they touch";
+    }
+    if (type === 'discontinuous' && apart[type] < 5.4) {
+      return "discontinuous bars stand " + apart[type].toFixed(2) +
+        "px apart; a bar chart's categories are separated";
+    }
+    // Every bar is on screen: the floor of 3% keeps a one-student bin visible.
+    for (var q = 0; q < cols.length; q++) {
+      if (cols[q].querySelector('.ks3-vp-bar').getBoundingClientRect().height < 1) {
+        return type + " drew a bin with no bar at all";
+      }
+    }
+    seen[type] = true;
+    return "";
+  }
+  // ⚖️⚖️ DESIGN'S THRESHOLD, COUNTED IN, ONE AT A TIME. `s-bench` and the
+  // `s-two` band stop that MIRRORS it both tick on this number (MRB-249), so
+  // an off-by-one here moves two rail stops. Asserted in both directions:
+  // nothing ticks before the threshold, and it ticks at it. Added by mutation
+  // — reading the threshold as 1 passed a loop that plotted everything.
+  var NEED = parseInt(w.getAttribute('data-threshold'), 10);
+  if (!(NEED >= 2)) { return "the bench declares a threshold of " + NEED; }
+  for (var i = 0; i < tabs.length; i++) {
+    tabs[i].click();
+    var err = plotCurrent();
+    if (err) { return err; }
+    var ticked = sec.getAttribute('data-stage-done') === '1';
+    if (i + 1 < NEED && ticked) {
+      return "the stop ticked after " + (i + 1) + " plotted, and the threshold is " + NEED;
+    }
+    if (i + 1 >= NEED && !ticked) {
+      return "the stop had not ticked after " + (i + 1) +
+        " plotted, and the threshold is " + NEED;
+    }
+    if (i + 1 >= NEED && seen.continuous && seen.discontinuous) { break; }
+  }
+  if (!seen.continuous || !seen.discontinuous) {
+    return "the bench never drew both kinds of data: " + JSON.stringify(seen);
+  }
+  // ⚖️⚖️ SIX PIXELS, EXACTLY, AND IT IS THE WHOLE CONVENTION. Not a style
+  // preference and not a number a payload may set: schema §2 forbids a `gap`
+  // key so that no record can ship blood group drawn as a histogram.
+  if (Math.abs((apart.discontinuous - apart.continuous) - 6) > 0.6) {
+    return "discontinuous bars stand " + apart.discontinuous.toFixed(2) +
+      "px apart and continuous ones " + apart.continuous.toFixed(2) +
+      "px; the derived gap is 6px and this is " +
+      (apart.discontinuous - apart.continuous).toFixed(2);
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "the bench reached its threshold and the stop did not tick";
+  }
+  // ⚠️ MONOTONIC. Switching back to a characteristic already plotted must not
+  // untick a stop the student reached — MRB-208, and the `s-two` band stop
+  // mirrors this one, so it would untick two.
+  tabs[0].click();
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "switching characteristic unticked a stop already reached";
+  }
+  return "";
+})()
+""",
+
+    # ⚖️ ALL SIX LEVELS, ONE PRESS AT A TIME. Design's own `isDone()` is
+    # `s.shown >= LEVELS.length` and the `s-model` band stop MIRRORS it
+    # (MRB-249), so this threshold is read by two rail entries. The whole
+    # ladder must be drawn from the first paint — the scale column is the
+    # lesson's argument and it cannot be read one row at a time — while only
+    # the `body` arrives on a press.
+    "b10-zoom-bottomed": r"""
+(function () {
+  var sec = document.querySelector('[data-zbblock]');
+  if (!sec) { return "no zoom bench on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') { return "the stop ticked on load"; }
+  var w = sec.querySelector('[data-zb]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var levels = w.querySelectorAll('.ks3-zb-level');
+  var total = parseInt(w.getAttribute('data-total'), 10);
+  if (levels.length !== total || !(total >= 3)) {
+    return "the bench declares " + total + " levels and draws " + levels.length;
+  }
+  var count = sec.querySelector('[data-count]');
+  if (count && count.textContent.indexOf('{') >= 0) {
+    return "the head readout shipped an unfilled placeholder: " + count.textContent;
+  }
+  // MRB-242: a stylesheet `display` beats the UA [hidden] rule.
+  var cascade = w.querySelectorAll('.ks3-zb-body[hidden], .ks3-zb-close[hidden], [data-zb-answer][hidden]');
+  for (var h = 0; h < cascade.length; h++) {
+    var el = cascade[h], prev = el.style.display;
+    el.style.display = '';
+    var d = getComputedStyle(el).display;
+    el.style.display = prev;
+    if (shownDisplay(d)) {
+      return "MRB-242: " + el.className + " ships `hidden` but the stylesheet " +
+        "gives it display:" + d + ", which beats the UA [hidden] rule";
+    }
+  }
+  function shownDisplay(d) { return d !== 'none'; }
+  // ⚖️⚖️ EVERY LEVEL IS DRAWN FROM THE START. The scale column is the argument
+  // and it has to be readable as a column before the journey begins.
+  for (var i = 0; i < levels.length; i++) {
+    var r = levels[i].getBoundingClientRect();
+    if (r.width < 1 || r.height < 1) {
+      return "level " + (i + 1) + " is not drawn until it is reached";
+    }
+    var sc = levels[i].querySelector('.ks3-zb-scale');
+    if (!sc || !sc.textContent.trim()) {
+      return "level " + (i + 1) + " prints no scale, and the scale column is the argument";
+    }
+    if (sc.getBoundingClientRect().width < 1) {
+      return "level " + (i + 1) + "'s scale figure is not drawn";
+    }
+  }
+  if (w.querySelectorAll('.ks3-zb-body:not([hidden])').length !== 1) {
+    return "the bench opens with more than the first level's body revealed";
+  }
+  if (w.querySelector('.ks3-zb-close:not([hidden])')) {
+    return "the bottom-out paragraph landed before the bench reached the bottom";
+  }
+  if (w.querySelectorAll('.ks3-zb-level[data-here]').length !== 1) {
+    return "the bench opens with no single level marked as where you are";
+  }
+  var inBtn = w.querySelector('[data-zb-in]');
+  var IN = w.getAttribute('data-in-label'), DONE = w.getAttribute('data-in-done-label');
+  if (IN === DONE) { return "the bench authors one label for both states of the zoom button"; }
+  if (inBtn.textContent.trim() !== IN.trim()) {
+    return "the zoom button opens reading " + JSON.stringify(inBtn.textContent);
+  }
+  for (var k = 1; k < total; k++) {
+    if (inBtn.disabled) { return "the zoom button locked at level " + k; }
+    inBtn.click();
+    var open = w.querySelectorAll('.ks3-zb-body:not([hidden])').length;
+    if (open !== k + 1) {
+      return "press " + k + " revealed " + open + " level(s); each press reveals one";
+    }
+    if (w.querySelectorAll('.ks3-zb-level[data-here]').length !== 1) {
+      return "press " + k + " left " + w.querySelectorAll('.ks3-zb-level[data-here]').length +
+        " levels marked as where you are";
+    }
+    if (k < total - 1) {
+      if (w.querySelector('.ks3-zb-close:not([hidden])')) {
+        return "the bottom-out paragraph landed at level " + (k + 1) + " of " + total;
+      }
+      if (sec.getAttribute('data-stage-done') === '1') {
+        return "the stop ticked at level " + (k + 1) + " of " + total;
+      }
+    }
+  }
+  if (!w.querySelector('.ks3-zb-close:not([hidden])')) {
+    return "the bench reached the bottom and no closing paragraph arrived";
+  }
+  if (!inBtn.disabled) { return "the bench is at the bottom and the zoom button is still live"; }
+  if (inBtn.textContent.trim() !== DONE.trim()) {
+    return "the zoom button is spent and still reads " + JSON.stringify(inBtn.textContent);
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "all six levels are open and the stop did not tick";
+  }
+  // ⚖️ THE SAY-IT-BACK PANEL GATES NOTHING AND MARKS NOTHING. One answer is
+  // shown at a time, the pressed tab says which question is being looked at,
+  // and no tab carries a verdict class (MRB-196 R10).
+  var qtabs = w.querySelectorAll('.ks3-zb-qtab');
+  if (qtabs.length < 2) { return "the say-it-back panel offers " + qtabs.length + " question(s)"; }
+  var pressed = w.querySelectorAll('.ks3-zb-qtab[aria-pressed="true"]');
+  if (pressed.length !== 1) {
+    return "the say-it-back panel opens with " + pressed.length + " questions chosen";
+  }
+  // ⚠️ `opens_on` IS NOT THE FIRST QUESTION, and that is the whole reason the
+  // key exists (schema §3.2). If the panel ever opens on tab 0 the key has
+  // stopped being read and the opening question is list order, not teaching.
+  if (pressed[0] === qtabs[0]) {
+    return "the say-it-back panel opened on the FIRST question; `opens_on` names another";
+  }
+  for (var q = 0; q < qtabs.length; q++) {
+    qtabs[q].click();
+    var vis = w.querySelectorAll('[data-zb-answer]:not([hidden])');
+    if (vis.length !== 1) { return "question " + q + " shows " + vis.length + " answer(s)"; }
+    if (vis[0].getAttribute('data-zb-answer') !== qtabs[q].getAttribute('data-zb-q')) {
+      return "question " + q + " shows another question's answer";
+    }
+    if (/is-correct|is-wrong|is-spent/.test(qtabs[q].className)) {
+      return "MRB-196 R10: the say-it-back panel marked a question — " + qtabs[q].className;
+    }
+    if (sec.getAttribute('data-stage-done') !== '1') {
+      return "reading an answer unticked a stop already reached";
+    }
+  }
+  // ⚠️ `Back out` IS A VIEW RESET, NOT A RECORD RESET. MRB-208: what a student
+  // found out cannot be un-found — and two stops read this marker.
+  var outBtn = w.querySelector('[data-zb-out]');
+  if (outBtn) {
+    outBtn.click();
+    if (sec.getAttribute('data-stage-done') !== '1') {
+      return "backing out unticked a stop already reached";
+    }
+    if (w.querySelectorAll('.ks3-zb-body:not([hidden])').length !== 1) {
+      return "backing out did not return the bench to the first level";
+    }
+    if (w.querySelector('.ks3-zb-close:not([hidden])')) {
+      return "the bottom-out paragraph survived a back-out";
+    }
+  }
+  // Leave the bench BOTTOMED for the driven rows.
+  for (var z = 1; z < total; z++) { w.querySelector('[data-zb-in]').click(); }
+  return "";
+})()
+""",
+
+    # ⚖️⚖️ TWELVE MODELS, FOUR TESTS, AND EXACTLY ONE SURVIVOR — walked in a
+    # browser rather than trusted from the matrix in schema §4.2. The bench
+    # must open on the unique 0-of-4 row (Pauling's model), every dial press
+    # must re-evaluate all four cards live with no run button anywhere, and
+    # only `correct` may reach 4 of 4.
+    "b10-model-solved": r"""
+(function () {
+  var sec = document.querySelector('[data-dhblock]');
+  if (!sec) { return "no model builder on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') { return "the stop ticked on load"; }
+  var w = sec.querySelector('[data-dh]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var cards = w.querySelectorAll('[data-dh-card]');
+  var total = parseInt(w.getAttribute('data-total'), 10);
+  if (cards.length !== total || !(total >= 2)) {
+    return "the bench declares " + total + " tests and draws " + cards.length;
+  }
+  // ⛔ NO RUN BUTTON AND NO RESET BUTTON (schema §4.3). The cards re-evaluate
+  // live; a control here would be one Design did not draw.
+  if (w.querySelector('.ks3-reveal-btn')) {
+    return "the bench grew a run or reset control; the cards re-evaluate live";
+  }
+  var count = sec.querySelector('[data-count]');
+  if (count && count.textContent.indexOf('{') >= 0) {
+    return "the head readout shipped an unfilled placeholder: " + count.textContent;
+  }
+  // MRB-242: a stylesheet `display` on a `hidden` element beats the UA rule,
+  // and every elimination line and both verdict tags on every card would be on
+  // screen at once — a bench saying `consistent` and `rules this model out`
+  // about the same evidence in the same row.
+  //
+  // ⚠️ RUN WHEN SOMETHING IS ACTUALLY HIDDEN. The bench OPENS with every card
+  // failing, so at rest there is not one hidden `why` to sweep and the check
+  // passes over an empty list. Called from inside the walk below, the first
+  // time a model passes anything. Added by mutation, and the first cut of it
+  // was the empty sweep.
+  function cascade() {
+    var els = w.querySelectorAll('.ks3-dh-why[hidden], .ks3-dh-tag[hidden]');
+    if (!els.length) { return "nothing was hidden to check"; }
+    for (var h = 0; h < els.length; h++) {
+      var el = els[h], prev = el.style.display;
+      el.style.display = '';
+      var shown = getComputedStyle(el).display;
+      el.style.display = prev;
+      if (shown !== 'none') {
+        return "MRB-242: " + el.className + " ships `hidden` but the stylesheet " +
+          "gives it display:" + shown + ", which beats the UA [hidden] rule";
+      }
+    }
+    return "";
+  }
+  var swept = false;
+  var line = w.querySelector('[data-dh-modelline]');
+  if (!line || !line.textContent.trim()) { return "the bench prints no model line"; }
+  var tag = w.querySelector('[data-dh-verdicttag]');
+  if (tag.textContent.indexOf('{') >= 0) {
+    return "the verdict tag shipped an unfilled placeholder: " + tag.textContent;
+  }
+  // ⚖️⚖️ THE OPENING STATE IS THE PRESET AND IT IS THE UNIQUE 0-OF-N ROW.
+  // Every card red, so every dial the student touches can only improve it.
+  if (w.querySelectorAll('[data-dh-card][data-pass]').length !== 0) {
+    return "the bench opens with " + w.querySelectorAll('[data-dh-card][data-pass]').length +
+      " card(s) already passing; the preset is the unique row that fails everything";
+  }
+  if (w.querySelectorAll('.ks3-dh-why:not([hidden])').length !== total) {
+    return "the bench opens with " + w.querySelectorAll('.ks3-dh-why:not([hidden])').length +
+      " elimination line(s) showing, and " + total + " cards are failing";
+  }
+  var CORRECT = JSON.parse(w.getAttribute('data-target') || '{}');
+  var opts = w.querySelectorAll('.ks3-dh-opt');
+  // ⛔ A DIAL IS NEVER MARKED (MRB-196 R10). The bench opens on a WRONG model
+  // with all its dials pressed; a verdict class here would open by telling the
+  // student they were right.
+  var d;
+  for (d = 0; d < opts.length; d++) {
+    if (/is-correct|is-wrong|is-spent/.test(opts[d].className)) {
+      return "MRB-196 R10: a dial button carries a verdict class — " + opts[d].className;
+    }
+  }
+  // Walk EVERY combination of every dial and score it against the cards, the
+  // way a student would. Exactly one may reach four of four.
+  var dials = {}, order = [];
+  for (d = 0; d < opts.length; d++) {
+    var id = opts[d].getAttribute('data-dh-dial');
+    if (!dials[id]) { dials[id] = []; order.push(id); }
+    dials[id].push(opts[d]);
+  }
+  function press(btn) { btn.click(); }
+  function passing() { return w.querySelectorAll('[data-dh-card][data-pass]').length; }
+  var combos = [[]], i, j, k, next;
+  for (i = 0; i < order.length; i++) {
+    next = [];
+    for (j = 0; j < combos.length; j++) {
+      for (k = 0; k < dials[order[i]].length; k++) {
+        next.push(combos[j].concat([dials[order[i]][k]]));
+      }
+    }
+    combos = next;
+  }
+  var perfect = 0, zero = 0, solvedAt = -1;
+  for (i = 0; i < combos.length; i++) {
+    for (j = 0; j < combos[i].length; j++) { press(combos[i][j]); }
+    var n = passing();
+    if (w.querySelectorAll('.ks3-dh-why:not([hidden])').length !== total - n) {
+      return "a model passing " + n + " of " + total +
+        " showed " + w.querySelectorAll('.ks3-dh-why:not([hidden])').length + " elimination line(s)";
+    }
+    if (n > 0 && !swept) {
+      var cerr = cascade();
+      if (cerr && cerr !== "nothing was hidden to check") { return cerr; }
+      if (!cerr) { swept = true; }
+    }
+    if (n === total) {
+      perfect += 1;
+      solvedAt = i;
+      var built = {}, kk;
+      for (j = 0; j < combos[i].length; j++) {
+        built[combos[i][j].getAttribute('data-dh-dial')] =
+          combos[i][j].getAttribute('data-dh-opt');
+      }
+      for (kk in CORRECT) {
+        if (built[kk] !== CORRECT[kk]) {
+          return "a model that is not `correct` passed every test: " + JSON.stringify(built);
+        }
+      }
+      if (sec.getAttribute('data-stage-done') !== '1') {
+        return "every test passed and the stop did not tick";
+      }
+    }
+    if (n === 0) { zero += 1; }
+  }
+  if (perfect !== 1) {
+    return "of " + combos.length + " models, " + perfect +
+      " pass every test; the lesson's claim is that exactly one does";
+  }
+  if (zero !== 1) {
+    return "of " + combos.length + " models, " + zero +
+      " fail every test; the opening preset is meant to be the unique one";
+  }
+  if (!swept) { return "no model on this bench ever hid an elimination line"; }
+  // ⚠️ `solved` IS STICKY. Break the model on purpose and the stop stays —
+  // MRB-208, and the `s-who` band stop mirrors this marker, so an unticking
+  // predicate would move two.
+  dials[order[0]][0].click();
+  dials[order[0]][dials[order[0]].length - 1].click();
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "breaking the model after solving it unticked the stop";
+  }
+  // Leave the bench SOLVED for the driven rows.
+  for (j = 0; j < combos[solvedAt].length; j++) { press(combos[solvedAt][j]); }
+  if (passing() !== total) { return "the bench could not be returned to the solved model"; }
+  return "";
+})()
+""",
+
+    # ⚖️⚖️ REAL, UNSEEDED RANDOMNESS — so every assertion below is an INVARIANT
+    # that holds across runs, never a pinned sequence. Schema §5.1: no student
+    # sees the same cross twice, and a gate that needed them to would be a gate
+    # arguing for a seed.
+    "b10-cross-grown": r"""
+(function () {
+  var sec = document.querySelector('[data-pcblock]');
+  if (!sec) { return "no pea cross on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') { return "the stop ticked on load"; }
+  var w = sec.querySelector('[data-pc]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var one = w.querySelector('[data-pc-one]'), many = w.querySelector('[data-pc-many]');
+  var clear = w.querySelector('[data-pc-clear]');
+  if (!one || !many) { return "the bench offers no way to grow a seed"; }
+  var rows = w.querySelectorAll('[data-pc-row]');
+  if (rows.length !== 2) { return "the plot tallies " + rows.length + " outcome(s)"; }
+  var MANY = parseInt(w.getAttribute('data-many-n'), 10);
+  if (!(MANY >= 20)) { return "the big button grows " + MANY + " seeds"; }
+  // The plot opens empty: no tally, no seed card, and a note that already fits
+  // the opening cross.
+  if (w.querySelector('[data-pc-tally]:not([hidden])')) {
+    return "the plot opens with a tally on it and no seeds grown";
+  }
+  if (w.querySelector('[data-pc-last]:not([hidden])')) {
+    return "the plot opens with a most-recent seed and none has been grown";
+  }
+  if (w.querySelectorAll('[data-pc-note]:not([hidden])').length !== 1) {
+    return "the plot opens with " +
+      w.querySelectorAll('[data-pc-note]:not([hidden])').length + " notes showing";
+  }
+  var openingNote = w.querySelector('[data-pc-note]:not([hidden])').getAttribute('data-pc-note');
+  var cross = w.querySelector('[data-pc-crossline]').textContent;
+  if (cross.indexOf('{') >= 0) { return "the cross line shipped a placeholder: " + cross; }
+  function total() {
+    var t = 0, i, v;
+    for (i = 0; i < rows.length; i++) {
+      v = rows[i].querySelector('[data-pc-value]').textContent;
+      t += parseInt(v, 10) || 0;
+    }
+    return t;
+  }
+  // ── one seed: the "chance decides each one" story ──
+  one.click();
+  if (total() !== 1) { return "growing one seed tallied " + total(); }
+  var last = w.querySelector('[data-pc-last]:not([hidden])');
+  if (!last) { return "growing one seed produced no most-recent-seed card"; }
+  var line = w.querySelector('[data-pc-lastline]').textContent;
+  if (line.indexOf('{') >= 0) { return "the seed line shipped a placeholder: " + line; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked after one seed; the threshold is twenty";
+  }
+  // ── a hundred seeds: the "only totals show the pattern" story, and the two
+  // are never on screen together ──
+  many.click();
+  if (total() !== 1 + MANY) { return "growing " + MANY + " more tallied " + total(); }
+  if (w.querySelector('[data-pc-last]:not([hidden])')) {
+    return "growing a hundred left the single-seed card on screen; the two stories are separate";
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "the plot passed twenty seeds and the stop did not tick";
+  }
+  // Both bars are drawn and the bars sum to the seeds. Pp × Pp cannot be all
+  // one colour over a hundred and one seeds in any run this side of the heat
+  // death of the universe, so this is an invariant and not a pinned outcome.
+  var i, n, sum = 0;
+  for (i = 0; i < rows.length; i++) {
+    n = parseInt(rows[i].querySelector('[data-pc-value]').textContent, 10);
+    sum += n;
+    if (rows[i].querySelector('[data-pc-bar]').getBoundingClientRect().width < 0 ) {
+      return "a tally bar has no width at all";
+    }
+  }
+  if (sum !== total()) { return "the tally rows do not sum to the seeds grown"; }
+  var ratio = w.querySelector('[data-pc-ratio]').textContent;
+  if (!ratio.trim()) { return "a hundred seeds and the plot reports no ratio at all"; }
+  if (ratio.indexOf('{') >= 0) { return "the ratio line shipped a placeholder: " + ratio; }
+  // ⚖️⚖️ DOMINANT-FIRST, ALWAYS — AND DRIVEN DETERMINISTICALLY, WITHOUT A
+  // SEED. `pP` is two spellings of one genotype and a student reasonably reads
+  // them as two different things. Growing seeds and hoping for the p-then-P
+  // case is a one-in-four assertion that passes three runs in four whatever
+  // the code does — found by mutation, which slipped through exactly that way.
+  // `pp x PP` forces it: parent 1 can only give p and parent 2 can only give
+  // P, so EVERY seed is the case being tested. Real randomness, no seed, and a
+  // certain outcome, because the cross was chosen rather than the dice.
+  var pureRec = null, pureDom = null, gi;
+  var allGeno = w.querySelectorAll('.ks3-pc-geno');
+  var GEN = JSON.parse(w.getAttribute('data-genotypes') || '{}');
+  var D = w.getAttribute('data-dominant'), R = w.getAttribute('data-recessive');
+  var p1 = allGeno[0].getAttribute('data-pc-parent'), p2 = null;
+  for (gi = 0; gi < allGeno.length; gi++) {
+    if (allGeno[gi].getAttribute('data-pc-parent') !== p1) {
+      p2 = allGeno[gi].getAttribute('data-pc-parent'); break;
+    }
+  }
+  for (gi = 0; gi < allGeno.length; gi++) {
+    var gid = allGeno[gi].getAttribute('data-pc-geno'), al = GEN[gid] || [];
+    var isRec = al.length === 2 && al[0] === R && al[1] === R;
+    var isDom = al.length === 2 && al[0] === D && al[1] === D;
+    if (isRec && allGeno[gi].getAttribute('data-pc-parent') === p1) { pureRec = allGeno[gi]; }
+    if (isDom && allGeno[gi].getAttribute('data-pc-parent') === p2) { pureDom = allGeno[gi]; }
+  }
+  if (!pureRec || !pureDom) {
+    return "the bench cannot be set to a cross that forces the p-then-P seed";
+  }
+  pureRec.click();
+  pureDom.click();
+  w.querySelector('[data-pc-one]').click();
+  var forced = w.querySelector('[data-pc-lastline]').textContent;
+  if (forced.indexOf(R + D) >= 0) {
+    return "the seed line printed " + R + D + " rather than " + D + R +
+      "; the genotype is normalised dominant-first: " + forced;
+  }
+  if (forced.indexOf('so it is ' + D + R) < 0) {
+    return "a " + R + R + " x " + D + D + " cross did not print " + D + R + ": " + forced;
+  }
+  // ⚠️ CHANGING A PARENT CLEARS THE PLOT. Counts carried across two different
+  // crosses describe neither of them.
+  var genos = w.querySelectorAll('.ks3-pc-geno');
+  var firstParent = genos[0].getAttribute('data-pc-parent'), other = null;
+  for (i = 0; i < genos.length; i++) {
+    if (genos[i].getAttribute('data-pc-parent') === firstParent &&
+        genos[i].getAttribute('aria-pressed') === 'false') { other = genos[i]; break; }
+  }
+  if (!other) { return "the first parent offers no other genotype"; }
+  other.click();
+  if (total() !== 0) {
+    return "changing a parent left " + total() + " seeds on the plot from the previous cross";
+  }
+  if (w.querySelector('[data-pc-last]:not([hidden])')) {
+    return "changing a parent left the previous cross's seed card on screen";
+  }
+  if (w.querySelector('[data-pc-tally]:not([hidden])')) {
+    return "changing a parent left the previous cross's tally on screen";
+  }
+  var note2 = w.querySelector('[data-pc-note]:not([hidden])');
+  if (!note2) { return "changing a parent left the plot with no note"; }
+  if (note2.getAttribute('data-pc-note') === openingNote &&
+      openingNote === 'both_carriers') {
+    return "changing a parent off Pp x Pp left the both-carriers note in place";
+  }
+  // ⚠️ AND MONOTONIC: clearing the plot is a view reset, not a record reset.
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "changing a parent unticked a stop already reached";
+  }
+  if (clear) {
+    clear.click();
+    if (sec.getAttribute('data-stage-done') !== '1') {
+      return "clearing the plot unticked a stop already reached";
+    }
+  }
+  // Leave the bench with ONE seed on the opening cross, for the driven rows.
+  for (i = 0; i < genos.length; i++) {
+    if (genos[i].getAttribute('data-pc-parent') === firstParent) { genos[i].click(); break; }
+  }
+  w.querySelector('[data-pc-one]').click();
+  return "";
+})()
+""",
+
+    # ⚖️ SEVEN CASES, THREE VERDICTS, AND THE THIRD IS THE INSTRUMENT. The
+    # bench is commit-then-reveal per case; the drive proves the gate, the
+    # freeze, the threshold and — the thing that would be easiest to lose —
+    # that "the test does not settle it" is somebody's correct answer.
+    "b10-species-checked": r"""
+(function () {
+  var sec = document.querySelector('[data-scblock]');
+  if (!sec) { return "no species bench on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') { return "the stop ticked on load"; }
+  var w = sec.querySelector('[data-sc]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var tabs = w.querySelectorAll('[data-sc-case]');
+  var panels = w.querySelectorAll('[data-sc-panel]');
+  var check = w.querySelector('[data-sc-check]');
+  var NEED = parseInt(w.getAttribute('data-threshold'), 10);
+  if (tabs.length !== panels.length || !(tabs.length >= NEED)) {
+    return "the bench draws " + tabs.length + " tabs, " + panels.length +
+      " panels and needs " + NEED;
+  }
+  if (w.querySelectorAll('[data-sc-panel]:not([hidden])').length !== 1) {
+    return "the bench opens with more than one case showing";
+  }
+  // Law 4: no outcome before a commitment, and the control says so.
+  if (!check.disabled) { return "the check button is live before any verdict is chosen"; }
+  if (w.querySelector('[data-sc-out]:not([hidden])')) {
+    return "an outcome is on screen before the student committed";
+  }
+  var count = sec.querySelector('[data-count]');
+  if (count && count.textContent.indexOf('{') >= 0) {
+    return "the head readout shipped an unfilled placeholder: " + count.textContent;
+  }
+  // ⚖️⚖️ THE THIRD VERDICT IS SOMEBODY'S ANSWER. A bench that offers "the test
+  // does not settle it" and never lands on it teaches that the honest answer
+  // is the box you do not tick.
+  var third = null, answers = {}, i, j;
+  var v0 = panels[0].querySelectorAll('.ks3-sc-verdict');
+  if (v0.length !== 3) { return "the bench offers " + v0.length + " verdicts, and there are three"; }
+  third = v0[2].getAttribute('data-sc-verdict');
+  for (i = 0; i < panels.length; i++) {
+    answers[panels[i].getAttribute('data-sc-answer')] = true;
+    var letters = panels[i].querySelectorAll('.ks3-sc-letter');
+    for (j = 0; j < letters.length; j++) {
+      if (letters[j].textContent.trim() !== String.fromCharCode(65 + j)) {
+        return "verdict " + j + " is lettered " + letters[j].textContent +
+          "; the letters are derived from position";
+      }
+    }
+  }
+  if (!answers[third]) {
+    return "no case answers the third verdict, which is the instrument of this lesson";
+  }
+  var tally = w.querySelector('[data-sc-tally]');
+  var opened = 0;
+  for (i = 0; i < tabs.length; i++) {
+    tabs[i].click();
+    var panel = w.querySelector('[data-sc-panel]:not([hidden])');
+    if (panel.getAttribute('data-sc-panel') !== tabs[i].getAttribute('data-sc-case')) {
+      return "tab " + i + " opened another case";
+    }
+    if (check.disabled === false && !panel.hasAttribute('data-sc-opened')) {
+      return "case " + i + " arrived with the check button already live";
+    }
+    var opts = panel.querySelectorAll('.ks3-sc-verdict');
+    // Answer the first three RIGHT and the rest WRONG, so both tags are
+    // exercised in one document.
+    var want = i < 3 ? panel.getAttribute('data-sc-answer') : null;
+    var chosen = null;
+    for (j = 0; j < opts.length; j++) {
+      var id = opts[j].getAttribute('data-sc-verdict');
+      if (want ? id === want : id !== panel.getAttribute('data-sc-answer')) {
+        chosen = opts[j]; break;
+      }
+    }
+    if (!chosen) { return "case " + i + " offers no verdict to choose"; }
+    chosen.click();
+    if (check.disabled) { return "case " + i + " had a verdict chosen and the check stayed dead"; }
+    check.click();
+    opened += 1;
+    var out = panel.querySelector('[data-sc-out]:not([hidden])');
+    if (!out) { return "case " + i + " was checked and no outcome arrived"; }
+    var tags = out.querySelectorAll('.ks3-sc-tag:not([hidden])');
+    if (tags.length !== 1) { return "case " + i + " showed " + tags.length + " outcome tag(s)"; }
+    var wantTag = chosen.getAttribute('data-sc-verdict') ===
+      panel.getAttribute('data-sc-answer') ? 'right' : 'wrong';
+    if (tags[0].getAttribute('data-sc-tag') !== wantTag) {
+      return "case " + i + " was answered " + wantTag + " and the bench showed the other tag";
+    }
+    // ⛔ AND THE BUTTON IS NEVER MARKED (MRB-196 R10).
+    for (j = 0; j < opts.length; j++) {
+      if (/is-correct|is-wrong|is-spent/.test(opts[j].className)) {
+        return "MRB-196 R10: the bench marked a verdict button — " + opts[j].className;
+      }
+    }
+    if (!panel.hasAttribute('data-sc-opened')) {
+      return "case " + i + " was checked and the panel did not record it as settled";
+    }
+    // The commitment is FROZEN once checked.
+    for (j = 0; j < opts.length; j++) { if (opts[j] !== chosen) { opts[j].click(); } }
+    if (panel.querySelector('.ks3-sc-verdict[aria-pressed="true"]') !== chosen) {
+      return "case " + i + " was settled and its verdict could still be changed";
+    }
+    if (!check.disabled) { return "case " + i + " was settled and the check button is still live"; }
+    if (tally && tally.textContent.indexOf('{') >= 0) {
+      return "the tally shipped an unfilled placeholder: " + tally.textContent;
+    }
+    var ticked = sec.getAttribute('data-stage-done') === '1';
+    if (opened < NEED && ticked) {
+      return "the stop ticked after " + opened + " settled, and the threshold is " + NEED;
+    }
+    if (opened >= NEED && !ticked) {
+      return "the stop had not ticked after " + opened + " settled, and the threshold is " + NEED;
+    }
+  }
+  if (tally && !/\S/.test(tally.textContent)) { return "the tally emptied at the end"; }
+  // ⚠️ Revisiting a settled case does not untick anything (MRB-208), and the
+  // `s-test` band stop mirrors this marker.
+  tabs[0].click();
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "revisiting a settled case unticked a stop already reached";
+  }
+  return "";
+})()
+""",
+    # ═══ END B10 drives ═══
 
     "b7-chain-traced": r"""
 (function () {

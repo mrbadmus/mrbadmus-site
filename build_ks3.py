@@ -1012,7 +1012,147 @@ def _food_web(fig):
     return "".join(out)
 
 
-SVG_ART = {"food-web": _food_web}
+def _base_pairs(fig):
+    """The two strands, the rungs between them, and why the width never changes.
+
+    ⚖️ WHY THIS LESSON GETS A DIAGRAM WHEN THE REST OF B10 DOES NOT. `model-builder`
+    beside it is a REASONING instrument: the student sets dials and the evidence
+    cards rule models out, so they argue their way to two strands with the bases
+    paired inside and never once see it. The lesson's KEY FACT is then a purely
+    structural claim — *"two strands twisted round each other, with the bases
+    paired on the inside — A always with T, C always with G"* — and a structural
+    claim with no drawing is a sentence to be memorised. That is Mide's test for
+    a diagram: genuinely spatial or structural, not decoration.
+
+    ⚖️ AND THE DIAGRAM TEACHES THE REASON, not just the rule. A always with T and
+    C always with G is usually met as an arbitrary fact. It is not: A and G are
+    the big bases and C and T the small ones, so a big one paired with a small one
+    is the only combination that keeps every rung the same length — and a molecule
+    whose rungs were different lengths could not have the constant width Franklin
+    measured off the diffraction pattern on this same page. The constant-width
+    guide down the right-hand side is therefore the point of the drawing, not an
+    annotation on it.
+
+    Never colour-alone, three ways over: a base carries its LETTER, its WIDTH
+    (big or small, drawn to scale against each other), and a written size word in
+    the key. A reader who cannot separate the tints still has all of it.
+    """
+    d = fig.get("data") or {}
+    rungs = d.get("rungs") or []
+    if not rungs:
+        raise ValueError("base-pairs figure %r has no rungs." % fig.get("id"))
+
+    # Big bases (purines) and small ones (pyrimidines), drawn to their real
+    # relative sizes rather than to two arbitrary widths — the whole argument is
+    # that big + small is a constant total.
+    BIG, SMALL = 96.0, 62.0
+    SIZE = {"A": BIG, "G": BIG, "C": SMALL, "T": SMALL}
+    WORD = {"A": "big", "G": "big", "C": "small", "T": "small"}
+
+    W, PAD_TOP, ROW_H, BAR_W = 760, 34, 62, 26
+    # ⚠️ 200, not 300. At 300 the ladder sat centred with 200px of dead space on
+    # its left, and the constant-width guide's label ran off the right-hand edge
+    # of the viewBox — it rendered as "every rung the same", losing the one word
+    # that carries the whole point. Nothing warns: SVG text simply draws outside
+    # the box and is clipped. Moving the ladder left buys the label its room and
+    # spends space that was doing nothing.
+    MID = 200.0                       # centre of the rung span
+    H = PAD_TOP + len(rungs) * ROW_H + 96
+
+    for left, right in rungs:
+        for b in (left, right):
+            if b not in SIZE:
+                raise ValueError(
+                    "base-pairs figure %r names base %r, which is not one of "
+                    "A, T, C or G." % (fig.get("id"), b))
+        # ⚖️ The constant width is an ASSERTION, not a hope. If a pair ever
+        # summed differently the drawing would quietly teach that rungs vary,
+        # which is the opposite of the lesson — so it fails the build instead.
+        if SIZE[left] + SIZE[right] != BIG + SMALL:
+            raise ValueError(
+                "base-pairs figure %r pairs %s with %s, which are both %s. Every "
+                "rung must pair a big base with a small one — that is why the "
+                "molecule has a constant width, and a rung that does not would "
+                "draw a helix that could not exist."
+                % (fig.get("id"), left, right, WORD[left]))
+
+    out = [_svg_open(fig, W, H)]
+    span = BIG + SMALL
+    x0 = MID - span / 2.0
+
+    # The two backbones, drawn as continuous bars so they read as one molecule
+    # each rather than as a stack of blocks.
+    top, bot = PAD_TOP, PAD_TOP + len(rungs) * ROW_H
+    for bx in (x0 - BAR_W - 10, x0 + span + 10):
+        out.append('<rect x="%.1f" y="%s" width="%s" height="%s" rx="12" '
+                   'style="fill:%s;stroke:%s" stroke-width="2"/>'
+                   % (bx, top, BAR_W, bot - top, _SVG_BAND, _SVG_INK))
+    out.append(_svg_text(x0 - BAR_W / 2.0 - 10, top - 12, "backbone", size=12,
+                         fill=_SVG_INK_MUTED, weight="700", family=_SVG_MONO))
+    out.append(_svg_text(x0 + span + BAR_W / 2.0 + 10, top - 12, "backbone",
+                         size=12, fill=_SVG_INK_MUTED, weight="700",
+                         family=_SVG_MONO))
+
+    for i, (left, right) in enumerate(rungs):
+        cy = PAD_TOP + i * ROW_H + ROW_H / 2.0
+        lw, rw = SIZE[left], SIZE[right]
+        # Left base from the left backbone, right base meeting it in the middle.
+        out.append('<rect x="%.1f" y="%.1f" width="%.1f" height="34" rx="9" '
+                   'style="fill:%s;stroke:%s" stroke-width="2"/>'
+                   % (x0, cy - 17, lw, _SVG_ACCENT_TINT, _SVG_INK))
+        out.append('<rect x="%.1f" y="%.1f" width="%.1f" height="34" rx="9" '
+                   'style="fill:%s;stroke:%s" stroke-width="2"/>'
+                   % (x0 + lw, cy - 17, rw, _SVG_OK_TINT, _SVG_INK))
+        out.append(_svg_text(x0 + lw / 2.0, cy + 7, left, size=19,
+                             weight="800", family=_SVG_MONO))
+        out.append(_svg_text(x0 + lw + rw / 2.0, cy + 7, right, size=19,
+                             weight="800", family=_SVG_MONO))
+        # The join, so the pair reads as two things held together rather than
+        # as one block that happens to be two colours.
+        out.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" '
+                   'style="stroke:%s" stroke-width="2" stroke-dasharray="4 3"/>'
+                   % (x0 + lw, cy - 17, x0 + lw, cy + 17, _SVG_INK_MUTED))
+        out.append(_svg_text(x0 + span + BAR_W + 34, cy + 5,
+                             "%s with %s" % (left, right), size=14,
+                             fill=_SVG_INK_BODY, weight="600", anchor="start"))
+
+    # The constant-width guide. Two ticks and one label, because the claim is
+    # about SAMENESS and sameness is shown by measuring twice.
+    gx = x0 + span + BAR_W + 210
+    out.append('<line x1="%.1f" y1="%s" x2="%.1f" y2="%s" style="stroke:%s" '
+               'stroke-width="2"/>' % (gx, top + 8, gx, bot - 8, _SVG_ACCENT))
+    for y in (top + 8, bot - 8):
+        out.append('<line x1="%.1f" y1="%s" x2="%.1f" y2="%s" '
+                   'style="stroke:%s" stroke-width="2"/>'
+                   % (gx - 9, y, gx + 9, y, _SVG_ACCENT))
+    out.append(_svg_text(gx + 16, (top + bot) / 2.0 + 5,
+                         d.get("guide_label")
+                         or "every rung the same width", size=13,
+                         fill=_SVG_ACCENT_TEXT, weight="700", anchor="start"))
+
+    ly = bot + 34
+    out.append('<line x1="0" y1="%s" x2="%d" y2="%s" style="stroke:%s" '
+               'stroke-width="2"/>' % (ly - 18, W, ly - 18, _SVG_RULE_STRONG))
+    for j, (letters, word, tint) in enumerate(
+            [("A and G", "the big bases", _SVG_ACCENT_TINT),
+             ("C and T", "the small bases", _SVG_OK_TINT)]):
+        kx = 18 + j * 300
+        # The swatch is drawn at the base's OWN width — 34 for a small base and
+        # 52 for a big one — so the key repeats the size distinction rather than
+        # reducing it to two colours. That is the never-colour-alone rule doing
+        # real work: the widths in the key are the widths in the drawing.
+        out.append('<rect x="%s" y="%s" width="%s" height="22" rx="7" '
+                   'style="fill:%s;stroke:%s" stroke-width="2"/>'
+                   % (kx, ly + 4, 34 if j else 52, tint, _SVG_INK))
+        out.append(_svg_text(kx + (34 if j else 52) + 12, ly + 20,
+                             "%s — %s" % (letters, word), size=13,
+                             fill=_SVG_INK_BODY, weight="600", anchor="start"))
+    out.append('</svg>')
+    return "".join(out)
+
+
+SVG_ART = {"food-web": _food_web,
+           "base-pairs": _base_pairs}
 
 
 def r_explainer(lesson, block):
@@ -15621,6 +15761,1355 @@ def _b9_quadrat_pools(side):
 # renderers: ═══ END B9 ═══
 
 
+# renderers: ═══ BEGIN B10 ═══
+#
+# ── B10 · Inheritance and DNA (⊕ MRB-248) ──
+#
+# Five instruments, one per lesson. All five are DOM-only: `canvas`,
+# `requestAnimationFrame`, `setTimeout` and `setInterval` appear ZERO times
+# across all five of Design's delivered pages (schema §0.1), and
+# `shared/ks3.js` keeps it that way. The only motion in the unit is CSS — a
+# height/width transition on `[data-fill]` — and the platform's R6 rule
+# (`*,*::before,*::after { transition-duration:.001ms !important }`) already
+# neutralises it under `prefers-reduced-motion`, so there is no tick in this
+# unit that would have to test the query inside itself (contract R4, the
+# b2-03 slip).
+#
+# ⚠️ ALL FIVE SHIP ON `ks3-block ks3-dark ks3-practical`, measured off
+# Design's own `#s-bench` class attribute on all five pages (b10-01 L105,
+# b10-02 L105, b10-03 L105, b10-04 L105, b10-05 L105). Under
+# `ACTIVITY_SHELLS` that string is `segment: "practical"`. `.ks3-dark p` is
+# (0,1,1) and a bare component class is (0,1,0), so every colour rule in the
+# B10 stylesheet is written under `.ks3-dark …` at (0,2,0) and every one of
+# them is resolved by `ks3_parity.check_dark_text_specificity()` on the real
+# cascade.
+#
+# ⚖️ THREE OF THE FIVE BENCHES ADJUDICATE A STUDENT COMMITMENT, and that is a
+# DELIBERATE DEPARTURE FROM B7 §0.6 recorded in schema §0.6 rather than a
+# drift. b10-01 prints `Your prediction was right` / `Not what you predicted`,
+# b10-03 prints `rules this model out` against a failing evidence card, and
+# b10-05 prints `That is the answer` / `Not quite`. Measured off Design's own
+# pages, soft in every case, and confronting the IDEA rather than the student.
+# ⛔ THE VERDICT IS WORDS AND ONLY WORDS. No green, no red, no badge, no mark
+# on an option button, and never the amber `is-wrong` ladder treatment. Only
+# the mastery ladder marks correctness (MRB-196 R10).
+#
+# ⚠️ AND EACH BENCH'S MARKER IS READ TWICE (MRB-249). The band section beside
+# it — `s-two`, `s-model`, `s-who`, `s-steps`, `s-test` — carries no control of
+# its own, so its rail entry MIRRORS `s-bench` and ticks the moment this
+# marker flips. Design states each threshold in her own `isDone()` and schema
+# §8 records all five: b10-01 three plotted · b10-02 all six levels shown ·
+# b10-03 solved · b10-04 twenty seeds · b10-05 five cases opened. A threshold
+# moved for convenience here moves TWO stops, not one, which is why each of
+# the five renderers below refuses a payload that cannot reach its own.
+
+
+def _b10_suffix(a, kind):
+    """`progress_suffix`, validated where the head row is composed from it.
+
+    ⚠️ THE HEAD ROW IS BUILT BEFORE THE INSTRUMENT RUNS, so a missing suffix
+    would otherwise reach the page as "3 of 6 " with the sentence cut off, and
+    the renderer's own message — which knows what the word is FOR — never gets
+    to complain. One message per mistake, raised at the first point that can
+    see it. Same reasoning as `_b9_head`.
+    """
+    sfx = a.get("progress_suffix")
+    if not sfx:
+        raise ValueError(
+            "%s declares no `progress_suffix`. Design's head row reads "
+            "'{n} of {total} <word>' and the word is the only authored part "
+            "of it; without one the block ships a counter with its sentence "
+            "cut off mid-air." % kind)
+    return _b8_plain(sfx, a.get("id") or "?", "`progress_suffix`")
+
+
+# ⚖️ SIX LEVELS AND FOUR QUESTIONS, BOTH CLOSED. Design's `isDone()` for
+# `s-bench` is `s.shown >= LEVELS.length` and the `s-model` band stop mirrors
+# it, so the level count IS the rail threshold on two stops (MRB-249). Her own
+# progress line says "all six levels" in words, which a seventh row would
+# contradict on screen. The four say-it-back questions are one row of tabs on
+# one panel and Design draws exactly four.
+_B10_ZB_LEVELS = 6
+_B10_ZB_QUESTIONS = 4
+
+
+def _b10_zoom_progress(pg, act_id):
+    """b10-02's head readout, validated where it is composed.
+
+    Design's line is `bottomed ? 'all six levels' : 'level ' + shown + ' of ' +
+    total` — a count with a bespoke sentence at the TOP end, which is exactly
+    `head_counter`'s `format` + `full` shape. Schema §1 names the three
+    fragments `all`, `step_prefix` and `step_join`, so they are composed here
+    rather than asking an author to write "level {n} of {total}" and get the
+    braces right. Reading them here is their R5 read site, and validating
+    before `r_activity` composes the head row is what keeps one message per
+    mistake: without it a missing `step_join` reaches the page as
+    "level 36" and no gate says a word.
+    """
+    if not isinstance(pg, dict):
+        raise ValueError(
+            "zoom-bench %r declares no `progress`. Design draws a live readout "
+            "in this block's head row, right-aligned and mono, and without it "
+            "the row is the eyebrow and the heading with a hole in it."
+            % act_id)
+    for k in ("all", "step_prefix", "step_join"):
+        if not pg.get(k):
+            raise ValueError(
+                "zoom-bench %r progress declares no %r. The readout is one "
+                "count with a bespoke sentence at the top — 'level 3 of 6' "
+                "then 'all six levels' — and each fragment is authored exactly "
+                "once. A missing join reads 'level 36'." % (act_id, k))
+    return pg
+
+
+# ⚖️ THE FOUR NOTE BRANCHES, IN DESIGN'S EVALUATION ORDER. First match wins,
+# and the ORDER IS THE MEANING (schema §5.2): `both_carriers` must be tested
+# before `mixed` or Pp × Pp — Mendel's 3:1, the result the whole lesson is
+# built on — falls through to the generic line. The predicates are implemented
+# once here and once in `wirePeaCross`, keyed by these ids, which is why the id
+# set is closed and ordered rather than free.
+_B10_PC_NOTES = ("one_pure_dominant", "both_pure_recessive", "both_carriers",
+                 "mixed")
+
+# ⚖️ THREE VERDICTS, AND FIVE CASES OPENED. The third verdict is the
+# instrument (schema §6.1) and the letters A/B/C are derived from position, so
+# the list is ordered and its length is fixed. Design's `isDone()` for
+# `s-bench` is `openedCount >= 5` and the `s-test` band stop mirrors it.
+_B10_SC_VERDICTS = 3
+_B10_SC_THRESHOLD = 5
+
+
+def _b10_pea_progress(pg, act_id):
+    """b10-04's head readout, validated where it is composed.
+
+    Design's line is three states, not two: `total === 0 ? 'no seeds grown' :
+    total + ' seed' + (total === 1 ? '' : 's') + ' grown'`. So it is a count
+    with a bespoke ZERO **and a singular/plural split** — the only readout in
+    the key stage that needs the split, because one seed is a state a student
+    reaches deliberately on this bench and "1 seeds grown" would undercut the
+    sentence beside it.
+
+    ⚠️ THE UNDERSCORED NAMES ARE THE SCHEMA'S AND ARE NOT NEGOTIABLE (§5). They
+    are only legal because THIS function reads them — an instrument that
+    consumes `progress` takes the key back from the shell, and the shell's
+    `_progress_readout` would otherwise reject `suffix_one` as a
+    `data-state-…` name. b10-02 ships `step_prefix`/`step_join` under exactly
+    the same arrangement.
+    """
+    if not isinstance(pg, dict):
+        raise ValueError(
+            "pea-cross %r declares no `progress`. Design draws a live readout "
+            "in this block's head row, right-aligned and mono." % act_id)
+    for k in ("none", "suffix_one", "suffix_many"):
+        if not pg.get(k):
+            raise ValueError(
+                "pea-cross %r progress declares no %r. The readout is three "
+                "states — 'no seeds grown', '1 seed grown', '100 seeds grown' "
+                "— and the singular is a state a student reaches on purpose "
+                "here, so it is authored rather than derived."
+                % (act_id, k))
+    return pg
+
+
+# ── b10-01 `#s-bench` · variation-plotter ────────────────────────────────
+
+# ⚖️ THE TWO DATA TYPES, CLOSED. `data_type` is not a label: it decides the
+# bar gap, the display-weight verdict line and whether the prediction was
+# right, so a third spelling would silently make every one of those three
+# wrong at once. Design's own `kind` field takes exactly these two values.
+_B10_DATA_TYPES = ("continuous", "discontinuous")
+
+# ⚖️ DESIGN'S OWN THRESHOLD, AND IT IS READ TWICE. `isDone()` on b10-01 is
+# `n >= 3` for `s-bench` AND for `s-two` — the band stop mirrors the bench
+# (MRB-249, schema §8) — so this number is not a tuning choice. Three of six
+# is the point at which a student has met both data types and can have seen
+# the gap change; the constant is here rather than inline so the renderer's
+# refusal, the emitted attribute and the wire function cannot drift apart.
+_B10_VP_THRESHOLD = 3
+
+# Chassis, not content (schema §2): the rule and the bold lead-in are drawn on
+# every one of the six panels and belong to the instrument. `cause` is the
+# authored half.
+_B10_VP_CAUSE_LEAD = "What causes it:"
+
+
+def r_variation_plotter(a, act_id):
+    """⊕ b10-01 `#s-bench` — predict the shape, then plot it.
+
+    ⚖️ THE BAR GAP IS DERIVED FROM `data_type` AND IS NOT AUTHORED. Design
+    computes `gap = kind === 'continuous' ? '0px' : '6px'` and gives every bar
+    `width: calc(100% - gap)` inside an equal-width flex column, so a
+    continuous characteristic's bars TOUCH and a discontinuous one's STAND
+    APART. That is the histogram/bar-chart convention being taught by the
+    rendering itself, and schema §2 is explicit that it must not be
+    overridable: there is no `gap` key, no `spacing` key and no `chart_type`
+    key, because an authored one would let a record ship touching bars for
+    blood group. The rule lives in the stylesheet, keyed on
+    `[data-vp-type]`, and a parity row reads the computed width of both.
+
+    ⚖️ THE STUDENT CANNOT SEE THE GRAPH BEFORE COMMITTING TO A SHAPE. The plot
+    button is `disabled` until a prediction exists for the CURRENT
+    characteristic, which is Law 4 built into the instrument rather than
+    layered over it. Once plotted, the predict buttons for that characteristic
+    go away and the plot cannot be re-run — six characteristics, one
+    prediction each, and there is NO RESET.
+
+    ⚖️ SHAPE AND CAUSE ARE TWO QUESTIONS AND THE PANEL ASKS THEM SEPARATELY.
+    `shape` answers "what shape is it"; `cause` answers "what caused it", under
+    a rule and a bold lead-in. The split is the second half of the lesson's
+    argument and the whole of `#s-think`: height is continuous AND strongly
+    inherited, so the shape of the graph says nothing about the cause. A
+    renderer that merged the two paragraphs would delete the lesson.
+
+    ⚠️ EVERY CHARACTERISTIC'S GRAPH IS IN THE DOCUMENT, hidden, so the shipped
+    bytes carry all six data sets and both verdict tags rather than being
+    written in by the runtime. Nothing here assigns a science-bearing string
+    to `textContent`.
+
+    ⛔ AND THE VERDICT IS THE ONE THING IN THIS UNIT THAT JUDGES A PREDICTION
+    (schema §0.6). It is a mono tag in accent-TEXT on the cream panel — the
+    same tone whichever way it went — and it takes no green, no red and no
+    badge. The prediction is a wrong IDEA being corrected, not a student being
+    marked.
+    """
+    _b7_need(a, act_id, ("options_label", "characteristics", "predict_label",
+                         "predict_options", "kind_lines", "run_label",
+                         "run_done_label", "verdicts", "progress_suffix"))
+
+    kind_lines = a["kind_lines"]
+    for k in _B10_DATA_TYPES:
+        if not kind_lines.get(k):
+            raise ValueError(
+                "variation-plotter %r kind_lines declares no %r. The display-"
+                "weight line is what NAMES the shape the student has just "
+                "looked at — 'Continuous — a histogram, bars touching' — and "
+                "without it the verdict panel opens on the tag and then the "
+                "prose, with the answer missing from between them."
+                % (act_id, k))
+
+    verdicts = a["verdicts"]
+    for k in ("right", "wrong"):
+        if not verdicts.get(k):
+            raise ValueError(
+                "variation-plotter %r verdicts declares no %r. Both tags are "
+                "drawn in the same tone on the same panel (schema §0.6): the "
+                "bench says whether the PREDICTION held, in words, and a "
+                "missing branch is a graph that arrives with no answer to the "
+                "question the student was made to commit to." % (act_id, k))
+
+    # ⚠️ THE PREDICT OPTIONS ARE THE DATA TYPES, and their `id`s are compared
+    # against `data_type` to decide the verdict. An option whose id is not one
+    # of the two can never be right, on any characteristic, for ever — and the
+    # page would look completely normal.
+    popts = a["predict_options"]
+    pids = [p.get("id") for p in popts]
+    if sorted(pids) != sorted(_B10_DATA_TYPES):
+        raise ValueError(
+            "variation-plotter %r offers predictions %r. The two buttons ARE "
+            "the two data types and their ids are compared against each "
+            "characteristic's `data_type` — an id outside %r is a prediction "
+            "that is wrong on all six characteristics and looks entirely "
+            "normal on the page." % (act_id, pids, list(_B10_DATA_TYPES)))
+    for p in popts:
+        if not p.get("label"):
+            raise ValueError(
+                "variation-plotter %r predict option %r declares no `label`."
+                % (act_id, p.get("id")))
+
+    chars = a["characteristics"]
+    # ⚖️ THE MIRROR STOP NEEDS THREE (MRB-249, schema §8). Design's `isDone()`
+    # for BOTH `s-bench` and `s-two` is `n >= 3` plotted, so a bench with fewer
+    # than three characteristics ships two rail stops that can never tick.
+    if len(chars) < _B10_VP_THRESHOLD:
+        raise ValueError(
+            "variation-plotter %r declares %d characteristic(s). The bench's "
+            "stage predicate is %d plotted and the `s-two` band stop MIRRORS "
+            "it (MRB-249), so a shorter bench ships two rail stops that no "
+            "student can ever tick." % (act_id, len(chars), _B10_VP_THRESHOLD))
+
+    # ⚖️ AND BOTH TYPES HAVE TO BE ON THE BENCH. The argument is the CONTRAST —
+    # touching bars against separated bars, and a smooth hump against four
+    # columns with nothing between them. Six characteristics all of one type is
+    # a bench that cannot make it, and the gap rule would draw one gap for ever
+    # with nothing on screen to compare it to.
+    seen, kinds = set(), set()
+    for c in chars:
+        for f in ("id", "label", "name", "data_type", "axis", "bins", "shape",
+                  "cause"):
+            if not c.get(f):
+                raise ValueError(
+                    "variation-plotter %r characteristic %r declares no %r. "
+                    "`shape` and `cause` are the lesson's TWO QUESTIONS and "
+                    "neither may be folded into the other; `axis` is the mono "
+                    "caption that says in words why the bars touch or do not."
+                    % (act_id, c.get("id"), f))
+        if c["id"] in seen:
+            raise ValueError("variation-plotter %r declares characteristic id "
+                             "%r twice." % (act_id, c["id"]))
+        seen.add(c["id"])
+        if c["data_type"] not in _B10_DATA_TYPES:
+            raise ValueError(
+                "variation-plotter %r characteristic %r has data_type %r. It "
+                "must be one of %r: the value decides the BAR GAP, the "
+                "display-weight verdict line and whether the prediction was "
+                "right, so an unknown spelling makes all three wrong at once "
+                "and draws a plausible graph while doing it."
+                % (act_id, c["id"], c["data_type"], list(_B10_DATA_TYPES)))
+        kinds.add(c["data_type"])
+        if len(c["bins"]) < 2:
+            raise ValueError(
+                "variation-plotter %r characteristic %r has %d bin(s). One bar "
+                "cannot show a shape, and the gap rule needs two columns "
+                "before there is a gap to see."
+                % (act_id, c["id"], len(c["bins"])))
+        for b in c["bins"]:
+            if not b.get("label") or b.get("n") is None:
+                raise ValueError(
+                    "variation-plotter %r characteristic %r has a bin missing "
+                    "`label` or `n`." % (act_id, c["id"]))
+            if int(b["n"]) < 0:
+                raise ValueError(
+                    "variation-plotter %r characteristic %r bin %r counts %r "
+                    "students." % (act_id, c["id"], b["label"], b["n"]))
+        if max(int(b["n"]) for b in c["bins"]) <= 0:
+            raise ValueError(
+                "variation-plotter %r characteristic %r surveyed nobody — "
+                "every bin is zero, so the tallest bar is the floor and the "
+                "graph is a flat row of stubs." % (act_id, c["id"]))
+    if kinds != set(_B10_DATA_TYPES):
+        raise ValueError(
+            "variation-plotter %r declares only %r data. The bench's whole "
+            "argument is the CONTRAST between touching bars and separated "
+            "ones, and a student who never sees the other kind has nothing to "
+            "compare the gap to." % (act_id, sorted(kinds)))
+
+    preds = "".join(
+        '<li><button type="button" class="ks3-option ks3-vp-pred" '
+        'data-vp-pred="%s" aria-pressed="false">'
+        '<span class="ks3-opt-label">%s</span></button></li>'
+        % (e(p["id"]), t(p["label"])) for p in popts)
+
+    tabs, panels = [], []
+    for i, c in enumerate(chars):
+        first = i == 0
+        tabs.append(
+            '<li><button type="button" class="ks3-option ks3-vp-tab" '
+            'data-vp-char="%s" aria-pressed="%s">'
+            '<span class="ks3-opt-label">%s</span></button></li>'
+            % (e(c["id"]), "true" if first else "false", t(c["label"])))
+
+        # Bar height is `max(3, n / maxN * 100)`%, and `maxN` is PER
+        # CHARACTERISTIC — each graph is scaled to its own tallest bin, so the
+        # shape is readable whether the biggest bin holds 39 students or 2.
+        # The floor of 3 keeps a one-student bin on screen rather than letting
+        # it round away to a hairline the eye reads as an empty category.
+        max_n = max(int(b["n"]) for b in c["bins"])
+        cols = []
+        for b in c["bins"]:
+            h = max(3.0, (int(b["n"]) / float(max_n)) * 100.0)
+            cols.append(
+                '<span class="ks3-vp-col">'
+                '<span class="ks3-vp-n">%s</span>'
+                '<span class="ks3-vp-bar" data-fill style="height:%s%%">'
+                '</span>'
+                '<span class="ks3-vp-binlabel">%s</span></span>'
+                % (t(str(int(b["n"]))), e(_pctnum(h)), t(b["label"])))
+
+        # ⚠️ EACH CHARACTERISTIC CARRIES ITS OWN PREDICT GROUP, because the
+        # prediction IS per characteristic — Design's `predicts` is a map keyed
+        # by id, and the buttons disappear for a characteristic once it has
+        # been plotted while staying live for the other five. One shared group
+        # would need the runtime to remember six answers and repaint two
+        # buttons from them; six groups make the DOM the state, which is what
+        # every other tabbed bench in the key stage does.
+        panels.append(
+            '<div class="ks3-vp-charpanel" data-vp-charpanel="%s"%s>'
+            '<p class="ks3-vp-name">%s</p>'
+            '<div class="ks3-vp-predict" data-vp-predict>'
+            '<p class="ks3-vp-predictlabel">%s</p>'
+            '<ul class="ks3-options ks3-vp-preds" role="list">%s</ul></div>'
+            '<div class="ks3-vp-graph" data-vp-graph hidden>'
+            '<div class="ks3-vp-chart" data-vp-type="%s">%s</div>'
+            '<p class="ks3-vp-axis">%s</p>'
+            '<div class="ks3-vp-verdict">'
+            '<p class="ks3-vp-tag" data-vp-tag="right" hidden>%s</p>'
+            '<p class="ks3-vp-tag" data-vp-tag="wrong" hidden>%s</p>'
+            '<p class="ks3-vp-kind">%s</p>'
+            '<p class="ks3-vp-shape">%s</p>'
+            '<p class="ks3-vp-cause"><strong>%s</strong> %s</p>'
+            '</div></div></div>'
+            % (e(c["id"]), "" if first else " hidden", t(c["name"]),
+               t(a["predict_label"]), preds,
+               e(c["data_type"]), "".join(cols), t(c["axis"]),
+               t(verdicts["right"]), t(verdicts["wrong"]),
+               t(kind_lines[c["data_type"]]), t(c["shape"]),
+               _B10_VP_CAUSE_LEAD, t(c["cause"])))
+
+    # ⚠️ THE PLOT BUTTON SHIPS `disabled`, because the resting page has no
+    # prediction on it. That is Law 4 in the BYTES, before any JS runs.
+    return ('<div class="ks3-vp" data-vp data-run-label="%s" '
+            'data-run-done-label="%s" data-threshold="%d">'
+            '<div class="ks3-vp-tabsgroup">'
+            '<p class="ks3-vp-tabslabel" id="%s-chars">%s</p>'
+            '<ul class="ks3-options ks3-vp-tabs" role="list" '
+            'aria-labelledby="%s-chars">%s</ul></div>'
+            '<div class="ks3-vp-panel">%s'
+            '<div class="ks3-vp-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-vp-plot" '
+            'data-vp-plot disabled>%s</button></div>'
+            '</div></div>'
+            % (e(_b8_plain(a["run_label"], act_id, "`run_label`")),
+               e(_b8_plain(a["run_done_label"], act_id, "`run_done_label`")),
+               _B10_VP_THRESHOLD,
+               e(act_id), t(a["options_label"]), e(act_id), "".join(tabs),
+               "".join(panels), t(a["run_label"])))
+# ── b10-02 `#s-bench` · zoom-bench ───────────────────────────────────────
+
+def r_zoom_bench(a, act_id):
+    """⊕ b10-02 `#s-bench` — from a whole person to four letters.
+
+    ⚖️ EVERY LEVEL IS DRAWN FROM THE START AND ONLY THE `body` ARRIVES. The
+    `name` and the `scale` are on screen from the first paint at 45% opacity,
+    so a student can see how far down there is to go — and, more importantly,
+    can see the SCALE COLUMN as a column. That column is the argument of the
+    lesson: it is the thing that makes six levels feel like one journey rather
+    than six facts. Hiding the unreached rows would turn the bench into a
+    reveal-list and delete it.
+
+    ⚖️ AND NOTHING IS SWAPPED FOR ANYTHING ELSE ON THE WAY DOWN. Each level is
+    INSIDE the one above it, which is why the rows are drawn as a single
+    numbered ladder in document order rather than as tabs or cards: the
+    ordering is the claim. `#s-think` on this page confronts exactly the
+    belief that a gene is a separate object stuck to a chromosome.
+
+    ⚠️ LEVEL 5 PRINTS NO NUMBER, AND THAT IS MEASURED (schema §3.1). A gene has
+    no characteristic length, so Design writes `a section of the strand` where
+    every other row has a figure. The renderer therefore checks that `scale` is
+    PRESENT on all six and never that it looks like a measurement — a check for
+    a digit here would fail the one row whose whole point is that there is no
+    digit to give.
+
+    ⚠️ THE SAY-IT-BACK PANEL IS PART OF THIS INSTRUMENT, not a second activity.
+    Measured: it is inside `<section id="s-bench">`. It gates nothing and marks
+    nothing — every answer is visible the moment its question is chosen, and
+    the tabs record which question is being looked at, not whether anyone was
+    right (MRB-196 R10).
+
+    ⚖️ AND THE STAGE TICKS ON ALL SIX LEVELS, WHICH IS DESIGN'S OWN `isDone()`
+    (`s.shown >= LEVELS.length`). The `s-model` band stop mirrors it (MRB-249),
+    so the count is read by two rail entries and a bench of five levels would
+    ship two stops that can never tick.
+    """
+    _b7_need(a, act_id, ("levels", "in_label", "in_done_label", "reset_label",
+                         "close", "progress", "say_it_back"))
+    _b10_zoom_progress(a.get("progress"), act_id)
+
+    levels = a["levels"]
+    if len(levels) != _B10_ZB_LEVELS:
+        raise ValueError(
+            "zoom-bench %r declares %d level(s). The bench is %d — person, "
+            "cell, nucleus, chromosome, gene, bases — and BOTH the `s-bench` "
+            "stop and the `s-model` band stop that mirrors it tick on all of "
+            "them being open (MRB-249). Design's progress line reads 'all six "
+            "levels' in words, so a seventh row or a missing one contradicts "
+            "the counter above it as well as the rail beside it."
+            % (act_id, len(levels), _B10_ZB_LEVELS))
+    rows = []
+    for i, L in enumerate(levels):
+        for f in ("name", "scale", "body"):
+            if not L.get(f):
+                raise ValueError(
+                    "zoom-bench %r level %d declares no %r. `scale` is the "
+                    "COLUMN, and the column is the argument — a blank cell in "
+                    "it is the one thing on this bench a student would read as "
+                    "'nothing is known here'. Level 5 is the row with no "
+                    "number, and Design fills it with words (`a section of the "
+                    "strand`) rather than leaving it empty."
+                    % (act_id, i + 1, f))
+        first = i == 0
+        rows.append(
+            '<li class="ks3-zb-level" data-zb-level="%d"%s%s>'
+            '<span class="ks3-zb-num" aria-hidden="true">%d</span>'
+            '<span class="ks3-zb-cell">'
+            '<span class="ks3-zb-head">'
+            '<span class="ks3-zb-name">%s</span>'
+            '<span class="ks3-zb-scale">%s</span></span>'
+            '<span class="ks3-zb-body"%s>%s</span></span></li>'
+            % (i, ' data-shown=""' if first else "",
+               ' data-here=""' if first else "", i + 1,
+               t(L["name"]), t(L["scale"]),
+               "" if first else " hidden", t(L["body"])))
+
+    say = a["say_it_back"]
+    for f in ("options_label", "opens_on", "questions"):
+        if not say.get(f):
+            raise ValueError(
+                "zoom-bench %r say_it_back declares no %r." % (act_id, f))
+    qs = say["questions"]
+    if len(qs) != _B10_ZB_QUESTIONS:
+        raise ValueError(
+            "zoom-bench %r say_it_back asks %d question(s), and Design draws "
+            "%d — longest, contains, howmany, same. They are one row of tabs "
+            "on one panel; a fifth wraps the row and a third leaves the panel "
+            "looking like it lost one."
+            % (act_id, len(qs), _B10_ZB_QUESTIONS))
+    # ⚠️ `opens_on` IS AUTHORED BECAUSE IT IS NOT THE FIRST QUESTION (schema
+    # §0.3 and §3.2). `state.quiz` opens on `contains` — *"What contains
+    # what?"* — which is `questions[1]`, and it opens there because that one
+    # question states the whole nesting the bench has just walked down. That is
+    # a teaching choice, so it gets a key; an opening selection that IS the
+    # first entry gets none and the renderer defaults to index 0.
+    ids = [q.get("id") for q in qs]
+    if say["opens_on"] not in ids:
+        raise ValueError(
+            "zoom-bench %r opens the say-it-back panel on %r, and the "
+            "questions are %r. `opens_on` is authored ONLY because the opening "
+            "question is not the first one (schema §3.2) — pointed at nothing, "
+            "it silently falls back to the first, and the panel opens on a "
+            "question chosen by list order rather than by teaching."
+            % (act_id, say["opens_on"], ids))
+    if len(set(ids)) != len(ids):
+        raise ValueError("zoom-bench %r say_it_back declares a duplicate "
+                         "question id: %r." % (act_id, ids))
+    tabs, answers = [], []
+    for q in qs:
+        for f in ("id", "label", "answer"):
+            if not q.get(f):
+                raise ValueError(
+                    "zoom-bench %r say_it_back question %r declares no %r. The "
+                    "answer is ALWAYS VISIBLE for the selected question — this "
+                    "panel gates nothing and marks nothing — so a missing one "
+                    "is a tab that empties the panel."
+                    % (act_id, q.get("id"), f))
+        on = q["id"] == say["opens_on"]
+        tabs.append(
+            '<li><button type="button" class="ks3-option ks3-zb-qtab" '
+            'data-zb-q="%s" aria-pressed="%s">'
+            '<span class="ks3-opt-label">%s</span></button></li>'
+            % (e(q["id"]), "true" if on else "false", t(q["label"])))
+        answers.append(
+            '<p class="ks3-zb-answer" data-zb-answer="%s"%s>%s</p>'
+            % (e(q["id"]), "" if on else " hidden", t(q["answer"])))
+
+    return ('<div class="ks3-zb" data-zb data-in-label="%s" '
+            'data-in-done-label="%s" data-total="%d">'
+            '<div class="ks3-zb-panel">'
+            '<ol class="ks3-zb-levels" role="list">%s</ol>'
+            '<div class="ks3-zb-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-zb-in" '
+            'data-zb-in>%s</button>'
+            '<button type="button" class="ks3-reveal-btn ks3-zb-out" '
+            'data-zb-out>%s</button></div>'
+            '<p class="ks3-zb-close" data-zb-close hidden>%s</p></div>'
+            '<div class="ks3-zb-say">'
+            '<p class="ks3-zb-saylabel" id="%s-say">%s</p>'
+            '<ul class="ks3-options ks3-zb-qtabs" role="list" '
+            'aria-labelledby="%s-say">%s</ul>%s</div></div>'
+            % (e(_b8_plain(a["in_label"], act_id, "`in_label`")),
+               e(_b8_plain(a["in_done_label"], act_id, "`in_done_label`")),
+               len(levels), "".join(rows), t(a["in_label"]),
+               t(a["reset_label"]), t(a["close"]),
+               e(act_id), t(say["options_label"]), e(act_id),
+               "".join(tabs), "".join(answers)))
+# ── b10-03 `#s-bench` · model-builder ────────────────────────────────────
+
+# ⛔ CHASSIS, NOT CONTENT, AND DELIBERATELY NOT AUTHORED. Design's two card
+# verdicts are fixed strings on her own page and schema §4 gives them no key.
+# They are the instrument saying what it just did to the MODEL — `consistent`
+# or `rules this model out` — and both are drawn in the same place, in the same
+# type, on every card. Making them authorable would let one lesson's four cards
+# disagree with each other about what a verdict is called, and would put the
+# wording of a judgement into a payload that has no other judgement in it.
+_B10_MB_PASS_LABEL = "consistent"
+_B10_MB_FAIL_LABEL = "rules this model out"
+
+def _b10_mb_pass(model, ev):
+    """One evidence card against one model. The rule, in one place.
+
+    ⚖️ A CARD PASSES WHEN EVERY `requires` PAIR MATCHES **AND** THE `forbids`
+    MAP IS NOT MATCHED IN FULL. Three of Design's four tests are a single
+    equality; the fourth — Pauling's triple helix — is a NEGATED CONJUNCTION,
+    `!(strands === '3' && bases === 'out')`, which is why `forbids` is a map
+    and not a list. Read it as an OR of the required pairs and it fires on
+    three strands alone, which would rule out row 9 as well and break the
+    "exactly one of twelve" claim the lesson rests on.
+
+    Written once and used by the static render, by the renderer's own
+    twelve-row proof, and — reimplemented in three lines — by `wireModelBuilder`.
+    """
+    for k, v in (ev.get("requires") or {}).items():
+        if model.get(k) != v:
+            return False
+    forbids = ev.get("forbids") or {}
+    if forbids and all(model.get(k) == v for k, v in forbids.items()):
+        return False
+    return True
+
+
+def r_model_builder(a, act_id):
+    """⊕ b10-03 `#s-bench` — twelve models, four tests, and exactly one survivor.
+
+    ⚖️⚖️ THE BENCH OPENS ON PAULING'S WRONG MODEL AND THAT IS THE WHOLE DESIGN.
+    `start` is three strands, bases out, any base with any base — row 12 of the
+    twelve, and the UNIQUE combination that fails all four tests. So the
+    student opens with four red cards, the most emphatic opening available, and
+    every dial they touch can only improve it. Elimination as a method,
+    presented as a monotone descent. The renderer PROVES this rather than
+    trusting the preset: it works all twelve combinations and refuses a payload
+    whose `start` is not the unique 0/4 and whose `correct` is not the unique
+    4/4.
+
+    ⚖️ AND `pauling` IS NOT AN INDEPENDENT CONSTRAINT — it fails only rows 11
+    and 12, both of which already fail `photo` and `water`. There is no model
+    anywhere in the twelve that passes the other three and fails it. Its job is
+    not to eliminate: it is to make the opening state cost FOUR failures rather
+    than three, and to teach that a wrong model published by the most respected
+    chemist alive was itself useful evidence. Schema §4.2 says in words: do not
+    tidy it as redundant. Removing it would leave the opening at 3/4 and delete
+    the lesson's only worked example of a rival being ruled out.
+
+    ⛔ THERE IS NO RUN BUTTON AND NO RESET BUTTON (schema §4.3). The four cards
+    re-evaluate live on every dial press, and the header counter is the only
+    running feedback. B7's `reactant-remover` and `method-breaker` both had a
+    run control and copying that across would add something Design did not
+    draw — so `run_label` and `reset_label` are not read here and must not be
+    authored.
+
+    ⛔ AND THE VERDICT IS ON THE MODEL, NEVER ON THE STUDENT (schema §0.6). A
+    failing card prints `rules this model out` in alert and unhides the line
+    that says WHAT it rules out; a passing one prints `consistent` in green.
+    That is one of the three B10 benches that adjudicate a commitment, and it
+    is shipped as Design drew it. The DIAL BUTTONS take no mark at any point —
+    a pressed dial is the alert ground, meaning "this is the model on the
+    bench", and never a verdict. Only the mastery ladder marks correctness.
+
+    ⚠️ `solved` IS STICKY, by Design's own construction (`solved: st.solved ||
+    ok`). A student who reaches the double helix and then goes back to break
+    the model on purpose keeps the stop — and the `s-who` band stop mirrors it
+    (MRB-249), so an unticking predicate would move two.
+    """
+    _b7_need(a, act_id, ("dials", "start", "correct", "evidence",
+                         "verdict_tags", "verdicts", "progress_suffix"))
+    for f in ("run_label", "reset_label"):
+        if a.get(f):
+            raise ValueError(
+                "model-builder %r authors %r. There is no run control and no "
+                "reset control on this bench (schema §4.3): the four evidence "
+                "cards re-evaluate live on every dial press, and the header "
+                "counter is the only running feedback. B7's benches had one, "
+                "and copying that across adds a control Design did not draw."
+                % (act_id, f))
+
+    dials = a["dials"]
+    if len(dials) < 2:
+        raise ValueError(
+            "model-builder %r declares %d dial(s). The bench is a COMBINATION "
+            "of decisions and one decision has no combinations."
+            % (act_id, len(dials)))
+    dial_ids, choices = [], {}
+    for d in dials:
+        for f in ("id", "name", "options"):
+            if not d.get(f):
+                raise ValueError("model-builder %r dial %r declares no %r."
+                                 % (act_id, d.get("id"), f))
+        if d["id"] in choices:
+            raise ValueError("model-builder %r declares dial id %r twice."
+                             % (act_id, d["id"]))
+        if len(d["options"]) < 2:
+            raise ValueError(
+                "model-builder %r dial %r offers %d option(s). A dial with one "
+                "setting is a label." % (act_id, d["id"], len(d["options"])))
+        for o in d["options"]:
+            for f in ("id", "label", "phrase"):
+                if not o.get(f):
+                    raise ValueError(
+                        "model-builder %r dial %r option %r declares no %r. "
+                        "`label` is the BUTTON text and `phrase` is the same "
+                        "option's sentence fragment for the model line above "
+                        "the cards — 'Two' against 'Two strands', 'Inside, "
+                        "facing each other' against 'bases on the inside'. The "
+                        "two genuinely differ, so both are content and neither "
+                        "can be derived from the other."
+                        % (act_id, d["id"], o.get("id"), f))
+        dial_ids.append(d["id"])
+        choices[d["id"]] = [o["id"] for o in d["options"]]
+
+    for which in ("start", "correct"):
+        m = a[which]
+        if sorted(m) != sorted(dial_ids):
+            raise ValueError(
+                "model-builder %r `%s` sets %r and the dials are %r. Every "
+                "dial takes a position or the bench opens with a control at no "
+                "setting at all." % (act_id, which, sorted(m), sorted(dial_ids)))
+        for k, v in m.items():
+            if v not in choices[k]:
+                raise ValueError(
+                    "model-builder %r `%s` sets dial %r to %r, which it does "
+                    "not offer (%r)." % (act_id, which, k, v, choices[k]))
+
+    evidence = a["evidence"]
+    if len(evidence) < 2:
+        raise ValueError(
+            "model-builder %r declares %d test(s). One test is not evidence, "
+            "it is an answer key." % (act_id, len(evidence)))
+    seen = set()
+    for ev in evidence:
+        for f in ("id", "name", "what", "why"):
+            if not ev.get(f):
+                raise ValueError(
+                    "model-builder %r evidence %r declares no %r. `why` is the "
+                    "ELIMINATION TEXT — the line that names what this evidence "
+                    "rules out — and it is the only thing on the bench that "
+                    "tells a student which decision to change."
+                    % (act_id, ev.get("id"), f))
+        if ev["id"] in seen:
+            raise ValueError("model-builder %r declares evidence id %r twice."
+                             % (act_id, ev["id"]))
+        seen.add(ev["id"])
+        if not (ev.get("requires") or ev.get("forbids")):
+            raise ValueError(
+                "model-builder %r evidence %r constrains nothing. A card with "
+                "neither `requires` nor `forbids` passes every model in the "
+                "matrix, which makes it a card that is always green and never "
+                "teaches anything." % (act_id, ev["id"]))
+        # ⚖️ A `forbids` MAP IS A NEGATED CONJUNCTION AND MUST NAME AT LEAST
+        # TWO DIALS. Design's only one is Pauling's — `!(strands === '3' &&
+        # bases === 'out')` — and the AND is the whole of it: his model was
+        # ruled out by the COMBINATION, not by three strands, and not by the
+        # bases facing out. A one-pair `forbids` is a single equality written
+        # in the negative, and it quietly turns this card into an independent
+        # constraint that eliminates models the historical evidence did not
+        # eliminate. Schema §4.2 measured that it fails rows 11 and 12 only;
+        # with one pair it would fail 9 and 10 as well, the twelve-row proof
+        # below would still pass, and nothing on the page would look wrong.
+        # Found by mutation: this is the one renderer check the matrix cannot
+        # make for itself.
+        if ev.get("forbids") is not None and len(ev["forbids"]) < 2:
+            raise ValueError(
+                "model-builder %r evidence %r forbids %r — one pair. `forbids` "
+                "is a NEGATED CONJUNCTION and the AND is the science: a rival "
+                "model is ruled out by a COMBINATION of decisions, not by one "
+                "of them. Written with a single pair it becomes an independent "
+                "constraint that rules out models the evidence does not, and "
+                "the twelve-row proof below cannot see the difference."
+                % (act_id, ev["id"], ev["forbids"]))
+        for which in ("requires", "forbids"):
+            for k, v in (ev.get(which) or {}).items():
+                if k not in choices:
+                    raise ValueError(
+                        "model-builder %r evidence %r %s names dial %r, which "
+                        "the bench does not have." % (act_id, ev["id"], which, k))
+                if v not in choices[k]:
+                    raise ValueError(
+                        "model-builder %r evidence %r %s wants dial %r at %r, "
+                        "which it does not offer (%r)."
+                        % (act_id, ev["id"], which, k, v, choices[k]))
+
+    # ⚖️⚖️ THE TWELVE ROWS, WORKED. Schema §4.2 states the claim the whole
+    # lesson rests on — "exactly one combination survives all four" — and this
+    # is where it stops being an assertion in a document. Every combination of
+    # every dial is built and scored; the payload is refused unless `correct`
+    # is the UNIQUE model that passes everything and `start` is the UNIQUE
+    # model that passes nothing. A retuned `requires` that quietly admitted a
+    # second 4/4 would leave the bench looking entirely normal while the
+    # sentence above it, the verdict below it and rung 2 all became false.
+    combos = [{}]
+    for did in dial_ids:
+        combos = [dict(c, **{did: o}) for c in combos for o in choices[did]]
+    all_pass = [c for c in combos if all(_b10_mb_pass(c, ev) for ev in evidence)]
+    none_pass = [c for c in combos if not any(_b10_mb_pass(c, ev)
+                                              for ev in evidence)]
+    if len(all_pass) != 1 or all_pass[0] != a["correct"]:
+        raise ValueError(
+            "model-builder %r: of %d combinations, %d pass every test (%r), "
+            "and `correct` is %r. The lesson's claim — and the sentence above "
+            "the bench, and the closing verdict, and rung 2 — is that EXACTLY "
+            "ONE model survives all the evidence. A second survivor makes the "
+            "bench a lie that nothing else in the build can see."
+            % (act_id, len(combos), len(all_pass), all_pass, a["correct"]))
+    if len(none_pass) != 1 or none_pass[0] != a["start"]:
+        raise ValueError(
+            "model-builder %r: %d combination(s) fail every test (%r), and the "
+            "bench opens on %r. The opening state is not an accident of the "
+            "preset — it IS the preset (schema §4.2): the unique 0-of-%d row, "
+            "so a student opens with every card red and every dial they touch "
+            "can only improve it. Elimination as a monotone descent."
+            % (act_id, len(none_pass), none_pass, a["start"], len(evidence)))
+
+    tags = a["verdict_tags"]
+    for f in ("pass", "fail_one", "fail_many"):
+        if not tags.get(f):
+            raise ValueError(
+                "model-builder %r verdict_tags declares no %r. Design writes "
+                "the count in words on both sides of one — '1 test still "
+                "failing' against '3 tests still failing' — and a missing "
+                "branch is a heading that vanishes at exactly one count."
+                % (act_id, f))
+    for f in ("fail_one", "fail_many"):
+        if "{n}" not in tags[f]:
+            raise ValueError(
+                "model-builder %r verdict_tags %r names no {n}. The number of "
+                "failing tests is computed from the model on the bench and "
+                "cannot be authored as a literal — a tag that quotes a fixed "
+                "figure is wrong on every setting but one."
+                % (act_id, f))
+    if "{n}" in tags["pass"]:
+        raise ValueError(
+            "model-builder %r verdict_tags `pass` names {n}, and nothing fills "
+            "it there. This is the branch where the count is ZERO and the "
+            "sentence says so in words instead." % (act_id, tags["pass"]))
+    verdicts = a["verdicts"]
+    for f in ("pass", "fail"):
+        if not verdicts.get(f):
+            raise ValueError(
+                "model-builder %r verdicts declares no %r." % (act_id, f))
+
+    groups = []
+    for d in dials:
+        opts = "".join(
+            '<li><button type="button" class="ks3-option ks3-dh-opt" '
+            'data-dh-dial="%s" data-dh-opt="%s" data-dh-phrase="%s" '
+            'aria-pressed="%s"><span class="ks3-opt-label">%s</span>'
+            '</button></li>'
+            % (e(d["id"]), e(o["id"]),
+               e(_b8_plain(o["phrase"], act_id, "option `phrase`")),
+               "true" if a["start"][d["id"]] == o["id"] else "false",
+               t(o["label"])) for o in d["options"])
+        groups.append(
+            '<div class="ks3-dh-dial">'
+            '<p class="ks3-dh-dialname" id="%s-%s">%s</p>'
+            '<ul class="ks3-options ks3-dh-opts" role="list" '
+            'aria-labelledby="%s-%s">%s</ul></div>'
+            % (e(act_id), e(d["id"]), t(d["name"]),
+               e(act_id), e(d["id"]), opts))
+
+    cards, passes = [], 0
+    for ev in evidence:
+        ok = _b10_mb_pass(a["start"], ev)
+        if ok:
+            passes += 1
+        cards.append(
+            '<li class="ks3-dh-card" data-dh-card="%s" data-dh-requires="%s" '
+            'data-dh-forbids="%s"%s>'
+            '<div class="ks3-dh-cardhead">'
+            '<p class="ks3-dh-cardname">%s</p>'
+            '<p class="ks3-dh-tag" data-dh-tag="pass"%s>%s</p>'
+            '<p class="ks3-dh-tag" data-dh-tag="fail"%s>%s</p></div>'
+            '<p class="ks3-dh-what">%s</p>'
+            '<p class="ks3-dh-why"%s>%s</p></li>'
+            % (e(ev["id"]),
+               e(json.dumps(ev.get("requires") or {}, separators=(",", ":"),
+                            sort_keys=True)),
+               e(json.dumps(ev.get("forbids") or {}, separators=(",", ":"),
+                            sort_keys=True)),
+               ' data-pass=""' if ok else "",
+               t(ev["name"]),
+               "" if ok else " hidden", _B10_MB_PASS_LABEL,
+               " hidden" if ok else "", _B10_MB_FAIL_LABEL,
+               t(ev["what"]), " hidden" if ok else "", t(ev["why"])))
+
+    n_fail = len(evidence) - passes
+    return ('<div class="ks3-dh" data-dh data-tag-pass="%s" '
+            'data-tag-fail-one="%s" data-tag-fail-many="%s" '
+            'data-verdict-pass="%s" data-verdict-fail="%s" '
+            'data-target="%s" data-total="%d">'
+            '<div class="ks3-dh-dials">%s</div>'
+            '<div class="ks3-dh-panel">'
+            '<p class="ks3-dh-modelline" data-dh-modelline>%s</p>'
+            '<ul class="ks3-dh-cards" role="list">%s</ul>'
+            '<div class="ks3-dh-verdict">'
+            '<p class="ks3-dh-verdicttag" data-dh-verdicttag>%s</p>'
+            '<p class="ks3-dh-verdictbody" data-dh-verdictbody>%s</p>'
+            '</div></div></div>'
+            % (e(_b8_plain(tags["pass"], act_id, "verdict_tags `pass`")),
+               e(_b8_plain(tags["fail_one"], act_id, "verdict_tags `fail_one`")),
+               e(_b8_plain(tags["fail_many"], act_id,
+                           "verdict_tags `fail_many`")),
+               e(_b8_plain(verdicts["pass"], act_id, "verdicts `pass`")),
+               e(_b8_plain(verdicts["fail"], act_id, "verdicts `fail`")),
+               e(json.dumps(a["correct"], separators=(",", ":"),
+                            sort_keys=True)),
+               len(evidence), "".join(groups),
+               t(_b10_mb_modelline(a, a["start"])),
+               "".join(cards),
+               t(_b10_mb_tag(tags, n_fail)),
+               t(verdicts["pass"] if n_fail == 0 else verdicts["fail"])))
+
+
+def _b10_mb_modelline(a, model):
+    """`", ".join(phrase)`, in DIAL ORDER — Design's own composition.
+
+    The order is the order the decisions are drawn in, which is the order the
+    sentence has to read in: *"Three strands, bases on the outside, any base
+    with any base."* Built once here for the shipped bytes and once in
+    `wireModelBuilder`, from the same `data-dh-phrase` attributes.
+    """
+    out = []
+    for d in a["dials"]:
+        for o in d["options"]:
+            if o["id"] == model[d["id"]]:
+                out.append(o["phrase"])
+    return ", ".join(out)
+
+
+def _b10_mb_tag(tags, n_fail):
+    if n_fail == 0:
+        return tags["pass"]
+    key = "fail_one" if n_fail == 1 else "fail_many"
+    return tags[key].replace("{n}", str(n_fail))
+# ── b10-04 `#s-bench` · pea-cross ────────────────────────────────────────
+
+def r_pea_cross(a, act_id):
+    """⊕ b10-04 `#s-bench` — two parents, one gene, and real chance.
+
+    ⚖️⚖️ THE RANDOMNESS IS REAL AND UNSEEDED AND MUST STAY THAT WAY (schema
+    §5.1). One `Math.random()` per gamete, per parent, per seed; no PRNG, no
+    seed, and NO `seed` KEY — grepped across all five B10 pages, this is the
+    unit's only call. A seeded bench would deliver 75/25 on cue, which teaches
+    exactly the belief the page's legal line and rung 4 are written to break: a
+    3:1 ratio is a SAMPLING result, not a property of any one litter. The
+    hundred-seed button exists because one seed is not enough, and that only
+    lands if one seed is genuinely unpredictable. The renderer therefore
+    refuses a `seed` key rather than leaving the door open.
+
+    ⚖️ THE FOUR NOTES ARE ORDERED AND THE ORDER IS THE MEANING (schema §5.2).
+    Design evaluates them as an if/else chain and the first match wins:
+    `one_pure_dominant` → `both_pure_recessive` → `both_carriers` → `mixed`.
+    Moving `both_carriers` below `mixed` would let `Pp × Pp` — Mendel's 3:1,
+    the whole point of the lesson — fall through to the generic line. The four
+    ids are a CLOSED, ORDERED set here for that reason, and `wirePeaCross`
+    branches on them in the same order.
+
+    ⚠️ CHANGING EITHER PARENT CLEARS THE TALLY AND THE LAST SEED. Measured on
+    Design's own handler. Load-bearing rather than tidy: without it a student
+    accumulates counts across two DIFFERENT crosses and reads a ratio that
+    describes neither of them. Wire the clear or the instrument silently lies.
+
+    ⚠️ AND GROWING A HUNDRED HIDES THE MOST-RECENT-SEED CARD (`last: n === 1 ?
+    last : null`). The single seed is the "chance decides each one" story; the
+    hundred is the "only totals show the pattern" story. Design never puts them
+    on screen together and neither does this.
+
+    ⚖️ THE GENOTYPE ON THE LAST-SEED CARD IS NORMALISED DOMINANT-FIRST. A seed
+    that received `p` then `P` prints `Pp`, never `pP` — measured. Without it
+    the same genotype appears under two spellings on the same bench and a
+    student reasonably concludes they are different things.
+
+    ⛔ AND *DOMINANT* AND *RECESSIVE* ARE NEVER NAMED (NOTES flag 13, ruled and
+    confirmed in schema §16). The page says "overrides" and "hidden"; the
+    LETTERS carry the idea. There is no `dominant_term` key and there must not
+    be one — `phenotypes` maps the two outcomes to their colour words and that
+    is as far as the vocabulary goes. The keys `dominant`/`recessive` are
+    internal ids and reach no student.
+    """
+    _b7_need(a, act_id, ("genotypes", "parents", "start", "phenotypes",
+                         "one_label", "many_label", "reset_label",
+                         "cross_join", "last_label", "last_template",
+                         "tally_rows", "ratio_template",
+                         "no_recessive_template", "notes", "progress"))
+    if a.get("many_n") is None:
+        raise ValueError("pea-cross %r declares no `many_n`." % act_id)
+    if a.get("seed") is not None:
+        raise ValueError(
+            "pea-cross %r authors a `seed`. THE RANDOMNESS ON THIS BENCH IS "
+            "REAL AND UNSEEDED AND STAYS THAT WAY (schema §5.1). A 3:1 ratio "
+            "is a sampling result, not a property of one litter — a seeded "
+            "bench hands the student 75/25 on cue and teaches precisely the "
+            "misconception the legal line and rung 4 exist to break. No "
+            "student sees the same cross twice." % act_id)
+    _b10_pea_progress(a.get("progress"), act_id)
+
+    many_n = int(a["many_n"])
+    if many_n < 20:
+        raise ValueError(
+            "pea-cross %r grows %d seeds on the big button. It is there "
+            "BECAUSE one seed is not enough to show a proportion, and a "
+            "handful is not either — a run that small would show noise and "
+            "teach that the prediction fails." % (act_id, many_n))
+
+    pheno = a["phenotypes"]
+    for f in ("dominant", "recessive"):
+        if not pheno.get(f):
+            raise ValueError(
+                "pea-cross %r phenotypes declares no %r. These are the COLOUR "
+                "WORDS — purple and white — and they are as far as this "
+                "lesson's vocabulary goes: `dominant` and `recessive` are "
+                "internal ids and are never printed (NOTES flag 13)."
+                % (act_id, f))
+
+    # ⚖️ THE ALLELE ALPHABET IS DERIVED FROM THE GENOTYPES AND CHECKED, because
+    # every downstream claim rests on it: which letter overrides which, which
+    # combination is white, and whether `pp` can ever be reached at all.
+    genos, alleles = {}, set()
+    for g in a["genotypes"]:
+        for f in ("id", "label", "alleles"):
+            if not g.get(f):
+                raise ValueError("pea-cross %r genotype %r declares no %r."
+                                 % (act_id, g.get("id"), f))
+        if len(g["alleles"]) != 2:
+            raise ValueError(
+                "pea-cross %r genotype %r carries %d allele(s). Every parent "
+                "carries TWO copies of the gene and passes ONE — that is the "
+                "whole mechanism the bench models."
+                % (act_id, g["id"], len(g["alleles"])))
+        genos[g["id"]] = g["alleles"]
+        alleles.update(g["alleles"])
+    if len(alleles) != 2:
+        raise ValueError(
+            "pea-cross %r uses %d allele letter(s) (%r). The bench is ONE gene "
+            "with two versions: one that overrides and one that is hidden."
+            % (act_id, len(alleles), sorted(alleles)))
+    # ⚖️ THE DOMINANT LETTER IS THE CAPITAL ONE, DERIVED AND NEVER AUTHORED.
+    # An authored letter could disagree with the genotype list, and the bench
+    # would then print one thing and compute another — white seeds tallied
+    # under the purple bar, with every string on screen still correct.
+    # `sorted()` is ASCII, where every capital sorts before every lower-case
+    # letter, so the capital is always first. The convention it depends on —
+    # capital for the version that overrides, lower case for the one that is
+    # hidden — is the one the page teaches in its own opening sentence, and
+    # the check below refuses a genotype set that does not follow it.
+    dom, rec = sorted(alleles)
+    if not (dom.isupper() and rec.islower() and dom.lower() == rec):
+        raise ValueError(
+            "pea-cross %r uses the letters %r and %r. The bench derives which "
+            "version overrides from the CASE of the letter, because that is "
+            "the convention the page's own opening sentence teaches — P gives "
+            "purple and beats p. Two letters that are not the same letter in "
+            "two cases leave the instrument guessing which bar a seed belongs "
+            "in." % (act_id, dom, rec))
+    if not any(sorted(v) == sorted([rec, rec]) for v in genos.values()):
+        raise ValueError(
+            "pea-cross %r offers no genotype carrying two %r. The hidden "
+            "version can only show when there is nothing left to override it, "
+            "so without that genotype the recessive phenotype is unreachable "
+            "and the white bar is decoration." % (act_id, rec))
+
+    parents = a["parents"]
+    if len(parents) != 2:
+        raise ValueError(
+            "pea-cross %r declares %d parent(s). A cross is two."
+            % (act_id, len(parents)))
+    for p in parents:
+        for f in ("id", "name"):
+            if not p.get(f):
+                raise ValueError("pea-cross %r parent %r declares no %r."
+                                 % (act_id, p.get("id"), f))
+        if a["start"].get(p["id"]) not in genos:
+            raise ValueError(
+                "pea-cross %r opens parent %r on %r, which is not one of %r. "
+                "`start` is authored (schema §0.3) BECAUSE the bench opens on "
+                "the second genotype, not the first: the only cross that "
+                "produces the 3:1, so the headline result is one press away "
+                "and the student has to change something to find the others."
+                % (act_id, p["id"], a["start"].get(p["id"]), sorted(genos)))
+
+    rows = a["tally_rows"]
+    row_ids = [r.get("id") for r in rows]
+    if sorted(row_ids) != ["dominant", "recessive"]:
+        raise ValueError(
+            "pea-cross %r tallies %r. There are exactly two outcomes on this "
+            "bench and their ids are the phenotype ids, because the bar the "
+            "runtime fills is found by that id." % (act_id, row_ids))
+    for r in rows:
+        if not r.get("name"):
+            raise ValueError("pea-cross %r tally row %r declares no `name`."
+                             % (act_id, r.get("id")))
+
+    _b9_placeholders(a["ratio_template"], act_id, "`ratio_template`",
+                     ("{ratio}",))
+    _b9_placeholders(a["no_recessive_template"], act_id,
+                     "`no_recessive_template`", ("{total}",), ("{ratio}",))
+    _b9_placeholders(a["last_template"], act_id, "`last_template`",
+                     ("{g1}", "{g2}", "{genotype}", "{phenotype}"))
+
+    notes = a["notes"]
+    if list(notes) and set(notes) != set(_B10_PC_NOTES):
+        raise ValueError(
+            "pea-cross %r declares notes %r; the bench branches on %r. The "
+            "FOUR ARE ORDERED and the order is the meaning (schema §5.2): "
+            "first match wins, and `both_carriers` must be tested before "
+            "`mixed` or Pp × Pp — Mendel's 3:1, the whole point of the lesson "
+            "— falls through to the generic line."
+            % (act_id, sorted(notes), list(_B10_PC_NOTES)))
+    for k in _B10_PC_NOTES:
+        if not notes.get(k):
+            raise ValueError(
+                "pea-cross %r notes declares no %r. Every combination of "
+                "parents a student can set reaches one of the four, so a "
+                "missing branch is a panel that empties on exactly the crosses "
+                "it does not cover." % (act_id, k))
+
+    groups = []
+    for p in parents:
+        opts = "".join(
+            '<li><button type="button" class="ks3-option ks3-pc-geno" '
+            'data-pc-parent="%s" data-pc-geno="%s" aria-pressed="%s">'
+            '<span class="ks3-opt-label">%s</span></button></li>'
+            % (e(p["id"]), e(g["id"]),
+               "true" if a["start"][p["id"]] == g["id"] else "false",
+               t(g["label"])) for g in a["genotypes"])
+        groups.append(
+            '<div class="ks3-pc-parent">'
+            '<p class="ks3-pc-parentname" id="%s-%s">%s</p>'
+            '<ul class="ks3-options ks3-pc-genos" role="list" '
+            'aria-labelledby="%s-%s">%s</ul></div>'
+            % (e(act_id), e(p["id"]), t(p["name"]),
+               e(act_id), e(p["id"]), opts))
+
+    bars = "".join(
+        '<li class="ks3-pc-row" data-pc-row="%s">'
+        '<div class="ks3-pc-rowhead">'
+        '<p class="ks3-pc-rowname">%s</p>'
+        '<p class="ks3-pc-rowvalue" data-pc-value>0</p></div>'
+        '<span class="ks3-pc-track">'
+        '<span class="ks3-pc-bar" data-fill data-pc-bar style="width:0%%">'
+        '</span></span></li>'
+        % (e(r["id"]), t(r["name"])) for r in rows)
+
+    # ⚠️ THE NOTES ARE ALL IN THE DOCUMENT, one per branch, and the runtime
+    # shows one. Nothing science-bearing is assigned to `textContent`, and a
+    # reader with JS off gets the opening cross's note rather than a blank.
+    opening_note = _b10_pc_note(a["start"][parents[0]["id"]],
+                                a["start"][parents[1]["id"]], genos, dom, rec)
+    note_els = "".join(
+        '<p class="ks3-pc-note" data-pc-note="%s"%s>%s</p>'
+        % (e(k), "" if k == opening_note else " hidden", t(notes[k]))
+        for k in _B10_PC_NOTES)
+
+    pg = a["progress"]
+    return ('<div class="ks3-pc" data-pc data-many-n="%d" data-dominant="%s" '
+            'data-recessive="%s" data-genotypes="%s" data-cross-join="%s" '
+            'data-last-template="%s" data-pheno-dominant="%s" '
+            'data-pheno-recessive="%s" data-ratio-template="%s" '
+            'data-no-recessive-template="%s" data-suffix-one="%s" '
+            'data-suffix-many="%s">'
+            '<div class="ks3-pc-parents">%s</div>'
+            '<div class="ks3-pc-panel">'
+            '<p class="ks3-pc-crossline" data-pc-crossline>%s</p>'
+            '<div class="ks3-pc-last" data-pc-last hidden>'
+            '<p class="ks3-pc-lastlabel">%s</p>'
+            '<p class="ks3-pc-lastline" data-pc-lastline></p></div>'
+            '<div class="ks3-pc-tally" data-pc-tally hidden>'
+            '<ul class="ks3-pc-rows" role="list">%s</ul>'
+            '<p class="ks3-pc-ratio" data-pc-ratio></p></div>'
+            '%s'
+            '<div class="ks3-pc-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-pc-one" '
+            'data-pc-one>%s</button>'
+            '<button type="button" class="ks3-reveal-btn ks3-pc-many" '
+            'data-pc-many>%s</button>'
+            '<button type="button" class="ks3-reveal-btn ks3-pc-clear" '
+            'data-pc-clear>%s</button></div>'
+            '</div></div>'
+            % (many_n, e(dom), e(rec),
+               e(json.dumps(genos, separators=(",", ":"), sort_keys=True)),
+               e(_b8_plain(a["cross_join"], act_id, "`cross_join`")),
+               e(_b8_plain(a["last_template"], act_id, "`last_template`")),
+               e(_b8_plain(pheno["dominant"], act_id, "phenotypes `dominant`")),
+               e(_b8_plain(pheno["recessive"], act_id,
+                           "phenotypes `recessive`")),
+               e(_b8_plain(a["ratio_template"], act_id, "`ratio_template`")),
+               e(_b8_plain(a["no_recessive_template"], act_id,
+                           "`no_recessive_template`")),
+               e(_b8_plain(pg["suffix_one"], act_id, "progress `suffix_one`")),
+               e(_b8_plain(pg["suffix_many"], act_id, "progress `suffix_many`")),
+               "".join(groups),
+               t("%s %s %s" % (a["start"][parents[0]["id"]],
+                               a["cross_join"],
+                               a["start"][parents[1]["id"]])),
+               t(a["last_label"]), bars, note_els,
+               t(a["one_label"]), t(a["many_label"]), t(a["reset_label"])))
+
+
+def _b10_pc_note(g1, g2, genos, dom, rec):
+    """Design's four-branch chain, in HER order. First match wins.
+
+    ⚖️ `both_carriers` IS TESTED BEFORE `mixed` and that is the whole reason
+    this is an ordered chain rather than a lookup. Pp × Pp is Mendel's 3:1 and
+    it must never fall through to the generic line. Reimplemented identically
+    in `wirePeaCross`; the ids are the branch names and the set is closed.
+    """
+    a1, a2 = genos[g1], genos[g2]
+    if not (rec in a1 and rec in a2) and (a1 == [dom, dom] or a2 == [dom, dom]):
+        return "one_pure_dominant"
+    if a1 == [rec, rec] and a2 == [rec, rec]:
+        return "both_pure_recessive"
+    if sorted(a1) == sorted([dom, rec]) and sorted(a2) == sorted([dom, rec]):
+        return "both_carriers"
+    return "mixed"
+
+
+# ── b10-05 `#s-bench` · species-cases ────────────────────────────────────
+
+def r_species_cases(a, act_id):
+    """⊕ b10-05 `#s-bench` — seven hard cases, and a test that runs out.
+
+    ⚖️⚖️ THERE ARE THREE VERDICTS AND THE THIRD IS THE INSTRUMENT. *"The test
+    does not settle it"* is not a hedge and not an I-don't-know: it is the
+    CORRECT answer for three of the seven cases — bacteria, dandelions, the
+    ring of gulls — and a student who never selects it cannot score above four
+    out of seven. Dropping to a boolean would delete the lesson, so the
+    renderer refuses anything but a three-entry ordered list, and refuses one
+    whose third verdict is never the answer.
+
+    ⚖️ THE CASE ORDER IS AUTHORED AND IS NOT SORTED. The three unsettleable
+    cases are last and consecutive, so the bench spends its first four
+    establishing the test and its last three showing where it runs out — which
+    is what the lead means by "read the last two carefully". Kept as authored.
+
+    ⚖️ COMMIT THEN REVEAL, PER CASE. `run_label` is disabled until a verdict is
+    chosen, and once pressed the pick is FROZEN and the unchosen verdicts drop
+    to half opacity. Same gate as `variation-plotter` and for the same reason:
+    a student who can see the answer before choosing has not been asked
+    anything.
+
+    ⛔ AND THE BENCH ADJUDICATES — one of the three in B10 that do (schema
+    §0.6). It prints `That is the answer` or `Not quite` on the cream panel,
+    in ONE tone, above the verdict it should have been. The three verdict
+    buttons take NO mark at any point: the chosen one keeps the alert outline
+    it had, right or wrong, and the others simply dim. A wrong idea is
+    corrected on the panel, never marked on the button (MRB-196 R10).
+
+    ⚖️ THE LETTERS A/B/C ARE DERIVED FROM POSITION, never authored — which is
+    why the verdict list is ordered and why re-ordering it re-letters the
+    buttons without anything else having to change.
+    """
+    _b7_need(a, act_id, ("verdicts", "options_label", "commit_label", "cases",
+                         "run_label", "run_done_label", "verdict_tags",
+                         "progress_suffix", "tally"))
+    verdicts = a["verdicts"]
+    if len(verdicts) != _B10_SC_VERDICTS:
+        raise ValueError(
+            "species-cases %r offers %d verdict(s). There are %d, ordered, and "
+            "the THIRD IS THE INSTRUMENT: 'the test does not settle it' is the "
+            "correct answer for three of the seven cases, and a bench that "
+            "offers only same/different cannot ask the question this lesson "
+            "exists to ask." % (act_id, len(verdicts), _B10_SC_VERDICTS))
+    vids = []
+    for v in verdicts:
+        for f in ("id", "text"):
+            if not v.get(f):
+                raise ValueError("species-cases %r verdict %r declares no %r."
+                                 % (act_id, v.get("id"), f))
+        if v["id"] in vids:
+            raise ValueError("species-cases %r declares verdict id %r twice."
+                             % (act_id, v["id"]))
+        vids.append(v["id"])
+
+    tags = a["verdict_tags"]
+    for f in ("right", "wrong"):
+        if not tags.get(f):
+            raise ValueError(
+                "species-cases %r verdict_tags declares no %r. Both are drawn "
+                "in the same tone on the same cream panel (schema §0.6): the "
+                "bench says whether the commitment held, in words, and never "
+                "marks the button." % (act_id, f))
+    tal = a["tally"]
+    for f in ("all", "remaining_suffix"):
+        if not tal.get(f):
+            raise ValueError(
+                "species-cases %r tally declares no %r. The line beside the "
+                "check button counts DOWN — '4 still to settle' then 'all "
+                "seven settled' — and a missing end is a counter that stops "
+                "saying anything at the moment it matters most."
+                % (act_id, f))
+
+    cases = a["cases"]
+    if len(cases) < _B10_SC_THRESHOLD:
+        raise ValueError(
+            "species-cases %r declares %d case(s). The stage predicate is %d "
+            "opened and the `s-test` band stop MIRRORS it (MRB-249), so a "
+            "shorter bench ships two rail stops that no student can tick."
+            % (act_id, len(cases), _B10_SC_THRESHOLD))
+    seen, answers, tabs, panels = set(), set(), [], []
+    for i, c in enumerate(cases):
+        for f in ("id", "label", "title", "facts", "answer", "why"):
+            if not c.get(f):
+                raise ValueError(
+                    "species-cases %r case %r declares no %r. `facts` is what "
+                    "the student decides ON and `why` is the reasoning they "
+                    "get back — a case missing either is a question with no "
+                    "evidence or an answer with no argument."
+                    % (act_id, c.get("id"), f))
+        if c["id"] in seen:
+            raise ValueError("species-cases %r declares case id %r twice."
+                             % (act_id, c["id"]))
+        seen.add(c["id"])
+        if c["answer"] not in vids:
+            raise ValueError(
+                "species-cases %r case %r answers %r, and the verdicts are %r. "
+                "An answer outside the offered set can never be selected, so "
+                "that case is wrong however the student decides it."
+                % (act_id, c["id"], c["answer"], vids))
+        answers.add(c["answer"])
+
+    # ⚖️ THE THIRD VERDICT MUST BE SOMEBODY'S ANSWER. A bench that offers it
+    # and never needs it teaches that it is the safe box you do not tick, which
+    # is the opposite of the lesson.
+    if vids[-1] not in answers:
+        raise ValueError(
+            "species-cases %r offers %r and no case answers it. The third "
+            "verdict is the instrument: it is where the test RUNS OUT, and a "
+            "bench that never lands on it has taught a student that the "
+            "honest answer is always the wrong one."
+            % (act_id, verdicts[-1]["text"]))
+
+    for i, c in enumerate(cases):
+        first = i == 0
+        tabs.append(
+            '<li><button type="button" class="ks3-option ks3-sc-tab" '
+            'data-sc-case="%s" aria-pressed="%s">'
+            '<span class="ks3-opt-label">%s</span></button></li>'
+            % (e(c["id"]), "true" if first else "false", t(c["label"])))
+        opts = "".join(
+            '<li><button type="button" class="ks3-option ks3-sc-verdict" '
+            'data-sc-verdict="%s" aria-pressed="false">'
+            '<span class="ks3-sc-letter" aria-hidden="true">%s</span>'
+            '<span class="ks3-opt-label">%s</span></button></li>'
+            % (e(v["id"]), t(chr(65 + j)), t(v["text"]))
+            for j, v in enumerate(verdicts))
+        answer_text = next(v["text"] for v in verdicts if v["id"] == c["answer"])
+        panels.append(
+            '<div class="ks3-sc-case" data-sc-panel="%s" data-sc-answer="%s"%s>'
+            '<p class="ks3-sc-title">%s</p>'
+            '<p class="ks3-sc-facts">%s</p>'
+            '<p class="ks3-sc-commit">%s</p>'
+            '<ul class="ks3-options ks3-sc-verdicts" role="list">%s</ul>'
+            '<div class="ks3-sc-out" data-sc-out hidden>'
+            '<p class="ks3-sc-tag" data-sc-tag="right" hidden>%s</p>'
+            '<p class="ks3-sc-tag" data-sc-tag="wrong" hidden>%s</p>'
+            '<p class="ks3-sc-answer">%s</p>'
+            '<p class="ks3-sc-why">%s</p></div></div>'
+            % (e(c["id"]), e(c["answer"]), "" if first else " hidden",
+               t(c["title"]), t(c["facts"]), t(a["commit_label"]), opts,
+               t(tags["right"]), t(tags["wrong"]),
+               t(answer_text), t(c["why"])))
+
+    return ('<div class="ks3-sc" data-sc data-run-label="%s" '
+            'data-run-done-label="%s" data-tally-all="%s" '
+            'data-tally-suffix="%s" data-total="%d" data-threshold="%d">'
+            '<div class="ks3-sc-tabsgroup">'
+            '<p class="ks3-sc-tabslabel" id="%s-cases">%s</p>'
+            '<ul class="ks3-options ks3-sc-tabs" role="list" '
+            'aria-labelledby="%s-cases">%s</ul></div>'
+            '<div class="ks3-sc-panel">%s'
+            '<div class="ks3-sc-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-sc-check" '
+            'data-sc-check disabled>%s</button>'
+            '<span class="ks3-sc-tally" data-sc-tally>%s</span></div>'
+            '</div></div>'
+            % (e(_b8_plain(a["run_label"], act_id, "`run_label`")),
+               e(_b8_plain(a["run_done_label"], act_id, "`run_done_label`")),
+               e(_b8_plain(tal["all"], act_id, "tally `all`")),
+               e(_b8_plain(tal["remaining_suffix"], act_id,
+                           "tally `remaining_suffix`")),
+               len(cases), _B10_SC_THRESHOLD,
+               e(act_id), t(a["options_label"]), e(act_id), "".join(tabs),
+               "".join(panels), t(a["run_label"]),
+               t("%d %s" % (len(cases), tal["remaining_suffix"]))))
+# renderers: ═══ END B10 ═══
+
+
 ACTIVITY_KIND_RENDERERS = {
     "test-board":    ("ks3-board",
                       ' data-instrument data-board data-stage-done="0"'),
@@ -15861,6 +17350,36 @@ ACTIVITY_KIND_RENDERERS = {
     "quadrat-bench":    ("ks3-qb-block",
                          ' data-instrument data-qbblock data-stage-done="0"'),
     # ═══ END B9 dispatch ═══
+
+    # ═══ BEGIN B10 dispatch ═══
+    # ⚠️ ALL FIVE SHELLS ARE MEASURED, not inferred from the kind name.
+    # `ks3-block ks3-dark ks3-practical` on `#s-bench` on all five of Design's
+    # delivered pages, which is `practical` here (schema §0.2); contract §4
+    # records that B1 got two of six wrong by guessing.
+    #
+    # ⚠️ AND ALL FIVE EMIT `data-stage-done="0"`. Nothing ticks on load
+    # (MRB-208), and without the declaration `doneByDom` would fall through to
+    # "anything in here is aria-pressed" — which on every one of the five is
+    # TRUE BEFORE THE STUDENT HAS DECIDED ANYTHING, because a characteristic
+    # tab, a zoom level, a model tab, a parent pair and a case tab are all
+    # built pressed to show where the bench is standing.
+    #
+    # ⚠️ AND THE BAND STOP BESIDE EACH BENCH MIRRORS THIS MARKER (MRB-249).
+    # `s-two`, `s-model`, `s-who`, `s-steps` and `s-test` carry no control of
+    # their own, so their rail entry names `"mirrors": "s-bench"` and ticks the
+    # moment this flips. The threshold has to be DESIGN'S, not a convenient
+    # one: two stops read it.
+    "variation-plotter": ("ks3-vp-block",
+                          ' data-instrument data-vpblock data-stage-done="0"'),
+    "zoom-bench":       ("ks3-zb-block",
+                         ' data-instrument data-zbblock data-stage-done="0"'),
+    "model-builder":    ("ks3-dh-block",
+                         ' data-instrument data-dhblock data-stage-done="0"'),
+    "pea-cross":        ("ks3-pc-block",
+                         ' data-instrument data-pcblock data-stage-done="0"'),
+    "species-cases":    ("ks3-sc-block",
+                         ' data-instrument data-scblock data-stage-done="0"'),
+    # ═══ END B10 dispatch ═══
 }
 
 # Kinds that ARE the generic shell, and are not waiting for a component.
@@ -16020,6 +17539,13 @@ ACTIVITY_KIND_FN = {
     "bioaccumulation":        r_bioaccumulation,
     "quadrat-bench":          r_quadrat_bench,
     # ═══ END B9 renderfn ═══
+    # ═══ BEGIN B10 renderfn ═══
+    "variation-plotter":      r_variation_plotter,
+    "zoom-bench":             r_zoom_bench,
+    "model-builder":          r_model_builder,
+    "pea-cross":              r_pea_cross,
+    "species-cases":          r_species_cases,
+    # ═══ END B10 renderfn ═══
 }
 
 
@@ -16086,6 +17612,20 @@ _KIND_HEAD_TOTAL = {
     # more squares than there are. The clamp in `setCount` then has something
     # true to clamp against.
     "quadrat-bench": lambda a: int(a.get("side") or 0) ** 2,
+    # ⊕ MRB-248 / B10. b10-01's readout is "{n} of 6 plotted" and the six is
+    # the number of characteristics on the bench — a fact about the payload,
+    # not a number an author chose. It would still be six if the author
+    # reordered the tabs.
+    "variation-plotter": lambda a: len(a.get("characteristics") or []),
+    # b10-02 counts the levels it draws, which is six and is asserted to be
+    # six by `r_zoom_bench` — the denominator is the ladder, not a choice.
+    "zoom-bench": lambda a: len(a.get("levels") or []),
+    # b10-03 counts the evidence on the bench. Four tests is a fact about the
+    # payload, and `r_model_builder` proves the twelve-row matrix against it.
+    "model-builder": lambda a: len(a.get("evidence") or []),
+    # b10-05 counts the cases on the bench, which is seven and is a fact about
+    # the payload rather than a number an author chose.
+    "species-cases": lambda a: len(a.get("cases") or []),
 }
 
 # ── the head readout DERIVED, where Design draws one and authors no key ──
@@ -16155,6 +17695,44 @@ _KIND_HEAD_FROM = {
     "quadrat-bench": lambda a: _b9_head(
         a, "quadrat-bench", ("before", "after"),
         lambda pg: {"format": pg["after"], "zero": pg["before"], "start": 0}),
+    # ⊕ MRB-248 / B10. Design's `benchProgress` is
+    # `nPlotted + ' of ' + CHARS.length + ' plotted'` — one count, one
+    # denominator, one authored word at the end. §1 of the schema names that
+    # word `progress_suffix`, so the format is composed here rather than asking
+    # the author to write "{n} of {total} plotted" and get the braces right.
+    # Reading the key here is also its R5 read site.
+    "variation-plotter": lambda a: {
+        "format": "{n} of {total} %s" % _b10_suffix(a, "variation-plotter"),
+        "start": 0},
+    # b10-02's readout is "level 3 of 6" with "all six levels" at the top end —
+    # a count with a bespoke `full`, which `head_counter` has had since B6. It
+    # OPENS AT 1, not 0: the student is already standing on a level.
+    "zoom-bench": lambda a: (lambda pg: {
+        "format": "%s{n}%s{total}" % (pg["step_prefix"], pg["step_join"]),
+        "full": pg["all"], "start": 1})(
+            _b10_zoom_progress(a.get("progress"), a.get("id") or "?")),
+    # ⚠️ b10-03's RESTING COUNT IS NOT ZERO BY ASSUMPTION — it is computed from
+    # the opening model against the same predicate the cards use, and it comes
+    # out at zero because `start` is the unique row that fails everything. If a
+    # future edit moved the preset the readout would follow it rather than
+    # shipping a number the cards below it contradict.
+    "model-builder": lambda a: {
+        "format": "{n} of {total} %s" % _b10_suffix(a, "model-builder"),
+        "start": sum(1 for ev in (a.get("evidence") or [])
+                     if _b10_mb_pass(a.get("start") or {}, ev))},
+    # ⚠️ b10-04 IS THE ONE READOUT IN THE KEY STAGE THAT NEEDS A SINGULAR. The
+    # format carries the plural, `zero` carries the bespoke empty state, and
+    # `wirePeaCross` swaps the suffix at n = 1 — because one seed is a state a
+    # student reaches deliberately on this bench and "1 seeds grown" would
+    # undercut the sentence beside it. The singular is passed through on the
+    # element so the runtime has it without a second lookup.
+    "pea-cross": lambda a: (lambda pg: {
+        "format": "{n} %s" % pg["suffix_many"], "zero": pg["none"],
+        "start": 0})(_b10_pea_progress(a.get("progress"),
+                                       a.get("id") or "?")),
+    "species-cases": lambda a: {
+        "format": "{n} of {total} %s" % _b10_suffix(a, "species-cases"),
+        "start": 0},
 }
 
 # The three that need the whole lesson, not just the activity, because they
@@ -16498,7 +18076,18 @@ def r_activity(lesson, block_type, act_id, block=None):
         # gate looking at the eyebrow alone and passing or failing on the
         # wording of "Your turn" — a live check silently disarmed.
         tag = "p" if a.get("cards") else prompt_tag
-        parts.append("<%s>%s</%s>" % (tag, t(a["prompt"]), tag))
+        # ⊕ MRB-248 / B10 — `rich()`, NOT `t()`. This shipped
+        # "<strong>P</strong> gives purple and beats <strong>p</strong>" as
+        # literal angle brackets on b10-04, on a live page, in the sentence
+        # that introduces the whole notation the lesson is built on. Design
+        # draws real `<strong>` there (page line 113), and emphasis in a prompt
+        # is the one piece of markup a prompt has ever wanted.
+        #
+        # `rich()` is `t()` plus `<em>` and `<strong>` and NOTHING else, so a
+        # prompt carrying no markup is byte-identical across this change —
+        # verified by diffing the whole built tree, 295 pages, before and
+        # after: b10-04 is the only page that moves.
+        parts.append("<%s>%s</%s>" % (tag, rich(a["prompt"]), tag))
 
     # ⊕ MRB-244 — everything appended so far is FRAMING: eyebrow, heading,
     # head-counter, prompt. Everything after this line is the activity itself.
@@ -16920,13 +18509,49 @@ def _rule_card(block, i, c):
     chips = c.get("chips") or []
     # b1-04's foot line: the cells that answer the problem the card names.
     examples = c.get("examples")
+    # ⊕ MRB-248 / B10 — THE ACCENT BADGE, and it is the same wall hit twice.
+    #
+    # b10-03's `#s-who` cards carry `RF` / `MW` / `EC` / `WC` (page line 158)
+    # and b10-04's `#s-steps` cards carry `1` / `2` / `3` / `4` (page line 172).
+    # Both are a filled accent square to the LEFT of a two- or three-row card,
+    # spanning its rows — the same component drawn at two sizes, which is why
+    # the key names the KIND and the stylesheet holds the sizes.
+    #
+    # ⚠️ NEITHER CAN BE DERIVED. `WC` is "Watson and Crick", which is not the
+    # initials of the string `name`; a code that computed it would be guessing,
+    # and would guess `W` or `WAC`. The digit is likewise the card's position
+    # in a numbered sequence the record owns. Both are content.
+    #
+    # ⚠️ AND WITHOUT THIS SLOT THE KEYS ARE DEAD (contract R5). b10-04's author
+    # had already worked around the gap by authoring the digit into `role`,
+    # which ships it as the mono accent TAG rather than as Design's badge — the
+    # card then has a number where its job title goes and no badge at all.
+    badge = c.get("initials") or c.get("num")
+    badge_kind = "initials" if c.get("initials") else "num"
 
     parts = []
+    # ⊕ MRB-248 / B10 — A BADGED CARD READS NAME, THEN ROLE, THEN BODY, which
+    # is the reverse of the flow card's role-then-name. Measured on both pages
+    # (b10-03 lines 159–161, b10-04 lines 173–174): the badge already does the
+    # labelling job the role line does on a b1-04 card, so the NAME is the
+    # first thing in the second column and the role sits under it as a
+    # subtitle. Emitting the flow order into the grid puts the job title
+    # alongside the badge and the name below it, which reads as a card about a
+    # laboratory rather than about a person.
+    if badge is not None:
+        # `aria-hidden`, as Design draws it: the badge repeats what the name
+        # beside it already says, and a screen reader that spelled out "RF"
+        # before "Rosalind Franklin" would be reading the card twice.
+        parts.append('<span class="ks3-rule-badge" data-badge="%s" '
+                     'aria-hidden="true">%s</span>'
+                     % (e(badge_kind), t(str(badge))))
+    head = []
     if role:
-        parts.append('<p class="ks3-rule-role" data-tone="%s">%s</p>'
-                     % (e(role_tone), t(role)))
+        head.append('<p class="ks3-rule-role" data-tone="%s">%s</p>'
+                    % (e(role_tone), t(role)))
     if term:
-        parts.append('<p class="ks3-rule-term">%s</p>' % t(term))
+        head.append('<p class="ks3-rule-term">%s</p>' % t(term))
+    parts.extend(reversed(head) if badge is not None else head)
     if chips:
         parts.append('<ul class="ks3-rule-chips" data-tone="%s" role="list">%s'
                      '</ul>'
@@ -16946,12 +18571,18 @@ def _rule_card(block, i, c):
     if not parts:
         raise ValueError(
             "%s: statement-panel card %d renders NOTHING — it authors %s and "
-            "this component reads role/label, term/name/title, chips, "
+            "this component reads initials/num, role/label, term/name/title, "
+            "chips, "
             "gloss/body/close and examples. An empty card is still a drawn box "
             "on a laid-out grid, so it ships looking deliberate."
             % (block.get("anchor") or block.get("id") or "rule", i,
                sorted(c) or "no keys at all"))
-    return "<li>%s</li>" % "".join(parts)
+    # ⊕ MRB-248 / B10 — a card with a badge is a two-column GRID, and the
+    # attribute is what the stylesheet switches on. Without it the badge would
+    # sit above the name in flow, which is a different card.
+    return ('<li%s>%s</li>'
+            % ((' data-badge="%s"' % e(badge_kind)) if badge is not None
+               else "", "".join(parts)))
 
 
 def r_rule(lesson, block):
@@ -16990,7 +18621,11 @@ def r_rule(lesson, block):
             '%s%s%s%s</section>'
             % (_id_attr(block), t(block.get("eyebrow") or "What settles it"),
                rich(block.get("statement", "")), equation,
-               ('<ul class="ks3-rule-cards">%s</ul>' % cards) if cards else "",
+               ('<ul class="ks3-rule-cards"%s>%s</ul>'
+                % (' data-badged=""' if any(
+                    c.get("initials") or c.get("num") is not None
+                    for c in (block.get("cards") or [])) else "",
+                   cards)) if cards else "",
                kf, close))
 
 

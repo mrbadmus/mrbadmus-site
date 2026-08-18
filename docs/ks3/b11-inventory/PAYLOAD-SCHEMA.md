@@ -423,15 +423,26 @@ completion; then an opened `[data-reveal]`; then `.ks3-option[aria-pressed="true
 has **none of the four** — no declaration, no rungs, no reveal, no options. It returns `false` for
 ever, and B1's four-of-six lesson could reach at most four stops for exactly this reason.
 
-**Two ways out, and it is the commander's call, not the author's:**
-1. **Rail of three** — drop the `rule` panel from `rail_stages` and keep hook / bench / ladder.
-   Cleanest, matches B7's treatment (`#s-features` is deliberately not on B7's rail), and loses
-   nothing: the panel is prose the student reads, not work they do.
-2. **Mirror the bench** — emit `data-stage-done` on the panel driven by the bench's own predicate,
-   reproducing Design's intent exactly.
+⊕ **RULED, and the call is made: OPTION 2, THE MIRROR.** MRB-249 settled it for the whole key
+stage and B9 has already shipped it. Route 1 — a rail of three — is not available: MRB-205 binds,
+Design draws and we render, and dropping a stop she drew is not rendering what she drew. The
+"loses nothing" argument was wrong on its own terms as well; the panel is 1.2–5.2 KB of real
+teaching, and it is where each lesson's KEY FACT lives.
 
-Whichever is chosen, **do not ship four stops with the third unreachable.** Also note `#s-think`
-and `#s-keynote` are on no rail on any page, which is correct and matches B7.
+`mirrors` is resolved in `wireRail`'s `paint()` at rail level, which is where Design resolves it in
+her own `isDone()`. Nothing ticks on load; the mirrored stop ticks when its target does. So:
+
+    {"anchor": "s-three", "short": "COMPETE", "label": "…",
+     "mirrors": "s-bench", "done_when": "<the bench's own condition>"},
+
+Per lesson: b11-01 `s-three` / three of five environments seen · b11-02 `s-steps` / ten
+generations run · b11-03 `s-risk` / four species-pressure combinations seen · b11-04 `s-banks` /
+two fields blighted. Those four are Design's own predicates, recorded in the paragraph above.
+
+`ks3_parity.check_rail_matches_design` gates the built rail against
+`docs/ks3/rail-manifest.md` — generated from Design's delivered pages — so a rail of three FAILS
+THE BUILD naming the page. Also note `#s-think` and `#s-keynote` are on no rail on any page, which
+is correct and matches B7.
 
 **The four bench predicates, for whichever route is taken:** b11-01 three of five environments
 seen; b11-02 ten generations run; b11-03 four species-pressure combinations seen; b11-04 two fields
@@ -554,6 +565,16 @@ Two per lesson, matching the two quotes measured in each `#s-think` (§7). NOTES
 An unclaimed spare stays **permanently unused**, like `DRUG-07` and `REPRO-17`/`20`/`21`/`23`.
 Never re-point one at a different belief — ids are permanent.
 
+⊕ 18 Aug 2026 — this table is the RANGE, fixed before any author starts, and B11 already had it
+right where B10 did not. Four authors work four files at once and cannot see each other, so an
+author who finds a third belief takes that lesson's spare and no one else's. An author who needs a
+SECOND spare stops and reports rather than reaching past the table: two lessons minting from the
+same next-free number is a collision that permanent ids cannot undo.
+
+⚠️ `EVOL` still has no prefix row in `docs/ks3/misconception-register.md` (§11 item 5). The row is
+the engine pass's to add, in the same commit as the instruments, so that the first authoring pass
+to reference `EVOL-01` resolves against a register that knows the prefix.
+
 `confronted_by` and `elicited_by` **must name an element on that lesson's own page** — an activity
 `id` or a block `anchor` the page actually emits. This is gated (MRB-244) and resolves against the
 BUILT page, so a name that renders to nothing fails the build. B11's available section anchors are
@@ -573,3 +594,101 @@ interactives — and b11-02 is carried by `selection-runner`, which shows the sa
 **Do not invent a figure slot to fill the gap, and do not drop the flag** — it is Mide's to rule
 on, alongside NOTES §5.2's build-wide observation that the entire biology build has no diagrams
 and the manifest has no biology entries at all.
+
+---
+
+## 14. Science rulings — every NOTES-B11 flag, answered ⊕
+
+`docs/ks3/design-reference/b11/README.txt` names three flags to answer first. All sixteen are ruled
+here, 18 Aug 2026, under this run's standing authority over KS3 science. **No lesson waits on any of
+them and no author re-opens one.** Two require a change to the delivered copy; the rest ship as
+drawn.
+
+### Flag 11 — "two thirds of modern medicines". CHANGE IT. This is the real correction in B11.
+
+Design asked to *"soften or attach a figure you are happy to defend"*, and the honest answer is that
+there is no fraction here worth defending to a thirteen-year-old. The number moves enormously with
+the counting rule: whether a semi-synthetic derivative counts, whether "inspired by a natural
+scaffold" counts, which drug classes are in scope, and which window of approvals is measured.
+Surveys of newly approved small-molecule drugs land nearer a third to a half depending on all four;
+two thirds sits at the top of the range and usually comes from counting anything with a
+natural-product ancestor anywhere in its history.
+
+**So do not soften the fraction — remove it, and replace it with kind rather than proportion.** Say
+that a great many of our medicines began as compounds found in living things, and then name
+examples: aspirin from willow bark, penicillin from a mould, and one plant-derived anticancer drug.
+
+Two reasons this is the better lesson and not merely the safer one. Named examples are far more
+memorable at this age than any fraction, and a student who remembers three drugs has the point. And
+a fraction can become wrong — this one already is, depending on who counts — where "aspirin came
+from willow bark" cannot.
+
+⚠️ This edits authored prose in a `#s-think` body, which is permitted: MRB-177's rule that you never
+edit a correction applies to LADDER options, and this is not one. Lift the rest of the block
+byte-identical, change only the sentence carrying the fraction, and report the before and after.
+
+### Flag 13 — the Irish potato famine, one clause. KEEP IT TO ONE CLAUSE, and check what the clause SAYS.
+
+One clause is right. The science this lesson owns is that a crop grown from genetically near-
+identical plants has no variation to fall back on, so one pathogen can take all of it — and the 1840s
+blight is the clearest case there is. The political history is history's to teach and this lesson
+should not attempt it.
+
+**But the b11-04 author must check the exact wording, because the risk here is not what the clause
+says, it is what a single clause implies.** The blight destroyed the potato crop. What followed —
+roughly a million deaths and a million more emigrating — followed from far more than a fungus, and a
+clause that reads as *"the blight caused the famine"* teaches a false causal story by omission and
+would be fairly criticised for it.
+
+The test: the clause must be about the CROP FAILING, not about the famine's death toll or its causes.
+If the delivered wording already does that, ship it untouched. If it attributes the famine itself to
+the blight, adjust it to the crop and report the change. Do not expand it to cover the politics —
+that is the other failure mode, and it is a science lesson.
+
+### Flag 5 — the two-paragraph *Going further* on b11-02. KEEP BOTH PARAGRAPHS.
+
+Design offers to move or cut the antibiotic-resistance paragraph because the layer now runs to two
+where no other lesson's does. Keep both. *Going further* is a layer the STUDENT chose; a student who
+opened it is not harmed by a second paragraph, and length uniformity across lessons is a habit, not
+a rule. The two do different jobs and neither substitutes for the other: the moth-method story is a
+*how do we know?* about the organism the lesson just taught, and antibiotic resistance is natural
+selection happening now, in the only context where a student may one day act on it. Moving
+antibiotic resistance elsewhere would strand it on a page whose bench is not about selection.
+
+Recorded as a deliberate departure from the build's habit, not an oversight.
+
+### Flag 16 — diagrams. ANSWERED, and the moth pair IS DRAWN.
+
+This flag records that B11 has no diagrams and that a peppered moth pair on two barks is the obvious
+candidate. Mide ruled on 18 Aug 2026 that code draws the diagrams itself, inline, and the mechanism
+shipped the same day (`SVG_ART` in `build_ks3.py`, `status: "drawn"`, first used for the oak wood web
+on b9-01 and b9-03).
+
+**Draw it.** Camouflage is the one idea in this unit that is genuinely and irreducibly visual — the
+whole claim is about whether a bird can pick a moth out against a background, and no sentence does
+what two panels do. `selection-runner` shows the proportion changing over generations, which is the
+consequence; it does not show the thing the consequence follows from.
+
+It is a COMPONENT: it registers in §10.2 of the coverage manifest and carries parity rows, or the
+gate cannot see it. Never colour-alone — the two barks must differ by pattern as well as tone, and
+each moth must be labelled.
+
+### Flags 1, 2, 3, 4, 6, 7, 8, 9, 10, 12, 14, 15 — checked, correct, ship as drawn.
+
+Checked individually, not as a block. The b11-01 survival percentages are illustrative and the legal
+line says so, which is the same treatment B9 and B10 use and is acceptable. "Fittest" as best-fitted
+*plus* reproductive success is correct and is the definition worth having — the mayfly comparison
+earns its place. The Grants' finches are right: Daphne Major, the 1977 drought, a measurable increase
+in beak depth within one generation, and the reversal after the 1983 rains; "evolution watched rather
+than reconstructed" is a fair framing. Lamarck treated with respect is both better history and better
+teaching — a serious theory, right that species change, wrong on mechanism — and Design is right that
+the respect makes the correction land harder. "As prescribed" is deliberately the antibiotic wording
+that survives the current argument about finishing the course; keep it exactly. Over 99% of species
+extinct, five mass extinctions, end-Permian ~90% of marine species, end-Cretaceous 66 Mya are all
+standard. The conservative "tens to hundreds of times background" is the right choice where published
+estimates run much higher. The four b11-03 species are accurately described, and the dormouse detail
+is doing most of the teaching work, correctly. Kakapo: flightless, freeze response, breeding tied to
+mast years, low point of 51 — right. Gros Michel and Cavendish, and TR4 moving through Cavendish
+plantations — right and current. Svalbard's figures are right, and "well over a million" is the
+correct hedge for a holding that grows. The invented 62% landrace resistance is labelled illustrative
+and is chosen well: it beats the ten-variety field clearly without reading as immunity.
