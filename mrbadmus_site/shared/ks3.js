@@ -5100,7 +5100,16 @@
       // Design's own page. Clamping does not contradict the drawn label; it
       // is the label meaning what it says. What ticks is unchanged.
       var total = parseInt(el.getAttribute("data-total"), 10);
-      if (!isNaN(total) && n > total) { n = total; }
+      /* ⊕ MRB-250 — `total > 0`, because a counter with NO denominator emits
+         `data-total="0"` and a clamp against zero is not a clamp, it is a
+         readout stuck on its opening value for ever. b9-02's head row is
+         "year 0" → "year 26": one sentence, one number, and no denominator
+         anywhere on the page, because there is nothing the years are counting
+         towards. Without this narrowing the field can be run for a century and
+         the readout still says year zero. A zero denominator was previously
+         unreachable in a format that also names {n}, so no shipped counter
+         moves. */
+      if (!isNaN(total) && total > 0 && n > total) { n = total; }
       /* ⊕ MRB-244 / B6 — `data-full`, the mirror of `data-zero`. b6-01's
          readout is "not started" → "stage 3 of 5" → "all five stages", and
          the top end is a bespoke sentence for the same reason the bottom end
@@ -13694,6 +13703,819 @@
 
 /* ═══ END B8 ═══ */
 
+/* ═══ BEGIN B9 ═══ */
+
+  /* ── B9 · Ecosystems and interdependence (⊕ MRB-250) ──
+     Six instruments, six wire functions, and NOTHING SHARED between them
+     except four number formatters — because nothing in this unit is the same
+     block twice. The six ask six different questions: climb a chain and watch
+     what arrives at the top, run a field for twenty-six years and find the
+     lag, take a species out of a wood and follow it three rounds, empty a
+     supermarket shelf, climb the same chain with a chemical on it, and
+     estimate a population you can then check your answer against.
+
+     ⚠️ NOTHING HERE ANIMATES AND NOTHING HERE USES A TIMER. No canvas, no
+     `requestAnimationFrame`, no `setTimeout`, no `setInterval` — grepped
+     across all six approved pages and zero on every term. So there is no rAF
+     loop in this section to test `prefers-reduced-motion` inside (MRB-220 R4),
+     and the B9 stylesheet adds no transition for the platform-wide
+     reduced-motion rule to have to remove.
+
+     ⚠️ AND NONE OF THESE SIX MARKS ANYTHING (MRB-196 R10). A chosen tab shows
+     that it was CHOSEN — the alert ground Design's own `seg()` paints — and
+     takes no verdict class, no green, no red, ever. What these benches show is
+     a CONSEQUENCE. Only the mastery ladder marks correctness, and amber here
+     is a quantity above a threshold, never a student being wrong.
+
+     ⚠️ THE STAGE PREDICATE IS MONOTONIC ON ALL SIX, and on b9-04 and b9-06
+     that is a departure from Design made under MRB-208 rather than against it.
+     Her `isDone()` for those two reads live state a student can turn back off
+     — bringing the pollinators back, re-sampling the field — so her rail stop
+     unticks when a student tidies up after themselves. The rail records
+     PARTICIPATION. What ticks is unchanged; what unticks is nothing.
+
+     ⚠️ AND EACH BENCH'S MARKER IS READ TWICE (MRB-249). The band section
+     beside it — `s-roles`, `s-cycle`, `s-rules`, `s-who`, `s-two` — carries no
+     control of its own and its rail entry MIRRORS `s-bench`, resolved in
+     `wireRail`'s `paint()`. So a threshold moved for convenience here moves
+     two stops, not one. */
+
+  /* `toLocaleString()` is the BROWSER's locale and not ours: a student whose
+     machine is set to a European locale would read `10.000 kJ` for ten
+     thousand. Design writes the locale call on four of the six pages; the port
+     groups explicitly, and `build_ks3.py`'s `_b8_group` does the identical
+     thing at the other end so the static bytes and the live page cannot
+     disagree. */
+  function b9Group(n) {
+    var s = String(Math.round(n)), out = "", i = 0, j;
+    for (j = s.length - 1; j >= 0; j--) {
+      out = s.charAt(j) + out;
+      i += 1;
+      if (i % 3 === 0 && j > 0 && s.charAt(j - 1) !== "-") { out = "," + out; }
+    }
+    return out;
+  }
+
+  /* A bare amount: grouped when it is a whole number of one or more, printed
+     plainly when it is not. `String(0.1)` is "0.1" and `String(0.01)` is
+     "0.01", which is exactly what Design's concatenation produces. */
+  function b9Amount(v) {
+    return (v >= 1 && v === Math.floor(v)) ? b9Group(v) : String(v);
+  }
+
+  /* `x.toFixed(2).replace(/\.?0+$/, '')` — Design's own percentage rule, and
+     the difference between `0.1` and `0.01` is the difference between a
+     four-level chain and a five-level one. Kept, not tidied. */
+  function b9Strip2(x) {
+    return x.toFixed(2).replace(/\.?0+$/, "") || "0";
+  }
+
+  /* Design's four-branch concentration rule: ≥10 → 0 dp · ≥1 → 1 dp ·
+     ≥0.01 → 3 dp · else 4 dp. THE THRESHOLD IS PER VALUE, so the same column
+     prints `0.0030` and `300` and that is the rule applied honestly. */
+  function b9Ppm(x) {
+    if (x >= 10) { return x.toFixed(0); }
+    if (x >= 1) { return x.toFixed(1); }
+    if (x >= 0.01) { return x.toFixed(3); }
+    return x.toFixed(4);
+  }
+
+  function b9Json(el, name) {
+    try { return JSON.parse(el.getAttribute(name) || "{}"); }
+    catch (x) { return null; }
+  }
+
+  /* ── chain-ledger (b9-01 #s-bench) ──
+
+     ⚖️ THE PRODUCER IS AT THE BOTTOM AND THE ENERGY GOES UP. The list is
+     `column-reverse` in the stylesheet, so `data-i="0"` — the grass, the ten
+     thousand kilojoules — is drawn last and therefore lowest. Everything here
+     indexes from the producer regardless, which is why the arithmetic does not
+     care about the drawing order and the drawing order does not care about the
+     arithmetic.
+
+     ⚖️ THE VERDICT IS COMPUTED FROM THE CHAIN'S LENGTH, from the same three
+     authored fragments `build_ks3.py` used for the resting render. A fourth
+     chain therefore needs no new prose, and the line cannot disagree with the
+     ladder of figures above it.
+
+     ⚠️ SWITCHING CHAIN RESTARTS THE CLIMB. Design resets `shown` to 1 on every
+     tab press, so the panels do not each keep their own progress: one count
+     lives here and the panels are redrawn from it. */
+  function wireChainLedger(sec) {
+    var w = sec.querySelector("[data-cl]");
+    if (!w) { return; }
+    var tabs = toArray(w.querySelectorAll(".ks3-cl-tab"));
+    var panels = toArray(w.querySelectorAll("[data-cl-chainpanel]"));
+    var up = w.querySelector("[data-cl-up]");
+    var resetBtn = w.querySelector("[data-cl-reset]");
+    var verdictEl = w.querySelector("[data-cl-verdict]");
+    if (!tabs.length || !panels.length || !up) { return; }
+
+    var START = parseFloat(w.getAttribute("data-start-kj")) || 0;
+    var FACTOR = parseFloat(w.getAttribute("data-factor")) || 10;
+    var STEP = w.getAttribute("data-step-label") || "";
+    var SPENT = w.getAttribute("data-step-spent-label") || "";
+    var LEAD = w.getAttribute("data-verdict-lead") || "";
+    var MID = w.getAttribute("data-verdict-mid") || "";
+    var TAIL = w.getAttribute("data-verdict-tail") || "";
+
+    /* The opening state IS the markup: the chain Design opens on is already
+       pressed, so there is no second copy of the default to fall out of step
+       with the page. */
+    var current = tabs[0];
+    each(tabs, function (tb) {
+      if (tb.getAttribute("aria-pressed") === "true") { current = tb; }
+    });
+    var shown = 1, everTopped = false;
+
+    function panelFor(id) {
+      var found = panels[0], i;
+      for (i = 0; i < panels.length; i++) {
+        if (panels[i].getAttribute("data-cl-chainpanel") === id) {
+          found = panels[i];
+        }
+      }
+      return found;
+    }
+
+    function draw() {
+      var panel = panelFor(current.getAttribute("data-cl-chain"));
+      each(tabs, function (tb) {
+        tb.setAttribute("aria-pressed", tb === current ? "true" : "false");
+      });
+      each(panels, function (p) { setHidden(p, p !== panel); });
+
+      var levels = toArray(panel.querySelectorAll(".ks3-cl-level"));
+      var total = levels.length;
+      if (shown > total) { shown = total; }
+      each(levels, function (li, i) {
+        var on = i < shown;
+        if (on) { li.setAttribute("data-shown", ""); }
+        else { li.removeAttribute("data-shown"); }
+        if (i === shown - 1) { li.setAttribute("data-top", ""); }
+        else { li.removeAttribute("data-top"); }
+        setHidden(li.querySelector("[data-cl-readout]"), !on);
+      });
+
+      var topped = shown >= total;
+      up.textContent = topped ? SPENT : STEP;
+      up.disabled = topped;
+      if (verdictEl) {
+        if (topped) {
+          verdictEl.textContent =
+            LEAD + b9Amount(START / Math.pow(FACTOR, total - 1)) + MID +
+            b9Strip2(100 / Math.pow(FACTOR, total - 1)) + TAIL;
+        }
+        setHidden(verdictEl, !topped);
+      }
+
+      /* ⚠️ THE DENOMINATOR FOLLOWS THE TAB. The chains are deliberately
+         different lengths — that is the argument — so "level 1 of 4" has to
+         become "level 1 of 5" on the sea chain. `build_ks3.py` seeds the
+         resting value from the FIRST chain for the same reason. */
+      var count = sec.querySelector("[data-count]");
+      if (count) { count.setAttribute("data-total", String(total)); }
+      setCount(sec, shown);
+
+      if (topped) { everTopped = true; }
+      markStage(sec, everTopped);
+    }
+
+    each(tabs, function (tb) {
+      tb.addEventListener("click", function () {
+        current = tb;
+        shown = 1;
+        draw();
+      });
+    });
+    up.addEventListener("click", function () { shown += 1; draw(); });
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () { shown = 1; draw(); });
+    }
+    draw();
+  }
+
+  /* ── cycle-runner (b9-02 #s-bench) ──
+
+     ⚖️ K IS THE GRASS SUPPLY AND IT IS WHY THIS IS A LESSON. Take the
+     predators out and the rabbits climb, then STOP — crowded and hungry at the
+     ceiling the grass sets — instead of drawing the exponential curve that
+     would teach the belief `#s-think` exists to break. The logistic term
+     `R * prey * (1 - prey / K)` is the whole of that, and the two clamps
+     (`K * prey_cap_mult` above, a hard floor at `pred_floor` below) are what
+     stop a DISCRETE model overshooting or oscillating negative.
+
+     ⚖️ THE TWO SERIES ARE SCALED INDEPENDENTLY, each with its own floor. On
+     one scale the fox line flattens into the axis and the LAG — the entire
+     lesson, and what both marked rungs test — becomes unreadable. The caption
+     says so in words because the chart cannot.
+
+     ⚠️ *REMOVE EVERY FOX* IS NOT A RESET. It toggles the predators between
+     zero and their starting number, pushes ONE history point and advances the
+     year by one, so the chart records the intervention as a year like any
+     other and the rabbits' response to it is read off the years that follow. */
+  function wireCycleRunner(sec) {
+    var w = sec.querySelector("[data-cy]");
+    if (!w) { return; }
+    var M = b9Json(w, "data-model"), NOTES = b9Json(w, "data-notes");
+    var chart = w.querySelector("[data-cy-chart]");
+    var preyEl = w.querySelector("[data-cy-prey]");
+    var predEl = w.querySelector("[data-cy-pred]");
+    var noteEl = w.querySelector("[data-cy-note]");
+    var yearBtn = w.querySelector("[data-cy-year]");
+    var tenBtn = w.querySelector("[data-cy-ten]");
+    var cullBtn = w.querySelector("[data-cy-cull]");
+    var resetBtn = w.querySelector("[data-cy-reset]");
+    if (!M || !NOTES || !chart || !cullBtn) { return; }
+
+    var CULL = w.getAttribute("data-cull-label") || "";
+    var RESTORE = w.getAttribute("data-restore-label") || "";
+    var PREY_FILL = w.getAttribute("data-prey-fill") || "--ks3-alert";
+    var PRED_FILL = w.getAttribute("data-pred-fill") || "--ks3-ok";
+
+    var prey = M.start_prey, pred = M.start_pred, year = 0, everTen = false;
+    var hist = [{ prey: prey, pred: pred }];
+
+    function advance(n) {
+      var i, nextPrey, nextPred;
+      for (i = 0; i < n; i++) {
+        nextPrey = prey + M.r * prey * (1 - prey / M.k) - M.a * prey * pred;
+        nextPred = pred + M.b * M.a * prey * pred - M.m * pred;
+        prey = Math.max(0, Math.min(M.k * M.prey_cap_mult, nextPrey));
+        pred = Math.max(0, Math.min(M.k, nextPred));
+        /* The extinction floor, and not a rounding artefact: below one animal
+           there is no breeding pair, and a discrete model left to carry 0.3 of
+           a fox would let the population climb back out of nothing. */
+        if (pred < M.pred_floor) { pred = 0; }
+        hist.push({ prey: prey, pred: pred });
+      }
+      while (hist.length > M.history) { hist.shift(); }
+      year += n;
+      draw();
+    }
+
+    /* ⚖️ SIX BRANCHES, IN DESIGN'S EVALUATION ORDER, FIRST MATCH WINS — and
+       `no_pred_at_ceiling` MUST be tested before `no_pred` or the ceiling note
+       never fires and *Remove every fox* stops teaching carrying capacity.
+       Tested on the ROUNDED values, as Design does, so "no foxes" means the
+       number on screen rather than a hundredth of one. */
+    function noteId(p, q) {
+      if (year === 0) { return "year_zero"; }
+      if (q === 0 && p > M.k * 0.9) { return "no_pred_at_ceiling"; }
+      if (q === 0) { return "no_pred"; }
+      if (p > 1200 && q < 200) { return "prey_high_pred_low"; }
+      if (p < 500) { return "prey_low"; }
+      return "steady";
+    }
+
+    function bar(series, token, v, max) {
+      var s = document.createElement("span");
+      s.className = "ks3-cy-bar";
+      s.setAttribute("data-series", series);
+      s.style.setProperty("--cy-fill", "var(" + token + ")");
+      s.style.height = Math.max(2, (v / max) * 100) + "%";
+      return s;
+    }
+
+    function draw() {
+      var p = Math.round(prey), q = Math.round(pred), i;
+      var maxPrey = 600, maxPred = 150;
+      for (i = 0; i < hist.length; i++) {
+        if (hist[i].prey > maxPrey) { maxPrey = hist[i].prey; }
+        if (hist[i].pred > maxPred) { maxPred = hist[i].pred; }
+      }
+      while (chart.firstChild) { chart.removeChild(chart.firstChild); }
+      for (i = 0; i < hist.length; i++) {
+        var col = document.createElement("span");
+        col.className = "ks3-cy-year";
+        col.appendChild(bar("prey", PREY_FILL, hist[i].prey, maxPrey));
+        col.appendChild(bar("pred", PRED_FILL, hist[i].pred, maxPred));
+        chart.appendChild(col);
+      }
+      if (preyEl) { preyEl.textContent = String(p); }
+      if (predEl) { predEl.textContent = String(q); }
+      if (noteEl) { noteEl.textContent = NOTES[noteId(p, q)] || ""; }
+      cullBtn.textContent = q === 0 ? RESTORE : CULL;
+      setCount(sec, year);
+      if (year >= 10) { everTen = true; }
+      markStage(sec, everTen);
+    }
+
+    if (yearBtn) {
+      yearBtn.addEventListener("click", function () { advance(1); });
+    }
+    if (tenBtn) {
+      tenBtn.addEventListener("click", function () { advance(10); });
+    }
+    cullBtn.addEventListener("click", function () {
+      pred = pred === 0 ? M.start_pred : 0;
+      hist.push({ prey: prey, pred: pred });
+      while (hist.length > M.history) { hist.shift(); }
+      year += 1;
+      draw();
+    });
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        prey = M.start_prey;
+        pred = M.start_pred;
+        year = 0;
+        hist = [{ prey: prey, pred: pred }];
+        draw();
+      });
+    }
+    draw();
+  }
+
+  /* ── remove-a-species (b9-03 #s-bench) ──
+
+     ⚖️ THE BEES HAVE NO FEEDING LINE AND STILL EMPTY THE WEB. Nothing here
+     special-cases them and nothing needs to: the web is prose, the rounds are
+     authored, and the instrument's job is to make the student take three steps
+     before the verdict lands. What that buys is the sentence — feeding is not
+     the only kind of dependence — arriving after the consequence rather than
+     as a claim.
+
+     ⚠️ EVERY SPECIES' PANEL IS IN THE DOCUMENT and only one is shown, so a
+     reader with JS off gets a whole removal rather than an empty shell.
+     Switching species resets the round count, as Design does. */
+  function wireRemoveASpecies(sec) {
+    var w = sec.querySelector("[data-rs]");
+    if (!w) { return; }
+    var tabs = toArray(w.querySelectorAll(".ks3-rs-tab"));
+    var panels = toArray(w.querySelectorAll("[data-rs-panel]"));
+    var next = w.querySelector("[data-rs-next]");
+    var resetBtn = w.querySelector("[data-rs-reset]");
+    if (!tabs.length || !panels.length || !next) { return; }
+
+    var STILL = w.getAttribute("data-still-label") || "";
+    var REMOVED = w.getAttribute("data-removed-label") || "";
+    var FIRST = w.getAttribute("data-first-label") || "";
+    var STEP = w.getAttribute("data-step-label") || "";
+    var SPENT = w.getAttribute("data-spent-label") || "";
+
+    var current = tabs[0];
+    each(tabs, function (tb) {
+      if (tb.getAttribute("aria-pressed") === "true") { current = tb; }
+    });
+    var shown = 0, everDone = false;
+
+    function panelFor(id) {
+      var found = panels[0], i;
+      for (i = 0; i < panels.length; i++) {
+        if (panels[i].getAttribute("data-rs-panel") === id) {
+          found = panels[i];
+        }
+      }
+      return found;
+    }
+
+    function draw() {
+      var panel = panelFor(current.getAttribute("data-rs-species"));
+      each(tabs, function (tb) {
+        tb.setAttribute("aria-pressed", tb === current ? "true" : "false");
+      });
+      each(panels, function (p) { setHidden(p, p !== panel); });
+
+      var rounds = toArray(panel.querySelectorAll(".ks3-rs-round"));
+      var total = rounds.length;
+      if (shown > total) { shown = total; }
+      var name = panel.getAttribute("data-label") || "";
+      var headline = panel.querySelector("[data-rs-headline]");
+      if (headline) {
+        headline.textContent =
+          (shown === 0 ? STILL : REMOVED).split("{name}").join(name);
+      }
+      each(rounds, function (li, i) {
+        var on = i < shown;
+        if (on) { li.setAttribute("data-shown", ""); }
+        else { li.removeAttribute("data-shown"); }
+        if (i === shown - 1) { li.setAttribute("data-cur", ""); }
+        else { li.removeAttribute("data-cur"); }
+        setHidden(li.querySelector(".ks3-rs-roundbody"), !on);
+      });
+
+      var done = shown >= total;
+      next.textContent = shown === 0 ? FIRST : (done ? SPENT : STEP);
+      next.disabled = done;
+      setHidden(panel.querySelector("[data-rs-verdict]"), !done);
+      setCount(sec, shown);
+      if (done) { everDone = true; }
+      markStage(sec, everDone);
+    }
+
+    each(tabs, function (tb) {
+      tb.addEventListener("click", function () {
+        current = tb;
+        shown = 0;
+        draw();
+      });
+    });
+    next.addEventListener("click", function () { shown += 1; draw(); });
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () { shown = 0; draw(); });
+    }
+    draw();
+  }
+
+  /* ── supermarket-shelf (b9-04 #s-bench) ──
+
+     ⚖️ THE GAP BETWEEN THE TWO BARS IS THE ENTIRE LESSON, and this function's
+     one job is to keep them apart. Two percentages, computed from two separate
+     shares of two separate totals, written into two separate bars that the
+     stylesheet lays out side by side and wraps to two ROWS rather than
+     merging. `build_ks3.py` refuses a payload whose two bars land on the same
+     figure with the pollinators gone; there is nothing here that could combine
+     them, and that is deliberate.
+
+     ⚠️ THREE STATES, TWO BUTTONS, AND NO PATH FROM `half` BACK TO `all`.
+     Design's, measured, and left alone. */
+  function wireSupermarketShelf(sec) {
+    var w = sec.querySelector("[data-ss]");
+    if (!w) { return; }
+    var SHARES = b9Json(w, "data-shares");
+    var NOTES = b9Json(w, "data-notes");
+    var tiles = toArray(w.querySelectorAll("[data-ss-food]"));
+    var bars = toArray(w.querySelectorAll("[data-ss-bar]"));
+    var noteEl = w.querySelector("[data-ss-note]");
+    var toggle = w.querySelector("[data-ss-toggle]");
+    var half = w.querySelector("[data-ss-half]");
+    if (!SHARES || !NOTES || !tiles.length || !toggle) { return; }
+
+    var REMOVE = w.getAttribute("data-remove-label") || "";
+    var RESTORE = w.getAttribute("data-restore-label") || "";
+    var GONE = w.getAttribute("data-gone-label") || "";
+    var UNAFFECTED = w.getAttribute("data-unaffected-label") || "";
+    var PART = w.getAttribute("data-part-label") || "";
+
+    var level = "all", ever = false;
+
+    function draw() {
+      var loss = level === "none" ? 1 : (level === "half" ? 0.5 : 0);
+      var cal = 0, vit = 0, calMax = 0, vitMax = 0, i;
+      for (i = 0; i < SHARES.length; i++) {
+        var remaining = 1 - SHARES[i][2] * loss;
+        cal += SHARES[i][0] * remaining;
+        vit += SHARES[i][1] * remaining;
+        calMax += SHARES[i][0];
+        vitMax += SHARES[i][1];
+      }
+      var pct = {
+        cal: Math.round((cal / calMax) * 100),
+        vit: Math.round((vit / vitMax) * 100)
+      };
+
+      each(tiles, function (li) {
+        var dep = parseFloat(li.getAttribute("data-dep")) || 0;
+        var remaining = 1 - dep * loss;
+        var gone = remaining < 0.2;
+        var status = li.querySelector("[data-ss-status]");
+        if (gone) { li.setAttribute("data-gone", "1"); }
+        else { li.removeAttribute("data-gone"); }
+        if (!status) { return; }
+        /* ⚖️ AT FULL POLLINATION THE TILE SHOWS *HOW*, NOT A STATUS. The dial
+           doubles as the teaching label, so a student reads why a food is
+           about to survive before finding out that it does. */
+        if (loss === 0) {
+          status.textContent = li.getAttribute("data-how") || "";
+        } else if (gone) {
+          status.textContent = GONE;
+        } else if (remaining < 0.85) {
+          status.textContent =
+            PART.split("{n}").join(String(Math.round(remaining * 100)));
+        } else {
+          status.textContent = UNAFFECTED;
+        }
+      });
+
+      each(bars, function (b) {
+        var id = b.getAttribute("data-ss-bar");
+        var v = b.querySelector("[data-ss-value]");
+        var fill = b.querySelector(".ks3-ss-fill");
+        if (v) { v.textContent = pct[id] + "%"; }
+        if (fill) { fill.style.width = pct[id] + "%"; }
+      });
+
+      if (noteEl) {
+        noteEl.textContent = (NOTES[level] || "")
+          .split("{cal}").join(String(pct.cal))
+          .split("{vit}").join(String(pct.vit));
+      }
+      toggle.textContent = level === "none" ? RESTORE : REMOVE;
+      setCountState(sec, level);
+      if (level !== "all") { ever = true; }
+      markStage(sec, ever);
+    }
+
+    toggle.addEventListener("click", function () {
+      level = level === "none" ? "all" : "none";
+      draw();
+    });
+    if (half) {
+      half.addEventListener("click", function () { level = "half"; draw(); });
+    }
+    draw();
+  }
+
+  /* ── bioaccumulation (b9-05 #s-bench) ──
+
+     ⚖️ THE ×1 SETTING IS THE CONTROL AND IT MUST DRAW A FLAT LINE. Its verdict
+     is the one branch that quotes no number, because there is no number to
+     quote: the concentration in the water was the whole story. That is what
+     proves the mechanism is PERSISTENCE, NOT TOXICITY. Nothing here varies how
+     poisonous the chemical is, and the dial's labels never suggest it does.
+
+     ⚠️ THE HARM FLAG IS PER ROW AND PER SETTING, so a row that is safe on the
+     slow chemical and harmful on the persistent one changes both its colour
+     and its words when the tab moves. Neither is a mark: it is a quantity
+     against a threshold. */
+  function wireBioaccumulation(sec) {
+    var w = sec.querySelector("[data-ba]");
+    if (!w) { return; }
+    var tabs = toArray(w.querySelectorAll(".ks3-ba-tab"));
+    var levels = toArray(w.querySelectorAll(".ks3-ba-level"));
+    var up = w.querySelector("[data-ba-up]");
+    var resetBtn = w.querySelector("[data-ba-reset]");
+    var noteEl = w.querySelector("[data-ba-chemnote]");
+    var verdictEl = w.querySelector("[data-ba-verdict]");
+    if (!tabs.length || !levels.length || !up) { return; }
+
+    var HARM = parseFloat(w.getAttribute("data-harm")) || 0;
+    var SUFFIX = w.getAttribute("data-ppm-suffix") || "";
+    var HARMV = w.getAttribute("data-harm-verdict") || "";
+    var SAFEV = w.getAttribute("data-safe-verdict") || "";
+    var STEP = w.getAttribute("data-step-label") || "";
+    var SPENT = w.getAttribute("data-step-spent-label") || "";
+    var FLAT = w.getAttribute("data-verdict-flat") || "";
+    var HARMFUL = w.getAttribute("data-verdict-harmful") || "";
+    var BELOW = w.getAttribute("data-verdict-below") || "";
+
+    var current = tabs[0];
+    each(tabs, function (tb) {
+      if (tb.getAttribute("aria-pressed") === "true") { current = tb; }
+    });
+    var shown = 1, everTopped = false;
+    var total = levels.length;
+
+    function draw() {
+      var factor = parseFloat(current.getAttribute("data-factor")) || 1;
+      var start = parseFloat(current.getAttribute("data-start")) || 0;
+      var top = start * Math.pow(factor, total - 1);
+      var scale = Math.max(top, HARM);
+      each(tabs, function (tb) {
+        tb.setAttribute("aria-pressed", tb === current ? "true" : "false");
+      });
+      if (noteEl) { noteEl.textContent = current.getAttribute("data-note") || ""; }
+
+      each(levels, function (li, i) {
+        var conc = start * Math.pow(factor, i);
+        var harmful = conc >= HARM;
+        var on = i < shown;
+        if (on) { li.setAttribute("data-shown", ""); }
+        else { li.removeAttribute("data-shown"); }
+        if (i === shown - 1) { li.setAttribute("data-cur", ""); }
+        else { li.removeAttribute("data-cur"); }
+        if (harmful) { li.setAttribute("data-harmful", "1"); }
+        else { li.removeAttribute("data-harmful"); }
+        var ppm = li.querySelector("[data-ba-ppm]");
+        var lv = li.querySelector("[data-ba-lvlverdict]");
+        var bar = li.querySelector("[data-ba-bar]");
+        if (ppm) { ppm.textContent = b9Ppm(conc) + SUFFIX; }
+        if (lv) { lv.textContent = harmful ? HARMV : SAFEV; }
+        if (bar) {
+          bar.style.width =
+            Math.max(1, Math.min(100, (conc / scale) * 100)) + "%";
+        }
+        setHidden(li.querySelector(".ks3-ba-readout"), !on);
+      });
+
+      var topped = shown >= total;
+      up.textContent = topped ? SPENT : STEP;
+      up.disabled = topped;
+      if (verdictEl) {
+        if (topped) {
+          var text;
+          if (factor === 1) {
+            text = FLAT;
+          } else if (top >= HARM) {
+            text = HARMFUL.split("{ppm}").join(b9Ppm(top))
+              .split("{times}").join(b9Group(Math.round(top / start)));
+          } else {
+            text = BELOW.split("{ppm}").join(b9Ppm(top));
+          }
+          verdictEl.textContent = text;
+        }
+        setHidden(verdictEl, !topped);
+      }
+      setCount(sec, shown);
+      if (topped) { everTopped = true; }
+      markStage(sec, everTopped);
+    }
+
+    each(tabs, function (tb) {
+      tb.addEventListener("click", function () {
+        current = tb;
+        shown = 1;
+        draw();
+      });
+    });
+    up.addEventListener("click", function () { shown += 1; draw(); });
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () { shown = 1; draw(); });
+    }
+    draw();
+  }
+
+  /* ── quadrat-bench (b9-06 #s-bench) ──
+
+     ⚖️ MORE QUADRATS FIXES CHANCE AND DOES NOTHING FOR BIAS, and that falls
+     out of the POOLS rather than out of any special-casing here. The corner
+     pool is twenty-five squares entirely inside the cluster, so the
+     twenty-five-quadrat setting EXHAUSTS it: the largest sample on the biased
+     dial is deterministic, and the answer stops wobbling without getting any
+     better. `build_ks3.py` measures both biased pools against the field's own
+     model and refuses a set that is not biased in both directions.
+
+     ⚠️ THE FIELD IS BUILT HERE, UNSEEDED, ONCE PER PAGE LOAD. This is the only
+     `Math.random()` in B9 — a hundred calls at wire time. Two students never
+     see the same field and no student sees the same one twice, so the estimate
+     cannot be memorised and the reveal cannot be spoiled. It is also why the
+     shipped grid is a hundred EMPTY cells: that is not a placeholder for the
+     live page, it is exactly what an unsurveyed field looks like. */
+  function wireQuadratBench(sec) {
+    var w = sec.querySelector("[data-qb]");
+    if (!w) { return; }
+    var F = b9Json(w, "data-field");
+    var VERDICTS = b9Json(w, "data-verdicts");
+    var DIRECTION = b9Json(w, "data-direction");
+    var cells = toArray(w.querySelectorAll(".ks3-qb-cell"));
+    var methodTabs = toArray(w.querySelectorAll("[data-qb-method]"));
+    var countTabs = toArray(w.querySelectorAll("[data-qb-count]"));
+    var figuresEl = w.querySelector("[data-qb-figures]");
+    var captionEl = w.querySelector("[data-qb-caption]");
+    var sampleBtn = w.querySelector("[data-qb-sample]");
+    var truthBtn = w.querySelector("[data-qb-truth]");
+    var verdictEl = w.querySelector("[data-qb-verdict]");
+    if (!F || !VERDICTS || !cells.length || !sampleBtn || !truthBtn) { return; }
+
+    var SIDE = parseInt(w.getAttribute("data-side"), 10) || 10;
+    var SAMPLE = w.getAttribute("data-sample-label") || "";
+    var RESAMPLE = w.getAttribute("data-resample-label") || "";
+    var CAP_UN = w.getAttribute("data-caption-unsampled") || "";
+    var CAP_S = w.getAttribute("data-caption-sampled") || "";
+    var CAP_R = w.getAttribute("data-caption-revealed") || "";
+    var HIDDEN = w.getAttribute("data-hidden-value") || "";
+
+    /* The clustering model, term for term as `build_ks3.py` asserts against
+       it. The square on the richness is what makes a tight CLUSTER rather than
+       a gradient, and a gradient would leave every method very nearly right. */
+    var field = [], r, c;
+    for (r = 0; r < SIDE; r++) {
+      for (c = 0; c < SIDE; c++) {
+        var richness = Math.max(0, 1 - (Math.abs(c - F.centre_col) +
+          Math.abs(r - F.centre_row)) / F.reach);
+        var base = F.base + richness * richness * F.peak;
+        field.push(Math.max(0,
+          Math.round(base + (Math.random() - 0.5) * F.noise)));
+      }
+    }
+    var realTotal = 0;
+    for (r = 0; r < field.length; r++) { realTotal += field[r]; }
+
+    var method = "random", count = parseInt(w.getAttribute("data-count"), 10) || 8;
+    each(methodTabs, function (tb) {
+      if (tb.getAttribute("aria-pressed") === "true") {
+        method = tb.getAttribute("data-qb-method");
+      }
+    });
+    var picked = [], truthShown = false, everRevealed = false;
+
+    function pool(m) {
+      var out = [], i, rr, cc;
+      for (i = 0; i < SIDE * SIDE; i++) {
+        rr = Math.floor(i / SIDE);
+        cc = i % SIDE;
+        if (m === "corner" && !(rr >= SIDE / 2 && cc <= (SIDE / 2) - 1)) { continue; }
+        if (m === "path" && rr > 2) { continue; }
+        out.push(i);
+      }
+      return out;
+    }
+
+    function takeSample() {
+      var p = pool(method), n = Math.min(count, p.length), i;
+      picked = [];
+      /* Without replacement — `splice`, as Design does. With replacement the
+         twenty-five-quadrat corner setting would stop being deterministic and
+         the "it just stops wobbling" claim would stop being true. */
+      for (i = 0; i < n; i++) {
+        picked.push(p.splice(Math.floor(Math.random() * p.length), 1)[0]);
+      }
+      truthShown = false;
+      draw();
+    }
+
+    function fig(id, value) {
+      var el = w.querySelector('[data-qb-fig="' + id + '"]');
+      if (el) { el.textContent = value; }
+    }
+
+    function draw() {
+      var sampled = picked.length > 0, i, sum = 0;
+      for (i = 0; i < picked.length; i++) { sum += field[picked[i]]; }
+      var mean = sampled ? sum / picked.length : 0;
+      var estimate = Math.round(mean * SIDE * SIDE);
+      var errPct = sampled
+        ? Math.round(((estimate - realTotal) / realTotal) * 100) : 0;
+
+      each(methodTabs, function (tb) {
+        tb.setAttribute("aria-pressed",
+          tb.getAttribute("data-qb-method") === method ? "true" : "false");
+      });
+      each(countTabs, function (tb) {
+        tb.setAttribute("aria-pressed",
+          parseInt(tb.getAttribute("data-qb-count"), 10) === count
+            ? "true" : "false");
+      });
+
+      each(cells, function (el, i2) {
+        var inSample = picked.indexOf(i2) >= 0;
+        var show = inSample || truthShown;
+        var shade = Math.min(0.75, field[i2] / F.shade_max);
+        el.textContent = show ? String(field[i2]) : "";
+        el.style.backgroundColor = "rgba(228, 87, 46, " +
+          (truthShown ? shade : (inSample ? Math.max(0.35, shade) : 0.08)) + ")";
+        if (inSample) { el.setAttribute("data-in-sample", "1"); }
+        else { el.removeAttribute("data-in-sample"); }
+      });
+
+      if (captionEl) {
+        captionEl.textContent =
+          truthShown ? CAP_R : (sampled ? CAP_S : CAP_UN);
+      }
+      fig("mean", mean.toFixed(1));
+      fig("estimate", b9Group(estimate));
+      fig("real", truthShown ? b9Group(realTotal) : HIDDEN);
+      if (figuresEl) { setHidden(figuresEl, !sampled); }
+      var realEl = w.querySelector('[data-qb-figure="real"]');
+      if (realEl) {
+        if (truthShown) { realEl.setAttribute("data-revealed", "1"); }
+        else { realEl.removeAttribute("data-revealed"); }
+      }
+
+      sampleBtn.textContent = sampled ? RESAMPLE : SAMPLE;
+      truthBtn.disabled = !sampled || truthShown;
+
+      if (verdictEl) {
+        if (truthShown) {
+          /* ⚖️ FOUR BRANCHES IN DESIGN'S ORDER, AND THE THIRD IS TESTED LAST
+             OF THE THREE THAT CAN FIRE. Bias is named before chance, because a
+             biased three-quadrat sample is biased AND unlucky and only one of
+             those is the thing more work cannot fix. */
+          var key = method === "corner" ? "corner"
+            : (method === "path" ? "path"
+              : (picked.length <= 3 ? "chance" : "good"));
+          verdictEl.textContent = (VERDICTS[key] || "")
+            .split("{err}").join(String(Math.abs(errPct)))
+            .split("{n}").join(String(picked.length))
+            .split("{dir}").join(errPct > 0
+              ? (DIRECTION && DIRECTION.over) || ""
+              : (DIRECTION && DIRECTION.under) || "");
+        }
+        setHidden(verdictEl, !truthShown);
+      }
+
+      setCount(sec, picked.length);
+      if (truthShown) { everRevealed = true; }
+      markStage(sec, everRevealed);
+    }
+
+    each(methodTabs, function (tb) {
+      tb.addEventListener("click", function () {
+        method = tb.getAttribute("data-qb-method");
+        picked = [];
+        truthShown = false;
+        draw();
+      });
+    });
+    each(countTabs, function (tb) {
+      tb.addEventListener("click", function () {
+        count = parseInt(tb.getAttribute("data-qb-count"), 10) || count;
+        picked = [];
+        truthShown = false;
+        draw();
+      });
+    });
+    sampleBtn.addEventListener("click", takeSample);
+    truthBtn.addEventListener("click", function () {
+      truthShown = true;
+      draw();
+    });
+    draw();
+  }
+
+/* ═══ END B9 ═══ */
+
 
 
   function wireInstruments(root) {
@@ -13928,6 +14750,17 @@
     each(root.querySelectorAll("[data-fmblock]"), wireFermenter);
     each(root.querySelectorAll("[data-rdblock]"), wireRouteDecider);
     // ═══ END B8 wiring ═══
+    // ═══ BEGIN B9 wiring ═══
+    // Six instruments, six markers. A kind that reaches the dispatch table and
+    // not this list ships as static markup that never responds — the §6.6
+    // failure, and this list is the JS half of the gate that catches it.
+    each(root.querySelectorAll("[data-clblock]"), wireChainLedger);
+    each(root.querySelectorAll("[data-cyblock]"), wireCycleRunner);
+    each(root.querySelectorAll("[data-rsblock]"), wireRemoveASpecies);
+    each(root.querySelectorAll("[data-ssblock]"), wireSupermarketShelf);
+    each(root.querySelectorAll("[data-bablock]"), wireBioaccumulation);
+    each(root.querySelectorAll("[data-qbblock]"), wireQuadratBench);
+    // ═══ END B9 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
   }

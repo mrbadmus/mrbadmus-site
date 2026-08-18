@@ -312,6 +312,39 @@ def check_structure(ks3_root):
                         % (rel, kind, pattr,
                            "slide" if kind == "microscope" else "system"))
 
+    # ⊕ MRB-250 — the parity rows that are REGISTERED AND NOT YET MEASURED,
+    # counted and named. A skipped assertion must never be able to read as a
+    # passed one, so the wait is reported on every build rather than being a
+    # property of a list nobody prints.
+    #
+    # A page may be waited on only if it is a lesson slot the build knows about
+    # and Design delivered — the slug has to be in `_B9_SLUGS`, which comes
+    # from `docs/ks3/rail-manifest.md`. Anything else is a typo in a page
+    # constant, and a typo would otherwise buy every row on it permanent
+    # silence: the browser layer would skip it for ever and the count would
+    # look like honest progress.
+    waiting = _awaiting_pages(ks3_root)
+    if waiting:
+        rows = sum(1 for spec in COMPONENTS + CONTRAST
+                   if spec["on"] in waiting)
+        for rel in waiting:
+            slug = os.path.basename(rel)[:-5]
+            if slug not in _B9_SLUGS:
+                problems.append(
+                    "PARITY: %d row(s) are registered on /%s, which is neither "
+                    "an authored lesson nor a slot this run is waiting on. A "
+                    "page constant that names nothing is a row that can never "
+                    "run and can never fail."
+                    % (sum(1 for spec in COMPONENTS + CONTRAST
+                           if spec["on"] == rel), rel))
+        notes.append(
+            "%d parity assertion(s) across %d page(s) are REGISTERED AND NOT "
+            "YET MEASURED — the lesson records are still to be authored: %s. "
+            "They begin measuring the moment each page renders its instrument; "
+            "nothing has to be unparked."
+            % (rows, len(waiting),
+               ", ".join(os.path.basename(r)[:-5] for r in waiting)))
+
     return (problems, notes)
 
 
@@ -523,6 +556,36 @@ B8_DEBT   = "biology/respiration/anaerobic-respiration-in-humans.html"
 B8_FERM   = "biology/respiration/fermentation.html"
 B8_ROUTE  = "biology/respiration/aerobic-vs-anaerobic.html"
 # ═══ END B8 ═══
+
+# ═══ BEGIN B9 ═══
+# ⊕ MRB-250. Six instruments, six pages, all six on ink.
+#
+# ⚠️ THESE PAGES DO NOT EXIST YET, AND REGISTERING AGAINST THEM NOW IS THE
+# POINT. The B9 engine pass builds the six components; six separate authoring
+# passes write the lesson records that render them. B8 shipped five instruments
+# with twelve assertions between them because the rows were left until "after",
+# and after never came — a green kinds gate over five unmeasured components.
+# `_pages_needed` skips a page that has not been authored yet and
+# `check_structure` reports the wait out loud, with a count and by name, so a
+# row cannot sit unmeasured in silence. The moment an authoring pass lands the
+# page, every row on it starts measuring — nothing to remember, nothing to
+# edit, no flag to clear. See `_awaiting_pages`.
+_B9_UNIT = "biology/ecosystems-and-interdependence/"
+B9_CHAIN   = _B9_UNIT + "food-chains-and-food-webs.html"
+B9_CYCLE   = _B9_UNIT + "predator-and-prey.html"
+B9_REMOVE  = _B9_UNIT + "disturbing-a-food-web.html"
+B9_SHELF   = _B9_UNIT + "pollinators-and-food-security.html"
+B9_TOXIC   = _B9_UNIT + "toxic-build-up-in-a-food-chain.html"
+B9_QUADRAT = _B9_UNIT + "sampling-an-ecosystem.html"
+
+# The six slugs Design delivered, from `docs/ks3/rail-manifest.md`. A page path
+# above that is NOT one of these, and does not exist in the built tree, is a
+# TYPO rather than a page still being written — and a typo would otherwise buy
+# permanent silence for every row on it. `check_structure` refuses one.
+_B9_SLUGS = ("food-chains-and-food-webs", "predator-and-prey",
+             "disturbing-a-food-web", "pollinators-and-food-security",
+             "toxic-build-up-in-a-food-chain", "sampling-an-ecosystem")
+# ═══ END B9 ═══
 
 
 # ═══ BEGIN B5 ═══
@@ -3641,6 +3704,525 @@ COMPONENTS = [
     dict(name="B8 route-decider · the case label row is mono muted",
          on=B8_ROUTE, sel=".ks3-rd-caseslabel",
          props={"font-family": "DM Mono", "font-size": "14px"}),
+
+    # ══ B9 · Ecosystems and interdependence (⊕ MRB-250) ═════════════════
+    #
+    # ⚠️ THESE ROWS EXIST BECAUSE B8 SHIPPED WITHOUT THEM. B7's two flagship
+    # instruments carry 23 and 24 assertions apiece; B8's five carry 1, 2, 2, 3
+    # and 4 — twelve across five instruments, which is not coverage, it is a
+    # sample. The kinds gate stayed green throughout, because a dispatch entry
+    # is not a component and a green gate over an unmeasured component says
+    # nothing at all. Every B9 instrument below carries a full state sweep:
+    # resting, chosen, revealed, spent, and every state the science depends on.
+    #
+    # ⚠️ AND THEY ARE AIMED AT THE SPECIFICITY TRAP. All six B9 instruments sit
+    # on `ks3-dark`. `.ks3-dark p` is (0,1,1) and beats a bare instrument class
+    # at (0,1,0) — so a rule written as `.ks3-cl-energy { color: … }` LOSES to
+    # the dark-ground default and ships a figure at roughly 1.2:1 that no grep
+    # will ever find, because the CSS is right there saying the correct thing.
+    # Only a computed read catches it. Every rule below is asserted against the
+    # element as the BROWSER resolves it, not as the stylesheet declares it.
+
+    # ── b9-01 · chain-ledger ──
+    dict(name="B9 chain-ledger · the chain label is muted mono on ink",
+         on=B9_CHAIN, sel=".ks3-cl-tabslabel",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px"}),
+    # ⚖️ A CHOSEN TAB IS THE ALERT GROUND, which is Design's `seg()` and NOT
+    # the platform's alert border. Still not a mark: it says "this is the
+    # chain you are looking at", never "this is correct".
+    dict(name="B9 chain-ledger · the chosen chain tab is the alert ground",
+         on=B9_CHAIN, sel='.ks3-cl-tab[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="B9 chain-ledger · an unchosen tab stays on the panel ground",
+         on=B9_CHAIN, sel='.ks3-cl-tab[aria-pressed="false"]',
+         props={"background-color": "#3E3730", "color": "#FBF3E6"}),
+    # ⚖️⚖️ THE PRODUCER IS DRAWN AT THE BOTTOM AND THIS IS THE ROW THAT SAYS
+    # SO. `column-reverse` is the claim the lesson makes about which way energy
+    # travels, not a layout preference: `#s-think`'s first quote is that arrows
+    # point at what the animal eats, and it is the single most-marked error in
+    # the topic. If this ever resolves to `column` the bench is drawing the
+    # same figures making the opposite argument, and nothing else would notice.
+    dict(name="B9 chain-ledger · the producer is drawn at the BOTTOM",
+         on=B9_CHAIN, sel=".ks3-cl-levels:not([hidden])",
+         props={"display": "flex", "flex-direction": "column-reverse"}),
+    # ⚖️ AN UNREACHED LEVEL DIMS AND STAYS ON-DARK. It is not a wrong answer
+    # and it is not absent: the whole chain is drawn from the start so a
+    # student reads how far there is to go. If the opacity resolves to 1 the
+    # bench has given away where the chain ends before the first press.
+    dict(name="B9 chain-ledger · an unreached level dims and takes no outline",
+         on=B9_CHAIN,
+         sel=".ks3-cl-levels:not([hidden]) .ks3-cl-level:not([data-shown])",
+         props={"opacity": "0.45", "border-top-color": "rgba(0, 0, 0, 0)"}),
+    dict(name="B9 chain-ledger · an unreached level's name is muted",
+         on=B9_CHAIN,
+         sel=(".ks3-cl-levels:not([hidden]) "
+              ".ks3-cl-level:not([data-shown]) .ks3-cl-levelname"),
+         props={"color": "#C6B9A7", "font-size": "19px"}),
+    dict(name="B9 chain-ledger · a revealed level's name is on-dark headline",
+         on=B9_CHAIN,
+         sel=(".ks3-cl-levels:not([hidden]) "
+              ".ks3-cl-level[data-shown] .ks3-cl-levelname"),
+         props={"color": "#FBF3E6", "font-size": "19px",
+                "font-weight": "700"}),
+    dict(name="B9 chain-ledger · the level just reached takes the alert outline",
+         on=B9_CHAIN,
+         sel=".ks3-cl-levels:not([hidden]) .ks3-cl-level[data-top]",
+         props={"border-top-color": "#FFC53D", "border-top-width": "2px"}),
+    dict(name="B9 chain-ledger · the trophic role is muted mono, not body",
+         on=B9_CHAIN,
+         sel=".ks3-cl-levels:not([hidden]) .ks3-cl-levelrole",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "16px"}),
+    # ⚖️ THE ENERGY FIGURE TAKES THE ALERT AND THE PERCENTAGE BESIDE IT DOES
+    # NOT. The number falling by a factor of ten is the one the eye should land
+    # on; the percentage restates it. Two mono lines in one colour would make
+    # them read as one quantity printed twice.
+    dict(name="B9 chain-ledger · the energy figure is the alert mono line",
+         on=B9_CHAIN, sel=".ks3-cl-levels:not([hidden]) [data-cl-energy]",
+         props={"color": "#FFC53D", "font-family": "DM Mono",
+                "font-size": "17px"}),
+    dict(name="B9 chain-ledger · the percentage beside it is muted, not alert",
+         on=B9_CHAIN, sel=".ks3-cl-levels:not([hidden]) [data-cl-pct]",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "15px"}),
+    dict(name="B9 chain-ledger · the energy bar is the alert fill",
+         on=B9_CHAIN, sel=".ks3-cl-levels:not([hidden]) .ks3-cl-bar",
+         props={"background-color": "#FFC53D"}),
+    dict(name="B9 chain-ledger · the bar sits in a translucent well",
+         on=B9_CHAIN, sel=".ks3-cl-levels:not([hidden]) .ks3-cl-track",
+         props={"height": "16px",
+                "background-color": "rgba(255, 255, 255, 0.08)"}),
+    dict(name="B9 chain-ledger · the level note reads in on-dark body",
+         on=B9_CHAIN, sel=".ks3-cl-levels:not([hidden]) .ks3-cl-note",
+         props={"color": "#E7DECE", "font-size": "17px"}),
+    dict(name="B9 chain-ledger · the ledger sits on the nested dark panel",
+         on=B9_CHAIN, sel=".ks3-cl-panel",
+         props={"background-color": "#3E3730"}),
+    dict(name="B9 chain-ledger · the step button is inverted on ink",
+         on=B9_CHAIN, sel=".ks3-cl-up",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="B9 chain-ledger · the reset button is inverted on ink",
+         on=B9_CHAIN, sel=".ks3-cl-reset",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "min-height": "44px"}),
+    # ⚖️ THE VERDICT IS THE PAGE GROUND ON AN INK BLOCK — cream inside ink,
+    # which is the one place in this unit where the text colour has to be INK
+    # and not on-dark. It is the element the whole climb exists to reach.
+    dict(name="B9 chain-ledger · the verdict is the page ground on an ink block",
+         on=B9_CHAIN, drive="b9-chain-topped",
+         sel=".ks3-cl-verdict:not([hidden])",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "font-size": "18px"}),
+    dict(name="B9 chain-ledger · the spent step button dims", on=B9_CHAIN,
+         drive="b9-chain-topped", sel=".ks3-cl-up[disabled]",
+         props={"opacity": "0.45"}),
+    dict(name="B9 chain-ledger · the top level lights its ground", on=B9_CHAIN,
+         drive="b9-chain-topped",
+         sel=".ks3-cl-levels:not([hidden]) .ks3-cl-level[data-top]",
+         props={"background-color": "rgba(255, 255, 255, 0.1)"}),
+
+    # ── b9-02 · cycle-runner ──
+    # ⚖️⚖️ THE TWO SERIES ARE TWO COLOURS AND THE CAPTION NAMES THEM BY
+    # COLOUR — "amber = rabbits · green = foxes". These four rows are what
+    # stops the caption becoming a lie. If either readout or either bar ever
+    # resolves to the other's hue, or to the same hue, the chart stops being
+    # readable at all and the LAG — which is the entire lesson and what both
+    # marked rungs test — becomes invisible.
+    dict(name="B9 cycle-runner · the prey readout is the amber the caption names",
+         on=B9_CYCLE, sel='.ks3-cy-live[data-series="prey"]',
+         props={"color": "#FFC53D", "font-size": "20px",
+                "font-weight": "700"}),
+    dict(name="B9 cycle-runner · the predator readout is the green it names",
+         on=B9_CYCLE, sel='.ks3-cy-live[data-series="pred"]',
+         props={"color": "#12A150", "font-size": "20px",
+                "font-weight": "700"}),
+    dict(name="B9 cycle-runner · the prey bar is amber and flat-bottomed",
+         on=B9_CYCLE, sel='.ks3-cy-bar[data-series="prey"]',
+         props={"background-color": "#FFC53D",
+                "border-top-left-radius": "2px",
+                "border-bottom-left-radius": "0px"}),
+    dict(name="B9 cycle-runner · the predator bar is green", on=B9_CYCLE,
+         sel='.ks3-cy-bar[data-series="pred"]',
+         props={"background-color": "#12A150"}),
+    # ⚖️ THE CHART IS A FIXED BAND AND THE BARS GROW FROM ITS FLOOR. A chart
+    # that changed height with the data would make two years incomparable,
+    # which is the one comparison the block is for.
+    dict(name="B9 cycle-runner · the chart is a fixed band, bars from the floor",
+         on=B9_CYCLE, sel=".ks3-cy-chart",
+         props={"display": "flex", "height": "150px",
+                "align-items": "flex-end"}),
+    dict(name="B9 cycle-runner · a year is a PAIR of bars, not one",
+         on=B9_CYCLE, sel=".ks3-cy-year",
+         props={"display": "flex", "align-items": "flex-end",
+                "min-width": "0px"}),
+    dict(name="B9 cycle-runner · the caption is muted mono in caps",
+         on=B9_CYCLE, sel=".ks3-cy-caption",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px", "text-transform": "uppercase"}),
+    dict(name="B9 cycle-runner · the note reads in on-dark body", on=B9_CYCLE,
+         sel=".ks3-cy-note",
+         props={"color": "#E7DECE", "font-size": "18px",
+                "line-height": "27.9px"}),
+    dict(name="B9 cycle-runner · the field sits on the nested dark panel",
+         on=B9_CYCLE, sel=".ks3-cy-panel",
+         props={"background-color": "#3E3730"}),
+    dict(name="B9 cycle-runner · the year buttons are inverted on ink",
+         on=B9_CYCLE, sel=".ks3-cy-btn",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "min-height": "44px"}),
+    # ⚖️ AND AFTER THE CULL, THIRTY YEARS ON, ALL OF IT STILL HOLDS. This is
+    # the state the carrying-capacity argument is read in — rabbits at the
+    # ceiling, foxes at zero — and it is the state a "tidy the chart" revision
+    # would break first, because it is the only one where one series is flat.
+    dict(name="B9 cycle-runner · the amber survives thirty years without foxes",
+         on=B9_CYCLE, drive="b9-cycle-culled",
+         sel='.ks3-cy-bar[data-series="prey"]',
+         props={"background-color": "#FFC53D"}),
+    dict(name="B9 cycle-runner · the green series is still drawn at extinction",
+         on=B9_CYCLE, drive="b9-cycle-culled",
+         sel='.ks3-cy-bar[data-series="pred"]',
+         props={"background-color": "#12A150"}),
+    dict(name="B9 cycle-runner · the chart band does not grow with the data",
+         on=B9_CYCLE, drive="b9-cycle-culled", sel=".ks3-cy-chart",
+         props={"height": "150px"}),
+    dict(name="B9 cycle-runner · the ceiling note reads in on-dark body",
+         on=B9_CYCLE, drive="b9-cycle-culled", sel=".ks3-cy-note",
+         props={"color": "#E7DECE"}),
+    dict(name="B9 cycle-runner · the fox readout keeps its green at zero",
+         on=B9_CYCLE, drive="b9-cycle-culled",
+         sel='.ks3-cy-live[data-series="pred"]', props={"color": "#12A150"}),
+
+    # ── b9-03 · remove-a-species ──
+    dict(name="B9 remove-a-species · the web label is muted mono on ink",
+         on=B9_REMOVE, sel=".ks3-rs-weblabel",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px"}),
+    # ⚖️ THE WEB IS PROSE IN A GRID, NOT A DRAWN GRAPH. Eight who-eats-whom
+    # lines, no adjacency structure — which is what lets the bees' line sit in
+    # the list as an equal rather than as a missing edge. See NOTES flag 17:
+    # the drawn web is Mide's to rule on and is not invented here.
+    dict(name="B9 remove-a-species · the web is a prose grid", on=B9_REMOVE,
+         sel=".ks3-rs-weblines", props={"display": "grid"}),
+    dict(name="B9 remove-a-species · a web line reads in on-dark body",
+         on=B9_REMOVE, sel=".ks3-rs-webline",
+         props={"color": "#E7DECE", "font-size": "17px"}),
+    dict(name="B9 remove-a-species · the remove label is muted mono",
+         on=B9_REMOVE, sel=".ks3-rs-tabslabel",
+         props={"color": "#C6B9A7", "font-family": "DM Mono"}),
+    dict(name="B9 remove-a-species · the chosen species tab is the alert ground",
+         on=B9_REMOVE, sel='.ks3-rs-tab[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="B9 remove-a-species · the consequences sit on the dark panel",
+         on=B9_REMOVE, sel=".ks3-rs-body",
+         props={"background-color": "#3E3730"}),
+    dict(name="B9 remove-a-species · the headline is on-dark at 21px",
+         on=B9_REMOVE, sel="[data-rs-panel]:not([hidden]) [data-rs-headline]",
+         props={"color": "#FBF3E6", "font-size": "21px",
+                "font-weight": "700"}),
+    dict(name="B9 remove-a-species · the why line is muted, not headline",
+         on=B9_REMOVE, sel="[data-rs-panel]:not([hidden]) .ks3-rs-why",
+         props={"color": "#C6B9A7", "font-size": "18px"}),
+    dict(name="B9 remove-a-species · an unreached round dims and has no outline",
+         on=B9_REMOVE,
+         sel="[data-rs-panel]:not([hidden]) .ks3-rs-round:not([data-shown])",
+         props={"opacity": "0.45", "border-top-color": "rgba(0, 0, 0, 0)"}),
+    dict(name="B9 remove-a-species · an unreached round chip is a muted outline",
+         on=B9_REMOVE,
+         sel=("[data-rs-panel]:not([hidden]) "
+              ".ks3-rs-round:not([data-shown]) .ks3-rs-num"),
+         props={"color": "#C6B9A7", "background-color": "rgba(0, 0, 0, 0)",
+                "border-top-color": "#C6B9A7"}),
+    dict(name="B9 remove-a-species · an unreached round title is muted",
+         on=B9_REMOVE,
+         sel=("[data-rs-panel]:not([hidden]) "
+              ".ks3-rs-round:not([data-shown]) .ks3-rs-roundtitle"),
+         props={"color": "#C6B9A7", "font-size": "19px"}),
+    dict(name="B9 remove-a-species · the step button is inverted on ink",
+         on=B9_REMOVE, sel=".ks3-rs-next",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="B9 remove-a-species · the put-it-back button is inverted on ink",
+         on=B9_REMOVE, sel=".ks3-rs-reset",
+         props={"background-color": "#FBF3E6", "color": "#221E1B"}),
+    dict(name="B9 remove-a-species · a followed round fills its chip in alert",
+         on=B9_REMOVE, drive="b9-web-followed",
+         sel=("[data-rs-panel]:not([hidden]) "
+              ".ks3-rs-round[data-shown] .ks3-rs-num"),
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "border-top-color": "#FFC53D"}),
+    dict(name="B9 remove-a-species · a followed round title lifts to on-dark",
+         on=B9_REMOVE, drive="b9-web-followed",
+         sel=("[data-rs-panel]:not([hidden]) "
+              ".ks3-rs-round[data-shown] .ks3-rs-roundtitle"),
+         props={"color": "#FBF3E6"}),
+    dict(name="B9 remove-a-species · the consequence text is on-dark body",
+         on=B9_REMOVE, drive="b9-web-followed",
+         sel=("[data-rs-panel]:not([hidden]) "
+              ".ks3-rs-round[data-shown] .ks3-rs-roundbody"),
+         props={"color": "#E7DECE", "font-size": "18px"}),
+    dict(name="B9 remove-a-species · the round just reached is outlined in alert",
+         on=B9_REMOVE, drive="b9-web-followed",
+         sel="[data-rs-panel]:not([hidden]) .ks3-rs-round[data-cur]",
+         props={"border-top-color": "#FFC53D",
+                "background-color": "rgba(255, 255, 255, 0.1)"}),
+    dict(name="B9 remove-a-species · the verdict is the page ground on ink",
+         on=B9_REMOVE, drive="b9-web-followed",
+         sel="[data-rs-panel]:not([hidden]) [data-rs-verdict]:not([hidden])",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "font-size": "18px"}),
+    dict(name="B9 remove-a-species · the spent step button dims", on=B9_REMOVE,
+         drive="b9-web-followed", sel=".ks3-rs-next[disabled]",
+         props={"opacity": "0.45"}),
+
+    # ── b9-04 · supermarket-shelf ──
+    dict(name="B9 supermarket-shelf · the shelf sits on the nested dark panel",
+         on=B9_SHELF, sel=".ks3-ss", props={"background-color": "#3E3730"}),
+    dict(name="B9 supermarket-shelf · the twelve foods are a wrapping grid",
+         on=B9_SHELF, sel=".ks3-ss-shelf", props={"display": "grid"}),
+    dict(name="B9 supermarket-shelf · a surviving food is outlined and upright",
+         on=B9_SHELF, sel=".ks3-ss-food:not([data-gone])",
+         props={"border-top-color": "#C6B9A7", "opacity": "1",
+                "text-decoration-line": "none"}),
+    dict(name="B9 supermarket-shelf · a surviving food's name is on-dark",
+         on=B9_SHELF, sel=".ks3-ss-food:not([data-gone]) .ks3-ss-foodname",
+         props={"color": "#FBF3E6", "font-size": "18px",
+                "font-weight": "700"}),
+    # ⚖️ AT FULL POLLINATION THE TILE READS *HOW*, and it reads it in the same
+    # mono the status will use — so the dial doubles as the teaching label and
+    # the swap from "wind-pollinated" to "gone" is a change of words rather
+    # than a change of component.
+    dict(name="B9 supermarket-shelf · the how/status line is mono caps on ink",
+         on=B9_SHELF, sel=".ks3-ss-food:not([data-gone]) .ks3-ss-foodstatus",
+         props={"color": "#FBF3E6", "font-family": "DM Mono",
+                "font-size": "14px", "text-transform": "uppercase"}),
+    # ⚖️⚖️ TWO BARS, SIDE BY SIDE, NEVER COMBINED. The gap between them IS the
+    # lesson. `b9-shelf-emptied` squeezes the container and proves they WRAP to
+    # two rows rather than merging or dropping one, which is the failure a
+    # default-width measurement cannot see.
+    dict(name="B9 supermarket-shelf · the two bars are a grid, never one bar",
+         on=B9_SHELF, sel=".ks3-ss-bars", props={"display": "grid"}),
+    dict(name="B9 supermarket-shelf · the calorie label is on-dark at 17px",
+         on=B9_SHELF, sel='[data-ss-bar="cal"] .ks3-ss-barlabel',
+         props={"color": "#FBF3E6", "font-size": "17px",
+                "font-weight": "600"}),
+    dict(name="B9 supermarket-shelf · the percentage is muted mono",
+         on=B9_SHELF, sel='[data-ss-bar="cal"] [data-ss-value]',
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "17px"}),
+    dict(name="B9 supermarket-shelf · the calorie fill is the green",
+         on=B9_SHELF, sel='[data-ss-bar="cal"] .ks3-ss-fill',
+         props={"background-color": "#12A150"}),
+    dict(name="B9 supermarket-shelf · the vitamin fill is the amber",
+         on=B9_SHELF, sel='[data-ss-bar="vit"] .ks3-ss-fill',
+         props={"background-color": "#FFC53D"}),
+    dict(name="B9 supermarket-shelf · the bar wells are 18px", on=B9_SHELF,
+         sel='[data-ss-bar="cal"] .ks3-ss-track', props={"height": "18px"}),
+    dict(name="B9 supermarket-shelf · the note reads in on-dark body",
+         on=B9_SHELF, sel=".ks3-ss-note",
+         props={"color": "#E7DECE", "font-size": "18px"}),
+    dict(name="B9 supermarket-shelf · the remove button is inverted on ink",
+         on=B9_SHELF, sel=".ks3-ss-toggle",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "min-height": "44px"}),
+    # ⚖️ A FAILED CROP IS STRUCK THROUGH AS WELL AS AMBER, so colour is never
+    # the only signal (R2). And it is still not a mark: nothing the student
+    # does here is right or wrong, and what the amber says is that this crop
+    # has failed.
+    dict(name="B9 supermarket-shelf · a failed crop is amber AND struck through",
+         on=B9_SHELF, drive="b9-shelf-emptied", sel=".ks3-ss-food[data-gone]",
+         props={"border-top-color": "#FFC53D", "opacity": "0.6",
+                "text-decoration-line": "line-through"}),
+    dict(name="B9 supermarket-shelf · a failed crop's name drops to muted",
+         on=B9_SHELF, drive="b9-shelf-emptied",
+         sel=".ks3-ss-food[data-gone] .ks3-ss-foodname",
+         props={"color": "#C6B9A7"}),
+    dict(name="B9 supermarket-shelf · a failed crop's status drops to muted",
+         on=B9_SHELF, drive="b9-shelf-emptied",
+         sel=".ks3-ss-food[data-gone] .ks3-ss-foodstatus",
+         props={"color": "#C6B9A7"}),
+    dict(name="B9 supermarket-shelf · the calorie bar keeps its own green",
+         on=B9_SHELF, drive="b9-shelf-emptied",
+         sel='[data-ss-bar="cal"] .ks3-ss-fill',
+         props={"background-color": "#12A150"}),
+    dict(name="B9 supermarket-shelf · the vitamin bar keeps its own amber",
+         on=B9_SHELF, drive="b9-shelf-emptied",
+         sel='[data-ss-bar="vit"] .ks3-ss-fill',
+         props={"background-color": "#FFC53D"}),
+    dict(name="B9 supermarket-shelf · the gap note reads in on-dark body",
+         on=B9_SHELF, drive="b9-shelf-emptied", sel=".ks3-ss-note",
+         props={"color": "#E7DECE"}),
+
+    # ── b9-05 · bioaccumulation ──
+    dict(name="B9 bioaccumulation · the chemical label is muted mono on ink",
+         on=B9_TOXIC, sel=".ks3-ba-tabslabel",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px"}),
+    dict(name="B9 bioaccumulation · the chosen setting is the alert ground",
+         on=B9_TOXIC, sel='.ks3-ba-tab[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+    # ⚖️ THE SAME LADDER AS b9-01, THE SAME WAY UP. Water at the bottom,
+    # ospreys at the top, because this bench is b9-01's arithmetic run in the
+    # other direction and the two are deliberately the same shape.
+    dict(name="B9 bioaccumulation · the lake water is drawn at the BOTTOM",
+         on=B9_TOXIC, sel=".ks3-ba-levels",
+         props={"flex-direction": "column-reverse"}),
+    dict(name="B9 bioaccumulation · the setting's note is muted, not body",
+         on=B9_TOXIC, sel=".ks3-ba-chemnote",
+         props={"color": "#C6B9A7", "font-size": "18px"}),
+    dict(name="B9 bioaccumulation · an unreached level dims and has no outline",
+         on=B9_TOXIC, sel=".ks3-ba-level:not([data-shown])",
+         props={"opacity": "0.45", "border-top-color": "rgba(0, 0, 0, 0)"}),
+    dict(name="B9 bioaccumulation · an unreached level's name is muted",
+         on=B9_TOXIC, sel=".ks3-ba-level:not([data-shown]) .ks3-ba-name",
+         props={"color": "#C6B9A7", "font-size": "19px"}),
+    dict(name="B9 bioaccumulation · a revealed level's name is on-dark",
+         on=B9_TOXIC, sel=".ks3-ba-level[data-shown] .ks3-ba-name",
+         props={"color": "#FBF3E6"}),
+    dict(name="B9 bioaccumulation · the level just reached is outlined in alert",
+         on=B9_TOXIC, sel=".ks3-ba-level[data-cur]",
+         props={"border-top-color": "#FFC53D", "border-top-width": "2px"}),
+    # ⚖️ THE `eats` LINE IS THE MECHANISM AND IT IS ON SCREEN BEFORE THE
+    # NUMBERS. "Eat hundreds of perch a year" is WHY the concentration
+    # multiplies rather than merely persisting, and it stays legible on an
+    # unreached row so the student can read the chain before climbing it.
+    dict(name="B9 bioaccumulation · the eats line is muted mono, always on",
+         on=B9_TOXIC, sel=".ks3-ba-eats",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "16px"}),
+    dict(name="B9 bioaccumulation · the concentration is the alert mono line",
+         on=B9_TOXIC, sel="[data-ba-ppm]",
+         props={"color": "#FFC53D", "font-family": "DM Mono",
+                "font-size": "18px"}),
+    # ⚖️⚖️ A SAFE ROW IS MUTED — INCLUDING EVERY ROW OF THE ×1 CONTROL. If this
+    # ever resolves to the alert the control stops being flat, the comparison
+    # the lesson rests on disappears, and the bench starts saying the chemical
+    # is dangerous everywhere. That is the belief `#s-think` exists to break.
+    dict(name="B9 bioaccumulation · a safe level's verdict is muted, not alert",
+         on=B9_TOXIC,
+         sel=".ks3-ba-level:not([data-harmful]) [data-ba-lvlverdict]",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "15px"}),
+    dict(name="B9 bioaccumulation · a safe level's bar is muted, not alert",
+         on=B9_TOXIC, sel=".ks3-ba-level:not([data-harmful]) .ks3-ba-bar",
+         props={"background-color": "#C6B9A7"}),
+    dict(name="B9 bioaccumulation · the chain sits on the nested dark panel",
+         on=B9_TOXIC, sel=".ks3-ba-panel",
+         props={"background-color": "#3E3730"}),
+    dict(name="B9 bioaccumulation · the step button is inverted on ink",
+         on=B9_TOXIC, sel=".ks3-ba-up",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="B9 bioaccumulation · a harmful level's verdict takes the alert",
+         on=B9_TOXIC, drive="b9-chain-poisoned",
+         sel=".ks3-ba-level[data-harmful] [data-ba-lvlverdict]",
+         props={"color": "#FFC53D"}),
+    dict(name="B9 bioaccumulation · a harmful level's bar takes the alert",
+         on=B9_TOXIC, drive="b9-chain-poisoned",
+         sel=".ks3-ba-level[data-harmful] .ks3-ba-bar",
+         props={"background-color": "#FFC53D"}),
+    dict(name="B9 bioaccumulation · the verdict is the page ground on ink",
+         on=B9_TOXIC, drive="b9-chain-poisoned",
+         sel=".ks3-ba-verdict:not([hidden])",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "font-size": "18px"}),
+    dict(name="B9 bioaccumulation · the spent step button dims", on=B9_TOXIC,
+         drive="b9-chain-poisoned", sel=".ks3-ba-up[disabled]",
+         props={"opacity": "0.45"}),
+    # ⚖️ THE CONTROL, MEASURED AS A CONTROL. Climb the ×1 chain to the top and
+    # every bar is still muted — no amber anywhere on the bench. That is the
+    # flat line, and it is the evidence that the mechanism is persistence
+    # rather than toxicity.
+    dict(name="B9 bioaccumulation · the ×1 control reaches the top with no alert",
+         on=B9_TOXIC, drive="b9-chem-control",
+         sel=".ks3-ba-level:not([data-harmful]) .ks3-ba-bar",
+         props={"background-color": "#C6B9A7"}),
+    dict(name="B9 bioaccumulation · the control's verdict lands on the same ground",
+         on=B9_TOXIC, drive="b9-chem-control",
+         sel=".ks3-ba-verdict:not([hidden])",
+         props={"background-color": "#FBF3E6", "color": "#221E1B"}),
+
+    # ── b9-06 · quadrat-bench ──
+    dict(name="B9 quadrat-bench · a dial label is muted mono on ink",
+         on=B9_QUADRAT, sel=".ks3-qb-diallabel",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px"}),
+    dict(name="B9 quadrat-bench · the chosen method is the alert ground",
+         on=B9_QUADRAT, sel='.ks3-qb-tab[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="B9 quadrat-bench · the field is a square grid, capped at 460px",
+         on=B9_QUADRAT, sel=".ks3-qb-grid",
+         props={"display": "grid", "max-width": "460px"}),
+    # ⚖️ AN UNCOUNTED SQUARE IS A FAINT ACCENT WASH WITH NO OUTLINE AND NO
+    # NUMBER. The contents are hidden until they are counted or the truth is
+    # shown — which is what makes committing to an estimate feel like
+    # committing, and what stops the answer being read off the grid.
+    dict(name="B9 quadrat-bench · an uncounted square is a faint wash, no outline",
+         on=B9_QUADRAT, sel=".ks3-qb-cell",
+         props={"background-color": "rgba(228, 87, 46, 0.08)",
+                "color": "#FBF3E6", "font-family": "DM Mono",
+                "font-size": "12px", "border-top-color": "rgba(0, 0, 0, 0)"}),
+    dict(name="B9 quadrat-bench · the grid caption is muted mono in caps",
+         on=B9_QUADRAT, sel=".ks3-qb-caption",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px", "text-transform": "uppercase"}),
+    dict(name="B9 quadrat-bench · the field sits on the nested dark panel",
+         on=B9_QUADRAT, sel=".ks3-qb-panel",
+         props={"background-color": "#3E3730"}),
+    dict(name="B9 quadrat-bench · the sample button is inverted on ink",
+         on=B9_QUADRAT, sel=".ks3-qb-sample",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "min-height": "44px"}),
+    # ⚖️ THE REVEAL IS LOCKED UNTIL A SAMPLE HAS BEEN TAKEN. Two-stage
+    # completion is Design's, and the rail ticks on the SECOND stage: an
+    # estimate you can check before you have made one is not a check.
+    dict(name="B9 quadrat-bench · the reveal is locked before a sample",
+         on=B9_QUADRAT, sel=".ks3-qb-truth[disabled]",
+         props={"opacity": "0.45"}),
+    dict(name="B9 quadrat-bench · the figures panel arrives as a grid on a well",
+         on=B9_QUADRAT, drive="b9-field-sampled",
+         sel=".ks3-qb-figures:not([hidden])",
+         props={"display": "grid",
+                "background-color": "rgba(255, 255, 255, 0.06)"}),
+    dict(name="B9 quadrat-bench · a figure's label is muted mono",
+         on=B9_QUADRAT, drive="b9-field-sampled", sel=".ks3-qb-figlabel",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "13px"}),
+    dict(name="B9 quadrat-bench · the mean is on-dark display type",
+         on=B9_QUADRAT, drive="b9-field-sampled",
+         sel='[data-qb-figure="mean"] .ks3-qb-figvalue',
+         props={"color": "#FBF3E6", "font-family": "Bricolage Grotesque",
+                "font-size": "26px", "font-weight": "800"}),
+    dict(name="B9 quadrat-bench · the estimate takes the alert", on=B9_QUADRAT,
+         drive="b9-field-sampled",
+         sel='[data-qb-figure="estimate"] .ks3-qb-figvalue',
+         props={"color": "#FFC53D"}),
+    # ⚖️ THE REAL TOTAL IS WITHHELD IN THE SAME SLOT AND THE SAME TYPE, muted
+    # rather than absent — so the student can see there IS an answer being held
+    # back. An empty slot would read as the bench failing to compute it.
+    dict(name="B9 quadrat-bench · the withheld total is muted, not absent",
+         on=B9_QUADRAT, drive="b9-field-sampled",
+         sel='[data-qb-figure="real"]:not([data-revealed]) .ks3-qb-figvalue',
+         props={"color": "#C6B9A7"}),
+    dict(name="B9 quadrat-bench · a counted square is outlined on-dark",
+         on=B9_QUADRAT, drive="b9-field-sampled",
+         sel=".ks3-qb-cell[data-in-sample]",
+         props={"border-top-color": "#FBF3E6", "border-top-width": "2px"}),
+    dict(name="B9 quadrat-bench · the revealed total turns green", on=B9_QUADRAT,
+         drive="b9-field-revealed",
+         sel='[data-qb-figure="real"][data-revealed] .ks3-qb-figvalue',
+         props={"color": "#12A150"}),
+    dict(name="B9 quadrat-bench · the verdict is the page ground on ink",
+         on=B9_QUADRAT, drive="b9-field-revealed",
+         sel=".ks3-qb-verdict:not([hidden])",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "font-size": "18px"}),
+    # ═══ END B9 ═══ rows
 ]
 
 
@@ -7589,6 +8171,752 @@ DRIVES = {
     # that each press reveals exactly one more note, that the counter's
     # denominator is THIS food's chain length, and that switching food
     # afterwards restarts the chain without untelling what has been reached.
+
+    # ── B9 · Ecosystems and interdependence (⊕ MRB-250) ──
+    #
+    # Eight states that exist only after a student does something. Each is
+    # reached the way a student reaches it — through the instrument's own
+    # control — so a regression in the interaction path fails HERE rather than
+    # being measured around. Each also carries the BEHAVIOURAL assertions for
+    # its instrument, because a drive that only clicks is a drive that cannot
+    # fail for the right reason.
+
+    # b9-01. Climbs the opening chain to the top, proving the verdict is
+    # withheld until the chain is complete, that the computed figures are the
+    # chain's own, that the denominator follows the tab across chains of
+    # different lengths, and that going back to the producers does not untell
+    # what has been reached.
+    "b9-chain-topped": r"""
+(function () {
+  var sec = document.querySelector('[data-clblock]');
+  if (!sec) { return "no chain ledger on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') { return "the stop ticked on load"; }
+  var w = sec.querySelector('[data-cl]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var tabs = w.querySelectorAll('[data-cl-chain]');
+  if (tabs.length < 2) { return "the bench offers " + tabs.length + " chain(s)"; }
+  if (!/class="[^"]*\bks3-option\b/.test(sec.innerHTML)) {
+    return "the chain tabs are not server-rendered options";
+  }
+  var count = sec.querySelector('[data-count]');
+  if (count && count.textContent.indexOf('{') >= 0) {
+    return "the head readout shipped an unfilled placeholder: " + count.textContent;
+  }
+  var cascade = w.querySelectorAll(
+    '[data-cl-chainpanel][hidden], [data-cl-readout][hidden], .ks3-cl-verdict[hidden]');
+  for (var h = 0; h < cascade.length; h++) {
+    var el = cascade[h], prev = el.style.display;
+    el.style.display = '';
+    var shown = getComputedStyle(el).display;
+    el.style.display = prev;
+    if (shown !== 'none') {
+      return "MRB-242: " + el.className + " ships `hidden` but the stylesheet " +
+        "gives it display:" + shown + ", which beats the UA [hidden] rule";
+    }
+  }
+  var panels = w.querySelectorAll('[data-cl-chainpanel]:not([hidden])');
+  if (panels.length !== 1) {
+    return "the bench opens with " + panels.length + " chain panels showing";
+  }
+  var panel = panels[0];
+  var total = parseInt(panel.getAttribute('data-total'), 10);
+  if (!(total >= 3)) { return "the opening chain has " + total + " level(s)"; }
+  if (panel.querySelectorAll('[data-cl-readout]:not([hidden])').length !== 1) {
+    return "the chain opens with more than the producer revealed";
+  }
+  if (w.querySelector('.ks3-cl-verdict:not([hidden])')) {
+    return "the verdict landed before the chain was complete";
+  }
+  // ⚖️ THE PRODUCER IS AT THE BOTTOM. Asserted on painted geometry, not on the
+  // stylesheet: `data-i="0"` is the first child in the document and must be
+  // the LOWEST on screen. This is the direction-of-energy claim `#s-think`
+  // spends a paragraph on.
+  var rows = panel.querySelectorAll('.ks3-cl-level');
+  if (rows[0].getBoundingClientRect().top <=
+      rows[rows.length - 1].getBoundingClientRect().top) {
+    return "the producer is not drawn at the bottom of the chain";
+  }
+  var up = w.querySelector('[data-cl-up]');
+  for (var i = 1; i < total; i++) {
+    if (up.disabled) { return "the step button locked at level " + i; }
+    up.click();
+    var shownNow = panel.querySelectorAll('[data-cl-readout]:not([hidden])').length;
+    if (shownNow !== i + 1) {
+      return "press " + i + " revealed " + shownNow + " level(s); each press reveals one";
+    }
+    if (i < total - 1 && w.querySelector('.ks3-cl-verdict:not([hidden])')) {
+      return "the verdict landed at level " + (i + 1) + " of " + total;
+    }
+  }
+  var verdict = w.querySelector('.ks3-cl-verdict:not([hidden])');
+  if (!verdict) { return "the chain reached its top and no verdict landed"; }
+  if (verdict.textContent.indexOf('{') >= 0) {
+    return "the verdict shipped an unfilled placeholder: " + verdict.textContent;
+  }
+  if (!up.disabled) { return "the chain is complete and the step button is still live"; }
+  // ⚖️ THE TROPHIC ARITHMETIC, READ OFF THE PAGE. A four-level chain at a
+  // tenth per step arrives at 0.1% of the original and a five-level chain at
+  // 0.01%. If this ever stops holding, B9 has stopped owning the 10:1 that
+  // every later lesson cites it for.
+  var want4 = { 4: '0.1%', 5: '0.01%', 3: '1%' };
+  if (want4[total] && verdict.textContent.indexOf(want4[total]) < 0) {
+    return "a " + total + "-level chain reported " + verdict.textContent;
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "a chain was climbed to the top and the stop did not tick";
+  }
+  if (count && count.getAttribute('data-total') !== String(total)) {
+    return "the head readout's denominator is " + count.getAttribute('data-total') +
+      " and this chain has " + total + " levels";
+  }
+  // ⚖️ SWITCHING CHAIN RESTARTS THE CLIMB AND UNTELLS NOTHING, and the
+  // denominator follows the tab — the chains are deliberately different
+  // lengths, which is the argument.
+  for (var q = 0; q < tabs.length; q++) {
+    if (tabs[q].getAttribute('aria-pressed') === 'false') {
+      tabs[q].click();
+      var next = w.querySelector('[data-cl-chainpanel]:not([hidden])');
+      if (!next) { return "switching chain left no panel showing"; }
+      if (next.querySelectorAll('[data-cl-readout]:not([hidden])').length !== 1) {
+        return "switching chain did not restart the climb";
+      }
+      if (count && count.getAttribute('data-total') !==
+          next.getAttribute('data-total')) {
+        return "the head readout's denominator did not follow the tab";
+      }
+      if (sec.getAttribute('data-stage-done') !== '1') {
+        return "switching chain unticked a stop the student had reached";
+      }
+      break;
+    }
+  }
+  // ⚖️ AND `Back to the producers` DOES NOT UNTICK IT EITHER. MRB-208 ruled
+  // the rail records participation; a student who tidies up after themselves
+  // has still climbed the chain.
+  var reset = w.querySelector('[data-cl-reset]');
+  if (reset) {
+    reset.click();
+    if (sec.getAttribute('data-stage-done') !== '1') {
+      return "going back to the producers unticked a stop already reached";
+    }
+    if (w.querySelector('.ks3-cl-verdict:not([hidden])')) {
+      return "the verdict survived a reset";
+    }
+  }
+  // Leave the bench TOPPED, on the opening chain, for the driven rows.
+  tabs[0].click();
+  var t = parseInt(
+    w.querySelector('[data-cl-chainpanel]:not([hidden])').getAttribute('data-total'), 10);
+  for (var z = 1; z < t; z++) { w.querySelector('[data-cl-up]').click(); }
+  return "";
+})()
+""",
+
+    # b9-02. Removes the foxes and runs thirty years, which is the ONE state
+    # the carrying-capacity argument can be read in — and the state a model
+    # with K dropped would fail in, by climbing for ever.
+    "b9-cycle-culled": r"""
+(function () {
+  var sec = document.querySelector('[data-cyblock]');
+  if (!sec) { return "no cycle runner on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') { return "the stop ticked on load"; }
+  var w = sec.querySelector('[data-cy]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var count = sec.querySelector('[data-count]');
+  if (count && count.textContent.indexOf('{') >= 0) {
+    return "the head readout shipped an unfilled placeholder: " + count.textContent;
+  }
+  var M;
+  try { M = JSON.parse(w.getAttribute('data-model')); }
+  catch (x) { return "the model did not parse"; }
+  if (!(M.k > 0)) { return "K is " + M.k + " — the grass supply is gone"; }
+  if (w.querySelectorAll('.ks3-cy-year').length !== 1) {
+    return "the field opens with " + w.querySelectorAll('.ks3-cy-year').length +
+      " years of history; it opens with one";
+  }
+  var prey0 = parseInt(w.querySelector('[data-cy-prey]').textContent, 10);
+  var pred0 = parseInt(w.querySelector('[data-cy-pred]').textContent, 10);
+  if (!(prey0 > 0 && pred0 > 0)) { return "the field opens empty"; }
+
+  // ⚖️ THE LAG, MEASURED. Run forty years and find each series' peak year in
+  // the history. The predator peak must come AFTER the prey peak — that is the
+  // entire lesson, it is what both marked rungs test, and it is the first
+  // thing a "simplified" model would lose.
+  var ten = w.querySelector('[data-cy-ten]');
+  for (var i = 0; i < 4; i++) { ten.click(); }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "ten years were run and the stop did not tick";
+  }
+  var cols = w.querySelectorAll('.ks3-cy-year');
+  if (cols.length > M.history) {
+    return "the chart holds " + cols.length + " years against a window of " + M.history;
+  }
+  var bestPrey = -1, bestPred = -1, hiPrey = -1, hiPred = -1, j;
+  for (j = 0; j < cols.length; j++) {
+    var p = parseFloat(cols[j].querySelector('[data-series="prey"]').style.height);
+    var q = parseFloat(cols[j].querySelector('[data-series="pred"]').style.height);
+    if (p > hiPrey) { hiPrey = p; bestPrey = j; }
+    if (q > hiPred) { hiPred = q; bestPred = j; }
+  }
+  if (!(bestPred > bestPrey)) {
+    return "the predator peak (year index " + bestPred + ") does not follow the " +
+      "prey peak (" + bestPrey + ") — the lag is the lesson";
+  }
+  // ⚖️ AND THE TWO SERIES ARE SCALED SEPARATELY, which the caption says in
+  // words. On a shared scale the fox series would never reach the top of the
+  // band; each must have its own 100%.
+  if (!(hiPrey > 99 && hiPred > 99)) {
+    return "the two series are on one scale — tallest prey " + hiPrey +
+      "%, tallest predator " + hiPred + "%";
+  }
+
+  // ⚖️ K IS THE GRASS SUPPLY. Remove every fox, run thirty more years, and the
+  // rabbits must STOP at the ceiling rather than climb without limit — which
+  // is the misconception `#s-think` exists to break.
+  var cull = w.querySelector('[data-cy-cull]');
+  var before = cull.textContent;
+  cull.click();
+  if (cull.textContent === before) {
+    return "removing the foxes did not change the control's label";
+  }
+  for (var k = 0; k < 3; k++) { ten.click(); }
+  var pred = parseInt(w.querySelector('[data-cy-pred]').textContent, 10);
+  if (pred !== 0) { return "the foxes were removed and " + pred + " remain"; }
+  var prey = parseInt(w.querySelector('[data-cy-prey]').textContent, 10);
+  if (prey > M.k * M.prey_cap_mult + 1) {
+    return "the rabbits reached " + prey + " against a carrying capacity of " +
+      M.k + " — the logistic term is gone and the bench is teaching " +
+      "exponential growth";
+  }
+  if (prey < M.k * 0.9) {
+    return "the rabbits reached only " + prey + " of a possible " + M.k +
+      " with no predators; the ceiling note can never fire";
+  }
+  var note = w.querySelector('[data-cy-note]').textContent;
+  if (!note) { return "the field is at its ceiling and the note is blank"; }
+  if (note.indexOf('{') >= 0) { return "the note shipped a placeholder: " + note; }
+  var reset = w.querySelector('[data-cy-reset]');
+  if (reset) {
+    reset.click();
+    if (sec.getAttribute('data-stage-done') !== '1') {
+      return "resetting the field unticked a stop already reached";
+    }
+    // Back to the driven state for the rows.
+    w.querySelector('[data-cy-cull]').click();
+    for (var z = 0; z < 3; z++) { w.querySelector('[data-cy-ten]').click(); }
+  }
+  return "";
+})()
+""",
+
+    # b9-03. Follows the opening removal to round three, proving the verdict is
+    # withheld until it gets there, that every species carries exactly three
+    # rounds and no empty fourth, and that switching species restarts the
+    # count without untelling what has been reached.
+    "b9-web-followed": r"""
+(function () {
+  var sec = document.querySelector('[data-rsblock]');
+  if (!sec) { return "no removal bench on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') { return "the stop ticked on load"; }
+  var w = sec.querySelector('[data-rs]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var count = sec.querySelector('[data-count]');
+  if (count && count.textContent.indexOf('{') >= 0) {
+    return "the head readout shipped an unfilled placeholder: " + count.textContent;
+  }
+  if (w.querySelectorAll('.ks3-rs-webline').length < 6) {
+    return "the web has " + w.querySelectorAll('.ks3-rs-webline').length + " lines";
+  }
+  // ⚠️ MRB-242 — AN AUTHOR `display` BEATS THE UA `[hidden]` RULE regardless of
+  // specificity, and the element then ships visible with the attribute still on
+  // it. Nine builds have paid for this. Probed rather than trusted: unset the
+  // inline display, read what the STYLESHEET resolves to, put it back.
+  var cascade = w.querySelectorAll(
+    '[data-rs-panel][hidden], .ks3-rs-roundbody[hidden], .ks3-rs-verdict[hidden]');
+  for (var h = 0; h < cascade.length; h++) {
+    var cel = cascade[h], cprev = cel.style.display;
+    cel.style.display = '';
+    var cshown = getComputedStyle(cel).display;
+    cel.style.display = cprev;
+    if (cshown !== 'none') {
+      return "MRB-242: " + cel.className + " ships `hidden` but the stylesheet " +
+        "gives it display:" + cshown + ", which beats the UA [hidden] rule";
+    }
+  }
+  var panels = w.querySelectorAll('[data-rs-panel]');
+  if (panels.length < 4) { return "the bench offers " + panels.length + " removals"; }
+  // ⚠️ EXACTLY THREE ROUNDS ON EVERY SPECIES, AND NO EMPTY FOURTH. Design's
+  // `caterpillars` carries `{ title: '', body: '' }` and filters it at draw
+  // time; this port has no filter and refuses the entry at build time. If one
+  // ever arrives it draws a numbered row with nothing in it, and the counter
+  // says "of 4".
+  for (var i = 0; i < panels.length; i++) {
+    var rounds = panels[i].querySelectorAll('.ks3-rs-round');
+    if (rounds.length !== 3) {
+      return panels[i].getAttribute('data-rs-panel') + " has " + rounds.length +
+        " rounds; every removal has three";
+    }
+    for (var j = 0; j < rounds.length; j++) {
+      if (!rounds[j].querySelector('.ks3-rs-roundtitle').textContent.trim() ||
+          !rounds[j].querySelector('.ks3-rs-roundbody').textContent.trim()) {
+        return panels[i].getAttribute('data-rs-panel') + " round " + (j + 1) +
+          " is empty — an editing artefact reached the page";
+      }
+    }
+  }
+  if (w.querySelectorAll('[data-rs-panel]:not([hidden])').length !== 1) {
+    return "the bench opens with more than one removal showing";
+  }
+  var panel = w.querySelector('[data-rs-panel]:not([hidden])');
+  if (panel.querySelectorAll('.ks3-rs-roundbody:not([hidden])').length !== 0) {
+    return "a consequence was revealed before anything was removed";
+  }
+  if (panel.querySelector('[data-rs-verdict]:not([hidden])')) {
+    return "the verdict landed before the removal was followed";
+  }
+  var head0 = panel.querySelector('[data-rs-headline]').textContent;
+  if (head0.indexOf('{name}') >= 0) {
+    return "the headline shipped an unfilled placeholder: " + head0;
+  }
+  var next = w.querySelector('[data-rs-next]');
+  for (var r = 1; r <= 3; r++) {
+    if (next.disabled) { return "the step button locked at round " + r; }
+    next.click();
+    var open = panel.querySelectorAll('.ks3-rs-roundbody:not([hidden])').length;
+    if (open !== r) {
+      return "press " + r + " revealed " + open + " consequence(s); each press reveals one";
+    }
+    if (r < 3 && panel.querySelector('[data-rs-verdict]:not([hidden])')) {
+      return "the verdict landed at round " + r + " of 3";
+    }
+  }
+  var head1 = panel.querySelector('[data-rs-headline]').textContent;
+  if (head1 === head0) { return "the headline did not change when the species was removed"; }
+  if (head1.indexOf('{name}') >= 0) {
+    return "the removed headline shipped a placeholder: " + head1;
+  }
+  var verdict = panel.querySelector('[data-rs-verdict]:not([hidden])');
+  if (!verdict) { return "three rounds were followed and no verdict landed"; }
+  if (!next.disabled) { return "the removal is followed and the step button is still live"; }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "a removal was followed to the end and the stop did not tick";
+  }
+  var tabs = w.querySelectorAll('[data-rs-species]');
+  for (var q = 0; q < tabs.length; q++) {
+    if (tabs[q].getAttribute('aria-pressed') === 'false') {
+      tabs[q].click();
+      var nx = w.querySelector('[data-rs-panel]:not([hidden])');
+      if (nx.querySelectorAll('.ks3-rs-roundbody:not([hidden])').length !== 0) {
+        return "switching species did not put the wood back";
+      }
+      if (sec.getAttribute('data-stage-done') !== '1') {
+        return "switching species unticked a stop the student had reached";
+      }
+      break;
+    }
+  }
+  // Back to a FOLLOWED state on the opening species for the driven rows.
+  tabs[0].click();
+  for (var z = 0; z < 3; z++) { w.querySelector('[data-rs-next]').click(); }
+  return "";
+})()
+""",
+
+    # b9-04. Empties the shelf, which is where the whole lesson is: two bars,
+    # two different percentages, and a GAP between them that must survive a
+    # phone-width container.
+    "b9-shelf-emptied": r"""
+(function () {
+  var sec = document.querySelector('[data-ssblock]');
+  if (!sec) { return "no shelf on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') { return "the stop ticked on load"; }
+  var w = sec.querySelector('[data-ss]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var count = sec.querySelector('[data-count]');
+  if (count && count.textContent.indexOf('{') >= 0) {
+    return "the head readout shipped an unfilled placeholder: " + count.textContent;
+  }
+  var bars = w.querySelectorAll('[data-ss-bar]');
+  if (bars.length !== 2) { return "the shelf draws " + bars.length + " bars; there are two"; }
+  var tiles = w.querySelectorAll('[data-ss-food]');
+  if (tiles.length < 8) { return "the shelf stocks " + tiles.length + " foods"; }
+  if (w.querySelectorAll('[data-ss-food][data-gone]').length) {
+    return "a crop had already failed before the pollinators were removed";
+  }
+  // ⚖️ AT FULL POLLINATION THE TILE READS `how`, NOT A STATUS — the dial
+  // doubles as the teaching label.
+  var how0 = tiles[0].querySelector('[data-ss-status]').textContent;
+  if (how0 !== tiles[0].getAttribute('data-how')) {
+    return "the intact shelf shows a status instead of how the crop is pollinated";
+  }
+  function pct(i) {
+    return parseInt(bars[i].querySelector('[data-ss-value]').textContent, 10);
+  }
+  if (pct(0) !== 100 || pct(1) !== 100) {
+    return "the intact shelf reads " + pct(0) + "% and " + pct(1) + "%";
+  }
+  var toggle = w.querySelector('[data-ss-toggle]');
+  var before = toggle.textContent;
+  toggle.click();
+  if (toggle.textContent === before) {
+    return "removing the pollinators did not change the control's label";
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "the pollinators were removed and the stop did not tick";
+  }
+  var cal = pct(0), vit = pct(1);
+  // ⚖️⚖️ THE GAP IS THE ENTIRE LESSON. Calories must survive better than
+  // vitamins, and the two must not agree — the note reads the difference
+  // aloud and rung 2 marks a student for knowing which falls further.
+  if (cal === vit) {
+    return "both bars land on " + cal + "% — two bars that agree are one bar drawn twice";
+  }
+  if (!(cal > vit)) {
+    return "calories fell to " + cal + "% and vitamins to " + vit +
+      "%; the unit's claim is that the VARIETY goes first";
+  }
+  var note = w.querySelector('[data-ss-note]').textContent;
+  if (note.indexOf('{') >= 0) { return "the note shipped a placeholder: " + note; }
+  if (note.indexOf(String(cal)) < 0 || note.indexOf(String(vit)) < 0) {
+    return "the note does not quote the two figures beside it: " + note;
+  }
+  if (!w.querySelectorAll('[data-ss-food][data-gone]').length) {
+    return "the pollinators are gone and no crop failed";
+  }
+  // ⚖️ AND THE TWO BARS SURVIVE A PHONE. The grid is `auto-fit` on the
+  // CONTAINER, not on a media query, so squeezing the container is the honest
+  // test: they must WRAP to two rows, both still painted, never merge and
+  // never drop one.
+  var wrap = w.querySelector('.ks3-ss-bars');
+  var prev = wrap.style.width;
+  wrap.style.width = '260px';
+  void wrap.offsetHeight;
+  var r0 = bars[0].getBoundingClientRect(), r1 = bars[1].getBoundingClientRect();
+  var cols = getComputedStyle(wrap).gridTemplateColumns.split(' ').length;
+  var vis = getComputedStyle(bars[0]).display !== 'none' &&
+            getComputedStyle(bars[1]).display !== 'none';
+  wrap.style.width = prev;
+  void wrap.offsetHeight;
+  if (cols !== 1) {
+    return "squeezed to 260px the bar grid still reports " + cols +
+      " tracks; it must wrap to one column";
+  }
+  if (!(r1.top > r0.top) || !vis || r0.width <= 0 || r1.width <= 0) {
+    return "squeezed to a phone width the two bars merged or one was dropped";
+  }
+  return "";
+})()
+""",
+
+    # b9-05. Climbs the persistent chemical to the ospreys — the one state
+    # where the harm threshold is crossed and the multiplier is quoted.
+    "b9-chain-poisoned": r"""
+(function () {
+  var sec = document.querySelector('[data-bablock]');
+  if (!sec) { return "no bioaccumulation bench on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') { return "the stop ticked on load"; }
+  var w = sec.querySelector('[data-ba]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var count = sec.querySelector('[data-count]');
+  if (count && count.textContent.indexOf('{') >= 0) {
+    return "the head readout shipped an unfilled placeholder: " + count.textContent;
+  }
+  var tabs = w.querySelectorAll('[data-ba-chem]');
+  if (tabs.length < 3) { return "the dial offers " + tabs.length + " settings"; }
+  // ⚖️ EXACTLY ONE ×1 SETTING, AND IT IS THE CONTROL.
+  var ones = 0, i;
+  for (i = 0; i < tabs.length; i++) {
+    if (parseFloat(tabs[i].getAttribute('data-factor')) === 1) { ones += 1; }
+  }
+  if (ones !== 1) {
+    return "the dial has " + ones + " settings at ×1; exactly one is the control";
+  }
+  var levels = w.querySelectorAll('.ks3-ba-level');
+  if (levels.length < 4) { return "the chain has " + levels.length + " levels"; }
+  // ⚠️ MRB-242 — AN AUTHOR `display` BEATS THE UA `[hidden]` RULE regardless of
+  // specificity, and the element then ships visible with the attribute still on
+  // it. Nine builds have paid for this. Probed rather than trusted: unset the
+  // inline display, read what the STYLESHEET resolves to, put it back.
+  var cascade = w.querySelectorAll(
+    '.ks3-ba-readout[hidden], .ks3-ba-verdict[hidden]');
+  for (var h = 0; h < cascade.length; h++) {
+    var cel = cascade[h], cprev = cel.style.display;
+    cel.style.display = '';
+    var cshown = getComputedStyle(cel).display;
+    cel.style.display = cprev;
+    if (cshown !== 'none') {
+      return "MRB-242: " + cel.className + " ships `hidden` but the stylesheet " +
+        "gives it display:" + cshown + ", which beats the UA [hidden] rule";
+    }
+  }
+  if (w.querySelectorAll('.ks3-ba-readout:not([hidden])').length !== 1) {
+    return "the chain opens with more than the lake water revealed";
+  }
+  if (w.querySelector('.ks3-ba-verdict:not([hidden])')) {
+    return "the verdict landed before the chain was climbed";
+  }
+  // The lake water must be at the bottom, as in b9-01.
+  if (levels[0].getBoundingClientRect().top <=
+      levels[levels.length - 1].getBoundingClientRect().top) {
+    return "the lake water is not drawn at the bottom of the chain";
+  }
+  tabs[0].click();
+  var up = w.querySelector('[data-ba-up]');
+  for (i = 1; i < levels.length; i++) {
+    if (up.disabled) { return "the step button locked at level " + i; }
+    up.click();
+  }
+  if (!up.disabled) { return "the chain is complete and the step button is still live"; }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "the chain was climbed and the stop did not tick";
+  }
+  var harmful = w.querySelectorAll('.ks3-ba-level[data-harmful]').length;
+  if (!harmful) {
+    return "the most persistent setting reached the top and nothing is flagged " +
+      "as harmful — the lesson's consequence is unreachable";
+  }
+  var verdict = w.querySelector('.ks3-ba-verdict:not([hidden])');
+  if (!verdict) { return "the chain reached the ospreys and no verdict landed"; }
+  if (verdict.textContent.indexOf('{') >= 0) {
+    return "the verdict shipped an unfilled placeholder: " + verdict.textContent;
+  }
+  // ⚖️ THE MULTIPLIER IS COMPUTED AND IT IS GROUPED BY HAND, never by
+  // `toLocaleString()` — a European locale would print 100,000 as 100.000.
+  if (!/[0-9],[0-9]{3}/.test(verdict.textContent) &&
+      !/\b\d{1,3}\b/.test(verdict.textContent)) {
+    return "the harmful verdict quotes no multiplier: " + verdict.textContent;
+  }
+  var top = w.querySelectorAll('[data-ba-ppm]');
+  var topText = top[top.length - 1].textContent;
+  if (!/[0-9]/.test(topText)) { return "the top level prints no concentration"; }
+  var reset = w.querySelector('[data-ba-reset]');
+  if (reset) {
+    reset.click();
+    if (sec.getAttribute('data-stage-done') !== '1') {
+      return "going back to the water unticked a stop already reached";
+    }
+    for (i = 1; i < levels.length; i++) { w.querySelector('[data-ba-up]').click(); }
+  }
+  return "";
+})()
+""",
+
+    # b9-05 again, on the CONTROL. Its own drive rather than a branch of the
+    # one above, because a control measured in the same document as the
+    # treatment is not a control.
+    "b9-chem-control": r"""
+(function () {
+  var sec = document.querySelector('[data-bablock]');
+  if (!sec) { return "no bioaccumulation bench on the page"; }
+  var w = sec.querySelector('[data-ba]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var tabs = w.querySelectorAll('[data-ba-chem]');
+  var ctrl = null, i;
+  for (i = 0; i < tabs.length; i++) {
+    if (parseFloat(tabs[i].getAttribute('data-factor')) === 1) { ctrl = tabs[i]; }
+  }
+  if (!ctrl) { return "the dial has no ×1 control setting"; }
+  ctrl.click();
+  var levels = w.querySelectorAll('.ks3-ba-level');
+  for (i = 1; i < levels.length; i++) { w.querySelector('[data-ba-up]').click(); }
+  // ⚖️⚖️ FLAT ALL THE WAY UP. Every level prints the SAME concentration, and
+  // nothing anywhere on the bench is flagged as harmful. This is what proves
+  // the mechanism is persistence and not toxicity — the claim rung 1 marks and
+  // `#s-think` confronts. If the control ever stops being flat, the lesson has
+  // lost the comparison it is built on.
+  var ppms = w.querySelectorAll('[data-ba-ppm]'), first = ppms[0].textContent;
+  for (i = 1; i < ppms.length; i++) {
+    if (ppms[i].textContent !== first) {
+      return "the ×1 control is not flat: " + first + " at the bottom and " +
+        ppms[i].textContent + " at level " + (i + 1);
+    }
+  }
+  if (w.querySelectorAll('.ks3-ba-level[data-harmful]').length) {
+    return "the water-soluble control flagged a level as harmful";
+  }
+  var verdict = w.querySelector('.ks3-ba-verdict:not([hidden])');
+  if (!verdict) { return "the control reached the top and no verdict landed"; }
+  if (/[0-9]/.test(verdict.textContent.replace(/×1|x1/g, ''))) {
+    return "the control's verdict quotes a figure; it is the one branch that " +
+      "has no number to report: " + verdict.textContent;
+  }
+  return "";
+})()
+""",
+
+    # b9-06, stage one. Takes a sample and proves the answer is still withheld.
+    "b9-field-sampled": r"""
+(function () {
+  var sec = document.querySelector('[data-qbblock]');
+  if (!sec) { return "no quadrat bench on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') { return "the stop ticked on load"; }
+  var w = sec.querySelector('[data-qb]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var count = sec.querySelector('[data-count]');
+  if (count && count.textContent.indexOf('{') >= 0) {
+    return "the head readout shipped an unfilled placeholder: " + count.textContent;
+  }
+  var side = parseInt(w.getAttribute('data-side'), 10);
+  var cells = w.querySelectorAll('.ks3-qb-cell');
+  if (cells.length !== side * side) {
+    return "the field draws " + cells.length + " squares for a " + side + "×" + side + " site";
+  }
+  // ⚖️ AN UNSURVEYED FIELD SHOWS NOTHING. The counts are generated at page
+  // load and none of them may be legible before a quadrat has been placed —
+  // otherwise the estimate can be read off the grid and the reveal is spoiled.
+  for (var i = 0; i < cells.length; i++) {
+    if (cells[i].textContent.trim()) {
+      return "square " + i + " shows its count before the field was surveyed";
+    }
+  }
+  if (!w.querySelector('[data-qb-figures]').hasAttribute('hidden')) {
+    return "the figures panel is open before a sample was taken";
+  }
+  // ⚠️ MRB-242 — AN AUTHOR `display` BEATS THE UA `[hidden]` RULE regardless of
+  // specificity, and the element then ships visible with the attribute still on
+  // it. Nine builds have paid for this. Probed rather than trusted: unset the
+  // inline display, read what the STYLESHEET resolves to, put it back.
+  var cascade = w.querySelectorAll(
+    '.ks3-qb-figures[hidden], .ks3-qb-verdict[hidden]');
+  for (var h = 0; h < cascade.length; h++) {
+    var cel = cascade[h], cprev = cel.style.display;
+    cel.style.display = '';
+    var cshown = getComputedStyle(cel).display;
+    cel.style.display = cprev;
+    if (cshown !== 'none') {
+      return "MRB-242: " + cel.className + " ships `hidden` but the stylesheet " +
+        "gives it display:" + cshown + ", which beats the UA [hidden] rule";
+    }
+  }
+  if (!w.querySelector('[data-qb-truth]').disabled) {
+    return "the reveal is available before an estimate has been made";
+  }
+  w.querySelector('[data-qb-sample]').click();
+  var marked = w.querySelectorAll('.ks3-qb-cell[data-in-sample]').length;
+  var want = parseInt(w.getAttribute('data-count'), 10);
+  if (marked !== want) {
+    return "the sample counted " + marked + " squares against a dial of " + want;
+  }
+  var labelled = 0;
+  for (var j = 0; j < cells.length; j++) {
+    if (cells[j].textContent.trim()) { labelled += 1; }
+  }
+  if (labelled !== marked) {
+    return labelled + " squares show a count and " + marked + " were sampled";
+  }
+  if (w.querySelector('[data-qb-figures]').hasAttribute('hidden')) {
+    return "a sample was taken and the figures did not arrive";
+  }
+  if (w.querySelector('[data-qb-fig="real"]').textContent !==
+      w.getAttribute('data-hidden-value')) {
+    return "the real total was given away before the student asked for it";
+  }
+  if (w.querySelector('[data-qb-truth]').disabled) {
+    return "a sample was taken and the reveal is still locked";
+  }
+  // ⚖️ THE RAIL TICKS ON THE REVEAL, NOT ON THE SAMPLE. Design's own
+  // threshold: an estimate you have not checked is not the lesson.
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on the sample; it ticks on the reveal";
+  }
+  return "";
+})()
+""",
+
+    # b9-06, stage two. Reveals the truth, and then proves the thing the whole
+    # instrument exists for: more quadrats fixes chance and does nothing at all
+    # for bias.
+    "b9-field-revealed": r"""
+(function () {
+  var sec = document.querySelector('[data-qbblock]');
+  if (!sec) { return "no quadrat bench on the page"; }
+  var w = sec.querySelector('[data-qb]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  w.querySelector('[data-qb-sample]').click();
+  w.querySelector('[data-qb-truth]').click();
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "the real total was revealed and the stop did not tick";
+  }
+  var real = w.querySelector('[data-qb-fig="real"]').textContent;
+  if (real === w.getAttribute('data-hidden-value') || !/[0-9]/.test(real)) {
+    return "the reveal printed " + real;
+  }
+  var verdict = w.querySelector('[data-qb-verdict]:not([hidden])');
+  if (!verdict) { return "the truth was shown and no verdict landed"; }
+  if (verdict.textContent.indexOf('{') >= 0) {
+    return "the verdict shipped an unfilled placeholder: " + verdict.textContent;
+  }
+  var cells = w.querySelectorAll('.ks3-qb-cell'), i, blank = 0;
+  for (i = 0; i < cells.length; i++) { if (!cells[i].textContent.trim()) { blank += 1; } }
+  if (blank) { return blank + " squares stayed hidden after the reveal"; }
+
+  function err(method, n) {
+    w.querySelector('[data-qb-method="' + method + '"]').click();
+    w.querySelector('[data-qb-count="' + n + '"]').click();
+    w.querySelector('[data-qb-sample]').click();
+    w.querySelector('[data-qb-truth]').click();
+    var m = /(\d+)%/.exec(w.querySelector('[data-qb-verdict]').textContent);
+    return m ? parseInt(m[1], 10) : NaN;
+  }
+  function runs(method, n, k) {
+    var out = [], j;
+    for (j = 0; j < k; j++) { out.push(err(method, n)); }
+    return out;
+  }
+  function mean(a) {
+    var s = 0, j;
+    for (j = 0; j < a.length; j++) { s += a[j]; }
+    return s / a.length;
+  }
+  var counts = w.querySelectorAll('[data-qb-count]');
+  var small = parseInt(counts[0].getAttribute('data-qb-count'), 10);
+  var big = parseInt(counts[counts.length - 1].getAttribute('data-qb-count'), 10);
+
+  // ⚖️⚖️ CHANCE SHRINKS WITH EFFORT AND BIAS DOES NOT. Twelve runs each way.
+  // Random placement must get MEASURABLY better with the larger sample;
+  // the flowery corner must not, and at its largest setting it exhausts its
+  // own 25-cell pool and becomes DETERMINISTIC — the same wrong answer every
+  // time. That separation is `NOS-04`'s whole confrontation, and it is the
+  // property a "balanced" set of pools would silently delete.
+  var rSmall = mean(runs('random', small, 12));
+  var rBig = mean(runs('random', big, 12));
+  if (!(rBig < rSmall)) {
+    return "more random quadrats did not reduce the error: " + rSmall +
+      "% at " + small + " and " + rBig + "% at " + big;
+  }
+  var cBig = runs('corner', big, 6);
+  var spread = Math.max.apply(null, cBig) - Math.min.apply(null, cBig);
+  if (spread !== 0) {
+    return "the largest sample on the flowery corner still wobbles by " + spread +
+      " points; it should exhaust its pool and be deterministic";
+  }
+  if (!(mean(cBig) > rBig)) {
+    return "the flowery corner at " + big + " quadrats is no worse (" +
+      mean(cBig) + "%) than random placement (" + rBig +
+      "%) — the pools have been balanced and bias has stopped being bias";
+  }
+  var pBig = mean(runs('path', big, 6));
+  if (!(pBig > rBig)) {
+    return "the path edge at " + big + " quadrats is no worse (" + pBig +
+      "%) than random placement — bias has no favourite direction, but it " +
+      "must have a direction";
+  }
+  // ⚖️ AND SWITCHING THE DIAL PUTS THE ANSWER BACK. Re-sampling clears the
+  // reveal; it does not untick the stop.
+  w.querySelector('[data-qb-method="random"]').click();
+  if (!w.querySelector('[data-qb-figures]').hasAttribute('hidden')) {
+    return "switching method left the previous survey's figures on screen";
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "switching method unticked a stop the student had reached";
+  }
+  // Back to a REVEALED state for the driven rows.
+  w.querySelector('[data-qb-sample]').click();
+  w.querySelector('[data-qb-truth]').click();
+  return "";
+})()
+""",
+
     "b7-chain-traced": r"""
 (function () {
   var sec = document.querySelector('[data-tbblock]');
@@ -8694,12 +10022,69 @@ def _flatten(stack):
     return base
 
 
-def _pages_needed():
+def _awaiting_pages(ks3_root):
+    """Registered pages that the built tree does not have yet.
+
+    ⊕ MRB-250. A parity row can only be written against a page, and on a unit
+    where the engine pass and the authoring passes are separate runs there is a
+    window where the components exist and the lesson records do not. B8 spent
+    that window writing no rows at all: five instruments shipped with twelve
+    assertions between them, the kinds gate stayed green throughout, and a
+    dispatch entry read as coverage.
+
+    So the rows are written FIRST, against the page paths the authoring passes
+    will produce, and this reports the wait rather than hiding it. Three
+    properties, and the third is the one that makes it safe:
+
+    1. A page not in the tree is skipped, so the browser layer does not try to
+       load a 404 and report a hundred style failures in Times New Roman.
+    2. The skip is COUNTED AND NAMED — `check_structure` prints it and
+       `verify_ks3.py` shows it. A skipped assertion must never read as a
+       passed one, which is this file's own doctrine.
+    3. It self-clears. The moment the page lands, every row on it measures.
+       There is no flag to remember to remove, which is the failure mode a
+       `parked=` marker would have reintroduced one level up.
+
+    The list of names a page may legitimately be waiting on is bounded by
+    `_B9_SLUGS`, which comes from Design's delivered pages via
+    `docs/ks3/rail-manifest.md`. A path outside it that does not exist is a
+    typo, and a typo would otherwise buy permanent silence.
+    """
+    out = []
+    for rel in _registered_pages():
+        path = os.path.join(ks3_root, rel)
+        if not os.path.isfile(path):
+            out.append(rel)
+            continue
+        # ⚠️ A COMING-SOON SLOT IS NOT A PAGE, and it is the state B9 is in
+        # right now: `build_ks3.py` emits a placeholder for all 183 lesson
+        # slots, so the FILE exists from the day the slug is in
+        # `structure.py`. Testing existence alone would have loaded six
+        # placeholders and reported every B9 row as a vanished component —
+        # a hundred and eighty failures describing work that has not started.
+        with open(path, encoding="utf-8") as fh:
+            if "ks3-coming-soon" in fh.read():
+                out.append(rel)
+    return out
+
+
+def _registered_pages():
     seen = []
     for spec in COMPONENTS + CONTRAST:
         if spec["on"] not in seen:
             seen.append(spec["on"])
     return seen
+
+
+def _pages_needed(ks3_root):
+    """Every registered page that the browser layer can actually load.
+
+    ⚠️ NOT filtered by `parked`. A parked spec sits on a page other live specs
+    are measured on; dropping the page would drop them too. It is filtered by
+    EXISTENCE, which is a different question — see `_awaiting_pages`.
+    """
+    waiting = set(_awaiting_pages(ks3_root))
+    return [rel for rel in _registered_pages() if rel not in waiting]
 
 
 def _drives_needed(rel):
@@ -8997,7 +10382,7 @@ def run_browser_layers(ks3_root, browser_mod):
         # ran before it — it reported all six of c2-02's components "registered
         # but not rendered" while the page rendered them perfectly in isolation.
         # It passed at HEAD by luck, and one extra per-page read tipped it over.
-        for rel in _pages_needed():
+        for rel in _pages_needed(ks3_root):
             url = "http://127.0.0.1:%d/%s/%s" % (port, prefix, rel)
             with browser_mod.Browser() as b:
 

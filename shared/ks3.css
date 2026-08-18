@@ -12697,3 +12697,721 @@ body.rd[data-mode="ks3"] {
 }
 
 /* ═══ END B8 ═══ */
+
+/* ═══ BEGIN B9 ═══ */
+
+/* ── B9 · Ecosystems and interdependence (⊕ MRB-250) ──
+   Six instruments, and every one of them on ink.
+
+   ⚠️ SPECIFICITY, AND ON THIS UNIT IT IS LOAD-BEARING SIX TIMES OVER.
+   `.ks3-dark p` is (0,1,1) and every bare class below would be (0,1,0), so an
+   unscoped `color` LOSES to the dark ground's default and the component's own
+   colour never reaches the page. All six B9 practicals are
+   `ks3-block ks3-dark ks3-practical` — measured off Design's own `#s-bench`
+   markup on all six pages, character for character, no exceptions.
+
+   ⛔ AND DO NOT TRUST THIS COMMENT. B7's stylesheet carried a section note
+   claiming every rule in it was scoped, and the gate found the trap re-laid
+   inside that very section hours later. Every colour rule below is written
+   under `.ks3-dark …` at (0,2,0) or tighter AND
+   `ks3_parity.check_dark_text_specificity()` resolves the real cascade winner
+   on every element on every ink ground. The comment is intent; the gate is
+   evidence.
+
+   ⊕ THE LIST IS OF ELEMENTS, NOT OF PANELS, and B4 is why: counting panels is
+   what let a seventh `<p>` inside a rescued panel ship at 1.21:1. The
+   CREAM-INSIDE-INK elements in B9 — each with its own rule, never the panel's:
+
+     `.ks3-cl-verdict` · `.ks3-rs-verdict` · `.ks3-ba-verdict` ·
+     `.ks3-qb-verdict`
+
+   Four closing panels on `--ks3-ground`, one per bench that has one. Add a
+   text element inside any of them and it joins this list in the same commit.
+
+   ⚠️ NO `display` ON ANYTHING THAT ALSO TAKES `[hidden]`. An author `display`
+   beats the UA stylesheet's `[hidden] { display: none }` regardless of
+   specificity — the defect that has now cost nine builds. Every element hidden
+   at rest in this unit takes its `[hidden]` guard FIRST, on its own line,
+   before any rule that could give it a box.
+
+   ⚠️ NOTHING HERE TRANSITIONS OR ANIMATES. All six B9 instruments are DOM-only
+   with no canvas, no rAF and no timer, so this section creates no
+   reduced-motion obligation. `.ks3-option`'s own 160ms background transition
+   is the platform's and is inherited by the tabs; parity gate 7 exists because
+   of it. */
+
+/* The tab rows, shared across the unit. `.ks3-options` is a COLUMN by default,
+   because an answer list is a column; a tab strip is a segmented control and
+   reads across. Design's own `seg()` on all six pages: 16px/700, 10px 15px,
+   44px minimum, `--ks3-r-control`. */
+.ks3-cl-tabs,
+.ks3-rs-tabs,
+.ks3-ba-tabs,
+.ks3-qb-tabs {
+  margin-top: 0;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.ks3-cl-tab,
+.ks3-rs-tab,
+.ks3-ba-tab,
+.ks3-qb-tab {
+  width: auto;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: 700;
+}
+/* ⚖️ A CHOSEN TAB IS THE ALERT GROUND, NOT THE ALERT BORDER — Design's
+   measurement, not a preference: her `seg()` paints the chosen segment
+   `background: var(--ks3-alert); color: var(--ks3-ink)`. The platform's
+   `.ks3-dark .ks3-option[aria-pressed="true"]` gives an alert BORDER, which is
+   right for an answer committed to and wrong for a switch that is currently
+   on. Same specificity (0,3,0) as the platform rule and later in the file, so
+   source order decides — deliberately, because this narrows one unit rather
+   than replacing the platform rule.
+
+   ⚠️ AND IT IS STILL NOT A MARK (MRB-196 R10). Alert is "this is the setting
+   you have chosen", never "this is correct". Nothing on these six benches is
+   right or wrong; only the mastery ladder marks. */
+.ks3-dark .ks3-cl-tab[aria-pressed="true"],
+.ks3-dark .ks3-rs-tab[aria-pressed="true"],
+.ks3-dark .ks3-ba-tab[aria-pressed="true"],
+.ks3-dark .ks3-qb-tab[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+/* The bench buttons are `.ks3-reveal-btn`, which is INK ON INK — on a
+   `ks3-dark` block that paints an invisible control. Inverted here, exactly as
+   `.ks3-dark .ks3-ml-run` is. */
+.ks3-dark .ks3-cl-up,
+.ks3-dark .ks3-cl-reset,
+.ks3-dark .ks3-cy-btn,
+.ks3-dark .ks3-rs-next,
+.ks3-dark .ks3-rs-reset,
+.ks3-dark .ks3-ss-toggle,
+.ks3-dark .ks3-ss-half,
+.ks3-dark .ks3-ba-up,
+.ks3-dark .ks3-ba-reset,
+.ks3-dark .ks3-qb-sample,
+.ks3-dark .ks3-qb-truth {
+  background: var(--ks3-on-dark);
+  border-color: var(--ks3-on-dark);
+  color: var(--ks3-ink);
+}
+.ks3-cl-up[disabled],
+.ks3-rs-next[disabled],
+.ks3-ba-up[disabled],
+.ks3-qb-truth[disabled] { opacity: .45; cursor: default; }
+.ks3-cl-up[disabled]:hover,
+.ks3-rs-next[disabled]:hover,
+.ks3-ba-up[disabled]:hover,
+.ks3-qb-truth[disabled]:hover { transform: none; }
+
+/* The mono label above a tab row or a dial, on all six. */
+.ks3-cl-tabslabel,
+.ks3-rs-tabslabel,
+.ks3-rs-weblabel,
+.ks3-ba-tabslabel,
+.ks3-qb-diallabel {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.ks3-cl-tabsgroup,
+.ks3-ba-tabsgroup { margin-top: 22px; }
+.ks3-rs-tabsgroup { margin-top: 20px; }
+.ks3-dark .ks3-cl-tabslabel,
+.ks3-dark .ks3-rs-tabslabel,
+.ks3-dark .ks3-rs-weblabel,
+.ks3-dark .ks3-ba-tabslabel,
+.ks3-dark .ks3-qb-diallabel { color: var(--ks3-on-dark-muted); }
+
+/* The nested dark panel each bench puts its working in. */
+.ks3-cl-panel,
+.ks3-rs-body,
+.ks3-ba-panel,
+.ks3-qb-panel,
+.ks3-ss {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-card);
+}
+.ks3-cy-panel {
+  margin-top: 22px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-card);
+}
+.ks3-dark .ks3-cl-panel,
+.ks3-dark .ks3-cy-panel,
+.ks3-dark .ks3-rs-body,
+.ks3-dark .ks3-ss,
+.ks3-dark .ks3-ba-panel,
+.ks3-dark .ks3-qb-panel { background: var(--ks3-dark-panel); }
+
+/* The control row at the foot of a bench, on all six. */
+.ks3-cl-foot,
+.ks3-cy-foot,
+.ks3-rs-foot,
+.ks3-ss-foot,
+.ks3-ba-foot,
+.ks3-qb-foot {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  flex-wrap: wrap;
+}
+.ks3-cl-foot,
+.ks3-ba-foot { margin-top: 20px; }
+
+/* ⚠️ THE CLOSING PANELS: `[hidden]` FIRST, ON ITS OWN LINE. Each is emitted
+   hidden and each takes a background, and a `display` here would beat the UA
+   rule and ship the verdict visible before the student had reached it. */
+.ks3-cl-verdict[hidden] { display: none; }
+.ks3-rs-verdict[hidden] { display: none; }
+.ks3-ba-verdict[hidden] { display: none; }
+.ks3-qb-verdict[hidden] { display: none; }
+.ks3-cl-verdict,
+.ks3-rs-verdict,
+.ks3-ba-verdict,
+.ks3-qb-verdict {
+  margin: 18px 0 0;
+  padding: 17px 19px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+  font-size: 18px;
+  line-height: 1.6;
+}
+/* The cream-inside-ink elements. Each one separately, never the panel alone. */
+.ks3-dark .ks3-cl-verdict,
+.ks3-dark .ks3-rs-verdict,
+.ks3-dark .ks3-ba-verdict,
+.ks3-dark .ks3-qb-verdict { color: var(--ks3-ink); }
+
+/* ═══ chain-ledger (b9-01 #s-bench) ══════════════════════════════════════
+   Three chains, four or five levels each, and a tenth of the energy surviving
+   every step.
+
+   ⚖️ `column-reverse` IS THE CLAIM THE LESSON MAKES, NOT A LAYOUT CHOICE. The
+   producer is `data-i="0"` and is drawn at the BOTTOM, so the student reads
+   the chain the way the energy travels — in at the ground, up one step at a
+   time. `#s-think`'s first quote is that arrows point at what the animal eats,
+   and it is the single most-marked error in the topic; a list flipped to
+   ordinary document order would draw the same figures making the opposite
+   claim. There is a parity row on this property. */
+.ks3-cl-levels[hidden] { display: none; }
+.ks3-cl-levels {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
+}
+.ks3-cl-level {
+  padding: 14px 16px;
+  border-radius: var(--ks3-r-panel);
+  background: transparent;
+  border: 2px solid transparent;
+  opacity: .45;
+}
+/* ⚖️ AN UNREACHED LEVEL DIMS AND STAYS ON-DARK. It is not a wrong answer and
+   it is not absent: the whole chain is drawn from the start, so a student
+   reads how far there is to go before taking a step. If the opacity ever
+   resolves to 1 the bench has given away where the chain ends. */
+.ks3-cl-level[data-shown] {
+  opacity: 1;
+  border-color: var(--ks3-on-dark-muted);
+}
+.ks3-cl-level[data-top] {
+  background: rgba(255, 255, 255, .10);
+  border-color: var(--ks3-alert);
+}
+.ks3-cl-levelhead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+.ks3-cl-levelname { margin: 0; font-size: 19px; font-weight: 700; }
+.ks3-cl-levelrole {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 16px;
+}
+.ks3-cl-readout[hidden] { display: none; }
+.ks3-cl-figs {
+  margin-top: 8px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ks3-cl-energy {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 17px;
+  font-weight: 500;
+}
+.ks3-cl-pct {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+}
+.ks3-cl-track,
+.ks3-ba-track {
+  display: block;
+  margin-top: 6px;
+  height: 16px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, .08);
+  overflow: hidden;
+}
+.ks3-cl-bar,
+.ks3-ba-bar { display: block; height: 100%; }
+.ks3-cl-note { margin: 8px 0 0; font-size: 17px; line-height: 1.5; }
+
+/* ── chain-ledger on ink ───────────────────────────────────────────────── */
+.ks3-dark .ks3-cl-levelname { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-cl-level[data-shown] .ks3-cl-levelname {
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-cl-levelrole { color: var(--ks3-on-dark-muted); }
+/* ⚖️ THE ENERGY FIGURE TAKES THE ALERT and the percentage beside it does not.
+   The number that is falling by a factor of ten is the one the eye should
+   land on; the percentage is its restatement. */
+.ks3-dark .ks3-cl-energy { color: var(--ks3-alert); }
+.ks3-dark .ks3-cl-pct { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-cl-note { color: var(--ks3-on-dark-body); }
+.ks3-cl-bar { background: var(--ks3-alert); }
+
+/* ═══ cycle-runner (b9-02 #s-bench) ══════════════════════════════════════
+   One field, two populations, twenty-six years of history.
+
+   ⚖️ THE TWO SERIES ARE SCALED INDEPENDENTLY AND THE BARS ARE DRAWN IN PAIRS.
+   Each year is one `.ks3-cy-year` column holding one amber bar and one green
+   bar; the heights come from two separate maxima computed in
+   `wireCycleRunner`, each with its own floor. On a shared scale the fox series
+   flattens into the axis and the LAG — the whole lesson, and what both marked
+   rungs test — becomes unreadable. The caption says so in words because the
+   chart cannot. */
+.ks3-cy-now {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px 28px;
+}
+.ks3-cy-live { margin: 0; font-size: 20px; font-weight: 700; }
+.ks3-cy-chart {
+  margin-top: 18px;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 150px;
+  padding: 10px 12px;
+  border-radius: var(--ks3-r-panel);
+  background: rgba(255, 255, 255, .06);
+}
+.ks3-cy-year {
+  flex: 1 1 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 100%;
+  min-width: 0;
+}
+.ks3-cy-bar {
+  display: block;
+  flex: 1 1 0;
+  border-radius: 2px 2px 0 0;
+  background: var(--cy-fill, var(--ks3-alert));
+}
+.ks3-cy-caption {
+  margin: 8px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.ks3-cy-note,
+.ks3-ss-note {
+  margin: 18px 0 0;
+  padding: 15px 17px;
+  border-radius: var(--ks3-r-panel);
+  background: rgba(255, 255, 255, .06);
+  font-size: 18px;
+  line-height: 1.55;
+}
+
+/* ── cycle-runner on ink ───────────────────────────────────────────────── */
+/* ⚖️ THE TWO LIVE READOUTS TAKE THE SERIES' OWN COLOURS, because the caption
+   names the two colours rather than the two names — "amber = rabbits, green =
+   foxes" — and a student matches the chart to the numbers by colour. Both are
+   20px/700, which is large text, and both clear 3:1 on the nested panel. */
+.ks3-dark .ks3-cy-live[data-series="prey"] { color: var(--ks3-alert); }
+.ks3-dark .ks3-cy-live[data-series="pred"] { color: var(--ks3-ok); }
+.ks3-dark .ks3-cy-caption { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-cy-note { color: var(--ks3-on-dark-body); }
+
+/* ═══ remove-a-species (b9-03 #s-bench) ══════════════════════════════════
+   One oak wood, eight species, six removals and three rounds each.
+
+   ⚖️ THE WEB IS PROSE AND IT IS DRAWN AS PROSE. Eight who-eats-whom lines in a
+   two-column grid; no adjacency structure is authored and none is drawn. That
+   is Design's, measured, and it is what makes the bees' line — they pollinate
+   the wildflowers, and nothing eats them — sit in the list as an equal rather
+   than as a missing edge. */
+.ks3-rs-web {
+  margin-top: 18px;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-card);
+  background: rgba(255, 255, 255, .06);
+}
+.ks3-rs-weblines {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 8px 20px;
+}
+.ks3-rs-webline { font-size: 17px; line-height: 1.5; }
+.ks3-rs-panel[hidden] { display: none; }
+.ks3-rs-headline { margin: 0; font-size: 21px; font-weight: 700; }
+.ks3-rs-why { margin: 6px 0 0; font-size: 18px; line-height: 1.55; }
+.ks3-rs-rounds {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ks3-rs-round {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border-radius: var(--ks3-r-panel);
+  background: transparent;
+  border: 2px solid transparent;
+  opacity: .45;
+}
+.ks3-rs-round[data-shown] {
+  opacity: 1;
+  border-color: var(--ks3-on-dark-muted);
+}
+.ks3-rs-round[data-cur] {
+  background: rgba(255, 255, 255, .10);
+  border-color: var(--ks3-alert);
+}
+.ks3-rs-num {
+  flex: 0 0 30px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 15px;
+  background: transparent;
+  border: 2px solid var(--ks3-on-dark-muted);
+}
+.ks3-rs-roundmain { flex: 1 1 auto; }
+.ks3-rs-roundtitle { display: block; font-size: 19px; font-weight: 700; }
+.ks3-rs-roundbody[hidden] { display: none; }
+.ks3-rs-roundbody {
+  display: block;
+  margin-top: 6px;
+  font-size: 18px;
+  line-height: 1.55;
+}
+
+/* ── remove-a-species on ink ───────────────────────────────────────────── */
+.ks3-dark .ks3-rs-webline { color: var(--ks3-on-dark-body); }
+.ks3-dark .ks3-rs-headline { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-rs-why { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-rs-num { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-rs-round[data-shown] .ks3-rs-num {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-rs-roundtitle { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-rs-round[data-shown] .ks3-rs-roundtitle {
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-rs-roundbody { color: var(--ks3-on-dark-body); }
+
+/* ═══ supermarket-shelf (b9-04 #s-bench) ═════════════════════════════════
+   Twelve foods, and two numbers that do not fall by the same amount.
+
+   ⚖️⚖️ THE GAP BETWEEN THE TWO BARS IS THE ENTIRE LESSON, AND THIS GRID IS
+   WHAT KEEPS THEM APART. `repeat(auto-fit, minmax(220px, 1fr))` wraps them to
+   two ROWS on a narrow screen rather than merging or dropping one — the `none`
+   note reads the gap aloud and rung 2 marks a student for knowing which of the
+   two falls further. A revision that stacks them, combines them into one
+   "food" bar, or hides one at a breakpoint deletes the lesson. There is a
+   parity row on this container measured at a narrow viewport, because
+   shrinking a container in a headless browser does not fire a media query and
+   would pass silently over exactly that. */
+.ks3-ss-shelf {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 10px;
+}
+.ks3-ss-food {
+  padding: 13px 15px;
+  border-radius: var(--ks3-r-panel);
+  border: 2px solid var(--ks3-on-dark-muted);
+  background: rgba(255, 255, 255, .08);
+  opacity: 1;
+  text-decoration: none;
+}
+/* ⚖️ A FOOD THAT IS GONE IS STRUCK THROUGH AND OUTLINED IN ALERT, and it is
+   still not a mark: nothing here is right or wrong, and what the amber says is
+   that this crop has failed. The strike-through is the second signal, so
+   colour is never carrying the state alone (R2). */
+.ks3-ss-food[data-gone] {
+  border-color: var(--ks3-alert);
+  background: rgba(255, 255, 255, .04);
+  opacity: .6;
+  text-decoration: line-through;
+}
+.ks3-ss-foodname { margin: 0; font-size: 18px; font-weight: 700; }
+.ks3-ss-foodstatus {
+  margin: 3px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  opacity: .85;
+}
+.ks3-ss-bars {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+.ks3-ss-barhead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ks3-ss-barlabel { margin: 0; font-size: 17px; font-weight: 600; }
+.ks3-ss-barvalue {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 17px;
+}
+.ks3-ss-track {
+  display: block;
+  margin-top: 6px;
+  height: 18px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, .08);
+  overflow: hidden;
+}
+.ks3-ss-fill {
+  display: block;
+  height: 100%;
+  background: var(--ss-fill, var(--ks3-alert));
+}
+
+/* ── supermarket-shelf on ink ──────────────────────────────────────────── */
+.ks3-dark .ks3-ss-foodname { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-ss-foodstatus { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-ss-food[data-gone] .ks3-ss-foodname,
+.ks3-dark .ks3-ss-food[data-gone] .ks3-ss-foodstatus {
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-dark .ks3-ss-barlabel { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-ss-barvalue { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-ss-note { color: var(--ks3-on-dark-body); }
+
+/* ═══ bioaccumulation (b9-05 #s-bench) ═══════════════════════════════════
+   One lake, six levels, three persistence settings — and the third is a
+   control.
+
+   ⚖️ `column-reverse` AGAIN, AND FOR THE SAME REASON AS b9-01. The lake water
+   is `data-i="0"` and sits at the bottom; the ospreys are at the top. The two
+   benches are deliberately the same shape, because b9-05 is b9-01's arithmetic
+   run in the other direction — the energy falls by a tenth going up and the
+   concentration multiplies by ten going up, on the same ladder. */
+.ks3-ba-chemnote { margin: 0; font-size: 18px; line-height: 1.55; }
+.ks3-ba-levels {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
+}
+.ks3-ba-level {
+  padding: 14px 16px;
+  border-radius: var(--ks3-r-panel);
+  background: transparent;
+  border: 2px solid transparent;
+  opacity: .45;
+}
+.ks3-ba-level[data-shown] {
+  opacity: 1;
+  border-color: var(--ks3-on-dark-muted);
+}
+.ks3-ba-level[data-cur] {
+  background: rgba(255, 255, 255, .10);
+  border-color: var(--ks3-alert);
+}
+.ks3-ba-levelhead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 16px;
+}
+.ks3-ba-name { margin: 0; font-size: 19px; font-weight: 700; }
+.ks3-ba-eats {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 16px;
+}
+.ks3-ba-readout[hidden] { display: none; }
+.ks3-ba-figs {
+  margin-top: 8px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ks3-ba-ppm {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 18px;
+  font-weight: 500;
+}
+.ks3-ba-lvlverdict {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+}
+
+/* ── bioaccumulation on ink ────────────────────────────────────────────── */
+.ks3-dark .ks3-ba-chemnote { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-ba-name { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-ba-level[data-shown] .ks3-ba-name {
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-ba-eats { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-ba-ppm { color: var(--ks3-alert); }
+/* ⚖️ THE HARM FLAG IS AMBER AND IT IS NOT A MARK. It says a quantity has
+   crossed a threshold, on a bench where nothing the student does is right or
+   wrong. The safe rows stay muted, so the amber arrives as an event rather
+   than as a colour scheme — and on the ×1 control it never arrives at all,
+   which is the whole point of the control. */
+.ks3-dark .ks3-ba-lvlverdict { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-ba-level[data-harmful] .ks3-ba-lvlverdict {
+  color: var(--ks3-alert);
+}
+.ks3-ba-bar { background: var(--ks3-on-dark-muted); }
+.ks3-ba-level[data-harmful] .ks3-ba-bar { background: var(--ks3-alert); }
+
+/* ═══ quadrat-bench (b9-06 #s-bench) ═════════════════════════════════════
+   A hundred squares, a hidden answer, and two failures that need two
+   different fixes.
+
+   ⚠️ THE GRID SHIPS EMPTY AND THAT IS THE RESTING STATE, NOT A PLACEHOLDER.
+   The field is generated unseeded in `wireQuadratBench` at page load — the
+   only `Math.random()` in B9 — so no count can be rendered at build time and
+   none should be: an unsurveyed field has nothing on show. */
+.ks3-qb-dials {
+  margin-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 30px;
+}
+.ks3-qb-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--qb-cols, 10), 1fr);
+  gap: 3px;
+  max-width: 460px;
+}
+.ks3-qb-cell {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: 4px;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  background: rgba(228, 87, 46, .08);
+  border: 2px solid transparent;
+}
+/* ⚖️ A COUNTED SQUARE IS OUTLINED, and the outline is the second signal beside
+   the shade so the sample is readable without relying on colour (R2). It is
+   the only thing on the grid that says WHERE you looked — which is the whole
+   difference between the flowery corner and a random spread. */
+.ks3-qb-cell[data-in-sample] { border-color: var(--ks3-on-dark); }
+.ks3-qb-caption {
+  margin: 10px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.ks3-qb-figures[hidden] { display: none; }
+.ks3-qb-figures {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: rgba(255, 255, 255, .06);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px 20px;
+}
+.ks3-qb-figlabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.ks3-qb-figvalue {
+  margin: 3px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 26px;
+  letter-spacing: -.02em;
+}
+
+/* ── quadrat-bench on ink ──────────────────────────────────────────────── */
+.ks3-dark .ks3-qb-cell { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-qb-caption { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-qb-figlabel { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-qb-figvalue { color: var(--ks3-on-dark); }
+/* ⚖️ THE ESTIMATE IS AMBER AND THE REAL TOTAL IS GREEN, AND ONLY AFTER IT IS
+   REVEALED. Until then it is the muted `hidden`, in the same slot and the same
+   type — so the student can see there IS an answer being withheld, which is
+   what makes committing to an estimate feel like committing. */
+.ks3-dark .ks3-qb-figure[data-qb-figure="estimate"] .ks3-qb-figvalue {
+  color: var(--ks3-alert);
+}
+.ks3-dark .ks3-qb-figure[data-qb-figure="real"] .ks3-qb-figvalue {
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-dark .ks3-qb-figure[data-revealed] .ks3-qb-figvalue {
+  color: var(--ks3-ok);
+}
+
+/* ═══ END B9 ═══ */

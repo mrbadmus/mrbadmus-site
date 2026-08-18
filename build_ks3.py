@@ -13765,6 +13765,1409 @@ def r_route_decider(a, act_id):
 # renderers: ═══ END B8 ═══
 
 
+# renderers: ═══ BEGIN B9 ═══
+#
+# ── B9 · Ecosystems and interdependence (⊕ MRB-250) ──
+#
+# Six instruments, one per lesson — the largest single-unit instrument count in
+# the biology build. All six are DOM-only: `canvas`, `requestAnimationFrame`,
+# `setTimeout` and `setInterval` appear ZERO times across all six of Design's
+# delivered pages, and `shared/ks3.js` keeps it that way. So this unit creates
+# no reduced-motion obligation (MRB-220 R4) and adds no timer for a gate to
+# have to chase.
+#
+# ⚠️ ALL SIX SHIP ON `ks3-block ks3-dark ks3-practical`, measured off Design's
+# own `#s-bench` markup on all six pages character for character (b9-01 L105,
+# b9-02 L105, b9-03 L104, b9-04 L105, b9-05 L105, b9-06 L104). `.ks3-dark p` is
+# (0,1,1) and a bare component class is (0,1,0), so every colour rule in the B9
+# stylesheet is written under `.ks3-dark …` at (0,2,0) and every one of them is
+# resolved by `ks3_parity.check_dark_text_specificity()` on the real cascade.
+#
+# ⚠️ AND NONE OF THE SIX MARKS ANYTHING (MRB-196 R10). A chosen tab shows that
+# it was CHOSEN — the alert ground Design's own `seg()` paints — and takes no
+# verdict class, no green, no red, ever. What these benches show is a
+# CONSEQUENCE: what arrives at the top of a chain, what a field does over
+# twenty-six years, what a removal reaches, what is left on a shelf, what a
+# chemical does on the way up, and how wrong an estimate was. Only the mastery
+# ladder marks correctness. Amber is a wrong IDEA being confronted.
+#
+# ⚠️ THE STAGE PREDICATE IS MONOTONIC ON ALL SIX and on three of them that is a
+# DEPARTURE FROM DESIGN, made under MRB-208 rather than against it. Design's
+# `isDone()` for b9-01, b9-03 and b9-05 reads a sticky `everTopped`/`everDone`,
+# but b9-04's reads `s.level !== 'all'` and b9-06's reads `s.truthShown` — both
+# of which a student can turn back OFF by tidying up after themselves (bringing
+# the pollinators back, re-sampling the field). MRB-208 ruled the rail records
+# PARTICIPATION, and B5's compare rows and B7's tuner already resolved the same
+# clash the same way. What ticks is unchanged; what unticks is nothing.
+#
+# ⚖️ AND B9 OWNS THE TROPHIC 10:1 FOR THE WHOLE KEY STAGE (schema §0.7). b9-01
+# states it, computes with it and legals it; b9-05 runs the same arithmetic in
+# the opposite direction. `r_chain_ledger` refuses any other factor rather than
+# letting a later edit re-teach the ratio by accident.
+
+
+def _b9_num(x):
+    """A number printed the way JavaScript's `String(n)` prints it.
+
+    ⚠️ THE STATIC RENDER AND THE RUNTIME MUST AGREE AT EVERY PRINTED VALUE, and
+    the two are written in different languages. Design's pages compose their
+    figures with plain JS concatenation — `(100 / Math.pow(10, i)) + '% of the
+    original'` — which prints `0.1` and `0.01` with no trailing noise. Python's
+    `str(float)` agrees on those; what it does not agree on is the integers,
+    where it says `100.0` and JavaScript says `100`. So the integer case is
+    handled explicitly and everything else falls through to `repr`, which is
+    Python's shortest round-tripping form and is the same algorithm V8 uses.
+    """
+    x = float(x)
+    if x == int(x) and abs(x) < 1e16:
+        return str(int(x))
+    return repr(x)
+
+
+def _b9_strip2(x):
+    """`x.toFixed(2).replace(/\\.?0+$/, '')` — Design's own percentage rule.
+
+    ⚠️ `0.10 → 0.1` AND `0.01` SURVIVES UNTOUCHED, and the difference between
+    those two is the difference between a four-level chain and a five-level
+    one. Reproduced rather than tidied: the verdict line quotes this number as
+    the fraction of the original energy that arrived, and it is the number the
+    lesson's whole argument rests on.
+    """
+    return re.sub(r"\.?0+$", "", "%.2f" % float(x)) or "0"
+
+
+def _b9_progress(pg, act_id, kind, keys):
+    """The block-head readout, validated where the instrument derives it.
+
+    ⊕ MRB-250. Five of the six B9 benches put a live count in Design's head-row
+    paragraph — "level 3 of 4", "year 26", "round 2 of 3", "8 quadrats counted"
+    — and `_KIND_HEAD_FROM` converts the authored `progress` into the head
+    counter that draws it. Reading the key here is what puts the kind into
+    `_KIND_FN_OWNS_PROGRESS`, which is what stops the shell ALSO printing the
+    raw map through `_progress_readout` and shipping `level {n} of {total}`
+    with the placeholders still in it.
+
+    So this is a read site in the strict R5 sense and not a formality: without
+    it the page ships a brace on screen, which is exactly what B7's own drive
+    fails a build for.
+    """
+    if not isinstance(pg, dict) or not pg:
+        raise ValueError(
+            "%s %r declares no `progress`. Design draws a live readout in this "
+            "block's head row on all six B9 pages, right-aligned and mono, and "
+            "without it the row is the eyebrow and the heading with a hole in "
+            "it." % (kind or "?", act_id))
+    for k in keys:
+        if not pg.get(k):
+            raise ValueError(
+                "%s %r progress declares no %r. Every state the instrument can "
+                "reach needs a sentence, or the readout goes blank while the "
+                "student is holding the control." % (kind or "?", act_id, k))
+    return pg
+
+
+def _b9_placeholders(value, act_id, where, required, forbidden=()):
+    """A composed string, checked for the braces it must and must not carry.
+
+    ⚠️ AN UNFILLED `{ppm}` IS INVISIBLE TO EVERY OTHER GATE. The build renders
+    it, the specificity gate resolves its colour, the rail ticks — and a
+    student reads a brace. B7's `b7-chain-traced` drive fails a build for
+    exactly this, having found it in a browser; this catches the same defect at
+    the source, where the message can say which key is wrong.
+    """
+    s = str(value or "")
+    for token in required:
+        if token not in s:
+            raise ValueError(
+                "%s: %s names no %s. That number is computed from the bench's "
+                "own state and cannot be authored as a literal — a verdict "
+                "that quotes a fixed figure is a verdict that is wrong on "
+                "every setting but one." % (act_id, where, token))
+    for token in forbidden:
+        if token in s:
+            raise ValueError(
+                "%s: %s names %s, and nothing fills it here. This branch is "
+                "the one that quotes no number — it is the CONTROL, and its "
+                "whole point is that there is no figure to report."
+                % (act_id, where, token))
+    return s
+
+
+def _b9_head(a, kind, keys, build):
+    """The block-head readout, validated and then converted, in that order.
+
+    ⊕ MRB-250. `r_activity` emits the head row BEFORE it dispatches to the
+    instrument, so a `progress` map that is missing a state is met by
+    `_progress_readout`'s generic complaint about a `data-state-…` name rather
+    than by the renderer's own message about what the readout is FOR. Found by
+    mutation: dropping `progress` from a chain-ledger reported "progress state
+    'format' has no label", which is true, unactionable, and about a key the
+    author never wrote.
+
+    So the derivation validates first and builds second, and there is exactly
+    one message per mistake, raised at the first point that can see it.
+    """
+    pg = _b9_progress(a.get("progress"), a.get("id") or "?", kind, keys)
+    return build(pg)
+
+
+def _b9_json(obj):
+    """A payload map for a `data-` attribute, stable across builds."""
+    return e(json.dumps(obj, separators=(",", ":"), sort_keys=True))
+
+
+# ── b9-01 `#s-bench` · chain-ledger ──────────────────────────────────────
+
+def r_chain_ledger(a, act_id):
+    """⊕ b9-01 `#s-bench` — ten thousand kilojoules, and what is left at the top.
+
+    ⚖️ THE PRODUCER IS DRAWN AT THE BOTTOM, and that is not styling. The level
+    list is `flex-direction: column-reverse`, so a student reads the chain the
+    way the energy travels: in at the bottom, up one step at a time, a tenth
+    of it surviving each step. Flipping the list to ordinary document order
+    would draw the same numbers making the opposite claim, and the arrows in
+    `#s-think` — the unit's most-marked misconception — are about exactly this
+    direction. The rule is in the stylesheet and there is a parity row on it.
+
+    ⚖️ THE VERDICT LINE IS COMPUTED, NEVER AUTHORED PER CHAIN. Three fragments
+    — `lead`, `mid`, `tail` — with the two figures derived from the chain's own
+    length, which is why a fourth chain needs no new prose and cannot disagree
+    with the bench beside it. Four-level chains land on "10 arrived here —
+    0.1% of it"; the five-level sea chain lands on "1 … 0.01%". Both come out
+    of one expression.
+
+    ⚖️ THE FACTOR IS TEN AND THE RENDERER REFUSES ANYTHING ELSE. Schema §0.7:
+    B9 owns the trophic 10:1 for the whole key stage — b9-01 states it, the
+    bench computes with it, the legal line qualifies it as a teaching average,
+    and b9-05 runs the same arithmetic in the other direction. A later edit
+    that "tuned" this to 8 or 12 would silently re-teach the ratio in every
+    lesson that cites b9-01, and nothing else in the build would notice.
+
+    ⚠️ EVERY CHAIN'S PANEL IS IN THE DOCUMENT and only one is shown, so a
+    reader with JS off gets a whole chain rather than an empty shell. Design
+    resets `shown` to 1 on every tab press, so the panels do NOT each keep
+    their own progress — one count is held by the runtime and the panels are
+    redrawn from it, which is what makes switching chains restart the climb.
+    """
+    # ⚠️ `start_kj` AND `factor` ARE NOT IN THIS LIST. `_b7_need` tests
+    # truthiness, so a numeric key whose wrong value is ZERO is reported as
+    # ABSENT and the explicit check below — the one with the teaching message —
+    # never runs. Found by mutation: `harm: 0` on b9-05 said "declares no
+    # `harm`", which is false and sends the author looking for a missing line.
+    _b7_need(a, act_id, ("tabs_label", "chains", "step_label",
+                         "step_spent_label", "reset_label", "verdict"))
+    for f in ("start_kj", "factor"):
+        if a.get(f) is None:
+            raise ValueError("chain-ledger %r declares no %r." % (act_id, f))
+    _b9_progress(a.get("progress"), act_id, "chain-ledger",
+                 ("before", "after"))
+
+    factor = float(a["factor"])
+    if abs(factor - 10.0) > 1e-9:
+        raise ValueError(
+            "chain-ledger %r sets factor %r. B9 OWNS THE TROPHIC 10:1 for the "
+            "whole key stage (schema §0.7): this bench states the ratio, "
+            "computes with it, and b9-05 runs the same arithmetic in the "
+            "opposite direction. Changing it here re-teaches the figure in "
+            "every later lesson that cites b9-01, and the page's own legal "
+            "line — a tenth, a teaching average — would then be describing a "
+            "bench that says something else." % (act_id, a["factor"]))
+    start_kj = float(a["start_kj"])
+    if start_kj <= 0:
+        raise ValueError(
+            "chain-ledger %r starts at %r kJ. The producers are where energy "
+            "ENTERS the living world; a chain that starts at nothing prints a "
+            "ladder of zeroes." % (act_id, a["start_kj"]))
+
+    verdict = a["verdict"]
+    for f in ("lead", "mid", "tail"):
+        if not verdict.get(f):
+            raise ValueError(
+                "chain-ledger %r verdict declares no %r. The line is three "
+                "authored fragments with two computed figures between them; a "
+                "missing fragment is a sentence that reads '10 0.1%%'."
+                % (act_id, f))
+
+    chains = a["chains"]
+    if len(chains) < 2:
+        raise ValueError(
+            "chain-ledger %r declares %d chain(s). The bench's argument is "
+            "that chains of DIFFERENT lengths stop for the same reason, which "
+            "needs more than one." % (act_id, len(chains)))
+
+    seen, tabs, panels = set(), [], []
+    for i, c in enumerate(chains):
+        for f in ("id", "label", "levels"):
+            if not c.get(f):
+                raise ValueError("chain-ledger %r chain %r declares no %r."
+                                 % (act_id, c.get("id"), f))
+        if c["id"] in seen:
+            raise ValueError("chain-ledger %r declares chain id %r twice."
+                             % (act_id, c["id"]))
+        seen.add(c["id"])
+        levels = c["levels"]
+        if len(levels) < 3:
+            raise ValueError(
+                "chain-ledger %r chain %r has %d level(s). A chain that "
+                "reaches its top predator in two steps is a caption, not a "
+                "climb." % (act_id, c["id"], len(levels)))
+        top = start_kj / (factor ** (len(levels) - 1))
+        if top < 1.0:
+            raise ValueError(
+                "chain-ledger %r chain %r runs %d levels and arrives at %s kJ. "
+                "Design's own formatting has no branch below one kilojoule, "
+                "and the lesson's point is that a chain STOPS before it gets "
+                "there — a level that prints a fraction of a kilojoule is the "
+                "bench contradicting the sentence under it."
+                % (act_id, c["id"], len(levels), _b9_num(top)))
+        for L in levels:
+            for f in ("name", "role", "note"):
+                if not L.get(f):
+                    raise ValueError(
+                        "chain-ledger %r chain %r has a level missing %r. The "
+                        "`role` is the job title `#s-roles` names and the "
+                        "`note` is what arrives on a press — a level that "
+                        "unhides nothing is a press that does nothing."
+                        % (act_id, c["id"], f))
+
+        first = i == 0
+        tabs.append(
+            '<li><button type="button" class="ks3-option ks3-cl-tab" '
+            'data-cl-chain="%s" aria-pressed="%s">'
+            '<span class="ks3-opt-label">%s</span></button></li>'
+            % (e(c["id"]), "true" if first else "false", t(c["label"])))
+
+        rows = []
+        for j, L in enumerate(levels):
+            kj = start_kj / (factor ** j)
+            pct = 100.0 / (factor ** j)
+            rows.append(
+                '<li class="ks3-cl-level" data-i="%d"%s%s>'
+                '<div class="ks3-cl-levelhead">'
+                '<p class="ks3-cl-levelname">%s</p>'
+                '<p class="ks3-cl-levelrole">%s</p></div>'
+                '<div class="ks3-cl-readout" data-cl-readout%s>'
+                '<div class="ks3-cl-figs">'
+                '<p class="ks3-cl-energy" data-cl-energy>%s</p>'
+                '<p class="ks3-cl-pct" data-cl-pct>%s</p></div>'
+                '<span class="ks3-cl-track">'
+                '<span class="ks3-cl-bar" data-cl-bar style="width:%s%%">'
+                '</span></span>'
+                '<p class="ks3-cl-note">%s</p></div></li>'
+                % (j, ' data-shown=""' if j == 0 else "",
+                   ' data-top=""' if j == 0 else "",
+                   t(L["name"]), t(L["role"]), "" if j == 0 else " hidden",
+                   t(_b9_energy(kj, a)), t(_b9_pct(pct, a)),
+                   e(_pctnum(max(0.6, pct))), t(L["note"])))
+
+        panels.append(
+            '<ol class="ks3-cl-levels" role="list" data-cl-chainpanel="%s" '
+            'data-total="%d"%s>%s</ol>'
+            % (e(c["id"]), len(levels), "" if first else " hidden",
+               "".join(rows)))
+
+    return ('<div class="ks3-cl" data-cl data-start-kj="%s" data-factor="%s" '
+            'data-energy-unit="%s" data-pct-suffix="%s" data-step-label="%s" '
+            'data-step-spent-label="%s" data-verdict-lead="%s" '
+            'data-verdict-mid="%s" data-verdict-tail="%s">'
+            '<div class="ks3-cl-tabsgroup">'
+            '<p class="ks3-cl-tabslabel" id="%s-chains">%s</p>'
+            '<ul class="ks3-options ks3-cl-tabs" role="list" '
+            'aria-labelledby="%s-chains">%s</ul></div>'
+            '<div class="ks3-cl-panel">%s'
+            '<div class="ks3-cl-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-cl-up" '
+            'data-cl-up>%s</button>'
+            '<button type="button" class="ks3-reveal-btn ks3-cl-reset" '
+            'data-cl-reset>%s</button></div>'
+            '<p class="ks3-cl-verdict" data-cl-verdict hidden>%s</p>'
+            '</div></div>'
+            % (e(_pctnum(start_kj)), e(_pctnum(factor)),
+               e(_b8_plain(a.get("energy_unit") or " kJ", act_id,
+                           "`energy_unit`")),
+               e(_b8_plain(a.get("pct_suffix") or "% of the original", act_id,
+                           "`pct_suffix`")),
+               e(_b8_plain(a["step_label"], act_id, "`step_label`")),
+               e(_b8_plain(a["step_spent_label"], act_id,
+                           "`step_spent_label`")),
+               e(_b8_plain(verdict["lead"], act_id, "verdict `lead`")),
+               e(_b8_plain(verdict["mid"], act_id, "verdict `mid`")),
+               e(_b8_plain(verdict["tail"], act_id, "verdict `tail`")),
+               e(act_id), t(a["tabs_label"]), e(act_id), "".join(tabs),
+               "".join(panels), t(a["step_label"]), t(a["reset_label"]),
+               t(_b9_chain_verdict(a, chains[0], factor, start_kj))))
+
+
+def _b9_energy(kj, a):
+    """`10,000 kJ` — grouped by hand, never by `toLocaleString()`.
+
+    ⚠️ `toLocaleString()` IS THE BROWSER'S LOCALE AND NOT OURS. A student whose
+    machine is set to a European locale reads `10.000 kJ` for ten thousand —
+    ten, printed as if it were ten. Design writes the locale call; the port
+    groups explicitly at both ends so the page cannot say a different number in
+    a different country.
+    """
+    unit = a.get("energy_unit") or " kJ"
+    if kj >= 1 and float(kj) == int(kj):
+        return _b8_group(int(kj), True) + unit
+    return _b9_num(kj) + unit
+
+
+def _b9_pct(pct, a):
+    return _b9_num(pct) + (a.get("pct_suffix") or "% of the original")
+
+
+def _b9_chain_verdict(a, chain, factor, start_kj):
+    """The computed line, built once here and once in `wireChainLedger`."""
+    n = len(chain["levels"])
+    top = start_kj / (factor ** (n - 1))
+    v = a["verdict"]
+    return ("%s%s%s%s%s"
+            % (v["lead"],
+               _b8_group(int(top), True) if (top >= 1 and top == int(top))
+               else _b9_num(top),
+               v["mid"], _b9_strip2(100.0 / (factor ** (n - 1))), v["tail"]))
+
+
+# ── b9-02 `#s-bench` · cycle-runner ──────────────────────────────────────
+
+# ⚖️ THE SIX NOTE BRANCHES, IN DESIGN'S EVALUATION ORDER. First match wins, and
+# the ORDER IS THE MEANING: `no_pred_at_ceiling` must be tested before
+# `no_pred` or the ceiling note never fires and *Remove every fox* stops
+# teaching carrying capacity. The predicates are implemented once, in
+# `wireCycleRunner`, keyed by these ids — which is why the id set is closed and
+# ordered rather than free.
+#
+# ⊖ Design's `notes` carry a `when` string in the schema. It is NOT authored
+# here: a predicate expressed as a string needs an evaluator, we are not
+# shipping one, and a key whose only reader is a comment is precisely the dead
+# key R5 forbids. The `id` IS the predicate's name and the runtime branches on
+# it. Reported as a schema deviation.
+_B9_CYCLE_NOTES = ("year_zero", "no_pred_at_ceiling", "no_pred",
+                   "prey_high_pred_low", "prey_low", "steady")
+
+_B9_CYCLE_MODEL = ("r", "k", "a", "b", "m", "start_prey", "start_pred",
+                   "history", "prey_cap_mult", "pred_floor")
+
+
+def r_cycle_runner(a, act_id):
+    """⊕ b9-02 `#s-bench` — two rules, twenty-six years, and a lag.
+
+    ⚖️ K IS THE GRASS SUPPLY AND IT IS NOT A TUNING CONSTANT. It is the only
+    reason *Remove every fox* teaches a carrying-capacity result — the rabbits
+    climb, then stop, crowded and hungry — instead of drawing the exponential
+    curve that would teach the misconception `#s-think` exists to break. Design
+    says so in a comment on her own page. A revision that drops it, raises it
+    out of reach, or replaces the logistic term with plain growth deletes the
+    lesson, so the renderer refuses a model whose prey cannot reach the
+    ceiling and refuses one that starts at or above it.
+
+    ⚖️ THE TWO SERIES ARE SCALED INDEPENDENTLY and the caption says so in
+    words. On one scale the fox line flattens into the axis and the LAG — which
+    is the entire lesson, and the thing rung 1 and rung 2 both test — becomes
+    unreadable. `wireCycleRunner` computes `maxPrey` and `maxPred` separately,
+    each with its own floor, exactly as Design does. Do not "fix" it.
+
+    ⚠️ *REMOVE EVERY FOX* IS NOT A RESET. It toggles the predator count between
+    zero and its starting value, pushes ONE history point and advances the year
+    by one — so the chart records the intervention as a year like any other and
+    the student can see the rabbits respond to it over the years that follow.
+
+    ⚑ `culled` is dead in DESIGN'S OWN CODE: `onCull` sets it, `onReset`
+    clears it, and `renderVals()` never reads it. Not carried across.
+    """
+    _b7_need(a, act_id, ("model", "series", "chart_caption", "year_label",
+                         "ten_label", "cull_label", "restore_label",
+                         "reset_label", "notes"))
+    _b9_progress(a.get("progress"), act_id, "cycle-runner", ("prefix",))
+
+    model = a["model"]
+    for f in _B9_CYCLE_MODEL:
+        if model.get(f) is None:
+            raise ValueError(
+                "cycle-runner %r model declares no %r. Every one of the ten is "
+                "in the recurrence or in a clamp on it, and a missing one "
+                "makes the whole field NaN on the first press."
+                % (act_id, f))
+    k = float(model["k"])
+    if k <= 0:
+        raise ValueError(
+            "cycle-runner %r sets K = %r. K IS THE GRASS SUPPLY. Without a "
+            "positive carrying capacity the logistic term is gone and "
+            "'Remove every fox' draws an exponential curve — which is the "
+            "misconception `#s-think` exists to break, taught by the bench "
+            "that is supposed to break it." % (act_id, model["k"]))
+    if float(model["start_prey"]) >= k:
+        raise ValueError(
+            "cycle-runner %r starts the prey at %r against a ceiling of %r. "
+            "The field opens with room to grow into, or the first ten years "
+            "show a population that only ever falls."
+            % (act_id, model["start_prey"], model["k"]))
+    if float(model["start_pred"]) <= 0:
+        raise ValueError(
+            "cycle-runner %r starts with %r predators. With none there is no "
+            "cycle to run and the bench opens on the cull's answer."
+            % (act_id, model["start_pred"]))
+    if int(model["history"]) < 10:
+        raise ValueError(
+            "cycle-runner %r keeps %r years of history. The cycle's period is "
+            "several years and the lag is read ACROSS the chart, so a window "
+            "shorter than one full turn cannot show it."
+            % (act_id, model["history"]))
+    if float(model["prey_cap_mult"]) < 1:
+        raise ValueError(
+            "cycle-runner %r caps the prey below K itself (×%r). The ceiling "
+            "clamp exists to stop a discrete model overshooting, not to hold "
+            "the population under its own carrying capacity."
+            % (act_id, model["prey_cap_mult"]))
+
+    series = a["series"]
+    for f in ("prey", "pred"):
+        s = series.get(f) or {}
+        if not (s.get("name") and s.get("colour_token")):
+            raise ValueError(
+                "cycle-runner %r series %r needs `name` and `colour_token`. "
+                "The name is the live readout's label and the token is the "
+                "bar's fill — the caption reads the two colours out by name, "
+                "so neither is decoration." % (act_id, f))
+        if not str(s["colour_token"]).startswith("--ks3-"):
+            raise ValueError(
+                "cycle-runner %r series %r names colour token %r. Only the "
+                "shipped KS3 palette is reachable from a page; an arbitrary "
+                "value here is a styling backdoor around the parity gate."
+                % (act_id, f, s["colour_token"]))
+
+    notes = a["notes"]
+    got = [n.get("id") for n in notes]
+    if got != list(_B9_CYCLE_NOTES):
+        raise ValueError(
+            "cycle-runner %r declares note branches %s. The six are fixed and "
+            "ORDERED — %s — because first match wins and %r must be tested "
+            "before %r or the ceiling note never fires and 'Remove every fox' "
+            "stops teaching carrying capacity."
+            % (act_id, got, list(_B9_CYCLE_NOTES),
+               "no_pred_at_ceiling", "no_pred"))
+    for n in notes:
+        if not n.get("text"):
+            raise ValueError(
+                "cycle-runner %r note %r has no text. Every branch is a state "
+                "the field can be left in, and a blank one reads as the bench "
+                "having stopped responding." % (act_id, n["id"]))
+
+    prey_name = _b8_plain(series["prey"]["name"], act_id, "series prey `name`")
+    pred_name = _b8_plain(series["pred"]["name"], act_id, "series pred `name`")
+    note_map = dict((n["id"], _b8_plain(n["text"], act_id,
+                                        "note %r" % n["id"])) for n in notes)
+    mdl = dict((f, float(model[f])) for f in _B9_CYCLE_MODEL)
+
+    # The resting chart is Design's opening history: exactly one year, the
+    # starting pair. `maxPrey`/`maxPred` carry their own floors, so the two
+    # bars are already on two scales in the shipped bytes.
+    p0, q0 = mdl["start_prey"], mdl["start_pred"]
+    max_prey = max(600.0, p0)
+    max_pred = max(150.0, q0)
+
+    return ('<div class="ks3-cy" data-cy data-model="%s" data-notes="%s" '
+            'data-prey-name="%s" data-pred-name="%s" data-prey-fill="%s" '
+            'data-pred-fill="%s" data-cull-label="%s" '
+            'data-restore-label="%s">'
+            '<div class="ks3-cy-panel">'
+            '<div class="ks3-cy-now">'
+            '<p class="ks3-cy-live" data-series="prey">'
+            '<span class="ks3-cy-livename">%s</span> '
+            '<span class="ks3-cy-liveval" data-cy-prey>%d</span></p>'
+            '<p class="ks3-cy-live" data-series="pred">'
+            '<span class="ks3-cy-livename">%s</span> '
+            '<span class="ks3-cy-liveval" data-cy-pred>%d</span></p></div>'
+            '<div class="ks3-cy-chart" data-cy-chart role="img" '
+            'aria-label="%s">%s</div>'
+            '<p class="ks3-cy-caption">%s</p>'
+            '<p class="ks3-cy-note" data-cy-note>%s</p>'
+            '<div class="ks3-cy-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-cy-btn" '
+            'data-cy-year>%s</button>'
+            '<button type="button" class="ks3-reveal-btn ks3-cy-btn" '
+            'data-cy-ten>%s</button>'
+            '<button type="button" class="ks3-reveal-btn ks3-cy-btn" '
+            'data-cy-cull>%s</button>'
+            '<button type="button" class="ks3-reveal-btn ks3-cy-btn" '
+            'data-cy-reset>%s</button></div></div></div>'
+            % (_b9_json(mdl), _b9_json(note_map), e(prey_name), e(pred_name),
+               e(series["prey"]["colour_token"]),
+               e(series["pred"]["colour_token"]),
+               e(_b8_plain(a["cull_label"], act_id, "`cull_label`")),
+               e(_b8_plain(a["restore_label"], act_id, "`restore_label`")),
+               t(series["prey"]["name"]), _b8_round(p0),
+               t(series["pred"]["name"]), _b8_round(q0),
+               e(_b8_plain(a["chart_caption"], act_id, "`chart_caption`")),
+               _b9_cycle_bars(series, p0, q0, max_prey, max_pred),
+               t(a["chart_caption"]), t(note_map["year_zero"]),
+               t(a["year_label"]), t(a["ten_label"]), t(a["cull_label"]),
+               t(a["reset_label"])))
+
+
+def _b9_cycle_bars(series, prey, pred, max_prey, max_pred):
+    """One year of the chart: a paired amber and green bar on two scales."""
+    return ('<span class="ks3-cy-year">'
+            '<span class="ks3-cy-bar" data-series="prey" '
+            'style="--cy-fill: var(%s); height: %s%%"></span>'
+            '<span class="ks3-cy-bar" data-series="pred" '
+            'style="--cy-fill: var(%s); height: %s%%"></span></span>'
+            % (e(series["prey"]["colour_token"]),
+               e(_pctnum(max(2.0, (prey / max_prey) * 100.0))),
+               e(series["pred"]["colour_token"]),
+               e(_pctnum(max(2.0, (pred / max_pred) * 100.0)))))
+
+
+# ── b9-03 `#s-bench` · remove-a-species ──────────────────────────────────
+
+def r_remove_a_species(a, act_id):
+    """⊕ b9-03 `#s-bench` — take one out of an oak wood and follow it.
+
+    ⚖️ THE BEES ARE IN THE WEB WITH NO FEEDING LINE, DELIBERATELY. `web_lines`
+    gives them a SERVICE — they pollinate the wildflowers — and nothing in the
+    wood eats them. Removing them still empties the web three rounds later, and
+    the verdict says so: feeding is not the only kind of dependence. That is
+    the setup for b9-04 and it is the strongest link in the unit. A revision
+    that "tidies" the web by giving the bees a feeding line, or drops them
+    because they have none, destroys it.
+
+    ⚖️ THE OAK IS THE ONE REMOVAL WHERE THE WEB DOES NOT REORGANISE. Every
+    other verdict describes a redistribution; the producer's describes a loss
+    the web cannot absorb. It is the contrast case, and it is why there are six
+    removals rather than five.
+
+    ⚠️ EXACTLY THREE ROUNDS PER SPECIES, AND AN EMPTY ONE IS REFUSED. Design's
+    `caterpillars` carries a fourth round object — `{ title: '', body: '' }` —
+    which her renderer filters out at draw time (`sp.rounds.filter(r => r.title)`)
+    so the page never shows it and the counter still reads "of 3". It is an
+    editing artefact. This renderer has no filter and does not want one: an
+    empty round is a dead payload entry under R5 and a blank row on the page,
+    and refusing it at build time is how the authoring pass finds out.
+
+    ⚠️ EVERY SPECIES' PANEL IS IN THE DOCUMENT and only one is shown. Design
+    resets `shown` to 0 on every tab press, so the panels do not each keep
+    their own progress — the runtime holds one count and redraws.
+    """
+    _b7_need(a, act_id, ("web_label", "web_lines", "tabs_label", "species",
+                         "step_first_label", "step_label",
+                         "step_spent_label", "reset_label",
+                         "still_here_label", "removed_label"))
+    _b9_progress(a.get("progress"), act_id, "remove-a-species",
+                 ("none", "mid", "all"))
+
+    for key in ("still_here_label", "removed_label"):
+        if "{name}" not in str(a[key]):
+            raise ValueError(
+                "remove-a-species %r's %s names no {name}. Design composes the "
+                "panel's headline from the species' own label — 'Ladybirds — "
+                "still in the wood', 'Ladybirds removed' — so the line has to "
+                "carry the slot the label goes into." % (act_id, key))
+
+    web_lines = a["web_lines"]
+    if len(web_lines) < 6:
+        raise ValueError(
+            "remove-a-species %r draws %d web line(s). The bench's whole claim "
+            "is that a removal reaches species it never touched, which needs a "
+            "web with enough in it to reach ACROSS."
+            % (act_id, len(web_lines)))
+
+    species = a["species"]
+    if len(species) < 4:
+        raise ValueError(
+            "remove-a-species %r offers %d removal(s). The contrast between a "
+            "web that reorganises and a producer whose loss it cannot absorb "
+            "is what the set is for." % (act_id, len(species)))
+
+    seen, tabs, panels = set(), [], []
+    for i, sp in enumerate(species):
+        for f in ("id", "label", "why", "rounds", "verdict"):
+            if not sp.get(f):
+                raise ValueError(
+                    "remove-a-species %r species %r declares no %r."
+                    % (act_id, sp.get("id"), f))
+        if sp["id"] in seen:
+            raise ValueError("remove-a-species %r declares species id %r twice."
+                             % (act_id, sp["id"]))
+        seen.add(sp["id"])
+        rounds = sp["rounds"]
+        if len(rounds) != 3:
+            raise ValueError(
+                "remove-a-species %r species %r declares %d round(s). Three, "
+                "on every species, because the counter says 'of 3' and because "
+                "the third round is where the consequence has travelled far "
+                "enough to be surprising. Design's `caterpillars` carries a "
+                "FOURTH, empty, and filters it out at draw time — that is an "
+                "editing artefact and it is not carried across."
+                % (act_id, sp["id"], len(rounds)))
+        for j, r in enumerate(rounds, 1):
+            if not (r.get("title") and r.get("body")):
+                raise ValueError(
+                    "remove-a-species %r species %r round %d is missing "
+                    "`title` or `body`. An empty round draws a numbered row "
+                    "with nothing in it and counts towards 'all three rounds'."
+                    % (act_id, sp["id"], j))
+
+        first = i == 0
+        tabs.append(
+            '<li><button type="button" class="ks3-option ks3-rs-tab" '
+            'data-rs-species="%s" aria-pressed="%s">'
+            '<span class="ks3-opt-label">%s</span></button></li>'
+            % (e(sp["id"]), "true" if first else "false", t(sp["label"])))
+
+        rows = "".join(
+            '<li class="ks3-rs-round" data-i="%d">'
+            '<span class="ks3-rs-num" aria-hidden="true">%d</span>'
+            '<span class="ks3-rs-roundmain">'
+            '<span class="ks3-rs-roundtitle">%s</span>'
+            '<span class="ks3-rs-roundbody" hidden>%s</span></span></li>'
+            % (j, j + 1, t(r["title"]), t(r["body"]))
+            for j, r in enumerate(rounds))
+
+        panels.append(
+            '<div class="ks3-rs-panel" data-rs-panel="%s" data-total="%d" '
+            'data-label="%s"%s>'
+            '<p class="ks3-rs-headline" data-rs-headline>%s</p>'
+            '<p class="ks3-rs-why">%s</p>'
+            '<ol class="ks3-rs-rounds" role="list">%s</ol>'
+            '<p class="ks3-rs-verdict" data-rs-verdict hidden>%s</p></div>'
+            % (e(sp["id"]), len(rounds),
+               e(_b8_plain(sp["label"], act_id, "species %r `label`" % sp["id"])),
+               "" if first else " hidden",
+               t(str(a["still_here_label"]).replace("{name}", sp["label"])),
+               t(sp["why"]), rows, rich(sp["verdict"])))
+
+    return ('<div class="ks3-rs" data-rs data-still-label="%s" '
+            'data-removed-label="%s" data-first-label="%s" '
+            'data-step-label="%s" data-spent-label="%s">'
+            '<div class="ks3-rs-web">'
+            '<p class="ks3-rs-weblabel">%s</p>'
+            '<ul class="ks3-rs-weblines" role="list">%s</ul></div>'
+            '<div class="ks3-rs-tabsgroup">'
+            '<p class="ks3-rs-tabslabel" id="%s-remove">%s</p>'
+            '<ul class="ks3-options ks3-rs-tabs" role="list" '
+            'aria-labelledby="%s-remove">%s</ul></div>'
+            '<div class="ks3-rs-body">%s'
+            '<div class="ks3-rs-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-rs-next" '
+            'data-rs-next>%s</button>'
+            '<button type="button" class="ks3-reveal-btn ks3-rs-reset" '
+            'data-rs-reset>%s</button></div></div></div>'
+            % (e(_b8_plain(a["still_here_label"], act_id,
+                           "`still_here_label`")),
+               e(_b8_plain(a["removed_label"], act_id, "`removed_label`")),
+               e(_b8_plain(a["step_first_label"], act_id,
+                           "`step_first_label`")),
+               e(_b8_plain(a["step_label"], act_id, "`step_label`")),
+               e(_b8_plain(a["step_spent_label"], act_id,
+                           "`step_spent_label`")),
+               t(a["web_label"]),
+               "".join('<li class="ks3-rs-webline">%s</li>' % t(w)
+                       for w in web_lines),
+               e(act_id), t(a["tabs_label"]), e(act_id), "".join(tabs),
+               "".join(panels), t(a["step_first_label"]),
+               t(a["reset_label"])))
+
+
+# ── b9-04 `#s-bench` · supermarket-shelf ─────────────────────────────────
+
+def r_supermarket_shelf(a, act_id):
+    """⊕ b9-04 `#s-bench` — twelve foods, and two numbers that fall differently.
+
+    ⚖️ THE GAP BETWEEN THE TWO BARS IS THE ENTIRE LESSON. Two bars, two
+    colours, two labels, two percentages, side by side and never combined. The
+    `none` note reads the gap aloud — nobody starves on what is left, and
+    nobody stays healthy on it either — and rung 2 marks a student for knowing
+    which of the two falls further. A revision that merges them into one 'food'
+    bar, renders them stacked, or drops one for space at a narrow breakpoint
+    deletes the lesson, so: the grid is `repeat(auto-fit, minmax(220px, 1fr))`
+    and wraps to two ROWS rather than merging, there is a parity row on the
+    container at a narrow viewport, and this renderer REFUSES a payload whose
+    two bars land on the same percentage when the pollinators are gone.
+
+    ⚖️ AND THE DIAL DOUBLES AS THE TEACHING LABEL. At full pollination each
+    tile shows the food's `how` — wind-pollinated, grown from tubers,
+    pollinated by midges — rather than a status, so a student reads WHY a food
+    is about to survive before finding out that it does.
+
+    ⚠️ THREE STATES, TWO BUTTONS, AND NO PATH FROM `half` BACK TO `all`. That
+    is Design's, measured, and it is left alone: *Remove every insect
+    pollinator* toggles `none ↔ all`, *Lose half of them* sets `half`
+    unconditionally. Inventing a third button would be inventing a control.
+    """
+    _b7_need(a, act_id, ("foods", "bars", "remove_label", "restore_label",
+                         "half_label", "notes"))
+    # ⚠️ THREE NAMED STATES WITH NO NUMBER IN ANY OF THEM, so this one alone
+    # among the six needs no derivation — `_progress_readout` draws it as
+    # authored. It still goes through `_KIND_HEAD_FROM` like its five siblings,
+    # because reading `progress` here is what puts the kind into
+    # `_KIND_FN_OWNS_PROGRESS`, and a kind in that set gets no head row at all
+    # unless something hands one back.
+    pg = _b9_progress(a.get("progress"), act_id, "supermarket-shelf",
+                      ("all", "half", "none"))
+    if list(pg)[0] != "all":
+        raise ValueError(
+            "supermarket-shelf %r opens its progress on %r. `_progress_readout` "
+            "prints the FIRST authored state at rest and the shelf opens "
+            "intact, so a page with the pollinators still on it would ship "
+            "bytes saying they were gone." % (act_id, list(pg)[0]))
+
+    foods = a["foods"]
+    if len(foods) < 8:
+        raise ValueError(
+            "supermarket-shelf %r stocks %d food(s). The argument is a WEEKLY "
+            "SHOP — that most of the calories survive and most of the variety "
+            "does not — and it cannot be made from a handful."
+            % (act_id, len(foods)))
+
+    bars = a["bars"]
+    if [b.get("id") for b in bars] != ["cal", "vit"]:
+        raise ValueError(
+            "supermarket-shelf %r declares bars %s. Exactly two, `cal` then "
+            "`vit`, because the GAP between them is the lesson and the order "
+            "is the order the note reads them out in."
+            % (act_id, [b.get("id") for b in bars]))
+    for b in bars:
+        if not (b.get("label") and b.get("colour_token")):
+            raise ValueError(
+                "supermarket-shelf %r bar %r needs `label` and `colour_token`. "
+                "Two labels and two colours is what stops them reading as one "
+                "quantity." % (act_id, b.get("id")))
+        if not str(b["colour_token"]).startswith("--ks3-"):
+            raise ValueError(
+                "supermarket-shelf %r bar %r names colour token %r. Only the "
+                "shipped KS3 palette is reachable from a page."
+                % (act_id, b["id"], b["colour_token"]))
+
+    cal_max = vit_max = 0.0
+    cal_gone = vit_gone = 0.0
+    deps = set()
+    for f in foods:
+        for key in ("name", "how"):
+            if not f.get(key):
+                raise ValueError(
+                    "supermarket-shelf %r food %r declares no %r. `how` is "
+                    "what the tile reads at full pollination — the dial "
+                    "doubles as the teaching label." % (act_id, f.get("name"), key))
+        for key in ("cal", "vit"):
+            if f.get(key) is None:
+                raise ValueError(
+                    "supermarket-shelf %r food %r declares no %r share. A food "
+                    "with no share contributes nothing to either bar and is a "
+                    "tile that cannot move." % (act_id, f["name"], key))
+        dep = float(f.get("dep") or 0)
+        if not 0 <= dep <= 1:
+            raise ValueError(
+                "supermarket-shelf %r food %r has dep %r. It is the FRACTION "
+                "of the crop lost with no insect pollinators, so it lives "
+                "between 0 and 1." % (act_id, f["name"], f["dep"]))
+        deps.add(dep)
+        cal_max += float(f["cal"])
+        vit_max += float(f["vit"])
+        cal_gone += float(f["cal"]) * (1 - dep)
+        vit_gone += float(f["vit"]) * (1 - dep)
+    if cal_max <= 0 or vit_max <= 0:
+        raise ValueError(
+            "supermarket-shelf %r's shelf carries no calories or no vitamins. "
+            "Both bars are percentages of a total and neither total can be "
+            "zero." % act_id)
+    if 0.0 not in deps:
+        raise ValueError(
+            "supermarket-shelf %r stocks nothing with dep 0. The four "
+            "wind-pollinated staples are the reason the calorie bar survives, "
+            "and without one the bench teaches 'no bees, no food' — which is "
+            "the belief `#s-think` exists to break." % act_id)
+    if max(deps) < 1.0:
+        raise ValueError(
+            "supermarket-shelf %r stocks nothing that is entirely "
+            "insect-pollinated. A shelf where every tile only dims never shows "
+            "a food GO, and 'gone' is the tile state the lesson turns on."
+            % act_id)
+
+    cal_pct = _b8_round(cal_gone / cal_max * 100.0)
+    vit_pct = _b8_round(vit_gone / vit_max * 100.0)
+    if cal_pct == vit_pct:
+        raise ValueError(
+            "supermarket-shelf %r lands both bars on %d%% with the pollinators "
+            "gone. THE GAP BETWEEN THE TWO BARS IS THE ENTIRE LESSON — the "
+            "`none` note reads it aloud and rung 2 marks a student for knowing "
+            "which falls further. Two bars that agree are one bar drawn twice."
+            % (act_id, cal_pct))
+    if vit_pct >= cal_pct:
+        raise ValueError(
+            "supermarket-shelf %r loses %d%% of its calories and %d%% of its "
+            "vitamins. The claim the unit makes — cereals carry the calories, "
+            "insect-pollinated crops carry the variety — is that the VITAMIN "
+            "bar falls further. This shelf says the opposite."
+            % (act_id, 100 - cal_pct, 100 - vit_pct))
+
+    notes = a["notes"]
+    for f in ("all", "none", "half"):
+        if not notes.get(f):
+            raise ValueError("supermarket-shelf %r notes declares no %r."
+                             % (act_id, f))
+    _b9_placeholders(notes["none"], act_id, "note `none`", ("{cal}", "{vit}"))
+
+    tiles = "".join(
+        '<li class="ks3-ss-food" data-ss-food="%d" data-dep="%s" '
+        'data-how="%s">'
+        '<p class="ks3-ss-foodname">%s</p>'
+        '<p class="ks3-ss-foodstatus" data-ss-status>%s</p></li>'
+        % (i, e(_pctnum(f.get("dep") or 0)),
+           e(_b8_plain(f["how"], act_id, "food %r `how`" % f["name"])),
+           t(f["name"]), t(f["how"]))
+        for i, f in enumerate(foods))
+
+    barhtml = "".join(
+        '<div class="ks3-ss-bar" data-ss-bar="%s">'
+        '<div class="ks3-ss-barhead">'
+        '<p class="ks3-ss-barlabel">%s</p>'
+        '<p class="ks3-ss-barvalue" data-ss-value>100%%</p></div>'
+        '<span class="ks3-ss-track"><span class="ks3-ss-fill" '
+        'style="--ss-fill: var(%s); width: 100%%"></span></span></div>'
+        % (e(b["id"]), t(b["label"]), e(b["colour_token"]))
+        for b in bars)
+
+    return ('<div class="ks3-ss" data-ss data-shares="%s" data-notes="%s" '
+            'data-remove-label="%s" data-restore-label="%s" '
+            'data-gone-label="%s" data-unaffected-label="%s" '
+            'data-part-label="%s">'
+            '<ul class="ks3-ss-shelf" role="list">%s</ul>'
+            '<div class="ks3-ss-bars">%s</div>'
+            '<p class="ks3-ss-note" data-ss-note>%s</p>'
+            '<div class="ks3-ss-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-ss-toggle" '
+            'data-ss-toggle>%s</button>'
+            '<button type="button" class="ks3-reveal-btn ks3-ss-half" '
+            'data-ss-half>%s</button></div></div>'
+            % (_b9_json([[float(f["cal"]), float(f["vit"]),
+                          float(f.get("dep") or 0)] for f in foods]),
+               _b9_json(dict((k, _b8_plain(notes[k], act_id, "note %r" % k))
+                             for k in ("all", "none", "half"))),
+               e(_b8_plain(a["remove_label"], act_id, "`remove_label`")),
+               e(_b8_plain(a["restore_label"], act_id, "`restore_label`")),
+               e(_b8_plain(a.get("gone_label") or "gone", act_id,
+                           "`gone_label`")),
+               e(_b8_plain(a.get("unaffected_label") or "unaffected", act_id,
+                           "`unaffected_label`")),
+               e(_b8_plain(a.get("part_label") or "{n}% of the crop", act_id,
+                           "`part_label`")),
+               tiles, barhtml, t(notes["all"]),
+               t(a["remove_label"]), t(a["half_label"])))
+
+
+# ── b9-05 `#s-bench` · bioaccumulation ───────────────────────────────────
+
+def r_bioaccumulation(a, act_id):
+    """⊕ b9-05 `#s-bench` — one lake, six levels, and a persistence dial.
+
+    ⚖️ THE ×1 SETTING IS THE CONTROL AND IT PRODUCES A FLAT LINE. Its verdict
+    is the only one that computes no number: the chemical is excreted as fast
+    as it arrives, so no organism holds more than any other. It is what proves
+    the mechanism is PERSISTENCE, NOT TOXICITY — the claim rung 1 marks and
+    `#s-think` confronts — and removing it as 'the boring one' would remove the
+    control from a lesson about controls. The renderer refuses a payload
+    without one.
+
+    ⚖️ THE DIAL IS A PERSISTENCE DIAL AND NEVER A TOXICITY DIAL. Nothing on the
+    bench varies how poisonous the chemical is; what varies is whether the body
+    can get rid of it. Bioaccumulation is driven by FAT-SOLUBILITY, and the
+    water-soluble setting is the one that does nothing — that pairing is
+    already live as a written distractor and every label here keeps it.
+
+    ⚖️ SIX ROWS, AND THE BENCH WINS OVER THE PROSE. Measured, `persistent` runs
+    0.0030 → 0.030 → 0.300 → 3.0 → 30 → 300 ppm and the harmful verdict
+    computes 100,000×. The hook, rung 3 and NOTES-B9 all describe five rows and
+    ~10,000×. Ruled: the bench is right and the prose is what changes. The
+    renderer asserts the persistent setting actually REACHES harm, which is the
+    property the lesson depends on, rather than asserting a row count.
+
+    ⚠️ FOUR-BRANCH NUMBER FORMATTING, REPRODUCED EXACTLY: ≥10 → 0 dp, ≥1 → 1
+    dp, ≥0.01 → 3 dp, else 4 dp. It is what puts `0.0030` and `300` in the same
+    column without either reading as noise, and the runtime and the static
+    render share one implementation of it in each language.
+    """
+    # ⚠️ `harm` IS NOT IN THIS LIST — see the same note on `r_chain_ledger`.
+    _b7_need(a, act_id, ("tabs_label", "chemicals", "levels",
+                         "harm_verdict", "safe_verdict", "step_label",
+                         "step_spent_label", "reset_label", "verdicts"))
+    if a.get("harm") is None:
+        raise ValueError(
+            "bioaccumulation %r declares no `harm` threshold. Every row is "
+            "measured against it, so without one no level is ever flagged and "
+            "the ospreys' verdict can never fire." % act_id)
+    _b9_progress(a.get("progress"), act_id, "bioaccumulation",
+                 ("before", "after"))
+
+    harm = float(a["harm"])
+    if harm <= 0:
+        raise ValueError(
+            "bioaccumulation %r puts the harm threshold at %r ppm. Every row "
+            "would then read 'above the level that causes harm', including the "
+            "lake water, and the bench would be saying the water was the "
+            "problem all along." % (act_id, a["harm"]))
+
+    levels = a["levels"]
+    if len(levels) < 4:
+        raise ValueError(
+            "bioaccumulation %r draws %d level(s). The build-up is only "
+            "visible over a chain long enough for the multiplication to run "
+            "away, and this one is trimmed to where it does not."
+            % (act_id, len(levels)))
+    for L in levels:
+        if not (L.get("name") and L.get("eats")):
+            raise ValueError(
+                "bioaccumulation %r has a level missing `name` or `eats`. The "
+                "`eats` line — eat thousands of algae, eat hundreds of perch a "
+                "year — is the MECHANISM: it is why the concentration "
+                "multiplies rather than merely persisting."
+                % act_id)
+
+    chems = a["chemicals"]
+    if len(chems) < 3:
+        raise ValueError(
+            "bioaccumulation %r offers %d setting(s). Three: it persists, it "
+            "is slowly broken down, it is excreted. The middle one is what "
+            "stops the lesson reading as a binary, and the third is the "
+            "CONTROL — the flat line that proves the mechanism is persistence "
+            "and not toxicity." % (act_id, len(chems)))
+    seen, factors, ctrl = set(), [], []
+    for c in chems:
+        for f in ("id", "label", "factor", "start", "tab_note"):
+            if c.get(f) is None or c.get(f) == "":
+                raise ValueError(
+                    "bioaccumulation %r chemical %r declares no %r. The "
+                    "`tab_note` is the sentence under the dial that says what "
+                    "the setting MEANS, and without it the dial is three "
+                    "numbers." % (act_id, c.get("id"), f))
+        if c["id"] in seen:
+            raise ValueError("bioaccumulation %r declares chemical id %r twice."
+                             % (act_id, c["id"]))
+        seen.add(c["id"])
+        if float(c["factor"]) < 1:
+            raise ValueError(
+                "bioaccumulation %r chemical %r has factor %r. A factor below "
+                "one is a chemical that gets WEAKER up the chain, which is not "
+                "a persistence setting and is not a thing that happens."
+                % (act_id, c["id"], c["factor"]))
+        if float(c["start"]) <= 0:
+            raise ValueError(
+                "bioaccumulation %r chemical %r starts at %r ppm. The lake is "
+                "the source; a source of nothing has nothing to accumulate."
+                % (act_id, c["id"], c["start"]))
+        factors.append(float(c["factor"]))
+        if abs(float(c["factor"]) - 1.0) < 1e-9:
+            ctrl.append(c["id"])
+    if len(ctrl) != 1:
+        raise ValueError(
+            "bioaccumulation %r declares %d setting(s) at ×1 (%s). EXACTLY ONE "
+            "IS THE CONTROL. The flat line is what proves the mechanism is "
+            "persistence and not toxicity — it is the claim rung 1 marks and "
+            "`#s-think` confronts, and a bench without it is a bench with no "
+            "comparison in it." % (act_id, len(ctrl), ", ".join(ctrl) or "none"))
+
+    top_chem = max(chems, key=lambda c: float(c["factor"]))
+    top_conc = float(top_chem["start"]) * (float(top_chem["factor"])
+                                           ** (len(levels) - 1))
+    if top_conc < harm:
+        raise ValueError(
+            "bioaccumulation %r's most persistent setting reaches %s ppm "
+            "against a harm threshold of %s. Nothing on the bench is ever "
+            "flagged as harmful, so the ospreys' verdict never fires and the "
+            "lesson's whole consequence is unreachable."
+            % (act_id, _b9_ppm(top_conc), _b9_ppm(harm)))
+
+    verdicts = a["verdicts"]
+    for f in ("flat", "harmful", "below"):
+        if not verdicts.get(f):
+            raise ValueError("bioaccumulation %r verdicts declares no %r."
+                             % (act_id, f))
+    _b9_placeholders(verdicts["flat"], act_id, "verdict `flat`", (),
+                     ("{ppm}", "{times}"))
+    _b9_placeholders(verdicts["harmful"], act_id, "verdict `harmful`",
+                     ("{ppm}", "{times}"))
+    _b9_placeholders(verdicts["below"], act_id, "verdict `below`", ("{ppm}",))
+
+    tabs = "".join(
+        '<li><button type="button" class="ks3-option ks3-ba-tab" '
+        'data-ba-chem="%s" data-factor="%s" data-start="%s" data-note="%s" '
+        'aria-pressed="%s"><span class="ks3-opt-label">%s</span>'
+        '</button></li>'
+        % (e(c["id"]), e(_pctnum(c["factor"])), e(_pctnum(c["start"])),
+           e(_b8_plain(c["tab_note"], act_id,
+                       "chemical %r `tab_note`" % c["id"])),
+           "true" if c is chems[0] else "false", t(c["label"]))
+        for c in chems)
+
+    opener = chems[0]
+    rows = []
+    for i, L in enumerate(levels):
+        conc = float(opener["start"]) * (float(opener["factor"]) ** i)
+        harmful = conc >= harm
+        rows.append(
+            '<li class="ks3-ba-level" data-i="%d"%s%s%s>'
+            '<div class="ks3-ba-levelhead">'
+            '<p class="ks3-ba-name">%s</p>'
+            '<p class="ks3-ba-eats">%s</p></div>'
+            '<div class="ks3-ba-readout"%s>'
+            '<div class="ks3-ba-figs">'
+            '<p class="ks3-ba-ppm" data-ba-ppm>%s</p>'
+            '<p class="ks3-ba-lvlverdict" data-ba-lvlverdict>%s</p></div>'
+            '<span class="ks3-ba-track"><span class="ks3-ba-bar" '
+            'data-ba-bar style="width: %s%%"></span></span></div></li>'
+            % (i, ' data-shown=""' if i == 0 else "",
+               ' data-cur=""' if i == 0 else "",
+               ' data-harmful="1"' if harmful else "",
+               t(L["name"]), t(L["eats"]), "" if i == 0 else " hidden",
+               t(_b9_ppm(conc) + (a.get("ppm_suffix") or " ppm")),
+               t(a["harm_verdict"] if harmful else a["safe_verdict"]),
+               e(_pctnum(_b9_ba_width(conc, top_conc, harm)))))
+
+    return ('<div class="ks3-ba" data-ba data-harm="%s" data-total="%d" '
+            'data-ppm-suffix="%s" data-harm-verdict="%s" '
+            'data-safe-verdict="%s" data-step-label="%s" '
+            'data-step-spent-label="%s" data-verdict-flat="%s" '
+            'data-verdict-harmful="%s" data-verdict-below="%s">'
+            '<div class="ks3-ba-tabsgroup">'
+            '<p class="ks3-ba-tabslabel" id="%s-chems">%s</p>'
+            '<ul class="ks3-options ks3-ba-tabs" role="list" '
+            'aria-labelledby="%s-chems">%s</ul></div>'
+            '<div class="ks3-ba-panel">'
+            '<p class="ks3-ba-chemnote" data-ba-chemnote>%s</p>'
+            '<ol class="ks3-ba-levels" role="list">%s</ol>'
+            '<div class="ks3-ba-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-ba-up" '
+            'data-ba-up>%s</button>'
+            '<button type="button" class="ks3-reveal-btn ks3-ba-reset" '
+            'data-ba-reset>%s</button></div>'
+            '<p class="ks3-ba-verdict" data-ba-verdict hidden>%s</p>'
+            '</div></div>'
+            % (e(_pctnum(harm)), len(levels),
+               e(_b8_plain(a.get("ppm_suffix") or " ppm", act_id,
+                           "`ppm_suffix`")),
+               e(_b8_plain(a["harm_verdict"], act_id, "`harm_verdict`")),
+               e(_b8_plain(a["safe_verdict"], act_id, "`safe_verdict`")),
+               e(_b8_plain(a["step_label"], act_id, "`step_label`")),
+               e(_b8_plain(a["step_spent_label"], act_id,
+                           "`step_spent_label`")),
+               e(_b8_plain(verdicts["flat"], act_id, "verdict `flat`")),
+               e(_b8_plain(verdicts["harmful"], act_id, "verdict `harmful`")),
+               e(_b8_plain(verdicts["below"], act_id, "verdict `below`")),
+               e(act_id), t(a["tabs_label"]), e(act_id), tabs,
+               t(opener["tab_note"]), "".join(rows),
+               t(a["step_label"]), t(a["reset_label"]),
+               t(_b9_ba_verdict(a, opener, levels, harm))))
+
+
+def _b9_ppm(x):
+    """Design's four-branch rule: ≥10 → 0 dp · ≥1 → 1 dp · ≥0.01 → 3 dp · 4 dp.
+
+    ⚠️ THE THRESHOLD IS PER VALUE, NOT PER SETTING. On the persistent chemical
+    the same column prints `0.0030` and `300`, and that is the rule applied
+    honestly: three significant places where the number is small enough to need
+    them and none where it is not. Tidying it to one form would either bury the
+    lake water in zeroes or print the ospreys to four decimals.
+    """
+    x = float(x)
+    if x >= 10:
+        return "%.0f" % x
+    if x >= 1:
+        return "%.1f" % x
+    if x >= 0.01:
+        return "%.3f" % x
+    return "%.4f" % x
+
+
+def _b9_ba_width(conc, top_conc, harm):
+    """Design's bar: the concentration against the taller of the top and harm."""
+    return max(1.0, min(100.0, (conc / max(top_conc, harm)) * 100.0))
+
+
+def _b9_ba_verdict(a, chem, levels, harm):
+    """Which of the three closing lines this setting earns, with its figures."""
+    v = a["verdicts"]
+    factor, start = float(chem["factor"]), float(chem["start"])
+    top = start * (factor ** (len(levels) - 1))
+    if abs(factor - 1.0) < 1e-9:
+        return v["flat"]
+    if top >= harm:
+        return (v["harmful"].replace("{ppm}", _b9_ppm(top))
+                .replace("{times}", _b8_group(_b8_round(top / start), True)))
+    return v["below"].replace("{ppm}", _b9_ppm(top))
+
+
+# ── b9-06 `#s-bench` · quadrat-bench ─────────────────────────────────────
+
+_B9_QUADRAT_METHODS = ("random", "corner", "path")
+
+
+def r_quadrat_bench(a, act_id):
+    """⊕ b9-06 `#s-bench` — a field you can check your answer against.
+
+    ⚖️ INCREASING THE SAMPLE SIZE FIXES THE RANDOM CASE AND DOES NOTHING FOR
+    THE TWO BIASED ONES. That separation is the whole instrument and it falls
+    out of the POOLS rather than out of any special-casing: 3 → 8 → 25 random
+    squares converge on the true mean, while 25 corner squares are drawn from a
+    25-cell pool entirely inside the cluster — so the largest sample on the
+    biased setting is the most stably wrong, and is in fact DETERMINISTIC,
+    because it exhausts its pool. The verdicts say it in words. A revision that
+    "balances" the pools, or lets sample size shrink the bias, deletes
+    `NOS-04`'s confrontation, so the renderer measures the pools against the
+    field's own model and refuses a set that is not biased in both directions.
+
+    ⚠️ THE FIELD IS REGENERATED, UNSEEDED, ON EVERY PAGE LOAD. This is the only
+    `Math.random()` in B9 — 100 calls, once, at mount — and it is deliberate:
+    two students never see the same field and no student sees the same one
+    twice, so the estimate cannot be memorised and the reveal cannot be
+    spoiled. Design's legal line states it. It also means the counts CANNOT be
+    rendered at build time, which is why the shipped grid is a hundred empty
+    cells: that is exactly what an unsurveyed field looks like, so the static
+    page is not a placeholder for the live one — it IS the resting state.
+
+    ⚠️ TWO-STAGE COMPLETION, AND THE RAIL TICKS ON THE REVEAL. *Take the
+    sample*, then *Show the real total* — the second disabled until the first
+    has run, re-sampling clearing the reveal. Design's threshold is
+    `s.truthShown` and it is kept; what is not kept is her un-ticking, because
+    MRB-208 ruled the rail records participation.
+    """
+    # ⚠️ `side` IS NOT IN THIS LIST — see the note on `r_chain_ledger`.
+    if a.get("side") is None:
+        raise ValueError("quadrat-bench %r declares no `side`." % act_id)
+    _b7_need(a, act_id, ("field", "methods_label", "methods",
+                         "counts_label", "counts", "figures", "sample_label",
+                         "resample_label", "truth_label", "captions",
+                         "verdicts", "direction"))
+    _b9_progress(a.get("progress"), act_id, "quadrat-bench",
+                 ("before", "after"))
+
+    side = int(a["side"])
+    if side < 5:
+        raise ValueError(
+            "quadrat-bench %r lays out a %d×%d field. The estimate is a mean "
+            "scaled by the number of quadrat-sized areas in the site, and a "
+            "site small enough to count by eye is a site nobody would sample."
+            % (act_id, side, side))
+
+    fld = a["field"]
+    for f in ("centre_row", "centre_col", "reach", "base", "peak", "noise",
+              "shade_max"):
+        if fld.get(f) is None:
+            raise ValueError(
+                "quadrat-bench %r field declares no %r. The clustering model "
+                "is what makes the two biased methods biased; a missing term "
+                "flattens the field and every method then agrees."
+                % (act_id, f))
+    if float(fld["peak"]) <= 0:
+        raise ValueError(
+            "quadrat-bench %r's field peaks at %r above base. With no peak the "
+            "daisies are spread evenly, the flowery corner is not flowery, and "
+            "the bench teaches that placement does not matter."
+            % (act_id, fld["peak"]))
+
+    counts = [int(c) for c in a["counts"]]
+    if len(counts) < 3 or counts != sorted(counts) or len(set(counts)) != len(counts):
+        raise ValueError(
+            "quadrat-bench %r offers counts %s. Three or more, strictly "
+            "increasing: the dial's argument is what MORE work does, and it "
+            "cannot be read off a list that doubles back."
+            % (act_id, counts))
+    default = int(a.get("default_count") or counts[1 if len(counts) > 1 else 0])
+    if default not in counts:
+        raise ValueError(
+            "quadrat-bench %r opens on %d quadrats, which it does not offer."
+            % (act_id, default))
+
+    methods = a["methods"]
+    if [m.get("id") for m in methods] != list(_B9_QUADRAT_METHODS):
+        raise ValueError(
+            "quadrat-bench %r declares methods %s. The three are fixed — %s — "
+            "because the POOL each one draws from is the pedagogy and is "
+            "implemented against these names in `wireQuadratBench`."
+            % (act_id, [m.get("id") for m in methods],
+               list(_B9_QUADRAT_METHODS)))
+    for m in methods:
+        if not m.get("label"):
+            raise ValueError("quadrat-bench %r method %r has no label."
+                             % (act_id, m["id"]))
+
+    # ⚖️ THE POOLS, MEASURED AGAINST THE FIELD'S OWN MODEL. The noise term is
+    # left out on purpose: what is asserted is that the two biased pools sit on
+    # systematically richer and poorer ground than the field as a whole, which
+    # is a property of WHERE they look and not of the roll of the dice.
+    def richness(r, c):
+        return max(0.0, 1 - (abs(c - float(fld["centre_col"]))
+                             + abs(r - float(fld["centre_row"])))
+                   / float(fld["reach"]))
+
+    def density(r, c):
+        return float(fld["base"]) + richness(r, c) ** 2 * float(fld["peak"])
+
+    pools = _b9_quadrat_pools(side)
+    whole = sum(density(i // side, i % side)
+                for i in range(side * side)) / float(side * side)
+    for mid, direction in (("corner", 1), ("path", -1)):
+        pool = pools[mid]
+        if not pool:
+            raise ValueError(
+                "quadrat-bench %r's %r pool is empty on a %d×%d field."
+                % (act_id, mid, side, side))
+        mean = sum(density(i // side, i % side) for i in pool) / float(len(pool))
+        if direction * (mean - whole) <= 0:
+            raise ValueError(
+                "quadrat-bench %r's %r pool averages %.2f daisies a square "
+                "against the field's %.2f, so it is not biased %s. THE TWO "
+                "BIASED POOLS ARE THE INSTRUMENT: bias has no favourite "
+                "direction, and one that overstates and one that understates "
+                "is what proves it. A field whose cluster has moved leaves both "
+                "of them sampling the same ground as everybody else."
+                % (act_id, mid, mean, whole,
+                   "high" if direction > 0 else "low"))
+    if max(counts) < len(pools["corner"]):
+        raise ValueError(
+            "quadrat-bench %r's largest sample is %d against a corner pool of "
+            "%d. The point of the largest setting is that it EXHAUSTS the "
+            "biased pool — twenty-five quadrats out of twenty-five squares is "
+            "deterministic, so the answer stops wobbling and stays exactly as "
+            "wrong. That is what makes bias visibly different from chance."
+            % (act_id, max(counts), len(pools["corner"])))
+
+    figures = a["figures"]
+    if [f.get("id") for f in figures] != ["mean", "estimate", "real"]:
+        raise ValueError(
+            "quadrat-bench %r declares figures %s. Three, in this order: the "
+            "mean, what it scales up to, and the answer — which stays hidden "
+            "until the student has committed to the other two."
+            % (act_id, [f.get("id") for f in figures]))
+    if not figures[2].get("hidden_value"):
+        raise ValueError(
+            "quadrat-bench %r's `real` figure declares no `hidden_value`. The "
+            "slot is on screen from the start and says so; a blank one looks "
+            "like the bench failing to compute it." % act_id)
+    for f in figures:
+        if not f.get("label"):
+            raise ValueError("quadrat-bench %r figure %r has no label."
+                             % (act_id, f["id"]))
+
+    caps = a["captions"]
+    for f in ("unsampled", "sampled", "revealed"):
+        if not caps.get(f):
+            raise ValueError("quadrat-bench %r captions declares no %r."
+                             % (act_id, f))
+
+    verdicts = a["verdicts"]
+    for f in ("corner", "path", "chance", "good"):
+        if not verdicts.get(f):
+            raise ValueError("quadrat-bench %r verdicts declares no %r."
+                             % (act_id, f))
+    _b9_placeholders(verdicts["corner"], act_id, "verdict `corner`",
+                     ("{err}", "{dir}"))
+    _b9_placeholders(verdicts["path"], act_id, "verdict `path`", ("{err}",))
+    _b9_placeholders(verdicts["chance"], act_id, "verdict `chance`", ("{err}",))
+    _b9_placeholders(verdicts["good"], act_id, "verdict `good`",
+                     ("{err}", "{n}"))
+    direction = a["direction"]
+    for f in ("over", "under"):
+        if not direction.get(f):
+            raise ValueError(
+                "quadrat-bench %r direction declares no %r. The corner verdict "
+                "reads 'and far too high' or 'and wrong' depending on which "
+                "way the error fell, and the two are not interchangeable."
+                % (act_id, f))
+
+    method_tabs = "".join(
+        '<li><button type="button" class="ks3-option ks3-qb-tab" '
+        'data-qb-method="%s" aria-pressed="%s">'
+        '<span class="ks3-opt-label">%s</span></button></li>'
+        % (e(m["id"]), "true" if m["id"] == methods[0]["id"] else "false",
+           t(m["label"]))
+        for m in methods)
+    count_tabs = "".join(
+        '<li><button type="button" class="ks3-option ks3-qb-tab '
+        'ks3-qb-counttab" data-qb-count="%d" aria-pressed="%s">'
+        '<span class="ks3-opt-label">%s</span></button></li>'
+        % (c, "true" if c == default else "false",
+           t((a.get("count_label") or "{n} quadrats").replace("{n}", str(c))))
+        for c in counts)
+
+    cells = "".join('<span class="ks3-qb-cell" data-i="%d"></span>' % i
+                    for i in range(side * side))
+    figs = "".join(
+        '<li class="ks3-qb-figure" data-qb-figure="%s">'
+        '<p class="ks3-qb-figlabel">%s</p>'
+        '<p class="ks3-qb-figvalue" data-qb-fig="%s">%s</p></li>'
+        % (e(f["id"]), t(f["label"]), e(f["id"]),
+           t(f.get("hidden_value") or "0"))
+        for f in figures)
+
+    return ('<div class="ks3-qb" data-qb data-side="%d" data-field="%s" '
+            'data-count="%d" data-sample-label="%s" data-resample-label="%s" '
+            'data-caption-unsampled="%s" data-caption-sampled="%s" '
+            'data-caption-revealed="%s" data-hidden-value="%s" '
+            'data-verdicts="%s" data-direction="%s">'
+            '<div class="ks3-qb-dials">'
+            '<div class="ks3-qb-dial">'
+            '<p class="ks3-qb-diallabel" id="%s-where">%s</p>'
+            '<ul class="ks3-options ks3-qb-tabs" role="list" '
+            'aria-labelledby="%s-where">%s</ul></div>'
+            '<div class="ks3-qb-dial">'
+            '<p class="ks3-qb-diallabel" id="%s-many">%s</p>'
+            '<ul class="ks3-options ks3-qb-tabs" role="list" '
+            'aria-labelledby="%s-many">%s</ul></div></div>'
+            '<div class="ks3-qb-panel">'
+            '<div class="ks3-qb-grid" data-qb-grid role="img" '
+            'aria-label="%s" style="--qb-cols: %d">%s</div>'
+            '<p class="ks3-qb-caption" data-qb-caption>%s</p>'
+            '<ul class="ks3-qb-figures" data-qb-figures role="list" hidden>'
+            '%s</ul>'
+            '<div class="ks3-qb-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-qb-sample" '
+            'data-qb-sample>%s</button>'
+            '<button type="button" class="ks3-reveal-btn ks3-qb-truth" '
+            'data-qb-truth disabled>%s</button></div>'
+            '<p class="ks3-qb-verdict" data-qb-verdict hidden></p>'
+            '</div></div>'
+            % (side,
+               _b9_json(dict((k, float(fld[k]))
+                             for k in ("centre_row", "centre_col", "reach",
+                                       "base", "peak", "noise", "shade_max"))),
+               default,
+               e(_b8_plain(a["sample_label"], act_id, "`sample_label`")),
+               e(_b8_plain(a["resample_label"], act_id, "`resample_label`")),
+               e(_b8_plain(caps["unsampled"], act_id, "caption `unsampled`")),
+               e(_b8_plain(caps["sampled"], act_id, "caption `sampled`")),
+               e(_b8_plain(caps["revealed"], act_id, "caption `revealed`")),
+               e(_b8_plain(figures[2]["hidden_value"], act_id,
+                           "`hidden_value`")),
+               _b9_json(dict((k, _b8_plain(verdicts[k], act_id,
+                                           "verdict %r" % k))
+                             for k in ("corner", "path", "chance", "good"))),
+               _b9_json(dict((k, _b8_plain(direction[k], act_id,
+                                           "direction %r" % k))
+                             for k in ("over", "under"))),
+               e(act_id), t(a["methods_label"]), e(act_id), method_tabs,
+               e(act_id), t(a["counts_label"]), e(act_id), count_tabs,
+               e(caps["unsampled"]), side, cells, t(caps["unsampled"]), figs,
+               t(a["sample_label"]), t(a["truth_label"])))
+
+
+def _b9_quadrat_pools(side):
+    """Design's three sampling pools, by the rules on her own page.
+
+    ⚖️ `random` IS EVERY SQUARE, `corner` IS THE BOTTOM-LEFT QUADRANT AND
+    `path` IS THE TOP THREE ROWS, and the sizes that fall out — 100, 25, 30 —
+    are not balanced and must not be. The corner pool is small enough for the
+    largest sample setting to exhaust it, which is what makes the biased answer
+    stop wobbling without getting any better.
+    """
+    return {
+        "random": list(range(side * side)),
+        "corner": [i for i in range(side * side)
+                   if i // side >= side // 2 and i % side <= (side // 2) - 1],
+        "path": [i for i in range(side * side) if i // side <= 2],
+    }
+# renderers: ═══ END B9 ═══
+
+
 ACTIVITY_KIND_RENDERERS = {
     "test-board":    ("ks3-board",
                       ' data-instrument data-board data-stage-done="0"'),
@@ -13964,6 +15367,47 @@ ACTIVITY_KIND_RENDERERS = {
     "route-decider": ("ks3-rd-block",
                       ' data-instrument data-rdblock data-stage-done="0"'),
     # ═══ END B8 dispatch ═══
+    # ═══ BEGIN B9 dispatch ═══
+    #
+    # ── B9 · Ecosystems and interdependence (⊕ MRB-250) ──
+    #
+    # Six instruments, six markers, six wire functions, six stylesheet
+    # namespaces — nothing shared, because nothing in this unit is the same
+    # block twice. The six ask six different questions: climb a chain and
+    # watch what arrives, run a field for twenty-six years, take a species out
+    # and follow it, empty a supermarket shelf, climb the same chain with a
+    # chemical on it, and estimate a population you can then check.
+    #
+    # All six are `ks3-block ks3-dark ks3-practical`, measured off Design's own
+    # `#s-bench` markup on all six pages, so all six are on ink and every
+    # colour rule they hang on is scoped `.ks3-dark …` at (0,2,0).
+    #
+    # All six carry a completion contract, so all six emit
+    # `data-stage-done="0"` and the rail reads the instrument's own predicate
+    # rather than guessing from `aria-pressed` — which on five of the six would
+    # tick the stage on load, because a chain tab, a species tab, a chemical
+    # tab and both of b9-06's dials are pressed before the student has decided
+    # anything (MRB-208: nothing ticks on load).
+    #
+    # ⚠️ AND THE BAND STOP BESIDE EACH BENCH MIRRORS IT (MRB-249). `s-roles`,
+    # `s-cycle`, `s-rules`, `s-who`, `s-two` and `s-rules` carry no control of
+    # their own — the instrument already took the commitment — so their rail
+    # entry names `"mirrors": "s-bench"` and ticks the moment this marker
+    # flips. That is why the threshold below has to be DESIGN'S threshold and
+    # not a convenient one: two stops read it.
+    "chain-ledger":     ("ks3-cl-block",
+                         ' data-instrument data-clblock data-stage-done="0"'),
+    "cycle-runner":     ("ks3-cy-block",
+                         ' data-instrument data-cyblock data-stage-done="0"'),
+    "remove-a-species": ("ks3-rs-block",
+                         ' data-instrument data-rsblock data-stage-done="0"'),
+    "supermarket-shelf": ("ks3-ss-block",
+                          ' data-instrument data-ssblock data-stage-done="0"'),
+    "bioaccumulation":  ("ks3-ba-block",
+                         ' data-instrument data-bablock data-stage-done="0"'),
+    "quadrat-bench":    ("ks3-qb-block",
+                         ' data-instrument data-qbblock data-stage-done="0"'),
+    # ═══ END B9 dispatch ═══
 }
 
 # Kinds that ARE the generic shell, and are not waiting for a component.
@@ -14115,6 +15559,14 @@ ACTIVITY_KIND_FN = {
     "fermenter":              r_fermenter,
     "route-decider":          r_route_decider,
     # ═══ END B8 renderfn ═══
+    # ═══ BEGIN B9 renderfn ═══
+    "chain-ledger":           r_chain_ledger,
+    "cycle-runner":           r_cycle_runner,
+    "remove-a-species":       r_remove_a_species,
+    "supermarket-shelf":      r_supermarket_shelf,
+    "bioaccumulation":        r_bioaccumulation,
+    "quadrat-bench":          r_quadrat_bench,
+    # ═══ END B9 renderfn ═══
 }
 
 
@@ -14163,6 +15615,24 @@ _KIND_HEAD_TOTAL = {
     # payload, not a number an author chose. It would still be five if the
     # author reordered the tabs.
     "route-decider": lambda a: len(a.get("cases") or []),
+    # ⊕ MRB-250 / B9. Four more, and three of them for b7-04's reason exactly:
+    # the denominator belongs to the thing the tab selected, not to the block.
+    # b9-01's chains run four, four and five levels, so "level 1 of 4" has to
+    # become "level 1 of 5" when the sea chain is chosen, and `wireChainLedger`
+    # rewrites `data-total` on every tab press. Without a resting value the
+    # shipped bytes would read "level 1 of 0".
+    "chain-ledger":
+        lambda a: len(((a.get("chains") or [{}])[0]).get("levels") or []),
+    # b9-03's rounds are three on every species — asserted, not assumed, by
+    # `r_remove_a_species` — so this one does not move with the tab. It is
+    # still a fact about the payload rather than a number an author chose.
+    "remove-a-species":
+        lambda a: len(((a.get("species") or [{}])[0]).get("rounds") or []),
+    "bioaccumulation": lambda a: len(a.get("levels") or []),
+    # b9-06 counts quadrats, and the ceiling is the field: you cannot count
+    # more squares than there are. The clamp in `setCount` then has something
+    # true to clamp against.
+    "quadrat-bench": lambda a: int(a.get("side") or 0) ** 2,
 }
 
 # ── the head readout DERIVED, where Design draws one and authors no key ──
@@ -14187,6 +15657,51 @@ _KIND_HEAD_FROM = {
                                    (a.get("clock") or {}).get("recovering")
                                    or ""),
     },
+    # ⊕ MRB-250 / B9 — and all six of B9's, for a reason one step past B8's.
+    #
+    # Design draws the same right-aligned mono paragraph on all six pages, and
+    # the schema authors it under one name, `progress`, on all six. But five of
+    # the six QUOTE A NUMBER the runtime owns — "level 3 of 4", "year 26",
+    # "round 2 of 3", "8 quadrats counted" — and `_progress_readout` prints its
+    # first authored state VERBATIM at rest. Ship the map straight through and
+    # the bytes read `level {n} of {total}`, with the braces on screen until JS
+    # runs and permanently in what a crawler or a JS-off reader gets. B7's own
+    # `b7-chain-traced` drive fails a build for exactly that, having found it
+    # in a browser.
+    #
+    # A count with a bespoke top and/or bottom end IS `head_counter`, which has
+    # had `zero` and `full` since B6 and fills its resting number from `start`.
+    # So the derivation converts, rather than a fourth readout arriving. The
+    # names on the left are Design's states; the names on the right are the
+    # shapes the one head-row element already knows.
+    #
+    # ⚠️ Every one of the six renderers reads `progress` itself, which is what
+    # puts the kind into `_KIND_FN_OWNS_PROGRESS` — and a kind in that set gets
+    # NO head row unless something here hands one back. `supermarket-shelf` is
+    # in the table for that reason alone: its three states quote no number and
+    # it is returned exactly as authored.
+    "chain-ledger": lambda a: _b9_head(
+        a, "chain-ledger", ("before", "after"),
+        lambda pg: {"format": pg["before"], "full": pg["after"], "start": 1}),
+    # b9-02's readout is "year 0" → "year 26": one sentence, one number, and no
+    # denominator anywhere on the page. `head_counter`'s format shape is the
+    # only one of the three that can say that, and `prefix` is the whole of
+    # what Design authors.
+    "cycle-runner": lambda a: _b9_head(
+        a, "cycle-runner", ("prefix",),
+        lambda pg: {"format": "%s{n}" % pg["prefix"], "start": 0}),
+    "remove-a-species": lambda a: _b9_head(
+        a, "remove-a-species", ("none", "mid", "all"),
+        lambda pg: {"format": pg["mid"], "zero": pg["none"],
+                    "full": pg["all"], "start": 0}),
+    "supermarket-shelf": lambda a: _b9_head(
+        a, "supermarket-shelf", ("all", "half", "none"), lambda pg: pg),
+    "bioaccumulation": lambda a: _b9_head(
+        a, "bioaccumulation", ("before", "after"),
+        lambda pg: {"format": pg["before"], "full": pg["after"], "start": 1}),
+    "quadrat-bench": lambda a: _b9_head(
+        a, "quadrat-bench", ("before", "after"),
+        lambda pg: {"format": pg["after"], "zero": pg["before"], "start": 0}),
 }
 
 # The three that need the whole lesson, not just the activity, because they
@@ -14444,7 +15959,20 @@ def r_activity(lesson, block_type, act_id, block=None):
     # one on and the schema authors under another name. See `_KIND_HEAD_FROM`.
     # An authored readout of either shape still wins; this only fills a blank.
     if not hc and not pg and kind in _KIND_HEAD_FROM:
-        pg = _KIND_HEAD_FROM[kind](a)
+        derived = _KIND_HEAD_FROM[kind](a)
+        # ⊕ MRB-250 / B9 — a derivation may name EITHER shape, and the
+        # discriminator is the one `_head_counter` itself already uses: a spec
+        # with a `format` is a tally, anything else is a map of named states.
+        # B8's single derivation produced named states; five of B9's six
+        # produce a count with a bespoke end, because Design's readout on those
+        # five quotes a number the runtime owns. Sending those through
+        # `_progress_readout` would ship `level {n} of {total}` with the braces
+        # still in it — the head row's one unrecoverable failure, because every
+        # other gate sees a rendered page and reads it as fine.
+        if isinstance(derived, dict) and derived.get("format"):
+            hc = derived
+        else:
+            pg = derived
     if hc and pg:
         raise ValueError(
             "%s: activity %r authors both `head_counter` and `progress`. They "
