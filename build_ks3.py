@@ -21734,7 +21734,6 @@ def landing(units, browse):
     <p class="ks3-hub-sub">Biology, Chemistry and Physics for Years 7, 8 and 9 —
        built lesson by lesson, with something to press on every page.</p>
     <div class="ks3-hub-actions">%(primary)s
-      <a class="ks3-btn" href="/ks3/year-7/index.html">Start with Year 7</a>
     </div>
   </div>
   <div class="ks3-live">
