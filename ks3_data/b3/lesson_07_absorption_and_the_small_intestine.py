@@ -30,28 +30,45 @@ still in print, which is Design's own handling and is the honest one.
 other materials say 200 m², the two must be made to agree, and this page is not
 the one that should move on its own.**
 
-── The rail is THREE stops, not Design's four ──────────────────────────
+── FOUR rail stops — Design's fourth restored (MRB-249) ────────────────
 
-MRB-208 rule 2, applied the same way `ks3_data/c1/lesson_02` applied it to
-`#s-matrix`. Design's rail lists `s-hook`, `s-fold`, `s-four`, `s-ladder`, and
-its own tick function reads:
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to read "the rail is
+THREE stops, not Design's four", and it took `ks3_data/c1/lesson_02`'s handling
+of `#s-matrix` with it. Design's rail lists `s-hook`, `s-fold`, `s-four`,
+`s-ladder`, and its own tick function reads:
 
     if (id === 's-fold')  return s.on.folds && s.on.villi && s.on.microvilli;
     if (id === 's-four')  return s.on.folds && s.on.villi && s.on.microvilli;
 
-— stage three's predicate is stage two's, character for character. `#s-four` is
-an eyebrow, a statement, four cards and a key fact: it emits no control, no
-commitment and no field, so a student can complete it only by completing the
-section above it. MRB-208 ruled the rail carries only sections that require the
-student to DO something, and `ks3_parity.check_rail_reachable` fails a stop
-whose section carries none of the completion signals `doneByDom()` reads.
+— stage three's predicate is stage two's, character for character. Because
+`#s-four` is an eyebrow, a statement, four cards and a key fact, emitting no
+control, no commitment and no field, the argument ran: MRB-208 confines the
+rail to sections that require the student to DO something,
+`ks3_parity.check_rail_reachable` fails a stop whose section carries none of
+the signals `doneByDom()` reads, and inventing a control Design did not draw is
+closed to this build — so the stop came off.
 
-There is no demand in the section to promote and inventing a control Design did
-not draw is closed to this build, so the stop comes OFF the rail rather than
-ticking on its neighbour's state. `#s-four` keeps its anchor and its
-scroll-margin: hash links into it still work, it simply makes no claim to be
-completable. `#s-think` is not a candidate either — on this page it is two
-quotes and two paragraphs with nothing to answer, unlike C1's, which commit.
+That is overruled on two grounds.
+
+MRB-205 binds and is not re-argued: Design draws, we render; no invented and no
+dropped page structure; page wins over engine. Dropping a stop Design drew is
+not rendering what Design drew, whatever the engine would have preferred.
+
+And read the two lines above again as a statement rather than a duplication.
+`isDone()` is a rail-level function, and Design writing the same expression for
+two consecutive ids is Design saying how the second one ticks. The four
+features ARE the reading of the surface the student just built: the section
+carries no control because `#s-fold` already took the commitment. That is a
+MIRROR, resolved at rail level in `wireRail`'s `paint()` and serialised into
+`data-rail-stages` by `build_ks3.py`.
+
+So the stop is declared: anchor `s-four`, `mirrors: "s-fold"`,
+`done_when: "all_three_levels_on"` — stage two's predicate, named as borrowed
+rather than smuggled, and gated by `ks3_parity.check_rail_matches_design`
+against `docs/ks3/rail-manifest.md`. `#s-four` keeps its anchor and its
+scroll-margin, as it always did. `#s-think` is still not a candidate — Design
+does not draw a stop on it, and on this page it is two quotes and two
+paragraphs with nothing to answer, unlike C1's, which commit.
 
 ── What could not be lifted byte-identical, and why ────────────────────
 
@@ -179,14 +196,17 @@ LESSON = {
                     "surface. Yours has about thirty. Nothing was made longer.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-four` is dropped — see the docstring.
-    # `short` is ≤6 characters and both are Design's own `RAIL_SHORT` and
-    # `RAIL` strings (page lines 297–303).
+    # FOUR stops, as Design draws them. `s-four` is the third: no control of
+    # its own, so it mirrors `s-fold` and ticks on the fold's predicate — see
+    # the docstring. `short` is ≤6 characters and both are Design's own
+    # `RAIL_SHORT` and `RAIL` strings (page lines 297–303).
     "rail": [
         {"anchor": "s-hook",   "short": "HOOK",   "label": "Hose and gut",
          "done_when": "committed"},
         {"anchor": "s-fold",   "short": "FOLD",   "label": "Build the surface",
          "done_when": "all_three_levels_on"},
+        {"anchor": "s-four", "short": "FOUR", "label": "Four features",
+         "mirrors": "s-fold", "done_when": "all_three_levels_on"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -332,8 +352,8 @@ LESSON = {
         # #s-four — Design's band-on-3px-ink statement panel with four cards.
         # That IS the `rule` shell (§5.1.1): `--ks3-band`, 3px ink, no shadow,
         # accent eyebrow, display statement, auto-fit card grid. NOT a `check`
-        # activity — there is nothing to do in it, which is also why it is not
-        # on the rail.
+        # activity — there is nothing to do in it, which is why its rail stop
+        # mirrors `s-fold` rather than carrying a predicate of its own.
         {"type": "rule", "anchor": "s-four",
          "eyebrow": "What a good exchange surface needs",
          "statement": "Area is only one of four, and the villus has all four.",

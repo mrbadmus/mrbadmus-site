@@ -424,6 +424,30 @@ the words.**
 
 ## 7. Rail stops — how many can actually tick
 
+> ⊕ **REVERSED 18 Aug 2026 — MRB-249. SHIP FOUR STOPS. The band stop is a MIRROR.**
+>
+> This section's *measurement* is right and stands; its instruction is reversed. It told five
+> B8 lessons to ship three stops, and nine lesson records cite it by name as the authority for
+> having done so. Thirty-five pages across B3–B8 and C1 shipped a rail with a stop missing.
+>
+> **MRB-205 binds and is not re-argued: Design draws, we render; the page wins over the
+> engine.** A band section holding a drawn equation and three fact cards is teaching, not a
+> spacer, and dropping it from the rail is not rendering what Design drew. Design also states
+> the completion condition herself, in a **rail-level** `isDone()`:
+>
+>     if (id === 's-bench')   return s.exits;
+>     if (id === 's-summary') return s.exits;
+>
+> The band is the payoff of the instrument beside it; it carries no control because the
+> instrument already took the commitment. It is authored as a mirror —
+> `{"anchor": "s-summary", "mirrors": "s-bench", "done_when": "exits_shown"}` — and
+> `shared/ks3.js` resolves it in `wireRail`'s `paint()`, at the level Design resolves it.
+> `ks3_parity.check_rail_matches_design` now fails the build on a dropped stop.
+>
+> Read "the band stop" below as **the mirror stop**, and the bench predicate column as its
+> `done_when`.
+
+
 Design draws **four** stops on all five pages: `s-hook`, `s-bench`, the band section, `s-ladder`.
 On Design's own page all four tick, because Design's `isDone()` aliases the band stop to the bench's
 state (`s-summary` returns `s.exits`; `s-jobs` and `s-two` return the bench's seen-count; `s-equation`

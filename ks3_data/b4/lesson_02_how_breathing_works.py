@@ -46,22 +46,35 @@ The slider is the only control that changes state; `Breathe in` and `Breathe
 out` are presets onto the same slider, which is why they are `presets[]` and
 not a second instrument.
 
-── One rail stop comes off, and it is the defect C1 already found ───────
+── FOUR rail stops — Design's fourth restored (MRB-249) ─────────────────
 
-Design draws FOUR stops and `#s-limits` ticks on `s.moved` (page line 405) —
-`#s-model`'s predicate, character for character, one section to the left.
-MRB-208 ruled the rail carries only sections that require the student to do
-something, and `#s-limits` is an eyebrow, a display statement, four static
-cards, a key fact and a prose panel: no control, no commitment, no field.
-`ks3_parity.check_rail_reachable` fails a stop whose section carries none of
-the signals `doneByDom()` reads, and this section carries none.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that
+`#s-limits` came off the rail. Design draws FOUR stops and `#s-limits` ticks on
+`s.moved` (page line 405) — `#s-model`'s predicate, character for character,
+one section to the left — and because `#s-limits` is an eyebrow, a display
+statement, four static cards, a key fact and a prose panel, with no control, no
+commitment and no field, the reading was that MRB-208 forbade the stop and
+`ks3_parity.check_rail_reachable` would fail it for carrying none of the
+signals `doneByDom()` reads. So the lesson shipped THREE stops.
 
-There is no demand in it to promote and inventing one Design did not draw is
-closed to this build, so the lesson declares THREE stops. Same call and the
-same reasoning as c1-02's `#s-matrix`, c1-05's `#s-scale`, b3-02's own
-`#s-limits`, b3-01's `#s-nutrients` and b3-07's `#s-four`. The section keeps
-its anchor, so every hash link into it still works — it simply makes no claim
-to be completable.
+Two things overrule that inference.
+
+MRB-205 binds and is not re-argued: Design draws, we render; nothing invented,
+nothing dropped; page wins over engine.
+
+And `s.moved` written twice is Design stating the tick condition, not Design
+duplicating by accident. `isDone()` is rail-level and returns the identical
+expression for `#s-model` and then for `#s-limits`. Where the bell jar fails is
+the payoff of having moved the diaphragm: the section carries no control
+because the model already took the student's commitment. That is a MIRROR,
+resolved at rail level in `wireRail`'s `paint()`.
+
+So the fourth stop is declared: anchor `s-limits`, `mirrors: "s-model"`,
+`done_when: "diaphragm_moved"` — the model's own predicate, named as borrowed,
+and gated by `check_rail_matches_design` against `docs/ks3/rail-manifest.md`.
+c1-02's `#s-matrix`, c1-05's `#s-scale`, b3-02's own `#s-limits`, b3-01's
+`#s-nutrients` and b3-07's `#s-four` are restored the same way. The section
+keeps its anchor, as it always did, so every hash link into it still works.
 
 ── ⚑ THE P5 FORWARD REFERENCE, AND WHAT WAS DONE ABOUT IT ───────────────
 
@@ -301,8 +314,9 @@ LESSON = {
                     "air follows.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-limits` is dropped — see the
-    # docstring. `short` and `label` are Design's own strings (page lines
+    # FOUR stops, as Design draws them. `s-limits` is the third: no control of
+    # its own, so it mirrors `s-model` and ticks on the model's predicate — see
+    # the docstring. `short` and `label` are Design's own strings (page lines
     # 336–342).
     "rail": [
         {"anchor": "s-hook",   "short": "HOOK",   "label": "Collapsed lung",
@@ -312,6 +326,8 @@ LESSON = {
         # invent a demand she did not draw.
         {"anchor": "s-model",  "short": "MODEL",  "label": "Bell jar",
          "done_when": "diaphragm_moved"},
+        {"anchor": "s-limits", "short": "LIMITS", "label": "Model limits",
+         "mirrors": "s-model", "done_when": "diaphragm_moved"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -457,8 +473,8 @@ LESSON = {
 
          "phases": PHASES},
 
-        # #s-limits — the band panel. NOT on the rail; see the docstring.
-        # `close` carries Design's lede, which `r_rule` can only place after
+        # #s-limits — the band panel. Rail stop 3, mirroring `s-model`; see
+        # the docstring. `close` carries Design's lede, which `r_rule` can only place after
         # the cards.
         {"type": "rule", "anchor": "s-limits",
          "eyebrow": "Where the model fails",

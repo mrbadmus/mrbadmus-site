@@ -45,18 +45,37 @@ parity drive asserts the tube never resolves to `--ks3-accent` or
 `--ks3-alert` — an accent-tinted tube would be teaching a colour change that
 does not happen.
 
-── One rail stop comes off, and it is the defect C1 already found ───────
+── FOUR rail stops — Design's fourth restored (MRB-249) ─────────────────
 
-Design draws FOUR stops and `#s-limits` ticks on `Object.keys(s.ran).length >= 4`
-(page line 455) — the BENCH's predicate, verbatim, one section to the left.
-MRB-208 ruled the rail carries only sections that require the student to do
-something, and `#s-limits` is an eyebrow, a display line, three static cards
-and a key fact: no control, no commit, no field. There is no demand in it to
-promote and inventing one Design did not draw is closed to this build, so the
-lesson declares THREE stops. Same call, same reasoning and the same shape as
-c1-02's `#s-matrix`, b3-01's `#s-nutrients` and b3-07's `#s-four`. The section
-keeps its anchor, so the tutor card's `#s-limits` link and every hash link into
-it still work.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that
+`#s-limits` came off the rail. Design draws FOUR stops and `#s-limits` ticks on
+`Object.keys(s.ran).length >= 4` (page line 455) — the BENCH's predicate,
+verbatim, one section to the left — and since `#s-limits` is an eyebrow, a
+display line, three static cards and a key fact with no control, no commit and
+no field, MRB-208's "the rail carries only sections that require the student to
+do something" looked to rule it out. So the lesson shipped THREE stops.
+
+Two things overrule that inference.
+
+MRB-205 binds and is not re-argued: Design draws, we render; no invented or
+dropped page structure; page wins over engine. Dropping a stop Design drew is
+not rendering what Design drew.
+
+And Design's `isDone()` states the tick condition rather than leaving it to be
+inferred. It is a rail-level function and it returns the identical expression
+for `#s-bench` and then for `#s-limits`. That repetition is not a slip: the
+three cards are the payoff of the four tests beside them, and the section holds
+no control because the bench has already taken the student's commitment. It is
+a MIRROR, and `wireRail`'s `paint()` in `shared/ks3.js` resolves mirrors at
+rail level.
+
+So the fourth stop is declared: anchor `s-limits`, `mirrors: "s-bench"`,
+`done_when: "four_combinations_run"` — the bench's own predicate, named as
+borrowed rather than smuggled, and gated by
+`ks3_parity.check_rail_matches_design` against `docs/ks3/rail-manifest.md`.
+c1-02's `#s-matrix`, b3-01's `#s-nutrients` and b3-07's `#s-four` are restored
+the same way. The section keeps its anchor, as it always did, so the tutor
+card's `#s-limits` link and every hash link into it still work.
 
 ── What could not be lifted, and why ────────────────────────────────────
 
@@ -250,9 +269,10 @@ LESSON = {
                     "none of them can answer.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-limits` is dropped — see the
-    # docstring. `short` and `label` are Design's own strings (page lines
-    # 333–339).
+    # FOUR stops, as Design draws them. `s-limits` is the third: no control
+    # of its own, so it mirrors `s-bench` and ticks on the bench's predicate —
+    # see the docstring. `short` and `label` are Design's own strings (page
+    # lines 333–339).
     "rail": [
         {"anchor": "s-hook",   "short": "HOOK",   "label": "Two tubes",
          "done_when": "committed"},
@@ -261,6 +281,8 @@ LESSON = {
         # after a twentieth of it.
         {"anchor": "s-bench",  "short": "BENCH",  "label": "Run the tests",
          "done_when": "four_combinations_run"},
+        {"anchor": "s-limits", "short": "LIMITS", "label": "What it is worth",
+         "mirrors": "s-bench", "done_when": "four_combinations_run"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -388,8 +410,8 @@ LESSON = {
          },
          "rail_after": 4},
 
-        # #s-limits — the band panel. NOT on the rail; see the docstring.
-        # `rule` is the component: band ground, 3px ink border, an accent-text
+        # #s-limits — the band panel. Rail stop 3, mirroring `s-bench`; see
+        # the docstring. `rule` is the component: band ground, 3px ink border, an accent-text
         # eyebrow and a display statement, then a card grid on the option
         # border — Design's markup (page lines 178–191) minus the repeated tag.
         {"type": "rule", "anchor": "s-limits",

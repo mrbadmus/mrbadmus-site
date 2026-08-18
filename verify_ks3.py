@@ -998,6 +998,19 @@ def main():
           else "%d unreachable: %s" % (len(reach_problems),
                                        reach_problems[0][:200]))
 
+    # ⊕ MRB-249 — the two checks above are both about the stops we EMITTED, and
+    # neither can see a stop we never emitted. That is how 33 pages shipped a
+    # three-stop rail where Design drew four: dropping the stop is what made
+    # the reachability check pass. This one asserts the built rail against
+    # `docs/ks3/rail-manifest.md`, which is generated from Design's own pages,
+    # so the build cannot satisfy it by removing content.
+    drawn_problems, drawn_count = PARITY.check_rail_matches_design(KS3_OUT, ".")
+    check("MRB-249 · the built rail is the rail Design drew",
+          not drawn_problems,
+          "%d rails match the drawn rail, stop for stop" % drawn_count
+          if not drawn_problems
+          else "%d differ: %s" % (len(drawn_problems), drawn_problems[0][:220]))
+
     # ── ⊕ MRB-244: a `confronted_by` pointing at another page ───────────
     #
     # The same question as the two gates above, asked of the misconception

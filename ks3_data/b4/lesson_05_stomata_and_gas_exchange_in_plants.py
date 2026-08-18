@@ -58,19 +58,35 @@ sentence or the page goes back to contradicting itself. Do not widen
 `balanced_window`: at ±2.4 every reading from midnight to overcast would report
 itself as balanced.
 
-── One rail stop comes off, and it is a defect the gate already names ───
+── FOUR rail stops — Design's fourth restored (MRB-249) ─────────────────
 
-Design draws FOUR stops and `#s-stomata` ticks on `s.moved` (page line 395) —
-the LEDGER's predicate, verbatim, one section to the left. The section is an
-eyebrow, a display line, four cards, a closing card and a key fact: no control,
-no commit, no field. MRB-208 ruled the rail carries only sections that require
-the student to do something, and `ks3_parity.check_rail_reachable` fails a stop
-whose section carries none of the completion signals `doneByDom()` reads —
-naming this exact defect in its own docstring. There is no demand in the
-section to promote and inventing one Design did not draw is closed to this
-build, so the lesson declares THREE stops. Same call as c1-02's `#s-matrix`,
-b3-02's `#s-limits`, b3-04's `#s-three` and b3-07's `#s-four`. `#s-stomata`
-keeps its anchor, so hash links into it still work.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that
+`#s-stomata` came off the rail. Design draws FOUR stops and `#s-stomata` ticks
+on `s.moved` (page line 395) — the LEDGER's predicate, verbatim, one section to
+the left — and because the section is an eyebrow, a display line, four cards, a
+closing card and a key fact with no control, no commit and no field, the
+reading was that MRB-208 forbade the stop and that
+`ks3_parity.check_rail_reachable` would fail it for carrying none of the
+signals `doneByDom()` reads. So the lesson shipped THREE stops.
+
+Two things overrule that inference.
+
+MRB-205 binds and is not re-argued: Design draws, we render; nothing invented,
+nothing dropped; page wins over engine. A gate that would have failed the stop
+is a gate to fix, not a reason to drop what Design drew — which is what
+`check_rail_matches_design` and rail-level mirrors now do.
+
+And `s.moved` written twice is Design stating the tick condition. `isDone()` is
+a rail-level function and returns the identical expression for `#s-ledger` and
+then for `#s-stomata`. The stomata are the payoff of having moved the light:
+the section holds no control because the ledger already took the student's
+commitment. That is a MIRROR, resolved at rail level in `wireRail`'s `paint()`.
+
+So the fourth stop is declared: anchor `s-stomata`, `mirrors: "s-ledger"`,
+`done_when: "light_moved"` — the ledger's own predicate, named as borrowed, and
+gated against `docs/ks3/rail-manifest.md`. c1-02's `#s-matrix`, b3-02's
+`#s-limits`, b3-04's `#s-three` and b3-07's `#s-four` are restored the same
+way. `#s-stomata` keeps its anchor, as it always did.
 
 ── What could not be lifted byte-identical, and why ─────────────────────
 
@@ -253,9 +269,10 @@ LESSON = {
                     "run at once.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-stomata` is dropped — see the
-    # docstring. `short` and `label` are Design's own strings (page lines
-    # 321–327).
+    # FOUR stops, as Design draws them. `s-stomata` is the third: no control
+    # of its own, so it mirrors `s-ledger` and ticks on the ledger's predicate
+    # — see the docstring. `short` and `label` are Design's own strings (page
+    # lines 321–327).
     "rail": [
         {"anchor": "s-hook",   "short": "HOOK",   "label": "Flat line at dawn",
          "done_when": "committed"},
@@ -264,6 +281,8 @@ LESSON = {
         # driven has shown them one state out of a hundred and one.
         {"anchor": "s-ledger", "short": "LEDGER", "label": "Two processes",
          "done_when": "light_moved"},
+        {"anchor": "s-stomata", "short": "STOMA", "label": "Stomata",
+         "mirrors": "s-ledger", "done_when": "light_moved"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -474,8 +493,8 @@ LESSON = {
                         "plants and animals are not opposites."},
          }},
 
-        # #s-stomata — the band panel. NOT on the rail; see the docstring.
-        # `rule` is the component: band ground, 3px ink border, an accent-text
+        # #s-stomata — the band panel. Rail stop 3, mirroring `s-ledger`; see
+        # the docstring. `rule` is the component: band ground, 3px ink border, an accent-text
         # eyebrow and a display statement, then a card grid — Design's markup
         # (page lines 156–173) with the tags folded into the terms.
         {"type": "rule", "anchor": "s-stomata",

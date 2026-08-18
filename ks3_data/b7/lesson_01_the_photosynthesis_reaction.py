@@ -108,25 +108,43 @@ else moves.
    b3-07, b4-01 and b5-06 resolve the identical foot line the identical way.
    (B7's real safety line is b7-03's, and it is that lesson's to carry.)
 
-── One rail stop comes off, and it is the defect five units have found ──
+── FOUR rail stops — Design's fourth restored (MRB-249) ─────────────────
 
-Design draws FOUR stops and `#s-summary` ticks on `s.everTested` (page line
-409) — the BENCH's predicate, character for character, one section to the left
-(page line 408). MRB-208 ruled the rail completion-based and carrying only
-sections that require the student to do something; `#s-summary` is an eyebrow,
-a display statement, an equation, four static cards and a key fact, with no
-control, no commitment and no field. `ks3_parity.check_rail_reachable` would
-fail it for exactly that: the assertion looks for one of five literal DOM
-signals in the anchored section — `data-stage-done`, `class="ks3-rung`,
-`data-reveal`, `ks3-reveal-btn`, `class="ks3-option` — and `#s-summary` emits
-none of the five, so the stop could never tick however `done_when` were
-spelled. Inventing a demand Design did not draw is closed to this build
-(MRB-205). So the lesson declares THREE stops — the same call,
-the same reasoning and the same shape as b5-06's `#s-designs`, b4-01's
-`#s-parts`, b4-03's `#s-built`, c1-02's `#s-matrix`, c1-05's `#s-scale`,
-b3-01's `#s-nutrients` and b3-02's `#s-limits`. The section keeps its anchor,
-so every hash link into it still works, and NOTES-B7 §3's "four in all four
-lessons" is reported rather than silently followed.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that
+`#s-summary` came off the rail. Design draws FOUR stops and `#s-summary` ticks
+on `s.everTested` (page line 409) — the BENCH's predicate, character for
+character, one section to the left (page line 408) — and because `#s-summary`
+is an eyebrow, a display statement, an equation, four static cards and a key
+fact, with no control, no commitment and no field, the argument was that
+MRB-208 confined the rail to sections requiring the student to do something and
+that `ks3_parity.check_rail_reachable` would fail the stop outright: the
+assertion looks for one of five literal DOM signals in the anchored section —
+`data-stage-done`, `class="ks3-rung`, `data-reveal`, `ks3-reveal-btn`,
+`class="ks3-option` — and `#s-summary` emits none of them, so the stop could
+never tick however `done_when` were spelled. So the lesson shipped THREE stops.
+
+Two things overrule that inference.
+
+MRB-205 binds and is not re-argued: Design draws, we render; nothing invented,
+nothing dropped; page wins over engine. That a gate could not express the stop
+is a fact about the gate, and the gate has moved — `wireRail`'s `paint()`
+resolves the tick at RAIL level, where Design computes it, instead of hunting
+for a signal inside the section.
+
+And Design's `isDone()` says what the condition is. It is a rail-level function
+and it returns the identical expression for `#s-bench` and then for
+`#s-summary`. The word summary is the payoff of the bench beside it: it emits
+none of the five signals precisely because the bench already took the student's
+commitment. That is a MIRROR, not an alias.
+
+So the fourth stop is declared: anchor `s-summary`, `mirrors: "s-bench"`,
+`done_when: "leaf_tested"` — the bench's own predicate, named as borrowed, and
+gated by `ks3_parity.check_rail_matches_design` against
+`docs/ks3/rail-manifest.md`. b5-06's `#s-designs`, b4-01's `#s-parts`, b4-03's
+`#s-built`, c1-02's `#s-matrix`, c1-05's `#s-scale`, b3-01's `#s-nutrients` and
+b3-02's `#s-limits` are restored the same way. The section keeps its anchor, as
+it always did, and NOTES-B7 §3's "four in all four lessons" is now followed
+rather than reported.
 
 ⊕ MRB-177 LENGTH PARITY — RUNG 2 IS REPAIRED; RUNG 1 IS CLEAN.
 
@@ -452,9 +470,11 @@ LESSON = {
                     "four hundredths of one per cent of the atmosphere.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-summary` is dropped — see the
-    # docstring. `short` and `label` are Design's own `RAIL_SHORT` and `RAIL`
-    # strings (page lines 323–329).
+    # FOUR stops, as Design draws them and as NOTES-B7 §3 requires.
+    # `s-summary` is the third: no control of its own, so it mirrors `s-bench`
+    # and ticks on the bench's predicate — see the docstring. `short` and
+    # `label` are Design's own `RAIL_SHORT` and `RAIL` strings (page lines
+    # 323–329).
     "rail": [
         {"anchor": "s-hook", "short": "HOOK", "label": "The willow",
          "done_when": "committed"},
@@ -464,6 +484,8 @@ LESSON = {
         # until you look at what it did.
         {"anchor": "s-bench", "short": "BENCH", "label": "Take one away",
          "done_when": "leaf_tested"},
+        {"anchor": "s-summary", "short": "SUMMARY", "label": "Word summary",
+         "mirrors": "s-bench", "done_when": "leaf_tested"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -644,8 +666,9 @@ LESSON = {
          "verdicts": VERDICTS},
 
         # #s-summary — the word summary. Shell measured as `rule`, not
-        # `formula`; the arrow is DRAWN and there is no cover component. Both
-        # decisions are argued in full in the docstring.
+        # `formula`; the arrow is DRAWN and there is no cover component. Rail
+        # stop 3, mirroring `s-bench`. All three decisions are argued in full
+        # in the docstring.
         {"type": "rule", "anchor": "s-summary",
          "eyebrow": "The word summary",
          "statement": "Two reactants in, two products out.",

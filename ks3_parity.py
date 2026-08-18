@@ -81,6 +81,8 @@ import os
 import re
 from html import unescape as _unescape
 
+import ks3_rail_manifest as RAIL_MANIFEST
+
 REF_DIR = os.path.join("docs", "ks3", "design-reference")
 ARTIFACTS = (
     "KS3 Reference Set (offline).html",
@@ -4161,12 +4163,56 @@ def check_rail_reachable(ks3_root):
             stages = json.loads(_unescape(m.group(1)))
         except ValueError:
             continue                      # check_rail_anchors owns this failure
+        by_anchor = {st.get("anchor"): st for st in stages if st.get("anchor")}
         for st in stages:
             anchor = st.get("anchor")
             if not anchor:
                 continue                  # ditto
             label = st.get("short") or anchor
             total += 1
+
+            # ⊕ MRB-249 — a stop may MIRROR an earlier stop instead of carrying
+            # its own signal. Design's `isDone()` returns the same expression
+            # for two consecutive ids on 33 of her 48 pages: the synthesis
+            # section is the payoff of the instrument beside it and takes no
+            # commitment of its own, because the instrument already did.
+            #
+            # A mirror is only a completion route if it TERMINATES somewhere
+            # that can actually finish, so the chain is walked to a real
+            # section and that section is what gets checked. A mirror naming a
+            # stop that is not on this rail, or a cycle, is a stop that can
+            # never tick — the same failure, reached by a new route, and it is
+            # reported as such rather than silently accepted.
+            hops, at, seen = 0, st, {anchor}
+            while (at.get("mirrors") or "").strip():
+                target = at["mirrors"]
+                if target not in by_anchor:
+                    problems.append(
+                        "%s: rail stop %r mirrors %r, which is not a stop on "
+                        "this rail — it can never tick"
+                        % (name, label, target))
+                    at = None
+                    break
+                if target in seen:
+                    problems.append(
+                        "%s: rail stop %r is in a mirror cycle through %r, so "
+                        "it can never tick" % (name, label, target))
+                    at = None
+                    break
+                seen.add(target)
+                at = by_anchor[target]
+                hops += 1
+            if at is None:
+                continue
+            if hops:
+                # The mirrored stop's own reachability is checked on its own
+                # iteration; this stop rides on it and needs nothing further.
+                if not (st.get("done_when") or "").strip():
+                    problems.append(
+                        "%s: rail stop %r declares no done_when — every stop "
+                        "has to name the condition that completes it"
+                        % (name, label))
+                continue
 
             if not (st.get("done_when") or "").strip():
                 problems.append(
@@ -4188,6 +4234,95 @@ def check_rail_reachable(ks3_root):
                     "doneByDom() reads, so it can never tick. It is either a "
                     "section that must gain a demand, or a section that must "
                     "come off the rail." % (name, label, anchor))
+    return problems, total
+
+
+
+
+def check_rail_matches_design(ks3_root, repo_root):
+    """⊕ MRB-249 — the built rail is the rail DESIGN DREW, stop for stop.
+
+    `check_rail_reachable` asks whether the stops we emitted can tick. It
+    cannot ask about a stop we never emitted, and that is precisely how the
+    defect escaped it: across B3, B4, B5, B6, B7 and B8, **33 pages shipped a
+    three-stop rail where Design drew four**, each dropping the synthesis
+    section between the instrument and the ladder.
+
+    Every one of those sections is still in the built page, still carrying its
+    anchor, holding 1.2–5.2 KB of teaching — a drawn equation, a summary table,
+    a set of fact cards. Three separate authoring passes reasoned that a
+    section with no control of its own "cannot tick" and took it off the rail,
+    which made the reachability gate pass. The gate was narrower than its own
+    name, and it read as coverage.
+
+    That reasoning contradicts MRB-205 — Design draws, we render, and the page
+    wins over the engine — and it contradicts Design's own `isDone()`, which
+    states in plain JavaScript how the stop ticks:
+
+        if (id === 's-bench')   return s.exits;
+        if (id === 's-summary') return s.exits;
+
+    So this asserts against an outside reference the build cannot talk itself
+    out of: `docs/ks3/rail-manifest.md`, generated from Design's delivered
+    pages by `ks3_rail_manifest.py`.
+
+    Three assertions, and the third is the one that closes the hole:
+
+    1. Anchors match the drawn rail exactly, and IN ORDER. A dropped stop, an
+       added stop and a reordered rail all fail.
+    2. The mirror map matches, so a stop cannot be kept on the rail by being
+       quietly re-pointed at some other section's state.
+    3. A rail-bearing page with NO row in the manifest fails. Without this the
+       gate is opt-in, and a unit could pass by never being recorded at all —
+       the same defect class, one level up.
+    """
+    problems, total = [], 0
+    rails = RAIL_MANIFEST.manifest_rails(repo_root)
+    for page in _lesson_pages(ks3_root):
+        with open(page, encoding="utf-8") as fh:
+            html = fh.read()
+        name = os.path.basename(page)
+        slug = name[:-len(".html")]
+        found = re.search(r'data-rail-stages="([^"]*)"', html)
+        if not found:
+            continue
+        try:
+            stages = json.loads(_unescape(found.group(1)))
+        except ValueError:
+            continue                      # check_rail_anchors owns this failure
+        total += 1
+
+        drawn = rails.get(slug)
+        if drawn is None:
+            problems.append(
+                "%s: carries a rail but has no row in %s. Regenerate it with "
+                "`python3 ks3_rail_manifest.py --write` so the drawn rail is on "
+                "the record — an unrecorded lesson is unchecked, not passing."
+                % (name, RAIL_MANIFEST.MANIFEST))
+            continue
+        want_ids, want_mirrors = drawn
+        if want_ids is None:
+            continue                      # Design drew no RAIL const for this one
+
+        got_ids = [st.get("anchor") for st in stages]
+        if got_ids != want_ids:
+            missing = [i for i in want_ids if i not in got_ids]
+            added = [i for i in got_ids if i not in want_ids]
+            detail = ""
+            if missing:
+                detail += "  DROPPED: %s" % ", ".join(missing)
+            if added:
+                detail += "  ADDED: %s" % ", ".join(added)
+            problems.append("%s: rail is %s, Design draws %s.%s"
+                            % (name, got_ids, want_ids, detail))
+            continue
+
+        got_mirrors = dict((st["anchor"], st["mirrors"]) for st in stages
+                           if (st.get("mirrors") or "").strip())
+        if got_mirrors != want_mirrors:
+            problems.append(
+                "%s: mirror map is %s, Design's isDone() gives %s"
+                % (name, got_mirrors or {}, want_mirrors or {}))
     return problems, total
 
 

@@ -75,26 +75,43 @@ unanswered self-check can never block a student. Its question names the marathon
 rather than asking about the five in general, because a look-back that does not
 name the trap lets a student who fell into it report that they were fine.
 
-── Three rail stops, not Design's four ──────────────────────────────────
+── FOUR rail stops — Design's fourth restored (MRB-249) ─────────────────
 
-Design draws FOUR (`RAIL`, page lines 310–315) and `#s-table` ticks on
-`opened >= CASES.length` (page line 399) — the INSTRUMENT's predicate, character
-for character, one line above the bench's own (page line 398). `#s-table` is an
-eyebrow, a display statement, a six-row comparison and a key fact: no control,
-no commitment, no field.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to be headed "Three
+rail stops, not Design's four". Design draws FOUR (`RAIL`, page lines 310–315)
+and `#s-table` ticks on `opened >= CASES.length` (page line 399) — the
+INSTRUMENT's predicate, character for character, one line above the bench's own
+(page line 398). `#s-table` is an eyebrow, a display statement, a six-row
+comparison and a key fact: no control, no commitment, no field.
 
-On the built page that aliasing does not exist. `doneByDom()` in `shared/ks3.js`
-reads only the DOM inside the stop's own section, and `r_comparison` emits no
-`data-stage-done`, no `.ks3-rung`, no `[data-reveal]`, no `.ks3-reveal-btn` and
-no `.ks3-option`. `ks3_parity.check_rail_reachable()` fails a stop that carries
-none of them, and MRB-208's completion rule exists to stop a stop ticking for
-something the student did in a different section.
+The argument rested on a measurement of the built page: `doneByDom()` in
+`shared/ks3.js` read only the DOM inside the stop's own section, and
+`r_comparison` emits no `data-stage-done`, no `.ks3-rung`, no `[data-reveal]`,
+no `.ks3-reveal-btn` and no `.ks3-option`, so
+`ks3_parity.check_rail_reachable()` would fail the stop — with MRB-208's
+completion rule read as forbidding a tick for something done in a different
+section. So THREE stops shipped.
 
-So THREE stops, and the count is uniform across B8 (payload schema §7: 3, 3, 3,
-3, 3). The dropped pair is Design's `TABLE` / *Side by side*. **`#s-table` keeps
-its anchor**, so every hash link into it still works. Same call as b7-04's
-`#s-jobs`, b7-01's `#s-summary`, b5-06's `#s-designs`, b4-05's `#s-stomata` and
-eleven others.
+The measurement was right about the engine and wrong about the page.
+
+MRB-205 binds and is not re-argued: Design draws, we render; nothing invented,
+nothing dropped; page wins over engine. When the engine cannot express the
+page, the engine moves — and it has: `wireRail`'s `paint()` resolves the tick
+at RAIL level, where Design computes it.
+
+And page line 399 is a declaration, not an alias. The side-by-side table is the
+payoff of the five cases the student just settled; `#s-table` carries no signals
+of its own because the bench already took the commitment. That is a MIRROR.
+
+So the fourth stop is declared: anchor `s-table`, `mirrors: "s-bench"`,
+`done_when: "five_cases_settled"` — with Design's `TABLE` / *Side by side* pair
+restored to it — and `check_rail_matches_design` gates the built rail against
+`docs/ks3/rail-manifest.md`. b7-04's `#s-jobs`, b7-01's `#s-summary`, b5-06's
+`#s-designs`, b4-05's `#s-stomata` and the rest are restored the same way.
+**`#s-table` keeps its anchor**, as it always did.
+
+The count is uniform across B8 again, at four: payload schema §7's 3, 3, 3, 3,
+3 is superseded and its text has not been re-cut, so read it as historical.
 
 ── What could not be lifted byte-identical, and why ─────────────────────
 
@@ -515,10 +532,11 @@ LESSON = {
                     "running when is the whole point of this unit.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-table` is dropped — see the docstring.
-    # `short` and `label` are Design's own `RAIL_SHORT` and `RAIL` strings
-    # (page lines 310–316), and the dropped pair (`TABLE` / *Side by side*) goes
-    # with the stop.
+    # FOUR stops, as Design draws them. `s-table` is the third: no control of
+    # its own, so it mirrors `s-bench` and ticks on the bench's predicate — see
+    # the docstring, which supersedes payload schema §7's count. `short` and
+    # `label` are Design's own `RAIL_SHORT` and `RAIL` strings (page lines
+    # 310–316), `TABLE` / *Side by side* included.
     "rail": [
         {"anchor": "s-hook", "short": "HOOK", "label": "Twenty times",
          "done_when": "committed"},
@@ -527,6 +545,8 @@ LESSON = {
         # ones and leaves has not met the marathon.
         {"anchor": "s-bench", "short": "BENCH", "label": "Which route",
          "done_when": "five_cases_settled"},
+        {"anchor": "s-table", "short": "TABLE", "label": "Side by side",
+         "mirrors": "s-bench", "done_when": "five_cases_settled"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -707,8 +727,8 @@ LESSON = {
                      "on the second one.",
          }},
 
-        # #s-table — the band panel. NOT on the rail; see the docstring. It
-        # keeps its anchor, so every hash link into it still works.
+        # #s-table — the band panel. Rail stop 3, mirroring `s-bench`; see the
+        # docstring. Its anchor also carries every hash link into it.
         # `comparison` is the component: six rows, two captioned columns and the
         # key fact Design nests inside the panel (page lines 169–172).
         {"type": "comparison", "anchor": "s-table",

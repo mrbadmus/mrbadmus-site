@@ -59,22 +59,41 @@ prompt makes to the student. Every verdict's step count is Design's and every
 one of them checks out against its own chain (`len(chain) - 1`): steak 3,
 bread 2, salmon 4, cheese 3, mushroom 3, honey 3.
 
-── One rail stop comes off, and it is the defect the gate already names ──
+── FOUR rail stops — Design's fourth restored (MRB-249) ──────────────────
 
-Design draws FOUR stops and `#s-jobs` ticks on `s.everArrived` (page line 423)
-— the INSTRUMENT's predicate, character for character, one section to the left
-(page line 422). `#s-jobs` is an eyebrow, a display statement, three static
-cards and a key fact: no control, no commitment, no field.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that `#s-jobs`
+came off the rail. Design draws FOUR stops and `#s-jobs` ticks on
+`s.everArrived` (page line 423) — the INSTRUMENT's predicate, character for
+character, one section to the left (page line 422) — and because `#s-jobs` is
+an eyebrow, a display statement, three static cards and a key fact, with no
+control, no commitment and no field, the reading was that
 `ks3_parity.check_rail_reachable` fails a stop whose section carries none of
-the completion signals `doneByDom()` reads, and MRB-208 ruled the rail carries
-only sections that require the student to do something. Inventing a demand
-Design did not draw is closed to this build, so the lesson declares THREE
-stops — the same call, the same reasoning and the same shape as b4-05's
-`#s-stomata`, b5-06's `#s-designs`, b4-01's `#s-parts`, b4-03's `#s-built`,
-c1-02's `#s-matrix`, c1-05's `#s-scale`, b3-01's `#s-nutrients`, b3-02's
-`#s-limits`, b3-04's `#s-three` and b3-07's `#s-four`. The section keeps its
-anchor, so every hash link into it still works — and `PLANT-08` still resolves
-against it, because `elicited_by` needs an emitted `id`, not a rail stop.
+the completion signals `doneByDom()` reads, that MRB-208 confined the rail to
+sections requiring the student to do something, and that inventing a demand
+Design did not draw is closed to this build. So the lesson shipped THREE stops.
+
+Two things overrule that inference.
+
+MRB-205 binds and is not re-argued: Design draws, we render; nothing invented,
+nothing dropped; page wins over engine. The gate naming the defect was the
+gate looking in the wrong place — the tick is computed at rail level, and
+that is where mirrors are now resolved, in `wireRail`'s `paint()`.
+
+And Design's `isDone()` states the tick condition. It is a rail-level function
+returning the identical expression for `#s-trace` and then for `#s-jobs`. The
+three jobs are the payoff of having traced the chain back; the section holds no
+control because the instrument already took the student's commitment. That is a
+MIRROR.
+
+So the fourth stop is declared: anchor `s-jobs`, `mirrors: "s-trace"`,
+`done_when: "chain_traced"` — the instrument's own predicate, named as
+borrowed, and gated by `check_rail_matches_design` against
+`docs/ks3/rail-manifest.md`. b4-05's `#s-stomata`, b5-06's `#s-designs`,
+b4-01's `#s-parts`, b4-03's `#s-built`, c1-02's `#s-matrix`, c1-05's
+`#s-scale`, b3-01's `#s-nutrients`, b3-02's `#s-limits`, b3-04's `#s-three` and
+b3-07's `#s-four` are restored the same way. The section keeps its anchor, as
+it always did — and `PLANT-08` resolves against it exactly as before, because
+`elicited_by` needs an emitted `id`, which is independent of the rail.
 
 ── What could not be lifted byte-identical, and why ─────────────────────
 
@@ -559,9 +578,10 @@ LESSON = {
                     "every breath you have ever taken.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-jobs` is dropped — see the docstring.
-    # `short` and `label` are Design's own `RAIL_SHORT` and `RAIL` strings
-    # (page lines 308–312).
+    # FOUR stops, as Design draws them. `s-jobs` is the third: no control of
+    # its own, so it mirrors `s-trace` and ticks on the instrument's predicate
+    # — see the docstring. `short` and `label` are Design's own `RAIL_SHORT`
+    # and `RAIL` strings (page lines 308–312).
     "rail": [
         {"anchor": "s-hook", "short": "HOOK", "label": "Every meal",
          "done_when": "committed"},
@@ -570,6 +590,8 @@ LESSON = {
         # a food has been picked — a tab press reveals nothing.
         {"anchor": "s-trace", "short": "TRACE", "label": "Trace it back",
          "done_when": "chain_traced"},
+        {"anchor": "s-jobs", "short": "JOBS", "label": "Three jobs",
+         "mirrors": "s-trace", "done_when": "chain_traced"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -620,8 +642,8 @@ LESSON = {
     #
     # Both values resolve against the BUILT page (MRB-244): `s-think` is the
     # confrontation block's anchor and `s-jobs` is the rule block's, and both
-    # are emitted as `id="…"`. `s-jobs` is not a rail stop and does not need to
-    # be — the gate wants an emitted element, not a completion signal.
+    # are emitted as `id="…"`. Whether `s-jobs` is a rail stop is beside the
+    # point here — the gate wants an emitted element, not a completion signal.
     "misconceptions": [
         {"id": "PLANT-07",
          "statement": "Plants do the photosynthesising — trees are the lungs "
@@ -727,8 +749,9 @@ LESSON = {
          "done_label": "You have reached a producer",
          "reset_label": "Start again"},
 
-        # #s-jobs — the band panel, `rule` with a three-card grid. NOT on the
-        # rail; see the docstring. One card per clause of KS3.B.PHOT.02.
+        # #s-jobs — the band panel, `rule` with a three-card grid. Rail stop
+        # 3, mirroring `s-trace`; see the docstring. One card per clause of
+        # KS3.B.PHOT.02.
         {"type": "rule", "anchor": "s-jobs",
          "eyebrow": "Three things it does for everything else",
          "statement": "Food, air, and the balance between them.",

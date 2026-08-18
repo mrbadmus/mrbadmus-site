@@ -55,20 +55,36 @@ The arithmetic is `hours = units`, `remaining = max(0, units - hour)`, cap 12.
 That is Design's own `renderVals` (page lines 461–478) and it is why the
 verdict can say *"which is exactly the number of units"*.
 
-── One rail stop comes off, and it is the defect B4 and C1 already found ─
+── FOUR rail stops — Design's fourth restored (MRB-249) ──────────────────
 
-Design draws FOUR stops (page lines 327–332) and `#s-years` ticks on
-`s.everRan` (page line 420) — the CLOCK's predicate, verbatim, one section to
-the left. MRB-208 ruled the rail is completion-based and carries only sections
-that require the student to do something; `#s-years` is an eyebrow, a
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that
+`#s-years` came off the rail. Design draws FOUR stops (page lines 327–332) and
+`#s-years` ticks on `s.everRan` (page line 420) — the CLOCK's predicate,
+verbatim, one section to the left — and because `#s-years` is an eyebrow, a
 statement, two static cards and a key fact, with no control, no commitment and
-no field. `ks3_parity.check_rail_reachable` would fail it for exactly that (a
-`rule` section carries none of the signals `doneByDom()` reads), and inventing
-a demand Design did not draw is closed to this build. So the lesson declares
-THREE stops — the same call, the same reasoning and the same shape as b4-01's
-`#s-parts`, c1-02's `#s-matrix`, c1-05's `#s-scale`, b3-01's `#s-nutrients`
-and b3-02's `#s-limits`. The section keeps its anchor, so every hash link into
-it still works.
+no field, the reading was that MRB-208's completion rule ruled it out and
+`ks3_parity.check_rail_reachable` would fail a `rule` section for carrying none
+of the signals `doneByDom()` reads. So the lesson shipped THREE stops.
+
+Two things overrule that inference.
+
+MRB-205 binds and is not re-argued: Design draws, we render; nothing invented,
+nothing dropped; page wins over engine. Dropping a stop Design drew is not
+rendering what Design drew.
+
+And `s.everRan` written twice is Design stating the tick condition, not Design
+repeating herself. `isDone()` is rail-level and returns the identical
+expression for `#s-clock` and then for `#s-years`. Years of nights is the
+payoff of one night on the clock; the section holds no control because the
+clock has already taken the student's commitment. That is a MIRROR, resolved at
+rail level in `wireRail`'s `paint()`.
+
+So the fourth stop is declared: anchor `s-years`, `mirrors: "s-clock"`,
+`done_when: "clock_run"` — the clock's own predicate, named as borrowed, and
+gated by `check_rail_matches_design` against `docs/ks3/rail-manifest.md`.
+b4-01's `#s-parts`, c1-02's `#s-matrix`, c1-05's `#s-scale`, b3-01's
+`#s-nutrients` and b3-02's `#s-limits` are restored the same way. The section
+keeps its anchor, as it always did, so every hash link into it still works.
 
 ── What could not be lifted, and why ────────────────────────────────────
 
@@ -301,13 +317,15 @@ LESSON = {
                     "understanding as biology before anyone argues about them.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-years` is dropped — see the docstring.
-    # `short` and `label` are Design's own `RAIL_SHORT` and `RAIL` strings
-    # (page lines 327–333).
+    # FOUR stops, as Design draws them. `s-years` is the third: no control of
+    # its own, so it mirrors `s-clock` and ticks on the clock's predicate — see
+    # the docstring. `short` and `label` are Design's own `RAIL_SHORT` and
+    # `RAIL` strings (page lines 327–333).
     #
     # ⚠️ MRB-208: nothing is ticked on load. `done_when` is R2's gate field —
     # every stop names the condition that completes it, and every named
-    # condition is one the section can actually reach.
+    # condition is one the page can actually reach, whether the stop owns the
+    # control or mirrors the section that does.
     "rail": [
         {"anchor": "s-hook", "short": "HOOK", "label": "Three tricks",
          "done_when": "committed"},
@@ -317,6 +335,8 @@ LESSON = {
         # glass and walked away has not seen the clock refuse to move.
         {"anchor": "s-clock", "short": "CLOCK", "label": "Beat the liver",
          "done_when": "clock_run"},
+        {"anchor": "s-years", "short": "YEARS", "label": "Years of nights",
+         "mirrors": "s-clock", "done_when": "clock_run"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -510,8 +530,8 @@ LESSON = {
                         "affected, whatever the person says about feeling "
                         "fine."}},
 
-        # #s-years — the band panel. NOT on the rail; see the docstring.
-        # `rule` is the component: band ground, 3px ink border, an accent-text
+        # #s-years — the band panel. Rail stop 3, mirroring `s-clock`; see the
+        # docstring. `rule` is the component: band ground, 3px ink border, an accent-text
         # eyebrow and a display statement, then a card grid — Design's markup
         # (page lines 156–175) with the row lists folded into the glosses.
         {"type": "rule", "anchor": "s-years",

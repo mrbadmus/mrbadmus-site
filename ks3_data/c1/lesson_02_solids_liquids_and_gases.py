@@ -29,26 +29,42 @@ and a solid particle are the same object — so `reference_particle` is a
 REQUIRED key and `r_state_bench` raises without it rather than quietly
 rendering a bench that has lost its point.
 
-── Two rail corrections, both engine defects rather than science ───────
+── Two rail items: one reversed (MRB-249), one still a correction ──────
 
-1. **`#s-matrix` comes OFF the rail.** Design's stage 3 ticks on
-   `Object.keys(seen).length >= 3` — stage 2's predicate, verbatim. MRB-208
-   ruled the rail carries only sections that require the student to do
-   something, and `#s-matrix` is an eyebrow, a heading, a lede, a table and a
-   footnote: it emits no control, no commit and no field. The map offers two
-   ways out (§2.4) and the page supports only one — there is no demand in the
-   section to promote, and inventing a control Design did not draw is closed to
-   this build. So the lesson declares FOUR rail stops, not five, and
-   `ks3_parity.check_rail_reachable` — which names this exact defect in its own
-   docstring — passes honestly rather than by a predicate borrowed from next
-   door. The section keeps its `scroll-margin-top` anchor: hash links into it
-   still work, it simply makes no claim to be completable.
+1. **`#s-matrix` STAYS ON the rail.** ⊕ **REVERSED 18 Aug 2026 (MRB-249).**
+   This item used to say the opposite, and a dozen later lessons cited it.
+   Design's stage 3 ticks on `Object.keys(seen).length >= 3` — stage 2's
+   predicate, verbatim — and because `#s-matrix` is an eyebrow, a heading, a
+   lede, a table and a footnote, emitting no control, no commit and no field,
+   the argument was that MRB-208 confined the rail to sections requiring the
+   student to do something, that there was no demand in the section to promote,
+   and that inventing a control Design did not draw is closed to this build. So
+   the lesson shipped FOUR stops, not five.
 
-   ⚑ The nearest thing to a demand of its own is the highlight: the matrix lights
-   a different row for squash, for paths and for neither. But those are the
-   BENCH's toggles, in the bench's section, so a predicate over them would
-   reproduce Design's defect one control-group to the left. Recorded rather than
-   pressed into service.
+   Two things overrule that. MRB-205 binds and is not re-argued — Design draws,
+   we render, nothing invented and nothing dropped, page wins over engine — and
+   dropping a stop Design drew is as much a departure from the page as adding a
+   control to it. And the repeated predicate is Design saying how stage 3
+   ticks: `isDone()` is a rail-level function, and the same expression written
+   for two consecutive ids is a declaration. The contrast table is the payoff
+   of the bench beside it, and it carries no control because the bench already
+   took the student's commitment. That is a MIRROR, resolved at rail level in
+   `wireRail`'s `paint()`.
+
+   So the stop is declared: anchor `s-matrix`, `mirrors: "s-bench"`,
+   `done_when: "all_three_states_seen"` — stage 2's predicate, named as
+   borrowed rather than smuggled, and gated by
+   `ks3_parity.check_rail_matches_design` against `docs/ks3/rail-manifest.md`.
+   FIVE stops, as Design drew. The section keeps its `scroll-margin-top`
+   anchor, as it always did.
+
+   ⚑ The note below was recorded here before the reversal and it turns out to
+   have been describing the mechanism: the nearest thing to a demand of its own
+   is the highlight, and the matrix lights a different row for squash, for
+   paths and for neither — but those are the BENCH's toggles, in the bench's
+   section. That is not a defect to route around; it is what a mirror IS. The
+   section's state is the bench's state, which is why Design gives the two
+   stops one predicate.
 
 2. **`benchProgress` starts at ZERO.** Design computes
    `Object.keys(seen).length + (seen[st] ? 0 : 1)` (line 614), which counts the
@@ -160,14 +176,17 @@ LESSON = {
                     "particles. So what exactly is different about them?",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # FOUR stops. Design draws five; `s-matrix` is dropped — see the docstring.
-    # `short` is ≤6 characters and `label` is Design's own sentence-case string
-    # from `RAIL` (page lines 338–344), both lifted.
+    # FIVE stops, as Design draws them. `s-matrix` is the third: no control of
+    # its own, so it mirrors `s-bench` and ticks on the bench's predicate — see
+    # the docstring. `short` is ≤6 characters and `label` is Design's own
+    # sentence-case string from `RAIL` (page lines 338–344), both lifted.
     "rail": [
         {"anchor": "s-hook",   "short": "HOOK",   "label": "The long bridge",
          "done_when": "committed"},
         {"anchor": "s-bench",  "short": "BENCH",  "label": "State bench",
          "done_when": "all_three_states_seen"},
+        {"anchor": "s-matrix", "short": "TABLE", "label": "The contrast",
+         "mirrors": "s-bench", "done_when": "all_three_states_seen"},
         {"anchor": "s-think",  "short": "THINK",  "label": "Softening particles",
          "done_when": "committed"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
@@ -395,7 +414,8 @@ LESSON = {
              },
          }},
 
-        # #s-matrix — state-matrix, DOM, LIGHT check shell. NOT on the rail.
+        # #s-matrix — state-matrix, DOM, LIGHT check shell. Rail stop 3,
+        # mirroring `s-bench`; see the docstring.
         # `r_comparison` is B1-06's two-column "one against the other" table
         # with a dark header row; this is a four-column property matrix whose
         # lit row is driven by another block's controls (§2.5.2).

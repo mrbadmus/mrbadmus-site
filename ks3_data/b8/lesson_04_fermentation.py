@@ -104,22 +104,41 @@ while still counting toward `done_after`. Measured, deliberate-looking, and
 harmless — recorded so a later pass does not "fix" it into a different opening
 state and cost the brewery/yoghurt contrast its symmetry.
 
-── THREE rail stops, not Design's four ──────────────────────────────────
+── FOUR rail stops — Design's fourth restored (MRB-249) ─────────────────
 
-Design draws four (`RAIL`, page lines 316–321) and `#s-two` ticks on `s.seen >= 2`
-(page line 403) — the BENCH's predicate, character for character, one section to
-the left (page line 402). `#s-two` is an eyebrow, a display statement, two static
-route cards and a key fact: no control, no commitment, no field.
-
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to be headed "THREE
+rail stops, not Design's four". Design draws four (`RAIL`, page lines 316–321)
+and `#s-two` ticks on `s.seen >= 2` (page line 403) — the BENCH's predicate,
+character for character, one section to the left (page line 402). `#s-two` is
+an eyebrow, a display statement, two static route cards and a key fact: no
+control, no commitment, no field. The argument was that
 `ks3_parity.check_rail_reachable()` fails a stop whose section carries none of
-the five DOM signals `doneByDom()` reads, and MRB-208 ruled the rail carries only
-sections that require the student to do something. Aliasing it to the bench
-would tick a stop for something done in a different section. So THREE stops —
-the same call, the same reasoning and the same shape as all four B7 pages,
-b4-03 `#s-built`, b5-06 `#s-designs`, b6-03 `#s-four`, c1-02 `#s-matrix` and
-eight others. **`#s-two` keeps its anchor**, so every hash link into it still
-works. Schema §7 ruled this before dispatch; NOTES-B8 §4's "four in all five" is
-reported, not silently followed.
+the five DOM signals `doneByDom()` reads, that MRB-208 confined the rail to
+sections requiring the student to do something, and that ALIASING the stop to
+the bench would tick it for something done in a different section. So THREE
+stops shipped.
+
+Two things overrule that.
+
+MRB-205 binds and is not re-argued: Design draws, we render; nothing invented,
+nothing dropped; page wins over engine.
+
+And page line 403 is not an alias — it is Design, in a rail-level function,
+saying what completes the stop. The two routes are the payoff of the four dials
+beside them; `#s-two` carries no control precisely because the bench already
+took the student's commitment. That is a MIRROR, and `wireRail`'s `paint()`
+resolves mirrors at rail level rather than searching the section for a signal.
+
+So the fourth stop is declared: anchor `s-two`, `mirrors: "s-bench"`,
+`done_when: "two_setups_tried"` — with Design's `ROUTES` / "Two routes" pair
+restored to it — and `check_rail_matches_design` gates the built rail against
+`docs/ks3/rail-manifest.md`. All four B7 pages, b4-03 `#s-built`, b5-06
+`#s-designs`, b6-03 `#s-four`, c1-02 `#s-matrix` and the rest are restored the
+same way. **`#s-two` keeps its anchor**, as it always did.
+
+NOTES-B8 §4's "four in all five" is now followed rather than reported. Schema
+§7's pre-dispatch three-stop ruling is superseded; its text has not been re-cut,
+so read that count as historical.
 
 ── ⊕ MRB-225 — THREE CLAIMS SHRUNK UNTIL THEY ARE TRUE ──────────────────
 
@@ -602,10 +621,11 @@ LESSON = {
                     "and we built a civilisation on them before we knew that.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-two` is dropped and keeps its anchor —
-    # see the docstring and schema §7. `short` and `label` are Design's own
-    # `RAIL_SHORT` and `RAIL` strings (page lines 316–322), and the dropped
-    # pair — `ROUTES` / "Two routes" — goes with the stop.
+    # FOUR stops, as Design draws them and as NOTES-B8 §4 requires. `s-two` is
+    # the third: no control of its own, so it mirrors `s-bench` and ticks on
+    # the bench's `s.seen >= 2` — see the docstring, which supersedes schema
+    # §7's count. `short` and `label` are Design's own `RAIL_SHORT` and `RAIL`
+    # strings (page lines 316–322), `ROUTES` / "Two routes" included.
     "rail": [
         {"anchor": "s-hook", "short": "HOOK", "label": "The holes",
          "done_when": "committed"},
@@ -613,6 +633,8 @@ LESSON = {
         # set-ups tried — a single dial press is not a comparison.
         {"anchor": "s-bench", "short": "BENCH", "label": "Four dials",
          "done_when": "two_setups_tried"},
+        {"anchor": "s-two", "short": "ROUTES", "label": "Two routes",
+         "mirrors": "s-bench", "done_when": "two_setups_tried"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -759,8 +781,8 @@ LESSON = {
          "branches": BRANCHES,
          "done_after": 2},
 
-        # #s-two — the band panel, `rule` with the two route cards. NOT on the
-        # rail; the anchor is kept. See the docstring.
+        # #s-two — the band panel, `rule` with the two route cards. Rail stop
+        # 3, mirroring `s-bench`. See the docstring.
         {"type": "rule", "anchor": "s-two",
          "eyebrow": "Two fermentations, two products",
          "statement": "Which organism decides what you get.",

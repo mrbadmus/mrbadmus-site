@@ -55,26 +55,43 @@ least (0,2,0); this has now bitten five builds, and B4 shipped a label at
 1.21:1 past a green kinds gate because of it. Flagged for the engine pass, not
 fixable from a data module.
 
-── One rail stop comes off, and it is the same defect for the sixth time ─
+── FOUR rail stops — Design's fourth restored (MRB-249) ──────────────────
 
-Design draws FOUR stops. `isDone('s-fert')` is
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that `#s-fert`
+came off the rail — "the same defect for the sixth time". Design draws FOUR
+stops, and `isDone` is
 
     if (id === 's-compare') return Object.keys(s.open).length >= 6;
     if (id === 's-fert')    return Object.keys(s.open).length >= 6;
 
 — page lines 410–411, character for character the same predicate, one section
-to the left. `#s-fert` is an eyebrow, a display statement, five static cards
-and a key fact: no control, no commitment, no field, and nothing a student can
-do inside it that the page can observe. MRB-208 ruled the rail is
-completion-based and carries only sections that require the student to do
-something, and `ks3_parity.check_rail_reachable` would fail it for exactly that
-— a `rule` section carries none of the signals `doneByDom()` reads. Inventing a
-demand Design did not draw is closed to this build.
+to the left. Because `#s-fert` is an eyebrow, a display statement, five static
+cards and a key fact, with no control, no commitment, no field and nothing a
+student can do inside it that the page can observe, the reading was that
+MRB-208's completion rule ruled it out, that
+`ks3_parity.check_rail_reachable` would fail it for carrying none of the
+signals `doneByDom()` reads, and that inventing a demand Design did not draw is
+closed to this build. So the lesson shipped **THREE stops**.
 
-So the lesson declares **THREE stops**, the same call and the same reasoning as
-c1-02's `#s-matrix`, c1-05's `#s-scale`, b3-01's `#s-nutrients`, b3-02's
-`#s-limits` and b4-01's `#s-parts`. **The section keeps its anchor**, so the
-tutor card's `#s-fert` link and every hash link into it still resolve.
+Two things overrule that inference.
+
+MRB-205 binds and is not re-argued: Design draws, we render; nothing invented,
+nothing dropped; page wins over engine. Inventing a control and deleting a stop
+are both departures from the page, and MRB-205 forbids both.
+
+And those two lines are not a repetition to be explained away — they are
+Design, in a rail-level function, saying how the second stop ticks. The five
+steps of fertilisation are the payoff of the six rows the student just opened;
+`#s-fert` carries no control because `#s-compare` already took the commitment.
+That is a MIRROR, resolved at rail level in `wireRail`'s `paint()`.
+
+So the fourth stop is declared: anchor `s-fert`, `mirrors: "s-compare"`,
+`done_when: "all_six_rows_opened"` — the predicate above, named as borrowed
+rather than smuggled, and gated by `check_rail_matches_design` against
+`docs/ks3/rail-manifest.md`. c1-02's `#s-matrix`, c1-05's `#s-scale`, b3-01's
+`#s-nutrients`, b3-02's `#s-limits` and b4-01's `#s-parts` are restored the
+same way. **The section keeps its anchor**, as it always did, so the tutor
+card's `#s-fert` link and every hash link into it still resolve.
 
 ── What could not be lifted, and why ────────────────────────────────────
 
@@ -375,9 +392,10 @@ LESSON = {
                     "material.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-fert` is dropped — see the docstring.
-    # `short` and `label` are Design's own `RAIL_SHORT` and `RAIL` strings
-    # (page lines 329–335).
+    # FOUR stops, as Design draws them. `s-fert` is the third: no control of
+    # its own, so it mirrors `s-compare` and ticks on that section's predicate
+    # — see the docstring. `short` and `label` are Design's own `RAIL_SHORT`
+    # and `RAIL` strings (page lines 329–335).
     "rail": [
         {"anchor": "s-hook", "short": "HOOK", "label": "Unequal sizes",
          "done_when": "committed"},
@@ -387,6 +405,8 @@ LESSON = {
         # sixth of it.
         {"anchor": "s-compare", "short": "CELLS", "label": "Two cells",
          "done_when": "all_six_rows_opened"},
+        {"anchor": "s-fert", "short": "STEPS", "label": "Five steps",
+         "mirrors": "s-compare", "done_when": "all_six_rows_opened"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -558,8 +578,8 @@ LESSON = {
          # The panel below the table, inside the same section.
          "scale": SCALE},
 
-        # #s-fert — the band panel. NOT on the rail; see the docstring.
-        # `rule` is the component: band ground, 3px ink border, an accent-text
+        # #s-fert — the band panel. Rail stop 3, mirroring `s-compare`; see
+        # the docstring. `rule` is the component: band ground, 3px ink border, an accent-text
         # eyebrow and a display statement, then a card grid on the option
         # border — Design's markup (page lines 169–186) minus the number chips
         # and step 3's promotion.

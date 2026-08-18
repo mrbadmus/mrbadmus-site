@@ -74,23 +74,39 @@ written in words. They are authored as `choices[].label` because a renderer
 hard-coding them would be a renderer holding science copy. NOTES §2.2's payload
 line does not list them; the page does. Reported.
 
-── The rail loses a stop, and it is the defect five units have now found ─
+── FOUR rail stops — Design's fourth restored (MRB-249) ──────────────────
 
-Design draws FOUR stops, and `#s-stages` ticks on `Object.keys(s.opened).length
->= 6` (page line 412) — the BENCH's predicate, verbatim, one section to the
-left. `#s-stages` is an eyebrow, a display statement, five static stage cards
-and a key fact: no control, no commitment, no field.
-`ks3_parity.check_rail_reachable` fails a stop whose section carries none of the
-signals `doneByDom()` reads, and inventing a demand Design did not draw is
-closed to this build (MRB-205).
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that the rail
+lost a stop, "the defect five units have now found". Design draws FOUR stops,
+and `#s-stages` ticks on `Object.keys(s.opened).length >= 6` (page line 412) —
+the BENCH's predicate, verbatim, one section to the left — and because
+`#s-stages` is an eyebrow, a display statement, five static stage cards and a
+key fact with no control, no commitment and no field, the reading was that
+`ks3_parity.check_rail_reachable` would fail a stop carrying none of the
+signals `doneByDom()` reads, and that inventing a demand Design did not draw is
+closed to this build. So the lesson shipped THREE stops.
 
-So this lesson declares THREE stops. Same call, same reasoning and same shape as
+Two things overrule that inference.
+
+MRB-205 was cited for one half of itself. Design draws, we render: it forbids
+inventing a control, and just as plainly forbids dropping a stop Design drew.
+Page wins over engine.
+
+And Design's `isDone()` states the tick condition. It is a rail-level function
+and returns the identical expression for `#s-cross` and then for `#s-stages`.
+The forty weeks are the payoff of the six crossings the student just settled;
+the section carries no control because the bench already took the commitment.
+That is a MIRROR, resolved at rail level in `wireRail`'s `paint()`.
+
+So the fourth stop is declared: anchor `s-stages`, `mirrors: "s-cross"`,
+`done_when: "all_six_checked"` — the bench's own predicate, named as borrowed,
+and gated by `check_rail_matches_design` against `docs/ks3/rail-manifest.md`.
 b5-03's `#s-events`, b5-05's `#s-windows`, b4-01's `#s-parts`, b3-06's
-`#s-three`, c1-02's `#s-matrix` and c1-05's `#s-scale`. **The section keeps its
-`#s-stages` anchor**, so every hash link into it still resolves.
+`#s-three`, c1-02's `#s-matrix` and c1-05's `#s-scale` are restored the same
+way. **The section keeps its `#s-stages` anchor**, as it always did.
 
-Design's dropped stop is `{id: 's-stages', label: 'Forty weeks'}`, short
-`STAGES`. Recorded here because the label is hers and is otherwise lost.
+The stop is Design's `{id: 's-stages', label: 'Forty weeks'}`, short `STAGES` —
+her label, now carried rather than merely recorded.
 
 ── Misconceptions: this lesson owns REPRO-07 and REPRO-08 ───────────────
 
@@ -305,7 +321,9 @@ commission.
 
 ⚑ Two page-internal notes, both reported rather than silently ruled (MRB-205):
   1. **`#s-stages` and `#s-cross` share a completion predicate**, verbatim. See
-     the rail section above; the stop is dropped, the anchor is kept.
+     the rail section above: since MRB-249 that is read as Design declaring a
+     MIRROR, so both stops ship and `#s-stages` names `#s-cross` as the section
+     it borrows from.
   2. **The stage windows overlap, and it is not an error.** Stage 02 is
      *Weeks 1–12* and stage 03 is *Weeks 3–8*, which sit inside each other on
      purpose: the placenta is still growing while the organs are being laid
@@ -537,9 +555,10 @@ LESSON = {
                     "ever meeting.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-stages` is dropped — see the docstring.
-    # `short` and `label` are Design's own `RAIL_SHORT` and `RAIL` strings
-    # (page lines 315–321) for the three that remain.
+    # FOUR stops, as Design draws them. `s-stages` is the third: no control of
+    # its own, so it mirrors `s-cross` and ticks on the bench's predicate — see
+    # the docstring. `short` and `label` are Design's own `RAIL_SHORT` and
+    # `RAIL` strings (page lines 315–321), all four of them.
     "rail": [
         # `isDone('s-hook')` is `s.hookChoice !== null` (page line 410): the
         # stop ticks on the commitment, which is the only thing the hook asks
@@ -555,6 +574,8 @@ LESSON = {
          "done_when": "all_six_checked"},
         # `isDone('s-ladder')` is both marked rungs answered AND both
         # self-marked rungs checked (page line 413).
+        {"anchor": "s-stages", "short": "STAGES", "label": "Forty weeks",
+         "mirrors": "s-cross", "done_when": "all_six_checked"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -744,8 +765,8 @@ LESSON = {
          # the ladder marks correctness.
          "verdict": {"right": "Correct", "wrong": "Other way round"}},
 
-        # #s-stages — the band panel. NOT on the rail; see the docstring.
-        # `rule` is the component: band ground, 3px ink border, an accent-text
+        # #s-stages — the band panel. Rail stop 3, mirroring `s-cross`; see
+        # the docstring. `rule` is the component: band ground, 3px ink border, an accent-text
         # eyebrow and a display statement, then a card grid — Design's markup
         # (page lines 154–171) minus the number chips and minus stage 02's
         # promotion. `.ks3-rule` ships exactly her section's ground, border and

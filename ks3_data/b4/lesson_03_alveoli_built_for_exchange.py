@@ -42,28 +42,47 @@ non-positive `blood_kpa` for the same reason.
 and those are `13.3 × 90` and `5.3 × 90`. If a science review moves either kPa
 figure, that sentence moves with it. No gate can check a number inside prose.
 
-── The rail is THREE stops, not Design's four ──────────────────────────
+── FOUR rail stops — Design's fourth restored (MRB-249) ────────────────
 
-MRB-208 rule 2, applied exactly as `ks3_data/b3/lesson_07` applied it to
-`#s-four` and `ks3_data/c1/lesson_02` to `#s-matrix`. Design's rail lists
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to read "the rail is
+THREE stops, not Design's four", on MRB-208 rule 2, taking `b3/lesson_07`'s
+`#s-four` and `c1/lesson_02`'s `#s-matrix` with it. Design's rail lists
 `s-hook`, `s-gradient`, `s-built`, `s-ladder`, and its own tick function reads:
 
     if (id === 's-gradient') return s.tried;
     if (id === 's-built')    return s.tried;
 
-— stage three's predicate is stage two's, character for character. `#s-built`
-is an eyebrow, a display statement, a four-row comparison and a key fact: no
-control, no commitment, no field. `docs/ks3/b4-inventory/PAYLOAD-SCHEMA.md`
-records the same finding independently — it lists `#s-built` among the five B4
-band sections that have "no control, a commitment or any state".
+— stage three's predicate is stage two's, character for character. Because
+`#s-built` is an eyebrow, a display statement, a four-row comparison and a key
+fact with no control, no commitment and no field, the argument was that there
+was no demand in it to promote, that inventing one Design did not draw is
+closed to this build, and so the stop came off rather than ticking on its
+neighbour's state.
 
-There is no demand in the section to promote, and inventing a control Design
-did not draw is closed to this build (MRB-205), so the stop comes OFF the rail
-rather than ticking on its neighbour's state. `#s-built` keeps its anchor and
-its scroll-margin: hash links into it still work. `#s-think` is not a candidate
-either — on this page it is three quotes and three paragraphs with nothing to
-answer, so MRB-220 R1 (which promotes a *committing* `#s-think` to `predict`)
-does not reach it.
+The OBSERVATION stands and is worth keeping:
+`docs/ks3/b4-inventory/PAYLOAD-SCHEMA.md` independently lists `#s-built` among
+the five B4 band sections with "no control, a commitment or any state". It is
+the CONCLUSION drawn from it that is overruled, on two grounds.
+
+MRB-205 was cited for the wrong half of itself. It says Design draws and we
+render, with no invented and no dropped page structure, and page winning over
+engine. It forbids inventing a control; it equally forbids dropping a stop.
+
+And the two lines above are Design stating how `#s-built` ticks. `isDone()` is
+a rail-level function, and the same expression written for two consecutive ids
+is a declaration. The same four features is the payoff of the crossings the
+student just counted; the section holds no control because `#s-gradient`
+already took the commitment. That is a MIRROR, resolved at rail level in
+`wireRail`'s `paint()`.
+
+So the stop is declared: anchor `s-built`, `mirrors: "s-gradient"`,
+`done_when: "either_switch_used"` — stage two's predicate, named as borrowed,
+and gated by `ks3_parity.check_rail_matches_design` against
+`docs/ks3/rail-manifest.md`. `#s-built` keeps its anchor and its scroll-margin,
+as it always did. `#s-think` is still not a stop — Design draws none on it, and
+on this page it is three quotes and three paragraphs with nothing to answer, so
+MRB-220 R1 (which promotes a *committing* `#s-think` to `predict`) does not
+reach it.
 
 ⚑ NOTES-B4 §6 says "Rail stops: four in every lesson." That is Design's
 intention and it is recorded here rather than silently met: a fourth stop on
@@ -251,9 +270,10 @@ LESSON = {
                     "numbers.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-built` is dropped — see the docstring.
-    # `short` and `label` are Design's own `RAIL_SHORT` and `RAIL` strings
-    # (page lines 322–328).
+    # FOUR stops, as Design draws them. `s-built` is the third: no control of
+    # its own, so it mirrors `s-gradient` and ticks on that section's predicate
+    # — see the docstring. `short` and `label` are Design's own `RAIL_SHORT`
+    # and `RAIL` strings (page lines 322–328).
     "rail": [
         {"anchor": "s-hook",     "short": "HOOK",   "label": "One smooth bag",
          "done_when": "committed"},
@@ -263,6 +283,8 @@ LESSON = {
         # bench of twenty would have ticked after one.
         {"anchor": "s-gradient", "short": "CROSS",
          "label": "Count crossings", "done_when": "either_switch_used"},
+        {"anchor": "s-built", "short": "FOUR", "label": "Same four",
+         "mirrors": "s-gradient", "done_when": "either_switch_used"},
         {"anchor": "s-ladder",   "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -425,9 +447,10 @@ LESSON = {
         # #s-built — Design's band-on-3px-ink panel with the four-row table.
         # That IS the `comparison` shell (§5.1.1): band ground, accent-text
         # eyebrow, display statement, dark header row, zebra rows, a nested key
-        # fact. NOT a rail stop and NOT a `check` — there is nothing to do in
-        # it. The lede paragraph becomes the `references` edge above; see "What
-        # could not be lifted" 1.
+        # fact. Rail stop 3, mirroring `s-gradient`, but NOT a `check` — there
+        # is nothing to do in it, which is why it borrows its predicate. The
+        # lede paragraph becomes the `references` edge above; see "What could
+        # not be lifted" 1.
         {"type": "comparison", "anchor": "s-built",
          "eyebrow": "Same four features, second organ",
          "eyebrow_tone": "accent-text",

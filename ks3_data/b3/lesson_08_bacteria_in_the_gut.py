@@ -9,28 +9,52 @@ architecture.md §4.8 as amended by §4.8.1 and §4.8.2; shape follows
 Every student-facing string is byte-identical to the approved page, with the
 five documented exceptions listed under "What could not be lifted" below.
 
-── The rail is THREE stops, not Design's four ──────────────────────────
+── FOUR rail stops — Design's fourth restored (MRB-249) ────────────────
 
-MRB-208 rule 2, and this is the plainer of the two cases in this pair. Design's
-rail lists `s-hook`, `s-jobs`, `s-deal`, `s-ladder`, and its own tick function
-reads:
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to read "the rail is
+THREE stops, not Design's four", on MRB-208 rule 2, and called this the plainer
+of the two cases in the pair. Design's rail lists `s-hook`, `s-jobs`, `s-deal`,
+`s-ladder`, and its own tick function reads:
 
     if (id === 's-hook') return s.hookChoice !== null;
     if (id === 's-jobs') return JOBS.every((j) => s.off[j.id]);
     if (id === 's-deal') return s.hookChoice !== null;
 
-Stage three's predicate is stage ONE's, character for character: `#s-deal`
-ticks the moment the hook is answered, two sections earlier, and a student who
-never scrolls to it completes it anyway. The section itself is an eyebrow, a
-statement, three cards and a key fact — no control, no commitment, no field —
-so `ks3_parity.check_rail_reachable` would fail it for carrying none of the
-signals `doneByDom()` reads.
+The argument was that `#s-deal` is an eyebrow, a statement, three cards and a
+key fact — no control, no commitment, no field — so
+`ks3_parity.check_rail_reachable` would fail it for carrying none of the
+signals `doneByDom()` reads, and that inventing a control Design did not draw
+is closed to this build. So the stop came off.
 
-There is no demand in the section to promote, and inventing a control Design
-did not draw is closed to this build, so the stop comes OFF the rail. `#s-deal`
-keeps its anchor: hash links into it still work, and the tutor card still
-points at it. `#s-think` is not a candidate either — on this page it is two
-quotes and two paragraphs with nothing to answer.
+Two things overrule that.
+
+MRB-205 binds and is not re-argued: Design draws, we render; nothing invented,
+nothing dropped; page wins over engine.
+
+And the third line above is Design stating how `#s-deal` ticks. `isDone()` is a
+rail-level function; writing `s.hookChoice !== null` against `s-deal` is a
+declaration, not an oversight. Both sides of the deal is the reading-back of
+the germ-free mouse the student already answered on, so the section carries no
+control of its own. That is a MIRROR, resolved at rail level in `wireRail`'s
+`paint()`.
+
+So the stop is declared: anchor `s-deal`, `mirrors: "s-hook"`,
+`done_when: "committed"` — stage one's predicate, named as borrowed rather than
+smuggled, and gated by `ks3_parity.check_rail_matches_design` against
+`docs/ks3/rail-manifest.md`.
+
+⚠️ One observation from the old argument SURVIVES the reversal and is not
+answered by it: this mirror reaches BACKWARDS PAST a section, to `s-hook` two
+stops earlier rather than to `s-jobs` next door. So a student who answers the
+hook and never scrolls to `#s-deal` sees its stop ticked. That is what Design
+drew and MRB-205 settles which of us wins, but it is the one page in B3 where
+the mirror is not simply "the payoff of the instrument beside it", and it is
+recorded here rather than quietly dropped.
+
+`#s-think` is still not a candidate — Design draws no stop on it, and on this
+page it is two quotes and two paragraphs with nothing to answer. `#s-deal`
+keeps its anchor, as it always did: hash links into it still work, and the
+tutor card still points at it.
 
 ── What could not be lifted byte-identical, and why ────────────────────
 
@@ -158,14 +182,17 @@ LESSON = {
                     "arrangement.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-deal` is dropped — see the docstring.
-    # `short` and `label` are Design's own `RAIL_SHORT` and `RAIL` strings
-    # (page lines 296–302).
+    # FOUR stops, as Design draws them. `s-deal` is the third: no control of
+    # its own, so it mirrors `s-hook` — two stops back, not next door — and
+    # ticks on the hook's predicate. See the docstring. `short` and `label` are
+    # Design's own `RAIL_SHORT` and `RAIL` strings (page lines 296–302).
     "rail": [
         {"anchor": "s-hook",   "short": "HOOK",   "label": "Germ-free mouse",
          "done_when": "committed"},
         {"anchor": "s-jobs",   "short": "JOBS",   "label": "Five jobs",
          "done_when": "all_five_jobs_off"},
+        {"anchor": "s-deal", "short": "DEAL", "label": "Both sides",
+         "mirrors": "s-hook", "done_when": "committed"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -296,7 +323,8 @@ LESSON = {
 
         # #s-deal — Design's band-on-3px-ink statement panel with three cards.
         # That IS the `rule` shell (§5.1.1). NOT a `check` activity: there is
-        # nothing to do in it, which is also why it is not on the rail.
+        # nothing to do in it, which is why its rail stop mirrors `s-hook`
+        # rather than carrying a predicate of its own.
         {"type": "rule", "anchor": "s-deal",
          "eyebrow": "Both sides of the deal",
          "statement": "What each side gets, and what happens when the balance "

@@ -150,17 +150,33 @@ changing with it.
    survive, in Design's grouping. `ks4_links` gives way to `ks4_becomes` —
    §4.8.1 D makes the two mutually exclusive.
 
-5. **One rail stop comes off — the defect B4 found on every page.** Design
-   draws FOUR stops and `#s-method` ticks on `s.everRan` (page line 381), which
-   is the BENCH's predicate, one section to the left (page line 380). MRB-208
-   ruled the rail completion-based, carrying only sections that require the
-   student to do something; `#s-method` is an eyebrow, a display line, five
-   static cards and a key fact, with no control, no commitment and no field.
-   `ks3_parity.check_rail_reachable` would fail it outright — it carries none
-   of `_DONE_SIGNALS` — and inventing a demand Design did not draw is closed to
-   this build. THREE stops, the same call and the same shape as b5-06's
-   `#s-designs`, b6-03's `#s-four`, b4-01's `#s-parts` and b3-02's `#s-limits`.
-   The section keeps its anchor, so every hash link into it still works.
+5. **The fourth rail stop is Design's, and it stays.** ⊕ **REVERSED 18 Aug
+   2026 (MRB-249).** This item used to read "One rail stop comes off — the
+   defect B4 found on every page". Design draws FOUR stops and `#s-method`
+   ticks on `s.everRan` (page line 381), which is the BENCH's predicate, one
+   section to the left (page line 380); because `#s-method` is an eyebrow, a
+   display line, five static cards and a key fact, with no control, no
+   commitment and no field, the reading was that MRB-208's completion rule
+   ruled it out, that `ks3_parity.check_rail_reachable` would fail it outright
+   for carrying none of `_DONE_SIGNALS`, and that inventing a demand Design did
+   not draw is closed to this build. So THREE stops shipped.
+
+   That is overruled twice. MRB-205 binds and is not re-argued — Design draws,
+   we render, nothing invented and nothing dropped, page wins over engine — and
+   a stop that a gate could not express is a gate to fix, which is what
+   rail-level mirror resolution in `wireRail`'s `paint()` now does. And
+   Design's `isDone()` states the condition: it is rail-level and returns the
+   identical expression for `#s-bench` and then for `#s-method`, because the
+   five steps done properly are the payoff of having run it badly. The section
+   holds no control because the bench already took the commitment. That is a
+   MIRROR.
+
+   So the stop is declared: anchor `s-method`, `mirrors: "s-bench"`,
+   `done_when: "iodine_added"` — the bench's own predicate, named as borrowed,
+   and gated by `check_rail_matches_design` against
+   `docs/ks3/rail-manifest.md`. b5-06's `#s-designs`, b6-03's `#s-four`,
+   b4-01's `#s-parts` and b3-02's `#s-limits` are restored the same way. The
+   section keeps its anchor, as it always did.
 
 ⊕ MRB-177 LENGTH PARITY — RULED 17 Aug 2026, AND RUNG 2 IS REPAIRED.
   rung 1 (recall): correct 11w against distractors of 9 / 8 / 11. Clean as
@@ -449,9 +465,10 @@ LESSON = {
                     "read.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-method` is dropped — see "What could
-    # not be lifted" 5. `short` and `label` are Design's own `RAIL_SHORT` and
-    # `RAIL` strings (page lines 303–309).
+    # FOUR stops, as Design draws them. `s-method` is the third: no control of
+    # its own, so it mirrors `s-bench` and ticks on the bench's predicate — see
+    # "What could not be lifted" 5. `short` and `label` are Design's own
+    # `RAIL_SHORT` and `RAIL` strings (page lines 303–309).
     "rail": [
         {"anchor": "s-hook", "short": "HOOK", "label": "Straight on",
          "done_when": "committed"},
@@ -461,6 +478,8 @@ LESSON = {
         # bench exists for.
         {"anchor": "s-bench", "short": "BENCH", "label": "Run it badly",
          "done_when": "iodine_added"},
+        {"anchor": "s-method", "short": "METHOD", "label": "Five steps",
+         "mirrors": "s-bench", "done_when": "iodine_added"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -636,8 +655,8 @@ LESSON = {
          # the whole lesson asks.
          "conclude_label": "Can you conclude anything?"},
 
-        # #s-method — the band panel. NOT on the rail; see "What could not be
-        # lifted" 5. `rule` is the component: band ground, 3px ink border, an
+        # #s-method — the band panel. Rail stop 3, mirroring `s-bench`; see
+        # "What could not be lifted" 5. `rule` is the component: band ground, 3px ink border, an
         # accent-text eyebrow and a display statement, then a card list —
         # Design's markup (page lines 148–160) minus the number chips.
         {"type": "rule", "anchor": "s-method",

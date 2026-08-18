@@ -75,16 +75,36 @@ tells the student to switch person **without changing the food**. NOTES-B3 §3.3
 names that instruction as the thing that must not be lost — it is the
 experiment, and without it the ledger is a calculator.
 
-── One rail stop comes off, for the third time in this unit ─────────────
+── FOUR rail stops — Design's fourth restored (MRB-249) ─────────────────
 
-Design draws FOUR stops and `#s-maths` ticks on `Object.keys(s.plate).length > 0`
-(page line 423) — the LEDGER's predicate, verbatim, one section to the left.
-`#s-maths` is an eyebrow, a display line, three worked sums, a key fact and the
-forward pointer: no control, no commit, no field. MRB-208 says the rail carries
-only sections that require the student to do something, so the lesson declares
-THREE stops. Same call as b3-01's `#s-nutrients`, b3-02's `#s-limits`, b3-07's
-`#s-four` and c1-02's `#s-matrix`. The anchor survives, so the tutor card's
-`#s-maths` link still lands.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that
+`#s-maths` came off the rail. Design draws FOUR stops and `#s-maths` ticks on
+`Object.keys(s.plate).length > 0` (page line 423) — the LEDGER's predicate,
+verbatim, one section to the left — and since `#s-maths` is an eyebrow, a
+display line, three worked sums, a key fact and the forward pointer, with no
+control, no commit and no field, MRB-208's "the rail carries only sections that
+require the student to do something" looked to rule it out. So the lesson
+shipped THREE stops.
+
+Two things overrule that inference.
+
+MRB-205 binds and is not re-argued: Design draws, we render; no invented or
+dropped page structure; page wins over engine. Three stops where Design drew
+four is not rendering what Design drew.
+
+And the repeated predicate is Design saying how the stop ticks, not Design
+being careless. `isDone()` is rail-level and returns the same expression for
+`#s-ledger` and then for `#s-maths`, because the three sums are what the ledger
+was for: the section carries no control because the ledger already took the
+student's commitment. That is a MIRROR, resolved at rail level in `wireRail`'s
+`paint()`.
+
+So the fourth stop is declared: anchor `s-maths`, `mirrors: "s-ledger"`,
+`done_when: "food_on_the_plate"` — the ledger's own predicate, named as
+borrowed. `ks3_parity.check_rail_matches_design` gates the built rail against
+`docs/ks3/rail-manifest.md`. b3-01's `#s-nutrients`, b3-02's `#s-limits`,
+b3-07's `#s-four` and c1-02's `#s-matrix` are restored the same way. The anchor
+survives as it always did, so the tutor card's `#s-maths` link still lands.
 
 ── What could not be lifted, and why ────────────────────────────────────
 
@@ -272,8 +292,10 @@ LESSON = {
                     "day it is.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-maths` is dropped — see the docstring.
-    # `short` and `label` are Design's own strings (page lines 329–335).
+    # FOUR stops, as Design draws them. `s-maths` is the third: no control of
+    # its own, so it mirrors `s-ledger` and ticks on the ledger's predicate —
+    # see the docstring. `short` and `label` are Design's own strings (page
+    # lines 329–335).
     "rail": [
         {"anchor": "s-hook",   "short": "HOOK",   "label": "Same food",
          "done_when": "committed"},
@@ -282,6 +304,8 @@ LESSON = {
         # cannot tick on load and un-ticks if the day is emptied.
         {"anchor": "s-ledger", "short": "LEDGER", "label": "Feed a day",
          "done_when": "food_on_the_plate"},
+        {"anchor": "s-maths", "short": "MATHS", "label": "On paper",
+         "mirrors": "s-ledger", "done_when": "food_on_the_plate"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -409,7 +433,7 @@ LESSON = {
          }},
 
         # #s-maths — Design's band panel, as four blocks. See "What could not
-        # be lifted" 1. NOT on the rail.
+        # be lifted" 1. Rail stop 3, mirroring `s-ledger`.
         {"type": "rule", "anchor": "s-maths",
          "eyebrow": "Doing it on paper",
          "statement": "Three sums, and the units that make them behave."},

@@ -35,17 +35,34 @@ adaptations `b` and enzymes `c`. The wrapper's letters are followed rather than
 re-derived from one file — but the discrepancy is real and belongs in the same
 minting pass.
 
-── The rail loses a stop, and it is the same defect as C1's ─────────────
+── FOUR rail stops — Design's fourth restored (MRB-249) ─────────────────
 
-Design's stage 3 (`#s-two`) ticks on `Object.keys(s.seen).length >= 7` — the
-JOURNEY's predicate, verbatim (page line 415). `#s-two` is an eyebrow, a
-display line, two cards and a key fact: no control, no commit, no field, so it
-can never tick on anything a student does inside it. MRB-208 ruled the rail
-carries only sections that require the student to do something, and
-`ks3_parity.check_rail_reachable` names this exact defect in its docstring. So
-the lesson declares THREE rail stops, not four. The section keeps its anchor —
-hash links still work; it simply makes no claim to be completable. Same
-handling as c1-02's `#s-matrix`.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that the rail
+lost a stop. Design's stage 3 (`#s-two`) ticks on
+`Object.keys(s.seen).length >= 7` — the JOURNEY's predicate, verbatim (page
+line 415) — and because `#s-two` is an eyebrow, a display line, two cards and a
+key fact with no control, no commit and no field, the reading was that MRB-208
+forbade the stop and `ks3_parity.check_rail_reachable` would name the defect.
+So the lesson shipped THREE rail stops, not four.
+
+Two things overrule that inference.
+
+MRB-205 binds and is not re-argued: Design draws, we render; nothing invented
+and nothing dropped; page wins over engine. A stop Design drew and we did not
+render is not rendering what Design drew.
+
+And Design's `isDone()` states the tick condition rather than leaving it to be
+inferred. It is rail-level and it returns the identical expression for
+`#s-journey` and then for `#s-two`. Mechanical and chemical breaking is the
+payoff of the seven stops beside it: the section carries no control because the
+journey already took the student's commitment. That is a MIRROR, resolved at
+rail level in `wireRail`'s `paint()`.
+
+So the fourth stop is declared: anchor `s-two`, `mirrors: "s-journey"`,
+`done_when: "all_seven_stops_visited"` — the journey's own predicate, named as
+borrowed. `check_rail_matches_design` gates the built rail against
+`docs/ks3/rail-manifest.md`. c1-02's `#s-matrix` is restored the same way. The
+section keeps its anchor, as it always did, so hash links still work.
 
 ── The journey counter opens at ONE, and that is NOT c1-02's defect ─────
 
@@ -155,13 +172,17 @@ LESSON = {
                     "the one that actually does the work.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-two` is dropped — see the docstring.
-    # `short` and `label` are Design's own (page lines 322–327).
+    # FOUR stops, as Design draws them. `s-two` is the third: no control of
+    # its own, so it mirrors `s-journey` and ticks on the journey's predicate —
+    # see the docstring. `short` and `label` are Design's own (page lines
+    # 322–327).
     "rail": [
         {"anchor": "s-hook",    "short": "HOOK",    "label": "The blender",
          "done_when": "committed"},
         {"anchor": "s-journey", "short": "JOURNEY", "label": "Seven stops",
          "done_when": "all_seven_stops_visited"},
+        {"anchor": "s-two", "short": "BREAK", "label": "Two kinds",
+         "mirrors": "s-journey", "done_when": "all_seven_stops_visited"},
         {"anchor": "s-ladder",  "short": "LADDER",  "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -395,7 +416,7 @@ LESSON = {
                       "absorption happens."}},
 
         # #s-two — Design's classless band section, which IS the `rule` shell.
-        # NOT on the rail; see the docstring.
+        # Rail stop 3, mirroring `s-journey`; see the docstring.
         {"type": "rule", "anchor": "s-two",
          "eyebrow": "Two kinds of breaking",
          "statement": "Smaller pieces is not smaller molecules.",

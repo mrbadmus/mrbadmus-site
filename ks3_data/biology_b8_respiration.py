@@ -15,11 +15,15 @@ schema written before dispatch at `docs/ks3/b8-inventory/PAYLOAD-SCHEMA.md`.
 join for scheme-of-work rows, progress records and every `requires` edge, and
 they are permanent (§8.4).
 
-**⚠️ Design draws four rail stops per page; three can tick.** On every page one
-stop is anchored to the BAND section, which renders as a static `ks3-rule` and
-carries none of the five DOM signals `doneByDom()` reads. Dropped to three per
-page, anchors kept so hash links and `elicited_by` / `confronted_by` values
-still resolve. Full treatment in `ks3_data/b8/__init__.py`.
+**⊕ REVERSED 18 Aug 2026 (MRB-249): four rail stops per page, all four tick.**
+This note used to say three could tick and that the fourth was dropped. On every
+page one stop is anchored to the BAND section, which renders as a static
+`ks3-rule` and carries none of the five DOM signals `doneByDom()` reads —
+because Design's `isDone()` completes it on the instrument's predicate instead.
+All four stops are declared, `mirrors` names the section each borrows from, and
+the tick is resolved at rail level. Anchors are unchanged, so hash links and
+`elicited_by` / `confronted_by` values resolve exactly as before. Full treatment
+in `ks3_data/b8/__init__.py`.
 
 **⚑ One science correction was made to an approved page, and it is Mide's to
 confirm** (§5.10 — he is the sole science gate):

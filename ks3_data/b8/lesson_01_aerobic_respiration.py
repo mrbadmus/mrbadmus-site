@@ -74,22 +74,47 @@ having seen it in its own column: the third exit row ("Energy — Not an exit at
 all"), the `close` line under the exits panel, and rung 1's fourth distractor.
 Folding it into a total would silently unteach all three.
 
-── THREE rail stops, not Design's four ───────────────────────────────────
+── FOUR rail stops — Design's fourth restored (MRB-249) ──────────────────
 
-Design draws four (page lines 342–348) and her `isDone()` aliases `s-summary` to
-the BENCH's predicate, character for character, one section to the left:
-`if (id === 's-summary') return s.exits;` (page line 418). `#s-summary` is an
-eyebrow, a display statement, a drawn equation, three static cards and a key
-fact: no control, no commitment, no field, no reveal.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to be headed "THREE
+rail stops, not Design's four". Design draws four (page lines 342–348) and her
+`isDone()` gives `s-summary` the BENCH's predicate, character for character,
+one section to the left:
 
-`ks3_parity.check_rail_reachable()` fails a stop whose section carries none of
-the five DOM signals `doneByDom()` reads, and MRB-208 ruled the rail carries
-only sections that require the student to do something. Aliasing would tick a
-stop for something done in a different section. So the lesson declares THREE
-stops — the same call, the same reasoning and the same shape as b7-01's own
-`#s-summary`, b7-04's `#s-jobs`, b4-05's `#s-stomata`, b5-06's `#s-designs` and
-ten others. **The section keeps its anchor**, so every hash link into it still
-resolves, and payload schema §7 pre-ruled the count for all five B8 pages.
+    if (id === 's-bench')   return s.exits;
+    if (id === 's-summary') return s.exits;      // page line 418
+
+`#s-summary` is an eyebrow, a display statement, a drawn equation, three static
+cards and a key fact: no control, no commitment, no field, no reveal. The
+argument was that `ks3_parity.check_rail_reachable()` fails a stop whose
+section carries none of the five DOM signals `doneByDom()` reads, that MRB-208
+confined the rail to sections requiring the student to do something, and that
+ALIASING would tick a stop for something done in a different section. So the
+lesson shipped THREE stops.
+
+Two things overrule that.
+
+MRB-205 binds and is not re-argued: Design draws, we render; no invented and no
+dropped page structure; page wins over engine. Dropping a stop Design drew is
+not rendering what Design drew.
+
+And the second line above is not an alias — it is Design, in a rail-level
+function, saying what completes the stop. The word summary is the PAYOFF of the
+ledger beside it: it carries no control precisely because the bench has already
+taken the student's commitment. That relationship has a name now — a MIRROR —
+and `wireRail`'s `paint()` resolves mirrors at rail level, where Design
+computes them, rather than hunting for a DOM signal inside the section.
+
+So the fourth stop is declared: anchor `s-summary`, `mirrors: "s-bench"`,
+`done_when: "exits_shown"` — SUMMARY / "Word summary", Design's own strings —
+and `ks3_parity.check_rail_matches_design` gates the built rail against
+`docs/ks3/rail-manifest.md`. b7-01's own `#s-summary`, b7-04's `#s-jobs`,
+b4-05's `#s-stomata`, b5-06's `#s-designs` and the rest are restored the same
+way. **The section keeps its anchor**, as it always did.
+
+⚠️ Payload schema §7 pre-ruled the THREE-stop count for all five B8 pages. That
+pre-ruling is superseded here and in b8-02 to b8-05; the schema's own text has
+not been re-cut, so read §7's count as historical.
 
 ── What could not be lifted byte-identical, and why ─────────────────────
 
@@ -472,11 +497,11 @@ LESSON = {
                     "without you noticing.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-summary` is dropped — see the
-    # docstring, and payload schema §7 which pre-ruled the count for all five
-    # B8 pages. `short` and `label` are Design's own `RAIL_SHORT` and `RAIL`
-    # strings (page lines 342–348); the dropped pair, SUMMARY / "Word summary",
-    # goes with the stop.
+    # FOUR stops, as Design draws them. `s-summary` is the third: no control
+    # of its own, so it mirrors `s-bench` and ticks on the ledger's predicate —
+    # see the docstring, which also supersedes payload schema §7's three-stop
+    # count. `short` and `label` are Design's own `RAIL_SHORT` and `RAIL`
+    # strings (page lines 342–348), SUMMARY / "Word summary" included.
     "rail": [
         {"anchor": "s-hook", "short": "HOOK", "label": "Ten kilograms",
          "done_when": "committed"},
@@ -485,6 +510,8 @@ LESSON = {
         # has been pressed — switching amounts reveals nothing new.
         {"anchor": "s-bench", "short": "LEDGER", "label": "The ledger",
          "done_when": "exits_shown"},
+        {"anchor": "s-summary", "short": "SUMMARY", "label": "Word summary",
+         "mirrors": "s-bench", "done_when": "exits_shown"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -656,7 +683,7 @@ LESSON = {
                   "separately — energy is not a substance leaving the body."},
 
         # #s-summary — the band panel, and the section that discharges
-        # KS3.B.RESP.02. NOT on the rail; see the docstring. The anchor stays.
+        # KS3.B.RESP.02. Rail stop 3, mirroring `s-bench`; see the docstring.
         {"type": "rule", "anchor": "s-summary",
          "eyebrow": "The word summary",
          "statement": "Photosynthesis, read from right to left.",

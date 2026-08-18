@@ -24,13 +24,15 @@ does; §10.2 requires `covers` to be non-empty, and WS ids are exempt from the
 exactly-once ownership check. All three PHOT statements therefore stay with
 L1/L2/L4 and nothing is claimed twice.
 
-**⚠️ Design draws four rail stops per page; three can tick.** On every page one
-stop is anchored to a static card section whose completion predicate was copied
-from the instrument beside it. Those sections carry none of the five DOM signals
-`doneByDom()` reads, so the stop could never complete and the build fails.
-Dropped to three per page, anchors kept so hash links and `elicited_by` values
-still resolve. All four authoring passes reached this independently. Full
-treatment, including the `#s-tuner` renderer hazard, in `ks3_data/b7/__init__.py`.
+**⊕ REVERSED 18 Aug 2026 (MRB-249): four rail stops per page, all four tick.**
+This note used to say three could tick and that the fourth was dropped. On every
+page one stop is anchored to a static card section whose completion predicate is
+Design's own, stated a second time for the instrument beside it — a MIRROR, not
+a copy. All four stops are declared, `mirrors` names the section each borrows
+from, and `wireRail`'s `paint()` resolves them at rail level instead of hunting
+for DOM signals inside the section. Anchors are unchanged, so hash links and
+`elicited_by` values resolve exactly as before. Full treatment, including the
+`#s-tuner` renderer hazard, in `ks3_data/b7/__init__.py`.
 
 **⚑ Three science corrections were made to approved pages, and they are Mide's
 to confirm** (§5.10 — he is the sole science gate):

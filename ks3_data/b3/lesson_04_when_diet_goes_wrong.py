@@ -23,18 +23,32 @@ in clinic 3 is Design's, and the closing line pointing at a trusted adult, a
 school nurse or a doctor is Design's. If any of it is to change, it changes on
 Mide's ruling and not on an author's instinct.
 
-── Two corrections, one to the rail and one to the verdict ──────────────
+── One correction to the verdict, and one reversal on the rail ──────────
 
-1. **`#s-three` COMES OFF THE RAIL.** Design's stage 2 ticks on
-   `s.hookChoice !== null` — the HOOK's predicate, verbatim (page line 430).
-   The section itself is an eyebrow, a display line, a lede, three columns and
-   a key fact: it emits no control, no commit and no field, so it can never
-   tick on anything a student does inside it. MRB-208 ruled the rail carries
-   only sections that require the student to do something, and
-   `ks3_parity.check_rail_reachable` names this exact defect in its own
-   docstring. So the lesson declares THREE rail stops, not four. The section
-   keeps its anchor — hash links into it still work; it simply makes no claim
-   to be completable. Same handling as c1-02's `#s-matrix`.
+1. **`#s-three` STAYS ON THE RAIL.** ⊕ **REVERSED 18 Aug 2026 (MRB-249).**
+   This item used to say the opposite. Design's stage 2 ticks on
+   `s.hookChoice !== null` — the HOOK's predicate, verbatim (page line 430) —
+   and because the section is an eyebrow, a display line, a lede, three columns
+   and a key fact, emitting no control, no commit and no field, the reading was
+   that MRB-208's completion rule forbade the stop and
+   `ks3_parity.check_rail_reachable` would name the defect. So the lesson
+   shipped THREE stops, not four.
+
+   That is overruled twice over. MRB-205 binds and is not re-argued — Design
+   draws, we render, nothing invented and nothing dropped, page wins over
+   engine — and dropping a stop Design drew is not rendering what Design drew.
+   And the repeated predicate is Design stating the tick condition, not
+   overlooking one: `isDone()` is a rail-level function returning the identical
+   expression for `#s-hook` and then for `#s-three`, because the three failures
+   ARE the reading-back of the hook's own choice. The section holds no control
+   because the hook already took the commitment. That is a MIRROR, resolved at
+   rail level in `wireRail`'s `paint()`.
+
+   So the stop is declared: anchor `s-three`, `mirrors: "s-hook"`,
+   `done_when: "committed"` — the hook's own predicate, named as borrowed
+   rather than smuggled, and gated by `check_rail_matches_design` against
+   `docs/ks3/rail-manifest.md`. c1-02's `#s-matrix` is restored the same way.
+   The section keeps its anchor, as it always did.
 
 2. **The clinic verdict stops marking the student (MRB-196 R10).** Design
    computes whether the ticks matched exactly and spends it on the verdict
@@ -152,12 +166,15 @@ LESSON = {
                     "happen at once, in the same person, on a full plate.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-three` is dropped — see the docstring.
-    # `short` is Design's own RAIL_SHORT entry and `label` its own RAIL label,
-    # both lifted (page lines 318–323).
+    # FOUR stops, as Design draws them. `s-three` is the second: no control of
+    # its own, so it mirrors `s-hook` and ticks on the hook's predicate — see
+    # the docstring. `short` is Design's own RAIL_SHORT entry and `label` its
+    # own RAIL label, both lifted (page lines 318–323).
     "rail": [
         {"anchor": "s-hook",   "short": "HOOK",   "label": "Full plate",
          "done_when": "committed"},
+        {"anchor": "s-three", "short": "THREE", "label": "Three failures",
+         "mirrors": "s-hook", "done_when": "committed"},
         {"anchor": "s-cases",  "short": "CLINIC", "label": "Five clinics",
          "done_when": "all_five_diagnosed"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
@@ -246,7 +263,8 @@ LESSON = {
         # #s-three — Design's classless band section, which IS the `rule`
         # shell: `--ks3-band`, 3px ink, `--ks3-r-block`, 34px 32px padding,
         # 28px top margin and an accent-text eyebrow, matching `.ks3-rule`
-        # declaration for declaration. NOT on the rail; see the docstring.
+        # declaration for declaration. Rail stop 2, mirroring `s-hook`; see
+        # the docstring.
         {"type": "rule", "anchor": "s-three",
          "eyebrow": "Three separate failures",
          "statement": "Not one problem with a dial on it.",

@@ -36,20 +36,39 @@ the entire three-cell grid in a single `<button>` at `width: 100%`; NOTES-B5
 No separate chevron control."* An added chevron would be a second control for
 one action and a second tab stop for no gain.
 
-── One rail stop comes off, and it is the defect C1 already found ───────
+── FOUR rail stops — Design's fourth restored (MRB-249) ─────────────────
 
-Design draws FOUR stops and `#s-steps` ticks on `Object.keys(s.open).length >= 6`
-(page line 394) — the BECOMES predicate, character for character, one section to
-the left. MRB-208 ruled the rail is completion-based and carries only sections
-that require the student to do something; `#s-steps` is an eyebrow, a display
-statement, five static step cards and a key fact, with no control, no commitment
-and no field. `ks3_parity.check_rail_reachable` would fail it for exactly that (a
-`rule` section carries none of the signals `doneByDom()` reads), and inventing a
-demand Design did not draw is closed to this build. So the lesson declares THREE
-stops — the same call, the same reasoning and the same shape as b4-01's
-`#s-parts`, c1-02's `#s-matrix`, c1-05's `#s-scale`, b3-01's `#s-nutrients` and
-b3-02's `#s-limits`. The section keeps its anchor, so the tutor card's `#s-steps`
-link and every hash link into it still work.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that
+`#s-steps` came off the rail. Design draws FOUR stops and `#s-steps` ticks on
+`Object.keys(s.open).length >= 6` (page line 394) — the BECOMES predicate,
+character for character, one section to the left — and because `#s-steps` is an
+eyebrow, a display statement, five static step cards and a key fact, with no
+control, no commitment and no field, the reading was that MRB-208's completion
+rule ruled it out, that `ks3_parity.check_rail_reachable` would fail a `rule`
+section for carrying none of the signals `doneByDom()` reads, and that
+inventing a demand Design did not draw is closed to this build. So the lesson
+shipped THREE stops.
+
+Two things overrule that inference.
+
+MRB-205 binds and is not re-argued: Design draws, we render; nothing invented,
+nothing dropped; page wins over engine. Dropping a stop Design drew is not
+rendering what Design drew.
+
+And Design's `isDone()` states the tick condition. It is a rail-level function
+and returns the identical expression for `#s-becomes` and then for `#s-steps`.
+The five steps are the payoff of the six rows the student just opened; the
+section holds no control because `#s-becomes` — whose reveal is gated, above —
+already took the commitment. That is a MIRROR, resolved at rail level in
+`wireRail`'s `paint()`.
+
+So the fourth stop is declared: anchor `s-steps`, `mirrors: "s-becomes"`,
+`done_when: "all_six_rows_opened"` — the BECOMES predicate, named as borrowed,
+and gated by `check_rail_matches_design` against `docs/ks3/rail-manifest.md`.
+b4-01's `#s-parts`, c1-02's `#s-matrix`, c1-05's `#s-scale`, b3-01's
+`#s-nutrients` and b3-02's `#s-limits` are restored the same way. The section
+keeps its anchor, as it always did, so the tutor card's `#s-steps` link and
+every hash link into it still work.
 
 ── What could not be lifted, and why ────────────────────────────────────
 
@@ -338,9 +357,10 @@ LESSON = {
                     "centimetres apart, and neither of them can move.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-steps` is dropped — see the docstring.
-    # `short` and `label` are Design's own `RAIL_SHORT` and `RAIL` strings
-    # (page lines 312–318).
+    # FOUR stops, as Design draws them. `s-steps` is the third: no control of
+    # its own, so it mirrors `s-becomes` and ticks on that section's predicate
+    # — see the docstring. `short` and `label` are Design's own `RAIL_SHORT`
+    # and `RAIL` strings (page lines 312–318).
     "rail": [
         {"anchor": "s-hook", "short": "HOOK", "label": "A tunnel",
          "done_when": "committed"},
@@ -349,6 +369,8 @@ LESSON = {
         # would call a six-row instrument finished at a sixth of it.
         {"anchor": "s-becomes", "short": "BECOMES", "label": "What it becomes",
          "done_when": "all_six_rows_opened"},
+        {"anchor": "s-steps", "short": "STEPS", "label": "Five steps",
+         "mirrors": "s-becomes", "done_when": "all_six_rows_opened"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -516,8 +538,8 @@ LESSON = {
                    "before": "Before",
                    "after": "After fertilisation"}},
 
-        # #s-steps — the band panel. NOT on the rail; see the docstring.
-        # `rule` is the component: band ground, 3px ink border, an accent-text
+        # #s-steps — the band panel. Rail stop 3, mirroring `s-becomes`; see
+        # the docstring. `rule` is the component: band ground, 3px ink border, an accent-text
         # eyebrow and a display statement, then a card list — Design's markup
         # (page lines 152–169) minus the number chips and step 03's promotion.
         {"type": "rule", "anchor": "s-steps",

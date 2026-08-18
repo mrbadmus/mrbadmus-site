@@ -65,21 +65,40 @@ The reveal is never withheld for a wrong answer. `verdicts.wrong` is *"Not the
 part you chose"* and the answer prints underneath it either way — the bench
 locates a fault, it does not mark the student. Only the ladder marks.
 
-── One rail stop comes off, and it is the defect the ruling covers ──────
+── FOUR rail stops — Design's fourth restored (MRB-249) ─────────────────
 
-Design draws FOUR stops and `#s-smoke` ticks on
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that
+`#s-smoke` came off the rail. Design draws FOUR stops and `#s-smoke` ticks on
 `Object.keys(s.opened).length >= 3` (page line 419) — the BENCH's predicate,
-verbatim, one section to the right. MRB-208 rules the rail completion-based,
-and `#s-smoke` is an eyebrow, a display statement, four static cards and a KEY
-FACT: no control, no commit, no field. There is nothing in it for a student to
-complete, and inventing a demand Design did not draw is closed to this build
-(MRB-205), so the lesson declares THREE stops. Same call, same reasoning and
-the same shape as b3-02's `#s-limits`, b3-01's `#s-nutrients`, b3-07's
-`#s-four` and c1-02's `#s-matrix`. The section keeps its anchor, so every hash
-link into it still works.
+verbatim, one section to the right — and because `#s-smoke` is an eyebrow, a
+display statement, four static cards and a KEY FACT, with no control, no commit
+and no field, the reading was that MRB-208's completion rule left nothing in it
+to complete and that inventing a demand Design did not draw is closed to this
+build. So the lesson shipped THREE stops.
 
-NOTES-B4 §6 says "Rail stops: four in every lesson"; that is Design's count of
-what she drew, not a claim that all four carry a demand.
+Two things overrule that inference.
+
+MRB-205 was cited for half of itself. Design draws, we render: it forbids
+inventing a control, and it equally forbids dropping a stop Design drew. Page
+wins over engine.
+
+And Design's `isDone()` states the tick condition rather than leaving it to be
+inferred. It is a rail-level function returning the identical expression for
+`#s-bench` and then for `#s-smoke`. The four substances are the payoff of
+having located the fault; the section holds no control because the bench has
+already taken the student's commitment. That is a MIRROR, resolved at rail
+level in `wireRail`'s `paint()`.
+
+So the fourth stop is declared: anchor `s-smoke`, `mirrors: "s-bench"`,
+`done_when: "three_factors_opened"` — the bench's own predicate, named as
+borrowed, and gated by `check_rail_matches_design` against
+`docs/ks3/rail-manifest.md`. b3-02's `#s-limits`, b3-01's `#s-nutrients`,
+b3-07's `#s-four` and c1-02's `#s-matrix` are restored the same way. The
+section keeps its anchor, as it always did.
+
+And NOTES-B4 §6 — "Rail stops: four in every lesson" — turns out to have been
+the plain instruction it looked like. The old passage read it down to a count
+of what Design drew rather than a requirement on what we build. It is both.
 
 ── What could not be lifted, and why ────────────────────────────────────
 
@@ -308,8 +327,10 @@ LESSON = {
                     "part is most of the answer.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-smoke` is dropped — see the docstring.
-    # `short` and `label` are Design's own strings (page lines 318–324).
+    # FOUR stops, as Design draws them and as NOTES-B4 §6 requires. `s-smoke`
+    # is the third: no control of its own, so it mirrors `s-bench` and ticks on
+    # the bench's predicate — see the docstring. `short` and `label` are
+    # Design's own strings (page lines 318–324).
     "rail": [
         {"anchor": "s-hook",   "short": "HOOK",   "label": "The inhaler",
          "done_when": "committed"},
@@ -319,6 +340,8 @@ LESSON = {
         # section exists to make.
         {"anchor": "s-bench",  "short": "LOCATE", "label": "Locate the fault",
          "done_when": "three_factors_opened"},
+        {"anchor": "s-smoke", "short": "SMOKE", "label": "Four substances",
+         "mirrors": "s-bench", "done_when": "three_factors_opened"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -476,8 +499,8 @@ LESSON = {
                       "wrong": "Not the part you chose"},
          "rail_after": 3},
 
-        # #s-smoke — the band panel. NOT on the rail; see the docstring.
-        # `rule` is the component: band ground, 3px ink border, an accent-text
+        # #s-smoke — the band panel. Rail stop 3, mirroring `s-bench`; see the
+        # docstring. `rule` is the component: band ground, 3px ink border, an accent-text
         # eyebrow and a display statement, then a card grid — Design's markup
         # (page lines 158–171) with the third card field folded into the gloss.
         {"type": "rule", "anchor": "s-smoke",

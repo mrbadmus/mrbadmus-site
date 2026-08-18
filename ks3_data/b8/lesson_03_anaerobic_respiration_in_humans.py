@@ -213,26 +213,46 @@ reference, not a restatement.
 5. **`ks4_links` gives way to `ks4_becomes`.** Design's third endmatter card is
    authored prose and §4.8.1 D makes the two mutually exclusive.
 
-── One rail stop comes off, and it is the defect six units have found ───
+── FOUR rail stops — Design's fourth restored (MRB-249) ─────────────────
 
-Design draws FOUR stops and `#s-equation` ticks on `s.everRecovered` (page line
-386) — the BENCH's predicate, character for character, one section to the left
-(page line 385). On the BUILT page that aliasing does not exist: `doneByDom()`
-in `shared/ks3.js` reads only the DOM inside the stop's own section, and
-`r_rule` emits a `<section class="ks3-rule">` with no rungs, no options, no
-reveal and no `data-stage-done`. `ks3_parity.check_rail_reachable` fails a stop
-whose section carries none of the five signals, so the stop could never tick
-however `done_when` were spelled, and MRB-208 ruled the rail carries only
-sections that require the student to do something. Inventing a demand Design did
-not draw is closed by MRB-205.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that a rail
+stop came off, "the defect six units have found". Design draws FOUR stops and
+`#s-equation` ticks on `s.everRecovered` (page line 386) — the BENCH's
+predicate, character for character, one section to the left (page line 385).
+The argument turned on a real measurement of the BUILT page: `doneByDom()` in
+`shared/ks3.js` read only the DOM inside the stop's own section, and `r_rule`
+emits a `<section class="ks3-rule">` with no rungs, no options, no reveal and
+no `data-stage-done`, so `ks3_parity.check_rail_reachable` would fail the stop
+and it could never tick however `done_when` were spelled. With MRB-208 confining
+the rail to sections that require the student to do something, and inventing a
+demand Design did not draw closed by MRB-205, THREE stops shipped.
 
-So THREE stops — payload schema §7's own resolution for all five B8 pages, and
-the same call as b7-01's `#s-summary`, b7-04's `#s-jobs`, b4-05's `#s-stomata`,
-b5-06's `#s-designs`, b4-01's `#s-parts`, b4-03's `#s-built`, c1-02's
-`#s-matrix`, c1-05's `#s-scale`, b3-01's `#s-nutrients`, b3-02's `#s-limits`,
-b3-04's `#s-three` and b3-07's `#s-four`. **The section keeps its anchor**, so
-every hash link into it still works. Design's dropped `RAIL_SHORT`/`RAIL` pair
-is `SUMMARY` / *Word summary*, and it goes with the stop.
+The measurement of the engine was correct. The conclusion drawn about the page
+was not.
+
+MRB-205 was cited for one half of itself. Design draws, we render; page wins
+over engine. It closes off inventing a control, and closes off dropping a stop
+just as firmly. An engine that cannot express what Design drew is the thing
+that gives way — and it has: `wireRail`'s `paint()` now resolves the tick at
+RAIL level, where Design computes it, rather than looking inside the section.
+
+And what page line 386 does is state the tick condition. The word summary is
+the payoff of the bench beside it, and it carries no signals of its own because
+`#s-bench` already took the student's commitment. That is a MIRROR, not an
+alias.
+
+So the fourth stop is declared: anchor `s-equation`, `mirrors: "s-bench"`,
+`done_when: "debt_repaid"` — with Design's `SUMMARY` / *Word summary* pair
+restored to it — and `ks3_parity.check_rail_matches_design` gates the built
+rail against `docs/ks3/rail-manifest.md`. b7-01's `#s-summary`, b7-04's
+`#s-jobs`, b4-05's `#s-stomata`, b5-06's `#s-designs`, b4-01's `#s-parts`,
+b4-03's `#s-built`, c1-02's `#s-matrix`, c1-05's `#s-scale`, b3-01's
+`#s-nutrients`, b3-02's `#s-limits`, b3-04's `#s-three` and b3-07's `#s-four`
+are restored the same way. **The section keeps its anchor**, as it always did.
+
+⚠️ Payload schema §7 recorded the three-stop count as its resolution for all
+five B8 pages. That resolution is superseded; §7's own text has not been
+re-cut, so read its count as historical.
 
 ── ⊕ MRB-177 LENGTH PARITY — RUNG 2 FAILED; RUNG 1 IS CLEAN ─────────────
 
@@ -492,10 +512,11 @@ LESSON = {
                     "finished. Something else has not.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-equation` is dropped — see the
-    # docstring and payload schema §7. `short` and `label` are Design's own
-    # `RAIL_SHORT` and `RAIL` strings (page lines 314–320); the dropped entry's
-    # pair, `SUMMARY` / "Word summary", goes with the stop.
+    # FOUR stops, as Design draws them. `s-equation` is the third: no control
+    # of its own, so it mirrors `s-bench` and ticks on the bench's predicate —
+    # see the docstring, which supersedes payload schema §7's count. `short`
+    # and `label` are Design's own `RAIL_SHORT` and `RAIL` strings (page lines
+    # 314–320), `SUMMARY` / "Word summary" included.
     "rail": [
         {"anchor": "s-hook", "short": "HOOK", "label": "Ten seconds",
          "done_when": "committed"},
@@ -507,6 +528,8 @@ LESSON = {
         # five presses of "Stop and recover 30 s" to get there.
         {"anchor": "s-bench", "short": "BENCH", "label": "Run and stop",
          "done_when": "debt_repaid"},
+        {"anchor": "s-equation", "short": "SUMMARY", "label": "Word summary",
+         "mirrors": "s-bench", "done_when": "debt_repaid"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -697,7 +720,7 @@ LESSON = {
         # 152 is a bare `<section>` with `background: var(--ks3-band)` and
         # `border: 3px solid var(--ks3-ink)`, which is `.ks3-rule` and not
         # `.ks3-block`. Payload schema §0 rule 2's table says the same.
-        # NOT on the rail — see the docstring — but it keeps its anchor.
+        # Rail stop 3, mirroring `s-bench` — see the docstring.
         {"type": "rule", "anchor": "s-equation",
          "eyebrow": "The word summary",
          "statement": "One reactant. One product. An unfinished job.",

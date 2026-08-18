@@ -100,21 +100,38 @@ cells. The week bar is *when a system is being built*, never a verdict on
 anyone: `winText` on every row talks about what is forming, and insulin's says
 plainly that the bar does not apply because it does not arrive.
 
-── One rail stop comes off — the defect four units have already found ───
+── FOUR rail stops — Design's fourth restored (MRB-249) ─────────────────
 
-Design draws FOUR stops, and `#s-windows` ticks on `Object.keys(s.opened).
-length >= 6` (page line 429) — the PANEL's predicate, verbatim, one section to
-the left. `#s-windows` is an eyebrow, a statement, a lede, three static rows
-and a key fact: no control, no commitment, no field. `ks3_parity.check_rail_
-reachable` fails a stop whose section carries none of the signals `doneByDom()`
-reads, and inventing a demand Design did not draw is closed to this build
-(MRB-205). So this lesson declares THREE stops — the same call and the same
-reasoning as b4-01's `#s-parts`, c1-02's `#s-matrix`, c1-05's `#s-scale`,
-b3-01's `#s-nutrients` and b3-02's `#s-limits`.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that a rail
+stop came off. Design draws FOUR stops, and `#s-windows` ticks on
+`Object.keys(s.opened).length >= 6` (page line 429) — the PANEL's predicate,
+verbatim, one section to the left — and because `#s-windows` is an eyebrow, a
+statement, a lede, three static rows and a key fact with no control, no
+commitment and no field, the reading was that
+`ks3_parity.check_rail_reachable` would fail a stop carrying none of the
+signals `doneByDom()` reads, and that inventing a demand Design did not draw is
+closed to this build. So the lesson shipped THREE stops.
 
-The section KEEPS its `#s-windows` anchor, so every hash link into it still
-resolves. What is given up is Design's rail label for it (`TIMING` / *Three
-windows*), and nothing else.
+Two things overrule that inference.
+
+MRB-205 was cited for one half of itself. Design draws, we render, and page
+wins over engine: inventing a control is forbidden, and so is dropping a stop
+Design drew.
+
+And Design's `isDone()` states the tick condition. It is a rail-level function
+returning the identical expression for `#s-cross` and then for `#s-windows`.
+The three windows are the payoff of the six crossings the student just settled;
+the section holds no control because the panel already took the commitment.
+That is a MIRROR, resolved at rail level in `wireRail`'s `paint()`.
+
+So the fourth stop is declared: anchor `s-windows`, `mirrors: "s-cross"`,
+`done_when: "all_six_checked"` — the panel's own predicate, named as borrowed,
+and gated by `check_rail_matches_design` against `docs/ks3/rail-manifest.md`.
+b4-01's `#s-parts`, c1-02's `#s-matrix`, c1-05's `#s-scale`, b3-01's
+`#s-nutrients` and b3-02's `#s-limits` are restored the same way.
+
+The section KEEPS its `#s-windows` anchor, as it always did, and Design's rail
+label for it (`TIMING` / *Three windows*) is no longer given up — it ships.
 
 ── Misconceptions: this lesson owns REPRO-09 and REPRO-10 ───────────────
 
@@ -450,9 +467,10 @@ LESSON = {
                     "the foetus would be better off without it.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-windows` is dropped — see the
-    # docstring. `short` and `label` are Design's own `RAIL_SHORT` and `RAIL`
-    # strings (page lines 330–336) for the three that remain.
+    # FOUR stops, as Design draws them. `s-windows` is the third: no control
+    # of its own, so it mirrors `s-cross` and ticks on the panel's predicate —
+    # see the docstring. `short` and `label` are Design's own `RAIL_SHORT` and
+    # `RAIL` strings (page lines 330–336), all four of them.
     "rail": [
         {"anchor": "s-hook", "short": "HOOK", "label": "Not a filter",
          "done_when": "committed"},
@@ -463,6 +481,8 @@ LESSON = {
         # SET.
         {"anchor": "s-cross", "short": "CROSS", "label": "Does it cross?",
          "done_when": "all_six_checked"},
+        {"anchor": "s-windows", "short": "TIMING", "label": "Three windows",
+         "mirrors": "s-cross", "done_when": "all_six_checked"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -612,7 +632,8 @@ LESSON = {
                     "ticks": ["Week 0", "Week 20", "Week 40"]}},
 
         # #s-windows — the band panel: when an exposure matters and why.
-        # NOT on the rail; see the docstring. `comparison` is the component —
+        # Rail stop 3, mirroring `s-cross`; see the docstring. `comparison`
+        # is the component —
         # a row name and two captioned columns, which is exactly Design's
         # `when` / `What is happening` / `What an exposure can affect`.
         {"type": "comparison", "anchor": "s-windows",

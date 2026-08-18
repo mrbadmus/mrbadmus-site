@@ -72,21 +72,40 @@ entire argument of the lesson arriving as a tab rather than as a sentence.
 403) and not a round number chosen here. Three of five means a student cannot
 reach the stop on the two animal cells nearest their prior belief alone.
 
-── One rail stop comes off, and the reason is measured, not stylistic ────
+── FOUR rail stops — Design's fourth restored (MRB-249) ──────────────────
 
-Design draws FOUR stops and `#s-jobs` ticks on the BENCH's seen-count (page line
-404: `if (id === 's-jobs') return seen >= 3;` — the identical predicate to
-`s-bench` one line above it). `#s-jobs` itself is an eyebrow, a display
-statement, four static cards and a key fact: no control, no commitment, no
-field. `ks3_parity.check_rail_reachable()` fails a stop whose section carries
-none of the five DOM signals `doneByDom()` reads, and aliasing it to the bench
-would tick a stop for something the student did in a different section — which
-is what MRB-208's completion rule exists to prevent.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that a rail
+stop came off, and called the reason measured rather than stylistic. Design
+draws FOUR stops and `#s-jobs` ticks on the BENCH's seen-count (page line 404:
+`if (id === 's-jobs') return seen >= 3;` — the identical predicate to `s-bench`
+one line above it). `#s-jobs` itself is an eyebrow, a display statement, four
+static cards and a key fact: no control, no commitment, no field. The argument
+was that `ks3_parity.check_rail_reachable()` fails a stop whose section carries
+none of the five DOM signals `doneByDom()` reads, and that ALIASING it to the
+bench would tick a stop for something the student did in a different section —
+which is what MRB-208's completion rule exists to prevent. So THREE stops
+shipped, ruled for the whole unit in `ks3_data/b8/__init__.py` before dispatch.
 
-THREE stops, ruled for the whole unit in `ks3_data/b8/__init__.py` before
-dispatch. **The section keeps its `anchor`**, so every hash link into it still
-works and `RESP-04`'s `elicited_by` still resolves — the MRB-244/248 gate wants
-an emitted `id`, not a completion signal.
+The measurement was right and the conclusion was wrong.
+
+MRB-205 binds and is not re-argued: Design draws, we render; nothing invented,
+nothing dropped; page wins over engine. Dropping a stop Design drew is not
+rendering what Design drew.
+
+And the two consecutive lines are Design stating how the second stop ticks, in
+a rail-level function. That is not an alias. The four jobs are the payoff of
+the five cells beside them — the section carries no control precisely because
+the bench has already taken the student's commitment. That relationship has a
+name now, a MIRROR, and `wireRail`'s `paint()` resolves mirrors at rail level
+instead of hunting for a DOM signal inside the section.
+
+So the fourth stop is declared: anchor `s-jobs`, `mirrors: "s-bench"`,
+`done_when: "three_cells_cut"` — Design's `JOBS` / "Four jobs", ticking on her
+`seen >= 3` — and `check_rail_matches_design` gates the built rail against
+`docs/ks3/rail-manifest.md`. **The section keeps its `anchor`**, as it always
+did, so every hash link into it still works and `RESP-04`'s `elicited_by` still
+resolves: the MRB-244/248 gate wants an emitted `id`, and that is unrelated to
+the rail.
 
 ── What could not be lifted byte-identical, and why ─────────────────────
 
@@ -545,10 +564,12 @@ LESSON = {
                     "subject of this lesson.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-jobs` is dropped and its ANCHOR IS
-    # KEPT — see the docstring and ks3_data/b8/__init__.py. `short` and `label`
-    # are Design's own `RAIL_SHORT` and `RAIL` strings (page lines 313–319); the
-    # dropped pair is `JOBS` / "Four jobs".
+    # FOUR stops, as Design draws them. `s-jobs` is the third: no control of
+    # its own, so it mirrors `s-bench` and ticks on the bench's `seen >= 3` —
+    # see the docstring, which reverses the unit ruling in
+    # ks3_data/b8/__init__.py. `short` and `label` are Design's own
+    # `RAIL_SHORT` and `RAIL` strings (page lines 313–319), `JOBS` / "Four
+    # jobs" included.
     "rail": [
         {"anchor": "s-hook", "short": "HOOK", "label": "Four minutes",
          "done_when": "committed"},
@@ -558,6 +579,8 @@ LESSON = {
         # their prior belief.
         {"anchor": "s-bench", "short": "CELLS", "label": "Five cells",
          "done_when": "three_cells_cut"},
+        {"anchor": "s-jobs", "short": "JOBS", "label": "Four jobs",
+         "mirrors": "s-bench", "done_when": "three_cells_cut"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -613,9 +636,9 @@ LESSON = {
     # rows are the engine pass's to write and these are the strings they take.
     #
     # Both values resolve against the BUILT page (MRB-244/248): `s-think`,
-    # `s-bench` and `s-jobs` are all emitted as `id="…"`. `s-jobs` is not a rail
-    # stop and does not need to be — the gate wants an emitted element, not a
-    # completion signal, which is exactly why the dropped stop keeps its anchor.
+    # `s-bench` and `s-jobs` are all emitted as `id="…"`. Whether `s-jobs` is a
+    # rail stop is beside the point here — the gate wants an emitted element,
+    # not a completion signal.
     "misconceptions": [
         # Elicited at the bench, by the root hair tab: a plant cell whose energy
         # bill is 75% one process, and whose `fails` line kills it outright when
@@ -721,9 +744,10 @@ LESSON = {
          # Design's own threshold (page line 403), kept. Three DISTINCT cells.
          "done_after": 3},
 
-        # #s-jobs — the band panel, `rule` with a four-card grid. NOT on the
-        # rail; the anchor is kept so hash links and RESP-04's `elicited_by`
-        # still resolve. One card per thing the statutory clause has to pay for.
+        # #s-jobs — the band panel, `rule` with a four-card grid. Rail stop 3,
+        # mirroring `s-bench`; the anchor also carries hash links and RESP-04's
+        # `elicited_by`. One card per thing the statutory clause has to pay
+        # for.
         {"type": "rule", "anchor": "s-jobs",
          "eyebrow": "Four things the energy pays for",
          "statement": "Only one of them is moving.",

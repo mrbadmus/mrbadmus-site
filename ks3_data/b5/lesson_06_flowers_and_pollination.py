@@ -65,20 +65,38 @@ misconception on its own: `ovule` lists `ovary` and `ovary` lists `ovule`, so
 the confusion between the container and the thing contained is elicited by the
 instrument and then answered in the ovule's `why`.
 
-── One rail stop comes off, and it is the defect B4 found on every page ─
+── FOUR rail stops — Design's fourth restored (MRB-249) ─────────────────
 
-Design draws FOUR stops and `#s-designs` ticks on `Object.keys(s.opened).length
->= 9` (page line 421) — the INSTRUMENT's predicate, character for character,
-one section to the left (page line 420). MRB-208 ruled the rail is
-completion-based and carries only sections that require the student to do
-something; `#s-designs` is an eyebrow, a display statement, a lede, five static
-comparison rows and a key fact, with no control, no commitment and no field.
-`ks3_parity.check_rail_reachable` would fail it for exactly that. Inventing a
-demand Design did not draw is closed to this build. So the lesson declares
-THREE stops — the same call, the same reasoning and the same shape as b4-01's
-`#s-parts`, b4-03's `#s-built`, c1-02's `#s-matrix`, c1-05's `#s-scale`,
-b3-01's `#s-nutrients` and b3-02's `#s-limits`. The section keeps its anchor,
-so every hash link into it still works.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that
+`#s-designs` came off the rail, on what B4 had called a defect on every page.
+Design draws FOUR stops and `#s-designs` ticks on
+`Object.keys(s.opened).length >= 9` (page line 421) — the INSTRUMENT's
+predicate, character for character, one section to the left (page line 420) —
+and because `#s-designs` is an eyebrow, a display statement, a lede, five
+static comparison rows and a key fact, with no control, no commitment and no
+field, the reading was that MRB-208's completion rule ruled it out and
+`ks3_parity.check_rail_reachable` would fail it. So the lesson shipped THREE
+stops.
+
+Two things overrule that inference.
+
+MRB-205 binds and is not re-argued: Design draws, we render; nothing invented,
+nothing dropped; page wins over engine. The repetition B4 kept finding was not
+a defect in Design's pages.
+
+And Design's `isDone()` states the tick condition rather than leaving it to be
+inferred. It is a rail-level function returning the identical expression for
+`#s-parts` and then for `#s-designs`. Two designs is the payoff of the nine
+parts the student just matched; the section holds no control because the
+instrument already took the commitment. That is a MIRROR, resolved at rail
+level in `wireRail`'s `paint()`.
+
+So the fourth stop is declared: anchor `s-designs`, `mirrors: "s-parts"`,
+`done_when: "all_nine_parts_checked"` — the instrument's own predicate, named
+as borrowed, and gated by `check_rail_matches_design` against
+`docs/ks3/rail-manifest.md`. b4-01's `#s-parts`, b4-03's `#s-built`, c1-02's
+`#s-matrix`, c1-05's `#s-scale`, b3-01's `#s-nutrients` and b3-02's `#s-limits`
+are restored the same way. The section keeps its anchor, as it always did.
 
 ── What could not be lifted, and why ────────────────────────────────────
 
@@ -377,9 +395,10 @@ LESSON = {
                     "and the plant cannot move.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-designs` is dropped — see the
-    # docstring. `short` and `label` are Design's own `RAIL_SHORT` and `RAIL`
-    # strings (page lines 317–323).
+    # FOUR stops, as Design draws them. `s-designs` is the third: no control
+    # of its own, so it mirrors `s-parts` and ticks on the instrument's
+    # predicate — see the docstring. `short` and `label` are Design's own
+    # `RAIL_SHORT` and `RAIL` strings (page lines 317–323).
     "rail": [
         {"anchor": "s-hook", "short": "HOOK", "label": "Grass flowers",
          "done_when": "committed"},
@@ -389,6 +408,8 @@ LESSON = {
         # ninth of it.
         {"anchor": "s-parts", "short": "PARTS", "label": "Match the job",
          "done_when": "all_nine_parts_checked"},
+        {"anchor": "s-designs", "short": "DESIGNS", "label": "Two designs",
+         "mirrors": "s-parts", "done_when": "all_nine_parts_checked"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -582,9 +603,9 @@ LESSON = {
                      "wrong": "Not this one — that job belongs to "
                               "another part"}},
 
-        # #s-designs — the band-panel comparison. NOT on the rail; see the
-        # docstring. Design's lede is the one thing lost — "What could not be
-        # lifted" 1.
+        # #s-designs — the band-panel comparison. Rail stop 3, mirroring
+        # `s-parts`; see the docstring. Design's lede is the one thing lost —
+        # "What could not be lifted" 1.
         {"type": "comparison", "anchor": "s-designs",
          "eyebrow": "Two solutions to one problem",
          "eyebrow_tone": "accent-text",

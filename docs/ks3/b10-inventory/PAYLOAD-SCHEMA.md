@@ -479,7 +479,42 @@ The band anchor differs per lesson and its card shape differs with it — two ch
 | b10-04 | `s-steps` | ordered list with a number badge, `{num, name, body}` × 4 |
 | b10-05 | `s-test` | grid, `{kind, name, body}` × 4 |
 
-## 8. Rail stops: four are drawn, three can tick
+## 8. Rail stops: four are drawn, and FOUR is what we build (MRB-249)
+
+> ⊕ **RULED 18 Aug 2026 — MRB-249. AUTHOR FOUR STOPS. The band stop is a MIRROR.**
+>
+> This section's verdict is reversed; its *measurement* below is correct and still stands.
+> Design draws four, and four is what we build.
+>
+> The reasoning that produced "author three" was that a static band carries none of the DOM
+> signals `doneByDom()` reads, so a stop anchored to it can never tick. That was true of the
+> runtime as it stood, and it is no longer true of the runtime — but more importantly it was
+> never a reason to drop the stop. **MRB-205 binds and is not re-argued: Design draws, we
+> render; the page wins over the engine.** Dropping a stop Design drew is not rendering what
+> Design drew, and the band section is 1.2–5.2 KB of real teaching, not a spacer.
+>
+> Design also states the completion condition herself, in her own `isDone()`, which is a
+> **rail-level** function rather than a per-section one:
+>
+>     if (id === 's-bench') return s.everTopped;
+>     if (id === 's-roles') return s.everTopped;
+>
+> The band is the *payoff* of the instrument beside it. It carries no control because the
+> instrument already took the student's commitment. So it is authored as a mirror:
+>
+>     {"anchor": "s-roles", "short": "ROLES", "label": "Producer, consumer, decomposer",
+>      "mirrors": "s-bench", "done_when": "chain_topped"},
+>
+> `shared/ks3.js` resolves `mirrors` in `wireRail`'s `paint()` — at rail level, where Design
+> resolves it. Nothing ticks on load; the mirrored stop ticks the moment its target does.
+> `ks3_parity.check_rail_matches_design` now gates the built rail against
+> `docs/ks3/rail-manifest.md`, which is generated from Design's delivered pages, so a dropped
+> stop **fails the build**. Thirty-five pages had already shipped with one missing.
+>
+> The tables below record what Design drew. Read the "dropped" column as **"the mirror stop"**,
+> and the "Design's bench threshold" column as the mirror's `done_when`.
+
+
 
 Every page draws **four** rail stops. `doneByDom()` in `shared/ks3.js` reads, in order:
 `data-stage-done` (authoritative in both directions), then `.ks3-rung` completion, then

@@ -15543,8 +15543,21 @@ def r_rail(lesson):
            '</span></div></nav>'
            % (len(stages), t(stages[0].get("label", ""))))
 
+    # ⊕ MRB-249 — `mirrors` names an EARLIER stop whose completion this stop
+    # shares. Design's own `isDone()` is a rail-level function and on 33 of her
+    # 48 lesson pages it returns the SAME expression for two consecutive ids —
+    # `if (id === 's-summary') return s.exits;` one line under
+    # `if (id === 's-bench') return s.exits;`. The synthesis section is the
+    # payoff of the instrument beside it: it carries no control of its own
+    # because the instrument already took the student's commitment.
+    #
+    # Three earlier units read that as "a stop that cannot tick" and dropped it,
+    # shipping a three-stop rail where Design drew four. That is an MRB-205
+    # violation — Design draws, we render, and the page wins over the engine —
+    # and it is now gated both ways by `check_rail_matches_design`.
     payload = json.dumps([{"anchor": s["anchor"],
                            "label": s.get("label", ""),
+                           "mirrors": s.get("mirrors", ""),
                            "done_when": s.get("done_when", "")}
                           for s in stages], separators=(",", ":"),
                          sort_keys=True)

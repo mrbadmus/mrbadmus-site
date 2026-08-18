@@ -86,23 +86,39 @@ day 28 without touching a length chip demonstrates nothing this lesson claims.
   Authored exactly as delivered, including the hedges Design chose ("roughly",
   "about", "nearer day 21"). Nothing is hardened and nothing is softened.
 
-── The rail loses a stop, and it is the defect four units have now found ─
+── FOUR rail stops — Design's fourth restored (MRB-249) ──────────────────
 
-Design draws FOUR stops and `#s-events` ticks on `Object.keys(s.seen).length
->= 2` (page line 392) — the DIAL's predicate, verbatim, one section to the left.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that the rail
+lost a stop, "the defect four units have now found". Design draws FOUR stops
+and `#s-events` ticks on `Object.keys(s.seen).length >= 2` (page line 392) —
+the DIAL's predicate, verbatim, one section to the left — and because
 `#s-events` is an eyebrow, a display statement, four static cards and a key
-fact: no control, no commitment, no field. MRB-208 ruled the rail is
-completion-based and carries only sections that require the student to do
-something, and `ks3_parity.check_rail_reachable` fails a section carrying none
-of the signals `doneByDom()` reads — which a `rule` panel carries none of.
+fact with no control, no commitment and no field, the reading was that MRB-208
+confined the rail to sections requiring the student to do something and that
+`ks3_parity.check_rail_reachable` would fail a `rule` panel for carrying none
+of the signals `doneByDom()` reads. So the lesson shipped THREE stops.
 
-So the lesson declares THREE stops. Same call, same reasoning and same shape as
+Two things overrule that inference.
+
+MRB-205 binds and is not re-argued: Design draws, we render; nothing invented,
+nothing dropped; page wins over engine. What four units found was not a defect
+in Design's pages but a limitation in how the rail was being read.
+
+And Design's `isDone()` states the tick condition. It is rail-level and returns
+the identical expression for `#s-dial` and then for `#s-events`. The four
+events are the payoff of having walked the days: the section holds no control
+because the dial already took the student's commitment. That is a MIRROR,
+resolved at rail level in `wireRail`'s `paint()`.
+
+So the fourth stop is declared: anchor `s-events`, `mirrors: "s-dial"`,
+`done_when: "two_lengths_seen"` — the dial's own predicate, named as borrowed,
+and gated by `check_rail_matches_design` against `docs/ks3/rail-manifest.md`.
 b4-01's `#s-parts`, b3-06's `#s-three`, c1-02's `#s-matrix` and c1-05's
-`#s-scale`. **The section keeps its anchor**, so every hash link into `#s-events`
-still resolves.
+`#s-scale` are restored the same way. **The section keeps its anchor**, as it
+always did, so every hash link into `#s-events` still resolves.
 
-Design's dropped stop is `{id: 's-events', label: 'Four events'}`, short
-`EVENTS`. Recorded here because the label is hers and is otherwise lost.
+The stop is Design's `{id: 's-events', label: 'Four events'}`, short `EVENTS` —
+her label, now carried rather than merely recorded.
 
 ── What could not be lifted, and why ────────────────────────────────────
 
@@ -385,9 +401,10 @@ LESSON = {
                     "are timed against each other.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-events` is dropped — see the docstring.
-    # `short` and `label` are Design's own `RAIL_SHORT` and `RAIL` strings
-    # (page lines 323–329).
+    # FOUR stops, as Design draws them. `s-events` is the third: no control of
+    # its own, so it mirrors `s-dial` and ticks on the dial's predicate — see
+    # the docstring. `short` and `label` are Design's own `RAIL_SHORT` and
+    # `RAIL` strings (page lines 323–329).
     "rail": [
         {"anchor": "s-hook", "short": "HOOK", "label": "Not day 14",
          "done_when": "committed"},
@@ -399,6 +416,8 @@ LESSON = {
         # load (MRB-208).
         {"anchor": "s-dial", "short": "DIAL", "label": "Walk the days",
          "done_when": "two_lengths_seen"},
+        {"anchor": "s-events", "short": "EVENTS", "label": "Four events",
+         "mirrors": "s-dial", "done_when": "two_lengths_seen"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -607,8 +626,8 @@ LESSON = {
                         "marker move. That movement is the point of this "
                         "instrument."},
 
-        # #s-events — the band panel. NOT on the rail; see the docstring.
-        # `rule` is the component: band ground, 3px ink border, an accent-text
+        # #s-events — the band panel. Rail stop 3, mirroring `s-dial`; see the
+        # docstring. `rule` is the component: band ground, 3px ink border, an accent-text
         # eyebrow and a display statement, then a card grid — Design's markup
         # (page lines 163–181) minus the number chips and minus event 03's
         # promotion.

@@ -120,6 +120,8 @@ LESSON = {
          "done_when": "tank_has_evened_out"},
         {"anchor": "s-think",  "short": "THINK",  "label": "Wanting to spread",
          "done_when": "committed"},
+        {"anchor": "s-scale", "short": "SCALE", "label": "Distance and time",
+         "mirrors": "s-think", "done_when": "committed"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],

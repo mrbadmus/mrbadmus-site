@@ -31,18 +31,36 @@ the only place in the page where "balanced means equal amounts" is read back to
 them in their own answer rather than argued against in the abstract.
 `r_band_commit` raises without all three.
 
-── One rail stop comes off, and it is the same defect C1 found ──────────
+── FOUR rail stops — Design's fourth restored (MRB-249) ─────────────────
 
-Design draws FOUR stops and `#s-nutrients` ticks on `s.plateOpen` (page line
-420) — the PREVIOUS section's predicate, verbatim. MRB-208 ruled that the rail
-carries only sections that require the student to do something, and
-`#s-nutrients` is an eyebrow, a display line, a seven-row table and a key fact:
-it emits no control, no commit and no field, so there is no demand in it to
-promote and inventing one Design did not draw is closed to this build. The
-lesson declares THREE stops and `ks3_parity.check_rail_reachable` passes
-honestly rather than on a predicate borrowed from next door. Exactly c1-02's
-`#s-matrix` and b3-07's `#s-four`; the section keeps its anchor, so hash links
-into it still work — it simply makes no claim to be completable.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that
+`#s-nutrients` came off the rail. Design draws FOUR stops and `#s-nutrients`
+ticks on `s.plateOpen` (page line 420) — the PREVIOUS section's predicate,
+verbatim — and since the section is an eyebrow, a display line, a seven-row
+table and a key fact, emitting no control, no commit and no field, MRB-208's
+"the rail carries only sections that require the student to do something"
+looked to rule it out. So the lesson shipped THREE stops and called
+`ks3_parity.check_rail_reachable` honest for it.
+
+Two things overrule that inference.
+
+MRB-205 binds and is not re-argued: Design draws, we render; no invented or
+dropped page structure; page wins over engine. Declaring three stops where
+Design drew four is not rendering what Design drew.
+
+And Design's own `isDone()` states the tick condition rather than leaving it to
+be inferred. It is a rail-level function, and it returns the identical
+expression for `#s-plate` and then for `#s-nutrients`. The seven-row table is
+the payoff of the plate beside it; it carries no control because the plate has
+already taken the student's commitment. That is a MIRROR, and `wireRail`'s
+`paint()` in `shared/ks3.js` resolves mirrors at rail level.
+
+So the fourth stop is declared: anchor `s-nutrients`, `mirrors: "s-plate"`,
+`done_when: "all_seven_committed_and_opened"` — the plate's own predicate,
+named as borrowed rather than smuggled. `ks3_parity.check_rail_matches_design`
+gates the built rail against `docs/ks3/rail-manifest.md`. c1-02's `#s-matrix`
+and b3-07's `#s-four` are restored the same way. The section always kept its
+anchor; it now also makes a claim to be completable, and it is reachable.
 
 ── What could not be lifted, and why ────────────────────────────────────
 
@@ -222,9 +240,10 @@ LESSON = {
                     "Both are essential. What does “balanced” actually mean?",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-nutrients` is dropped — see the
-    # docstring. `short` and `label` are Design's own `RAIL_SHORT` and `RAIL`
-    # strings (page lines 333–339).
+    # FOUR stops, as Design draws them. `s-nutrients` is the third: it holds
+    # no control of its own and mirrors `s-plate`, ticking on the plate's
+    # predicate — see the docstring. `short` and `label` are Design's own
+    # `RAIL_SHORT` and `RAIL` strings (page lines 333–339).
     "rail": [
         {"anchor": "s-hook",   "short": "HOOK",   "label": "One orange",
          "done_when": "committed"},
@@ -233,6 +252,8 @@ LESSON = {
         # partial plate and cannot tick on load.
         {"anchor": "s-plate",  "short": "BENCH",  "label": "Build a day",
          "done_when": "all_seven_committed_and_opened"},
+        {"anchor": "s-nutrients", "short": "SEVEN", "label": "The seven",
+         "mirrors": "s-plate", "done_when": "all_seven_committed_and_opened"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -402,8 +423,8 @@ LESSON = {
                        "something you never absorb at all.",
          }},
 
-        # #s-nutrients — the seven-row table. NOT on the rail; see the
-        # docstring. `r_comparison` is the component: band ground, 3px ink
+        # #s-nutrients — the seven-row table. Rail stop 3, mirroring
+        # `s-plate`; see the docstring. `r_comparison` is the component: band ground, 3px ink
         # border, dark header row, zebra rows, a nested key fact — which is
         # Design's markup (page lines 159–190) element for element, minus the
         # name column's second line.

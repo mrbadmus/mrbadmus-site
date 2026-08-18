@@ -9,32 +9,51 @@ which follows B5, B4, B3, C1, C2, B2 and B1: each module exports a single
 
 Every student-facing string is lifted byte-identical from the approved page.
 
-── ⚠️ DESIGN DRAWS FOUR RAIL STOPS PER PAGE. THREE CAN TICK. ─────────────
+── ⊕ DESIGN DRAWS FOUR RAIL STOPS PER PAGE. ALL FOUR TICK. ───────────────
 
-Measured before dispatch this time, in the schema's §7, rather than four times
-over by four authors afterwards. On every B8 page one rail stop is anchored to
-the BAND section — `#s-summary` (b8-01), `#s-jobs` (b8-02), `#s-equation`
-(b8-03), `#s-two` (b8-04), `#s-table` (b8-05) — and every one of those renders
-as a core `rule` (b8-05: `comparison`), which is a `<section class="ks3-rule">`
-of static cards.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This heading used to read "THREE CAN
+TICK", and payload schema §7 pre-ruled the three-stop count for all five pages
+before dispatch. The measurement below was right; what was drawn from it was
+not.
 
+On every B8 page one rail stop is anchored to the BAND section — `#s-summary`
+(b8-01), `#s-jobs` (b8-02), `#s-equation` (b8-03), `#s-two` (b8-04), `#s-table`
+(b8-05) — and every one of those renders as a core `rule` (b8-05:
+`comparison`), which is a `<section class="ks3-rule">` of static cards.
 `ks3_parity.check_rail_reachable()` requires the anchored section to contain one
 of five literal DOM signals — `data-stage-done`, `class="ks3-rung`,
-`data-reveal`, `ks3-reveal-btn`, `class="ks3-option`. The band sections carry
-none, so a stop on one could never tick and FAILS the build.
+`data-reveal`, `ks3-reveal-btn`, `class="ks3-option` — and the band sections
+carry none of them.
 
-It appears to work on Design's own page only because Design's `isDone()` aliases
-the band stop to the bench's PRIVATE state — `s-summary` returns `s.exits`,
-`s-jobs` and `s-two` return the bench's seen-count, `s-equation` returns
-`everRecovered`, `s-table` returns the opened-count. Aliasing it here would tick
-a stop for something the student did in a different section, which is exactly
-what MRB-208's completion rule exists to prevent.
+The old argument called Design's own `isDone()` an ALIAS onto the bench's
+private state — `s-summary` returns `s.exits`, `s-jobs` and `s-two` return the
+bench's seen-count, `s-equation` returns `everRecovered`, `s-table` returns the
+opened-count — and held that ticking a stop for something done in a different
+section is what MRB-208's completion rule exists to prevent. So three stops per
+lesson, band stop dropped, anchor kept.
 
-**Three stops per lesson; the band stop is dropped and its ANCHOR IS KEPT**, so
-hash links, `elicited_by` and `confronted_by` still resolve. Same call as B7's
-four pages, b4-03 `#s-built`, b5-06 `#s-designs`, b6-03 `#s-four`, c1-02
-`#s-matrix` and eight others. NOTES-B8 §4's "four in all five" is reported, not
-silently followed.
+Two things overrule that.
+
+MRB-205 binds and is not re-argued: Design draws, we render; nothing invented,
+nothing dropped; page wins over engine. When the engine cannot express the page,
+the engine moves.
+
+And those five expressions are not aliases. `isDone()` is a RAIL-LEVEL function,
+and Design returning the same expression for two consecutive ids is Design
+saying how the second one ticks. Each band section is the payoff of the
+instrument beside it, and carries no signal of its own precisely because the
+instrument already took the student's commitment. That is a MIRROR:
+`build_ks3.py` serialises a `mirrors` key into `data-rail-stages`, and
+`wireRail`'s `paint()` in `shared/ks3.js` resolves it at rail level instead of
+searching the section. `ks3_parity.check_rail_matches_design` gates the built
+rail against `docs/ks3/rail-manifest.md`.
+
+**Four stops per lesson; the band stop mirrors the bench and its ANCHOR IS
+UNCHANGED**, so hash links, `elicited_by` and `confronted_by` resolve exactly as
+before. B7's four pages, b4-03 `#s-built`, b5-06 `#s-designs`, b6-03 `#s-four`,
+c1-02 `#s-matrix` and the rest are restored the same way. NOTES-B8 §4's "four in
+all five" is followed, not reported. Payload schema §7's pre-dispatch count is
+superseded and its text has not been re-cut — read it as historical.
 
 ── `#s-think` is `confrontation` on all five, NOT `predict` ──────────────
 

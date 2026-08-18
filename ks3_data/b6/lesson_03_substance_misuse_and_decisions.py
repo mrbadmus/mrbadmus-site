@@ -66,19 +66,36 @@ opacity once checked, and no branch of that expression is ever green or red.
 Only the ladder marks correctness (MRB-208 / MRB-196 R10). The verdict eyebrow
 is the sole verdict, in words: "That is the fault" / "Not the main fault here".
 
-── One rail stop comes off, and it is the defect C1 already found ───────
+── FOUR rail stops — Design's fourth restored (MRB-249) ─────────────────
 
-Design draws FOUR stops and `#s-four` ticks on `opened >= CLAIMS.length` (page
-line 421) — the BENCH's predicate, verbatim, one section to the left. MRB-208
-ruled the rail is completion-based and carries only sections that require the
-student to do something; `#s-four` is an eyebrow, a display statement, four
-static cards and a key fact, with no control, no commitment and no field.
-`ks3_parity.check_rail_reachable` fails a stop whose section carries none of
-the signals `doneByDom()` reads, and inventing a demand Design did not draw is
-closed to this build. So the lesson declares THREE stops — the same call and
-the same shape as c1-02's `#s-matrix`, c1-05's `#s-scale`, b3-01's
-`#s-nutrients`, b3-02's `#s-limits` and b4-01's `#s-parts`. The section keeps
-its anchor, so every hash link into it still works.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that `#s-four`
+came off the rail. Design draws FOUR stops and `#s-four` ticks on
+`opened >= CLAIMS.length` (page line 421) — the BENCH's predicate, verbatim,
+one section to the left — and because `#s-four` is an eyebrow, a display
+statement, four static cards and a key fact, with no control, no commitment and
+no field, the reading was that MRB-208's completion rule ruled it out and that
+`ks3_parity.check_rail_reachable` would fail a stop carrying none of the
+signals `doneByDom()` reads. So the lesson shipped THREE stops.
+
+Two things overrule that inference.
+
+MRB-205 binds and is not re-argued: Design draws, we render; nothing invented,
+nothing dropped; page wins over engine. Dropping a stop Design drew is not
+rendering what Design drew.
+
+And Design's `isDone()` states the tick condition. It is a rail-level function
+returning the identical expression for `#s-claims` and then for `#s-four`. The
+four questions are the payoff of the five claims the student just checked — the
+generalisation of what they were doing by hand — and the section holds no
+control because the bench already took the commitment. That is a MIRROR,
+resolved at rail level in `wireRail`'s `paint()`.
+
+So the fourth stop is declared: anchor `s-four`, `mirrors: "s-claims"`,
+`done_when: "all_five_checked"` — the bench's own predicate, named as borrowed,
+and gated by `check_rail_matches_design` against `docs/ks3/rail-manifest.md`.
+c1-02's `#s-matrix`, c1-05's `#s-scale`, b3-01's `#s-nutrients`, b3-02's
+`#s-limits` and b4-01's `#s-parts` are restored the same way. The section keeps
+its anchor, as it always did, so every hash link into it still works.
 
 ── What could not be lifted, and why ────────────────────────────────────
 
@@ -384,9 +401,10 @@ LESSON = {
                     "difference.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-four` is dropped — see the docstring.
-    # `short` and `label` are Design's own `RAIL_SHORT` and `RAIL` strings
-    # (page lines 320–326).
+    # FOUR stops, as Design draws them. `s-four` is the third: no control of
+    # its own, so it mirrors `s-claims` and ticks on the bench's predicate —
+    # see the docstring. `short` and `label` are Design's own `RAIL_SHORT` and
+    # `RAIL` strings (page lines 320–326).
     "rail": [
         {"anchor": "s-hook", "short": "HOOK", "label": "It is natural",
          "done_when": "committed"},
@@ -395,6 +413,8 @@ LESSON = {
         # would call the bench finished at a fifth of it.
         {"anchor": "s-claims", "short": "CLAIMS", "label": "Find the fault",
          "done_when": "all_five_checked"},
+        {"anchor": "s-four", "short": "FOUR", "label": "Four questions",
+         "mirrors": "s-claims", "done_when": "all_five_checked"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -569,8 +589,8 @@ LESSON = {
          "tally": {"format": "{n} still to check",
                    "done": "all five claims checked"}},
 
-        # #s-four — the band panel. NOT on the rail; see the docstring.
-        # `rule` is the component: band ground, 3px ink border, an accent-text
+        # #s-four — the band panel. Rail stop 3, mirroring `s-claims`; see the
+        # docstring. `rule` is the component: band ground, 3px ink border, an accent-text
         # eyebrow and a display statement, then a card grid — Design's markup
         # (page lines 155–167) minus the `Question n` chips.
         {"type": "rule", "anchor": "s-four",

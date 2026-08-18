@@ -40,26 +40,42 @@ decorative — it is what makes an explicitly illustrative model honest. NOTES-B
 flag 9 asks Mide to confirm that an explicitly illustrative model is acceptable
 here.
 
-── The rail is THREE stops, not Design's four ──────────────────────────
+── FOUR rail stops — Design's fourth restored (MRB-249) ────────────────
 
-Design draws `s-hook`, `s-tuner`, `s-features`, `s-ladder`, and her own tick
-function (page lines 396–402) reads:
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to read "the rail is
+THREE stops, not Design's four". Design draws `s-hook`, `s-tuner`,
+`s-features`, `s-ladder`, and her own tick function (page lines 396–402) reads:
 
     if (id === 's-tuner')    return s.moved;
     if (id === 's-features') return s.moved;
 
-— stage three's predicate is stage two's, character for character. `#s-features`
-is an eyebrow, a display statement, five static cards and a key fact: no
-control, no commitment, no field. `ks3_parity.check_rail_reachable` fails a stop
-whose section carries none of the signals `doneByDom()` looks for, and there is
-no demand in the section to promote; inventing a control Design did not draw is
-closed to this build (MRB-205). So the stop comes OFF the rail rather than
-ticking on its neighbour's state.
+— stage three's predicate is stage two's, character for character. Because
+`#s-features` is an eyebrow, a display statement, five static cards and a key
+fact, with no control, no commitment and no field, the argument was that
+`ks3_parity.check_rail_reachable` fails a stop whose section carries none of
+the signals `doneByDom()` looks for, that there was no demand in the section to
+promote, and that inventing a control Design did not draw is closed to this
+build. So the stop came off.
 
-`#s-features` keeps its anchor and its scroll-margin, so every hash link into it
-still works. Identical call, identical reasoning, to b4-03's `#s-built`,
-b5-06's `#s-designs`, b4-05's `#s-stomata`, b3-07's `#s-four`, c1-02's
-`#s-matrix` and c1-05's `#s-scale`. `#s-think` is not a candidate either — on
+Two things overrule that.
+
+MRB-205 was cited for half of itself. Design draws, we render; page wins over
+engine. Inventing a control is forbidden; so is dropping a stop Design drew.
+
+And the two lines above are Design saying how the second stop ticks. `isDone()`
+is a rail-level function, and the same expression written for two consecutive
+ids is a declaration, not a duplication to be worked around. The five features
+are the payoff of the leaf the student just built; `#s-features` carries no
+control because `#s-tuner` already took the commitment. That is a MIRROR,
+resolved at rail level in `wireRail`'s `paint()`.
+
+So the stop is declared: anchor `s-features`, `mirrors: "s-tuner"`,
+`done_when: "any_dial_moved"` — stage two's predicate, named as borrowed rather
+than smuggled, and gated by `ks3_parity.check_rail_matches_design` against
+`docs/ks3/rail-manifest.md`. b4-03's `#s-built`, b5-06's `#s-designs`, b4-05's
+`#s-stomata`, b3-07's `#s-four`, c1-02's `#s-matrix` and c1-05's `#s-scale` are
+restored the same way. `#s-features` keeps its anchor and its scroll-margin, as
+it always did. `#s-think` is still not a stop — Design draws none on it, and on
 this page it is two quotes and two paragraphs with nothing to answer, so
 MRB-220 R1 (which promotes a *committing* `#s-think` to `predict`) does not
 reach it.
@@ -371,9 +387,10 @@ LESSON = {
                     "between them.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-features` is dropped — see the
-    # docstring. `short` and `label` are Design's own `RAIL_SHORT` and `RAIL`
-    # strings (page lines 309–315).
+    # FOUR stops, as Design draws them. `s-features` is the third: no control
+    # of its own, so it mirrors `s-tuner` and ticks on the tuner's predicate —
+    # see the docstring. `short` and `label` are Design's own `RAIL_SHORT` and
+    # `RAIL` strings (page lines 309–315).
     "rail": [
         {"anchor": "s-hook",   "short": "HOOK",
          "label": "Every hole leaks", "done_when": "committed"},
@@ -384,6 +401,8 @@ LESSON = {
         # have ticked after one.
         {"anchor": "s-tuner",  "short": "TUNER",
          "label": "Build a leaf", "done_when": "any_dial_moved"},
+        {"anchor": "s-features", "short": "FEATURES", "label": "Five features",
+         "mirrors": "s-tuner", "done_when": "any_dial_moved"},
         {"anchor": "s-ladder", "short": "LADDER",
          "label": "Mastery ladder", "done_when": "ladder_complete"},
     ],
@@ -617,8 +636,8 @@ LESSON = {
                         "them."},
          }},
 
-        # #s-features — the band panel. NOT on the rail; see the docstring.
-        # `r_rule` is the shell Design drew: band ground, 3px ink border, no
+        # #s-features — the band panel. Rail stop 3, mirroring `s-tuner`; see
+        # the docstring. `r_rule` is the shell Design drew: band ground, 3px ink border, no
         # shadow, an eyebrow, a display statement and a card list.
         {"type": "rule", "anchor": "s-features",
          "eyebrow": "Five features, five jobs",

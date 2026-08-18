@@ -54,27 +54,44 @@ intention:
   * the blackberry's `why` — *"The timing is part of the design"* — design in
     the sense of the arrangement, not of a designer. Flagged, not altered.
 
-── THE RAIL LOSES A STOP, AND IT IS THE DEFECT MRB-208 NAMES ────────────
+── FOUR RAIL STOPS — DESIGN'S FOURTH RESTORED (MRB-249) ─────────────────
 
-Design draws FOUR stops (`RAIL`, page lines 318–323) and `isDone` (page line
-429) ticks `#s-methods` on `Object.keys(s.opened).length >= 8` — the SORT's
-predicate, character for character, one section to the left. `#s-methods` is an
-eyebrow, a display statement, a five-row table and a key fact: no control, no
-commitment, no field. `ks3_parity.check_rail_reachable` would fail it for
-exactly that, and inventing a demand Design did not draw is closed to this build
-(MRB-205).
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to be headed "THE RAIL
+LOSES A STOP, AND IT IS THE DEFECT MRB-208 NAMES". Design draws FOUR stops
+(`RAIL`, page lines 318–323) and `isDone` (page line 429) ticks `#s-methods` on
+`Object.keys(s.opened).length >= 8` — the SORT's predicate, character for
+character, one section to the left. Because `#s-methods` is an eyebrow, a
+display statement, a five-row table and a key fact, with no control, no
+commitment and no field, the reading was that
+`ks3_parity.check_rail_reachable` would fail it for exactly that, and that
+inventing a demand Design did not draw is closed to this build. So the lesson
+shipped THREE stops.
 
-So this lesson declares THREE stops. Same call, same reasoning and same shape as
+Two things overrule that inference.
+
+MRB-205 was cited for one half of itself. Design draws, we render; page wins
+over engine. It forbids inventing a control, and equally forbids dropping a
+stop Design drew.
+
+And the repeated predicate is Design saying how `#s-methods` ticks. `isDone` is
+a rail-level function; the same expression written for two consecutive ids is a
+declaration, not a slip. The five methods are the payoff of the eight specimens
+the student just sorted, and the section carries no control because `#s-sort`
+already took the commitment. That is a MIRROR, resolved at rail level in
+`wireRail`'s `paint()`.
+
+So the fourth stop is declared: anchor `s-methods`, `mirrors: "s-sort"`,
+`done_when: "all_eight_checked"` — the SORT's predicate, named as borrowed, and
+gated by `check_rail_matches_design` against `docs/ks3/rail-manifest.md`.
 c1-02's `#s-matrix`, c1-05's `#s-scale`, b3-01's `#s-nutrients`, b3-07's
-`#s-four` and b4-01's `#s-parts`. `#s-methods` KEEPS ITS ANCHOR, so every hash
-link into it still works; it simply stops claiming to be completable.
+`#s-four` and b4-01's `#s-parts` are restored the same way. `#s-methods` KEEPS
+ITS ANCHOR, as it always did.
 
-`#s-think` is not a candidate for the fourth stop either: on this page it is two
-quotes and two paragraphs with nothing to answer, so MRB-220 R1 — which promotes
-a *committing* `#s-think` to `predict` — does not reach it.
+`#s-think` is still not a stop: Design draws none on it, and on this page it is
+two quotes and two paragraphs with nothing to answer, so MRB-220 R1 — which
+promotes a *committing* `#s-think` to `predict` — does not reach it.
 
-⚑ NOTES-B5 §6 says "Rail stops: four in every lesson in the unit." That is
-Design's intention and it is recorded here rather than silently met.
+⚑ NOTES-B5 §6 says "Rail stops: four in every lesson in the unit." It is met.
 
 ── What could not be lifted byte-identical, and why ─────────────────────
 
@@ -360,9 +377,11 @@ LESSON = {
                     "from that.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-methods` is dropped — see the
-    # docstring. `short` and `label` are Design's own `RAIL_SHORT` and `RAIL`
-    # strings (page lines 318–324).
+    # FOUR stops, as Design draws them and as NOTES-B5 §6 requires.
+    # `s-methods` is the third: no control of its own, so it mirrors `s-sort`
+    # and ticks on the SORT's predicate — see the docstring. `short` and
+    # `label` are Design's own `RAIL_SHORT` and `RAIL` strings (page lines
+    # 318–324).
     "rail": [
         {"anchor": "s-hook", "short": "HOOK", "label": "Why move?",
          "done_when": "committed"},
@@ -372,6 +391,8 @@ LESSON = {
         # eighth that matters most is the poppy, which is specimen 03.
         {"anchor": "s-sort", "short": "SORT", "label": "Sort the eight",
          "done_when": "all_eight_checked"},
+        {"anchor": "s-methods", "short": "METHODS", "label": "Five methods",
+         "mirrors": "s-sort", "done_when": "all_eight_checked"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -534,8 +555,8 @@ LESSON = {
          "tell_label": "Deciding feature",
          "specimen_label": "Specimen"},
 
-        # #s-methods — the band panel. NOT on the rail; see the docstring.
-        # `comparison` is the component: five rows, two captioned columns and
+        # #s-methods — the band panel. Rail stop 3, mirroring `s-sort`; see
+        # the docstring. `comparison` is the component: five rows, two captioned columns and
         # the nested key fact Design draws inside the panel.
         {"type": "comparison", "anchor": "s-methods",
          "eyebrow": "One problem · five answers",

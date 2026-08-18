@@ -24,25 +24,45 @@ Its `covers` is anchored on `KS3.WS.*` per §5.7.1 — every INVESTIGATION lesso
 does this, §10.2 requires `covers` non-empty, and WS ids are exempt from the
 exactly-once ownership check in `build_ks3.validate()`.
 
-── ⚠️ DESIGN DRAWS FOUR RAIL STOPS PER PAGE. THREE CAN TICK. ─────────────
+── ⊕ DESIGN DRAWS FOUR RAIL STOPS PER PAGE. ALL FOUR TICK. ───────────────
 
-All four authoring passes hit this independently and all four made the same
-call, which is why it is recorded here once rather than four times.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This heading used to read "THREE CAN
+TICK", and all four B7 authoring passes reached that call independently — which
+is why it was recorded here once rather than four times, and why the reversal
+is recorded here once too.
 
 On every B7 page, one rail stop is anchored to a section whose completion
-predicate is copied from the instrument one section to its left — `s.everTested`
-on b7-01 `#s-summary`, `s.moved` on b7-02 `#s-features`, `s.everRan` on b7-03
-`#s-method`, `s.everArrived` on b7-04 `#s-jobs`. Each of those sections is
-static cards: no control, no commitment, no field.
+predicate is Design's own, stated a second time for the instrument one section
+to its left — `s.everTested` on b7-01 `#s-summary`, `s.moved` on b7-02
+`#s-features`, `s.everRan` on b7-03 `#s-method`, `s.everArrived` on b7-04
+`#s-jobs`. Each of those sections is static cards: no control, no commitment,
+no field.
 
-`ks3_parity.check_rail_reachable()` requires the anchored section to contain one
-of five literal DOM signals — `data-stage-done`, `class="ks3-rung`,
-`data-reveal`, `ks3-reveal-btn`, `class="ks3-option`. These four carry none, so
-a stop on them could never tick and FAILS the build. Dropped to three stops per
-page; **the anchors are kept**, so hash links and `elicited_by` values still
-resolve. Same call as b4-03 `#s-built`, b5-06 `#s-designs`, b6-03 `#s-four`,
-c1-02 `#s-matrix` and eight others. NOTES-B7 §3's "four in all four" is
-reported, not silently followed.
+The old argument: `ks3_parity.check_rail_reachable()` requires the anchored
+section to contain one of five literal DOM signals — `data-stage-done`,
+`class="ks3-rung`, `data-reveal`, `ks3-reveal-btn`, `class="ks3-option` — these
+four carry none, so a stop on them could never tick and would FAIL the build.
+Hence three stops per page, anchors kept.
+
+Two things overrule it.
+
+MRB-205 binds and is not re-argued: Design draws, we render; no invented and no
+dropped page structure; page wins over engine. A gate that cannot express what
+Design drew is the thing that gives way, and it has.
+
+And the repeated predicate is Design stating the tick condition, in a
+rail-level `isDone()`. Each of those static sections is the PAYOFF of the
+instrument beside it, carrying no control precisely because the instrument
+already took the student's commitment. That relationship is a MIRROR:
+`build_ks3.py` serialises a `mirrors` key into `data-rail-stages`, and
+`wireRail`'s `paint()` in `shared/ks3.js` resolves it at rail level rather than
+searching the section for a signal. `ks3_parity.check_rail_matches_design`
+gates the built rail against `docs/ks3/rail-manifest.md`.
+
+So: FOUR stops per page, anchors unchanged, hash links and `elicited_by` values
+resolving exactly as before. b4-03 `#s-built`, b5-06 `#s-designs`, b6-03
+`#s-four`, c1-02 `#s-matrix` and the rest are restored the same way. NOTES-B7
+§3's "four in all four" is followed, not reported.
 
 ⚠️ **`#s-tuner` is the one stop that depends on the RENDERER, not the record.**
 The signal test is a plain substring search over the built page's STATIC markup.

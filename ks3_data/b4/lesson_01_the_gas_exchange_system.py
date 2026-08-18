@@ -39,19 +39,37 @@ the bar: the bar says *that* it changed, and the numeral is the only thing on
 the page that says *by how much*. NOTES-B4 §3.1 makes the same point in the
 same words.
 
-── One rail stop comes off, and it is the defect C1 already found ───────
+── FOUR rail stops — Design's fourth restored (MRB-249) ─────────────────
 
-Design draws FOUR stops and `#s-parts` ticks on `s.airOpen` (page line 417) —
-the BENCH's predicate, verbatim, one section to the left. MRB-208 ruled the
-rail is completion-based and carries only sections that require the student to
-do something; `#s-parts` is an eyebrow, a statement, six static cards and a key
-fact, with no control, no commitment and no field. `ks3_parity.check_rail_
-reachable` would fail it for exactly that (a `rule` section carries none of the
-signals `doneByDom()` reads), and inventing a demand Design did not draw is
-closed to this build. So the lesson declares THREE stops — the same call, the
-same reasoning and the same shape as c1-02's `#s-matrix`, c1-05's `#s-scale`,
-b3-01's `#s-nutrients` and b3-02's `#s-limits`. The section keeps its anchor,
-so the tutor card's `#s-parts` link and every hash link into it still work.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that
+`#s-parts` came off the rail. Design draws FOUR stops and `#s-parts` ticks on
+`s.airOpen` (page line 417) — the BENCH's predicate, verbatim, one section to
+the left — and because `#s-parts` is an eyebrow, a statement, six static cards
+and a key fact with no control, no commitment and no field, the reading was
+that MRB-208's completion rule forbade the stop and
+`ks3_parity.check_rail_reachable` would fail it for carrying none of the
+signals `doneByDom()` reads. So the lesson shipped THREE stops.
+
+Two things overrule that inference.
+
+MRB-205 binds and is not re-argued: Design draws, we render; nothing invented,
+nothing dropped; page wins over engine. Dropping a stop Design drew is not
+rendering what Design drew.
+
+And Design's `isDone()` states the tick condition rather than leaving it to be
+inferred. It is a rail-level function and it returns the identical expression
+for `#s-air` and then for `#s-parts`. The route in is the payoff of the two
+bags beside it; the section holds no control because the bench has already
+taken the student's commitment. That is a MIRROR, resolved at rail level in
+`wireRail`'s `paint()`.
+
+So the fourth stop is declared: anchor `s-parts`, `mirrors: "s-air"`,
+`done_when: "both_bags_analysed"` — the bench's own predicate, named as
+borrowed rather than smuggled, and gated by `check_rail_matches_design` against
+`docs/ks3/rail-manifest.md`. c1-02's `#s-matrix`, c1-05's `#s-scale`, b3-01's
+`#s-nutrients` and b3-02's `#s-limits` are restored the same way. The section
+keeps its anchor, as it always did, so the tutor card's `#s-parts` link and
+every hash link into it still work.
 
 ── What could not be lifted, and why ────────────────────────────────────
 
@@ -239,9 +257,10 @@ LESSON = {
                     "seriously.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-parts` is dropped — see the docstring.
-    # `short` and `label` are Design's own `RAIL_SHORT` and `RAIL` strings
-    # (page lines 337–343).
+    # FOUR stops, as Design draws them. `s-parts` is the third: no control of
+    # its own, so it mirrors `s-air` and ticks on the bench's predicate — see
+    # the docstring. `short` and `label` are Design's own `RAIL_SHORT` and
+    # `RAIL` strings (page lines 337–343).
     "rail": [
         {"anchor": "s-hook", "short": "HOOK", "label": "Mouth-to-mouth",
          "done_when": "committed"},
@@ -251,6 +270,8 @@ LESSON = {
         # a quarter of it.
         {"anchor": "s-air", "short": "BAGS", "label": "Two bags",
          "done_when": "both_bags_analysed"},
+        {"anchor": "s-parts", "short": "ROUTE", "label": "The route in",
+         "mirrors": "s-air", "done_when": "both_bags_analysed"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -406,8 +427,8 @@ LESSON = {
                   "water vapour, which is why you can see your breath on a "
                   "cold day."},
 
-        # #s-parts — the band panel. NOT on the rail; see the docstring.
-        # `rule` is the component: band ground, 3px ink border, an accent-text
+        # #s-parts — the band panel. Rail stop 3, mirroring `s-air`; see the
+        # docstring. `rule` is the component: band ground, 3px ink border, an accent-text
         # eyebrow and a display statement, then a card grid on the option
         # border — Design's markup (page lines 172–189) minus the number chips.
         {"type": "rule", "anchor": "s-parts",

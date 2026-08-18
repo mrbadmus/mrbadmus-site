@@ -94,14 +94,32 @@ only fires when a sub-ID is registered AND its parent is also owned — so this
 ships correct and the minting is one edit across three lessons. Flagged rather
 than done from one of three parallel lessons.
 
-── The rail loses a stop, and it is the same defect as C1's ─────────────
+── FOUR rail stops — Design's fourth restored (MRB-249) ─────────────────
 
-Design's stage 3 (`#s-three`) ticks on `s.everRan` — the BENCH's predicate,
-verbatim (page line 408). `#s-three` is an eyebrow, a display line, three cards
-and a key fact: no control, no commit, no field. MRB-208 ruled the rail carries
-only sections that require the student to do something, and
-`ks3_parity.check_rail_reachable` names this exact defect. THREE rail stops,
-not four; the section keeps its anchor.
+⊕ **REVERSED 18 Aug 2026 (MRB-249).** This section used to argue that the rail
+lost a stop. Design's stage 3 (`#s-three`) ticks on `s.everRan` — the BENCH's
+predicate, verbatim (page line 408) — and because `#s-three` is an eyebrow, a
+display line, three cards and a key fact with no control, no commit and no
+field, MRB-208's completion rule looked to forbid it and
+`ks3_parity.check_rail_reachable` looked set to name the defect. THREE stops
+shipped, not four.
+
+Two things overrule that inference.
+
+MRB-205 binds and is not re-argued: Design draws, we render; nothing invented,
+nothing dropped; page wins over engine.
+
+And `s.everRan` appearing twice is Design stating the tick condition, not
+Design forgetting to write one. `isDone()` is a rail-level function and returns
+the identical expression for `#s-bench` and then for `#s-three`. Amylase,
+protease and lipase are the payoff of the run beside them; the section holds no
+control because the bench has already taken the student's commitment. That is a
+MIRROR, resolved at rail level in `wireRail`'s `paint()`.
+
+So the fourth stop is declared: anchor `s-three`, `mirrors: "s-bench"`,
+`done_when: "reaction_run"` — the bench's own predicate, named as borrowed, and
+gated by `check_rail_matches_design` against `docs/ks3/rail-manifest.md`. The
+section keeps its anchor, as it always did.
 
 ── One addition inside a component Design drew ──────────────────────────
 
@@ -227,13 +245,17 @@ LESSON = {
                     "expect.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
-    # THREE stops. Design draws four; `s-three` is dropped — see the docstring.
-    # `short` and `label` are Design's own (page lines 337–342).
+    # FOUR stops, as Design draws them. `s-three` is the third: no control of
+    # its own, so it mirrors `s-bench` and ticks on the bench's predicate — see
+    # the docstring. `short` and `label` are Design's own (page lines
+    # 337–342).
     "rail": [
         {"anchor": "s-hook",   "short": "HOOK",   "label": "A teaspoon",
          "done_when": "committed"},
         {"anchor": "s-bench",  "short": "BENCH",  "label": "Run it",
          "done_when": "reaction_run"},
+        {"anchor": "s-three", "short": "THREE", "label": "The three",
+         "mirrors": "s-bench", "done_when": "reaction_run"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -441,7 +463,7 @@ LESSON = {
          }},
 
         # #s-three — Design's classless band section, which IS the `rule`
-        # shell. NOT on the rail; see the docstring.
+        # shell. Rail stop 3, mirroring `s-bench`; see the docstring.
         {"type": "rule", "anchor": "s-three",
          "eyebrow": "The three you must know",
          "statement": "One enzyme, one substrate, one place it works best.",

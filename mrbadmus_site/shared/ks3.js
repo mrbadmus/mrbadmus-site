@@ -14003,10 +14003,37 @@
 
     function sectionFor(i) { return document.getElementById(stages[i].anchor); }
 
+    // ⊕ MRB-249 — a stop may MIRROR an earlier stop. Design's `isDone()` is a
+    // rail-level function and returns the same expression for two consecutive
+    // ids on 33 of her 48 lesson pages: the synthesis section is the payoff of
+    // the instrument beside it and carries no control of its own, because the
+    // instrument already took the student's commitment. Resolved here rather
+    // than in `doneByDom`, because `doneByDom` answers "is this SECTION
+    // finished" and a mirror is a statement about the RAIL.
+    //
+    // Base states are computed for every stop first, then mirrors are resolved
+    // against them — so a mirror never reads a half-built array, and a mirror
+    // pointing at another mirror still lands on a real section's state. The
+    // hop limit is a cycle guard: `mirrors` is authored, and an author who
+    // writes a loop gets a stop that stays untocked rather than a hung tab.
+    var anchorIndex = {};
+    for (var a = 0; a < stages.length; a++) { anchorIndex[stages[a].anchor] = a; }
+
     function paint() {
       var done = 0;
+      var base = [];
+      for (var b = 0; b < stages.length; b++) { base[b] = doneByDom(sectionFor(b)); }
+      function resolve(i) {
+        var seen = 0, at = i;
+        while (stages[at] && stages[at].mirrors && seen < stages.length) {
+          var nxt = anchorIndex[stages[at].mirrors];
+          if (nxt === undefined || nxt === at) { break; }
+          at = nxt; seen++;
+        }
+        return base[at];
+      }
       for (var i = 0; i < stages.length; i++) {
-        var isDone = doneByDom(sectionFor(i));
+        var isDone = resolve(i);
         if (isDone) { done++; }
         var li = nodes[i];
         if (li) {
