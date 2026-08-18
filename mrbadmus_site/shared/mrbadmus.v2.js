@@ -297,9 +297,15 @@ FULL BIOLOGY SPECIFICATION TOPICS:
       // Wake up Render if needed (it spins down after inactivity)
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 55000); // 55s timeout
+      let authHeaders = { 'Content-Type': 'application/json' };
+      try {
+        const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+        const tok = raw && JSON.parse(raw)?.access_token;
+        if (tok) authHeaders['Authorization'] = 'Bearer ' + tok;
+      } catch (e) {}
       const res = await fetch('https://mrbadmus-backend.onrender.com/api/chat', {
         method:'POST',
-        headers:{'Content-Type':'application/json'},
+        headers: authHeaders,
         body:JSON.stringify({ system:systemPrompt, messages:chatHistory }),
         signal: controller.signal
       });

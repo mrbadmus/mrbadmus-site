@@ -155,6 +155,7 @@ body.rd[data-mode="ks3"] {
   flex-wrap: wrap;
   align-items: center;
   gap: 9px;
+  min-width: 0;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -5867,6 +5868,13 @@ body.rd[data-mode="ks3"] {
   .ks3-main.is-browse,
   .ks3-main.is-hub { padding: 28px 16px 64px; }
   .ks3-nav-rail { padding: 0 16px; gap: 12px; min-height: 64px; }
+  /* The lesson trail's links are `white-space: nowrap` by design (no
+     mid-word break in a crumb label) — fine on a wide rail, but past the
+     brand + divider + spacer a 390px rail leaves too little room for an
+     unwrapped long unit name, and flex-wrap alone can't help a child that
+     can't itself break. Letting the label wrap is the least visible
+     departure: the crumb still reads as one phrase, just on two lines. */
+  .ks3-trail a { white-space: normal; overflow-wrap: break-word; }
   .ks3-footer-rail { padding: 24px 16px; gap: 12px; }
 
   .ks3-hub-top { gap: 34px; }
