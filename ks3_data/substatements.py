@@ -227,6 +227,97 @@ SUBSTATEMENTS = {
         ("c", "Substance misuse: its effects, and how a claim made about a "
               "drug is judged as evidence.", "B6"),
     ],
+    # Minted for B8 (2026-08-17, MRB-248). The bullet reads:
+    #   "the process of anaerobic respiration in humans and micro-organisms,
+    #    including fermentation, and a word summary for anaerobic respiration"
+    # It names TWO organisms' worth of the same process, and B8 is written at
+    # that grain because the two are not the same lesson: the human clause is
+    # about a body that has run out of oxygen and must pay it back, and the
+    # micro-organism clause is about a process we deliberately RUN — in a
+    # brewery, a yoghurt maker and an industrial fermenter — with no debt to
+    # repay at all. Teaching them together makes fermentation look like a
+    # failure state, which is exactly the misconception b8-04's bench exists to
+    # confront (its open, stirred yeast vessel is not an error message, it is
+    # how yeast is manufactured).
+    #
+    # The word summary named at the end of the bullet is not a third clause —
+    # it is the product of the process, and it lands with (a), where the
+    # equation is first written.
+    "KS3.B.RESP.03": [
+        ("a", "Anaerobic respiration in humans: what a muscle does when the "
+              "oxygen supply cannot keep up, and a word summary for it.",
+         "B8"),
+        ("b", "Anaerobic respiration in micro-organisms, including "
+              "fermentation and what we use it for.", "B8"),
+    ],
+    # Minted for B9 (2026-08-17, MRB-248). The bullet reads:
+    #   "the interdependence of organisms in an ecosystem, including food webs
+    #    and insect pollinated crops"
+    # It names one idea and two worked examples of it, and B9 spends four of its
+    # six lessons on them. Splitting three ways would have been tidier and would
+    # have DROPPED a clause the bullet names out loud — "insect pollinated
+    # crops" — so it splits four.
+    #
+    # The seam between (b) and (c) is worth naming because it is not obvious.
+    # (b) is two populations that each change the other, which is a relationship
+    # a student can hold in one hand. (c) is what happens when a species is
+    # taken OUT, and its whole point is that the effect does not stop at the
+    # links you can draw — b9-03's bench puts bees in the web with no feeding
+    # line at all and removing them still empties it. That is a different claim
+    # about interdependence, not a longer version of the same one.
+    "KS3.B.ECO.01": [
+        ("a", "Interdependence shown as food chains and food webs: who eats "
+              "whom, and what happens to the energy along the way.", "B9"),
+        ("b", "Interdependence between a predator and its prey: two "
+              "populations that each change the other.", "B9"),
+        ("c", "What interdependence means when a web is disturbed: removing "
+              "one species reaches further than the links it feeds along.",
+         "B9"),
+        ("d", "Insect pollinated crops as a case of interdependence.", "B9"),
+    ],
+    # Minted for B10 (2026-08-17, MRB-248). The bullet reads:
+    #   "a simple model of chromosomes, genes and DNA in heredity, including
+    #    the part played by Watson, Crick, Wilkins and Franklin in the
+    #    development of the DNA model"
+    # A MODEL and the HISTORY OF ARRIVING AT IT are two lessons in every scheme
+    # of work, and B10 writes them as two: b10-02 nests person → cell → nucleus
+    # → chromosome → gene → bases, and b10-03 rebuilds the 1952 argument from
+    # four pieces of evidence with the bench opening on Pauling's wrong triple
+    # helix.
+    #
+    # ⚑ (b) is the only statutory clause in the key stage that names PEOPLE.
+    # That is why b10-03 can mark a rung on writing a fairer acknowledgement —
+    # the statutory language is "the part played by", and who played what part
+    # is the thing being assessed. Flagged for Mide in the unit wrapper; it is
+    # a values judgement inside a science mark and it is arguable.
+    "KS3.B.INH.02": [
+        ("a", "A simple model of chromosomes, genes and DNA in heredity, and "
+              "how the four nest inside one another.", "B10"),
+        ("b", "The part played by Watson, Crick, Wilkins and Franklin in "
+              "developing the DNA model, and how the evidence settled it.",
+         "B10"),
+    ],
+    # Minted for B11 (2026-08-17, MRB-248). The bullet reads:
+    #   "the variation between species and between individuals of the same
+    #    species meaning some organisms compete more successfully, which can
+    #    drive natural selection"
+    # The bullet's own "which can drive" is the seam: everything before it is a
+    # statement about a POPULATION AT ONE MOMENT — these individuals differ, and
+    # some of them do better here. Everything after it is a statement about that
+    # repeating over GENERATIONS until the population itself changes. b11-01
+    # teaches the first with a bench whose ranking REVERSES between
+    # environments; b11-02 teaches the second with a deterministic runner.
+    #
+    # Teaching them in one sitting is what produces the belief that an
+    # individual adapts during its own life, which is the single most expensive
+    # misconception in this unit.
+    "KS3.B.INH.05": [
+        ("a", "Variation between and within species meaning some organisms "
+              "compete more successfully — and that which variation helps "
+              "depends on where the organism is.", "B11"),
+        ("b", "How that difference in competitive success, repeated over "
+              "generations, drives natural selection.", "B11"),
+    ],
 }
 
 

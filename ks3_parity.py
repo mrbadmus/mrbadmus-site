@@ -513,6 +513,15 @@ B7_TUNER  = "biology/photosynthesis/leaves-built-for-the-job.html"
 B7_METHOD = "biology/photosynthesis/testing-a-leaf-for-starch.html"
 B7_TRACE  = "biology/photosynthesis/why-almost-all-life-depends-on-it.html"
 # ═══ END B7 ═══
+# ═══ BEGIN B8 ═══
+# ⊕ MRB-248. Five instruments, five pages, all five on ink.
+B8_LEDGER = "biology/respiration/aerobic-respiration.html"
+B8_DEMAND = "biology/respiration/why-every-cell-respires.html"
+B8_DEBT   = "biology/respiration/anaerobic-respiration-in-humans.html"
+B8_FERM   = "biology/respiration/fermentation.html"
+B8_ROUTE  = "biology/respiration/aerobic-vs-anaerobic.html"
+# ═══ END B8 ═══
+
 
 # ═══ BEGIN B5 ═══
 B5_JOBS = "biology/reproduction/human-reproductive-systems.html"
@@ -3584,6 +3593,52 @@ COMPONENTS = [
          props={"background-color": "#FBF3E6", "color": "#221E1B",
                 "min-height": "44px"}),
     # ═══ END B7 ═══ rows
+    # ══ B8 · Respiration (⊕ MRB-248) ════════════════════════════════════
+    #
+    # ⚠️ THESE ROWS EXIST BECAUSE OF THE SPECIFICITY TRAP, AND THEY ARE AIMED
+    # AT IT. All five B8 instruments sit on `ks3-dark`. `.ks3-dark p` is
+    # (0,1,1) and beats a bare instrument class at (0,1,0) — so a rule written
+    # as `.ks3-ml-total { color: … }` LOSES to the dark-ground default and
+    # ships a label at roughly 1.2:1 that no grep will ever find, because the
+    # CSS is right there in the file saying the correct thing. Only a computed
+    # read catches it. Every rule below is therefore asserted against the
+    # element as the BROWSER resolves it, not as the stylesheet declares it.
+    #
+    # This is the trap that produced 200 defects across 46 pages, and was then
+    # re-laid hours later inside a section whose own comment claimed every rule
+    # was scoped. The comment is not evidence. The measurement is.
+    dict(name="B8 mass-ledger · column head on ink", on=B8_LEDGER,
+         sel=".ks3-ml-colhead", props={"font-family": "DM Mono"}),
+    dict(name="B8 mass-ledger · row name resolves on ink, not to .ks3-dark p",
+         on=B8_LEDGER, sel=".ks3-ml-rowname", props={"color": "#FBF3E6"}),
+    dict(name="B8 cell-demand · spend bar name on ink", on=B8_DEMAND,
+         sel=".ks3-cd-spendname", props={"color": "#FBF3E6"}),
+    dict(name="B8 oxygen-debt · bar name resolves on ink", on=B8_DEBT,
+         sel=".ks3-od-barname", props={"color": "#FBF3E6"}),
+    dict(name="B8 oxygen-debt · bar value is mono on ink", on=B8_DEBT,
+         sel=".ks3-od-barvalue", props={"font-family": "DM Mono"}),
+    # ⚖️ NO BRANCH IS STYLED AS AN ERROR — the yeast open-and-stirred branch is
+    # how yeast is MANUFACTURED. This row pins the reaction line to the ordinary
+    # on-ink treatment so a later pass cannot quietly introduce a failure tone.
+    dict(name="B8 fermenter · reaction line takes no error tone", on=B8_FERM,
+         sel=".ks3-fm-line", props={"font-size": "20px", "font-weight": "700"}),
+    dict(name="B8 fermenter · rate readout is mono on ink", on=B8_FERM,
+         sel=".ks3-fm-rate", props={"font-family": "DM Mono"}),
+    # ⚖️ THE ROUTE BENCH HAS NO CORRECT-ANSWER STYLING AND MUST NOT ACQUIRE
+    # ANY. A route button is an ordinary `.ks3-option` whether the student had
+    # it or not; the verdict panel names the answer in words. MRB-196 R10 and
+    # the house rule — only the ladder marks correctness. If a later pass paints
+    # this green, this row is what stops it.
+    dict(name="B8 route-decider · case text resolves on ink", on=B8_ROUTE,
+         sel=".ks3-rd-text", props={"color": "#FBF3E6", "font-size": "18px"}),
+    dict(name="B8 route-decider · verdict word is mono on ink", on=B8_ROUTE,
+         sel=".ks3-rd-word", props={"font-family": "DM Mono",
+                                    "color": "#FBF3E6"}),
+    dict(name="B8 route-decider · the why line is body on ink", on=B8_ROUTE,
+         sel=".ks3-rd-why", props={"font-size": "17px"}),
+    dict(name="B8 route-decider · the case label row is mono muted",
+         on=B8_ROUTE, sel=".ks3-rd-caseslabel",
+         props={"font-family": "DM Mono", "font-size": "14px"}),
 ]
 
 

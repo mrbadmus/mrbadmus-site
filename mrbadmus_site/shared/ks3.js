@@ -13168,6 +13168,532 @@
 
 /* ═══ END B7 ═══ */
 
+/* ═══ BEGIN B8 ═══ */
+
+  /* ── B8 · Respiration (⊕ MRB-248) ──
+     Five instruments, five wire functions, and NOTHING SHARED — because
+     nothing in this unit is the same block twice. The five ask five different
+     questions: weigh both sides of a reaction, cut the oxygen to five
+     different cells, run and then stop and watch what does not stop, set four
+     dials and read what you have made, and decide which route is running. A
+     shared chassis here would be a coincidence enforced.
+
+     ⚠️ NOTHING HERE ANIMATES AND NOTHING HERE USES A TIMER. No canvas, no
+     `requestAnimationFrame`, no `setTimeout`, no `setInterval` — grepped
+     across all five approved pages and zero on every term. So there is no rAF
+     loop in this section to test `prefers-reduced-motion` inside (MRB-220 R4,
+     the b2-03 slip), and the B8 stylesheet deliberately adds no transition for
+     the platform-wide reduced-motion rule to have to remove.
+
+     ⚠️ AND NONE OF THESE FIVE MARKS ANYTHING (MRB-196 R10). A chosen tab shows
+     that it was CHOSEN — the alert ground Design paints — and takes no verdict
+     class, no green, no red, ever. What these benches show is a CONSEQUENCE:
+     what a reaction must take in and give out, what a cell loses when its
+     oxygen goes, what the breathing rate does after the running stops, what
+     four dials have made, and which route the situation is running. Only the
+     mastery ladder marks correctness.
+
+     ⚠️ THE STAGE PREDICATE IS MONOTONIC ON ALL FIVE. Every one of them ticks
+     on something the student HAS done and never unticks — MRB-208 ruled the
+     rail records participation. */
+
+  /* ── mass-ledger (b8-01 #s-bench) ──
+
+     ⚖️ EVERY PRINTED FIGURE IS DERIVED FROM ONE PER-GRAM MODEL, which is why
+     the two totals agree at every amount rather than at the four somebody
+     checked. `data-factors` is the same map `build_ks3.py` used for the
+     resting render, so the static page and the live page cannot come to
+     different arithmetic.
+
+     ⚖️ AND THE ENERGY IS NOT IN EITHER TOTAL. It is computed from its own
+     per-gram figure, printed on the same row, and never added to anything.
+     That separation is the argument the whole block exists to make.
+
+     ⚠️ `_b8_group` RATHER THAN `toLocaleString()`. Design writes the latter,
+     which is the browser's locale and not ours — a student whose machine is
+     set to a European locale would read `1.404 kJ` for one thousand four
+     hundred and four. The grouping is authored and applied explicitly at both
+     ends. */
+  function wireMassLedger(sec) {
+    var w = sec.querySelector("[data-ml]");
+    if (!w) { return; }
+    var tabs = toArray(w.querySelectorAll(".ks3-ml-tab"));
+    var runBtn = w.querySelector("[data-ml-run]");
+    var panel = w.querySelector("[data-ml-exitspanel]");
+    var nameEl = w.querySelector("[data-ml-name]");
+    var noteEl = w.querySelector("[data-ml-note]");
+    var rows = toArray(w.querySelectorAll("[data-ml-row]"));
+    var totals = toArray(w.querySelectorAll("[data-ml-total]"));
+    var energyEl = w.querySelector("[data-ml-energy]");
+    if (!tabs.length || !runBtn) { return; }
+
+    var factors = {};
+    try {
+      factors = JSON.parse(w.getAttribute("data-factors") || "{}");
+    } catch (x) { return; }
+    var KJ = parseFloat(w.getAttribute("data-kj")) || 0;
+    var MASS = w.getAttribute("data-mass-unit") || "";
+    var ENERGY = w.getAttribute("data-energy-unit") || "";
+    var DP = parseFloat(w.getAttribute("data-dp")) || 0;
+    var GROUP = w.getAttribute("data-group") === "1";
+    var RUN = w.getAttribute("data-run-label") || "";
+    var RAN = w.getAttribute("data-ran-label") || "";
+
+    /* The opening state IS the markup: the amount Design opens on is already
+       pressed, so there is nothing to seed and no second copy of the default
+       to fall out of step with the page. */
+    var current = tabs[0];
+    each(tabs, function (tb) {
+      if (tb.getAttribute("aria-pressed") === "true") { current = tb; }
+    });
+    var exits = false;
+
+    function mass(x) {
+      return (x >= DP ? String(Math.round(x)) : x.toFixed(1)) + MASS;
+    }
+    /* Thousands grouped by hand, for the locale reason above. */
+    function group(n) {
+      var s = String(Math.round(n));
+      if (!GROUP) { return s; }
+      var out = "", i = 0, j;
+      for (j = s.length - 1; j >= 0; j--) {
+        out = s.charAt(j) + out;
+        i += 1;
+        if (i % 3 === 0 && j > 0) { out = "," + out; }
+      }
+      return out;
+    }
+
+    function draw() {
+      var grams = parseFloat(current.getAttribute("data-grams")) || 0;
+      each(tabs, function (tb) {
+        tb.setAttribute("aria-pressed", tb === current ? "true" : "false");
+      });
+      if (nameEl) { nameEl.textContent = current.getAttribute("data-name") || ""; }
+      if (noteEl) { noteEl.textContent = current.getAttribute("data-note") || ""; }
+
+      /* ⚖️ THE TOTALS ARE SUMMED FROM THE FACTORS, NOT FROM THE PRINTED
+         STRINGS. Design sums the unrounded values and rounds once; summing the
+         rounded ones would let the two columns disagree by a tenth at exactly
+         the amount the student is being asked to compare them at, on the one
+         bench in the key stage whose whole claim is that they are equal.
+
+         Which column a row belongs to is carried on the row itself
+         (`data-ml-side`), authored at build time from `rows_in` / `rows_out`.
+         Deriving it from DOM position would make the arithmetic depend on the
+         layout, and the layout is a grid that reflows at 560px. */
+      var sums = { "in": 0, "out": 0 };
+      each(rows, function (el) {
+        var f = factors[el.getAttribute("data-ml-row")];
+        if (typeof f !== "number") { return; }
+        var v = grams * f;
+        el.textContent = mass(v);
+        var side = el.getAttribute("data-ml-side");
+        if (Object.prototype.hasOwnProperty.call(sums, side)) {
+          sums[side] += v;
+        }
+      });
+      each(totals, function (el) {
+        el.textContent = mass(sums[el.getAttribute("data-ml-total")]);
+      });
+      if (energyEl) { energyEl.textContent = group(grams * KJ) + ENERGY; }
+
+      runBtn.textContent = exits ? RAN : RUN;
+      runBtn.disabled = exits;
+      if (panel) { setHidden(panel, !exits); }
+      setCountState(sec, exits ? "after" : "before");
+      markStage(sec, exits);
+    }
+
+    each(tabs, function (tb) {
+      tb.addEventListener("click", function () { current = tb; draw(); });
+    });
+    /* ⚖️ ONE-WAY. Design has no un-reveal: the exits panel is the completion of
+       the bench and a student who has seen where the carbon goes has seen it. */
+    runBtn.addEventListener("click", function () {
+      exits = true;
+      if (panel) { panel.setAttribute("role", "status"); }
+      draw();
+    });
+
+    draw();
+  }
+
+  /* ── cell-demand (b8-02 #s-bench) ──
+
+     ⚖️ THE CUT IS PER CELL AND ONE-WAY, AND THE DOM IS THE STATE. Every cell's
+     panel is in the document with its own button and its own hidden `fails`
+     line, so switching tabs cannot lose a cut and there is no second copy of
+     the record to fall out of step with the page. A student who cuts the
+     muscle cell, wanders off to the sperm cell and comes back finds the muscle
+     cell exactly as they left it — which is what makes five separate failures
+     accumulate into one argument.
+
+     ⚖️ AND THE STOP COUNTS DISTINCT CELLS, NOT PRESSES. Design's own threshold
+     is `seen >= 3` over the set of cut cells; counting presses would let three
+     jabs at the same button tick a stop that is supposed to mean the student
+     has seen the same failure in three different kinds of cell. */
+  function wireCellDemand(sec) {
+    var w = sec.querySelector("[data-cd]");
+    if (!w) { return; }
+    var tabs = toArray(w.querySelectorAll(".ks3-cd-tab"));
+    var panels = toArray(w.querySelectorAll("[data-cd-panel]"));
+    if (!tabs.length || !panels.length) { return; }
+
+    var TOTAL = parseInt(w.getAttribute("data-total"), 10) || panels.length;
+    var AFTER = parseInt(w.getAttribute("data-done-after"), 10) || 1;
+    var RUN = w.getAttribute("data-run-label") || "";
+    var RAN = w.getAttribute("data-ran-label") || "";
+    var cut = {};
+
+    function count() {
+      var n = 0, k;
+      for (k in cut) {
+        if (Object.prototype.hasOwnProperty.call(cut, k) && cut[k]) { n += 1; }
+      }
+      return n;
+    }
+
+    function show(id) {
+      each(tabs, function (tb) {
+        tb.setAttribute("aria-pressed",
+          tb.getAttribute("data-cd-cell") === id ? "true" : "false");
+      });
+      each(panels, function (p) {
+        setHidden(p, p.getAttribute("data-cd-panel") !== id);
+      });
+    }
+
+    function refresh() {
+      var n = count();
+      setCountState(sec, n ? "some" : "zero", { n: n, total: TOTAL });
+      markStage(sec, n >= AFTER);
+    }
+
+    each(tabs, function (tb) {
+      tb.addEventListener("click", function () {
+        show(tb.getAttribute("data-cd-cell"));
+      });
+    });
+
+    each(panels, function (p) {
+      var id = p.getAttribute("data-cd-panel");
+      var btn = p.querySelector("[data-cd-cut]");
+      var fails = p.querySelector("[data-cd-fails]");
+      if (!btn) { return; }
+      btn.addEventListener("click", function () {
+        if (cut[id]) { return; }
+        cut[id] = true;
+        if (fails) {
+          setHidden(fails, false);
+          fails.setAttribute("role", "status");
+        }
+        btn.textContent = RAN;
+        btn.disabled = true;
+        refresh();
+      });
+      /* The resting label is in the markup already; naming it here as well
+         would put Design's own string in the bytes twice. */
+      if (btn.textContent === "") { btn.textContent = RUN; }
+    });
+
+    refresh();
+  }
+
+  /* ── oxygen-debt (b8-03 #s-bench) ──
+
+     ⚖️ THE BREATHING BAR IS DRIVEN BY LACTATE, NOT BY PACE. This is the whole
+     lesson and it is one line of arithmetic:
+
+         breathing = min(100, round(20 + supply × 0.6 + lactate × 0.5))
+
+     Neither `pace` nor `demand` appears in it. When the runner stops, the
+     demand bar collapses from 150 to 25 and the breathing bar stays at 90% —
+     and the note names it: the muscles are not asking for this oxygen, the
+     lactic acid is. `build_ks3.py` simulates exactly that sequence at build
+     time and refuses to draw the bench if breathing follows demand down, so a
+     regression here is a red build rather than a lesson quietly teaching its
+     own misconception.
+
+     ⚖️ RECOVERY LOWERS `supply` TOO, while lactate remains. Without that term
+     breathing would fall on the supply half as well and the effect would be
+     muddied; with it, the only thing holding the bar up after a stop is the
+     lactate.
+
+     ⚠️ THREE WIDTH RULES, NOT ONE. `bar_divisor` scales `demand` and `aerobic`
+     ONLY — those two run past 100 in arbitrary units. `lactate` fills at its
+     own value against its own maximum and `breathing` at its own percentage.
+     Dividing all four by 1.6 would cap a maxed breathing bar at 62% and cost
+     the lesson its punchline: the bar visibly topping out, and STAYING there
+     after the runner stops, is the evidence the student is meant to read.
+
+     ⚠️ NO TIMER. "Run for 10 s" advances the model by one step per press. The
+     seconds are a label, not a clock — there is no `setInterval` in this unit
+     and nothing here animates. */
+  function wireOxygenDebt(sec) {
+    var w = sec.querySelector("[data-od]");
+    if (!w) { return; }
+    var tabs = toArray(w.querySelectorAll(".ks3-od-tab"));
+    var runBtn = w.querySelector("[data-od-run]");
+    var stopBtn = w.querySelector("[data-od-stop]");
+    var resetBtn = w.querySelector("[data-od-reset]");
+    var phaseEl = w.querySelector("[data-od-phase]");
+    var shortEl = w.querySelector("[data-od-shortfall]");
+    var noteEl = w.querySelector("[data-od-note]");
+    var values = toArray(w.querySelectorAll("[data-od-bar]"));
+    var fills = toArray(w.querySelectorAll("[data-od-fill]"));
+    if (!tabs.length || !runBtn || !stopBtn) { return; }
+
+    var M, LABELS, PHASES, SHORT, NOTES;
+    try {
+      M = JSON.parse(w.getAttribute("data-model") || "{}");
+      LABELS = JSON.parse(w.getAttribute("data-labels") || "{}");
+      PHASES = JSON.parse(w.getAttribute("data-phases") || "{}");
+      SHORT = JSON.parse(w.getAttribute("data-shortfall") || "{}");
+      NOTES = JSON.parse(w.getAttribute("data-notes") || "{}");
+    } catch (x) { return; }
+    var LACT_MAX = parseFloat(w.getAttribute("data-lactate-max")) || 100;
+    var DIV = parseFloat(w.getAttribute("data-bar-divisor")) || 1;
+
+    var pace = tabs[0];
+    each(tabs, function (tb) {
+      if (tb.getAttribute("aria-pressed") === "true") { pace = tb; }
+    });
+
+    var supply, lactate, seconds, phase, everRecovered = false;
+    function reset() {
+      supply = M.supply_rest;
+      lactate = 0;
+      seconds = 0;
+      phase = "ready";
+    }
+    reset();
+
+    function paceDemand() {
+      return parseFloat(pace.getAttribute("data-demand")) || 0;
+    }
+
+    /* Design's own reads, and the only copy of them in the runtime. */
+    function read() {
+      var demand = phase === "recovering" ? M.recover_demand
+        : (phase === "ready" ? M.supply_rest : paceDemand());
+      var b = M.breathing;
+      return {
+        demand: demand,
+        aerobic: Math.min(supply, demand),
+        lactate: Math.round(lactate),
+        breathing: Math.min(b.max, Math.round(
+          b.base + supply * b.per_supply + lactate * b.per_lactate)),
+        shortfall: Math.max(0, demand - supply)
+      };
+    }
+
+    function width(id, v) {
+      if (id === "breathing") { return Math.min(100, v); }
+      if (id === "lactate") { return Math.min(100, v * 100 / LACT_MAX); }
+      return Math.min(100, v / DIV);
+    }
+
+    function fill(tpl, n) {
+      return String(tpl || "").split("{n}").join(String(n));
+    }
+
+    function noteFor(r) {
+      if (phase === "ready") { return NOTES.rest; }
+      if (phase === "recovering") {
+        return lactate > 1 ? NOTES.debt : NOTES.cleared;
+      }
+      return r.shortfall > 0 ? fill(NOTES.shortfall, r.shortfall)
+                             : NOTES.within;
+    }
+
+    function draw() {
+      var r = read();
+      each(tabs, function (tb) {
+        tb.setAttribute("aria-pressed", tb === pace ? "true" : "false");
+      });
+      each(values, function (el) {
+        var id = el.getAttribute("data-od-bar");
+        var suffix = el.getAttribute("data-suffix") || "";
+        el.textContent = r[id] +
+          (/^[A-Za-z0-9]/.test(suffix) ? " " : "") + suffix;
+      });
+      each(fills, function (el) {
+        var id = el.getAttribute("data-od-fill");
+        el.style.width = width(id, r[id]) + "%";
+      });
+
+      if (phaseEl) {
+        phaseEl.textContent = phase === "ready" ? PHASES.ready
+          : (phase === "recovering" ? PHASES.recovering
+             : (pace.getAttribute("data-label") || ""));
+      }
+      if (shortEl) {
+        shortEl.textContent = phase === "recovering" ? SHORT.repaying
+          : (r.shortfall > 0 ? fill(SHORT.borrowed, r.shortfall)
+                             : SHORT.aerobic);
+      }
+      if (noteEl) { noteEl.textContent = noteFor(r); }
+
+      runBtn.textContent = phase === "running" ? LABELS.running : LABELS.run;
+      stopBtn.textContent = phase === "recovering" ? LABELS.recovering
+                                                   : LABELS.stop;
+      stopBtn.disabled = phase === "ready";
+
+      /* The clock lives in the block's head row, as three named states — two
+         of which quote the seconds. See `_KIND_HEAD_FROM` in build_ks3.py. */
+      setCountState(sec, seconds === 0 ? "zero"
+        : (phase === "recovering" ? "recovering" : "running"), { n: seconds });
+      markStage(sec, everRecovered);
+    }
+
+    runBtn.addEventListener("click", function () {
+      supply = Math.min(M.supply_max, supply + M.supply_step);
+      var gap = Math.max(0, paceDemand() - supply);
+      lactate = Math.min(M.lactate_max, lactate + gap * M.lactate_factor);
+      seconds += M.run_seconds;
+      phase = "running";
+      draw();
+    });
+
+    stopBtn.addEventListener("click", function () {
+      if (phase === "ready") { return; }
+      lactate = Math.max(0, lactate - M.recover_clear);
+      /* ⚖️ SUPPLY COMES DOWN TOO, while there is still acid to clear — and
+         snaps to rest once there is not. Without this the breathing bar would
+         fall on the supply half as well and the lactate term would stop being
+         the only thing holding it up. */
+      supply = lactate > 0 ? Math.max(M.supply_rest, supply - M.supply_decay)
+                           : M.supply_rest;
+      seconds += M.recover_seconds;
+      phase = "recovering";
+      /* ⚖️ ONE-WAY, AND ONLY AT ZERO. A student who presses once and leaves has
+         watched breathing fall from 100% to 90%, which is the wrong story: the
+         debt has barely been touched. The stop ticks when the acid is gone. */
+      if (lactate === 0) { everRecovered = true; }
+      draw();
+    });
+
+    each(tabs, function (tb) {
+      tb.addEventListener("click", function () { pace = tb; draw(); });
+    });
+    if (resetBtn) {
+      /* ⚠️ `everRecovered` AND `pace` SURVIVE A RESET. The rail records what
+         the student has done (MRB-208), and the pace is a setting rather than
+         a state — Design's own `onReset` leaves both alone. */
+      resetBtn.addEventListener("click", function () { reset(); draw(); });
+    }
+
+    draw();
+  }
+
+  /* ── fermenter (b8-04 #s-bench) ──
+
+     ⛔ THIS RUNTIME PICKS A BRANCH. IT DOES NOT BUILD ONE. Every branch is
+     already in the document, drawn in full by `build_ks3.py` and hidden, and
+     all this does is unhide the first one whose pins agree with the dials.
+
+     That is the fix for a real defect. Design decided which product list to
+     show with `out.line.indexOf('oxygen') >= 0` — a string sniff on the
+     reaction text — and it is wrong on one live branch: yoghurt bacteria in an
+     open stirred vessel take `line = "contaminated"`, which contains no
+     "oxygen", so the sniff fell through to the anaerobic list and the bench
+     printed "Lactic acid 100 units" under its own heading "Poor conditions for
+     these bacteria". `products` is authored per branch, the sniff is gone, and
+     `r_fermenter` refuses any aerobic branch that reports a fermentation
+     product — so it cannot come back.
+
+     ⚖️ AND NO BRANCH IS AN ERROR STATE. Yeast open-and-stirred is how yeast is
+     manufactured; it gets the same panel as every other outcome. Nothing here
+     adds a class, a tone or an attribute to single a branch out.
+
+     ⚠️ DRAWING IN THE BROWSER WOULD ALSO BREAK THE ARROW. The reaction lines
+     carry `→`, which no shipped font subset contains — `t()` swaps it for a
+     drawn `<svg>` at build time. A line assigned to `textContent` here would
+     ship the raw codepoint and render as tofu mid-equation. */
+  function wireFermenter(sec) {
+    var w = sec.querySelector("[data-fm]");
+    if (!w) { return; }
+    var opts = toArray(w.querySelectorAll(".ks3-fm-opt"));
+    var presets = toArray(w.querySelectorAll("[data-fm-preset]"));
+    var blocks = toArray(w.querySelectorAll("[data-fm-branch]"));
+    if (!opts.length || !blocks.length) { return; }
+
+    var branches = [], picks = {};
+    try {
+      branches = JSON.parse(w.getAttribute("data-branches") || "[]");
+      picks = JSON.parse(w.getAttribute("data-start") || "{}");
+    } catch (x) { return; }
+    if (!branches.length) { return; }
+    var AFTER = parseInt(w.getAttribute("data-done-after"), 10) || 1;
+    var seen = 0;
+
+    /* Design's own first-match-wins. Order is the pedagogy: killed beats
+       starved beats aerobic beats fermenting — a dead culture is dead whatever
+       else is set, and a culture with no sugar has nothing to respire however
+       perfect the other three dials are. Read from the shipped list, never
+       from an object's key order. */
+    function current() {
+      for (var i = 0; i < branches.length; i++) {
+        var when = branches[i].when, ok = true, d;
+        for (d in when) {
+          if (Object.prototype.hasOwnProperty.call(when, d)
+              && picks[d] !== when[d]) { ok = false; break; }
+        }
+        if (ok) { return branches[i].id; }
+      }
+      return branches[branches.length - 1].id;
+    }
+
+    function draw() {
+      var id = current();
+      each(opts, function (o) {
+        o.setAttribute("aria-pressed",
+          picks[o.getAttribute("data-dial")] === o.getAttribute("data-opt")
+            ? "true" : "false");
+      });
+      each(blocks, function (bl) {
+        setHidden(bl, bl.getAttribute("data-fm-branch") !== id);
+      });
+      setCountState(sec, seen ? "some" : "zero",
+        { n: seen, s: seen === 1 ? "" : "s" });
+      markStage(sec, seen >= AFTER);
+    }
+
+    /* ⚑ EVERY PRESS COUNTS, INCLUDING ONE THAT CHANGES NOTHING. The bench
+       opens already set as a brewery, so pressing "Set it up as a brewery"
+       first moves no dial — and still counts, exactly as Design has it.
+       Measured, deliberate-looking, and left alone: "fixing" it would cost the
+       brewery/yoghurt contrast its symmetry. */
+    each(opts, function (o) {
+      o.addEventListener("click", function () {
+        picks[o.getAttribute("data-dial")] = o.getAttribute("data-opt");
+        seen += 1;
+        draw();
+      });
+    });
+    each(presets, function (btn) {
+      btn.addEventListener("click", function () {
+        var next = {};
+        try {
+          next = JSON.parse(btn.getAttribute("data-fm-preset") || "{}");
+        } catch (x) { return; }
+        var d;
+        for (d in next) {
+          if (Object.prototype.hasOwnProperty.call(next, d)) {
+            picks[d] = next[d];
+          }
+        }
+        seen += 1;
+        draw();
+      });
+    });
+
+    draw();
+  }
+
+/* ═══ END B8 ═══ */
+
 
 
   function wireInstruments(root) {
@@ -13263,6 +13789,145 @@
     each(root.querySelectorAll("[data-mbblock]"), wireMethodBreaker);
     each(root.querySelectorAll("[data-tbblock]"), wireTraceItBack);
     // ═══ END B7 wiring ═══
+
+  /* ── b8-05 · route-decider ──────────────────────────────────────────────
+     Five cases, three routes, one commitment each.
+
+     ⚠️ NOTHING GREEN AND NOTHING RED REACHES A ROUTE BUTTON. The verdict panel
+     names, in words, which route was running and whether the student had it.
+     MRB-196 R10 and the house rule: only the ladder marks correctness.
+
+     ⚖️ A SETTLED CASE STAYS SETTLED, AND STAYS SHOWING ITS VERDICT. Switching
+     away and back must not un-settle one, or the rail stop would tick and then
+     untick as the student browsed — and a student who has met the marathon
+     cannot be allowed to un-meet it. `picked` is therefore write-once per case;
+     `pending` holds an uncommitted selection so that browsing away and back
+     does not silently discard it either. */
+  function wireRouteDecider(sec) {
+    var w = sec.querySelector("[data-rd]");
+    if (!w) { return; }
+    var caseBtns = toArray(w.querySelectorAll("[data-rd-case]"));
+    var routeBtns = toArray(w.querySelectorAll("[data-rd-route]"));
+    var run = w.querySelector("[data-rd-run]");
+    var textEl = w.querySelector("[data-rd-text]");
+    var vBox = w.querySelector("[data-rd-verdict]");
+    var vWord = w.querySelector("[data-rd-word]");
+    var vWhy = w.querySelector("[data-rd-why]");
+    var progEl = w.querySelector("[data-rd-progress]");
+    var tallyEl = w.querySelector("[data-rd-tally]");
+    if (!caseBtns.length || !routeBtns.length || !run) { return; }
+
+    var cases = [], verdicts = {}, tally = {}, labels = {};
+    var progress = w.getAttribute("data-progress") || "";
+    try {
+      cases = JSON.parse(w.getAttribute("data-cases") || "[]");
+      verdicts = JSON.parse(w.getAttribute("data-verdicts") || "{}");
+      tally = JSON.parse(w.getAttribute("data-tally") || "{}");
+      labels = JSON.parse(w.getAttribute("data-labels") || "{}");
+    } catch (x) { return; }
+    if (!cases.length) { return; }
+
+    var AFTER = parseInt(w.getAttribute("data-done-after"), 10) || cases.length;
+    var picked = {};      /* case id -> the route committed to. Write-once. */
+    var pending = {};     /* case id -> a selection not yet checked. */
+    var here = cases[0].id;
+
+    function caseById(id) {
+      var i;
+      for (i = 0; i < cases.length; i++) {
+        if (cases[i].id === id) { return cases[i]; }
+      }
+      return null;
+    }
+
+    function settledCount() {
+      var n = 0, k;
+      for (k in picked) {
+        if (Object.prototype.hasOwnProperty.call(picked, k)) { n++; }
+      }
+      return n;
+    }
+
+    function showVerdict(c) {
+      if (!vBox) { return; }
+      var had = picked[c.id] === c.answer;
+      if (vWord) { vWord.textContent = had ? verdicts.right : verdicts.wrong; }
+      if (vWhy) { vWhy.textContent = c.why; }
+      vBox.hidden = false;
+    }
+
+    function paint() {
+      var c = caseById(here), done = settledCount(), i;
+      if (!c) { return; }
+      if (textEl) { textEl.textContent = c.text; }
+      for (i = 0; i < caseBtns.length; i++) {
+        caseBtns[i].setAttribute(
+          "aria-pressed",
+          caseBtns[i].getAttribute("data-rd-case") === here ? "true" : "false");
+      }
+      var sel = picked[here] || pending[here] || "";
+      for (i = 0; i < routeBtns.length; i++) {
+        routeBtns[i].setAttribute(
+          "aria-pressed",
+          routeBtns[i].getAttribute("data-rd-route") === sel ? "true" : "false");
+      }
+      if (picked[here]) {
+        showVerdict(c);
+        run.disabled = true;
+        if (labels.ran) { run.textContent = labels.ran; }
+      } else {
+        if (vBox) { vBox.hidden = true; }
+        run.disabled = !pending[here];
+        if (labels.run) { run.textContent = labels.run; }
+      }
+      if (progEl && progress) {
+        progEl.textContent = progress.replace("{n}", String(done))
+                                     .replace("{total}", String(cases.length));
+      }
+      if (tallyEl) {
+        tallyEl.textContent = done >= cases.length
+          ? (tally.all || "")
+          : String(tally.remaining || "").replace(
+              "{n}", String(cases.length - done));
+      }
+      markStage(sec, done >= AFTER);
+    }
+
+    each(caseBtns, function (b) {
+      b.addEventListener("click", function () {
+        here = b.getAttribute("data-rd-case");
+        paint();
+      });
+    });
+
+    each(routeBtns, function (b) {
+      b.addEventListener("click", function () {
+        if (picked[here]) { return; }   /* a settled case does not re-open */
+        pending[here] = b.getAttribute("data-rd-route");
+        paint();
+      });
+    });
+
+    run.addEventListener("click", function () {
+      if (picked[here] || !pending[here]) { return; }
+      picked[here] = pending[here];
+      paint();
+    });
+
+    paint();
+  }
+
+    // ═══ BEGIN B8 wiring ═══
+    // Five instruments, five markers. A kind that reaches this list but has no
+    // wire function ships as static markup that never responds — which is the
+    // §6.6 failure the dispatch gate above catches on the Python side and this
+    // list is the JS half of.
+    each(root.querySelectorAll("[data-mlblock]"), wireMassLedger);
+    each(root.querySelectorAll("[data-cdblock]"), wireCellDemand);
+    each(root.querySelectorAll("[data-odblock]"), wireOxygenDebt);
+    each(root.querySelectorAll("[data-fmblock]"), wireFermenter);
+    each(root.querySelectorAll("[data-rdblock]"), wireRouteDecider);
+    // ═══ END B8 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
   }

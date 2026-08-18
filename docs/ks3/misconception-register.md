@@ -113,6 +113,7 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `ATOM` | Atoms having kinds, and substances versus their ingredients | 2026-08-16, by B2's sibling delivery, C2 |
 | `DIET` | Food, what a body needs from it, and what the gut does to it | 2026-08-16, by B3 |
 | `PLANT` | Plant nutrition, photosynthesis, and what a leaf is for | 2026-08-17, by B7 |
+| `RESP` | Respiration: what it is, where it happens, and what it is not | 2026-08-18, by B8 |
 | `NOS` | Nature of science — how models, evidence and theories actually work | 2026-08-17, by MRB-248 (commander's ruling), populated by re-homing from `PART` and `DRUG` |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
@@ -771,3 +772,46 @@ and both are emitted as `data-activity="…"` on the page a student loads. The f
 resolve to nothing. This is the same defect MRB-244 and MRB-248 gate for, caught one layer up — in
 the markdown rather than in the Python — and it is the argument for the gate reading the Python and
 the Python alone.
+
+---
+
+### `RESP` — respiration: what it is, where it happens, and what it is not
+
+Opened 18 Aug 2026 by **B8 *Respiration*** (MRB-248). Ten entries across five
+lessons. The family's centre of gravity is a single confusion the other
+families do not have: **respiration is confused with two entirely different
+things at once** — with BREATHING (`RESP-04`, `RESP-06`) and with BURNING
+(`RESP-01`). Both are inherited from ordinary English rather than worked out
+from experience, which is why `b8-01` and `b8-05` both spend their `#s-think`
+on a word rather than on a mechanism.
+
+**Ids were pre-allocated per lesson before dispatch**, two per lesson with a
+named spare each, so five parallel authoring passes could not collide. This is
+the fix `DIET`, `BREATH` and `REPRO` each had to learn the hard way and the
+second unit to apply it from the start. No id collided.
+
+**⚠️ `RESP-11` to `RESP-15` are ALL deliberately unused and must stay unused.**
+Every one of the five passes was allocated a spare for a third belief and every
+one declined it — the pages carry two confrontable beliefs each and no more.
+Ids are permanent and a gap is cheaper than a renumber: do not reuse any of the
+five for something else. Same rule as `DRUG-07` and `REPRO-17/20/21/23`.
+
+**Two entries deliberately declare no `elicited_by`, and that is legal.**
+`RESP-01` and `RESP-05` name beliefs that nothing on their page asks the student
+to state — they are confronted directly rather than surfaced first. Under the
+MRB-248 gate an absent `elicited_by` passes and a PRESENT one that names no
+element on its own page fails, precisely so that this case does not have to be
+faked with an invented anchor.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `RESP-01` | Respiration is just slow burning. | — | `s-think` | `aerobic-respiration` |
+| `RESP-02` | The fat is converted into energy, so the mass disappears. | `s-hook` | `s-think` | `aerobic-respiration` |
+| `RESP-03` | Plants photosynthesise, animals respire. | `s-bench` | `s-think` | `why-every-cell-respires` |
+| `RESP-04` | You respire when you need energy — when you exercise. | `s-jobs` | `s-think` | `why-every-cell-respires` |
+| `RESP-05` | Lactic acid is why your legs ache two days after a hard session. | — | `two-wrong-ideas` | `anaerobic-respiration-in-humans` |
+| `RESP-06` | When you sprint, you switch from aerobic to anaerobic respiration. | `s-hook` | `two-wrong-ideas` | `anaerobic-respiration-in-humans` |
+| `RESP-07` | Fermenting is just food going off in a controlled way. | `s-think` | `s-think` | `fermentation` |
+| `RESP-08` | Yeast is a powder — a raising agent, like baking powder. | `s-bench` | `s-think` | `fermentation` |
+| `RESP-09` | Aerobic respiration is the fast one, because that is the one athletes train for. | `s-bench` | `s-think` | `aerobic-vs-anaerobic` |
+| `RESP-10` | Anaerobic respiration is the emergency backup — something has gone wrong when it happens. | `s-hook` | `s-think` | `aerobic-vs-anaerobic` |
