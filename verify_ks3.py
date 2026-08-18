@@ -251,6 +251,58 @@ def main():
             text = re.sub(r"<[^>]+>", "\n", open(page).read())
             for hit in YEAR_LEAK.findall(text):
                 seq_leaks.append("%s: %r" % (l["slug"], hit))
+    # ⊕ MRB-248 / B11 — THE ESCAPE LEAK, GATED. Four instances across three
+    # units, every one in Design's delivered bytes, every one the same root
+    # cause: an escape or a tag meant for a `<script>` block written into
+    # MARKUP, where a browser prints the literal characters.
+    #
+    #   b10-01 line 129   `—` — six characters where an em dash belongs
+    #   b10-04            raw `<strong>` as visible text, in the sentence that
+    #                     introduces the whole P/p notation
+    #   b11-02 line 128   two `·` in the axis note
+    #   b11-04 line 288   `—` in *Going further*
+    #
+    # Every one was found by an author lifting strings and LOOKING at what
+    # rendered. None would have been caught by anything else, because a lesson
+    # that prints `—` is a lesson that renders, validates and passes every
+    # gate in the build. This is what one costs to catch: two patterns over the
+    # visible text of a page that is already open.
+    #
+    # ⚠️ THE TEXT IS TAG-STRIPPED FIRST, for the year gate's reason and one of
+    # its own: a `data-` attribute may legitimately carry a backslash, and an
+    # inline `<script>`'s JSON legitimately carries `\u` escapes. What is being
+    # asserted is what a student READS.
+    ESCAPE_LEAK = (
+        (re.compile(r"\\u[0-9a-fA-F]{4}"),
+         "a JavaScript escape printed as literal characters — the escape "
+         "belongs in a script block, and in markup the browser prints the six "
+         "characters"),
+        (re.compile(r"&lt;/?(?:strong|em|br|p|span|a)\b"),
+         "an HTML tag printed as visible text — the string reached the page "
+         "through `t()`, which escapes; `rich()` is the path that draws it"),
+    )
+    esc_leaks = []
+    for u in units:
+        for l in u["lessons"]:
+            if not l.get("authored"):
+                continue
+            page = ("mrbadmus_site/ks3/%s/%s/%s.html"
+                    % (u["discipline"], u["slug"], l["slug"]))
+            if not os.path.exists(page):
+                continue
+            raw = open(page).read()
+            # Script blocks out first — their contents are code, not reading.
+            raw = re.sub(r"(?is)<script\b.*?</script>", " ", raw)
+            text = re.sub(r"<[^>]+>", "\n", raw)
+            for pat, why in ESCAPE_LEAK:
+                for hit in set(pat.findall(text)):
+                    esc_leaks.append("%s: %r — %s" % (l["slug"], hit, why))
+    check("no lesson page prints an escape or a tag as visible text",
+          not esc_leaks,
+          "%d authored lessons swept, none prints an escape or a raw tag"
+          % sum(1 for u in units for l in u["lessons"] if l.get("authored"))
+          if not esc_leaks else "%d: %s" % (len(esc_leaks), esc_leaks[:3]))
+
     check("no lesson page leaks a year or a half-term (sequence is data)",
           not seq_leaks,
           "%s" % seq_leaks[:5] if seq_leaks
@@ -1086,6 +1138,17 @@ def main():
     # and deliberately not in the runtime. The check above proves a rail stop's
     # anchor names a real element; this one proves that element can finish.
     # Together they are what stops a rail stop being decorative.
+    # ⊕ MRB-248 / B11 — MRB-208's other half, read out of the BYTES. A browser
+    # cannot see this: `markStage` writes the attribute on the first draw, so
+    # every drive reads it correct however the page shipped.
+    tick_problems, tick_count = PARITY.check_nothing_ticks_on_load(KS3_OUT)
+    check("MRB-208 · no instrument ships already ticked",
+          not tick_problems,
+          "%d instrument section(s) declare completion at 0" % tick_count
+          if not tick_problems
+          else "%d ship ticked or undeclared: %s"
+               % (len(tick_problems), tick_problems[0][:200]))
+
     reach_problems, reach_count = PARITY.check_rail_reachable(KS3_OUT)
     check("MRB-208 · every rail stop can actually reach done (R2)",
           not reach_problems,

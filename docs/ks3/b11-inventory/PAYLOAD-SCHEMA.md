@@ -692,3 +692,45 @@ mast years, low point of 51 — right. Gros Michel and Cavendish, and TR4 moving
 plantations — right and current. Svalbard's figures are right, and "well over a million" is the
 correct hedge for a holding that grows. The invented 62% landrace resistance is labelled illustrative
 and is chosen well: it beats the ten-variety field clearly without reading as immunity.
+
+---
+
+## 15. Two design questions this run does NOT settle — they are Mide's ⊕
+
+Both surfaced from measurement during the B11 engine pass, both are brand or palette decisions rather
+than science, and both are pinned in parity rows so the gate names them the day either moves. Recorded
+so the next pass does not rediscover them and does not quietly "fix" them either.
+
+### Amber is doing four jobs across B11's benches, and one of them is a species
+
+`--ks3-alert` is ruled as *a wrong IDEA being confronted, never the student*. Nothing here breaches
+that — every bench gives its verdict in words, no option button takes a verdict class, and every
+amber carries a word as well as the colour, so the never-colour-alone rule holds. **Ships as drawn.**
+
+But measured across the unit it now carries, simultaneously:
+
+| where | what amber means there |
+|---|---|
+| b11-01 | the worst-here figure and bar (paired with `--ks3-ok` for best-here) |
+| b11-02 | **the dark moth stack** and its live figure — amber as a *species*, which is as far from "a wrong idea" as the token gets |
+| b11-03 | the sub-40 band on the outcome figure and bar |
+| b11-04 | the zero-survivor bar **and, separately, the yield bar** — "nothing came through" and "the cost of variation", two rows apart on one panel |
+
+It is also the chosen-tab ground on all four benches (Design's own `seg()`), so on b11-04 one colour
+says *this is the field you are looking at*, *nothing survived* and *this is what you gave up* at the
+same time. That is not a rule breach; it is a palette carrying more meaning than one colour can hold,
+and whether it matters is a design judgement. **Mide's.**
+
+### `--ks3-ok` at 16px on `--ks3-dark-panel` measures 3.49:1
+
+Below the 4.5:1 that small text needs. It is b11-01's best-here figure and b11-04's survivor value,
+and `erun-bar-fixed` already carries the same flag from an earlier unit — so this is the second
+sighting, not the first.
+
+**Not repaired here, and the reason is that the obvious repair is a design decision.** `--ks3-ok-text`
+is specified at 5.9:1 *on tint*, not on an ink-dark ground; there is no defined on-dark green in the
+token set. Inventing one is minting a brand token, which is Mide's call and not a science correction —
+and the alternative, dropping the green, would remove the pairing that makes best-here and worst-here
+readable as a pair.
+
+Two flags on the same pair from two independent passes is the argument for putting it in front of him.

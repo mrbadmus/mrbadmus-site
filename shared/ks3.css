@@ -2592,6 +2592,22 @@ body.rd[data-mode="ks3"] {
 }
 /* The card's foot line: the cells that answer the problem it names. Mono and
    muted, so it reads as evidence for the card rather than as more of it. */
+/* ⊕ MRB-248 / B11 — the card's fourth part: what the method CANNOT do.
+   b11-04's bank cards say what each way of storing variation is, and then, in
+   a second paragraph, what it cannot do — which is the argument of the whole
+   panel rather than an aside. Measured off Design's own markup (page line
+   161): 17px, line-height 1.5, `--ks3-ink-muted`, 10px above.
+
+   ⚠️ NOT `.ks3-rule-eg`, WHICH IS MONO AT 15px. That treatment is right for
+   "shrew · dormouse · hedgehog" and wrong for two sentences of prose, and
+   without this rule the author's only options were a mono paragraph or one
+   joined paragraph with the break and the tone lost. */
+.ks3-rule-limit {
+  margin: 10px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ks3-ink-muted);
+}
 .ks3-rule-eg {
   margin: 12px 0 0;
   font-family: var(--ks3-font-mono);
@@ -2679,7 +2695,8 @@ body.rd[data-mode="ks3"] {
 .ks3-rule-cards > li[data-badge] > .ks3-rule-term,
 .ks3-rule-cards > li[data-badge] > .ks3-rule-gloss,
 .ks3-rule-cards > li[data-badge] > .ks3-rule-chips,
-.ks3-rule-cards > li[data-badge] > .ks3-rule-eg {
+.ks3-rule-cards > li[data-badge] > .ks3-rule-eg,
+.ks3-rule-cards > li[data-badge] > .ks3-rule-limit {
   grid-column: 2;
   margin: 0;
 }
@@ -14419,3 +14436,634 @@ body.rd[data-mode="ks3"] {
 .ks3-dark .ks3-sc-why { color: var(--ks3-ink-body); }
 
 /* ═══ END B10 ═══ */
+
+/* ═══ BEGIN B11 ═══════════════════════════════════════════════════════════
+   B11 · Evolution, extinction and biodiversity (⊕ MRB-248)
+
+   KS3 Biology's last unit. Four instruments, one per lesson, every one of
+   them on `ks3-block ks3-dark ks3-practical` — measured off Design's own
+   `#s-bench` class attribute on all four delivered pages, not inferred from
+   the kind name (schema §0.3).
+
+   ⚠️ SO EVERY COLOUR RULE HERE IS WRITTEN UNDER `.ks3-dark …`. `.ks3-dark p`
+   is (0,1,1) and a bare component class is (0,1,0), so a rule written as
+   `.ks3-ab-why { color: … }` LOSES to the dark-ground default and ships a
+   sentence at roughly 1.2:1 that no grep will ever find, because the CSS is
+   right there saying the correct thing. Only a computed read catches it, and
+   `ks3_parity.check_dark_text_specificity()` does exactly that.
+
+   ⚠️ AND NOTHING HERE IS A MARK (MRB-196 R10, schema §0.7). An alert ground
+   on a tab says "this is the world the bench is standing in", never "this is
+   correct". These four benches take no prediction and adjudicate nothing;
+   each gives its verdict in WORDS, on cream, in one tone. No option button
+   takes a verdict class anywhere in this unit.
+
+   ⚑ AMBER IS DOING TWO JOBS IN THIS UNIT AND IT IS FLAGGED, NOT REPAINTED.
+   `--ks3-alert` is the platform's "a wrong IDEA is being confronted" ink, and
+   B11 also uses it as a DATA colour throughout — the worst-here bar and
+   figure here, the dark-moth stack on b11-02, the sub-40 risk band on
+   b11-03, the zero-survivors bars on b11-04. Design drew all four that way
+   and none of them marks a student, so the rule is not breached; it is the
+   same ink carrying two meanings on four pages, and it is reproduced as drawn
+   with a parity row on every instance so the day the palette question is
+   ruled the gate names every value.
+
+   ⚠️ AND `--ks3-accent` IS 3.4:1 — LARGE TEXT ONLY. Every mono caption, tag
+   and label below 24px takes `--ks3-accent-text` (6.0:1) instead. On ink the
+   accent is unusable at any size and the alert takes its place, which is what
+   the `.ks3-dark` blocks below do.
+
+   ⊖ AND THERE IS NO B11 REDUCED-MOTION BLOCK, DELIBERATELY, for B10's reason
+   exactly. The unit has no canvas, no rAF and no timer in any wire function,
+   so there is no tick that would have to test the query inside itself
+   (contract R4, the b2-03 slip). Any transition declared below is already
+   beaten by R6's platform rule (`*, *::before, *::after {
+   transition-duration: .001ms !important }`), whose `!important` no later
+   bare declaration can win against, so a B11 block would be noise. Verified
+   in a
+   browser under emulated `prefers-reduced-motion: reduce` rather than
+   asserted. */
+
+/* ── b11-01 `#s-bench` · advantage-bench ───────────────────────────────── */
+
+.ks3-ab { margin-top: 22px; }
+.ks3-ab-tabslabel {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.ks3-ab-tabs {
+  margin-top: 0;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.ks3-ab-tab {
+  width: auto;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: 700;
+}
+.ks3-ab-panel {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-card);
+}
+.ks3-ab-envname {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+.ks3-ab-envnote {
+  margin: 6px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+}
+.ks3-ab-rows {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+/* ⚖️ NAME LEFT, FIGURE RIGHT, ON ONE BASELINE — and it WRAPS. The figure is
+   the longest string on the row once " · best here" is on the end of it, and
+   a narrow screen has to be able to drop it under the name rather than
+   squeezing the animal's name to three characters. */
+.ks3-ab-rowhead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+}
+.ks3-ab-name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+.ks3-ab-chance {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 16px;
+}
+/* The track is the 100% the bar is a fraction of, so it is drawn whether the
+   bar fills it or not — a 20% row has to READ as a fifth of something, not as
+   a short bar floating on the panel. */
+.ks3-ab-track {
+  display: block;
+  margin-top: 5px;
+  height: 16px;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.ks3-ab-bar {
+  display: block;
+  height: 100%;
+}
+.ks3-ab-why {
+  margin: 6px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+}
+.ks3-ab-verdict {
+  margin: 18px 0 0;
+  padding: 16px 18px;
+  border-radius: var(--ks3-r-panel);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* ── advantage-bench on ink ────────────────────────────────────────────── */
+.ks3-dark .ks3-ab-tabslabel { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-ab-panel { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-ab-envname { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-ab-envnote { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-ab-name { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-ab-why { color: var(--ks3-on-dark-body); }
+.ks3-dark .ks3-ab-track { background: rgba(255, 255, 255, .08); }
+/* ⚖️ A CHOSEN TAB IS THE ALERT GROUND, NOT THE ALERT BORDER — Design's `seg()`
+   paints `background: var(--ks3-alert); color: var(--ks3-ink)`. The platform's
+   `.ks3-dark .ks3-option[aria-pressed="true"]` gives an alert BORDER, which is
+   right for an answer committed to and wrong for a switch that is currently
+   on. Same specificity (0,3,0) and later in the file, so source order decides
+   — deliberately, because this narrows one unit rather than replacing the
+   platform rule. Still not a mark: it says which world the bench is standing
+   in, never that the student is right. */
+.ks3-dark .ks3-ab-tab[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+/* ⚖️⚖️ THE COLUMN'S TWO ENDS, AND EVERY OTHER ROW IS MUTED. The default is
+   the muted tone on BOTH the figure and the bar, and `data-ab-rank` is only
+   emitted where the column has a unique maximum AND a unique minimum
+   (`_b11_ab_extremes`). That is the disease-panel fix in the stylesheet's
+   half of the job: with no attribute there is no green and no amber, and
+   every one of the five rows is muted under a verdict that says none of the
+   variations helps.
+
+   ⚑ AND THE TWO COLOURS ARE DATA HERE, NOT A MARK. Amber is the bottom of a
+   column, not a wrong answer; green is the top of one, not a right answer.
+   The student has predicted nothing on this bench. Both are drawn as Design
+   drew them and both carry the WORD as well as the colour — " · best here",
+   " · worst here" — so nothing here is signalled by colour alone (R2). */
+.ks3-dark .ks3-ab-chance { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-ab-bar { background: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-ab-chance[data-ab-rank="best"] { color: var(--ks3-ok); }
+.ks3-dark .ks3-ab-chance[data-ab-rank="worst"] { color: var(--ks3-alert); }
+.ks3-dark .ks3-ab-bar[data-ab-rank="best"] { background: var(--ks3-ok); }
+.ks3-dark .ks3-ab-bar[data-ab-rank="worst"] { background: var(--ks3-alert); }
+/* ⚠️ (0,2,0) — the verdict is cream inside ink, so it re-declares INK against
+   `.ks3-dark p` rather than inheriting the on-dark body colour. It is the
+   element the whole switch exists to reach, and it is ONE TONE: the bench
+   says what just happened, not whether anybody was right. */
+.ks3-dark .ks3-ab-verdict {
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+
+/* ── b11-02 `#s-bench` · selection-runner ──────────────────────────────── */
+
+.ks3-nr { margin-top: 22px; }
+.ks3-nr-tabslabel {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.ks3-nr-tabs {
+  margin-top: 0;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.ks3-nr-tab {
+  width: auto;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: 700;
+}
+.ks3-nr-panel {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-card);
+}
+.ks3-nr-barknote {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.55;
+}
+/* ⚖️ ONE COLUMN PER GENERATION, OLDEST ON THE LEFT, and the columns FLEX so
+   that one column fills the chart and twenty-four share it. That is what makes
+   the run read as a run rather than as a widening pile: the chart is always
+   the same width and the history gets finer inside it. `align-items:
+   flex-end` sits every column on the floor. */
+.ks3-nr-chart {
+  margin-top: 18px;
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 150px;
+  padding: 12px;
+  border-radius: var(--ks3-r-panel);
+}
+.ks3-nr-col {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  min-width: 0;
+  gap: 2px;
+}
+/* ⚠️ `display: flex` HAS TO BE RE-DECLARED UNDER `:not([hidden])` OR THE
+   COLUMN RULE ABOVE BEATS THE UA'S `[hidden] { display: none }` and all
+   twenty-four columns paint at once from the first frame (MRB-242). The
+   stylesheet, not the runtime, is what would have shipped that. */
+.ks3-nr-col[hidden] { display: none; }
+.ks3-nr-pale,
+.ks3-nr-dark {
+  display: block;
+  width: 100%;
+}
+.ks3-nr-pale { border-radius: 3px 3px 0 0; }
+.ks3-nr-dark { border-radius: 0 0 3px 3px; }
+.ks3-nr-axis {
+  margin: 8px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.ks3-nr-live {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+}
+.ks3-nr-figure {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+}
+.ks3-nr-note {
+  margin: 0;
+  padding: 15px 17px;
+  border-radius: var(--ks3-r-panel);
+  font-size: 18px;
+  line-height: 1.55;
+}
+.ks3-nr-notes { margin-top: 16px; }
+.ks3-nr-foot {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  flex-wrap: wrap;
+}
+
+/* ── selection-runner on ink ───────────────────────────────────────────── */
+.ks3-dark .ks3-nr-tabslabel { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-nr-panel { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-nr-barknote { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-nr-chart { background: rgba(255, 255, 255, .06); }
+.ks3-dark .ks3-nr-axis { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-nr-note {
+  background: rgba(255, 255, 255, .06);
+  color: var(--ks3-on-dark-body);
+}
+/* ⚖️ A CHOSEN BARK IS THE ALERT GROUND — Design's `seg()` again. And a bark
+   tab is emphatically NOT a mark: it says which world the moths are resting
+   on, and pressing it does not reset the population, which is the best thing
+   on this bench. */
+.ks3-dark .ks3-nr-tab[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-nr-one,
+.ks3-dark .ks3-nr-ten,
+.ks3-dark .ks3-nr-reset {
+  background: var(--ks3-on-dark);
+  border-color: var(--ks3-on-dark);
+  color: var(--ks3-ink);
+}
+/* ⚑⚑ THE TWO MOTH COLOURS, AND AMBER IS DATA HERE. `--ks3-alert` is the DARK
+   MOTH — the stack at the bottom of every column and the figure beside it —
+   and the muted tone is the pale moth. Neither marks anybody: there is no
+   prediction on this bench, and what the amber means is "this many of them
+   are the dark form". Design drew it; it is reproduced as drawn and asserted
+   in parity rows so the day the palette question is ruled the gate names the
+   value. `data-label` on each figure carries the WORD, which is on screen
+   beside the number, so the two stacks are never told apart by colour alone
+   (R2). */
+.ks3-dark .ks3-nr-pale { background: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-nr-dark { background: var(--ks3-alert); }
+.ks3-dark .ks3-nr-figure[data-nr-series="pale"] {
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-dark .ks3-nr-figure[data-nr-series="dark"] { color: var(--ks3-alert); }
+
+/* ── b11-03 `#s-bench` · pressure-bench ────────────────────────────────── */
+
+.ks3-pb { margin-top: 22px; }
+/* Two tab groups side by side, wrapping to a stack when they will not fit —
+   the two axes are independent and reading them as one row of nine buttons is
+   the one misreading the layout has to prevent. */
+.ks3-pb-tabsets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 30px;
+}
+.ks3-pb-tabslabel {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.ks3-pb-tabs {
+  margin-top: 0;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.ks3-pb-tab {
+  width: auto;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: 700;
+}
+.ks3-pb-panel {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-card);
+}
+.ks3-pb-name {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 700;
+}
+.ks3-pb-traits {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 8px 20px;
+}
+.ks3-pb-trait {
+  font-size: 17px;
+  line-height: 1.5;
+}
+.ks3-pb-traitlabel {
+  display: block;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+/* ⚖️ THE DIVIDER IS THE ARGUMENT'S HINGE. Above it, what the species IS;
+   below it, what happens to it. A rule rather than a gap, because the two
+   halves have to read as one panel — the traits are the explanation of the
+   number, not a separate card beside it. */
+.ks3-pb-under {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 2px solid rgba(255, 255, 255, .12);
+}
+.ks3-pb-pname {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+}
+.ks3-pb-pnote {
+  margin: 6px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+}
+.ks3-pb-outrow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+.ks3-pb-outlabel {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+.ks3-pb-outpct {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 17px;
+}
+.ks3-pb-track {
+  display: block;
+  margin-top: 6px;
+  height: 18px;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.ks3-pb-bar {
+  display: block;
+  height: 100%;
+}
+.ks3-pb-why {
+  margin: 16px 0 0;
+  padding: 16px 18px;
+  border-radius: var(--ks3-r-panel);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* ── pressure-bench on ink ─────────────────────────────────────────────── */
+.ks3-dark .ks3-pb-tabslabel { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-pb-panel { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-pb-name { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-pb-trait { color: var(--ks3-on-dark-body); }
+.ks3-dark .ks3-pb-traitlabel { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-pb-pname { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-pb-pnote { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-pb-outlabel { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-pb-track { background: rgba(255, 255, 255, .08); }
+.ks3-dark .ks3-pb-tab[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+/* ⚑⚑ THREE BANDS, AND AMBER IS THE BOTTOM ONE AS DATA. `--ks3-alert` here
+   means "this population is in trouble fifty years on", not "you are wrong":
+   nothing on this bench is predicted and nothing is marked. The sentence
+   underneath says which trouble, in words, so the band is never the only
+   signal (R2). Design drew all three; they are reproduced as drawn and
+   asserted in parity rows so the day the palette question is ruled the gate
+   names every value. */
+.ks3-dark .ks3-pb-outpct[data-pb-band="ok"] { color: var(--ks3-ok); }
+.ks3-dark .ks3-pb-outpct[data-pb-band="mid"] { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-pb-outpct[data-pb-band="bad"] { color: var(--ks3-alert); }
+.ks3-dark .ks3-pb-bar[data-pb-band="ok"] { background: var(--ks3-ok); }
+.ks3-dark .ks3-pb-bar[data-pb-band="mid"] { background: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-pb-bar[data-pb-band="bad"] { background: var(--ks3-alert); }
+/* ⚠️ (0,2,0) — cream inside ink, so it re-declares INK against `.ks3-dark p`.
+   Twenty individually-written sentences land here and this is the only place
+   the bench says anything at all. */
+.ks3-dark .ks3-pb-why {
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+
+/* ── b11-04 `#s-bench` · blight-bench ──────────────────────────────────── */
+
+.ks3-bb { margin-top: 22px; }
+.ks3-bb-tabslabel {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.ks3-bb-tabs {
+  margin-top: 0;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.ks3-bb-tab {
+  width: auto;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: 700;
+}
+.ks3-bb-panel {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-card);
+}
+.ks3-bb-name {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+.ks3-bb-note {
+  margin: 6px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+}
+.ks3-bb-rows {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+.ks3-bb-rowhead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.ks3-bb-barname {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+.ks3-bb-value {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 16px;
+}
+.ks3-bb-track {
+  display: block;
+  margin-top: 5px;
+  height: 16px;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.ks3-bb-bar {
+  display: block;
+  height: 100%;
+}
+.ks3-bb-foot {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  flex-wrap: wrap;
+}
+.ks3-bb-run[disabled] { opacity: .45; cursor: default; }
+.ks3-bb-run[disabled]:hover { transform: none; }
+.ks3-bb-verdict {
+  margin: 18px 0 0;
+  padding: 17px 19px;
+  border-radius: var(--ks3-r-panel);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* ── blight-bench on ink ───────────────────────────────────────────────── */
+.ks3-dark .ks3-bb-tabslabel { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-bb-panel { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-bb-name { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-bb-note { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-bb-barname { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-bb-value { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-bb-track { background: rgba(255, 255, 255, .08); }
+.ks3-dark .ks3-bb-tab[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-bb-run,
+.ks3-dark .ks3-bb-clear {
+  background: var(--ks3-on-dark);
+  border-color: var(--ks3-on-dark);
+  color: var(--ks3-ink);
+}
+/* ⚑⚑ ZERO IS ITS OWN BAND AND IT IS AMBER. Design's rule is
+   `pct === 0 ? alert : (pct >= 50 ? ok : muted)` — the clone field does not do
+   badly, it returns NOTHING, and that is the one number this lesson exists to
+   show. Amber here is DATA, not a mark: the student has predicted nothing on
+   this bench, and the row prints "0 of 1000" beside the bar so the band is
+   never the only signal (R2). Reproduced as drawn and asserted in a parity
+   row so the day the palette question is ruled the gate names the value. */
+.ks3-dark .ks3-bb-value[data-bb-band="none"] { color: var(--ks3-alert); }
+.ks3-dark .ks3-bb-value[data-bb-band="ok"] { color: var(--ks3-ok); }
+.ks3-dark .ks3-bb-value[data-bb-band="mid"] { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-bb-bar[data-bb-band="none"] { background: var(--ks3-alert); }
+.ks3-dark .ks3-bb-bar[data-bb-band="ok"] { background: var(--ks3-ok); }
+.ks3-dark .ks3-bb-bar[data-bb-band="mid"] {
+  background: var(--ks3-on-dark-muted);
+}
+/* ⚑ AND THE YIELD BAR IS AMBER TOO, WHICH IS DESIGN'S AND IS THE THIRD JOB
+   THE COLOUR DOES ON THIS PAGE. It is the COST of variation — the reason a
+   farmer plants a clone in the first place — and it is drawn in the same ink
+   as "nothing survived" two rows above it. Not a mark either; flagged rather
+   than repainted, because it is drawn that way and the palette question is
+   Mide's. The variation bar beside it stays muted, as drawn. */
+.ks3-dark .ks3-bb-bar[data-bb-tone="muted"] {
+  background: var(--ks3-on-dark-muted);
+}
+.ks3-dark .ks3-bb-bar[data-bb-tone="cost"] { background: var(--ks3-alert); }
+/* ⚠️ (0,2,0) — cream inside ink, and the element the whole release exists to
+   reach. One tone: the bench says what happened to the crop, not whether
+   anybody was right. */
+.ks3-dark .ks3-bb-verdict {
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+
+/* ═══ END B11 ═══ */

@@ -330,7 +330,7 @@ def check_structure(ks3_root):
                    if spec["on"] in waiting)
         for rel in waiting:
             slug = os.path.basename(rel)[:-5]
-            if slug not in _B9_SLUGS + _B10_SLUGS:
+            if slug not in _B9_SLUGS + _B10_SLUGS + _B11_SLUGS:
                 problems.append(
                     "PARITY: %d row(s) are registered on /%s, which is neither "
                     "an authored lesson nor a slot this run is waiting on. A "
@@ -464,6 +464,34 @@ _PARKED_NO_FIGURE = (
     "six lessons carry `figures: []` and draw everything on canvas. Un-park "
     "with the first delivered unit that names a diagram slot (B4 and B5 both "
     "do).")
+# ⊖ PARKED 18 Aug 2026 (MRB-248). The `moth-pair` drawer exists, is registered
+# in `SVG_ART`, and is proved in a browser — but the FIGURE RECORD that would
+# put it on b11-02 does not, because the drawer post-dates the b11-02 authoring
+# pass. `r_figure` raises on a `status: "drawn"` figure whose `art` it cannot
+# draw, deliberately, so authoring the record before the drawer existed would
+# have failed the build for the other three authors as well; the author left
+# `figures: []` and reported it, which was correct.
+#
+# ⚠️ UN-PARK BY DELETING THIS CONSTANT FROM THE FOUR ROWS, the moment b11-02's
+# record names the figure. Nothing else changes: the rows are already written
+# against the page and the selectors are already the ones the drawer emits.
+_PARKED_NO_MOTH_FIGURE = (
+    "b11-02 carries `figures: []` — the `moth-pair` drawer landed in the "
+    "engine pass AFTER the lesson record was authored, and a `status: drawn` "
+    "figure with no drawer fails the build by design. Un-park the moment the "
+    "figure record is wired; the rows and selectors are already right.")
+# ⊖ PARKED 18 Aug 2026 (MRB-248). `_rule_card`'s fourth part — what a method
+# CANNOT do — exists in the engine and in the stylesheet, and no record authors
+# `limit` yet: b11-04's author joined each limit to its own `body` with a
+# single space, because the slot did not exist when they ran. Every byte is
+# preserved; the paragraph break and the muted tone are not.
+#
+# ⚠️ UN-PARK BY DELETING THIS FROM THE ROW, the moment b11-04's `BANK_CARDS`
+# move their second sentence into `limit`.
+_PARKED_NO_LIMIT_SLOT = (
+    "no record authors a statement-panel card's `limit` yet — b11-04's bank "
+    "cards join it to `body` because the slot post-dates the authoring pass. "
+    "Un-park when the strings move across.")
 _PARKED_NO_SIM_FIGURE = (
     "no lesson renders a generic `.ks3-sim` live figure — B1's microscope, "
     "the only surviving sim, draws its readout in its own class tree. Engine "
@@ -631,6 +659,38 @@ _B10_SLUGS = ("variation-continuous-and-discontinuous",
               "chromosomes-genes-and-dna", "how-we-worked-out-dna",
               "passing-it-on-heredity", "what-makes-a-species")
 # ═══ END B10 ═══
+
+
+# ═══ BEGIN B11 ═══
+# ⊕ MRB-248. KS3 Biology's last unit: four instruments, four pages, all four on
+# ink, plus one drawn figure.
+#
+# ⚠️ THESE PAGES DO NOT EXIST YET, AND REGISTERING AGAINST THEM NOW IS THE
+# POINT — the same shape as B9's and B10's blocks above, and for the same
+# reason. The engine pass builds the four components and the diagram; four
+# separate authoring passes write the lesson records that render them. B8
+# shipped five instruments with twelve assertions between them because the rows
+# were left until "after", and after never came. `_pages_needed` skips a page
+# that has not been authored yet and `check_structure` reports the wait out
+# loud, with a count and by name, so a row cannot sit unmeasured in silence.
+# The moment an authoring pass lands the page, every row on it starts
+# measuring — nothing to remember, nothing to edit, no flag to clear.
+#
+# ⚠️ THE SLUGS ARE `ks3_data/structure.py`'s, CHARACTER FOR CHARACTER. A
+# plausible mis-spelling here buys every row on that page permanent silence,
+# which is what `_B11_SLUGS` refuses. L3's is
+# `when-the-environment-changes-extinction` — no colon, no hyphen where the
+# title has one.
+_B11_UNIT = "biology/evolution-extinction-and-biodiversity/"
+B11_ADV    = _B11_UNIT + "variation-and-competitive-success.html"
+B11_SEL    = _B11_UNIT + "natural-selection.html"
+B11_PRESS  = _B11_UNIT + "when-the-environment-changes-extinction.html"
+B11_BLIGHT = _B11_UNIT + "biodiversity-and-gene-banks.html"
+
+_B11_SLUGS = ("variation-and-competitive-success", "natural-selection",
+              "when-the-environment-changes-extinction",
+              "biodiversity-and-gene-banks")
+# ═══ END B11 ═══
 
 
 # ═══ BEGIN B5 ═══
@@ -4602,6 +4662,19 @@ COMPONENTS = [
          sel=".ks3-rule-cards > li[data-badge] > .ks3-rule-term",
          props={"font-family": "Bricolage Grotesque", "font-weight": "800",
                 "font-size": "22px"}),
+    # ⊕ MRB-248 / B11 — the card's FOURTH part. `.ks3-rule-eg` is mono at 15px,
+    # which is right for "shrew · dormouse · hedgehog" and wrong for two
+    # sentences of prose, so what a method cannot do gets a slot of its own at
+    # 17px in ink-muted — Design's own treatment, measured off b11-04 line 161.
+    # ⚠️ REPOINTED 18 Aug 2026. This row was written parked, and a parked row's
+    # `on` is never exercised — so it sat on `LESSON` (the rebuilt c1-04, which
+    # authors no rule cards at all) and nobody could tell. Un-parking it is what
+    # surfaced that: the gate reported the component registered and not
+    # rendered, which was true of the page it named and false of the key stage.
+    # A parked row's page is a claim nothing checks; check it when you un-park.
+    dict(name="card limit is muted prose, not the mono example line",
+         on=B11_BLIGHT, sel=".ks3-rule-limit",
+         props={"font-size": "17px", "color": "#5F564F"}),
     dict(name="badged card's role is accent-TEXT mono under the name",
          on=B10_MODEL,
          sel=".ks3-rule-cards > li[data-badge] > .ks3-rule-role",
@@ -4829,6 +4902,356 @@ COMPONENTS = [
          sel=".ks3-sc-check[disabled]",
          props={"opacity": "0.45"}),
     # ═══ END B10 ═══ rows
+    # ═══ BEGIN B11 ═══ rows
+    # ⚠️ THE SAME AIM AS B10's BLOCK ABOVE: a dispatch entry is not a component
+    # (contract §6.6), and every one of these is asserted against the element
+    # as the BROWSER resolves it. All four B11 instruments sit on `ks3-dark`,
+    # where `.ks3-dark p` at (0,1,1) beats a bare instrument class at (0,1,0) —
+    # so a rule written without the `.ks3-dark` scope ships a sentence at
+    # roughly 1.2:1 that no grep will find, because the CSS is right there
+    # saying the correct thing.
+
+    # ── b11-01 · advantage-bench ──
+    dict(name="B11 advantage-bench · the conditions label is muted mono",
+         on=B11_ADV, sel=".ks3-ab-tabslabel",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px", "text-transform": "uppercase"}),
+    # ⚖️ A CHOSEN CONDITION IS THE ALERT GROUND, which is Design's own `seg()`
+    # and NOT the platform's alert border. Still not a mark: it says "this is
+    # the world the bench is standing in", never "this is correct".
+    dict(name="B11 advantage-bench · the chosen condition is the alert ground",
+         on=B11_ADV, sel='.ks3-ab-tab[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+    # ⚖️ AN UNCHOSEN TAB IS THE PANEL GROUND, NOT TRANSPARENT — the platform's
+    # `.ks3-dark .ks3-option` against Design's `seg(false)`, which paints
+    # `background: transparent`. The platform wins on all five B10 benches and
+    # is what shipped there; B11 matching it keeps one control looking like one
+    # control across nine pages, which is worth more than a per-unit fidelity
+    # to a value Design's own delivered pages disagree with the platform about.
+    # Recorded as measured, not as drawn — the drift is B10's, settled, and
+    # named here rather than re-argued.
+    dict(name="B11 advantage-bench · an unchosen condition stays on the block ground",
+         on=B11_ADV, sel='.ks3-ab-tab[aria-pressed="false"]',
+         props={"background-color": "#3E3730", "color": "#FBF3E6"}),
+    dict(name="B11 advantage-bench · the bench sits on the nested dark panel",
+         on=B11_ADV, sel=".ks3-ab-panel",
+         props={"background-color": "#3E3730"}),
+    dict(name="B11 advantage-bench · the condition headline is on-dark at 20px",
+         on=B11_ADV, sel="[data-ab-envpanel]:not([hidden]) .ks3-ab-envname",
+         props={"color": "#FBF3E6", "font-size": "20px",
+                "font-weight": "700"}),
+    dict(name="B11 advantage-bench · what the condition does is muted, not body",
+         on=B11_ADV, sel="[data-ab-envpanel]:not([hidden]) .ks3-ab-envnote",
+         props={"color": "#C6B9A7", "font-size": "18px"}),
+    dict(name="B11 advantage-bench · the variation's name is on-dark at 18px",
+         on=B11_ADV, sel="[data-ab-envpanel]:not([hidden]) .ks3-ab-name",
+         props={"color": "#FBF3E6", "font-size": "18px",
+                "font-weight": "700"}),
+    # ⚖️ THE TRACK IS THE 100% THE BAR IS A FRACTION OF, so it is drawn whether
+    # the bar fills it or not — a 20% row has to READ as a fifth of something.
+    dict(name="B11 advantage-bench · the survival bar runs in a drawn track",
+         on=B11_ADV, sel="[data-ab-envpanel]:not([hidden]) .ks3-ab-track",
+         props={"height": "16px",
+                "background-color": "rgba(255, 255, 255, 0.08)"}),
+    # ⚑ AMBER AND GREEN ARE DATA ON THIS BENCH, NOT A MARK. The student has
+    # predicted nothing here; amber is the bottom of a column and green is the
+    # top of one. Both carry the WORD as well as the colour (" · best here",
+    # " · worst here") so nothing is signalled by colour alone (R2). Recorded
+    # as values rather than described, so the day the palette question is ruled
+    # the gate names them.
+    dict(name="B11 advantage-bench · the column's best is green and says so",
+         on=B11_ADV,
+         sel='[data-ab-envpanel]:not([hidden]) .ks3-ab-chance[data-ab-rank="best"]',
+         props={"color": "#12A150", "font-family": "DM Mono",
+                "font-size": "16px"}),
+    dict(name="B11 advantage-bench · the column's worst is amber and says so",
+         on=B11_ADV,
+         sel='[data-ab-envpanel]:not([hidden]) .ks3-ab-chance[data-ab-rank="worst"]',
+         props={"color": "#FFC53D", "font-family": "DM Mono",
+                "font-size": "16px"}),
+    dict(name="B11 advantage-bench · an unranked figure is muted mono",
+         on=B11_ADV,
+         sel="[data-ab-envpanel]:not([hidden]) .ks3-ab-chance:not([data-ab-rank])",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "16px"}),
+    dict(name="B11 advantage-bench · an unranked bar is the muted fill",
+         on=B11_ADV,
+         sel="[data-ab-envpanel]:not([hidden]) .ks3-ab-bar:not([data-ab-rank])",
+         props={"background-color": "#C6B9A7"}),
+    dict(name="B11 advantage-bench · the reason under the bar reads in on-dark body",
+         on=B11_ADV, sel="[data-ab-envpanel]:not([hidden]) .ks3-ab-why",
+         props={"color": "#E7DECE", "font-size": "17px"}),
+    # ⚖️ THE VERDICT IS THE PAGE GROUND ON AN INK BLOCK — cream inside ink, and
+    # the one place in this instrument where the text has to be INK and not
+    # on-dark. It is the element the whole switch exists to reach, and it is
+    # ONE TONE: the bench says what just happened, never whether anybody was
+    # right (schema §0.7).
+    dict(name="B11 advantage-bench · the verdict is the page ground on an ink block",
+         on=B11_ADV, sel="[data-ab-envpanel]:not([hidden]) .ks3-ab-verdict",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "font-size": "18px"}),
+    # ── driven: three conditions switched through, ending on the tie ──
+    dict(name="B11 advantage-bench · the tied column marks nothing best",
+         on=B11_ADV, drive="b11-conditions-tried",
+         sel="[data-ab-envpanel]:not([hidden]) .ks3-ab-bar",
+         props={"background-color": "#C6B9A7"}),
+    dict(name="B11 advantage-bench · the tied column's figures are all muted",
+         on=B11_ADV, drive="b11-conditions-tried",
+         sel="[data-ab-envpanel]:not([hidden]) .ks3-ab-chance",
+         props={"color": "#C6B9A7"}),
+
+    # ── b11-02 · selection-runner ──
+    dict(name="B11 selection-runner · the bark label is muted mono",
+         on=B11_SEL, sel=".ks3-nr-tabslabel",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px", "text-transform": "uppercase"}),
+    dict(name="B11 selection-runner · the chosen bark is the alert ground",
+         on=B11_SEL, sel='.ks3-nr-tab[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="B11 selection-runner · an unchosen bark stays on the block ground",
+         on=B11_SEL, sel='.ks3-nr-tab[aria-pressed="false"]',
+         props={"background-color": "#3E3730", "color": "#FBF3E6"}),
+    dict(name="B11 selection-runner · the bench sits on the nested dark panel",
+         on=B11_SEL, sel=".ks3-nr-panel", props={"background-color": "#3E3730"}),
+    dict(name="B11 selection-runner · what the bark IS reads muted, not body",
+         on=B11_SEL, sel="[data-nr-barknote]:not([hidden])",
+         props={"color": "#C6B9A7", "font-size": "18px"}),
+    # ⚖️ THE CHART IS A FIXED-HEIGHT WELL AND THE COLUMNS SHARE IT. One column
+    # fills it and twenty-four divide it, so the run reads as a run rather than
+    # as a widening pile — which is why `flex: 1 1 0` and `min-width: 0` are
+    # asserted rather than a width.
+    dict(name="B11 selection-runner · the generations sit in a fixed well",
+         on=B11_SEL, sel=".ks3-nr-chart",
+         props={"height": "150px",
+                "background-color": "rgba(255, 255, 255, 0.06)"}),
+    dict(name="B11 selection-runner · a generation column shares the well",
+         on=B11_SEL, sel="[data-nr-col]:not([hidden])",
+         props={"min-width": "0px", "flex-grow": "1", "flex-shrink": "1"}),
+    # ⚑ AMBER IS THE DARK MOTH HERE, NOT A MARK. There is no prediction on this
+    # bench; the colour means "this many of them are the dark form", and the
+    # word is on screen beside the number (R2). Recorded as a value so the day
+    # the palette question is ruled the gate names it.
+    dict(name="B11 selection-runner · the pale stack is the muted fill",
+         on=B11_SEL, sel="[data-nr-col]:not([hidden]) .ks3-nr-pale",
+         props={"background-color": "#C6B9A7"}),
+    dict(name="B11 selection-runner · the dark stack is the alert fill",
+         on=B11_SEL, sel="[data-nr-col]:not([hidden]) .ks3-nr-dark",
+         props={"background-color": "#FFC53D"}),
+    dict(name="B11 selection-runner · the axis caption is muted mono, uppercase",
+         on=B11_SEL, sel=".ks3-nr-axis",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px", "text-transform": "uppercase"}),
+    dict(name="B11 selection-runner · the pale figure matches the pale stack",
+         on=B11_SEL, sel='.ks3-nr-figure[data-nr-series="pale"]',
+         props={"color": "#C6B9A7", "font-size": "19px",
+                "font-weight": "700"}),
+    dict(name="B11 selection-runner · the dark figure matches the dark stack",
+         on=B11_SEL, sel='.ks3-nr-figure[data-nr-series="dark"]',
+         props={"color": "#FFC53D", "font-size": "19px",
+                "font-weight": "700"}),
+    dict(name="B11 selection-runner · the note reads in on-dark body on a well",
+         on=B11_SEL, sel=".ks3-nr-note:not([hidden])",
+         props={"color": "#E7DECE", "font-size": "18px",
+                "background-color": "rgba(255, 255, 255, 0.06)"}),
+    dict(name="B11 selection-runner · the run buttons are inverted on ink",
+         on=B11_SEL, sel=".ks3-nr-ten",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="B11 selection-runner · the reset is inverted on ink too",
+         on=B11_SEL, sel=".ks3-nr-reset",
+         props={"background-color": "#FBF3E6", "color": "#221E1B"}),
+    # ── driven: ten generations on sooty bark ──
+    dict(name="B11 selection-runner · a run fills the well with columns",
+         on=B11_SEL, drive="b11-generations-run",
+         sel="[data-nr-col]:not([hidden])",
+         props={"min-width": "0px"}),
+
+    # ── b11-03 · pressure-bench ──
+    dict(name="B11 pressure-bench · an axis label is muted mono",
+         on=B11_PRESS, sel=".ks3-pb-tabslabel",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px", "text-transform": "uppercase"}),
+    dict(name="B11 pressure-bench · the chosen species is the alert ground",
+         on=B11_PRESS, sel='.ks3-pb-tab[data-pb-species][aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="B11 pressure-bench · the chosen pressure is the alert ground too",
+         on=B11_PRESS, sel='.ks3-pb-tab[data-pb-pressure][aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B"}),
+    dict(name="B11 pressure-bench · an unchosen tab stays on the block ground",
+         on=B11_PRESS, sel='.ks3-pb-tab[aria-pressed="false"]',
+         props={"background-color": "#3E3730", "color": "#FBF3E6"}),
+    dict(name="B11 pressure-bench · the bench sits on the nested dark panel",
+         on=B11_PRESS, sel=".ks3-pb-panel", props={"background-color": "#3E3730"}),
+    dict(name="B11 pressure-bench · the species name is on-dark at 21px",
+         on=B11_PRESS, sel="[data-pb-speciespanel]:not([hidden]) .ks3-pb-name",
+         props={"color": "#FBF3E6", "font-size": "21px",
+                "font-weight": "700"}),
+    dict(name="B11 pressure-bench · a trait reads in on-dark body",
+         on=B11_PRESS, sel="[data-pb-speciespanel]:not([hidden]) .ks3-pb-trait",
+         props={"color": "#E7DECE", "font-size": "17px"}),
+    dict(name="B11 pressure-bench · a trait's name is muted mono at 13px",
+         on=B11_PRESS,
+         sel="[data-pb-speciespanel]:not([hidden]) .ks3-pb-traitlabel",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "13px", "text-transform": "uppercase"}),
+    # ⚖️ THE DIVIDER IS THE ARGUMENT'S HINGE — what the species IS, above; what
+    # happens to it, below. A rule and not a gap, so the two read as one panel.
+    dict(name="B11 pressure-bench · a rule divides the species from the pressure",
+         on=B11_PRESS, sel=".ks3-pb-under",
+         props={"border-top-width": "2px", "border-top-style": "solid"}),
+    dict(name="B11 pressure-bench · the pressure headline is on-dark at 19px",
+         on=B11_PRESS, sel="[data-pb-pressurepanel]:not([hidden]) .ks3-pb-pname",
+         props={"color": "#FBF3E6", "font-size": "19px",
+                "font-weight": "700"}),
+    dict(name="B11 pressure-bench · what the pressure does reads muted",
+         on=B11_PRESS, sel="[data-pb-pressurepanel]:not([hidden]) .ks3-pb-pnote",
+         props={"color": "#C6B9A7", "font-size": "18px"}),
+    dict(name="B11 pressure-bench · the outcome ask is on-dark at 17px",
+         on=B11_PRESS, sel="[data-pb-cell]:not([hidden]) .ks3-pb-outlabel",
+         props={"color": "#FBF3E6", "font-size": "17px",
+                "font-weight": "600"}),
+    dict(name="B11 pressure-bench · the outcome bar runs in a drawn track",
+         on=B11_PRESS, sel="[data-pb-cell]:not([hidden]) .ks3-pb-track",
+         props={"height": "18px",
+                "background-color": "rgba(255, 255, 255, 0.08)"}),
+    # ⚑ THREE BANDS, AND AMBER IS THE BOTTOM ONE AS DATA. Nothing is predicted
+    # on this bench and nothing is marked; the band says "this population is in
+    # trouble fifty years on" and the sentence underneath says which trouble.
+    # The bench opens on the dormouse under habitat loss, which is 15% — the
+    # worst cell on the bench — so the resting page measures the amber band.
+    dict(name="B11 pressure-bench · a bottom-band outcome is amber and says so",
+         on=B11_PRESS,
+         sel='[data-pb-cell]:not([hidden]) .ks3-pb-outpct[data-pb-band="bad"]',
+         props={"color": "#FFC53D", "font-family": "DM Mono",
+                "font-size": "17px"}),
+    dict(name="B11 pressure-bench · a bottom-band bar is the amber fill",
+         on=B11_PRESS,
+         sel='[data-pb-cell]:not([hidden]) .ks3-pb-bar[data-pb-band="bad"]',
+         props={"background-color": "#FFC53D"}),
+    # ⚠️ (0,2,0) — cream inside ink. Twenty individually-written sentences land
+    # here and this is the only place the bench says anything at all.
+    dict(name="B11 pressure-bench · the outcome text is the page ground on ink",
+         on=B11_PRESS, sel="[data-pb-cell]:not([hidden]) .ks3-pb-why",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "font-size": "18px"}),
+    # ── driven: a top-band cell, and a middle-band cell ──
+    dict(name="B11 pressure-bench · a top-band outcome is green",
+         on=B11_PRESS, drive="b11-combinations-tried",
+         sel='[data-pb-cell]:not([hidden]) .ks3-pb-outpct[data-pb-band="ok"]',
+         props={"color": "#12A150"}),
+    dict(name="B11 pressure-bench · a top-band bar is the green fill",
+         on=B11_PRESS, drive="b11-combinations-tried",
+         sel='[data-pb-cell]:not([hidden]) .ks3-pb-bar[data-pb-band="ok"]',
+         props={"background-color": "#12A150"}),
+
+    # ── b11-04 · blight-bench ──
+    dict(name="B11 blight-bench · the field label is muted mono",
+         on=B11_BLIGHT, sel=".ks3-bb-tabslabel",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "14px", "text-transform": "uppercase"}),
+    dict(name="B11 blight-bench · the chosen field is the alert ground",
+         on=B11_BLIGHT, sel='.ks3-bb-tab[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="B11 blight-bench · an unchosen field stays on the block ground",
+         on=B11_BLIGHT, sel='.ks3-bb-tab[aria-pressed="false"]',
+         props={"background-color": "#3E3730", "color": "#FBF3E6"}),
+    dict(name="B11 blight-bench · the bench sits on the nested dark panel",
+         on=B11_BLIGHT, sel=".ks3-bb-panel", props={"background-color": "#3E3730"}),
+    dict(name="B11 blight-bench · the field name is on-dark at 20px",
+         on=B11_BLIGHT, sel="[data-bb-fieldpanel]:not([hidden]) .ks3-bb-name",
+         props={"color": "#FBF3E6", "font-size": "20px",
+                "font-weight": "700"}),
+    dict(name="B11 blight-bench · what was planted reads muted, not body",
+         on=B11_BLIGHT, sel="[data-bb-fieldpanel]:not([hidden]) .ks3-bb-note",
+         props={"color": "#C6B9A7", "font-size": "18px"}),
+    dict(name="B11 blight-bench · a bar's name is on-dark at 17px",
+         on=B11_BLIGHT, sel="[data-bb-fieldpanel]:not([hidden]) .ks3-bb-barname",
+         props={"color": "#FBF3E6", "font-size": "17px",
+                "font-weight": "600"}),
+    dict(name="B11 blight-bench · a bar runs in a drawn track",
+         on=B11_BLIGHT, sel="[data-bb-fieldpanel]:not([hidden]) .ks3-bb-track",
+         props={"height": "16px",
+                "background-color": "rgba(255, 255, 255, 0.08)"}),
+    # ⚖️ THE VARIATION BAR IS MUTED AND THE YIELD BAR IS AMBER, WHICH IS
+    # DESIGN'S. The yield bar is the COST of variation — the reason a farmer
+    # plants a clone — and it is drawn in the same ink as "nothing survived"
+    # two rows above it. Flagged rather than repainted; ⚑ the third job amber
+    # does on this page.
+    dict(name="B11 blight-bench · the variation bar is the muted fill",
+         on=B11_BLIGHT,
+         sel='[data-bb-fieldpanel]:not([hidden]) .ks3-bb-bar[data-bb-tone="muted"]',
+         props={"background-color": "#C6B9A7"}),
+    dict(name="B11 blight-bench · the yield bar is amber, as the cost",
+         on=B11_BLIGHT,
+         sel='[data-bb-fieldpanel]:not([hidden]) .ks3-bb-bar[data-bb-tone="cost"]',
+         props={"background-color": "#FFC53D"}),
+    # ⚖️ THE RESTING FIELD IS PLANTED AND UNTOUCHED — every plant standing, a
+    # full green bar at "1000 of 1000". That is what makes the release mean
+    # something: a full field becomes an empty one, rather than an empty one
+    # appearing.
+    dict(name="B11 blight-bench · the unblighted field is a full green bar",
+         on=B11_BLIGHT,
+         sel='[data-bb-fieldpanel]:not([hidden]) [data-bb-surv="before"] .ks3-bb-bar',
+         props={"background-color": "#12A150"}),
+    dict(name="B11 blight-bench · the release button is inverted on ink",
+         on=B11_BLIGHT, sel=".ks3-bb-run",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "min-height": "44px"}),
+    dict(name="B11 blight-bench · the clear button is inverted on ink",
+         on=B11_BLIGHT, sel=".ks3-bb-clear",
+         props={"background-color": "#FBF3E6", "color": "#221E1B"}),
+    # ── driven: the blight released on the clone field ──
+    # ⚑⚑ ZERO IS ITS OWN BAND AND IT IS AMBER. The clone field does not do
+    # badly, it returns NOTHING — `resistant: 0` over `varieties: 1` is zero
+    # along every arithmetic path — and that number is the payoff of the whole
+    # lesson. Amber is DATA here; the row prints "0 of 1000" beside the bar.
+    dict(name="B11 blight-bench · a zero harvest is amber and says so",
+         on=B11_BLIGHT, drive="b11-blight-released",
+         sel='[data-bb-fieldpanel]:not([hidden]) [data-bb-surv="after"] .ks3-bb-value[data-bb-band="none"]',
+         props={"color": "#FFC53D", "font-family": "DM Mono",
+                "font-size": "16px"}),
+    dict(name="B11 blight-bench · the zero-survivor bar is the amber fill",
+         on=B11_BLIGHT, drive="b11-blight-released",
+         sel='[data-bb-fieldpanel]:not([hidden]) [data-bb-surv="after"] .ks3-bb-bar[data-bb-band="none"]',
+         props={"background-color": "#FFC53D"}),
+    dict(name="B11 blight-bench · the verdict is the page ground on an ink block",
+         on=B11_BLIGHT, drive="b11-blight-released",
+         sel="[data-bb-fieldpanel]:not([hidden]) [data-bb-verdict]:not([hidden])",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "font-size": "18px"}),
+    dict(name="B11 blight-bench · the spent release button dims",
+         on=B11_BLIGHT, drive="b11-blight-released",
+         sel=".ks3-bb-run[disabled]", props={"opacity": "0.45"}),
+
+    # ── b11-02 · the peppered moth pair (a `figure`, not a `practical`) ──
+    # ⚑⚑ THESE FOUR ROWS EXIST TO CATCH ONE FAILURE, and it is the failure that
+    # cost four rebuilds on the first drawer: `fill="var(--ks3-ink)"` as an SVG
+    # PRESENTATION ATTRIBUTE is not a valid <paint>, the attribute is silently
+    # dropped, and the element renders opaque BLACK — while every token grep in
+    # the repo stays clean, because the tokens are all there, in the one place
+    # where they do nothing. Only a computed read in a browser sees it, and
+    # only if something asks for the resolved `fill`. These ask.
+    dict(name="B11 moth pair · the pale moth is the band fill, not a dropped paint",
+         on=B11_SEL,
+         sel='.ks3-moth[data-moth-tone="pale"] path', props={"fill": "#F4E9D8"}),
+    dict(name="B11 moth pair · the dark moth is the ink fill, not a dropped paint",
+         on=B11_SEL, drive="b11-moth-pair",
+         sel='.ks3-moth[data-moth-tone="dark"] path', props={"fill": "#221E1B"}),
+    # ⚖️ THE TWO BARKS DIFFER BY TONE — and, structurally, by PATTERN, which
+    # the drive checks by counting mottle against streaks. Tone alone would
+    # make the diagram work for most readers and fail exactly the ones it is
+    # drawn for.
+    dict(name="B11 moth pair · the lichen bark is the band ground",
+         on=B11_SEL,
+         sel='.ks3-moth-bark[data-bark="lichen"]', props={"fill": "#F4E9D8"}),
+    dict(name="B11 moth pair · the soot bark is the ink ground",
+         on=B11_SEL,
+         sel='.ks3-moth-bark[data-bark="soot"]', props={"fill": "#221E1B"}),
+    # ═══ END B11 ═══ rows
 ]
 
 
@@ -5309,6 +5732,132 @@ _DONE_SIGNALS = (
     ('ks3-reveal-btn', 'has a reveal button that can be expanded'),
     ('class="ks3-option', 'has an option a student can press'),
 )
+
+
+# ⊖ TWO KNOWN OFFENDERS, NAMED RATHER THAN EXCUSED (MRB-248, 18 Aug 2026).
+#
+# `check_rail_reachable`'s own docstring already names these two: c1-05's
+# `#s-scale` is three static cards and two paragraphs, and c1-02's `#s-matrix`
+# is a static contrast grid. Both are rail stops, both carry `data-instrument`
+# because the block owns its own options, and NEITHER wire function calls
+# `markStage` — so neither can declare a completion at 0 without shipping a
+# stop that can then never tick. Fixing them properly means giving each a
+# completion predicate, which is a change to ticking behaviour on two lessons
+# that are live and in front of students, and it is not this run's to make.
+#
+# ⚠️ THE LIST SELF-CLEARS. An entry naming a section that no longer offends is
+# a build failure, so a fix cannot leave a stale exemption behind and the list
+# cannot quietly grow into a way of not fixing things.
+# ⚖️ RULED 18 Aug 2026 — THESE TWO STAY PARKED FOR NOW, and the ruling is
+# recorded here rather than in a ticket because this set is where the next pass
+# will meet the question.
+#
+# Both are rail stops on LIVE C1 lessons whose wire functions never call
+# `markStage`, so they can never tick and the student can never reach 4 of 4 on
+# those two pages. That is worse than the `done_when` case contract R2 parked,
+# because R2's defect was invisible to a student and this one is a counter that
+# stops short in front of them.
+#
+# It is still not this run's work, for two reasons that are about risk rather
+# than tidiness:
+#
+#   1. The fix is not a line — it is DECIDING WHAT COMPLETION MEANS for two
+#      instruments nobody in this run has read. `#s-scale` and `#s-matrix` are
+#      c1-05's and c1-02's, and inventing a predicate for an instrument you have
+#      not studied is how a stop starts ticking when it should not, which is the
+#      B1 finding quoted inside `doneByDom()`.
+#   2. Changing ticking behaviour on two lessons that are live, verified and in
+#      front of students, at the end of a nine-lesson biology run, is the shape
+#      of change that gets made at the end of a long session and found in the
+#      morning.
+#
+# What makes parking safe here is that this set SELF-CLEARS: a stale entry fails
+# the build, so the exemption cannot outlive the defect quietly. It is a
+# reminder with teeth, which is the only kind worth leaving.
+#
+# ⚠️ Whoever takes it: the answer is probably `mirrors`, not a new predicate.
+# `ks3_rail_manifest.py` already derives these two as mirrors from Design's own
+# `isDone()` — its docstring names them — so the completion they need may
+# already exist on the instrument beside them.
+_TICK_EXEMPT = {
+    ("chemistry/particles-and-their-behaviour/diffusion.html", "s-scale"),
+    ("chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html",
+     "s-matrix"),
+}
+
+
+def check_nothing_ticks_on_load(ks3_root):
+    """⊕ MRB-248 / B11 — MRB-208's other half, and it had no gate either.
+
+    "Nothing is ticked on load" has been settled since MRB-208 and the way it
+    is kept is that every instrument emits `data-stage-done="0"` in its own
+    dispatch entry. Nothing checked that it did. `check_rail_reachable` above
+    asks whether a section carries ANY completion signal, and an instrument
+    that dropped the declaration still carries `class="ks3-option"` — so it
+    passes that gate and then `doneByDom()` falls through to "anything in here
+    is aria-pressed", which on nearly every bench in the key stage is TRUE
+    BEFORE THE STUDENT HAS DECIDED ANYTHING, because a tab is pressed to show
+    where the bench is standing.
+
+    ⚠️ AND A BROWSER CANNOT SEE IT. `markStage` writes the attribute on the
+    first `draw()`, so by the time any drive reads the DOM the value is there
+    and correct. What is wrong is the SHIPPED BYTES: the rail's own first paint
+    runs before the instruments wire, and a crawler or a reader with JS off
+    gets a page whose rail claims work nobody did. So this is read out of the
+    HTML as written, which is the only place the defect exists.
+
+    Found by mutation: removing the declaration from one dispatch entry left
+    every other gate in the build green.
+    """
+    problems, total = [], 0
+    seen_exempt, stale = set(), set()
+    for page in _lesson_pages(ks3_root):
+        rel = os.path.relpath(page, ks3_root)
+        html = open(page, encoding="utf-8").read()
+        # ⚠️ SCOPED TO INSTRUMENTS THAT ARE RAIL STOPS, and the scope is the
+        # correctness of the check rather than a softening of it. A
+        # `confrontation` carries `data-instrument` — it owns its own options —
+        # and carries no completion contract on purpose: it is static, it asks
+        # for nothing, and MRB-249 records that `#s-think` is on no rail on any
+        # page. Requiring a declaration there would fail fifty-six live pages
+        # over a rule that does not apply to them. What the rule is about is a
+        # stop that can tick, so the anchors the rail names are the scope.
+        anchors = set(re.findall(r"&quot;anchor&quot;:&quot;([a-z0-9-]+)&quot;",
+                                 html))
+        for m in re.finditer(r"<section[^>]*\bdata-instrument\b[^>]*>", html):
+            tag = m.group(0)
+            sid = re.search(r'\bid="([^"]+)"', tag)
+            if not sid or sid.group(1) not in anchors:
+                continue
+            total += 1
+            key = (rel.replace(os.sep, "/"), sid.group(1))
+            if 'data-stage-done="0"' in tag:
+                if key in _TICK_EXEMPT:
+                    stale.add(key)
+                continue
+            if key in _TICK_EXEMPT:
+                seen_exempt.add(key)
+                continue
+            problems.append(
+                "MRB-208: /%s ships an instrument section with %s — every "
+                "instrument declares its own completion at 0 in the bytes, or "
+                "`doneByDom()` falls through to \"anything in here is "
+                "aria-pressed\", which is true before the student has decided "
+                "anything. A browser cannot catch this: `markStage` writes the "
+                "attribute on the first draw."
+                % (rel, "data-stage-done=\"1\"" if 'data-stage-done="1"' in tag
+                   else "no `data-stage-done` at all"))
+    for key in sorted(_TICK_EXEMPT - seen_exempt):
+        problems.append(
+            "MRB-208: /%s #%s is on the known-offender list and no longer "
+            "offends (or no longer exists). The list self-clears: remove the "
+            "entry, so it can never become a way of not fixing something."
+            % key)
+    for key in sorted(stale):
+        problems.append(
+            "MRB-208: /%s #%s declares completion at 0 and is still exempt. "
+            "Remove the exemption." % key)
+    return problems, total
 
 
 def check_rail_reachable(ks3_root):
@@ -10337,6 +10886,798 @@ DRIVES = {
 })()
 """,
     # ═══ END B10 drives ═══
+    # ═══ BEGIN B11 drives ═══
+    # ⚖️ THREE WORLDS SWITCHED THROUGH, AND THE BENCH ENDS ON THE TIE. b11-01
+    # is a switcher with no run button and no reset, so what there is to prove
+    # is: nothing ticks on load, the count is the number of worlds SEEN and
+    # never shrinks, the stage flips on Design's own `n >= 3`, and — the one
+    # place this port departs from her renderer — the `disease` column, whose
+    # maximum is 45 on four of five mice, marks NOTHING. Her `isBest` is
+    # `c === Math.max(…)`, so her page paints four green "best here" winners
+    # under a verdict reading "None of the visible variations helps."
+    #
+    # ⚠️ THE TIED PANEL IS LEFT OPEN DELIBERATELY. Two driven rows above read
+    # every bar and every figure in the open panel and demand the muted tone —
+    # which is an assertion about ALL FIVE rows at once, and it is the shape
+    # the defect had.
+    "b11-conditions-tried": r"""
+(function () {
+  var sec = document.querySelector('[data-abblock]');
+  if (!sec) { return "no advantage bench on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') { return "the stop ticked on load"; }
+  var w = sec.querySelector('[data-ab]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var need = Number(w.getAttribute('data-threshold'));
+  if (!need) { return "the bench declares no completion threshold"; }
+  var tabs = w.querySelectorAll('[data-ab-env]');
+  if (tabs.length < need) {
+    return "the bench offers " + tabs.length + " condition(s) and needs " + need;
+  }
+  for (var c = 0; c < tabs.length; c++) {
+    if (!/\bks3-option\b/.test(tabs[c].className)) {
+      return "condition tab " + c + " is not a platform option: " + tabs[c].className;
+    }
+    if (tabs[c].getAttribute('aria-pressed') === null) {
+      return "condition tab " + c + " carries no aria-pressed";
+    }
+  }
+  var count = sec.querySelector('[data-count]');
+  if (!count) { return "the bench ships no head readout"; }
+  if (count.textContent.indexOf('{') >= 0) {
+    return "the head readout shipped an unfilled placeholder: " + count.textContent;
+  }
+  // ⚠️ THE RESTING COUNT IS ONE, NOT ZERO. The bench OPENS ON a condition and
+  // a condition you are looking at is one you have seen, which is Design's own
+  // `seen: { winter: true }`. `head_counter.start` puts the 1 in the shipped
+  // bytes; without it the page reads "0 of 5" until JS runs, and for ever in
+  // what a crawler gets.
+  if (!/\b1\b/.test(count.textContent)) {
+    return "the bench opens on a condition and its readout says " +
+      JSON.stringify(count.textContent);
+  }
+  // MRB-242: a stylesheet `display` on a `hidden` element beats the UA rule
+  // and every condition on this bench would be on screen at once.
+  var hid = w.querySelectorAll('[data-ab-envpanel][hidden]');
+  if (!hid.length) { return "no condition panel ships hidden"; }
+  for (var h = 0; h < hid.length; h++) {
+    var el = hid[h], prev = el.style.display;
+    el.style.display = '';
+    var shown = getComputedStyle(el).display;
+    el.style.display = prev;
+    if (shown !== 'none') {
+      return "MRB-242: a condition panel ships `hidden` and the stylesheet " +
+        "gives it display:" + shown + ", which beats the UA [hidden] rule";
+    }
+  }
+  var open = w.querySelectorAll('[data-ab-envpanel]:not([hidden])');
+  if (open.length !== 1) {
+    return "the bench opens with " + open.length + " conditions showing";
+  }
+  // ⚖️ EVERY CONDITION'S PANEL IS IN THE DOCUMENT, so the shipped bytes carry
+  // every verdict and every per-subject reason rather than the runtime writing
+  // them in. Checked by counting reasons against tabs × subjects.
+  var subjects = open[0].querySelectorAll('.ks3-ab-row').length;
+  if (subjects < 2) { return "the column holds " + subjects + " subject(s)"; }
+  var whys = w.querySelectorAll('.ks3-ab-why').length;
+  if (whys !== subjects * tabs.length) {
+    return "the bench ships " + whys + " reasons for " + tabs.length +
+      " conditions × " + subjects + " subjects";
+  }
+  if (w.querySelectorAll('.ks3-ab-verdict').length !== tabs.length) {
+    return "the bench ships " + w.querySelectorAll('.ks3-ab-verdict').length +
+      " verdicts for " + tabs.length + " conditions";
+  }
+  // ⛔ AND NO SCIENCE-BEARING STRING RIDES AN ATTRIBUTE. Everything above is
+  // static markup; the runtime only unhides.
+  //
+  // Now switch. One press per world, and the stage may not flip early.
+  var opened = open[0].getAttribute('data-ab-envpanel');
+  var order = [];
+  for (var i = 0; i < tabs.length; i++) {
+    var id = tabs[i].getAttribute('data-ab-env');
+    if (id !== opened) { order.push(tabs[i]); }
+  }
+  for (var k = 0; k < need - 1; k++) {
+    if (sec.getAttribute('data-stage-done') === '1') {
+      return "the stop ticked after " + (k + 1) + " of " + need + " conditions";
+    }
+    order[k].click();
+    var live = w.querySelectorAll('[data-ab-envpanel]:not([hidden])');
+    if (live.length !== 1 ||
+        live[0].getAttribute('data-ab-envpanel') !==
+          order[k].getAttribute('data-ab-env')) {
+      return "a condition was chosen and the panel did not follow it";
+    }
+    if (order[k].getAttribute('aria-pressed') !== 'true') {
+      return "the chosen condition is not pressed";
+    }
+    if (w.querySelectorAll('[data-ab-env][aria-pressed="true"]').length !== 1) {
+      return "two conditions are pressed at once";
+    }
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return need + " conditions were tried and the stop did not tick";
+  }
+  // ⚠️ `seen` NEVER SHRINKS. Going back to a world already visited must not
+  // reduce the count, and must not untick the stop — two rail entries read
+  // this marker (MRB-249), and MRB-208 ruled the rail records participation.
+  var was = count.textContent;
+  order[0].click();
+  if (count.textContent !== was) {
+    return "returning to a condition already seen changed the count from " +
+      JSON.stringify(was) + " to " + JSON.stringify(count.textContent);
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "returning to a condition already seen unticked the stop";
+  }
+  // ⛔ MRB-196 R10 — the bench marks nothing. No option button anywhere in
+  // this instrument may take a verdict class.
+  if (w.querySelector('.ks3-option.is-correct, .ks3-option.is-wrong, .ks3-option.is-spent')) {
+    return "MRB-196 R10: the bench marked a condition button";
+  }
+  // ⛔⛔ AND THE TIE. Find the column whose printed figures have no unique
+  // maximum, open it, and leave it open for the two driven rows above. It must
+  // mark NOTHING — no `data-ab-rank` anywhere in it, on a figure or on a bar.
+  var tied = null;
+  for (var e2 = 0; e2 < tabs.length; e2++) {
+    var pid = tabs[e2].getAttribute('data-ab-env');
+    var panel = w.querySelector('[data-ab-envpanel="' + pid + '"]');
+    var nums = Array.prototype.map.call(
+      panel.querySelectorAll('.ks3-ab-chance'),
+      function (x) { return parseInt(x.textContent, 10); });
+    var hi = Math.max.apply(null, nums), lo = Math.min.apply(null, nums);
+    var uniq = nums.filter(function (n) { return n === hi; }).length === 1 &&
+               nums.filter(function (n) { return n === lo; }).length === 1 &&
+               hi !== lo;
+    var marked = panel.querySelectorAll('[data-ab-rank]').length;
+    if (uniq) {
+      // A column with two clean ends marks exactly two things: one figure and
+      // its bar for the best, one figure and its bar for the worst.
+      if (marked !== 4) {
+        return "condition " + pid + " has a unique best and a unique worst " +
+          "and carries " + marked + " marked element(s), not 4";
+      }
+      if (panel.querySelectorAll('[data-ab-rank="best"]').length !== 2 ||
+          panel.querySelectorAll('[data-ab-rank="worst"]').length !== 2) {
+        return "condition " + pid + " marks a best or a worst on only one of " +
+          "the figure and the bar";
+      }
+    } else {
+      if (marked !== 0) {
+        return "condition " + pid + " has no unique extreme and still marks " +
+          marked + " element(s) — Design's own renderer paints four green " +
+          "'best here' winners on the disease column under a verdict reading " +
+          "'None of the visible variations helps.'";
+      }
+      tied = tabs[e2];
+    }
+  }
+  if (!tied) {
+    return "no column on this bench ties, so the suppression rule that the " +
+      "disease panel exists to prove is untested here";
+  }
+  tied.click();
+  return null;
+})()
+""",
+    # ⚖️⚖️ TEN GENERATIONS, A BARK SWITCH, A RESET AND FIFTY GENERATIONS OF
+    # THE CONTROL — because every one of those is a claim this bench makes and
+    # none of them is visible in the markup.
+    #
+    # What is proved here: nothing ticks on load; the recurrence moves the
+    # population and the stage flips on Design's own `gen >= 10`; switching
+    # bark does NOT reset the population (which is what lets a student watch it
+    # come back, and is the best thing on the bench); the reset shows
+    # `notes.reset` and NOT `notes.start` — the gen-0 defect in the delivered
+    # bytes, where a fifty-fifty population sits under "Nine moths in ten are
+    # pale"; the stop stays ticked through a reset (MRB-208); and the control
+    # bark does not move by so much as a rounding pixel over fifty
+    # generations, which is the panel that proves the other two show selection
+    # rather than an animation.
+    "b11-generations-run": r"""
+(function () {
+  var sec = document.querySelector('[data-nrblock]');
+  if (!sec) { return "no selection runner on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') { return "the stop ticked on load"; }
+  var w = sec.querySelector('[data-nr]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var M; try { M = JSON.parse(w.getAttribute('data-model')); } catch (x) { M = null; }
+  if (!M || !M.barks) { return "the bench shipped no model"; }
+  var need = Number(w.getAttribute('data-threshold'));
+  if (!need) { return "the bench declares no completion threshold"; }
+  var count = sec.querySelector('[data-count]');
+  if (!count) { return "the bench ships no head readout"; }
+  if (count.textContent.indexOf('{') >= 0) {
+    return "the head readout shipped an unfilled placeholder: " + count.textContent;
+  }
+  // ⚠️ THE TRAILING SPACE. `gen_label` is "generation " and the composition
+  // adds no separator of its own; a doubled space would ship "generation  7"
+  // and no gate but this one would see it. B10's `zoom-bench` shipped the
+  // mirror image ("level1of6") until the spaces went back.
+  if (/\s\s/.test(count.textContent)) {
+    return "the head readout doubled a separator: " + JSON.stringify(count.textContent);
+  }
+  // ⛔ THE BENCH OPENS ON THE BARK THE MODEL NAMES, WHICH IS NOT THE FIRST.
+  // Design's state is `bark: 'sooty'`, the second entry — the lesson opens in
+  // industrial Britain because that is where one press of *Ten generations*
+  // shows the sweep. A silent fallback to the first bark opens the lesson on
+  // the wrong world and nothing else anywhere says a word.
+  var live = w.querySelectorAll('[data-nr-bark][aria-pressed="true"]');
+  if (live.length !== 1) { return live.length + " barks are pressed at once"; }
+  if (live[0].getAttribute('data-nr-bark') !== M.opens_on) {
+    return "the bench opens on " + live[0].getAttribute('data-nr-bark') +
+      " and the model says " + M.opens_on;
+  }
+  var first = w.querySelector('[data-nr-bark]').getAttribute('data-nr-bark');
+  if (first === M.opens_on) {
+    return "the opening bark IS the first bark, so this assertion proves " +
+      "nothing about the fallback it exists to catch";
+  }
+  // Exactly one control, and it is what makes the third panel a control.
+  var controls = 0, key;
+  for (key in M.barks) {
+    if (Object.prototype.hasOwnProperty.call(M.barks, key) &&
+        M.barks[key].control) { controls += 1; }
+  }
+  if (controls !== 1) { return "the bench declares " + controls + " control bark(s)"; }
+  // MRB-242 — a stylesheet `display` on a hidden column beats the UA rule, and
+  // the column rule below IS a `display: flex`. All twenty-four would paint.
+  var hid = w.querySelectorAll('[data-nr-col][hidden]');
+  if (!hid.length) { return "no history column ships hidden"; }
+  if (getComputedStyle(hid[0]).display !== 'none') {
+    return "MRB-242: a history column ships `hidden` and the stylesheet gives " +
+      "it display:" + getComputedStyle(hid[0]).display;
+  }
+  if (w.querySelectorAll('[data-nr-col]:not([hidden])').length !== 1) {
+    return "the bench opens with more than the starting generation drawn";
+  }
+  // Six note branches in the document, one shown, none written in by the
+  // runtime: every sentence this bench can say is in the shipped bytes.
+  if (w.querySelectorAll('[data-nr-note]').length !== 6) {
+    return "the bench ships " + w.querySelectorAll('[data-nr-note]').length +
+      " note branches and there are six";
+  }
+  function shownNote() {
+    var n = w.querySelectorAll('[data-nr-note]:not([hidden])');
+    return n.length === 1 ? n[0].getAttribute('data-nr-note') : ('x' + n.length);
+  }
+  if (shownNote() !== 'start') {
+    return "the bench opens on note " + shownNote() + " and not `start`";
+  }
+  function pct(which) {
+    var f = w.querySelector('[data-nr-series="' + which + '"]');
+    return parseInt(f.textContent.replace(/[^0-9]/g, ''), 10);
+  }
+  var pale0 = pct('pale');
+  var ten = w.querySelector('[data-nr-run="' + need + '"]');
+  if (!ten) { return "the bench has no button that runs " + need + " generations"; }
+  ten.click();
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return need + " generations were run and the stop did not tick";
+  }
+  if (pct('pale') === pale0) {
+    return need + " generations on the opening bark and the population did not move";
+  }
+  if (pct('pale') + pct('dark') !== 100) {
+    return "the two figures read " + pct('pale') + " and " + pct('dark');
+  }
+  if (w.querySelectorAll('[data-nr-col]:not([hidden])').length !== need + 1) {
+    return "a " + need + "-generation run drew " +
+      w.querySelectorAll('[data-nr-col]:not([hidden])').length + " columns";
+  }
+  // ⚖️ SWITCHING BARK DOES NOT RESET THE POPULATION. Without this a student
+  // cannot run it sooty, switch to clean and watch it come back — which is
+  // the one demonstration on the page that selection has no memory.
+  var held = pct('pale');
+  var other = null, tabs = w.querySelectorAll('[data-nr-bark]');
+  for (var i = 0; i < tabs.length; i++) {
+    var bid = tabs[i].getAttribute('data-nr-bark');
+    if (bid !== M.opens_on && !M.barks[bid].control) { other = tabs[i]; }
+  }
+  if (!other) { return "the bench offers no second bark that selects"; }
+  other.click();
+  if (pct('pale') !== held) {
+    return "switching bark reset the population from " + held + "% to " + pct('pale') + "%";
+  }
+  if (Number(count.textContent.replace(/[^0-9]/g, '')) !== need) {
+    return "switching bark moved the generation counter";
+  }
+  // ⛔⛔ THE GEN-0 FIX. Design's reset sets `pale: 0.5, gen: 0` and her
+  // `notes.start` fires on `gen === 0` alone, so her page prints "Nine moths
+  // in ten are pale" over a fifty-fifty population. The port gates `start` on
+  // the STARTING fraction and authors `reset` for the other one.
+  var resetBtn = w.querySelector('[data-nr-reset]');
+  if (!resetBtn) { return "the bench has no reset"; }
+  resetBtn.click();
+  if (Number(count.textContent.replace(/[^0-9]/g, '')) !== 0) {
+    return "the reset did not return the bench to generation 0";
+  }
+  if (pct('pale') !== Math.round(M.reset * 100)) {
+    return "the reset left the population at " + pct('pale') + "%";
+  }
+  if (shownNote() !== 'reset') {
+    return "after the reset the bench shows note `" + shownNote() + "` — the " +
+      "delivered page shows `start`, which reads 'Nine moths in ten are pale' " +
+      "over a fifty-fifty population";
+  }
+  // MRB-208 — the rail records participation. Resetting is using the bench.
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "the reset unticked a stop the student had already earned";
+  }
+  // ⚑⚑ THE CONTROL DOES NOT CREEP, AND IT IS TESTED OFF A HALF.
+  //
+  // ⚠️ FIFTY-FIFTY IS THE ONE FRACTION THAT CANNOT FAIL. At p = 0.5 with equal
+  // rates, `0.5·s / (0.5·s + 0.5·s)` is exactly 0.5 in floating point whichever
+  // way it is written — so a control tested straight after the reset proves
+  // nothing at all, and this drive passed a mutation that removed the
+  // short-circuit entirely until it was moved off the half. One selecting
+  // generation first, which lands the population on a fraction with a long
+  // tail; then fifty on the control, which is more than the history holds, so
+  // every drawn column is a post-switch one.
+  // ⚠️⚠️ THE STARTING FRACTION IS CHOSEN, NOT TAKEN. Almost every fraction on
+  // this bench is a fixed point of the naive arithmetic as well as of the
+  // short-circuit — `p·s / (p·s + (1−p)·s)` comes back bit-for-bit `p` for
+  // 0.5, for 0.9, and for most of what a run lands on — so a control tested
+  // from the reset value passes whichever way the step is written and proves
+  // nothing. This drive did exactly that until it was measured: the mutation
+  // that removes the short-circuit went green.
+  //
+  // Ten generations on the PALE-FAVOURED bark from the reset lands the
+  // population on 0.998273425228992, which is one of the fractions the naive
+  // arithmetic does NOT hold — fifty control steps move it to
+  // …9919. Deliberately chosen, and named here so a later edit cannot
+  // "simplify" the route back to something that passes for nothing.
+  var sel = null, ctl = null;
+  for (var j = 0; j < tabs.length; j++) {
+    var bid2 = tabs[j].getAttribute('data-nr-bark');
+    if (M.barks[bid2].control) { ctl = tabs[j]; }
+    else if (M.barks[bid2].pale_favoured) { sel = tabs[j]; }
+  }
+  if (!ctl || !sel) {
+    return "the bench has no control bark or no pale-favoured selecting one";
+  }
+  sel.click();
+  ten.click();
+  ctl.click();
+  //
+  // ⚠️ AND IT IS READ OFF `data-nr-pale`, NOT OFF THE DRAWN HEIGHT. A
+  // percentage set through `style.height` comes back out of the CSSOM
+  // re-serialised to four decimal places, so a difference in the sixteenth
+  // digit — which is the whole of what a creeping control is — is invisible in
+  // the drawn value. The instrument writes the model's own fraction beside it
+  // for exactly this reason.
+  var live0 = w.querySelectorAll('[data-nr-col]:not([hidden])');
+  var h0 = live0[live0.length - 1].getAttribute('data-nr-pale');
+  if (!h0) {
+    return "the bench draws its history without recording the fraction, so " +
+      "the control's exactness cannot be measured at all";
+  }
+  if (h0 === '0.5' || h0 === '0.9') {
+    return "the control is being tested from " + h0 + ", which is a fixed " +
+      "point of the naive arithmetic as well as of the short-circuit — the " +
+      "assertion below would pass whichever way the step is written";
+  }
+  for (var k = 0; k < 5; k++) { ten.click(); }
+  var drawn = w.querySelectorAll('[data-nr-col]:not([hidden])');
+  if (drawn.length !== M.history) {
+    return "fifty generations drew " + drawn.length + " columns and the " +
+      "history is " + M.history;
+  }
+  for (var c = 0; c < drawn.length; c++) {
+    if (drawn[c].getAttribute('data-nr-pale') !== h0) {
+      return "the control moved: column " + c + " is " +
+        drawn[c].getAttribute('data-nr-pale') + " where the start was " + h0;
+    }
+  }
+  if (shownNote() !== 'control') {
+    return "fifty generations on the control bark and the bench shows note `" +
+      shownNote() + "`";
+  }
+  if (w.querySelector('.ks3-option.is-correct, .ks3-option.is-wrong, .ks3-option.is-spent')) {
+    return "MRB-196 R10: the bench marked a bark button";
+  }
+  // Leave the bench on a full history for the driven row above.
+  return null;
+})()
+""",
+    # ⚖️ FOUR COMBINATIONS, AND THE UNIT IS THE PAIR. What Design counts is
+    # `seen[species + '-' + pressure]`, so a bench that counted axis presses
+    # would tick its stage for a student who had looked at four species under
+    # ONE pressure and never watched a row change — which is the lesson. Proved
+    # here by moving one axis at a time and reading the count.
+    #
+    # Also proved: the singular ("1 combination tried") in the SHIPPED BYTES,
+    # the twenty outcome texts all being present rather than composed, and the
+    # three bands resolving to three different colours. The drive ends on a
+    # top-band cell for the two driven rows above.
+    "b11-combinations-tried": r"""
+(function () {
+  var sec = document.querySelector('[data-pbblock]');
+  if (!sec) { return "no pressure bench on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') { return "the stop ticked on load"; }
+  var w = sec.querySelector('[data-pb]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var need = Number(w.getAttribute('data-threshold'));
+  if (!need) { return "the bench declares no completion threshold"; }
+  var sp = w.querySelectorAll('[data-pb-species]');
+  var pr = w.querySelectorAll('[data-pb-pressure]');
+  if (sp.length < 2 || pr.length < 2) {
+    return "the bench offers " + sp.length + " species and " + pr.length + " pressures";
+  }
+  var cells = w.querySelectorAll('[data-pb-cell]');
+  // ⚠️ EVERY COMBINATION IS IN THE DOCUMENT. Design's `OUTCOMES` is a full
+  // grid of individually written prose — nothing generated, nothing
+  // templated — so the count is the product and a shortfall is a cell that
+  // would draw a number and a bar with nothing underneath.
+  if (cells.length !== sp.length * pr.length) {
+    return "the bench ships " + cells.length + " outcome cells for " +
+      sp.length + " species × " + pr.length + " pressures";
+  }
+  var count = sec.querySelector('[data-count]');
+  if (!count) { return "the bench ships no head readout"; }
+  if (count.textContent.indexOf('{') >= 0) {
+    return "the head readout shipped an unfilled placeholder: " + count.textContent;
+  }
+  // ⛔ THE `(s)` IS EXPANDED, IN THE SHIPPED BYTES. The author writes the noun
+  // once as "combination(s) tried"; unsplit, the resting page reads
+  // "1 combination(s) tried" — visible on screen, invisible to every gate that
+  // does not open a browser.
+  if (/\(s\)/.test(count.textContent)) {
+    return "the head readout shipped an unexpanded plural marker: " +
+      JSON.stringify(count.textContent);
+  }
+  if (!/\b1\b/.test(count.textContent)) {
+    return "the bench opens on a pair and its readout says " +
+      JSON.stringify(count.textContent);
+  }
+  var openedSingular = count.textContent;
+  // MRB-242 — a stylesheet `display` on a hidden cell would put all twenty on
+  // screen at once.
+  var hid = w.querySelectorAll('[data-pb-cell][hidden]');
+  if (!hid.length) { return "no outcome cell ships hidden"; }
+  if (getComputedStyle(hid[0]).display !== 'none') {
+    return "MRB-242: an outcome cell ships `hidden` and the stylesheet gives " +
+      "it display:" + getComputedStyle(hid[0]).display;
+  }
+  if (w.querySelectorAll('[data-pb-cell]:not([hidden])').length !== 1) {
+    return "the bench opens with more than one outcome on screen";
+  }
+  var open0 = w.querySelector('[data-pb-cell]:not([hidden])').getAttribute('data-pb-cell');
+  if (open0 !== (w.getAttribute('data-opens-on') || '')) {
+    return "the bench opens on " + open0 + " and declares " +
+      w.getAttribute('data-opens-on');
+  }
+  // ⚖️ ONE AXIS AT A TIME, AND EACH MOVE IS A NEW PAIR. Move the pressure
+  // three times without touching the species: four pairs, four counts, and
+  // the stage ticks on the fourth.
+  var moved = 0;
+  for (var i = 0; i < pr.length && moved < need - 1; i++) {
+    if (pr[i].getAttribute('aria-pressed') === 'true') { continue; }
+    if (sec.getAttribute('data-stage-done') === '1') {
+      return "the stop ticked after " + (moved + 1) + " of " + need + " combinations";
+    }
+    pr[i].click();
+    moved += 1;
+    if (w.querySelectorAll('[data-pb-cell]:not([hidden])').length !== 1) {
+      return "a pressure was chosen and " +
+        w.querySelectorAll('[data-pb-cell]:not([hidden])').length + " outcomes showed";
+    }
+    var want = w.querySelector('[data-pb-species][aria-pressed="true"]')
+      .getAttribute('data-pb-species') + '|' + pr[i].getAttribute('data-pb-pressure');
+    if (w.querySelector('[data-pb-cell]:not([hidden])').getAttribute('data-pb-cell') !== want) {
+      return "the pressure changed and the outcome cell did not follow the PAIR";
+    }
+    if (w.querySelectorAll('[data-pb-pressure][aria-pressed="true"]').length !== 1) {
+      return "two pressures are pressed at once";
+    }
+  }
+  if (moved !== need - 1) { return "could not reach " + need + " combinations"; }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return need + " combinations were tried and the stop did not tick";
+  }
+  // The plural arrived, and it is a different string from the singular.
+  if (count.textContent === openedSingular) {
+    return "the readout says the same thing at 1 and at " + need;
+  }
+  if (/\(s\)/.test(count.textContent)) {
+    return "the plural readout still carries the marker: " + count.textContent;
+  }
+  // ⚠️ AND `seen` NEVER SHRINKS. Returning to the opening pair must not reduce
+  // the count nor untick the stop — two rail entries read this marker.
+  var was = count.textContent;
+  var back = w.querySelector('[data-pb-pressure="' + open0.split('|')[1] + '"]');
+  back.click();
+  if (count.textContent !== was) {
+    return "returning to a pair already seen changed the count from " +
+      JSON.stringify(was) + " to " + JSON.stringify(count.textContent);
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "returning to a pair already seen unticked the stop";
+  }
+  // ⚖️⚖️ AND THE UNIT IS THE PAIR, WHICH IS WHAT THIS PROVES. Everything above
+  // moved ONE axis, so a bench that counted pressure presses would have kept
+  // pace with a bench that counted pairs. Move the SPECIES now, with the
+  // pressure held: the pair is new, so the count must rise. Keyed on either
+  // axis alone it does not, and the stage then ticks for a student who looked
+  // at four species under one pressure and never watched a row change.
+  var before = Number(count.textContent.replace(/[^0-9]/g, ''));
+  var otherSp = null;
+  for (var s3 = 0; s3 < sp.length; s3++) {
+    if (sp[s3].getAttribute('aria-pressed') !== 'true') { otherSp = sp[s3]; }
+  }
+  if (!otherSp) { return "every species is pressed at once"; }
+  otherSp.click();
+  if (Number(count.textContent.replace(/[^0-9]/g, '')) !== before + 1) {
+    return "a new SPECIES under a pressure already seen did not count as a " +
+      "new combination — the unit is the pair, not the button";
+  }
+  // ⛔ MRB-196 R10 — no tab on either axis takes a verdict class.
+  if (w.querySelector('.ks3-option.is-correct, .ks3-option.is-wrong, .ks3-option.is-spent')) {
+    return "MRB-196 R10: the bench marked an axis button";
+  }
+  // ⚑⚑ THREE BANDS, THREE COLOURS, AND ALL THREE REACHABLE. A bench whose
+  // cells all fell in one band would draw twenty rows in one colour and the
+  // band rule would be dead CSS that greps clean.
+  var bands = {};
+  for (var c = 0; c < cells.length; c++) {
+    var el = cells[c].querySelector('.ks3-pb-outpct');
+    bands[el.getAttribute('data-pb-band')] = true;
+    var bar = cells[c].querySelector('.ks3-pb-bar');
+    if (bar.getAttribute('data-pb-band') !== el.getAttribute('data-pb-band')) {
+      return "cell " + cells[c].getAttribute('data-pb-cell') +
+        " paints its figure and its bar in different bands";
+    }
+  }
+  if (!bands.ok || !bands.mid || !bands.bad) {
+    return "the twenty cells reach bands " + Object.keys(bands).join(",") +
+      " — a band with no cell is a colour rule nothing on the page can show";
+  }
+  // Leave the bench on a TOP-band cell for the two driven rows above.
+  for (var s2 = 0; s2 < sp.length; s2++) {
+    for (var p2 = 0; p2 < pr.length; p2++) {
+      var key = sp[s2].getAttribute('data-pb-species') + '|' +
+                pr[p2].getAttribute('data-pb-pressure');
+      var cell = w.querySelector('[data-pb-cell="' + key + '"]');
+      if (cell.querySelector('.ks3-pb-outpct').getAttribute('data-pb-band') === 'ok') {
+        sp[s2].click(); pr[p2].click();
+        return null;
+      }
+    }
+  }
+  return "no cell on this bench falls in the top band";
+})()
+""",
+    # ⚖️⚖️ THE BLIGHT RELEASED ON THE CLONE FIELD, WHICH RETURNS EXACTLY ZERO.
+    # `resistant: 0` over `varieties: 1` is zero along every arithmetic path,
+    # and that number is the payoff of the lesson — the Irish potato crop, the
+    # Gros Michel. Checked as an integer and not as a bar width, because a
+    # rounding that produced one survivor in a thousand would draw an
+    # identical bar.
+    #
+    # Also proved: the resting field is PLANTED AND WHOLE (a full green bar at
+    # total-of-total, which is what makes the release mean something); the
+    # verdict arrives only on release; switching field re-arms the blight;
+    # *Clear the field* clears the release and NOT the tally; and the stage
+    # ticks on Design's own `tried >= 2`.
+    "b11-blight-released": r"""
+(function () {
+  var sec = document.querySelector('[data-bbblock]');
+  if (!sec) { return "no blight bench on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') { return "the stop ticked on load"; }
+  var w = sec.querySelector('[data-bb]');
+  if (!w) { return "the practical shell rendered without the instrument"; }
+  var need = Number(w.getAttribute('data-threshold'));
+  if (!need) { return "the bench declares no completion threshold"; }
+  var tabs = w.querySelectorAll('[data-bb-field]');
+  if (tabs.length < need) {
+    return "the bench plants " + tabs.length + " field(s) and needs " + need;
+  }
+  var run = w.querySelector('[data-bb-run]');
+  var clear = w.querySelector('[data-bb-clear]');
+  if (!run || !clear) { return "the bench ships without its two controls"; }
+  var count = sec.querySelector('[data-count]');
+  if (!count) { return "the bench ships no head readout"; }
+  if (count.textContent.indexOf('{') >= 0 || /\(s\)/.test(count.textContent)) {
+    return "the head readout shipped an unfilled placeholder or an " +
+      "unexpanded plural: " + JSON.stringify(count.textContent);
+  }
+  var zeroLabel = count.textContent;
+  // ⚠️ THE RESTING FIELD IS PLANTED AND UNTOUCHED. The release ships LIVE and
+  // the verdict ships hidden — Design disables the button only once it has
+  // been pressed.
+  if (run.disabled) { return "the release button ships already spent"; }
+  if (w.querySelector('[data-bb-verdict]:not([hidden])')) {
+    return "a verdict is on screen before the blight was released";
+  }
+  var open = w.querySelectorAll('[data-bb-fieldpanel]:not([hidden])');
+  if (open.length !== 1) { return "the bench opens with " + open.length + " fields showing"; }
+  function survRow() {
+    return w.querySelector('[data-bb-fieldpanel]:not([hidden]) [data-bb-surv]:not([hidden])');
+  }
+  var before = survRow();
+  if (!before || before.getAttribute('data-bb-surv') !== 'before') {
+    return "the resting field does not show its unblighted harvest";
+  }
+  if (before.querySelector('.ks3-bb-bar').style.width !== '100%') {
+    return "the unblighted field is drawn at " +
+      before.querySelector('.ks3-bb-bar').style.width + " and every plant is standing";
+  }
+  // ⚖️ THREE BARS, AND THE THIRD IS THE COST. A bench that drew survival and
+  // variation but not yield would teach that variation is free.
+  var bars = w.querySelectorAll('[data-bb-fieldpanel]:not([hidden]) .ks3-bb-row:not([hidden])');
+  if (bars.length !== 3) {
+    return "the field draws " + bars.length + " bars and there are three — " +
+      "what survived, how much variation went in, and what it yields";
+  }
+  // MRB-242, on both the hidden panels and the hidden survivor rows.
+  var hid = w.querySelectorAll('[data-bb-fieldpanel][hidden], [data-bb-surv][hidden], [data-bb-verdict][hidden]');
+  if (!hid.length) { return "nothing on this bench ships hidden"; }
+  for (var h = 0; h < hid.length; h++) {
+    if (getComputedStyle(hid[h]).display !== 'none') {
+      return "MRB-242: " + hid[h].className + " ships `hidden` and the " +
+        "stylesheet gives it display:" + getComputedStyle(hid[h]).display;
+    }
+  }
+  // ⛔⛔ RELEASE IT. The opening field is the one with no resistant variety.
+  run.click();
+  if (!run.disabled) { return "the blight was released and the button stayed live"; }
+  if (run.textContent.trim() === w.getAttribute('data-run-label').trim()) {
+    return "the blight has passed through and the button still reads " +
+      JSON.stringify(run.textContent);
+  }
+  var after = survRow();
+  if (!after || after.getAttribute('data-bb-surv') !== 'after') {
+    return "the blight was released and the harvest did not change";
+  }
+  // The integer, not the bar. A rounding that left one plant in a thousand
+  // would draw a bar of the same width and be a different lesson.
+  var nums = after.querySelector('.ks3-bb-value').textContent.match(/\d+/g) || [];
+  if (nums.length < 2) {
+    return "the survivor row reads " +
+      JSON.stringify(after.querySelector('.ks3-bb-value').textContent);
+  }
+  if (Number(nums[0]) !== 0) {
+    return "the clone field returned " + nums[0] + " survivor(s) of " + nums[1] +
+      " — `resistant: 0` over `varieties: 1` is zero along every arithmetic path";
+  }
+  if (after.querySelector('.ks3-bb-value').getAttribute('data-bb-band') !== 'none') {
+    return "a zero harvest is in band " +
+      after.querySelector('.ks3-bb-value').getAttribute('data-bb-band') +
+      " — zero is its own band, not the bottom of one";
+  }
+  if (!w.querySelector('[data-bb-verdict]:not([hidden])')) {
+    return "the blight passed through and no verdict arrived";
+  }
+  if (/[{}]/.test(w.querySelector('[data-bb-verdict]:not([hidden])').textContent)) {
+    return "the verdict shipped an unfilled placeholder";
+  }
+  if (count.textContent === zeroLabel) {
+    return "a field was tested and the readout still says " + JSON.stringify(zeroLabel);
+  }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked after 1 of " + need + " fields";
+  }
+  // ⚖️ SWITCHING FIELD RE-ARMS THE BLIGHT, which is Design's own tab handler
+  // (`{ field: x.id, released: false }`).
+  //
+  // ⚠️ TESTED BEFORE THE CLEAR, AND THAT ORDER IS THE ASSERTION. Clearing the
+  // field also un-releases it, so a switch tested after a clear finds the
+  // blight armed whether the tab handler re-arms it or not — this drive passed
+  // a mutation that deleted the re-arm entirely until the two were reordered.
+  var tallied = count.textContent;
+  var second = null, opened = open[0].getAttribute('data-bb-fieldpanel');
+  for (var i = 0; i < tabs.length; i++) {
+    if (tabs[i].getAttribute('data-bb-field') !== opened) { second = tabs[i]; }
+  }
+  second.click();
+  if (run.disabled) { return "a new field was planted and the blight was already spent"; }
+  if (w.querySelector('[data-bb-verdict]:not([hidden])')) {
+    return "a new field was planted with the previous field's verdict on it";
+  }
+  // ⚖️ AND *Clear the field* CLEARS THE RELEASE AND NOT THE TALLY. MRB-208:
+  // the rail records participation, and clearing a field is using the bench.
+  run.click();
+  clear.click();
+  if (run.disabled) { return "the field was cleared and the blight stayed spent"; }
+  if (w.querySelector('[data-bb-verdict]:not([hidden])')) {
+    return "the field was cleared and its verdict stayed on screen";
+  }
+  if (Number(count.textContent.replace(/[^0-9]/g, '')) !== 2) {
+    return "clearing a field un-counted it: the readout reads " +
+      JSON.stringify(count.textContent) + " after two fields were tested";
+  }
+  if (count.textContent === tallied) {
+    return "a second field was tested and the readout still says " +
+      JSON.stringify(tallied);
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return need + " fields were tested and the stop did not tick";
+  }
+  var pluralised = count.textContent;
+  if (/\(s\)/.test(pluralised)) {
+    return "the plural readout still carries the marker: " + pluralised;
+  }
+  if (pluralised === tallied) {
+    return "the readout says the same thing at 1 and at " + need + " fields";
+  }
+  // Re-testing a field already tested must not double-count it.
+  second.click();
+  run.click();
+  if (count.textContent !== pluralised) {
+    return "releasing the blight twice on one field counted it twice";
+  }
+  if (w.querySelector('.ks3-option.is-correct, .ks3-option.is-wrong, .ks3-option.is-spent')) {
+    return "MRB-196 R10: the bench marked a field button";
+  }
+  // Leave the bench on the zero-harvest field for the driven rows above.
+  w.querySelector('[data-bb-field="' + opened + '"]').click();
+  run.click();
+  return null;
+})()
+""",
+    # ⚖️ THE DRAWN MOTH PAIR, STRUCTURALLY. What the four rows above cannot
+    # say is that the two barks differ by PATTERN as well as by tone, that the
+    # same two moths appear on both, and that every one of them is labelled —
+    # which is the whole of what makes the drawing honest as well as legible.
+    #
+    # ⊖ This drive runs only once b11-02's figure record is wired; until then
+    # its rows are parked and it never fires. Written now, with the drawer, so
+    # that un-parking is a deletion rather than an afternoon.
+    "b11-moth-pair": r"""
+(function () {
+  var svg = document.querySelector('.ks3-figure-drawn svg');
+  if (!svg) { return "no drawn figure on the page"; }
+  if (!svg.querySelector('title') || !svg.querySelector('desc')) {
+    return "the drawing ships without a <title> or a <desc>";
+  }
+  var barks = svg.querySelectorAll('.ks3-moth-bark');
+  if (barks.length !== 2) { return "the drawing has " + barks.length + " panels"; }
+  if (barks[0].getAttribute('data-bark') === barks[1].getAttribute('data-bark')) {
+    return "both panels draw the same bark";
+  }
+  // ⚑ PATTERN, NOT ONLY TONE. Mottle is a different KIND of mark from a
+  // streak, and that is what makes the two panels tell apart for a reader who
+  // cannot separate the tones.
+  var mottle = svg.querySelectorAll('.ks3-moth-mottle').length;
+  var streak = svg.querySelectorAll('.ks3-moth-streak').length;
+  if (!mottle || !streak) {
+    return "the two barks carry " + mottle + " mottle and " + streak +
+      " streak marks — they differ by tone alone";
+  }
+  var moths = svg.querySelectorAll('.ks3-moth');
+  if (moths.length !== 4) {
+    return "the drawing carries " + moths.length + " moths and a pair of " +
+      "panels showing the same two moths is four";
+  }
+  var pale = svg.querySelectorAll('.ks3-moth[data-moth-tone="pale"]').length;
+  var dark = svg.querySelectorAll('.ks3-moth[data-moth-tone="dark"]').length;
+  if (pale !== 2 || dark !== 2) {
+    return "the panels carry " + pale + " pale and " + dark + " dark moths — " +
+      "the claim is that NOTHING ABOUT THE MOTHS CHANGED and only the " +
+      "background did, so each panel holds one of each";
+  }
+  // ⛔ EVERY MOTH IS LABELLED, twice: its name, and a written note saying how
+  // easy it is to see there. Never colour-alone.
+  if (svg.querySelectorAll('.ks3-moth-label').length !== 4 ||
+      svg.querySelectorAll('.ks3-moth-note').length !== 4) {
+    return "the drawing labels " + svg.querySelectorAll('.ks3-moth-label').length +
+      " moths and annotates " + svg.querySelectorAll('.ks3-moth-note').length;
+  }
+  // ⚠️ AND NO PAINT RIDES A PRESENTATION ATTRIBUTE. `fill="var(--ks3-ink)"` is
+  // not a valid <paint>; the attribute is dropped and the element renders
+  // opaque black with every token grep still clean.
+  var painted = svg.querySelectorAll('[fill]');
+  for (var i = 0; i < painted.length; i++) {
+    if (/var\(/.test(painted[i].getAttribute('fill'))) {
+      return "an element paints through a `fill` attribute: " +
+        painted[i].getAttribute('fill') + " — a custom property is not a " +
+        "valid SVG paint and the element will render opaque black";
+    }
+  }
+  return null;
+})()
+""",
+    # ═══ END B11 drives ═══
 
     "b7-chain-traced": r"""
 (function () {

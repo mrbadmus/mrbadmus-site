@@ -5121,6 +5121,16 @@
         el.textContent = full;
         return;
       }
+      /* ⊕ MRB-248 / B11 — `data-format-one`, the SINGULAR, and the mirror of
+         `data-zero` and `data-full` rather than a fourth shape. b11-03's
+         readout is "1 combination tried" → "4 combinations tried" and b11-04's
+         does the same with "field": the noun agrees with the count, and one is
+         a state every student passes through on the way to the second.
+         The author writes the noun once, as "combination(s) tried"; the ENGINE
+         splits the `(s)` and hands both halves down. Opt-in, read after the
+         clamp and after `data-full`, so no shipped counter moves. */
+      var single = el.getAttribute("data-format-one");
+      if (single && n === 1) { fmt = single; }
       el.textContent = fmt.replace("{n}", String(n))
         .replace("{total}", el.getAttribute("data-total") || "");
     } else {
@@ -15193,6 +15203,369 @@
 
 /* ═══ END B10 ═══ */
 
+/* ═══ BEGIN B11 ═════════════════════════════════════════════════════════════
+   B11 · Evolution, extinction and biodiversity (⊕ MRB-248)
+
+   ⚑ NO RANDOMNESS IN ANY OF THE FOUR, and it is load-bearing rather than
+   incidental (schema §0.2). B11 teaches a process people wrongly imagine to be
+   directed; a stochastic bench lets a student watch a run go "the wrong way"
+   and conclude the model is broken, or watch a lucky one and conclude
+   selection is a lottery. Nothing here calls `Math.random`.
+
+   ⚑ AND NO SCIENCE-BEARING STRING IS EVER ASSIGNED TO `textContent` BY THESE
+   FUNCTIONS. Every environment's five rationales, every verdict, every outcome
+   text is in the shipped document, hidden — so a reader with JS off gets the
+   same teaching a reader with JS on does, and the drawn marks `t()` produces
+   never have to survive a `data-` attribute (`_b8_plain`'s hazard).
+
+   ⚑ NO CANVAS, NO rAF, NO TIMER. There is no tick in this unit that would have
+   to test `prefers-reduced-motion` inside itself (contract R4, the b2-03
+   slip); the reduced-motion experience is the complete one (R6). */
+
+  /* ── b11-01 `#s-bench` · advantage-bench ─────────────────────────────── */
+
+  /* ⚖️ A SWITCHER, AND SWITCHING IS THE EXPERIMENT. There is no run button and
+     no reset: five worlds, one set of animals, and the ranking reshuffles as
+     the world changes underneath it.
+
+     ⚠️ AND `seen` NEVER SHRINKS. Design's own predicate counts the truthy keys
+     of a map she only ever adds to, and MRB-208 ruled that the rail records
+     participation — so what ticks here is the number of worlds a student has
+     LOOKED AT, and nothing unticks. Two rail stops read this: `s-bench` and
+     the `s-three` band stop that mirrors it (MRB-249). */
+  function wireAdvantageBench(sec) {
+    var w = sec.querySelector("[data-ab]");
+    if (!w) { return; }
+    var tabs = toArray(w.querySelectorAll("[data-ab-env]"));
+    var panels = toArray(w.querySelectorAll("[data-ab-envpanel]"));
+    if (!tabs.length || !panels.length) { return; }
+
+    var NEED = Number(w.getAttribute("data-threshold")) || 0;
+    var seen = {}, nSeen = 0;
+
+    function show(id) {
+      if (!seen[id]) { seen[id] = true; nSeen += 1; }
+      each(tabs, function (tb) {
+        tb.setAttribute("aria-pressed",
+                        tb.getAttribute("data-ab-env") === id ? "true" : "false");
+      });
+      each(panels, function (p) {
+        setHidden(p, p.getAttribute("data-ab-envpanel") !== id);
+      });
+      setCount(sec, nSeen);
+      markStage(sec, NEED > 0 && nSeen >= NEED);
+    }
+
+    each(tabs, function (tb) {
+      tb.addEventListener("click", function () {
+        show(tb.getAttribute("data-ab-env"));
+      });
+    });
+
+    /* Opens on whichever environment the markup opened on, which is the first
+       — Design's `env: 'winter'` with `seen: { winter: true }`. The count
+       therefore starts at ONE, and `head_counter.start` already put a 1 in the
+       shipped bytes so this repaint changes nothing on screen. */
+    var open = w.querySelector("[data-ab-envpanel]:not([hidden])");
+    show((open || panels[0]).getAttribute("data-ab-envpanel"));
+  }
+
+  /* ── b11-02 `#s-bench` · selection-runner ────────────────────────────── */
+
+  /* ⚖️⚖️ THE RECURRENCE, AND IT IS THE WHOLE MODEL. With pale fraction `p`
+     and the selected bark's two survival rates:
+
+         survivors_pale = p · pale_surv
+         survivors_dark = (1 − p) · dark_surv
+         p′             = survivors_pale / (survivors_pale + survivors_dark)
+
+     Population size is not modelled — only the fraction is carried, which is
+     what the page's own legal line says. No sampling, no drift, no mutation,
+     no `Math.random` (schema §0.2).
+
+     ⚑ AND THE CONTROL SHORT-CIRCUITS RATHER THAN DIVIDING. Equal survival
+     rates mean the proportion sits exactly where it was — but
+     `p·0.7 / (p·0.7 + (1−p)·0.7)` is NOT bit-for-bit `p` in floating point:
+     at p = 0.9 it lands on 0.9000000000000001, and fifty presses of that let
+     the control creep. A control that drifts is a control you have to argue
+     for instead of showing, and this bench's patchy bark is the one panel
+     that shows selection NOT happening. Identical survival is identical
+     survival; the division is what introduces noise the model does not have. */
+  function nrStep(p, bark) {
+    if (bark.control) { return p; }
+    var sp = p * bark.pale, sd = (1 - p) * bark.dark;
+    return sp / (sp + sd);
+  }
+
+  function wireSelectionRunner(sec) {
+    var w = sec.querySelector("[data-nr]");
+    if (!w) { return; }
+    var M = b9Json(w, "data-model");
+    var chart = w.querySelector("[data-nr-chart]");
+    if (!M || !M.barks || !chart) { return; }
+
+    var NEED = Number(w.getAttribute("data-threshold")) || 0;
+    var tabs = toArray(w.querySelectorAll("[data-nr-bark]"));
+    var barkNotes = toArray(w.querySelectorAll("[data-nr-barknote]"));
+    var notes = toArray(w.querySelectorAll("[data-nr-note]"));
+    var cols = toArray(w.querySelectorAll("[data-nr-col]"));
+    var figures = toArray(w.querySelectorAll("[data-nr-series]"));
+    var resetBtn = w.querySelector("[data-nr-reset]");
+
+    var bark = M.opens_on, pale = M.start, gen = 0, everTen = false;
+    var hist = [pale];
+
+    /* ⚖️ SIX BRANCHES, IN DESIGN'S EVALUATION ORDER, FIRST MATCH WINS — with
+       the gen-0 branch SPLIT IN TWO, which is the fix. Her `notes.start` fires
+       on `gen === 0` alone and her reset sets `pale: 0.5, gen: 0`, so pressing
+       *Start again at fifty-fifty* shows a fifty-fifty population under a
+       sentence reading "Nine moths in ten are pale" (schema §3).
+
+       ⚠️ `control` IS TESTED BEFORE THE PERCENTAGES, exactly as Design tests
+       `bark === 'mixed'` before them, and it has to be: on patchy bark started
+       at 90% pale, `palePct > 85` is true from the first frame and the control
+       would never announce itself. */
+    function noteId(palePct, darkPct) {
+      if (gen === 0) { return pale === M.reset ? "reset" : "start"; }
+      if (M.barks[bark].control) { return "control"; }
+      if (darkPct > 85) { return "dark_high"; }
+      if (palePct > 85 && M.barks[bark].pale_favoured) { return "pale_high"; }
+      return "moving";
+    }
+
+    function draw() {
+      var palePct = Math.round(pale * 100), darkPct = 100 - palePct, i;
+      each(tabs, function (tb) {
+        tb.setAttribute("aria-pressed",
+                        tb.getAttribute("data-nr-bark") === bark ? "true" : "false");
+      });
+      each(barkNotes, function (p) {
+        setHidden(p, p.getAttribute("data-nr-barknote") !== bark);
+      });
+      /* The chart's columns are DRAWN, all of them, and this unhides and
+         resizes. Nothing is created, so there is no element churn on a
+         ten-generation press and no way for a column to arrive without the
+         stylesheet's rules on it. */
+      for (i = 0; i < cols.length; i++) {
+        var live = i < hist.length;
+        setHidden(cols[i], !live);
+        if (live) {
+          cols[i].firstChild.style.height = (hist[i] * 100) + "%";
+          cols[i].lastChild.style.height = ((1 - hist[i]) * 100) + "%";
+          /* ⚠️ THE FRACTION AT FULL PRECISION, because the HEIGHT IS NOT
+             READABLE AT FULL PRECISION. `style.height` goes through the
+             CSSOM, which re-serialises a percentage to four decimal places —
+             so the one property the control has to have, that it does not
+             move at all, is invisible through the drawn value. Writing the
+             fraction gives the parity gate something it can actually compare,
+             and it is the model's own number rather than a rendering of it.
+             Nothing reads this at runtime; it exists to be measured. */
+          cols[i].setAttribute("data-nr-pale", String(hist[i]));
+        } else {
+          cols[i].removeAttribute("data-nr-pale");
+        }
+      }
+      each(figures, function (f) {
+        var which = f.getAttribute("data-nr-series");
+        f.textContent = (f.getAttribute("data-label") || "") + " " +
+          (which === "pale" ? palePct : darkPct) + "%";
+      });
+      var want = noteId(palePct, darkPct);
+      each(notes, function (p) {
+        setHidden(p, p.getAttribute("data-nr-note") !== want);
+      });
+      setCount(sec, gen);
+      if (NEED > 0 && gen >= NEED) { everTen = true; }
+      /* ⚠️ MONOTONIC. *Start again at fifty-fifty* sets `gen` back to 0, and
+         Design's own `isDone()` would untick two rail stops with it. MRB-208
+         ruled the rail records participation: a student who has run ten
+         generations has run them, and pressing reset is using the bench, not
+         undoing it. */
+      markStage(sec, everTen);
+    }
+
+    function advance(n) {
+      for (var i = 0; i < n; i += 1) {
+        pale = nrStep(pale, M.barks[bark]);
+        hist.push(pale);
+      }
+      while (hist.length > M.history) { hist.shift(); }
+      gen += n;
+      draw();
+    }
+
+    each(tabs, function (tb) {
+      tb.addEventListener("click", function () {
+        /* ⚖️ SWITCHING BARK DOES NOT TOUCH THE POPULATION, AND THAT IS THE
+           BEST THING ON THIS BENCH. Run it sooty to 99% dark, switch to clean,
+           run it again and watch it come back — which is `notes.pale_high`
+           saying selection has no memory and no direction. */
+        bark = tb.getAttribute("data-nr-bark");
+        draw();
+      });
+    });
+    each(w.querySelectorAll("[data-nr-run]"), function (btn) {
+      btn.addEventListener("click", function () {
+        advance(Number(btn.getAttribute("data-nr-run")) || 1);
+      });
+    });
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        pale = M.reset;
+        gen = 0;
+        hist = [pale];
+        draw();
+      });
+    }
+
+    draw();
+  }
+
+  /* ── b11-03 `#s-bench` · pressure-bench ──────────────────────────────── */
+
+  /* ⚖️ TWO AXES, AND THE COMBINATION IS THE UNIT. What is counted is the PAIR
+     the student is looking at, not the number of buttons pressed — Design's
+     `seen[species + '-' + pressure]`. A bench that counted axis presses would
+     tick its stage for a student who had looked at four species under one
+     pressure and never watched a row change, which is the whole lesson.
+
+     ⚠️ `seen` NEVER SHRINKS, for MRB-208's reason: the rail records
+     participation, and two stops read this marker (MRB-249). */
+  function wirePressureBench(sec) {
+    var w = sec.querySelector("[data-pb]");
+    if (!w) { return; }
+    var spTabs = toArray(w.querySelectorAll("[data-pb-species]"));
+    var prTabs = toArray(w.querySelectorAll("[data-pb-pressure]"));
+    var spPanels = toArray(w.querySelectorAll("[data-pb-speciespanel]"));
+    var prPanels = toArray(w.querySelectorAll("[data-pb-pressurepanel]"));
+    var cells = toArray(w.querySelectorAll("[data-pb-cell]"));
+    if (!spTabs.length || !prTabs.length || !cells.length) { return; }
+
+    var NEED = Number(w.getAttribute("data-threshold")) || 0;
+    var opens = (w.getAttribute("data-opens-on") || "").split("|");
+    var species = opens[0], pressure = opens[1];
+    var seen = {}, nSeen = 0;
+
+    function draw() {
+      var key = species + "|" + pressure;
+      if (!seen[key]) { seen[key] = true; nSeen += 1; }
+      each(spTabs, function (tb) {
+        tb.setAttribute("aria-pressed",
+                        tb.getAttribute("data-pb-species") === species
+                          ? "true" : "false");
+      });
+      each(prTabs, function (tb) {
+        tb.setAttribute("aria-pressed",
+                        tb.getAttribute("data-pb-pressure") === pressure
+                          ? "true" : "false");
+      });
+      each(spPanels, function (p) {
+        setHidden(p, p.getAttribute("data-pb-speciespanel") !== species);
+      });
+      each(prPanels, function (p) {
+        setHidden(p, p.getAttribute("data-pb-pressurepanel") !== pressure);
+      });
+      each(cells, function (c) {
+        setHidden(c, c.getAttribute("data-pb-cell") !== key);
+      });
+      setCount(sec, nSeen);
+      markStage(sec, NEED > 0 && nSeen >= NEED);
+    }
+
+    each(spTabs, function (tb) {
+      tb.addEventListener("click", function () {
+        species = tb.getAttribute("data-pb-species");
+        draw();
+      });
+    });
+    each(prTabs, function (tb) {
+      tb.addEventListener("click", function () {
+        pressure = tb.getAttribute("data-pb-pressure");
+        draw();
+      });
+    });
+
+    draw();
+  }
+
+  /* ── b11-04 `#s-bench` · blight-bench ────────────────────────────────── */
+
+  /* ⚖️ SWITCHING FIELD RE-ARMS THE BLIGHT, AND NOTHING UNTICKS. Design's tab
+     handler is `{ field: x.id, released: false }` and her *Clear the field* is
+     `{ released: false }` — `tried` is cleared by neither, so a student who
+     has released the blight on two fields keeps both. MRB-208: the rail
+     records participation, and two stops read this marker (MRB-249). */
+  function wireBlightBench(sec) {
+    var w = sec.querySelector("[data-bb]");
+    if (!w) { return; }
+    var tabs = toArray(w.querySelectorAll("[data-bb-field]"));
+    var panels = toArray(w.querySelectorAll("[data-bb-fieldpanel]"));
+    var runBtn = w.querySelector("[data-bb-run]");
+    var clearBtn = w.querySelector("[data-bb-clear]");
+    if (!tabs.length || !panels.length || !runBtn) { return; }
+
+    var NEED = Number(w.getAttribute("data-threshold")) || 0;
+    var RUN = w.getAttribute("data-run-label") || "";
+    var RAN = w.getAttribute("data-ran-label") || "";
+    var field = (panels[0] || {}).getAttribute
+      ? panels[0].getAttribute("data-bb-fieldpanel") : "";
+    var open = w.querySelector("[data-bb-fieldpanel]:not([hidden])");
+    if (open) { field = open.getAttribute("data-bb-fieldpanel"); }
+    var released = false, tried = {}, nTried = 0;
+
+    function draw() {
+      each(tabs, function (tb) {
+        tb.setAttribute("aria-pressed",
+                        tb.getAttribute("data-bb-field") === field ? "true" : "false");
+      });
+      each(panels, function (p) {
+        var on = p.getAttribute("data-bb-fieldpanel") === field;
+        setHidden(p, !on);
+        /* ⚖️ THE SURVIVOR ROW HAS TWO DRAWN STATES and the release chooses
+           between them. Before, every plant is standing and the bar is full;
+           after, it is whatever the resistant varieties left. The student
+           watches a full field become an empty one rather than watching an
+           empty one appear. */
+        each(p.querySelectorAll("[data-bb-surv]"), function (row) {
+          setHidden(row, row.getAttribute("data-bb-surv") !==
+                    (on && released ? "after" : "before"));
+        });
+        setHidden(p.querySelector("[data-bb-verdict]"), !(on && released));
+      });
+      runBtn.textContent = released ? RAN : RUN;
+      runBtn.disabled = released;
+      setCount(sec, nTried);
+      markStage(sec, NEED > 0 && nTried >= NEED);
+    }
+
+    each(tabs, function (tb) {
+      tb.addEventListener("click", function () {
+        field = tb.getAttribute("data-bb-field");
+        released = false;
+        draw();
+      });
+    });
+    runBtn.addEventListener("click", function () {
+      /* The gate in the handler as well as on the element: `disabled` is the
+         drawn half, and this is the half a synthetic click cannot get past. */
+      if (released) { return; }
+      released = true;
+      if (!tried[field]) { tried[field] = true; nTried += 1; }
+      draw();
+    });
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        released = false;
+        draw();
+      });
+    }
+
+    draw();
+  }
+
+/* ═══ END B11 ═══ */
+
+
 
 
   function wireInstruments(root) {
@@ -15449,6 +15822,16 @@
     each(root.querySelectorAll("[data-pcblock]"), wirePeaCross);
     each(root.querySelectorAll("[data-scblock]"), wireSpeciesCases);
     // ═══ END B10 wiring ═══
+    // ═══ BEGIN B11 wiring ═══
+    // Four instruments, four markers. A kind that reaches the dispatch table
+    // and not this list ships as static markup that never responds — the
+    // contract §6.6 failure, and this list is the JS half of the gate that
+    // catches it.
+    each(root.querySelectorAll("[data-abblock]"), wireAdvantageBench);
+    each(root.querySelectorAll("[data-nrblock]"), wireSelectionRunner);
+    each(root.querySelectorAll("[data-pbblock]"), wirePressureBench);
+    each(root.querySelectorAll("[data-bbblock]"), wireBlightBench);
+    // ═══ END B11 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
   }
