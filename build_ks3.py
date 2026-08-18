@@ -21750,8 +21750,6 @@ def landing(units, browse):
 <section class="ks3-hub-sec">
   <div class="ks3-sec-head">
     <h2>Pick your year</h2>
-    <p>Each year is split into the six half terms of the school year, with all
-       three sciences running side by side.</p>
   </div>
   <ul class="ks3-unit-grid is-browse">%(years)s</ul>
 </section>
@@ -21759,8 +21757,6 @@ def landing(units, browse):
 <section class="ks3-hub-sec">
   <div class="ks3-sec-head">
     <h2>Or go by subject</h2>
-    <p>Same lessons, same pages — ordered by how the science builds up instead
-       of by school term.</p>
   </div>
   <ul class="ks3-unit-grid is-browse">%(subjects)s</ul>
 </section>""" % {
