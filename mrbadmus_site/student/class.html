@@ -893,11 +893,14 @@
       '<div class="stats-strip">' + tilesHtml + '</div>';
   }
 
-  // ── Start-link builder (env-aware; assignment_id is informational
-  //    until the weekly-challenge page learns to route on it) ── */
+  // ── Start-link builder (env-aware). MRB-238 — routes to the dedicated
+  //    take-and-submit page, not weekly-challenge.html: that page's whole
+  //    flow assumes one global AI-generated challenge, and an assignment's
+  //    questions are references into the KS3 lesson tree with their own
+  //    submission target (assignment_submissions / assignment_question_attempts). ── */
   function buildStartUrl(assignmentId) {
     const env = (window.MrBadmusConfig && window.MrBadmusConfig.environment) === 'test' ? '&env=test' : '';
-    return '/weekly-challenge.html?assignment_id=' + encodeURIComponent(assignmentId) + env;
+    return '/student/assignment.html?assignment_id=' + encodeURIComponent(assignmentId) + env;
   }
 
   function buildAssignmentCardHtml(card, statusInfo, opts) {

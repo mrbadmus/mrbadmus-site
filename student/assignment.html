@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#F7F1E5"/>
+<title>Assignment — Mr Badmus AI</title>
+<link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="stylesheet" href="/shared/tokens.css?v=475c2efb"/>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--text); font-family: var(--font-sans);
+    min-height: 100vh; padding: 40px 20px 80px; display: none;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; }
+  .state { display: none; text-align: center; padding: 60px 20px; color: var(--muted); }
+  .state.show { display: block; }
+  h1 { font-family: var(--font-serif); font-size: 1.8rem; margin: 0 0 6px; }
+  .meta { color: var(--muted); font-size: .95rem; margin-bottom: 28px; }
+  .q-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 22px; margin-bottom: 18px;
+  }
+  .q-index { font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+  .q-text { font-weight: 600; font-size: 1.05rem; margin-bottom: 16px; }
+  .q-opt {
+    display: block; width: 100%; text-align: left; padding: 12px 16px; margin-bottom: 8px;
+    border: 1px solid var(--border); border-radius: 10px; background: var(--bg);
+    color: var(--text); font: inherit; cursor: pointer;
+  }
+  .q-opt:hover:not(:disabled) { border-color: var(--science); }
+  .q-opt.is-chosen { border-color: var(--science); background: var(--sunken); }
+  .q-opt.is-correct { border-color: #12A150; background: #E6F7EC; }
+  .q-opt.is-wrong { border-color: var(--danger); background: #FDECEA; }
+  .q-opt:disabled { cursor: default; }
+  .submit-bar { text-align: center; margin-top: 24px; }
+  button.primary {
+    background: var(--science); color: #fff; border: none; border-radius: 999px;
+    padding: 14px 32px; font: inherit; font-weight: 700; cursor: pointer;
+  }
+  button.primary:disabled { opacity: .5; cursor: not-allowed; }
+  .results { text-align: center; padding: 40px 20px; }
+  .results .score { font-family: var(--font-serif); font-size: 3rem; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="state-loading" class="state show">Loading assignment…</div>
+  <div id="state-not-authorised" class="state">You don't have access to this assignment.</div>
+  <div id="state-not-found" class="state">This assignment couldn't be found.</div>
+  <div id="state-error" class="state">Something went wrong loading this assignment.</div>
+  <div id="state-loaded"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/shared/config.js"></script>
+<script src="/shared/student-guard.js"></script>
+<script>
+(function () {
+  const STATES = {
+    loading: document.getElementById('state-loading'),
+    loaded: document.getElementById('state-loaded'),
+    notFound: document.getElementById('state-not-found'),
+    notAuthorised: document.getElementById('state-not-authorised'),
+    error: document.getElementById('state-error'),
+  };
+  function showState(name) {
+    document.body.style.display = 'block';
+    Object.keys(STATES).forEach(function (k) {
+      const el = STATES[k];
+      if (k === 'loaded') { el.style.display = name === 'loaded' ? 'block' : 'none'; }
+      else { el.classList.toggle('show', k === name); }
+    });
+  }
+
+  function escapeHtml(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const assignmentId = params.get('assignment_id');
+
+  // MRB-238 — assignment_questions stores only a REFERENCE (source_ref +
+  // rung), never question text, per MRB-239's ruling. This page is the
+  // resolution step: it fetches the referenced KS3 lesson page itself and
+  // reads the live-authored rung markup straight out of its DOM, so the
+  // question a student sees here is never a second copy that can drift
+  // from the lesson. Only page-marked (MCQ) rungs resolve today — the two
+  // self-marked written rungs need a teacher-marking surface that doesn't
+  // exist yet, so a referenced self-marked rung is skipped with a note
+  // rather than rendered wrong.
+  async function resolveQuestion(sourceRef, rung) {
+    const url = '/ks3/' + sourceRef + '.html';
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const html = await res.text();
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const rungEl = doc.querySelector('.ks3-rung[data-rung="' + rung + '"]');
+    if (!rungEl) return null;
+    const hasOptions = rungEl.querySelectorAll('.ks3-option').length > 0;
+    if (!hasOptions) return { unsupported: true };
+    const heading = rungEl.querySelector('.ks3-rung-q') || rungEl.querySelector('h3');
+    const options = Array.from(rungEl.querySelectorAll('.ks3-option')).map(function (opt) {
+      const mark = opt.querySelector('.ks3-opt-mark');
+      const clone = opt.cloneNode(true);
+      if (clone.querySelector('.ks3-opt-mark')) clone.querySelector('.ks3-opt-mark').remove();
+      return { text: clone.textContent.trim(), correct: opt.getAttribute('data-correct') === '1' };
+    });
+    return {
+      text: heading ? heading.textContent.trim() : ('Question (' + rung + ')'),
+      options: options
+    };
+  }
+
+  async function main() {
+    MrBadmusStudentGuard.requireStudentRole({
+      onAllowed: async function (ctx) {
+        if (!assignmentId) { showState('notFound'); return; }
+        const sb = MrBadmusStudentGuard.getClient();
+
+        const [{ data: assignment, error: aErr }, { data: questions, error: qErr }] = await Promise.all([
+          sb.from('assignments').select('id, title, instructions, due_at, class_id').eq('id', assignmentId).maybeSingle(),
+          sb.from('assignment_questions').select('id, position, source_ref, rung').eq('assignment_id', assignmentId).order('position'),
+        ]);
+
+        if (aErr || qErr) { console.error(aErr || qErr); showState('error'); return; }
+        if (!assignment) { showState('notAuthorised'); return; }
+
+        const { data: existing } = await sb.from('assignment_submissions')
+          .select('id, score, max_score, submitted_at')
+          .eq('assignment_id', assignmentId).eq('student_id', ctx.user.id).maybeSingle();
+
+        if (existing && existing.submitted_at) {
+          renderResults(existing.score, existing.max_score);
+          showState('loaded');
+          return;
+        }
+
+        const resolved = await Promise.all(
+          (questions || []).map(function (q) { return resolveQuestion(q.source_ref, q.rung).then(function (r) { return { q: q, r: r }; }); })
+        );
+        const takeable = resolved.filter(function (x) { return x.r && !x.r.unsupported; });
+
+        renderQuiz(assignment, takeable, ctx.user.id);
+        showState('loaded');
+      },
+      onDenied: function () { showState('notAuthorised'); },
+    });
+  }
+
+  function renderResults(score, maxScore) {
+    STATES.loaded.innerHTML =
+      '<div class="results"><p class="score">' + escapeHtml(score) + ' / ' + escapeHtml(maxScore) + '</p>' +
+      '<p>You\'ve already submitted this assignment.</p></div>';
+  }
+
+  function renderQuiz(assignment, takeable, studentId) {
+    if (!takeable.length) {
+      STATES.loaded.innerHTML = '<div class="results"><p>Nothing to take yet — ask your teacher.</p></div>';
+      return;
+    }
+    const answers = new Array(takeable.length).fill(null);
+    const startedAt = Date.now();
+
+    let html = '<h1>' + escapeHtml(assignment.title) + '</h1>';
+    if (assignment.instructions) html += '<p class="meta">' + escapeHtml(assignment.instructions) + '</p>';
+    takeable.forEach(function (item, i) {
+      html += '<div class="q-card" data-qi="' + i + '">' +
+        '<div class="q-index">Question ' + (i + 1) + ' of ' + takeable.length + '</div>' +
+        '<div class="q-text">' + escapeHtml(item.r.text) + '</div>' +
+        item.r.options.map(function (opt, oi) {
+          return '<button type="button" class="q-opt" data-oi="' + oi + '">' + escapeHtml(opt.text) + '</button>';
+        }).join('') +
+        '</div>';
+    });
+    html += '<div class="submit-bar"><button type="button" class="primary" id="submit-btn" disabled>Submit</button></div>';
+    STATES.loaded.innerHTML = html;
+
+    Array.from(document.querySelectorAll('.q-card')).forEach(function (card) {
+      const qi = Number(card.getAttribute('data-qi'));
+      const opts = Array.from(card.querySelectorAll('.q-opt'));
+      opts.forEach(function (btn, oi) {
+        btn.addEventListener('click', function () {
+          if (answers[qi]) return; // one attempt per question, matches the KS3 ladder's rule
+          const correctOpt = takeable[qi].r.options.filter(function (o) { return o.correct; })[0];
+          answers[qi] = {
+            selected_answer: takeable[qi].r.options[oi].text,
+            correct_answer: correctOpt ? correctOpt.text : null,
+            is_correct: !!takeable[qi].r.options[oi].correct,
+          };
+          opts.forEach(function (b, i2) {
+            b.disabled = true;
+            if (takeable[qi].r.options[i2].correct) b.classList.add('is-correct');
+            else if (i2 === oi) b.classList.add('is-wrong');
+          });
+          document.getElementById('submit-btn').disabled = answers.some(function (a) { return !a; });
+        });
+      });
+    });
+
+    document.getElementById('submit-btn').addEventListener('click', function () {
+      submit(assignment, takeable, answers, studentId, startedAt);
+    });
+  }
+
+  async function submit(assignment, takeable, answers, studentId, startedAt) {
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+    const sb = MrBadmusStudentGuard.getClient();
+    const { data: { session } } = await sb.auth.getSession();
+    const token = session ? session.access_token : null;
+    const totalTimeSeconds = Math.round((Date.now() - startedAt) / 1000);
+
+    try {
+      const res = await fetch('https://mrbadmus-backend.onrender.com/api/assignment-submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({
+          assignment_id: assignment.id,
+          total_time_seconds: totalTimeSeconds,
+          answers: takeable.map(function (item, i) {
+            return {
+              question_index: i,
+              question_text: item.r.text,
+              selected_answer: answers[i].selected_answer,
+              correct_answer: answers[i].correct_answer,
+              is_correct: answers[i].is_correct,
+            };
+          }),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'submit failed');
+      renderResults(data.score, data.max_score);
+    } catch (e) {
+      console.error(e);
+      btn.disabled = false;
+      btn.textContent = 'Submit (try again)';
+    }
+  }
+
+  main();
+})();
+</script>
+</body>
+</html>
