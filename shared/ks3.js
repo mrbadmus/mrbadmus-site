@@ -53,6 +53,53 @@
     } catch (e) { /* private mode — the lesson works, it just doesn't save */ }
   }
 
+  /* ── MRB-235: record a finished ladder server-side ───────────────
+     KS3 lesson pages carry no Supabase SDK (mirrors mrbadmus.v2.js's
+     approach on topic pages), so the session token is read straight out
+     of the same localStorage blob the SDK itself writes. A logged-out
+     student has no token — the ladder still works, nothing is sent, and
+     no error is shown, exactly as a logged-out chat degrades. subject /
+     topic / subtopic come from the URL path (/ks3/<discipline>/<unit>/
+     <lesson>.html), the same stable identifier assignment_questions'
+     source_ref uses, because both need a lesson address that survives a
+     content regeneration untouched by any database id. */
+  function submitLadderScore(slug, got, total, rungs) {
+    var token = null;
+    try {
+      var raw = window.localStorage.getItem("sb-urklkrwevjtlfbwnipjn-auth-token");
+      token = raw && JSON.parse(raw).access_token;
+    } catch (e) { /* private mode, or no session — degrade silently */ }
+    if (!token) { return; }
+
+    var parts = window.location.pathname.split("/").filter(Boolean);
+    // .../ks3/<discipline>/<unit>/<lesson>.html
+    var ks3At = parts.indexOf("ks3");
+    var discipline = ks3At >= 0 ? parts[ks3At + 1] : "";
+    var unit = ks3At >= 0 ? parts[ks3At + 2] : "";
+
+    var attempts = rungs.map(function (r, i) {
+      return {
+        question_index: i,
+        question_text: r.key,
+        selected_answer: r.selectedText || "",
+        correct_answer: r.correctText || "",
+        is_correct: !!r.met
+      };
+    });
+
+    try {
+      fetch("https://mrbadmus-backend.onrender.com/api/quiz-score", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+        body: JSON.stringify({
+          subject: discipline, topic: unit, subtopic: slug,
+          score: got, max_score: total,
+          attempts: attempts
+        })
+      }).catch(function () { /* best-effort — the ladder itself never waits on this */ });
+    } catch (e) { /* private mode, or fetch unavailable — degrade silently */ }
+  }
+
   /* ── the visit log (MRB-212) ────────────────────────────────────
      ks3_visits — { "<slug>": { t: <epoch ms>, done: <bool> } }
 
@@ -284,6 +331,7 @@
     var rungs = [];                                  // scorable rungs, page order
     var work = readStore(WORK_PREFIX + slug) || {};
     var WHO = "";
+    var submitted = false;
 
     // The best is read ONCE, at load, and the score line is compared against
     // that snapshot rather than against a value this sitting keeps raising.
@@ -374,6 +422,14 @@
          off" is about unfinished work, not about marks. */
       if (resolved) { markVisit(slug, true); }
       setHidden(retryWrap, misses === 0);
+      // MRB-235 — record the attempt server-side once all four rungs are
+      // resolved. Fires once per page load: `submitted` guards a re-fire
+      // when "Retry my misses" resolves the ladder a second time in the
+      // same sitting, which would otherwise double-count the attempt.
+      if (resolved === total && !submitted) {
+        submitted = true;
+        submitLadderScore(slug, got, total, rungs);
+      }
     }
 
     /* ── rungs the page marks: one attempt, then locked ── */
@@ -415,7 +471,12 @@
           rung.setAttribute("data-locked", "1");
           var correct = btn.getAttribute("data-correct") === "1";
           rec.met = correct;
-
+          rec.selectedText = (btn.textContent || "").trim();
+          each(options, function (b) {
+            if (b.getAttribute("data-correct") === "1") {
+              rec.correctText = (b.textContent || "").trim();
+            }
+          });
           each(options, function (b) {
             b.disabled = true;
             var mark = b.querySelector(".ks3-opt-mark");
@@ -466,6 +527,8 @@
         var n = 0, all = boxes.length;
         boxes.forEach(function (b) { if (b.checked) { n += 1; } });
         rec.met = all > 0 && n === all;
+        rec.selectedText = answer ? answer.value : "";
+        rec.correctText = n + " of " + all + " criteria ticked";
         if (!tally) { return; }
         tally.textContent = rec.met
           ? "All " + all + " ticked — rung met."
