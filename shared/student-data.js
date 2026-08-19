@@ -42,21 +42,29 @@
  *   - The function membership-gates internally — non-members get
  *     { eligible: [], is_empty: true, empty_reason: 'not_member' }.
  *
- * Subject pill rule — ⊕ MRB-263 (Mide, 19 Aug 2026). It used to branch on
- * `science_pathway`, which is nullable and null on real classes, so a card
- * could silently lose its pill. It now names the class's SUBJECT:
- *   KS3                  → 'Science'          / var(--science)
- *   KS4 name has /Sc     → 'Combined Science' / var(--science)
- *   KS4 name has /Ph     → 'Physics'          / var(--physics)
- *   KS4 name has /Ch|/Bi → 'Chemistry' | 'Biology' / their own colour
- *   anything else        → null pill
+ * Subject pill rule — ⊕ MRB-265 (Mide, 19 Aug 2026). READ FROM
+ * `class_teachers.subject_id`, exactly as the teacher view reads it:
+ * filter the links that carry a subject, take the lowest subject_id for a
+ * deterministic tie-break, use that subject's name and colour. No links
+ * visible → no pill.
  *
- * The teacher view reads the same fact from `class_teachers.subject_id`.
- * A student cannot: there is no student-read policy on that table, which
- * this file has recorded since v1. The two derivations were checked equal
- * against all 15 production classes. They collapse into one the day a
- * `class_teachers_member_read` policy (or a `primary_subject_id` column on
- * `classes`) exists — see `deriveStudentPill`.
+ * ⊕ This SUPERSEDES the rule MRB-263 left here that morning, and the note
+ * that came with it. That rule parsed the subject out of `classes.name`
+ * (`/Sc` → Combined Science, `/Ph` → Physics, …) because a student could
+ * not read `class_teachers` — there was no policy for it, which this file
+ * had recorded since v1 — and it named the fix as one policy. The policy
+ * now exists (migration 20260819154015), so the second derivation is gone
+ * and `classes.name` stops being load-bearing on the student side. That
+ * was the real cost: the roster importer already find-or-creates a class
+ * by exact name match, so a rename could change what a student's card
+ * claimed the class was.
+ *
+ * ⚠️ THE POLICY GRANTS THE LINK, NOT THE TEACHER'S NAME. A student can now
+ * read `class_teachers` for their own classes and join `subjects` through
+ * it, but `profiles` has no student-read policy for a TEACHER's row, so the
+ * teacher's name is still unreadable from here. Mide's 19 Aug ruling — that
+ * students should see who teaches them — is therefore only half delivered;
+ * the other half needs a second policy on `profiles`. See MRB-265.
  */
 
 window.MrBadmusStudentData = (function () {
@@ -118,55 +126,66 @@ window.MrBadmusStudentData = (function () {
     }, null);
   }
 
-  /* Student-side pill derivation. See JSDoc above.
-     ⊕ MRB-263 (Mide, 19 Aug 2026) — IT USED TO READ `science_pathway`, and
-     for the same reason the teacher side did: nullable, and null on real
-     classes, so a card silently lost its pill.
+  /* Student-side pill derivation.
 
-     ⚠️ THE RULED SOURCE IS `class_teachers.subject_id`, AND A STUDENT
-     CANNOT READ IT. There is no student-read policy on `class_teachers` in
-     production — only `class_teachers_self_read` (teacher_id = me),
-     `_admin_read`, `_hod_read` and `_operator_read`. The JSDoc at the top
-     of this file has said so since v1 and named the two ways out: a
-     `primary_subject_id` column on `classes`, or a SECURITY DEFINER
-     helper. Both are DDL, and no DDL was authorised for this change.
+     ⊕ MRB-265 (Mide, 19 Aug 2026) — THE NAME-PARSE IS GONE. This used to
+     read the subject out of `classes.name`, pulling `Sc` / `Ph` / `Ch` /
+     `Bi` from `8r/Sc1` with a regex, because a student could not read
+     `class_teachers` and the ruled source lives there. The comment that
+     stood here said so and named the fix: one policy. That policy now
+     exists — `class_teachers_member_read`, migration 20260819154015 — so
+     the subject is read from `class_teachers.subject_id` on both sides of
+     the app and `classes.name` stops being load-bearing here.
 
-     So the subject is derived here from the two class fields a student CAN
-     read — `key_stage` and `name` — using the naming convention MRB-263
-     fixed in place: year, band, `/`, subject code, set. `Sc` is combined
-     science, `Ph` is physics only. This is deliberately the SAME FACT the
-     teacher side reads out of `class_teachers`, and the equivalence was
-     checked against production before it shipped: all 15 classes, the
-     name-derived subject and `class_teachers.subject_id` agree, 15 of 15.
+     That matters beyond tidiness. The parse made the class NAME carry
+     meaning in a second place, and the roster importer already
+     find-or-creates a class by exact name match (CLAUDE.md), so a rename
+     could quietly change what subject a student's card claimed. One fact,
+     one derivation, and it is now the same derivation `derivePill` uses in
+     teacher-data.js — same filter, same lowest-subject_id tie-break, same
+     colour lookup — so a class cannot show one subject to its teacher and
+     a different one to the students in it.
 
-     ⚠️ IT IS STILL A SECOND DERIVATION OF ONE FACT, and it is a cost, not
-     a design: it makes `classes.name` load-bearing in a second place (the
-     roster importer already find-or-creates on it — see CLAUDE.md). The
-     fix is one policy — a `class_teachers_member_read` letting a student
-     read the links for classes they belong to — after which this function
-     should read the subject the same way `derivePill` does, and this
-     comment should go with it. Until then a class named off-convention
-     gets no pill rather than a wrong one, which is the safe direction. */
-  function deriveStudentPill(klass) {
-    const name = classSubjectName(klass);
-    if (!name) return { pill_label: null, pill_colour_var: null };
+     ⚠️ NO ROWS MEANS NO PILL, not a guessed one. A student who cannot see
+     any link for the class — the class has no teacher assigned yet, or the
+     membership lapsed — gets a card with no pill, which is what the parse
+     did for an off-convention name and the same safe direction. */
+  function deriveStudentPill(klass, teacherRowsForClass) {
+    const sorted = (teacherRowsForClass || [])
+      .filter(function (r) { return r.subject_id && r.subject && r.subject.name; })
+      .slice()
+      .sort(function (a, b) {
+        if (a.subject_id < b.subject_id) return -1;
+        if (a.subject_id > b.subject_id) return 1;
+        return 0;
+      });
+    if (sorted.length === 0) return { pill_label: null, pill_colour_var: null };
+    const name = sorted[0].subject.name;
     return { pill_label: name, pill_colour_var: subjectColourVar(name) };
   }
 
-  // The convention, read as a subject. Anything unrecognised returns null,
-  // so an off-convention name shows no pill rather than the wrong one.
-  function classSubjectName(klass) {
-    if (!klass) return null;
-    if (klass.key_stage === 'KS3') return 'Science';
-    if (klass.key_stage !== 'KS4') return null;
-    const code = /\/([A-Za-z]{2})/.exec(klass.name || '');
-    switch (code && code[1].toLowerCase()) {
-      case 'sc': return 'Combined Science';
-      case 'ph': return 'Physics';
-      case 'ch': return 'Chemistry';
-      case 'bi': return 'Biology';
-      default:   return null;
+  /* The links for one or many classes, keyed by class_id.
+
+     ⚠️ A FAILURE HERE IS NOT FATAL. The pill is a label on a card; the
+     assignments under it are the page. If the query fails the classes still
+     render, without pills, exactly as they do for a class with no teacher
+     assigned — logged, never thrown. */
+  async function loadClassTeacherLinks(sb, classIds) {
+    const byClass = {};
+    if (!classIds || classIds.length === 0) return byClass;
+    const res = await sb
+      .from('class_teachers')
+      .select('class_id, subject_id, subject:subject_id ( name )')
+      .in('class_id', classIds);
+    if (res.error) {
+      console.error('[student-data] class_teachers query failed', res.error);
+      return byClass;
     }
+    (res.data || []).forEach(function (row) {
+      if (!byClass[row.class_id]) byClass[row.class_id] = [];
+      byClass[row.class_id].push(row);
+    });
+    return byClass;
   }
 
   // Subject-colour top stripe (Phase 3 visual differentiator). Currently
@@ -537,7 +556,9 @@ window.MrBadmusStudentData = (function () {
       leaderboard.eligible.some(function (e) { return e.student_id === viewingStudentId; })
     );
 
-    const pill = deriveStudentPill(klass);
+    // ⊕ MRB-265 — the subject comes from the link table now, not the name.
+    const teacherLinks = await loadClassTeacherLinks(sb, [klass.id]);
+    const pill = deriveStudentPill(klass, teacherLinks[klass.id]);
     const stripe_colour_var = deriveStripeColourVar(klass);
 
     return {
@@ -695,8 +716,12 @@ window.MrBadmusStudentData = (function () {
       throw classRes.error;
     }
 
+    // ⊕ MRB-265 — one query for every class on the picker, not one each.
+    const teacherLinks = await loadClassTeacherLinks(
+      sb, (classRes.data || []).map(function (k) { return k.id; }));
+
     return (classRes.data || []).map(function (k) {
-      const pill = deriveStudentPill(k);
+      const pill = deriveStudentPill(k, teacherLinks[k.id]);
       return {
         id: k.id,
         name: k.name,
