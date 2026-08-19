@@ -168,8 +168,8 @@ QUESTIONS = [
              "why": "Heating does not create sugar. The lactose was in the milk "
                     "before either tube went in the bath — what changed is how "
                     "far the reaction was allowed to get."},
-            {"text": "Both tubes came from the same milk — the colour moved "
-                     "further because it was heated for longer.",
+            {"text": "Both tubes came from the same milk — the second was "
+                     "simply heated for longer.",
              "correct": True},
             {"text": "Orange is not a Benedict's colour, so the first tube must "
                      "have been contaminated.",
@@ -291,8 +291,8 @@ QUESTIONS = [
              "why": "Every food on the bench is tested in solution — "
                     "dissolving is part of the method, not a barrier to it. "
                     "Glucose stirred into water goes brick red."},
-            {"text": "Caster sugar is sucrose, which is not a reducing sugar, "
-                     "so Benedict's cannot detect it.",
+            {"text": "Caster sugar is sucrose, a non-reducing sugar, so "
+                     "Benedict's stays blue.",
              "correct": True},
             {"text": "The tube was not heated for long enough to reach brick "
                      "red.",

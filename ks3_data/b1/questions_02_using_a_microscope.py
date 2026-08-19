@@ -40,8 +40,8 @@ QUESTIONS = [
              "why": "The lamp is under the stage, which is why the slide is "
                     "clipped over the hole in the middle. The light travels up "
                     "through the specimen, so anything thick simply blocks it."},
-            {"text": "Light has to pass through the specimen, and only the skin "
-                     "is thin enough to let it through.",
+            {"text": "Light has to pass through the specimen, and only the "
+                     "skin is thin enough.",
              "correct": True},
             {"text": "Only the skin of an onion is made of cells, so the rest "
                      "is not worth looking at.",

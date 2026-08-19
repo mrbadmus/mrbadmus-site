@@ -178,7 +178,7 @@ QUESTIONS = [
                 "carbon dioxide made compare?",
         "options": [
             {"text": "The same mass is made both times. Only how much of it "
-                     "stays on the balance changes.",
+                     "escapes changes.",
              "correct": True},
             {"text": "Less is made in the sealed flask, because the bung stops "
                      "it forming.",
@@ -352,8 +352,8 @@ QUESTIONS = [
              "why": "You can tell, from the open run. Same chemicals, same "
                     "reaction, same mass of gas — the bung changes only where "
                     "that gas ends up."},
-            {"text": "2.20 g. The same reaction makes the same gas; the bung "
-                     "just keeps it on the balance.",
+            {"text": "2.20 g. The same reaction makes the same gas; the "
+                     "bung keeps it in.",
              "correct": True},
         ],
         "figure": None,

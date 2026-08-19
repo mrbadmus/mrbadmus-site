@@ -248,9 +248,8 @@ QUESTIONS = [
              "why": "It is not a matter of degree at all. A fixed joint has "
                     "no range to be stiff in: the bones interlock and are "
                     "effectively one bone."},
-            {"text": "They are different shapes, not different settings: a "
-                     "groove allows one direction, an interlocking seam "
-                     "allows none.",
+            {"text": "Different shapes, not settings: a groove allows one "
+                     "direction, an interlocking seam none.",
              "correct": True},
             {"text": "A fixed joint does bend, but only in a baby, so "
                      "\"stiff\" is the right word for an adult one.",
@@ -276,8 +275,8 @@ QUESTIONS = [
              "why": "The elbow is a hinge. It bends and straightens along one "
                     "line and does not turn at all — which is why you could "
                     "keep it still and still turn the screwdriver."},
-            {"text": "A pivot joint between the two bones of the forearm, one "
-                     "of them turning inside a ring of ligament.",
+            {"text": "A pivot joint between the two forearm bones, one turning "
+                     "inside a ring of ligament.",
              "correct": True},
             {"text": "The shoulder, since it is the only joint in the whole "
                      "arm that is able to rotate.",
@@ -330,9 +329,8 @@ QUESTIONS = [
                 "the four types. A student says that shows the four-type "
                 "model is not worth much. What is the better answer?",
         "options": [
-            {"text": "The model still sorts most of the skeleton, and the "
-                     "joints it fails on are the ones worth looking at "
-                     "properly.",
+            {"text": "The model sorts most of the skeleton, and the joints it "
+                     "fails on are the ones worth studying.",
              "correct": True},
             {"text": "The thumb joint is really a ball and socket, so the "
                      "four types do cover it after all.",
@@ -374,9 +372,8 @@ QUESTIONS = [
              "why": "Stretched ligaments add no direction; they leave the "
                     "joint less able to resist. This is about feeding the "
                     "cartilage, not about range."},
-            {"text": "Cartilage is fed by fluid squeezed through it as the "
-                     "joint is loaded and unloaded, so using it is the only "
-                     "way to feed it.",
+            {"text": "Cartilage is fed by fluid squeezed through it each time "
+                     "the joint is loaded and unloaded.",
              "correct": True},
             {"text": "Moving the joint builds the muscles round it, and the "
                      "muscles are what hold the two bones together.",

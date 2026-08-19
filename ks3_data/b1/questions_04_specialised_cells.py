@@ -137,8 +137,8 @@ QUESTIONS = [
              "why": "A vacuole holds cell sap and keeps a plant cell firm. It "
                     "stores no energy, and animal cells have no permanent "
                     "vacuole anyway."},
-            {"text": "Mitochondria, because movement costs energy and that is "
-                     "where it is released from food.",
+            {"text": "Mitochondria, because movement costs energy and food "
+                     "releases it there.",
              "correct": True},
         ],
         "figure": None,
@@ -248,8 +248,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Same volume means the same room inside. Shape changes "
                     "how much surface the cell has, not how much fits in it."},
-            {"text": "A ball would have more surface, so the oxygen would "
-                     "leak back out of it.",
+            {"text": "A ball of the same volume would have more surface, so "
+                     "oxygen would leak back out of it.",
              "correct": False,
              "why": "It is the other way round: rounding something up gives a "
                     "given volume the smallest surface it can possibly have."},
@@ -260,7 +260,7 @@ QUESTIONS = [
                     "shape the cell is built into, not a dent left by "
                     "something missing."},
             {"text": "More surface for the same volume, and floppy enough to "
-                     "fold through narrow vessels.",
+                     "fold through capillaries.",
              "correct": True},
         ],
         "figure": None,
@@ -306,8 +306,8 @@ QUESTIONS = [
              "why": "A sperm cell does have a nucleus — delivering what is "
                     "inside it is the entire job. It is the red blood cell "
                     "that destroyed its own."},
-            {"text": "The red blood cell destroys its nucleus; the sperm cell "
-                     "keeps one with half a set of chromosomes.",
+            {"text": "A red blood cell destroys its nucleus; a sperm cell "
+                     "keeps half a set of chromosomes.",
              "correct": True},
             {"text": "Both keep a nucleus with half a set of chromosomes, "
                      "ready to be joined to another half.",

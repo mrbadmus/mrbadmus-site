@@ -115,8 +115,8 @@ QUESTIONS = [
                      "period.", "correct": False,
              "why": "Fibre is never respired. Only carbohydrate, lipid and "
                     "protein release energy, and fibre is not even digested."},
-            {"text": "It adds bulk, so the gut muscles have something to grip "
-                     "and push against.", "correct": True},
+            {"text": "It adds bulk for the gut muscles to grip and push "
+                     "against.", "correct": True},
             {"text": "It coats the gut wall and stops harmful bacteria "
                      "getting in.", "correct": False,
              "why": "Fibre does nothing of the kind. It adds bulk, and the "
@@ -147,8 +147,8 @@ QUESTIONS = [
              "why": "These are daily targets. A 13-year-old needs about "
                     "2000 g of water and about 0.2 g of vitamins on the same "
                     "day, not in different weeks."},
-            {"text": "Balanced means seven separate targets met at once, and "
-                     "those targets are very different sizes.",
+            {"text": "Balanced means seven separate targets, of very "
+                     "different sizes, all met at once.",
              "correct": True},
             {"text": "Balanced does mean equal amounts, as long as you count "
                      "energy rather than mass.", "correct": False,
@@ -209,7 +209,7 @@ QUESTIONS = [
                     "carbohydrate. More energy per gram means less mass is "
                     "needed."},
             {"text": "So a small mass of lipid brings in a lot of energy, and "
-                     "it is easy to take in more than you need.",
+                     "is easy to overeat.",
              "correct": True},
         ],
         "figure": None,
@@ -222,13 +222,14 @@ QUESTIONS = [
                 "same food plus one orange, and does not. What does the pair "
                 "show?",
         "options": [
-            {"text": "Plate A must be short of energy as well as short of the "
-                     "orange.", "correct": False,
+            {"text": "Plate A must be short of energy too, because no diet "
+                     "that kills in four months is meeting its needs.",
+             "correct": False,
              "why": "Plate A has carbohydrate, lipid and protein in roughly "
                     "the right amounts, so the energy is there. What is "
                     "missing weighs about 50 mg."},
-            {"text": "A nutrient needed in milligrams can be every bit as "
-                     "essential as one needed in hundreds of grams.",
+            {"text": "A nutrient needed in milligrams is as essential as one "
+                     "needed in hundreds of grams.",
              "correct": True},
             {"text": "Fresh food is always healthier than cooked food, "
                      "whatever nutrients it holds.", "correct": False,
@@ -318,8 +319,8 @@ QUESTIONS = [
              "why": "More of the same ration would not have helped — polished "
                     "rice was not short of energy. What changed was what the "
                     "food contained, not how much there was."},
-            {"text": "That something present in barley and missing from "
-                     "polished rice was preventing the disease.",
+            {"text": "That something in barley, absent from polished rice, "
+                     "prevented the disease.",
              "correct": True},
             {"text": "That vitamin B1 prevents beriberi, which is why he "
                      "added the barley.", "correct": False,
@@ -341,8 +342,8 @@ QUESTIONS = [
              "why": "Protein is what muscle is built from, and there was "
                     "plenty of it. The question is what the body did with it "
                     "instead."},
-            {"text": "With no carbohydrate to respire, the body broke down "
-                     "its own fat and then its own protein for fuel.",
+            {"text": "With no carbohydrate, the body respired its own fat, "
+                     "then its own protein.",
              "correct": True},
             {"text": "Protein cannot be respired, so the extra protein was "
                      "passed out as waste.", "correct": False,

@@ -193,14 +193,14 @@ QUESTIONS = [
                 "Why does having no bacteria do that?",
         "options": [
             {"text": "Its lining cells have lost their preferred fuel, the "
-                     "fatty acids bacteria release.", "correct": True},
+                     "fatty acids from bacteria.", "correct": True},
             {"text": "The extra food it eats scrapes the lining away as it "
                      "passes through.", "correct": False,
              "why": "Food does not sand the gut down. The mouse eats more "
                     "because energy from fibre is lost; the wall is thin "
                     "because its cells are unfed and unsignalled."},
-            {"text": "Bacteria normally pack against the wall and make it "
-                     "thicker than it is.", "correct": False,
+            {"text": "Bacteria normally line the wall in a layer, and that "
+                     "layer is much of its thickness.", "correct": False,
              "why": "The thickness is the wall's own cells, not a layer of "
                     "bacteria sitting on it. Bacteria feed and signal those "
                     "cells; they are not the wall."},

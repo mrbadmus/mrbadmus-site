@@ -118,8 +118,8 @@ QUESTIONS = [
              "why": "Not one atom has been lost. Every iron atom that went "
                     "into the dish is still in it — heating joined them to "
                     "sulfur, it did not destroy them."},
-            {"text": "No iron is left — its atoms are joined to sulfur, and "
-                     "that substance is not magnetic", "correct": True},
+            {"text": "No iron is left — its atoms are in iron sulfide, "
+                     "which is not magnetic", "correct": True},
             {"text": "The iron melted and ran to the bottom, out of the "
                      "magnet's reach", "correct": False,
              "why": "Nothing has run anywhere: the solid is the same dull "
@@ -195,8 +195,8 @@ QUESTIONS = [
              "why": "Both fizz. The useful question is which gas comes off, "
                     "and it is a different gas each time — which is exactly "
                     "what tells you the substances are different."},
-            {"text": "The mixture gives a gas that pops; the heated solid "
-                     "gives a gas that smells of rotten eggs", "correct": True},
+            {"text": "The mixture gives a popping gas; the heated solid a "
+                     "rotten-egg gas", "correct": True},
             {"text": "Both give a gas that pops, because both of them contain "
                      "iron", "correct": False,
              "why": "Both contain iron atoms, but only the mixture contains "
@@ -342,8 +342,8 @@ QUESTIONS = [
              "why": "Both are mixtures of exactly the same kind. Being "
                     "saltier does not make anything more chemically joined — "
                     "it just means more salt in the same water."},
-            {"text": "Sea water is a mixture — its composition varies from "
-                     "place to place, and a compound's cannot", "correct": True},
+            {"text": "Sea water is a mixture — its composition varies, and "
+                     "a compound's cannot", "correct": True},
         ],
         "figure": None,
     },

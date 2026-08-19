@@ -60,8 +60,8 @@ QUESTIONS = [
         "text": "You already had a particle model before this lesson. What "
                 "did Dalton add to it?",
         "options": [
-            {"text": "That there are different kinds of particle, one kind "
-                     "for each element", "correct": True},
+            {"text": "That particles come in kinds, one per element",
+             "correct": True},
             {"text": "That particles are far too small to see",
              "correct": False,
              "why": "The particle model already said that — it is where it "
@@ -162,8 +162,8 @@ QUESTIONS = [
                 "mass. If Dalton were wrong that all atoms of one element are "
                 "alike, what would you expect instead?",
         "options": [
-            {"text": "The proportion would come out differently from one "
-                     "sample to the next", "correct": True},
+            {"text": "The proportion would differ from sample to sample",
+             "correct": True},
             {"text": "Water would stop forming at all", "correct": False,
              "why": "Nothing in that claim decides whether hydrogen and "
                     "oxygen combine. What it fixes is the proportion they "
@@ -218,10 +218,10 @@ QUESTIONS = [
              "why": "People looked, for well over a century. The barrier was "
                     "the instrument, not the idea — and the idea was "
                     "published in 1803."},
-            {"text": "Light is too coarse to show anything that small, so "
-                     "electrons had to be used instead", "correct": True},
-            {"text": "Lenses could not be ground accurately enough until then",
-             "correct": False,
+            {"text": "Light is too coarse to show an atom, so electrons "
+                     "were used", "correct": True},
+            {"text": "Lenses could not be ground accurately enough to "
+                     "magnify that far", "correct": False,
              "why": "It is not a matter of better lenses or more "
                     "magnification. Once light is too coarse to show a thing, "
                     "no amount of magnifying it will help."},
@@ -295,8 +295,8 @@ QUESTIONS = [
         "text": "A nuclear reactor really can turn one element into another. "
                 "Does that mean the alchemists were right after all?",
         "options": [
-            {"text": "Yes — it shows lead could have been turned into gold by "
-                     "chemistry all along", "correct": False,
+            {"text": "Yes — it shows lead could have been turned into gold "
+                     "by chemistry, given enough heat", "correct": False,
              "why": "What a reactor does is not a chemical reaction. The "
                     "claim that no chemical reaction changes an atom's kind is "
                     "left completely untouched by it."},
@@ -305,9 +305,8 @@ QUESTIONS = [
              "why": "Fifteen centuries of failure was never a skill problem. "
                     "Heating, dissolving and burning cannot reach what a "
                     "reactor reaches, however well you do them."},
-            {"text": "No — a nuclear change is not a chemical reaction, and no "
-                     "chemical reaction changes an atom's kind",
-             "correct": True},
+            {"text": "No — a nuclear change is not a chemical reaction, and "
+                     "alchemy was chemistry", "correct": True},
             {"text": "No — changing one element into another is impossible by "
                      "any means at all", "correct": False,
              "why": "It is possible, and reactors do it. The boundary Dalton's "
@@ -327,8 +326,8 @@ QUESTIONS = [
              "why": "Every step is the same piece of wire, seen closer. What "
                     "changes across the sequence is the scale of the view, "
                     "not the substance in it."},
-            {"text": "At no step — even the last view is a crowd of atoms, and "
-                     "colour belongs to the crowd", "correct": True},
+            {"text": "At no step — even the last view is a crowd, and colour "
+                     "needs a crowd", "correct": True},
             {"text": "At 0.1 mm, once the microscope shows scratches and "
                      "grains", "correct": False,
              "why": "Scratches and grains are still copper, and still orange. "

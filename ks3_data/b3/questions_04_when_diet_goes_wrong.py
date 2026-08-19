@@ -152,8 +152,8 @@ QUESTIONS = [
                     "in the world, and it is not concentrated where food is "
                     "short. A deficiency is about one nutrient, not about how "
                     "much food there is."},
-            {"text": "Both still appear in hospitals, because a diet can look "
-                     "ordinary and still be missing one nutrient.",
+            {"text": "Both still appear in hospitals: a diet can look "
+                     "ordinary and still miss one nutrient.",
              "correct": True},
             {"text": "They have gone, because modern food supplies every "
                      "nutrient that anybody needs.",
@@ -206,8 +206,8 @@ QUESTIONS = [
                 "Doctors expect specific deficiency diseases as well as an "
                 "energy shortfall. Why?",
         "options": [
-            {"text": "Too little food means too little of everything in it, "
-                     "so a long shortfall drags deficiencies behind it.",
+            {"text": "Too little food means too little of every nutrient in "
+                     "it, so deficiencies follow as well.",
              "correct": True},
             {"text": "Being hungry makes the body use up its vitamins far "
                      "faster than it normally would.",
@@ -280,8 +280,8 @@ QUESTIONS = [
              "why": "This is the idea the lesson exists to attack. The three "
                     "imbalances are diagnosed from measurements and clinical "
                     "signs, not from how somebody looks."},
-            {"text": "Nothing reliable — mass is affected by genetics, "
-                     "illness, medication, movement, sleep and stress too.",
+            {"text": "Nothing reliable — genetics, illness, medication, "
+                     "activity and sleep all affect mass.",
              "correct": True},
             {"text": "The larger one is well nourished, so any deficiency "
                      "here must be in the smaller one.",
@@ -299,8 +299,8 @@ QUESTIONS = [
                 "mass and several vitamin levels are low. What has gone "
                 "wrong?",
         "options": [
-            {"text": "What reaches the blood is a shortfall even though what "
-                     "reaches the mouth is not: absorption has failed.",
+            {"text": "Absorption has failed: enough reaches the mouth, but "
+                     "not enough gets into the blood.",
              "correct": True},
             {"text": "The intake figure must have been measured wrongly, "
                      "because mass cannot fall at requirement.",
@@ -348,8 +348,8 @@ QUESTIONS = [
              "why": "Obesity is not a moral failure, and the lesson says so "
                     "plainly. The difference is between supplying a nutrient "
                     "and shifting a store built over years."},
-            {"text": "The missing nutrient can simply be supplied; a store "
-                     "built over years only shifts with a lasting change.",
+            {"text": "The missing nutrient can be supplied; a store built "
+                     "over years needs lasting change.",
              "correct": True},
         ],
         "figure": None,

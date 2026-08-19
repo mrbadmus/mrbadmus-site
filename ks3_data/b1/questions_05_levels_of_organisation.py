@@ -130,11 +130,11 @@ QUESTIONS = [
              "why": "The muscle layer never made the acid — the lining does, "
                     "and the lining is still there. The chemistry is fine; it "
                     "is the mixing that has gone."},
-            {"text": "The chemistry works but nothing is churned, so "
-                     "digestion is slow, patchy and never finishes",
+            {"text": "The chemistry works but nothing churns, so digestion is "
+                     "patchy and never finishes",
              "correct": True},
             {"text": "Nothing changes, because the enzymes do all the real "
-                     "work of digestion", "correct": False,
+                     "work and they are still there", "correct": False,
              "why": "Enzymes only work where they meet the food, and a "
                     "sandwich is not a liquid. With no churning they reach "
                     "the outside of the lump and never the middle."},
@@ -182,8 +182,8 @@ QUESTIONS = [
                 "continuous covering made of skin cells.' What is wrong with "
                 "that?",
         "options": [
-            {"text": "Skin is several different tissues — epidermis, "
-                     "connective tissue, glands, nerves — so it is an organ",
+            {"text": "Skin is several unlike tissues — epidermis, glands, "
+                     "nerves — so it is an organ",
              "correct": True},
             {"text": "Skin is an organ system, because it covers and protects "
                      "the whole body", "correct": False,
@@ -248,8 +248,8 @@ QUESTIONS = [
              "why": "A ladder could simply name a different organelle for "
                     "animals. The real reason is that no organelle is alive "
                     "on its own."},
-            {"text": "Because the cell is the smallest thing on the ladder "
-                     "that is alive and does all seven life processes",
+            {"text": "Because a cell is the smallest living thing that does "
+                     "all seven life processes",
              "correct": True},
             {"text": "Because a chloroplast is a chemical rather than a "
                      "structure built from cells", "correct": False,
@@ -293,8 +293,8 @@ QUESTIONS = [
                 "Every cell and every tissue in it is healthy. Why can it not "
                 "clean anybody's blood while it sits there?",
         "options": [
-            {"text": "Because a kidney is a tissue, and a tissue cannot do a "
-                     "whole job by itself", "correct": False,
+            {"text": "Because a kidney is only a tissue, and a single tissue "
+                     "cannot do a whole job by itself", "correct": False,
              "why": "A kidney is an organ — several unlike tissues arranged "
                     "together. Which rung it is on is not the problem here."},
             {"text": "Because its cells stop working the moment the organ "
@@ -307,8 +307,8 @@ QUESTIONS = [
              "why": "One kidney is plenty — people live with one. What it "
                     "needs is to be plumbed into a system, not to be "
                     "duplicated."},
-            {"text": "Because an organ is not self-sufficient — nothing "
-                     "delivers blood to it or carries waste away",
+            {"text": "Because an organ is not self-sufficient — nothing brings "
+                     "it blood or takes waste away",
              "correct": True},
         ],
         "figure": None,
