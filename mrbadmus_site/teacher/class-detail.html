@@ -374,6 +374,24 @@
     .cell-mean-empty { color: var(--muted); }
 
     /* Section-level empty state for 0-assignment classes (e.g. 9Y1). */
+    /* ⊕ MRB-238 — the four assignment groups. Quiet furniture: the table
+       is still the thing being read, and a heavy heading between each
+       would make four small screens out of one list. */
+    .assignments-group + .assignments-group { margin-top: 28px; }
+    .assignments-group-title {
+      margin: 0 0 10px;
+      font-family: var(--font-sans);
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .assignments-group-count {
+      font-weight: 600;
+      opacity: .7;
+      margin-left: 4px;
+    }
     .assignments-empty {
       padding: 40px 24px;
       text-align: center;
@@ -1092,7 +1110,7 @@
 <script src="/shared/config.js"></script>
 <script src="/shared/class-entry.js?v=59d97451" defer></script>
 <script src="/shared/teacher-guard.js"></script>
-<script src="/shared/teacher-data.js?v=7ff154b1"></script>
+<script src="/shared/teacher-data.js?v=89a17e6b"></script>
 <script src="/shared/shoutouts.js"></script>
 <script>
 (function () {
@@ -1525,6 +1543,19 @@
     return 'var(--science)';
   }
 
+  /* ⊕ MRB-238 (Mide, 19 Aug 2026) — grouped, and still everything.
+     The four groups the data layer stamps, in the order a teacher needs
+     them: what is late, what lands this week, what is coming, what is
+     finished. Every assignment for the class appears in exactly one of
+     them; nothing is filtered out by any date rule, which is the point.
+     An empty group is simply not drawn. */
+  const ASSIGNMENT_GROUPS = [
+    { key: 'overdue',   title: 'Overdue' },
+    { key: 'this_week', title: 'Due this week' },
+    { key: 'upcoming',  title: 'Upcoming' },
+    { key: 'past',      title: 'Past' },
+  ];
+
   function renderAssignments(assignments) {
     const section = document.getElementById('assignments-section');
     section.className = 'section-block';
@@ -1557,7 +1588,7 @@
     );
     const showSubjectColumn = distinctSubjects.size > 1;
 
-    const rowsHtml = list.map(function (a) {
+    function rowsFor(rows) { return rows.map(function (a) {
       const due = formatDueDate(a.due_at);
 
       let subjectCellHtml = '';
@@ -1588,22 +1619,44 @@
         '<td>' + escapeHtml(a.submissions_count + '/' + a.total_students) + '</td>' +
         '<td>' + meanCell + '</td>' +
       '</tr>';
-    }).join('');
+    }).join(''); }
 
     const subjectTh = showSubjectColumn ? '<th scope="col">Subject</th>' : '';
-    section.innerHTML = headerHtml +
-      '<div class="table-wrap"><div class="table-scroll">' +
-        '<table class="assignments-table">' +
-          '<thead><tr>' +
-            '<th scope="col">Title</th>' +
-            subjectTh +
-            '<th scope="col">Due</th>' +
-            '<th scope="col">Submitted</th>' +
-            '<th scope="col">Class Mean</th>' +
-          '</tr></thead>' +
-          '<tbody>' + rowsHtml + '</tbody>' +
-        '</table>' +
-      '</div></div>';
+
+    // ⚠️ Anything the data layer hands over with an unrecognised (or
+    // missing) `due_group` is swept into the last group rather than
+    // dropped. This screen's one promise is that nothing disappears, and
+    // it must not be broken by a stale cached copy of teacher-data.js.
+    const known = ASSIGNMENT_GROUPS.map(function (g) { return g.key; });
+    const buckets = {};
+    known.forEach(function (k) { buckets[k] = []; });
+    list.forEach(function (a) {
+      buckets[known.indexOf(a.due_group) >= 0 ? a.due_group : 'past'].push(a);
+    });
+
+    const groupsHtml = ASSIGNMENT_GROUPS.map(function (g) {
+      const rows = buckets[g.key];
+      if (!rows.length) return '';
+      return '<div class="assignments-group">' +
+        '<h3 class="assignments-group-title">' + escapeHtml(g.title) +
+          ' <span class="assignments-group-count">' + rows.length + '</span>' +
+        '</h3>' +
+        '<div class="table-wrap"><div class="table-scroll">' +
+          '<table class="assignments-table">' +
+            '<thead><tr>' +
+              '<th scope="col">Title</th>' +
+              subjectTh +
+              '<th scope="col">Due</th>' +
+              '<th scope="col">Submitted</th>' +
+              '<th scope="col">Class Mean</th>' +
+            '</tr></thead>' +
+            '<tbody>' + rowsFor(rows) + '</tbody>' +
+          '</table>' +
+        '</div></div>' +
+      '</div>';
+    }).join('');
+
+    section.innerHTML = headerHtml + groupsHtml;
   }
 
   // ── Stars leaderboard (Phase 4d) ───────────────────────────────────

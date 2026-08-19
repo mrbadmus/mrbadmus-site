@@ -703,7 +703,10 @@
     <div class="layout-grid">
       <div class="layout-main">
         <section id="stats-strip-section" class="section-block"></section>
-        <section id="due-this-week-section" class="section-block"></section>
+        <section id="due-now-section" class="section-block"></section>
+        <!-- ⊕ MRB-238 (19 Aug 2026) — work that is set but not yet due used
+             to exist on no screen at all. It has one now. -->
+        <section id="coming-up-section" class="section-block"></section>
         <section id="past-assignments-section" class="section-block"></section>
       </div>
       <aside class="layout-sidebar">
@@ -745,7 +748,7 @@
 <script src="/shared/class-entry.js?v=59d97451" defer></script>
 <script src="/shared/student-guard.js"></script>
 <script src="/shared/shoutouts.js"></script>
-<script src="/shared/student-data.js?v=aed13350"></script>
+<script src="/shared/student-data.js?v=e2b5d361"></script>
 <script>
 (function () {
   const STATES = {
@@ -795,6 +798,12 @@
         ? { tone: 'on-time', text: '✓ Submitted on time' }
         : { tone: 'late',    text: '✗ Submitted late' };
     }
+    // ⚠️ `new Date(null)` is the epoch, NOT an invalid date, so a null
+    // due_at would sail past the isNaN guard below and render "Overdue by
+    // 20,000 days". Undated assignments never reached this function before
+    // MRB-238 — the bucketing dropped them one step earlier — so the hole
+    // was unreachable rather than absent. They reach it now.
+    if (!card.due_at) return { tone: 'soon', text: 'No deadline set' };
     const dueMs = new Date(card.due_at).getTime();
     if (isNaN(dueMs)) return { tone: 'soon', text: '—' };
     const diff = dueMs - nowMs;
@@ -809,8 +818,9 @@
       if (minutes >= 1) return { tone: 'today', text: 'Due in ' + minutes + ' minute' + (minutes === 1 ? '' : 's') };
       return                  { tone: 'today', text: 'Due in ' + seconds + ' second' + (seconds === 1 ? '' : 's') };
     }
-    // Past deadline + not submitted. In "Due this week" → overdue red.
-    // In "Past assignments" → missed red (caller can distinguish via context).
+    // Past deadline + not submitted. This now always renders in "Due now",
+    // because MRB-238 keeps outstanding work outstanding rather than filing
+    // it under "Done" once the week turned over.
     const ago     = -diff;
     const days    = Math.floor(ago / 86400000);
     const hours   = Math.floor((ago % 86400000) / 3600000);
@@ -965,12 +975,19 @@
     '</div>';
   }
 
-  // ── Due this week ── */
-  function renderDueThisWeek(assignments) {
-    const section = document.getElementById('due-this-week-section');
+  /* ── Due now ──
+     ⊕ MRB-238 (19 Aug 2026). This was "Due this week", and it held only
+     work whose deadline fell inside the current window. Overdue work
+     dropped out of it at the week boundary and reappeared under "Past
+     assignments" captioned "✗ Not submitted" — the one thing a student
+     still owed, filed at the bottom of the page under a heading meaning
+     "finished". It now stays here, at the top, actionable, until it is
+     submitted; the data layer sorts the most overdue first. */
+  function renderDueNow(assignments) {
+    const section = document.getElementById('due-now-section');
     const headerHtml =
       '<div class="section-header">' +
-        '<h2 class="section-title">Due this week</h2>' +
+        '<h2 class="section-title">Due now</h2>' +
         '<span class="section-subtitle">' +
           (assignments.length === 0
             ? 'Nothing due'
@@ -980,12 +997,52 @@
 
     if (assignments.length === 0) {
       section.innerHTML = headerHtml +
-        '<div class="assignment-list-empty">Nothing due this week — enjoy the breathing room.</div>';
+        '<div class="assignment-list-empty">Nothing due right now — enjoy the breathing room.</div>';
       return;
     }
 
     const nowMs = Date.now();
     const cardsHtml = assignments.map(function (a) {
+      const status = formatAssignmentStatus(a, nowMs);
+      return buildAssignmentCardHtml(a, status, { actionable: true });
+    }).join('');
+
+    section.innerHTML = headerHtml +
+      '<div class="assignment-card-list">' + cardsHtml + '</div>';
+  }
+
+  /* ── Coming up ──
+     ⊕ MRB-238 (19 Aug 2026). Work that is set but not yet due, beyond this
+     week — and work with no deadline at all. None of it appeared anywhere
+     before: the bucketing ended in a silent `else` and it fell through.
+
+     It is startable, because a student who wants to work ahead should be
+     able to, and it carries its own date so nothing here reads as owed.
+     No badge, no nudge, no count in a "you have N outstanding" line — the
+     point is that it is present, not that it is pressing. */
+  function renderComingUp(assignments) {
+    const section = document.getElementById('coming-up-section');
+    const list = assignments || [];
+
+    if (list.length === 0) {
+      // Nothing set ahead is the ordinary case, and an empty box saying so
+      // on every class page is noise. The section simply is not there.
+      section.innerHTML = '';
+      section.style.display = 'none';
+      return;
+    }
+    section.style.display = '';
+
+    const headerHtml =
+      '<div class="section-header">' +
+        '<h2 class="section-title">Coming up</h2>' +
+        '<span class="section-subtitle">' +
+          (list.length === 1 ? '1 assignment' : list.length + ' assignments') +
+        '</span>' +
+      '</div>';
+
+    const nowMs = Date.now();
+    const cardsHtml = list.map(function (a) {
       const status = formatAssignmentStatus(a, nowMs);
       return buildAssignmentCardHtml(a, status, { actionable: true });
     }).join('');
@@ -1038,10 +1095,10 @@
     if (all.length === 0) {
       section.innerHTML =
         '<div class="section-header">' +
-          '<h2 class="section-title">Past assignments</h2>' +
+          '<h2 class="section-title">Done</h2>' +
           '<span class="section-subtitle"></span>' +
         '</div>' +
-        '<div class="assignment-list-empty">No past assignments yet.</div>';
+        '<div class="assignment-list-empty">Nothing handed in yet.</div>';
       return;
     }
 
@@ -1053,7 +1110,7 @@
 
     const headerHtml =
       '<div class="section-header">' +
-        '<h2 class="section-title">Past assignments</h2>' +
+        '<h2 class="section-title">Done</h2>' +
         '<span class="section-subtitle">' + subtitleText + '</span>' +
       '</div>';
 
@@ -1069,7 +1126,7 @@
     if (pastState.showAll) {
       toggleHtml = '<button class="show-all-btn" id="past-toggle-btn">Show less</button>';
     } else if (all.length > visible.length) {
-      toggleHtml = '<button class="show-all-btn" id="past-toggle-btn">Show all past assignments (' + all.length + ')</button>';
+      toggleHtml = '<button class="show-all-btn" id="past-toggle-btn">Show everything handed in (' + all.length + ')</button>';
     }
 
     section.innerHTML = headerHtml +
@@ -1345,8 +1402,9 @@
         const detail = await MrBadmusStudentData.loadStudentClass(classId, ctx.user.id);
         console.log('[student/class.html] loadStudentClass OK, rendering...', {
           assignments_in_class: detail.viewerStats.assignments_in_class_count,
-          due_this_week_count:  detail.assignmentsDueThisWeek.length,
-          past_count:           detail.pastAssignments.length,
+          due_now_count:        detail.assignmentsDueNow.length,
+          coming_up_count:      detail.assignmentsComingUp.length,
+          done_count:           detail.assignmentsDone.length,
           leaderboard_eligible: (detail.leaderboard && detail.leaderboard.eligible) ? detail.leaderboard.eligible.length : 0,
           viewer_on_podium:     detail.viewerOnPodium,
         });
@@ -1355,9 +1413,10 @@
         renderClassHeader(detail.class, ctx.profile.first_name);
         renderStarsLeaderboard(detail.leaderboard, ctx.user.id);
         renderStatsStrip(detail.viewerStats);
-        renderDueThisWeek(detail.assignmentsDueThisWeek);
+        renderDueNow(detail.assignmentsDueNow);
+        renderComingUp(detail.assignmentsComingUp);
 
-        pastState.all = detail.pastAssignments || [];
+        pastState.all = detail.assignmentsDone || [];
         pastState.showAll = false;
         renderPastAssignments();
 

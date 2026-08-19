@@ -499,6 +499,34 @@ window.MrBadmusTeacherData = (function () {
     };
   }
 
+  /* Which of the four groups an assignment belongs in, for the teacher.
+     ⊕ MRB-238 (Mide, 19 Aug 2026) — A TEACHER SEES EVERYTHING, ALWAYS.
+
+     No assignment for a teacher's class is ever hidden from them by a date
+     rule; knowing what is outstanding is the whole job of that screen. The
+     table already listed every row — that part was already right — but it
+     listed them as one undifferentiated run sorted by date, so "three
+     people still owe me last Tuesday's work" and "this is set for
+     September" sat in the same block looking the same.
+
+       overdue   — the deadline has passed and somebody has still not
+                   submitted. The only group that is a to-do list.
+       this_week — deadline inside the current window and not yet passed.
+       upcoming  — deadline beyond this week, or no deadline at all.
+       past      — deadline passed and every student has submitted.
+                   Finished, and out of the way.
+
+     A class with no students has nothing outstanding by definition, so its
+     past-deadline work is `past` rather than permanently `overdue`. */
+  function assignmentDueGroup(a, week, nowIso) {
+    if (!a.due_at) return 'upcoming';
+    if (a.due_at >= week.end_at) return 'upcoming';
+    if (a.due_at > nowIso) return 'this_week';
+    const everyoneIn = a.total_students === 0 ||
+                       a.submissions_count >= a.total_students;
+    return everyoneIn ? 'past' : 'overdue';
+  }
+
   // Parse a "Wk N" tag out of an assignment title for sort purposes
   // (Phase 4c, 15 May 2026). Tagged titles sort by ascending week within
   // their subject; untagged titles fall through to MAX_SAFE_INTEGER so
@@ -920,8 +948,11 @@ window.MrBadmusTeacherData = (function () {
       return calcStudentStats(m.student, assignments, weekAssignments, week, firstAttemptByKey);
     });
 
+    const nowIso = new Date().toISOString();
     const assignmentStats = assignments.map(function (a) {
-      return calcAssignmentStats(a, allMembers.length, firstAttemptByKey);
+      const stat = calcAssignmentStats(a, allMembers.length, firstAttemptByKey);
+      stat.due_group = assignmentDueGroup(stat, week, nowIso);
+      return stat;
     });
 
     // Sort assignments due_at DESC NULLS LAST (most-recent first; undated
@@ -985,6 +1016,8 @@ window.MrBadmusTeacherData = (function () {
       week: week,
       students: students,
       leaderboard: leaderboard,
+      // Every assignment for the class, none withheld, each stamped with a
+      // `due_group` of overdue | this_week | upcoming | past (MRB-238).
       assignments: assignmentStats,
     };
   }

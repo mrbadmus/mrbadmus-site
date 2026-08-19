@@ -256,10 +256,16 @@ window.MrBadmusStudentData = (function () {
    *     viewerStats: { assignments_in_class_count, submissions_completed,
    *                    on_time_count, average_score_pct,
    *                    submissions_completed_pct },
-   *     assignmentsDueThisWeek: [
+   *     // ⊕ MRB-238 (19 Aug 2026) — three buckets, nothing dropped.
+   *     // Was `assignmentsDueThisWeek` + `pastAssignments`, and anything
+   *     // that was neither in-window, submitted nor past fell through a
+   *     // silent `else`. Cards share one shape across all three.
+   *     assignmentsDueNow: [       // open, owed now; most overdue first
    *       { id, title, subject_id, subject_name, subject_colour_var,
    *         due_at, is_submitted, score, max_score, on_time }
    *     ],
+   *     assignmentsComingUp: [],   // set, not yet due; undated last
+   *     assignmentsDone: [],       // submitted; newest first
    *     leaderboard: { eligible, is_empty, empty_reason },
    *     viewerOnPodium: boolean,   // viewer in leaderboard.eligible
    *     week: { start_at, end_at, anchor_day, anchor_source },
@@ -434,41 +440,49 @@ window.MrBadmusStudentData = (function () {
         : Math.round((submissions_completed / assignments_in_class_count) * 100),
     };
 
-    // 6. Bucket each assignment into dueThisWeek (actionable) or
-    // pastAssignments (submitted OR past-deadline-not-submitted).
-    //
-    // Phase 3 v2 rewrite — v1 returned a single "Due this week" list
-    // including past-and-submitted items, which produced contradictory
-    // pill states (e.g. "Overdue by 3 days" + "✓ Submitted on time"
-    // on the same card). The split below makes each card's status
-    // unambiguous and matches the two sections the page now renders.
-    //
-    // Bucketing rules:
-    //   dueThisWeek:
-    //     - due_at IS in current week-window
-    //     - AND viewer has NOT submitted yet
-    //     (covers "upcoming this week" and "overdue this week but not
-    //      submitted yet — still in time today/tomorrow to do it late")
-    //   pastAssignments:
-    //     - viewer HAS submitted (regardless of when), OR
-    //     - due_at is BEFORE current week-window (i.e. last week or
-    //       earlier) AND viewer did NOT submit (missed)
-    //   future-not-this-week (due 2+ weeks away, not submitted):
-    //     - silently dropped — not actionable yet, not past.
-    //
-    // Past assignments sort: newest due-date first. The page applies
-    // the "last week only by default" filter + Show-all toggle in JS
-    // using the week.start_at + week.prev_week_start values it
-    // computes from the same window.
-    const dueThisWeek    = [];
-    const pastAssignments = [];
+    /* 6. Bucket every assignment. THREE buckets, and nothing is dropped.
+       ⊕ MRB-238 (Mide, 19 Aug 2026) — VISIBILITY IS DRIVEN BY THE
+       ASSIGNMENT'S OWN DATES, NEVER BY THE CURRENT CALENDAR WEEK.
+
+       What stood here dropped, in silence, any assignment that was
+       neither in this week's window, nor submitted, nor past. Mide set a
+       demo assignment due 25 August; the window ran 17–24; and it existed
+       on nobody's screen, with nothing anywhere saying that something
+       existed. A student who wanted to work ahead could not see there was
+       anything to work ahead ON.
+
+       Silent dropping is the defect. The window boundaries are fine — it
+       is the `else: drop` that was wrong. A row that exists and belongs to
+       this class now appears somewhere, always.
+
+         DUE NOW   — open and not yet submitted, deadline inside this week
+                     or already past. Overdue items sort first (due_at
+                     ascending puts the most overdue at the top) and STAY
+                     HERE UNTIL SUBMITTED. They no longer vanish at a week
+                     boundary, which is what used to move a missed piece of
+                     work into "past" where it read as finished.
+         COMING UP — set but not yet due, beyond this week. Present and
+                     visible, clearly not required yet: a student who wants
+                     to get ahead can, and one who does not is not nagged.
+                     Undated assignments live here too — they exist, and
+                     no date makes them due.
+         DONE      — submitted, as before.
+
+       ⚠️ MISSED WORK IS "DUE NOW", NOT "DONE". It used to be filed with
+       the finished work and captioned "✗ Not submitted", which put the one
+       thing a student still owes at the bottom of the screen under a
+       heading that says the opposite. It is outstanding, so it sits with
+       the outstanding work, and the card stays actionable.
+
+       Done sorts newest-first; the page applies its own "last week only by
+       default" filter and Show-all toggle on top of that. */
+    const dueNow   = [];
+    const comingUp = [];
+    const done     = [];
 
     assignments.forEach(function (a) {
-      if (!a.due_at) return;  // assignments without deadlines are not surfaceable here
-
       const sub = ownFirstAttempts.get(a.id + ':' + viewingStudentId);
       const isSubmitted = !!(sub && sub.submitted_at);
-      const inThisWeek = a.due_at >= week.start_at && a.due_at < week.end_at;
 
       const card = {
         id: a.id,
@@ -476,7 +490,7 @@ window.MrBadmusStudentData = (function () {
         subject_id: a.subject_id,
         subject_name: a.subject ? a.subject.name : null,
         subject_colour_var: subjectColourVar(a.subject ? a.subject.name : null),
-        due_at: a.due_at,
+        due_at: a.due_at || null,
         is_submitted: isSubmitted,
         score: isSubmitted ? sub.score : null,
         max_score: isSubmitted ? sub.max_score : null,
@@ -485,18 +499,28 @@ window.MrBadmusStudentData = (function () {
       };
 
       if (isSubmitted) {
-        pastAssignments.push(card);
-      } else if (inThisWeek) {
-        dueThisWeek.push(card);
-      } else if (a.due_at < week.start_at) {
-        // Past deadline + never submitted = missed → past assignments
-        pastAssignments.push(card);
+        done.push(card);
+      } else if (a.due_at && a.due_at < week.end_at) {
+        // Overdue, or due before this week is out. Either way: owed now.
+        dueNow.push(card);
+      } else {
+        // Beyond this week, or never dated. Visible, not yet required.
+        comingUp.push(card);
       }
-      // else: future-not-this-week + not-submitted → silently dropped (v1)
     });
 
-    dueThisWeek.sort(function (a, b) { return a.due_at.localeCompare(b.due_at); });
-    pastAssignments.sort(function (a, b) { return b.due_at.localeCompare(a.due_at); });
+    // Most overdue first, then the rest of this week in order.
+    dueNow.sort(function (a, b) { return a.due_at.localeCompare(b.due_at); });
+    // Soonest first; the undated sit at the bottom, since nothing is due.
+    comingUp.sort(function (a, b) {
+      if (!a.due_at && !b.due_at) return (a.title || '').localeCompare(b.title || '');
+      if (!a.due_at) return 1;
+      if (!b.due_at) return -1;
+      return a.due_at.localeCompare(b.due_at);
+    });
+    done.sort(function (a, b) {
+      return (b.due_at || '').localeCompare(a.due_at || '');
+    });
 
     // Compute the previous week's start_at so the page can default-filter
     // "Past assignments" to last week only without having to recompute
@@ -531,8 +555,9 @@ window.MrBadmusStudentData = (function () {
       },
       viewer: viewer,
       viewerStats: viewerStats,
-      assignmentsDueThisWeek: dueThisWeek,
-      pastAssignments: pastAssignments,
+      assignmentsDueNow: dueNow,
+      assignmentsComingUp: comingUp,
+      assignmentsDone: done,
       leaderboard: leaderboard,
       viewerOnPodium: viewerOnPodium,
       week: week,
