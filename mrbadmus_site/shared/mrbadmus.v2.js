@@ -5,6 +5,10 @@
 window.MrBadmus = (function() {
   let chatInited = false, pendingImg = null, chatHistory = [], currentSubject = 'physics', currentTopic = '', systemPrompt = '';
   let studentName = null, studentProfile = null;
+  // MRB-257 — the key stage this page belongs to. '' on every KS4 page, which
+  // is every page that existed before KS3 mounted the tutor, so every branch
+  // that reads it is a branch KS4 never takes.
+  let currentKeyStage = '';
 
   // Load student name + profile from Supabase session (if logged in)
   async function loadStudentSession() {
@@ -18,6 +22,14 @@ window.MrBadmus = (function() {
       // Update chat header subtitle with name
       const subtitle = document.getElementById('chat-head-subtitle');
       if (subtitle && studentName) subtitle.textContent = 'Hey ' + studentName + '! 👋';
+      /* MRB-257 — a KS3 page does not ask the database who this student is.
+         The profile fetch reads `science_pathway, tier`. Both are GCSE
+         concepts: a KS3 student has neither, and feeding them to the tutor
+         produces "The student is on the Higher tier" about a twelve-year-old,
+         which is wrong and is exactly the register KS3 forbids. Skipping it
+         also means a KS3 page needs no Supabase CDN script at all — the name
+         above comes from localStorage and still works. */
+      if (currentKeyStage === 'ks3') return;
       try {
         const sb = supabase.createClient(
           'https://urklkrwevjtlfbwnipjn.supabase.co',
@@ -187,19 +199,48 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     return text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/`(.*?)`/g,'<code>$1</code>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
   }
 
+  /* MRB-257 — KS3 framing, appended after the subject prompt.
+     Additive by construction: it is only ever reached when a page passes
+     `keyStage: 'ks3'`, and no page did before KS3 lesson pages started to.
+     A KS4 page therefore builds the byte-identical prompt it always did.
+
+     It APPENDS rather than replacing the subject prompt, and that is the
+     deliberate choice. The base prompt carries the safeguarding section —
+     forty lines of it, and the single most important thing in the file for an
+     eleven-year-old audience — plus the tone, the FIFA method and the honesty
+     rules, all of which hold at KS3. What does not hold is the exam framing
+     wrapped around them, so this overrides that explicitly and last, where a
+     model weights it most. Replacing the whole prompt would mean a second copy
+     of the safeguarding block, free to drift from the first. */
+  const KS3_FRAMING = `
+
+KEY STAGE 3 — THIS OVERRIDES THE EXAM FRAMING ABOVE.
+You are talking to a KS3 student: roughly 11 to 14 years old, two or three years before they start a GCSE course. Everything above about warmth, honesty, the FIFA method for calculations, units in every answer, and safeguarding still applies exactly as written. The exam-board framing does not.
+- This student has NO tier and NO pathway. Never say "Higher tier", "Foundation", "Triple", "Combined", "paper 1", "mark scheme", "the spec" or a spec point code. They do not exist for this student yet, and naming them tells a twelve-year-old they are behind.
+- Do not label content ⭐ HIGHER TIER or 🔬 TRIPLE ONLY. There are no tiers here.
+- Drop the "✅ Key exam words" line and the command-word drilling. Teach the correct scientific word — "respiration", "diffusion", "chromosome" — because the word is the idea and they will need it later, but teach it as the name of a thing, not as a mark-scheme term.
+- The GCSE specification listed above is BACKGROUND ONLY, so that you know where this is going. Do not teach from it and do not quote it. Answer the question the student actually asked, at the depth they asked it.
+- Never refer to the student by their school year. Say "a student your age".
+- Keep it short and concrete. Curiosity is the whole point at this stage — if they ask something off-topic that comes from real interest, follow it.`;
+
   async function init(config) {
+    currentKeyStage = config.keyStage || '';
     await loadStudentSession();
     currentSubject = config.subject || 'physics';
     currentTopic = config.topic || '';
     systemPrompt = SUBJECT_PROMPTS[currentSubject] || SUBJECT_PROMPTS.physics;
     if (studentName) systemPrompt += `\n\nThe student you are speaking with is named ${studentName}. Use their name naturally and warmly in your replies — like a teacher who knows their student well — but never overuse it (don't start every sentence with their name).`;
-    if (studentProfile?.tier) {
-      const tierLabel = studentProfile.tier.charAt(0).toUpperCase() + studentProfile.tier.slice(1);
-      systemPrompt += `\n\nThe student is on the ${tierLabel} tier.`;
-    }
-    if (studentProfile?.science_pathway) {
-      const pathLabel = studentProfile.science_pathway.charAt(0).toUpperCase() + studentProfile.science_pathway.slice(1);
-      systemPrompt += `\n\nThe student is studying ${pathLabel} Science.`;
+    if (currentKeyStage === 'ks3') {
+      systemPrompt += KS3_FRAMING;
+    } else {
+      if (studentProfile?.tier) {
+        const tierLabel = studentProfile.tier.charAt(0).toUpperCase() + studentProfile.tier.slice(1);
+        systemPrompt += `\n\nThe student is on the ${tierLabel} tier.`;
+      }
+      if (studentProfile?.science_pathway) {
+        const pathLabel = studentProfile.science_pathway.charAt(0).toUpperCase() + studentProfile.science_pathway.slice(1);
+        systemPrompt += `\n\nThe student is studying ${pathLabel} Science.`;
+      }
     }
     if (currentTopic) systemPrompt += `\n\nThe student is currently studying: ${currentTopic}. Focus on this topic when possible.`;
 
@@ -233,6 +274,11 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     }
   });
     document.querySelectorAll('.quick-q').forEach(btn => btn.addEventListener('click', () => ask(btn.dataset.q)));
+    /* MRB-257 — the image-clear control, bound rather than inline. KS4 wires
+       it with an `onclick` attribute, which KS3's "all interactive controls
+       are real buttons" gate forbids on a KS3 page. Both markups now work:
+       this finds nothing on a KS4 page and changes nothing there. */
+    document.querySelectorAll('[data-clear-img]').forEach(el => el.addEventListener('click', clearImg));
     document.querySelectorAll('[data-open-chat]').forEach(el => el.addEventListener('click', open));
   }
 
@@ -248,19 +294,34 @@ FULL BIOLOGY SPECIFICATION TOPICS:
 
   function open() {
     loadStudentSession();
-    document.getElementById('chatOverlay')?.classList.add('open');
+    const ov = document.getElementById('chatOverlay');
+    /* MRB-257 — the closed overlay is `opacity:0; pointer-events:none`, which
+       hides it from the eye and the mouse and NOT from the keyboard: a text
+       input, a file picker and two buttons sit in the tab order regardless.
+       A page that ships the overlay `inert` opts into having it managed here.
+       KS4's markup carries neither attribute, so both lines are no-ops there
+       and its behaviour is unchanged. */
+    ov?.removeAttribute('inert');
+    ov?.classList.add('open');
     if (!chatInited) {
       chatInited = true;
       const sn = {physics:'Physics ⚡',chemistry:'Chemistry 🧪',biology:'Biology 🌿'}[currentSubject];
+      /* MRB-257 — a KS3 student is not sitting a GCSE. Same sentence, minus a
+         qualification they have not started. */
+      const subj = currentKeyStage === 'ks3' ? 'Science' : 'GCSE Science';
       const greet = studentName
-        ? "Hey " + studentName + "! 👋 I'm Mr Badmus, here to help you smash your GCSE Science. What are we stuck on?"
-        : "Hey! 👋 I'm Mr Badmus, here to help you smash your GCSE Science. What are we stuck on?";
+        ? "Hey " + studentName + "! 👋 I'm Mr Badmus, here to help you smash your " + subj + ". What are we stuck on?"
+        : "Hey! 👋 I'm Mr Badmus, here to help you smash your " + subj + ". What are we stuck on?";
       addMsg('bot', greet);
     }
     setTimeout(() => document.getElementById('ci')?.focus(), 100);
   }
 
-  function close() { document.getElementById('chatOverlay')?.classList.remove('open'); }
+  function close() {
+    const ov = document.getElementById('chatOverlay');
+    ov?.classList.remove('open');
+    if (ov?.hasAttribute('data-inert-when-closed')) ov.setAttribute('inert', '');
+  }
 
   function handleImg(input) {
     const file = input.files[0]; if (!file) return;

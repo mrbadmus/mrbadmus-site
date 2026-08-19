@@ -640,6 +640,18 @@ def main():
         # Same class of consequence as the four above: a KS4-tree page that
         # the entry-point ruling obliges us to change.
         "weekly-challenge.html",
+        # ⊕ MRB-257 · audit 6.1 — the custom 404 page.
+        #
+        # Every unknown URL was returning HTTP 200 and the marketing homepage,
+        # byte-identical, /favicon.ico included: a stale bookmark dumped a
+        # student on the front page with no sign anything had gone wrong, and
+        # search engines were free to index the homepage under every wrong URL.
+        # Cloudflare Pages serves the nearest-ancestor 404.html and falls back
+        # to the root index.html with a 200 when no 404.html exists anywhere,
+        # which is exactly what the audit measured. It is copied into the
+        # output by generate_site_v5.py, so it appears in the KS4 tree by
+        # design rather than by drift — which is what this list is for.
+        "404.html",
     }
 
     # ⚠️ GATE CORRECTED 2026-08-07 (MRB-179). As written, this compared a KS4

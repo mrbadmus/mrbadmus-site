@@ -36,6 +36,7 @@ derived placement — reordering the sequence regenerates these index pages and
 changes nothing else, which is the property §9's reorder proof already tests.
 """
 
+import base64
 import hashlib
 import html
 import json
@@ -103,8 +104,16 @@ KS4_BRIDGE_TIER = "foundation"
 # never run and whose cards never flip, with no error and nothing to tell the
 # student the page is broken. Any future shared asset a KS3 page links goes in
 # this tuple — the name is deliberately no longer about stylesheets.
+#
+# ⊕ MRB-257 · audit 6.2 — `mrbadmus.v2.js` joins the tuple. KS3 lesson pages
+# now link the shared chat engine, and it is the asset in this list most likely
+# to change: a stale cached copy would hand a student a tutor button that
+# throws instead of opening. It is hashed from the SOURCE tree like the rest,
+# which is what makes the stamp agree with generate_site_v5.py's — that
+# generator hashes its own output copy, and the copy is written verbatim from
+# `shared/mrbadmus.v2.js`, so the two hashes are the same eight characters.
 VERSIONED_ASSETS = ("tokens.css", "styles.css", "nav.css", "ks3.css", "ks3.js",
-                     "class-entry.js")
+                     "class-entry.js", "mrbadmus.v2.js")
 
 
 def asset_versions(repo_root="."):
@@ -291,6 +300,153 @@ def family_label(family):
 # accent tile; NOT adopted on the 15 Aug replay, because NAV_BRAND is one mark
 # for all 294 KS3 pages and taking the tile would restyle the browse layer Mide
 # has just approved. Parked for Mide — see the ledger entry of 15 Aug 2026.
+# ── §6.9 / §6.8 head metadata (⊕ MRB-257, audit 6.8 6.9 6.10) ────────────
+#
+# The KS3 tree shipped 70 pages with zero `<link rel="icon">`, zero
+# `rel="canonical"` and zero `og:*`. Three separate consequences, one place to
+# fix them:
+#
+#   • the browser's fallback `GET /favicon.ico` was answered with 7,396 bytes
+#     of KS4 homepage HTML, once per page, and every KS3 tab in a student's
+#     browser was unlabelled;
+#   • a lesson pasted into a class Teams chat rendered as a bare URL;
+#   • nothing told a search engine which URL is the real one.
+#
+# ⚠️ THE FAVICON IS THE KS3 MARK, NOT THE KS4 ONE. CLAUDE.md's brand rule gives
+# KS3 Claude Design's single bold `#E4572E` chevron (MRB-197, Mide's ruling)
+# and KS4 the gold-to-rust TWO-chevron mark. Shipping the KS4 mark on 294 KS3
+# pages would be brand drift introduced by the fix. The path below is the same
+# `d=` as NAV_BRAND — one chevron, one definition — and it is base64'd rather
+# than percent-escaped so there is no question about spaces, `#` or quotes
+# surviving into an href.
+SITE_ORIGIN = "https://mrbadmus.com"
+
+_FAVICON_SVG = (
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">'
+    '<path d="M4 16L12 7l8 9" fill="none" stroke="#E4572E" stroke-width="4.6" '
+    'stroke-linecap="round" stroke-linejoin="round"/></svg>')
+FAVICON_LINK = (
+    '<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,%s"/>'
+    % base64.b64encode(_FAVICON_SVG.encode("utf-8")).decode("ascii"))
+
+
+def canon(path):
+    """A site path → the URL Cloudflare Pages actually serves it at.
+
+    ⚠️ NOT the `.html` path the links are written with. Audit 6.10 measured all
+    602 internal links as `…​.html` and all 602 as a 308 to the extensionless
+    form. A canonical tag pointing at a URL that redirects is a canonical tag
+    naming a page that does not exist at that address, which is worse than
+    none — so the canonical is the redirect TARGET, self-referencing the URL a
+    reader's address bar ends up showing.
+
+        /ks3/biology/cells/index.html  → https://mrbadmus.com/ks3/biology/cells/
+        /ks3/biology/cells/x.html      → https://mrbadmus.com/ks3/biology/cells/x
+    """
+    if path.endswith("/index.html"):
+        return SITE_ORIGIN + path[:-len("index.html")]
+    if path.endswith(".html"):
+        return SITE_ORIGIN + path[:-len(".html")]
+    return SITE_ORIGIN + path
+
+
+# ── the tutor, on a lesson page (⊕ MRB-257, audit 6.2) ───────────────────
+#
+# THE TUTOR WAS OFFERED 58 TIMES AND REACHED A TUTOR ZERO TIMES. All 58 lessons
+# shipped `section.ks3-tutor > a.ks3-tutor-cta`, 58 of 58 hrefs were in-page
+# anchors, and no click listener existed anywhere in the key stage. On
+# `the-menstrual-cycle` at 390px the CTA scrolled the student 9,768px BACKWARDS
+# into a section they had already finished. It is the last thing in every
+# lesson and the only thing on the page that looks like help.
+#
+# This is the markup `MrBadmus.init()` binds to. Three deliberate differences
+# from what generate_site_v5.py emits for KS4, each of them a rule rather than
+# a preference:
+#
+# 1. NO `chat-fab`. KS4's floating button draws the TWO-chevron gold-to-rust
+#    mark. CLAUDE.md gives KS3 Claude Design's single `#E4572E` chevron
+#    (MRB-197, Mide's ruling), and the audit's brand baseline is 82/82 files
+#    byte-identical with zero drift. Emitting the KS4 fab on 58 KS3 pages would
+#    be brand drift introduced by the fix. The `.ks3-tutor` card at the end of
+#    the lesson is the entry point, and it gains `data-open-chat`.
+#
+# 2. NO SUPABASE CDN, and no profile fetch. `loadStudentSession()` reads the
+#    student's NAME out of localStorage — no Supabase needed — and then fetches
+#    `science_pathway, tier` from the database. Tier and pathway are GCSE
+#    concepts. Feeding them to a KS3 tutor produces "The student is on the
+#    Higher tier" about a twelve-year-old who has no tier, which is both wrong
+#    and exactly the register KS3 design law forbids. Under `keyStage: "ks3"`
+#    the fetch is skipped, so the CDN script is not needed here — which is also
+#    one fewer blocking request on the page audit 6.5 measured at 8.96 s.
+#
+# 3. NO INLINE `onclick`, ANYWHERE. KS4's close button and image-clear button
+#    are wired with attributes; `verify_ks3.py`'s "all interactive controls are
+#    real buttons" gate asserts `onclick=` appears nowhere in a KS3 lesson, and
+#    it is right to. `init()` already binds `.close-btn`; `[data-clear-img]` is
+#    the KS3-shaped equivalent for the image row and is bound in the engine.
+#
+# ⚠️ AND THE MARKS ARE DRAWN, NOT TYPED. KS4 types `✕` and `➤` into these two
+# buttons. The five KS3 latin woff2 subsets contain neither U+2715 nor U+2192,
+# which is the whole reason MARK_CROSS and MARK_ARROW exist — and the parity
+# gate caught the first draft of this markup on all 70 authored lessons, which
+# is the gate working exactly as designed. KS4 keeps its characters; its pages
+# load a different font stack and are not this generator's business.
+#
+# ⚠️ `inert` — the overlay is `opacity: 0; pointer-events: none` when closed,
+# which hides it from the eye and from the mouse and NOT from the keyboard. A
+# text input, a file picker and two buttons would otherwise sit in the tab
+# order of every lesson page, invisible. `data-inert-when-closed` is what tells
+# the engine to put it back on close; KS4 does not carry the attribute and is
+# therefore untouched by the same code.
+KS3_CHAT_OVERLAY = """<div class="chat-overlay" id="chatOverlay" inert data-inert-when-closed>
+  <div class="chat-modal">
+    <div class="chat-head">
+      <div class="chat-head-info">
+        <h3>Mr. Badmus AI</h3>
+        <p id="chat-head-subtitle">KS3 Science Tutor</p>
+      </div>
+      <button class="close-btn" type="button" aria-label="Close the tutor">%(cross)s</button>
+    </div>
+    <div class="chat-msgs" id="chatMsgs"></div>
+    <div class="img-preview-row" id="imgPreviewRow">
+      <img id="imgPreview" src="" alt="preview"/>
+      <button type="button" data-clear-img aria-label="Remove the picture">%(cross)s</button>
+    </div>
+    <div class="chat-input-row" style="max-width:860px;width:100%%;margin:0 auto;padding:0 24px 20px;">
+      <label for="imgInput" class="img-btn" title="Add a photo of your work">\U0001F4F7</label>
+      <input type="file" id="imgInput" accept="image/*" style="display:none"/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything about this lesson"/>
+      <button class="chat-send-btn" type="button" aria-label="Send">%(arrow)s</button>
+    </div>
+  </div>
+</div>
+""" % {"cross": MARK_CROSS, "arrow": MARK_ARROW}
+
+
+def tutor_mount(discipline, topic):
+    """The overlay, the engine and the one call that binds them.
+
+    ⚠️ THE INIT CALL WAITS FOR `DOMContentLoaded` ON PURPOSE. `mrbadmus.v2.js`
+    is `defer`red, and a deferred script executes AFTER the parser reaches
+    `</html>` — so an inline `<script>` written straight after it runs FIRST
+    and `window.MrBadmus` is not defined yet. Deferred scripts do run before
+    `DOMContentLoaded` fires, so the listener is the one ordering that holds.
+
+    The config is `json.dumps`ed rather than interpolated, because a lesson
+    title is authored prose and prose contains apostrophes. `<` is escaped
+    besides, so a title could never close the script element early.
+    """
+    cfg = json.dumps({"subject": discipline, "topic": topic,
+                      "keyStage": "ks3"}, sort_keys=True)
+    cfg = cfg.replace("<", "\\u003c")
+    return (KS3_CHAT_OVERLAY +
+            '<script src="/shared/mrbadmus.v2.js" defer '
+            'fetchpriority="low"></script>\n'
+            '<script>document.addEventListener("DOMContentLoaded",'
+            'function(){if(window.MrBadmus){MrBadmus.init(%s);}});</script>\n'
+            % cfg)
+
+
 NAV_BRAND = (
     '<a class="ks3-brand" href="/index.html">'
     '<svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true">'
@@ -370,7 +526,8 @@ def header_trail(parts):
 
 def shell(title, body, crumb_html="", discipline=None, description="",
           footer_links=(), main_class="", lesson_slug=None,
-          trail_html="", rail_html=""):
+          trail_html="", rail_html="", canonical="", head_links="",
+          tail_html="", needs_js=True, og_type="website"):
     """KS3 page shell. `class="rd"` + `data-mode="ks3"` per §8.5.
 
     **The breadcrumbs live in the HEADER, not in `<main>` (MRB-208).** Design's
@@ -402,6 +559,39 @@ def shell(title, body, crumb_html="", discipline=None, description="",
     and `<main>` — outside the main landmark because it is a position readout
     for the page, not part of its content, and it is sticky under a sticky
     header, which only works if the two are siblings.
+
+    ⊕ MRB-257 — five additive keyword slots. Every one of them defaults to the
+    behaviour this shell already had, so a caller that passes none is
+    unchanged. The `trail_html or crumb_html` slot above is untouched: the
+    MRB-220 contract's objection was to a SECOND trail slot, not to the shell
+    growing head metadata it never had.
+
+    `canonical` — the site path this page is written to (`/ks3/…/x.html`).
+    Given one, the head gains `rel="canonical"` and the `og:*` set; given
+    nothing it gains neither, because a canonical tag guessing at its own
+    address is worse than an absent one. Audit 6.9: 0 of 70 pages had either.
+
+    `head_links` — raw `<link>` markup for relationships only the caller knows.
+    Today that is `rel="prev"` / `rel="next"`, emitted from the unit order
+    (audit 6.3).
+
+    `tail_html` — raw markup after the footer, before the scripts. The chat
+    overlay the tutor CTA opens (audit 6.2) goes here: `MrBadmus.init()` binds
+    to `#chatOverlay` and does NOT build it, so the markup has to be on the
+    page already.
+
+    `needs_js` — audit 6.5. `shared/ks3.js` is 174 KB and, on an index page,
+    wires nothing at all. It was linked from all 294 pages regardless, and
+    because `defer` defers EXECUTION and not download priority it competed for
+    bandwidth with the render-blocking stylesheet: FCP on Slow 3G measured
+    8,532 ms on the discipline hub, whose DOM is 91 nodes with no canvas and no
+    interactive control. Index pages now pass `needs_js=False`.
+
+    ⚠️ `/ks3/index.html` KEEPS IT. The KS3 landing page carries MRB-212's
+    lesson picker, which `wirePicker()` in ks3.js is the whole behaviour of.
+    Dropping the tag there would leave a disclosure button that never opens —
+    a much worse defect than a slow page. The rule is "a page that wires
+    nothing does not load the wiring", not "index pages do not get JS".
     """
     accent = ("--subject: var(%s);" % SUBJECT_TOKEN[discipline]) if discipline else ""
 
@@ -416,18 +606,46 @@ def shell(title, body, crumb_html="", discipline=None, description="",
     links = "".join(
         '<a href="%s">%s</a>' % (e(href), t(label))
         for label, href in (("All of KS3", "/ks3/index.html"),) + tuple(footer_links))
+
+    # The description is composed once and reused three times — `<meta
+    # name="description">`, `og:description` and nothing else — so the social
+    # card and the search result can never disagree about what the page is.
+    desc = description or title
+    full_title = "%s · MrBadmusAI KS3" % title
+    social = ""
+    if canonical:
+        url = canon(canonical)
+        social = (
+            '<link rel="canonical" href="%s"/>\n'
+            '<meta property="og:type" content="%s"/>\n'
+            '<meta property="og:site_name" content="MrBadmusAI"/>\n'
+            '<meta property="og:title" content="%s"/>\n'
+            '<meta property="og:description" content="%s"/>\n'
+            '<meta property="og:url" content="%s"/>\n'
+            '<meta name="twitter:card" content="summary"/>\n'
+            % (e(url), e(og_type), e(full_title), e(desc), e(url)))
+
+    # ⚠️ `fetchpriority="low"` on a DEFERRED script is not redundant. `defer`
+    # says "run me after parsing"; it says nothing about when to FETCH, and the
+    # browser was pulling 174 KB of ks3.js concurrently with the stylesheet
+    # that blocks first paint. The hint moves the download behind the render
+    # path without moving the execution — the instruments still wire before
+    # DOMContentLoaded, they just stop starving the CSS to do it.
+    scripts = ('<script src="/shared/ks3.js" defer fetchpriority="low"></script>\n'
+               if needs_js else "")
     return """<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>%(title)s · MrBadmusAI KS3</title>
+<title>%(fulltitle)s</title>
 <meta name="description" content="%(desc)s"/>
-%(preload)s<link rel="stylesheet" href="/shared/tokens.css"/>
+%(favicon)s
+%(social)s%(preload)s<link rel="stylesheet" href="/shared/tokens.css"/>
 <link rel="stylesheet" href="/shared/styles.css"/>
 <link rel="stylesheet" href="/shared/nav.css"/>
 <link rel="stylesheet" href="/shared/ks3.css"/>
-</head>
+%(headlinks)s</head>
 <body class="rd" data-mode="ks3"%(lesson)s%(style)s>
 <header class="ks3-nav">
   <div class="ks3-nav-rail">%(brand)s
@@ -445,13 +663,17 @@ def shell(title, body, crumb_html="", discipline=None, description="",
     <div class="ks3-footer-links">%(links)s</div>
   </div>
 </footer>
-<script src="/shared/ks3.js" defer></script>
-<script src="/shared/class-entry.js" defer></script>
+%(tail)s%(scripts)s<script src="/shared/class-entry.js" defer></script>
 </body>
 </html>
 """ % {
-        "title": e(title),
-        "desc": e(description or title),
+        "fulltitle": e(full_title),
+        "desc": e(desc),
+        "favicon": FAVICON_LINK,
+        "social": social,
+        "headlinks": head_links,
+        "tail": tail_html,
+        "scripts": scripts,
         "style": (' style="%s"' % accent) if accent else "",
         "lesson": (' data-ks3-lesson="%s"' % e(lesson_slug)) if lesson_slug else "",
         "brand": NAV_BRAND,
@@ -1050,6 +1272,26 @@ def _base_pairs(fig):
     BIG, SMALL = 96.0, 62.0
     SIZE = {"A": BIG, "G": BIG, "C": SMALL, "T": SMALL}
     WORD = {"A": "big", "G": "big", "C": "small", "T": "small"}
+    # ⊕ MRB-257 · audit 5.42 / 3.1 — THE FILL IS A PROPERTY OF THE BASE, and
+    # this map is the whole fix.
+    #
+    # The two rects below used to be painted `_SVG_ACCENT_TINT` on the left and
+    # `_SVG_OK_TINT` on the right, unconditionally — keyed to the COLUMN. The
+    # key underneath says accent = "A and G — the big bases" and ok = "C and T
+    # — the small bases", so every rung authored small-first (`("T", "A")`,
+    # `("C", "G")`) painted a small base in the big colour and a big base in
+    # the small one. Four of ten boxes on `how-we-worked-out-dna`.
+    #
+    # The widths were right throughout, which is exactly why it survived: the
+    # drawing was structurally correct and only the colour lied. A student who
+    # reads the key and applies it classifies T and C as the big bases — the
+    # inversion of the one fact the figure exists to teach, and the fact the
+    # "every rung is one big + one small" argument rests on.
+    #
+    # Derived from the same letter that picks the width, so the two encodings
+    # cannot drift apart again: one lookup, one truth.
+    TINT = {"A": _SVG_ACCENT_TINT, "G": _SVG_ACCENT_TINT,
+            "C": _SVG_OK_TINT, "T": _SVG_OK_TINT}
 
     W, PAD_TOP, ROW_H, BAR_W = 760, 34, 62, 26
     # ⚠️ 200, not 300. At 300 the ladder sat centred with 200px of dead space on
@@ -1099,12 +1341,24 @@ def _base_pairs(fig):
         cy = PAD_TOP + i * ROW_H + ROW_H / 2.0
         lw, rw = SIZE[left], SIZE[right]
         # Left base from the left backbone, right base meeting it in the middle.
+        # `data-base` / `data-size` are HOOKS FOR THE GATE, and MRB-257
+        # decision 4 is why they exist: "every code-drawn figure's parity rows
+        # must include at least one assertion tying the visual encoding to the
+        # scientific fact it teaches." The colour defect above passed parity
+        # for weeks because no row could name a box's base — every rect looked
+        # like every other rect to a selector. Now `rect[data-base="T"]` is a
+        # thing a parity row can measure the fill of, and the inversion cannot
+        # come back without a red gate.
         out.append('<rect x="%.1f" y="%.1f" width="%.1f" height="34" rx="9" '
+                   'data-base="%s" data-size="%s" '
                    'style="fill:%s;stroke:%s" stroke-width="2"/>'
-                   % (x0, cy - 17, lw, _SVG_ACCENT_TINT, _SVG_INK))
+                   % (x0, cy - 17, lw, e(left), e(WORD[left]),
+                      TINT[left], _SVG_INK))
         out.append('<rect x="%.1f" y="%.1f" width="%.1f" height="34" rx="9" '
+                   'data-base="%s" data-size="%s" '
                    'style="fill:%s;stroke:%s" stroke-width="2"/>'
-                   % (x0 + lw, cy - 17, rw, _SVG_OK_TINT, _SVG_INK))
+                   % (x0 + lw, cy - 17, rw, e(right), e(WORD[right]),
+                      TINT[right], _SVG_INK))
         out.append(_svg_text(x0 + lw / 2.0, cy + 7, left, size=19,
                              weight="800", family=_SVG_MONO))
         out.append(_svg_text(x0 + lw + rw / 2.0, cy + 7, right, size=19,
@@ -1422,14 +1676,33 @@ def r_figure(lesson, block):
         return ""
     status = fig.get("status", "needed")
     if status == "needed":
-        # Honest placeholder — a declared, tracked sourcing task (§4.10),
-        # never a broken image.
-        return ("""<figure class="ks3-figure ks3-figure-pending">
-  <div class="ks3-figure-slot" role="img" aria-label="%s">
-    <span class="ks3-figure-tag">Diagram coming soon</span>
-  </div>
-  <figcaption>%s</figcaption>
-</figure>""" % (e(fig["caption"]), t(fig["caption"])))
+        # ⊕ MRB-257 · audit C4 / §8.10 — AN UNBUILT ASSET EMITS NOTHING. NOT A
+        # PLACEHOLDER, NOT A CAPTION, NOT A WORD.
+        #
+        # This used to return a `.ks3-figure-pending` block reading "Diagram
+        # coming soon" over the figure's caption. That is the build's own
+        # backlog printed to a twelve-year-old, which is precisely what §8.10
+        # forbids: a student page carries no meta-text about how the platform
+        # works, and "we have not drawn this yet" is the purest example there
+        # is. It was written as honesty and it is really an apology addressed
+        # to the wrong reader — the student cannot act on it, and the only
+        # thing it changes is that the lesson now looks unfinished.
+        #
+        # ⚠️ THE SAME LEAK EXISTS IN THE RECORDS AND IS NOT FIXED HERE. Eleven
+        # lessons hand-author "…is declared in the lesson record as
+        # `b5-pollen-tube`, awaiting illustration." into `convention_note`.
+        # There is no generator template for that sentence — it is authored
+        # prose and it is cut in the records, not here. What this return does
+        # is make the GENERATOR structurally incapable of adding a twelfth.
+        #
+        # Returning "" is deliberate and not a hole: a figure block whose
+        # figure is not drawn yet leaves the surrounding blocks flowing into
+        # each other exactly as they do on the 54 lessons that never declared
+        # a figure at all. The declaration itself is not lost — `figures[]`
+        # still carries it, `validate()` still sees it, and
+        # `docs/ks3/diagram-manifest.md` is the place the backlog is read,
+        # by the people who can act on it.
+        return ""
     # ⊕ `drawn` — Mide's diagram ruling of 18 Aug 2026. Code draws it, inline,
     # from tokens. Dispatched through a closed registry with a raise on an
     # unknown name, exactly as `_css_art` does, and for the same reason.
@@ -2622,8 +2895,7 @@ def r_sort_pairs(a, act_id):
                t(lookup[r["answer"]] + "."), rich(r.get("note", ""))))
 
     unit = a.get("progress_unit") or "sent"
-    panel = ('<div class="ks3-pair-panel" hidden data-pair-panel>%s</div>'
-             % rich(a["reveal_panel"])) if a.get("reveal_panel") else ""
+    panel = _pair_panel(a.get("reveal_panel"))
     return ('<ul class="ks3-pairrows" role="list">%s</ul>'
             '<div class="ks3-pair-foot">'
             '<button type="button" class="ks3-reveal-btn ks3-pair-reveal" '
@@ -2632,6 +2904,50 @@ def r_sort_pairs(a, act_id):
             'data-total="%d" data-unit="%s">0 of %d %s</span></div>%s'
             % ("".join(out), t(a.get("reveal_label") or "Show the answers"),
                len(rows), e(unit), len(rows), t(unit), panel))
+
+
+def _pair_panel(payload):
+    """The sorter's answer panel — `{headline, body}` or a bare string.
+
+    ⊕ MRB-257 · audit 5.3 / MRB-253 — THIS SHIPPED A PYTHON DICT TO STUDENTS.
+    The line was `rich(a["reveal_panel"])`, and `rich()` is `html.escape()` with
+    two tags put back: handed a dict it stringifies it, so `animal-and-plant-
+    cells` published
+
+        {'headline': 'The wall is the box. The membrane is the door.', 'body': …}
+
+    as the panel a student opens after sorting five statements. Verified as the
+    only occurrence in 58 lessons — because it is the only record that authored
+    the two-key form, which nothing on the render side ever knew about.
+
+    Both shapes are accepted rather than one being declared wrong. The dict is
+    the better authoring shape (a headline earns its own line), the string is
+    what every other record would write, and a renderer that raises on the
+    string form would turn a schema preference into a build failure for an
+    author who did the obvious thing.
+
+    ⚠️ `wirePairs()` in shared/ks3.js only calls `setHidden(panel, false)` — it
+    never renders a payload — so the markup this returns is exactly what the
+    student reads. Nothing downstream can rescue a bad shape here.
+
+    The 14px gap is inline rather than a class because `.ks3-pair-panel` has no
+    `p + p` rule and this generator does not invent classes the stylesheet has
+    never heard of; 14px is the value `.ks3-reveal-panel p + p` already uses for
+    the same job. Handed off to be moved into shared/ks3.css.
+    """
+    if not payload:
+        return ""
+    if isinstance(payload, dict):
+        head = payload.get("headline") or ""
+        body = payload.get("body") or ""
+        inner = ""
+        if head:
+            inner += "<p><strong>%s</strong></p>" % rich(head)
+        if body:
+            inner += "<p>%s</p>" % rich(body)
+    else:
+        inner = rich(payload)
+    return '<div class="ks3-pair-panel" hidden data-pair-panel>%s</div>' % inner
 
 
 def r_fit_parts(lesson, a, act_id):
@@ -19828,27 +20144,34 @@ def r_ladder(lesson, block=None):
     """
     lad = lesson.get("ladder") or {}
     slug = lesson["slug"]
-    rungs, marked, self_marked = [], [], []
+    rungs, self_marked = [], []
     for key, num, name in LADDER_RUNGS:
         q = lad.get(key)
         if not q:
             continue
         if q.get("options"):
             rungs.append(_rung_marked(key, num, name, q))
-            marked.append(num)
         elif q.get("success"):
             rungs.append(_rung_self(slug, key, num, name, q))
             self_marked.append(num)
 
-    # Both header lines are counted off what actually rendered, so neither can
-    # describe a ladder the page is not showing. With the standard 2 + 2 shape
-    # they read exactly as Design labelled the component: "Four rungs. Two the
-    # page marks, two you mark."
-    total = len(marked) + len(self_marked)
-    sub = ("%s rung%s. %s the page marks, %s you mark."
-           % (_count_word(total).capitalize(), "" if total == 1 else "s",
-              _count_word(len(marked)).capitalize(),
-              _count_word(len(self_marked))))
+    # ⊕ MRB-257 · audit C7 — THE SUB-LINE IS GONE, and only one line survives.
+    #
+    # This block used to emit BOTH `.ks3-ladder-sub` ("Four rungs. Two the page
+    # marks, two you mark.") and `.ks3-score-note` ("Rungs 3 and 4 you mark
+    # yourself.") into the same header, on all 58 lessons. Two sentences, one
+    # fact, side by side — and the second is the better of the two: it names
+    # WHICH rungs rather than how many, which is the thing a student standing
+    # in front of the ladder actually needs.
+    #
+    # The count is not lost with it. The rungs are numbered on the page and
+    # they are all visible at once, so "four" was being told to a reader who
+    # could already see four. Nothing in `shared/ks3.js` reads or rewrites
+    # either string (checked), so dropping the sub-line is a pure subtraction.
+    #
+    # The page-marked rungs are no longer counted at all: `len(marked)` had
+    # exactly one reader and it was the sentence above. `self_marked` still
+    # earns its list, because the surviving note names the rungs by number.
     if not self_marked:
         note = "The page marks every rung."
     elif len(self_marked) == 1:
@@ -19859,15 +20182,14 @@ def r_ladder(lesson, block=None):
 
     return ('<section class="ks3-block ks3-ladder" data-lesson="%s"%s>'
             '<div class="ks3-ladder-head">'
-            '<div><h2>Mastery ladder</h2>'
-            '<p class="ks3-ladder-sub">%s</p></div>'
+            '<div><h2>Mastery ladder</h2></div>'
             '<div class="ks3-ladder-score" aria-live="polite">'
             '<p class="ks3-score" data-score>Not started yet.</p>'
             '<p class="ks3-score-note" data-score-note>%s</p></div>'
             '</div>'
             '<div class="ks3-rungs">%s</div>'
             '</section>'
-            % (e(slug), _id_attr(block or {}), e(sub), e(note),
+            % (e(slug), _id_attr(block or {}), e(note),
                "".join(rungs)))
 
 
@@ -20550,6 +20872,12 @@ def r_endmatter(cards, tutor=None):
     A card with no items is omitted — an empty "Before this lesson" is a
     promise the lesson did not make. The tutor card has no items and always
     renders, because it is an offer rather than a list.
+
+    ⊕ MRB-257 · audit 6.3 — the caller now passes a "Where to next" card built
+    from the unit order. It is a card in this grid and nothing new: MRB-205
+    binds, Design drew the endmatter and this is one more section inside it.
+    `repeat(auto-fit, minmax(250px, 1fr))` takes a fifth card without any
+    change to the layout.
     """
     out = []
     for heading, items in cards:
@@ -20558,23 +20886,32 @@ def r_endmatter(cards, tutor=None):
         out.append('<section><h2>%s</h2><ul>%s</ul></section>'
                    % (e(heading), "".join(items)))
 
-    # ⚠️ A SPAN, NOT A LINK, AND DELIBERATELY SO — unless the lesson names a
-    # destination that exists on its own page.
+    # ⊕ MRB-257 · audit 6.2 — A REAL BUTTON, BECAUSE THERE IS NOW A REAL TUTOR.
     #
-    # This was an <a href="#ks3-tutor">, and no KS3 page contains an element
-    # with that id — so it was a link that silently went nowhere, which is
-    # worse than no affordance at all. Claude Design's reference draws it as a
-    # <span> for exactly this reason: the tutor panel does not exist yet
-    # (§8.8 — a KS3 student can reach no tutor today), and the reference shows
-    # what the card will look like rather than pretending the destination is
-    # live. It becomes a real control when the KS3 tutor lands, not before.
+    # ⛔ The paragraph that used to live here explained why this was a <span>,
+    # and before that an <a href="#ks3-tutor"> pointing at an id no KS3 page
+    # contains. Both were right at the time: §8.8 said a KS3 student could
+    # reach no tutor, so the card showed what it WOULD look like. `tutor_mount`
+    # ends that — the chat engine is on the page and this control opens it.
     #
-    # ⊕ §4.8.1 C. Design's approved B1 pages resolve this differently: the card
-    # points at THE LESSON'S OWN flagship activity — b1-01's at `#s-board` —
-    # which scrolls, asks nobody anything, and still reads as a tutor. That is
-    # a real destination on the page it is printed on, so the <span> objection
-    # does not apply to it. A lesson that names no `anchor` still gets the
-    # span. MRB-209's link gate covers the href either way.
+    # The `anchor` compromise goes with it, and that is the point of the fix.
+    # A lesson could name one of its own sections and the card would scroll
+    # there instead; all 58 biology lessons did, and on `the-menstrual-cycle`
+    # at 390px it scrolled the reader 9,768px BACKWARDS to a section they had
+    # already finished. A card that says "Ask about this lesson" and answers by
+    # moving the page is not a tutor, and relabelling it to what it did would
+    # have been the honest version of a worse product.
+    #
+    # ⚠️ A BUTTON, NOT A LINK, and the distinction is load-bearing: this
+    # performs an action on the page rather than going to an address. The
+    # audit's own accessibility baseline is "zero bare interactive elements",
+    # and `verify_ks3.py` asserts every KS3 control is a real `<button>`.
+    #
+    # The inline style supplies only what a `<button>` needs and an `<a>` did
+    # not — the UA border, the UA font-family and the pointer. It deliberately
+    # does NOT restate `font-size` or `font-weight`: those come from
+    # `.ks3-tutor-cta` in shared/ks3.css and an inline copy would outrank the
+    # stylesheet and freeze them. Handed off to be folded into that rule.
     # ⊕ MRB-220 — `body` is authorable. B1's approved cards put the lesson's
     # own sticking point in the HEADING ("Stuck on why a flame isn’t alive?");
     # Design's B2 cards head it "Ask Mr Badmus AI" and put the question in the
@@ -20589,10 +20926,8 @@ def r_endmatter(cards, tutor=None):
         body = ('<p>Ask anything about this lesson and get it explained '
                 'another way.</p>' if not tutor.get("prompt") else "")
     label = t(tutor.get("cta") or "Start a question")
-    anchor = tutor.get("anchor")
-    cta = ('<a class="ks3-tutor-cta" href="#%s">%s %s</a>'
-           % (e(anchor), label, MARK_ARROW)) if anchor else (
-          '<span class="ks3-tutor-cta">%s %s</span>' % (label, MARK_ARROW))
+    cta = ('<button type="button" class="ks3-tutor-cta" data-open-chat>'
+           '%s %s</button>' % (label, MARK_ARROW))
     out.append('<section class="ks3-tutor"><h2>%s</h2>%s%s</section>'
                % (heading, body, cta))
     return '<div class="ks3-endmatter">%s</div>' % "".join(out)
@@ -20689,7 +21024,54 @@ def ks4_bridge_href(link):
     return "/%s/%s/%s.html" % (KS4_BRIDGE_PATHWAY, KS4_BRIDGE_TIER, link)
 
 
-def lesson_page(unit, lesson, registry, units_by_code):
+def lesson_neighbours(units):
+    """`slug → (previous, next)`, each an `(unit, lesson)` pair or None.
+
+    ⊕ MRB-257 · audit 6.3 — THERE WAS NO FORWARD MOVE ANYWHERE IN 58 LESSONS.
+    Zero elements matching next/previous/continue, zero `<link rel="next">`.
+    Eleven non-terminal lessons had no link at all to the next lesson in their
+    own unit; nine of the eleven last-in-unit lessons had no link into the
+    following unit, and on `unicellular-organisms` all three in-`<main>` links
+    pointed backwards. After roughly eight thousand pixels of scrolling, the
+    reward for finishing was a page with no way on.
+
+    Nothing new is invented to fix it. The unit index already publishes this
+    order; this reads the same list.
+
+    ⚠️ TWO KINDS OF SLOT ARE SKIPPED, for two different reasons.
+
+    A `reference_to` slot has no page at all — §4.6 says the owning unit
+    renders it — so a link to one would be a 404, which is the defect MRB-209's
+    gate exists to catch.
+
+    An UNAUTHORED slot does have a page, and it is skipped anyway. "Next
+    lesson" that lands on *This lesson has not been written yet* is a worse
+    ending than no control: the student did the work, pressed the one forward
+    affordance the page offers, and got a placeholder. The unit index still
+    lists the slot honestly, which is the right place for a coming-soon row.
+
+    Rollover is within a DISCIPLINE, in the order `build_ks3()` walks its units
+    — so the last lesson of a unit points at the first lesson of the next unit,
+    and the last authored lesson in a discipline points at nothing rather than
+    at another subject.
+    """
+    nbrs = {}
+    for disc in ("biology", "chemistry", "physics"):
+        seq = [(u, l) for u in units if u["discipline"] == disc
+               for l in u["lessons"]
+               if l.get("authored") and not l.get("reference_to")]
+        for i, (u, l) in enumerate(seq):
+            nbrs[l["slug"]] = (seq[i - 1] if i else None,
+                               seq[i + 1] if i + 1 < len(seq) else None)
+    return nbrs
+
+
+def _lesson_href(unit, lesson):
+    return "/ks3/%s/%s/%s.html" % (unit["discipline"], unit["slug"],
+                                   lesson["slug"])
+
+
+def lesson_page(unit, lesson, registry, units_by_code, neighbours=None):
     disc = unit["discipline"]
     base = "/ks3/%s/%s" % (disc, unit["slug"])
     # ⊕ MRB-208 rule 1: on a LESSON page the trail lives in the header bar and
@@ -20847,6 +21229,41 @@ def lesson_page(unit, lesson, registry, units_by_code):
     if not prereqs and lesson.get("before_this"):
         prereqs = ['<li><span class="ks3-endmatter-prose">%s</span></li>'
                    % t(lesson["before_this"])]
+    # ⊕ MRB-257 · audit 2.8 — AND IF THE RECORD SAYS NEITHER, THE RAIL STILL
+    # RENDERS. It was missing on 13 of 58 lessons, and not as an opener
+    # exemption: B4-02 and B4-05 carried it and B4-03 and B4-04 did not, while
+    # openers elsewhere correctly read "Nothing — this is where the unit
+    # starts." It disappeared exactly where B5's dependency chain is tightest —
+    # seven of the eight reproduction lessons — so the student who most needed
+    # to be told what comes first was the one told nothing.
+    #
+    # An empty card was the right rule when the alternative was inventing a
+    # prerequisite. It is the wrong rule now, because the generator can say
+    # something true without inventing anything: position in the unit is data
+    # the unit index already publishes, and the two truthful readings of "no
+    # declared prerequisite" are different sentences.
+    #
+    # ⚠️ THE OPENER SENTENCE IS NOT SAFE FOR A NON-OPENER. Ten of the thirteen
+    # are lessons 2 to 7 of their unit; telling a reader standing on B5 lesson
+    # 5 that "this is where the unit starts" would be false, and a rail that
+    # lies is worse than a rail that is absent. So the fallback is keyed to
+    # position, and the non-opener form states the sequence rather than
+    # claiming an absence of prerequisites.
+    #
+    # It states it in PROSE and does not link: the forward and backward moves
+    # are the "Where to next" card below, and two controls to the same lesson
+    # in one endmatter is a grid that repeats itself.
+    #
+    # ⚠️ This is a floor, not a substitute for `requires`. Every one of the
+    # thirteen is listed in the run report so the real dependency edges can be
+    # authored in the records, where the prerequisite graph is validated.
+    if not prereqs:
+        prev = (neighbours or {}).get(lesson["slug"], (None, None))[0]
+        same_unit = prev and prev[0]["code"] == unit["code"]
+        prereqs = ['<li><span class="ks3-endmatter-prose">%s</span></li>'
+                   % t("This follows on from %s." % prev[1]["title"]
+                       if same_unit
+                       else "Nothing — this is where the unit starts.")]
     if not ks4 and lesson.get("ks4_becomes"):
         ks4 = ['<li><span class="ks3-endmatter-prose">%s</span></li>'
                % t(lesson["ks4_becomes"])]
@@ -20857,11 +21274,67 @@ def lesson_page(unit, lesson, registry, units_by_code):
     # FORWARD at the next lesson. A fixed heading would have rendered a card
     # Design did not draw over content Design did draw. The default is
     # unchanged, so no shipped lesson moves.
+    # ⊕ MRB-257 · audit 6.3 — the forward and backward move, from the order
+    # the unit index already knows. An ordinary endmatter card (MRB-205: no new
+    # component), and the same `<li><a>` + `<p>` shape the "Connects to" card
+    # uses for a reference with a `why`.
+    #
+    # The next lesson comes FIRST. A student reaching the end of a lesson is
+    # looking for the way on; the way back is the one they have just come from.
+    #
+    # The unit line is printed only when the move crosses a unit boundary,
+    # which is where a title alone stops being enough to know where you are
+    # going. `_require_slug`'s registry is not consulted: `neighbours` is built
+    # from the same `units` list this page was rendered from, so a link here
+    # cannot point at a page the build did not write.
+    onward = []
+    prev_n, next_n = (neighbours or {}).get(lesson["slug"], (None, None))
+    for pair, lead in ((next_n, "Next"), (prev_n, "Previous")):
+        if not pair:
+            continue
+        u2, l2 = pair
+        crossing = ('<p>%s</p>' % t(u2["title"])) if u2["code"] != unit["code"] \
+            else ""
+        onward.append('<li><a href="%s">%s: %s %s</a>%s</li>'
+                      % (e(_lesson_href(u2, l2)), t(lead), t(l2["title"]),
+                         MARK_ARROW, crossing))
+
     body.append(r_endmatter([("Before this lesson", prereqs),
                              (lesson.get("connects_heading") or "Connects to",
                               connects),
-                             ("At GCSE this becomes", ks4)],
+                             ("At GCSE this becomes", ks4),
+                             ("Where to next", onward)],
                             tutor=lesson.get("tutor")))
+    # ⊕ MRB-257 · audit 6.4 — THE CONFIDENTIAL SERVICE, NAMED, IN SMALL TYPE.
+    #
+    # RULED by Mide on 19 Aug 2026 (MRB-233 comment 2). Eight lessons carry a
+    # safeguarding block and all three drugs lessons defer to "your school's
+    # PSHE materials"; a corpus sweep for `childline|0800 1111|nspcc|
+    # samaritans|papyrus|frank|shout` across all 58 rendered lessons returned
+    # ZERO. mrbadmus.com is a public site, and the student who most needs that
+    # block is reading it alone at eleven at night, when a school folder is not
+    # reachable.
+    #
+    # The ruling, exactly: the service is `Childline`, the number is
+    # `0800 1111`, joined by a spaced em dash. The "your school's PSHE
+    # materials" deferral STAYS as the daytime route; Childline is the
+    # out-of-hours one. Shout and FRANK were offered and not taken up.
+    #
+    # ⚠️ THE TREATMENT IS THE RULING TOO, and it is why this is a `ks3-legal`
+    # foot line and not a card. §8.10: anything of this kind sits small, at the
+    # bottom edge, alongside the existing school-nurse / pharmacist / GP
+    # routes, NEVER a callout block. A helpline should be findable and quiet.
+    # It is emitted before `safety_note` because it is the most specific thing
+    # on the page and the standing legal line is the least.
+    #
+    # The generator owns the SLOT; the eleven strings are authored in the
+    # records, because which lessons carry a safeguarding block is a judgement
+    # about content and not something a renderer can derive — only four lessons
+    # in the key stage have a non-empty `support[]`, and the ruled set is
+    # eleven.
+    if lesson.get("safeguarding_note"):
+        body.append('<p class="ks3-legal">%s</p>'
+                    % t(lesson["safeguarding_note"]))
     # ⊕ §4.8.1 D — the lesson-specific safety line sits ALONGSIDE the standing
     # legal line, never instead of it. b1-01's is "Never light a candle to test
     # this at home without an adult with you."
@@ -20893,10 +21366,39 @@ def lesson_page(unit, lesson, registry, units_by_code):
     body.append(LEGAL_LINE)
     body.append("</div>")
 
+    # ⊕ MRB-257 · audit 6.12 — `meta_description`, an authored override.
+    #
+    # The description has always been the `big_question`, which is also printed
+    # on the page in display type. 41 of 70 KS3 pages measured over 160
+    # characters and truncate in a search result; two are over 300 and the
+    # longest is 380. Shortening the `big_question` to fix a search snippet
+    # would edit the sentence a student reads at the top of the lesson, which
+    # is the wrong trade — so the two strings come apart here, and the record
+    # can carry a short one for search without touching the page. Absent, the
+    # behaviour is exactly what it was.
+    #
+    # ⚠️ NOT truncated here. A generator that cuts at 160 characters cuts
+    # mid-word, and the result is a search snippet that reads as broken rather
+    # than as short. The over-long strings are listed in the run report for
+    # authoring.
+    head_links = ""
+    if next_n:
+        head_links += '<link rel="next" href="%s"/>\n' % e(canon(
+            _lesson_href(next_n[0], next_n[1])))
+    if prev_n:
+        head_links += '<link rel="prev" href="%s"/>\n' % e(canon(
+            _lesson_href(prev_n[0], prev_n[1])))
+
     return shell(lesson["title"], "\n".join(x for x in body if x), "", disc,
-                 lesson.get("big_question", ""),
+                 lesson.get("meta_description")
+                 or lesson.get("big_question", ""),
                  lesson_slug=lesson["slug"],
-                 trail_html=trail, rail_html=r_rail(lesson))
+                 trail_html=trail, rail_html=r_rail(lesson),
+                 canonical=_lesson_href(unit, lesson),
+                 head_links=head_links,
+                 og_type="article",
+                 tail_html=tutor_mount(
+                     disc, "%s — %s" % (unit["title"], lesson["title"])))
 
 
 def coming_soon_page(unit, lesson):
@@ -20921,7 +21423,10 @@ def coming_soon_page(unit, lesson):
              t(lesson["title"]), e(base), t(unit["title"]))
     return shell(lesson["title"], body, crumb, disc,
                  "%s — coming soon" % lesson["title"],
-                 lesson_slug=lesson["slug"])
+                 lesson_slug=lesson["slug"],
+                 canonical="/ks3/%s/%s/%s.html" % (disc, unit["slug"],
+                                                   lesson["slug"]),
+                 og_type="article")
 
 
 def unit_index(unit, units_by_code, registry):
@@ -20958,7 +21463,20 @@ def unit_index(unit, units_by_code, registry):
         e(DISCIPLINE_TITLES[disc]), e(unit["code"]), t(unit["title"]), intro,
         unit["authored_count"], len(unit["lessons"]), t(unit["statutory_area"]),
         rows)
-    return shell(unit["title"], body, crumb, disc, unit.get("intro") or unit["title"])
+    # ⊕ MRB-257 · audit 6.5 — `needs_js=False`. A unit index is a heading, an
+    # intro and an ordered list of links: `wireSims`, `wireLadder`, `wireRail`
+    # and `wirePicker` all find nothing here, and 174 KB downloaded to do
+    # nothing was competing with the stylesheet that blocks first paint.
+    # ⊕ MRB-257 · audit 6.12 — `meta_description` on a unit too, same shape and
+    # same reason as the lesson's: `intro` is printed at the top of the page in
+    # display type AND used as the search snippet, and seven of the eleven
+    # biology unit intros run past the 160 characters a result truncates at.
+    # Absent, the behaviour is exactly what it was.
+    return shell(unit["title"], body, crumb, disc,
+                 unit.get("meta_description") or unit.get("intro")
+                 or unit["title"],
+                 canonical="/ks3/%s/%s/index.html" % (disc, unit["slug"]),
+                 needs_js=False)
 
 
 def discipline_hub(disc, units):
@@ -20983,7 +21501,24 @@ def discipline_hub(disc, units):
 </header>
 <ul class="ks3-unit-grid">%s</ul>""" % (
         e(DISCIPLINE_TITLES[disc]), len(units), "".join(cards))
-    return shell("KS3 %s" % DISCIPLINE_TITLES[disc], body, crumb, disc)
+    # ⊕ MRB-257 · audit 6.7 — THE HUB HAD AN ELEVEN-CHARACTER DESCRIPTION.
+    #
+    # No `description` was passed, so `desc = description or title` fell back
+    # to the title and `/ks3/biology/` shipped `content="KS3 Biology"` — on the
+    # one page in the tree a search for "KS3 biology revision" actually lands
+    # on. Every lesson and all eleven unit indexes had a real one; the hub
+    # above them had the shortest string on the estate.
+    #
+    # Composed rather than tabulated so chemistry and physics get the same
+    # treatment the moment their units land, and so the unit count cannot go
+    # stale. Kept under 160 characters, which is where a search result
+    # truncates (audit 6.12).
+    return shell("KS3 %s" % DISCIPLINE_TITLES[disc], body, crumb, disc,
+                 "Free KS3 %s — %d units of lessons you work through, each "
+                 "with something to try, a mastery ladder and answers you can "
+                 "check." % (DISCIPLINE_TITLES[disc], len(units)),
+                 canonical="/ks3/%s/index.html" % disc,
+                 needs_js=False)
 
 
 # ── the browse layer (§4.5.2) ────────────────────────────────────────────
@@ -21232,7 +21767,9 @@ def year_index(year, browse):
                  "term by half term." % year,
                  footer_links=[("Year %d" % year,
                                 "/ks3/year-%d/index.html" % year)],
-                 main_class="is-browse")
+                 main_class="is-browse",
+                 canonical="/ks3/year-%d/index.html" % year,
+                 needs_js=False)
 
 
 def half_term_index(year, half_term, browse):
@@ -21353,7 +21890,10 @@ def half_term_index(year, half_term, browse):
                  % (year, name),
                  footer_links=[("Year %d" % year,
                                 "/ks3/year-%d/index.html" % year)],
-                 main_class="is-browse")
+                 main_class="is-browse",
+                 canonical="/ks3/year-%d/%s/index.html"
+                           % (year, half_term_slug(half_term)),
+                 needs_js=False)
 
 
 VOCAB_CAP = 8
@@ -21548,7 +22088,10 @@ def half_term_discipline_index(year, half_term, disc, browse, units_by_code):
                                 "/ks3/year-%d/index.html" % year),
                                (DISCIPLINE_TITLES[disc],
                                 "/ks3/%s/index.html" % disc)],
-                 main_class="is-browse")
+                 main_class="is-browse",
+                 canonical="/ks3/year-%d/%s/%s/index.html"
+                           % (year, half_term_slug(half_term), disc),
+                 needs_js=False)
 
 
 def lesson_picker(units):
@@ -21770,9 +22313,14 @@ def landing(units, browse):
         "years": "".join(years),
         "subjects": "".join(secs),
     }
+    # ⚠️ `needs_js` stays TRUE here, alone among the index pages. This is the
+    # page that carries MRB-212's lesson picker, and `wirePicker()` in ks3.js
+    # is the whole of its behaviour — without the tag the disclosure button
+    # would never open. See shell()'s docstring.
     return shell("KS3 Science", body, crumb, None,
                  "Free KS3 Science revision — Years 7 to 9, all three sciences.",
-                 main_class="is-browse is-hub")
+                 main_class="is-browse is-hub",
+                 canonical="/ks3/index.html")
 
 
 # ── validation (§9 gates) ────────────────────────────────────────────────
@@ -21988,6 +22536,7 @@ def build_ks3(output_dir=OUT_ROOT, mirror_to_root=True, repo_root="."):
             f.write(stamp_versions(content, versions))
 
     browse = browse_slots(units)
+    neighbours = lesson_neighbours(units)
 
     n = 0
     write("index.html", landing(units, browse))
@@ -22003,7 +22552,8 @@ def build_ks3(output_dir=OUT_ROOT, mirror_to_root=True, repo_root="."):
             for l in u["lessons"]:
                 if l.get("reference_to"):
                     continue          # §4.6 — the owner renders it, not us
-                page = (lesson_page(u, l, registry, units_by_code)
+                page = (lesson_page(u, l, registry, units_by_code,
+                                    neighbours)
                         if l["authored"] else coming_soon_page(u, l))
                 write("%s/%s/%s.html" % (disc, u["slug"], l["slug"]), page)
                 n += 1
@@ -22052,6 +22602,63 @@ def build_ks3(output_dir=OUT_ROOT, mirror_to_root=True, repo_root="."):
             shutil.copy2(src, os.path.join(shared_dst, asset))
     print("  ✅ synced shared assets (ks3.css, ks3.js, tokens.css)")
     print("  ✅ cache-bust: stamped %d pages — %s" % (n, versions))
+
+    # ⊕ MRB-257 · audit 2.9 — RAIL VOCABULARY DRIFT, REPORTED EVERY BUILD.
+    #
+    # 52 lessons head the middle endmatter card "Connects to"; three B2 lessons
+    # head it "Next in this unit" and one "Taught in full in". The consequence
+    # the audit measured is not cosmetic: a card headed "Next in this unit"
+    # gets authored with only the next lesson in it, so B2 never points
+    # sideways at the B4 and B8 material it depends on. The label shaped the
+    # content.
+    #
+    # ⚠️ AND THE OVERRIDE IS NOT REMOVED, deliberately. `connects_heading` is
+    # authored on 16 lessons, and killing the read site would take
+    # "Continues in Physics" off `energy-in-food-and-what-you-need` — which is
+    # the one place the label is carrying real information a generic heading
+    # cannot — and would restyle eleven live CHEMISTRY lessons that were never
+    # in the audit's scope. A fix that breaks two units to tidy one is not a
+    # fix. The default is unchanged, the divergence is now VISIBLE on every
+    # build, and which records should move is a content decision.
+    #
+    # This is also why audit 6.3's prev/next matters here: with a real forward
+    # control on every lesson, a card headed "Next in this unit" is the second
+    # forward affordance in one endmatter, and the case for the override is
+    # weaker than it was when it was written.
+    drift = [(u["code"], l["slug"], l["connects_heading"])
+             for u in units for l in u["lessons"]
+             if l.get("authored") and l.get("connects_heading")
+             and l["connects_heading"] != "Connects to"]
+    if drift:
+        print("  ⚠️  rail vocabulary: %d lesson(s) head the connects card with "
+              "something other than \"Connects to\"" % len(drift))
+        for code, slug, head in drift:
+            print("       %-4s %-42s %s" % (code, slug, head))
+
+    # ⊕ MRB-257 · audit 6.12 — meta descriptions that truncate in a search
+    # result. Reported rather than cut: see lesson_page(). 160 is where Google
+    # stops; the audit measured 41 of 70 KS3 Biology pages over it, two over
+    # 300, the longest 380.
+    longd = []
+    for u in units:
+        # A unit index takes `intro`, which is also printed on the page — the
+        # same two-jobs-one-string problem the lessons have, and it needs the
+        # same `meta_description` treatment in `structure.py`.
+        ud = u.get("meta_description") or u.get("intro") or ""
+        if u["authored_count"] and len(ud) > 160:
+            longd.append((u["code"], u["slug"] + "/index", len(ud)))
+        for l in u["lessons"]:
+            if not l.get("authored") or l.get("reference_to"):
+                continue
+            d = l.get("meta_description") or l.get("big_question") or ""
+            if len(d) > 160:
+                longd.append((u["code"], l["slug"], len(d)))
+    if longd:
+        longd.sort(key=lambda r: -r[2])
+        print("  ⚠️  meta description over 160 chars on %d page(s) — author "
+              "`meta_description` (longest %d)" % (len(longd), longd[0][2]))
+        for code, slug, ln in longd:
+            print("       %-4s %-42s %d" % (code, slug, ln))
 
     with open(os.path.join(repo_root, "docs", "ks3", "diagram-manifest.md"),
               "w", encoding="utf-8") as f:

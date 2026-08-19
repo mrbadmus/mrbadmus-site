@@ -5189,7 +5189,22 @@ def build_site(output_dir="mrbadmus_site"):
 
     # ── Auth pages — copy into output if they exist in repo root ──
     import shutil as _shutil, os as _os
-    for _auth_file in ["auth.html", "reset-password.html", "profile-setup.html", "teacher-profile.html", "weekly-challenge.html", "leaderboard.html", "past-papers.html", "my-challenges.html", "revision.html"]:
+    # ⊕ MRB-257 · KS3 Biology audit 6.1 — `404.html` JOINS THIS LIST.
+    #
+    # Cloudflare Pages looks for `404.html` in the nearest ancestor directory of
+    # a request it cannot resolve, and — this is the part that bit us — when it
+    # finds none ANYWHERE it falls back to serving the root `index.html` with a
+    # **200**. Measured on the live site: three bogus paths plus `/favicon.ico`
+    # all returned 200 text/html, 7,396 bytes, byte-identical (md5 b676e202…),
+    # titled "MrBadmusAI — Free KS3 & GCSE Science Revision". A stale bookmark
+    # dumped a student on the marketing homepage with no sign anything had gone
+    # wrong, and every wrong URL was a candidate for indexing as the homepage.
+    #
+    # It has to be copied from here rather than written by build_ks3.py: that
+    # generator writes only under `mrbadmus_site/ks3/` on purpose, and anything
+    # it left at the output root would be deleted by the wipe loop above the
+    # next time this generator ran.
+    for _auth_file in ["404.html", "auth.html", "reset-password.html", "profile-setup.html", "teacher-profile.html", "weekly-challenge.html", "leaderboard.html", "past-papers.html", "my-challenges.html", "revision.html"]:
         _src = _auth_file
         _dst = f"{output_dir}/{_auth_file}"
         if _os.path.exists(_src):

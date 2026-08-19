@@ -1511,16 +1511,33 @@ body.rd[data-mode="ks3"] {
   font-size: 19px;
   font-weight: 700;
 }
+/* ⊕ MRB-257 · audit 6.2 — THIS IS A BUTTON NOW, not a link.
+   The CTA is offered 58 times and used to be an in-page anchor that scrolled
+   the student to a section they had already finished; on `the-menstrual-cycle`
+   at 390px it scrolled 9,768px BACKWARDS. It now opens the tutor, which is an
+   action, not an address — so it is a <button>, and a button needs the UA
+   border, appearance and font-family cleared to keep the drawn shape.
+   `display` is inline-FLEX rather than inline-block so `min-height` can carry
+   the tap target: at 10px padding on a 16px label the control measured 40px,
+   under audit 3.12's 44px. That was invisible while it was a link in a run of
+   text; it is not invisible on the only control in the block. */
 .ks3-tutor-cta {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--ks3-tap);
   margin-top: 12px;
   padding: 10px 17px;
+  border: 0;
   border-radius: 12px;
+  appearance: none;
+  -webkit-appearance: none;
   background: var(--ks3-card);
   color: var(--ks3-accent-text);
+  font-family: inherit;
   font-weight: 700;
   font-size: 16px;
   text-decoration: none;
+  cursor: pointer;
 }
 
 /* R14 — anything legal sits small, at the bottom edge, never a callout. */
@@ -3732,6 +3749,13 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   font-size: 19px;
   line-height: 1.6;
 }
+
+/* ⊕ MRB-257 · audit 5.3 — the answer panel is a headline and a body now.
+   It used to publish the raw Python dict `{'headline': …, 'body': …}` to
+   students, because the builder serialised the payload and `wirePairs` only
+   un-hid it. Matches `.ks3-reveal-panel p + p`, which spaces the same shape
+   in `#s-think`. */
+.ks3-pair-panel p + p { margin-top: 14px; }
 
 /* Build it. "Which parts" becomes a consequence of "what job". */
 .ks3-fit-tabs { margin-top: 22px; display: flex; gap: 9px; flex-wrap: wrap; }

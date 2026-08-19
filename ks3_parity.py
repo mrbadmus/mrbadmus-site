@@ -13551,6 +13551,82 @@ def check_figure_cue(browser_mod, url_for, rel):
     return problems
 
 
+def check_figure_content_truth(browser_mod, url_for, rel):
+    """MRB-257 decision 4 — a figure must encode the fact it exists to teach.
+
+        "5.42 (fills keyed to column, not base) passed parity because no row
+         asserted the encoding. Standing: every code-drawn figure's parity
+         rows must include at least one assertion tying the visual encoding to
+         the scientific fact it teaches, mutation-tested at source."
+
+    The defect this stands for: `_base_pairs` keyed each box's fill to its
+    COLUMN INDEX rather than to the base letter. The widths were right
+    throughout, so only the colour lied — and it lied on 4 of the 10 boxes, the
+    two rungs where the big base sits on the right. A student who reads the
+    legend and applies it classifies T and C as the big bases: the exact
+    inversion of the fact the drawing exists to teach, and the fact the "every
+    rung is one big and one small" argument rests on.
+
+    It survived every gate we had because every row on this figure measured the
+    frame, the ground and the guide label. None could name a box's BASE.
+
+    ⚠️ WALKS ALL TEN BOXES, deliberately. The obvious form of this assertion —
+    four parity rows, one per letter — catches only two of the four wrong
+    boxes, because `q()` returns the FIRST match and rung 1 is correct even
+    under the bug. An assertion that passes on the majority of a defect is how
+    this got to production in the first place.
+    """
+    problems = []
+    JS = """
+    (function () {
+      var boxes = document.querySelectorAll('.ks3-figure-svg rect[data-base]');
+      if (!boxes.length) { return null; }
+      var BIG = {A: 1, G: 1}, bad = [];
+      var WANT = {big: 'rgb(252, 231, 222)', small: 'rgb(228, 247, 235)'};
+      for (var i = 0; i < boxes.length; i++) {
+        var r = boxes[i], b = r.getAttribute('base' in r ? 'base' : 'data-base');
+        var big = !!BIG[b], want = big ? 'big' : 'small';
+        var w = parseFloat(r.getAttribute('width'));
+        var fill = getComputedStyle(r).fill;
+        if (fill !== WANT[want]) {
+          bad.push('box ' + i + ' is ' + b + ' (' + want + ') and is filled '
+                   + fill + ', the ' + (big ? 'SMALL' : 'BIG') + '-base tint');
+        }
+        if (r.getAttribute('data-size') !== want) {
+          bad.push('box ' + i + ' is ' + b + ' but declares data-size='
+                   + r.getAttribute('data-size'));
+        }
+        if (big ? (w < 80) : (w > 80)) {
+          bad.push('box ' + i + ' is ' + b + ' (' + want + ') and is drawn '
+                   + w + 'px wide');
+        }
+      }
+      return {n: boxes.length, bad: bad};
+    })()
+    """
+    with browser_mod.Browser() as b:
+        got = b.page(url_for(rel)).eval(JS)
+    if got is None:
+        problems.append(
+            "CONTENT TRUTH: /%s draws no `rect[data-base]`, so the base-pair "
+            "encoding assertion did not run. Either the figure has been "
+            "re-drawn without the hook, or it is no longer on this page — "
+            "both need a human, because this is the assertion standing "
+            "between a student and a legend that lies." % rel)
+        return problems
+    if got["n"] < 10:
+        problems.append(
+            "CONTENT TRUTH: /%s draws %d base boxes; the figure teaches five "
+            "rungs of two." % (rel, got["n"]))
+    for line in got["bad"]:
+        problems.append(
+            "CONTENT TRUTH: /%s — %s. The legend promises A and G are the big "
+            "bases; a student applying it would read this box the other way "
+            "round." % (rel, line))
+    return problems
+
+
+
 def run_browser_layers(ks3_root, browser_mod):
     """Layers C and D. Returns (problems, style_rows, contrast_rows).
 
@@ -13915,6 +13991,18 @@ def run_browser_layers(ks3_root, browser_mod):
              "edge fade present at 390px, absent at 1440px",
              "0 problems", "%d problem(s)" % len(cue_problems),
              not cue_problems))
+
+        # ⊕ MRB-257 decision 4 — content truth on the one figure whose
+        # encoding carried a fact, and got it backwards.
+        truth_problems = check_figure_content_truth(
+            browser_mod, _url, "biology/inheritance-and-dna/"
+                               "how-we-worked-out-dna.html")
+        problems.extend(truth_problems)
+        style_rows.append(
+            ("⊕ decision 4 · the base-pair fills encode base SIZE",
+             "all 10 boxes: A/G big-base tint, C/T small-base tint",
+             "0 problems", "%d problem(s)" % len(truth_problems),
+             not truth_problems))
     finally:
         server.shutdown()
 
