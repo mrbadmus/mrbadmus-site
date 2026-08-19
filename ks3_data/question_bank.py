@@ -76,6 +76,23 @@ Recorded here so the rule is not lost, and implemented by
   own lessons.
 * A lesson that cannot supply its share falls back to the nearest earlier
   lesson in the same subject rather than shipping a short assignment.
+
+⚠️ **The fallback is the normal path, not an edge case.** Twelve questions per
+lesson is four per band, and an assignment draws a single band — so fifteen
+questions need four lessons in scope, and the thirteen from the current week
+need four *current-week* lessons::
+
+    1 current-week lesson  →  4 questions available, 13 needed
+    2 current-week lessons →  8 questions available, 13 needed
+    3 current-week lessons → 12 questions available, 13 needed
+    4 current-week lessons → 16 questions available, 13 needed  ✓
+
+A KS3 week is typically one or two lessons, so ``earlier_lessons`` will be
+supplied on almost every real call. A caller that omits it is not hitting a
+rare corner — it is asking for an assignment that cannot be built, and
+:func:`compose_assignment` raises :class:`ShortAssignment` rather than quietly
+returning nine questions. Shipping short is the one outcome the ruling names
+and forbids.
 """
 
 import importlib
@@ -91,6 +108,17 @@ ASSIGNMENT_SIZE = 15
 RETRIEVAL_MINIMUM = 2
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
+
+
+class ShortAssignment(Exception):
+    """Not enough questions in scope to build a full assignment.
+
+    Raised rather than returning a short list, because "rather than shipping a
+    short assignment" is the ruled behaviour and a caller that silently sets
+    nine questions has broken it without anyone noticing. The message names
+    what was asked for and what was reachable, so the fix (pass more
+    ``earlier_lessons``) is obvious from the traceback.
+    """
 
 
 def _question_modules():
@@ -172,6 +200,11 @@ def compose_assignment(current_lessons, preceding_lesson=None,
     Returns a list of question dicts, ``size`` long. Selection is deterministic
     — it takes questions in bank order, so the same inputs always give the same
     assignment and a teacher previewing one sees what the class will get.
+
+    Raises :class:`ShortAssignment` if the lessons in scope cannot supply
+    ``size`` questions at ``band``. See the module docstring: with four
+    questions per band per lesson, this happens on any week with fewer than
+    four lessons unless ``earlier_lessons`` is supplied.
     """
     bank = bank if bank is not None else bank_by_lesson()
 
@@ -218,5 +251,15 @@ def compose_assignment(current_lessons, preceding_lesson=None,
             if len(chosen) >= size:
                 break
             take(key, size - len(chosen))
+
+    if len(chosen) < size:
+        raise ShortAssignment(
+            "only %d question(s) at band %r reachable from %d current lesson(s)"
+            ", %s preceding and %d earlier — %d needed. Each lesson supplies %d "
+            "questions per band, so pass more `earlier_lessons` (nearest "
+            "first) to make up the shortfall."
+            % (len(chosen), band, len(current_lessons),
+               "a" if preceding_lesson else "no", len(earlier_lessons), size,
+               PER_BAND))
 
     return chosen[:size]
