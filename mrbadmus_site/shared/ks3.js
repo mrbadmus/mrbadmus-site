@@ -10861,7 +10861,21 @@
       var tTerm = temp <= OPTIMUM
         ? Math.pow(temp / OPTIMUM, RISE)
         : Math.max(0, 1 - Math.pow((temp - OPTIMUM) / FALL, 2));
-      var gap = Math.abs(ph - Number(OPT[enzyme]));
+      /* MRB-255 S4 — `opt_ph` IS A SET and the gap is to the NEAREST
+         optimum in it. One protease with a scalar optimum of 2 put pH 8
+         six units away against a span of 4.5, so protease in the small
+         intestine read 0% and the verdict said "the conditions are simply
+         wrong for it" — under a rule card reading "Best at pH 2 in the
+         stomach, 8 in the small intestine". Pepsin ~2, trypsin ~8. A
+         scalar still works and means a one-element set. `_erun_rate` in
+         build_ks3.py IS THIS FUNCTION; a change to one is a change to
+         both. */
+      var opts = OPT[enzyme];
+      if (!(opts instanceof Array)) { opts = [opts]; }
+      var gap = Infinity;
+      for (var oi = 0; oi < opts.length; oi++) {
+        gap = Math.min(gap, Math.abs(ph - Number(opts[oi])));
+      }
       var pTerm = Math.max(0, 1 - gap / SPAN);
       return Math.max(0, Math.min(1, tTerm * pTerm));
     }
@@ -12042,6 +12056,7 @@
       "in": wrap.querySelector('[data-fill="in"]'),
       out: wrap.querySelector('[data-fill="out"]')
     };
+    var kpaFoot = wrap.querySelector("[data-cross-kpa]");
     var state = { breathing: true, blood_flow: true };
     each(switches, function (sw) {
       state[sw.getAttribute("data-switch")] =
@@ -12068,6 +12083,11 @@
       put(tiles.alveolar, live.getAttribute("data-alveolar"));
       put(tiles.blood, live.getAttribute("data-blood"));
       put(tiles.net, live.getAttribute("data-net"));
+      /* MRB-257 (6.15) — the partial pressures, in the footnote where the
+         audit puts them. Still copied, never computed: `r_crossing_counter`
+         derives this line from the same pair of values the side labels come
+         from, so the footnote cannot disagree with the tiles above it. */
+      put(kpaFoot, live.getAttribute("data-kpa"));
       put(vals["in"], live.getAttribute("data-in"));
       put(vals.out, live.getAttribute("data-out"));
       if (fills["in"]) {
@@ -15607,6 +15627,14 @@
     var P_REC = w.getAttribute("data-pheno-recessive") || "";
     var RATIO_T = w.getAttribute("data-ratio-template") || "";
     var NOREC_T = w.getAttribute("data-no-recessive-template") || "";
+    /* MRB-257 (5.45) — the mirror of NOREC_T. `pp × pp` grows a hundred white
+       plants and printed "Ratio purple to white — 0.00 : 1"; so did any
+       sample of one that came up white. A ratio needs both phenotypes.
+       (5.44) — and both lines are counts, so both need a singular: "in 1
+       seeds" is a state a student reaches here on purpose. */
+    var NODOM_T = w.getAttribute("data-no-dominant-template") || "";
+    var NOREC_1 = w.getAttribute("data-no-recessive-template-one") || "";
+    var NODOM_1 = w.getAttribute("data-no-dominant-template-one") || "";
     var SUF_ONE = w.getAttribute("data-suffix-one") || "";
     var SUF_MANY = w.getAttribute("data-suffix-many") || "";
 
@@ -15741,12 +15769,12 @@
            the two counts is always zero. */
         if (tally.recessive === 0) {
           ratioEl.textContent = total
-            ? NOREC_T.replace("{total}", String(total)) : "";
+            ? ((total === 1 && NOREC_1) || NOREC_T)
+                .replace("{total}", String(total)) : "";
         } else if (tally.dominant === 0) {
           ratioEl.textContent = total
-            ? (w.getAttribute("data-no-dominant-template") || "")
-                .replace("{total}", String(total))
-            : "";
+            ? ((total === 1 && NODOM_1) || NODOM_T)
+                .replace("{total}", String(total)) : "";
         } else {
           ratioEl.textContent = RATIO_T.replace("{ratio}",
             (tally.dominant / tally.recessive).toFixed(2));

@@ -971,9 +971,9 @@ LESSON = {
                  "spine, hips and the ends of your long bones. That is the "
                  "hidden cost of the trade — cargo space bought with a "
                  "maintenance bill handed to the rest of the body. Why keep "
-                 "paying it? Because about a quarter of all your cells are "
-                 "red blood cells, and every one would otherwise carry a "
-                 "third less oxygen."},
+                 "paying it? Because roughly five in every six of your "
+                 "cells are red blood cells, and every one would otherwise "
+                 "carry a third less oxygen."},
     ],
 
     # Present-but-empty by design (§11 decision 4). Empty renders

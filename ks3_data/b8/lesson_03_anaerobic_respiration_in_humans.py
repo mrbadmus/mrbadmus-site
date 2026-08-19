@@ -359,6 +359,14 @@ PACES = [
 # bar's behaviour after the runner stops.
 MODEL = {
     "supply_rest":  25,    # `SUPPLY_REST` — where supply starts and returns to
+    # ⊕ MRB-257 (5.15) — THE RESTING DEMAND, AND IT IS NOT THE RESTING SUPPLY.
+    # `read()` reused `supply_rest` as the demand for the ready phase, so
+    # "Standing on the line" asked for 25 units while Walking asks for 20: the
+    # bench said standing still costs MORE than walking. Supply comfortably
+    # exceeding demand is the whole meaning of "at rest", and 15 against a
+    # supply of 25 says it — every pace on the list is now more expensive than
+    # standing, which is the only ordering that is true.
+    "demand_rest":  15,    # what standing on the line actually asks for
     "supply_max":   80,    # `SUPPLY_MAX` — "the aerobic ceiling: everything
                            #  above this is borrowed" is Design's own comment
     "supply_step":  18,    # per 10 s run, regardless of pace
@@ -426,6 +434,26 @@ NOTES = {
     "cleared": "Lactic acid cleared and breathing settling back. The debt is "
                "paid, and the whole episode cost you nothing but time — "
                "nothing was wasted, it was borrowed.",
+    # ⊕ MRB-257 (5.13) — A DEBT HAS TO BE INCURRED BEFORE IT CAN BE REPAID.
+    # `cleared` fired on `lactate <= 1`, which is also true of a runner who
+    # never made any: Walking → Run 10 s → Recover 30 s read "Lactic acid
+    # cleared… The debt is paid" with the acid bar at 0 units the whole way
+    # through. The engine now tracks the PEAK lactate since the last reset and
+    # branches here when it never rose.
+    "nothing_to_repay": "Nothing to repay. This pace never went above what "
+                        "the oxygen supply could cover, so no lactic acid was "
+                        "made and there is no debt — your breathing settles "
+                        "as soon as you stop, because it was never borrowing.",
+    # ⊕ MRB-257 (5.14) — TWO DIFFERENT FACTS, AND THEY NEED TWO SENTENCES.
+    # Once supply has climbed to meet demand, nothing FURTHER is being made —
+    # but `within` says "nothing is building up" over an acid bar still reading
+    # 4 units, indefinitely. What has stopped is the accumulating; what has not
+    # happened yet is the clearing, and that only starts when the runner does.
+    "within_with_lactate": "Demand is now inside what the oxygen supply can "
+                           "cover, so nothing further is being made and this "
+                           "is aerobic from here. The lactic acid already in "
+                           "your muscles is still there, though — it clears "
+                           "when you stop, not while you keep going.",
 }
 
 # ── the three fact cards (page lines 333–337) ───────────────────────────

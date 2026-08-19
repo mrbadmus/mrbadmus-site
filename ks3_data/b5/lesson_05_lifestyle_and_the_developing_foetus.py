@@ -247,9 +247,14 @@ apply the copy exactly as given, so it is applied exactly.
 # medicines row breaks the yes/no framing, and insulin — the single `crosses:
 # False` row — lands last as the proof that the rule is about size.
 #
-# ⚠️ `win` is a pair of PERCENTAGES of a 0–40 week bar, not weeks. Insulin's
-# [0, 0] is a deliberately empty bar with `win_text` saying why: it does not
-# arrive. A row drawn with no bar and no sentence would read as a gap.
+# ⊕ MRB-257 (5.22) — `win_weeks` IS IN WEEKS, and it replaces a `win` that was
+# in PERCENTAGES of the 0–40 week bar while every `win_text` beside it is
+# written in weeks. Two of the six had drifted: prescribed medicines drew weeks
+# 2.0–10.0 under "weeks three to eight", and carbon monoxide drew 4.0–40.0
+# under "mostly the growth half". Each row now reads straight off its own
+# sentence. Insulin's [0, 0] is a deliberately empty bar with `win_text` saying
+# why: it does not arrive. A row drawn with no bar and no sentence would read
+# as a gap.
 SUBS = [
     {"id": "alcohol",
      "label": "Alcohol",
@@ -265,7 +270,7 @@ SUBS = [
             "are on the developing brain and nervous system, and on growth. "
             "UK advice is that no amount is known to be safe, which is a "
             "statement about missing knowledge as much as about the alcohol.",
-     "win": [0, 100],
+     "win_weeks": [0, 40],
      "win_text": "The whole pregnancy. The brain and nervous system are being "
                  "built and rebuilt from the first weeks to the last, so "
                  "there is no window in which alcohol has nothing to reach."},
@@ -290,7 +295,7 @@ SUBS = [
             "which is why smoking during pregnancy lowers birth weight "
             "measurably. Nicotine crosses too, and narrows blood vessels, "
             "which reduces the supply again.",
-     "win": [10, 100],
+     "win_weeks": [9, 40],
      "win_text": "Mostly the growth half of the pregnancy, because this is a "
                  "supply problem rather than a building problem — though the "
                  "supply matters throughout."},
@@ -313,7 +318,7 @@ SUBS = [
             "<em>crosses the placenta</em> and <em>harmful at any amount</em> "
             "are two different statements, and the second one has to be "
             "established separately for every substance.",
-     "win": [0, 100],
+     "win_weeks": [0, 40],
      "win_text": "No sharply defined window. What the evidence associates "
                  "with high intake is reduced growth, which can happen at any "
                  "stage."},
@@ -332,7 +337,7 @@ SUBS = [
             "can damage the developing eyes, ears and heart, which is why the "
             "MMR vaccination given in childhood is as much a protection for "
             "future pregnancies as for the child receiving it.",
-     "win": [0, 30],
+     "win_weeks": [0, 12],
      "win_text": "Overwhelmingly the first twelve weeks, when the eyes, ears "
                  "and heart are being formed. After about twenty weeks the "
                  "risk is very low."},
@@ -355,7 +360,7 @@ SUBS = [
             "precisely why the decision belongs to a doctor or pharmacist who "
             "knows the case, and why nobody should stop a prescribed medicine "
             "on their own.",
-     "win": [5, 25],
+     "win_weeks": [3, 8],
      "win_text": "Weeks three to eight are the most sensitive for structural "
                  "effects, which is why the first appointment asks what "
                  "someone is already taking."},
@@ -376,7 +381,7 @@ SUBS = [
             "it controls the mother’s glucose without reaching the foetus. It "
             "is the clearest proof that the rule is about size, not about "
             "safety — nothing has decided that insulin should be kept out.",
-     "win": [0, 0],
+     "win_weeks": [0, 0],
      "win_text": "Not applicable: it does not arrive. Glucose, on the other "
                  "hand, crosses freely, which is why controlling the mother’s "
                  "blood glucose still matters a great deal."},
@@ -639,7 +644,9 @@ LESSON = {
 
          # The 0–40 week bar under every verdict. `label` is the mono caption
          # and `ticks` are the three axis marks, left to right.
-         "window": {"label": "When it matters most",
+         # `weeks_total` is the span `win_weeks` is measured against, stated
+         # once here rather than implied by the tick captions (5.22).
+         "window": {"label": "When it matters most", "weeks_total": 40,
                     "ticks": ["Week 0", "Week 20", "Week 40"]}},
 
         # #s-windows — the band panel: when an exposure matters and why.

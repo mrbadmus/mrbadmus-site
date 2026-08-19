@@ -789,6 +789,18 @@ LESSON = {
          # also the correct output for PP × anything, where "no white in 100
          # seeds" IS the result.
          "no_recessive_template": "No white plants at all in {total} seeds",
+         # ⊕ MRB-257 (5.44) — the singular. One seed is a state this bench
+         # reaches on its first press, on purpose, and "in 1 seeds" undercuts
+         # the sentence beside it.
+         "no_recessive_template_one": "No white plant — {total} seed grown",
+         # ⊕ MRB-257 (5.45) — THE MISSING BRANCH. `pp × pp` grows a hundred
+         # white plants and printed "Ratio purple to white — 0.00 : 1"; so did
+         # any single seed that came up white. A ratio needs both phenotypes,
+         # and with no purple plants there is no ratio to state — the honest
+         # line says what there is. The mirror case had had its own line
+         # since Design drew it; this is the other half of the same rule.
+         "no_dominant_template": "No purple plants at all in {total} seeds",
+         "no_dominant_template_one": "No purple plant — {total} seed grown",
 
          # ⚠️⚠️ **ORDERED. FIRST MATCH WINS. NOT ALPHABETICAL, NOT ARBITRARY,
          # AND NOT TO BE TIDIED.** Schema §5.2, and the renderer must test in
@@ -796,7 +808,30 @@ LESSON = {
          # below it would send Pp × Pp — the one cross this whole lesson is
          # about — to the generic line. Full working in the docstring.
          "notes": {
-             # 1. Neither parent can give two p AND at least one is PP.
+             # ⊕ MRB-257 / MRB-255 (5.38) — 1a and 1b ARE NEW AND ARE TESTED
+             # FIRST. `one_pure_dominant` covered three crosses and its closing
+             # promise — "some of them are quietly carrying p, which will show
+             # up in the generation after" — is true of exactly one of them.
+             # With both parents PP no offspring can carry p at all, and the
+             # page was promising a hidden recessive that cannot exist: the
+             # misconception this lesson is built to remove, printed by the
+             # lesson. With PP × pp the opposite is true — every single seed
+             # carries it — and "some of them" undersells the fact that makes
+             # the F2 generation surprising.
+             #
+             # 1a. Both parents PP.
+             "both_pure_dominant":
+                 "Both parents carry two P versions, so there is no p anywhere "
+                 "in this cross to pass on. Every seed is purple, and none of "
+                 "them is carrying anything hidden — grow a thousand and the "
+                 "generation after will be purple too.",
+             # 1b. PP × pp — the classic F1, and every seed is a carrier.
+             "pure_dominant_x_pure_recessive":
+                 "One parent has only P and the other only p, so every seed "
+                 "receives one of each and every seed is Pp. All purple — "
+                 "and every single one of them is carrying p. Cross two of "
+                 "these and the white flowers come back.",
+             # 1. PP × Pp — what is left, and the sentence written for it.
              "one_pure_dominant":
                  "One parent carries two P versions, so every seed receives at "
                  "least one P. Every offspring is purple however many you "

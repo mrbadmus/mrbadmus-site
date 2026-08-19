@@ -13627,6 +13627,109 @@ def check_figure_content_truth(browser_mod, url_for, rel):
 
 
 
+def check_derived_side_labels(browser_mod, url_for, rel):
+    """MRB-257 (6.15) — a comparative label must be TRUE IN EVERY STATE.
+
+    The audit asked for the alveoli tiles to read "more oxygen here" / "less
+    oxygen here" instead of "13.3 kPa" / "5.3 kPa". Applied as two authored
+    strings that ships a FALSE statement: the labels are static, the values
+    are per-state, and in the both-stopped state both sides read 9.3 kPa. So
+    the label is DERIVED from the pair — and the general rule it stands for
+    (build contract, decision 8) is that any comparative label over per-state
+    values is computed, never authored beside them.
+
+    ⚠️ DRIVES ALL FOUR STATES, INCLUDING THE EQUAL ONE, and that is the whole
+    point of the row. The equal state is the one the literal fix got wrong; it
+    is also the one a load-state sweep never reaches, because the bench opens
+    with both switches ON. Three states passing is exactly the shape of
+    assertion that let 5.42 reach production.
+
+    The check is a comparison against the figures the footnote prints, so it
+    cannot be satisfied by an authored string that happens to look right: the
+    label and the numbers come from one pair, and this row re-derives the
+    comparison independently and demands they agree.
+    """
+    problems = []
+    JS = """
+    (function () {
+      var w = document.querySelector('[data-cross]');
+      if (!w) { return null; }
+      var sw = Array.prototype.slice.call(w.querySelectorAll('[data-switch]'));
+      if (sw.length !== 2) { return null; }
+      function set(a, b) {
+        var want = [a, b];
+        for (var i = 0; i < 2; i++) {
+          if ((sw[i].getAttribute('aria-pressed') === 'true') !== want[i]) {
+            sw[i].click();
+          }
+        }
+      }
+      function read() {
+        var alv = w.querySelector('[data-tile="alveolar"]');
+        var bld = w.querySelector('[data-tile="blood"]');
+        var foot = w.querySelector('[data-cross-kpa]');
+        var nums = (foot ? foot.textContent : '').match(/[0-9]+\\.[0-9]+/g) || [];
+        return {alv: alv && alv.textContent.trim(),
+                bld: bld && bld.textContent.trim(),
+                kpa: nums.map(Number),
+                state: w.getAttribute('data-state')};
+      }
+      var out = [];
+      [[true, true], [true, false], [false, true], [false, false]]
+        .forEach(function (p) { set(p[0], p[1]); out.push(read()); });
+      return out;
+    })()
+    """
+    with browser_mod.Browser() as b:
+        got = b.page(url_for(rel)).eval(JS)
+    if not got:
+        problems.append(
+            "CONTENT TRUTH: /%s has no two-switch `[data-cross]` bench, so the "
+            "derived side-label assertion did not run. This row is what stands "
+            "between a student and a tile reading 'more oxygen here' over two "
+            "equal numbers (6.15)." % rel)
+        return problems
+    if len(got) != 4:
+        problems.append("CONTENT TRUTH: /%s drove %d states, not 4."
+                        % (rel, len(got)))
+    seen_equal = False
+    for r in got:
+        if len(r["kpa"]) != 2:
+            problems.append(
+                "CONTENT TRUTH: /%s state %s prints %d partial pressure(s) in "
+                "its footnote; the comparison is over two."
+                % (rel, r["state"], len(r["kpa"])))
+            continue
+        alv_kpa, bld_kpa = r["kpa"]
+        if alv_kpa == bld_kpa:
+            seen_equal = True
+            want_alv = want_bld = "same"
+        else:
+            want_alv = "more" if alv_kpa > bld_kpa else "less"
+            want_bld = "more" if bld_kpa > alv_kpa else "less"
+        for side, label, want, mine, theirs in (
+                ("alveolus", r["alv"], want_alv, alv_kpa, bld_kpa),
+                ("blood", r["bld"], want_bld, bld_kpa, alv_kpa)):
+            low = (label or "").lower()
+            says = ("same" if "same" in low
+                    else "more" if "more" in low
+                    else "less" if "less" in low else "?")
+            if says != want:
+                problems.append(
+                    "CONTENT TRUTH: /%s state %s — the %s side reads %r at "
+                    "%.1f kPa against %.1f kPa, which is %r. A comparative "
+                    "label that disagrees with the two values it compares is "
+                    "the defect 6.15 exists to stop."
+                    % (rel, r["state"], side, label, mine, theirs, want))
+    if not seen_equal:
+        problems.append(
+            "CONTENT TRUTH: /%s never reached a state where the two sides are "
+            "EQUAL. That state is the one the literal fix got wrong and the "
+            "one a load-state sweep cannot reach, so a run that skips it "
+            "proves nothing about the label (6.15)." % rel)
+    return problems
+
+
 def run_browser_layers(ks3_root, browser_mod):
     """Layers C and D. Returns (problems, style_rows, contrast_rows).
 
@@ -14003,6 +14106,19 @@ def run_browser_layers(ks3_root, browser_mod):
              "all 10 boxes: A/G big-base tint, C/T small-base tint",
              "0 problems", "%d problem(s)" % len(truth_problems),
              not truth_problems))
+
+        # ⊕ MRB-257 (6.15) — content truth on the one label that is DERIVED
+        # rather than authored, driven through all four states including the
+        # equal one.
+        side_problems = check_derived_side_labels(
+            browser_mod, _url, "biology/breathing-and-gas-exchange/"
+                               "alveoli-built-for-exchange.html")
+        problems.extend(side_problems)
+        style_rows.append(
+            ("⊕ 6.15 · the alveoli side label is derived, in all 4 states",
+             "more / less / the same, agreeing with the two kPa figures",
+             "0 problems", "%d problem(s)" % len(side_problems),
+             not side_problems))
     finally:
         server.shutdown()
 

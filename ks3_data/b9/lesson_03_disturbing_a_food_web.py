@@ -48,7 +48,7 @@ only works because the web is drawn with the gap in it. A revision that
 have none, destroys the unit.
 
 ⚖️ **THE OAK IS THE ONE REMOVAL WHERE THE WEB DOES NOT REORGANISE.** Every other
-verdict describes a redistribution — six species changed, the owls squeezed out,
+verdict describes a redistribution — seven organisms changed, the owls squeezed out,
 the effect running from a predator down to the plants. The producer's describes a
 loss the web cannot absorb: *"Removing the producer removes the energy itself."*
 It is the contrast case, and it is the reason there are six removals rather than
@@ -158,7 +158,7 @@ Three flags, three checked, **none corrected**:
              softened; MRB-225 says a claim shrinks until it is true, and this
              one is already inside its own hedge.
 
-  * flag 7   **The oak wood web** — eight species, six removals, three rounds
+  * flag 7   **The oak wood web** — eleven organisms, six removals, three rounds
              each, and whether the *remove the oak* case is worth including.
              CHECKED AND LEFT WHOLE. Every outcome is a plausible direction
              rather than a prediction and the legal line says exactly that. The
@@ -365,9 +365,9 @@ SPECIES = [
                   "means the owls have a bad year — four steps from an insect "
                   "that never went near an owl."},
      ],
-     "verdict": "Six of the eight species changed, and the two that started "
-                "the story — ladybirds and aphids — are the least interesting "
-                "part of it."},
+     "verdict": "Seven of the eleven organisms in the wood changed, and the "
+                "two that started the story — ladybirds and aphids — are "
+                "the least interesting part of it."},
 
     {"id": "bluetits", "label": "Blue tits",
      "why": "They sit in the middle of this web, eating two things and being "
@@ -388,9 +388,9 @@ SPECIES = [
                   "are squeezed out by a competitor that arrived because of a "
                   "change three species away."},
      ],
-     "verdict": "Every species in the wood except the bees and the decomposers "
-                "changed, and the owls suffered most from losing a bird they "
-                "never competed with."},
+     "verdict": "Every organism in the wood except the bees, the "
+                "wildflowers and the decomposers changed, and the owls "
+                "suffered most from losing a bird they never competed with."},
 
     {"id": "owls", "label": "Owls",
      "why": "A top predator. Nothing eats an owl, so it looks like the safest "
@@ -753,7 +753,7 @@ LESSON = {
         {"type": "remove-a-species", "id": "take-one-out",
          "anchor": "s-bench", "segment": "practical",
          "demand": "investigate",
-         "eyebrow": "At the bench · one oak wood, eight species",
+         "eyebrow": "At the bench · one oak wood, every link in it",
          "heading": "Take one out and follow it",
          # Design's mono line beside the heading (page line 493). Three states,
          # and the middle one carries the live count.
@@ -1058,11 +1058,14 @@ LESSON = {
     # page telling the student that eighteen consequence texts are plausible
     # directions rather than predictions, and that three rounds on a screen are
     # years in a wood.
-    "convention_note": "The wood is a teaching web of eight species. Real "
-                       "woodland webs contain hundreds, the outcomes described "
-                       "are plausible directions rather than predictions, and "
-                       "effects that appear here in three rounds take years in "
-                       "a real ecosystem and do not always arrive.",
+    "convention_note": "The wood is a teaching web of eleven organisms, two "
+                       "of which — the wildflowers, and the fungi and "
+                       "bacteria — stand for whole groups rather than "
+                       "single species. Real woodland webs contain "
+                       "hundreds, the outcomes described are plausible "
+                       "directions rather than predictions, and effects "
+                       "that appear here in three rounds take years in a "
+                       "real ecosystem and do not always arrive.",
 
     # ── working scientifically (§5.7) ───────────────────────────────────────
     # Rungs 3 and 4 both ask for a reasoned explanation and a prediction

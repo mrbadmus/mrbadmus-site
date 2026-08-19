@@ -214,7 +214,10 @@ LESSON = {
              "both": "Both pulling. The elbow does not move — it stiffens. Nothing has cancelled out inside the muscles; both are working hard, and both are using energy.",
              "biceps": "The biceps pulls the forearm up and the triceps relaxes. Relaxing is not doing nothing: it is letting go so the partner can lengthen it.",
              "triceps": "The triceps pulls on the bone behind the elbow, and the forearm swings down. This is the only muscle that can straighten the arm against a resistance.",
-             "none": "Neither is pulling, so the arm falls under its own weight. Gravity will straighten a hanging arm for free — which is one reason the triceps is the smaller of the two.",
+             "none": "Neither is pulling, so the arm falls under its own "
+                     "weight. Gravity will straighten a hanging arm for "
+                     "free — which is one reason the triceps does less work "
+                     "than you would expect.",
          },
          # Drawn on the canvas at (600, 44) and (40, 44). Stem plus suffix,
          # exactly as the page composes them.

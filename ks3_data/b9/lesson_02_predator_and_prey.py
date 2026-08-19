@@ -234,9 +234,13 @@ simplify any of them into a one-cause story:
              which is the claim the lesson makes. ⚑ The one consequence worth
              Mide's eye: run far enough and the cycle damps out to two steady
              numbers, and a student who presses *Ten years* four times will see
-             that. The `steady` note and the legal line both cover it ("cycle
-             less tidily, and sometimes do not cycle at all"), so nothing was
-             added.
+             that. ⊕ RULED, MRB-255 S5 (19 Aug 2026): the maths stays and the
+             copy shrinks. `steady` and the legal line did NOT cover it — they
+             describe a swing, and by then there is none — so a `settled`
+             branch was added, and every string promising a cycle that
+             continues undiminished ("a repeating cycle", "goes round again")
+             was re-authored. The legal line's "cycle less tidily, and
+             sometimes do not cycle at all" is load-bearing and stays.
 
   * flag 6   **Hudson's Bay lynx and hare.** CHECKED AND LEFT — already
              resolved 16 Aug and verified in the bytes; see the ⚖️ block above.
@@ -374,6 +378,17 @@ NOTES = [
      "text": "No foxes left. The rabbits are climbing fast, and they will keep "
              "climbing until the grass runs short — run another ten years to "
              "find the ceiling."},
+    # ⊕ MRB-257 (5.11) / MRB-255 S5 — THE STATE THE MODEL ACTUALLY ARRIVES AT.
+    # Four presses of "Ten years" takes the prey spread from 30.8–100% to
+    # 99.9–100.0%: the oscillation has stopped, and every other note on this
+    # list describes one. MRB-255 rules the maths stays and the copy shrinks,
+    # so this is the note that makes the arrival legible instead of a chart
+    # that has quietly gone flat under a sentence about peaks.
+    {"id": "settled",
+     "text": "The swings have stopped. Rabbits and foxes have arrived at a "
+             "pair of numbers that hold each other in place — neither can "
+             "grow, and neither dies out. Nothing is managing it; this is "
+             "where the arithmetic comes to rest when nothing disturbs it."},
     {"id": "prey_high_pred_low",
      "text": "Rabbits high and foxes still low. This is the easy part of the "
              "cycle for the foxes, and their numbers will follow — next year, "
@@ -381,10 +396,16 @@ NOTES = [
     {"id": "prey_low",
      "text": "Rabbits scarce. The foxes are now the ones in trouble, and their "
              "numbers will fall until the pressure comes off the rabbits."},
+    # ⚖️ MRB-257 (5.12) — "a year or two" was measured and it is FIVE. On the
+    # shipped model the prey peak sits at column 15 and the predator peak at
+    # column 20, and the page's own GOING FURTHER already says "several years".
+    # The "every time" is a claim about the ORDER of the peaks, which is true
+    # at any amplitude, and MRB-255 S5 keeps it. What the closing clause adds
+    # is the thing the chart is doing that no note admitted to.
     {"id": "steady",
      "text": "Both populations moving. Watch the chart rather than the "
-             "numbers: the green bars peak a year or two after the amber ones, "
-             "every time."},
+             "numbers: the green bars peak about five years after the amber "
+             "ones, every time. The swings are getting smaller as it goes."},
 ]
 
 
@@ -492,12 +513,13 @@ LESSON = {
             "fall too",
             "Predators deliberately leave enough prey to breed",
         ],
-        "reveal": "Because the prey running out is the predator's problem too. "
-                  "As rabbits become scarce the foxes go hungry, fewer cubs "
-                  "survive, and the fox population falls — which takes the "
-                  "pressure off the rabbits, who recover, and the whole thing "
-                  "goes round again. Nobody is managing this. It falls out of "
-                  "the arithmetic, and the bench below runs it.",
+        "reveal": "Because the prey running out is the predator's problem "
+                  "too. As rabbits become scarce the foxes go hungry, fewer "
+                  "cubs survive, and the fox population falls — which takes "
+                  "the pressure off the rabbits, who recover, and the "
+                  "pattern repeats — each swing smaller than the last. "
+                  "Nobody is managing this. It falls out of the arithmetic, "
+                  "and the bench below runs it.",
     },
 
     # ── misconceptions (Law 3) ──────────────────────────────────────────────
@@ -651,10 +673,10 @@ LESSON = {
     # §12's b9-02 entry.
     "key_facts": [
         {"id": "the-predator-peak-comes-second",
-         "text": "Predator and prey numbers rise and fall in a repeating "
-                 "cycle, and the predator peak always comes after the prey "
-                 "peak. Each population limits the other, so neither wipes the "
-                 "other out and neither grows without limit.",
+         "text": "Predator and prey numbers rise and fall together, and the "
+                 "predator peak always comes after the prey peak. Each "
+                 "population limits the other, so neither wipes the other "
+                 "out and neither grows without limit.",
          "ground": "card",
          "eyebrow": "Key fact"},
     ],
@@ -685,19 +707,20 @@ LESSON = {
               "body": ["More rabbits does eventually mean more foxes, and "
                        "<em>eventually</em> is the entire content of this "
                        "lesson. A fox that finds plenty of food this spring "
-                       "cannot turn that into extra foxes until its cubs are "
-                       "born and survive, so the fox numbers respond to last "
-                       "year's rabbits, not this year's. Look at the chart on "
-                       "the bench: the green peak sits to the right of the "
-                       "amber one every single time. That delay is what makes "
-                       "the pattern a cycle rather than two lines moving "
-                       "together. Without a lag the populations would simply "
-                       "settle at a steady value and stay there; with one, "
-                       "each overshoots the level it could sustain, corrects, "
-                       "overshoots the other way, and goes round again. "
-                       "Delayed feedback producing oscillation is not just "
-                       "biology — it is why a shower runs hot then cold when "
-                       "the tap is slow to respond."]},
+                       "cannot turn that into extra foxes until its cubs "
+                       "are born and survive, so the fox numbers respond to "
+                       "last year's rabbits, not this year's. Look at the "
+                       "chart on the bench: the green peak sits to the "
+                       "right of the amber one every single time. That "
+                       "delay is what makes the pattern a cycle rather than "
+                       "two lines moving together. Without a lag the "
+                       "populations would simply settle at a steady value "
+                       "and stay there; with one, each overshoots the level "
+                       "it could sustain, corrects, overshoots the other "
+                       "way, and swings again — a little less far each "
+                       "time. Delayed feedback producing oscillation is not "
+                       "just biology — it is why a shower runs hot then "
+                       "cold when the tap is slow to respond."]},
              # `ECO-04`, and the paragraph that makes K load-bearing: "Press
              # remove every fox on the bench and watch what actually happens"
              # is a real instruction to a real control, and the ceiling note is

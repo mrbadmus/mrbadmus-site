@@ -19,7 +19,8 @@ locked until every one of the seven has been placed.
 B2's `job-sort`. The sorter opens each row the instant that row is decided,
 which is right there: a student finds out about item 1 before committing on
 item 2, and the sequence teaches. Here the argument is the SPREAD — two
-nutrients in hundreds of grams, three in tens, two in milligrams — and nobody
+nutrients in hundreds of grams, three in tens, one in single grams and one in
+milligrams (MRB-255 S6; see "What could not be lifted") — and nobody
 is surprised by a spread they were shown a seventh at a time. The block's own
 lede says so: *a guess you did not make cannot be wrong, and a guess that is
 never wrong teaches you nothing.*
@@ -94,12 +95,24 @@ anchor; it now also makes a claim to be completable, and it is reachable.
     grams. Three are measured in milligrams."* The bench's own bands put TWO in
     hundreds of grams (carbohydrate 300 g, water 2000 g), THREE in tens (lipid
     70 g, protein 45 g, fibre 25 g) and TWO in the trace band (vitamins 0.2 g,
-    minerals 5 g) — and the bench's `close` verdict says exactly that, in the
-    same section: *"two nutrients in hundreds of grams, three in tens, two in
-    milligrams."* Three sentences on one page, two of which agree with the data
-    and one of which does not. **Design's wording is lifted unchanged**, per
-    the c1-02 precedent: the numbers are a content call and content is Mide's
-    gate, not the build's. The cheapest repair is "Two of the seven are
+    minerals 5 g) — and the bench's `close` verdict said exactly that, in the
+    same section. Three sentences on one page, two of which agreed with the
+    data and one of which did not.
+
+    ⊕ RULED AND FIXED, MRB-255 S6 (19 Aug 2026). This was lifted unchanged on
+    the c1-02 precedent — the numbers are a content call and content is Mide's
+    gate. That gate has now ruled, and it ruled the other way round from the
+    "cheapest repair" sketched below: the defect is not the sentence, it is the
+    BAND. Three bands cannot hold vitamins (0.2 g) and minerals (5 g) honestly,
+    because they are two orders of magnitude apart, so a student who reasoned
+    to "a few grams" for minerals was marked WRONG FOR BEING RIGHT — the
+    marking behaviour is audit 5.9 and it is the defect a student actually
+    meets. A fourth band `grams` ("A few grams") now sits between `some` and
+    `trace`, the minerals row answers to it, and the `close` verdict counts the
+    four-band spread. Widening the trace label to "Grams or less" was the other
+    way to make this consistent and it is the wrong way: it would have made the
+    vitamins row wrong instead. The superseded sketch, kept for the reasoning:
+    "Two of the seven are
     measured in hundreds of grams. Two are measured in milligrams." — but it is
     a repair to a sentence a qualified examiner should choose.
   * NOTES-B3 §4 flags 1–4 are open on this lesson: the seven daily figures, the
@@ -136,7 +149,8 @@ PLATE = [
             "release no energy at all — they let the reactions that do release "
             "energy actually run."},
     {"name": "Minerals", "hint": "dairy, red meat, leafy greens, salt",
-     "band": "trace", "mass": "about 5 g in total",
+     # ⚖️ MRB-255 S6 — `grams`, not `trace`. 5 g is 5,000 mg.
+     "band": "grams", "mass": "about 5 g in total",
      "why": "A few grams, mostly calcium, and then iron, iodine and the rest "
             "in milligrams. Iron is 14 mg a day; miss it and your blood cannot "
             "carry oxygen properly."},
@@ -391,6 +405,15 @@ LESSON = {
               "miss_label": "Actually hundreds of grams"},
              {"id": "some",  "label": "Tens of grams",
               "miss_label": "Actually tens of grams"},
+             # ⚖️ MRB-255 S6 · THE FOURTH BAND. Minerals are ~5 g a day (Ca
+             # ~1 g, Na ~2.4 g, K ~3.5 g dominate) and vitamins ~0.2 g. On
+             # three bands both fell in "Milligrams or less", so a student
+             # who reasoned to "a few grams" for minerals — which is right —
+             # was marked wrong. Widening the trace label to "Grams or less"
+             # was the other way to make this consistent and it is the wrong
+             # way: it would make the vitamins row wrong instead.
+             {"id": "grams", "label": "A few grams",
+              "miss_label": "Actually a few grams"},
              {"id": "trace", "label": "Milligrams or less",
               "miss_label": "Actually milligrams or less"},
          ],
@@ -413,9 +436,9 @@ LESSON = {
                          "vitamins are both correct, and they are ten thousand "
                          "times apart.",
              "close": "Notice what the spread looks like: two nutrients in "
-                      "hundreds of grams, three in tens, two in milligrams. "
-                      "Balanced describes seven separate targets, not seven "
-                      "similar piles.",
+                      "hundreds of grams, three in tens, one in single "
+                      "grams and one in milligrams. Balanced describes "
+                      "seven separate targets, not seven similar piles.",
              "spread": "The usual misses are lipid and fibre. Lipid feels like "
                        "it should be near zero and is not; fibre feels like a "
                        "trace and is 25 g — more than half a day’s protein, of "
@@ -491,15 +514,15 @@ LESSON = {
                        "group.",
               "body": ["Look at the two ends of the table you have just "
                        "filled in. A 13-year-old needs roughly 300 g of "
-                       "carbohydrate and about 0.0000015 g of vitamin B12 in "
-                       "a day — a difference of two hundred million times. "
-                       "Eating them in equal amounts would mean 300 g of "
-                       "vitamin B12, which would be a lifetime supply for "
-                       "four hundred thousand people and would poison you "
-                       "long before you finished the plate. The word balanced "
-                       "describes a set of seven different targets being met "
-                       "at once, like seven dials each reading correctly. It "
-                       "has never meant seven equal piles."]},
+                       "carbohydrate and about 0.0000015 g of vitamin B12 "
+                       "in a day — a difference of two hundred million "
+                       "times. Eating them in equal amounts would mean 300 "
+                       "g of vitamin B12, which would be a year’s supply "
+                       "for about half a million people and would poison "
+                       "you long before you finished the plate. The word "
+                       "balanced describes a set of seven different targets "
+                       "being met at once, like seven dials each reading "
+                       "correctly. It has never meant seven equal piles."]},
              {"quote": "Vitamins give you energy.",
               "body": ["They do not, and this is worth being exact about. "
                        "Only three of the seven nutrients release energy when "

@@ -723,6 +723,13 @@ LESSON = {
          "bar_labels": ["Plants surviving the blight",
                         "Genetic variation in the field",
                         "Yield per plant in a good year"],
+         # ⊕ MRB-257 (5.41) — the SAME ROW, before the blight. It was sharing
+         # `bar_labels[0]`, so the resting page read "Plants surviving the
+         # blight — 1000 of 1000" with a full green bar, about a blight nobody
+         # had released. Before the release the number is a count of what was
+         # planted; the row only becomes a survivor count once the blight has
+         # passed through, and the two states now say which they are.
+         "bar_label_before": "Plants standing in the field",
 
          "run_label": "Release the blight",
          "ran_label": "Blight has passed through",

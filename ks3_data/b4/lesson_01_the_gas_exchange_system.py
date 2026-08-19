@@ -198,10 +198,11 @@ ROUTE = [
      "walls instead of cartilage. That muscle is what narrows in an asthma "
      "attack."),
     ("Alveoli", "Gas exchange — the only place",
-     "Around 500 million tiny air sacs, each wrapped in capillaries, each with "
-     "a wall one cell thick. This is where oxygen enters the blood and carbon "
-     "dioxide leaves it, and it is the only place in the body where that "
-     "happens."),
+     "Around 500 million tiny air sacs, each wrapped in capillaries, each "
+     "with a wall one cell thick. This is where oxygen enters the blood and "
+     "carbon dioxide leaves it, and once you are breathing air it is the "
+     "only place in your body where that happens — before you were born, "
+     "the placenta did all of it."),
     ("Ribs, intercostal muscles and diaphragm", "Moving the air",
      "Not part of the airway at all — the machinery that changes the volume of "
      "the chest, and so moves air in and out. The lungs contain no muscle of "

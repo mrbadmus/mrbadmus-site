@@ -395,7 +395,9 @@ LESSON = {
          # each before the button wraps to zero. It exists so `setCount`'s
          # clamp has a true number rather than a guess — the format itself
          # quotes no total.
-         "head_counter": {"format": "{n} portions on the plate", "total": 72,
+         # MRB-257 (5.44) — `format_one` is the MRB-248 singular opt-in.
+         "head_counter": {"format": "{n} portions on the plate",
+                          "format_one": "{n} portion on the plate", "total": 72,
                           "start": 0},
 
          "group_label": "Who is eating",
@@ -417,7 +419,9 @@ LESSON = {
 
          "clear_label": "Empty the day",
          "portions": {"empty": "nothing added yet",
-                      "some": "{n} portions, {total} kJ"},
+                      "some": "{n} portions, {total} kJ",
+                      # MRB-257 (5.44) — the plate holding one thing.
+                      "one": "{n} portion, {total} kJ"},
 
          "tolerance": 5,
          # ⚖️ THE COPY THAT MUST NOT BE LOST (NOTES-B3 §3.3). Without the

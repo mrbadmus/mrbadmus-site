@@ -31,8 +31,8 @@ explicit: two switches, four states, four hand-written notes, and the notes are
 where the lesson's argument lives. A computed version would collapse them into
 one sentence with numbers in it.
 
-⚖️ **`blood_kpa` is never zero in any of the four states** — 5.3, 13.1, 5.6,
-9.3, giving outward counts of 477, 1179, 504 and 837 per second. The outward
+⚖️ **`blood_kpa` is never zero in any of the four states** — 5.3, 13.1, 5.3,
+9.3, giving outward counts of 477, 1179, 477 and 837 per second. The outward
 bar staying visible in every state IS the confrontation: a student who watches
 it disappear has learnt that diffusion is one-way, which is precisely the belief
 `BREATH-06` and `BREATH-07` exist to remove. The renderer raises on a
@@ -204,8 +204,21 @@ STATES = [
              "blood side has almost caught up, then the two counts nearly "
              "match and net absorption collapses. The surface, the thin wall "
              "and the fresh air are all still there."},
+    # ⚖️ MRB-257 (5.35) — 5.5/5.3, NOT 6.0/5.6, AND THE NOTE IS WHY. This
+    # state's own last sentence reads "stopping either side has the same effect
+    # for the same reason" — and it did not. Blood-flow-stopped leaves a gap of
+    # 0.2 kPa (13.3 − 13.1) → 18 crossings → "about zero"; breathing-stopped
+    # left a gap of 0.4 (6.0 − 5.6) → 36 → "36 per second". Twice the residual,
+    # under a sentence claiming the two are the same. The gap is now 0.2 in
+    # both, so the note is true of what the bench draws.
+    #
+    # The physiology is unchanged and if anything tighter: with breathing
+    # stopped, alveolar oxygen falls TOWARDS the blood level rather than
+    # settling above it, and the blood side stays near mixed-venous because the
+    # tissues keep draining it. `blood_kpa` stays positive, which the renderer
+    # requires and the outward bar depends on.
     {"breathing": False, "blood_flow": True,
-     "alveolar_kpa": 6.0, "blood_kpa": 5.6,
+     "alveolar_kpa": 5.5, "blood_kpa": 5.3,
      "note": "Breathing stopped. The blood keeps draining oxygen away, so the "
              "alveolar level falls until the difference is almost gone. Note "
              "that stopping either side has the same effect for the same "
@@ -307,9 +320,10 @@ LESSON = {
             "Indefinitely, as long as you kept the airway clear",
         ],
         "reveal": "Minutes. The bag holds the same air and offers roughly a "
-                  "hundredth of a square metre of exchange surface instead of "
-                  "about seventy. Volume is not what keeps you alive — surface "
-                  "is, and a bag is the worst possible shape for it.",
+                  "sixth of a square metre of exchange surface instead of "
+                  "about seventy. Volume is not what keeps you alive — "
+                  "surface is, and a bag is the worst possible shape for "
+                  "it.",
     },
 
     # ── misconceptions (Law 3) ──────────────────────────────────────────────
@@ -433,7 +447,24 @@ LESSON = {
          "tiles": {"alveolar": "Oxygen in the alveolus",
                    "blood": "Oxygen in the blood",
                    "net": "Net oxygen absorbed"},
+         # ⊕ MRB-257 (6.15) — THE SIDE LABEL IS DERIVED AT BUILD TIME from the
+         # two values, never authored. The audit asked for "more oxygen here /
+         # less oxygen here" because partial pressure is not met until A-level;
+         # applied as two static strings that ships a FALSE statement, because
+         # in the both-stopped state both sides read 9.3 kPa. Ruled: compare
+         # the pair per state and emit more / less / the same, which is true in
+         # every reachable state by construction — and the equal state is one
+         # worth a student seeing, because it is what "diffusion has stopped"
+         # looks like.
+         "side_labels": {"more": "more oxygen here",
+                         "less": "less oxygen here",
+                         "same": "the same on both sides"},
+         # The figures are correct and worth keeping; they are simply not a
+         # Year 7 readout. `kpa_format` now feeds this line instead of the
+         # tiles, and it is derived per state from the same pair.
          "kpa_format": "{v} kPa",
+         "kpa_foot_format": "Partial pressures in this state — alveolus "
+                            "{alveolar}, blood {blood}.",
          "crossing_format": "{n} per second",
          # ⚖️ The NET tile hedges below 20 crossings a second and the two bars
          # never do. "About zero" is honest about a difference that has

@@ -405,9 +405,11 @@ AMOUNTS = [
 # the three questions a PROCESS lesson has to answer about its reaction.
 FACT_CARDS = [
     {"role": "Where", "name": "In the mitochondria",
-     "body": "Every living cell has them, and cells that work hardest have the "
-             "most. Not in the lungs, not in the blood — in the cells "
-             "themselves."},
+     "body": "Almost every cell has them, and cells that work hardest have "
+             "the most. Not in the lungs, not in the blood — in the cells "
+             "themselves. The red blood cell is the exception you met in "
+             "Specialised cells, and having none is why it cannot use the "
+             "oxygen it carries."},
     {"role": "When", "name": "Continuously",
      "body": "There is no off switch. A cell that stops respiring for more "
              "than a few minutes dies, which is what makes this the reaction "
@@ -726,9 +728,12 @@ LESSON = {
         {"id": "respiration-is-a-reaction-not-a-breath",
          "text": "Aerobic respiration is glucose + oxygen giving carbon "
                  "dioxide + water, releasing energy the cell can use. It "
-                 "happens in the mitochondria of every living cell, "
-                 "continuously, and it is a chemical reaction — not breathing, "
-                 "which is the muscular job that supplies it.",
+                 "happens in the mitochondria of almost every cell, "
+                 "continuously, and it is a chemical reaction — not "
+                 "breathing, which is the muscular job that supplies it. "
+                 "The red blood cell is the exception you met in "
+                 "Specialised cells, and it is why it cannot use its own "
+                 "cargo.",
          "ground": "card",
          "eyebrow": "Key fact"},
     ],
@@ -912,12 +917,14 @@ LESSON = {
     },
 
     # ── the key note (fixed, last, photographable) ──────────────────────────
-    "key_note": "Glucose + oxygen gives carbon dioxide + water, and energy is "
-                "transferred to the cell. It happens in the mitochondria of "
-                "every living cell, all the time, in small enzyme-controlled "
-                "steps at body temperature. No mass is lost: every atom in the "
-                "reactants appears in the products, which is why weight lost "
-                "as fat leaves mostly through the lungs.",
+    "key_note": "Glucose + oxygen gives carbon dioxide + water, and energy "
+                "is transferred to the cell. It happens in the mitochondria "
+                "of almost every cell, all the time, in small "
+                "enzyme-controlled steps at body temperature. The red blood "
+                "cell is the exception, and having no mitochondria is why "
+                "it cannot use its own cargo. No mass is lost: every atom "
+                "in the reactants appears in the products, which is why "
+                "weight lost as fat leaves mostly through the lungs.",
 
     # ── the stretch layer (§5.6) — visible and opt-in to all ────────────────
     # ⚑ NOTES-B8 flags 4 and 5 both live in this one paragraph, and both are

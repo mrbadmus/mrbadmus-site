@@ -722,7 +722,7 @@ LESSON = {
          # is why level 5 is `A gene` rather than `DNA`: "the last four are all
          # the same molecule" is true of chromosome, gene and bases and would be
          # false of a list carrying DNA beside them as a separate thing.
-         "close": "Six levels, and the last four are all the same molecule "
+         "close": "Six levels, and the last three are all the same molecule "
                   "seen at different magnifications. A chromosome is coiled "
                   "DNA; a gene is a section of that DNA; the bases are the "
                   "units the section is written in. Nothing was swapped for "

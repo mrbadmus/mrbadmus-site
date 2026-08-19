@@ -872,6 +872,13 @@ LESSON = {
          "dark_label": "Dark",
          "axis_note": "pale on top, dark below · one column per generation · "
                       "oldest on the left",
+         # ⊕ MRB-257 (5.40) — WHICH generations are on screen. The chart is a
+         # sliding window and "oldest on the left" stops being true once more
+         # generations have run than there are columns: at generation 50,
+         # column 0 was generation 27 and the whole change the lesson is about
+         # had scrolled off with nothing saying so. Filled on every draw.
+         "axis_format": "pale on top, dark below · one column per generation · "
+                        "generations {from} to {to}",
 
          "one_label": "One generation",
          "ten_label": "Ten generations",

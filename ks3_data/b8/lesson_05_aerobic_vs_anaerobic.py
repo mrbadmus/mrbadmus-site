@@ -376,7 +376,8 @@ reproduces it without a key.
 ROUTES = [
     {"id": "aerobic",   "text": "Almost entirely aerobic"},
     {"id": "both",      "text": "Aerobic, with anaerobic making up a shortfall"},
-    {"id": "anaerobic", "text": "Entirely anaerobic — no oxygen is being used"},
+    {"id": "anaerobic", "text": "Almost entirely anaerobic — very little "
+                                "oxygen is available"},
 ]
 
 # ── the five situations (page line 324, via extract_design_payload.js) ───
@@ -430,10 +431,10 @@ CASES = [
     {"id": "yeast", "label": "Yeast in dough", "answer": "anaerobic",
      "text": "Yeast in a sealed ball of bread dough, rising on a warm shelf.",
      "why": "No oxygen reaches most of the dough, so the yeast ferments: "
-            "glucose to ethanol and carbon dioxide. The gas is what raises the "
-            "loaf. This is the one case on the bench with no aerobic "
-            "respiration in it at all — and it is not an emergency for the "
-            "yeast, it is a living."},
+            "glucose to ethanol and carbon dioxide. The gas is what raises "
+            "the loaf. This is one of the two cases on the bench where "
+            "fermentation supplies nearly all the energy — and it is not an "
+            "emergency for the yeast, it is a living."},
 
     {"id": "root", "label": "Roots in flooded soil", "answer": "anaerobic",
      "text": "The root cells of a houseplant standing in waterlogged soil.",
@@ -684,9 +685,10 @@ LESSON = {
          "anchor": "s-bench", "demand": "decide",
          "eyebrow": "At the bench · five situations",
          "heading": "Which route is running here?",
-         "prompt": "Commit to an answer before you check it. Three of the five "
-                   "are not the answer most people give first, and one of them "
-                   "has no aerobic respiration in it at all.",
+         "prompt": "Commit to an answer before you check it. Three of the "
+                   "five are not the answer most people give first, and in "
+                   "two of them fermentation is supplying nearly all the "
+                   "energy.",
 
          "cases_label":   "The situation",
          "options_label": "Which route is supplying the energy?",

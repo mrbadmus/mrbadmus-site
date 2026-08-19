@@ -452,6 +452,8 @@ LESSON = {
          "light_aria": "Light level",
          "dark_label": "darkness",
          "light_format": "{n} units",
+         # MRB-257 (5.44) — one step above "dark".
+         "light_format_one": "{n} unit",
          "presets": PRESETS,
 
          # ⚖️ RESPIRATION IS FLAT AND NEVER MOVES. It is a constant, not a

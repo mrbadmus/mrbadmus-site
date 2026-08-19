@@ -8760,7 +8760,18 @@ def _erun_rate(model, temp, ph, opt_ph):
         t_term = (temp / opt) ** float(model["rise_exponent"]) if opt else 0.0
     else:
         t_term = max(0.0, 1.0 - ((temp - opt) / float(model["fall_divisor"])) ** 2)
-    gap = abs(float(ph) - float(opt_ph))
+    # MRB-255 S4 — `opt_ph` IS A SET, not a scalar, and the gap is to the
+    # NEAREST optimum in it. One protease with `opt_ph` 2 and a span of 4.5
+    # put pepsin's optimum 6 units from pH 8, so protease in the small
+    # intestine read 0% under a rule card saying "Best at pH 2 in the stomach,
+    # 8 in the small intestine" — the bench denied the one pairing the lesson
+    # most wants a student to try. Pepsin is ~2 and trypsin ~8; it is why the
+    # lesson teaches the pancreatic alkali at all, and it is what AQA asks.
+    # A scalar is still accepted and means a one-element set.
+    opts = opt_ph if isinstance(opt_ph, (list, tuple)) else [opt_ph]
+    if not opts:
+        raise ValueError("enzyme-run: opt_ph is an empty set.")
+    gap = min(abs(float(ph) - float(o)) for o in opts)
     p_term = max(0.0, 1.0 - gap / float(model["ph_span"]))
     return max(0.0, min(1.0, t_term * p_term))
 
@@ -8931,11 +8942,17 @@ def r_enzyme_run(a, act_id):
                 "enzyme-run %r temp_bands is missing %r." % (act_id, key))
 
     verdicts = a.get("verdicts") or {}
-    for key in ("denatured", "slow", "worked"):
+    # MRB-257 (5.7) — `nothing` is REQUIRED, not optional. Without it the
+    # engine falls back to Design's three and prints "A little product,
+    # slowly." over `Rate 0%` and `0 units made`. A future enzyme bench must
+    # not be able to ship without the branch that says nothing happened.
+    for key in ("denatured", "nothing", "slow", "worked"):
         if not verdicts.get(key):
             raise ValueError(
-                "enzyme-run %r verdicts is missing %r. Three branches are "
-                "drawn and the denatured one is the block's whole argument."
+                "enzyme-run %r verdicts is missing %r. Four branches are "
+                "drawn: the denatured one is the block's whole argument and "
+                "`nothing` is the one that stops a run which produced zero "
+                "units being described as having produced a little (5.7)."
                 % (act_id, key))
 
     groups = a.get("group_labels") or {}
@@ -9051,7 +9068,11 @@ def r_enzyme_run(a, act_id):
     vnotes = "".join(
         '<span class="ks3-erun-verdicttext" data-verdict="%s" hidden>%s</span>'
         % (key, rich(verdicts[key]))
-        for key in ("denatured", "slow", "worked"))
+        # MRB-257 (5.7) — `nothing` between `denatured` and `slow`, matching
+        # `verdictFor()`'s branch order in shared/ks3.js. The engine tests
+        # `hasVerdict("nothing")` before it uses the branch, so this span
+        # existing IS what turns the fix on.
+        for key in ("denatured", "nothing", "slow", "worked"))
 
     return ('<div class="ks3-erun" data-erun data-cfg="%s">'
             '<div class="ks3-erun-dials">'
@@ -9224,6 +9245,46 @@ def r_fold_builder(a, act_id):
             "note is a state the instrument can reach with nothing to say "
             "about it." % (act_id, len(notes), len(levels), len(levels) + 1))
 
+    # ── MRB-257 (5.18) · EVERY REACHABLE STATE HAS SOMETHING TRUE TO SAY ──
+    # The note used to be chosen by HOW MANY levels are on. With three
+    # independent toggles there are 2³ = 8 states and only 4 of them are
+    # prefixes of the document order, so the other four printed a sentence
+    # about a level that was switched off — villi-only said "Corrugating the
+    # wall triples it", which is the folds.
+    #
+    # The gate is stated over the STATE SPACE, not over the note count: walk
+    # all 2ⁿ subsets and require each to resolve, either to an authored set
+    # note or — only when the subset is the first `k` levels in document
+    # order — to the cumulative note for k. Asserting "n set notes exist"
+    # would pass while leaving a state unresolved, which is the shape of
+    # assertion this whole run exists to stop.
+    set_notes = a.get("set_notes") or {}
+    ids = [l["id"] for l in levels]
+    unresolved, unused = [], set(set_notes)
+    for mask in range(1 << len(ids)):
+        on_ids = [ids[i] for i in range(len(ids)) if mask & (1 << i)]
+        key = "+".join(on_ids)
+        if key in set_notes:
+            unused.discard(key)
+            continue
+        # a prefix state falls back to the cumulative note for its count
+        if on_ids == ids[:len(on_ids)]:
+            continue
+        unresolved.append(key or "(none on)")
+    if unresolved:
+        raise ValueError(
+            "fold-builder %r can reach %d state(s) with nothing true to say: "
+            "%s. The cumulative `notes` are indexed by COUNT and are true "
+            "only of the prefix states; every other combination needs a "
+            "`set_notes` entry keyed by the '+'-joined ids of the levels that "
+            "are on, in document order (5.18)."
+            % (act_id, len(unresolved), ", ".join(sorted(unresolved))))
+    if unused:
+        raise ValueError(
+            "fold-builder %r has `set_notes` key(s) no state can reach: %s. "
+            "Keys are the '+'-joined level ids in DOCUMENT order."
+            % (act_id, ", ".join(sorted(unused))))
+
     labels = a.get("labels") or {}
     off_label = labels.get("off")
     on_label = labels.get("on")
@@ -9255,11 +9316,17 @@ def r_fold_builder(a, act_id):
             % (e(l["id"]), e(l["factor"]), t(l["name"]), rich(l["what"]),
                t(l["scale"]), e(lit), e(off_label), t(off_label)))
 
-    # Emit-both-show-one. Index 0 is the plain tube and is the one shown.
+    # Emit-all-show-one. Index 0 is the plain tube and is the one shown.
+    # ⚠️ The cumulative notes must NOT carry `data-note-set`: `wireFoldBuilder`
+    # distinguishes the two families by that attribute's presence, and a
+    # cumulative note wearing one would be picked for a state it is false of.
     note_html = "".join(
         '<p class="ks3-fold-note" data-note="%d"%s>%s</p>'
         % (i, "" if i == 0 else " hidden", rich(n))
         for i, n in enumerate(notes))
+    note_html += "".join(
+        '<p class="ks3-fold-note" data-note-set="%s" hidden>%s</p>'
+        % (e(k), rich(set_notes[k])) for k in sorted(set_notes))
 
     area_format = a.get("area_format") or "{a}"
     multiple_format = a.get("multiple_format") or "{x}"
@@ -9790,7 +9857,7 @@ def r_person_ledger(a, act_id):
             '<button type="button" class="ks3-reveal-btn ks3-ledger-clear" '
             'data-ledger-clear>%s</button>'
             '<span class="ks3-ledger-portions" data-portions data-empty="%s" '
-            'data-format="%s">%s</span></div>'
+            'data-format="%s" data-format-one="%s">%s</span></div>'
             '<div class="ks3-ledger-match" hidden data-match>'
             '<p class="ks3-ledger-mlabel">%s</p>%s'
             '<p class="ks3-ledger-mwhy">%s</p></div></div>'
@@ -9809,6 +9876,11 @@ def r_person_ledger(a, act_id):
                t(a.get("clear_label") or "Empty the day"),
                e(portions.get("empty") or ""),
                e(portions.get("some") or "{n} portions, {total} kJ"),
+               # MRB-257 (5.44) — "1 portions, 2,400 kJ" is a state every
+               # student passes through on the way to the second. Falls back
+               # to the plural when a payload does not author it.
+               e(portions.get("one") or portions.get("some")
+                 or "{n} portions, {total} kJ"),
                t(portions.get("empty") or ""),
                t(match.get("eyebrow") or ""), heads, rich(match["why"])))
 
@@ -10561,10 +10633,45 @@ def r_crossing_counter(a, act_id):
             "as explicitly as the inward one because a student who reads only "
             "one label reads only one direction."
             % (act_id, ", ".join(bmissing)))
-    for key in ("kpa_format", "crossing_format", "net_zero"):
+    # `kpa_format` still does real work — it feeds the footnote line (6.15),
+    # which is where the audit puts the partial pressures. `kpa_foot_format`
+    # is the sentence around them.
+    for key in ("kpa_format", "kpa_foot_format", "crossing_format",
+                "net_zero"):
         if not a.get(key):
             raise ValueError(
                 "crossing-counter %r declares no %r." % (act_id, key))
+
+    # ── MRB-257 (6.15) · THE SIDE LABEL IS DERIVED, NEVER AUTHORED ────────
+    # The audit asks for the two tiles to read "more oxygen here" / "less
+    # oxygen here" instead of "13.3 kPa" / "5.3 kPa", because partial pressure
+    # is not met until A-level and the bench works without the numbers.
+    #
+    # ⚠️ APPLIED LITERALLY THAT SHIPS A FALSE STATEMENT, which is why 3b-i
+    # refused it and MRB-257 then ruled the shape rather than the strings. The
+    # tile labels are static; the VALUES are per-state; and in the both-stopped
+    # state both sides read 9.3 kPa, so a fixed "more oxygen here" is wrong
+    # there. That is precisely the prose-contradicts-instrument class this run
+    # exists to kill.
+    #
+    # RULED: compare the two values per state and emit more / less / the same.
+    # True in every reachable state BY CONSTRUCTION, including the equal one —
+    # which is a state worth a student seeing, because it is what "diffusion
+    # has stopped" looks like. The kPa figures move to the footnote.
+    #
+    # ⚖️ THE GENERAL RULE THIS IS AN INSTANCE OF (build contract, decision 8):
+    # any comparative label over per-state values is COMPUTED from those
+    # values, never authored beside them. An authored comparative is a second
+    # source for a fact the numbers already carry, and the two drift the moment
+    # a state is added or a number moves.
+    sides = a.get("side_labels") or {}
+    smissing = sorted({"more", "less", "same"} - set(sides))
+    if smissing:
+        raise ValueError(
+            "crossing-counter %r side_labels is missing %s. All three are "
+            "reachable — the two switches both off leaves the sides EQUAL — "
+            "and a comparative that cannot say 'the same' is false in that "
+            "state (6.15)." % (act_id, ", ".join(smissing)))
 
     per_kpa = float(a.get("crossings_per_kpa") or 90)
     max_cross = float(a.get("max_crossings") or 1250)
@@ -10585,6 +10692,23 @@ def r_crossing_counter(a, act_id):
     def fmt_kpa(v):
         return a["kpa_format"].replace("{v}", "%.1f" % v)
 
+    def side(mine, theirs):
+        """More / less / the same, from the two values and nothing else."""
+        if abs(mine - theirs) < 1e-9:
+            return sides["same"]
+        return sides["more"] if mine > theirs else sides["less"]
+
+    def foot_kpa(st):
+        """The two partial pressures, for the footnote line (6.15).
+
+        The figures are correct and worth keeping — they are simply not a
+        Year 7 readout. Derived per state from the same pair the tiles are,
+        so the footnote cannot disagree with the sides above it.
+        """
+        return (a["kpa_foot_format"]
+                .replace("{alveolar}", fmt_kpa(st["alveolar_kpa"]))
+                .replace("{blood}", fmt_kpa(st["blood_kpa"])))
+
     def fmt_cross(n):
         return a["crossing_format"].replace("{n}", str(int(n)))
 
@@ -10598,12 +10722,15 @@ def r_crossing_counter(a, act_id):
         panels.append(
             '<p class="ks3-cross-note" data-state="%s" data-alveolar="%s" '
             'data-blood="%s" data-in="%s" data-out="%s" data-net="%s" '
-            'data-inw="%s" data-outw="%s"%s>%s</p>'
-            % (sid, e(fmt_kpa(st["alveolar_kpa"])), e(fmt_kpa(st["blood_kpa"])),
+            'data-inw="%s" data-outw="%s" data-kpa="%s"%s>%s</p>'
+            % (sid,
+               e(side(st["alveolar_kpa"], st["blood_kpa"])),
+               e(side(st["blood_kpa"], st["alveolar_kpa"])),
                e(fmt_cross(into)), e(fmt_cross(out_of)),
                e(a["net_zero"] if net <= zero_below else fmt_cross(net)),
                ("%.1f" % (into / max_cross * 100)),
                ("%.1f" % (out_of / max_cross * 100)),
+               e(foot_kpa(st)),
                "" if st is states[0] else " hidden",
                rich(st["note"])))
 
@@ -10641,11 +10768,14 @@ def r_crossing_counter(a, act_id):
             '<div class="ks3-cross-switches">%s</div>'
             '<div class="ks3-cross-panel">'
             '<div class="ks3-cross-tiles">%s%s%s</div>'
-            '<ul class="ks3-cross-bars" role="list">%s%s</ul>%s</div></div>'
+            '<ul class="ks3-cross-bars" role="list">%s%s</ul>'
+            '<p class="ks3-cross-kpa" data-cross-kpa>%s</p>%s</div></div>'
             % (1 if first["breathing"] else 0, 1 if first["blood_flow"] else 0,
                switch_html,
-               tile("alveolar", fmt_kpa(first["alveolar_kpa"])),
-               tile("blood", fmt_kpa(first["blood_kpa"])),
+               tile("alveolar", side(first["alveolar_kpa"],
+                                    first["blood_kpa"])),
+               tile("blood", side(first["blood_kpa"],
+                                  first["alveolar_kpa"])),
                tile("net",
                     a["net_zero"] if first_net <= zero_below
                     else fmt_cross(first_net),
@@ -10654,6 +10784,7 @@ def r_crossing_counter(a, act_id):
                    "%.1f" % (first_in / max_cross * 100)),
                bar("out", bars["out_of"], fmt_cross(first_out),
                    "%.1f" % (first_out / max_cross * 100)),
+               t(foot_kpa(first)),
                "".join(panels)))
 
 
@@ -10994,7 +11125,7 @@ def r_two_process_ledger(a, act_id):
             '<div class="ks3-tpl-controlhead">'
             '<p class="ks3-tpl-cap">%s</p>'
             '<p class="ks3-tpl-light" data-light data-dark="%s" '
-            'data-format="%s">%s</p></div>'
+            'data-format="%s" data-format-one="%s">%s</p></div>'
             '<label class="ks3-sr-only" for="%s">%s</label>'
             '<input class="ks3-b4slider ks3-tpl-slider" type="range" id="%s" '
             'min="0" max="100" step="1" value="%d" data-tpl-slider>'
@@ -11028,8 +11159,13 @@ def r_two_process_ledger(a, act_id):
                e(a["rate_format"]), e(net_spec["in_format"]),
                e(net_spec["out_format"]),
                t(a["light_label"]), e(a["dark_label"]), e(a["light_format"]),
+               # MRB-257 (5.44) — "1 units" at the bottom of the slider's
+               # travel, one step above "dark". Falls back to the plural.
+               e(a.get("light_format_one") or a["light_format"]),
                t(a["dark_label"] if start == 0
-                 else a["light_format"].replace("{n}", str(start))),
+                 else (a.get("light_format_one") if start == 1
+                       and a.get("light_format_one") else a["light_format"])
+                 .replace("{n}", str(start))),
                e(sid), t(a["light_aria"]), e(sid), start, preset_html,
                t(resp_spec["name"]), t(rate(float(resp))),
                ("%.1f" % (float(resp) / scale * 100)),
@@ -12334,6 +12470,15 @@ def r_crosses_panel(a, act_id):
             "ticks caption the 0–40 week bar, and an uncaptioned bar is a "
             "coloured rectangle." % act_id)
     ticks = "".join("<span>%s</span>" % t(x) for x in window["ticks"])
+    # The bar's full span, in the units `win_weeks` is written in. Authored so
+    # the conversion is stated once and in the payload rather than assumed at
+    # two places in this function.
+    weeks_total = float(window.get("weeks_total") or 0)
+    if weeks_total <= 0:
+        raise ValueError(
+            "crosses-panel %r needs `window.weeks_total` — the number of weeks "
+            "the bar spans. `win_weeks` is divided by it, so it cannot be "
+            "implied." % act_id)
 
     items, crossing = [], 0
     for s in a.get("subs") or []:
@@ -12344,23 +12489,42 @@ def r_crosses_panel(a, act_id):
         if "crosses" not in s:
             raise ValueError("crosses-panel %r substance %r declares no "
                              "`crosses`." % (act_id, s.get("id")))
-        win = s.get("win")
+        # ⊕ MRB-257 (5.22) — `win` IS IN WEEKS, and that is the fix rather
+        # than the two numbers it corrects. It used to be a pair of PERCENTAGES
+        # of the 0–40 week bar while every `win_text` beside it is written in
+        # WEEKS, so an author had to divide by 0.4 in their head on every row.
+        # Two of six were wrong: prescribed medicines drew weeks 2.0–10.0 under
+        # "weeks three to eight", and carbon monoxide drew 4.0–40.0 under
+        # "mostly the growth half" (weeks 9–40, defined on this page). Both are
+        # exactly the arithmetic slip the unit mismatch invites. In weeks the
+        # payload reads straight off the sentence: [3, 8] and [9, 40].
+        win = s.get("win_weeks")
+        if win is None:
+            raise ValueError(
+                "crosses-panel %r substance %r needs `win_weeks` as "
+                "[start, end] IN WEEKS. `win` (percentages of the bar) is "
+                "retired: it did not match the units its own caption is "
+                "written in, and two of six rows drifted (5.22)."
+                % (act_id, s.get("id")))
         win_text = s.get("win_text") or s.get("winText")
         if not (isinstance(win, (list, tuple)) and len(win) == 2):
             raise ValueError(
-                "crosses-panel %r substance %r needs `win` as [start%%, end%%] "
-                "across the 0–40 week bar." % (act_id, s.get("id")))
+                "crosses-panel %r substance %r needs `win_weeks` as "
+                "[start, end] in weeks." % (act_id, s.get("id")))
         if not win_text:
             raise ValueError(
                 "crosses-panel %r substance %r declares no `win_text`. Insulin "
                 "draws an empty bar and its sentence is the only thing that "
                 "says why, so a blank one is not a legitimate empty state."
                 % (act_id, s.get("id")))
-        lo, hi = float(win[0]), float(win[1])
-        if not 0 <= lo <= hi <= 100:
+        w_lo, w_hi = float(win[0]), float(win[1])
+        if not 0 <= w_lo <= w_hi <= weeks_total:
             raise ValueError(
-                "crosses-panel %r substance %r has win %r, which is not a "
-                "0–100 span in order." % (act_id, s["id"], list(win)))
+                "crosses-panel %r substance %r has win_weeks %r, which is not "
+                "a 0–%g week span in order."
+                % (act_id, s["id"], list(win), weeks_total))
+        lo = w_lo / weeks_total * 100.0
+        hi = w_hi / weeks_total * 100.0
         if s["crosses"]:
             crossing += 1
         extra = ('<div class="ks3-b5c-window">'
@@ -13207,8 +13371,18 @@ def r_reactant_remover(a, act_id):
             'data-rr-reset>%s</button></div>%s</div></div>'
             % (e(setup["all_present"]), e(setup["missing_prefix"]),
                e(rate["suffix"]), e(a["test_label"]), e(a["tested_label"]),
+               # MRB-257 (5.32) — `data-missing` names WHAT IS ABSENT when
+               # the option says something different from its dial. Three
+               # dials name the thing they remove; the fourth is "The leaf
+               # tested" and its zero option is "White part of a variegated
+               # leaf", so the bench printed "Missing: the leaf tested" with
+               # the leaf plainly present. `missingName()` falls back to the
+               # lower-cased dial name when an option does not author one.
                _b7_dial_block("rr", act_id, dials, start,
-                              lambda d, o: ' data-f="%s"' % e(_pctnum(o["f"]))),
+                              lambda d, o: ' data-f="%s"%s'
+                              % (e(_pctnum(o["f"])),
+                                 (' data-missing="%s"' % e(o["missing"]))
+                                 if o.get("missing") else "")),
                t(setup["all_present"]), t(rate["label"]),
                t(_b7_suffix(100, rate["suffix"])),
                "".join(rows), t(a["test_label"]), t(a["reset_label"]),
@@ -14320,10 +14494,15 @@ def r_oxygen_debt(a, act_id):
                          "offer." % (act_id, a["start"]))
 
     model = dict(a["model"])
-    for f in ("supply_rest", "supply_max", "supply_step", "supply_decay",
-              "recover_demand", "recover_clear", "lactate_factor",
-              "lactate_max", "breathing", "run_seconds", "recover_seconds",
-              "bar_divisor"):
+    # MRB-257 (5.15) — `demand_rest` is REQUIRED. `read()` fell back to
+    # `supply_rest` when it was absent, which made standing on the line cost
+    # 25 units against walking's 20: the bench said standing still is more
+    # expensive than walking. A fallback that produces a false reading is not
+    # a fallback, so the payload has to carry it.
+    for f in ("supply_rest", "demand_rest", "supply_max", "supply_step",
+              "supply_decay", "recover_demand", "recover_clear",
+              "lactate_factor", "lactate_max", "breathing", "run_seconds",
+              "recover_seconds", "bar_divisor"):
         if model.get(f) is None:
             raise ValueError("oxygen-debt %r model declares no %r."
                              % (act_id, f))
@@ -14388,17 +14567,42 @@ def r_oxygen_debt(a, act_id):
         raise ValueError(
             "oxygen-debt %r's shortfall.borrowed names no {n}. How many units "
             "are being borrowed is the one number that line is for." % act_id)
-    for f in ("rest", "within", "shortfall", "debt", "cleared"):
+    # MRB-257 (5.13 / 5.14) — SEVEN NOTES, NOT FIVE. `nothing_to_repay` is the
+    # state where the runner never went anaerobic, which `cleared` was claiming
+    # ("the debt is paid" over an acid bar that read 0 throughout);
+    # `within_with_lactate` is the state where supply has caught up but the
+    # acid already made is still there, which `within` was denying ("nothing is
+    # building up" over a bar reading 4 units). Both are reachable in three
+    # presses and both had the engine falling back to a note that is false of
+    # them, so both are required rather than optional.
+    for f in ("rest", "within", "within_with_lactate", "shortfall", "debt",
+              "cleared", "nothing_to_repay"):
         if not a["notes"].get(f):
             raise ValueError(
-                "oxygen-debt %r notes declares no %r. All five are reachable "
-                "states of the bench, and a state with no note is the panel "
-                "going blank while the student is holding the control."
+                "oxygen-debt %r notes declares no %r. All seven are reachable "
+                "states of the bench, and a state with no note of its own "
+                "falls back to one that is false of it."
                 % (act_id, f))
     if "{n}" not in a["notes"]["shortfall"]:
         raise ValueError(
             "oxygen-debt %r's notes.shortfall names no {n}. The size of the gap "
             "is what that note is telling the student." % act_id)
+
+    # MRB-257 (5.15) — and it must be BELOW the resting supply, or "at rest"
+    # is not what the bars are showing; and below every pace, or standing
+    # still is not the cheapest thing on the list.
+    if float(model["demand_rest"]) >= float(model["supply_rest"]):
+        raise ValueError(
+            "oxygen-debt %r has demand_rest %g against supply_rest %g. At rest "
+            "the supply has to comfortably exceed the demand — that is what "
+            "'at rest' means, and the bars say so."
+            % (act_id, float(model["demand_rest"]), float(model["supply_rest"])))
+    cheapest = min(float(p["demand"]) for p in paces)
+    if float(model["demand_rest"]) >= cheapest:
+        raise ValueError(
+            "oxygen-debt %r has demand_rest %g against a cheapest pace of %g, "
+            "so the bench says standing on the line costs at least as much as "
+            "moving (5.15)." % (act_id, float(model["demand_rest"]), cheapest))
 
     # ── the assertion that IS the lesson ──────────────────────────────────
     rest = {"supply": float(model["supply_rest"]), "lactate": 0.0,
@@ -15330,7 +15534,18 @@ def _b9_chain_verdict(a, chain, factor, start_kj):
 # shipping one, and a key whose only reader is a comment is precisely the dead
 # key R5 forbids. The `id` IS the predicate's name and the runtime branches on
 # it. Reported as a schema deviation.
-_B9_CYCLE_NOTES = ("year_zero", "no_pred_at_ceiling", "no_pred",
+# ⊕ MRB-257 (5.11) / MRB-255 S5 — `settled` IS THE SEVENTH, and it sits
+# fourth because that is where `noteId()` tests it: after the two no-fox
+# branches (which are about a field the student emptied) and before the three
+# that describe a swing (which are false once there is no swing left). The
+# shipped parameters are a DAMPED oscillator with a stable equilibrium — 667
+# rabbits / 267 foxes by year 260 — and four presses of "Ten years" reaches a
+# spread of 99.9–100.0%. MRB-255 rules that the MATHS STAYS: a neutral model
+# would cycle forever at its starting amplitude, which looks like perpetual
+# motion, is structurally unstable, and loses the carrying capacity `#s-think`
+# and rung 4 both depend on. So the arrival needs a note of its own rather
+# than `steady` describing a cycle that has stopped.
+_B9_CYCLE_NOTES = ("year_zero", "no_pred_at_ceiling", "no_pred", "settled",
                    "prey_high_pred_low", "prey_low", "steady")
 
 _B9_CYCLE_MODEL = ("r", "k", "a", "b", "m", "start_prey", "start_pred",
@@ -15428,7 +15643,8 @@ def r_cycle_runner(a, act_id):
     got = [n.get("id") for n in notes]
     if got != list(_B9_CYCLE_NOTES):
         raise ValueError(
-            "cycle-runner %r declares note branches %s. The six are fixed and "
+            "cycle-runner %r declares note branches %s. The seven are fixed "
+            "and "
             "ORDERED — %s — because first match wins and %r must be tested "
             "before %r or the ceiling note never fires and 'Remove every fox' "
             "stops teaching carrying capacity."
@@ -16462,7 +16678,16 @@ def _b10_zoom_progress(pg, act_id):
 # built on — falls through to the generic line. The predicates are implemented
 # once here and once in `wirePeaCross`, keyed by these ids, which is why the id
 # set is closed and ordered rather than free.
-_B10_PC_NOTES = ("one_pure_dominant", "both_pure_recessive", "both_carriers",
+# MRB-257 / MRB-255 (5.38) — SIX BRANCHES, NOT FOUR, AND STILL ORDERED.
+# `one_pure_dominant` covered THREE crosses and its sentence is true of only
+# one: it ends "…and some of them are quietly carrying p, which will show up in
+# the generation after." That is right for PP × Pp. With both parents PP no
+# offspring can carry p at all; for PP × pp every single one does. A promise of
+# hidden recessives that cannot exist is the misconception this lesson exists
+# to remove, printed by the lesson. The two specific cases are tested BEFORE
+# the general one, which keeps its name and narrows to PP × Pp.
+_B10_PC_NOTES = ("both_pure_dominant", "pure_dominant_x_pure_recessive",
+                 "one_pure_dominant", "both_pure_recessive", "both_carriers",
                  "mixed")
 
 # ⚖️ THREE VERDICTS, AND FIVE CASES OPENED. The third verdict is the
@@ -17413,6 +17638,20 @@ def r_pea_cross(a, act_id):
                      ("{ratio}",))
     _b9_placeholders(a["no_recessive_template"], act_id,
                      "`no_recessive_template`", ("{total}",), ("{ratio}",))
+    # MRB-257 (5.45 / 5.44) — the other three count lines. `no_dominant_*` is
+    # the branch that was missing entirely, so `pp × pp` printed a ratio with
+    # zero underneath it; the `_one` pair are the singulars a sample of one
+    # reaches, and a sample of one ALWAYS has one of the two counts at zero.
+    for key in ("no_recessive_template_one", "no_dominant_template",
+                "no_dominant_template_one"):
+        if not a.get(key):
+            raise ValueError(
+                "pea-cross %r is missing `%s`. Growing a single seed puts one "
+                "of the two counts at zero every time, so all four of these "
+                "lines are states the bench reaches on its first press."
+                % (act_id, key))
+        _b9_placeholders(a[key], act_id, "`%s`" % key, ("{total}",),
+                         ("{ratio}",))
     _b9_placeholders(a["last_template"], act_id, "`last_template`",
                      ("{g1}", "{g2}", "{genotype}", "{phenotype}"))
 
@@ -17475,7 +17714,10 @@ def r_pea_cross(a, act_id):
             'data-recessive="%s" data-genotypes="%s" data-cross-join="%s" '
             'data-last-template="%s" data-pheno-dominant="%s" '
             'data-pheno-recessive="%s" data-ratio-template="%s" '
-            'data-no-recessive-template="%s" data-suffix-one="%s" '
+            'data-no-recessive-template="%s" '
+            'data-no-recessive-template-one="%s" '
+            'data-no-dominant-template="%s" '
+            'data-no-dominant-template-one="%s" data-suffix-one="%s" '
             'data-suffix-many="%s">'
             '<div class="ks3-pc-parents">%s</div>'
             '<div class="ks3-pc-panel">'
@@ -17505,6 +17747,12 @@ def r_pea_cross(a, act_id):
                e(_b8_plain(a["ratio_template"], act_id, "`ratio_template`")),
                e(_b8_plain(a["no_recessive_template"], act_id,
                            "`no_recessive_template`")),
+               e(_b8_plain(a["no_recessive_template_one"], act_id,
+                           "`no_recessive_template_one`")),
+               e(_b8_plain(a["no_dominant_template"], act_id,
+                           "`no_dominant_template`")),
+               e(_b8_plain(a["no_dominant_template_one"], act_id,
+                           "`no_dominant_template_one`")),
                e(_b8_plain(pg["suffix_one"], act_id, "progress `suffix_one`")),
                e(_b8_plain(pg["suffix_many"], act_id, "progress `suffix_many`")),
                "".join(groups),
@@ -17525,6 +17773,12 @@ def _b10_pc_note(g1, g2, genos, dom, rec):
     """
     a1, a2 = genos[g1], genos[g2]
     if not (rec in a1 and rec in a2) and (a1 == [dom, dom] or a2 == [dom, dom]):
+        # 5.38 — the two specific cases first, in `wirePeaCross`'s own order.
+        if a1 == [dom, dom] and a2 == [dom, dom]:
+            return "both_pure_dominant"
+        if ((a1 == [dom, dom] and a2 == [rec, rec])
+                or (a1 == [rec, rec] and a2 == [dom, dom])):
+            return "pure_dominant_x_pure_recessive"
         return "one_pure_dominant"
     if a1 == [rec, rec] and a2 == [rec, rec]:
         return "both_pure_recessive"
@@ -17991,6 +18245,41 @@ def _b11_nr_control(bark):
     return float(bark["pale_surv"]) == float(bark["dark_surv"])
 
 
+def _b11_sr_axis_format(a, act_id):
+    """`axis_format` — the axis caption, as a template over the DRAWN window.
+
+    MRB-257 (5.40). The chart holds `history` columns and `advance()` shifts
+    older entries off the left, so the authored caption's "oldest on the left"
+    is true only until generation `history`. After five presses of "Ten
+    generations" the head read "generation 50" while column 0 carried a pale
+    fraction of 0.9987 — it was generation 27, and generation 0 (at 0.9) had
+    gone. Nothing on screen said so, which is the whole change the lesson is
+    about disappearing silently.
+
+    ⚠️ Widening the window is NOT the fix available here. `ks3_parity.py`
+    asserts that after sixty generations EVERY drawn column equals the
+    control's fraction, and that holds only because the window has flushed the
+    selecting bark's run — keeping generation 0 on screen turns that gate red.
+    Moving both is one coordinated change across two files. Naming the window
+    costs nothing and makes the chart honest about what it is showing, which
+    is the part that was missing.
+    """
+    fmt = a.get("axis_format")
+    if not fmt:
+        raise ValueError(
+            "selection-runner %r declares no `axis_format`. The chart is a "
+            "sliding window, so a caption that does not name which "
+            "generations are on screen is false from generation %s onwards "
+            "(5.40)." % (act_id, a.get("history")))
+    for slot in ("{from}", "{to}"):
+        if slot not in fmt:
+            raise ValueError(
+                "selection-runner %r `axis_format` %r carries no %s. Both ends "
+                "of the window have to be named, or the caption is describing "
+                "a window it cannot see." % (act_id, fmt, slot))
+    return fmt
+
+
 def r_selection_runner(a, act_id):
     """⊕ b11-02 `#s-bench` — run the generations, and no moth changes colour.
 
@@ -18204,7 +18493,14 @@ def r_selection_runner(a, act_id):
             'aria-labelledby="%s-barks">%s</ul></div>'
             '<div class="ks3-nr-panel">%s'
             '<div class="ks3-nr-chart" data-nr-chart>%s</div>'
-            '<p class="ks3-nr-axis">%s</p>'
+            # ⊕ MRB-257 (5.40) — the axis names the WINDOW it is drawing.
+            # The chart is a sliding window `history` columns wide, so past
+            # generation 23 "oldest on the left" stopped being true: at
+            # generation 50 column 0 was generation 27, and the whole change
+            # the lesson is about had scrolled off silently. `axis_format`
+            # carries {from} and {to}, filled by `wireNaturalRun` on every
+            # draw; `axis_note` remains the static half.
+            '<p class="ks3-nr-axis" data-nr-axis data-format="%s">%s</p>'
             '<div class="ks3-nr-live">'
             '<p class="ks3-nr-figure" data-nr-series="pale" '
             'data-label="%s">%s</p>'
@@ -18220,7 +18516,8 @@ def r_selection_runner(a, act_id):
             'data-nr-reset>%s</button></div></div></div>'
             % (_b9_json(model), _B11_NR_THRESHOLD,
                e(act_id), t(a["tabs_label"]), e(act_id), "".join(tabs),
-               bark_notes, "".join(cols), t(a["axis_note"]),
+               bark_notes, "".join(cols),
+               e(_b11_sr_axis_format(a, act_id)), t(a["axis_note"]),
                e(_b8_plain(a["pale_label"], act_id, "`pale_label`")),
                t("%s %d%%" % (a["pale_label"], pale_pct)),
                e(_b8_plain(a["dark_label"], act_id, "`dark_label`")),
@@ -18599,7 +18896,8 @@ def r_blight_bench(a, act_id):
     predicted nothing here. No option button takes a verdict class.
     """
     _b7_need(a, act_id, ("tabs_label", "progress_suffix", "progress_zero",
-                         "total", "fields", "bar_labels", "run_label",
+                         "total", "fields", "bar_labels", "bar_label_before",
+                         "run_label",
                          "ran_label", "reset_label", "verdicts"))
 
     _b11_plural(a["progress_suffix"], act_id, "blight-bench")
@@ -18619,6 +18917,18 @@ def r_blight_bench(a, act_id):
             "what the field yields in a year with no blight. The third is the "
             "COST, and a bench that drops it teaches that variation is free."
             % (act_id, len(labels)))
+    # MRB-257 (5.41) — the survivor row's BEFORE label. The row is drawn in
+    # both states and only one of them is about survival; sharing one string
+    # made the resting page report a thousand plants surviving a blight that
+    # had not been released.
+    before_label = a.get("bar_label_before")
+    if not before_label:
+        raise ValueError(
+            "blight-bench %r declares no `bar_label_before`. The survivor row "
+            "is drawn before the blight as well as after it, and before it "
+            "the number is a count of what was PLANTED — labelling it "
+            "'%s' says a thousand plants survived something that has not "
+            "happened (5.41)." % (act_id, labels[0]))
 
     fields, fids, zeroes = a["fields"], [], []
     for f in fields:
@@ -18730,7 +19040,13 @@ def r_blight_bench(a, act_id):
         # and the row reads a full green bar at "1000 of 1000". That is what
         # makes the release mean something: the student watches a full field
         # become an empty one rather than watching an empty one appear.
+        # ⊕ MRB-257 (5.41) — THE TWO STATES NEED TWO LABELS. Both rows shipped
+        # `bar_labels[0]`, so on load — with nothing released — the bench read
+        # "Plants surviving the blight — 1000 of 1000" under a full green bar,
+        # about a blight that had not happened. The before row is a count of
+        # what was planted; only the after row is a count of survivors.
         rows = []
+        row_labels = {"before": before_label, "after": labels[0]}
         for state, n in (("before", total), ("after", survivors)):
             p = int(round(n / float(total) * 100))
             band = _b11_bb_band(p)
@@ -18743,7 +19059,7 @@ def r_blight_bench(a, act_id):
                 '<span class="ks3-bb-bar" data-bb-band="%s" '
                 'style="width:%d%%"></span></span></li>'
                 % (e(state), "" if state == "before" else " hidden",
-                   t(labels[0]), e(band),
+                   t(row_labels[state]), e(band),
                    t("%d of %d" % (n, total)), e(band), p))
 
         # The other two bars never move: how much variation went into the

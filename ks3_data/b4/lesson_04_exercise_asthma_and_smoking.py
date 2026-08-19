@@ -480,8 +480,8 @@ LESSON = {
          "heading": "Which part of the system does each one hit?",
          "head_counter": {"format": "{n} of 3 opened", "total": 3},
          "prompt": "Commit to a part of the system before opening each one. "
-                   "The four options are the same every time, and only one of "
-                   "the three factors hits the same part twice.",
+                   "The four options are the same every time, and only one "
+                   "of the three factors damages more than one part.",
 
          "parts": PARTS,
          "question": "Which part of the system is affected?",

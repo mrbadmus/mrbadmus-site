@@ -743,12 +743,13 @@ LESSON = {
         # The two `<em>` runs survive: `rich()` renders them, and "in a
         # particular set of conditions" is the whole answer.
         "reveal": "There is no best one. An advantage is only ever an "
-                  "advantage <em>in a particular set of conditions</em>, and "
-                  "the conditions change. Being large helps you win fights and "
-                  "costs you more food; a thick coat saves you in a cold "
-                  "winter and overheats you in a warm one. The bench below "
-                  "runs the same population through five different "
-                  "environments and the winner changes every time.",
+                  "advantage <em>in a particular set of conditions</em>, "
+                  "and the conditions change. Being large helps you win "
+                  "fights and costs you more food; a thick coat saves you "
+                  "in a cold winter and overheats you in a warm one. The "
+                  "bench below runs the same population through five "
+                  "different environments, and no one variation wins in all "
+                  "of them — in the last, nothing wins at all.",
     },
 
     # ── misconceptions (Law 3) ──────────────────────────────────────────────

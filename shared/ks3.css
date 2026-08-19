@@ -10205,6 +10205,18 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   line-height: 1.6;
 }
 
+/* ⊕ MRB-257 (6.15) — the partial pressures, moved off the tiles and into a
+   footnote. It is a caption, not a readout: the tiles now carry the derived
+   comparison a Year 7 can read, and this is the figure a curious student (or
+   a teacher) can still check. Muted, small, and never the thing the eye
+   lands on first. */
+.ks3-cross-kpa {
+  margin: 14px 0 0;
+  color: var(--ks3-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 /* ── crossing-counter on ink ───────────────────────────────────────────── */
 .ks3-dark .ks3-cross-switch {
   border-color: var(--ks3-on-dark-muted);
@@ -10232,6 +10244,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 .ks3-dark .ks3-cross-fill[data-fill="out"] { background: var(--ks3-on-dark-muted); }
 /* ⚠️ (0,2,0) — cream panel inside the ink block. */
 .ks3-dark .ks3-cross-note { color: var(--ks3-ink); }
+/* The footnote sits on the ink block itself, not inside the cream note, so it
+   takes the on-dark muted ink rather than `--ks3-muted` (6.15). */
+.ks3-dark .ks3-cross-kpa { color: var(--ks3-on-dark-muted); }
 
 /* ═══ fault-bench (b4-04 #s-bench) ════════════════════════════════════════
    ⚖️ THE REVEAL IS NEVER WITHHELD FOR A WRONG ANSWER, so there is no

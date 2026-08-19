@@ -160,12 +160,27 @@ PRESSED_JS = """
     var p = b.parentElement;
     if (!p) { return; }
     if (!p.__ks3grp) { p.__ks3grp = 'g' + (++seq) + ':' + (p.className || p.tagName); }
-    var rec = groups.get(p.__ks3grp) || {on: 0, n: 0};
+    var rec = groups.get(p.__ks3grp) || {on: 0, n: 0, preset: false};
     rec.n += 1;
     if (b.getAttribute('aria-pressed') === 'true') { rec.on += 1; }
+    // ⊕ MRB-257 phase 4 — PRESETS OVER A CONTINUOUS CONTROL ARE NOT A RADIO
+    // GROUP. `changes-of-state`'s `.ks3-hb-jumps` are shortcuts onto a scrub
+    // slider, and `wireHeatingBench` lights one only while the scrub is
+    // within 3 units of it. Dragging the slider between two presets therefore
+    // leaves none pressed, and that is CORRECT — "none of the presets is
+    // where you are" is a true statement about a continuous control. Marked
+    // structurally, not by page name: the group is a preset row when its
+    // buttons carry a numeric value hook and the instrument around them
+    // holds a range input driving the same value.
+    if (b.hasAttribute('data-v')) {
+      var block = b.closest('[data-instrument]') || b.closest('section');
+      if (block && block.querySelector('input[type=range]')) {
+        rec.preset = true;
+      }
+    }
     groups.set(p.__ks3grp, rec);
   });
-  groups.forEach(function (v, k) { out.push([k, v.on, v.n]); });
+  groups.forEach(function (v, k) { out.push([k, v.on, v.n, v.preset]); });
   return JSON.stringify(out);
 })()
 """
@@ -556,8 +571,8 @@ def main():
                     # test is also the correct one. If a group opens with
                     # exactly one control pressed, mutual exclusion is what it
                     # means, and it must still hold after the sweep.
-                    b0 = {k: (on, n) for k, on, n in press0}
-                    for key, on, n in press1:
+                    b0 = {k: (on, n, preset) for k, on, n, preset in press0}
+                    for key, on, n, preset in press1:
                         was = b0.get(key)
                         if not was or was[1] < 2 or was[0] != 1:
                             continue          # toggle bank, or new — not radio
@@ -567,7 +582,13 @@ def main():
                                 "%d controls pressed, so it is a radio group — and "
                                 "after the sweep %d of them claim to be pressed at "
                                 "once" % (rel, key, n, on))
-                        elif on == 0:
+                        elif on == 0 and not (preset or was[2]):
+                            # ⚠️ "TWO OR MORE PRESSED" IS STILL A DEFECT ON A
+                            # PRESET ROW and is deliberately NOT excused above:
+                            # presets are still mutually exclusive positions on
+                            # the same control. Only the empty state is
+                            # legitimate, and only because the control they are
+                            # presets FOR has values between them.
                             problems.append(
                                 "%s [aria-pressed] radio group '%s' had a pressed "
                                 "control and now has none" % (rel, key, ))

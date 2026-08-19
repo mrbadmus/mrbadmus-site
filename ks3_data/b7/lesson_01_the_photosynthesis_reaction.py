@@ -216,11 +216,16 @@ rather than reported.
     marked question measures, and that is Mide's gate. Reported, unchanged.
     (NOTES-B7 flag 2's hedge is the same argument in the hook, where the page
     says "dry mass" explicitly and is unimpeachable.)
-  * **The bench mixes two classic apparatus.** The lede is a pot plant under a
-    bell jar; the second readout is "Oxygen bubbles off the pondweed". Every
-    individual claim is true and the legal line declares the bench a simplified
-    model, but no single piece of glassware has both a soda-lime bell jar, a
-    "not watered" dial and bubbling pondweed. Left byte-identical.
+  * **The bench mixed two classic apparatus — RULED AND FIXED, MRB-255 S15.**
+    The lede is a pot plant under a bell jar; the second readout read "Oxygen
+    bubbles off the pondweed". Every individual claim was true and the legal
+    line declares the bench a simplified model, but no single piece of
+    glassware has a soda-lime bell jar, a "not watered" dial AND bubbling
+    pondweed — and "Not watered" drove the pondweed readout to zero, which is
+    incoherent. Ruled: one practical per bench. The bell jar is kept, because
+    it is the only one of the two that carries the water dial and the
+    variegated leaf, and those carry rung 3 and the iodine panel. See
+    `READOUTS` for the change and for why `scale` moved with it.
   * NOTES-B7 flag 7 lands here: PLANT-02 is confronted by pointing at P1's
     conservation of energy and forward at B8. Both pointers survive as
     `references` edges.
@@ -267,7 +272,14 @@ DIALS = [
     {"id": "leaf", "name": "The leaf tested",
      "options": [
          {"id": "green", "label": "Green part", "f": 1},
-         {"id": "white", "label": "White part of a variegated leaf", "f": 0},
+         # ⊕ MRB-257 (5.32) — WHAT IS MISSING IS CHLOROPHYLL, which is this
+         # control's entire teaching point. Keyed to the dial, the bench
+         # printed "Missing: the leaf tested" with the leaf plainly present,
+         # and the wrong name leaked into the multi-fault line as well
+         # ("carbon dioxide and the leaf tested"). The other three dials name
+         # the thing they remove, so only this option needs `missing`.
+         {"id": "white", "label": "White part of a variegated leaf", "f": 0,
+          "missing": "chlorophyll"},
      ]},
 ]
 
@@ -289,8 +301,31 @@ READOUTS = [
     {"id": "glucose", "label": "Glucose being made",
      "scale": 100, "suffix": "units an hour", "zero": "none",
      "tone": "alert"},
-    {"id": "oxygen", "label": "Oxygen bubbles off the pondweed",
-     "scale": 40, "suffix": "per minute", "zero": "0 per minute",
+    # ⊕ MRB-255 S15 · ONE PRACTICAL PER BENCH. The lede is a pot plant under a
+    # bell jar, the reset button reads "Reset the bell jar", and this readout
+    # was a pondweed — so a student asked to describe the apparatus had two
+    # answers, and "Not watered" drove an aquatic plant's output to zero, which
+    # is incoherent: a pondweed's limiting factors are light, CO₂ and
+    # temperature and watering is not among them. Ruled: keep whichever
+    # practical preserves the teaching point and remove every control that
+    # cannot apply to it.
+    #
+    # THE BELL JAR WINS, and not narrowly. It carries all four dials — a potted
+    # plant can be unwatered, and a variegated pelargonium is the classic leaf
+    # for the iodine test — plus the starch test, rung 3, and the "carbon
+    # dioxide taken from the jar" readout. Pondweed carries neither the water
+    # dial nor the variegated leaf, and losing those two would take most of the
+    # lesson with them. Only this one string was pondweed; nothing else on the
+    # page mentions it. (b7-02's pondweed is a different lesson and a genuine
+    # pondweed experiment — untouched.)
+    #
+    # ⚖️ `scale` 40 → 100 as part of the same change, and it is a repair: the
+    # equation is 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂, so oxygen out and carbon dioxide
+    # in are one-for-one. Forty against the CO₂ readout's hundred said they
+    # were not, on the page that teaches the equation. "Bubbles per minute" was
+    # the only reason they differed.
+    {"id": "oxygen", "label": "Oxygen released into the jar",
+     "scale": 100, "suffix": "units an hour", "zero": "none",
      "tone": "ok"},
     {"id": "co2", "label": "Carbon dioxide taken from the jar",
      "scale": 100, "suffix": "units an hour", "zero": "none",

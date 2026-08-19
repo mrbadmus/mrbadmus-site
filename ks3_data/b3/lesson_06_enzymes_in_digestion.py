@@ -132,12 +132,20 @@ to send the student back to the pH dial never appeared. Design's three verdict
 branches are unchanged; only when they are shown moved. The page was silent on
 this case, so this is an addition rather than a contradiction.
 
-⚑ Related, and left as Design drew it: stomach protease at pH 8 reads 0% of
-  maximum, because the bench models ONE protease with `opt_ph` 2 and the pH
-  term falls linearly over 4.5 units. That is correct for the stomach enzyme
-  and it sits awkwardly beside its own card, which says "Best at pH 2 in the
-  stomach, 8 in the small intestine". Reproduced as drawn and flagged; a
-  second protease is a science call, not a build one.
+⊕ RULED AND FIXED — MRB-255 S4 (19 Aug 2026). Stomach protease at pH 8 read 0%
+  of maximum, because the bench modelled ONE protease with `opt_ph` 2 and the
+  pH term falls linearly over 4.5 units: |8 − 2| = 6 against a span of 4.5, so
+  zero. It sat directly beside its own card — "Best at pH 2 in the stomach, 8
+  in the small intestine" — and this module flagged it as a science call rather
+  than a build one, which was right.
+
+  The gate ruled: **the card is right and the model changes.** Pepsin is ~2 and
+  trypsin ~8; it is why the lesson teaches the pancreatic alkali at all, and it
+  is what AQA asks. `opt_ph` is now a SET and the rate uses the gap to the
+  nearest optimum in it, so protease reads 100% at both pH 2 and pH 8 and the
+  bench finally agrees with the card. This was the sharpest instance of the
+  prose-over-instrument class in the whole audit: the pairing the lesson most
+  wants a student to try was the one the bench denied.
 
 ── What could not be lifted byte-identical ─────────────────────────────
 
@@ -364,8 +372,18 @@ LESSON = {
               "equation": "starch → glucose", "opt_ph": 7,
               "counter_substrate": "Starch left",
               "counter_product": "Glucose made"},
+             # ⚖️ MRB-255 S4 · TWO OPTIMA, AND THE CARD WAS ALWAYS RIGHT.
+             # Design modelled one protease at pH 2, so protease + pH 8 read
+             # 0% and the verdict said "the conditions are simply wrong for
+             # it" — directly under a card reading "Best at pH 2 in the
+             # stomach, 8 in the small intestine". Pepsin is ~2 and trypsin
+             # ~8; that is why the lesson teaches the pancreatic alkali at
+             # all, and it is what AQA asks. Ruled: the card is right and the
+             # model moves. `opt_ph` may be a scalar or a set; the rate uses
+             # the gap to the NEAREST optimum. `_erun_rate` and `rateFor()`
+             # both implement it and must stay in step.
              {"id": "protease", "label": "Protease",
-              "equation": "protein → amino acids", "opt_ph": 2,
+              "equation": "protein → amino acids", "opt_ph": [2, 8],
               "counter_substrate": "Protein left",
               "counter_product": "Amino acids made"},
              {"id": "lipase", "label": "Lipase",
@@ -451,10 +469,28 @@ LESSON = {
                  "up, they have been ruined. Turn the temperature back down "
                  "and run it again: still nothing. That is the difference "
                  "between denatured and merely cold.",
+             # ⊕ MRB-257 (5.7) — THE RUN THAT PRODUCED NOTHING. Protease +
+             # pH 7, lipase + pH 2 and carbohydrase + pH 2 all finished on
+             # `Rate 0%` and `0 units made` under "A little product, slowly."
+             # A little is not none, and the sentence a student reads has to
+             # be true of the counters beside it. Tested BEFORE the rate.
+             "nothing":
+                 "Nothing was digested at all. The enzyme is intact — it has "
+                 "not been ruined, and the counter still reads forty — but in "
+                 "these conditions it is not working. Move the pH towards one "
+                 "this enzyme works at, or the temperature back towards 37 °C, "
+                 "and run it again.",
+             # ⚖️ 5.51 — THE BLAME MOVED. This branch named pH as the cause in
+             # every state, including pH 7 with the temperature slider at 0 °C,
+             # where the pH is already the enzyme's own optimum and the cold is
+             # the whole of the problem. The rate term is a PRODUCT of a
+             # temperature term and a pH term, so a slow run has two possible
+             # causes and the sentence may not pick one.
              "slow":
-                 "A little product, slowly. The enzyme is intact and the "
-                 "conditions are simply wrong for it — change the pH to this "
-                 "enzyme’s optimum and run it again to see the difference.",
+                 "A little product, slowly. The enzyme is intact and these are "
+                 "not the conditions it works best in — move the pH towards "
+                 "one this enzyme works at, or the temperature towards 37 °C, "
+                 "and run it again to see the difference.",
              "worked":
                  "Substrate down, product up, enzyme unchanged. Forty "
                  "molecules converted hundreds of units and are all still "

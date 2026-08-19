@@ -658,9 +658,9 @@ LESSON = {
     # is where the eight-week seam between them is actually taught.
     "vocabulary": [
         {"term": "gestation",
-         "definition": "The time a developing organism spends in the uterus, "
-                       "from implantation to birth — about 40 weeks in "
-                       "humans.",
+         "definition": "The time a developing organism spends in the "
+                       "uterus, from fertilisation to birth — about 38 "
+                       "weeks in humans.",
          "note": "Pregnancy is dated from the first day of the last period, so "
                  "the familiar forty weeks is about two weeks longer than the "
                  "time the foetus has existed."},
@@ -993,16 +993,17 @@ LESSON = {
     # contracts, the cervix opens, the baby is delivered, the placenta follows.
     # Design's scope decision (NOTES flag 25), carried into the summary exactly
     # as she carried it into stage 05.
-    "key_note": "Gestation is the time from implantation to birth, about 40 "
-                "weeks in humans. The placenta is the exchange surface between "
-                "two separate circulations: oxygen, glucose and other small "
-                "molecules diffuse in from the mother's blood, carbon dioxide "
-                "and urea diffuse out into it, and the two never mix. The "
-                "umbilical cord carries the foetus's own blood to and from the "
-                "placenta. Organs are laid down in the first eight weeks; the "
-                "rest is growth. At birth the uterus muscle contracts, the "
-                "cervix opens, the baby is delivered, and the placenta "
-                "follows.",
+    "key_note": "Gestation is the time from fertilisation to birth, about "
+                "38 weeks in humans — the familiar 40 weeks is counted from "
+                "the first day of the last period. The placenta is the "
+                "exchange surface between two separate circulations: "
+                "oxygen, glucose and other small molecules diffuse in from "
+                "the mother's blood, carbon dioxide and urea diffuse out "
+                "into it, and the two never mix. The umbilical cord carries "
+                "the foetus's own blood to and from the placenta. Organs "
+                "are laid down in the first eight weeks; the rest is "
+                "growth. At birth the uterus muscle contracts, the cervix "
+                "opens, the baby is delivered, and the placenta follows.",
 
     # ── the stretch layer (§5.6) — visible and opt-in to all ────────────────
     # ⚑ NOTES flag 24: it ENDS ON AN OPEN QUESTION, deliberately, and Design

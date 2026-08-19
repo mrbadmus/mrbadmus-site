@@ -53,15 +53,26 @@ transcription, because each is a science decision and they belong on the record:
     is a claim the web does not make. `mice → fungi` is the same science on a
     line a student can actually follow.
 
-⚠️ **A count discrepancy this module deliberately does NOT resolve.** Design's
-page says *"one oak wood, eight species"* in the bench eyebrow and *"a teaching
-web of eight species"* in the legal note, and her own eight sentences name
-eleven organisms: the oak, wildflowers, caterpillars, aphids, ladybirds, blue
-tits, mice, owls, sparrowhawks, bees, and fungi and bacteria. Her strings are
-lifted byte-identical and are not edited here. The drawing states no count of
-its own — no title, desc or caption below says "eight" or "eleven" — so it
-cannot contradict the page. Raised for Mide as a copy finding, not corrected
-under a science authority it does not fall under.
+⊕ **THE COUNT DISCREPANCY, RESOLVED — MRB-251 §2 / MRB-255 S14 (19 Aug 2026).**
+This module raised it and deliberately did not resolve it: Design's page said
+*"one oak wood, eight species"* in the bench eyebrow and *"a teaching web of
+eight species"* in the legal note, while her own eight sentences name **eleven
+organisms** — the oak, wildflowers, caterpillars, aphids, ladybirds, blue tits,
+mice, owls, sparrowhawks, bees, and fungi and bacteria. The strings were lifted
+byte-identical and left, because it is a copy finding and not a science one.
+
+MRB-251 rules it: *the count must equal what the page draws, and the arithmetic
+must follow it.* Eleven is this module's own count, arrived at here independently
+of the audit, and b9-03 now uses it. The judgement MRB-251 leaves to Code is
+whether the two collectives count as species: `wildflowers` and `fungi and
+bacteria` are each drawn as ONE node standing for many species, so "species" is
+the wrong noun for them. b9-03 therefore says *organisms* in the prose and drops
+the count from the eyebrow entirely, which MRB-251 names as a valid fix.
+
+The drawing itself still states no count of its own — no title, desc or caption
+says "eight" or "eleven" — so it could not have contradicted the page and does
+not now. **Nothing in this module changed; only its reasoning did.** If a count
+is ever drawn into the SVG it must be eleven, and it must say organisms.
 """
 
 # Rows are authored TOP-DOWN — tertiary consumers first, decomposers last —

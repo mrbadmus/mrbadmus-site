@@ -104,43 +104,88 @@ number, deliberately kept, and the note above exists so it stays kept.
 """
 
 # ── the three folding levels (page lines 307–314) ───────────────────────
-# Multipliers ×3, ×7, ×3 on a 0.5 m² base land at 31.5 m², which prints as
-# "32 m²" and is described as "about 30 m²". ⚑ NOTES-B3 flag 18: the three
-# factors are chosen to land on ~30 m² and are NOT separately sourced
-# measurements. The block is a model of compounding, and the legal line says
-# the figures are approximate. For Mide: confirm, or supply sourced factors.
+# ⊕ MRB-257 (5.47) — MULTIPLIERS ×3, ×5, ×4 ON A 0.5 m² BASE LAND AT EXACTLY
+# 30.0 m² AND ×60. Design's ×3, ×7, ×3 land at 31.5 m², which printed as
+# "32 m²" and "×63" — the only two figures on the page that were not 30 and
+# sixty. Four separate prose sites say otherwise and all four are right:
+# the readout note ("About 30 m² … and sixty times the plain tube"), the hook
+# ("Same length, same width, sixty times the surface"), the key fact ("roughly
+# 30 m² … about a sixtieth as fast") and GOING FURTHER (fresh-tissue
+# measurements "closer to 30 m²"). The instrument was the one thing on the page
+# disagreeing with the lesson, on the number the lesson is about.
+#
+# ⚑ NOTES-B3 flag 18 already recorded that the factors are chosen to land on
+# ~30 m² and are NOT separately sourced measurements — the block is a model of
+# compounding and the legal line says the figures are approximate. That is what
+# makes this a build correction rather than a science one: no sourced figure
+# moved, because there was never a sourced figure here. Villi remain the
+# largest single factor, which is what note 2 claims. If sourced factors are
+# ever supplied they replace these and every note below is recomputed with them.
 LEVELS = [
     {"id": "folds", "name": "Level 1 · Circular folds", "factor": 3,
      "scale": "Visible without a microscope — ridges a few millimetres deep",
      "what": "The whole wall is thrown into ridges running round the tube, "
              "like the inside of a concertina. Nothing is added; the same "
              "sheet is corrugated."},
-    {"id": "villi", "name": "Level 2 · Villi", "factor": 7,
+    {"id": "villi", "name": "Level 2 · Villi", "factor": 5,
      "scale": "About 1 mm long — visible with a hand lens, like velvet",
      "what": "Every square millimetre of that folded wall carries thousands "
              "of finger-shaped projections. Each villus has a network of "
              "capillaries inside it and a wall one cell thick."},
-    {"id": "microvilli", "name": "Level 3 · Microvilli", "factor": 3,
+    {"id": "microvilli", "name": "Level 3 · Microvilli", "factor": 4,
      "scale": "About 0.001 mm — needs an electron microscope",
      "what": "Each cell covering a villus has its own outer surface thrown "
              "into hundreds of tiny projections. Folds on folds on folds — "
              "the third and last level."},
 ]
 
-# ── the four bench notes (page lines 422–427) ───────────────────────────
-# ⚠️ Indexed by HOW MANY levels are on, not by which — four strings for four
-# counts, NOTES-B3 §3.5. Three of the four name the six metres again, and that
-# repetition is the confrontation in `#s-think` done with a number.
+# ── the four cumulative bench notes (page lines 422–427) ────────────────
+# ⚠️ Indexed by HOW MANY levels are on, and therefore TRUE ONLY OF THE PREFIX
+# STATES — folds, then folds+villi, then all three, which is the stack these
+# four sentences were written for. `FOLD_SET_NOTES` below covers the four
+# states that are NOT prefixes, and the renderer refuses a payload that leaves
+# any of the eight with nothing true to say. See 5.18.
 FOLD_NOTES = [
     "A plain tube. Half a square metre — about a tea towel. A meal would be "
     "through you long before much of it crossed the wall.",
-    "Corrugating the wall triples it. Still nothing like enough, and this is "
-    "the only level you could see with the naked eye.",
-    "Villi are where most of the gain comes from. Ten square metres of "
-    "absorbing surface, in a tube you could coil in your hands.",
+    "Corrugating the wall triples it — one and a half square metres. Still "
+    "nothing like enough, and this is the only level you could see with the "
+    "naked eye.",
+    "Villi are where most of the gain comes from. Seven and a half square "
+    "metres of absorbing surface, in a tube you could coil in your hands.",
     "About 30 m² — roughly the floor of a small bedroom, and sixty times the "
     "plain tube. The length is still six metres.",
 ]
+
+# ── the four set notes (MRB-257 · 5.18) ─────────────────────────────────
+# ⚠️ THE FOUR STATES THAT ARE NOT PREFIXES. The note used to be keyed on HOW
+# MANY levels were on rather than WHICH, so:
+#   villi only        → "Corrugating the wall triples it"  (that is the FOLDS)
+#   microvilli only   → the same sentence, about a level that "needs an
+#                       electron microscope"
+#   folds+microvilli  → "Villi are where most of the gain comes from. Ten
+#                       square metres" — with the villi switched off
+# Keyed by the "+"-joined ids of the levels that are ON, in document order.
+# The four prefix states ("", folds, folds+villi, folds+villi+microvilli) are
+# not here: `FOLD_NOTES` is already true of them, and duplicating a sentence
+# is how the two copies drift apart.
+FOLD_SET_NOTES = {
+    "villi":
+        "Villi alone multiply it by five — two and a half square metres. This "
+        "is the level that gives the most, and here it is doing it on a wall "
+        "nobody has corrugated.",
+    "microvilli":
+        "Microvilli alone multiply it by four — two square metres. Every one "
+        "of them sits on a cell surface you would need an electron microscope "
+        "to see.",
+    "folds+microvilli":
+        "Twelve times the plain tube, six square metres — with the middle "
+        "level missing. Leaving the villi out costs more than leaving out "
+        "either of the others.",
+    "villi+microvilli":
+        "Twenty times the plain tube: ten square metres of velvet, on a wall "
+        "that was never corrugated.",
+}
 
 LESSON = {
     # ── identity ────────────────────────────────────────────────────────────
@@ -337,6 +382,7 @@ LESSON = {
          "base_area": 0.5,
          "levels": LEVELS,
          "notes": FOLD_NOTES,
+         "set_notes": FOLD_SET_NOTES,
 
          # The readout's three authored strings. `{a}` and `{x}` are the two
          # live numbers; everything else is finished text, so the runtime
