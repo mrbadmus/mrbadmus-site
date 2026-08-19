@@ -185,13 +185,13 @@ QUESTIONS = [
              "why": "Spreading is a consequence of dispersal, not the reason "
                     "for it. The immediate problem is much closer to home: "
                     "the seedling's own parent."},
-            {"text": "Animals feeding on the parent plant will find the "
-                     "seedling and eat it",
+            {"text": "Animals already feeding on the parent plant will find "
+                     "the seedling and eat it too",
              "correct": False,
              "why": "Being eaten is not the problem dispersal structures "
                     "answer. The opponent here is the parent itself, not an "
                     "animal."},
-            {"text": "It competes with a large established plant for light, "
+            {"text": "It competes with an established plant for light, "
                      "water and minerals, and loses",
              "correct": True},
         ],
@@ -362,8 +362,8 @@ QUESTIONS = [
                 "seeds could travel further from the parent.' What is the "
                 "fault in that sentence?",
         "options": [
-            {"text": "'So that' claims a plan. The plants whose seeds "
-                     "travelled further left more descendants",
+            {"text": "'So that' claims a plan. Plants whose seeds travelled "
+                     "further left more descendants",
              "correct": True},
             {"text": "There is no fault — parachutes are exactly what "
                      "dandelion seeds have",
@@ -378,7 +378,7 @@ QUESTIONS = [
                     "The sentence would still claim a plan with the mechanism "
                     "described perfectly."},
             {"text": "A dandelion 'seed' is really a single-seeded fruit, so "
-                     "the word is wrong",
+                     "the sentence uses the wrong word",
              "correct": False,
              "why": "Also true, and the lesson says so — but a naming slip is "
                     "not the fault. Swap in 'fruit' and the sentence still "

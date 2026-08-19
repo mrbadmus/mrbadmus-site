@@ -169,8 +169,7 @@ QUESTIONS = [
                     "stomach wall as well as through the intestine, so it "
                     "arrives in the blood quickly."},
             {"text": "Alcohol slows signals throughout the brain, and "
-                     "judgement goes first — the thing least able to notice "
-                     "itself", "correct": True},
+                     "judgement goes first, unnoticed", "correct": True},
             {"text": "Only their coordination is affected, and walking is "
                      "something the body does automatically", "correct": False,
              "why": "Alcohol slows the signals passing between nerve cells "
@@ -244,7 +243,7 @@ QUESTIONS = [
                     "the blood vessels. The airway and lung damage is done by "
                     "tar and the other substances in the smoke."},
             {"text": "Nicotine is why they keep smoking; tar and the other "
-                     "substances in the smoke do that damage", "correct": True},
+                     "substances do the damage", "correct": True},
             {"text": "Nicotine never reaches the lungs at all, because it "
                      "goes straight to the brain", "correct": False,
              "why": "It reaches the brain by crossing the thin alveoli walls, "

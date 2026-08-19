@@ -315,11 +315,12 @@ QUESTIONS = [
              "why": "They need organs very much — a uterus, a cervix and a "
                     "placenta. And receiving a gamete happens before "
                     "fertilisation, not after."},
-            {"text": "Each one happens inside the body: receiving, then "
+            {"text": "Each happens inside the body: receiving, then "
                      "protecting and supplying an embryo",
              "correct": True},
-            {"text": "They are shared really, but the male structures were "
-                     "left off the table", "correct": False,
+            {"text": "They are shared really, but the matching male "
+                     "structures were just left off the table",
+             "correct": False,
              "why": "There are no male structures to add. Expecting some is "
                     "the mirror-image idea, and this table exists to break "
                     "it."},

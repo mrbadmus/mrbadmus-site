@@ -169,7 +169,7 @@ QUESTIONS = [
                 "diaphragm up and down. Which readout never changes, and why?",
         "options": [
             {"text": "Pressure outside — atmospheric pressure is the fixed "
-                     "reference everything else is quoted against.",
+                     "reference here.",
              "correct": True},
             {"text": "Chest volume — the jar is rigid, so the space inside it "
                      "cannot change.",
@@ -339,8 +339,8 @@ QUESTIONS = [
              "why": "Neither airway is blocked — you are told both are clear. "
                     "What has failed in both is the pressure difference that "
                     "normally drives air in."},
-            {"text": "In both, the pressure around the lung can no longer be "
-                     "made lower than the air outside.",
+            {"text": "In both, the chest can no longer lower the pressure "
+                     "around the lung.",
              "correct": True},
             {"text": "In both, the lung itself has lost the strength it needs "
                      "to expand.",

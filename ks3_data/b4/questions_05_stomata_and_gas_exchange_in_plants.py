@@ -381,8 +381,8 @@ QUESTIONS = [
              "why": "Water, not light, is what shuts a stoma in this lesson. "
                     "Gases are still moving here — the net figure is small, "
                     "and pointing the wrong way."},
-            {"text": "Respiration slightly outruns photosynthesis, so the net "
-                     "movement of carbon dioxide is outwards.",
+            {"text": "Respiration slightly outruns photosynthesis, so net "
+                     "carbon dioxide movement is out.",
              "correct": True},
             {"text": "Photosynthesis has stopped altogether, because dim light "
                      "is not enough to start it.",

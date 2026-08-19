@@ -117,8 +117,8 @@ QUESTIONS = [
              "why": "The head carries the nucleus, not a store. A store would "
                     "make the sperm heavier, and travelling is easier the "
                     "smaller you are."},
-            {"text": "From sugar in the fluid around it, released by the "
-                     "mitochondria behind its head.",
+            {"text": "From sugar in the fluid around it, released by its "
+                     "mitochondria.",
              "correct": True},
             {"text": "It needs none — it is carried along by cilia and muscle "
                      "in the wall.",
@@ -175,7 +175,7 @@ QUESTIONS = [
                     "reaching is not fertilising, and pregnancy begins at "
                     "implantation, days later."},
             {"text": "The sperm's nucleus fuses with the egg's in the uterus, "
-                     "and pregnancy begins there.",
+                     "and pregnancy begins right there and then.",
              "correct": False,
              "why": "Fusing is the right word for the event, but it happens in "
                     "the oviduct and nowhere else, and pregnancy begins at "
@@ -273,7 +273,7 @@ QUESTIONS = [
                     "scale. It is the step from a width to an amount that has "
                     "to be taken carefully."},
             {"text": "Those bars are diameters, and volume goes as the cube "
-                     "of the diameter — roughly eight thousand times.",
+                     "— roughly eight thousand times.",
              "correct": True},
             {"text": "It is backwards — the egg is twenty times as wide but "
                      "only about five times the volume.",

@@ -54,11 +54,11 @@ QUESTIONS = [
                     "about what a substance does to a body. Alcohol is legal "
                     "and is misused every day; so are prescription "
                     "medicines."},
-            {"text": "Using a substance in a way that damages health, "
-                     "including legal ones and medicines taken wrongly.",
+            {"text": "Using a substance in a way that damages health, legal "
+                     "ones and medicines included.",
              "correct": True},
             {"text": "Taking a substance so often that the body becomes "
-                     "addicted to it and needs it.",
+                     "addicted to it and needs it to function.",
              "correct": False,
              "why": "Addiction is one way misuse can end up, not what the "
                     "word means. One dose of a medicine taken wrongly damages "
@@ -161,8 +161,8 @@ QUESTIONS = [
              "why": "Nobody split the pupils into groups. They sorted "
                     "themselves by whether they eat breakfast, and a fair "
                     "test changes one thing on purpose."},
-            {"text": "A correlation: two things changing together, with the "
-                     "cause not yet settled.",
+            {"text": "A correlation: two things changing together, with no "
+                     "cause shown.",
              "correct": True},
         ],
         "figure": None,

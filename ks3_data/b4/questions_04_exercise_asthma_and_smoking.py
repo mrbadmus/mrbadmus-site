@@ -235,10 +235,10 @@ QUESTIONS = [
              "why": "The air is 21% oxygen whether you breathe hard or "
                     "gently. Breathing harder changes how often it is "
                     "replaced, not what is in it."},
-            {"text": "Alveolar air is refreshed more often, keeping the "
+            {"text": "Alveolar air is refreshed faster, keeping the "
                      "concentration difference steep", "correct": True},
-            {"text": "The alveolar wall becomes thinner, so oxygen crosses "
-                     "more quickly", "correct": False,
+            {"text": "The alveolar wall stretches thinner as the lungs fill, "
+                     "so oxygen crosses faster", "correct": False,
              "why": "The wall is one cell thick and stays that way. Exercise "
                     "changes the air on one side of it, not the barrier "
                     "itself."},
@@ -259,7 +259,8 @@ QUESTIONS = [
                 "further before becoming breathless. What most likely "
                 "explains the difference?",
         "options": [
-            {"text": "Their lungs are far larger and hold much more air",
+            {"text": "Their lungs are far larger, so they hold much more air "
+                     "with each breath",
              "correct": False,
              "why": "Trained athletes do not generally have much bigger lungs "
                     "than anyone else. Lung capacity is almost never what "
@@ -340,13 +341,13 @@ QUESTIONS = [
                 "oxygen reaches the blood. Which comparison of the two is "
                 "right?",
         "options": [
-            {"text": "Both destroy the alveoli, but emphysema does it more "
-                     "slowly", "correct": False,
+            {"text": "Both destroy the alveoli, but emphysema does it far "
+                     "more slowly and permanently", "correct": False,
              "why": "An attack leaves the alveoli completely undamaged. That "
                     "is why it reverses in minutes with a reliever and "
                     "emphysema never reverses at all."},
             {"text": "Asthma blocks delivery to an undamaged surface; "
-                     "emphysema destroys the surface", "correct": True},
+                     "emphysema destroys it", "correct": True},
             {"text": "Both narrow the bronchioles, but emphysema narrows them "
                      "for good", "correct": False,
              "why": "Emphysema is not a narrowing. Alveolar walls break down "

@@ -51,9 +51,9 @@ QUESTIONS = [
                 "tell you?",
         "options": [
             {"text": "It slows the nervous system, so reactions, coordination "
-                     "and judgement all worsen.", "correct": True},
-            {"text": "It lowers the person's mood, which is what the word "
-                     "depressant means.", "correct": False,
+                     "and judgement worsen.", "correct": True},
+            {"text": "It lowers the person's mood and energy, which is what "
+                     "the word depressant means.", "correct": False,
              "why": "Depressant is about nerve signals being slowed, not about "
                     "mood. It names what the drug does to the nervous system, "
                     "however the person happens to feel."},
@@ -239,12 +239,12 @@ QUESTIONS = [
                     "at all to the carbon monoxide. Tar is one of three harms, "
                     "not the whole list."},
             {"text": "The filter holds back the nicotine as well, so the "
-                     "dependence gets worse instead.", "correct": False,
+                     "dependence gets worse instead of better.", "correct": False,
              "why": "A filter does not take out the nicotine and the "
                     "dependence is unchanged. What it changes is the taste and "
                     "the number in the test."},
-            {"text": "It removes some tar, does nothing to carbon monoxide, "
-                     "and smoother smoke is inhaled deeper.", "correct": True},
+            {"text": "It removes some tar, none of the carbon monoxide, and "
+                     "smoother smoke goes deeper.", "correct": True},
             {"text": "Filters were banned as soon as the link with cancer "
                      "became public knowledge.", "correct": False,
              "why": "Filters were introduced when that link became public, not "
