@@ -210,6 +210,164 @@ follow the measurement, not this table, where they disagree.
 
 ---
 
+## 5A. Amended 19 Aug 2026 — MRB-257, from the KS3 Biology audit
+
+The audit returned 153 findings across 58 lessons and they collapse onto a small number of
+repeatable mistakes. Everything below is **binding on Chemistry and Physics** — 113 lessons are
+still to be built, and every one of them would otherwise inherit these. This section is MRB-257
+decision 8, plus the rules the remediation run itself had to discover.
+
+### 5A.1 The prose bar, extended — an instrument is a source of truth
+
+- **No bench-intro control narration.** If the paragraph above a bench describes buttons that are
+  already on screen, cut it. `disturbing-a-food-web` ships no intro paragraph and loses nothing;
+  that is the evidence these can be cut outright rather than trimmed. (C6 — 11 of 19 benches.)
+- **Any count or figure quoted in prose must match the instrument.** This is the single largest
+  family in the audit, it recurred in Chemistry, and it resolves the same way every time:
+  **the instrument is the measurement and the prose is what changes.** The number moves only when
+  the number is *wrong* — and when it does, the page's own other sentences are usually the
+  evidence (`absorption-and-the-small-intestine` said 30 m² and ×60 in four places while the
+  readout said 32 and ×63).
+  *Adjusting a figure to rescue a sentence is not available.* The figures are what a student reads
+  as evidence.
+- **A dial that is DRAWN must also be MODELLED.** `gas-pressure`'s container control reached
+  `draw()` and nothing else, so the box got smaller and the wall-hit rate did not move — under the
+  lesson's own first prediction, which marks "it goes up" correct. Measured: 14.7 / 14.3 / 14.9 per
+  second across the three settings.
+- **A comparative label over per-state values is COMPUTED, never authored beside them.** The
+  alveoli tiles were asked to read *"more oxygen here / less oxygen here"*; authored as two static
+  strings that ships a false statement, because in the both-stopped state both sides read 9.3 kPa.
+  Derive it from the values and it is true in every reachable state by construction — including the
+  equal one, which is worth a student seeing. An authored comparative is a second source for a fact
+  the numbers already carry, and the two drift the moment a state is added.
+- **Every reachable state has something true to say, and the gate is stated over the STATE SPACE.**
+  Three independent toggles is 2³ states, and only four of them are prefixes of document order —
+  the fold builder's notes were keyed to *how many* levels were on rather than *which*, so
+  villi-only printed the sentence about the folds. Asserting "n notes exist" passes while leaving a
+  state uncovered. Walk the subsets.
+- **A branch that cannot be reached is authored copy no student will read.** Where a defensive
+  branch exists *because* of a property of the payload, gate the property: `claim-switch` now
+  refuses a claim no observation needs, which is what its own note asserts out loud.
+
+### 5A.2 Token annotations are law
+
+`shared/tokens.css` states, beside several colours and in capitals, what they may and may not be
+used for. Those lines bind, and `verify_ks3.py` now enforces them against **computed size and
+painted ground** across every built page.
+
+| Token | Rule |
+|---|---|
+| `--ks3-accent` | LARGE TEXT ONLY (≥24px, or ≥18.66px at 700+). Never body size. |
+| `--ks3-ok` | MARKS AND FILLS ONLY. Never `color:` on text, at any size. |
+| `--ks3-ok-text` | body-size green on a LIGHT ground only. |
+| `--ks3-ok-dark` | body-size green on an INK-DARK ground only. |
+| `--ks3-blue-light` | on ink-dark only. |
+
+**MRB-252's two rulings, recorded here so they stop being re-litigated per unit:**
+
+- **The greens.** The engine had been painting `--ks3-ok` as `color:` on 16–26px readouts across
+  six instruments — 3.48:1 on the dark panel, 2.89:1 on the figures tile, which fails even the
+  large-text bar. The file already forbade it; what it did not do was offer a legal alternative, so
+  the violation had nowhere to go. `--ks3-ok-text` and `--ks3-ok-dark` are minted, and
+  `--ks3-ok-dark` is the one KS3 colour with no line in Design's frozen reference — recorded in
+  `MINTED_TOKENS` rather than let through Layer A quietly.
+- **Amber warns; it never merely labels.** Reserved for warning and confrontation — the `#s-think`
+  register, and genuine caution or loss states. By B11 it was carrying four jobs on two benches
+  (a wrong idea, a species, "the field you are looking at", "nothing survived", "what you gave
+  up"). Nothing was broken — every instance carried a word as well as the colour — but a student
+  who has learned across B1–B9 that amber means *careful, this is a wrong idea* cannot then meet
+  amber meaning *a moth* without the first meaning wearing away. **Category and selection uses go
+  to `--ks3-data`.**
+- ⚠️ **No accent-text token on any dark ground, ever.** `--st-accent-text` is specified as the
+  small-text partner *on cream*; landing it on a dark ground is the same class of error as the
+  on-dark green (audit 3.2 — comparison captions at 1.78:1, on the block whose entire teaching
+  point is which column is which).
+
+### 5A.3 Readouts
+
+- **Every countable readout uses `data-format-one`.** "1 portions on the plate", "1 units",
+  "No white plants at all in 1 seeds" — one is a state a student passes through on the way to two,
+  and on some benches it is the state they reach on purpose.
+- **A ratio needs both terms.** `pp × pp` printed "Ratio purple to white — 0.00 : 1"; so did any
+  sample of one that came up white. Author the line for each end, and note that a sample of one
+  always has one of the two counts at zero.
+
+### 5A.4 Figures
+
+- **Every code-drawn figure's parity rows include at least one assertion tying the visual encoding
+  to the fact it teaches**, mutation-tested at source (decision 4).
+- **A content-truth row walks EVERY element a defect could touch.** The base-pair figure keyed its
+  fills to the column rather than the base and was wrong on 4 of 10 boxes; the obvious form of the
+  assertion — four rows, one per letter — catches only two of the four, because a selector returns
+  the first match and rung 1 is correct even under the bug. The alveoli row drives **all four**
+  states including the equal one, which is the state a load sweep never reaches and the state the
+  literal fix got wrong. **An assertion that passes on the majority of a defect is how these reach
+  production.**
+- **Retiring a declared figure is a `status: "retired"` plus a `retired_reason` on the record**,
+  never a deletion — `docs/ks3/diagram-manifest.md` is generated, and a deleted record loses the
+  reasoning and lets the figure be re-declared later.
+
+### 5A.5 Navigation and sweeps
+
+- **prev/next emitted from the unit `order`**, rolling over into the next unit's first lesson.
+  Eleven non-terminal lessons had no link at all to the next lesson in their own unit.
+- **Four rail stops.** Design's fourth was restored under MRB-249 and the count is not a
+  suggestion: the rail is the completion signal the schools layer is built on, `markStage()` is a
+  **structural ratchet** (a call that would lower an already-true stage is a no-op), and a lesson
+  that ticks on fewer stops than it draws reports progress it did not earn.
+- **§8.10 sweeps run over post-interaction state, not the served HTML.** The `b4-04` slug on
+  `what-drugs-do-to-the-body` sits behind four interactions and survived the gate built to catch
+  it. Same blind spot as the b1-03 specimen defect.
+- **The no-op-press invariant.** *Pressing the control that already claims to be pressed must be a
+  no-op; if the section's rendered text changes, what was on screen was not what the control
+  claimed.* This is the assertion that catches b1-03, and a count-based invariant cannot: exactly
+  one control was pressed before and after, the whole way through, while the page taught that a
+  leaf cell has no wall, no vacuole and no chloroplasts.
+  ⚠️ Its companion — "a clicked control becomes the pressed one" — was **removed**: load state
+  cannot tell a radio group from a toggle bank, and in a toggle bank a second press legitimately
+  turns a control off.
+  ⚠️ **Presets over a continuous control are not a radio group.** A row of shortcuts onto a slider
+  legitimately has none pressed when the slider sits between them; identify them structurally (a
+  numeric value hook plus a range input in the same instrument), never by page name. "Two or more
+  pressed" remains a defect on a preset row.
+
+### 5A.6 Editing the corpus
+
+- **THE EDITOR-CUT LAW.** An audit's polish table is written for an editor, not a machine: rows say
+  *drop X* and leave the seam to judgement. Applied literally, 17 of the biology cuts shipped
+  broken sentences — *"foxes eat and die. look at when each peak happens"*, *"Only the conditions
+  change, ."*, *"The reason is width. every rung is one big and one small"*. **A cut is re-authored
+  so the seam lands as a sentence, previewed against the built page, and never applied as a raw
+  string delete.**
+- **Corpus-wide matching works on FOLDED LITERALS, never `grep`.** These records routinely split a
+  sentence across adjacent Python string literals, so the contiguous substring does not exist in
+  the file. `grep -l "awaiting illustration" ks3_data/` found **eight** of the eleven C4 leaks;
+  folding with `ast` finds all eleven, which is the count measured from the served pages. A
+  grep-driven fix ships 8 of 11 and reports it done.
+- ⚠️ **`ast` reports column offsets in UTF-8 BYTES; Python string indices count CHARACTERS.** On an
+  ASCII corpus they agree. This corpus is written with em dashes and curly apostrophes, so any
+  literal whose final line carries them reports an end column past the real one and the span
+  swallows the source after it — on one swap by exactly four characters, two apostrophes at two
+  extra bytes each, which ate a closing `),`. Convert before slicing, and **re-parse before
+  writing**: that assertion existed for a defect nobody had thought of and is what stopped it.
+- **Edits land in the source records, never the built tree**, and the swap harness is a gate with
+  an edit inside it: old string exactly once before, zero after, new exactly once after, **and no
+  other page changed**. That last clause is the one a careless `sed` over `ks3_data/` gets wrong —
+  a sentence authored once can be rendered on two pages.
+- **The audit's "Left alone deliberately" list is binding.** Figure hedges, safeguarding wording,
+  model-limitation disclosures and predict-first instructions are load-bearing and must not be
+  tidied.
+
+### 5A.7 Science authority
+
+Where prose and instrument disagree the instrument wins, and that is a **build** call, not a
+science one. A ruling that moves a figure, a model or a claim is recorded **in the record it
+touches**, with the working, so the next pass can see why — and a record that has parked something
+for Mide says so in the same place. Two chemistry corrections in this run were sitting in exactly
+such parked notes, correctly raised months earlier and never resolved.
+
+---
+
 ## 6. Gates — a failing gate is a finding, never an obstacle
 
 Never weaken a gate to make something pass.

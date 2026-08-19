@@ -1578,6 +1578,38 @@ def main():
                    % (len(hidden_problems), n_hidden,
                       "; ".join(hidden_problems[:3])))
 
+        # ══ ⊕ MRB-257 phase 4 — THE TOKEN CONTRACT ══════════════════════
+        #
+        # `shared/tokens.css` states, beside several colours and in capitals,
+        # what they may and may not be used for: `--ks3-accent` is "LARGE TEXT
+        # ONLY. Never body size."; `--ks3-ok` is "MARKS AND FILLS ONLY. Never
+        # text."; the two minted greens are each specified for one kind of
+        # ground. Those lines are LAW and nothing was reading them.
+        #
+        # MRB-252 says exactly why that mattered: *"The token file already
+        # forbade exactly that ('NEVER body text'); what it did not do was
+        # offer a legal alternative, so the violation had nowhere to go."* Six
+        # instruments had already broken it, at 3.48:1 on the dark panel and
+        # 2.89:1 on the figures tile — which fails even the LARGE-text bar. The
+        # ruling minted `--ks3-ok-text` and `--ks3-ok-dark`, so there is now
+        # somewhere for every legitimate use to go, and the prohibition binds.
+        #
+        # The rules are READ OUT OF THE TOKEN FILE rather than retyped here,
+        # and `TOKEN_RULES_EXPECTED` names the tokens the file is expected to
+        # constrain — so a comment reworded past the parser turns this red by
+        # name instead of leaving it checking nothing. A colour gate's real
+        # failure mode is a blind parser, and a blind parser and a clean corpus
+        # look identical from here.
+        tok_problems, n_rules, n_tok_pages = PARITY.check_token_contract(
+            KS3_OUT, ks3_browser)
+        check("⊕ MRB-252 · tokens.css usage rules hold on every built page "
+              "(measured against computed size and painted ground)",
+              not tok_problems,
+              "%d rule(s) parsed from tokens.css, enforced across %d lesson(s)"
+              % (n_rules, n_tok_pages) if not tok_problems
+              else "%d violation(s): %s"
+                   % (len(tok_problems), "; ".join(tok_problems[:2])))
+
         # ⊕ GATE A — `.ks3-dark p` is (0,1,1) and a bare instrument class is
         # (0,1,0), so on an ink-dark block the component's own colour loses
         # silently and the text ships present, correct and invisible. It has

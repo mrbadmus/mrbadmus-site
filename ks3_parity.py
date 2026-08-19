@@ -13817,6 +13817,242 @@ def check_container_dial_is_modelled(browser_mod, url_for, rel):
     return problems
 
 
+# ── the token contract (MRB-257 phase 4 · MRB-252's ruling made a gate) ───
+#
+# `shared/tokens.css` does not merely list colours. Beside several of them it
+# states what they may and may not be used FOR, in capitals, and those lines
+# are law:
+#
+#     --ks3-accent   3.4:1 — LARGE TEXT ONLY. Never body size.
+#     --ks3-ok       3.0:1 — MARKS AND FILLS ONLY. Never text.
+#     --ks3-ok-text  body-size green on a LIGHT ground
+#     --ks3-ok-dark  body-size green on an INK-DARK ground
+#
+# MRB-252's ruling names exactly why this needs a gate rather than a comment:
+# *"The token file already forbade exactly that ('NEVER body text'); what it
+# did not do was offer a legal alternative, so the violation had nowhere to
+# go."* The alternative now exists — `--ks3-ok-text` and `--ks3-ok-dark` were
+# minted under that ruling — so the prohibition is enforceable, and until it is
+# enforced it is a comment that six instruments had already broken.
+#
+# ⚠️ THE RULES ARE READ OUT OF THE TOKEN FILE, NOT RETYPED HERE, because a
+# second copy of a rule is a second place for it to drift. What IS written here
+# is the SET of tokens the file is expected to constrain — so if a rule line is
+# reworded past the parser, this gate says so by name instead of quietly
+# checking nothing. That is the failure mode a colour gate actually has: a
+# clean run and a blind parser look identical.
+TOKEN_RULES_EXPECTED = {
+    "--ks3-accent":    "no-body-text",
+    "--ks3-ok":        "no-text",
+    "--ks3-ok-text":   "light-ground-only",
+    "--ks3-ok-dark":   "dark-ground-only",
+}
+
+# WCAG large text: 24px, or 18.66px at 700+.
+def _is_large(px, weight):
+    try:
+        px = float(px); weight = float(weight)
+    except (TypeError, ValueError):
+        return False
+    return px >= 24.0 or (px >= 18.66 and weight >= 700)
+
+
+def parse_token_rules(repo_root="."):
+    """Read the usage rules out of `shared/tokens.css`.
+
+    Returns {token_name: (rule, value)}. A token is constrained when its
+    trailing comment carries one of the file's own capitalised prohibitions.
+    """
+    import re as _re
+    path = os.path.join(repo_root, "shared", "tokens.css")
+    src = open(path, encoding="utf-8").read()
+    out = {}
+    # `--name: #VALUE;` followed by the comment that documents it, which may
+    # run over several lines before the next declaration.
+    for m in _re.finditer(
+            r"(--ks3-[a-z0-9-]+)\s*:\s*([^;]+);\s*(/\*.*?\*/)?",
+            src, _re.S):
+        name, value, comment = m.group(1), m.group(2).strip(), (m.group(3) or "")
+        low = comment.lower()
+        rule = None
+        if "never text" in low or "marks and fills only" in low:
+            rule = "no-text"
+        elif "never body size" in low or "large text only" in low:
+            rule = "no-body-text"
+        elif "on a light ground" in low or "on every light ground" in low:
+            rule = "light-ground-only"
+        elif "ink-dark ground" in low or "on ink-dark only" in low:
+            rule = "dark-ground-only"
+        if rule and name not in out:
+            out[name] = (rule, value)
+    return out
+
+
+_TOKEN_SWEEP_JS = r"""
+(function (spec) {
+  // Every element that PAINTS TEXT OF ITS OWN — a node with a non-empty direct
+  // text child. Walking all elements would attribute an ancestor's colour to a
+  // container that draws nothing.
+  function ownText(el) {
+    for (var i = 0; i < el.childNodes.length; i++) {
+      var n = el.childNodes[i];
+      if (n.nodeType === 3 && n.nodeValue.trim()) { return n.nodeValue.trim(); }
+    }
+    return "";
+  }
+  function rgb(str) {
+    var m = String(str).match(/rgba?\(([^)]+)\)/);
+    if (!m) { return null; }
+    var p = m[1].split(",").map(function (x) { return parseFloat(x); });
+    return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1];
+  }
+  function lum(c) {
+    var a = [c[0], c[1], c[2]].map(function (v) {
+      v /= 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
+  }
+  // The painted ground behind an element: first ancestor with a non-transparent
+  // background, composited over what is behind it.
+  function ground(el) {
+    var stack = [];
+    for (var e = el; e; e = e.parentElement) {
+      var c = rgb(getComputedStyle(e).backgroundColor);
+      if (c && c[3] > 0) { stack.push(c); if (c[3] >= 1) { break; } }
+    }
+    var base = rgb(getComputedStyle(document.body).backgroundColor) || [255,255,255,1];
+    var out = [base[0], base[1], base[2]];
+    for (var i = stack.length - 1; i >= 0; i--) {
+      var c = stack[i], a = c[3];
+      out = [c[0]*a + out[0]*(1-a), c[1]*a + out[1]*(1-a), c[2]*a + out[2]*(1-a)];
+    }
+    return out;
+  }
+  var bad = [];
+  var els = document.querySelectorAll("main *");
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    var txt = ownText(el);
+    if (!txt) { continue; }
+    var cs = getComputedStyle(el);
+    if (cs.visibility === "hidden" || cs.display === "none") { continue; }
+    var col = rgb(cs.color);
+    if (!col || col[3] === 0) { continue; }
+    var hex = "#" + [col[0], col[1], col[2]].map(function (v) {
+      return ("0" + Math.round(v).toString(16)).slice(-2);
+    }).join("").toUpperCase();
+    for (var k = 0; k < spec.length; k++) {
+      var s = spec[k];
+      if (s.hex !== hex) { continue; }
+      var px = parseFloat(cs.fontSize), wt = parseFloat(cs.fontWeight) || 400;
+      var g = ground(el), dark = lum(g) < 0.25;
+      var why = null;
+      if (s.rule === "no-text") {
+        why = "used as `color:` at " + px + "px — the token is marks and fills only";
+      } else if (s.rule === "no-body-text" &&
+                 !(px >= 24 || (px >= 18.66 && wt >= 700))) {
+        why = "used as `color:` at " + px + "px/" + wt + " — below the large-text bar";
+      } else if (s.rule === "light-ground-only" && dark) {
+        why = "used on a DARK ground (rgb " + g.map(Math.round).join(",") + ")";
+      } else if (s.rule === "dark-ground-only" && !dark) {
+        why = "used on a LIGHT ground (rgb " + g.map(Math.round).join(",") + ")";
+      }
+      if (why) {
+        bad.push({token: s.name, why: why, text: txt.slice(0, 46),
+                  sel: el.tagName.toLowerCase() + "." +
+                       String(el.className || "").split(" ")[0]});
+      }
+    }
+  }
+  return bad;
+})(%s)
+"""
+
+
+def check_token_contract(ks3_root, browser_mod, repo_root="."):
+    """Every capitalised usage rule in tokens.css, enforced on the built pages.
+
+    Returns (problems, n_rules, n_pages).
+
+    ⚠️ THE SERVER IS ROOTED AT THE PARENT OF ks3/, for the reason
+    `run_browser_layers` documents at length: every KS3 page links
+    `/shared/tokens.css` and `/shared/ks3.css` as ABSOLUTE paths, so serving
+    `ks3/` itself makes them 404 and the page loads unstyled. This gate would
+    then find zero violations — every colour would be the UA default — and
+    report a clean run. A colour gate that passes because the stylesheet is
+    missing is the worst outcome available here, so the sweep asserts it can
+    see the accent token before it trusts a single measurement.
+    """
+    import json as _json
+    rules = parse_token_rules(repo_root)
+    problems = []
+    # THE ANTI-ROT ASSERTION. A reworded comment that slips past the parser
+    # leaves this gate checking nothing, and a clean run would look identical.
+    for name, want in sorted(TOKEN_RULES_EXPECTED.items()):
+        got = rules.get(name)
+        if not got:
+            problems.append(
+                "TOKEN CONTRACT: `%s` carries no usage rule this gate can "
+                "read. tokens.css states its rules in prose and they are LAW; "
+                "if the wording has moved, move the parser with it — a rule "
+                "nothing reads is a comment." % name)
+        elif got[0] != want:
+            problems.append(
+                "TOKEN CONTRACT: `%s` parses as %r and is expected to be %r."
+                % (name, got[0], want))
+    if problems:
+        return problems, len(rules), 0
+
+    spec = [{"name": n, "rule": r, "hex": v.upper()}
+            for n, (r, v) in sorted(rules.items()) if v.startswith("#")]
+    js = _TOKEN_SWEEP_JS % _json.dumps(spec)
+
+    served_root = os.path.dirname(os.path.abspath(ks3_root))
+    prefix = os.path.basename(os.path.abspath(ks3_root))
+    pages = []
+    for root, _dirs, files in os.walk(os.path.abspath(ks3_root)):
+        for f in sorted(files):
+            if not f.endswith(".html") or f == "index.html":
+                continue
+            rel = os.path.relpath(os.path.join(root, f),
+                                  os.path.abspath(ks3_root))
+            if rel.count(os.sep) == 2:            # subject/unit/lesson.html
+                pages.append(rel.replace(os.sep, "/"))
+    pages.sort()
+
+    server, port = browser_mod.serve(served_root)
+    seen = 0
+    try:
+        with browser_mod.Browser() as b:
+            for rel in pages:
+                page = b.page("http://localhost:%d/%s/%s" % (port, prefix, rel))
+                if not seen:
+                    # The stylesheet-is-missing guard. If tokens.css did not
+                    # load, `--ks3-accent` resolves to nothing and every
+                    # measurement below is meaningless.
+                    got = page.eval(
+                        "getComputedStyle(document.body)"
+                        ".getPropertyValue('--ks3-accent').trim()")
+                    if not got:
+                        return (["TOKEN CONTRACT: `--ks3-accent` does not "
+                                 "resolve on /%s, so tokens.css did not load "
+                                 "and this gate measured nothing. Check the "
+                                 "served root." % rel], len(rules), 0)
+                bad = page.eval(js)
+                seen += 1
+                for f in (bad or []):
+                    problems.append(
+                        "TOKEN CONTRACT: /%s — `%s` %s on %s (%r). tokens.css "
+                        "states the rule beside the token and MRB-252 ruled "
+                        "it: the alternative tokens exist, so the prohibition "
+                        "binds." % (rel, f["token"], f["why"], f["sel"],
+                                    f["text"]))
+    finally:
+        server.shutdown()
+    return problems, len(rules), seen
+
+
 def run_browser_layers(ks3_root, browser_mod):
     """Layers C and D. Returns (problems, style_rows, contrast_rows).
 
