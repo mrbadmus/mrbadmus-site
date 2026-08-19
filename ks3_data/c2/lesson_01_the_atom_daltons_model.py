@@ -244,15 +244,40 @@ LESSON = {
          "head_counter": {"format": "{n} of {total} steps", "total": 5,
                           "start": 1},
          "demand": "investigate",
-         "prompt": "Start at a centimetre of copper wire and magnify. Each "
-                   "step is ten times closer than the last.",
-         "labels": {"out": "Back out", "in": "Ten times closer"},
+         "prompt": "Start at a centimetre of copper wire and go closer. "
+                   "Watch the scale on each step: the jumps get bigger as "
+                   "you go down, because the distance between what a lens "
+                   "can show you and the size of an atom is enormous.",
+         # ⊕ MRB-257 phase 4 — the button said "Ten times closer" and only
+         # the first two steps are. Level 2's note still says it, correctly,
+         # because that step genuinely is ×10.
+         "labels": {"out": "Back out", "in": "Go closer"},
          "alt": {"template": "A magnified view of copper at {scale}: "
                              "{label}."},
          "start": 0,
          # ZOOM, page lines 365–376, plus the `drawing` key naming which of the
          # five drawn scenes each level paints. The names are validated at
          # build time against `SCALE_DRAWINGS`.
+         #
+         # ⊕ MRB-257 phase 4 — TWO CORRECTIONS, and the first is MRB-251's
+         # class exactly. The prompt read "Each step is ten times closer than
+         # the last" over steps of ×10, ×10, ×100 and ×10,000 — the same
+         # defect as b10-02's "a thousandfold drop per zoom step" over
+         # ×80,000 / ×3.3 / ×3 / ×7,000, and it resolves the same way: the
+         # figures are what a student reads as evidence, so the figures stand
+         # and the sentence goes. The replacement is the true claim and the
+         # better teaching point — the jumps get bigger, which is precisely
+         # why a zoom sequence needs stated magnifications rather than an
+         # intuition about scale. Level 2's note still says "Ten times
+         # closer" and is LEFT, because that step genuinely is.
+         #
+         # Second: the last level read 0.0000001 mm (0.1 nm) with "about a
+         # hundred million would fit across that first centimetre". Both come
+         # from an atom 0.1 nm across. A COPPER atom is 0.256 nm, so about
+         # forty million fit across a centimetre — and a 0.1 nm field of view
+         # would hold less than one atom, while the drawing is a lattice. The
+         # level is now 0.000001 mm (1 nm), about four copper atoms across,
+         # and the count is copper's.
          "levels": [
              {"scale": "1 cm across",
               "label": "A piece of copper wire",
@@ -272,10 +297,12 @@ LESSON = {
               # The canvas caption, drawn in mono at the centre of the frame.
               "caption": "past the reach of any light microscope",
               "note": "Light itself is too coarse to show anything at this scale. To go further you need electrons instead of light, and that machine was not built until the 1930s."},
-             {"scale": "0.0000001 mm across",
+             {"scale": "0.000001 mm across",
               "label": "Individual copper atoms",
               "drawing": "lattice",
-              "note": "Atoms, stacked in a regular pattern. About a hundred million of them would fit across that first centimetre of wire."},
+              "note": "Atoms, stacked in a regular pattern. About forty "
+                      "million of them would fit across that first "
+                      "centimetre of wire."},
          ]},
 
         {"type": "misconception", "id": "think-commit-copper", "anchor": "s-think",

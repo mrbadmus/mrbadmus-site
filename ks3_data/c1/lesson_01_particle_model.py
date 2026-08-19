@@ -233,9 +233,11 @@ LESSON = {
          "head_counter": {"format": "{n} of {total} possible cuts",
                           "total": FLOOR},
          "progress_full": "floor reached",
-         "prompt": "A sugar cube, one centimetre on each side. A knife with a "
-                   "perfect edge, and no limit on your patience. Cut it in "
-                   "half, throw one half away, cut what is left in half again.",
+         "prompt": "A sugar cube, one centimetre on each side. A knife with "
+                   "a perfect edge, and no limit on your patience. Halve it "
+                   "across, throw the rest away, then halve what is left "
+                   "again — every cut leaves a piece half as wide as the "
+                   "one before.",
 
          "floor": FLOOR,
          # The edge of the starting cube, in centimetres. The size ladder is
@@ -464,9 +466,9 @@ LESSON = {
         # ⚖️ This rung is why FLOOR is 24 and not a round number: the stem
         # counts the cuts in words.
         "apply": {
-            "q": "A student cuts a sugar cube in half twenty-four times and "
-                 "reaches one particle. Why can they not make the twenty-fifth "
-                 "cut?",
+            "q": "A student halves a sugar cube twenty-four times, each cut "
+                 "leaving a piece half as wide, and reaches one particle. "
+                 "Why can they not make the twenty-fifth cut?",
             "options": [
                 "They can cut it, but what comes out is no longer sugar",
                 "No knife is thin enough to fit",

@@ -603,15 +603,16 @@ LESSON = {
     "stretch": [
         {"type": "explainer", "id": "steam-burns",
          "text": "The plateau has a practical consequence you have felt. "
-                 "Water at 100 °C will scald you; steam at 100 °C — the same "
-                 "temperature — will do far worse, because every gram of it "
-                 "has to give back the whole boiling plateau's worth of "
-                 "energy as it condenses on your skin, and that is roughly "
-                 "five times the energy released by the same water cooling "
+                 "Water at 100 °C will scald you; steam at 100 °C — the "
+                 "same temperature — will do far worse, because every gram "
+                 "of it has to give back the whole boiling plateau's worth "
+                 "of energy as it condenses on your skin, and that is about "
+                 "seven times the energy released by the same water cooling "
                  "from 100 °C to room temperature. Nothing about the "
-                 "temperature reading warns you. This is also how a sweating "
-                 "body cools itself, how a fridge works, and why a puddle can "
-                 "evaporate on a cold day without ever reaching 100 °C."},
+                 "temperature reading warns you. This is also how a "
+                 "sweating body cools itself, how a fridge works, and why a "
+                 "puddle can evaporate on a cold day without ever reaching "
+                 "100 °C."},
     ],
 
     # Present and empty — §5.6's ruling: may be empty, never absent.

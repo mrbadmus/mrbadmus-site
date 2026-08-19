@@ -169,7 +169,9 @@ LESSON = {
               # `origin` is authored and read by nothing (map N16): the card
               # reveals `why` on any pick. Design's intent, kept and flagged.
               "origin": 1,
-              "why": "First two letters — except it is not Ch, because that was already spoken for elsewhere. The rule is looser than it looks."},
+              "why": "Not the first two letters: Cl is the first and the "
+                     "third, exactly like magnesium below. The rule is "
+                     "looser than it looks."},
              {"id": "Mg", "headline": "Mg", "sub": "Magnesium",
               # `origin` is authored and read by nothing (map N16): the card
               # reveals `why` on any pick. Design's intent, kept and flagged.
@@ -184,7 +186,8 @@ LESSON = {
               # `origin` is authored and read by nothing (map N16): the card
               # reveals `why` on any pick. Design's intent, kept and flagged.
               "origin": 2,
-              "why": "From ferrum, the Latin for iron — which is also where ferry, farrier and ferrous come from."},
+              "why": "From ferrum, the Latin for iron — which is also where "
+                     "farrier and ferrous come from."},
              {"id": "Pb", "headline": "Pb", "sub": "Lead",
               # `origin` is authored and read by nothing (map N16): the card
               # reveals `why` on any pick. Design's intent, kept and flagged.

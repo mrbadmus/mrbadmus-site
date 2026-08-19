@@ -295,11 +295,15 @@ LESSON = {
              "idle": "The drop is sitting on the left. Nothing is pushing it, "
                      "nothing is stirring, and there is no current in the "
                      "tank. Press start and watch what randomness alone does.",
-             "spreading": "Early on, far more particles cross left-to-right "
-                          "than right-to-left. Not because they know where to "
-                          "go — because there are more of them on the left "
-                          "available to make the crossing. That imbalance is "
-                          "the whole of diffusion.",
+             "spreading": "Early on, more particles cross left-to-right "
+                          "than right-to-left — not because they know where "
+                          "to go, but because there are more of them on the "
+                          "left available to make the crossing. Watch the "
+                          "GAP between the two counters rather than their "
+                          "size: a single particle near the middle crosses "
+                          "the line again and again, so both totals run "
+                          "away. The gap is the net movement, and it is the "
+                          "whole of diffusion.",
              "even": "Evened out — and look at the two crossing counters. They "
                      "are still climbing, at the same rate as each other. "
                      "Particles are pouring across the middle in both "

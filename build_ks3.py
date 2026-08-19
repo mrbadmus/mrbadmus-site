@@ -4553,6 +4553,25 @@ def r_claim_switch(a, act_id):
                 "claim-switch %r observation %r needs claim(s) %s, which are "
                 "not declared." % (act_id, o.get("id"), missing))
 
+    # ⊕ MRB-257 phase 4 — EVERY CLAIM MUST BE LOAD-BEARING, and the note says
+    # so out loud: the `none_broken` branch reads "Nothing has broken — which
+    # would mean that claim was doing no work. Look again: every one of
+    # Dalton's three is holding something up." That sentence is true of the
+    # shipped payload and is UNREACHABLE because of it, which is the right
+    # relationship between a defensive branch and its precondition — but
+    # nothing was checking the precondition. A claim no observation needs
+    # would make the branch reachable and the block pointless: a student could
+    # switch something off and be told, correctly, that it did nothing.
+    idle = sorted(c["id"] for c in claims
+                  if not any(c["id"] in (o.get("needs") or []) for o in obs))
+    if idle:
+        raise ValueError(
+            "claim-switch %r declares claim(s) %s that no observation needs, "
+            "so switching one off breaks nothing and the block teaches the "
+            "opposite of its own note ('every one of them is holding "
+            "something up'). Either an observation is missing or the claim is."
+            % (act_id, ", ".join(map(repr, idle))))
+
     gate = dict(a.get("gate") or {})
     # ⊕ The gate's options ARE the three claim texts, lettered (map §2.5). They
     # are read from `claims` rather than authored twice: a second copy of a

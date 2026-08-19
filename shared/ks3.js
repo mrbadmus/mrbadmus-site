@@ -7457,10 +7457,31 @@
       // changed mid-lesson takes effect without a reload — and the gas
       // slows rather than stopping, so the count keeps running.
       var scale = motionReduced() ? RM : 1;
-      // Design's distance is per FRAME. Normalised to 60 Hz so the count
-      // is a property of the gas rather than of the monitor.
+      /* ⊕ MRB-257 phase 4 — THE CONTAINER DIAL WAS DRAWN AND NEVER MODELLED.
+         `VOLS[].scale` reached `draw()` and nothing else: the simulation runs
+         in NORMALISED box coordinates with walls fixed at 0.02/0.98, and
+         `draw()` maps that unit square onto the scaled rectangle. So the
+         picture showed a smaller box with the particles filling it, while the
+         normalised free path — and therefore the wall-hit rate — never moved.
+
+         Measured before the fix, warm, 24 particles, fourteen one-second
+         samples each: Large 14.7/s, Half size 14.3/s, Quarter size 14.9/s.
+         The lesson's FIRST prediction is "the container is made smaller and
+         nothing else changes — what happens to the wall hits?", marked "Up …
+         same speed, shorter trip, more arrivals", and the resting note says
+         "Smaller box, same particles, same speed — and the count is up". The
+         bench disproved all of it, on the one dial the lesson opens with.
+
+         The particles have a fixed DRAWN radius (r = 9) and a fixed absolute
+         speed; what shrinks is the box. So the normalised step has to be
+         divided by the box scale, which is the same statement. Nothing about
+         the drawing moves — the particles still fill the box — and the Large
+         setting is arithmetically unchanged, so the resting page is untouched.
+         Temperature and particle count were always modelled and are not
+         touched here. */
+      var box = Number(VOLS[state.vol].scale) || 1;
       var speed = (Number(TEMPS[state.temp].speed_multiplier) || 0)
-        * scale * STEP * dt * 60;
+        * scale * STEP * dt * 60 / box;
       var n = live();
       pairs = [];
       for (var i = 0; i < n; i++) {
@@ -8817,6 +8838,20 @@
     // stage 4, and the same fix — a stop records what was reached, not what
     // is on screen now.
     var everEven = false;
+    /* ⊕ MRB-257 phase 4 — THE NOTE'S OWN LATCH, and it is NOT `everEven`.
+       `even` is a threshold on a noisy count (|right − N/2| < N × 0.09,
+       sampled 3×/s), so once the tank has evened out it crosses the line
+       back and forth: measured on the shipped bench, warm, 16 flips in 181
+       one-second samples after the first Yes. The live Yes/No readout
+       flickering is honest — the balance IS dynamic, and that is the lesson
+       — but the NOTE is not a reading, it is a claim about how far through
+       the run you are, and it opens "Early on, far more particles cross
+       left-to-right…". A student watching an evenly-spread tank at 100
+       seconds was being told they were early on, repeatedly.
+       Separate from `everEven` because that one drives the rail and must
+       never un-finish (MRB-208); this one describes the TANK and so is
+       cleared by `reset()`, which puts the dye back on the left. */
+    var evenSeen = false;
     var left = N, right = 0;
     var acc = 0, last = 0, sampleAt = 0;
 
@@ -8834,6 +8869,10 @@
       crossL = 0;
       left = N;
       right = 0;
+      // The dye is back on the left, so the tank has not evened out — but
+      // the rail keeps what it earned (MRB-208).
+      evenSeen = false;
+      even = false;
     }
 
     /* One step for every particle: a random direction, a fixed length, and a
@@ -8871,6 +8910,7 @@
       }
       left = parts.length - right;
       even = Math.abs(right - parts.length / 2) < parts.length * TOL;
+      if (even) { evenSeen = true; }
       if (even && !everEven) {
         everEven = true;
         markStage(sec, true);
@@ -8902,7 +8942,7 @@
     function noteKey() {
       if (!everRan) { return "idle"; }
       if (trace) { return "tracing"; }
-      if (even) { return "even"; }
+      if (evenSeen) { return "even"; }
       return "spreading";
     }
 

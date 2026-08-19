@@ -13730,6 +13730,93 @@ def check_derived_side_labels(browser_mod, url_for, rel):
     return problems
 
 
+def check_container_dial_is_modelled(browser_mod, url_for, rel):
+    """MRB-257 phase 4 — a dial that is DRAWN must also be MODELLED.
+
+    `gas-pressure`'s container control reached `draw()` and nothing else. The
+    simulation runs in normalised box coordinates with walls fixed at
+    0.02/0.98, and `draw()` maps that unit square onto the scaled rectangle —
+    so the picture showed a smaller box with the particles filling it, while
+    the normalised free path, and therefore the wall-hit rate, never moved.
+
+    Measured on the shipped bench before the fix, warm, 24 particles, fourteen
+    one-second samples per setting: Large 14.7/s, Half size 14.3/s, Quarter
+    size 14.9/s. The lesson's FIRST prediction asks what happens to the wall
+    hits when the container is made smaller, marks "Up … same speed, shorter
+    trip, more arrivals" correct, and the resting note says "Smaller box, same
+    particles, same speed — and the count is up". A student who predicted
+    correctly was reading an instrument that disproved them.
+
+    ⚠️ IT IS A RATE, SO IT IS SAMPLED, NOT READ ONCE. A single one-second count
+    on the large box ranges 9–19; one sample per setting would flip this gate
+    green or red at random and a gate that does that is worse than none. Six
+    samples per setting, compared on the MEDIAN, with a margin well inside the
+    ~1.6× and ~2.5× the geometry implies.
+    """
+    problems = []
+    SET = """(function (l) {
+      var bs = [].slice.call(document.querySelectorAll('[data-counter] button'));
+      for (var i = 0; i < bs.length; i++) {
+        if ((bs[i].textContent || '').trim() === l) { bs[i].click(); return 1; }
+      }
+      return 0;
+    })("%s")"""
+    HITS = ("(document.querySelector('[data-counter-canvas]')"
+            " || {getAttribute: function () { return ''; }})"
+            ".getAttribute('aria-label')")
+    import re as _re, time as _time
+
+    def _settle(secs):
+        t0 = _time.time()
+        while _time.time() - t0 < secs:
+            pass
+
+    def _median(xs):
+        xs = sorted(xs)
+        n = len(xs)
+        return xs[n // 2] if n % 2 else (xs[n // 2 - 1] + xs[n // 2]) / 2.0
+
+    with browser_mod.Browser() as b:
+        page = b.page(url_for(rel))
+        # the bench is gated; any option opens it
+        page.eval("(function(){var o=document.querySelectorAll('main .ks3-option');"
+                  "if(o.length)o[1].click();})()")
+        if not page.eval("!!document.querySelector('[data-counter]')"):
+            return ["CONTENT TRUTH: /%s has no `[data-counter]` bench, so the "
+                    "container-dial assertion did not run." % rel]
+        got = {}
+        for label in ("Large", "Half size", "Quarter size"):
+            if not page.eval(SET % label):
+                problems.append("CONTENT TRUTH: /%s has no container setting "
+                                "%r." % (rel, label))
+                continue
+            _settle(1.4)
+            vals = []
+            for _ in range(6):
+                _settle(1.05)
+                m = _re.search(r"last second: (\d+)", page.eval(HITS) or "")
+                if m:
+                    vals.append(int(m.group(1)))
+            if vals:
+                got[label] = _median(vals)
+    if len(got) == 3:
+        big, half, quarter = got["Large"], got["Half size"], got["Quarter size"]
+        if not (half > big * 1.2):
+            problems.append(
+                "CONTENT TRUTH: /%s — halving the container moved the wall-hit "
+                "rate from %.1f/s to %.1f/s. The lesson's first prediction is "
+                "that it goes UP, and marks that correct; a dial that is drawn "
+                "smaller and modelled the same size disproves the student."
+                % (rel, big, half))
+        if not (quarter > half * 1.2):
+            problems.append(
+                "CONTENT TRUTH: /%s — the quarter-size container reads %.1f/s "
+                "against half size at %.1f/s. Smaller has to mean more "
+                "arrivals at every step of the dial, not only the first."
+                % (rel, quarter, half))
+    return problems
+
+
 def run_browser_layers(ks3_root, browser_mod):
     """Layers C and D. Returns (problems, style_rows, contrast_rows).
 
@@ -14119,6 +14206,18 @@ def run_browser_layers(ks3_root, browser_mod):
              "more / less / the same, agreeing with the two kPa figures",
              "0 problems", "%d problem(s)" % len(side_problems),
              not side_problems))
+
+        # ⊕ MRB-257 phase 4 — the chemistry sweep's flagship finding: a dial
+        # that was drawn and never modelled, on the lesson's first prediction.
+        vol_problems = check_container_dial_is_modelled(
+            browser_mod, _url, "chemistry/particles-and-their-behaviour/"
+                               "gas-pressure.html")
+        problems.extend(vol_problems)
+        style_rows.append(
+            ("⊕ phase 4 · the container dial reaches the physics",
+             "wall-hit rate rises at each step down in box size",
+             "0 problems", "%d problem(s)" % len(vol_problems),
+             not vol_problems))
     finally:
         server.shutdown()
 

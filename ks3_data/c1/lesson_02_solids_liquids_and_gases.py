@@ -497,16 +497,32 @@ LESSON = {
              "identical. Same size, same mass, same three atoms joined the "
              "same way. Melting does not soften anything and boiling does not "
              "stretch anything.",
-             # ⚑ Science gate, §2.6. The conditional in the second sentence
-             # reads backwards; the observation it rests on is correct. Lifted
-             # unchanged — Mide's call, not the build's.
-             "Test it against the freezer: ice floats. If melting made "
-             "particles smaller you would expect water to be less dense than "
-             "ice, and it is the other way round. Test it against the bridge: "
-             "the girder gets longer, and no one thinks the iron atoms "
-             "inflate. What changes is always the spacing and the speed. "
-             "<em>Soft</em>, <em>runny</em> and <em>squashy</em> are words "
-             "about a crowd of particles, never about one.",
+             # ⊕ RULED AND CUT — MRB-257 phase 4 (19 Aug 2026). This
+             # opened with a freezer test: "ice floats. If melting made
+             # particles smaller you would expect water to be less dense
+             # than ice, and it is the other way round." This module already
+             # flagged the conditional as reading backwards and parked it for
+             # Mide, which was right. It is worse than backwards:
+             #
+             #   smaller particles in the liquid → the same number in less
+             #   volume → the LIQUID is denser → the solid floats.
+             #
+             # Ice floating is exactly what the misconception predicts, so
+             # the test CONFIRMED the wrong idea instead of refuting it.
+             #
+             # And it cannot be repaired by re-wording, because c1-06
+             # `testing-the-model` lists "Ice floats on water" among the
+             # seven things the model must account for and marks it FAILS —
+             # "identical spheres cannot produce this". Any wording that
+             # makes ice floating support the spacing account contradicts
+             # that lesson, two lessons later in the same unit, and that
+             # lesson is right. So the test is cut and the bridge carries
+             # the paragraph, which it always could.
+             "Test it against the bridge: the girder gets longer, and no "
+             "one thinks the iron atoms inflate. What changes is always the "
+             "spacing and the speed. <em>Soft</em>, <em>runny</em> and "
+             "<em>squashy</em> are words about a crowd of particles, never "
+             "about one.",
          ]},
     ],
 
