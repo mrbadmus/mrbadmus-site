@@ -238,7 +238,7 @@ QUESTIONS = [
                     "because the roots there can always replace what the leaf "
                     "is losing."},
             {"text": "It photosynthesises a little faster than an oak leaf, "
-                     "and pays more than three times the water for it.",
+                     "for more than three times the water.",
              "correct": True},
         ],
         "figure": None,
@@ -256,8 +256,8 @@ QUESTIONS = [
              "why": "Green is the colour chlorophyll uses least, which is why "
                     "the leaf reflects it at you. Red and blue light together "
                     "look pink, not green."},
-            {"text": "The red and the blue that chlorophyll absorbs, so no "
-                     "electricity is spent on a colour the leaf throws away.",
+            {"text": "The red and blue that chlorophyll absorbs, not the green "
+                     "the leaf throws away.",
              "correct": True},
             {"text": "Protection from green light, which damages a leaf that "
                      "is left under it for too long.",

@@ -112,8 +112,8 @@ QUESTIONS = [
              "why": "They are different events. Melting is one substance "
                     "heated past its melting point; dissolving is a solid "
                     "spreading out among the particles of a liquid."},
-            {"text": "Salt cannot melt at any temperature, so the word can "
-                     "never be used of it.",
+            {"text": "Salt cannot melt at any temperature, since it breaks "
+                     "apart before it ever gets that hot.",
              "correct": False,
              "why": "Salt does melt — at 801 °C. Cold water is nowhere near "
                     "that, which is why this one is dissolving."},
@@ -122,8 +122,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Evaporating is a liquid turning into a gas. Nothing here "
                     "has become a gas; the salt has dissolved."},
-            {"text": "The water is cold, so nothing was heated to a melting "
-                     "point — the salt is dissolving.",
+            {"text": "The water is cold, so nothing reached a melting point — "
+                     "the salt is dissolving.",
              "correct": True},
         ],
         "figure": None,
@@ -201,7 +201,7 @@ QUESTIONS = [
                 "the longer one?",
         "options": [
             {"text": "Melting only loosens the particles; separating them "
-                     "completely costs about seven times as much.",
+                     "costs about seven times as much.",
              "correct": True},
             {"text": "The water is much hotter by then, so every further "
                      "degree takes longer to gain.",

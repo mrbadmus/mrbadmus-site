@@ -44,7 +44,8 @@ QUESTIONS = [
         "text": "The lesson opens by saying that matter is not continuous. "
                 "What does continuous mean?",
         "options": [
-            {"text": "Made of separate pieces, far too small for you to see.",
+            {"text": "Made of separate pieces, each far too small for you to "
+                     "see, with gaps in between.",
              "correct": False,
              "why": "That is the particle model itself — the idea that "
                     "replaces continuous. Continuous means the opposite: no "
@@ -126,8 +127,8 @@ QUESTIONS = [
         "text": "This lesson calls the particle picture a model. What is a "
                 "model?",
         "options": [
-            {"text": "An exact copy of the real thing, shrunk so you can see "
-                     "it.",
+            {"text": "An exact copy of the real thing, shrunk down small "
+                     "enough for you to see it.",
              "correct": False,
              "why": "A model does not have to be a perfect copy to be useful. "
                     "Nobody has ever seen a particle; this model earns its "
@@ -138,10 +139,10 @@ QUESTIONS = [
                     "tested — the 97 ml reading and the squashed gas are "
                     "it being tested."},
             {"text": "A simple picture or idea that helps explain something we "
-                     "cannot see directly.",
+                     "cannot see.",
              "correct": True},
-            {"text": "A rule that is always true, everywhere, with no "
-                     "exceptions.",
+            {"text": "A rule that has been shown to hold everywhere, always, "
+                     "with no exceptions.",
              "correct": False,
              "why": "Every model has limits, and later in this unit you find "
                     "where this one runs out. A model is a useful picture, not "
@@ -159,18 +160,18 @@ QUESTIONS = [
                 "depend on?",
         "options": [
             {"text": "That alcohol is lighter than water, so it sinks down "
-                     "into it.",
+                     "into it and takes up less room.",
              "correct": False,
              "why": "Weight has nothing to do with it. What matters is that "
                     "the particles are different sizes."},
-            {"text": "That the two liquids react, and what they make takes up "
-                     "less room.",
+            {"text": "That the two liquids react together, and the product "
+                     "they make takes up less room.",
              "correct": False,
              "why": "Nothing reacts and nothing is lost. The volume drops "
                     "because the particles pack more closely, not because the "
                     "matter changed."},
             {"text": "That their particles are different sizes, so small ones "
-                     "settle into gaps between large ones.",
+                     "fit gaps between big ones.",
              "correct": True},
             {"text": "That some alcohol evaporates as you pour, so less of it "
                      "arrives.",

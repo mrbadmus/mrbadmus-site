@@ -56,8 +56,8 @@ QUESTIONS = [
              "why": "There was no oxygen worth mentioning for the first two "
                     "billion years of Earth's history. Every molecule of it "
                     "in the air today is biological in origin."},
-            {"text": "Photosynthetic organisms released it over billions of "
-                     "years, as the waste product of splitting water.",
+            {"text": "Photosynthesis released it over billions of years, as "
+                     "the waste from splitting water.",
              "correct": True},
             {"text": "Plants release it deliberately, to keep the air "
                      "breathable for the animals around them.",
@@ -74,9 +74,8 @@ QUESTIONS = [
         "text": "Roughly half of the world's photosynthesis happens in the "
                 "sea. Which organisms are doing it?",
         "options": [
-            {"text": "Phytoplankton — microscopic algae drifting in the "
-                     "sunlit surface water, photosynthesising with "
-                     "chlorophyll.",
+            {"text": "Phytoplankton — microscopic algae with chlorophyll, "
+                     "drifting in the sunlit surface water.",
              "correct": True},
             {"text": "Zooplankton — the tiny drifting animals that fill the "
                      "surface water in enormous numbers.",
@@ -229,8 +228,8 @@ QUESTIONS = [
                 "they are the lungs of the planet, supplying the world's "
                 "oxygen. What is wrong with the argument?",
         "options": [
-            {"text": "Roughly half of all photosynthesis happens in the sea, "
-                     "and a mature forest consumes much of what it produces.",
+            {"text": "Half of all photosynthesis is in the sea, and a forest "
+                     "consumes much of what it makes.",
              "correct": True},
             {"text": "Nothing is wrong — trees are the only organisms on "
                      "Earth putting oxygen into the air.",
@@ -306,7 +305,7 @@ QUESTIONS = [
                     "depend on photosynthesis. Vent communities are different "
                     "because their chains start somewhere else entirely."},
             {"text": "Bacteria at the base of those chains build sugars using "
-                     "energy from chemical reactions instead of light.",
+                     "chemical energy instead of light.",
              "correct": True},
             {"text": "The worms need no energy source at all, because the hot "
                      "water is enough to keep them alive.",
@@ -373,8 +372,8 @@ QUESTIONS = [
              "why": "It came out of living things that happened to live in "
                     "the sea. The origin of every oxygen molecule in the air "
                     "is biological, not geological."},
-            {"text": "The sequence runs backwards: oxygen built up as waste "
-                     "first, and breathing animals appeared afterwards.",
+            {"text": "It runs backwards: oxygen built up as waste first, and "
+                     "breathing animals came later.",
              "correct": True},
         ],
         "figure": None,

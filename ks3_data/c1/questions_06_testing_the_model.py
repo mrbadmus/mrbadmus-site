@@ -33,8 +33,8 @@ QUESTIONS = [
              "why": "Particles never change size. What changes is where they "
                     "are — here the helium particles have moved out of the "
                     "balloon altogether."},
-            {"text": "Helium particles have worked their way through the gaps "
-                     "between the particles of the rubber.",
+            {"text": "Helium particles have squeezed through the gaps between "
+                     "the rubber's particles.",
              "correct": True},
             {"text": "The helium has cooled down and turned into a liquid in "
                      "the bottom of the balloon.",
@@ -129,8 +129,8 @@ QUESTIONS = [
              "why": "The model has the spacing changing at every change of "
                     "state, so the density has to change too. It predicts a "
                     "denser solid."},
-            {"text": "It predicts the solid will be denser and sink in its own "
-                     "liquid; water is the other way round, so ice floats.",
+            {"text": "It predicts the solid will be denser and sink; water is "
+                     "the other way round, so ice floats.",
              "correct": True},
             {"text": "It predicts the solid will be denser and sink, and ice "
                      "does sink, only very slowly.",
@@ -149,17 +149,17 @@ QUESTIONS = [
         "text": "A student says the three failures are rare exceptions, so "
                 "they can safely be ignored. Which reply deals with that best?",
         "options": [
-            {"text": "Nothing in science may ever be ignored, so the whole "
-                     "model has to go.",
+            {"text": "Nothing in science can ever be ignored, so a model with "
+                     "any failure has to be thrown out.",
              "correct": False,
              "why": "Too strong. Scientists do keep using models they know are "
                     "incomplete — the point is not that ignoring is banned, "
                     "but that these particular failures matter."},
             {"text": "Ice floating is why lakes do not freeze solid, and the "
-                     "exceptions are where the next model came from.",
+                     "exceptions led to the next model.",
              "correct": True},
             {"text": "Three failures out of seven is far too many for anyone "
-                     "to call them rare.",
+                     "to call them rare exceptions.",
              "correct": False,
              "why": "Counting is not the argument. Seven observations were "
                     "chosen for this page; what makes these three matter is "
@@ -193,13 +193,13 @@ QUESTIONS = [
                     "of a smell crossing a still room right, and that is a "
                     "prediction about how long something takes."},
             {"text": "They all involve energy going in or out, which the model "
-                     "leaves out entirely.",
+                     "leaves out of the picture entirely.",
              "correct": False,
              "why": "The model copes with a change of state, where energy goes "
                     "in — it keeps the mass right to the milligram. What it "
                     "leaves out is structure."},
-            {"text": "Each one needs the particles to differ from each other, "
-                     "or to be joined together in a particular way.",
+            {"text": "Each one needs particles that differ from each other, or "
+                     "are joined in a particular way.",
              "correct": True},
         ],
         "figure": None,
@@ -210,8 +210,8 @@ QUESTIONS = [
         "text": "A gas can be squashed into a fraction of its volume. The same "
                 "substance as a liquid cannot be squashed at all. Why not?",
         "options": [
-            {"text": "A gas is mostly empty space between its particles; in a "
-                     "liquid the particles are already touching.",
+            {"text": "A gas is mostly empty space between particles; in a "
+                     "liquid they are already touching.",
              "correct": True},
             {"text": "Gas particles are squashy and flatten under pressure, "
                      "while liquid particles are hard.",
@@ -252,8 +252,8 @@ QUESTIONS = [
              "why": "It does not. Loose spheres sliding past each other cannot "
                     "stretch to five times their length and snap back — that "
                     "is exactly what defeats the model."},
-            {"text": "Rubber is made of particles; the model fails because it "
-                     "cannot join them into long tangled chains.",
+            {"text": "Rubber is made of particles; the model cannot join them "
+                     "into long tangled chains.",
              "correct": True},
             {"text": "Rubber's particles are much bigger than glass's, and "
                      "that is what the model gets wrong.",
@@ -341,19 +341,20 @@ QUESTIONS = [
              "why": "Replacement is not demolition. A new model has to "
                     "reproduce everything the old one already explained, which "
                     "is why the changes build up instead of cancelling out."},
-            {"text": "Show that the dense nucleus does not exist after all.",
+            {"text": "Show that the dense nucleus does not exist after all, "
+                     "since the model holding it failed.",
              "correct": False,
              "why": "The nucleus survived, and it is in every model since. "
                     "What broke was the account of the electrons, not the "
                     "evidence from the gold foil."},
-            {"text": "Wait for a better experiment, since the problem was only "
-                     "on paper.",
+            {"text": "Wait for a better experiment, since a problem that shows "
+                     "up only in the maths proves nothing.",
              "correct": False,
              "why": "The maths was the evidence. It predicted that every atom "
                     "in existence should already have collapsed, and plainly "
                     "none of them has."},
-            {"text": "Keep everything Rutherford's model already explained, "
-                     "and also explain why electrons do not spiral in.",
+            {"text": "Keep everything Rutherford explained, and also explain "
+                     "why electrons do not spiral in.",
              "correct": True},
         ],
         "figure": None,
