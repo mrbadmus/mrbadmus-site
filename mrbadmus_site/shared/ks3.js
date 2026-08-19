@@ -88,13 +88,13 @@
        "explain" cannot answer that. It now carries the question the student
        actually saw, off `.ks3-rung-q`.
 
-       The rung is still worth keeping — difficulty is defined by rung — and
-       is sent as its own field. `quiz_question_attempts` has no column for
-       it yet, so the backend currently drops it; the one-line migration is
-       written up for Mide rather than applied here. Until it lands, rung is
-       recoverable from question_index for KS3 ladders, which are always
-       recall/apply/explain/produce in that order — an implicit coupling
-       that is exactly why the column is worth adding.
+       ⊕ RESOLVED 19 Aug 2026. The rung is worth keeping — difficulty on a
+       ladder is DEFINED by rung — and it now has a column
+       (`quiz_question_attempts.rung`, migration 20260819122539) and a line
+       in the backend's attempts map, so it persists rather than being
+       silently dropped. It is no longer recoverable-by-assuming that every
+       ladder is recall/apply/explain/produce in that order, which was the
+       implicit coupling that argued for the column.
 
        selected_answer / correct_answer held the option letter GLUED to the
        option text — "ANothing at all" — because both were read off the
@@ -106,9 +106,10 @@
        turns a mark into a lesson plan. Letter and text are now read from
        their own elements and joined with a TAB, which authored prose from
        the HTML cannot contain. Free-text rungs carry no letter and so no
-       separator. Two real columns are the right answer and are proposed
-       with the rung column; a tab is the unambiguous separator available
-       without a migration.
+       separator. Two real columns remain the right answer and are still
+       open; the tab is the unambiguous separator available without one, and
+       it is now the payload's separator generally — MRB-239 uses it for the
+       success-criteria list on free-text rungs too.
 
        time_spent_seconds was null on every row. Mide's per-student
        difficulty case is explicitly "finishes in four minutes with full
@@ -121,6 +122,10 @@
         rung: r.key,
         selected_answer: r.selectedText || "",
         correct_answer: r.correctText || "",
+        // ⊕ MRB-239 — self-marked rungs only. Marked rungs leave both null,
+        // which is what the columns mean there: there were no criteria.
+        criteria_met: r.criteriaMet || null,
+        criteria_total: r.criteriaTotal == null ? null : r.criteriaTotal,
         is_correct: !!r.met,
         time_spent_seconds: r.timeSpent
       };
@@ -129,6 +134,11 @@
     try {
       fetch("https://mrbadmus-backend.onrender.com/api/quiz-score", {
         method: "POST",
+        // ⊕ MRB-239 — `keepalive` is what lets this survive the unload that
+        // triggered it. Without it the pagehide send is a request the
+        // browser is entitled to cancel on its way out, which is exactly
+        // when it is most needed.
+        keepalive: true,
         headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
         body: JSON.stringify({
           subject: discipline, topic: unit, subtopic: slug,
@@ -396,6 +406,7 @@
     var work = readStore(WORK_PREFIX + slug) || {};
     var WHO = "";
     var submitted = false;
+    var armTimer = null;
 
     /* ⊕ MRB-262 — per-rung time.
 
@@ -540,15 +551,68 @@
          Same form as the MRB-235 guard immediately below. */
       if (total > 0 && resolved === total) { markVisit(slug, true); }
       setHidden(retryWrap, misses === 0);
-      // MRB-235 — record the attempt server-side once all four rungs are
-      // resolved. Fires once per page load: `submitted` guards a re-fire
-      // when "Retry my misses" resolves the ladder a second time in the
-      // same sitting, which would otherwise double-count the attempt.
-      if (resolved === total && !submitted) {
-        submitted = true;
-        submitLadderScore(slug, got, total, rungs);
-      }
+      /* MRB-235 — record the attempt server-side once all four rungs are
+         resolved. Once per page load: `submitted` guards a re-fire when
+         "Retry my misses" resolves the ladder a second time in the same
+         sitting, which would otherwise double-count the attempt.
+
+         ⊕ MRB-239, 19 Aug 2026 — IT USED TO SEND HERE, AND THAT MADE THE
+         NEW COLUMNS STRUCTURALLY EMPTY. A self-marked rung becomes
+         `resolved` the instant "Check my answer" is pressed — which is the
+         moment the criteria list OPENS, before the student has ticked a
+         single one. Rungs 3 and 4 are the free-text ones on every lesson,
+         so the last rung to resolve is always a self-marked one, and the
+         payload left with `criteria_met: []` on it every single time.
+         "19 of 24 students never tick criterion 3" would have been an
+         artefact of the send timing, true of 24 of 24, forever. Driven on
+         a real lesson before this fix: rung 4 posted `[]` while its boxes
+         were being ticked a second later.
+
+         So resolution ARMS the send instead of firing it, and any further
+         self-marking re-arms it. It goes when the student stops — or, more
+         reliably, when the page goes away. `submitted` still guarantees
+         exactly one send. */
+      if (resolved === total && !submitted) { arm(); }
     }
+
+    /* Send when the marking has actually stopped.
+       Two triggers, whichever comes first, both behind the one latch:
+         · quiet for QUIET_MS with the ladder resolved — the student is done
+           and still on the page;
+         · the page is going away (`pagehide`, or hidden on mobile, where
+           `pagehide` is unreliable) — send what we have, immediately.
+       The quiet window is generous because reading five success criteria
+       and judging your own answer against each is slow, deliberate work,
+       and a short debounce would fire in the middle of it. Nothing is lost
+       by waiting: the page-hide path is the real backstop. */
+    var QUIET_MS = 20000;
+
+    function arm() {
+      if (submitted) { return; }
+      if (armTimer) { clearTimeout(armTimer); }
+      armTimer = setTimeout(send, QUIET_MS);
+    }
+
+    function send() {
+      if (submitted) { return; }
+      var got = 0, resolved = 0;
+      rungs.forEach(function (r) {
+        if (r.resolved) { resolved += 1; }
+        if (r.met) { got += 1; }
+      });
+      // Only ever send a COMPLETE ladder — the arming path guarantees this,
+      // and the page-hide path must not turn a half-done lesson into an
+      // attempt row.
+      if (!rungs.length || resolved !== rungs.length) { return; }
+      submitted = true;
+      if (armTimer) { clearTimeout(armTimer); armTimer = null; }
+      submitLadderScore(slug, got, rungs.length, rungs);
+    }
+
+    window.addEventListener("pagehide", send);
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "hidden") { send(); }
+    });
 
     /* ── rungs the page marks: one attempt, then locked ── */
     function wireMarked(rung, rec) {
@@ -667,6 +731,34 @@
       rec.answer = answer;
       rec.boxes = boxes;
 
+      /* ⊕ MRB-239 — THE CRITERIA ARE THE MODEL ANSWER, so they are what
+         `correct_answer` carries. Read here, at wire time, from the elements
+         the build wrote them into, for the same reason `rec.question` is:
+         this row is the SNAPSHOT, and it has to survive the lesson being
+         regenerated with different words.
+
+         The numeral is stripped — `.ks3-tick-num` is furniture the renderer
+         adds, not part of the criterion, and leaving it in would put "1 " on
+         the front of every stored string. */
+      var criteria = boxes.map(function (b) {
+        var lab = (b.nextElementSibling && b.nextElementSibling.tagName === "LABEL")
+          ? b.nextElementSibling
+          : (ticks && b.id ? ticks.querySelector('label[for="' + b.id + '"]') : null);
+        if (!lab) { return ""; }
+        var clone = lab.cloneNode(true);
+        var num = clone.querySelector(".ks3-tick-num");
+        if (num) { num.parentNode.removeChild(num); }
+        return (clone.textContent || "").replace(/\s+/g, " ").trim();
+      });
+      /* Set at WIRE time, not in `tell()`. Every rung is sent, including
+         ones the student never opened, and the model answer for an
+         unattempted rung is still the model answer — a row that reported no
+         criteria would read as a rung that had none. `tell()` then only
+         moves `criteriaMet`. */
+      rec.correctText = criteria.join("\t");
+      rec.criteriaTotal = boxes.length;
+      rec.criteriaMet = [];
+
       /* ⊕ RULING (Mide, 19 Aug 2026) — NO SELF-MARKING BEFORE A COMMITMENT.
          R8 already said the criteria "are not on the page until the student
          has written an answer, because a visible checklist is the answer"
@@ -711,7 +803,24 @@
         boxes.forEach(function (b) { if (b.checked) { n += 1; } });
         rec.met = all > 0 && n === all;
         rec.selectedText = answer ? answer.value : "";
-        rec.correctText = n + " of " + all + " criteria ticked";
+        /* ⊕ MRB-239 (Mide, 19 Aug 2026). This line used to read
+             rec.correctText = n + " of " + all + " criteria ticked";
+           — a RESULT, in a column whose every other row holds answer text,
+           and a computed summary in a column that exists to be a snapshot.
+           It could not answer the question the per-question grain was ruled
+           in for. "19 of 24 students never tick criterion 3" is a lesson
+           plan; "0 of 5" can never become one, however it is aggregated.
+
+           So `correct_answer` carries the criteria themselves, tab-separated
+           — TAB being the separator this payload already uses precisely
+           because authored prose out of the HTML cannot contain one — and
+           WHICH were ticked goes in its own columns. */
+        rec.correctText = criteria.join("\t");
+        rec.criteriaTotal = all;
+        rec.criteriaMet = [];
+        boxes.forEach(function (b, i) {
+          if (b.checked) { rec.criteriaMet.push(i + 1); }   // 1-based
+        });
         if (!tally) { return; }
         tally.textContent = rec.met
           ? "All " + all + " ticked — rung met."
@@ -766,7 +875,13 @@
         });
       }
       boxes.forEach(function (b) {
-        b.addEventListener("change", function () { tell(); saveWork(); refresh(true); });
+        b.addEventListener("change", function () {
+          tell(); saveWork(); refresh(true);
+          // ⊕ MRB-239 — still marking, so push the send back. Without this
+          // the quiet window would expire mid-way through a careful read of
+          // the criteria and capture a half-finished self-mark.
+          arm();
+        });
       });
       if (answer) {
         answer.addEventListener("input", function () { gate(); saveWork(); });
