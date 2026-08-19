@@ -272,8 +272,8 @@ QUESTIONS = [
              "why": "The comparison itself is honest — both bars are drawn to "
                     "scale. It is the step from a width to an amount that has "
                     "to be taken carefully."},
-            {"text": "Those bars are diameters, and volume goes as the cube "
-                     "— roughly eight thousand times.",
+            {"text": "Those bars are diameters, and volume goes as the "
+                     "diameter cubed — eight thousand times.",
              "correct": True},
             {"text": "It is backwards — the egg is twenty times as wide but "
                      "only about five times the volume.",
