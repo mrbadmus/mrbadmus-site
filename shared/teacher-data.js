@@ -156,31 +156,46 @@ window.MrBadmusTeacherData = (function () {
     return { years: years, working: working };
   }
 
-  // Decide the subject pill for a class given the (possibly multiple)
-  // class_teachers rows that link THIS teacher to it. KS3 + KS4 Combined
-  // ignore the rows entirely (pill is derived from the class itself).
-  // KS4 Triple picks the row with the smallest subject_id for determinism.
+  /* Decide the subject pill for a class, from the class's OWN subject.
+     ⊕ MRB-263 (Mide, 19 Aug 2026) — IT USED TO READ `science_pathway`.
+
+     The old rule branched on `klass.science_pathway`, and consulted the
+     `class_teachers` rows only for KS4 Triple. `science_pathway` is
+     nullable and is null on real classes — `10h/Sc2` and `11h/Sc5` in
+     production carry no pathway at all — so those two cards rendered with
+     NO PILL while the cards either side of them had one. Same screen, same
+     kind of class, different treatment, for a reason invisible to whoever
+     was reading it.
+
+     The subject is now read from `class_teachers.subject_id`, which is the
+     field that actually means "what this class is". It is populated and
+     correct for all 15 production classes, needs no new data, and matches
+     the naming convention exactly: KS3 → Science, `/Sc` → Combined
+     Science, `/Ph` → Physics. Every card gets a pill, and no card differs
+     from its neighbour except where the classes genuinely differ.
+
+     The driver query in `loadTeacherClasses` already embeds `subject:
+     subject_id ( name )` on every link row, so this costs no extra
+     request — the data was arriving and being thrown away for three of
+     the four branches.
+
+     Multiple links to one class (a teacher who teaches it for two
+     subjects) still resolve deterministically by lowest subject_id, which
+     is the tie-break the Triple branch already used. */
   function derivePill(klass, teacherRowsForClass) {
-    if (klass.key_stage === 'KS3') {
-      return { pill_label: 'Science', pill_colour_var: 'var(--science)' };
-    }
-    if (klass.key_stage === 'KS4' && klass.science_pathway === 'combined') {
-      return { pill_label: 'Combined Science', pill_colour_var: 'var(--science)' };
-    }
-    if (klass.key_stage === 'KS4' && klass.science_pathway === 'triple') {
-      const sorted = teacherRowsForClass
-        .filter(function (r) { return r.subject_id && r.subject && r.subject.name; })
-        .slice()
-        .sort(function (a, b) {
-          if (a.subject_id < b.subject_id) return -1;
-          if (a.subject_id > b.subject_id) return 1;
-          return 0;
-        });
-      if (sorted.length === 0) return { pill_label: null, pill_colour_var: null };
-      const name = sorted[0].subject.name;
-      return { pill_label: name, pill_colour_var: SUBJECT_COLOUR_VARS[name] || null };
-    }
-    return { pill_label: null, pill_colour_var: null };
+    const sorted = (teacherRowsForClass || [])
+      .filter(function (r) { return r.subject_id && r.subject && r.subject.name; })
+      .slice()
+      .sort(function (a, b) {
+        if (a.subject_id < b.subject_id) return -1;
+        if (a.subject_id > b.subject_id) return 1;
+        return 0;
+      });
+    if (sorted.length === 0) return { pill_label: null, pill_colour_var: null };
+    const name = sorted[0].subject.name;
+    // Single-science subjects carry their own identity colour; Science and
+    // Combined Science stay on the neutral `--science`, exactly as before.
+    return { pill_label: name, pill_colour_var: SUBJECT_COLOUR_VARS[name] || 'var(--science)' };
   }
 
   // Shape-only UUID check. Caller-provided classIds in URLs etc. should be

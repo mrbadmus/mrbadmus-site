@@ -42,17 +42,21 @@
  *   - The function membership-gates internally — non-members get
  *     { eligible: [], is_empty: true, empty_reason: 'not_member' }.
  *
- * Subject pill rule (student variant — simpler than teacher's):
+ * Subject pill rule — ⊕ MRB-263 (Mide, 19 Aug 2026). It used to branch on
+ * `science_pathway`, which is nullable and null on real classes, so a card
+ * could silently lose its pill. It now names the class's SUBJECT:
  *   KS3                  → 'Science'          / var(--science)
- *   KS4 + combined       → 'Combined Science' / var(--science)
- *   KS4 + triple         → 'Triple Science'   / var(--science)
- *                          (teacher view picks a per-subject colour
- *                           by reading class_teachers; students can't
- *                           read that table. v1 ships neutral; if Mide
- *                           wants per-subject for Triple students later,
- *                           we add a primary_subject_id column on
- *                           classes or a SECURITY DEFINER helper.)
- *   anything else (KS5)  → null pill
+ *   KS4 name has /Sc     → 'Combined Science' / var(--science)
+ *   KS4 name has /Ph     → 'Physics'          / var(--physics)
+ *   KS4 name has /Ch|/Bi → 'Chemistry' | 'Biology' / their own colour
+ *   anything else        → null pill
+ *
+ * The teacher view reads the same fact from `class_teachers.subject_id`.
+ * A student cannot: there is no student-read policy on that table, which
+ * this file has recorded since v1. The two derivations were checked equal
+ * against all 15 production classes. They collapse into one the day a
+ * `class_teachers_member_read` policy (or a `primary_subject_id` column on
+ * `classes`) exists — see `deriveStudentPill`.
  */
 
 window.MrBadmusStudentData = (function () {
@@ -114,18 +118,55 @@ window.MrBadmusStudentData = (function () {
     }, null);
   }
 
-  // Student-side pill derivation. See JSDoc above.
+  /* Student-side pill derivation. See JSDoc above.
+     ⊕ MRB-263 (Mide, 19 Aug 2026) — IT USED TO READ `science_pathway`, and
+     for the same reason the teacher side did: nullable, and null on real
+     classes, so a card silently lost its pill.
+
+     ⚠️ THE RULED SOURCE IS `class_teachers.subject_id`, AND A STUDENT
+     CANNOT READ IT. There is no student-read policy on `class_teachers` in
+     production — only `class_teachers_self_read` (teacher_id = me),
+     `_admin_read`, `_hod_read` and `_operator_read`. The JSDoc at the top
+     of this file has said so since v1 and named the two ways out: a
+     `primary_subject_id` column on `classes`, or a SECURITY DEFINER
+     helper. Both are DDL, and no DDL was authorised for this change.
+
+     So the subject is derived here from the two class fields a student CAN
+     read — `key_stage` and `name` — using the naming convention MRB-263
+     fixed in place: year, band, `/`, subject code, set. `Sc` is combined
+     science, `Ph` is physics only. This is deliberately the SAME FACT the
+     teacher side reads out of `class_teachers`, and the equivalence was
+     checked against production before it shipped: all 15 classes, the
+     name-derived subject and `class_teachers.subject_id` agree, 15 of 15.
+
+     ⚠️ IT IS STILL A SECOND DERIVATION OF ONE FACT, and it is a cost, not
+     a design: it makes `classes.name` load-bearing in a second place (the
+     roster importer already find-or-creates on it — see CLAUDE.md). The
+     fix is one policy — a `class_teachers_member_read` letting a student
+     read the links for classes they belong to — after which this function
+     should read the subject the same way `derivePill` does, and this
+     comment should go with it. Until then a class named off-convention
+     gets no pill rather than a wrong one, which is the safe direction. */
   function deriveStudentPill(klass) {
-    if (klass.key_stage === 'KS3') {
-      return { pill_label: 'Science', pill_colour_var: 'var(--science)' };
+    const name = classSubjectName(klass);
+    if (!name) return { pill_label: null, pill_colour_var: null };
+    return { pill_label: name, pill_colour_var: subjectColourVar(name) };
+  }
+
+  // The convention, read as a subject. Anything unrecognised returns null,
+  // so an off-convention name shows no pill rather than the wrong one.
+  function classSubjectName(klass) {
+    if (!klass) return null;
+    if (klass.key_stage === 'KS3') return 'Science';
+    if (klass.key_stage !== 'KS4') return null;
+    const code = /\/([A-Za-z]{2})/.exec(klass.name || '');
+    switch (code && code[1].toLowerCase()) {
+      case 'sc': return 'Combined Science';
+      case 'ph': return 'Physics';
+      case 'ch': return 'Chemistry';
+      case 'bi': return 'Biology';
+      default:   return null;
     }
-    if (klass.key_stage === 'KS4' && klass.science_pathway === 'combined') {
-      return { pill_label: 'Combined Science', pill_colour_var: 'var(--science)' };
-    }
-    if (klass.key_stage === 'KS4' && klass.science_pathway === 'triple') {
-      return { pill_label: 'Triple Science', pill_colour_var: 'var(--science)' };
-    }
-    return { pill_label: null, pill_colour_var: null };
   }
 
   // Subject-colour top stripe (Phase 3 visual differentiator). Currently
@@ -263,7 +304,7 @@ window.MrBadmusStudentData = (function () {
     // (or never existed but the membership row leaked somehow — defensive).
     const classRes = await sb
       .from('classes')
-      .select('id, name, key_stage, year_group, tier, science_pathway, assignment_day_of_week, deleted_at')
+      .select('id, name, key_stage, year_group, tier, science_pathway, assignment_day_of_week, deleted_at, academic_year_id')
       .eq('id', classId)
       .is('deleted_at', null)
       .single();
@@ -278,6 +319,43 @@ window.MrBadmusStudentData = (function () {
       throw classRes.error || new Error('class fetch returned no row');
     }
     const klass = classRes.data;
+
+    /* 2b. Year-scope the SINGLE class, the same way the listing does.
+       ⊕ MRB-261, finished (Mide, 19 Aug 2026). The listing was scoped and
+       this was not, so the class a student left in July vanished from
+       their list and stayed reachable at its own URL — a bookmark, a
+       browser autocomplete, a link in a message from a friend. It then
+       rendered as CURRENT WORK: a live leaderboard, a "due this week"
+       section, a shout-out box, all belonging to a class that finished.
+
+       Membership is not the question here and is checked above; MRB-237
+       rolled students forward by creating NEW rows and leaving 2025-26
+       intact on purpose, so both memberships are legitimately live. The
+       question is which year is being worked in, and the answer is
+       `workingAcademicYear` — never `is_current`, which is moved by hand
+       on 1 September and through late August still names the year that
+       finished in July.
+
+       A past class is UNAVAILABLE, not missing and not forbidden: the
+       student was in it, and saying "you're not in this class" would be a
+       lie. Its own code, so the page can say the true thing. */
+    const yearRes = await sb
+      .from('academic_years')
+      .select('id, name, start_date, end_date')
+      .is('deleted_at', null);
+    if (yearRes.error) {
+      console.error('[student-data] academic years query failed', yearRes.error);
+      throw yearRes.error;
+    }
+    const workingYear = workingAcademicYear(yearRes.data);
+    // No readable years at all (a self-serve visitor with no school) — show
+    // the class rather than hiding it, matching the listing's own fallback.
+    if (workingYear && klass.academic_year_id &&
+        klass.academic_year_id !== workingYear.id) {
+      const e = new Error('Class belongs to a past academic year');
+      e.code = 'class_not_current';
+      throw e;
+    }
 
     // 3. Viewer's profile (for "Hi, [first_name]" greeting). Could be
     // pulled from the auth/profile in the guard's onAllowed, but we

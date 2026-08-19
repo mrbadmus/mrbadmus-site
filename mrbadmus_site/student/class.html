@@ -718,6 +718,15 @@
     <a class="state-btn" href="/index.html">Back home</a>
   </div>
 
+  <!-- ⊕ MRB-261 (19 Aug 2026). A class from a finished year is not missing
+       and the student is not a stranger to it — they were in it. Its own
+       state, so the page can say that rather than "class not found". -->
+  <div id="state-past-year" class="state-block">
+    <h2>This class has finished</h2>
+    <p>It was one of your classes last year. Your classes for this year are on your home page.</p>
+    <a class="state-btn" href="/index.html">Back home</a>
+  </div>
+
   <div id="state-not-authorised" class="state-block">
     <h2>You're not in this class</h2>
     <p>Looks like this isn't one of your classes. Head back home if you got here by mistake.</p>
@@ -736,13 +745,14 @@
 <script src="/shared/class-entry.js?v=59d97451" defer></script>
 <script src="/shared/student-guard.js"></script>
 <script src="/shared/shoutouts.js"></script>
-<script src="/shared/student-data.js?v=fa40f52c"></script>
+<script src="/shared/student-data.js?v=aed13350"></script>
 <script>
 (function () {
   const STATES = {
     loading:       document.getElementById('state-loading'),
     loaded:        document.getElementById('state-loaded'),
     notFound:      document.getElementById('state-not-found'),
+    pastYear:      document.getElementById('state-past-year'),
     notAuthorised: document.getElementById('state-not-authorised'),
     error:         document.getElementById('state-error'),
   };
@@ -1358,6 +1368,7 @@
         console.error('[student/class.html] onAllowed threw', e);
         if (e && e.code === 'invalid_class_id') return showState('notFound');
         if (e && e.code === 'class_not_found')  return showState('notFound');
+        if (e && e.code === 'class_not_current') return showState('pastYear');
         if (e && e.code === 'not_authorised')   return showState('notAuthorised');
         showState('error');
       }
