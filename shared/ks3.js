@@ -77,13 +77,52 @@
     var discipline = ks3At >= 0 ? parts[ks3At + 1] : "";
     var unit = ks3At >= 0 ? parts[ks3At + 2] : "";
 
+    /* ⊕ MRB-262 — what each field is now, and why it was wrong before.
+
+       question_text held `r.key`: the RUNG NAME — "recall", "apply",
+       "explain", "produce". Per MRB-239 this row is the SNAPSHOT: the thing
+       that preserves what was on screen when the content later changes. A
+       rung label preserves nothing. Worse, the gap grid (MRB-157) and the
+       Do Now generator (MRB-158) both read this field to tell a teacher
+       WHICH question the class got wrong, and four rows all reading
+       "explain" cannot answer that. It now carries the question the student
+       actually saw, off `.ks3-rung-q`.
+
+       The rung is still worth keeping — difficulty is defined by rung — and
+       is sent as its own field. `quiz_question_attempts` has no column for
+       it yet, so the backend currently drops it; the one-line migration is
+       written up for Mide rather than applied here. Until it lands, rung is
+       recoverable from question_index for KS3 ladders, which are always
+       recall/apply/explain/produce in that order — an implicit coupling
+       that is exactly why the column is worth adding.
+
+       selected_answer / correct_answer held the option letter GLUED to the
+       option text — "ANothing at all" — because both were read off the
+       button's textContent, and the letter badge is inside the button. No
+       consumer could split them: an option beginning with a capital is
+       indistinguishable from the prefix. That breaks per-distractor
+       analysis, which is the main reason the question grain was ruled in —
+       knowing nineteen students all chose the SAME wrong option is what
+       turns a mark into a lesson plan. Letter and text are now read from
+       their own elements and joined with a TAB, which authored prose from
+       the HTML cannot contain. Free-text rungs carry no letter and so no
+       separator. Two real columns are the right answer and are proposed
+       with the rung column; a tab is the unambiguous separator available
+       without a migration.
+
+       time_spent_seconds was null on every row. Mide's per-student
+       difficulty case is explicitly "finishes in four minutes with full
+       marks", and that judgement cannot be made from a column that is
+       always null. See stampTime(). */
     var attempts = rungs.map(function (r, i) {
       return {
         question_index: i,
-        question_text: r.key,
+        question_text: r.question || r.key,
+        rung: r.key,
         selected_answer: r.selectedText || "",
         correct_answer: r.correctText || "",
-        is_correct: !!r.met
+        is_correct: !!r.met,
+        time_spent_seconds: r.timeSpent
       };
     });
 
@@ -357,6 +396,35 @@
     var work = readStore(WORK_PREFIX + slug) || {};
     var WHO = "";
     var submitted = false;
+
+    /* ⊕ MRB-262 — per-rung time.
+
+       Defined as the interval between the previous rung being RESOLVED (or
+       the ladder loading, for whichever rung is resolved first) and this one
+       being resolved. Ordered by when the student actually finished each
+       rung, not by page order, so the sitting is partitioned across the
+       rungs with no overlap and no gaps and the four values sum to the time
+       on the ladder — which is the figure Mide's "finishes in four minutes
+       with full marks" judgement needs.
+
+       Stamped from the INTERACTION handlers only, never from the restore
+       path: a returning student's rung is already resolved when the page
+       loads, and stamping there would record the reload rather than the
+       work. Such a rung keeps `timeSpent: null`, which is honest — we do
+       not know how long a previous sitting took.
+
+       Capped at 30 minutes. Beyond that it is a tab left open, not
+       thinking, and one 4-hour rung would swamp a class average. */
+    var TIME_CAP_S = 30 * 60;
+    var lastResolvedAt = Date.now();
+
+    function stampTime(rec) {
+      var now = Date.now();
+      var secs = Math.round((now - lastResolvedAt) / 1000);
+      if (secs < 0) { secs = 0; }
+      rec.timeSpent = secs > TIME_CAP_S ? TIME_CAP_S : secs;
+      lastResolvedAt = now;
+    }
     /* MRB-257 (C3) — the score and note lines describe THIS sitting. A
        returning student's self-marked work is restored on load (wireSelf
        below), which used to make `resolved` non-zero before anything was
@@ -493,6 +561,31 @@
         return m ? m.innerHTML : "";
       });
 
+      /* ⊕ MRB-262 — letters read HERE, at wire time, and text read from
+         `.ks3-opt-label` rather than from the button.
+
+         The button's textContent is badge + label run together, which is how
+         "ANothing at all" reached the database. Reading the two spans
+         separately is the fix; reading the letter at wire time is what keeps
+         it correct, because the moment a rung is answered every badge's
+         innerHTML is replaced with a tick or cross SVG and the letter is
+         gone from the DOM. */
+      var letters = options.map(function (b) {
+        var m = b.querySelector(".ks3-opt-mark");
+        return m ? (m.textContent || "").trim() : "";
+      });
+
+      // Letter and text, joined by a TAB — a character authored prose out of
+      // the HTML cannot contain, so a consumer can split on it with no
+      // ambiguity at all. Separate columns are the right answer and are
+      // proposed to Mide; this is the unambiguous form available today.
+      function answerValue(i, btn) {
+        var labelEl = btn.querySelector(".ks3-opt-label");
+        var text = ((labelEl ? labelEl.textContent : btn.textContent) || "").trim();
+        var letter = letters[i] || "";
+        return letter ? letter + "\t" + text : text;
+      }
+
       // R2 — the feedback carries the WORD and a drawn mark, not just a
       // colour, so it survives being printed in greyscale.
       function feedback(correct, correction) {
@@ -521,10 +614,11 @@
           rung.setAttribute("data-locked", "1");
           var correct = btn.getAttribute("data-correct") === "1";
           rec.met = correct;
-          rec.selectedText = (btn.textContent || "").trim();
-          each(options, function (b) {
+          stampTime(rec);                                   // ⊕ MRB-262
+          rec.selectedText = answerValue(options.indexOf(btn), btn);
+          options.forEach(function (b, i) {
             if (b.getAttribute("data-correct") === "1") {
-              rec.correctText = (b.textContent || "").trim();
+              rec.correctText = answerValue(i, b);
             }
           });
           each(options, function (b) {
@@ -613,7 +707,16 @@
         checkBtn.setAttribute("aria-expanded", "false");
         checkBtn.addEventListener("click", function () {
           if (checkBtn.getAttribute("aria-expanded") === "true") { collapse(); }
-          else { show(); }
+          else {
+            // ⊕ MRB-262 — stamp on the FIRST check, which is the moment the
+            // writing stopped. Folding the list away and opening it again is
+            // purely visual and must not restart the clock; and this sits in
+            // the click handler rather than in show() because show() is also
+            // how restored work is put back at load.
+            var first = !rec.shown;
+            show();
+            if (first) { stampTime(rec); }
+          }
           saveWork();
           refresh(true);
         });
@@ -662,13 +765,19 @@
       var hasTicks = !!rung.querySelector("[data-ticks]");
       var hasOptions = rung.querySelectorAll(".ks3-option").length > 0;
       var self = mode === "self" || (!mode && hasTicks);
+      // ⊕ MRB-262 — the question the student actually saw, captured at wire
+      // time from the element the build writes it into. This is what the
+      // snapshot is FOR: it has to survive the lesson being regenerated.
+      var qEl = rung.querySelector(".ks3-rung-q");
       var rec = {
         key: rung.getAttribute("data-rung") || ("rung" + (rungs.length + 1)),
+        question: qEl ? (qEl.textContent || "").trim() : "",
         el: rung,
         mode: self ? "self" : "marked",
         resolved: false,
         met: false,
         shown: false,
+        timeSpent: null,
         options: [],
         boxes: [],
         fb: null
