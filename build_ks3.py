@@ -103,7 +103,8 @@ KS4_BRIDGE_TIER = "foundation"
 # never run and whose cards never flip, with no error and nothing to tell the
 # student the page is broken. Any future shared asset a KS3 page links goes in
 # this tuple — the name is deliberately no longer about stylesheets.
-VERSIONED_ASSETS = ("tokens.css", "styles.css", "nav.css", "ks3.css", "ks3.js")
+VERSIONED_ASSETS = ("tokens.css", "styles.css", "nav.css", "ks3.css", "ks3.js",
+                     "class-entry.js")
 
 
 def asset_versions(repo_root="."):
@@ -445,6 +446,7 @@ def shell(title, body, crumb_html="", discipline=None, description="",
   </div>
 </footer>
 <script src="/shared/ks3.js" defer></script>
+<script src="/shared/class-entry.js" defer></script>
 </body>
 </html>
 """ % {

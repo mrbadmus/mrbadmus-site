@@ -22,6 +22,7 @@
  *
  * Exports:
  *   loadStudentClass(classId, viewingStudentId) — bundle for the page
+ *   loadStudentClasses(viewingStudentId)         — the viewer's classes (picker)
  *   loadStudentClassShoutouts(classId, opts)     — paginated read-only feed
  *
  * Error codes thrown by loadStudentClass (UI matches state from .code):
@@ -463,8 +464,82 @@ window.MrBadmusStudentData = (function () {
     };
   }
 
+
+  /**
+   * loadStudentClasses(viewingStudentId) — MRB-259.
+   *
+   * Every class the viewer is an active member of, for the picker at
+   * /student/classes.html. Deliberately thin: the picker's job is to ROUTE,
+   * not to summarise, and a student who holds several classes is one click
+   * from the full page for any of them. Adding per-class assignment counts
+   * here would mean a fan-out of queries to render a screen most students
+   * never see (the single-class case skips it entirely — shared/class-entry.js
+   * links straight past it).
+   *
+   * Two hops rather than a PostgREST embed, matching loadStudentClass's
+   * membership-then-class shape: `class_members` is RLS-scoped to the
+   * viewer's own rows, and `classes` is readable because they are a member.
+   * Soft-deleted classes are filtered on the second hop, so a membership row
+   * left pointing at a deleted class simply yields nothing.
+   */
+  async function loadStudentClasses(viewingStudentId) {
+    if (!isUuid(viewingStudentId)) {
+      const e = new Error('Invalid student id');
+      e.code = 'invalid_student_id';
+      throw e;
+    }
+
+    const guard = window.MrBadmusStudentGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      throw new Error('[student-data] Supabase client unavailable — getClient() returned null');
+    }
+
+    const memberRes = await sb
+      .from('class_members')
+      .select('class_id')
+      .eq('student_id', viewingStudentId)
+      .is('left_at', null)
+      .is('deleted_at', null);
+    if (memberRes.error) {
+      console.error('[student-data] memberships query failed', memberRes.error);
+      throw memberRes.error;
+    }
+
+    const ids = (memberRes.data || [])
+      .map(function (r) { return r.class_id; })
+      .filter(Boolean);
+    if (!ids.length) return [];
+
+    const classRes = await sb
+      .from('classes')
+      .select('id, name, key_stage, year_group, tier, science_pathway')
+      .in('id', ids)
+      .is('deleted_at', null)
+      .order('name', { ascending: true });
+    if (classRes.error) {
+      console.error('[student-data] classes query failed', classRes.error);
+      throw classRes.error;
+    }
+
+    return (classRes.data || []).map(function (k) {
+      const pill = deriveStudentPill(k);
+      return {
+        id: k.id,
+        name: k.name,
+        key_stage: k.key_stage,
+        year_group: k.year_group,
+        tier: k.tier,
+        science_pathway: k.science_pathway,
+        pill_label: pill.pill_label,
+        pill_colour_var: pill.pill_colour_var,
+      };
+    });
+  }
+
   return {
     loadStudentClass: loadStudentClass,
+    loadStudentClasses: loadStudentClasses,
     loadStudentClassShoutouts: loadStudentClassShoutouts,
   };
 })();

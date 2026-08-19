@@ -652,7 +652,8 @@ HEAD_ASSETS = """<link rel="preload" href="/shared/fonts/fraunces-var-latin.woff
   <link rel="stylesheet" href="/shared/nav.css"/>
   <script src="/shared/search-index.js" defer></script>
   <script src="/shared/search.js" defer></script>
-  <script src="/shared/nav.js" defer></script>"""
+  <script src="/shared/nav.js" defer></script>
+  <script src="/shared/class-entry.js" defer></script>"""
 
 THEME_COLOR = "#F7F1E5"  # pre-paint browser chrome tint — matches --bg (light default)
 
@@ -4083,6 +4084,7 @@ html {{ background: #0F0F1A; }}
   <link rel="stylesheet" href="/shared/styles.css"/>
   <link rel="stylesheet" href="/shared/nav.css"/>
   <script src="/shared/nav.js" defer></script>
+  <script src="/shared/class-entry.js" defer></script>
   {extra_css}
 </head>
 <body>
@@ -4193,6 +4195,7 @@ html {{ background: #0F0F1A; }}
   <link rel="stylesheet" href="/shared/styles.css"/>
   <link rel="stylesheet" href="/shared/nav.css"/>
   <script src="/shared/nav.js" defer></script>
+  <script src="/shared/class-entry.js" defer></script>
   {extra_css}
 </head>
 <body>
@@ -5509,7 +5512,8 @@ def build_site(output_dir="mrbadmus_site"):
     # had already loaded the site. The regex below is written against a bare
     # `/shared/<name>"`, which is the shape of both the <link> and the <script>
     # tag, so extending the list is the whole change.
-    _versioned_assets = ["tokens.css", "styles.css", "nav.css", "nav.js"]
+    _versioned_assets = ["tokens.css", "styles.css", "nav.css", "nav.js",
+                         "class-entry.js"]
     _asset_ver = {}
     for _name in _versioned_assets:
         _p = os.path.join(output_dir, "shared", _name)

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#F7F1E5"/>
+  <title>My classes — Mr Badmus AI</title>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=475c2efb"/>
+  <script src="/shared/search-index.js" defer></script>
+  <script src="/shared/search.js" defer></script>
+  <style>
+
+    html { background: var(--bg); }
+    :root {
+      --darker:    var(--bg);
+      --dark:      var(--sunken);
+      --card2:     var(--sunken);
+      --science:   #A78BD0;
+      --shadow:    var(--shadow-card);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      /* 90px, not 80: the nav sits 6px down to clear the subject stripe,
+         matching student/class.html exactly. */
+      padding: 90px 20px 60px;
+      /* Hidden until requireStudentRole's onAllowed callback fires.
+         Fail-closed: if the guard bounces or JS fails, the page never
+         reveals student content. */
+      display: none;
+    }
+
+    /* ── NAV (reused from MRB-19 placeholder) ── */
+    .subject-stripe {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 6px;
+      background: var(--accent);
+      z-index: 11;
+      box-shadow: 0 1px 6px rgba(166, 60, 18, 0.30);
+    }
+
+    nav.top-nav {
+      position: fixed;
+      top: 6px; left: 0; right: 0;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      z-index: 10;
+    }
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .pill.env-test { background: var(--higher-soft); color: var(--higher); }
+    .pill.env-prod { background: var(--sunken); color: var(--muted); }
+    .signout-btn {
+      background: transparent;
+      border: 1px solid var(--border-strong);
+      color: var(--muted);
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-family: var(--font-sans);
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .signout-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* ── PAGE HEADER ── */
+    .container { max-width: 1100px; margin: 0 auto; }
+    .page-header { margin-bottom: 28px; }
+    .page-header h1 {
+      font-family: var(--font-serif);
+      font-optical-sizing: auto;
+      font-weight: 600;
+      font-size: 2rem;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .page-header .subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    /* ── CARDS GRID ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    @media (min-width: 600px)  { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 900px)  { .cards-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    /* ── CLASS CARD (button — keyboard focusable, screen-reader friendly) ── */
+    .class-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 20px;
+      text-align: left;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .class-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+      border-color: var(--accent-border);
+    }
+    .class-card:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .card-name {
+      font-family: var(--font-serif);
+      font-optical-sizing: auto;
+      font-weight: 600;
+      font-size: 1.4rem;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+    .card-pill {
+      flex-shrink: 0;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--darker);
+      white-space: nowrap;
+    }
+    .card-meta {
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .card-students {
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+    /* ── STATES (loading / empty / error) ── */
+    .state-block { display: none; padding: 60px 20px; text-align: center; }
+    .state-block.show { display: block; }
+    .state-block h2 {
+      font-family: var(--font-serif);
+      font-optical-sizing: auto;
+      font-weight: 600;
+      font-size: 1.4rem;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .state-block p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      max-width: 480px;
+      margin: 0 auto 20px;
+      line-height: 1.55;
+    }
+    .state-btn {
+      display: inline-block;
+      padding: 10px 22px;
+      border-radius: 22px;
+      background: var(--accent);
+      color: var(--on-accent);
+      font-family: var(--font-sans);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .state-btn:hover { opacity: 0.85; }
+    /* Secondary variant — outlined, sits in the page header as a lighter-weight action than the filled .state-btn. */
+    .state-btn.secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+    .state-btn.secondary:hover { opacity: 1; background: var(--accent-soft); }
+    .state-loading .dots { display: inline-flex; gap: 6px; margin-top: 10px; }
+    .state-loading .dots span {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+      animation: bounce 1.2s infinite;
+    }
+    .state-loading .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .state-loading .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+    /* ── TOAST ── */
+  </style>
+</head>
+<body>
+
+<!-- MRB-259 — the picker, and ONLY the picker.
+     A student with exactly one class never arrives here: shared/class-entry.js
+     puts that class's uuid straight into the nav href, so the single-class
+     journey is nav → class, with no page in between and no uuid ever typed.
+     This screen exists for the student who legitimately holds several — a KS4
+     triple student, most often — and its whole job is to route. It mirrors
+     /teacher/classes.html in shape for the same reason the guards and data
+     layers are mirrored: one mental model per role, nothing piled on.
+
+     Brand: dashboards carry plain white "MrBadmusAI" text and no logo asset,
+     per the brand rule. Not the KS4 chevron, not Design's KS3 mark. -->
+
+<div class="subject-stripe" id="subject-stripe"></div>
+
+<nav class="top-nav">
+  <a href="/index.html" style="font-family:var(--font-serif);font-optical-sizing:auto;font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;letter-spacing:-0.01em;">MrBadmusAI</a>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span id="env-pill" class="pill env-prod" title=""></span>
+    <span id="nav-user-area" style="color:var(--muted);font-weight:700;font-size:0.85rem;"></span>
+    <a id="settings-link" href="/student/settings.html" style="color:var(--muted);font-weight:700;font-size:0.85rem;text-decoration:none;">&#9881;&#65039; Settings</a>
+    <button class="signout-btn" onclick="MrBadmusStudentGuard.signOut()">Sign out</button>
+  </div>
+</nav>
+
+<main class="container">
+  <header class="page-header">
+    <h1>My classes</h1>
+    <p class="subtitle" id="subtitle">Loading&#8230;</p>
+  </header>
+
+  <div id="state-loading" class="state-block state-loading show">
+    <p>Loading your classes</p>
+    <div class="dots"><span></span><span></span><span></span></div>
+  </div>
+
+  <div id="state-cards" class="cards-grid" style="display:none;"></div>
+
+  <div id="state-empty" class="state-block">
+    <h2>No classes yet</h2>
+    <p>When your teacher adds you to a class, it will appear here.</p>
+    <a class="state-btn" href="/index.html">Back to homepage</a>
+  </div>
+
+  <div id="state-error" class="state-block">
+    <h2>Couldn&#8217;t load your classes</h2>
+    <p>Something went wrong. Please refresh the page.</p>
+    <button class="state-btn" onclick="window.location.reload()">Refresh</button>
+  </div>
+</main>
+
+<!-- Bootstrap: SDK -> config -> guard -> data -> render. Same order as every
+     other /student/* page. class-entry.js is deliberately NOT loaded here: this
+     IS the class entry's destination, and it would only render a link back to
+     the page the viewer is standing on. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/shared/config.js"></script>
+<script src="/shared/student-guard.js"></script>
+<script src="/shared/student-data.js"></script>
+<script>
+(function () {
+  const STATES = {
+    loading: document.getElementById('state-loading'),
+    cards:   document.getElementById('state-cards'),
+    empty:   document.getElementById('state-empty'),
+    error:   document.getElementById('state-error'),
+  };
+
+  function showState(name) {
+    Object.keys(STATES).forEach(function (k) {
+      const el = STATES[k];
+      if (!el) return;
+      if (k === 'cards') {
+        el.style.display = (k === name) ? 'grid' : 'none';
+      } else {
+        el.classList.toggle('show', k === name);
+      }
+    });
+  }
+
+  function escapeHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s == null ? '' : s;
+    return d.innerHTML;
+  }
+
+  // Year 8 / Higher / Triple, whichever the class actually declares. KS3
+  // classes carry no tier or pathway, so they contribute a year and stop.
+  function buildMetaLine(klass) {
+    const bits = [];
+    if (klass.year_group) bits.push('Year ' + klass.year_group);
+    if (klass.tier) bits.push(klass.tier.charAt(0).toUpperCase() + klass.tier.slice(1));
+    if (klass.science_pathway) {
+      bits.push(klass.science_pathway.charAt(0).toUpperCase() + klass.science_pathway.slice(1));
+    }
+    return bits.join(' \u00b7 ');
+  }
+
+  function renderCard(klass) {
+    const btn = document.createElement('button');
+    btn.className = 'class-card';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Open class ' + klass.name);
+
+    let pillHtml = '';
+    if (klass.pill_label) {
+      pillHtml = '<span class="card-pill" style="background:' +
+        escapeHtml(klass.pill_colour_var) + ';">' +
+        escapeHtml(klass.pill_label) + '</span>';
+    }
+
+    const meta = buildMetaLine(klass);
+    const metaHtml = meta ? '<div class="card-meta">' + escapeHtml(meta) + '</div>' : '';
+
+    btn.innerHTML =
+      '<div class="card-top">' +
+        '<div class="card-name">' + escapeHtml(klass.name) + '</div>' +
+        pillHtml +
+      '</div>' +
+      metaHtml;
+
+    btn.addEventListener('click', function () {
+      const env = (window.MrBadmusConfig && window.MrBadmusConfig.environment) === 'test'
+        ? '&env=test' : '';
+      window.location.href = '/student/class.html?class=' + encodeURIComponent(klass.id) + env;
+    });
+
+    return btn;
+  }
+
+  MrBadmusStudentGuard.requireStudentRole({
+    onAllowed: async function (ctx) {
+      const firstName = ctx.profile.first_name || 'there';
+      const env = (window.MrBadmusConfig && window.MrBadmusConfig.environment) || 'prod';
+
+      document.getElementById('nav-user-area').textContent = '\ud83d\udc64 ' + firstName;
+
+      const envEl = document.getElementById('env-pill');
+      envEl.textContent = env.toUpperCase();
+      envEl.className = 'pill env-' + env;
+      envEl.title = env === 'test'
+        ? 'Test sandbox — fake data only'
+        : 'Production — live student data';
+
+      if (env === 'test') {
+        document.getElementById('settings-link').href = '/student/settings.html?env=test';
+      }
+
+      const subtitleEl = document.getElementById('subtitle');
+      subtitleEl.textContent = 'Loading your classes\u2026';
+
+      document.body.style.display = 'block';
+
+      try {
+        const classes = await MrBadmusStudentData.loadStudentClasses(ctx.user.id);
+        if (!classes || classes.length === 0) {
+          subtitleEl.style.display = 'none';
+          showState('empty');
+          return;
+        }
+        // A student who lands here with exactly one class still gets a working
+        // screen — the nav skips this page for them, but a bookmark or a typed
+        // URL must not dead-end.
+        const n = classes.length;
+        subtitleEl.textContent = firstName + ', pick a class';
+        const grid = STATES.cards;
+        grid.innerHTML = '';
+        classes.forEach(function (k) { grid.appendChild(renderCard(k)); });
+        showState('cards');
+      } catch (e) {
+        console.error('[student/classes.html] loadStudentClasses failed', e);
+        subtitleEl.style.display = 'none';
+        showState('error');
+      }
+    },
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -103,7 +103,7 @@
     if (!rungEl) return null;
     const hasOptions = rungEl.querySelectorAll('.ks3-option').length > 0;
     if (!hasOptions) return { unsupported: true };
-    const heading = rungEl.querySelector('.ks3-rung-q, h3');
+    const heading = rungEl.querySelector('.ks3-rung-q') || rungEl.querySelector('h3');
     const options = Array.from(rungEl.querySelectorAll('.ks3-option')).map(function (opt) {
       const mark = opt.querySelector('.ks3-opt-mark');
       const clone = opt.cloneNode(true);

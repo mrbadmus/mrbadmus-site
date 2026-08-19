@@ -96,7 +96,8 @@
    geometry is .nav-icon-link's exactly, so the cluster keeps one rhythm; the
    treatment is typographic, so the link needs no title attribute repeating
    what is already on screen. */
-.nav-text-link {
+.nav-text-link,
+.nav-class-link {
   display: inline-flex;
   align-items: center;
   font-size: var(--fs-small);
@@ -108,7 +109,19 @@
   border-radius: 999px;
   transition: background 0.15s, color 0.15s;
 }
-.nav-text-link:hover { background: var(--accent-soft); color: var(--accent); }
+.nav-text-link:hover,
+.nav-class-link:hover { background: var(--accent-soft); color: var(--accent); }
+
+/* MRB-259 — the way in to a student's own class. Injected by
+   shared/class-entry.js and present ONLY for a signed-in viewer who is
+   actually enrolled, so it is never markup a signed-out visitor could see
+   flash. It borrows .nav-text-link's rule above rather than restating it: the
+   two are the same component, and the cluster must keep one rhythm.
+
+   It carries slightly more weight than 3D Studio because it is the one item in
+   the cluster that is about the viewer's own work rather than about the site.
+   Weight only — no new colour, no new geometry. */
+.nav-class-link { font-weight: 700; color: var(--text); }
 
 /* Auth control — Sign In / Sign Up when signed out, chip when signed in.
    The chip colours are the audited ~5.5:1 contrast pair — do not weaken. */
@@ -279,6 +292,15 @@
    10px with this item present, and is clean from 580px up. 600px is the next
    round number past that with headroom. The drawer carries the item below
    here, so nothing is lost. */
+/* MRB-259: the class link collapses one rung ABOVE 3D Studio, and the rung is
+   chosen to leave the measured ladder below untouched. The note above measured
+   ONE text item in the cluster (~103px on a generated topic page, clean from
+   580px up). A signed-in enrolled student has TWO, so the clean point moves up
+   by about that same width, to ~683px. 700px is the next round number past it
+   with headroom — and because the class link is gone by 600px, the rung below
+   is still being asked the same question it was measured against: one text
+   item, not two. The drawer carries the item below here, so nothing is lost. */
+@media (max-width: 700px) { .nav-class-link { display: none; } }
 @media (max-width: 600px) { .nav-text-link { display: none; } }
 @media (max-width: 560px) {
   .nav { padding: 0 var(--sp-3); gap: var(--sp-2); }

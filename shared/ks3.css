@@ -123,6 +123,39 @@ body.rd[data-mode="ks3"] {
   letter-spacing: .1em;
   text-decoration: none;
 }
+/* ── the way in to a student's own class (MRB-259) ──
+   Injected by shared/class-entry.js, immediately before the KS3 pill, and
+   ONLY for a signed-in viewer who is actually enrolled. It has no static
+   presence in any generated page — that is what makes "no flash of the entry
+   before auth resolves" structural rather than a CSS trick.
+
+   The lozenge geometry is `.ks3-pill`'s exactly, so the two read as one pair
+   at the end of the rail; the WEIGHT is inverted — outlined rather than
+   filled — so the pair does not read as two equal destinations. KS3's
+   signature 2px ink outline does that work, which is also why this needs no
+   colour Design did not specify: every value below is an existing --ks3-*
+   token, so the parity gate's provenance layer stays green.
+
+   ⚠️ Not registered in ks3_parity.py's COMPONENTS or CONTRAST, and that is a
+   real gap rather than an oversight. Those layers load a built page in
+   headless Chrome with no session, so this element does not exist there and a
+   registered row would fail on a missing selector rather than measure
+   anything. Gating it needs the harness to be able to mount a session first.
+   Ink on the nav ground is 14.2:1 by the token table, so the contrast is
+   sound; it is the ASSERTION that is missing, not the property. */
+.ks3-classlink {
+  flex: 0 0 auto;
+  padding: 6px 14px;
+  border: 2px solid var(--ks3-ink);
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-card);
+  color: var(--ks3-ink);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.ks3-classlink:hover { background: var(--ks3-accent-tint); }
+
 /* MRB-197: Design's mark — dimensions from the frozen reference's header
    (30px chevron, 22px/800 Bricolage wordmark, 10px gap, ink on ground).
    ⊕ MRB-208 rule 1 amends the chevron into a 34px accent-filled tile with a
