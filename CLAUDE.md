@@ -279,6 +279,23 @@ If the backend is unreachable, the chat falls back to a static message.
 ## Known Conventions and Gotchas
 
 - **No build tools.** No npm, no webpack, no bundler. Everything runs as plain files in the browser.
+- **Class naming convention** (MRB-263, ruled by Mide 19 Aug 2026): year number,
+  lowercase band letter, slash, subject code with a single capital, set number —
+  `7h/Sc5`, `10h/Ph1`, `11r/Sc1`. The 2026-27 timetable classes already follow it;
+  the 2025-26 leftovers `10R1` and `10H/Ph1` were renamed in place to match.
+  ⚠️ **`classes.name` is not purely cosmetic.** Nothing joins on it, but
+  `supabase/functions/roster-import/index.ts` find-or-creates a class by exact
+  `(school_id, academic_year_id, name)` match, so renaming a class outside the app
+  and then re-importing a CSV that still carries the old name creates a SECOND
+  class rather than finding the existing one. Rename the CSV too, or don't
+  re-import a year you have renamed into.
+- **A class belongs to an academic year, and every class list must say so**
+  (MRB-261). Never scope a class list on `academic_years.is_current` — that flag
+  is moved by hand on 1 September, so through late August it still points at the
+  year that finished in July. Use the `workingAcademicYear()` helper (three
+  hand-synced copies: `shared/class-entry.js`, `shared/student-data.js`,
+  `shared/teacher-data.js`). A plain `end_date >= today` is also wrong: academic
+  years run to 31 August, so through the summer two years are both unfinished.
 - **Shared JS via `window.MrBadmus`.** The chat engine exposes itself as a global so any page can call `MrBadmus.init(...)`.
 - **Supabase auth is client-side.** Sessions in `localStorage` under `sb-urklkrwevjtlfbwnipjn-auth-token`. Supabase JS SDK loaded via CDN — no import system.
 - **Inline auth-check scripts.** Each HTML page has a small inline `<script>` at the top of `<nav>` that swaps Sign In / Sign Up for the logged-in user's name + avatar.
