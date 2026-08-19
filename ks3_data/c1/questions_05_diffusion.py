@@ -173,9 +173,8 @@ QUESTIONS = [
              "why": "Repelling is just another force doing the pushing, and "
                     "there is no force here at all. Particles that pushed each "
                     "other apart could not sit together as a liquid."},
-            {"text": "Nothing attracts a particle — each steps at random, and "
-                     "more cross right because more start left", "correct":
-             True},
+            {"text": "Nothing attracts a particle — more cross right only "
+                     "because more start left", "correct": True},
             {"text": "Only the direction — it is the crowded left-hand side "
                      "that pushes the dye across", "correct": False,
              "why": "Swapping a pull for a push keeps the same mistake. "
@@ -190,9 +189,8 @@ QUESTIONS = [
         "text": "Halfway through a run you press \"Warm the water\". Which of "
                 "these describes what changes and what does not?",
         "options": [
-            {"text": "The particles take bigger steps so the tank evens out "
-                     "sooner; the directions stay just as random", "correct":
-             True},
+            {"text": "The steps get bigger so the tank evens out sooner; the "
+                     "directions stay random", "correct": True},
             {"text": "The particles take bigger steps, and more of them now "
                      "head towards the emptier side", "correct": False,
              "why": "Warming adds speed, not direction. A warm particle is a "
@@ -315,8 +313,8 @@ QUESTIONS = [
              "why": "A single grain on its own jitters just as much, so the "
                     "other grains cannot be the cause. What surrounds every "
                     "grain is water."},
-            {"text": "Water is made of invisible particles that are always "
-                     "moving, hitting the grain unevenly", "correct": True},
+            {"text": "Invisible water particles are always moving, and "
+                     "batter the grain unevenly", "correct": True},
         ],
         "figure": None,
     },
