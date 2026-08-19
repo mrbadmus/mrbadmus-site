@@ -825,19 +825,39 @@ LESSON = {
     "figures": [
         base_pairs(
             "b10-base-pairs",
-            title="How the bases pair across the two strands of DNA",
-            desc="Two backbones running down the sides, with five rungs between "
-                 "them. Each rung is one base from the left strand meeting one "
-                 "from the right: A with T, T with A, C with G, G with C, and A "
-                 "with T again. A and G are drawn wide and C and T narrow, "
-                 "because A and G are the big bases and C and T the small ones. "
-                 "Every rung pairs a big base with a small one, so every rung "
-                 "comes to the same width — marked down the right-hand side. "
-                 "That is why the molecule has the constant width measured from "
-                 "the diffraction images.",
+            title="How the bases pair across the two strands of DNA, and the "
+                  "same ladder twisted",
+            # ⊕ MRB-254 — REWRITTEN FOR WHAT IS NOW DRAWN. The old text said
+            # the constant width was "marked down the right-hand side", which
+            # was an accurate description of a mark that was measuring the
+            # wrong axis, and it stopped at the ladder. Both halves changed.
+            desc="On the left, two backbones running down the sides with five "
+                 "rungs between them. Each rung is one base from the left "
+                 "strand meeting one from the right: A with T, T with A, C "
+                 "with G, G with C, and A with T again. A and G are drawn "
+                 "wide and C and T narrow, because A and G are the big bases "
+                 "and C and T the small ones. Every rung pairs a big base "
+                 "with a small one, so every rung comes to the same width. "
+                 "That width is measured twice, by a dimension line drawn "
+                 "straight across the first rung and another drawn straight "
+                 "across the last — both the same length, both starting and "
+                 "finishing at the same two points. On the right the same "
+                 "ladder is drawn again with the twist put back into it: the "
+                 "two backbones wind round each other as a double helix with "
+                 "rungs running between them all the way down, and two dashed "
+                 "lines mark "
+                 "the widest points of the spiral with a third dimension line "
+                 "measured across them. That third measurement is the same "
+                 "length as the two on the ladder, because the width of the "
+                 "twisted molecule is its diameter and the ladder is what "
+                 "sets it. It is the constant width measured from the "
+                 "diffraction images on this page.",
             caption="The reason is width. Every rung is one big and one "
                     "small and every rung comes out the same length. Two "
-                    "big bases would bulge; two small ones would pinch.",
+                    "big bases would bulge; two small ones would pinch — and "
+                    "twisting the ladder up into the shape you already know "
+                    "does not change it, because that width has become the "
+                    "width of the spiral.",
             rungs=[("A", "T"), ("T", "A"), ("C", "G"), ("G", "C"), ("A", "T")]),
     ],
 

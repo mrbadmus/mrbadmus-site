@@ -417,18 +417,54 @@ LESSON = {
     # touches guard cells, and the mechanism — a shape change — is currently one
     # sentence of prose. A shape change is the thing prose is worst at.
     #
-    # ⚠️ DECLARED, NOT DRAWN. No `{"type": "figure"}` block is added to `core[]`
-    # this run: landing a diagram needs both a declaration and a drawer, and the
-    # diagram run is a separate one. `status: "needed"` is what makes it a
-    # tracked sourcing task rather than a dangling reference.
+    # ⊕ MRB-254 — DRAWN, AND THE BLOCK IS NOW IN `core[]`. The note that used
+    # to sit here said "declared, not drawn… landing a diagram needs both a
+    # declaration and a drawer, and the diagram run is a separate one." This is
+    # that run. Both halves have landed, which is what makes the figure appear
+    # on the page rather than only in the manifest.
     "figures": [
         {"id": "b4-guard-cells-two-state",
          "kind": "diagram",
-         "caption": "A guard-cell pair drawn in two states side by side: "
-                    "turgid, bowed apart, with the pore open between them, and "
-                    "flaccid, straight, with the pore closed — beside a leaf in "
-                    "section showing the stomata on the underside.",
-         "status": "needed"},
+         "status": "drawn",
+         "art": "guard-cells",
+         "title": "A pair of guard cells, open and closed, and where the "
+                  "pores are in the leaf",
+         "desc": "Two panels side by side, each showing the same pair of "
+                 "guard cells seen from the surface of the leaf. In the left "
+                 "panel, water has moved in: each cell is bowed away from its "
+                 "partner and the gap between them, the pore, is wide open. "
+                 "In the right panel water has moved out: the cells are "
+                 "straight and limp, their inner edges meet along a line, and "
+                 "there is no gap at all. In both panels the inner edge of "
+                 "each cell is drawn as a much thicker wall than the outer "
+                 "edge, which is why a filling cell bends outwards instead of "
+                 "swelling evenly. Arrows show water moving into the cells on "
+                 "the left and out of them on the right. Underneath both "
+                 "panels, a wide shallow slice through a leaf shows three "
+                 "pores, every one of them in the lower surface, while the "
+                 "upper surface runs unbroken from one side to the other. The "
+                 "slice is drawn in layers: a thin skin along the top, a row "
+                 "of block-shaped cells beneath it, a band of rounded cells "
+                 "through the middle, and along the bottom another row of "
+                 "block cells and a second thin skin. Only those two bottom "
+                 "rows are interrupted, and they are interrupted three times. "
+                 "At each interruption a pair of rounded guard cells sits one "
+                 "either side of the gap, the same pair the two panels above "
+                 "show from the surface. A line of text beneath the slice "
+                 "states the point in words: three pores, every one of them "
+                 "on the underside, and the top surface unbroken.",
+         "caption": "Nothing opens the pore but the shape of the two cells "
+                    "beside it. Water moves into the pair and each cell bows "
+                    "away from its partner — the wall along the inside is "
+                    "thick and stiff while the outer wall stretches, so the "
+                    "cell can only curve, and curving pulls the gap open. "
+                    "Water moves out, the cells go limp and straighten, and "
+                    "the two inner walls meet: no gap left. The pair is drawn "
+                    "the same length and the same thickness in both states, "
+                    "so the only thing that has changed is the bend. And the "
+                    "slice underneath says where the pores are: every one of "
+                    "them is in the underside of the leaf, and the top "
+                    "surface has none."},
     ],
 
     # ── core, in the approved page's document order ─────────────────────────
@@ -541,6 +577,15 @@ LESSON = {
         # it renders directly under the panel in document order. See "What
         # could not be lifted" 3.
         {"type": "key-fact", "ref": "gases-diffuse-net-difference"},
+        # ⊕ MRB-254 — AFTER `#s-stomata`, WHICH STATES THE MECHANISM IN ONE
+        # SENTENCE. "A hole you can shut" is a shape change, and a shape change
+        # is the thing prose is worst at: the rule panel can say the cells bow
+        # apart, and no arrangement of words shows a reader what bowing apart
+        # looks like or why a thicker inner wall is what makes it happen. The
+        # bench above never touches guard cells at all.
+
+        {"type": "figure", "ref": "b4-guard-cells-two-state", "anchor": "s-guards"},
+
 
         {"type": "misconception", "id": "think-net",
          "anchor": "s-think", "targets": "BREATH-12"},

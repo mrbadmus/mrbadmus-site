@@ -365,22 +365,63 @@ LESSON = {
     ],
 
     # ── figures (§4.10) ─────────────────────────────────────────────────────
-    # Design's legal line names this slot and no artwork exists for it, so it is
-    # DECLARED at `needed` rather than dropped: the manifest is generated from
-    # this field, which turns a dangling reference into a tracked sourcing task.
-    # `needed` is not a build blocker. No `figure` block is added to `core` —
-    # Design draws no figure slot on the page, and one here would be a
-    # component nobody drew. The caption describes only what this lesson
-    # teaches: the six parts, with the muscles shown around the lungs rather
-    # than as part of the airway, which is the route's own last card.
+    # ⊕ MRB-254 — DRAWN, AND THE `figure` BLOCK IS IN `core[]`. The note here
+    # used to say the slot was declared and not drawn because "Design draws no
+    # figure slot on the page, and one here would be a component nobody drew".
+    # Design has now drawn it. The airway is GENERATED — each branch 0.7 of its
+    # parent's length and narrower — so "divide, and divide again" is a
+    # property of the drawing rather than a sentence beside it, and the
+    # magnified cluster is picked as the lowest terminal tip in the right lung,
+    # so the callout ring and its leader are derived rather than placed.
     "figures": [
         {"id": "b4-gas-exchange-labelled",
          "kind": "diagram",
-         "caption": "The human gas exchange system, labelled: nose and mouth, "
-                    "trachea, bronchi, bronchioles and alveoli, with the ribs, "
-                    "intercostal muscles and diaphragm drawn around the lungs "
-                    "rather than as part of the airway.",
-         "status": "needed"},
+         "status": "drawn",
+         "art": "thorax",
+         "title": "The gas exchange system: the route in, and the machinery "
+                  "around it",
+         "desc": "Two framed drawings above a key of six parts. The left "
+                 "frame is a chest seen from the front. At the top, two short "
+                 "tubes from the nose and from the mouth meet and become 02, "
+                 "the trachea, a single tube down the centre held open by a "
+                 "row of cartilage rings. At its foot the trachea divides in "
+                 "two: 03, the bronchi, one running into each lung. Inside "
+                 "each lung outline the airway keeps dividing — four "
+                 "divisions are drawn, each branch narrower and shorter than "
+                 "the one before, until the smallest tips end in little "
+                 "clusters of sacs, so that the lung is drawn full of "
+                 "branching rather than hollow. One cluster low in the right "
+                 "lung is ringed with a dashed circle. Around both lungs, "
+                 "outside them, are six pairs of ribs sweeping down and out "
+                 "from the centre, short hatched lines filling one gap "
+                 "between two ribs to show the intercostal muscles, and "
+                 "beneath the lungs a domed sheet, the diaphragm. The right "
+                 "frame magnifies the ringed cluster: a narrow bronchiole "
+                 "opens into a rosette of five air sacs; a blue capillary "
+                 "runs across the front of them; one arrow points from the "
+                 "air space into the blood, labelled oxygen in, and another "
+                 "points from the blood into the air space, labelled carbon "
+                 "dioxide out; the sac wall is marked one cell thick. Notes "
+                 "record about 500 million of these sacs, each wrapped in "
+                 "capillaries, and that four divisions are drawn where a real "
+                 "lung has about twenty-three. The key reads: 01 nose and "
+                 "mouth, air warmed, moistened and filtered. 02 trachea, held "
+                 "open by C-shaped rings of cartilage. 03 bronchi, one to "
+                 "each lung, no exchange here. 04 bronchioles, divide and "
+                 "divide again, about twenty-three times. 05 alveoli, gas "
+                 "exchange, the only place it happens. 06 ribs, intercostal "
+                 "muscles and diaphragm, not the airway but the machinery "
+                 "that moves the air.",
+         "caption": "The route in runs 01 to 05 and stops there: gas exchange "
+                    "happens at the sacs and nowhere earlier along the tubes. "
+                    "Each lung is drawn full of branching — four divisions, "
+                    "each branch narrower than the last — because a lung is "
+                    "not a hollow bag. The circled cluster is magnified on "
+                    "the right, where one capillary crosses the sacs and the "
+                    "wall between air and blood is a single cell thick. The "
+                    "ribs, the muscles between them and the diaphragm are "
+                    "drawn outside the lungs: 06 is the only part of this "
+                    "figure that is not the airway."},
     ],
 
     # ── core, in the approved page's document order ─────────────────────────
@@ -441,6 +482,23 @@ LESSON = {
         # it renders directly under the panel in document order. See "What
         # could not be lifted" 3.
         {"type": "key-fact", "ref": "three-different-words"},
+
+        # ⊕ MRB-254 — THE STRUCTURAL PUNCHLINE FINALLY HAS SOMETHING TO LOOK AT.
+
+        # The page says "the bronchi divide about twenty-three times… every one of
+
+        # those divisions exists to turn a bag into a surface", and the bench beside
+
+        # it is a gas-composition quiz. Nothing on the page was branching. The
+
+        # figure's airway is generated rather than drawn, so the dividing is a
+
+        # property of the picture; it draws four generations and says so on its own
+
+        # face, because twenty-three is 8.4 million branches and four is what reads.
+
+        {"type": "figure", "ref": "b4-gas-exchange-labelled", "anchor": "s-route"},
+
 
         {"type": "misconception", "id": "three-wrong-ideas",
          "anchor": "s-think", "targets": "BREATH-01"},

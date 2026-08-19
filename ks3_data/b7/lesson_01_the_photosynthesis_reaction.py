@@ -722,7 +722,16 @@ LESSON = {
              "reactants": "carbon dioxide + water",
              "arrow":     "gives",
              "products":  "glucose + oxygen",
-             "condition": "requires light energy, absorbed by chlorophyll",
+             # ⊕ MRB-254 — SPLIT, from one line under the equation to the two
+             # positions the convention uses. Light is the energy the change
+             # runs on and goes OVER the arrow; chlorophyll is what absorbs it
+             # and goes UNDER. Authored as one comma-joined sentence beneath
+             # the whole row, the page said both things and located neither,
+             # and a student cannot read a convention they have never been
+             # shown. `condition` is dropped rather than kept alongside — see
+             # the note in `r_equation`, which refuses both.
+             "condition_over":  "light energy",
+             "condition_under": "absorbed by chlorophyll",
          },
 
          "cards": PART_CARDS,

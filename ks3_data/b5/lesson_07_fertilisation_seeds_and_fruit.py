@@ -505,10 +505,61 @@ LESSON = {
     "figures": [
         {"id": "b5-pollen-tube",
          "kind": "diagram",
-         "caption": "A pollen grain on the stigma, the pollen tube extending "
-                    "down through the style, and the male gamete nucleus "
-                    "reaching an ovule inside the ovary.",
-         "status": "needed"},
+         "status": "drawn",
+         "art": "pollen-tube",
+         "title": "Fertilisation, seeds and fruit: the carpel in section, "
+                  "before and after",
+         "desc": "Two framed drawings above a key of five steps. The left "
+                 "frame is a carpel cut open from top to bottom. At the top "
+                 "is the stigma, a broad pad drawn with sticky dots, and on "
+                 "it sits a single pollen grain, spiky, numbered 01 and "
+                 "labelled pollination, the grain arrives. Below the stigma "
+                 "the style runs down as a tube drawn in section, its two "
+                 "walls visible. Inside the style an orange line, the pollen "
+                 "tube, grows down from the grain — numbered 02 and labelled "
+                 "the tube grows down through the style — carrying a dark "
+                 "dot, the male gamete nucleus, part of the way along it. At "
+                 "the foot of the style is the ovary, a chamber whose wall is "
+                 "drawn as a distinct thickness with the cavity shaded inside "
+                 "it. Three ovules sit within that cavity, each holding a "
+                 "small nucleus. The orange tube reaches the uppermost ovule "
+                 "and ends inside it, where two dots meet: numbered 03 and "
+                 "labelled fertilisation, inside an ovule. A bracket down the "
+                 "left of the chamber reads: the ovary, ovules inside it. The "
+                 "right frame is the same carpel after fertilisation. The "
+                 "ovary has swollen into the fruit, its wall much thicker, "
+                 "and inside it are three seeds in the places the three "
+                 "ovules occupied, each drawn with a tough double coat and a "
+                 "small embryo curled inside. Above the fruit the style and "
+                 "stigma are a shrivelled stub and two dried remains hang "
+                 "beside it, noted as the rest of the flower withered and "
+                 "fell. Beneath, two lines with drawn arrows: ovule becomes "
+                 "seed, one ovule becomes one seed; and ovary becomes fruit, "
+                 "the wall swells and the seeds stay in. The key reads: 01 "
+                 "pollen lands, on the stigma and this is pollination, a "
+                 "grain arrives carried by an insect or the wind. 02 the "
+                 "pollen tube grows, down through the style, the male gamete "
+                 "nucleus travels down inside it. 03 fertilisation, inside an "
+                 "ovule and nowhere else, the two gamete nuclei fuse and that "
+                 "fusion is fertilisation. 04 seeds form, from the fertilised "
+                 "ovules, an embryo plant, a food store and a tough coat. 05 "
+                 "the fruit forms, from the ovary around them, the ovary wall "
+                 "swells and the rest of the flower withers.",
+         "caption": "The grain lands at 01 and the two nuclei fuse at 03, and "
+                    "the drawing puts the whole length of the style between "
+                    "them: pollination is delivery, fertilisation is fusion, "
+                    "and they are not the same event. The three ovules are "
+                    "drawn inside the ovary wall; on the right the three "
+                    "seeds are inside the fruit wall, in the same three "
+                    "places. Ovule to seed and ovary to fruit are then one "
+                    "fact about containment rather than two labels to "
+                    "memorise. Nothing moves out of anything — check it: put "
+                    "one finger on the top ovule on the left and one on the "
+                    "top seed on the right, and nothing has travelled. It "
+                    "changed where it already was, and the ovary swelled "
+                    "around it. The tube has a distance to grow and takes "
+                    "time to grow it, which is why 01 and 03 are two events "
+                    "and not one."},
     ],
 
     # ── core, in the approved page's document order ─────────────────────────
@@ -551,6 +602,21 @@ LESSON = {
         # renders directly under the panel in document order. See "What could not
         # be lifted" 3.
         {"type": "key-fact", "ref": "delivery-then-fusion"},
+
+        # ⊕ MRB-254 — CONTAINMENT, WHICH A BEFORE/AFTER TABLE CANNOT DRAW.
+
+        # The page carries this as six table rows — ovule becomes seed, ovary
+
+        # becomes fruit — which asks a student to memorise two pairs. Drawn in
+
+        # section they are one fact: the ovules are already inside the ovary, the
+
+        # seeds are inside the fruit in the same places, and nothing has moved out
+
+        # of anything. The table's two rows become one thing you can point at.
+
+        {"type": "figure", "ref": "b5-pollen-tube", "anchor": "s-section"},
+
 
         {"type": "misconception", "id": "two-wrong-ideas",
          "anchor": "s-think", "targets": "REPRO-14"},

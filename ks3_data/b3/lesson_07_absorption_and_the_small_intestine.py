@@ -349,13 +349,45 @@ LESSON = {
     # nothing beyond it — no lacteal, because the lesson does not teach one and
     # a caption naming untaught structure would commission a diagram this page
     # could not use.
+    # ⊕ MRB-254 — DRAWN. Design's, ported element for element, with three
+    # collisions in her delivery repaired: three crossing labels moved clear of
+    # their own arrow shafts, five scatter circles moved off two lines of text,
+    # and frame 3's heading pulled inside the viewBox it was four units outside
+    # of. All three were collisions rather than compositions, which is what
+    # puts them inside MRB-205's "refine inside a shape she drew".
     "figures": [
         {"id": "b3-villus-labelled",
          "kind": "diagram",
-         "caption": "A single villus, labelled: the wall one cell thick, the "
-                    "capillary network running through it, and the microvilli "
-                    "on the outer surface of each covering cell.",
-         "status": "needed"},
+         "status": "drawn",
+         "art": "villus",
+         "title": "Three scales of folding in the small intestine, and one "
+                  "villus cut through",
+         "desc": "Three framed drawings across the top, each a magnified "
+                 "callout of the one before it. The first shows a length of "
+                 "the small intestine as a tube, cut open at the near end, "
+                 "its inner wall thrown into ring-shaped ridges rather than "
+                 "being smooth. A callout from one ridge opens into the "
+                 "second frame, where the surface of that single ridge is "
+                 "covered in upright finger-shaped villi. A callout from one "
+                 "villus opens into the third frame, where the surface of a "
+                 "single villus cell is covered in far smaller projections, "
+                 "the microvilli. A second callout from the same row of villi "
+                 "opens downward into a wide panel beneath, showing one "
+                 "villus cut lengthways. Its wall is drawn as a single row of "
+                 "cells, divided by cross lines so the count can be checked, "
+                 "and inside the villus a capillary runs up to the tip and "
+                 "back. Three arrows cross the wall from the gut into the "
+                 "capillary, labelled glucose, amino acids and fatty acids.",
+         "caption": "Each frame is drawn from a callout of the frame before "
+                    "it, so the folding is one thing at three sizes rather "
+                    "than three separate facts: the tube is ridged, every "
+                    "ridge is covered in villi, and every cell of every "
+                    "villus is covered in microvilli. The panel underneath "
+                    "shows why it is worth doing. Count the cells across the "
+                    "wall of the villus — there is one. On the far side of "
+                    "that single cell is a capillary, which is why a glucose "
+                    "molecule in the gut is in the bloodstream a moment "
+                    "later."}
     ],
 
     # ── core, in the approved page's document order ─────────────────────────
@@ -438,6 +470,23 @@ LESSON = {
         # sequence, same treatment — `card` ground on the accent shadow, which
         # is what Design draws.
         {"type": "key-fact", "ref": "diffusion-not-a-push"},
+
+        # ⊕ MRB-254 — THE FIGURE ANSWERS THE BENCH'S OWN INSTRUCTION. The fold
+
+        # builder says "Switch each level on and watch the area" and only a
+
+        # NUMBER changes: three levels of physical nesting delivered as three
+
+        # text cards. "Folds on folds on folds" is the whole idea and it is the
+
+        # one thing the instrument cannot draw. The section underneath then
+
+        # says what the folding is for — a wall a student can count the cells
+
+        # across, with the blood already on the other side of it.
+
+        {"type": "figure", "ref": "b3-villus-labelled", "anchor": "s-folds"},
+
 
         {"type": "misconception", "id": "villi-and-length",
          "anchor": "s-think", "targets": ["DIET-15", "DIET-16"]},

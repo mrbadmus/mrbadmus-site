@@ -704,18 +704,57 @@ LESSON = {
     # NOTES flag 13 asks Mide to confirm what the human pages illustrate and at
     # what level of detail BEFORE anything is commissioned, and this is a
     # proposal, not a commission.
+    # ⊕ MRB-254 — DRAWN. The caption above was the brief; the figure is
+    # Design's, ported element for element. The flagship misconception on this
+    # page ("the baby's blood mixes with the mother's") is purely spatial and
+    # was answered in a hundred and eighty words of prose beside a bench that
+    # only ever asks WHICH WAY a substance crosses. Direction, never geometry.
+    # The drawing is the geometry.
     "figures": [
         {"id": "b5-placenta-exchange",
          "kind": "diagram",
-         "caption": "The placenta drawn as an exchange surface: the mother's "
-                    "blood on one side, the foetus's blood on the other in "
-                    "the folded finger-like projections, the two brought "
-                    "within a fraction of a millimetre and never joined, with "
-                    "the umbilical cord carrying the foetus's own blood to and "
-                    "from it. Arrows labelled for direction — oxygen and "
-                    "glucose crossing in, carbon dioxide and urea crossing "
-                    "out.",
-         "status": "needed"},
+         "status": "drawn",
+         "art": "placenta",
+         "title": "The placenta: two bloodstreams, side by side, never joined",
+         "desc": "Two drawings side by side. The first shows where the "
+                 "placenta is: the uterus in section with its wall drawn as a "
+                 "band, the placenta as a thick pad against the inside of the "
+                 "wall at the top, and the umbilical cord running from the "
+                 "pad down to a curled foetus, where it joins at the abdomen. "
+                 "Two vessels are drawn in the cord. A dashed marker on the "
+                 "placenta opens out into the second drawing. The second "
+                 "drawing is inside the placenta. The mother's blood is a "
+                 "pale orange field filling the middle. It arrives through "
+                 "the uterus wall at the top right and leaves through the "
+                 "same wall at the bottom right. Three finger-shaped "
+                 "projections called villi reach out into it from the left, "
+                 "and the mother's blood reaches back into the spaces between "
+                 "them, so the two interlock. Each villus is drawn as "
+                 "placenta tissue with a dark unbroken outline, and inside "
+                 "each one a blue vessel arrives from the cord, turns at the "
+                 "tip and returns to the cord: the baby's blood is a closed "
+                 "circuit that never opens. Four arrows cross the wall of the "
+                 "middle villus, oxygen and glucose inward, carbon dioxide "
+                 "and urea outward. Nowhere does a blue vessel meet an orange "
+                 "one, and nowhere is the outline broken.",
+         "caption": "Two circulations, brought within a fraction of a "
+                    "millimetre of each other across an enormous surface, and "
+                    "never joined. Trace the blue: the baby's blood leaves "
+                    "along the cord, loops inside a villus, and returns along "
+                    "the cord — a closed circuit. Trace the orange: the "
+                    "mother's blood arrives through the uterus wall, fills "
+                    "the space around and between the villi, and leaves the "
+                    "way it came. Between them, everywhere, is placenta "
+                    "tissue one cell thick. Only substances cross it, and "
+                    "they cross by diffusion, from wherever there is more of "
+                    "them to wherever there is less. Both bloods are red in "
+                    "life; the two colours here say only whose is whose. "
+                    "Follow either one as far as it goes and you never arrive "
+                    "in the other: every villus reaches into the mother's "
+                    "blood and her blood reaches back between them, yet the "
+                    "tissue outline runs unbroken around every villus and "
+                    "along the plate. Substances cross that wall; blood never "
+                    "does."},
     ],
 
     # ── core, in the approved page's document order ─────────────────────────
@@ -783,6 +822,16 @@ LESSON = {
         # it renders directly under the panel in document order. See "What could
         # not be lifted" 5.
         {"type": "key-fact", "ref": "built-to-spec"},
+        # ⊕ MRB-254 — THE FIGURE GOES BEFORE `#s-think`, WHICH IS THE WHOLE
+        # POINT OF IT. The bench asks which way each substance crosses, six
+        # times, and never once draws where it crosses. `#s-think` then meets
+        # "the baby's blood mixes with the mother's" — a claim about GEOMETRY —
+        # and answers it in prose. A student who has seen the two circulations
+        # interlocking with an unbroken wall between them does not need the
+        # paragraph; a student who has not cannot check it.
+
+        {"type": "figure", "ref": "b5-placenta-exchange", "anchor": "s-surface"},
+
 
         {"type": "misconception", "id": "two-wrong-ideas",
          "anchor": "s-think", "targets": "REPRO-08"},

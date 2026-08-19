@@ -307,6 +307,39 @@ painted ground** across every built page.
   never a deletion — `docs/ks3/diagram-manifest.md` is generated, and a deleted record loses the
   reasoning and lets the figure be re-declared later.
 
+**Added 19 Aug 2026 (MRB-254), from the twelve biology figures.**
+
+- **THE FILLED BADGE MEANS "THIS ONE HAS NO COUNTERPART".** ⊕ Ruled, and written here because
+  Design asked for it to be: a numbered badge drawn SOLID, with its numeral reversed out, marks an
+  item that has nothing corresponding to it in the set it is being compared with. An open badge
+  marks one that does. It carries no colour, it is explained once in the figure's own legend, and
+  it is never explained anywhere else. `b5-reproductive-systems` is the first use — three filled
+  badges on the female side, none on the male — and it puts the lesson's named misconception
+  ("the two systems are mirror images") inside the drawing instead of in a caption underneath it.
+  **The next figure that needs "this one has no partner" uses this mark**, rather than inventing a
+  second one; two marks for one meaning is how a reader stops trusting either.
+  ⚠️ Its hook is `data-counterpart="none"|"paired"` and the content-truth row asserts the FILL and
+  the MEANING agree on every badge. On b5-01 the three unpaired structures happen to be the last
+  three in the table *and* the last three in the column, so a fill keyed to index or to position
+  renders that figure pixel-identically and is wrong the moment a tenth structure or a re-order
+  arrives. That is the base-pair defect exactly.
+- **A figure that carries no category hue carries the distinction on something else, and says so.**
+  The biology set uses shape, dash pattern, position, stroke weight, badge fill inversion and
+  numerals — with a label in every case — and `--ks3-data` appears nowhere in it. ⚠️ **`--ks3-data`
+  is minted in the engine's `shared/tokens.css` under MRB-252 but is NOT in the shipped
+  design-system token files Design draws against.** Reconcile the two before Chemistry figures are
+  commissioned, or the same avoidance will be re-invented figure by figure.
+- **A `<desc>` walks the drawing in reading order and is 900–2,100 characters**, and it describes
+  what is ACTUALLY DRAWN. Where a port corrects the drawing, the `desc` is corrected with it: three
+  of the twelve shipped a `desc` that disagreed with the delivery (a tube reaching the middle ovule
+  when it reaches the uppermost; a closing note that is not on the plate). A `<desc>` is the whole
+  drawing to a reader who cannot see it, and shipping a knowingly false one because it is the
+  designer's is the wrong reading of MRB-205.
+- **A drawn figure declares its own readable width.** `_svg_open` emits `min-width` from the width
+  the drawer was drawn at; the stylesheet's value is a floor, not the answer. One number cannot be
+  right for figures 760, 860 and 900 units wide, and the failure is silent — the labels simply
+  scale below the legible floor while every font-size in the file stays correct.
+
 ### 5A.5 Navigation and sweeps
 
 - **prev/next emitted from the unit `order`**, rolling over into the next unit's first lesson.

@@ -891,16 +891,34 @@ def _svg_open(fig, width, height):
                 "caption is not a substitute: the caption addresses a reader "
                 "who can see the drawing." % (fig.get("id"), key))
     fid = fig["id"]
+    # ⊕ MRB-254 — THE DRAWING DECLARES ITS OWN READABLE WIDTH, and the
+    # stylesheet's `min-width: 700px` becomes the floor rather than the answer.
+    #
+    # 700 was measured once, against three figures that are all 760 wide, and
+    # it was close enough to be invisible: a 760-unit drawing held at 700px is
+    # scaled to 92%, so a 15px label lands at 13.8px and nobody notices. The
+    # biology kit is 860 and 900 units wide. At 700 those are scaled to 81% and
+    # 78%, and Design's 13px key lines arrive at 10.5px — under the floor
+    # `_label` refuses at source, reintroduced by the stylesheet after the
+    # drawer has done everything right.
+    #
+    # So the width the drawer chose is the width the figure keeps, and the
+    # narrow reader scrolls. `.ks3-figure-scroll` is told whether it is
+    # actually overflowing by ks3.js rather than by a guessed breakpoint —
+    # with fourteen different widths there is no single breakpoint that could
+    # be right, which is what forced the measurement.
     return (
         '<svg class="ks3-figure-svg" viewBox="0 0 %d %d" role="img" '
+        'style="min-width:%dpx" '
         'aria-labelledby="%s-t %s-d" preserveAspectRatio="xMidYMid meet">'
         '<title id="%s-t">%s</title><desc id="%s-d">%s</desc>'
-        % (width, height, e(fid), e(fid), e(fid), e(fig["title"]),
+        % (width, height, width, e(fid), e(fid), e(fid), e(fig["title"]),
            e(fid), e(fig["desc"])))
 
 
 def _svg_text(x, y, s, size=15, fill=_SVG_INK, weight="600", anchor="middle",
-              family="'Plus Jakarta Sans', sans-serif", spacing=None, cls=None):
+              family="'Plus Jakarta Sans', sans-serif", spacing=None, cls=None,
+              **data):
     """One text node, with the under-24px accent rule enforced at the source.
 
     `--ks3-accent` measures 3.4:1 on the ground. It is legal for large display
@@ -915,6 +933,13 @@ def _svg_text(x, y, s, size=15, fill=_SVG_INK, weight="600", anchor="middle",
             "(6.0:1). This is the ruling, and shared/tokens.css says the same "
             "thing beside the token." % (s, size))
     extra = ' letter-spacing="%s"' % e(spacing) if spacing else ""
+    # ⊕ MRB-254 — `data_*` hooks on a LABEL, not only on a shape. A
+    # content-truth row that has to assert "this square's printed genotype is
+    # the one its column and row make" needs the printed string and the two
+    # gametes reachable from the same node; without it the row matches a text
+    # element by its position, which is the assertion measuring the frame
+    # again. No output changes where none is passed.
+    extra += "".join(_data_attrs(data))
     # ⚠️ COLOUR GOES IN `style`, NEVER IN `fill="…"`. A custom property is only
     # substituted inside a CSS declaration; `fill="var(--ks3-ink)"` is an SVG
     # PRESENTATION attribute, `var(--ks3-ink)` is not a valid <paint>, and the
@@ -931,6 +956,214 @@ def _svg_text(x, y, s, size=15, fill=_SVG_INK, weight="600", anchor="middle",
 
 
 _SVG_MONO = "'DM Mono', monospace"
+
+# ── ⊕ MRB-254 · the biology figure kit ──────────────────────────────────
+#
+# Fourteen figures arrive at once (Design's twelve for the WS1 diagram gaps,
+# plus two drawn here), against three that existed. Three drawers could each
+# spell their own rects; seventeen cannot, and the reason is not tidiness:
+#
+#   · THE PAINT LAW IS ONE LINE OF CODE OR IT IS SEVENTEEN CHANCES TO FORGET
+#     IT. `fill="var(--ks3-ink)"` is a dropped attribute and an opaque-black
+#     element, silently — the note on `_svg_text` records what that cost the
+#     first time. Routing every shape through `_shape` below means the law is
+#     kept once, where it can be read, instead of trusted a few thousand times
+#     across seventeen drawings.
+#   · EVERY ARROW, TICK AND CROSS IS DRAWN. The latin subsets carry none of
+#     `→ ✓ ✕`, so a typed one silently falls back to whatever the system has,
+#     at a size and weight nobody chose. `_arrow_head` is the drawn one.
+#   · A HOOK A GATE CAN NAME. `data-*` on a shape is what lets a content-truth
+#     row measure the ENCODING rather than the frame — the distinction MRB-257
+#     decision 4 was written for. `**data` on every emitter makes adding one
+#     free, so there is no reason to skip it.
+
+_SVG_RULE        = "var(--ks3-rule)"
+_SVG_INK_FAINT   = "var(--ks3-ink-faint)"
+_SVG_INK_GHOST   = "var(--ks3-ink-ghost)"
+_SVG_BLUE_TEXT   = "var(--ks3-blue-text)"
+_SVG_BLUE_TINT   = "var(--ks3-blue-tint)"
+
+# ⚠️ `--ks3-font-body` IS INSTRUMENT SANS, and the three figures that predate
+# this kit draw their labels in Plus Jakarta Sans — which is self-hosted, so it
+# renders, and is therefore invisible as a defect: the figure's labels are
+# simply set in a different face from the prose around them. Design's twelve
+# name Instrument Sans throughout, which is the page's own body font, so the
+# new drawers take `_SVG_BODY` and the old three are left alone rather than
+# re-drawn under a ticket that does not own them. Recorded in the MRB-254
+# report as drift, not fixed here.
+_SVG_BODY    = "'Instrument Sans', system-ui, sans-serif"
+_SVG_DISPLAY = "'Bricolage Grotesque', system-ui, sans-serif"
+
+# The smallest a label may be set. Design's notes claim nothing below 13px and
+# five labels across three of the twelve are 12px — raised on implementation,
+# because 12px inside a plate that is already being scrolled sideways on a
+# phone is the size the scroll container exists to avoid.
+_SVG_MIN_LABEL = 13
+
+
+def _svg_attrs(fill, stroke, w, dash, opacity, cls, data):
+    """The paint and the hooks, in the one place the paint law is kept."""
+    bits = []
+    if cls:
+        bits.append(' class="%s"' % e(cls))
+    paint = []
+    # `none` is a keyword, not a colour, and it belongs in the attribute where
+    # it costs nothing. Everything else is a token and goes through `style`.
+    if fill is not None:
+        paint.append("fill:%s" % fill)
+    if stroke is not None:
+        paint.append("stroke:%s" % stroke)
+    if paint:
+        bits.append(' style="%s"' % ";".join(paint))
+    if w is not None:
+        bits.append(' stroke-width="%s"' % w)
+    if dash:
+        bits.append(' stroke-dasharray="%s"' % dash)
+    if opacity is not None:
+        bits.append(' opacity="%s"' % opacity)
+    bits.extend(_data_attrs(data))
+    return "".join(bits)
+
+
+def _data_attrs(data):
+    """`data_wall="inner"` becomes `data-wall="inner"`, and nothing else does.
+
+    ⚠️ THE PREFIX IS WRITTEN AT THE CALL SITE AND STRIPPED HERE, and both
+    halves of that are a gate. This started as `'data-%s' % k.replace('_','-')`
+    over a bare kwarg, so a caller writing the self-documenting
+    `data_wall="inner"` — which is what the porting contract asked for, and
+    what reads correctly at the call site — emitted `data-data-wall`. A hook a
+    content-truth row cannot find is worse than no hook: the row does not fail,
+    it returns nothing and reports green, which is precisely the shape of
+    absence MRB-257 decision 4 exists to close.
+
+    So a key that does not start with `data_` raises, rather than silently
+    becoming a presentation attribute nobody asked for. There is no legitimate
+    reason for an emitter to take an arbitrary attribute by keyword; if one
+    ever appears it should arrive through its own named parameter.
+    """
+    out = []
+    for k in sorted(data):
+        if not k.startswith("data_") or len(k) < 6:
+            raise ValueError(
+                "an emitter was given the keyword %r. The only keywords an "
+                "emitter takes beyond its named ones are HOOKS, spelled "
+                "`data_<name>`, and they become `data-<name>` on the element. "
+                "A bare keyword would land as a presentation attribute, where "
+                "it does nothing and looks like it does something." % k)
+        if data[k] is None:
+            continue
+        out.append(' data-%s="%s"'
+                   % (k[5:].replace("_", "-"), e(str(data[k]))))
+    return out
+
+
+def _n(v):
+    """A number, trimmed. `240.0` and `240` are the same point; only one of
+    them should reach the file, or a byte-comparison of two builds turns on
+    whether a coordinate came out of arithmetic or out of a literal."""
+    if isinstance(v, float):
+        s = "%.2f" % v
+        s = s.rstrip("0").rstrip(".")
+        return s if s not in ("", "-0") else "0"
+    return str(v)
+
+
+def _path(d, fill="none", stroke=None, w=None, dash=None, opacity=None,
+          cls=None, **data):
+    return '<path d="%s"%s/>' % (d, _svg_attrs(fill, stroke, w, dash,
+                                               opacity, cls, data))
+
+
+def _rect(x, y, width, height, rx=None, fill="none", stroke=None, w=None,
+          dash=None, opacity=None, cls=None, **data):
+    return ('<rect x="%s" y="%s" width="%s" height="%s"%s%s/>'
+            % (_n(x), _n(y), _n(width), _n(height),
+               ' rx="%s"' % _n(rx) if rx is not None else "",
+               _svg_attrs(fill, stroke, w, dash, opacity, cls, data)))
+
+
+def _circle(cx, cy, r, fill="none", stroke=None, w=None, dash=None,
+            opacity=None, cls=None, **data):
+    return ('<circle cx="%s" cy="%s" r="%s"%s/>'
+            % (_n(cx), _n(cy), _n(r),
+               _svg_attrs(fill, stroke, w, dash, opacity, cls, data)))
+
+
+def _ellipse(cx, cy, rx, ry, fill="none", stroke=None, w=None, dash=None,
+             opacity=None, cls=None, **data):
+    return ('<ellipse cx="%s" cy="%s" rx="%s" ry="%s"%s/>'
+            % (_n(cx), _n(cy), _n(rx), _n(ry),
+               _svg_attrs(fill, stroke, w, dash, opacity, cls, data)))
+
+
+def _line(x1, y1, x2, y2, stroke=None, w=None, dash=None, opacity=None,
+          cls=None, **data):
+    return ('<line x1="%s" y1="%s" x2="%s" y2="%s"%s/>'
+            % (_n(x1), _n(y1), _n(x2), _n(y2),
+               _svg_attrs(None, stroke, w, dash, opacity, cls, data)))
+
+
+def _arrow_head(x, y, angle, size=9, fill=None, cls=None, **data):
+    """A drawn triangle at (x, y), pointing along `angle` radians.
+
+    ⛔ THE ONLY ARROWHEAD. Not `→`, not a `<marker>`: a marker inherits the
+    line's `stroke-dasharray` in some engines and a dashed leader then arrives
+    with a dashed head, which is how a drawn arrow stops reading as an arrow.
+    A triangle is three points and cannot be surprised.
+    """
+    dx, dy = math.cos(angle), math.sin(angle)
+    px, py = -dy, dx
+    return _path("M %s,%s L %s,%s L %s,%s Z"
+                 % (_n(x), _n(y),
+                    _n(x - dx * size + px * size * 0.52),
+                    _n(y - dy * size + py * size * 0.52),
+                    _n(x - dx * size - px * size * 0.52),
+                    _n(y - dy * size - py * size * 0.52)),
+                 fill=fill or _SVG_INK, cls=cls, **data)
+
+
+def _arrow(x1, y1, x2, y2, stroke=None, w=2, dash=None, head=9, cls=None,
+           **data):
+    """Line plus drawn head, ending exactly at (x2, y2)."""
+    ang = math.atan2(y2 - y1, x2 - x1)
+    paint = stroke or _SVG_INK
+    return (_line(x1, y1, x2 - math.cos(ang) * head * 0.6,
+                  y2 - math.sin(ang) * head * 0.6,
+                  stroke=paint, w=w, dash=dash, cls=cls, **data)
+            + _arrow_head(x2, y2, ang, size=head, fill=paint, cls=cls, **data))
+
+
+def _label(x, y, s, size=15, fill=_SVG_INK, weight="600", anchor="middle",
+           family=None, spacing=None, cls=None, **data):
+    """`_svg_text` with the body face and the 13px floor, for the new kit.
+
+    Separate from `_svg_text` rather than a change to it, because the three
+    figures that predate this ticket are drawn in Plus Jakarta Sans and
+    re-facing an approved drawing is not this ticket's call.
+    """
+    if size < _SVG_MIN_LABEL:
+        raise ValueError(
+            "label %r is set at %dpx. %dpx is the floor: these plates are "
+            "already scrolled sideways on a phone, and a label below it is "
+            "the thing the scroll container exists to prevent."
+            % (s, size, _SVG_MIN_LABEL))
+    if not str(s).strip():
+        raise ValueError(
+            "an empty label was asked for at (%s, %s). A `<text>` with no "
+            "content renders as nothing at all — Design's nine-row key came "
+            "out as nine empty badges exactly this way, and it is the same "
+            "class of hole as `{brace}` and `[object Object]`." % (x, y))
+    return _svg_text(x, y, s, size=size, fill=fill, weight=weight,
+                     anchor=anchor, family=family or _SVG_BODY,
+                     spacing=spacing, cls=cls, **data)
+
+
+def _mono(x, y, s, size=15, fill=_SVG_INK_MUTED, weight="500",
+          anchor="start", spacing=None, cls=None, **data):
+    """The mono voice: measurements, magnifications, notes on the plate."""
+    return _label(x, y, s, size=size, fill=fill, weight=weight, anchor=anchor,
+                  family=_SVG_MONO, spacing=spacing, cls=cls, **data)
 
 
 def _food_web(fig):
@@ -1047,7 +1280,7 @@ def _food_web(fig):
                              family=_SVG_MONO, spacing="0.06em"))
         if row.get("note"):
             out.append(_svg_text(18, y + NODE_H / 2.0 + 15, row["note"],
-                                 size=12, fill=_SVG_INK_MUTED, weight="500",
+                                 size=13, fill=_SVG_INK_MUTED, weight="500",
                                  anchor="start", family=_SVG_MONO))
 
     # Links before nodes, so a line never draws over a name.
@@ -1166,7 +1399,7 @@ def _food_web(fig):
         out.append('<rect x="%.1f" y="%.1f" width="%d" height="18" rx="6" '
                    'style="fill:%s"/>'
                    % (lx - 5, ly - 13, int(7.4 * len(label)) + 10, _SVG_GROUND))
-        out.append(_svg_text(lx, ly, label, size=12, fill=_SVG_INK_MUTED,
+        out.append(_svg_text(lx, ly, label, size=13, fill=_SVG_INK_MUTED,
                              weight="600", anchor="start", family=_SVG_MONO))
 
     # Nodes, in the authored top-down order.
@@ -1196,7 +1429,7 @@ def _food_web(fig):
             out.append('<circle cx="%.1f" cy="%.1f" r="10" '
                        'style="fill:%s;stroke:%s" stroke-width="2"/>'
                        % (x + 15, p["cy"], _SVG_CARD, _SVG_ACCENT))
-            out.append(_svg_text(x + 15, p["cy"] + 4, str(tpos[nid]), size=12,
+            out.append(_svg_text(x + 15, p["cy"] + 4, str(tpos[nid]), size=13,
                                  fill=_SVG_ACCENT_TEXT, weight="700",
                                  family=_SVG_MONO))
 
@@ -1293,6 +1526,11 @@ def _base_pairs(fig):
     TINT = {"A": _SVG_ACCENT_TINT, "G": _SVG_ACCENT_TINT,
             "C": _SVG_OK_TINT, "T": _SVG_OK_TINT}
 
+    # ⊕ MRB-254 — STILL 760 WIDE, 40 TALLER. The two repairs below cost no
+    # width: the vertical guide they replace was itself occupying the whole
+    # right-hand third (a 2px line at x=515 and a label running to x≈721), and
+    # the "now twist it" panel moves into exactly the space it vacates. The
+    # ladder, the rung labels and the key are at the coordinates they were at.
     W, PAD_TOP, ROW_H, BAR_W = 760, 34, 62, 26
     # ⚠️ 200, not 300. At 300 the ladder sat centred with 200px of dead space on
     # its left, and the constant-width guide's label ran off the right-hand edge
@@ -1301,7 +1539,7 @@ def _base_pairs(fig):
     # the box and is clipped. Moving the ladder left buys the label its room and
     # spends space that was doing nothing.
     MID = 200.0                       # centre of the rung span
-    H = PAD_TOP + len(rungs) * ROW_H + 96
+    H = PAD_TOP + len(rungs) * ROW_H + 136
 
     for left, right in rungs:
         for b in (left, right):
@@ -1331,10 +1569,10 @@ def _base_pairs(fig):
         out.append('<rect x="%.1f" y="%s" width="%s" height="%s" rx="12" '
                    'style="fill:%s;stroke:%s" stroke-width="2"/>'
                    % (bx, top, BAR_W, bot - top, _SVG_BAND, _SVG_INK))
-    out.append(_svg_text(x0 - BAR_W / 2.0 - 10, top - 12, "backbone", size=12,
+    out.append(_svg_text(x0 - BAR_W / 2.0 - 10, top - 12, "backbone", size=13,
                          fill=_SVG_INK_MUTED, weight="700", family=_SVG_MONO))
     out.append(_svg_text(x0 + span + BAR_W / 2.0 + 10, top - 12, "backbone",
-                         size=12, fill=_SVG_INK_MUTED, weight="700",
+                         size=13, fill=_SVG_INK_MUTED, weight="700",
                          family=_SVG_MONO))
 
     for i, (left, right) in enumerate(rungs):
@@ -1372,21 +1610,195 @@ def _base_pairs(fig):
                              "%s with %s" % (left, right), size=14,
                              fill=_SVG_INK_BODY, weight="600", anchor="start"))
 
-    # The constant-width guide. Two ticks and one label, because the claim is
-    # about SAMENESS and sameness is shown by measuring twice.
-    gx = x0 + span + BAR_W + 210
-    out.append('<line x1="%.1f" y1="%s" x2="%.1f" y2="%s" style="stroke:%s" '
-               'stroke-width="2"/>' % (gx, top + 8, gx, bot - 8, _SVG_ACCENT))
-    for y in (top + 8, bot - 8):
-        out.append('<line x1="%.1f" y1="%s" x2="%.1f" y2="%s" '
-                   'style="stroke:%s" stroke-width="2"/>'
-                   % (gx - 9, y, gx + 9, y, _SVG_ACCENT))
-    out.append(_svg_text(gx + 16, (top + bot) / 2.0 + 5,
+    # ⊕ MRB-254 — THE CONSTANT-WIDTH GUIDE, RE-DRAWN. IT WAS MEASURING THE
+    # WRONG AXIS.
+    #
+    # It used to be a VERTICAL line at `x0 + span + BAR_W + 210` — 236px to the
+    # right of the rungs — running from the top of the stack to the bottom of
+    # it, with a tick at each end and the words "every rung the same width"
+    # beside it. Every property of that mark says HEIGHT. It is vertical, it
+    # spans the full stack top to bottom, its ticks cap the first and last
+    # rows, and it is nowhere near the thing it refers to. Read as a
+    # dimension — which is exactly what it is drawn as — it says "the stack is
+    # this tall", and the one word it carries then has to argue the reader out
+    # of what the drawing shows them. On a figure whose entire argument is that
+    # a horizontal distance never changes, the mark for that distance was the
+    # one line pointing the other way.
+    #
+    # A width is measured across the thing that has it. So: two horizontal
+    # dimension lines, drawn ON the rungs, spanning exactly the base pair from
+    # the left edge of the left base to the right edge of the right one — with
+    # extension lines up into the boxes, which is what makes it read as a
+    # measurement of THOSE boxes rather than a rule that happens to be under
+    # them. Two of them, on the first rung and the last, because sameness is
+    # shown by measuring twice and because the first and last rungs are the two
+    # a reader compares by eye anyway. They are the same length, they start and
+    # end at the same two x values, and the label sits centred beneath.
+    #
+    # ⚠️ Both dimension lines span `span`, which is `BIG + SMALL` — the SAME
+    # constant the loop above raises on. There is no second source for the
+    # number: if a rung could ever be a different width the build has already
+    # failed before this line runs.
+    def _dim(y, tick_up):
+        """One horizontal dimension line across the pair, with extension
+        lines. `tick_up` puts the extensions above the line (for a mark drawn
+        under a rung) or below it."""
+        s = []
+        s.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" '
+                 'style="stroke:%s" stroke-width="2"/>'
+                 % (x0, y, x0 + span, y, _SVG_ACCENT))
+        for ex in (x0, x0 + span):
+            s.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" '
+                     'style="stroke:%s" stroke-width="2"/>'
+                     % (ex, y, ex, y - 7 if tick_up else y + 7, _SVG_ACCENT))
+        return "".join(s)
+
+    first_cy = PAD_TOP + ROW_H / 2.0
+    last_cy = PAD_TOP + (len(rungs) - 1) * ROW_H + ROW_H / 2.0
+    out.append(_dim(first_cy + 22, True))
+    out.append(_dim(last_cy + 22, True))
+    out.append(_svg_text(x0 + span / 2.0, last_cy + 46,
                          d.get("guide_label")
                          or "every rung the same width", size=13,
-                         fill=_SVG_ACCENT_TEXT, weight="700", anchor="start"))
+                         fill=_SVG_ACCENT_TEXT, weight="700"))
 
-    ly = bot + 34
+    # ⊕ MRB-254 — "NOW TWIST IT". A STUDENT COULD FINISH B10 WITHOUT EVER
+    # SEEING A HELIX.
+    #
+    # The lesson's KEY FACT is "two strands TWISTED ROUND EACH OTHER, with the
+    # bases paired on the inside". `model-builder` argues its way to the
+    # pairing and draws nothing; this figure drew the pairing as a flat ladder,
+    # which is the right way to show why a big base must meet a small one and
+    # is not a picture of DNA. Nothing else in the unit draws one. So the shape
+    # every student can already half-picture — the one thing about this
+    # molecule that has escaped into general culture — was the one shape the
+    # unit never put in front of them, and the page's own words for it had
+    # nothing to attach to.
+    #
+    # It is the SAME ladder, stated as such and drawn as such: the same two
+    # backbones, the same five rungs, the same colours, turned. Drawn as a
+    # projection, so the rungs foreshorten towards the crossovers — which is
+    # honest and is the reason the width claim is repeated here in the form it
+    # takes once the thing is twisted. THE WIDTH OF A HELIX IS ITS DIAMETER,
+    # and the two dashed envelope lines with a dimension across them are the
+    # same measurement as the two on the ladder, on the same figure, so a
+    # reader can see they are one claim rather than two.
+    hx = x0 + span + BAR_W + 310          # centre of the twisted panel
+    hy0, hy1 = top + 24, bot - 4
+    # ⚖️ THE HELIX'S DIAMETER IS THE LADDER'S RUNG WIDTH, exactly, because it
+    # is the same molecule. `span` is `BIG + SMALL` — the constant every rung
+    # is asserted against a hundred lines above — so the dimension across the
+    # twisted panel and the two dimensions across the ladder are the same
+    # number by construction, not by two authors agreeing. That is the whole
+    # reason the width claim can be repeated here without becoming a second
+    # source for it.
+    amp = span / 2.0                       # half the diameter, in user units
+    turn = (hy1 - hy0) / 2.0               # two full turns down the panel
+
+    # ⚠️ A HELIX DRAWN WITHOUT A DEPTH BREAK IS NOT A HELIX, IT IS A COLUMN OF
+    # LOZENGES. Two full sine curves in antiphase meet at every half-turn, and
+    # with both drawn end to end the eye closes each meeting into an eye shape
+    # and stacks them. The first render of this panel came out as four lenses
+    # in a row and nothing about it said "spiral".
+    #
+    # What makes it read is the one thing a projection carries and a pair of
+    # curves does not: WHICH STRAND IS IN FRONT. The helix is
+    # `x = sin θ, z = cos θ`, so a strand is in front exactly where `cos θ > 0`
+    # — and the fix is the draughtsman's: paint what is behind, then paint what
+    # is in front over the top of it, with a casing in the ground colour so it
+    # genuinely occludes rather than merely overlapping.
+    def _runs(phase):
+        """The strand, split into (front?, points) runs by depth."""
+        n, runs, cur, cur_front = 120, [], [], None
+        for k in range(n + 1):
+            y = hy0 + (hy1 - hy0) * k / float(n)
+            th = 2 * math.pi * (y - hy0) / turn + phase
+            x = hx + amp * math.sin(th)
+            front = math.cos(th) > 0
+            if cur_front is None:
+                cur_front = front
+            if front != cur_front:
+                # Carry the boundary point into both runs so the curve has no
+                # gap at the crossover — the break is in DEPTH, not in the
+                # molecule.
+                cur.append((x, y))
+                runs.append((cur_front, cur))
+                cur, cur_front = [(x, y)], front
+            cur.append((x, y))
+        runs.append((cur_front, cur))
+        return runs
+
+    def _d(pts):
+        return "".join("%s%.1f,%.1f" % ("M " if i == 0 else " L ", p[0], p[1])
+                       for i, p in enumerate(pts))
+
+    strands = [_runs(0.0), _runs(math.pi)]
+    # 1 · everything behind.
+    for runs in strands:
+        for front, pts in runs:
+            if not front:
+                out.append('<path d="%s" style="fill:none;stroke:%s" '
+                           'stroke-width="3" stroke-linecap="round"/>'
+                           % (_d(pts), _SVG_INK_MUTED))
+    # 2 · the rungs. Behind the front strand, because they run between the two
+    # backbones and one of those two is nearer the reader than they are.
+    #
+    # ⚠️ EVENLY IN Y, AND THE ONES AT A CROSSOVER ARE NOT DRAWN. The rungs were
+    # first placed at five positions to match the ladder's five, which put one
+    # of them exactly on a crossover — where the two strands are at the same x
+    # and the rung between them has zero length. It rendered as nothing, which
+    # is the correct picture of an impossible thing and a silent hole in a
+    # figure. Separation in this projection is `2·amp·|sin θ|`, so a rung is
+    # only drawn where that clears the width of the strokes it runs between;
+    # near a half-turn the rung really is edge-on to the reader and really
+    # cannot be seen, and omitting it is what the projection says.
+    #
+    # The count is therefore NOT tied to `rungs`. It was, briefly, on the
+    # reasoning that the two panels should be countably the same molecule —
+    # but the ladder is five rungs because the lesson names five pairs, and the
+    # helix is a picture of a molecule that has millions. A reader who counts
+    # the spiral's rungs and gets five would have learned something false.
+    _HELIX_RUNGS = 13
+    for i in range(_HELIX_RUNGS):
+        y = hy0 + (hy1 - hy0) * (i + 0.5) / float(_HELIX_RUNGS)
+        th = 2 * math.pi * (y - hy0) / turn
+        a = hx + amp * math.sin(th)
+        b = hx + amp * math.sin(th + math.pi)
+        if abs(a - b) < 26:
+            continue
+        out.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" '
+                   'style="stroke:%s" stroke-width="2.2" '
+                   'stroke-linecap="round"/>' % (a, y, b, y, _SVG_INK_BODY))
+    # 3 · everything in front, cased in the ground so it cuts what it crosses.
+    for runs in strands:
+        for front, pts in runs:
+            if front:
+                out.append('<path d="%s" style="fill:none;stroke:%s" '
+                           'stroke-width="8" stroke-linecap="round"/>'
+                           % (_d(pts), _SVG_GROUND))
+                out.append('<path d="%s" style="fill:none;stroke:%s" '
+                           'stroke-width="3.4" stroke-linecap="round"/>'
+                           % (_d(pts), _SVG_INK))
+    # The envelope: the width, once it is twisted, is the diameter — and it is
+    # the same distance the two dimension lines on the ladder measure.
+    for ex in (hx - amp, hx + amp):
+        out.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" '
+                   'style="stroke:%s" stroke-width="1.6" '
+                   'stroke-dasharray="5 5"/>'
+                   % (ex, hy0 - 6, ex, hy1 + 18, _SVG_RULE_STRONG))
+    out.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" '
+               'style="stroke:%s" stroke-width="2"/>'
+               % (hx - amp, hy1 + 18, hx + amp, hy1 + 18, _SVG_ACCENT))
+    for ex in (hx - amp, hx + amp):
+        out.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" '
+                   'style="stroke:%s" stroke-width="2"/>'
+                   % (ex, hy1 + 18, ex, hy1 + 11, _SVG_ACCENT))
+    out.append(_svg_text(hx, hy1 + 42, "still the same width", size=13,
+                         fill=_SVG_ACCENT_TEXT, weight="700"))
+    out.append(_svg_text(hx, top + 8, "the same ladder, twisted", size=14,
+                         fill=_SVG_INK, weight="700"))
+
+    ly = bot + 74
     out.append('<line x1="0" y1="%s" x2="%d" y2="%s" style="stroke:%s" '
                'stroke-width="2"/>' % (ly - 18, W, ly - 18, _SVG_RULE_STRONG))
     for j, (letters, word, tint) in enumerate(
@@ -1624,7 +2036,7 @@ def _moth_pair(fig):
             out.append(_svg_text(cx, PY + PH + 32, m["label"], size=14,
                                  fill=_SVG_INK, weight="700",
                                  cls="ks3-moth-label"))
-            out.append(_svg_text(cx, PY + PH + 52, m["note"], size=12,
+            out.append(_svg_text(cx, PY + PH + 52, m["note"], size=13,
                                  fill=_SVG_INK_MUTED, weight="600",
                                  family=_SVG_MONO, cls="ks3-moth-note"))
 
@@ -1641,9 +2053,5764 @@ def _moth_pair(fig):
     return "".join(out)
 
 
-SVG_ART = {"food-web": _food_web,
-           "base-pairs": _base_pairs,
-           "moth-pair": _moth_pair}
+# ── the Punnett square for Pp × Pp (b10-04) ──────────────────────────────
+
+_PUNNETT_GRID_X, _PUNNETT_GRID_Y, _PUNNETT_CELL = 300.0, 240.0, 140.0
+
+
+def _punnett_flower(cx, cy, filled, scale=1.0):
+    """One flower mark. FILLED is the dominant phenotype, OPEN is the
+    recessive one.
+
+    ⛔ NEVER A HUE. Purple and white are the two phenotypes this lesson names,
+    and painting them purple and white is the one thing this figure may not do:
+    `--ks3-data` is not in the shipped token set, a literal purple is a colour
+    Design never specified, and a white-on-cream flower is not a flower. So the
+    distinction is FILL INVERSION — solid petals against outlined ones — which
+    is the same device the reproductive-systems figure uses for "this one has
+    no counterpart", and every mark carries its phenotype in words beside it
+    regardless.
+    """
+    out = []
+    petal = 15.0 * scale
+    for k in range(5):
+        a = -math.pi / 2 + k * 2 * math.pi / 5
+        px = cx + math.cos(a) * petal
+        py = cy + math.sin(a) * petal
+        out.append(_ellipse(px, py, petal * 0.72, petal * 0.72,
+                            fill=_SVG_INK_BODY if filled else _SVG_GROUND,
+                            stroke=_SVG_INK, w=2))
+    out.append(_circle(cx, cy, petal * 0.5,
+                       fill=_SVG_BAND if filled else _SVG_CARD,
+                       stroke=_SVG_INK, w=2))
+    return "".join(out)
+
+
+def _punnett_gamete(cx, cy, letter, r=25.0):
+    """A gamete badge: the single letter one parent puts into one seed."""
+    return (_circle(cx, cy, r, fill=_SVG_CARD, stroke=_SVG_INK, w=2.5)
+            + _label(cx, cy + 9, letter, size=25, weight="800",
+                     family=_SVG_MONO))
+
+
+def _punnett(fig):
+    """Pp x Pp, all four combinations, and the 3 : 1 read off them.
+
+    ⚖️ WHY THIS LESSON GETS A DIAGRAM (WS1 audit #8). The bench beside it grows
+    a hundred seeds and returns TALLIES — "Purple 77 · 77%", "Ratio 3.35 : 1".
+    It is a good instrument and it is deliberately unseeded, so a student who
+    runs it twice gets two numbers either side of three and learns that chance
+    decides each seed. What it never shows is WHY three. The four gamete
+    combinations that produce the ratio are the mechanism, they happen inside
+    the model, and the lesson the page is NAMED FOR is therefore simulated and
+    asserted but never explained. A student can leave this page having watched
+    3:1 arrive a dozen times without being able to say where it comes from.
+
+    ⚖️ AND IT IS THE MISCONCEPTION'S DIAGRAM TOO. `blending-and-the-skipped-
+    generation` (GENE-07) is the claim that a version which is not shown has
+    gone away. The bottom-right cell is the refutation and needs no words: both
+    parents are purple, both carry p, and one seed in four gets p twice. That
+    is why the note sits on that cell and nowhere else — it is the only cell
+    where the misconception is visibly wrong.
+
+    ⚖️ THE GAMETES ARE DRAWN LEAVING THE PARENTS. A Punnett square handed to a
+    student as a bare 2x2 is a mnemonic: fill in the letters, read off the
+    ratio. The two fans of arrows are what make it an ARGUMENT — each parent
+    has two versions, passes one, and the grid is every way those two choices
+    can land. Without them the row and column headings are just labels.
+
+    ⛔ NO COLOUR CARRIES A FACT. See `_punnett_flower`. Filled against open,
+    plus the word, plus the genotype, three channels for two categories.
+
+    ⚠️ THE FOUR CELLS ARE DERIVED, NEVER AUTHORED. `_PUNNETT_*` names the two
+    parents and nothing else; every genotype, every phenotype and every mark is
+    computed from them, and the ratio line is counted from the computed cells.
+    A figure that hardcoded "3 : 1" beside a grid it also hardcoded would agree
+    with itself no matter what the grid said, which is the shape of defect the
+    base-pair fills were — right structure, lying annotation.
+    """
+    d = fig.get("data") or {}
+    p1 = d.get("parent1") or "Pp"
+    p2 = d.get("parent2") or "Pp"
+    dom = d.get("dominant") or "purple"
+    rec = d.get("recessive") or "white"
+
+    for who, g in (("parent1", p1), ("parent2", p2)):
+        if len(g) != 2 or sorted(g.lower()) != ["p", "p"]:
+            raise ValueError(
+                "punnett figure %r gives %s the genotype %r. This drawer draws "
+                "ONE gene with two versions written as the same letter in two "
+                "cases — the lesson's P and p — and a genotype outside that is "
+                "a different diagram." % (fig.get("id"), who, g))
+
+    # ⚖️ DOMINANT-FIRST, EVERYWHERE, and it is not cosmetic. The bench beside
+    # this figure normalises a seed that received p then P to `Pp` and never
+    # `pP`, because `pP` on a card reads as a fourth genotype. The grid has to
+    # agree with the bench or the page carries two spellings of one thing.
+    def _norm(a, b):
+        return (a + b) if a.isupper() else (b + a)
+
+    # ⚠️ DOMINANT FIRST, AND `sorted(reverse=True)` DOES NOT DO IT. Lowercase
+    # `p` is 0x70 and uppercase `P` is 0x50, so a reverse sort puts the
+    # RECESSIVE gamete first — which put `pp` in square 1 and `PP` in square 4,
+    # and then the bracket that gathers "three of the four, purple" gathered
+    # squares 1 to 3, the first of which was the white one. The grid was right
+    # and the thing reading it off was wrong: exactly the base-pair defect,
+    # where the structure is correct and only the annotation lies.
+    cols = sorted(set(p1), key=lambda c: (c.islower(), c))
+    rows = sorted(set(p2), key=lambda c: (c.islower(), c))
+    if len(cols) != 2 or len(rows) != 2:
+        raise ValueError(
+            "punnett figure %r asks for a cross where a parent gives only one "
+            "kind of gamete. The 3 : 1 is a property of TWO carriers, and a "
+            "grid with a repeated row is a different lesson." % fig.get("id"))
+
+    W, H = 900, 812
+    GX, GY, C = _PUNNETT_GRID_X, _PUNNETT_GRID_Y, _PUNNETT_CELL
+    out = [_svg_open(fig, W, H)]
+
+    out.append(_mono(24, 40, "%s  CROSSED WITH  %s" % (p1, p2), size=14,
+                     fill=_SVG_INK_MUTED, spacing="1.4"))
+
+    # ── the two parents, and the choice each of them makes ──
+    # Parent 1 above the grid, fanning down into the two column headings;
+    # parent 2 to the left, fanning across into the two row headings. The
+    # geometry IS the sentence "one from each parent, chosen at random".
+    p1cx, p1cy = GX + C, 96.0
+    out.append(_rect(p1cx - 74, p1cy - 30, 148, 60, rx=18,
+                     fill=_SVG_BAND, stroke=_SVG_INK, w=2.5))
+    out.append(_label(p1cx, p1cy + 11, p1, size=28, weight="800",
+                      family=_SVG_MONO))
+    out.append(_mono(p1cx, p1cy - 46, "PARENT 1", size=13, anchor="middle",
+                     fill=_SVG_INK_MUTED, spacing="1.2"))
+
+    p2cx, p2cy = 132.0, GY + C
+    out.append(_rect(p2cx - 74, p2cy - 32, 148, 64, rx=18,
+                     fill=_SVG_BAND, stroke=_SVG_INK, w=2.5))
+    out.append(_label(p2cx, p2cy + 11, p2, size=28, weight="800",
+                      family=_SVG_MONO))
+    out.append(_mono(p2cx, p2cy - 46, "PARENT 2", size=13, anchor="middle",
+                     fill=_SVG_INK_MUTED, spacing="1.2"))
+
+    head_r = 25.0
+    col_cx = [GX + C * 0.5, GX + C * 1.5]
+    row_cy = [GY + C * 0.5, GY + C * 1.5]
+    head_y = GY - 50.0
+    head_x = GX - 46.0
+
+    for j, letter in enumerate(cols):
+        # ⚠️ THE FAN NEEDS ROOM TO BE A FAN. Drawn from the badge's edge to the
+        # gamete circle's edge, these were first given 3px of vertical travel
+        # and rendered as two horizontal stubs with their heads pointing away
+        # from the circles — an arrow that says nothing about where it goes.
+        # The badge sits higher and the headings lower so each arrow has a
+        # real diagonal, which is the whole content of the mark: this parent,
+        # that gamete.
+        out.append(_arrow(p1cx + (-42 if j == 0 else 42), p1cy + 32,
+                          col_cx[j], head_y - head_r - 7,
+                          stroke=_SVG_ACCENT, w=2.4, head=9,
+                          data_gamete=letter, data_from="parent1"))
+        out.append(_punnett_gamete(col_cx[j], head_y, letter, head_r))
+    for i, letter in enumerate(rows):
+        out.append(_arrow(p2cx + 76, p2cy + (-40 if i == 0 else 40),
+                          head_x - head_r - 6, row_cy[i],
+                          stroke=_SVG_ACCENT, w=2.4, head=9,
+                          data_gamete=letter, data_from="parent2"))
+        out.append(_punnett_gamete(head_x, row_cy[i], letter, head_r))
+
+    out.append(_mono(p1cx + 96, p1cy + 6, "one or the other,", size=13,
+                     fill=_SVG_ACCENT_TEXT))
+    out.append(_mono(p1cx + 96, p1cy + 24, "chosen at random", size=13,
+                     fill=_SVG_ACCENT_TEXT))
+
+    # ── the grid ──
+    cells = []
+    n = 0
+    for i, rl in enumerate(rows):
+        for j, cl in enumerate(cols):
+            n += 1
+            g = _norm(cl, rl)
+            shows_dom = any(ch.isupper() for ch in g)
+            cells.append({"n": n, "g": g, "col": cl, "row": rl,
+                          "pheno": dom if shows_dom else rec,
+                          "filled": shows_dom,
+                          "cx": col_cx[j], "cy": row_cy[i]})
+
+    for c in cells:
+        x, y = c["cx"] - C / 2, c["cy"] - C / 2
+        out.append(_rect(x, y, C, C, rx=18, fill=_SVG_CARD, stroke=_SVG_INK,
+                         w=2.5, data_cell=c["n"], data_genotype=c["g"],
+                         data_col_gamete=c["col"], data_row_gamete=c["row"],
+                         data_phenotype=c["pheno"]))
+        # The numeral is the cell's second channel and the strip below reads
+        # off it — no leader lines, which at four cells would cross twice.
+        out.append(_circle(x + 24, y + 24, 15, fill=_SVG_INSET,
+                           stroke=_SVG_INK, w=2))
+        out.append(_label(x + 24, y + 29, str(c["n"]), size=14, weight="700",
+                          family=_SVG_MONO))
+        out.append(_label(c["cx"], y + 58, c["g"], size=32, weight="800",
+                          family=_SVG_MONO, data_cell_genotype=c["n"]))
+        out.append(_punnett_flower(c["cx"], y + 96, c["filled"]))
+        out.append(_label(c["cx"], y + 128, c["pheno"], size=15, weight="700",
+                          fill=_SVG_INK_BODY))
+
+    # ⚖️ The note sits on the recessive cell and on no other, because it is the
+    # only cell where the skipped generation is visibly happening.
+    rec_cell = [c for c in cells if not c["filled"]]
+    if len(rec_cell) != 1:
+        raise ValueError(
+            "punnett figure %r produces %d recessive cell(s). The whole figure "
+            "is the argument that exactly one of the four combinations shows "
+            "the hidden version." % (fig.get("id"), len(rec_cell)))
+    rc = rec_cell[0]
+    nx = rc["cx"] + C / 2 + 26
+    out.append(_line(rc["cx"] + C / 2 + 4, rc["cy"], nx - 4, rc["cy"],
+                     stroke=_SVG_ACCENT, w=2, dash="5 4"))
+    out.append(_mono(nx, rc["cy"] - 8, "neither parent is", size=13,
+                     fill=_SVG_ACCENT_TEXT))
+    out.append(_mono(nx, rc["cy"] + 10, "%s. This one is." % rec, size=13,
+                     fill=_SVG_ACCENT_TEXT))
+
+    # ── the strip: the same four, in a row, so they can be counted ──
+    sy = GY + 2 * C + 74
+    out.append(_line(24, sy - 40, W - 24, sy - 40, stroke=_SVG_RULE, w=2))
+    out.append(_mono(24, sy - 14, "COUNT THE FOUR", size=13,
+                     fill=_SVG_INK_MUTED, spacing="1.2"))
+    sx0, step = 150.0, 170.0
+    for k, c in enumerate(cells):
+        cx = sx0 + k * step
+        out.append(_circle(cx - 46, sy + 24, 14, fill=_SVG_INSET,
+                           stroke=_SVG_INK, w=2))
+        out.append(_label(cx - 46, sy + 29, str(c["n"]), size=13,
+                          weight="700", family=_SVG_MONO))
+        out.append(_punnett_flower(cx - 4, sy + 24, c["filled"], scale=0.86))
+        out.append(_label(cx + 44, sy + 30, c["g"], size=21, weight="800",
+                          family=_SVG_MONO, data_strip_genotype=c["n"]))
+
+    # The two brackets, each spanning exactly the entries it counts. Drawn, so
+    # the ratio is READ OFF the strip rather than printed beside it.
+    #
+    # ⚠️ GROUPED BY PHENOTYPE, NEVER BY POSITION. This was `cells[:n_dom]` and
+    # `cells[n_dom:]` — three cells then one — which is right only because the
+    # dominant squares happen to come first, and they only happen to come first
+    # because of the gamete ordering fixed above. The first version of that
+    # ordering put `pp` in square 1, and this bracket then gathered squares 1
+    # to 3 and labelled them PURPLE with the white one inside it. So the run is
+    # found from the phenotypes themselves, and a phenotype that is not
+    # contiguous fails the build rather than being bracketed across a cell it
+    # does not contain.
+    by = sy + 58
+    runs, run = [], [cells[0]]
+    for c in cells[1:]:
+        if c["pheno"] == run[-1]["pheno"]:
+            run.append(c)
+        else:
+            runs.append(run)
+            run = [c]
+    runs.append(run)
+    seen = [r[0]["pheno"] for r in runs]
+    if len(set(seen)) != len(seen):
+        raise ValueError(
+            "punnett figure %r lays its squares out as %s. A bracket spans a "
+            "CONTIGUOUS run, so a phenotype that appears in two separate runs "
+            "cannot be gathered under one — and a bracket drawn across the "
+            "gap would enclose a square it is not counting."
+            % (fig.get("id"), " ".join(c["pheno"] for c in cells)))
+    n_dom = sum(1 for c in cells if c["filled"])
+    for span in runs:
+        k0, k1 = cells.index(span[0]), cells.index(span[-1])
+        word, count = span[0]["pheno"], len(span)
+        x0 = sx0 + k0 * step - 62
+        x1 = sx0 + k1 * step + 66
+        out.append(_path("M %s,%s V %s H %s V %s"
+                         % (_n(x0), _n(by), _n(by + 12), _n(x1), _n(by)),
+                         stroke=_SVG_ACCENT, w=2.4))
+        out.append(_label((x0 + x1) / 2, by + 36,
+                          "%d of the four — %s" % (count, word),
+                          size=15, weight="700", fill=_SVG_ACCENT_TEXT,
+                          data_tally=word, data_tally_count=count,
+                          data_tally_from=span[0]["n"],
+                          data_tally_to=span[-1]["n"]))
+
+    out.append(_label(24, by + 92,
+                      "%d %s : %d %s"
+                      % (n_dom, dom, len(cells) - n_dom, rec),
+                      size=30, weight="800", anchor="start",
+                      family=_SVG_DISPLAY, data_ratio="1"))
+    out.append(_mono(24, by + 118,
+                     "filled flower = %s  ·  open flower = %s" % (dom, rec),
+                     size=13, fill=_SVG_INK_MUTED))
+    out.append(_label(W - 30, by + 88,
+                      "P beats p. A plant is %s only if it gets p from "
+                      "both parents." % rec,
+                      size=14, weight="600", anchor="end",
+                      fill=_SVG_INK_BODY))
+    out.append('</svg>')
+    return "".join(out)
+
+
+# ── one turn of the predator–prey cycle, with the lag dimensioned (b9-02) ──
+
+
+def _cycle_lag_run(m, years):
+    """The bench's model, one step at a time, in Python.
+
+    ⚠️ THIS IS `wireCycleRunner`'s RECURRENCE, TRANSCRIBED, and it must stay
+    that way. Build contract §5A.1: any count or figure quoted in prose must
+    match the instrument, and the instrument is the measurement. A figure that
+    drew its own idealised sine waves beside a bench running a discrete
+    logistic model would be a second source for the one number this lesson
+    states six times — and the two would drift the first time anybody touched
+    either. So the curve is the model's own output and the lag is counted off
+    it, not authored.
+    """
+    prey, pred = float(m["start_prey"]), float(m["start_pred"])
+    hist = [(prey, pred)]
+    for _ in range(years):
+        nxt_prey = (prey + m["r"] * prey * (1 - prey / m["k"])
+                    - m["a"] * prey * pred)
+        nxt_pred = pred + m["b"] * m["a"] * prey * pred - m["m"] * pred
+        prey = max(0.0, min(m["k"] * m["prey_cap_mult"], nxt_prey))
+        pred = max(0.0, min(m["k"], nxt_pred))
+        if pred < m["pred_floor"]:
+            pred = 0.0
+        hist.append((prey, pred))
+    return hist
+
+
+def _cycle_lag_peaks(hist, idx, lo, hi):
+    """Every interior local maximum of one series inside [lo, hi]."""
+    return [y for y in range(max(lo, 1), min(hi, len(hist) - 2) + 1)
+            if hist[y][idx] > hist[y - 1][idx] and hist[y][idx] > hist[y + 1][idx]]
+
+
+def _cycle_lag(fig):
+    """Two populations over one turn of the cycle, and the gap between the
+    peaks measured on the drawing.
+
+    ⚖️ WHY THIS LESSON GETS A DIAGRAM (WS1 audit #12). This is the one page
+    where the bench ATTEMPTS the sequential idea and measurably fails at the
+    width most of these students are on. At 390px the chart is 274px holding
+    fifty-two bars at two pixels each, with no year axis and no year labels at
+    all, and the two series scaled separately. The lesson's own instruction is
+    *"Look at when each peak happens — not how high, when"*, and at that width
+    there is nothing on screen a student could answer it from: a two-pixel bar
+    has no when. The instrument is not replaced — it is where a student changes
+    the field and watches it respond, which no drawing can do — but the claim
+    it exists to demonstrate needs one picture that holds still and carries an
+    axis.
+
+    ⚖️ ONE TURN, NOT THE WHOLE RUN. The bench draws twenty-six years, which is
+    one and a half cycles of a DAMPED model, so the second prey peak is lower
+    than the first. Drawn as a figure that reads as "and then it dies away",
+    which is true of the model and is not this lesson's claim — the damping is
+    `#s-think`'s second belief and rung 4's business. So the window is one
+    complete period, and the caption says it is one turn.
+
+    ⚖️ THE LAG IS COUNTED, NEVER AUTHORED. `_cycle_lag_peaks` finds both peaks
+    in the drawn window and the dimension label prints the difference. The
+    lesson states "about five years" in seven places; if the model's parameters
+    were ever touched, this figure would print the new number and disagree with
+    those seven sentences loudly, instead of agreeing with them silently while
+    drawing something else. That is the §5A.1 rule — the instrument is the
+    measurement — turned into a property of the drawing.
+
+    ⛔ NO CATEGORY HUE, AND THE BENCH'S AMBER AND GREEN DO NOT COME WITH IT.
+    The chart beside this figure keys rabbits to `--ks3-alert` and foxes to
+    `--ks3-ok`, which is the usage MRB-252 ruled against and which the
+    biology figure set carries none of. Here the two series are told apart by
+    STROKE (solid against dashed), by a filled peak marker against an open one,
+    and by a direct label on each curve — three channels, none of them colour,
+    and the direct labels mean nothing has to be carried back to a key.
+
+    ⚠️ TWO SCALES, SAID OUT LOUD. The bench scales the two series
+    independently and its caption says so, because on one scale the fox line
+    flattens into the axis and the lag becomes unreadable. This figure does the
+    same and therefore inherits the same obligation: two axes, each labelled
+    with its own numbers, and a line on the face of the drawing telling the
+    reader to compare WHEN and not HOW HIGH. Without that a reader compares two
+    heights that were never comparable.
+
+    ⚠️ THE YEARLY SAMPLES ARE DRAWN AS DOTS. The model is discrete — one step
+    is one year — and a smooth curve through it would quietly claim a
+    continuous population that was measured between the years. The dots are
+    where the numbers actually are; the curve is the eye's line through them.
+    """
+    d = fig.get("data") or {}
+    m = d.get("model")
+    if not m:
+        raise ValueError(
+            "cycle-lag figure %r carries no `model`. The curve IS the bench's "
+            "model — a figure that drew its own would be a second source for "
+            "the one number this lesson states seven times."
+            % fig.get("id"))
+
+    span = int(d.get("span") or 60)
+    hist = _cycle_lag_run(m, span)
+
+    # The drawn window: one full period, taken from the SECOND turn, because
+    # the first is still leaving the starting values behind and its shape is
+    # the model settling rather than the cycle.
+    prey_pk = _cycle_lag_peaks(hist, 0, 1, span - 2)
+    pred_pk = _cycle_lag_peaks(hist, 1, 1, span - 2)
+    if len(prey_pk) < 2 or len(pred_pk) < 2:
+        raise ValueError(
+            "cycle-lag figure %r finds %d prey peak(s) and %d predator peak(s) "
+            "in %d years. The figure is one turn of a cycle and needs two of "
+            "each to know where a turn begins and ends."
+            % (fig.get("id"), len(prey_pk), len(pred_pk), span))
+    y_prey, y_pred = prey_pk[1], pred_pk[1]
+    if y_pred <= y_prey:
+        raise ValueError(
+            "cycle-lag figure %r puts the predator peak at year %d and the "
+            "prey peak at year %d. The predator peak FOLLOWS the prey peak — "
+            "that is the lesson, stated seven times on this page — and a "
+            "figure that drew it the other way round would teach the "
+            "misconception the page exists to break."
+            % (fig.get("id"), y_pred, y_prey))
+    lag = y_pred - y_prey
+
+    period = prey_pk[1] - prey_pk[0]
+    y0 = y_prey - int(round(period * 0.42))
+    y1 = y0 + period
+    y0 = max(0, y0)
+    y1 = min(span, y1)
+
+    W, H = 900, 626
+    PX0, PX1, PY0, PY1 = 104.0, 812.0, 96.0, 430.0
+    out = [_svg_open(fig, W, H)]
+
+    prey_max = float(d.get("prey_axis") or 1000)
+    pred_max = float(d.get("pred_axis") or 400)
+    prey_name = d.get("prey_name") or "Rabbits"
+    pred_name = d.get("pred_name") or "Foxes"
+
+    def x_of(year):
+        return PX0 + (PX1 - PX0) * (year - y0) / float(y1 - y0)
+
+    def y_of(v, top):
+        return PY1 - (PY1 - PY0) * (v / top)
+
+    out.append(_mono(24, 40, "ONE TURN OF THE CYCLE, FROM THE FIELD ON THIS "
+                             "PAGE", size=14, fill=_SVG_INK_MUTED,
+                     spacing="1.4"))
+
+    # ── the frame: two axes, because there are two scales ──
+    out.append(_line(PX0, PY0 - 10, PX0, PY1, stroke=_SVG_INK, w=2.5))
+    out.append(_line(PX1, PY0 - 10, PX1, PY1, stroke=_SVG_INK, w=2.5))
+    out.append(_line(PX0, PY1, PX1, PY1, stroke=_SVG_INK, w=2.5))
+
+    for v in range(0, int(prey_max) + 1, int(prey_max // 4)):
+        yy = y_of(v, prey_max)
+        out.append(_line(PX0 - 7, yy, PX0, yy, stroke=_SVG_INK, w=2))
+        if v:
+            out.append(_line(PX0, yy, PX1, yy, stroke=_SVG_RULE, w=1.4,
+                             dash="3 6"))
+        out.append(_mono(PX0 - 12, yy + 5, str(v), size=13, anchor="end",
+                         fill=_SVG_INK_MUTED))
+    for v in range(0, int(pred_max) + 1, int(pred_max // 4)):
+        yy = y_of(v, pred_max)
+        out.append(_line(PX1, yy, PX1 + 7, yy, stroke=_SVG_INK, w=2))
+        out.append(_mono(PX1 + 12, yy + 5, str(v), size=13, fill=_SVG_INK_MUTED))
+
+    # ⚠️ INSIDE THE AXES, NOT OUTSIDE THEM. These sat at `PX0 - 12` anchored
+    # end and `PX1 + 12` anchored start, which put "Rabbits counted" starting
+    # at x = -8 and "Foxes counted" ending past x = 900. SVG does not warn when
+    # text leaves the viewBox; it simply draws outside it and is clipped, so
+    # the figure rendered with "bits counted" on the left and "Foxes cou" on
+    # the right — each axis labelled with a fragment, on a figure whose one
+    # instruction is that the two scales are separate.
+    out.append(_mono(PX0, PY0 - 24, "%s counted" % prey_name, size=13,
+                     fill=_SVG_INK_BODY))
+    out.append(_mono(PX1, PY0 - 24, "%s counted" % pred_name, size=13,
+                     anchor="end", fill=_SVG_INK_BODY))
+
+    # ── the year axis, which the bench's chart has none of ──
+    for year in range(y0, y1 + 1):
+        xx = x_of(year)
+        major = (year - y0) % 2 == 0
+        out.append(_line(xx, PY1, xx, PY1 + (9 if major else 5),
+                         stroke=_SVG_INK, w=2 if major else 1.5))
+        if major:
+            out.append(_mono(xx, PY1 + 30, str(year), size=13,
+                             anchor="middle", fill=_SVG_INK_MUTED))
+    out.append(_mono(PX0, PY1 + 56, "year", size=13, fill=_SVG_INK_BODY))
+
+    # ── the two series ──
+    #
+    # ⚠️ THE DIRECT LABELS GO WHERE THE CURVES ARE FURTHEST APART, DERIVED.
+    # They were first placed at the right-hand end of each curve, which is
+    # where a line chart usually labels itself — and on this chart the two
+    # lines converge as the oscillation damps, so at the last year they were
+    # 14px apart and the words "Rabbits" and "Foxes" printed on top of each
+    # other. Both series then had no usable label, on a figure that carries no
+    # colour and relies on the direct label as one of its three channels.
+    #
+    # So the anchor is the year at which the drawn vertical gap between the two
+    # curves is greatest. That is a property of whatever the model does, not of
+    # this particular set of parameters, so it cannot come back if the numbers
+    # move.
+    gap_best, gap_year = -1.0, y0
+    for year in range(y0, y1 + 1):
+        g = abs(y_of(hist[year][0], prey_max) - y_of(hist[year][1], pred_max))
+        if g > gap_best:
+            gap_best, gap_year = g, year
+    prey_above = (y_of(hist[gap_year][0], prey_max)
+                  < y_of(hist[gap_year][1], pred_max))
+
+    for key, idx, top, name, dash, wt in (
+            ("prey", 0, prey_max, prey_name, None, 3.6),
+            ("pred", 1, pred_max, pred_name, "9 6", 3.0)):
+        pts = [(x_of(y), y_of(hist[y][idx], top)) for y in range(y0, y1 + 1)]
+        out.append(_path(
+            "".join("%s%.1f,%.1f" % ("M " if i == 0 else " L ", p[0], p[1])
+                    for i, p in enumerate(pts)),
+            stroke=_SVG_INK if key == "prey" else _SVG_INK_BODY,
+            w=wt, dash=dash, data_series=key))
+        # The samples. One dot is one year, which is one step of the model.
+        for i, y in enumerate(range(y0, y1 + 1)):
+            out.append(_circle(pts[i][0], pts[i][1], 3.4,
+                               fill=_SVG_INK if key == "prey" else _SVG_GROUND,
+                               stroke=_SVG_INK_BODY, w=1.6,
+                               data_series=key, data_year=y,
+                               data_count=int(round(hist[y][idx]))))
+        # Direct label on the curve, so neither series has to be carried back
+        # to a key to be identified.
+        lx = x_of(gap_year)
+        ly_ = y_of(hist[gap_year][idx], top)
+        up = prey_above if key == "prey" else not prey_above
+        out.append(_label(lx, ly_ - 16 if up else ly_ + 28, name,
+                          size=16, weight="800", fill=_SVG_INK,
+                          data_series_label=key))
+
+    # ── the two peaks, and the gap between them ──
+    marks = ((y_prey, 0, prey_max, True, "%s peak" % prey_name),
+             (y_pred, 1, pred_max, False, "%s peak" % pred_name))
+    for year, idx, top, filled, name in marks:
+        xx, yy = x_of(year), y_of(hist[year][idx], top)
+        out.append(_line(xx, yy + 8, xx, PY1, stroke=_SVG_ACCENT, w=2,
+                         dash="5 5"))
+        out.append(_circle(xx, yy, 8.5,
+                           fill=_SVG_INK if filled else _SVG_GROUND,
+                           stroke=_SVG_INK, w=2.6,
+                           data_peak=("prey" if idx == 0 else "pred"),
+                           data_peak_year=year))
+        out.append(_label(xx, yy - 20, name, size=14, weight="800",
+                          fill=_SVG_ACCENT_TEXT))
+        out.append(_mono(xx, yy - 38, "year %d" % year, size=13,
+                         anchor="middle", fill=_SVG_ACCENT_TEXT))
+
+    dy = PY1 + 78
+    xa, xb = x_of(y_prey), x_of(y_pred)
+    # ⊕ MRB-254 · THEY START BELOW THE YEAR, NOT AT THE AXIS. These two ran
+    # from `PY1 + 12` and the year-axis numerals sit at `PY1 + 30` — so the
+    # extension line for the fox peak came down through the numeral naming the
+    # year it was extending from, and "25" is the number the whole dimension
+    # exists to subtract. `PY1 + 44` starts them ten units under the numeral's
+    # descender. Nothing is lost by the shortening: each peak already has a
+    # dashed drop-line from its own marker to the axis, so the eye is carried
+    # down to the year before these ever begin.
+    for xx in (xa, xb):
+        out.append(_line(xx, PY1 + 44, xx, dy + 9, stroke=_SVG_ACCENT, w=1.6,
+                         dash="4 4"))
+    out.append(_line(xa, dy, xb, dy, stroke=_SVG_ACCENT, w=2.6,
+                     data_lag_dimension=lag))
+    for xx in (xa, xb):
+        out.append(_line(xx, dy - 8, xx, dy + 8, stroke=_SVG_ACCENT, w=2.6))
+    out.append(_rect((xa + xb) / 2 - 62, dy - 17, 124, 34, rx=12,
+                     fill=_SVG_GROUND, stroke="none"))
+    out.append(_label((xa + xb) / 2, dy + 6,
+                      "%d years" % lag, size=21, weight="800",
+                      fill=_SVG_ACCENT_TEXT, data_lag=lag))
+
+    ky = dy + 52
+    out.append(_line(24, ky - 22, W - 24, ky - 22, stroke=_SVG_RULE_STRONG,
+                     w=2))
+    out.append(_line(30, ky + 2, 76, ky + 2, stroke=_SVG_INK, w=3.6))
+    out.append(_circle(53, ky + 2, 3.4, fill=_SVG_INK, stroke=_SVG_INK_BODY,
+                       w=1.6))
+    out.append(_label(88, ky + 7, "%s — solid, filled peak" % prey_name,
+                      size=13, weight="600", anchor="start",
+                      fill=_SVG_INK_BODY))
+    out.append(_line(330, ky + 2, 376, ky + 2, stroke=_SVG_INK_BODY, w=3.0,
+                     dash="9 6"))
+    out.append(_circle(353, ky + 2, 3.4, fill=_SVG_GROUND,
+                       stroke=_SVG_INK_BODY, w=1.6))
+    out.append(_label(388, ky + 7, "%s — dashed, open peak" % pred_name,
+                      size=13, weight="600", anchor="start",
+                      fill=_SVG_INK_BODY))
+    out.append(_label(24, ky + 38,
+                      "The two are counted on their own scales. Look at WHEN "
+                      "each peak happens — not how high, when.",
+                      size=15, weight="600", anchor="start",
+                      fill=_SVG_INK))
+    out.append('</svg>')
+    return "".join(out)
+
+
+# ── b5-placenta-exchange · the two circulations ─────────────────────────────
+#
+# THE WHOLE FIGURE IS ONE NEGATIVE CLAIM: nothing joins. Every constant below
+# exists so that the claim is a property of the geometry rather than of a
+# sentence beside it, and so that a parity row can measure it.
+
+# The three villi, each as (number, outline, feed-branch y, return-branch y,
+# capillary loop). ⚖️ THE OUTLINE IS ONE CLOSED `Z` PATH PER VILLUS and the
+# loop is one stroke that leaves and returns — that is the drawing's proof.
+# A villus split into two arcs, or a loop drawn as two strokes meeting, would
+# render identically and would have a seam in it, and the seam is exactly the
+# thing a student is being asked to look for and not find. Kept as single
+# paths for that reason, not for brevity.
+_B5_PLACENTA_VILLI = (
+    (1,
+     "M 444,170 H 470 L 470,148 Q 481,132 492,148 L 492,170 H 556 L 556,152 "
+     "Q 569,138 582,152 L 582,170 H 620 C 652,170 652,234 620,234 H 444 Z",
+     188, 216,
+     "M 444,188 H 596 C 626,188 626,216 596,216 H 444"),
+    (2,
+     "M 444,302 H 470 L 470,280 Q 481,264 492,280 L 492,302 H 556 L 556,284 "
+     "Q 569,270 582,284 L 582,302 H 652 C 684,302 684,366 652,366 H 582 "
+     "L 582,384 Q 569,398 556,384 L 556,366 H 492 L 492,388 Q 481,404 470,388 "
+     "L 470,366 H 444 Z",
+     320, 348,
+     "M 444,320 H 628 C 658,320 658,348 628,348 H 444"),
+    (3,
+     "M 444,434 H 592 C 624,434 624,498 592,498 H 582 L 582,508 Q 569,520 "
+     "556,508 L 556,498 H 492 L 492,512 Q 481,524 470,512 L 470,498 H 444 Z",
+     452, 480,
+     "M 444,452 H 568 C 598,452 598,480 568,480 H 444"),
+)
+
+# The four labelled crossings, as
+# (substance, direction, label, label x, label y, arrow x, y from, y to, head y).
+#
+# ⚠️ DIRECTION IS NOT A FUNCTION OF WHICH WAY THE ARROW POINTS ON THE PAGE.
+# All four point DOWN. The top two start in the mother's blood above the villus
+# and end inside it — that is `in`. The bottom two start inside the villus and
+# end in the mother's blood below it — that is `out`. Reading the arrowhead
+# alone gets three of the four wrong, which is why `data-direction` is written
+# down here beside the coordinates rather than inferred anywhere.
+#
+# ⊕ `label x` is not `arrow x`: urea's word is set at 628 against an arrow at
+# 612, because at 612 it would have collided with the villus's right lobe.
+# Design moved the word, not the arrow, and the two columns keep that apart.
+_B5_PLACENTA_CROSSINGS = (
+    ("oxygen",         "in",  "oxygen",         520, 258, 520, 272, 320, 318),
+    ("glucose",        "in",  "glucose",        612, 258, 612, 272, 320, 318),
+    ("carbon-dioxide", "out", "carbon dioxide", 520, 428, 520, 346, 392, 390),
+    ("urea",           "out", "urea",           628, 428, 612, 346, 392, 390),
+)
+
+# The uterus wall's hatching, as one path. Ten parallel ticks: the wall is a
+# MATERIAL, and the hatch is what says so without a second colour.
+_B5_PLACENTA_HATCH = (
+    "M 764,96 L 798,66 M 764,146 L 798,116 M 764,196 L 798,166 "
+    "M 764,246 L 798,216 M 764,296 L 798,266 M 764,346 L 798,316 "
+    "M 764,396 L 798,366 M 764,446 L 798,416 M 764,496 L 798,466 "
+    "M 764,546 L 798,516"
+)
+
+
+def _placenta(fig):
+    """Where the placenta is, and what happens inside it: two bloodstreams
+    interlocked across an enormous surface and never once joined.
+
+    The lesson's flagship misconception — *"the baby's blood mixes with the
+    mother's"* — is PURELY SPATIAL, and that is the whole reason this is a
+    drawing rather than a paragraph. Prose can assert non-contact; only a
+    drawing can be looked at and found not to contain a join. So the figure is
+    built to be searched for the join and to survive the search.
+
+    Two plates, because the misconception has two halves and they need
+    different scales. The left plate answers *where* — a uterus in section, the
+    placenta as a pad against the wall, the cord running down to the foetus —
+    and a dashed marker on the pad opens into the right plate through a flare,
+    so the zoom is a drawn relationship rather than two unrelated pictures on
+    one sheet. The right plate answers *what is happening*, at the only scale
+    where interdigitation is visible at all.
+
+    ⚖️ WHY THE ENCODING IS WHAT IT IS. Three channels carry the claim, and no
+    single one of them is trusted:
+
+      · SHAPE — each villus is one closed path. The foetal vessel inside it is
+        one stroke that arrives, turns at the tip and returns. Neither has an
+        end anywhere except at the cord.
+      · POSITION — the mother's blood is a field that the villi reach into and
+        that reaches back between them. Every point where the two get close is
+        a point where placenta tissue is drawn between them.
+      · WORDS — three key lines name the three things, and the label on the
+        plate says *the wall — never open*.
+
+    ⚠️ THE TWO HUES ARE THE ONE EXCEPTION TO "NO CATEGORY HUE", AND THEY ARE
+    DECLARED ON THE DRAWING'S OWN FACE. `--ks3-blue-text` for the baby's blood
+    and `--ks3-accent` for the mother's are a category distinction, which the
+    kit otherwise forbids. They earn it here because *whose blood is whose* is
+    the entire subject and there is no shape available to carry it — both are
+    blood, both are in vessels, both are red in life. So the exception is paid
+    for three times over: each hue has a key line naming it in words, each has
+    drawn direction arrows, and the caption states outright that the colours
+    say only whose is whose. Removing the colour would lose nothing a reader
+    could not recover from the key and the arrows. Design shipped this pair in
+    an earlier session and fig-07 matches the blue; both are kept as delivered.
+
+    ⛔ THE HOOKS ARE THE POINT OF THIS DRAWER, not decoration on it. A defect
+    here is silent: a stray vessel that overshoots into the mother's field, or
+    a villus outline that fails to close, still looks like a diagram of a
+    placenta. So every element belonging to a circulation carries
+    `data-stream`, every element drawn as the barrier carries `data-gap`, and
+    the four crossings carry `data-crosses` with `data-direction`. That lets a
+    parity row assert what the drawing actually claims — no element is in both
+    streams, the two sets never share a boundary, and all four substances go
+    the way the science says — rather than asserting that a figure was emitted.
+
+      · `data-stream`  — "mother" | "foetus". On EVERY fill, vessel and arrow
+        belonging to a circulation, including the key chips, not only the two
+        the labels touch. A gate that measures a subset measures nothing.
+      · `data-gap`     — on the placenta tissue: the plate, the plate's face,
+        each villus outline, and the tissue chip in the key.
+      · `data-flow`    — "arriving" | "returning", in ONE frame for both
+        streams: travelling into the exchange region, or back out of it. The
+        three-sided villus loops carry neither, because a single path holds
+        both halves; their direction lives on the two drawn triangles.
+      · `data-panel`   — "where" | "inside". A non-contact measurement is only
+        meaningful within the plate that draws the exchange; the left plate's
+        cord vessels are the same circulation at a scale where the mother's
+        blood is not drawn at all, and would otherwise poison the measurement.
+
+    Note the crossing arrows carry NO `data-stream`. They are substances, and
+    a substance belongs to neither circulation — which is the sentence the
+    whole figure exists to make visible.
+    """
+    W, H = 860, 650
+    out = [_svg_open(fig, W, H)]
+
+    # Two clips, named off the figure id. ⚠️ A bare `id="f5L"` would collide
+    # the moment a second figure landed on the same page, and `url(#f5L)`
+    # resolves to whichever came first in the document — so one lesson's plate
+    # would silently take another's clip rectangle.
+    clip_l = "%s-clip-where" % e(fig["id"])
+    clip_r = "%s-clip-inside" % e(fig["id"])
+    out.append(
+        '<defs>'
+        '<clipPath id="%s"><rect x="30" y="60" width="290" height="410" '
+        'rx="18"/></clipPath>'
+        '<clipPath id="%s"><rect x="380" y="60" width="450" height="500" '
+        'rx="18"/></clipPath>'
+        '</defs>' % (clip_l, clip_r))
+
+    # Round caps and joins for the whole drawing, once. Design set them on her
+    # single wrapping `<g>`; every thick stroke in here — the 6px vessels, the
+    # 7px maternal arrows, the villus corners — is shaped by them, so they are
+    # geometry, not polish. They are the only presentation attributes on this
+    # group: paint stays in `style`, on every element, as the law requires.
+    out.append('<g stroke-linecap="round" stroke-linejoin="round">')
+
+    # ── the flare, joining the two plates ────────────────────────────────
+    # Drawn FIRST so both cards sit on top of it. It is the zoom, not the
+    # mother's blood, and it deliberately carries no `data-stream`: it is tinted
+    # with the same accent tint as her blood field, and a gate that took it for
+    # a circulation would find the mother's blood spilling across the gutter.
+    out.append(_path("M 250,182 L 380,60 L 380,560 L 250,240 Z",
+                     fill=_SVG_ACCENT_TINT))
+    out.append(_path("M 250,182 L 380,60", stroke=_SVG_RULE_STRONG, w=1.6,
+                     dash="6 5"))
+    out.append(_path("M 250,240 L 380,560", stroke=_SVG_RULE_STRONG, w=1.6,
+                     dash="6 5"))
+
+    out.append(_mono(30, 42, "WHERE IT IS", size=14, weight="400",
+                     spacing="1.4"))
+    out.append(_mono(380, 42, "WHAT IS HAPPENING INSIDE IT", size=14,
+                     weight="400", spacing="1.4"))
+
+    # ── plate one · where it is ──────────────────────────────────────────
+    out.append(_rect(30, 60, 290, 410, rx=18, fill=_SVG_CARD, stroke=_SVG_INK,
+                     w=2.5))
+    out.append('<g clip-path="url(#%s)">' % clip_l)
+    # Uterus wall as a band with a lining inside it, so "wall" is a thickness
+    # rather than a line — the same reading the right plate then magnifies.
+    out.append(_ellipse(175, 300, 118, 130, fill=_SVG_BAND, stroke=_SVG_INK,
+                        w=3))
+    out.append(_ellipse(175, 300, 104, 116, fill=_SVG_INSET, stroke=_SVG_INK,
+                        w=1.6))
+    # The placenta pad. No `data-gap`: at this scale it is the whole organ
+    # against the wall, not the one-cell barrier between two bloods, and the
+    # barrier is what `data-gap` names.
+    out.append(_path("M 105,214 A 104,116 0 0 1 245,214 Q 175,248 105,214 Z",
+                     fill=_SVG_CARD, stroke=_SVG_INK, w=2.5))
+    # The two cord vessels, drawn as two so the cord is visibly a bundle
+    # carrying blood BOTH WAYS — the fact the right plate then opens up.
+    for d in ("M 168,236 C 188,266 150,292 172,322 C 186,342 166,352 164,366",
+              "M 178,236 C 198,268 160,294 182,324 C 194,342 176,354 174,366"):
+        out.append(_path(d, stroke=_SVG_BLUE_TEXT, w=4,
+                         data_stream="foetus", data_panel="where"))
+    out.append(_path(
+        "M 206,352 C 220,368 216,392 194,400 C 170,408 144,396 138,378 "
+        "C 132,358 148,340 166,340 C 162,322 174,308 190,311 "
+        "C 205,314 212,330 204,342 C 205,345 206,348 206,352 Z",
+        fill=_SVG_CARD, stroke=_SVG_INK, w=2.5))
+    # The dashed marker: the region the right plate is a magnification of.
+    # Dashed, and it lines up with the flare, so the relationship is drawn.
+    out.append(_rect(90, 176, 160, 68, rx=16, stroke=_SVG_INK, w=1.6,
+                     dash="6 5"))
+    out.append('</g>')
+
+    # Labels sit OUTSIDE the clip, with leaders reaching in. A label clipped to
+    # the card would lose its last word to the rounded corner and nothing would
+    # warn: SVG text simply draws outside the box and is cut.
+    out.append(_label(44, 140, "placenta", size=16, weight="700",
+                      anchor="start"))
+    out.append(_path("M 110,146 L 142,198", stroke=_SVG_INK, w=1.4))
+    out.append(_label(250, 268, "cord", size=16, weight="700", anchor="start"))
+    out.append(_path("M 246,272 L 198,282", stroke=_SVG_INK, w=1.4))
+    out.append(_label(232, 416, "the baby", size=16, weight="700",
+                      anchor="start"))
+    out.append(_path("M 228,410 L 206,392", stroke=_SVG_INK, w=1.4))
+    out.append(_label(44, 452, "uterus wall", size=16, weight="400",
+                      anchor="start"))
+    out.append(_path("M 110,446 L 132,418", stroke=_SVG_INK, w=1.4))
+
+    # ── plate two · what is happening inside it ──────────────────────────
+    out.append('<g clip-path="url(#%s)">' % clip_r)
+    # Three bands, left to right: the placenta's own tissue, the mother's
+    # blood, the uterus wall. The tissue band is the plate the villi grow from
+    # and the cord arrives at, so it is barrier all the way down.
+    out.append(_rect(380, 60, 64, 500, fill=_SVG_CARD,
+                     data_gap="1", data_panel="inside"))
+    out.append(_rect(444, 60, 318, 500, fill=_SVG_ACCENT_TINT,
+                     data_stream="mother", data_panel="inside"))
+    out.append(_rect(762, 60, 68, 500, fill=_SVG_BAND))
+    out.append(_path(_B5_PLACENTA_HATCH, stroke=_SVG_RULE_STRONG, w=2))
+    out.append(_path("M 762,60 V 560", stroke=_SVG_INK, w=2.5))
+
+    # The tissue plate's face, in the four stretches between the villi. Drawn
+    # as one path so that the face and the three outlines together are a single
+    # unbroken frontier — there is no stretch of it that is merely absent.
+    out.append(_path("M 444,60 V 170 M 444,234 V 302 M 444,366 V 434 "
+                     "M 444,498 V 560",
+                     stroke=_SVG_INK, w=2.5,
+                     data_gap="1", data_panel="inside"))
+
+    # All three outlines before any vessel, exactly as Design layered them: the
+    # tissue is the ground the blue is drawn ON, and reversing the order would
+    # let a later villus's fill cover an earlier villus's vessel.
+    for n, outline, _feed, _ret, _loop in _B5_PLACENTA_VILLI:
+        out.append(_path(outline, fill=_SVG_CARD, stroke=_SVG_INK, w=2.5,
+                         data_gap="1", data_villus=n, data_panel="inside"))
+
+    # The cord's two trunks, running the height of the tissue plate.
+    out.append(_path("M 380,110 C 400,110 416,142 416,188 V 452",
+                     stroke=_SVG_BLUE_TEXT, w=6, data_stream="foetus",
+                     data_flow="arriving", data_panel="inside"))
+    out.append(_path("M 396,480 V 176 C 396,148 392,138 380,138",
+                     stroke=_SVG_BLUE_TEXT, w=6, data_stream="foetus",
+                     data_flow="returning", data_panel="inside"))
+    for n, _outline, feed, ret, _loop in _B5_PLACENTA_VILLI:
+        out.append(_path("M 416,%d H 444" % feed, stroke=_SVG_BLUE_TEXT, w=6,
+                         data_stream="foetus", data_flow="arriving",
+                         data_villus=n, data_panel="inside"))
+    for n, _outline, feed, ret, _loop in _B5_PLACENTA_VILLI:
+        out.append(_path("M 444,%d H 396" % ret, stroke=_SVG_BLUE_TEXT, w=6,
+                         data_stream="foetus", data_flow="returning",
+                         data_villus=n, data_panel="inside"))
+    # ⚖️ ONE PATH PER LOOP, carrying both halves of the journey. No `data-flow`
+    # on these, because the path is genuinely both; the two triangles below say
+    # which end is which.
+    for n, _outline, _feed, _ret, loop in _B5_PLACENTA_VILLI:
+        out.append(_path(loop, stroke=_SVG_BLUE_TEXT, w=6,
+                         data_stream="foetus", data_villus=n,
+                         data_panel="inside"))
+
+    # Four drawn triangles on the foetal circuit — one pair on the first
+    # villus's loop, one pair where the cord meets the plate. Triangles, not a
+    # typed arrow character: the latin subsets carry no arrow glyph and a typed
+    # one falls back silently to whatever the system has.
+    out.append(_path("M 536,180 L 536,196 L 552,188 Z", fill=_SVG_BLUE_TEXT,
+                     data_stream="foetus", data_flow="arriving",
+                     data_villus=1, data_panel="inside"))
+    out.append(_path("M 552,208 L 552,224 L 536,216 Z", fill=_SVG_BLUE_TEXT,
+                     data_stream="foetus", data_flow="returning",
+                     data_villus=1, data_panel="inside"))
+    out.append(_path("M 404,102 L 404,118 L 420,110 Z", fill=_SVG_BLUE_TEXT,
+                     data_stream="foetus", data_flow="arriving",
+                     data_panel="inside"))
+    out.append(_path("M 396,130 L 396,146 L 380,138 Z", fill=_SVG_BLUE_TEXT,
+                     data_stream="foetus", data_flow="returning",
+                     data_panel="inside"))
+
+    # The mother's blood, arriving through the uterus wall at the top and
+    # leaving through the same wall at the bottom. Her stream crosses the
+    # uterus wall and stops dead at the tissue plate; it has no branch that
+    # enters a villus, and there is nothing for it to join.
+    out.append(_path("M 812,150 C 776,150 750,142 706,152", stroke=_SVG_ACCENT,
+                     w=7, data_stream="mother", data_flow="arriving",
+                     data_panel="inside"))
+    out.append(_path("M 706,144 L 706,160 L 690,152 Z", fill=_SVG_ACCENT,
+                     data_stream="mother", data_flow="arriving",
+                     data_panel="inside"))
+    out.append(_path("M 700,536 C 754,528 780,536 812,536", stroke=_SVG_ACCENT,
+                     w=7, data_stream="mother", data_flow="returning",
+                     data_panel="inside"))
+    out.append(_path("M 812,528 L 812,544 L 828,536 Z", fill=_SVG_ACCENT,
+                     data_stream="mother", data_flow="returning",
+                     data_panel="inside"))
+
+    # The four crossings, in ink — neither stream's colour, because a substance
+    # belongs to neither. Shaft and head carry the same two hooks so that
+    # `[data-crosses="urea"]` selects a whole arrow, not half of one.
+    for sub, direction, _lab, _lx, _ly, ax, y1, y2, hy in \
+            _B5_PLACENTA_CROSSINGS:
+        out.append(_path("M %d,%d V %d" % (ax, y1, y2), stroke=_SVG_INK, w=3,
+                         data_crosses=sub, data_direction=direction,
+                         data_panel="inside"))
+        out.append(_path("M %d,%d L %d,%d L %d,%d Z"
+                         % (ax - 7, hy, ax + 7, hy, ax, hy + 14),
+                         fill=_SVG_INK,
+                         data_crosses=sub, data_direction=direction,
+                         data_panel="inside"))
+    out.append('</g>')
+
+    out.append(_rect(380, 60, 450, 500, rx=18, stroke=_SVG_INK, w=2.5))
+
+    # ── the words on plate two ───────────────────────────────────────────
+    out.append(_label(452, 94, "the cord — the baby's own", size=16,
+                      weight="700", anchor="start"))
+    out.append(_label(452, 116, "blood, out and back", size=16, weight="700",
+                      anchor="start"))
+    out.append(_label(452, 546, "the wall — never open", size=16,
+                      weight="700", anchor="start"))
+    out.append(_path("M 648,540 L 620,504", stroke=_SVG_INK, w=1.4))
+    out.append(_label(690, 126, "mother's blood in", size=16, weight="400"))
+    out.append(_label(690, 516, "and out again", size=16, weight="400"))
+    # ⚠️ THE SAME TUPLE THAT DREW THE ARROWS. The words and the arrows are two
+    # loops over one list for the reason `_food_web` records: two loops that
+    # each spell their own coordinates are two things free to drift, and the
+    # drift here would print "urea" over an arrow carrying oxygen inward.
+    for _sub, _direction, lab, lx, ly, _ax, _y1, _y2, _hy in \
+            _B5_PLACENTA_CROSSINGS:
+        out.append(_label(lx, ly, lab, size=16, weight="400"))
+    out.append(_mono(770, 84, "uterus", size=14, weight="400"))
+    out.append(_mono(770, 104, "wall", size=14, weight="400"))
+
+    # ── the key ──────────────────────────────────────────────────────────
+    # Three chips, three names. This is what pays for the two hues: with the
+    # key read once, the drawing is legible with the colour discarded.
+    out.append(_rect(30, 600, 34, 20, rx=5, fill=_SVG_ACCENT_TINT,
+                     stroke=_SVG_INK, w=2, data_stream="mother",
+                     data_key="legend"))
+    out.append(_path("M 34,610 H 60", stroke=_SVG_ACCENT, w=5,
+                     data_stream="mother", data_key="legend"))
+    out.append(_label(74, 616, "The mother's blood", size=17, weight="700",
+                      anchor="start"))
+    out.append(_path("M 250,610 H 284", stroke=_SVG_BLUE_TEXT, w=6,
+                     data_stream="foetus", data_key="legend"))
+    out.append(_label(294, 616, "The baby's blood", size=17, weight="700",
+                      anchor="start"))
+    out.append(_rect(470, 600, 34, 20, rx=5, fill=_SVG_CARD, stroke=_SVG_INK,
+                     w=2.5, data_gap="1", data_key="legend"))
+    out.append(_label(514, 616, "The placenta's tissue — the wall",
+                      size=17, weight="400", anchor="start"))
+
+    out.append('</g>')
+    out.append('</svg>')
+    return "".join(out)
+
+
+# ── ⊕ MRB-254 · WS1 #11 · the same pair of guard cells, twice ───────────
+#
+# The three numbers the leaf strip is generated from. Design computes the
+# strip rather than placing it, so these are the only literals: the pores'
+# centres, how far the two guard cells sit either side of a pore, and how much
+# lower epidermis each pore eats. Every run, cell and circle below is derived
+# from them, which is what lets a parity row assert "three pores, all of them
+# in the LOWER surface" against the drawing instead of against a caption.
+_B4_GUARD_PORES = (250, 430, 610)
+_B4_GUARD_DX = 20            # guard-cell centre offset either side of a pore
+_B4_GUARD_GAP = 36           # half-width of the break a pore makes in the run
+
+
+def _guard_cells(fig):
+    """One pair of guard cells drawn twice — turgid and open, flaccid and shut
+    — over a leaf in section that says every pore is on the UNDERSIDE.
+
+    ⚖️ WHY THIS LESSON GETS A DIAGRAM. `stomata-and-gas-exchange-in-plants`
+    carries the mechanism as a single prose sentence about a shape change, and
+    a shape change described in words is a shape change a student memorises
+    rather than sees. The claim is irreducibly spatial: a cell that fills with
+    water BENDS instead of swelling evenly, and the bend is the only thing that
+    opens the hole. Two panels do that; no sentence does.
+
+    ⛔ IT IS THE SAME PAIR, TWICE — the drawing's whole argument, and the thing
+    that would be cheapest to lose. Both panels draw the pair over the same
+    180-unit span (60 to 240 on the left, 480 to 660 on the right), the same
+    wall weights, the same everything: only the bend differs. Draw the
+    closed pair
+    shorter or thinner and the figure quietly starts teaching that guard cells
+    shrink, which is the misconception it exists to remove. `data-state` on
+    every shape in each panel is what lets a row check the two against each
+    other rather than eyeball them.
+
+    ⚖️ THE THICKENED INNER WALL IS THE MECHANISM, so it is a hook and not just
+    a stroke weight. Inner walls are drawn at 5.5 (open) and 6.5 (closed, where
+    the two meet as one line); outer walls at 2, in both. That asymmetry is the
+    REASON the cell curves — the stiff inside cannot stretch, the outside can,
+    so the cell can only bow away from its partner. A defect that dropped the
+    thickening from ONE panel would still look entirely correct in the other,
+    which is exactly why `data-wall="inner"/"outer"` goes on all of them and
+    the assertion is made in both panels rather than once.
+
+    ⚠️ THE PORE IS A HOLE, AND A HOLE IS A CONTRAST, NOT A SHAPE. The
+    open pore is `--ks3-ink-body` under cell bodies in `--ks3-band`, measured
+    at 10.2:1, so it reads as a gap THROUGH the leaf rather than as a dark
+    lozenge lying on it. The words "pore open" sit ON that dark fill in
+    `--ks3-ground`, 11.1:1. Both hold only while the pore stays the darkest
+    thing in the panel; lighten it and the label goes first, silently.
+
+    ⊕ THE STRIP UNDERNEATH CARRIES THE SECOND CLAIM, and carries it by
+    CONSTRUCTION. The lower epidermis and the lower cuticle are built as runs
+    BETWEEN the pores — so each break is a real absence of leaf, not a dark
+    rectangle painted over a solid row. The upper cuticle is one rect spanning
+    the whole strip and cannot be broken by accident. `data-run="1"` marks the
+    surface runs (not the epidermis cells, whose 4-unit gaps are cell walls and
+    not pores), so a row can assert: the upper surface is one unbroken span,
+    the lower surface is four runs with three gaps, and every `data-pore="1"`
+    sits in one of those gaps and carries `data-surface="lower"`.
+
+    ⊕ EVERY HOOK IS SPELLED `data_<name>` AT THE CALL SITE, and `_data_attrs`
+    strips the prefix to emit `data-<name>`. A bare keyword raises there rather
+    than landing as a presentation attribute — so the name written in this file
+    is the name a content-truth row will look for, with no translation step in
+    between. That is the whole reason the prefix is written twice.
+
+    ⊕ THE LABELS CARRY THE STATE TOO, not just the shapes. `_label` and
+    `_mono` take `**data` like every other emitter, so "pore open" and "no gap
+    left" answer to the same `data-state` as the paths they annotate — a row
+    that walks one panel gets the drawing AND the words for it, and a label
+    orphaned into the wrong panel becomes findable rather than merely wrong.
+    The `<g data-state="…">` wrappers stay as the container a row can select
+    on; the elements repeat the hook so neither is the single point of truth.
+
+    """
+    W, H = 860, 580
+    out = [_svg_open(fig, W, H)]
+    out.append('<g stroke-linecap="round" stroke-linejoin="round">')
+
+    # ── the two panels, seen from the surface of the leaf ────────────────
+    out.append(_mono(24, 42, "THE SAME PAIR OF GUARD CELLS, SEEN FROM THE "
+                             "SURFACE", size=14, weight="400", spacing="1.4"))
+
+    # ── open ──
+    out.append('<g data-state="open">')
+    out.append(_rect(30, 60, 380, 320, rx=18, fill=_SVG_CARD,
+                     stroke=_SVG_INK, w=2.5, data_state="open",
+                     data_panel="open"))
+    out.append(_label(54, 98, "Open", size=26, weight="800", anchor="start",
+                      family=_SVG_DISPLAY, spacing="-.5",
+                      data_state="open"))
+    out.append(_mono(54, 120, "water in · firm", size=15,
+                     fill=_SVG_ACCENT_TEXT, weight="400",
+                     data_state="open"))
+
+    # The hole first, then the two cell bodies over it: the pore is the sliver
+    # of dark left showing between them, so it can never be wider than the gap
+    # the two bodies actually leave.
+    out.append(_path("M 60,240 C 82,200 218,200 240,240 "
+                     "C 218,280 82,280 60,240 Z",
+                     fill=_SVG_INK_BODY, data_state="open", data_gap="open"))
+    out.append(_path("M 60,240 C 82,174 218,174 240,240 "
+                     "C 218,200 82,200 60,240 Z",
+                     fill=_SVG_BAND, data_state="open", data_cell="upper"))
+    out.append(_path("M 60,240 C 82,306 218,306 240,240 "
+                     "C 218,280 82,280 60,240 Z",
+                     fill=_SVG_BAND, data_state="open", data_cell="lower"))
+    out.append(_path("M 60,240 C 82,174 218,174 240,240", stroke=_SVG_INK,
+                     w=2, data_state="open", data_cell="upper",
+                     data_wall="outer"))
+    out.append(_path("M 60,240 C 82,306 218,306 240,240", stroke=_SVG_INK,
+                     w=2, data_state="open", data_cell="lower",
+                     data_wall="outer"))
+    out.append(_path("M 60,240 C 82,200 218,200 240,240", stroke=_SVG_INK,
+                     w=5.5, data_state="open", data_cell="upper",
+                     data_wall="inner"))
+    out.append(_path("M 60,240 C 82,280 218,280 240,240", stroke=_SVG_INK,
+                     w=5.5, data_state="open", data_cell="lower",
+                     data_wall="inner"))
+    out.append(_label(150, 246, "pore open", size=17, fill=_SVG_GROUND,
+                      weight="700", data_state="open", data_gap="open"))
+
+    # Design hand-placed both heads rather than deriving them, so they are
+    # reproduced as her literal triangles — a drawn head either way, never a
+    # glyph, but hers to the coordinate.
+    out.append(_path("M 110,150 V 190", stroke=_SVG_INK, w=3,
+                     data_state="open", data_water="in"))
+    out.append(_path("M 103,188 L 117,188 L 110,202 Z", fill=_SVG_INK,
+                     data_state="open", data_water="in"))
+    out.append(_label(110, 142, "water in", size=16, weight="400",
+                      data_state="open", data_water="in"))
+    out.append(_path("M 190,344 V 296", stroke=_SVG_INK, w=3,
+                     data_state="open", data_water="in"))
+    out.append(_path("M 183,298 L 197,298 L 190,284 Z", fill=_SVG_INK,
+                     data_state="open", data_water="in"))
+    out.append(_label(190, 366, "water in", size=16, weight="400",
+                      data_state="open", data_water="in"))
+
+    out.append(_label(256, 204, "thicker", size=16, weight="700",
+                      anchor="start", data_state="open", data_wall="inner"))
+    out.append(_label(256, 226, "inner wall", size=16, weight="700",
+                      anchor="start", data_state="open", data_wall="inner"))
+    out.append(_path("M 252,214 L 218,210", stroke=_SVG_INK, w=1.4,
+                     data_state="open"))
+    out.append('</g>')
+
+    # ── closed ──
+    out.append('<g data-state="closed">')
+    out.append(_rect(450, 60, 380, 320, rx=18, fill=_SVG_CARD,
+                     stroke=_SVG_INK, w=2.5, data_state="closed",
+                     data_panel="closed"))
+    out.append(_label(474, 98, "Closed", size=26, weight="800",
+                      anchor="start", family=_SVG_DISPLAY, spacing="-.5",
+                      data_state="closed"))
+    out.append(_mono(474, 120, "water out · limp", size=15,
+                     fill=_SVG_ACCENT_TEXT, weight="400",
+                     data_state="closed"))
+
+    # No dark shape at all on this side. The absence IS the claim, so the
+    # closed pair's `data-gap` rides the one line where the two inner walls
+    # have met — a row asking "where did the pore go" finds a stroke, not a
+    # fill, and that is the answer.
+    out.append(_path("M 480,240 C 502,210 638,210 660,240 Z", fill=_SVG_BAND,
+                     data_state="closed", data_cell="upper"))
+    out.append(_path("M 480,240 C 502,270 638,270 660,240 Z", fill=_SVG_BAND,
+                     data_state="closed", data_cell="lower"))
+    out.append(_path("M 480,240 C 502,210 638,210 660,240", stroke=_SVG_INK,
+                     w=2, data_state="closed", data_cell="upper",
+                     data_wall="outer"))
+    out.append(_path("M 480,240 C 502,270 638,270 660,240", stroke=_SVG_INK,
+                     w=2, data_state="closed", data_cell="lower",
+                     data_wall="outer"))
+    out.append(_path("M 480,240 H 660", stroke=_SVG_INK, w=6.5,
+                     data_state="closed", data_cell="both",
+                     data_wall="inner", data_gap="closed"))
+
+    out.append(_path("M 530,232 V 190", stroke=_SVG_INK, w=3,
+                     data_state="closed", data_water="out"))
+    out.append(_path("M 523,192 L 537,192 L 530,178 Z", fill=_SVG_INK,
+                     data_state="closed", data_water="out"))
+    out.append(_label(530, 170, "water out", size=16, weight="400",
+                      data_state="closed", data_water="out"))
+    out.append(_path("M 610,248 V 290", stroke=_SVG_INK, w=3,
+                     data_state="closed", data_water="out"))
+    out.append(_path("M 603,288 L 617,288 L 610,302 Z", fill=_SVG_INK,
+                     data_state="closed", data_water="out"))
+    out.append(_label(610, 324, "water out", size=16, weight="400",
+                      data_state="closed", data_water="out"))
+
+    out.append(_label(676, 204, "the two inner", size=16, weight="700",
+                      anchor="start", data_state="closed",
+                      data_wall="inner"))
+    out.append(_label(676, 226, "walls meet —", size=16, weight="700",
+                      anchor="start", data_state="closed",
+                      data_wall="inner"))
+    out.append(_label(676, 248, "no gap left", size=16, weight="700",
+                      anchor="start", data_state="closed",
+                      data_gap="closed"))
+    out.append(_path("M 672,232 L 646,239", stroke=_SVG_INK, w=1.4,
+                     data_state="closed"))
+    out.append('</g>')
+
+    # ── and where they are: the same leaf, sliced ────────────────────────
+    out.append(_mono(24, 424, "THE SAME LEAF, SLICED — TOP OF THE LEAF "
+                              "AT THE TOP", size=14, weight="400",
+                     spacing="1.4"))
+    out.append(_rect(30, 440, 800, 106, fill=_SVG_GROUND))
+
+    # The upper cuticle: ONE rect, 30 to 830. Not a loop, deliberately — the
+    # claim is that it is unbroken, and a run that is generated is a run that
+    # a future edit can break. It carries `data-run="1"` so the assertion has
+    # a span to measure rather than a shape to trust.
+    out.append(_rect(30, 440, 800, 10, fill=_SVG_BAND, stroke=_SVG_INK, w=2,
+                     data_surface="upper", data_layer="cuticle", data_run="1"))
+
+    # Upper epidermis. The 4-unit gaps between these are CELL WALLS, not
+    # pores, which is why they get no `data-run` — the surface claim is made
+    # on the cuticle, and these would fail an "unbroken" test for the wrong
+    # reason if they answered to the same hook.
+    x = 34
+    while x + 96 <= 826:
+        out.append(_rect(x, 452, 96, 26, rx=7, fill=_SVG_CARD,
+                         stroke=_SVG_INK, w=1.8, data_surface="upper",
+                         data_layer="epidermis"))
+        x += 100
+
+    # Mesophyll: neither surface, so no `data-surface` at all. A cell that
+    # answered to "upper" or "lower" here would make both claims unmeasurable.
+    cx = 74
+    while cx <= 796:
+        out.append(_circle(cx, 494, 14, fill=_SVG_CARD, stroke=_SVG_INK,
+                           w=1.8, data_layer="mesophyll"))
+        cx += 103
+
+    # Lower epidermis, built as runs BETWEEN the pores. Whole cells at 58 wide
+    # while there is room for one, then whatever is left over if it is at
+    # least 20 — below that it would draw as a sliver that reads as a crack.
+    cursor = 34
+    for p in _B4_GUARD_PORES:
+        stop = p - _B4_GUARD_GAP
+        x = cursor
+        while stop - x >= 62:
+            out.append(_rect(x, 510, 58, 26, rx=7, fill=_SVG_CARD,
+                             stroke=_SVG_INK, w=1.8, data_surface="lower",
+                             data_layer="epidermis"))
+            x += 62
+        if stop - x >= 20:
+            out.append(_rect(x, 510, stop - x, 26, rx=7, fill=_SVG_CARD,
+                             stroke=_SVG_INK, w=1.8, data_surface="lower",
+                             data_layer="epidermis"))
+        cursor = p + _B4_GUARD_GAP
+    x = cursor
+    while 826 - x >= 62:
+        out.append(_rect(x, 510, 58, 26, rx=7, fill=_SVG_CARD,
+                         stroke=_SVG_INK, w=1.8, data_surface="lower",
+                         data_layer="epidermis"))
+        x += 62
+    if 826 - x >= 20:
+        out.append(_rect(x, 510, 826 - x, 26, rx=7, fill=_SVG_CARD,
+                         stroke=_SVG_INK, w=1.8, data_surface="lower",
+                         data_layer="epidermis"))
+
+    # The pores themselves — the same dark as the open pore above, so the two
+    # halves of the figure agree about what a hole looks like. Every one of
+    # them carries `data-surface="lower"`: that pairing, walked across all
+    # three, is the claim.
+    for i, p in enumerate(_B4_GUARD_PORES):
+        out.append(_rect(p - 8, 510, 16, 36, rx=6, fill=_SVG_INK_BODY,
+                         data_pore="1", data_pore_index=i + 1,
+                         data_surface="lower"))
+
+    # Two guard cells per pore, in section — the same cells the panels above
+    # draw from the surface, which is why they take the same body fill.
+    for i, p in enumerate(_B4_GUARD_PORES):
+        for cxg in (p - _B4_GUARD_DX, p + _B4_GUARD_DX):
+            out.append(_circle(cxg, 523, 12, fill=_SVG_BAND, stroke=_SVG_INK,
+                               w=2, data_guard="1", data_pore_index=i + 1,
+                               data_surface="lower"))
+
+    # Lower cuticle, broken at every pore for the same reason as the
+    # epidermis: the gap is an absence, not an overlay.
+    cx0 = 30
+    for p in _B4_GUARD_PORES:
+        out.append(_rect(cx0, 536, (p - _B4_GUARD_GAP) - cx0, 10,
+                         fill=_SVG_BAND, stroke=_SVG_INK, w=2,
+                         data_surface="lower", data_layer="cuticle",
+                         data_run="1"))
+        cx0 = p + _B4_GUARD_GAP
+    out.append(_rect(cx0, 536, 830 - cx0, 10, fill=_SVG_BAND, stroke=_SVG_INK,
+                     w=2, data_surface="lower", data_layer="cuticle",
+                     data_run="1"))
+
+    out.append(_label(30, 572, "Three pores, every one of them on the "
+                               "underside — and the top surface "
+                               "unbroken.", size=17, weight="700",
+                      anchor="start"))
+    out.append(_path("M 430,560 V 548", stroke=_SVG_INK, w=1.4))
+
+    out.append('</g>')
+    out.append('</svg>')
+    return "".join(out)
+
+
+# ── ⊕ MRB-254 · WS1 #4, b3-villus-labelled — Design's fig-04, ported ─────
+#
+# Every number below is Design's. The four tables are the four `<sc-for>`
+# loops from her `renderVals()`, moved out of the function body because they
+# are the parts a reader might want to check against her file, and burying a
+# fourteen-element coordinate list inside 200 lines of drawing hides it.
+
+# Dissolved food in the gut lumen, above and below the villus. Literal in her
+# delivery too — the scatter is composed, not generated, so there is no jitter
+# function to port and nothing here can drift run to run.
+#
+# ⊕ FIVE OF THE FOURTEEN ARE MOVED FROM DESIGN'S COORDINATES, and the reason is
+# always the same: in her delivery they sit ON a word. A 5px disc struck
+# through "digested food, in the gut" does not read as a scatter dot with a
+# label near it, it reads as a typo in the label. Their exact positions carry
+# nothing — this is the one thing on the plate that is decoration rather than
+# anatomy, so it is the thing that gets out of the way of the words. Her
+# originals are in the comment on each line; count, radius, paint and the
+# above/below-the-villus distribution are all unchanged.
+_VILLUS_FOOD = ((90, 422),    # was (90, 400)  — was inside "digested food…"
+                (150, 416),
+                (220, 417),   # was (220, 398) — was inside "…in the gut"
+                (300, 414),
+                (360, 400),
+                (470, 414),
+                (560, 416),   # was (560, 400) — was inside "amino acids"
+                (700, 470), (740, 520), (96, 600), (200, 604), (330, 596),
+                (712, 606),   # was (470, 606) — was inside the closing line
+                (770, 598))   # was (600, 598) — was inside the closing line
+
+# The three things that cross the wall. `(x, label, hook)` — the hook is the
+# label slugged, and it is what `data-crossing` carries, so a parity row can
+# name the three molecules rather than counting three anonymous arrows.
+_VILLUS_CROSSINGS = ((400, "glucose", "glucose"),
+                     (520, "amino acids", "amino-acids"),
+                     (640, "fatty acids", "fatty-acids"))
+
+# The callout wedges, in Design's drawing order: `(wedge, upper edge, lower
+# edge, opened FROM, opened INTO)`. The last two are the whole point of the
+# figure expressed as data — see the note on nesting in the docstring.
+_VILLUS_CALLOUTS = (
+    ("M 200,178 L 310,70 L 310,300 L 200,222 Z",
+     "M 200,178 L 310,70", "M 200,222 L 310,300", "tube", "villi"),
+    ("M 458,168 L 590,70 L 590,300 L 458,212 Z",
+     "M 458,168 L 590,70", "M 458,212 L 590,300", "villi", "microvilli"),
+    # ⊕ MRB-254 · THIS ONE'S MOUTH WAS 120–700 AT y=378 AND IS NOW 199–583 AT
+    # y=352. Read the note in the docstring before changing it back.
+    ("M 386,300 L 199,352 L 583,352 L 430,300 Z",
+     "M 386,300 L 199,352", "M 430,300 L 583,352", "villi", "section"),
+)
+
+
+def _villus(fig):
+    """Folding at three scales, each opened out of the one before it, then one
+    villus cut lengthways so the wall can be counted.
+
+    ⚖️ THE NESTING IS THE FIGURE, and it is drawn rather than stated. "The gut
+    is ridged, the ridges carry villi, the villi carry microvilli" is three
+    sentences, and three sentences are three things to memorise — a student
+    who meets them as a list has no reason to believe they are the same fact
+    at three magnifications, and routinely comes away thinking villi and
+    microvilli are two different structures somewhere else in the gut. So each
+    frame is entered through a wedge whose narrow end sits on the exact spot in
+    the previous frame that it magnifies: frame 2 opens out of the dashed ring
+    on the tube, frame 3 opens out of the dashed rings round two villi, and the
+    section below opens out of the same row of villi. The chain is physically
+    on the page, and a reader can follow it backwards.
+
+    ⚖️ AND THE CHAIN IS ASSERTABLE, not just drawn. Each frame carries
+    `data-scale` (`tube`, `villi`, `microvilli`; the section panel carries
+    `data-section` instead, since it is a cut rather than a magnification), and
+    each wedge carries `data-zoom-from` / `data-zoom-to`. A content-truth row
+    can then check that every wedge starts at the scale before the one it ends
+    at and at no other — which is the one defect that would be invisible in a
+    screenshot, because a wedge drawn from the WRONG frame still looks like a
+    wedge. That is the ENCODING rather than the frame, in MRB-257 decision 4's
+    sense.
+
+    ⚖️ THE WALL IS ONE CELL THICK, AND THE DRAWING LETS THAT BE COUNTED. The
+    reason the folding is worth doing at all is on the other side of it: the
+    barrier between the gut and the blood is a single cell. A drawing can claim
+    that with a label and a leader — and a label points at ONE PLACE, so a wall
+    that was one cell thick where the arrow lands and vaguely two cells thick
+    further along would pass. Design divides the wall with cross lines that
+    each run the FULL thickness, from the outer outline to the inner one, along
+    the whole length of the villus and on both faces of it. So every cross line
+    carries `data-wall-cell` (its index), `data-wall-edge` (which face) and
+    `data-wall-span` (30 units — the gap between the outer and inner wall
+    paths, which carry `data-wall="outer"` and `data-wall="inner"`). A row can
+    count the cells and assert that not one of them is subdivided, anywhere.
+
+    ⚠️ `Math.round`, NOT `round`. The villi stand on a fold, so their bases sit
+    on a half sine — `250 - Math.round(Math.sin(i / 11 * π) * 8)`. Python's
+    `round` is banker's rounding and JavaScript's `Math.round` is round-half-up,
+    so the two disagree on any exact `.5`. None of these twelve values is a tie
+    today, which is exactly why this would have been safe until somebody
+    changed the amplitude from 8 and then quietly lost a pixel on one villus.
+    `math.floor(v + 0.5)` is `Math.round` for non-negative `v`, which all of
+    these are, so the port is the JS rather than a near-miss of it.
+
+    ⚠️ THE ONE HUE, AND WHY IT IS NOT CARRYING A FACT ALONE. `--ks3-blue-text`
+    paints the capillary, and nothing else on the plate. It never has to be
+    seen as blue: the capillary is named in a bold label with a leader line
+    onto it, the direction of flow is two DRAWN triangles rather than a tint,
+    and the three crossing arrows are ink like everything else. Design's own
+    NOTES-FIGURES says this hue appears "in #7 only" — her delivery uses it
+    here too, and under MRB-205 the delivery wins. Recorded in the port report.
+
+    ⛔ EVERY ARROWHEAD IS A DRAWN TRIANGLE AT DESIGN'S OWN COORDINATES, not
+    `_arrow`. She placed all five heads by hand — three crossing the wall, two
+    inside the capillary — and `_arrow` would recompute them from an angle and
+    land them a fraction off her line. `_arrow` is for a head this file
+    computes; these are hers.
+
+    ⊕ THREE COLLISIONS IN DESIGN'S DELIVERY ARE REPAIRED HERE, and nothing
+    else about the drawing is touched: with these three reverted, a render of
+    this drawer is byte-identical to a render of her SVG. Each was a collision
+    rather than a composition — the three crossing arrows drawn through the
+    words that name them, five food discs struck through two labels, and the
+    third frame's heading running four units off the edge of the viewBox. The
+    rule applied each time was that the thing carrying the science holds its
+    position and the thing carrying none moves: the shafts stay and the labels
+    step aside; the words stay and the scatter moves; the heading is re-anchored
+    rather than re-worded. Each site says what it was.
+
+    ⚠️ CLIP IDS ARE DERIVED FROM THE FIGURE ID. Design's are `f4A`…`f4D`, which
+    are unique inside a review file that holds one figure. A lesson page can
+    hold several of these drawings, `id` is document-scoped, and a duplicate
+    `clipPath` id means the second figure silently clips to the first one's
+    rectangle. Nothing warns; the drawing just loses half of itself.
+    """
+    W, H = 860, 640
+    cid = e(fig["id"])
+    out = [_svg_open(fig, W, H)]
+
+    # The four windows. Raw markup rather than an emitter call because a
+    # <clipPath> carries no paint — there is no paint law to keep here, and
+    # `r_triangle` already sets this precedent in this file.
+    out.append(
+        '<defs>'
+        '<clipPath id="%s-c-tube"><rect x="30" y="70" width="240" '
+        'height="230" rx="16"/></clipPath>'
+        '<clipPath id="%s-c-villi"><rect x="310" y="70" width="240" '
+        'height="230" rx="16"/></clipPath>'
+        '<clipPath id="%s-c-micro"><rect x="590" y="70" width="240" '
+        'height="230" rx="16"/></clipPath>'
+        '<clipPath id="%s-c-section"><rect x="30" y="378" width="800" '
+        'height="252" rx="16"/></clipPath>'
+        '</defs>' % (cid, cid, cid, cid))
+
+    # Design's root group. Round caps and joins on everything: the villi, the
+    # microvilli and the folds are all organic outlines, and a mitred join on a
+    # 2px stroke round a 14-unit finger reads as a spike.
+    out.append('<g stroke-linecap="round" stroke-linejoin="round">')
+
+    # ── the callout wedges, drawn first so every frame sits on top of them ──
+    #
+    # ⚠️ EVERY HOOK IS SPELLED `data_…` AT THE CALL SITE, and `_data_attrs`
+    # strips the prefix back off. A bare `zoom_from=` now raises. Both halves
+    # matter: the call site reads as the attribute it produces, and a keyword
+    # that is NOT a hook cannot slip through and land as a presentation
+    # attribute that does nothing while looking like it does something.
+    for wedge, edge_hi, edge_lo, src, dst in _VILLUS_CALLOUTS:
+        out.append(_path(wedge, fill=_SVG_ACCENT_TINT, stroke="none",
+                         data_zoom_from=src, data_zoom_to=dst))
+        for edge in (edge_hi, edge_lo):
+            out.append(_path(edge, stroke=_SVG_RULE_STRONG, w=1.6, dash="6 5",
+                             data_zoom_from=src, data_zoom_to=dst))
+
+    # ── 1 · the tube, cut open at the near end ──────────────────────────────
+    out.append(_mono(30, 58, "1 · RINGED FOLDS", size=14, weight="400",
+                     spacing="1.4"))
+    out.append(_rect(30, 70, 240, 230, rx=16, fill=_SVG_CARD, stroke=_SVG_INK,
+                     w=2.5, data_scale="tube"))
+    out.append('<g clip-path="url(#%s-c-tube)">' % cid)
+    out.append(_path("M 60,150 H 262 M 60,250 H 262", stroke=_SVG_INK, w=2.5))
+    # Five ring-folds down the run of the tube. Half-ellipse arcs, so they read
+    # as rings seen in perspective rather than as bars across a flat strip.
+    out.append(_path(
+        "M 100,150 A 16,50 0 0 1 100,250 M 140,150 A 16,50 0 0 1 140,250 "
+        "M 180,150 A 16,50 0 0 1 180,250 M 220,150 A 16,50 0 0 1 220,250 "
+        "M 260,150 A 16,50 0 0 1 260,250", stroke=_SVG_INK, w=2.5))
+    out.append(_ellipse(60, 200, 16, 50, fill=_SVG_BAND, stroke=_SVG_INK,
+                        w=2.5))
+    out.append('</g>')
+    # The ring the next frame is opened from, drawn outside the clip so it can
+    # sit on the frame's own edge.
+    out.append(_circle(180, 200, 30, stroke=_SVG_INK, w=1.6, dash="6 5"))
+    out.append(_label(30, 326, "Not a smooth pipe. The wall", size=17,
+                      fill=_SVG_INK_BODY, weight="400", anchor="start"))
+    out.append(_label(30, 348, "is thrown into ridges.", size=17,
+                      fill=_SVG_INK_BODY, weight="400", anchor="start"))
+
+    # ── 2 · villi standing on one fold ──────────────────────────────────────
+    out.append(_mono(310, 58, "2 · VILLI ON EVERY FOLD", size=14,
+                     weight="400", spacing="1.4"))
+    out.append(_rect(310, 70, 240, 230, rx=16, fill=_SVG_CARD, stroke=_SVG_INK,
+                     w=2.5, data_scale="villi"))
+    out.append('<g clip-path="url(#%s-c-villi)">' % cid)
+    for i in range(12):
+        x = 322 + i * 19
+        # See ⚠️ in the docstring: this is `Math.round`, spelled so.
+        base = 250 - int(math.floor(math.sin((i / 11) * math.pi) * 8 + 0.5))
+        top = base - 74
+        out.append(_path(
+            "M %s,%s V %s Q %s,%s %s,%s V %s Z"
+            % (_n(x), _n(base), _n(top + 9), _n(x + 7), _n(top - 2),
+               _n(x + 14), _n(top + 9), _n(base)),
+            fill=_SVG_BAND, stroke=_SVG_INK, w=2))
+    # The fold the villi stand on, drawn after them so it closes their bases.
+    out.append(_path("M 310,246 C 380,238 480,238 550,246", stroke=_SVG_INK,
+                     w=3))
+    out.append(_path("M 310,272 C 380,264 480,264 550,272", stroke=_SVG_INK,
+                     w=2))
+    out.append('</g>')
+    out.append(_circle(404, 190, 26, stroke=_SVG_INK, w=1.6, dash="6 5"))
+    out.append(_circle(470, 190, 26, stroke=_SVG_INK, w=1.6, dash="6 5"))
+    # ⊕ MRB-254 · THREE LINES FROM x=360, WHERE THERE WERE TWO FROM x=310.
+    # This caption and the third callout wedge cannot both be where Design put
+    # them, and the arithmetic is in the docstring. The short version: the
+    # wedge's apex sits at x 386–430 on this frame's bottom edge, this caption
+    # begins 9.7 units below that edge and runs 310–502, and a straight edge
+    # leaving the apex is still inside those numbers when it gets there. So the
+    # caption is set narrow enough to sit BETWEEN the two edges rather than
+    # across them — 'Every ridge' is 81 units against a 107-unit opening at the
+    # first line's top, which is the tightest of the three and the reason the
+    # first line is that short.
+    out.append(_label(360, 326, "Every ridge", size=17,
+                      fill=_SVG_INK_BODY, weight="400", anchor="start"))
+    out.append(_label(360, 348, "is furred with villi,", size=17,
+                      fill=_SVG_INK_BODY, weight="400", anchor="start"))
+    out.append(_label(360, 370, "standing upright.", size=17,
+                      fill=_SVG_INK_BODY, weight="400", anchor="start"))
+
+    # ── 3 · microvilli on one villus cell ───────────────────────────────────
+    # ⊕ PINNED TO THE FRAME'S RIGHT EDGE, NOT ITS LEFT. Headings 1 and 2 are
+    # short enough to start at their frame's left edge; this one is 274 units
+    # of tracked mono and, started at 590, its last letter lands at 864 — four
+    # units OUTSIDE an 860 viewBox, so the "L" is simply cut off. Anchored to
+    # the frame's right edge instead it ends at 830, which is the same 30-unit
+    # margin frame 1 keeps on the left, and it ends there whatever the font
+    # does: an end anchor spends a metric change on the far end of the string,
+    # where there is 20 units of clear air before heading 2, rather than on the
+    # plate edge, where there is none.
+    out.append(_mono(830, 58, "3 · MICROVILLI ON EVERY CELL", size=14,
+                     weight="400", spacing="1.4", anchor="end"))
+    out.append(_rect(590, 70, 240, 230, rx=16, fill=_SVG_CARD, stroke=_SVG_INK,
+                     w=2.5, data_scale="microvilli"))
+    out.append('<g clip-path="url(#%s-c-micro)">' % cid)
+    for i in range(22):
+        x = 614 + i * 9
+        out.append(_path(
+            "M %s,200 V 174 Q %s,168 %s,174 V 200 Z"
+            % (_n(x), _n(x + 2.5), _n(x + 5)),
+            fill=_SVG_BAND, stroke=_SVG_INK, w=1.6))
+    # The cell body they stand on, and its nucleus — so the frame is legible as
+    # ONE CELL rather than as a strip of texture.
+    out.append(_path("M 610,196 H 812 V 268 H 610 Z", fill=_SVG_BAND,
+                     stroke=_SVG_INK, w=2.5))
+    out.append(_circle(710, 238, 11, fill=_SVG_CARD, stroke=_SVG_INK, w=2))
+    out.append('</g>')
+    out.append(_label(590, 326, "And every cell of every", size=17,
+                      fill=_SVG_INK_BODY, weight="400", anchor="start"))
+    out.append(_label(590, 348, "villus is furred again.", size=17,
+                      fill=_SVG_INK_BODY, weight="400", anchor="start"))
+
+    # ── the section: one villus, cut lengthways ─────────────────────────────
+    out.append(_mono(30, 370, "ONE VILLUS, CUT LENGTHWAYS", size=14,
+                     weight="400", spacing="1.4"))
+    out.append(_rect(30, 378, 800, 252, rx=16, fill=_SVG_BAND, stroke=_SVG_INK,
+                     w=2.5, data_section="one-villus"))
+    out.append('<g clip-path="url(#%s-c-section)">' % cid)
+    for cx, cy in _VILLUS_FOOD:
+        out.append(_circle(cx, cy, 5, fill=_SVG_CARD, stroke=_SVG_INK, w=1.6))
+    # Outer outline and inner face. The 30 units between them ARE the wall, and
+    # `data-wall-span` on every cross line below is measured against this gap.
+    out.append(_path("M 30,432 H 640 C 706,432 706,576 640,576 H 30 Z",
+                     fill=_SVG_CARD, stroke=_SVG_INK, w=2.5,
+                     data_wall="outer"))
+    out.append(_path("M 30,462 H 628 C 676,462 676,546 628,546 H 30",
+                     stroke=_SVG_INK, w=2.5, data_wall="inner"))
+    for i, x in enumerate(range(74, 605, 44)):
+        out.append(_path("M %s,432 V 462" % _n(x), stroke=_SVG_INK, w=1.6,
+                         data_wall_cell=i + 1, data_wall_edge="top",
+                         data_wall_span=30))
+        out.append(_path("M %s,546 V 576" % _n(x), stroke=_SVG_INK, w=1.6,
+                         data_wall_cell=i + 1, data_wall_edge="bottom",
+                         data_wall_span=30))
+    # The capillary, and the blood going up the villus and back down it.
+    out.append(_path("M 30,492 H 592 C 622,492 622,516 592,516 H 30",
+                     stroke=_SVG_BLUE_TEXT, w=7, data_capillary="1"))
+    out.append(_path("M 120,485 L 120,499 L 136,492 Z", fill=_SVG_BLUE_TEXT,
+                     stroke="none"))
+    out.append(_path("M 136,509 L 136,523 L 120,516 Z", fill=_SVG_BLUE_TEXT,
+                     stroke="none"))
+    # The three crossings: shaft, then Design's own head triangle.
+    for x, _text, hook in _VILLUS_CROSSINGS:
+        out.append(_path("M %s,392 V 448" % _n(x), stroke=_SVG_INK, w=3,
+                         data_crossing=hook))
+        out.append(_path("M %s,446 L %s,446 L %s,460 Z"
+                         % (_n(x - 7), _n(x + 7), _n(x)),
+                         fill=_SVG_INK, stroke="none", data_crossing=hook))
+    out.append('</g>')
+
+    # ── the labels on the section, outside the clip ─────────────────────────
+    # ⊕ BESIDE THE SHAFT, NOT ON IT. Design centres each of these three on its
+    # own arrow at the same y the arrow starts, so every shaft is drawn
+    # straight down through the middle of the word that names it. The shafts
+    # stay exactly where she put them — they are the science — and the labels
+    # step 10 units to the right of them, reading away from the arrow they
+    # belong to. Nothing else fits: the shaft spans the full depth of the
+    # lumen at that x, and there is no room above it between the panel edge
+    # and the cap-height of a 16px label.
+    for x, text, _hook in _VILLUS_CROSSINGS:
+        out.append(_label(x + 10, 404, text, size=16, fill=_SVG_INK,
+                          weight="400", anchor="start"))
+    out.append(_label(52, 404, "digested food, in the gut", size=16,
+                      fill=_SVG_INK, weight="400", anchor="start"))
+    out.append(_label(52, 482, "the wall — one cell thick", size=16,
+                      fill=_SVG_INK, weight="700", anchor="start"))
+    out.append(_path("M 240,472 L 262,462", stroke=_SVG_INK, w=1.4))
+    out.append(_label(160, 540, "a capillary, right inside the villus",
+                      size=16, fill=_SVG_INK, weight="700", anchor="start"))
+    out.append(_path("M 300,530 L 320,518", stroke=_SVG_INK, w=1.4))
+    out.append(_mono(700, 608, "one cell, and the food is in the blood",
+                     size=14, weight="400", anchor="end"))
+
+    out.append('</g>')
+    out.append('</svg>')
+    return "".join(out)
+
+
+# ── ⊕ MRB-254 · WS1 #3 · a leaf, sliced through ─────────────────────────
+#
+# The literals Design's `renderVals()` generates the slice's interior from.
+# Everything inside the section is derived here rather than placed, which is
+# what gives a content-truth row something to bite on: the palisade count, the
+# chloroplast count per cell, and the one gap in the underside are all
+# properties of these tuples, not of a caption that says so.
+#
+# ⚠️ THE LAYER ORDER IS THE FIGURE'S WHOLE CLAIM, so it lives in one dict and
+# every band, every cell and every label reads its rank out of it. Rung 1 of
+# this lesson asks WHY palisade cells are at the top; the rule block gives each
+# feature an explicit position. A defect that swapped palisade and spongy
+# mesophyll would still look exactly like a leaf, and would teach the answer to
+# rung 1 backwards. Nothing in the drawing may know its own rank independently.
+_B7_LEAF_ORDER = {
+    "upper-cuticle":    1,
+    "upper-epidermis":  2,
+    "palisade":         3,
+    "spongy-mesophyll": 4,
+    "lower-epidermis":  5,
+    "lower-cuticle":    6,
+}
+
+# Ten palisade cells across the 420-unit slice, and the four rows of
+# chloroplasts inside each. The COUNT is the fact — most of a leaf's
+# chloroplasts are in this layer — so Design places them rather than
+# suggesting them, and so does this.
+_B7_LEAF_PAL_X = (152, 194, 236, 278, 320, 362, 404, 446, 488, 530)
+_B7_LEAF_CHL_ROWS = (166, 186, 206, 226)
+
+# The spongy mesophyll: cx, cy, rx, ry. Nine cells, hand-placed by Design at
+# two staggered depths so the air between them reads as space rather than as
+# grout.
+_B7_LEAF_SPONGY = (
+    (180, 270, 27, 20), (176, 322, 25, 18),
+    (238, 264, 24, 18), (246, 318, 27, 20),
+    (400, 268, 24, 18), (398, 322, 22, 17),
+    (470, 266, 26, 19), (474, 320, 24, 18),
+    (536, 290, 26, 20),
+)
+
+# Eight of those nine cells keep ONE chloroplast, offset (+6, +2) off centre.
+# Eight against eighty is the comparison the caption asks a student to make.
+_B7_LEAF_SPONGY_CHL = (
+    (180, 270), (238, 264), (400, 268), (470, 266),
+    (176, 322), (246, 318), (474, 320), (536, 290),
+)
+
+# Upper epidermis: seven whole cells. Lower epidermis: six, and the sixth run
+# starts at 488 because the pore has eaten what would have been between them.
+_B7_LEAF_UPPER_EPI = (152, 212, 272, 332, 392, 452, 512)
+_B7_LEAF_LOWER_EPI = ((152, 56), (212, 56), (272, 56), (332, 48),
+                      (488, 38), (530, 38))
+
+# THE PORE IS THE SINGLE SOURCE OF TRUTH FOR THE UNDERSIDE. It is the 30
+# units between x 420 and x 450, and it is an absence rather than a shape: the
+# two runs of lower cuticle and the two guard cells are all derived from it, so
+# a defect that moved the pore moves everything that defines it rather than
+# leaving a hole and a lid in different places. Design's literals — cuticle
+# runs at 150 wide 270 and 450 wide 120, guard cells at 400 and 470 radius 20 —
+# come back out of these three numbers exactly.
+_B7_LEAF_PORE = (420, 450)
+_B7_LEAF_GUARD_R = 20
+_B7_LEAF_SECTION_X = (150, 570)
+
+# The number the dimension line prints, held once so the label and the mark
+# cannot drift apart. `data-scale-mm` on both is the same value read twice.
+_B7_LEAF_MM = "0.5"
+
+
+def _leaf_section(fig):
+    """A leaf in cross-section — cuticle, epidermis, palisade, spongy
+    mesophyll, vein, stoma — with carbon dioxide in through the pore and water
+    up the vein, over a slice marked less than half a millimetre thick.
+
+    ⚖️ WHY THIS LESSON NEEDS IT AT ALL. `leaves-built-for-the-job` is anatomy
+    end to end: its rule block hands every feature an explicit POSITION
+    ("Palisade cells · Top layer", "Stomata · Underside") and rung 1 asks why
+    the palisade cells are the ones at the top. The bench turns four dials into
+    two percentages and a habitat verdict — it never draws the leaf. And no
+    leaf cross-section exists anywhere else on the site, so this plate is the
+    only place a student ever sees the thing the whole lesson describes. A
+    position stated in a table and never drawn is a position that gets
+    memorised in whatever order it was read.
+
+    ⛔ THE ORDER OF THE LAYERS IS THE ENCODING, and it is the one defect that
+    would be invisible. Swap palisade and spongy mesophyll and the drawing is
+    still recognisably a leaf, still labelled, still pretty — and it now
+    teaches rung 1's answer backwards. So every band, every cell inside it and
+    every label naming it carries `data-layer` AND `data-order`, read out of
+    `_B7_LEAF_ORDER`, and a row walks all six by drawn y rather than checking
+    that one label exists somewhere. The labels are safe to carry the hooks
+    because their own baselines run in the same order as the bands they name;
+    a row taking min-y or mean-y per rank gets a monotonic sequence either way.
+
+    ⚖️ THE SURFACE HOOK IS SPELLED ON THE CUTICLE AND THE EPIDERMIS ONLY.
+    `data-surface="upper"/"lower"` goes on exactly the layers that HAVE a
+    surface, so "everything marked lower is in the bottom of the slice" stays
+    an assertion with content. Palisade and spongy mesophyll get no
+    `data-surface` at all — a mesophyll cell answering to "upper" would make
+    the stoma claim unmeasurable by flooding it.
+
+    ⚠️ THE PORE IS AN ABSENCE, SO THE HOOK RIDES WHAT DEFINES IT. Design draws
+    no stoma shape — and she is right not to: a hole painted on as a dark
+    lozenge is a hole a later edit can move without breaking anything. What she
+    draws is a lower cuticle in TWO runs with 30 units of nothing between them,
+    and two guard cells either side of that nothing. So `data-stoma="1"` sits
+    on the two guard cells, `data-run` + `data-run-index` on the cuticle runs
+    (one run on top, two underneath), and a row asserts the stoma is in the
+    LOWER surface from the guard cells' own `data-surface`, and that the gap
+    between run 1 and run 2 is where the carbon-dioxide route crosses. Guard
+    cells carrying `data-layer="lower-epidermis"` is not a convenience: guard
+    cells ARE modified epidermal cells, and the rank is true.
+
+    ⊕ BOTH ROUTES ARE WALKED SEGMENT BY SEGMENT, not asserted at their start.
+    `data-route` + `data-step` is on every piece of both arrows, so a row
+    checks continuity as well as endpoints: carbon dioxide from outside the
+    leaf (step 1) through the pore (step 2) up an air space into a palisade
+    cell (step 3), and water in along the vein (step 1) then upward inside it
+    (step 2). Design drew the carbon-dioxide run as ONE straight path; it is
+    subdivided here at the two boundaries it actually crosses — the underside
+    of the leaf and the top of the guard cells. Three collinear segments of the
+    same weight and the same round cap render as the line she drew, to the
+    pixel, and the last one still stops at 250 so her arrowhead is the only
+    thing at the tip. A route hooked only at its first segment is a route a row
+    can only check the beginning of, which is the assertion that measures the
+    frame again.
+
+    ⚠️ ONE THING IS DRAWN IN A DIFFERENT ORDER FROM DESIGN'S DELIVERY, and it
+    is a defect fix, not a preference. Her SVG paints the chloroplast loop —
+    which carries the palisade's eighty AND the spongy layer's eight — BEFORE
+    the spongy cell bodies, and those bodies are opaque `--ks3-card`. All eight
+    spongy chloroplasts are therefore painted over and none of them renders. Her
+    own source comment beside them reads "the spongy layer keeps a few, and
+    visibly fewer", and her figcaption asks the student to count the palisade's
+    against the spongy cells below — so the delivery contradicts both. The
+    spongy bodies are painted first here and every chloroplast after them.
+    Nothing else moves: no palisade chloroplast reaches y 244, no chloroplast
+    at all falls inside the vein, so the rest of the plate is byte-for-byte the
+    same drawing. The `<desc>` is amended to match, because it now walks a
+    drawing with eight visible chloroplasts in it that hers did not.
+
+    ⊕ THE THICKNESS PRINTS ITS OWN MARK. `_B7_LEAF_MM` is formatted into the
+    label and emitted as `data-scale-mm` on both the dimension path and the
+    text, so the number a student reads and the number a row measures against
+    are one string. Two literals would drift the first time either is edited.
+    """
+    W, H = 860, 500
+    out = [_svg_open(fig, W, H)]
+    out.append('<g stroke-linecap="round" stroke-linejoin="round">')
+
+    out.append(_mono(24, 44, "A SLICE THROUGH THE LEAF · TOP OF THE LEAF AT "
+                             "THE TOP", size=14, weight="400", spacing="1.4"))
+
+    # The slice's own ground, then the clip. Nothing currently overruns the
+    # section — Design's clip is belt and braces against a future edit that
+    # widens a cell — so it is kept, and kept keyed to the figure id so two
+    # figures on one page cannot collide on it.
+    out.append(_rect(150, 90, 420, 306, fill=_SVG_GROUND, data_section="1"))
+    clip = "%s-sec" % e(fig["id"])
+    out.append('<defs><clipPath id="%s">%s</clipPath></defs>'
+               % (clip, _rect(150, 90, 420, 306)))
+    out.append('<g clip-path="url(#%s)">' % clip)
+
+    # ── 1 · the upper cuticle: ONE run, and unbroken is the point ────────
+    out.append(_rect(150, 90, 420, 10, fill=_SVG_BAND, stroke=_SVG_INK, w=2,
+                     data_layer="upper-cuticle",
+                     data_order=_B7_LEAF_ORDER["upper-cuticle"],
+                     data_surface="upper", data_run="1", data_run_index="1"))
+
+    # ── 2 · upper epidermis ─────────────────────────────────────────────
+    for x in _B7_LEAF_UPPER_EPI:
+        out.append(_rect(x, 102, 56, 38, rx=8, fill=_SVG_CARD,
+                         stroke=_SVG_INK, w=2,
+                         data_layer="upper-epidermis",
+                         data_order=_B7_LEAF_ORDER["upper-epidermis"],
+                         data_surface="upper", data_cell="epidermis"))
+
+    # ── 3 · palisade: ten tall cells, standing on end, first in the light ─
+    for i, x in enumerate(_B7_LEAF_PAL_X):
+        out.append(_rect(x, 146, 38, 96, rx=10, fill=_SVG_CARD,
+                         stroke=_SVG_INK, w=2, data_layer="palisade",
+                         data_order=_B7_LEAF_ORDER["palisade"],
+                         data_cell="palisade", data_cell_index=i + 1))
+
+    # ── 4 · spongy mesophyll, painted BEFORE the chloroplasts ───────────
+    for cx, cy, rx, ry in _B7_LEAF_SPONGY:
+        out.append(_ellipse(cx, cy, rx, ry, fill=_SVG_CARD, stroke=_SVG_INK,
+                            w=2, data_layer="spongy-mesophyll",
+                            data_order=_B7_LEAF_ORDER["spongy-mesophyll"],
+                            data_cell="spongy"))
+
+    # The chloroplasts, Design's generator ported exactly. Eight per palisade
+    # cell — two per row, four rows — jittered by an integer modulus rather
+    # than by anything random, so the build is byte-identical run to run. Each
+    # one answers to the layer it sits in, which is what lets a row COUNT
+    # eighty against eight instead of trusting the caption that says so.
+    for i, x in enumerate(_B7_LEAF_PAL_X):
+        for r, y in enumerate(_B7_LEAF_CHL_ROWS):
+            out.append(_ellipse(x + 11, y + ((i * 7 + r * 3) % 5) - 2, 6, 4,
+                                fill=_SVG_BAND, stroke=_SVG_INK, w=1.5,
+                                data_chloroplast="1", data_layer="palisade",
+                                data_order=_B7_LEAF_ORDER["palisade"],
+                                data_cell_index=i + 1))
+            out.append(_ellipse(x + 27, y + ((i * 5 + r * 11) % 5) + 6, 6, 4,
+                                fill=_SVG_BAND, stroke=_SVG_INK, w=1.5,
+                                data_chloroplast="1", data_layer="palisade",
+                                data_order=_B7_LEAF_ORDER["palisade"],
+                                data_cell_index=i + 1))
+    for cx, cy in _B7_LEAF_SPONGY_CHL:
+        out.append(_ellipse(cx + 6, cy + 2, 6, 4, fill=_SVG_BAND,
+                            stroke=_SVG_INK, w=1.5, data_chloroplast="1",
+                            data_layer="spongy-mesophyll",
+                            data_order=_B7_LEAF_ORDER["spongy-mesophyll"]))
+
+    # ── the vein, embedded among the spongy cells ───────────────────────
+    # No `data-layer`: a vein is not a mesophyll cell, and if it answered to
+    # the spongy rank then "every spongy-mesophyll element is a rounded cell
+    # with air around it" would stop being checkable.
+    out.append(_ellipse(340, 294, 44, 32, fill=_SVG_CARD, stroke=_SVG_INK,
+                        w=2.5, data_vein="1"))
+    out.append(_label(340, 284, "vein", size=16, weight="700",
+                      data_vein="1"))
+    out.append(_line(340, 322, 340, 306, stroke=_SVG_INK, w=3,
+                     data_route="water", data_step="2", data_in="vein"))
+    out.append(_path("M 333,306 L 347,306 L 340,294 Z", fill=_SVG_INK,
+                     data_route="water", data_step="2", data_in="vein"))
+
+    # ── 5 · lower epidermis, interrupted once ───────────────────────────
+    for x, wid in _B7_LEAF_LOWER_EPI:
+        out.append(_rect(x, 346, wid, 38, rx=8, fill=_SVG_CARD,
+                         stroke=_SVG_INK, w=2,
+                         data_layer="lower-epidermis",
+                         data_order=_B7_LEAF_ORDER["lower-epidermis"],
+                         data_surface="lower", data_cell="epidermis"))
+
+    # The two guard cells. They are the stoma's hook because they are what the
+    # drawing actually contains: the pore itself is the 30 units of nothing
+    # between them, at x 420 to 450.
+    for cx in (_B7_LEAF_PORE[0] - _B7_LEAF_GUARD_R,
+               _B7_LEAF_PORE[1] + _B7_LEAF_GUARD_R):
+        out.append(_circle(cx, 362, _B7_LEAF_GUARD_R, fill=_SVG_BAND,
+                           stroke=_SVG_INK,
+                           w=2.5, data_layer="lower-epidermis",
+                           data_order=_B7_LEAF_ORDER["lower-epidermis"],
+                           data_surface="lower", data_guard="1",
+                           data_stoma="1"))
+
+    # ── 6 · lower cuticle: TWO runs, and the gap between them is the pore ─
+    for i, (x0, x1) in enumerate(((_B7_LEAF_SECTION_X[0], _B7_LEAF_PORE[0]),
+                                  (_B7_LEAF_PORE[1], _B7_LEAF_SECTION_X[1]))):
+        out.append(_rect(x0, 386, x1 - x0, 10, fill=_SVG_BAND, stroke=_SVG_INK,
+                         w=2, data_layer="lower-cuticle",
+                         data_order=_B7_LEAF_ORDER["lower-cuticle"],
+                         data_surface="lower", data_run="1",
+                         data_run_index=i + 1))
+    out.append('</g>')
+
+    out.append(_rect(150, 90, 420, 306, stroke=_SVG_INK, w=2.5,
+                     data_section="1"))
+
+    # ── carbon dioxide: outside, through the pore, up an air space, in ──
+    # One straight run of Design's, cut at the two boundaries it crosses. The
+    # x is 434, which is inside the pore (420–450) and inside the seventh
+    # palisade cell (404–442): the route is aimed, not decorative.
+    out.append(_line(434, 444, 434, 396, stroke=_SVG_INK, w=3,
+                     data_route="co2", data_step="1", data_start="outside"))
+    out.append(_line(434, 396, 434, 342, stroke=_SVG_INK, w=3,
+                     data_route="co2", data_step="2", data_through="stoma"))
+    out.append(_line(434, 342, 434, 250, stroke=_SVG_INK, w=3,
+                     data_route="co2", data_step="3", data_end="palisade"))
+    out.append(_path("M 427,252 L 441,252 L 434,238 Z", fill=_SVG_INK,
+                     data_route="co2", data_step="3", data_end="palisade"))
+
+    # ── water, in along the vein ────────────────────────────────────────
+    out.append(_line(132, 294, 292, 294, stroke=_SVG_INK, w=3,
+                     data_route="water", data_step="1", data_end="vein"))
+    out.append(_path("M 292,287 L 292,301 L 304,294 Z", fill=_SVG_INK,
+                     data_route="water", data_step="1", data_end="vein"))
+    out.append(_label(24, 258, "water arrives", size=16, weight="700",
+                      anchor="start", data_route="water"))
+    out.append(_label(24, 280, "along the vein", size=16, weight="700",
+                      anchor="start", data_route="water"))
+
+    # ── how thick the whole thing is ────────────────────────────────────
+    out.append(_path("M 584,90 V 396 M 576,90 H 592 M 576,396 H 592",
+                     stroke=_SVG_INK, w=2, data_scale_mm=_B7_LEAF_MM))
+    out.append(_mono(584, 78, "less than %s mm thick" % _B7_LEAF_MM, size=16,
+                     fill=_SVG_INK, weight="400", anchor="middle",
+                     data_scale_mm=_B7_LEAF_MM))
+
+    # ── the labels, each one carrying the rank of the band it names ─────
+    out.append(_label(600, 100, "cuticle — waxy, keeps water in", size=16,
+                      weight="400", anchor="start",
+                      data_layer="upper-cuticle",
+                      data_order=_B7_LEAF_ORDER["upper-cuticle"],
+                      data_surface="upper"))
+    out.append(_path("M 596,96 L 574,95", stroke=_SVG_INK, w=1.4))
+    out.append(_label(600, 132, "upper epidermis", size=16, weight="400",
+                      anchor="start", data_layer="upper-epidermis",
+                      data_order=_B7_LEAF_ORDER["upper-epidermis"],
+                      data_surface="upper"))
+    out.append(_path("M 596,128 L 574,121", stroke=_SVG_INK, w=1.4))
+
+    out.append(_label(600, 182, "palisade cells — the top layer", size=16,
+                      weight="700", anchor="start", data_layer="palisade",
+                      data_order=_B7_LEAF_ORDER["palisade"]))
+    out.append(_label(600, 204, "packed with chloroplasts, and", size=16,
+                      fill=_SVG_INK_BODY, weight="400", anchor="start",
+                      data_layer="palisade",
+                      data_order=_B7_LEAF_ORDER["palisade"]))
+    out.append(_label(600, 226, "first in the way of the light", size=16,
+                      fill=_SVG_INK_BODY, weight="400", anchor="start",
+                      data_layer="palisade",
+                      data_order=_B7_LEAF_ORDER["palisade"]))
+    out.append(_path("M 596,190 L 574,190", stroke=_SVG_INK, w=1.4))
+
+    out.append(_label(600, 288, "spongy mesophyll", size=16, weight="400",
+                      anchor="start", data_layer="spongy-mesophyll",
+                      data_order=_B7_LEAF_ORDER["spongy-mesophyll"]))
+    out.append(_path("M 596,284 L 574,286", stroke=_SVG_INK, w=1.4))
+    out.append(_label(600, 320, "air spaces between the cells", size=16,
+                      fill=_SVG_INK_BODY, weight="400", anchor="start",
+                      data_layer="spongy-mesophyll",
+                      data_order=_B7_LEAF_ORDER["spongy-mesophyll"]))
+    out.append(_path("M 596,316 L 574,322", stroke=_SVG_INK, w=1.4))
+
+    out.append(_label(600, 368, "lower epidermis", size=16, weight="400",
+                      anchor="start", data_layer="lower-epidermis",
+                      data_order=_B7_LEAF_ORDER["lower-epidermis"],
+                      data_surface="lower"))
+    out.append(_path("M 596,364 L 574,365", stroke=_SVG_INK, w=1.4))
+
+    out.append(_label(150, 430, "the stoma and its two guard cells", size=16,
+                      weight="700", anchor="start", data_stoma="1",
+                      data_surface="lower"))
+    out.append(_label(150, 452, "— on the underside, and nowhere on top",
+                      size=16, weight="700", anchor="start", data_stoma="1",
+                      data_surface="lower"))
+    out.append(_path("M 400,424 L 414,400", stroke=_SVG_INK, w=1.4))
+
+    out.append(_label(452, 470, "carbon dioxide, in through the stoma",
+                      size=16, weight="400", anchor="start",
+                      data_route="co2"))
+    out.append(_path("M 448,466 L 436,450", stroke=_SVG_INK, w=1.4))
+
+    out.append('</g>')
+    out.append('</svg>')
+    return "".join(out)
+
+
+# ── ⊕ MRB-254 · WS1 #1, b10-nested-scale — Design's fig-01, ported ───────
+#
+# Every number below is Design's. The tables are here rather than inside the
+# function because they are the parts a reader might want to check line for
+# line against her `renderVals()` and her `<svg>`, and a five-row coordinate
+# grid buried 200 lines into a drawing is a table nobody checks.
+
+# ── the nucleus grid ────────────────────────────────────────────────────
+#
+# 5 rows × 5 columns = 25 slots, two of them skipped, 23 remaining, each drawn
+# as a PAIR of marks. 23 × 2 = 46, which is the number the panel's own label
+# claims. Design's comment in `renderVals()` says exactly why the grid is built
+# this way rather than drawn: *"46 marks, so a student who counts them finds
+# the number the label claims."*
+#
+# ⊕ THE TWO SKIPPED SLOTS ARE THE FIRST AND THE LAST, which is why the
+# surviving slot numbers are 1…23 with no gap in them, and why `data-pair` can
+# carry the slot index directly and still read as "pair 1 of 23". That is a
+# property of `_NESTED_SCALE_SKIP` being exactly `(0, 24)`, not a coincidence
+# to rely on blindly — move a skip into the middle and the pair numbers grow a
+# hole, which the count row would catch (still 46 marks, still 23 pairs) but
+# the numbering would no longer be 1…23.
+_NESTED_SCALE_ROWS = (356, 382, 408, 434, 460)
+_NESTED_SCALE_COLS = (176, 201, 226, 251, 276)
+_NESTED_SCALE_SKIP = (0, 24)
+_NESTED_SCALE_PICKED = 1          # the slot whose second member the figure follows
+
+# ── the four callout wedges ─────────────────────────────────────────────
+#
+# `(from panel, to panel, wedge fill, upper dashed edge, lower dashed edge,
+#   the orange ribbon that carries the strand across the gap)`.
+#
+# The ribbon is the part that matters and the part that would be easiest to
+# drop as decoration: it is the followed strand LEAVING one frame and ARRIVING
+# in the next, drawn across the white space between them, so the continuity
+# claim is on the page rather than in the caption.
+_NESTED_SCALE_WEDGES = (
+    (1, 2,
+     "M 192,182 L 36,300 L 416,300 L 260,182 Z",
+     "M 192,182 L 36,300", "M 260,182 L 416,300",
+     "M 222,240 C 218,262 196,282 180,300 L 222,300 C 228,282 230,262 230,240 Z"),
+    (2, 3,
+     "M 176,378 L 36,556 L 416,556 L 226,378 Z",
+     "M 176,378 L 36,556", "M 226,378 L 416,556",
+     "M 196,498 C 192,518 168,538 152,556 L 208,556 C 210,538 208,518 206,498 Z"),
+    (3, 4,
+     "M 340,792 L 36,852 L 416,852 L 372,792 Z",
+     "M 340,792 L 36,852", "M 372,792 L 416,852",
+     "M 344,786 C 340,808 318,832 288,852 L 340,852 C 356,832 358,808 358,786 Z"),
+    (4, 5,
+     "M 192,990 L 36,1108 L 416,1108 L 250,990 Z",
+     "M 192,990 L 36,1108", "M 250,990 L 416,1108",
+     "M 206,1050 C 200,1070 174,1090 156,1108 L 256,1108 C 250,1090 234,1070 232,1050 Z"),
+)
+
+# ── the caption block beside each frame ─────────────────────────────────
+#
+# `(frame top, numeral, heading, magnification, body lines)`. Design lays every
+# block out against the top of its own frame — badge at +4, numeral at +26,
+# heading at +28, magnification at +62, body from +92 in 22s — and holds that
+# rule across all five, including the frame that is 236 tall rather than 210.
+# So the offsets are computed from `top` here instead of being five sets of
+# absolute y values that only a diff could tell apart.
+_NESTED_SCALE_CAPTIONS = (
+    (44, "01", "A cell", "0.02 mm across",
+     ("Any body cell will do. The instructions",
+      "are kept in the nucleus.")),
+    (300, "02", "The nucleus", "0.006 mm across",
+     ("46 chromosomes, in 23 pairs. We follow",
+      "one of them from here down.")),
+    (556, "03", "A chromosome", "0.002 mm long",
+     ("One DNA molecule, coiled and wound",
+      "around proteins. Not a different",
+      "substance from DNA — DNA, packed.")),
+    (852, "04", "A gene", "a section of the same strand",
+     ("A length of it, carrying the instruction",
+      "for one characteristic. Part of the",
+      "strand, not an object attached to it.")),
+    (1108, "05", "The bases", "0.0000003 mm apart",
+     ("Four letters, paired across the strand.",
+      "The order of them along the gene is",
+      "the information.")),
+)
+
+# The proteins the strand is wound around in panel 03. Literal in Design's
+# delivery — the zigzag is composed, not generated.
+_NESTED_SCALE_PROTEINS = ((205, 582), (155, 602), (205, 622),
+                          (155, 642), (205, 662), (155, 682))
+
+# Panel 05: `(x, top letter, bottom letter)`. A is always across from T and C
+# is always across from G — the pairing rule, held as data so a row can assert
+# it rather than four pairs of hand-placed strings that could each be wrong on
+# their own.
+_NESTED_SCALE_BASES = ((116, "A", "T"), (196, "C", "G"),
+                       (276, "T", "A"), (356, "G", "C"))
+
+# The gene in panel 04: the x range of the thickened stretch of backbone, and
+# of the bracket under it. ONE pair of numbers, used by both, because the claim
+# the panel makes is that they are the same length.
+_NESTED_SCALE_GENE = (158, 280)
+
+
+def _nested_scale(fig):
+    """One DNA molecule at five magnifications, each frame cut out of the one
+    above it, with a single orange strand running the whole height of the plate.
+
+    ⚖️ THE CONTINUITY IS THE FIGURE. b10's named misconception is that a
+    chromosome, a gene and DNA are *three different things in the nucleus*, and
+    the bench beside this figure renders six equally-sized sibling cards stacked
+    down the page — so the bench's own layout teaches the misconception it is
+    trying to correct. Six cards of equal weight say six things; they cannot say
+    "one thing at three magnifications", because nothing in a stack of siblings
+    is inside anything else. This drawing says it structurally: every frame is
+    entered through a wedge whose narrow end sits on the dashed ring in the
+    frame above, and the orange strand is drawn CROSSING each wedge, so it
+    leaves one frame and arrives in the next without a break. A reader can put a
+    finger on the fleck in panel 01 and trace it to a letter in panel 05 without
+    lifting it.
+
+    ⚖️ AND IT IS ASSERTABLE, NOT MERELY DRAWN. Three hooks carry the three
+    claims a screenshot cannot check:
+
+      · `data-followed="1"` + `data-panel="1"…"5"` on exactly ONE element per
+        panel — the fleck, the picked chromosome, the coiled strand, the upper
+        backbone, the upper backbone again. Five elements, five panels, and a
+        row can assert all five resolve to the SAME computed stroke. That
+        identity of paint is what carries "this is the same molecule"; if panel
+        04's backbone drifted to a different orange the drawing would still look
+        right and the claim would be gone.
+      · `data-chromosome="1"…"46"`, `data-pair`, `data-member` on all 46 marks
+        in panel 02 — see the note on the grid table above. The label says 46,
+        so 46 has to be countable, and a row can check the indices are 1…46 with
+        none missing or repeated and that they fall into 23 pairs of exactly two.
+      · `data-zoom-from` / `data-zoom-to` on every wedge, so a row can assert
+        panel N is opened from panel N−1 and from no other. A wedge drawn from
+        the WRONG frame still looks exactly like a wedge — this is the one
+        defect in the figure that is invisible to the eye and to a screenshot,
+        which is what MRB-257 decision 4 means by measuring the encoding rather
+        than the frame.
+
+    ⚖️ THE GENE IS A SEGMENT, NOT AN OBJECT. Panel 04's whole job is that a
+    gene is a marked LENGTH of the strand that was coiled in panel 03, not a
+    bead sitting on it. So the thickened stretch of backbone and the bracket
+    beneath it are drawn from the same pair of numbers (`_NESTED_SCALE_GENE`)
+    and both carry `data-gene-from` / `data-gene-to`: a row can assert the
+    bracket spans exactly the thickened length, and the two cannot drift apart.
+
+    ⚠️ `jitter` IS A HASH, NOT A RANDOM. `Math.sin(n * 12.9898) * 43758.5453`,
+    fractional part — the standard shader trick. `Math.random()` and
+    `Date.now()` appear nowhere in Design's JS and appear nowhere here: the
+    build has to be byte-identical run to run, and a scatter that moved between
+    builds would make every future diff of this file unreadable. Python and JS
+    both evaluate this in IEEE doubles, so the port reproduces her 46 paths bit
+    for bit; verified against `node` on the port, not assumed.
+
+    ⚠️ `Math.round`, NOT `round`. Her `r()` is `Math.round(v * 10) / 10`.
+    Python's `round` is banker's rounding and JavaScript's `Math.round` is
+    round-half-up, so the two disagree on any exact `.5` — and `x * 10` on
+    coordinates that are already one-decimal jitter outputs lands on ties. The
+    port spells it `math.floor(v * 10 + 0.5) / 10`, which is `Math.round`'s
+    definition rather than a near-miss of it.
+
+    ⊕ THE RING IN PANEL 02 IS DERIVED, NOT PLACED. Design hard-codes it at
+    `(201, 356)`; that is exactly `COLS[PICKED % 5], ROWS[PICKED // 5]`, i.e.
+    the grid slot of the pair the figure follows. Computed here from the same
+    two tables, so moving `_NESTED_SCALE_PICKED` moves the ring onto the new
+    pair instead of leaving it circling a chromosome nobody follows.
+
+    ⚠️ CLIP IDS ARE DERIVED FROM THE FIGURE ID. Design's are `f1p3`…`f1p5`,
+    unique inside a review file holding one figure. A lesson page can hold
+    several of these drawings, `id` is document-scoped, and a duplicate
+    `clipPath` id means the second figure silently clips to the first one's
+    rectangle. Nothing warns; the drawing just loses half of itself.
+    """
+    W, H = 860, 1400
+    cid = e(fig["id"])
+    out = [_svg_open(fig, W, H)]
+
+    # The three windows. Raw markup rather than an emitter call because a
+    # <clipPath> carries no paint — there is no paint law to keep here.
+    out.append(
+        '<defs>'
+        '<clipPath id="%s-c-p3"><rect x="36" y="556" width="380" '
+        'height="236" rx="18"/></clipPath>'
+        '<clipPath id="%s-c-p4"><rect x="36" y="852" width="380" '
+        'height="210" rx="18"/></clipPath>'
+        '<clipPath id="%s-c-p5"><rect x="36" y="1108" width="380" '
+        'height="210" rx="18"/></clipPath>'
+        '</defs>' % (cid, cid, cid))
+
+    # Design's root group. Round caps and joins on everything: the coil, the
+    # chromosome arcs and the strand ends are all organic, and a butt cap on a
+    # 10-unit stroke reads as a cut end rather than a continuing molecule.
+    out.append('<g fill="none" stroke-linecap="round" stroke-linejoin="round">')
+
+    # ── the four callout wedges, drawn first so every frame sits on top ─────
+    #
+    # ⚠️ HOOKS ARE SPELLED `data_zoom_from=` AT THE CALL SITE. `_data_attrs`
+    # requires the prefix and strips it; a bare `zoom_from=` now RAISES rather
+    # than landing as a presentation attribute that does nothing and looks like
+    # it does something. A hook a parity row cannot find does not fail the row —
+    # it returns nothing and reports green.
+    for src, dst, wedge, edge_hi, edge_lo, ribbon in _NESTED_SCALE_WEDGES:
+        out.append(_path(wedge, fill=_SVG_ACCENT_TINT, stroke="none",
+                         data_zoom_from=src, data_zoom_to=dst))
+        for edge in (edge_hi, edge_lo):
+            out.append(_path(edge, stroke=_SVG_RULE_STRONG, w=1.6, dash="6 5",
+                             data_zoom_from=src, data_zoom_to=dst))
+        # The strand itself, crossing the gap. Not `data_followed` — that is
+        # one element per PANEL, and this is between two of them.
+        out.append(_path(ribbon, fill=_SVG_ACCENT, stroke="none", opacity=0.9,
+                         data_zoom_from=src, data_zoom_to=dst,
+                         data_strand="carried"))
+
+    # ── panel 01 · a cell ───────────────────────────────────────────────────
+    out.append(_rect(36, 44, 380, 210, rx=18, fill=_SVG_CARD, stroke=_SVG_INK,
+                     w=2.5, data_frame="1"))
+    out.append(_ellipse(226, 149, 146, 78, fill=_SVG_INSET, stroke=_SVG_INK,
+                        w=2.5))
+    out.append(_circle(226, 149, 30, fill=_SVG_BAND, stroke=_SVG_INK, w=2))
+    # Five grey flecks and one orange one. The grey are the other 45 marks at
+    # this magnification — unresolvable, and drawn as such rather than omitted,
+    # so the nucleus is not an empty circle with one thing in it.
+    for d in ("M 213,141 q 6,-7 12,0", "M 228,138 q 7,6 13,-1",
+              "M 212,157 q 8,7 15,0", "M 231,160 q 7,-6 12,1",
+              "M 219,150 q 6,4 12,-1"):
+        out.append(_path(d, stroke=_SVG_INK_FAINT, w=2))
+    out.append(_path("M 220,146 q 7,8 14,1", stroke=_SVG_ACCENT, w=3.2,
+                     data_followed="1", data_panel="1"))
+    out.append(_circle(226, 149, 42, stroke=_SVG_INK, w=1.6, dash="6 5",
+                       data_zoom_ring="2"))
+
+    # ── panel 02 · the nucleus, and the 46 ──────────────────────────────────
+    out.append(_rect(36, 300, 380, 210, rx=18, fill=_SVG_CARD, stroke=_SVG_INK,
+                     w=2.5, data_frame="2"))
+    out.append(_circle(226, 405, 88, fill=_SVG_BAND, stroke=_SVG_INK, w=2.5))
+    out.append(_circle(226, 405, 82, stroke=_SVG_INK, w=1.4))
+
+    index = 0
+    slot = -1
+    for row in _NESTED_SCALE_ROWS:
+        for col in _NESTED_SCALE_COLS:
+            slot += 1
+            if slot in _NESTED_SCALE_SKIP:
+                continue
+            seed = slot * 7 + 3
+            # `jitter(seed)`, `jitter(seed + 1)`, `jitter(seed + 2)`, inlined
+            # rather than given a nested helper: the drawer is one function.
+            j = []
+            for k in (seed, seed + 1, seed + 2):
+                x = math.sin(k * 12.9898) * 43758.5453
+                j.append(x - math.floor(x))
+            cx = col + (j[0] - 0.5) * 7
+            cy = row + (j[1] - 0.5) * 7
+            angle = (j[2] - 0.5) * 2.2
+            for member in (1, 2):
+                index += 1
+                picked = (slot == _NESTED_SCALE_PICKED and member == 2)
+                # The picked one is drawn longer and more strongly bowed as
+                # well as orange: the distinction never rests on the hue alone.
+                half = 13 if picked else 9
+                bow = 6 if picked else 4.5
+                px = cx + (-4.5 if member == 1 else 4.5)
+                py = cy + (-1.5 if member == 1 else 1.5)
+                dx, dy = math.sin(angle), -math.cos(angle)
+                pts = (px - dx * half, py - dy * half,
+                       px + dy * bow, py - dx * bow,
+                       px + dx * half, py + dy * half)
+                # `Math.round(v * 10) / 10` — see the ⚠️ in the docstring.
+                r = [math.floor(v * 10 + 0.5) / 10.0 for v in pts]
+                d = ("M %s,%s Q %s,%s %s,%s"
+                     % (_n(r[0]), _n(r[1]), _n(r[2]),
+                        _n(r[3]), _n(r[4]), _n(r[5])))
+                hooks = {"data_chromosome": index,
+                         "data_pair": slot,
+                         "data_member": member}
+                if picked:
+                    hooks["data_followed"] = "1"
+                    hooks["data_panel"] = "2"
+                out.append(_path(
+                    d, stroke=_SVG_ACCENT if picked else _SVG_INK_FAINT,
+                    w=4.4 if picked else 2.3, **hooks))
+
+    # Design places this ring at (201, 356). That is the picked pair's own grid
+    # slot — computed, so it cannot end up circling the wrong chromosome.
+    out.append(_circle(_NESTED_SCALE_COLS[_NESTED_SCALE_PICKED % 5],
+                       _NESTED_SCALE_ROWS[_NESTED_SCALE_PICKED // 5],
+                       25, stroke=_SVG_INK, w=1.6, dash="6 5",
+                       data_zoom_ring="3"))
+
+    # ── panel 03 · one chromosome, coiled ───────────────────────────────────
+    out.append(_rect(36, 556, 380, 236, rx=18, fill=_SVG_CARD, stroke=_SVG_INK,
+                     w=2.5, data_frame="3"))
+    out.append('<g clip-path="url(#%s-c-p3)">' % cid)
+    for cx, cy in _NESTED_SCALE_PROTEINS:
+        out.append(_circle(cx, cy, 13, fill=_SVG_BAND, stroke=_SVG_INK, w=2))
+    # The coil twice: a wide ink stroke underneath, the orange strand on top of
+    # it. The ink is the packed chromosome as it is SEEN; the orange inside it
+    # is what it is MADE OF. Drawing them as one stroke would make the
+    # chromosome a different substance from DNA, which is the sentence in the
+    # caption block beside this very frame.
+    _coil = ("M 180,566 Q 226,576 180,586 Q 134,596 180,606 Q 226,616 180,626 "
+             "Q 134,636 180,646 Q 226,656 180,666 Q 134,676 180,686 "
+             "Q 228,698 180,712 Q 130,728 184,742 C 216,756 256,762 300,760 "
+             "C 344,758 382,764 %d,770")
+    out.append(_path(_coil % 416, stroke=_SVG_INK, w=10))
+    # ⚠️ 424, NOT 416, AND IT MAKES NO DIFFERENCE ON THE PAGE. Design's orange
+    # ends 8 units right of her ink; the clip rectangle cuts both at 416, so
+    # the overrun is invisible and it would be easy to "tidy" the two to the
+    # same number. Kept as she drew it — MRB-205, refine inside her shape —
+    # and recorded here so the next reader does not spend the same five
+    # minutes deciding whether it is a typo. It is harmless either way.
+    out.append(_path(_coil % 424, stroke=_SVG_ACCENT, w=6,
+                     data_followed="1", data_panel="3"))
+    out.append('</g>')
+    out.append(_circle(352, 766, 24, stroke=_SVG_INK, w=1.6, dash="6 5",
+                       data_zoom_ring="4"))
+    out.append(_mono(248, 576, "proteins", size=15, weight="400"))
+    out.append(_path("M 244,580 L 216,582", stroke=_SVG_INK_MUTED, w=1.4))
+
+    # ── panel 04 · a gene, as a length of that strand ───────────────────────
+    gene_from, gene_to = _NESTED_SCALE_GENE
+    out.append(_rect(36, 852, 380, 210, rx=18, fill=_SVG_CARD, stroke=_SVG_INK,
+                     w=2.5, data_frame="4"))
+    out.append('<g clip-path="url(#%s-c-p4)">' % cid)
+    out.append(_rect(gene_from, 920, gene_to - gene_from, 58, rx=10,
+                     fill=_SVG_ACCENT_TINT, stroke="none", data_gene="1",
+                     data_gene_from=gene_from, data_gene_to=gene_to))
+    # Both backbones run the full width of the frame and out of it on either
+    # side — the strand does not begin or end here, it passes through.
+    out.append(_path("M 30,930 H 422", stroke=_SVG_ACCENT, w=5,
+                     data_followed="1", data_panel="4",
+                     data_strand="backbone-upper"))
+    out.append(_path("M 30,968 H 422", stroke=_SVG_ACCENT, w=5,
+                     data_strand="backbone-lower"))
+    # The gene: the SAME backbone, drawn thicker over one stretch of it. Not a
+    # separate shape laid on top — same paint, same line, more weight.
+    out.append(_path("M %d,928 H %d" % (gene_from, gene_to), stroke=_SVG_ACCENT,
+                     w=8, data_gene="1", data_gene_from=gene_from,
+                     data_gene_to=gene_to, data_strand="backbone-upper"))
+    out.append(_path("M %d,970 H %d" % (gene_from, gene_to), stroke=_SVG_ACCENT,
+                     w=8, data_gene="1", data_gene_from=gene_from,
+                     data_gene_to=gene_to, data_strand="backbone-lower"))
+    rungs = " ".join("M %d,932 V 966" % (68 + i * 24) for i in range(14))
+    out.append(_path(rungs, stroke=_SVG_INK, w=2.2, data_rungs=14))
+    out.append('</g>')
+    out.append(_path("M %d,994 v 12 H %d v -12" % (gene_from, gene_to),
+                     stroke=_SVG_INK, w=2.5, data_gene="1",
+                     data_gene_from=gene_from, data_gene_to=gene_to))
+    # Design puts both of these at x=219, which is the midpoint of the gene
+    # span — derived here for the same reason the panel-02 ring is: the label
+    # and the ring belong to the bracket, and should move with it.
+    #
+    # ⚠️ `_n(gene_mid)` ON THE TEXT, not the bare float. The shape emitters run
+    # `_n` over their coordinates; `_svg_text` does not, so a float x arrives in
+    # the markup as `219.0`. It renders identically and it breaks a
+    # byte-comparison of two builds, which is the only thing that would ever
+    # tell us a drawing had changed by accident.
+    gene_mid = (gene_from + gene_to) / 2.0
+    out.append(_mono(_n(gene_mid), 1032, "one gene", size=17, fill=_SVG_INK,
+                     weight="400", anchor="middle", data_gene="1"))
+    out.append(_circle(gene_mid, 949, 30, stroke=_SVG_INK, w=1.6, dash="6 5",
+                       data_zoom_ring="5"))
+    out.append(_mono(52, 898, "the same strand, uncoiled", size=15,
+                     weight="400"))
+
+    # ── panel 05 · the bases ────────────────────────────────────────────────
+    out.append(_rect(36, 1108, 380, 210, rx=18, fill=_SVG_CARD,
+                     stroke=_SVG_INK, w=2.5, data_frame="5"))
+    out.append('<g clip-path="url(#%s-c-p5)">' % cid)
+    out.append(_path("M 30,1166 H 422", stroke=_SVG_ACCENT, w=7,
+                     data_followed="1", data_panel="5",
+                     data_strand="backbone-upper"))
+    out.append(_path("M 30,1266 H 422", stroke=_SVG_ACCENT, w=7,
+                     data_strand="backbone-lower"))
+    out.append('</g>')
+    # Each rung in three pieces: down from the top backbone, a short bar
+    # BETWEEN the two lettered boxes, and up from the bottom backbone. The
+    # middle piece is the bond, and it is what makes the pair a pair.
+    for y0, y1, part in ((1170, 1188, "upper"), (1214, 1218, "bond"),
+                         (1244, 1262, "lower")):
+        d = " ".join("M %d,%d V %d" % (x, y0, y1)
+                     for x, _t, _b in _NESTED_SCALE_BASES)
+        out.append(_path(d, stroke=_SVG_INK, w=2.2, data_rung_part=part))
+    # A is across from T and C is across from G, everywhere, drawn from one
+    # table so the four pairs cannot each be wrong on their own.
+    for pair, (x, top, bottom) in enumerate(_NESTED_SCALE_BASES, start=1):
+        for y, letter, side in ((1188, top, "top"), (1218, bottom, "bottom")):
+            out.append(_rect(x - 22, y, 44, 26, rx=8, fill=_SVG_BAND,
+                             stroke=_SVG_INK, w=2, data_base_pair=pair,
+                             data_base_side=side, data_base=letter))
+        out.append(_mono(x, 1207, top, size=18, fill=_SVG_INK, weight="400",
+                         anchor="middle", data_base_pair=pair,
+                         data_base_side="top", data_base=top,
+                         data_base_partner=bottom))
+        out.append(_mono(x, 1237, bottom, size=18, fill=_SVG_INK, weight="400",
+                         anchor="middle", data_base_pair=pair,
+                         data_base_side="bottom", data_base=bottom,
+                         data_base_partner=top))
+    out.append(_mono(56, 1148, "four rungs of that same length", size=15,
+                     weight="400"))
+
+    # ── the caption block beside each frame ─────────────────────────────────
+    for top, numeral, heading, magnification, lines in _NESTED_SCALE_CAPTIONS:
+        out.append(_rect(452, top + 4, 42, 32, rx=10, fill=_SVG_BAND,
+                         stroke=_SVG_INK, w=2))
+        out.append(_mono(473, top + 26, numeral, size=17, fill=_SVG_INK,
+                         weight="400", anchor="middle"))
+        out.append(_label(506, top + 28, heading, size=25, fill=_SVG_INK,
+                          weight="800", anchor="start", family=_SVG_DISPLAY,
+                          spacing="-.5"))
+        # ⚠️ `--ks3-accent-text`, NOT `--ks3-accent`. Accent measures 3.4:1 on
+        # the ground and is a graphic value only; `_svg_text` refuses it under
+        # 24px at source, and this is 16px.
+        out.append(_mono(452, top + 62, magnification, size=16,
+                         fill=_SVG_ACCENT_TEXT, weight="400"))
+        for n, line in enumerate(lines):
+            out.append(_label(452, top + 92 + n * 22, line, size=17,
+                              fill=_SVG_INK_BODY, weight="400",
+                              anchor="start"))
+    # Panel 03's block carries a sixth line, set bold and dropped clear of the
+    # other three: it is the sentence that hands the reader on to panel 04.
+    out.append(_label(452, 726, "It unwinds at the bottom of the frame.",
+                      size=17, fill=_SVG_INK, weight="700", anchor="start"))
+
+    # ── the legend ──────────────────────────────────────────────────────────
+    #
+    # Two swatches, and both of them are LABELLED. Orange is not carrying "DNA"
+    # on its own anywhere on this plate — every panel names what it is showing
+    # in words beside it — but the legend is what makes the one rule explicit,
+    # and it is the sentence the whole column depends on.
+    out.append(_path("M 36,1348 H 824", stroke=_SVG_RULE, w=2))
+    out.append(_path("M 44,1376 h 34", stroke=_SVG_ACCENT, w=6,
+                     data_legend="dna"))
+    out.append(_label(88, 1382, "DNA — the same molecule in all five panels",
+                      size=17, fill=_SVG_INK, weight="700", anchor="start",
+                      data_legend="dna"))
+    out.append(_path("M 470,1376 h 34", stroke=_SVG_INK, w=6,
+                     data_legend="not-dna"))
+    out.append(_label(514, 1382, "Everything that is not DNA", size=17,
+                      fill=_SVG_INK, weight="400", anchor="start",
+                      data_legend="not-dna"))
+
+    out.append('</g>')
+    out.append('</svg>')
+    return "".join(out)
+
+
+# ── ⊕ MRB-254 · WS1 #9, b5-flower-parts-labelled — Design's fig-09, ported ──
+#
+# The two feathery-stigma plumes, as cubic Béziers, exactly as her `PLUMES`
+# const holds them. BOTH the drawn curve and the barbs along it are emitted
+# from this one table, where her delivery held the curve in the SVG and the
+# barb sampler in the JS. That is the only structural liberty in this port and
+# it is taken on purpose: a barb is placed by sampling its curve, so if the two
+# copies of the curve could disagree the drawing would grow a fringe that hangs
+# off nothing, and it would still look like a feathery stigma. One table, one
+# curve, and the assertion in the docstring can never be satisfied by accident.
+_FLOWER_PLUMES = (
+    ((712, 400), (700, 340), (690, 270), (694, 206)),
+    ((728, 400), (742, 340), (754, 270), (750, 206)),
+)
+
+# The badges on the insect-pollinated flower: leader path, badge centre,
+# numeral, part slug. NINE ROWS, and nine is a claim the figure makes — the
+# key below names the same nine, and the floret re-uses three of the same
+# numbers rather than minting its own.
+_FLOWER_BADGES_INSECT = (
+    ("M 210,272 L 240,290", 196, 266, "01", "anther"),
+    ("M 210,402 L 252,398", 196, 404, "02", "filament"),
+    ("M 332,250 L 300,260", 346, 246, "03", "stigma"),
+    ("M 338,322 L 290,322", 352, 322, "04", "style"),
+    ("M 366,432 L 320,432", 380, 432, "05", "ovary"),
+    ("M 366,492 L 296,452", 380, 496, "06", "ovule"),
+    ("M 134,302 L 158,306", 120, 300, "07", "petal"),
+    ("M 164,520 L 198,500", 150, 524, "08", "sepal"),
+    ("M 160,448 L 228,446", 146, 448, "09", "nectary"),
+)
+
+# The three on the floret. Each carries the word "outside" under it — the one
+# word the right-hand drawing exists to make checkable. Design set that word at
+# 12px; it is raised to 13 here, and the report says so.
+#
+# ⊕ MRB-254 · THE LAST COLUMN IS HOW FAR THE WORD SITS UNDER THE BADGE, and it
+# is a column rather than a constant because two of these three leaders pass
+# through the space Design's constant put the word in. Reasoning at the call
+# site, where the coordinates it has to clear are also written down.
+_FLOWER_BADGES_WIND = (
+    ("M 600,332 L 608,368", 592, 318, "01", "anther", 94),
+    ("M 800,334 L 782,376", 806, 318, "02", "filament", 94),
+    ("M 662,222 L 690,234", 648, 216, "03", "stigma", 30),
+)
+
+# The key: (badge cx, text x, row centre y, numeral, slug, name, job).
+_FLOWER_KEY = (
+    (38, 64, 700, "01", "anther", "Anther",
+     "Makes pollen, each grain carrying a male nucleus"),
+    (38, 64, 744, "02", "filament", "Filament",
+     "Holds the anther where pollen can be taken away"),
+    (38, 64, 788, "03", "stigma", "Stigma",
+     "Catches pollen. Sticky, or feathery"),
+    (38, 64, 832, "04", "style", "Style",
+     "Raises the stigma; the pollen tube’s route down"),
+    (38, 64, 876, "05", "ovary", "Ovary",
+     "Holds the ovules, and becomes the fruit"),
+    (494, 520, 700, "06", "ovule", "Ovule",
+     "One ovule becomes one seed"),
+    (494, 520, 744, "07", "petal", "Petal",
+     "Advertising. Not a reproductive organ"),
+    (494, 520, 788, "08", "sepal", "Sepal",
+     "Protected the bud before it opened"),
+    (494, 520, 832, "09", "nectary", "Nectary",
+     "Makes nectar — the payment for the visit"),
+)
+
+
+def _flower_parts(fig):
+    """The same nine parts drawn twice — an insect-pollinated flower cut in
+    half, beside a wind-pollinated floret — so that WHERE the anthers and the
+    stigma sit is something a student can look at instead of something a table
+    tells them.
+
+    ⚖️ THE POSITIONS ARE THE WHOLE FIGURE, and they are the one thing a table
+    cannot carry. The lesson's comparison rows say the anthers are "held inside
+    the flower" or "dangling outside on long thin filaments", and a student who
+    reads that has two phrases to memorise and no way to check either. So both
+    drawings are numbered from the SAME key — 01 anther, 02 filament, 03 stigma
+    — and each drawing has a dashed line round the flower itself: the inside of
+    the petal cup on the left, the pair of bracts on the right. On the left the
+    anthers and the stigma are inside that line. On the right they are outside
+    it. Nothing else about the numbering changes, which is what makes the
+    position the only variable and therefore the readable one.
+
+    ⛔ AND THAT CLAIM IS MEASURED, not labelled. A drawing can put the word
+    "outside" beside an anther that is drawn inside, and it will look right to
+    anybody who reads the word rather than the picture — the exact defect a
+    screenshot cannot catch, because a mislabelled anther is still a
+    well-drawn anther. So:
+
+      · each dashed boundary carries `data-envelope` ("insect" | "wind") with
+        the `data-flower` it belongs to, and it is emitted as real geometry (a
+        cubic path on the left, an ellipse on the right) so a row can flatten
+        it and test containment;
+      · EVERY anther on both drawings carries `data-anther-position`
+        ("inside" | "outside") beside its `data-flower` — all two on the left
+        and all three on the right, not the one a label happens to point at.
+        A row that measured a single anther would measure the frame again;
+      · the stigma of each drawing carries `data-flower` for the same reason:
+        the sticky knob and the feathery plumes are the same numbered part in
+        two positions, and a row should be able to say which is which without
+        reading a word off the plate.
+
+    ⚠️ THE PRINTED WORD AND THE MEASURED FACT CARRY DIFFERENT HOOKS. The three
+    "outside" strings under the floret's badges carry `data-position`, NOT
+    `data-anther-position`. A row that selects `[data-anther-position]` must
+    get anthers and only anthers — five shapes with real coordinates — because
+    the moment a `<text>` node joins that set, the row is quietly measuring a
+    label's baseline against an envelope and calling it geometry. The two hooks
+    exist so the row can also compare them: the word says outside, the drawing
+    puts it outside, and the check is that both are true rather than either.
+
+    ⚖️ NINE PARTS, EACH ONCE. `data-part` and `data-number` sit on the drawn
+    organ, on its badge (`data-badge="1"`) and on its row in the key
+    (`data-key="1"`), so a row can assert the numbering is 01–09 with no gap
+    and no repeat, that the badge set and the key set name the same nine, and
+    that the floret's three re-use numbers the insect flower already has. Parts
+    drawn more than once — two anthers, two filaments, two petals, two sepals,
+    three ovules — all carry the same pair, because they are the same part.
+
+    ⚠️ ONLY LABELLED PARTS CARRY `data-part`. The receptacle, the stem, the
+    floret's bracts and its tiny ovary are drawn and not numbered, so they are
+    left unhooked rather than given a slug the key cannot back. A hook naming a
+    part no badge names would break the very count it exists to support.
+
+    ⚖️ THE BARBS ARE SAMPLED, NOT PLACED — Design's named assertion for this
+    figure. "Feathery" is not a texture at the tip: the whole length of each
+    plume is fringed, and that is the wind-pollinated row's positional claim,
+    because a net that catches drifting pollen has to be a net everywhere. So
+    nine points are taken along each curve at t = 0.1 … 0.9, the tangent is
+    taken from the point 0.02 further on, and the two barbs at each point are
+    drawn along the normal to it. Every barb carries `data-plume` (the curve it
+    was sampled from), `data-barb` (its index in drawing order) and `data-t`
+    (the parameter it was sampled at), and the two plume paths carry the same
+    `data-plume` — so a row can take each barb's start point, evaluate its own
+    plume's cubic at its own `t`, and assert the barb begins ON the curve
+    rather than near it, for all thirty-six of them. That is the difference
+    between a drawing that computes its fringe and a drawing that was hand-
+    placed to look as if it did.
+
+    ⚠️ `Math.round`, NOT `round`. Her sampler rounds each coordinate to one
+    decimal with `Math.round(v * 10) / 10`. Python's `round` is banker's
+    rounding and JavaScript's `Math.round` is half-UP, so the two disagree on
+    any exact `.5` — and none of these seventy-two coordinates is a tie today,
+    which is precisely what would have made the wrong one safe until somebody
+    changed the barb length from 13. `math.floor(v * 10 + 0.5) / 10` is
+    `Math.round`, so the port is her arithmetic rather than a near-miss of it.
+    Nothing here is random and nothing reads the clock: the build is
+    byte-identical run to run.
+
+    ⚖️ THE SEPALS ARE POINTED FLAPS, AND THEY ARE NOT GREEN. `--ks3-ok` is
+    marks-and-fills for correctness only, so a sepal drawn in it would be
+    saying "correct" in a drawing with nothing to be correct about, and the
+    student who learns "sepal = the green one" has learned a colour rather than
+    a position. They are drawn as two small pointed flaps angling down and out
+    below the petals, numbered 08, and the plate says so on its own face: no
+    colour in this figure carries a fact on its own. That sentence stays — it
+    is addressed to the student about the thing in front of them, so §8.10
+    keeps it rather than removing it.
+    """
+    W, H = 900, 992
+    out = [_svg_open(fig, W, H)]
+
+    # Two clips, named off the figure id. ⚠️ A bare `id="f9L"` would collide the
+    # moment a second figure landed on the same page — `url(#f9L)` resolves to
+    # whichever came first in the document, so one lesson's plate would take
+    # another's clip rectangle and nothing would warn.
+    clip_l = "%s-clip-insect" % e(fig["id"])
+    clip_r = "%s-clip-wind" % e(fig["id"])
+    out.append(
+        '<defs>'
+        '<clipPath id="%s"><rect x="24" y="54" width="520" height="560" '
+        'rx="18"/></clipPath>'
+        '<clipPath id="%s"><rect x="564" y="54" width="312" height="560" '
+        'rx="18"/></clipPath>'
+        '</defs>' % (clip_l, clip_r))
+
+    # Round caps and joins once, on the wrapping group, as Design set them.
+    # They are geometry here rather than polish: the 9px stem, the 4.5px
+    # filaments and the 6px style all end in the open, and a butt cap on any of
+    # them reads as a cut rather than a stalk. They are the only presentation
+    # attributes on this group — paint stays in `style`, per element.
+    out.append('<g stroke-linecap="round" stroke-linejoin="round">')
+
+    out.append(_mono(24, 44, "INSECT-POLLINATED, CUT IN HALF", size=13,
+                     weight="400", spacing="1.2"))
+    out.append(_mono(564, 44, "WIND-POLLINATED FLORET", size=13,
+                     weight="400", spacing="1.2"))
+
+    out.append(_rect(24, 54, 520, 560, rx=18, fill=_SVG_CARD, stroke=_SVG_INK,
+                     w=2.5))
+    out.append(_rect(564, 54, 312, 560, rx=18, fill=_SVG_CARD, stroke=_SVG_INK,
+                     w=2.5))
+
+    # ── the insect-pollinated flower, cut in half ────────────────────────
+    out.append('<g clip-path="url(#%s)">' % clip_l)
+    out.append(_path("M 284,480 V 566", stroke=_SVG_INK, w=9))
+
+    # The sepals: pointed flaps, below the petals, angled down and out. See the
+    # docstring — this shape is doing the work a green fill would otherwise be
+    # asked to do, and it is doing it better, because a shape survives being
+    # photocopied and a hue does not.
+    for d in ("M 266,452 C 232,466 206,486 192,506 C 220,502 254,482 272,464 Z",
+              "M 302,452 C 336,466 362,486 376,506 C 348,502 314,482 296,464 Z"):
+        out.append(_path(d, fill=_SVG_BAND, stroke=_SVG_INK, w=2.2,
+                         data_part="sepal", data_number="08",
+                         data_flower="insect"))
+
+    for d in ("M 266,448 C 214,438 172,392 158,320 C 152,286 156,258 168,238 "
+              "C 184,272 210,330 240,388 C 252,412 262,432 268,444 Z",
+              "M 302,448 C 354,438 396,392 410,320 C 416,286 412,258 400,238 "
+              "C 384,272 358,330 328,388 C 316,412 306,432 300,444 Z"):
+        out.append(_path(d, fill=_SVG_ACCENT_TINT, stroke=_SVG_INK, w=2.5,
+                         data_part="petal", data_number="07",
+                         data_flower="insect"))
+
+    # The boundary the left-hand claim is made against: the inside of the petal
+    # cup. Dashed, ghost-weight, and labelled in words above it, so a student
+    # reads it as "the inside of the flower" rather than as another organ.
+    out.append(_path("M 190,250 C 214,336 246,412 284,442 "
+                     "C 322,412 354,336 378,250",
+                     stroke=_SVG_INK_GHOST, w=2.4, dash="7 6",
+                     data_envelope="insect", data_flower="insect"))
+
+    # The receptacle — drawn, unnumbered, unhooked. It is where the parts stand,
+    # not one of the nine.
+    out.append(_path("M 262,450 C 262,472 274,482 284,482 C 294,482 306,472 "
+                     "306,450 Z", fill=_SVG_BAND, stroke=_SVG_INK, w=2.2))
+
+    out.append(_path("M 230,442 C 238,436 248,438 250,446 C 244,454 234,454 "
+                     "230,448 Z", fill=_SVG_ACCENT_TINT, stroke=_SVG_INK,
+                     w=1.8, data_part="nectary", data_number="09",
+                     data_flower="insect"))
+
+    for d in ("M 266,456 C 254,404 246,352 250,320",
+              "M 302,456 C 314,404 322,352 318,320"):
+        out.append(_path(d, stroke=_SVG_INK, w=4.5, data_part="filament",
+                         data_number="02", data_flower="insect"))
+
+    # ⛔ THE TWO ANTHERS, AND BOTH OF THEM CARRY THE POSITION. They sit at
+    # y 282–322 between the two arms of the dashed cup, which at that height
+    # runs at roughly x 205 and x 363 — so containment is true of the drawn
+    # rectangles and not only of the word beside them.
+    for x in (238, 306):
+        out.append(_rect(x, 282, 24, 40, rx=11, fill=_SVG_BAND,
+                         stroke=_SVG_INK, w=2.2, data_part="anther",
+                         data_number="01", data_flower="insect",
+                         data_anther_position="inside"))
+    for cx, cy in ((246, 294), (254, 304), (246, 312),
+                   (314, 294), (322, 304), (314, 312)):
+        out.append(_circle(cx, cy, 2.6, fill=_SVG_ACCENT_TEXT))
+
+    out.append(_ellipse(284, 432, 34, 28, fill=_SVG_CARD, stroke=_SVG_INK, w=3,
+                        data_part="ovary", data_number="05",
+                        data_flower="insect"))
+    for cx, cy in ((272, 428), (288, 442), (298, 426)):
+        out.append(_circle(cx, cy, 7, fill=_SVG_BAND, stroke=_SVG_INK, w=1.8,
+                           data_part="ovule", data_number="06",
+                           data_flower="insect"))
+
+    out.append(_path("M 284,406 V 278", stroke=_SVG_INK, w=6,
+                     data_part="style", data_number="04",
+                     data_flower="insect"))
+    out.append(_path("M 270,266 C 270,254 278,248 284,248 C 290,248 298,254 "
+                     "298,266 C 298,276 290,280 284,280 C 278,280 270,276 "
+                     "270,266 Z", fill=_SVG_BAND, stroke=_SVG_INK, w=2.2,
+                     data_part="stigma", data_number="03",
+                     data_flower="insect"))
+    # Sticky dots. The counterpart of the plumes opposite: same part, same
+    # number, a different way of catching pollen — dots against a fringe.
+    for cx, cy in ((276, 252), (286, 246), (294, 254)):
+        out.append(_circle(cx, cy, 2.4, fill=_SVG_ACCENT_TEXT))
+    out.append('</g>')
+
+    # The envelope's name, OUTSIDE the clip. A label inside it would lose its
+    # last word to the rounded corner, and SVG text simply draws past the box
+    # and is cut with no warning.
+    out.append(_mono(284, 220, "inside the flower", size=13, weight="400",
+                     anchor="middle"))
+
+    for d, cx, cy, num, slug in _FLOWER_BADGES_INSECT:
+        out.append(_path(d, stroke=_SVG_INK, w=1.4))
+        out.append(_circle(cx, cy, 14, fill=_SVG_BAND, stroke=_SVG_INK, w=2,
+                           data_part=slug, data_number=num,
+                           data_flower="insect", data_badge="1"))
+        out.append(_mono(cx, cy + 6, num, size=15, weight="400",
+                         anchor="middle", fill=_SVG_INK, data_part=slug,
+                         data_number=num, data_flower="insect",
+                         data_badge="1"))
+
+    # ── the wind-pollinated floret ───────────────────────────────────────
+    out.append('<g clip-path="url(#%s)">' % clip_r)
+    out.append(_path("M 720,470 V 566", stroke=_SVG_INK, w=8))
+
+    # Two papery bracts round a tiny ovary. Drawn, unnumbered, unhooked: they
+    # are what the dashed line encloses, and the point of the drawing is how
+    # little that is.
+    for d in ("M 700,404 C 686,428 690,456 706,470 C 716,452 716,424 710,404 Z",
+              "M 740,404 C 754,428 750,456 734,470 C 724,452 724,424 730,404 Z"):
+        out.append(_path(d, fill=_SVG_BAND, stroke=_SVG_INK, w=2.2))
+    out.append(_ellipse(720, 446, 15, 17, fill=_SVG_CARD, stroke=_SVG_INK,
+                        w=2.4))
+
+    # The floret's boundary — an ellipse, so containment on this side is one
+    # comparison rather than a flattened curve. It encloses the bracts and
+    # nothing else, which is the sentence the right-hand drawing makes.
+    out.append(_ellipse(720, 440, 48, 52, stroke=_SVG_RULE_STRONG, w=2,
+                        dash="7 6", data_envelope="wind", data_flower="wind"))
+
+    for d in ("M 706,404 C 682,388 646,378 622,384",
+              "M 718,398 C 704,354 676,320 650,306",
+              "M 734,404 C 758,388 794,378 818,384"):
+        out.append(_path(d, stroke=_SVG_INK, w=3, data_part="filament",
+                         data_number="02", data_flower="wind"))
+    # ⛔ ALL THREE ANTHERS, ALL THREE HOOKED. The nearest of them is more than
+    # its own width clear of the dashed ellipse; a row measures that rather
+    # than trusting it.
+    for x, y in ((596, 374), (626, 292), (814, 374)):
+        out.append(_rect(x, y, 30, 19, rx=9, fill=_SVG_BAND, stroke=_SVG_INK,
+                         w=2.2, data_part="anther", data_number="01",
+                         data_flower="wind", data_anther_position="outside"))
+    for cx, cy in ((606, 383), (616, 383), (636, 301), (646, 301),
+                   (824, 383), (834, 383)):
+        out.append(_circle(cx, cy, 2.4, fill=_SVG_ACCENT_TEXT))
+
+    # ── the feathery stigmas: two curves, and a fringe sampled along them ──
+    def _bez(p, t):
+        """Design's `bez`, unchanged: one cubic, evaluated at t."""
+        u = 1.0 - t
+        return (u * u * u * p[0][0] + 3 * u * u * t * p[1][0]
+                + 3 * u * t * t * p[2][0] + t * t * t * p[3][0],
+                u * u * u * p[0][1] + 3 * u * u * t * p[1][1]
+                + 3 * u * t * t * p[2][1] + t * t * t * p[3][1])
+
+    def _r1(v):
+        """`Math.round(v * 10) / 10` — half-UP, which `round` is not."""
+        return math.floor(v * 10 + 0.5) / 10.0
+
+    for pi, p in enumerate(_FLOWER_PLUMES):
+        out.append(_path("M %s,%s C %s,%s %s,%s %s,%s"
+                         % (_n(p[0][0]), _n(p[0][1]), _n(p[1][0]), _n(p[1][1]),
+                            _n(p[2][0]), _n(p[2][1]), _n(p[3][0]), _n(p[3][1])),
+                         stroke=_SVG_INK, w=3.4, data_part="stigma",
+                         data_number="03", data_flower="wind",
+                         data_plume=pi))
+    barb = 0
+    for pi, p in enumerate(_FLOWER_PLUMES):
+        for i in range(1, 10):
+            t = i / 10
+            ax, ay = _bez(p, t)
+            bx, by = _bez(p, t + 0.02)
+            dx, dy = bx - ax, by - ay
+            m = math.sqrt(dx * dx + dy * dy) or 1
+            nx, ny = -dy / m, dx / m
+            ln = 13
+            # Both sides of the same sample point, in her order: the fringe is
+            # symmetrical about the curve, so one side alone would read as a
+            # comb rather than a net.
+            for side in (1, -1):
+                out.append(_path(
+                    "M %s,%s L %s,%s"
+                    % (_n(_r1(ax)), _n(_r1(ay)),
+                       _n(_r1(ax + side * nx * ln - dx)),
+                       _n(_r1(ay + side * ny * ln - dy))),
+                    stroke=_SVG_INK, w=1.5, data_barb=barb, data_plume=pi,
+                    data_flower="wind", data_t="%.2f" % t))
+                barb += 1
+    out.append('</g>')
+
+    out.append(_mono(688, 500, "the floret", size=13, weight="400",
+                     anchor="end"))
+    # What is ABSENT is a fact too, and an absence cannot be labelled with a
+    # leader line — there is nothing to point at. So it is stated, in the
+    # accent text voice, against the two numbers the key holds.
+    out.append(_mono(720, 540, "no petals, no nectary —", size=13,
+                     weight="400", anchor="middle", fill=_SVG_ACCENT_TEXT))
+    out.append(_mono(720, 558, "07 and 09 are not here", size=13,
+                     weight="400", anchor="middle", fill=_SVG_ACCENT_TEXT))
+
+    for d, cx, cy, num, slug, drop in _FLOWER_BADGES_WIND:
+        out.append(_path(d, stroke=_SVG_INK, w=1.4))
+        out.append(_circle(cx, cy, 14, fill=_SVG_BAND, stroke=_SVG_INK, w=2,
+                           data_part=slug, data_number=num,
+                           data_flower="wind", data_badge="1"))
+        out.append(_mono(cx, cy + 6, num, size=15, weight="400",
+                         anchor="middle", fill=_SVG_INK, data_part=slug,
+                         data_number=num, data_flower="wind",
+                         data_badge="1"))
+        # ⚠️ `data-position`, deliberately NOT `data-anther-position` — see the
+        # docstring. This is the printed word; the shape carries the measured
+        # fact, and a row should be able to compare them without the word
+        # joining the set of things being measured.
+        #
+        # ⊕ MRB-254 · `drop` REPLACES A FLAT +30. Badges 01 and 02 both send
+        # their leader straight down past the word — 01 from 600,332 as far as
+        # 608,368, and 02 from 800,334 as far as 782,376 — and at +30 the word
+        # sat at y 338–351 with those leaders passing through x 602–604 and
+        # 794–797. A line down the middle of the one word this drawing exists
+        # to make checkable. Sideways is not available on either: 01's word
+        # already begins at x 565 against a frame edge at 564, and 02's ends at
+        # 833 against 876. Down is, because both leaders STOP at the organ they
+        # name, at y 368 and 376, so at +94 the word clears the whole leader
+        # and lands directly beneath the anther or the filament instead of
+        # beneath the badge. 03's leader leaves to the RIGHT, from 662,222 as
+        # far as 690,234, and never crosses its word at all, so it keeps
+        # Design's +30: the drop is per badge and not applied to all three.
+        out.append(_mono(cx, cy + drop, "outside", size=13, weight="400",
+                         anchor="middle", data_part=slug, data_number=num,
+                         data_flower="wind", data_position="outside"))
+
+    out.append(_mono(852, 120, "large, and feathery", size=13, weight="400",
+                     anchor="end"))
+    out.append(_mono(852, 138, "the whole length", size=13, weight="400",
+                     anchor="end"))
+
+    # ── the key ──────────────────────────────────────────────────────────
+    out.append(_mono(24, 654,
+                     "NINE PARTS · 01–02 MALE · "
+                     "03–06 FEMALE · 07–09 NEITHER",
+                     size=13, weight="400", spacing="1.2"))
+    out.append(_path("M 24,666 H 876", stroke=_SVG_RULE, w=2))
+
+    for cx, tx, cy, num, slug, name, job in _FLOWER_KEY:
+        out.append(_circle(cx, cy, 14, fill=_SVG_BAND, stroke=_SVG_INK, w=2,
+                           data_part=slug, data_number=num, data_key="1"))
+        out.append(_mono(cx, cy + 6, num, size=15, weight="400",
+                         anchor="middle", fill=_SVG_INK, data_part=slug,
+                         data_number=num, data_key="1"))
+        out.append(_label(tx, cy - 1, name, size=18, weight="700",
+                          anchor="start", data_part=slug, data_number=num,
+                          data_key="1"))
+        out.append(_label(tx, cy + 19, job, size=15, weight="400",
+                          anchor="start", fill=_SVG_INK_BODY,
+                          data_part=slug, data_key="1"))
+
+    out.append(_path("M 24,918 H 876", stroke=_SVG_RULE, w=2))
+    out.append(_label(24, 948,
+                      "The same nine parts, drawn twice. Only where 01, 02 "
+                      "and 03 sit has changed.",
+                      size=16, weight="700", anchor="start"))
+    out.append(_label(24, 970,
+                      "The sepals are drawn as pointed flaps rather than in "
+                      "green: no colour in this figure carries a fact on its "
+                      "own.",
+                      size=15, weight="400", anchor="start",
+                      fill=_SVG_INK_BODY))
+
+    out.append('</g>')
+    out.append('</svg>')
+    return "".join(out)
+
+
+# ── b5-reproductive-systems · nine structures, where the body puts them ─────
+#
+# ⛔ THE NINE ARE ONE TABLE AND EVERY STRING IN IT IS A LITERAL. Design's own
+# build of this figure rendered its nine-row key as nine empty badges — an
+# interpolated hole inside `<text>` produces nothing at all, and a `<text>`
+# with no content is invisible rather than broken, so the drawing looked
+# finished. `_label` now refuses an empty string, but a refusal is the second
+# line of defence and not the first. The first is here: there is no source of
+# a key row's words other than this table, no concatenation, no lookup that
+# can miss, no field that is computed from another figure's state. A blank in
+# the key would have to be typed into this table, in quotes, on purpose.
+#
+# Fields, per row:
+#   number       "01".."09". The printed numeral AND the sort order.
+#   slug         the `data-structure` value. Stable; a gate names it.
+#   system       "male" | "female". Which frame it is drawn in, and which key
+#                column it is listed in — the same value does both, so the two
+#                cannot disagree.
+#   counterpart  "none" | "paired". ⚖️ THIS IS THE MEANING, AND THE BADGE FILL
+#                IS DERIVED FROM IT — never the other way round. See the
+#                drawer's docstring; this is the whole point of the column.
+#   plate        (leader `d` or None, badge cx, badge cy, word x, word y,
+#                word anchor) — where the badge lands ON THE DRAWING. `None`
+#                for the leader on 07 only: the uterus badge sits inside the
+#                uterus, so there is nothing for a leader to reach.
+#   word         the short name printed on the plate, lower case.
+#   title        the key row's name, sentence case.
+#   job          the key row's one line of function.
+_B5_REPRO_STRUCTURES = (
+    ("01", "testes", "male", "paired",
+     ("M 88,400 L 138,398", 74, 400, 74, 432, "middle"),
+     "testes", "Testes", "Make sperm cells, from puberty onwards"),
+    ("02", "sperm-duct", "male", "paired",
+     ("M 86,268 L 160,290", 72, 266, 72, 296, "middle"),
+     "sperm duct", "Sperm duct", "Carries sperm towards the urethra"),
+    ("03", "glands", "male", "paired",
+     ("M 124,186 L 178,214", 110, 180, 110, 212, "middle"),
+     "glands", "Glands", "Add fluid; sperm plus fluid is semen"),
+    ("04", "penis", "male", "paired",
+     ("M 322,432 L 256,452", 336, 428, 336, 460, "middle"),
+     "penis", "Penis", "Transfers semen into the vagina"),
+    ("05", "ovaries", "female", "paired",
+     ("M 512,338 L 518,316", 506, 352, 506, 384, "middle"),
+     "ovaries", "Ovaries", "Contain the egg cells; release one a month"),
+    ("06", "oviduct", "female", "paired",
+     ("M 528,132 L 566,172", 514, 122, 532, 128, "start"),
+     "oviduct", "Oviduct", "Carries the egg. Fertilisation happens here"),
+    ("07", "uterus", "female", "none",
+     (None, 670, 238, 670, 266, "middle"),
+     "uterus", "Uterus", "Holds and supplies the developing embryo"),
+    ("08", "cervix", "female", "none",
+     ("M 730,338 L 700,340", 744, 338, 762, 344, "start"),
+     "cervix", "Cervix", "Closes the uterus; opens for birth"),
+    ("09", "vagina", "female", "none",
+     ("M 730,420 L 700,424", 744, 420, 762, 426, "start"),
+     "vagina", "Vagina", "Receives semen; the birth canal"),
+)
+
+# The two key columns: (system, left edge, rule right edge, badge cx).
+# The words' x is the badge cx plus 26 in both columns, so it is derived once
+# below rather than typed twice and allowed to drift.
+_B5_REPRO_KEY_COLUMNS = (("male", 24, 420, 38), ("female", 480, 876, 494))
+
+_B5_REPRO_KEY_TOP = 588      # baseline of the first key badge in each column
+_B5_REPRO_KEY_STEP = 44      # ⚠️ Design's row pitch; five rows must clear 806
+_B5_REPRO_BADGE_R = 14       # every numbered badge, plate and key alike
+_B5_REPRO_NUMERAL_DY = 6     # numeral baseline below the badge centre, always
+
+# The column headings count the structures beneath them, so the count is taken
+# from the table and spelled from here. Index 0 is the empty string and would
+# be a blank heading; it is unreachable — the guard in the drawer refuses a
+# column outside 1..9 before this is indexed, and `_label` refuses "" after.
+# Two refusals around one array is deliberate: this is the exact shape of the
+# hole that produced Design's nine empty badges.
+_B5_REPRO_COUNT_WORDS = ("", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX",
+                         "SEVEN", "EIGHT", "NINE")
+
+# The male frame, inside its clip. Order is Design's, and order is load-bearing
+# here: the sperm ducts are drawn as a dark 9px casing with a 4px inset lumen
+# laid over it, so a duct swapped ahead of its casing becomes a flat dark line.
+_B5_REPRO_DUCTS = ("M 170,366 C 164,320 178,268 194,246",
+                   "M 290,366 C 296,320 282,268 266,246")
+
+# The two oviducts, same casing-then-lumen construction at 10px / 4.5px.
+_B5_REPRO_OVIDUCTS = (
+    "M 616,192 C 580,166 542,164 524,190 C 508,214 512,244 532,254",
+    "M 724,192 C 760,166 798,164 816,190 C 832,214 828,244 808,254")
+
+# The fringed funnel at the end of each oviduct — three strokes, splayed. Drawn
+# as three separate line segments in one `d`, exactly as Design has them.
+_B5_REPRO_FIMBRIAE = (
+    "M 532,256 L 510,270 M 532,256 L 518,280 M 532,256 L 540,282",
+    "M 808,256 L 830,270 M 808,256 L 822,280 M 808,256 L 800,282")
+
+# The egg cells already present in each ovary, as (cx, cy). Four per ovary.
+# ⚠️ These are CONTENTS, not the organ, and they carry `data-organ="contents"`
+# for that reason: a row counting the shapes that make up an ovary must not
+# find twelve of them.
+_B5_REPRO_EGGS = ((506, 286), (521, 281), (514, 299), (528, 296),
+                  (814, 286), (829, 281), (822, 299), (836, 296))
+
+# The wrinkled skin on each testis. Surface texture on a shape that is already
+# hooked, and deliberately unhooked itself.
+_B5_REPRO_SCROTUM_TEXTURE = (
+    "M 148,388 q 10,-8 20,0 q 10,8 20,0 M 148,402 q 10,-8 20,0 q 10,8 20,0",
+    "M 268,388 q 10,-8 20,0 q 10,8 20,0 M 268,402 q 10,-8 20,0 q 10,8 20,0")
+
+
+def _repro_systems(fig):
+    """The two human reproductive tracts side by side, nine structures
+    numbered where the body actually puts them, above a shared key.
+
+    THE LESSON NAMES NINE STRUCTURES AND ITS BENCH IS A NAME-TO-FUNCTION
+    MATCHING QUIZ, which contains not one item of spatial information. A
+    student can score full marks on it holding a completely wrong picture of
+    where any of these things are — that the testes are inside the abdomen,
+    that fertilisation happens in the uterus, that the two systems are mirror
+    images of one another with a different part in each slot. This figure is
+    the only place in the lesson where the structures get positions, so it is
+    drawn to be READ POSITIONALLY and not as decoration beside the list.
+
+    Three claims are carried by geometry rather than by a sentence:
+
+      · THE TESTES ARE BELOW THE DASHED LINE. The line is labelled *body
+        cavity ends*, and 01 sits at y=396 against a boundary at y=330 — the
+        testes are outside the body, which is why they are drawn in a pouch
+        and why the glands at y=224 are not. `data-boundary="body-cavity"` on
+        the line lets a row measure that rather than trust it.
+      · THE ORANGE RING IS ON THE OVIDUCT. Fertilisation is marked once, at
+        (774, 170), on the right oviduct's arc and nowhere near the uterus at
+        (670, 238). The single most common wrong answer in this topic is
+        *the uterus*, and the ring exists to be found in the wrong place if
+        the drawing ever drifts.
+      · THE TWO SYSTEMS ARE NOT MIRROR IMAGES. Three of the nine have no
+        counterpart at all, and that is what the filled badge says.
+
+    ⊕ THE FILLED BADGE IS A HOUSE CONVENTION FROM HERE ON. Design invented it
+    for this figure and it is adopted as reusable: **a badge drawn solid, with
+    its numeral reversed out of the fill, means THIS ONE HAS NO COUNTERPART IN
+    THE OTHER SET.** An open badge means it has one. It is stated in words once,
+    in the legend along the bottom, and nowhere else — a device explained twice
+    is a device the reader has stopped trusting. It carries no colour and it
+    never will: the whole distinction is fill versus no fill, so it survives
+    greyscale, print, and a reader who cannot separate the accent from the ink.
+    The next drawer that needs *this one has no partner* should use this and not
+    invent a second device.
+
+    ⚠️ THE FILL IS DERIVED FROM THE MEANING, NOT THE POSITION. `counterpart` is
+    a column in `_B5_REPRO_STRUCTURES` and the badge's paint is computed from
+    it, once, in one expression. This matters because the three unpaired
+    structures happen to be the LAST three in the table and the LAST three in
+    the right-hand key column — so a badge whose fill was keyed to its index,
+    or to its column position, would render this figure pixel-identically and
+    be wrong the moment a tenth structure or a re-order arrived. That is the
+    base-pair failure mode exactly: correct on every row you look at, for a
+    reason that has nothing to do with the science. `data-counterpart` is on
+    every badge and every numeral so a row can assert the fill and the meaning
+    agree on all nine, rather than on the first one it finds.
+
+    ⚖️ TWO DIFFERENT RELATIONS LIVE ON THIS PLATE AND THEY ARE NOT THE SAME
+    ONE. `data-counterpart` is the badge device above — does the other system
+    contain anything corresponding to this. `data-pair="01-05"` is the dashed
+    link under the key, which marks the one pairing Design draws as a link:
+    testes and ovaries, because both make gametes. Six badges are open and only
+    one link is drawn, and that is not a contradiction — a correspondence is
+    not a drawn pairing. A gate that conflated the two would report the figure
+    broken while it is right.
+
+    ⚠️ THE GREY TUBE INSIDE THE PENIS IS NOT MARKED
+    `data-role="no-reproductive-job"`, and the bladder above it is. They are
+    the same grey on purpose — Design uses the tone to say *this is the urine
+    route* — but the urethra carries semen as well, which is the whole reason
+    the male tract has a shared final tube, and marking it as having no
+    reproductive job would put a false claim into the markup where a gate would
+    then enforce it. `data-role` is on the bladder, its neck, its leader and
+    its two label lines: the four things that genuinely have no reproductive
+    job and must not be counted among the nine.
+
+    The hooks, and what each is for:
+
+      · `data-structure` / `data-number` / `data-system` — on every element
+        belonging to one of the nine: the plate badge, its numeral, its printed
+        word, the shape or shapes it names, its leader, and its key row. A row
+        can assert there are exactly nine, numbered 01–09, none missing and
+        none repeated, by counting `data-badge="key"` or `data-badge="plate"`;
+        each set holds nine and the two must agree.
+      · `data-badge` / `data-numeral` / `data-word` — "plate" | "key" (and
+        "key-job" for the key's function line). These separate the FOUR places
+        a number appears, so a count is never ambiguous about which nine it is
+        counting.
+      · `data-counterpart` — "none" | "paired". On badge circles and numerals
+        only, because that is where the device lives: a filled circle must have
+        a reversed numeral, and both carry the value that says why.
+      · `data-organ` — "drawn" for a shape the number names, "contents" for
+        things drawn inside one. ⚠️ PLURAL IS NORMAL HERE AND IS NOT A DEFECT:
+        there are two testes, two ovaries, two oviducts and two sperm ducts,
+        and each duct is drawn twice over (casing, then lumen). Count by
+        `data-structure`, never by element.
+      · `data-role="no-reproductive-job"` — the bladder. Design draws it in
+        grey and says so in words, and it must not be counted among the nine.
+      · `data-boundary="body-cavity"` — the dashed line and its label.
+      · `data-marks="fertilisation"` — the ring, its leader, its label, and the
+        legend chip that explains it.
+      · `data-count` — on each key column heading, so the spelled-out word can
+        be checked against the number of badges beneath it.
+
+    ⚠️ ONE LABEL RAISED. Design sets *one pair* at 12px; the kit's floor is 13
+    and `_label` refuses below it. Raised to 13. It is anchored middle at x=455
+    in the gutter between the two key columns, so it grows symmetrically and
+    stays clear of both.
+    """
+    W, H = 900, 860
+
+    # ⛔ THE TABLE IS CHECKED BEFORE IT IS DRAWN. `_label` catches a blank at
+    # the call site, where the message can only name the coordinates; this
+    # catches it at the row, where the message can name the structure — and it
+    # also catches the two things `_label` cannot see at all: a missing number
+    # and a repeated one. The encoding claim is NINE, NUMBERED 01–09, EACH
+    # ONCE, so it is asserted in the build and not only in a parity row.
+    numbers = [r[0] for r in _B5_REPRO_STRUCTURES]
+    if numbers != ["%02d" % i for i in range(1, 10)]:
+        raise ValueError(
+            "b5-reproductive-systems is numbered %r. The lesson names NINE "
+            "structures and the drawing numbers them 01 to 09, each once: the "
+            "numbering is the figure's claim, not a caption on it." % numbers)
+    for row in _B5_REPRO_STRUCTURES:
+        blank = [i for i, v in enumerate(row) if isinstance(v, str)
+                 and not v.strip()]
+        if blank:
+            raise ValueError(
+                "structure %r has an empty field at %r. A `<text>` with no "
+                "content renders as nothing at all — this figure's nine-row "
+                "key came out as nine empty badges exactly that way."
+                % (row[0], blank))
+
+    out = [_svg_open(fig, W, H)]
+
+    # Two clips, named off the figure id. ⚠️ A bare `id="f2L"` collides the
+    # moment a second figure lands on the same page, and `url(#f2L)` resolves
+    # to whichever came first in the document — so one lesson's frame would
+    # silently take another's clip rectangle.
+    clip_m = "%s-clip-male" % e(fig["id"])
+    clip_f = "%s-clip-female" % e(fig["id"])
+    out.append(
+        '<defs>'
+        '<clipPath id="%s"><rect x="24" y="54" width="412" height="440" '
+        'rx="18"/></clipPath>'
+        '<clipPath id="%s"><rect x="464" y="54" width="412" height="440" '
+        'rx="18"/></clipPath>'
+        '</defs>' % (clip_m, clip_f))
+
+    # Round caps and joins for the whole drawing, once, as Design set them on
+    # her wrapping `<g>`. Every thick stroke here is shaped by them — the 9px
+    # duct casings, the 10px oviducts, the 7px bladder neck — so they are
+    # geometry, not polish. They are the only presentation attributes on this
+    # group; paint stays in `style`, on every element, as the law requires.
+    out.append('<g stroke-linecap="round" stroke-linejoin="round">')
+
+    out.append(_mono(24, 40, "MALE SYSTEM · FROM THE FRONT", size=14,
+                     weight="400", spacing="1.4", data_system="male"))
+    out.append(_mono(464, 40, "FEMALE SYSTEM · FROM THE FRONT", size=14,
+                     weight="400", spacing="1.4", data_system="female"))
+
+    out.append(_rect(24, 54, 412, 440, rx=18, fill=_SVG_CARD, stroke=_SVG_INK,
+                     w=2.5, data_system="male"))
+    out.append(_rect(464, 54, 412, 440, rx=18, fill=_SVG_CARD, stroke=_SVG_INK,
+                     w=2.5, data_system="female"))
+
+    # ── the male frame ───────────────────────────────────────────────────
+    out.append('<g clip-path="url(#%s)">' % clip_m)
+
+    # The pouch. Drawn first and unnumbered: it is skin, and it is here so that
+    # "outside the body cavity" is a place a student can see, not a phrase.
+    out.append(_path("M 126,352 C 112,414 146,452 200,447 C 240,444 262,444 "
+                     "300,447 C 356,452 386,414 372,352 Z",
+                     fill=_SVG_INSET, stroke=_SVG_INK_FAINT, w=2))
+
+    # ⚖️ The boundary. Everything the figure claims about the testes is a claim
+    # about which side of this line they are on.
+    out.append(_path("M 40,330 H 420", stroke=_SVG_RULE_STRONG, w=2,
+                     dash="7 6", data_boundary="body-cavity"))
+
+    # The bladder and its neck. Grey, unnumbered, and hooked as having no
+    # reproductive job so a gate can hold it out of the nine.
+    out.append(_ellipse(230, 166, 52, 34, fill=_SVG_BAND,
+                        stroke=_SVG_INK_FAINT, w=2,
+                        data_role="no-reproductive-job"))
+    out.append(_path("M 230,200 V 244", stroke=_SVG_INK_GHOST, w=7,
+                     data_role="no-reproductive-job"))
+
+    # The sperm ducts: dark casing first, inset lumen over it. Both strokes
+    # belong to 02.
+    for d in _B5_REPRO_DUCTS:
+        out.append(_path(d, stroke=_SVG_INK, w=9, data_structure="sperm-duct",
+                         data_number="02", data_system="male",
+                         data_organ="drawn"))
+    for d in _B5_REPRO_DUCTS:
+        out.append(_path(d, stroke=_SVG_INSET, w=4,
+                         data_structure="sperm-duct", data_number="02",
+                         data_system="male", data_organ="drawn"))
+
+    for cx in (196, 264):
+        out.append(_circle(cx, 224, 20, fill=_SVG_BAND, stroke=_SVG_INK,
+                           w=2.2, data_structure="glands", data_number="03",
+                           data_system="male", data_organ="drawn"))
+
+    # The penis: outline, then the tube down its centre, then the urethra as a
+    # grey thread over it. See the docstring on why the grey one is NOT marked
+    # as having no reproductive job.
+    out.append(_path("M 208,244 V 450 Q 208,474 230,474 Q 252,474 252,450 "
+                     "V 244 Z", fill=_SVG_CARD, stroke=_SVG_INK, w=2.5,
+                     data_structure="penis", data_number="04",
+                     data_system="male", data_organ="drawn"))
+    out.append(_path("M 230,248 V 462", stroke=_SVG_BAND, w=9,
+                     data_structure="penis", data_number="04",
+                     data_system="male", data_organ="drawn"))
+    out.append(_path("M 230,248 V 462", stroke=_SVG_INK_GHOST, w=2,
+                     data_structure="penis", data_number="04",
+                     data_system="male", data_organ="drawn"))
+
+    for cx in (170, 290):
+        out.append(_ellipse(cx, 396, 34, 28, fill=_SVG_CARD, stroke=_SVG_INK,
+                            w=2.5, data_structure="testes", data_number="01",
+                            data_system="male", data_organ="drawn"))
+    for d in _B5_REPRO_SCROTUM_TEXTURE:
+        out.append(_path(d, stroke=_SVG_INK_FAINT, w=1.6))
+
+    out.append('</g>')
+
+    # Labels sit OUTSIDE the clip, with leaders reaching in. A label clipped to
+    # the frame loses its last word to the rounded corner and nothing warns:
+    # SVG text simply draws past the box and is cut.
+    out.append(_mono(44, 322, "body cavity ends", size=13, weight="400",
+                     data_boundary="body-cavity"))
+
+    out.append(_path("M 292,160 L 272,164", stroke=_SVG_INK_FAINT, w=1.4,
+                     data_role="no-reproductive-job"))
+    # ⊕ MRB-254 · RE-BROKEN AFTER "no", NOT MOVED. The lines were
+    # `bladder —` / `no reproductive job`, both end-anchored at 424, and the
+    # second one is nineteen mono characters — 148 units — so it began at
+    # x≈276. The bladder's right edge is 282 and the leader's tail is 292, so
+    # the word ran back over both: the label lay on the organ it names and the
+    # leader lay inside the label, which is what the sweep calls a
+    # strikethrough. Sixteen characters is 125 units and starts at 299, seven
+    # clear of the leader and seventeen clear of the ellipse. The break is
+    # ugly to read aloud and it is the only move available: end-anchoring at
+    # 424 already leaves twelve units to the frame, so the label cannot go
+    # right, and the 13px floor is enforced at source so it cannot shrink.
+    out.append(_mono(424, 153, "bladder — no", size=13, weight="400",
+                     anchor="end", data_role="no-reproductive-job"))
+    out.append(_mono(424, 171, "reproductive job", size=13, weight="400",
+                     anchor="end", data_role="no-reproductive-job"))
+
+    out.extend(_repro_systems_plate_badges("male"))
+
+    # ── the female frame ─────────────────────────────────────────────────
+    out.append('<g clip-path="url(#%s)">' % clip_f)
+
+    for d in _B5_REPRO_OVIDUCTS:
+        out.append(_path(d, stroke=_SVG_INK, w=10, data_structure="oviduct",
+                         data_number="06", data_system="female",
+                         data_organ="drawn"))
+    for d in _B5_REPRO_OVIDUCTS:
+        out.append(_path(d, stroke=_SVG_INSET, w=4.5,
+                         data_structure="oviduct", data_number="06",
+                         data_system="female", data_organ="drawn"))
+    for d in _B5_REPRO_FIMBRIAE:
+        out.append(_path(d, stroke=_SVG_INK, w=2.2, data_structure="oviduct",
+                         data_number="06", data_system="female",
+                         data_organ="drawn"))
+
+    # The uterus is drawn AFTER the oviducts so its body covers their roots —
+    # the tubes leave the uterus, they do not sit on top of it.
+    out.append(_path("M 612,196 Q 616,172 670,172 Q 724,172 728,196 L 700,306 "
+                     "Q 694,330 670,330 Q 646,330 640,306 Z",
+                     fill=_SVG_CARD, stroke=_SVG_INK, w=3,
+                     data_structure="uterus", data_number="07",
+                     data_system="female", data_organ="drawn"))
+    # The lining, as a thickness inside the wall rather than a line on it.
+    out.append(_path("M 628,202 Q 640,188 670,188 Q 700,188 712,202 L 692,300 "
+                     "Q 686,316 670,316 Q 654,316 648,300 Z",
+                     fill=_SVG_ACCENT_TINT, stroke="none",
+                     data_structure="uterus", data_number="07",
+                     data_system="female", data_organ="drawn"))
+
+    out.append(_rect(648, 322, 44, 32, rx=9, fill=_SVG_BAND, stroke=_SVG_INK,
+                     w=2.5, data_structure="cervix", data_number="08",
+                     data_system="female", data_organ="drawn"))
+    out.append(_path("M 650,354 L 644,448 Q 644,462 658,462 L 682,462 "
+                     "Q 696,462 696,448 L 690,354 Z",
+                     fill=_SVG_CARD, stroke=_SVG_INK, w=2.5,
+                     data_structure="vagina", data_number="09",
+                     data_system="female", data_organ="drawn"))
+
+    for cx in (516, 824):
+        out.append(_ellipse(cx, 292, 30, 24, fill=_SVG_CARD, stroke=_SVG_INK,
+                            w=2.5, data_structure="ovaries", data_number="05",
+                            data_system="female", data_organ="drawn"))
+    # The egg cells already present — the fact the key line rests on.
+    for cx, cy in _B5_REPRO_EGGS:
+        out.append(_circle(cx, cy, 4.5, fill=_SVG_BAND, stroke=_SVG_INK_FAINT,
+                           w=1.4, data_structure="ovaries", data_number="05",
+                           data_system="female", data_organ="contents"))
+
+    # ⚖️ THE ONE PLACE FERTILISATION IS MARKED. On the right oviduct's arc, at
+    # (774, 170) — 68 units above the uterus badge and outside the uterus
+    # outline entirely. The ring is the only accent stroke in the drawing.
+    out.append(_circle(774, 170, 13, stroke=_SVG_ACCENT, w=3.4,
+                       data_marks="fertilisation", data_structure="oviduct",
+                       data_number="06", data_system="female"))
+
+    out.append('</g>')
+
+    out.append(_path("M 790,152 L 780,160", stroke=_SVG_ACCENT_TEXT, w=1.4,
+                     data_marks="fertilisation"))
+    out.append(_mono(866, 146, "fertilisation happens here", size=13,
+                     weight="400", anchor="end", fill=_SVG_ACCENT_TEXT,
+                     data_marks="fertilisation"))
+
+    out.extend(_repro_systems_plate_badges("female"))
+
+    # ── the shared key ───────────────────────────────────────────────────
+    # ⚠️ BOTH HEADINGS AND BOTH RULES FIRST, THEN THE ROWS — Design's own
+    # document order, kept even though nothing here overlaps and the render is
+    # identical either way. A structural differ compares the element sequence,
+    # and a port that reorders a region for the author's convenience makes that
+    # differ useless for finding the reorderings that DO change a drawing.
+    columns = []
+    for system, x0, x1, cx in _B5_REPRO_KEY_COLUMNS:
+        rows = [r for r in _B5_REPRO_STRUCTURES if r[2] == system]
+        n = len(rows)
+        # The heading spells the count of the rows beneath it, so the words and
+        # the drawing cannot disagree — remove a structure and the heading
+        # follows. Guarded because index 0 of the word list is "", and a blank
+        # heading is the failure this figure is on record for.
+        if not 1 <= n <= 9:
+            raise ValueError(
+                "the %s key column holds %d structures. The heading spells the "
+                "count in words, and there is no word for that." % (system, n))
+        columns.append((system, x0, x1, cx, rows, n))
+
+    for system, x0, _x1, _cx, _rows, n in columns:
+        out.append(_mono(x0, 546, "%s STRUCTURES" % _B5_REPRO_COUNT_WORDS[n],
+                         size=13, weight="400", spacing="1.2",
+                         data_system=system, data_count=n))
+    for _system, x0, x1, _cx, _rows, _n in columns:
+        out.append(_path("M %d,556 H %d" % (x0, x1), stroke=_SVG_RULE, w=2))
+
+    for system, _x0, _x1, cx, rows, _n in columns:
+        for i, (num, slug, _sys, counter, _plate, _word, title,
+                job) in enumerate(rows):
+            y = _B5_REPRO_KEY_TOP + _B5_REPRO_KEY_STEP * i
+            out.extend(_repro_systems_badge(cx, y, num, slug, system, counter,
+                                            "key"))
+            out.append(_label(cx + 26, y - 1, title, size=18, weight="700",
+                              anchor="start", data_structure=slug,
+                              data_number=num, data_system=system,
+                              data_word="key"))
+            out.append(_label(cx + 26, y + 19, job, size=15, weight="400",
+                              fill=_SVG_INK_BODY, anchor="start",
+                              data_structure=slug, data_number=num,
+                              data_system=system, data_word="key-job"))
+
+    # The one pairing drawn as a link — testes to ovaries, both make gametes.
+    # NOT the same relation as the badge fill; see the docstring.
+    out.append(_path("M 430,588 H 480", stroke=_SVG_INK, w=1.8, dash="6 5",
+                     data_pair="01-05"))
+    # ⚠️ Design sets this at 12px. Raised to the kit's 13px floor.
+    out.append(_mono(455, 574, "one pair", size=13, weight="400",
+                     anchor="middle", data_pair="01-05"))
+
+    # ── the legend ───────────────────────────────────────────────────────
+    # The two devices, each stated once, in words, on the drawing's own face.
+    out.append(_path("M 24,806 H 876", stroke=_SVG_RULE, w=2))
+    out.append(_circle(38, 834, 13, fill=_SVG_INK, stroke=_SVG_INK, w=2,
+                       data_legend="filled-badge"))
+    out.append(_label(60, 840,
+                      "A filled badge — nothing in the male system "
+                      "corresponds to it",
+                      size=16, weight="700", anchor="start",
+                      data_legend="filled-badge"))
+    out.append(_circle(556, 834, 13, stroke=_SVG_ACCENT, w=3.4,
+                       data_legend="fertilisation",
+                       data_marks="fertilisation"))
+    out.append(_label(578, 840, "The one place fertilisation happens",
+                      size=16, weight="400", anchor="start",
+                      data_legend="fertilisation",
+                      data_marks="fertilisation"))
+
+    out.append('</g>')
+    out.append('</svg>')
+    return "".join(out)
+
+
+def _repro_systems_badge(cx, cy, num, slug, system, counterpart, where):
+    """One numbered badge: the circle and the numeral reversed out of it.
+
+    ⚖️ THE FILL IS COMPUTED FROM `counterpart` AND FROM NOTHING ELSE. Filled
+    means *the other system has no counterpart for this*; the numeral inverts
+    to the ground so it stays legible, and both elements carry the value that
+    explains the fill. Plate badge and key badge come through this one function
+    so the two can never disagree about which three are solid — the failure
+    that would look correct on the plate and wrong in the key, or the reverse,
+    is not reachable.
+    """
+    solid = counterpart == "none"
+    hooks = dict(data_structure=slug, data_number=num, data_system=system,
+                 data_counterpart=counterpart)
+    return [
+        _circle(cx, cy, _B5_REPRO_BADGE_R,
+                fill=_SVG_INK if solid else _SVG_BAND, stroke=_SVG_INK, w=2,
+                data_badge=where, **hooks),
+        _mono(cx, cy + _B5_REPRO_NUMERAL_DY, num, size=15, weight="400",
+              fill=_SVG_GROUND if solid else _SVG_INK, anchor="middle",
+              data_numeral=where, **hooks),
+    ]
+
+
+def _repro_systems_plate_badges(system):
+    """The badges that sit ON the drawing, for one system: leader, badge,
+    numeral, printed word — in Design's order, which puts the leader under the
+    badge so the line never crosses the numeral.
+
+    07 alone has no leader: its badge sits inside the uterus it names, so there
+    is nothing to reach. That is why a gate must expect EIGHT leaders and nine
+    badges, and why `data-leader` is a separate hook rather than an assumed
+    companion of `data-badge="plate"`.
+    """
+    out = []
+    for num, slug, sys_, counter, plate, word, _t, _j in _B5_REPRO_STRUCTURES:
+        if sys_ != system:
+            continue
+        leader, cx, cy, wx, wy, anchor = plate
+        if leader:
+            out.append(_path(leader, stroke=_SVG_INK, w=1.4,
+                             data_leader=slug, data_number=num,
+                             data_system=sys_))
+        out.extend(_repro_systems_badge(cx, cy, num, slug, sys_, counter, "plate"))
+        out.append(_label(wx, wy, word, size=15, weight="700", anchor=anchor,
+                          data_structure=slug, data_number=num,
+                          data_system=sys_, data_word="plate"))
+    return out
+
+
+# ── ⊕ MRB-254 · WS1 #7, b4-gas-exchange-labelled — Design's fig-07, ported ──
+#
+# Every number below is Design's. Two of her three `<sc-for>` loops are pure
+# tables and live up here, out of the drawing body, because they are the parts
+# a reader might want to check against her `renderVals()` line by line. The
+# third loop — the airway — is not a table at all and cannot be one; it is a
+# recursion, and it stays inside the function beside the reason it exists.
+
+# Six pairs of ribs, sweeping down and out from the centre line. `y0` steps by
+# 42 and every control point is an offset from it, exactly as she wrote them,
+# so the sweep is one shape repeated rather than twelve hand-placed curves.
+_B4_THORAX_RIB_PAIRS = 6
+_B4_THORAX_RIB_STEP = 42
+_B4_THORAX_RIB_TOP = 240
+
+# One inter-rib gap filled, on the right, outside the lung outline. Her
+# comment: "positions taken from the rib curve itself so the hatches land
+# BETWEEN rib 1 and rib 2 rather than near them" — which is why the x values
+# and the y offsets march together instead of the hatches being a plain
+# vertical comb.
+_B4_THORAX_HATCH = ((464, 27), (474, 33), (483, 39))
+
+# The five sacs of the magnified rosette, and the bronchiole that opens into
+# them. Literal in her delivery: this is the one tip drawn large, so nothing
+# about it is generated and there is nothing here that can drift run to run.
+_B4_THORAX_ROSETTE = ((734, 172, 31), (794, 170, 31), (816, 216, 29),
+                      (762, 238, 31), (712, 214, 29))
+
+# The key beneath the plate. `(badge x, badge y, numeral, title, gloss)`.
+# 01–05 are the route in, in order; 06 is the machinery around it, and the
+# gloss says so in as many words — the figure's whole argument in one row.
+_B4_THORAX_KEY = (
+    (38, 758, "01", "Nose and mouth",
+     "Air warmed, moistened and filtered"),
+    (38, 814, "02", "Trachea",
+     "Held open by C-shaped rings of cartilage"),
+    (38, 870, "03", "Bronchi",
+     "One to each lung. No exchange here"),
+    (494, 758, "04", "Bronchioles",
+     "Divide, and divide again, about 23 times"),
+    (494, 814, "05", "Alveoli",
+     "Gas exchange — the only place it happens"),
+    (494, 870, "06", "Ribs, intercostal muscles and diaphragm",
+     "Not the airway. The machinery that moves air"),
+)
+
+
+def _thorax(fig):
+    """The route air takes in — nose and mouth to alveoli — with the ribs, the
+    intercostal muscles and the diaphragm drawn AROUND the lungs rather than
+    along the way in, and one terminal cluster magnified beside it.
+
+    ⚖️ THE BRANCHING IS GENERATED, AND THAT IS THE TEACHING. The lesson's
+    punchline is "the bronchi divide about twenty-three times… every one of
+    those divisions exists to turn a bag into a surface", and a drawing can
+    make that claim two ways. It can hand-draw a plausible-looking tree and
+    print the sentence beside it — in which case the sentence is doing all the
+    work and the picture is decoration. Or the tree can BE a division: one
+    function, called on its own output, each branch 0.7 of its parent's length
+    and 1.7 units narrower, until the fourth generation. Design chose the
+    second, so "divide, and divide again" is a property of the geometry that a
+    student can trace with a finger, and the lung comes out looking full
+    rather than hollow because it IS full — thirty branches ending in sixteen
+    tips, none of them placed by hand.
+
+    ⚖️ FOUR DIVISIONS, NOT TWENTY-THREE, AND THE DRAWING SAYS SO. Twenty-three
+    generations is 8.4 million branches; four is what reads at 576 units wide.
+    The simplification is therefore DISCLOSED on the plate — "Four divisions
+    are drawn opposite. A real lung has about twenty-three, and only the last
+    end in sacs" — rather than left for a student to discover is wrong. That
+    note is load-bearing and must survive any future re-cut of this figure:
+    without it the drawing quietly asserts a lung has sixteen alveolar
+    clusters.
+
+    ⚖️ SACS EXIST ONLY AT TERMINAL TIPS, NEVER ON A BRONCHUS — the named
+    assertion, and the one defect a screenshot could not catch. A tree with a
+    rosette hung off a mid-tree branch still looks exactly like a lung, and it
+    teaches that gas exchange happens along the tubes, which is the
+    misconception the whole "route in runs 01 to 05 and STOPS there" framing
+    exists to remove. So the encoding is hooked rather than the frame: every
+    branch carries `data-branch`, `data-generation`, `data-terminal` and a
+    `data-branch-id`, and every sac circle carries `data-sacs` plus the
+    `data-branch-id` of the branch it sits on. A row can then collect all 48
+    sac circles, resolve each to its branch, and assert that branch is
+    terminal — for all of them — and assert the converse both ways: no
+    terminal tip without sacs, no non-terminal branch with any.
+
+    ⚖️ AND THE CONVERSE OF THAT, FOR THE MACHINERY. The ribs, the intercostal
+    hatching and the diaphragm carry `data-around` and no `data-branch` at
+    all. "These are around the lungs, not part of the airway" is then a
+    property of the markup rather than a sentence in the key, and a row can
+    assert that nothing carrying `data-around` also carries `data-branch`.
+    `data-route-step` runs 1–5 on the five numbered callouts, so the order
+    (nose and mouth, trachea, bronchi, bronchioles, alveoli) is assertable
+    from the drawing itself, against the printed label rather than against a
+    position; 06 deliberately has no route step, which is the same fact said a
+    third way.
+
+    ⚖️ THE CALLOUT IS DERIVED, NOT PLACED. The ringed cluster is chosen by
+    rule — the lowest tip with x > 330, i.e. the lowest tip in the right lung,
+    with a fallback to any right-lung tip if the first pass never leaves
+    tips[0]. The dashed ring's centre and the leader into badge 05 are both
+    computed from that tip. Porting the RESULT (a ring at 396.7, 419.8) would
+    have looked identical today and silently detached the ring from the tree
+    the first time anyone changed the spread, the trunk length or GENS — the
+    ring would go on pointing at empty lung tissue and nothing would warn. So
+    the rule is ported, and the ring and leader carry the picked branch's
+    `data-branch-id` so a row can check the ring is centred on a tip that is
+    actually terminal.
+
+    ⚠️ `Math.round`, NOT `round`. Every coordinate in the tree goes through
+    her `r(v) = Math.round(v * 10) / 10`. Python's `round` is banker's
+    rounding and JavaScript's `Math.round` is round-half-up, so the two
+    disagree on any exact `.5` — and `math.floor(v * 10 + 0.5) / 10` is the JS
+    rather than a near-miss of it. None of these sixty coordinates is a tie
+    today, which is exactly why this would have stayed safe until somebody
+    changed the trunk length from 62 and then quietly lost a tenth on one
+    branch.
+
+    ⚠️ THE STROKE WIDTHS GO THROUGH `_n`. `9 - 3 * 1.7` is
+    `3.9000000000000004` in IEEE doubles, in JavaScript and in Python alike,
+    and `_svg_attrs` interpolates `w` straight into the attribute. Unrouted,
+    that is a seventeen-significant-figure stroke width in the shipped file
+    and a byte-diff between two builds that differ only in how a number was
+    reached. Same width, so nothing visible — which is the point.
+
+    ⛔ EVERY ARROWHEAD IS DESIGN'S OWN TRIANGLE AT HER OWN COORDINATES, not
+    `_arrow`. She placed both heads on the magnified rosette by hand, at
+    exactly the point where the sac wall meets the capillary, and `_arrow`
+    would recompute them from an angle and land them a fraction off her line.
+    `_arrow` is for a head this file computes; these are hers.
+
+    ⚠️ THE ONE HUE, AND WHY IT IS NOT CARRYING A FACT ALONE.
+    `--ks3-blue-text` paints the capillary in the magnified panel and nothing
+    else on the plate. It never has to be seen as blue: it is named in a
+    legend line under its own rule ("Blood in the capillary", with the swatch
+    drawn at the same 9-unit weight as the vessel), and both directions of
+    exchange are DRAWN triangles with bold labels rather than tints. A student
+    who cannot separate the blue from the ink loses nothing.
+
+    ⚠️ CLIP IDS ARE DERIVED FROM THE FIGURE ID. Design's are `f7L` and `f7R`,
+    which are unique inside a review file holding one figure. A lesson page
+    can hold several of these drawings, `id` is document-scoped, and a
+    duplicate `clipPath` id means the second figure silently clips to the
+    first one's rectangle. Nothing warns; the drawing just loses half of
+    itself.
+    """
+    W, H = 900, 970
+    cid = e(fig["id"])
+    out = [_svg_open(fig, W, H)]
+
+    # The two frames. Raw markup rather than an emitter call because a
+    # <clipPath> carries no paint — there is no paint law to keep here, and
+    # `_villus` already sets this precedent in this file.
+    out.append(
+        '<defs>'
+        '<clipPath id="%s-c-chest"><rect x="24" y="54" width="576" '
+        'height="620" rx="18"/></clipPath>'
+        '<clipPath id="%s-c-tip"><rect x="620" y="54" width="256" '
+        'height="620" rx="18"/></clipPath>'
+        '</defs>' % (cid, cid))
+
+    # Round caps and joins on everything: ribs, airway and diaphragm are all
+    # organic curves, and a mitred join where a 7-unit bronchus meets a
+    # 5-unit branch reads as a spike.
+    out.append('<g stroke-linecap="round" stroke-linejoin="round">')
+
+    out.append(_rect(24, 54, 576, 620, rx=18, fill=_SVG_CARD, stroke=_SVG_INK,
+                     w=2.5))
+    out.append(_rect(620, 54, 256, 620, rx=18, fill=_SVG_CARD, stroke=_SVG_INK,
+                     w=2.5))
+
+    # ── the chest, seen from the front ──────────────────────────────────────
+    out.append('<g clip-path="url(#%s-c-chest)">' % cid)
+
+    # The ribs go down FIRST, so both lung outlines cover them where they
+    # overlap: the ribs are in front of the lungs in life, but a drawing that
+    # showed them crossing the lung would read as ribs INSIDE it, which is the
+    # opposite of the one thing 06 exists to say.
+    for i in range(_B4_THORAX_RIB_PAIRS):
+        y0 = _B4_THORAX_RIB_TOP + i * _B4_THORAX_RIB_STEP
+        for side, d in (
+                ("left", "M 300,%s C 238,%s 158,%s 132,%s"
+                 % (_n(y0), _n(y0 - 4), _n(y0 + 18), _n(y0 + 48))),
+                ("right", "M 324,%s C 386,%s 466,%s 492,%s"
+                 % (_n(y0), _n(y0 - 4), _n(y0 + 18), _n(y0 + 48)))):
+            out.append(_path(d, stroke=_SVG_INK_FAINT, w=5,
+                             data_around="1", data_around_part="rib",
+                             data_around_pair=i + 1, data_around_side=side))
+    for x, off in _B4_THORAX_HATCH:
+        out.append(_path("M %s,%s L %s,%s"
+                         % (_n(x), _n(240 + off), _n(x), _n(282 + off)),
+                         stroke=_SVG_INK_GHOST, w=3,
+                         data_around="1", data_around_part="intercostal"))
+
+    out.append(_path("M 172,300 C 172,268 214,258 292,262 L 296,494 "
+                     "C 250,506 190,494 176,452 C 164,412 168,344 172,300 Z",
+                     fill=_SVG_INSET, stroke=_SVG_INK, w=2.5,
+                     data_lung="left"))
+    out.append(_path("M 452,300 C 452,268 410,258 332,262 L 328,494 "
+                     "C 374,506 434,494 448,452 C 460,412 456,344 452,300 Z",
+                     fill=_SVG_INSET, stroke=_SVG_INK, w=2.5,
+                     data_lung="right"))
+
+    out.append(_path("M 128,548 C 200,488 424,488 496,548 "
+                     "C 424,506 200,506 128,548 Z",
+                     fill=_SVG_BAND, stroke=_SVG_INK, w=2.5,
+                     data_around="1", data_around_part="diaphragm"))
+
+    # Every tube is drawn twice — a wide ink stroke, then a narrower inset
+    # stroke laid on top of it. That is a lumen, not an outline: the airway
+    # reads as a pipe with air inside it and a wall around it, at four
+    # different bores, without a single closed path being constructed.
+    for d in ("M 262,74 C 262,64 278,60 288,72 L 306,98",
+              "M 362,74 C 362,64 346,60 336,72 L 318,98"):
+        out.append(_path(d, stroke=_SVG_INK, w=17))
+    for d in ("M 262,74 C 262,64 278,60 288,72 L 306,98",
+              "M 362,74 C 362,64 346,60 336,72 L 318,98"):
+        out.append(_path(d, stroke=_SVG_INSET, w=11))
+
+    out.append(_path("M 312,96 V 228", stroke=_SVG_INK, w=24))
+    out.append(_path("M 312,96 V 228", stroke=_SVG_INSET, w=18))
+    # The cartilage rings, drawn ACROSS the lumen rather than as C-shapes on
+    # its edge — seven of them, evenly spaced, so "held open by rings" is
+    # something on the drawing and not only a line in the key.
+    out.append(_path("M 303,112 H 321 M 303,128 H 321 M 303,144 H 321 "
+                     "M 303,160 H 321 M 303,176 H 321 M 303,192 H 321 "
+                     "M 303,208 H 321", stroke=_SVG_INK_GHOST, w=2.4))
+
+    for d in ("M 312,226 C 300,240 280,252 262,268",
+              "M 312,226 C 324,240 344,252 362,268"):
+        out.append(_path(d, stroke=_SVG_INK, w=18))
+    for d in ("M 312,226 C 300,240 280,252 262,268",
+              "M 312,226 C 324,240 344,252 362,268"):
+        out.append(_path(d, stroke=_SVG_INSET, w=12))
+
+    # ── the recursion ───────────────────────────────────────────────────────
+    #
+    # Her `tree()`, unchanged: push a segment, and unless this is the last
+    # generation, call twice from its far end at ±spread radians, at 0.7 the
+    # length. `spread` narrows by 0.06 per generation, which is what stops the
+    # fourth generation from splaying out through the lung wall. Both trunks
+    # start at the foot of a bronchus, so the tree is physically continuous
+    # with the route in rather than a texture placed inside the outline.
+    gens = 4
+    branches = []
+    tips = []
+
+    def _round1(v):
+        # `Math.round(v * 10) / 10`. See ⚠️ in the docstring.
+        return math.floor(v * 10 + 0.5) / 10
+
+    def _grow(x, y, dx, dy, length, gen):
+        nx = x + dx * length
+        ny = y + dy * length
+        branches.append({
+            "d": "M %s,%s L %s,%s" % (_n(_round1(x)), _n(_round1(y)),
+                                      _n(_round1(nx)), _n(_round1(ny))),
+            "w": max(1.8, 9 - gen * 1.7),
+            "gen": gen,
+            "terminal": gen >= gens,
+        })
+        if gen >= gens:
+            tips.append({"x": nx, "y": ny, "branch": len(branches) - 1})
+            return
+        spread = 0.62 - gen * 0.06
+        c, s = math.cos(spread), math.sin(spread)
+        _grow(nx, ny, dx * c - dy * s, dx * s + dy * c, length * 0.7, gen + 1)
+        _grow(nx, ny, dx * c + dy * s, -dx * s + dy * c, length * 0.7, gen + 1)
+
+    def _unit(dx, dy):
+        m = math.sqrt(dx * dx + dy * dy)
+        return dx / m, dy / m
+
+    ldx, ldy = _unit(-0.5, 1)
+    rdx, rdy = _unit(0.5, 1)
+    _grow(262, 268, ldx, ldy, 62, 1)
+    _grow(362, 268, rdx, rdy, 62, 1)
+
+    for i, b in enumerate(branches):
+        out.append(_path(b["d"], stroke=_SVG_INK, w=_n(b["w"]),
+                         data_branch="1", data_branch_id="b%d" % (i + 1),
+                         data_generation=b["gen"],
+                         data_terminal="1" if b["terminal"] else "0"))
+
+    # A rosette of three sacs on every terminal tip, and on nothing else. The
+    # centre one is fractionally larger, so the cluster reads as a bunch seen
+    # end-on rather than as three beads in a row.
+    for t in tips:
+        bid = "b%d" % (t["branch"] + 1)
+        for dx, dy, r in ((0, 0, 4.4), (-7, 6, 4), (7, 6, 4)):
+            out.append(_circle(_round1(t["x"] + dx), _round1(t["y"] + dy), r,
+                               fill=_SVG_ACCENT_TINT, stroke=_SVG_ACCENT_TEXT,
+                               w=1.4, data_sacs="1", data_branch_id=bid))
+
+    # The ring, by rule. See ⚖️ in the docstring — the fallback is hers and is
+    # kept: without it a tree whose lowest tip happened to be in the LEFT lung
+    # would leave `pick` at tips[0] and ring a cluster the badge does not
+    # point at.
+    pick = tips[0]
+    for t in tips:
+        if t["x"] > 330 and t["y"] > pick["y"]:
+            pick = t
+    if pick["x"] < 330:
+        for t in tips:
+            if t["x"] > 330:
+                pick = t
+    pick_id = "b%d" % (pick["branch"] + 1)
+    ring_x = _round1(pick["x"])
+    ring_y = _round1(pick["y"] + 4)
+    out.append(_circle(ring_x, ring_y, 27, stroke=_SVG_INK, w=2, dash="6 5",
+                       data_callout="ring", data_branch_id=pick_id))
+    out.append('</g>')
+
+    out.append(_mono(250, 88, "nose", size=13, weight="400", anchor="end"))
+    out.append(_mono(374, 88, "mouth", size=13, weight="400"))
+
+    # ── the route in, 01 to 05 ──────────────────────────────────────────────
+    #
+    # Built as one list so the ORDER is a property of the data rather than of
+    # where four blocks of markup happen to sit, and so step 05 — whose badge
+    # leader is computed from the ring above — joins the same loop as the four
+    # placed ones instead of being a special case emitted somewhere else.
+    badge_x, badge_y = 496, 438
+    route = (
+        (1, "nose-and-mouth", 200, 148, "01", "M 214,150 L 300,152",
+         "nose and mouth", 200, 122, "middle"),
+        (2, "trachea", 200, 204, "02", "M 214,204 L 298,206",
+         "trachea", 200, 236, "middle"),
+        (3, "bronchi", 412, 212, "03", "M 398,218 L 356,254",
+         "bronchi", 436, 218, "start"),
+        (4, "bronchioles", 540, 330, "04", "M 526,332 L 444,340",
+         "bronchioles", 512, 306, "start"),
+        (5, "alveoli", badge_x, badge_y, "05",
+         "M %s,%s L %s,%s" % (_n(badge_x - 14), _n(badge_y + 4),
+                              _n(ring_x + 24), _n(ring_y - 8)),
+         "alveoli", 504, 470, "start"),
+    )
+    for step, part, bx, by, num, leader, name, nx, ny, anchor in route:
+        hook = {"data_route_step": step, "data_route_part": part}
+        if step == 5:
+            hook["data_branch_id"] = pick_id
+            hook["data_callout"] = "leader"
+        out.append(_path(leader, stroke=_SVG_INK, w=1.4, **hook))
+        hook.pop("data_callout", None)
+        out.append(_circle(bx, by, 14, fill=_SVG_BAND, stroke=_SVG_INK, w=2,
+                           **hook))
+        out.append(_mono(bx, by + 6, num, size=15, fill=_SVG_INK, weight="400",
+                         anchor="middle", **hook))
+        out.append(_label(nx, ny, name, size=15, weight="700", anchor=anchor,
+                          **hook))
+
+    # ── 06, the machinery — no route step, deliberately ─────────────────────
+    out.append(_path("M 526,560 L 498,550", stroke=_SVG_INK, w=1.4,
+                     data_around="1"))
+    out.append(_circle(540, 562, 14, fill=_SVG_BAND, stroke=_SVG_INK, w=2,
+                       data_around="1"))
+    out.append(_mono(540, 568, "06", size=15, fill=_SVG_INK, weight="400",
+                     anchor="middle", data_around="1"))
+
+    out.append(_label(506, 266, "ribs", size=15, weight="700", anchor="start",
+                      data_around="1", data_around_part="rib"))
+    out.append(_path("M 502,262 L 484,272", stroke=_SVG_INK, w=1.4,
+                     data_around="1", data_around_part="rib"))
+    out.append(_label(506, 200, "intercostal", size=15, weight="700",
+                      anchor="start", data_around="1",
+                      data_around_part="intercostal"))
+    out.append(_label(506, 218, "muscles", size=15, weight="700",
+                      anchor="start", data_around="1",
+                      data_around_part="intercostal"))
+    out.append(_path("M 502,224 L 468,262", stroke=_SVG_INK, w=1.4,
+                     data_around="1", data_around_part="intercostal"))
+    out.append(_label(312, 588, "diaphragm", size=15, weight="700",
+                      data_around="1", data_around_part="diaphragm"))
+
+    out.append(_mono(48, 644, "The lungs are drawn full of branching because "
+                              "a lung is not", size=13, weight="400"))
+    out.append(_mono(48, 662, "a bag with air in it. It is closer to a "
+                              "sponge.", size=13, weight="400"))
+
+    # ── one tip, magnified ──────────────────────────────────────────────────
+    out.append('<g clip-path="url(#%s-c-tip)">' % cid)
+    out.append(_path("M 632,132 C 660,138 692,150 722,164", stroke=_SVG_INK,
+                     w=14))
+    out.append(_path("M 632,132 C 660,138 692,150 722,164", stroke=_SVG_INSET,
+                     w=8))
+    for cx, cy, r in _B4_THORAX_ROSETTE:
+        out.append(_circle(cx, cy, r, fill=_SVG_ACCENT_TINT,
+                           stroke=_SVG_ACCENT_TEXT, w=2.5, data_sac_wall="1"))
+    # The capillary: an ink stroke with the blue laid inside it, the same
+    # lumen construction as the airway. It crosses IN FRONT of the sacs, which
+    # is what makes "the wall between air and blood is one cell thick" a thing
+    # you can point at rather than a measurement.
+    cap = ("M 630,286 C 676,266 700,300 744,288 C 788,276 802,306 848,294")
+    out.append(_path(cap, stroke=_SVG_INK, w=15))
+    out.append(_path(cap, stroke=_SVG_BLUE_TEXT, w=9, data_capillary="1"))
+    # Both exchange arrows are hers, shaft and head. See ⛔ in the docstring.
+    out.append(_path("M 706,244 V 276", stroke=_SVG_INK, w=2.6,
+                     data_exchange="oxygen-in"))
+    out.append(_path("M 700,272 L 712,272 L 706,284 Z", fill=_SVG_INK,
+                     stroke="none", data_exchange="oxygen-in"))
+    out.append(_path("M 812,282 V 250", stroke=_SVG_INK, w=2.6,
+                     data_exchange="carbon-dioxide-out"))
+    out.append(_path("M 806,254 L 818,254 L 812,242 Z", fill=_SVG_INK,
+                     stroke="none", data_exchange="carbon-dioxide-out"))
+    # ⊕ MRB-254 · SAME HEAD, DIFFERENT ROUTE. The leader used to climb the
+    # right-hand side — 824,394 up to 816,248 — and "carbon dioxide out" spans
+    # x 731–864 at y 316–334, so it went in the bottom of that label and out
+    # the top: a hairline drawn through the words naming the arrow beside it.
+    # The head does not move. It sits at 816,248, three units under the lower
+    # right sac, which is where the wall between air and blood actually is, and
+    # moving it would trade a legible label for a wrong one.
+    #
+    # What moves is the climb. There is exactly one clear corridor through the
+    # exchange-label line: "oxygen in" ends at 704.8 and "carbon dioxide out"
+    # begins at 730.7, so the leader now leaves the note's leading edge at
+    # x=724 and threads that 26-unit gap at x 721–725 before turning right for
+    # the sacs. It crosses the capillary on the way, as Design's did.
+    out.append(_path("M 724,392 C 714,320 716,286 816,248", stroke=_SVG_INK,
+                     w=1.4))
+    out.append('</g>')
+
+    out.append(_mono(636, 86, "ONE TIP, MAGNIFIED", size=13, weight="400",
+                     spacing="1.2"))
+    out.append(_label(636, 330, "oxygen in", size=15, weight="700",
+                      anchor="start", data_exchange="oxygen-in"))
+    out.append(_label(864, 330, "carbon dioxide out", size=15, weight="700",
+                      anchor="end", data_exchange="carbon-dioxide-out"))
+    out.append(_mono(864, 408, "wall one cell thick", size=13,
+                     fill=_SVG_ACCENT_TEXT, weight="400", anchor="end"))
+
+    out.append(_path("M 636,438 H 864", stroke=_SVG_RULE, w=2))
+    out.append(_mono(636, 468, "about 500 million of these,", size=13,
+                     fill=_SVG_INK, weight="400"))
+    out.append(_mono(636, 486, "each wrapped in capillaries", size=13,
+                     fill=_SVG_INK, weight="400"))
+
+    # The disclosure. See ⚖️ in the docstring: this is the note that keeps the
+    # four drawn generations honest, and it is the last thing to cut.
+    out.append(_path("M 636,516 H 864", stroke=_SVG_RULE, w=2))
+    for i, line in enumerate(("Four divisions are drawn",
+                              "opposite. A real lung has",
+                              "about twenty-three, and",
+                              "only the last end in sacs.")):
+        out.append(_mono(636, 546 + i * 18, line, size=13, weight="400"))
+
+    # The legend line the one hue depends on, at the vessel's own weight.
+    out.append(_path("M 636,626 H 864", stroke=_SVG_RULE, w=2))
+    out.append(_path("M 640,656 h 28", stroke=_SVG_BLUE_TEXT, w=9))
+    out.append(_label(680, 662, "Blood in the capillary", size=16,
+                      weight="700", anchor="start"))
+
+    # ── the key ─────────────────────────────────────────────────────────────
+    out.append(_mono(24, 712, "THE ROUTE IN, AND THE MACHINERY AROUND IT",
+                     size=13, weight="400", spacing="1.2"))
+    out.append(_path("M 24,724 H 876", stroke=_SVG_RULE, w=2))
+    for bx, by, num, title, gloss in _B4_THORAX_KEY:
+        out.append(_circle(bx, by, 14, fill=_SVG_BAND, stroke=_SVG_INK, w=2))
+        out.append(_mono(bx, by + 6, num, size=15, fill=_SVG_INK,
+                         weight="400", anchor="middle"))
+        out.append(_label(bx + 26, by - 1, title, size=18, weight="700",
+                          anchor="start"))
+        out.append(_label(bx + 26, by + 19, gloss, size=15,
+                          fill=_SVG_INK_BODY, weight="400", anchor="start"))
+
+    out.append(_path("M 24,922 H 876", stroke=_SVG_RULE, w=2))
+    out.append(_label(24, 954, "Every one of those divisions exists to turn a "
+                               "bag into a surface.", size=16, weight="700",
+                      anchor="start"))
+
+    out.append('</g>')
+    out.append('</svg>')
+    return "".join(out)
+
+
+# ── ⊕ MRB-254 · WS1 #6, b3-gut-labelled — Design's fig-06, ported ────────
+#
+# Every coordinate below is Design's, to the control point. Her `renderVals()`
+# holds nothing but the review-width switcher, which ruling 6 drops entirely,
+# so there is no `<sc-for>` to port here — the drawing is literal throughout.
+#
+# The tables exist because the four things a content-truth row has to WALK —
+# the tube in path order, the seven stops, the four ducts, and the key's seven
+# rows — are the parts a reader will want to check against her file, and
+# burying a fifteen-curve path inside 200 lines of drawing hides it.
+
+# ── the tube, as three stroked runs ─────────────────────────────────────
+#
+# `(segment, part, d, wall width, lumen width)`. Each run is drawn twice: an
+# ink stroke, then a narrower inset stroke down the middle of it, which is how
+# a flat stroke reads as a tube with a hole in it rather than as a line.
+#
+# ⚠️ THE SEGMENT NUMBERS ARE PATH ORDER, NOT PAINT ORDER. Segment 2 is the
+# stomach, which Design paints AFTER the intestines so its bag closes over the
+# start of the coils. The numbers are what a row walks; the order of `out` is
+# what the reader sees. They are allowed to differ and here they do.
+_GUT_TUBE_RUNS = (
+    ("1", "oesophagus", "M 500,100 V 256", 21, 15),
+    ("3", "small-intestine",
+     "M 466,362 C 452,376 448,398 456,416 C 464,434 482,440 498,436 "
+     "C 556,430 628,440 632,466 C 636,494 570,504 490,504 "
+     "C 410,504 364,512 362,536 C 360,562 426,572 504,572 "
+     "C 582,572 636,580 636,606 C 636,632 568,640 488,640 "
+     "C 408,640 364,648 364,672 C 364,694 410,702 444,700", 21, 15),
+    ("4", "large-intestine",
+     "M 444,700 C 396,700 364,718 364,746 C 364,776 440,788 520,788 "
+     "C 556,788 574,784 580,774 V 800", 34, 28),
+)
+
+# Segment 2. The stomach is a bag, not a stroked run, so it is three paths:
+# the fill, the outer wall from where the oesophagus enters to where the tube
+# leaves, and the inner face of the muscular wall that gives it its thickness.
+_GUT_TUBE_STOMACH_FILL = (
+    "M 496,254 C 562,254 618,292 616,344 C 614,396 560,426 510,414 "
+    "C 484,408 466,386 460,364 L 490,356 C 496,374 510,386 528,390 "
+    "C 560,396 588,374 586,340 C 584,300 548,280 490,280 Z")
+_GUT_TUBE_STOMACH_WALL = (
+    "M 496,254 C 562,254 618,292 616,344 C 614,396 560,426 510,414 "
+    "C 484,408 466,386 460,364")
+_GUT_TUBE_STOMACH_INNER = (
+    "M 490,280 C 548,280 584,300 586,340 C 588,374 560,396 528,390 "
+    "C 510,386 496,374 490,356")
+
+# The food's route: ONE `<path>`, one `M`, from the mouth to the anus. See the
+# docstring — this element is the figure's whole claim, and it is the only one
+# on the plate that cannot be broken without the break being visible.
+_GUT_TUBE_FOOD = (
+    "M 500,100 V 254 C 540,262 574,296 572,340 C 570,382 540,404 510,398 "
+    "C 488,394 472,380 466,362 C 452,376 448,398 456,416 "
+    "C 464,434 482,440 498,436 C 556,430 628,440 632,466 "
+    "C 636,494 570,504 490,504 C 410,504 364,512 362,536 "
+    "C 360,562 426,572 504,572 C 582,572 636,580 636,606 "
+    "C 636,632 568,640 488,640 C 408,640 364,648 364,672 "
+    "C 364,694 410,702 444,700 C 396,700 364,718 364,746 "
+    "C 364,776 440,788 520,788 C 556,788 574,784 580,774 V 800")
+
+# ── the ducts: `(slug, from, to, d)` ────────────────────────────────────
+#
+# Three tributaries, one for each organ, joining into one common duct that
+# runs right and meets the tube just past the stomach. `to` is set on the
+# common duct only, because it is the only one of the four that touches the
+# tube — which is the drawn form of "the juices go in there, and only there".
+_GUT_TUBE_DUCTS = (
+    ("liver", "liver", None, "M 268,320 C 276,336 282,346 290,354"),
+    ("gall-bladder", "gall-bladder", None,
+     "M 268,364 C 278,366 286,368 292,370"),
+    ("pancreas", "pancreas", None, "M 314,392 C 330,396 344,398 360,398"),
+    ("common", "junction", "tube",
+     "M 290,354 C 312,372 342,390 382,396 C 414,400 440,400 458,400"),
+)
+
+# ── the seven stops, in position on the plate ───────────────────────────
+#
+# `(numeral, organ, on the tube, leader d, badge cx, badge cy)`. 05 is the
+# odd one and everything about it says so: a dashed badge, a card fill instead
+# of a band fill, a leader that points at the dashed boundary rather than at
+# the tube, and `data-on-tube="0"`.
+_GUT_TUBE_STOPS = (
+    ("01", "mouth", True, "M 566,112 L 514,112", 580, 110),
+    ("02", "oesophagus", True, "M 566,202 L 514,202", 580, 200),
+    ("03", "stomach", True, "M 674,344 L 620,344", 688, 344),
+    ("04", "small-intestine", True, "M 700,472 L 638,466", 714, 470),
+    ("05", "pancreas-liver-gall-bladder", False,
+     "M 116,300 L 106,300", 72, 300),
+    ("06", "large-intestine", True, "M 654,760 L 598,776", 668, 756),
+    ("07", "rectum-anus", True, "M 638,792 L 596,798", 652, 790),
+)
+
+# The notes that hang off three of the badges: `(x, y, text, anchor, muted)`.
+# `muted` picks the ink; the tokens themselves are resolved in the function,
+# so this table can sit above their definitions without caring where the
+# splice lands it.
+_GUT_TUBE_NOTES = {
+    "04": ((858, 510, "6–7 m of narrow", "end", False),
+           (858, 528, "tube, coiled", "end", False)),
+    "05": ((72, 330, "off the tube", "middle", True),),
+    "06": ((858, 762, "wider, and shorter", "end", False),),
+}
+
+# ── the key: `(numeral, organ, on the tube, badge x, text x, cy, title,
+# body)`. Two columns, 01–04 left and 05–07 right, as Design sets them.
+_GUT_TUBE_KEY = (
+    ("01", "mouth", True, 38, 64, 898, "Mouth",
+     "Chewed and mixed with saliva"),
+    ("02", "oesophagus", True, 38, 64, 954, "Oesophagus",
+     "Squeezed down by muscle. Nothing is broken here"),
+    ("03", "stomach", True, 38, 64, 1010, "Stomach",
+     "Churned in acid. Protein begins"),
+    ("04", "small-intestine", True, 38, 64, 1066, "Small intestine",
+     "Every nutrient finished, and almost all absorption"),
+    ("05", "pancreas-liver-gall-bladder", False, 494, 520, 898,
+     "Pancreas, liver and gall bladder", "Juices in. No food passes through"),
+    ("06", "large-intestine", True, 494, 520, 954, "Large intestine",
+     "Water absorbed. The nutrients have gone"),
+    ("07", "rectum-anus", True, 494, 520, 1010, "Rectum and anus",
+     "Stored, then out. Never absorbed"),
+)
+
+
+def _gut_tube(fig):
+    """The whole gut as one continuous tube coiled down the frame, seven stops
+    numbered in position on it, and the three organs that feed it drawn beside
+    it rather than in it.
+
+    ⚖️ THE ANATOMICAL SIMPLIFICATION IS RULED IN, AND SO IS THE SENTENCE THAT
+    DISCLOSES IT. The coils are not in anatomical position: the colon does not
+    frame the small intestine, and there is no torso outline. Drawn properly,
+    the transverse colon has to cross in FRONT of the small intestine and the
+    duodenum has to cross back BEHIND it, and at that point the reader is
+    untangling two tubes instead of following one — which destroys the single
+    claim the figure exists to make. Design chose one legible run down the
+    frame, and disclosed the choice on the plate itself, bottom right, in two
+    mono lines carrying `data-disclosure`. Both halves were ruled in together
+    and the second is the reason the first is allowed: an undisclosed
+    simplification is a drawing that quietly says something untrue about where
+    the organs are. The disclosure is addressed to the student about the thing
+    in front of them, not to a reviewer about how the page works, so it passes
+    §8.10 on exactly that test. It does not move to the caption, it does not
+    shrink, and its absence is a red gate.
+
+    ⚖️ ONE PATH, AND IT IS ONE ELEMENT. The orange line is a single `<path>`
+    with a single `M`, from (500,100) at the mouth to (580,800) at the anus. A
+    row can assert continuity on it exactly — one move command, endpoints at
+    the tube's own ends — which is a stronger check than any walk of the tube
+    wall, because a path with one `M` CANNOT be discontinuous. It carries
+    `data-path="food"` and no `data-tube`: it is what moves through the tube,
+    not the tube.
+
+    ⚖️ AND THE TUBE ITSELF IS STILL WALKABLE, because the defect this figure
+    has to survive is a tube broken at one coil, which still looks like a gut.
+    Every element of the tube carries `data-tube="1"`, `data-segment` (1–4, in
+    PATH order), `data-tube-part` and `data-tube-layer`. The four elements
+    where the layer is `wall` are the spine, one per segment, and they chain:
+
+        1 oesophagus      starts (500,100)  ends (500,256)
+        2 stomach         starts (496,254)  ends (460,364)
+        3 small intestine starts (466,362)  ends (444,700)
+        4 large intestine starts (444,700)  ends (580,800)
+
+    ⚠️ THE JOINTS OVERLAP; THEY DO NOT MEET AT A POINT. Design's measured gaps
+    are 4.47 units (1 into 2), 6.32 (2 into 3) and 0 (3 into 4). That is
+    deliberate drawing, not sloppiness: the oesophagus is a 21-unit stroke
+    running INTO the stomach bag, and the bag's outline starts a few units
+    inside it, so the ink overlaps and no seam is visible. A continuity row
+    therefore needs a tolerance, and the honest one is half the tube's stroke
+    width — 10.5 — because a gap smaller than that is inside the ink and a gap
+    larger than it is a hole a reader could see. A zero-tolerance row would
+    fail Design's own drawing, which is the wrong thing for a gate to do.
+
+    ⊕ THE SMALL INTESTINE IS TRUNCATED AT THE CAECUM, and the render is
+    unchanged. Design draws the narrow 21/15 run all the way to (580,800) and
+    then paints the wide 34/28 colon over its last third along the same centre
+    line. Every pixel of that tail is inside the wider stroke drawn after it,
+    so cutting the narrow path at (444,700) — where the colon begins — is
+    invisible in the output and makes segments 3 and 4 meet exactly instead of
+    ending at the same point as each other. It is a refinement inside her
+    shape, not a new one: the junction it now encodes is the caecum, which is
+    where she drew the widening anyway. Recorded in the port report.
+
+    ⚖️ FOOD PASSES BY THE ACCESSORY ORGANS, AND THAT IS DRAWN AS AN ABSENCE.
+    The liver, gall bladder and pancreas carry `data-accessory` and NOT
+    `data-tube` — there is no element on the plate that is both. They sit
+    inside a dashed boundary well clear of the run, and they reach the tube
+    only through ducts: three tributaries, one per organ, joining into one
+    common duct that is the single duct touching the tube. So "juices in, food
+    never through" is checkable three ways — no accessory is part of the tube,
+    every accessory has a duct, and the orange line's least x is 360 while the
+    boundary's right edge is 340, so the food's route never enters the box.
+
+    ⚠️ 05 IS A STOP THAT IS NOT ON THE TUBE, and a row asserting the stops run
+    in order down the drawn path has to know that before it sorts them. Its
+    badge sits at y=300, between 02 and 03, because it is beside the tube
+    rather than along it. Hence `data-on-tube` on every badge: filter to `1`
+    and the six remaining numerals are strictly increasing in y, which is the
+    assertion; without the hook the row either fails on Design's correct
+    drawing or is written to skip "05" by name, which is a row that has
+    memorised the answer.
+
+    ⚠️ THE KEY REPEATS ALL SEVEN NUMERALS AND MUST NOT REPEAT THE HOOK. The
+    seven rows at the bottom carry `data-key-stop` / `data-key-organ`, not
+    `data-stop` / `data-organ`, so "seven stops, no gaps and no repeats" stays
+    an assertion about the seven badges IN POSITION on the drawing — which is
+    the teaching claim — while a second row can still check that the key names
+    the same seven. Sharing one hook name would have made the natural count
+    fourteen and the natural repeat-check fail on a correct figure. Same
+    reason the leader lines carry `data-stop-leader` and the numerals
+    `data-stop-numeral`: one element per stop owns `data-stop`, and it is the
+    badge, which has the position a row needs.
+
+    ⚠️ ONE 12px LABEL RAISED TO 13, AND IT NOW USES ALL THE ROOM THERE IS.
+    "off the tube", under badge 05. It sits in the 96-unit channel between the
+    plate frame at x=24 and the dashed boundary at x=120, and at 13px in DM
+    Mono the string measures 93 units — measured off the render, not guessed.
+    Design centred it at x=72, which is the midpoint of that channel, so the
+    raise consumes the slack (about 5 units a side at 12px, about 1 at 13) and
+    still fits without touching either line. Her x is kept rather than nudged:
+    it is the only value that fits, and it is also the badge's own centre, so
+    moving it to buy clearance would cost the alignment instead. Reported, not
+    fixed.
+
+    ⚠️ CLIP IDS ARE DERIVED FROM THE FIGURE ID. Design's is `f6P`, unique
+    inside a review file holding one figure. A lesson page can hold several of
+    these drawings, `id` is document-scoped, and a duplicate `clipPath` id
+    means the second figure silently clips to the first one's rectangle.
+    Nothing warns; the drawing just loses half of itself.
+    """
+    W, H = 900, 1250
+    cid = e(fig["id"])
+    out = [_svg_open(fig, W, H)]
+
+    # The plate window. Raw markup rather than an emitter call because a
+    # <clipPath> carries no paint — there is no paint law to keep here.
+    out.append(
+        '<defs><clipPath id="%s-c-plate"><rect x="24" y="54" width="852" '
+        'height="760" rx="18"/></clipPath></defs>' % cid)
+
+    # Design's root group. Round caps and joins on everything: every line on
+    # the plate is either a tube or an organ outline, and a mitred join on a
+    # 21-unit stroke turning through a coil reads as a spike.
+    out.append('<g stroke-linecap="round" stroke-linejoin="round">')
+
+    out.append(_rect(24, 54, 852, 760, rx=18, fill=_SVG_CARD, stroke=_SVG_INK,
+                     w=2.5))
+
+    out.append('<g clip-path="url(#%s-c-plate)">' % cid)
+
+    # ── the tube: ink wall, then inset lumen, run by run ────────────────
+    for seg, part, d, w_wall, w_lumen in _GUT_TUBE_RUNS:
+        out.append(_path(d, stroke=_SVG_INK, w=w_wall, data_tube="1",
+                         data_segment=seg, data_tube_part=part,
+                         data_tube_layer="wall"))
+        out.append(_path(d, stroke=_SVG_INSET, w=w_lumen, data_tube="1",
+                         data_segment=seg, data_tube_part=part,
+                         data_tube_layer="lumen"))
+
+    # ── segment 2, the stomach, painted over the start of the coils ─────
+    out.append(_path(_GUT_TUBE_STOMACH_FILL, fill=_SVG_BAND, stroke="none",
+                     data_tube="1", data_segment="2", data_tube_part="stomach",
+                     data_tube_layer="fill"))
+    out.append(_path(_GUT_TUBE_STOMACH_WALL, stroke=_SVG_INK, w=2.5,
+                     data_tube="1", data_segment="2", data_tube_part="stomach",
+                     data_tube_layer="wall"))
+    out.append(_path(_GUT_TUBE_STOMACH_INNER, stroke=_SVG_INK, w=2.5,
+                     data_tube="1", data_segment="2", data_tube_part="stomach",
+                     data_tube_layer="inner-wall"))
+
+    # ── stop 05: three organs, inside a dashed boundary, off the tube ───
+    out.append(_rect(120, 218, 220, 218, rx=20, stroke=_SVG_INK, w=2,
+                     dash="8 6", data_accessory_boundary="1"))
+    out.append(_path("M 132,240 C 180,222 262,228 314,252 L 318,314 "
+                     "C 262,336 180,332 136,312 Z",
+                     fill=_SVG_BAND, stroke=_SVG_INK, w=2.5,
+                     data_accessory="liver"))
+    out.append(_ellipse(256, 350, 15, 20, fill=_SVG_BAND, stroke=_SVG_INK,
+                        w=2.2, data_accessory="gall-bladder"))
+    out.append(_path("M 150,380 C 196,368 268,370 316,382 "
+                     "C 268,398 196,400 150,392 Z",
+                     fill=_SVG_BAND, stroke=_SVG_INK, w=2.2,
+                     data_accessory="pancreas"))
+
+    # The ducts, in Design's two passes: every wall first, then every lumen,
+    # so the four join into one without a seam where they cross.
+    for slug, src, dst, d in _GUT_TUBE_DUCTS:
+        out.append(_path(d, stroke=_SVG_INK, w=7, data_duct=slug,
+                         data_duct_from=src, data_duct_to=dst,
+                         data_duct_layer="wall"))
+    for slug, src, dst, d in _GUT_TUBE_DUCTS:
+        out.append(_path(d, stroke=_SVG_INSET, w=2.4, data_duct=slug,
+                         data_duct_from=src, data_duct_to=dst,
+                         data_duct_layer="lumen"))
+
+    # ── the food's route, over everything ───────────────────────────────
+    out.append(_path(_GUT_TUBE_FOOD, stroke=_SVG_ACCENT, w=3.6,
+                     data_path="food"))
+    out.append('</g>')
+
+    # ── the organ names, outside the clip ───────────────────────────────
+    out.append(_label(224, 286, "liver", size=16, weight="700",
+                      data_accessory_label="liver"))
+    out.append(_label(232, 356, "gall bladder", size=16, weight="700",
+                      anchor="end", data_accessory_label="gall-bladder"))
+    out.append(_label(224, 424, "pancreas", size=16, weight="700",
+                      data_accessory_label="pancreas"))
+    out.append(_mono(352, 440, "ducts in", size=13, weight="400"))
+
+    # ── the seven badges, in position ───────────────────────────────────
+    for num, organ, on_tube, leader, cx, cy in _GUT_TUBE_STOPS:
+        out.append(_path(leader, stroke=_SVG_INK, w=1.4,
+                         data_stop_leader=num))
+        out.append(_circle(cx, cy, 14,
+                           fill=_SVG_BAND if on_tube else _SVG_CARD,
+                           stroke=_SVG_INK, w=2,
+                           dash=None if on_tube else "5 4",
+                           data_stop=num, data_organ=organ,
+                           data_on_tube="1" if on_tube else "0"))
+        out.append(_mono(cx, cy + 6, num, size=15, fill=_SVG_INK,
+                         weight="400", anchor="middle",
+                         data_stop_numeral=num))
+        for nx, ny, s, anchor, muted in _GUT_TUBE_NOTES.get(num, ()):
+            out.append(_mono(nx, ny, s, size=13, weight="400", anchor=anchor,
+                             fill=_SVG_INK_MUTED if muted
+                             else _SVG_ACCENT_TEXT))
+
+    # ── the key ─────────────────────────────────────────────────────────
+    out.append(_mono(24, 852, "SEVEN STOPS, IN ORDER", size=13, weight="400",
+                     spacing="1.2"))
+    out.append(_path("M 24,864 H 876", stroke=_SVG_RULE, w=2))
+    for num, organ, on_tube, bx, tx, cy, title, body in _GUT_TUBE_KEY:
+        out.append(_circle(bx, cy, 14,
+                           fill=_SVG_BAND if on_tube else _SVG_CARD,
+                           stroke=_SVG_INK, w=2,
+                           dash=None if on_tube else "5 4",
+                           data_key_stop=num, data_key_organ=organ))
+        out.append(_mono(bx, cy + 6, num, size=15, fill=_SVG_INK,
+                         weight="400", anchor="middle",
+                         data_key_numeral=num))
+        out.append(_label(tx, cy - 1, title, size=18, weight="700",
+                          anchor="start", data_key_title=num))
+        out.append(_label(tx, cy + 19, body, size=15, fill=_SVG_INK_BODY,
+                          weight="400", anchor="start"))
+
+    # ── the two legend lines: what the orange is, what the dashes are ───
+    out.append(_path("M 24,1112 H 876", stroke=_SVG_RULE, w=2))
+
+    out.append(_path("M 28,1146 h 30", stroke=_SVG_ACCENT, w=3.6,
+                     data_legend="food-path"))
+    out.append(_label(70, 1152, "One path, 01 to 07 — the food’s route",
+                      size=16, weight="700", anchor="start",
+                      data_legend_label="food-path"))
+    out.append(_label(70, 1174, "It never enters 05.", size=15,
+                      fill=_SVG_INK_BODY, weight="400", anchor="start"))
+
+    out.append(_rect(480, 1134, 34, 26, rx=8, stroke=_SVG_INK, w=2, dash="8 6",
+                     data_legend="accessory"))
+    out.append(_label(524, 1152, "Alongside the tube, not part of it",
+                      size=16, weight="700", anchor="start",
+                      data_legend_label="accessory"))
+    out.append(_label(524, 1174, "Ducts in. Nothing comes back out.", size=15,
+                      fill=_SVG_INK_BODY, weight="400", anchor="start"))
+
+    # ── the disclosure. Ruled in; its absence is a red gate ─────────────
+    out.append(_mono(24, 1216,
+                     "The coils are drawn as one run down the frame rather "
+                     "than in their anatomical positions, so that", size=13,
+                     weight="400", data_disclosure="1",
+                     data_disclosure_line="1"))
+    out.append(_mono(24, 1236,
+                     "the order and the continuity read without one tube "
+                     "crossing another.", size=13, weight="400",
+                     data_disclosure="1", data_disclosure_line="2"))
+
+    out.append('</g>')
+    out.append('</svg>')
+    return "".join(out)
+
+
+# ── b5-gametes-journey · five steps, one tract, two of them days apart ──────
+#
+# THE CLAIM IS SPATIAL AND IT IS NUMERIC AT THE SAME TIME: fertilisation and
+# implantation are DIFFERENT PLACES a MEASURED NUMBER OF DAYS APART, on ONE
+# tract. Five prose blocks cannot be looked at and found to say that; a map
+# numbered along the route can. Every constant below exists so that the two
+# halves of the claim — different place, different day — are properties of the
+# geometry and of one another, rather than of two sentences free to drift.
+
+# The tract's left half, ONCE. The right half is this mirrored about x = W/2,
+# generated rather than spelled, because the two tubes are the same tube and a
+# second literal copy is a second thing free to drift: Design's own right-hand
+# `d` is her left-hand `d` with every x replaced by 900 − x, exactly, and the
+# mirror reproduces it to the digit. Points, not a `d` string, because the same
+# points are also flattened to measure arc length — see `_G10_JOURNEY`.
+_G10_OVIDUCT = ((376, 224),
+                (("C", (320, 186), (250, 182), (220, 216)),
+                 ("C", (192, 248), (200, 296), (232, 312))))
+
+# The fringed funnel, as three strokes from the tube's mouth.
+_G10_FUNNEL_FROM = (232, 314)
+_G10_FUNNEL_TO = ((208, 330), (220, 340), (242, 342))
+
+_G10_OVARY = (196, 352)
+# Follicles as OFFSETS from the ovary's centre, so both ovaries carry the same
+# four in the same places — the symmetry is drawn once and cannot fall out of
+# step on one side only.
+_G10_FOLLICLES = ((-10, -6), (6, -10), (-2, 8), (14, 6))
+
+# ⚖️ ONE PATH, BECAUSE IT IS ONE JOURNEY. The caption says "the solid orange
+# line is one journey"; a line split into a stretch per step would render
+# identically and would have four seams in it, and the seam is the thing this
+# figure exists NOT to contain — the misconception is that fertilisation and
+# implantation are one event in one place, and the answer is a single
+# uninterrupted route that visibly passes through both.
+_G10_JOURNEY = ((202, 338),
+                (("C", (214, 330), (226, 322), (232, 312)),
+                 ("C", (200, 296), (192, 248), (220, 216)),
+                 ("C", (250, 182), (320, 186), (376, 224)),
+                 ("C", (396, 238), (410, 268), (420, 300)),
+                 ("C", (426, 318), (428, 326), (430, 332))))
+
+# The sperm's route in, from 02 up to the meeting point beside 03. Design drew
+# the first stretch as `V 420`; it is written as a line to the same point,
+# which is the same geometry and lets one flattener measure both routes.
+_G10_SPERM = ((450, 516),
+              (("L", (450, 420)),
+               ("C", (450, 380), (438, 300), (416, 262)),
+               ("C", (396, 228), (340, 204), (262, 198))))
+
+# Design's three arrowheads on that route, as she drew them — literal
+# triangles, kept to the digit rather than recomputed through `_arrow_head`,
+# because `_arrow_head` would place them by angle and hers are placed by eye
+# between the dashes. ⛔ They are drawn triangles either way: an arrow is
+# never a typed character here or anywhere, the latin subsets do not carry one.
+#
+# ⊕ MRB-254 · THE THIRD ONE MOVED BACK DOWN THE ROUTE, from 328–344 × 204–216
+# to 442–454 × 370–386. It was invisible. Marker 04 is a 15-unit disc centred
+# on (341, 205) and it is drawn AFTER the heads, so its card fill covered the
+# triangle entirely: the sperm's route lost a third of its direction marks and
+# the plate still looked right, because a missing arrowhead leaves nothing
+# behind. The sweep found it as geometry rather than as paint — a hairline
+# lying wholly inside the numeral "04" — which is the same defect counted from
+# the other side.
+#
+# Nowhere on the upper half of the route will take it. From the corner at
+# (416, 262) all the way to 03 the dashed line runs six to ten units from the
+# solid orange one, and a head is thirteen across: every seat tried up there
+# put a black triangle on the EGG's route, which on a plate whose one job is
+# to keep the two journeys apart is a worse fault than the one being fixed.
+# Between 05 and head two the line is alone, so that is where it goes — very
+# nearly midway between the other two heads, on the stretch where "the sperm
+# swim up" is the whole claim. The cost is honest and recorded: the arc from
+# 04 to 03 now carries no head at all. It carried none before either; it just
+# looked as though it might.
+_G10_SPERM_HEADS = ("M 444,462 L 456,462 L 450,448 Z",
+                    "M 428,308 L 440,304 L 430,292 Z",
+                    "M 454,385 L 442,386 L 446,370 Z")
+
+# The same embryo, drawn three times along the stretch between 03 and 04: one
+# cell, then two, then four. (radius, (centres…)) — the count IS the label
+# here, so `data-cells` carries it and a parity row can count the circles it
+# selects instead of trusting a word.
+_G10_DIVIDING = ((4.4, ((272, 194),)),
+                 (4.4, ((298, 190), (306, 192))),
+                 (4, ((322, 194), (330, 192), (324, 202), (332, 200))))
+
+# Which two markers the dividing happens BETWEEN. It happens while the embryo
+# is travelling, not at a stop, and `data-between` says so on every cell.
+_G10_DIVIDING_BETWEEN = (3, 4)
+
+# The ball of cells, embedded in the lining at 05.
+_G10_BALL = ((424, 326), (434, 324), (428, 336), (438, 334))
+
+# The five steps. Each is
+#   (n, cx, cy, route, event, day, place, leader-d, ((x, y, text), …))
+#
+# ⚠️ `day` IS NOT A STRING HERE AND THE LABEL DOES NOT SPELL ITS OWN NUMBER.
+# The two label templates carrying `%(day)s` are filled from this column, and
+# `data-day` on the marker comes from the same column, so the printed "day 0"
+# and the hook a gate reads are one value. That is the whole defence against
+# the failure this figure is most exposed to: a marker moved or renumbered
+# while the sentence beside it keeps the old number, which looks entirely
+# correct and is the misconception restated.
+#
+# ⊕ `route` is "egg" or "sperm", and it is load-bearing for the ordering
+# assertion. Steps 1, 3, 4 and 5 sit on the orange journey and are strictly
+# increasing along it. Step 2 sits on the DASHED route, because the sperm
+# start at the far end of the tract and travel up: the five steps are in
+# chronological order, and no single drawn line can be monotone in them.
+# `data-along` is therefore measured along the route the marker is on, and an
+# order check runs per route.
+_G10_STEPS = (
+    (1, 232, 312, "egg", None, None, None, None,
+     ((164, 300, "one egg leaves", "end"),
+      (164, 318, "the ovary", "end"))),
+    (2, 450, 500, "sperm", None, None, None, None,
+     ((496, 498, "semen transferred;", "start"),
+      (496, 516, "the sperm swim up", "start"))),
+    (3, 249, 198, "egg", "fertilisation", 0, "oviduct", None,
+     ((249, 140, "in the oviduct", "middle"),
+      (249, 158, "day %(day)s · fertilisation", "middle"))),
+    (4, 341, 205, "egg", None, None, None, "M 424,166 L 356,196",
+     ((424, 142, "days 1–5 · dividing,", "start"),
+      (424, 160, "and still travelling", "start"))),
+    (5, 430, 332, "egg", "implantation", 6, "uterus-lining",
+     "M 528,336 L 448,336",
+     ((536, 330, "about day %(day)s ·", "start"),
+      (536, 348, "implantation", "start"))),
+)
+
+# The key, bottom of the plate. (n, cx, cy, heading, place-line, place, body)
+# `place` repeats the map marker's slug on rows 3 and 5 so the two zones can be
+# joined and checked against each other; the other three rows name a movement,
+# not a site, and carry none.
+_G10_KEY = (
+    (1, 38, 700, "Release", "Ovary to oviduct", None,
+     "One egg leaves, and can be fertilised for about a day"),
+    (2, 38, 760, "Transfer and travel", "Vagina to uterus to oviduct", None,
+     "Sperm swim up through the cervix and the uterus"),
+    (3, 38, 820, "Fertilisation", "The oviduct — and nowhere else", "oviduct",
+     "One sperm nucleus fuses with the egg nucleus. 23 and 23 makes 46"),
+    (4, 494, 700, "Dividing", "Travelling down the oviduct", None,
+     "Two cells, then four, then eight, over about five days"),
+    (5, 494, 760, "Implantation", "The uterus lining", "uterus-lining",
+     "The ball of cells embeds where it can be supplied"),
+)
+
+# The anatomy words, outside the clip with leaders reaching in.
+# (x, y, text, anchor, part, side, leader-d)
+_G10_PARTS = (
+    (196, 404, "ovary", "middle", "ovary", "left", None),
+    (704, 404, "ovary", "middle", "ovary", "right", None),
+    (620, 252, "oviduct", "start", "oviduct", "right", "M 616,248 L 596,230"),
+    (492, 296, "uterus", "middle", "uterus", None, None),
+    (504, 418, "cervix", "start", "cervix", None, "M 500,414 L 480,412"),
+    (392, 552, "vagina", "end", "vagina", None, "M 398,548 L 418,542"),
+)
+
+# The gap, in words, for the closing line. Indexed by the number of days, so
+# the sentence is a function of the two day marks and cannot disagree with
+# them. Deliberately short: an index error here is a figure whose two events
+# have drifted a week apart, and it should stop the build rather than print.
+_G10_GAP_WORDS = ("no", "one", "two", "three", "four", "five", "six", "seven")
+
+
+def _gametes_journey(fig):
+    """The five-step journey mapped on one tract, numbered along the route.
+
+    The lesson's key discrimination is that **fertilisation and implantation
+    are different places, days apart**. That is a claim about a map, and prose
+    cannot be checked against it: five paragraphs, each correct, leave a
+    student free to believe the sperm meets the egg in the uterus and settles
+    there — which is the misconception, and it is a misconception about
+    geography and about time at once. So the figure puts one tract on the page
+    and walks the process across it, and both halves of the discrimination
+    become things you can look at and fail to find.
+
+    ⚖️ WHY THE NUMBERS STAY. Design flagged (NOTES-FIGURES §4.4) that the
+    lesson says dividing takes "about five days" and implantation is "several
+    days later" — a range, not a day — and offered to drop `day 0` and
+    `about day 6` for "five or six days later". Ruled: they stay. *Days apart*
+    is only checkable against a number; two marks reading "some days" and "some
+    days later" restate the vagueness the figure exists to remove. The cost is
+    that the figure now asserts a precision the page does not, and the cost is
+    paid on purpose.
+
+    ⚠️ ONE WORD OF DESIGN'S IS AMENDED, AND IT IS THE ARITHMETIC. Her closing
+    line read *"about five days apart"* under marks reading day 0 and about
+    day 6, which is six. Five is the length of the DIVIDING stretch — her 04
+    label, "days 1–5", and her key line, "over about five days", are both
+    right — and the closing line had taken that number for the gap. The
+    sentence is now generated from the two day columns via `_G10_GAP_WORDS`,
+    so it prints "six" because the marks say 0 and 6, and no future edit can
+    move a mark without moving the word. Reported to the commander as an
+    amendment, not made quietly: it is one word and one number, and Mide's
+    science gate can put it back with a one-line patch.
+
+    ⛔ THERE IS NO DRAWN DIMENSION BETWEEN 03 AND 05, AND ONE WAS NOT INVENTED.
+    A bracket spanning the two markers is a shape Design did not draw, and
+    MRB-205 is the rule that stops a port adding furniture. What the drawing
+    already contains is better: the orange route runs the whole way from one to
+    the other, so the distance between them is an arc along the tract rather
+    than a straight line across unrelated organs. `data-along` on every marker
+    is that arc, measured off the same point list the path is drawn from, so
+    the "runs visibly between them" claim is a subtraction a parity row can do.
+
+    THE HOOKS, AND WHAT EACH EXISTS TO CATCH:
+
+      · `data-step`  — 1…5, on the marker, its numeral, its label lines and its
+        key row, with `data-zone` separating the map from the key. Five steps,
+        no gaps, no repeats, twice over, and the two zones checkable against
+        each other. A renumbered marker whose key row kept the old number is
+        the defect, and it is invisible to the eye.
+      · `data-route` + `data-along` — which drawn line the marker sits on, and
+        how far along it, in user units from that line's start. Steps 1, 3, 4,
+        5 must increase along "egg". Step 2 is the only one on "sperm", where
+        it sits 16 units from that route's start — the sperm begin at the far
+        end and swim up, which is why a single monotone 1-to-5 check would be
+        asserting something the science does not say.
+      · `data-event` / `data-day` / `data-place` — on the two marked events and
+        on the labels that print them. The whole claim reduces to: these two
+        rows differ in `place` AND differ in `day`. Both being one place, or
+        one day, is the misconception; the figure is built so that both are
+        visibly false and mechanically false at the same time.
+      · `data-gap-days` — on the closing line, with the two days it was
+        computed from beside it, so mark and sentence cannot drift.
+      · `data-tract` — on every element of the anatomy, both routes and all
+        five markers. "One tract" is half the teaching claim: two events in two
+        organs that turned out to be on two different diagrams would prove
+        nothing at all.
+      · `data-part` — the structure slug, so `data-place="oviduct"` on an event
+        names something actually drawn rather than a word nobody rendered.
+    """
+    W, H = 900, 960
+    out = [_svg_open(fig, W, H)]
+
+    # ── measurement: one flattener, both routes ─────────────────────────
+    # The `d` that is DRAWN and the polyline that is MEASURED come out of the
+    # same tuples. Storing a `d` string and a separate point list would be two
+    # descriptions of one line, and `data-along` would go on quietly reporting
+    # positions along a path that had been edited out from under it.
+    def flatten(route, n=96):
+        start, segs = route
+        pts = [(float(start[0]), float(start[1]))]
+        for seg in segs:
+            p0 = pts[-1]
+            if seg[0] == "L":
+                # ⚠️ SAMPLED, NOT JUST APPENDED. A straight run added as its
+                # two endpoints has no interior for a marker to be nearest to,
+                # so 02 — which sits sixteen units up a straight stretch of the
+                # sperm's route — snapped back to the route's start and
+                # reported an arc position of zero. A hook that returns a
+                # plausible number for the wrong point is the failure these
+                # hooks exist to close, so both segment kinds are sampled at
+                # the same rate.
+                p1 = (float(seg[1][0]), float(seg[1][1]))
+                for i in range(1, n + 1):
+                    t = i / float(n)
+                    pts.append((p0[0] + (p1[0] - p0[0]) * t,
+                                p0[1] + (p1[1] - p0[1]) * t))
+                continue
+            p1, p2, p3 = seg[1], seg[2], seg[3]
+            for i in range(1, n + 1):
+                t = i / float(n)
+                u = 1.0 - t
+                a, b = u * u * u, 3 * u * u * t
+                c, dd = 3 * u * t * t, t * t * t
+                pts.append((a * p0[0] + b * p1[0] + c * p2[0] + dd * p3[0],
+                            a * p0[1] + b * p1[1] + c * p2[1] + dd * p3[1]))
+        acc = [0.0]
+        for j in range(1, len(pts)):
+            acc.append(acc[-1] + math.hypot(pts[j][0] - pts[j - 1][0],
+                                            pts[j][1] - pts[j - 1][1]))
+        return pts, acc
+
+    def path_d(route):
+        start, segs = route
+        bits = ["M %s,%s" % (_n(start[0]), _n(start[1]))]
+        for seg in segs:
+            if seg[0] == "L":
+                bits.append("L %s,%s" % (_n(seg[1][0]), _n(seg[1][1])))
+            else:
+                bits.append("C %s,%s %s,%s %s,%s"
+                            % (_n(seg[1][0]), _n(seg[1][1]),
+                               _n(seg[2][0]), _n(seg[2][1]),
+                               _n(seg[3][0]), _n(seg[3][1])))
+        return " ".join(bits)
+
+    def mirror(route):
+        """The same tube on the other side. x becomes W − x; y is untouched."""
+        start, segs = route
+        return ((W - start[0], start[1]),
+                tuple((seg[0],) + tuple((W - p[0], p[1]) for p in seg[1:])
+                      for seg in segs))
+
+    def along(route_pts_acc, x, y):
+        """Arc position of the nearest sampled point on a route, in units."""
+        pts, acc = route_pts_acc
+        best, bd = 0.0, None
+        for j in range(len(pts)):
+            dx, dy = pts[j][0] - x, pts[j][1] - y
+            d2 = dx * dx + dy * dy
+            if bd is None or d2 < bd:
+                bd, best = d2, acc[j]
+        return "%.1f" % best
+
+    routes = {"egg": flatten(_G10_JOURNEY), "sperm": flatten(_G10_SPERM)}
+
+    # The two events, pulled out of the step table rather than restated, so
+    # every downstream number — the gap, the closing line, the step numbers in
+    # it — is the step table's own.
+    events = dict((s[4], s) for s in _G10_STEPS if s[4])
+    fert, impl = events["fertilisation"], events["implantation"]
+    gap = impl[5] - fert[5]
+    if gap <= 0 or gap >= len(_G10_GAP_WORDS):
+        raise ValueError(
+            "fertilisation is marked day %s and implantation day %s, a gap of "
+            "%s. The whole figure is the claim that these are days apart; a "
+            "gap of zero, a negative one, or one this table has no word for "
+            "means the marks have moved and the sentence beneath them has "
+            "not." % (fert[5], impl[5], gap))
+    if fert[6] == impl[6]:
+        raise ValueError(
+            "fertilisation and implantation are both marked %r. Two different "
+            "places is half of what this figure asserts; drawn in one "
+            "place it "
+            "teaches the misconception it exists to remove." % fert[6])
+
+    sperm_step = [s[0] for s in _G10_STEPS if s[3] == "sperm"][0]
+
+    clip = "%s-clip-plate" % e(fig["id"])
+    out.append('<defs><clipPath id="%s">'
+               '<rect x="24" y="54" width="852" height="560" rx="18"/>'
+               '</clipPath></defs>' % clip)
+
+    # Round caps and joins once, on the wrapping group, exactly as Design set
+    # them. The 13px oviduct wall and the 4.4px journey are both shaped by
+    # them, so they are geometry rather than polish. Paint stays in `style`, on
+    # every element, as the law requires.
+    out.append('<g stroke-linecap="round" stroke-linejoin="round">')
+
+    out.append(_rect(24, 54, 852, 560, rx=18, fill=_SVG_CARD, stroke=_SVG_INK,
+                     w=2.5))
+
+    out.append('<g clip-path="url(#%s)">' % clip)
+
+    # ── the tract ────────────────────────────────────────────────────────
+    # Each oviduct is drawn twice: a thick ink stroke, then a narrower inset
+    # stroke inside it. That is what makes the tube a TUBE WITH A LUMEN rather
+    # than a line — the egg travels *inside* it, and 03 and 04 are both marked
+    # on that inside.
+    sides = (("left", _G10_OVIDUCT), ("right", mirror(_G10_OVIDUCT)))
+    for w, paint, lumen in ((13, _SVG_INK, None), (7, _SVG_INSET, "1")):
+        for side, route in sides:
+            out.append(_path(path_d(route), stroke=paint, w=w,
+                             data_tract="1", data_part="oviduct",
+                             data_side=side, data_lumen=lumen))
+
+    for side, sign in (("left", 1), ("right", -1)):
+        fx = _G10_FUNNEL_FROM[0] if sign > 0 else W - _G10_FUNNEL_FROM[0]
+        d = " ".join("M %s,%s L %s,%s"
+                     % (_n(fx), _n(_G10_FUNNEL_FROM[1]),
+                        _n(tx if sign > 0 else W - tx), _n(ty))
+                     for tx, ty in _G10_FUNNEL_TO)
+        out.append(_path(d, stroke=_SVG_INK, w=2.4, data_tract="1",
+                         data_part="funnel", data_side=side))
+
+    out.append(_path("M 372,236 Q 378,196 450,196 Q 522,196 528,236 "
+                     "L 496,376 Q 488,404 450,404 Q 412,404 404,376 Z",
+                     fill=_SVG_CARD, stroke=_SVG_INK, w=3,
+                     data_tract="1", data_part="uterus"))
+    # The lining, drawn as a thickness inside the wall. 05 is marked ON this,
+    # which is why it is a filled area and not a second outline: "in the
+    # uterus lining" is a place with an inside to be in.
+    out.append(_path("M 392,244 Q 408,220 450,220 Q 492,220 508,244 "
+                     "L 484,368 Q 478,388 450,388 Q 422,388 416,368 Z",
+                     fill=_SVG_ACCENT_TINT, stroke="none",
+                     data_tract="1", data_part="uterus-lining"))
+
+    out.append(_rect(424, 394, 52, 38, rx=11, fill=_SVG_BAND, stroke=_SVG_INK,
+                     w=2.5, data_tract="1", data_part="cervix"))
+    out.append(_path("M 428,432 L 420,544 Q 420,560 438,560 L 462,560 "
+                     "Q 480,560 480,544 L 472,432 Z",
+                     fill=_SVG_CARD, stroke=_SVG_INK, w=2.5,
+                     data_tract="1", data_part="vagina"))
+
+    ovaries = (("left", _G10_OVARY), ("right", (W - _G10_OVARY[0],
+                                                _G10_OVARY[1])))
+    for side, (ox, oy) in ovaries:
+        out.append(_ellipse(ox, oy, 34, 27, fill=_SVG_CARD, stroke=_SVG_INK,
+                            w=2.5, data_tract="1", data_part="ovary",
+                            data_side=side))
+    for side, (ox, oy) in ovaries:
+        for dx, dy in _G10_FOLLICLES:
+            out.append(_circle(ox + dx, oy + dy, 5, fill=_SVG_BAND,
+                               stroke=_SVG_INK_FAINT, w=1.4, data_tract="1",
+                               data_part="follicle", data_side=side))
+
+    # ── the sperm's route in ─────────────────────────────────────────────
+    # Dashed, and it ENDS at the meeting point beside 03. The dash is the whole
+    # category distinction — there is no second hue in this figure — and the
+    # legend names it in words.
+    out.append(_path(path_d(_G10_SPERM), stroke=_SVG_INK, w=3, dash="9 7",
+                     data_tract="1", data_route="sperm",
+                     data_from_step=sperm_step,
+                     data_meets_step=fert[0]))
+    for d in _G10_SPERM_HEADS:
+        out.append(_path(d, fill=_SVG_INK, data_route="sperm"))
+
+    # ── the journey ──────────────────────────────────────────────────────
+    out.append(_path(path_d(_G10_JOURNEY), stroke=_SVG_ACCENT, w=4.4,
+                     data_tract="1", data_route="egg"))
+
+    # The same embryo, three times, between 03 and 04. `data-cells` is the
+    # count a reader can make of each cluster; `data-between` says which two
+    # markers the dividing happens between, which is the point — it happens
+    # WHILE TRAVELLING, not at a stop.
+    for i, (r, centres) in enumerate(_G10_DIVIDING, 1):
+        for cx, cy in centres:
+            out.append(_circle(cx, cy, r, fill=_SVG_CARD, stroke=_SVG_INK,
+                               w=1.6, data_route="egg", data_cluster=i,
+                               data_cells=len(centres),
+                               data_between="%d-%d"
+                               % _G10_DIVIDING_BETWEEN))
+
+    for cx, cy in _G10_BALL:
+        out.append(_circle(cx, cy, 5, fill=_SVG_CARD, stroke=_SVG_INK, w=1.8,
+                           data_tract="1", data_event=impl[4],
+                           data_place=impl[6], data_cells=len(_G10_BALL)))
+
+    out.append('</g>')
+
+    # ── the five markers ─────────────────────────────────────────────────
+    # Outside the clip, so no badge loses an edge to the rounded corner. Each
+    # is a ringed circle plus a numeral: the ring is orange, the numeral is
+    # ink, and neither carries a fact the other does not — the number is the
+    # channel, the colour is emphasis.
+    for n, cx, cy, route, event, day, place, leader, lines in _G10_STEPS:
+        hooks = dict(data_step=n, data_zone="map", data_tract="1",
+                     data_route=route, data_along=along(routes[route], cx, cy),
+                     data_event=event, data_day=day, data_place=place)
+        if leader:
+            out.append(_path(leader, stroke=_SVG_ACCENT_TEXT, w=1.4,
+                             data_step=n, data_zone="map"))
+        out.append(_circle(cx, cy, 15, fill=_SVG_CARD, stroke=_SVG_ACCENT,
+                           w=3, **hooks))
+        out.append(_mono(cx, cy + 6, "%02d" % n, size=15, fill=_SVG_INK,
+                         weight="400", anchor="middle", **hooks))
+        for lx, ly, tmpl, anchor in lines:
+            if "%(day)" in tmpl and day is None:
+                raise ValueError(
+                    "step %s prints a day and has none. A label built from a "
+                    "template with no value for it is the `{brace}` hole in "
+                    "another costume: it renders, it looks deliberate, "
+                    "and the "
+                    "number the whole figure turns on is missing." % n)
+            out.append(_mono(lx, ly, tmpl % {"day": day} if "%(day)" in tmpl
+                             else tmpl,
+                             size=13,
+                             fill=_SVG_ACCENT_TEXT if event or leader
+                             else _SVG_INK_MUTED,
+                             weight="400", anchor=anchor, data_step=n,
+                             data_zone="map", data_event=event, data_day=day,
+                             data_place=place))
+
+    # ── the anatomy, named ───────────────────────────────────────────────
+    for x, y, text, anchor, part, side, leader in _G10_PARTS:
+        if leader:
+            out.append(_path(leader, stroke=_SVG_INK, w=1.4))
+        out.append(_label(x, y, text, size=15, weight="700", anchor=anchor,
+                          data_tract="1", data_part=part, data_side=side))
+
+    # ── the legend ───────────────────────────────────────────────────────
+    # Two lines, two words. This is what pays for the solid/dashed distinction:
+    # read once, the drawing stays legible with both strokes in the same ink.
+    out.append(_path("M 570,556 h 32", stroke=_SVG_ACCENT, w=4.4,
+                     data_route="egg", data_key="legend"))
+    out.append(_label(614, 562, "The egg, then the embryo", size=16,
+                      weight="700", anchor="start", data_route="egg",
+                      data_key="legend"))
+    out.append(_path("M 570,590 h 32", stroke=_SVG_INK, w=3, dash="9 7",
+                     data_route="sperm", data_key="legend"))
+    out.append(_label(614, 596, "The sperm’s route in", size=16, weight="400",
+                      anchor="start", data_route="sperm", data_key="legend"))
+
+    # ── the key ──────────────────────────────────────────────────────────
+    out.append(_mono(24, 654, "FIVE STEPS, IN ORDER", size=13, weight="400",
+                     anchor="start", spacing="1.2"))
+    out.append(_path("M 24,666 H 876", stroke=_SVG_RULE, w=2))
+
+    for n, cx, cy, heading, place_line, place, body in _G10_KEY:
+        hooks = dict(data_step=n, data_zone="key", data_place=place)
+        out.append(_circle(cx, cy, 14, fill=_SVG_CARD, stroke=_SVG_ACCENT,
+                           w=3, **hooks))
+        out.append(_mono(cx, cy + 6, "%02d" % n, size=15, fill=_SVG_INK,
+                         weight="400", anchor="middle", **hooks))
+        out.append(_label(cx + 26, cy - 1, heading, size=18, weight="700",
+                          anchor="start", **hooks))
+        out.append(_mono(cx + 26, cy + 19, place_line, size=13,
+                         fill=_SVG_ACCENT_TEXT, weight="400", anchor="start",
+                         **hooks))
+        out.append(_label(cx + 26, cy + 39, body, size=15,
+                          fill=_SVG_INK_BODY, weight="400", anchor="start",
+                          **hooks))
+
+    # ── the closing statement ────────────────────────────────────────────
+    # The sentence is assembled from the step table: both step numbers, and the
+    # gap in words computed from the two day marks. Nothing here is typed
+    # twice.
+    out.append(_path("M 24,890 H 876", stroke=_SVG_RULE, w=2))
+    out.append(_label(24, 920,
+                      "%02d and %02d are different events, in different "
+                      "organs, about %s days apart."
+                      % (fert[0], impl[0], _G10_GAP_WORDS[gap]),
+                      size=16, weight="700", anchor="start",
+                      data_gap_days=gap, data_from_step=fert[0],
+                      data_to_step=impl[0], data_from_day=fert[5],
+                      data_to_day=impl[5], data_from_place=fert[6],
+                      data_to_place=impl[6]))
+    out.append(_label(24, 942,
+                      "Fertilisation is one nucleus fusing with another — not "
+                      "a sperm arriving. Many arrive; one fuses.",
+                      size=15, fill=_SVG_INK_BODY, weight="400",
+                      anchor="start"))
+
+    out.append('</g>')
+    out.append('</svg>')
+    return "".join(out)
+
+
+# ── b5-dispersal-specimens · eight specimens, one scale, no answers ─────────
+#
+# ⚖️ THE SCALE IS THE FIGURE. Everything below exists so that "one scale" is a
+# measurable property of the geometry and not a sentence printed under it.
+#
+# The plate's scale, in user units per millimetre, DERIVED from the one
+# specimen whose real size is ruled rather than drawn:
+#
+#     the coconut is 250 mm — the whole fruit, husk and all — and it is drawn
+#     380 units wide, so the plate runs at 380 / 250 = 1.52 units per mm.
+#
+# Design drew the plate at 1.9 and sized the coconut at 200 mm, saying in her
+# notes that 200 was HER number and that "the whole plate rescales from it,
+# which is a one-line change". The ruling made it 250, because the husk is
+# drawn and the husk IS the dispersal mechanism, so the stated dimension has to
+# include it. This constant is that one line. The coconut's drawn size does not
+# move — it already fills the plate, and it is the fixed point of the rescale —
+# so raising its real width lowers the plate's scale by a fifth, and every
+# other specimen is redrawn at its own stated width against the new scale.
+_B5_DISPERSAL_MM = 380.0 / 250.0
+
+# The ground line every specimen stands on, and the anchor every rescale turns
+# about. Design put all eight bottoms on y=470 — the coconut's ellipse bottom,
+# the poppy's stem foot, the sycamore's seed — so scaling a specimen about
+# (its own station, 470) keeps it standing on the line and centred under its
+# numbered badge. Nothing has to be re-placed by hand.
+_B5_DISPERSAL_GROUND = 470
+
+# The eight specimens, as
+# (slug, number, real width in mm, station x, width Design drew it, in units).
+#
+# ⚠️ THE mm COLUMN IS A WIDTH, MEASURED ACROSS x, FOR ALL EIGHT. It has to be:
+# `data-mm` and `data-drawn-w` are divided by one another to recover the scale,
+# and a specimen quoting its LENGTH against a drawn WIDTH would read as a
+# different scale and fail a check it should pass. That bites exactly once, on
+# the gorse pod: Design's comment says 22 mm, which is a gorse pod's length —
+# she drew it 18.75 units across, i.e. 9.9 mm wide at her own 1.9, which is a
+# gorse pod's actual width. Her DRAWING is right and her comment is on the
+# other axis, so the width column takes 10 and the report says so.
+#
+# ⊕ The last column is measured off Design's delivery, curves included, not
+# copied from her comments — the two disagree by up to 55% (she drew the
+# goosegrass 14 mm wide and called it 9). The measurement is what the rescale
+# has to divide into, because it is what is actually on the paper.
+_B5_DISPERSAL_SPECIMENS = (
+    ("goosegrass", 1,   9,  70,  26.682),
+    ("dandelion",  2,  14, 125,  21.149),
+    ("poppy",      3,  18, 185,  30.000),
+    ("blackberry", 4,  20, 248,  38.800),
+    ("burdock",    5,  20, 310,  44.000),
+    ("gorse",      6,  10, 372,  18.750),
+    ("sycamore",   7,  40, 434,  72.276),
+    ("coconut",    8, 250, 670, 380.000),
+)
+
+# The blackberry's segments, as (cx, cy, r). Design's own cluster, kept as a
+# list rather than nine spelled circles because each one carries a pip drawn
+# from the same centre — the segment and its pip are one fact, and separating
+# them into two hand-written blocks is how a tenth segment ends up pipless.
+_B5_DISPERSAL_CLUSTER = (
+    (240, 442, 6.4), (252, 439, 6.4), (262, 446, 6.4),
+    (236, 452, 6.4), (248, 450, 6.8), (260, 456, 6.4),
+    (242, 461, 6.0), (254, 461, 6.0), (248, 432, 5.6),
+)
+
+# The key: (number, name, badge x, baseline y). Two columns of four.
+#
+# ⛔ NAMES ONLY. No structural description, no "the tell", no method. This is
+# ruled, and it is the whole figure: a student asked to infer mechanism from
+# structure has to be given the structure AS STRUCTURE, and a sentence
+# describing hooks set beside a drawing of hooks quietly converts the task back
+# into reading comprehension — which is the defect this figure exists to
+# remove. The only qualifier here names WHICH PART of a specimen is drawn
+# (08, the whole fruit with its husk), because that is what its 250 mm measures
+# and it is not a clue to anything.
+_B5_DISPERSAL_KEY = (
+    (1, "Goosegrass, or cleavers",     38, 662),
+    (2, "Dandelion",                   38, 704),
+    (3, "Poppy capsule",               38, 746),
+    (4, "Blackberry",                  38, 788),
+    (5, "Burdock burr",               494, 662),
+    (6, "Gorse pod",                  494, 704),
+    (7, "Sycamore key",               494, 746),
+    (8, "Coconut, whole fruit with husk", 494, 788),
+)
+
+
+def _dispersal(fig):
+    """Eight fruits and seeds on one ground line at one scale, numbered, named,
+    and told nothing else about themselves.
+
+    The bench page hands the student the structures as PROSE — "hooks that
+    catch on fur", "a wing that spins" — and then asks them to infer the
+    mechanism. That is the exam skill turned inside out: inference from
+    structure becomes reading comprehension, and the student never has to look
+    at anything. This plate removes the crutch. Everything a mechanism can be
+    read from is DRAWN — the hooks, the pappus, the ring of pores under the
+    poppy's rim, the flesh around a hard pip, the wing set off to one side of
+    its seed, the fibrous husk full of voids — and nothing is captioned with a
+    method. So anything that puts the structure back into words undoes the
+    figure, which is why the key names the specimens and stops.
+
+    ⚖️ ONE SCALE, AND THE RANGE IS 250:9. Design's argument, upheld in full.
+    Two scales would make the plate a lie — the comparison is the point, and
+    the whole reason a coconut is not moved by wind is that it is that size —
+    so every specimen is drawn at `_B5_DISPERSAL_MM` units per millimetre and
+    the goosegrass comes out 13.7 units across. The cost is a plate with a lot
+    of empty paper in it. That emptiness IS the size difference, and it is the
+    fact the prose version cannot deliver, so it is kept rather than composed
+    away.
+
+    The one thing the scale cannot carry is the goosegrass's hooks, which at
+    13.7 units are below the width of the stroke that would have to draw them.
+    So there is ONE magnified detail, at ×4, MARKED ×4 on the drawing, tied to
+    its specimen by a dashed leader. ⊕ A stated magnification is not a broken
+    scale; an unstated one would be. It is drawn ×4 as well as labelled ×4 —
+    the dashed frame is exactly four times the specimen's drawn width — so the
+    number on the plate is a measurement of the plate rather than a claim about
+    it.
+
+    ⚠️ EVERY SPECIMEN IS A GROUP WITH A RESCALE ON IT, NOT A SET OF RETYPED
+    COORDINATES. Design's paths are reproduced unit for unit inside the group
+    and the group carries `transform="… scale(k) …"` about the specimen's foot
+    on the ground line. Two reasons, both of them about being able to check
+    this later: her geometry stays diffable against her delivery, and the
+    correction each specimen needed to land on the one scale is a single
+    readable number instead of being smeared through forty rewritten
+    coordinates. Stroke widths scale with the group, which is correct — a
+    specimen drawn smaller is drawn thinner.
+
+    Hooks a content-truth row can measure, because the claim that guards the
+    250 mm ruling is a claim about DRAWN GEOMETRY:
+
+      · `data-specimen`, `data-mm`, `data-drawn-w` on all eight groups. Walk
+        them, divide drawn-w by mm, and every one of the eight lands on 1.52.
+        All eight, not the coconut and the goosegrass alone — one scale means
+        one scale, and a specimen quietly drawn at its own convenient size is
+        invisible to a two-specimen check.
+      · `data-magnified` and `data-detail-of` on the goosegrass detail, which
+        carries NO `data-specimen` and is therefore excluded from that walk by
+        construction. Its own `data-drawn-w` divided by the goosegrass's is 4,
+        which is what the printed ×4 says.
+      · `data-scale-bar-mm` and `data-scale-bar-px` on the bar, carrying the
+        number its label prints and the length it is drawn — separately named
+        so the bar cannot wander into the specimen walk.
+    """
+    W, H = 900, 870
+    out = [_svg_open(fig, W, H)]
+
+    def rnd(v):
+        """Design's `Math.round(v * 10) / 10`, to the bit.
+
+        ⚠️ NOT Python's `round`, which is banker's rounding and turns
+        `Math.round(2.25 * 10) / 10` from 2.3 into 2.2. Half goes UP in JS, and
+        towards +∞ for negatives too, which is what `floor(x + 0.5)` is."""
+        return math.floor(v * 10 + 0.5) / 10.0
+
+    def hook(cx, cy, angle, r1, r2, curl):
+        """Design's `hook()`, ported: a stiff bristle from r1 to r2, then a
+        quadratic that turns back on itself. The BACKWARD turn is the whole
+        point of a hook and it is generated, not drawn — twenty-two of these
+        make the burdock and fourteen make the goosegrass, and hand-drawing
+        thirty-six of them is thirty-six chances for one to hook forwards."""
+        c, s = math.cos(angle), math.sin(angle)
+        x1, y1 = cx + c * r1, cy + s * r1
+        x2, y2 = cx + c * r2, cy + s * r2
+        hx, hy = x2 - s * curl, y2 + c * curl
+        return ("M %s,%s L %s,%s Q %s,%s %s,%s"
+                % (_n(rnd(x1)), _n(rnd(y1)), _n(rnd(x2)), _n(rnd(y2)),
+                   _n(rnd(hx)), _n(rnd(hy)),
+                   _n(rnd(x2 - s * curl * 0.4 - c * curl * 0.8)),
+                   _n(rnd(y2 + c * curl * 0.4 - s * curl * 0.8))))
+
+    def scale_about(k, ax, ay):
+        """The transform attribute, or nothing at all when k is 1.
+
+        `scale(1)` renders identically and reads as though something happened,
+        so the coconut — the one specimen the ruling leaves untouched — gets no
+        transform and is visibly the fixed point of the rescale."""
+        if abs(k - 1.0) < 1e-9:
+            return ""
+        return (' transform="translate(%s,%s) scale(%.6f) translate(%s,%s)"'
+                % (_n(ax), _n(ay), k, _n(-ax), _n(-ay)))
+
+    scale = {}   # slug -> units per mm correction applied to Design's drawing
+    drawn = {}   # slug -> drawn width in user units, after the rescale
+
+    def open_specimen(slug):
+        """The group tag for one specimen, with the three hooks on it.
+
+        The hooks go on the GROUP because the group is the specimen: a row that
+        put them on the outermost body shape would be measuring the coconut's
+        husk wall rather than the coconut, and on the sycamore it would name the
+        seed and miss the wing that is four fifths of the width."""
+        for s, _num, mm, ax, her_w in _B5_DISPERSAL_SPECIMENS:
+            if s != slug:
+                continue
+            width = mm * _B5_DISPERSAL_MM
+            k = width / her_w
+            scale[slug] = k
+            drawn[slug] = width
+            return ('<g data-specimen="%s" data-mm="%s" data-drawn-w="%s"%s>'
+                    % (e(slug), _n(mm), _n(width),
+                       scale_about(k, ax, _B5_DISPERSAL_GROUND)))
+        raise ValueError("no specimen %r on the plate" % slug)
+
+    # ⚠️ The clip id is built off the figure id. A bare `id="f14P"` collides the
+    # moment two figures share a page, and `url(#f14P)` then resolves to
+    # whichever landed first in the document — so one plate silently takes
+    # another's clip rectangle and half a drawing disappears.
+    clip = "%s-clip-plate" % e(fig["id"])
+    out.append('<defs><clipPath id="%s">'
+               '<rect x="24" y="54" width="852" height="520" rx="18"/>'
+               '</clipPath></defs>' % clip)
+
+    # Round caps and joins for the whole drawing, once, as Design set them on
+    # her single wrapping group. Every bristle tip and every hook turn is
+    # shaped by them, so they are geometry here, not polish.
+    out.append('<g stroke-linecap="round" stroke-linejoin="round">')
+
+    out.append(_rect(24, 54, 852, 520, rx=18, fill=_SVG_CARD, stroke=_SVG_INK,
+                     w=2.5))
+    out.append('<g clip-path="url(#%s)">' % clip)
+
+    # ── 08 · coconut, 250 mm, the whole fruit with its husk ───────────────
+    # Drawn first and largest, so everything else is laid over its edge rather
+    # than under it. Four walls, outside in: husk, husk lining, shell, cavity —
+    # and the husk is drawn as a MATERIAL, fibres running through its thickness
+    # with voids among them, because the husk is what floats and a husk drawn as
+    # an outline would be a claim with nothing behind it.
+    out.append(open_specimen("coconut"))
+    out.append(_ellipse(670, 299, 190, 171, fill=_SVG_BAND, stroke=_SVG_INK,
+                        w=3))
+    out.append(_ellipse(670, 299, 150, 133, fill=_SVG_INSET, stroke=_SVG_INK,
+                        w=2))
+    # 34 fibres and, on every third one, a void. Generated: the husk's texture
+    # is a PROPERTY of it, and thirty-four hand-placed strokes would drift into
+    # a pattern that means something it does not.
+    voids = []
+    for i in range(34):
+        a = (i / 34.0) * math.pi * 2
+        c, s = math.cos(a), math.sin(a)
+        out.append(_path("M %s,%s L %s,%s"
+                         % (_n(rnd(670 + c * 186)), _n(rnd(299 + s * 167)),
+                            _n(rnd(670 + c * 138)), _n(rnd(299 + s * 122))),
+                         stroke=_SVG_INK_GHOST, w=1.6))
+        if i % 3 == 0:
+            t = 0.62 + (i % 2) * 0.14
+            voids.append((rnd(670 + c * (150 + 36 * (t - 0.5))),
+                          rnd(299 + s * (133 + 32 * (t - 0.5))),
+                          3.4 + (i % 4) * 0.6))
+    for cx, cy, r in voids:
+        out.append(_circle(cx, cy, r, fill=_SVG_CARD, stroke=_SVG_INK_GHOST,
+                           w=1.2))
+    out.append(_ellipse(670, 299, 134, 118, fill=_SVG_CARD, stroke=_SVG_INK,
+                        w=2.8))
+    out.append(_ellipse(670, 299, 112, 96, fill=_SVG_INSET, stroke=_SVG_INK,
+                        w=1.6))
+    out.append(_path("M 566,330 C 606,346 734,346 774,330 C 762,378 720,395 "
+                     "670,395 C 620,395 578,378 566,330 Z",
+                     fill=_SVG_BAND, stroke=_SVG_INK, w=1.6))
+    out.append('</g>')
+
+    # ── 01 · goosegrass, 9 mm, the pair ──────────────────────────────────
+    # 13.7 units across, which is the honest size of a 9 mm fruit beside a
+    # 250 mm one and is very nearly a dot. It is meant to be. The hooks are
+    # generated at full size inside the group and then taken down with it, so
+    # what is drawn here is a true small copy rather than a simplified one.
+    out.append(open_specimen("goosegrass"))
+    out.append(_circle(65, 462, 4.6, fill=_SVG_BAND, stroke=_SVG_INK, w=1.6))
+    out.append(_circle(75, 462, 4.6, fill=_SVG_BAND, stroke=_SVG_INK, w=1.6))
+    for i in range(7):
+        a = (i / 7.0) * math.pi * 2 + 0.3
+        out.append(_path(hook(65, 462, a, 4.4, 8.4, 2.2), stroke=_SVG_INK,
+                         w=1.2))
+        out.append(_path(hook(75, 462, a + 0.45, 4.4, 8.4, 2.2),
+                         stroke=_SVG_INK, w=1.2))
+    out.append('</g>')
+
+    # ── the ×4 detail ────────────────────────────────────────────────────
+    # ⚖️ THE MAGNIFICATION IS DRAWN, NOT ASSERTED. The dashed frame is sized to
+    # exactly four times the goosegrass's drawn width, so `data-magnified="4"`,
+    # the printed "×4" and the geometry are one number measured three ways.
+    # Design drew this frame 80 units across against a specimen she drew 26.7
+    # wide — a stated ×4 sitting over an actual ×3.0 — and the rescale is what
+    # closes that. It carries no `data-specimen`: it is not a ninth specimen and
+    # it must not be walked as one, or the one-scale check finds a ×4 outlier
+    # and reports the figure broken for doing exactly what it says it does.
+    det_k = (4 * drawn["goosegrass"] / 2.0) / 40.0
+    det_bottom = 200 + 40 * det_k
+    out.append('<g data-detail-of="goosegrass" data-magnified="4" '
+               'data-drawn-w="%s"%s>'
+               % (_n(4 * drawn["goosegrass"]), scale_about(det_k, 70, 200)))
+    out.append(_circle(70, 200, 40, fill=_SVG_INSET, stroke=_SVG_INK, w=2,
+                       dash="6 5"))
+    out.append(_circle(60, 204, 15, fill=_SVG_BAND, stroke=_SVG_INK, w=2))
+    out.append(_circle(84, 200, 13, fill=_SVG_BAND, stroke=_SVG_INK, w=2))
+    for d in ("M 47,192 C 40,186 34,186 32,190 C 31,193 34,195 36,193",
+              "M 52,218 C 46,226 42,230 38,229 C 35,228 36,224 39,224",
+              "M 95,188 C 102,182 108,182 110,186 C 111,189 108,191 106,189"):
+        out.append(_path(d, stroke=_SVG_INK, w=2))
+    out.append('</g>')
+    # The leader, from the frame down to the specimen it came off. Dashed,
+    # because it is a relationship and not a part of either drawing, and it
+    # stops six units short of the specimen so the two never touch.
+    #
+    # ⊕ MRB-254 · IT NOW STARTS SHORT AS WELL AS STOPPING SHORT, at
+    # `det_bottom + 26` rather than at `det_bottom`. The printed "×4" is
+    # centred on the same x=70 at `det_bottom + 16`, so the dash ran from the
+    # frame straight down through the magnification it was carrying — the one
+    # number on this plate that a stated scale has to be readable to mean
+    # anything. Twenty-six clears the numeral's descender by six and loses
+    # nothing: the frame, the "×4" and the dash are now stacked on one axis, so
+    # the eye still travels the same line down to the specimen.
+    goose_top = (_B5_DISPERSAL_GROUND
+                 + (453.6 - _B5_DISPERSAL_GROUND) * scale["goosegrass"])
+    out.append(_path("M 70,%s V %s" % (_n(det_bottom + 26), _n(goose_top - 6)),
+                     stroke=_SVG_RULE_STRONG, w=1.6, dash="5 5"))
+
+    # ── 02 · dandelion, 14 mm ────────────────────────────────────────────
+    # One seed, a stalk, and eleven hairs generated as a fan about the stalk's
+    # head — a spray, not a disc, because what is being shown is that the hairs
+    # are separate and that there is a great deal of air between them.
+    out.append(open_specimen("dandelion"))
+    out.append(_ellipse(125, 464, 3.4, 6, fill=_SVG_BAND, stroke=_SVG_INK,
+                        w=1.6))
+    out.append(_path("M 125,458 V 448", stroke=_SVG_INK, w=1.4))
+    for i in range(11):
+        a = -math.pi / 2 + (i - 5) * 0.19
+        out.append(_path("M 125,448 L %s,%s"
+                         % (_n(rnd(125 + math.cos(a) * 13)),
+                            _n(rnd(448 + math.sin(a) * 13))),
+                         stroke=_SVG_INK, w=1.2))
+    out.append('</g>')
+
+    # ── 03 · poppy capsule, 18 mm ────────────────────────────────────────
+    # The ring of pores sits UNDER the rim, which is the whole structure: they
+    # are drawn as four filled dots below the lid line rather than as notches in
+    # the outline, so the capsule stays closed and the seeds have to come out of
+    # holes rather than out of a split.
+    out.append(open_specimen("poppy"))
+    out.append(_path("M 185,470 V 452", stroke=_SVG_INK, w=2))
+    out.append(_path("M 171,450 C 171,438 174,428 178,424 L 192,424 "
+                     "C 196,428 199,438 199,450 C 199,456 193,459 185,459 "
+                     "C 177,459 171,456 171,450 Z",
+                     fill=_SVG_BAND, stroke=_SVG_INK, w=2))
+    out.append(_path("M 170,428 C 176,424 194,424 200,428", stroke=_SVG_INK,
+                     w=2))
+    for cx, cy in ((175, 434), (181, 433), (189, 433), (195, 434)):
+        out.append(_circle(cx, cy, 1.7, fill=_SVG_INK, stroke="none"))
+    out.append('</g>')
+
+    # ── 04 · blackberry, 20 mm ───────────────────────────────────────────
+    # Every segment carries one pip, drawn from the segment's own centre. The
+    # pip is the seed and the segment is the flesh around it, and the two are
+    # generated together for that reason.
+    out.append(open_specimen("blackberry"))
+    out.append(_path("M 248,470 V 464", stroke=_SVG_INK, w=1.8))
+    for cx, cy, r in _B5_DISPERSAL_CLUSTER:
+        out.append(_circle(cx, cy, r, fill=_SVG_BAND, stroke=_SVG_INK, w=1.6))
+    for cx, cy, _r in _B5_DISPERSAL_CLUSTER:
+        out.append(_circle(cx, cy, 2.2, fill=_SVG_CARD, stroke=_SVG_INK,
+                           w=1.2))
+    out.append('</g>')
+
+    # ── 05 · burdock burr, 20 mm ─────────────────────────────────────────
+    # Twenty-two bracts around the whole circumference, every one of them
+    # turning back. Generated from the same `hook()` as the goosegrass, which is
+    # the point: two specimens that look nothing alike are drawn by one function
+    # because they are doing one thing.
+    out.append(open_specimen("burdock"))
+    out.append(_circle(310, 452, 16, fill=_SVG_BAND, stroke=_SVG_INK, w=2))
+    for i in range(22):
+        a = (i / 22.0) * math.pi * 2
+        out.append(_path(hook(310, 452, a, 15, 22, 3.4), stroke=_SVG_INK,
+                         w=1.5))
+    out.append('</g>')
+
+    # ── 06 · gorse pod, 10 mm across ─────────────────────────────────────
+    # Split along its length and slightly twisted, with the seeds still in it.
+    # The split is dashed because it is a line the pod opens ALONG rather than a
+    # line drawn on it.
+    out.append(open_specimen("gorse"))
+    out.append(_path("M 366,470 C 360,450 362,432 372,426 C 382,432 384,450 "
+                     "378,470 Z", fill=_SVG_BAND, stroke=_SVG_INK, w=2))
+    out.append(_path("M 370,468 C 366,450 368,434 372,428", stroke=_SVG_INK,
+                     w=1.5, dash="4 3"))
+    for cx, cy in ((371, 440), (373, 450), (371, 460)):
+        out.append(_circle(cx, cy, 3, fill=_SVG_CARD, stroke=_SVG_INK, w=1.2))
+    out.append('</g>')
+
+    # ── 07 · sycamore key, 40 mm ─────────────────────────────────────────
+    # ⚖️ THE WING IS OFF TO ONE SIDE OF THE SEED, not balanced about it. That
+    # asymmetry is the entire mechanism — a blade with its mass at one end spins
+    # — and a sycamore drawn symmetrically would show a student a thing that
+    # falls straight down. The seed sits at 404 and the wing runs out to 467.
+    out.append(open_specimen("sycamore"))
+    out.append(_ellipse(404, 462, 9, 7.5, fill=_SVG_BAND, stroke=_SVG_INK,
+                        w=2))
+    out.append(_path("M 411,458 C 428,446 450,424 464,402 C 470,412 468,432 "
+                     "456,448 C 444,462 424,466 411,464 Z",
+                     fill=_SVG_INSET, stroke=_SVG_INK, w=2))
+    out.append(_path("M 413,459 C 430,448 450,428 462,408",
+                     stroke=_SVG_INK_GHOST, w=1.4))
+    out.append(_path("M 424,462 C 434,450 446,436 454,424 "
+                     "M 436,462 C 444,452 452,442 458,432",
+                     stroke=_SVG_INK_GHOST, w=1.1))
+    out.append('</g>')
+
+    # The ground line, drawn last and over everything, so all eight are
+    # standing on one line rather than floating near it.
+    out.append(_path("M 44,470 H 856", stroke=_SVG_INK, w=2.5))
+    out.append('</g>')
+
+    # The magnification, printed. Accent-text rather than accent: 13px in
+    # `--ks3-accent` is 3.4:1 and `_label` refuses it, correctly.
+    out.append(_mono(70, det_bottom + 16, "×4", size=13, weight="400",
+                     anchor="middle", fill=_SVG_ACCENT_TEXT,
+                     data_magnified="4", data_detail_of="goosegrass"))
+
+    # ── the numbered stations ────────────────────────────────────────────
+    # Outside the clip, so a badge cannot lose its second digit to the rounded
+    # corner. Numbers only — smallest first is a fact about the row, and saying
+    # so in eight captions would be the prose this figure exists to remove.
+    for slug, num, _mm, ax, _her_w in _B5_DISPERSAL_SPECIMENS:
+        out.append(_circle(ax, 496, 13, fill=_SVG_BAND, stroke=_SVG_INK, w=2))
+        out.append(_mono(ax, 502, "%02d" % num, size=14, weight="400",
+                         anchor="middle", fill=_SVG_INK,
+                         data_badge_for=slug))
+
+    # ── the scale bar ────────────────────────────────────────────────────
+    # 100 mm, drawn at the plate's own scale, which is what makes it a bar and
+    # not a decoration: 100 × 1.52 = 152 units, ten steps of 15.2. Design drew
+    # it 190 long for 1.9, and it rescales with everything else — a scale bar
+    # left at the old scale is the one error on a plate like this that a reader
+    # cannot see and cannot recover from.
+    bar_px = 100 * _B5_DISPERSAL_MM
+    out.append(_path("M 60,538 H %s" % _n(60 + bar_px), stroke=_SVG_INK,
+                     w=2.5, data_scale_bar_mm="100",
+                     data_scale_bar_px=_n(bar_px)))
+    out.append(_path("M 60,530 V 546 M %s,530 V 546" % _n(60 + bar_px),
+                     stroke=_SVG_INK, w=2.5))
+    ticks = " ".join("M %s,534 V 542" % _n(60 + bar_px * i / 10.0)
+                     for i in range(1, 10))
+    out.append(_path(ticks, stroke=_SVG_INK, w=1.6))
+    out.append(_mono(60 + bar_px + 16, 544,
+                     "100 mm, in 10 mm steps — every specimen on this one "
+                     "scale", size=14, weight="400", fill=_SVG_INK,
+                     data_scale_bar_mm="100"))
+
+    # ── the key ──────────────────────────────────────────────────────────
+    out.append(_mono(24, 614, "EIGHT SPECIMENS · SMALLEST FIRST", size=13,
+                     weight="400", spacing="1.2"))
+    out.append(_path("M 24,626 H 876", stroke=_SVG_RULE, w=2))
+    for num, name, bx, by in _B5_DISPERSAL_KEY:
+        out.append(_circle(bx, by, 14, fill=_SVG_BAND, stroke=_SVG_INK, w=2))
+        out.append(_mono(bx, by + 6, "%02d" % num, size=15, weight="400",
+                         anchor="middle", fill=_SVG_INK))
+        out.append(_label(bx + 26, by + 6, name, size=18, weight="700",
+                          anchor="start"))
+    out.append(_path("M 24,820 H 876", stroke=_SVG_RULE, w=2))
+    out.append(_label(24, 848,
+                      "Names only. Nothing here says how any of them travels "
+                      "— that is what the structure is for.",
+                      size=16, weight="700", anchor="start"))
+
+    out.append('</g>')
+    out.append('</svg>')
+    return "".join(out)
+
+
+# ── ⊕ MRB-254 · WS1 #13, b5-pollen-tube — Design's fig-13, ported ───────
+#
+# Every coordinate below is Design's. Her `renderVals()` builds nothing inside
+# the SVG — it drives only the Full/768/390 review switcher, which ruling 6
+# drops — so there is no `<sc-for>` loop to port and every string in this
+# drawing is a literal in her delivery too.
+
+# The sticky pad on top of the stigma. Six dots, composed rather than
+# scattered by a generator, so there is no jitter function here and nothing
+# can drift run to run.
+_POLLEN_TUBE_STICKY = ((252, 126), (268, 118), (286, 122),
+                       (264, 140), (284, 142), (316, 132))
+
+# `(cx, cy, index, draws its own nucleus ring)`. The first ovule is the one
+# the tube reaches, and its nucleus is drawn as one of the two filled fusion
+# dots rather than as the outlined ring the other two carry — which is the
+# drawing saying "this one is mid-fertilisation" without a word.
+_POLLEN_TUBE_OVULES = ((254, 426, 1, False),
+                       (286, 456, 2, True),
+                       (318, 486, 3, True))
+
+# Design's pollen tube is ONE `<path>` of three cubic segments. Split here at
+# her own segment boundaries so each carries a `data-route-step` — see the
+# docstring. The coordinates are untouched: segment n starts exactly where
+# segment n-1 ended.
+_POLLEN_TUBE_ROUTE = ((2, "M 314,123 C 306,150 288,180 286,220"),
+                      (3, "M 286,220 C 284,270 288,330 292,380"),
+                      (4, "M 292,380 C 292,396 274,410 260,422"))
+
+# `(numeral, leader, badge cx, badge cy, first caption baseline, line 1,
+# line 2)`. The numeral sits at cy + 6; caption line 2 at line 1 + 18.
+_POLLEN_TUBE_MARKERS = (
+    ("01", "M 344,108 L 334,112", 360, 106, 98,
+     "pollination —", "the grain arrives"),
+    ("02", "M 344,252 L 308,252", 360, 252, 244,
+     "the tube grows down", "through the style"),
+    ("03", "M 344,424 L 276,426", 360, 424, 416,
+     "fertilisation —", "inside an ovule"),
+)
+
+_POLLEN_TUBE_SEEDS = ((690, 368, 1), (720, 404, 2), (750, 440, 3))
+
+# The curled embryo inside a seed, as offsets from the seed's centre. Design
+# spells all three out; they are the same seven points translated by (30, 36)
+# each time, and writing that once is the only way a fourth seed could not
+# quietly arrive with a different embryo in it.
+_POLLEN_TUBE_EMBRYO = ((-8, 0), (-8, -6), (-2, -8), (2, -4),
+                       (6, 0), (4, 6), (-2, 6))
+
+# The two correspondence lines under the right frame. `(baseline, before
+# part, after part, the note under it)`. The shaft sits at baseline - 6, the
+# drawn head spans baseline - 12 to baseline, the note at baseline + 22.
+_POLLEN_TUBE_BECOMES = (
+    (580, "ovule", "seed", "one ovule becomes one seed"),
+    (638, "ovary", "fruit", "the wall swells; seeds stay in"),
+)
+
+# `(badge cx, badge cy, numeral, heading, accent line, body line)`. Text sits
+# at cx + 26; heading at cy - 1, accent at cy + 19, body at cy + 39.
+_POLLEN_TUBE_KEY = (
+    (38, 760, "01", "Pollen lands",
+     "On the stigma — this is pollination",
+     "A grain arrives, carried by an insect or the wind"),
+    (38, 820, "02", "The pollen tube grows",
+     "Down through the style",
+     "The male gamete nucleus travels down inside it"),
+    (38, 880, "03", "Fertilisation",
+     "Inside an ovule — and nowhere else",
+     "The two gamete nuclei fuse. That fusion is fertilisation"),
+    (494, 760, "04", "Seeds form",
+     "From the fertilised ovules",
+     "An embryo plant, a food store, and a tough coat"),
+    (494, 820, "05", "The fruit forms",
+     "From the ovary around them",
+     "The ovary wall swells; the rest of the flower withers"),
+)
+
+
+def _pollen_tube(fig):
+    """The carpel cut open, before and after: pollen on the stigma, the tube
+    down the style, and the fusion happening inside an ovule that never leaves
+    the ovary it is drawn in.
+
+    ⚖️ CONTAINMENT IS THE FIGURE, AND IT IS DRAWN RATHER THAN ASSERTED. The
+    lesson carries this as a six-row before/after table — *ovule becomes seed,
+    ovary becomes fruit, petals fall, style withers* — and a table is six
+    things to memorise with nothing holding them together. A student who meets
+    it that way routinely comes away believing the ovule travels somewhere to
+    become a seed, or that the fruit forms around seeds that arrived from
+    outside. Both frames here are the SAME chamber: the ovules sit inside the
+    ovary wall on the left, and on the right the seeds sit inside the fruit
+    wall, in the same three places on the page. Nothing moves out of anything.
+    Put a finger on one ovule and the corresponding seed is under it.
+
+    ⚖️ SO THE CONTAINMENT IS ASSERTABLE FROM THE GEOMETRY, NOT FROM A LABEL.
+    Every ovule and every seed carries `data-contains` naming its container,
+    and the ovary wall and the fruit wall carry `data-container="1"`; a
+    content-truth row resolves the name to the shape and checks the bounding
+    boxes. It must walk ALL THREE, in both panels, which is the point: a
+    defect that put one of three ovules a few units outside the wall would
+    look right at a glance and would be the exact error the figure exists to
+    remove. The inner cavity outlines carry `data-cavity="1"` as well, so a
+    stricter row can require containment in the cavity rather than merely
+    inside the outer wall — both are true of this drawing (measured), and the
+    cavity is the claim Design's own `<desc>` makes.
+
+    ⚖️ THE BEFORE-TO-AFTER MAP IS SINGLE-VALUED, AND THAT IS THE SECOND
+    HALF OF THE LESSON. Each labelled part in the left panel carries
+    `data-becomes-to` and each in the right carries `data-becomes-from`, so a
+    row can assert that the map is a function and that it is exactly
+    ovule-to-seed and ovary-to-fruit. ⚠️ The map is TOTAL, not just those
+    two: stigma and style also map, to `withered-remains`, because they do
+    not vanish from the
+    drawing — they are the shrivelled stub and the two dried scraps at the top
+    of the right frame. Leaving them unhooked would make a row over "every
+    part in the before panel" fail on two parts that are drawn correctly.
+    `withered-remains` carries no reverse hook, since two parts converge on
+    it and the reverse of a many-to-one is not a name.
+
+    ⚖️ THE ROUTE IS NUMBERED FROM THE GRAIN TO THE OVULE. `data-route-step`
+    runs 1 to 5: the grain on the stigma, three tube segments, then the two
+    fusion dots. Steps 1 and 5 are circles, so a row can test "starts at the
+    stigma" and "ends inside an ovule" against bounding boxes without parsing
+    a cubic — the grain's centre inside the stigma outline, the fusion dots
+    wholly inside ovule 1. That distance is the whole difference between
+    pollination and fertilisation, and it is the one thing a table cannot
+    show: 01 and 03 are a style's length apart on the page.
+
+    ⊕ DESIGN'S ONE PATH IS THREE HERE, AND NOTHING ELSE ABOUT IT CHANGES. The
+    tube is a single `<path>` of three cubics in her delivery; a single
+    element cannot carry three step numbers. Split at her own segment
+    boundaries, each sub-path starts exactly where the last ended, and the
+    root group's `stroke-linecap="round"` closes the joins — a round cap is a
+    half-disc centred on the endpoint, and two of them at the same point fill
+    the join. Coordinates, paint and width are untouched.
+
+    ⚠️ THE `<desc>` SAYS "MIDDLE OVULE" AND THE DRAWING FERTILISES THE FIRST.
+    Her tube ends at (260, 422), inside the ovule at (254, 426) — the
+    uppermost of the three, not the middle one at (286, 456). The drawing is
+    right and self-consistent (the two fusion dots are drawn in that ovule and
+    it is the one without a nucleus ring); it is the sentence that is wrong.
+    Amended to "uppermost" in the record and reported: a `<desc>` is the whole
+    drawing for a reader who cannot see it, and shipping a known-false one
+    because it is Design's is the wrong reading of MRB-205.
+
+    ⚠️ CLIP IDS ARE DERIVED FROM THE FIGURE ID. Hers are `f13L` / `f13R`,
+    unique inside a review file holding one figure. `id` is document-scoped
+    and a lesson page can hold several drawings; a duplicate `clipPath` id
+    silently clips the second figure to the first one's rectangle. Both
+    windows are in fact inert — every shape in both groups is comfortably
+    inside its frame, measured — but they are kept rather than dropped,
+    because they are the guard that keeps a later edit from spilling a
+    petal over the frame edge without anyone noticing.
+
+    ⛔ THE TWO ARROWHEADS ARE DESIGN'S OWN TRIANGLES, not `_arrow_head`. She
+    placed both by hand on the correspondence lines; `_arrow_head` would
+    recompute them from an angle and land them a fraction off her shaft.
+    `_arrow` is for a head this file computes; these are hers.
+    """
+    W, H = 900, 1014
+    cid = e(fig["id"])
+    out = [_svg_open(fig, W, H)]
+
+    # The two windows. Raw markup rather than an emitter call because a
+    # <clipPath> carries no paint — there is no paint law to keep here.
+    out.append(
+        '<defs>'
+        '<clipPath id="%s-c-before"><rect x="24" y="54" width="520" '
+        'height="620" rx="18"/></clipPath>'
+        '<clipPath id="%s-c-after"><rect x="564" y="54" width="312" '
+        'height="620" rx="18"/></clipPath>'
+        '</defs>' % (cid, cid))
+
+    # Design's root group. Round caps and joins throughout: the stigma, the
+    # ovary and every ovule are organic outlines, and a mitred join on a 3px
+    # stroke round a 21-unit ellipse reads as a spike.
+    out.append('<g stroke-linecap="round" stroke-linejoin="round">')
+
+    # ── the two frames ──────────────────────────────────────────────────────
+    out.append(_mono(24, 44, "THE CARPEL, IN SECTION", size=13, weight="400",
+                     spacing="1.2"))
+    out.append(_mono(564, 44, "AFTER FERTILISATION", size=13, weight="400",
+                     spacing="1.2"))
+    out.append(_rect(24, 54, 520, 620, rx=18, fill=_SVG_CARD, stroke=_SVG_INK,
+                     w=2.5, data_frame="1", data_state="before"))
+    out.append(_rect(564, 54, 312, 620, rx=18, fill=_SVG_CARD, stroke=_SVG_INK,
+                     w=2.5, data_frame="1", data_state="after"))
+
+    # ── BEFORE · the carpel in section ──────────────────────────────────────
+    out.append('<g clip-path="url(#%s-c-before)">' % cid)
+
+    # The style, drawn in section so both walls are visible: the tube grows
+    # DOWN THE INSIDE of it, and a style drawn as a single line would make
+    # that impossible to see.
+    out.append(_rect(262, 150, 44, 256, fill=_SVG_CARD, stroke="none",
+                     data_part="style", data_state="before",
+                     data_becomes_to="withered-remains"))
+    out.append(_path("M 262,150 V 406", stroke=_SVG_INK, w=2.5,
+                     data_part="style", data_state="before",
+                     data_wall="left"))
+    out.append(_path("M 306,150 V 406", stroke=_SVG_INK, w=2.5,
+                     data_part="style", data_state="before",
+                     data_wall="right"))
+
+    out.append(_path("M 236,138 C 236,114 258,102 284,102 C 310,102 332,114 "
+                     "332,138 C 332,154 310,162 284,162 C 258,162 236,154 "
+                     "236,138 Z",
+                     fill=_SVG_BAND, stroke=_SVG_INK, w=2.5,
+                     data_part="stigma", data_state="before",
+                     data_becomes_to="withered-remains"))
+    for i, (cx, cy) in enumerate(_POLLEN_TUBE_STICKY, 1):
+        out.append(_circle(cx, cy, 2.6, fill=_SVG_ACCENT_TEXT, stroke="none",
+                           data_part="stigma", data_state="before",
+                           data_sticky=i))
+
+    # The ovary: a wall with a thickness, and a shaded cavity inside it. The
+    # thickness is what lets "inside the ovary" be a place rather than a word.
+    out.append(_path("M 284,378 C 340,378 368,404 368,452 C 368,500 336,530 "
+                     "284,530 C 232,530 200,500 200,452 C 200,404 228,378 "
+                     "284,378 Z",
+                     fill=_SVG_BAND, stroke=_SVG_INK, w=3,
+                     data_part="ovary", data_state="before",
+                     data_wall="outer", data_container="1",
+                     data_becomes_to="fruit"))
+    out.append(_path("M 284,392 C 332,392 356,414 356,452 C 356,490 328,516 "
+                     "284,516 C 240,516 212,490 212,452 C 212,414 236,392 "
+                     "284,392 Z",
+                     fill=_SVG_INSET, stroke=_SVG_INK, w=1.8,
+                     data_part="ovary", data_state="before",
+                     data_wall="inner", data_cavity="1"))
+
+    # Three ovules, and all three are hooked. One ovule drawn inside the wall
+    # and two drawn anywhere would satisfy a spot check and teach the opposite
+    # of the lesson.
+    for cx, cy, idx, _ring in _POLLEN_TUBE_OVULES:
+        out.append(_ellipse(cx, cy, 21, 17, fill=_SVG_BAND, stroke=_SVG_INK,
+                            w=2.2, data_part="ovule", data_state="before",
+                            data_index=idx, data_contains="ovary",
+                            data_becomes_to="seed"))
+    for cx, cy, idx, ring in _POLLEN_TUBE_OVULES:
+        if not ring:
+            continue
+        out.append(_circle(cx, cy, 5, fill=_SVG_CARD, stroke=_SVG_INK, w=1.6,
+                           data_part="ovule", data_state="before",
+                           data_index=idx, data_nucleus="1"))
+
+    # Step 1 of the route: the grain, sitting ON the stigma. Its spikes reach
+    # above the pad, so a containment row on this one tests the CENTRE, not
+    # the box — the grain has landed on the stigma, it is not inside it.
+    out.append(_circle(316, 112, 11, fill=_SVG_ACCENT_TINT,
+                       stroke=_SVG_ACCENT_TEXT, w=2, data_grain="1",
+                       data_state="before", data_route_step=1,
+                       data_route_start="stigma"))
+    out.append(_path("M 316,99 V 93 M 327,105 L 332,101 M 329,119 L 334,123 "
+                     "M 316,125 V 131 M 305,119 L 300,123 M 303,105 L 298,101",
+                     stroke=_SVG_ACCENT_TEXT, w=1.8, data_grain="1",
+                     data_state="before"))
+
+    for step, d in _POLLEN_TUBE_ROUTE:
+        out.append(_path(d, stroke=_SVG_ACCENT, w=3.6, data_tube="1",
+                         data_state="before", data_route_step=step))
+    # The male gamete nucleus, part of the way down the tube — the reason the
+    # tube is worth drawing at all: something is IN it.
+    out.append(_circle(290, 340, 5.2, fill=_SVG_INK, stroke="none",
+                       data_tube="1", data_state="before",
+                       data_travelling_nucleus="1"))
+    # Step 5: the two nuclei, touching, inside ovule 1. Design paints one in
+    # the tube's colour and one in ink; she does not label which is which, so
+    # neither does the markup.
+    out.append(_circle(250, 426, 5.6, fill=_SVG_ACCENT, stroke="none",
+                       data_state="before", data_fusion=1,
+                       data_route_step=5, data_route_end="ovule",
+                       data_route_end_index=1))
+    out.append(_circle(261, 429, 5.6, fill=_SVG_INK, stroke="none",
+                       data_state="before", data_fusion=2,
+                       data_route_step=5, data_route_end="ovule",
+                       data_route_end_index=1))
+
+    # The bracket down the left of the chamber: the containment claim, drawn.
+    out.append(_path("M 176,392 H 166 V 516 H 176", stroke=_SVG_INK, w=1.8,
+                     data_part="ovary", data_state="before",
+                     data_annotation="containment"))
+    out.append('</g>')
+
+    # ── BEFORE · the words ──────────────────────────────────────────────────
+    out.append(_label(216, 134, "stigma", size=15, weight="700", anchor="end",
+                      data_part="stigma", data_state="before",
+                      data_role="label"))
+    out.append(_label(240, 278, "style", size=15, weight="700", anchor="end",
+                      data_part="style", data_state="before",
+                      data_role="label"))
+    out.append(_label(284, 556, "ovary", size=15, weight="700",
+                      data_part="ovary", data_state="before",
+                      data_role="label"))
+    # ⊕ MOVED FROM (286, 461, middle) — Design's own coordinates put this
+    # word straight through ovule 2's nucleus ring: the ring lands on the "u"
+    # and the letter and the nucleus destroy each other. The rule is the one
+    # the villus port used — the thing carrying the science holds its
+    # position and the thing carrying none moves — so the ring stays where
+    # every ovule's nucleus is (its centre) and the word steps left, ending
+    # three units short of the ring on Design's baseline. It stays in the
+    # ovary cavity, which is not incidental: a label for a contained part,
+    # parked outside its container, works against what this figure says.
+    out.append(_label(262, 461, "ovule", size=14, weight="700", anchor="end",
+                      data_part="ovule", data_state="before",
+                      data_index=2, data_role="label"))
+    out.append(_mono(160, 438, "the ovary", size=13, weight="400",
+                     anchor="end", data_part="ovary", data_state="before",
+                     data_role="note"))
+    out.append(_mono(160, 456, "ovules inside it", size=13, weight="400",
+                     anchor="end", data_part="ovary", data_state="before",
+                     data_role="note"))
+
+    # ── the three numbered markers ──────────────────────────────────────────
+    #
+    # 01 and 03 are a style's length apart on the page and that gap is the
+    # argument: pollination is delivery, fertilisation is fusion, and a table
+    # that lists them as two rows gives a student no reason to believe they
+    # are not the same moment.
+    for num, leader, bx, by, ty, line1, line2 in _POLLEN_TUBE_MARKERS:
+        out.append(_path(leader, stroke=_SVG_ACCENT, w=1.4,
+                         data_marker=num, data_state="before"))
+        out.append(_circle(bx, by, 15, fill=_SVG_CARD, stroke=_SVG_ACCENT,
+                           w=3, data_marker=num, data_state="before"))
+        out.append(_mono(bx, by + 6, num, size=15, weight="400",
+                         anchor="middle", fill=_SVG_INK, data_marker=num,
+                         data_state="before"))
+        out.append(_mono(536, ty, line1, size=13, weight="400", anchor="end",
+                         fill=_SVG_ACCENT_TEXT, data_marker=num,
+                         data_state="before"))
+        out.append(_mono(536, ty + 18, line2, size=13, weight="400",
+                         anchor="end", fill=_SVG_ACCENT_TEXT,
+                         data_marker=num, data_state="before"))
+
+    # ── what the two marks in the drawing mean ──────────────────────────────
+    out.append(_path("M 60,600 h 30", stroke=_SVG_ACCENT, w=3.6,
+                     data_legend="pollen-tube"))
+    out.append(_label(102, 606, "The pollen tube — one cell, growing", size=16,
+                      weight="700", anchor="start",
+                      data_legend="pollen-tube"))
+    out.append(_circle(75, 634, 5.2, fill=_SVG_INK, stroke="none",
+                       data_legend="gamete-nuclei"))
+    out.append(_label(102, 640, "The gamete nuclei, male and female", size=16,
+                      weight="400", anchor="start",
+                      data_legend="gamete-nuclei"))
+
+    # ── AFTER · the same chamber, swollen ───────────────────────────────────
+    out.append('<g clip-path="url(#%s-c-after)">' % cid)
+
+    # What is left of the style and stigma, and two dried scraps of the rest
+    # of the flower. Drawn, not omitted: a right-hand frame with nothing above
+    # the fruit invites "the flower turned into a fruit", and this is instead
+    # the same flower with most of it dead.
+    out.append(_path("M 716,300 C 712,290 710,282 712,274 C 718,278 722,286 "
+                     "724,298",
+                     fill=_SVG_BAND, stroke=_SVG_INK, w=2,
+                     data_part="withered-remains", data_state="after",
+                     data_index=1))
+    out.append(_path("M 682,268 C 668,258 660,246 660,236 C 674,242 684,254 "
+                     "690,266 Z",
+                     fill=_SVG_BAND, stroke=_SVG_INK_FAINT, w=1.8,
+                     data_part="withered-remains", data_state="after",
+                     data_index=2))
+    out.append(_path("M 758,268 C 772,258 780,246 780,236 C 766,242 756,254 "
+                     "750,266 Z",
+                     fill=_SVG_BAND, stroke=_SVG_INK_FAINT, w=1.8,
+                     data_part="withered-remains", data_state="after",
+                     data_index=3))
+
+    # The fruit: the ovary's wall, much thicker, around the same cavity.
+    out.append(_path("M 720,300 C 792,300 828,336 828,398 C 828,462 788,502 "
+                     "720,502 C 652,502 612,462 612,398 C 612,336 648,300 "
+                     "720,300 Z",
+                     fill=_SVG_ACCENT_TINT, stroke=_SVG_INK, w=3,
+                     data_part="fruit", data_state="after",
+                     data_wall="outer", data_container="1",
+                     data_becomes_from="ovary"))
+    out.append(_path("M 720,322 C 780,322 806,350 806,398 C 806,446 774,480 "
+                     "720,480 C 666,480 634,446 634,398 C 634,350 660,322 "
+                     "720,322 Z",
+                     fill=_SVG_INSET, stroke=_SVG_INK, w=1.8,
+                     data_part="fruit", data_state="after",
+                     data_wall="inner", data_cavity="1"))
+
+    # Three seeds, in the three places the three ovules occupied. Each is a
+    # tough double coat with an embryo curled inside it — the thing the ovule
+    # became, not a thing that arrived.
+    for cx, cy, idx in _POLLEN_TUBE_SEEDS:
+        out.append(_ellipse(cx, cy, 23, 18, fill=_SVG_BAND, stroke=_SVG_INK,
+                            w=2.6, data_part="seed", data_state="after",
+                            data_index=idx, data_contains="fruit",
+                            data_becomes_from="ovule"))
+        out.append(_ellipse(cx, cy, 17, 12, fill=_SVG_CARD, stroke=_SVG_INK,
+                            w=1.4, data_part="seed", data_state="after",
+                            data_index=idx, data_coat="inner"))
+        pts = [(cx + dx, cy + dy) for dx, dy in _POLLEN_TUBE_EMBRYO]
+        out.append(_path("M %s,%s C %s,%s %s,%s %s,%s C %s,%s %s,%s %s,%s"
+                         % tuple(_n(v) for p in pts for v in p),
+                         stroke=_SVG_INK, w=2, data_part="seed",
+                         data_state="after", data_index=idx,
+                         data_embryo="1"))
+    out.append('</g>')
+
+    # ── AFTER · the words ───────────────────────────────────────────────────
+    # ⊕ MRB-254 · BOTH LINES RAISED 24 — baselines 232 and 250 become 208 and
+    # 226, and the leader's tail follows them, from y=254 up to y=230. The
+    # right-hand scrap is drawn from y=236 to y=268 across x 750–780, and
+    # "withered and fell" — seventeen mono characters back from an end anchor
+    # at 864 — occupied 731–864 at y 240–253. The scrap went in one side of the
+    # word and out the other: the thing the note names was drawn through the
+    # note. Twenty-four units puts the lower line's descender at 229, seven
+    # clear of the scrap's tip, and the frame's own top is at 54, so the block
+    # still has 150 units of clear paper above it. The leader's HEAD does not
+    # move — it is on the scrap, and that is what it is for; only the tail
+    # follows the words it leaves from.
+    out.append(_mono(864, 208, "the rest of the flower", size=13,
+                     weight="400", anchor="end",
+                     data_part="withered-remains", data_state="after",
+                     data_role="label"))
+    out.append(_mono(864, 226, "withered and fell", size=13, weight="400",
+                     anchor="end", data_part="withered-remains",
+                     data_state="after", data_role="note"))
+    out.append(_path("M 796,230 L 776,262", stroke=_SVG_INK_MUTED, w=1.4,
+                     data_part="withered-remains", data_state="after",
+                     data_leader="1"))
+    out.append(_label(720, 536, "the fruit", size=15, weight="700",
+                      data_part="fruit", data_state="after",
+                      data_role="label"))
+    # ⊕ MOVED FROM (720, 409, middle) — the same collision on the right: the
+    # word sat on seed 2's curled embryo and neither survived it. Same repair,
+    # same direction, and again inside the fruit cavity rather than out of it.
+    out.append(_label(692, 409, "seed", size=14, weight="700", anchor="end",
+                      data_part="seed", data_state="after", data_index=2,
+                      data_role="label"))
+
+    # ── the two correspondences, spelled out under the frame ────────────────
+    for base, src, dst, note in _POLLEN_TUBE_BECOMES:
+        out.append(_label(588, base, src, size=18, weight="700",
+                          anchor="start", data_map="1",
+                          data_becomes_from=src, data_becomes_to=dst))
+        out.append(_path("M 652,%s H 690" % _n(base - 6), stroke=_SVG_INK,
+                         w=2.4, data_map="1", data_becomes_from=src,
+                         data_becomes_to=dst))
+        # ⛔ Design's own triangle, at her coordinates. Not a typed arrow
+        # character, and not a recomputed head.
+        out.append(_path("M 688,%s L 700,%s L 688,%s Z"
+                         % (_n(base - 12), _n(base - 6), _n(base)),
+                         fill=_SVG_INK, stroke="none", data_map="1",
+                         data_becomes_from=src, data_becomes_to=dst))
+        out.append(_label(710, base, dst, size=18, weight="700",
+                          anchor="start", data_map="1",
+                          data_becomes_from=src, data_becomes_to=dst))
+        out.append(_mono(588, base + 22, note, size=13, weight="400",
+                         data_map="1", data_becomes_from=src,
+                         data_becomes_to=dst))
+
+    # ── the key: five steps, in order ───────────────────────────────────────
+    out.append(_mono(24, 714, "FIVE STEPS, IN ORDER", size=13, weight="400",
+                     spacing="1.2"))
+    out.append(_path("M 24,726 H 876", stroke=_SVG_RULE, w=2))
+    for cx, cy, num, head, accent, body in _POLLEN_TUBE_KEY:
+        out.append(_circle(cx, cy, 14, fill=_SVG_CARD, stroke=_SVG_ACCENT,
+                           w=3, data_step=num))
+        out.append(_mono(cx, cy + 6, num, size=15, weight="400",
+                         anchor="middle", fill=_SVG_INK, data_step=num))
+        out.append(_label(cx + 26, cy - 1, head, size=18, weight="700",
+                          anchor="start", data_step=num))
+        out.append(_mono(cx + 26, cy + 19, accent, size=13, weight="400",
+                         fill=_SVG_ACCENT_TEXT, data_step=num))
+        out.append(_label(cx + 26, cy + 39, body, size=15, weight="400",
+                          anchor="start", fill=_SVG_INK_BODY, data_step=num))
+
+    # ── the closing claim ───────────────────────────────────────────────────
+    out.append(_path("M 24,946 H 876", stroke=_SVG_RULE, w=2))
+    out.append(_label(24, 976,
+                      "Pollination is 01. Fertilisation is 03. Between them "
+                      "the tube has to grow the whole length of the style.",
+                      size=16, weight="700", anchor="start"))
+    out.append(_label(24, 998,
+                      "Counting the seeds in a fruit counts the ovules that "
+                      "were fertilised inside the ovary it grew from.",
+                      size=15, weight="400", anchor="start",
+                      fill=_SVG_INK_BODY))
+
+    out.append('</g>')
+    out.append('</svg>')
+    return "".join(out)
+
+
+SVG_ART = {
+    "base-pairs":      _base_pairs,
+    "cycle-lag":       _cycle_lag,
+    "dispersal":       _dispersal,
+    "flower-parts":    _flower_parts,
+    "food-web":        _food_web,
+    "gametes-journey": _gametes_journey,
+    "guard-cells":     _guard_cells,
+    "gut-tube":        _gut_tube,
+    "leaf-section":    _leaf_section,
+    "moth-pair":       _moth_pair,
+    "nested-scale":    _nested_scale,
+    "placenta":        _placenta,
+    "pollen-tube":     _pollen_tube,
+    "punnett":         _punnett,
+    "repro-systems":   _repro_systems,
+    "thorax":          _thorax,
+    "villus":          _villus}
 
 
 def r_explainer(lesson, block):
@@ -5440,9 +11607,21 @@ ACTIVITY_SHELLS = {
 # name). One table rather than three near-identical blocks, because the ONLY
 # thing that differs between them is which authored list they read — and a
 # fourth group would otherwise arrive as a fourth copy of the same markup.
+#
+# ⊕ MRB-254 (carrying MRB-257) — the middle row's value key is `volume`, and it
+# was `scale`. The dial is a VOLUME factor now, not a linear one, so that the
+# label, the drawing and the physics state one ratio instead of three; see the
+# note beside `VOLS` in `ks3_data/c1/lesson_04_gas_pressure.py`.
+#
+# ⚠️ THIS LINE IS WHY THE RENAME IS SAFE TO MAKE, and it is also the line that
+# caught it being made incompletely: the value key is used for one thing, a
+# presence check in the validator below, and the row dict is serialised whole
+# into the payload. So renaming the field in the record without renaming it
+# here does not produce a wrong drawing — it fails the build outright, on every
+# page, with "every vols entry needs `label` and `scale`". Which it did.
 _COUNTER_GROUPS = (
     ("temps", "speed_multiplier", "temperature", "temp"),
-    ("vols", "scale", "volume", "vol"),
+    ("vols", "volume", "volume", "vol"),
     ("counts", "n", "particles", "count"),
 )
 
@@ -20899,12 +27078,56 @@ def r_equation(eq):
     measured, because a horizontal arrow between two stacked labels points at
     nothing.
     """
-    for key in ("reactants", "arrow", "products", "condition"):
+    over, under = eq.get("condition_over"), eq.get("condition_under")
+    split = bool(over or under)
+    # ⊕ MRB-254 — TWO CONDITIONS, ONE ABOVE THE ARROW AND ONE BELOW IT.
+    #
+    # b7-01 authored both of photosynthesis's conditions as one sentence —
+    # "requires light energy, absorbed by chlorophyll" — set full-width under
+    # the whole equation. Two things were lost and the second is the one that
+    # matters.
+    #
+    # First, it does not say WHERE either condition acts. Light and chlorophyll
+    # are not two halves of one requirement: light is the energy the reaction
+    # runs on and chlorophyll is what absorbs it, and every board writes them
+    # in the two positions that say so — the energy over the arrow, the thing
+    # that captures it under. A student who only ever meets them as a
+    # comma-joined sentence cannot read that convention when they meet it, and
+    # cannot write it.
+    #
+    # Second, a full-width line under a flex row is attached to the ROW, not to
+    # the arrow. It reads as a footnote on the summary, which is what a
+    # condition must not be: the condition is a property of the CHANGE, and the
+    # change is the arrow.
+    #
+    # Both keys are optional. b8-01 and b8-03 carry a single `condition` that
+    # is genuine commentary on the whole equation rather than a condition on
+    # the arrow — "energy is transferred from the glucose to the cell" is not
+    # something that sits over an arrow — so they are untouched and keep the
+    # full-width line.
+    required = ("reactants", "arrow", "products")
+    if not split:
+        required = required + ("condition",)
+    for key in required:
         if not eq.get(key):
             raise ValueError(
                 "the word summary declares no %r. `arrow` is the WORD the drawn "
                 "arrow means and is the component's accessible name; the "
                 "character itself is never authored." % key)
+    if split and eq.get("condition"):
+        raise ValueError(
+            "the word summary authors BOTH `condition` and a split condition. "
+            "The two are alternatives — a condition that sits ON THE ARROW and "
+            "a note that sits under the equation are different claims, and "
+            "shipping both prints the same requirement twice in two places "
+            "that mean different things.")
+    if split and not (over and under):
+        raise ValueError(
+            "the word summary splits its condition but authors only the %s "
+            "half. The two positions are a CONVENTION — the energy over the "
+            "arrow, the substance that captures it under — and one half of a "
+            "convention tells the reader nothing about which half they are "
+            "looking at." % ("upper" if over else "lower"))
     for key in ("reactants", "arrow", "products"):
         if "→" in eq[key]:
             raise ValueError(
@@ -20912,6 +27135,23 @@ def r_equation(eq):
                 "DRAWN — the design system's fonts have no glyph for it, so a "
                 "typed one falls back to a system font mid-line. `arrow` holds "
                 "the word it means." % key)
+    if split:
+        # The accessible name says the two positions IN WORDS, because "over
+        # the arrow" is exactly the information the drawn layout carries, and a
+        # screen reader cannot see a layout.
+        return ('<div class="ks3-eqn ks3-eqn-split" role="img" aria-label="%s">'
+                '<p class="ks3-eqn-side">%s</p>'
+                '<span class="ks3-eqn-arrowstack" aria-hidden="true">'
+                '<span class="ks3-eqn-cond ks3-eqn-cond-over">%s</span>'
+                '%s'
+                '<span class="ks3-eqn-cond ks3-eqn-cond-under">%s</span>'
+                '</span>'
+                '<p class="ks3-eqn-side">%s</p></div>'
+                % (e("%s %s %s, with %s over the arrow and %s under it"
+                     % (eq["reactants"], eq["arrow"], eq["products"],
+                        over, under)),
+                   t(eq["reactants"]), t(over), _EQN_ARROW, t(under),
+                   t(eq["products"])))
     return ('<div class="ks3-eqn" role="img" aria-label="%s">'
             '<p class="ks3-eqn-side">%s</p>'
             '<span class="ks3-eqn-arrowwrap" aria-hidden="true">%s</span>'

@@ -527,15 +527,82 @@ LESSON = {
     # describes only what this lesson already teaches in words, and stops
     # there: NOTES-B5 flag 13 asks that the level of detail in the human slots
     # be ruled on before anything is commissioned.
+    # ⊕ MRB-254 — THE DECLARED SLOT IS RETIRED INTO THE FIGURE THAT REPLACED
+    # IT, not deleted. §5A.4: a deleted record loses the reasoning and lets the
+    # need be re-declared later, and `docs/ks3/diagram-manifest.md` is
+    # generated from this field, so a deletion is also a silent removal from
+    # the sourcing worklist.
     "figures": [
         {"id": "b5-gametes-labelled",
          "kind": "diagram",
+         "status": "retired",
+         "retired_reason": "Superseded by `b5-gametes-journey`, and ranked "
+                           "below it by the KS3 Biology audit of 18 Aug 2026: "
+                           "the size-and-parts comparison this slot was for is "
+                           "already carried on the page by the comparison "
+                           "table and its scale bars, while the lesson's key "
+                           "discrimination — that fertilisation and "
+                           "implantation are different places, days apart — "
+                           "had nothing to look at. A second figure repeating "
+                           "the table would have spent the page's one diagram "
+                           "on the claim it already makes well.",
          "caption": "A sperm cell and an egg cell drawn to the same scale and "
-                    "labelled: the sperm’s head, mitochondria and tail, and "
-                    "the egg’s nucleus, cytoplasm, food store and outer layer, "
-                    "with each cell’s diameter given — about 0.005 mm and "
-                    "about 0.1 mm.",
-         "status": "needed"},
+                    "labelled: the sperm\u2019s head, mitochondria and tail, and "
+                    "the egg\u2019s nucleus, cytoplasm, food store and outer layer, "
+                    "with each cell\u2019s diameter given \u2014 about 0.005 mm and "
+                    "about 0.1 mm."},
+        {"id": "b5-gametes-journey",
+         "kind": "diagram",
+         "status": "drawn",
+         "art": "gametes-journey",
+         "title": "Gametes and fertilisation: the five-step journey mapped on "
+                  "one tract",
+         "desc": "One framed drawing above a key of five steps. The drawing "
+                 "is a female reproductive tract seen from the front: a "
+                 "uterus in the centre with a thick lining drawn inside it, "
+                 "an oviduct curving out and up from each of its upper "
+                 "corners to a fringed funnel above an ovary, and below the "
+                 "uterus a cervix and then the vagina. Five numbered markers, "
+                 "each a circle ringed in orange, are placed along the tract "
+                 "in the order the process happens. Marker 01 sits at the "
+                 "left funnel, where one egg leaves the ovary. Marker 02 sits "
+                 "low in the vagina. From 02 a dashed ink line, carrying "
+                 "arrowheads that point away from it, runs up through the "
+                 "cervix, across the uterus and into the left oviduct: that "
+                 "is the sperm’s route in. Marker 03 sits in the outer part "
+                 "of the left oviduct and is labelled day 0, fertilisation. A "
+                 "solid orange line runs from 01 along the oviduct, through "
+                 "03, and on: between 03 and marker 04 it passes one cell, "
+                 "then two, then four, drawn small along the route. Marker 04 "
+                 "sits further along the same oviduct, nearer the uterus, and "
+                 "is labelled days 1 to 5, dividing. The orange line then "
+                 "enters the uterus and ends at marker 05, low in the uterus "
+                 "lining, labelled about day 6, implantation, where a small "
+                 "ball of cells is drawn embedded in the lining. The legend "
+                 "gives the solid orange line as the egg and then the embryo, "
+                 "and the dashed ink line as the sperm’s route in. The key "
+                 "reads: 01 release, ovary to oviduct, one egg leaves and can "
+                 "be fertilised for about a day. 02 transfer and travel, "
+                 "vagina to uterus to oviduct, sperm swim up through the "
+                 "cervix and the uterus. 03 fertilisation, the oviduct and "
+                 "nowhere else, one sperm nucleus fuses with the egg nucleus, "
+                 "23 and 23 makes 46. 04 dividing, travelling down the "
+                 "oviduct, two cells then four then eight over about five "
+                 "days. 05 implantation, the uterus lining, the ball of cells "
+                 "embeds itself where it can be supplied.",
+         "caption": "The whole process on one tract, numbered in the order it "
+                    "happens. The solid orange line is one journey — the egg, "
+                    "and then the embryo it becomes — running from the ovary "
+                    "at 01 to the uterus lining at 05. The dashed line is the "
+                    "sperm’s route in, and the two meet at 03 in the oviduct. "
+                    "The cells drawn between 03 and 04 are the same embryo "
+                    "dividing while it is still travelling: by the time it "
+                    "reaches 05 it is a ball of cells and it is in a "
+                    "different organ, five or six days later. Find 03, then "
+                    "find 05: they are marked with different days, they sit "
+                    "in different organs, and the orange route runs the whole "
+                    "way between them. Fertilisation and implantation are two "
+                    "events, not one."},
     ],
 
     # ── core, in the approved page's document order ─────────────────────────
@@ -592,6 +659,19 @@ LESSON = {
         # renders directly under the panel in document order. See "What could
         # not be lifted" 3.
         {"type": "key-fact", "ref": "fertilisation-is-fusion"},
+
+        # ⊕ MRB-254 — FERTILISATION AND IMPLANTATION ARE DIFFERENT PLACES, DAYS APART.
+
+        # That is this lesson's key discrimination and it is exactly what a map
+
+        # makes obvious and five prose blocks do not. The two events are marked in
+
+        # two different organs, with two different day numbers, and the route runs
+
+        # visibly between them.
+
+        {"type": "figure", "ref": "b5-gametes-journey", "anchor": "s-journey"},
+
 
         {"type": "misconception", "id": "two-wrong-ideas",
          "anchor": "s-think", "targets": "REPRO-03"},

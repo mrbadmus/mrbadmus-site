@@ -539,33 +539,90 @@ LESSON = {
     ],
 
     # ── figures (§4.10) ─────────────────────────────────────────────────────
-    # Design's legal line names BOTH of these slots and no artwork exists for
-    # either, so they are DECLARED at `needed` rather than dropped: the
-    # manifest is generated from this field, which turns two dangling
-    # references into two tracked sourcing tasks. `needed` is not a build
-    # blocker. No `figure` block is added to `core` — Design draws no figure
-    # slot on the page, and one here would be a component nobody drew.
+    # ⊕ MRB-254 — ONE FIGURE ANSWERS BOTH SLOTS, and the second is RETIRED
+    # into it rather than deleted (§5A.4).
     #
-    # The captions describe only what this lesson teaches. NOTES-B5 flag 13
-    # asks for a ruling on what is illustrated and at what depth before
-    # anything is commissioned, and nothing here pre-empts it: the first
-    # caption is the nine parts and their three groups, the second is the five
-    # comparison rows. Neither invents a structure the page does not name.
+    # The two were declared separately because the lesson names them
+    # separately: nine parts in one row, five wind-versus-insect comparisons in
+    # another. Drawn, they turn out to be one plate, and for a reason the two
+    # captions could not say. The comparison rows are POSITIONAL — "held inside
+    # the flower", "dangling outside on long thin filaments" — so the contrast
+    # is a fact about where the same named part sits in two flowers, and it can
+    # only be drawn by putting the two flowers side by side with the SAME
+    # NUMBERS on the same parts. A separate wind-versus-insect figure would
+    # have had to re-label everything and the reader would compare two
+    # vocabularies instead of two positions.
     "figures": [
         {"id": "b5-flower-parts-labelled",
          "kind": "diagram",
-         "caption": "A generalised flower cut in half and labelled: sepal and "
-                    "petal on the outside, the anther and filament together "
-                    "as the stamen, the stigma, style, ovary and ovules "
-                    "together as the carpel, and the nectary at the base.",
-         "status": "needed"},
+         "status": "drawn",
+         "art": "flower-parts",
+         "title": "Flowers and pollination: an insect-pollinated flower in "
+                  "section, beside a wind-pollinated floret",
+         "desc": "Two framed drawings above a key of nine parts. The left "
+                 "frame is an insect-pollinated flower cut in half from top "
+                 "to bottom. Two large petals, numbered 07, curve up and "
+                 "outward from the base to form a cup. A dashed line follows "
+                 "the inside of that cup and is labelled inside the flower. "
+                 "Within it, rising from the base, are two stamens: a thin "
+                 "filament numbered 02 carrying an oblong anther numbered 01, "
+                 "dotted with pollen. Also within it, in the centre, is the "
+                 "carpel: an ovary numbered 05 at the base, a chamber holding "
+                 "three ovules numbered 06; a stalk, the style numbered 04, "
+                 "rising from it; and at the top of the stalk a small knob, "
+                 "the stigma numbered 03, drawn with sticky dots and sitting "
+                 "above the anthers but still below the rim of the petals. At "
+                 "the base outside the ovary is a small pocket, the nectary "
+                 "numbered 09. Below the petals two small pointed flaps, the "
+                 "sepals numbered 08, angle down and outwards, and a stem "
+                 "continues below. The right frame is a wind-pollinated grass "
+                 "floret at the same scale of attention. Two small papery "
+                 "bracts enclose a tiny ovary; a dashed line around only "
+                 "those bracts marks the floret. Everything else is outside "
+                 "that line: three anthers numbered 01 hang in the open air "
+                 "on long thin filaments numbered 02, and two large feathery "
+                 "stigmas numbered 03, fringed with fine barbs along their "
+                 "whole length, rise into the air like nets. A note marks "
+                 "what is absent: no petals and no nectary — numbers 07 and "
+                 "09 do not appear on this drawing. The key names all nine "
+                 "parts: 01 anther, makes pollen, each grain carrying a male "
+                 "nucleus. 02 filament, holds the anther where pollen can be "
+                 "taken away. 03 stigma, catches pollen, sticky or feathery. "
+                 "04 style, raises the stigma and gives the pollen tube its "
+                 "route down. 05 ovary, holds the ovules and becomes the "
+                 "fruit. 06 ovule, one ovule becomes one seed. 07 petal, "
+                 "advertising, and not a reproductive organ. 08 sepal, "
+                 "protected the bud before it opened. 09 nectary, makes "
+                 "nectar, the payment for the visit.",
+         "caption": "Nine parts, drawn twice. On the left, inside the dashed "
+                    "line, the anthers stand where a visiting insect must "
+                    "brush past them and the stigma is a small sticky knob in "
+                    "the same enclosed space. On the right the dashed line "
+                    "encloses only the floret: the anthers hang outside it on "
+                    "long thin filaments and the stigmas are large, feathery "
+                    "and open to the air. A table can tell a student that "
+                    "anthers are “held inside” or “dangling outside”; only a "
+                    "drawing can let them check it. Both drawings carry the "
+                    "same numbers for the same parts, so anything that "
+                    "differs between them is a position and not a different "
+                    "part: find 01, 02 and 03 on each side, and look at where "
+                    "the dashed line leaves them."},
         {"id": "b5-wind-vs-insect",
          "kind": "diagram",
+         "status": "retired",
+         "retired_reason": "Answered by `b5-flower-parts-labelled`, which "
+                           "draws the wind-pollinated floret beside the "
+                           "insect-pollinated flower carrying the same numbers "
+                           "for the same parts. The five comparison rows this "
+                           "slot was for are positional, so the comparison IS "
+                           "the side-by-side drawing; a second figure would "
+                           "have re-labelled the same nine parts and asked the "
+                           "reader to compare two vocabularies rather than two "
+                           "positions.",
          "caption": "An insect-pollinated flower and a wind-pollinated flower "
                     "side by side, showing petals, nectary, the position of "
                     "the anthers, the texture of the stigma and the grains of "
-                    "pollen for each.",
-         "status": "needed"},
+                    "pollen for each."},
     ],
 
     # ── core, in the approved page's document order ─────────────────────────
@@ -625,6 +682,21 @@ LESSON = {
          # the slot for it. `card`, because the panel itself is `band` and band
          # on band is invisible.
          "key_fact": {"ref": "pollination-is-transfer", "ground": "card"}},
+
+        # ⊕ MRB-254 — THE COMPARISON ROWS ARE POSITIONAL AND A TABLE CANNOT SHOW A POSITION.
+
+        # "Held inside the flower" and "dangling outside on long thin filaments" are
+
+        # the two rows the wind-versus-insect table turns on, and they are facts
+
+        # about where a part sits. The two flowers are drawn side by side carrying
+
+        # the same numbers for the same parts, so the only thing that differs
+
+        # between them is where those parts are.
+
+        {"type": "figure", "ref": "b5-flower-parts-labelled", "anchor": "s-parts"},
+
 
         {"type": "misconception", "id": "two-wrong-ideas",
          "anchor": "s-think", "targets": "REPRO-11"},

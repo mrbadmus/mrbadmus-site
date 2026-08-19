@@ -941,21 +941,42 @@ body.rd[data-mode="ks3"] {
    defect being fixed is the state the page LOADS in — a complete-looking panel
    — and a soft edge at the end is a much smaller lie than a hard one at the
    start. Making it scroll-aware in CSS alone needs `animation-timeline:
-   scroll()`, which is Chrome-only; doing it in JS is outside this pass. */
-@media (max-width: 747px) {
-  .ks3-figure-scroll {
-    -webkit-mask-image:
-      linear-gradient(to right, #000 calc(100% - 56px), transparent);
-    mask-image:
-      linear-gradient(to right, #000 calc(100% - 56px), transparent);
-  }
+   scroll()`, which is Chrome-only; doing it in JS is outside this pass.
+
+   ⊕ MRB-254 — THE BREAKPOINT IS GONE, REPLACED BY THE MEASUREMENT IT STOOD
+   FOR. 747 was derived above from ONE figure width (760) and one padding (48),
+   and it was correct for exactly as long as every figure was 760 wide. The
+   biology kit is 860 and 900 units wide, so a 900px plate would overflow all
+   the way to a 948px viewport while the fade switched off at 747 — the figure
+   ending in a hard edge two hundred pixels of viewport before the cue admits
+   it, which is the audit-3.9 defect back again at a different width.
+
+   There is no single number that is right for fourteen widths. So the
+   condition is now the condition itself: `wireFigureCues()` in ks3.js sets
+   `.is-overflowing` from `scrollWidth > clientWidth`, on load and on every
+   resize, and this rule hangs off that. It cannot detach from what it stands
+   for, because it IS what it stands for.
+
+   ⚠️ WITHOUT JAVASCRIPT THERE IS NO FADE — deliberately, and it is the safe
+   way round. The old media query's failure mode was a fade drawn where the
+   figure fits, which teaches the reader that the cue means nothing. This
+   one's is a missing cue on a figure that does scroll, which is where the key
+   stage stood before audit 3.9 and is no worse than it. A `<noscript>`
+   fallback would have to guess a width again. */
+.ks3-figure-scroll.is-overflowing {
+  -webkit-mask-image:
+    linear-gradient(to right, #000 calc(100% - 56px), transparent);
+  mask-image:
+    linear-gradient(to right, #000 calc(100% - 56px), transparent);
 }
 .ks3-figure-svg {
   display: block;
   width: 100%;
-  /* Below this the labels stop being labels — see the note beside the scroll
-     wrapper in build_ks3.py. On a full-width column the figure is wider than
-     this and the minimum never engages. */
+  /* The FLOOR, not the answer: each drawer emits its own `min-width` inline
+     from the width it was drawn at (see `_svg_open`), and an inline style
+     beats this rule. This stays for a figure drawn narrower than 700, where
+     the labels would stop being labels — see the note beside the scroll
+     wrapper in build_ks3.py. */
   min-width: 700px;
   height: auto;
   border-radius: 24px;
@@ -12448,6 +12469,43 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   color: var(--ks3-accent-text);
 }
 .ks3-eqn-arrow { display: block; }
+/* ⊕ MRB-254 — the arrow with a condition over it and a condition under it.
+   A column, so the two labels are centred ON the arrow rather than beside the
+   row: the condition is a property of the CHANGE, and the change is the arrow.
+   `min-width` on the stack rather than a width on the labels, because the
+   longer of the two is what has to fit and which one that is depends on the
+   lesson. Mono and uppercase, matching `.ks3-eqn-condition` exactly — it is
+   the same voice saying the same kind of thing, moved to where it applies. */
+.ks3-eqn-arrowstack {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  gap: 6px;
+  color: var(--ks3-accent-text);
+}
+.ks3-eqn-cond {
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--ks3-ink-muted);
+  max-width: 15ch;
+}
+/* ⚠️ THE STACK MUST NOT BE THE THING THAT WRAPS. `.ks3-eqn` is a wrapping flex
+   row and the two sides are display type; on a 390px phone the row breaks
+   between reactants, arrow and products, and an arrow that has left its
+   reactants behind still has to carry its own two conditions with it. Which it
+   does — they are inside it. This rule only stops the stack being squeezed
+   narrower than its own text and pushing a label to four lines. */
+@media (max-width: 560px) {
+  .ks3-eqn-split { gap: 10px 14px; }
+  .ks3-eqn-cond { max-width: 18ch; }
+}
 /* Full width beneath the row, which is what makes the condition a CONDITION
    rather than a third term in the summary. */
 .ks3-eqn-condition {

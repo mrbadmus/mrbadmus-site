@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="../support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Figure b5-dispersal-specimens · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+  <div style="max-width: 1180px; margin: 0 auto; padding: 34px 24px 80px;">
+
+    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px; border-bottom: 3px solid var(--ks3-ink); padding-bottom: 20px;">
+      <div>
+        <p class="ks3-eyebrow" style="margin: 0;">Figure for review · 12 of 12</p>
+        <h1 style="margin: 8px 0 0; font-size: clamp(32px, 4.4vw, 46px); line-height: 1.02; letter-spacing: -.035em;">Eight specimens, one scale, no answers</h1>
+        <p style="margin: 10px 0 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">b5-dispersal-specimens · reproduction/seed-dispersal · WS1 #14</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Check the labels at</p>
+        <div style="display: flex; gap: 8px;">
+          <sc-for list="{{ widths }}" as="w" hint-placeholder-count="3">
+            <button type="button" onClick="{{ w.onClick }}" aria-pressed="{{ w.pressed }}" style="{{ w.style }}">{{ w.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+    </header>
+
+    <div style="margin: 22px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+      <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">What has to be checkable</p>
+      <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.5; max-width: 66ch;">Every specimen stands on one ground line at one scale, so the coconut is genuinely that much larger than the goosegrass. Nothing in the drawing names a method or a mechanism: hooks, wings, hairs, flesh and holes are drawn, and the inference is left to the student.</p>
+    </div>
+
+    <figure style="{{ frameStyle }}">
+      <div tabindex="0" role="group" aria-label="Eight fruits and seeds drawn to one scale — scrollable diagram" style="overflow-x: auto; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-ink); background: var(--ks3-ground);">
+        <svg viewBox="0 0 900 870" width="900" height="870" role="img" aria-labelledby="f14-title f14-desc" style="display: block; width: 900px; height: auto;">
+          <title id="f14-title">Seed dispersal: eight fruits and seeds drawn to one scale</title>
+          <desc id="f14-desc">A framed plate of eight specimens, all standing on one ground line at one scale, numbered but not named by any method of travel. From the left, smallest first. 01, a pair of tiny round fruits covered in short stiff bristles, each bristle ending in a hook; a magnified detail above it, marked four times, shows three of those hooks. 02, a single small seed carrying a spray of about ten fine hairs on a thin stalk above it. 03, a dry urn-shaped capsule with a rim and a ring of small holes just under the rim, on a stem. 04, a rounded cluster of about eight soft segments, each with one small hard pip drawn inside it. 05, a dense round burr made of many stiff bracts, each ending in a backward-facing hook. 06, a slim dry pod, split along its length and slightly twisted, with four seeds visible inside. 07, a hard seed at one end of a long stiff papery blade, the blade curving and set off to one side of the seed rather than balanced around it. 08, an enormous ovoid: a thick outer layer drawn full of fibres with small voids among them, a hard shell inside that, and a cavity within the shell holding liquid. Below the ground line a scale bar reads one hundred millimetres, divided into ten-millimetre steps. The key names the eight specimens and nothing else: 01 goosegrass, or cleavers. 02 dandelion. 03 poppy capsule. 04 blackberry. 05 burdock burr. 06 gorse pod. 07 sycamore key. 08 coconut. A closing note records that the coconut is drawn at the same scale as the rest, and that the goosegrass detail is magnified and says so.</desc>
+
+          <defs>
+            <clipPath id="f14P"><rect x="24" y="54" width="852" height="520" rx="18"></rect></clipPath>
+          </defs>
+
+          <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+
+            <rect x="24" y="54" width="852" height="520" rx="18" fill="#FFFCF5" stroke="#221E1B" stroke-width="2.5"></rect>
+
+            <g clip-path="url(#f14P)">
+
+              <!-- 08 coconut · 200 mm -->
+              <ellipse cx="670" cy="299" rx="190" ry="171" fill="#F4E9D8" stroke="#221E1B" stroke-width="3"></ellipse>
+              <ellipse cx="670" cy="299" rx="150" ry="133" fill="#F7EFE1" stroke="#221E1B" stroke-width="2"></ellipse>
+              <sc-for list="{{ fibres }}" as="f" hint-placeholder-count="34">
+                <path d="{{ f.d }}" stroke="#9A8F86" stroke-width="1.6"></path>
+              </sc-for>
+              <sc-for list="{{ voids }}" as="v" hint-placeholder-count="12">
+                <circle cx="{{ v.cx }}" cy="{{ v.cy }}" r="{{ v.r }}" fill="#FFFCF5" stroke="#9A8F86" stroke-width="1.2"></circle>
+              </sc-for>
+              <ellipse cx="670" cy="299" rx="134" ry="118" fill="#FFFCF5" stroke="#221E1B" stroke-width="2.8"></ellipse>
+              <ellipse cx="670" cy="299" rx="112" ry="96" fill="#F7EFE1" stroke="#221E1B" stroke-width="1.6"></ellipse>
+              <path d="M 566,330 C 606,346 734,346 774,330 C 762,378 720,395 670,395 C 620,395 578,378 566,330 Z" fill="#F4E9D8" stroke="#221E1B" stroke-width="1.6"></path>
+
+              <!-- 01 goosegrass · 9 mm pair -->
+              <circle cx="65" cy="462" r="4.6" fill="#F4E9D8" stroke="#221E1B" stroke-width="1.6"></circle>
+              <circle cx="75" cy="462" r="4.6" fill="#F4E9D8" stroke="#221E1B" stroke-width="1.6"></circle>
+              <sc-for list="{{ goosehooks }}" as="h" hint-placeholder-count="14">
+                <path d="{{ h.d }}" stroke="#221E1B" stroke-width="1.2"></path>
+              </sc-for>
+
+              <!-- 01 detail · magnified -->
+              <circle cx="70" cy="200" r="40" fill="#F7EFE1" stroke="#221E1B" stroke-width="2" stroke-dasharray="6 5"></circle>
+              <circle cx="60" cy="204" r="15" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+              <circle cx="84" cy="200" r="13" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+              <path d="M 47,192 C 40,186 34,186 32,190 C 31,193 34,195 36,193" stroke="#221E1B" stroke-width="2"></path>
+              <path d="M 52,218 C 46,226 42,230 38,229 C 35,228 36,224 39,224" stroke="#221E1B" stroke-width="2"></path>
+              <path d="M 95,188 C 102,182 108,182 110,186 C 111,189 108,191 106,189" stroke="#221E1B" stroke-width="2"></path>
+              <path d="M 70,240 V 448" stroke="#C3B191" stroke-width="1.6" stroke-dasharray="5 5"></path>
+
+              <!-- 02 dandelion · 14 mm -->
+              <ellipse cx="125" cy="464" rx="3.4" ry="6" fill="#F4E9D8" stroke="#221E1B" stroke-width="1.6"></ellipse>
+              <path d="M 125,458 V 448" stroke="#221E1B" stroke-width="1.4"></path>
+              <sc-for list="{{ pappus }}" as="p" hint-placeholder-count="11">
+                <path d="{{ p.d }}" stroke="#221E1B" stroke-width="1.2"></path>
+              </sc-for>
+
+              <!-- 03 poppy capsule · 18 mm -->
+              <path d="M 185,470 V 452" stroke="#221E1B" stroke-width="2"></path>
+              <path d="M 171,450 C 171,438 174,428 178,424 L 192,424 C 196,428 199,438 199,450 C 199,456 193,459 185,459 C 177,459 171,456 171,450 Z" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></path>
+              <path d="M 170,428 C 176,424 194,424 200,428" stroke="#221E1B" stroke-width="2"></path>
+              <circle cx="175" cy="434" r="1.7" fill="#221E1B" stroke="none"></circle>
+              <circle cx="181" cy="433" r="1.7" fill="#221E1B" stroke="none"></circle>
+              <circle cx="189" cy="433" r="1.7" fill="#221E1B" stroke="none"></circle>
+              <circle cx="195" cy="434" r="1.7" fill="#221E1B" stroke="none"></circle>
+
+              <!-- 04 blackberry · 20 mm -->
+              <path d="M 248,470 V 464" stroke="#221E1B" stroke-width="1.8"></path>
+              <sc-for list="{{ drupelets }}" as="d" hint-placeholder-count="9">
+                <circle cx="{{ d.cx }}" cy="{{ d.cy }}" r="{{ d.r }}" fill="#F4E9D8" stroke="#221E1B" stroke-width="1.6"></circle>
+              </sc-for>
+              <sc-for list="{{ pips }}" as="p" hint-placeholder-count="9">
+                <circle cx="{{ p.cx }}" cy="{{ p.cy }}" r="2.2" fill="#FFFCF5" stroke="#221E1B" stroke-width="1.2"></circle>
+              </sc-for>
+
+              <!-- 05 burdock burr · 20 mm -->
+              <circle cx="310" cy="452" r="16" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+              <sc-for list="{{ burrhooks }}" as="h" hint-placeholder-count="22">
+                <path d="{{ h.d }}" stroke="#221E1B" stroke-width="1.5"></path>
+              </sc-for>
+
+              <!-- 06 gorse pod · 22 mm -->
+              <path d="M 366,470 C 360,450 362,432 372,426 C 382,432 384,450 378,470 Z" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></path>
+              <path d="M 370,468 C 366,450 368,434 372,428" stroke="#221E1B" stroke-width="1.5" stroke-dasharray="4 3"></path>
+              <circle cx="371" cy="440" r="3" fill="#FFFCF5" stroke="#221E1B" stroke-width="1.2"></circle>
+              <circle cx="373" cy="450" r="3" fill="#FFFCF5" stroke="#221E1B" stroke-width="1.2"></circle>
+              <circle cx="371" cy="460" r="3" fill="#FFFCF5" stroke="#221E1B" stroke-width="1.2"></circle>
+
+              <!-- 07 sycamore key · 40 mm -->
+              <ellipse cx="404" cy="462" rx="9" ry="7.5" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></ellipse>
+              <path d="M 411,458 C 428,446 450,424 464,402 C 470,412 468,432 456,448 C 444,462 424,466 411,464 Z" fill="#F7EFE1" stroke="#221E1B" stroke-width="2"></path>
+              <path d="M 413,459 C 430,448 450,428 462,408" stroke="#9A8F86" stroke-width="1.4"></path>
+              <path d="M 424,462 C 434,450 446,436 454,424 M 436,462 C 444,452 452,442 458,432" stroke="#9A8F86" stroke-width="1.1"></path>
+
+              <path d="M 44,470 H 856" stroke="#221E1B" stroke-width="2.5"></path>
+            </g>
+
+            <text x="70" y="256" text-anchor="middle" fill="#A93411" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="13">×4</text>
+
+            <circle cx="70" cy="496" r="13" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <text x="70" y="502" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="14">01</text>
+            <circle cx="125" cy="496" r="13" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <text x="125" y="502" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="14">02</text>
+            <circle cx="185" cy="496" r="13" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <text x="185" y="502" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="14">03</text>
+            <circle cx="248" cy="496" r="13" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <text x="248" y="502" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="14">04</text>
+            <circle cx="310" cy="496" r="13" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <text x="310" y="502" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="14">05</text>
+            <circle cx="372" cy="496" r="13" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <text x="372" y="502" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="14">06</text>
+            <circle cx="434" cy="496" r="13" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <text x="434" y="502" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="14">07</text>
+            <circle cx="670" cy="496" r="13" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <text x="670" y="502" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="14">08</text>
+
+            <path d="M 60,538 H 250" stroke="#221E1B" stroke-width="2.5"></path>
+            <path d="M 60,530 V 546 M 250,530 V 546" stroke="#221E1B" stroke-width="2.5"></path>
+            <path d="M 79,534 V 542 M 98,534 V 542 M 117,534 V 542 M 136,534 V 542 M 155,534 V 542 M 174,534 V 542 M 193,534 V 542 M 212,534 V 542 M 231,534 V 542" stroke="#221E1B" stroke-width="1.6"></path>
+            <text x="266" y="544" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="14">100 mm, in 10 mm steps — every specimen on this one scale</text>
+
+            <!-- ══ key ══ -->
+            <text x="24" y="614" fill="#5F564F" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="13" letter-spacing="1.2">EIGHT SPECIMENS · SMALLEST FIRST</text>
+            <path d="M 24,626 H 876" stroke="#E0D2B9" stroke-width="2"></path>
+
+            <circle cx="38" cy="662" r="14" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <text x="38" y="668" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="15">01</text>
+            <text x="64" y="668" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="18" font-weight="700">Goosegrass, or cleavers</text>
+
+            <circle cx="38" cy="704" r="14" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <text x="38" y="710" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="15">02</text>
+            <text x="64" y="710" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="18" font-weight="700">Dandelion</text>
+
+            <circle cx="38" cy="746" r="14" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <text x="38" y="752" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="15">03</text>
+            <text x="64" y="752" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="18" font-weight="700">Poppy capsule</text>
+
+            <circle cx="38" cy="788" r="14" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <text x="38" y="794" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="15">04</text>
+            <text x="64" y="794" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="18" font-weight="700">Blackberry</text>
+
+            <circle cx="494" cy="662" r="14" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <text x="494" y="668" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="15">05</text>
+            <text x="520" y="668" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="18" font-weight="700">Burdock burr</text>
+
+            <circle cx="494" cy="704" r="14" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <text x="494" y="710" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="15">06</text>
+            <text x="520" y="710" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="18" font-weight="700">Gorse pod</text>
+
+            <circle cx="494" cy="746" r="14" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <text x="494" y="752" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="15">07</text>
+            <text x="520" y="752" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="18" font-weight="700">Sycamore key</text>
+
+            <circle cx="494" cy="788" r="14" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <text x="494" y="794" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="15">08</text>
+            <text x="520" y="794" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="18" font-weight="700">Coconut</text>
+
+            <path d="M 24,820 H 876" stroke="#E0D2B9" stroke-width="2"></path>
+            <text x="24" y="848" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16" font-weight="700">Names only. Nothing here says how any of them travels — that is what the structure is for.</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption style="margin: 14px 2px 0; font-size: 17px; line-height: 1.55; color: var(--ks3-ink-body); max-width: 74ch;">Eight fruits and seeds on one ground line at one scale, smallest first, numbered and named — and nothing else. The hooks, the hairs, the ring of holes under the rim, the flesh around a hard pip, the off-centre wing, the fibrous layer full of voids: all of it is drawn, none of it is captioned with a method. The scale is real, which is why the coconut is that size and the goosegrass is that size, and why one of them was never going to be moved by wind. The goosegrass detail is magnified four times and says so on the drawing.</figcaption>
+    </figure>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1180}}">
+const WIDTHS = [
+  { label: 'Full', px: null },
+  { label: '768px', px: 768 },
+  { label: '390px', px: 390 }
+];
+
+/* One scale for the whole plate: 1 mm = 1.9 px. Every specimen below is sized
+   from the measurement the lesson gives it, so the comparison is real —
+   sycamore 40 mm, burdock 20 mm, coconut 200 mm. */
+const MM = 1.9;
+
+function hook(cx, cy, angle, r1, r2, curl) {
+  const c = Math.cos(angle), s = Math.sin(angle);
+  const x1 = cx + c * r1, y1 = cy + s * r1;
+  const x2 = cx + c * r2, y2 = cy + s * r2;
+  const hx = x2 - s * curl, hy = y2 + c * curl;
+  const r = (v) => Math.round(v * 10) / 10;
+  return 'M ' + r(x1) + ',' + r(y1) + ' L ' + r(x2) + ',' + r(y2) + ' Q ' + r(hx) + ',' + r(hy) + ' ' + r(x2 - s * curl * 0.4 - c * curl * 0.8) + ',' + r(y2 + c * curl * 0.4 - s * curl * 0.8);
+}
+
+class Component extends DCLogic {
+  state = { w: 0 };
+
+  renderVals() {
+    const r = (v) => Math.round(v * 10) / 10;
+
+    /* coconut husk: fibres between the outer wall and the shell, with voids */
+    const fibres = [];
+    const voids = [];
+    for (let i = 0; i < 34; i += 1) {
+      const a = (i / 34) * Math.PI * 2;
+      const c = Math.cos(a), s = Math.sin(a);
+      fibres.push({
+        d: 'M ' + r(670 + c * 186) + ',' + r(299 + s * 167) + ' L ' + r(670 + c * 138) + ',' + r(299 + s * 122)
+      });
+      if (i % 3 === 0) {
+        const t = 0.62 + (i % 2) * 0.14;
+        voids.push({
+          cx: r(670 + c * (150 + 36 * (t - 0.5))),
+          cy: r(299 + s * (133 + 32 * (t - 0.5))),
+          r: 3.4 + (i % 4) * 0.6
+        });
+      }
+    }
+
+    /* goosegrass: a 9 mm pair, hooks all over */
+    const goosehooks = [];
+    for (let i = 0; i < 7; i += 1) {
+      const a = (i / 7) * Math.PI * 2 + 0.3;
+      goosehooks.push({ d: hook(65, 462, a, 4.4, 8.4, 2.2) });
+      goosehooks.push({ d: hook(75, 462, a + 0.45, 4.4, 8.4, 2.2) });
+    }
+
+    /* dandelion: a spray of fine hairs above the seed */
+    const pappus = [];
+    for (let i = 0; i < 11; i += 1) {
+      const a = -Math.PI / 2 + (i - 5) * 0.19;
+      pappus.push({
+        d: 'M 125,448 L ' + r(125 + Math.cos(a) * 13) + ',' + r(448 + Math.sin(a) * 13)
+      });
+    }
+
+    /* blackberry: a cluster of segments, each with one hard pip */
+    const drupelets = [];
+    const pips = [];
+    const cluster = [
+      [240, 442, 6.4], [252, 439, 6.4], [262, 446, 6.4],
+      [236, 452, 6.4], [248, 450, 6.8], [260, 456, 6.4],
+      [242, 461, 6], [254, 461, 6], [248, 432, 5.6]
+    ];
+    cluster.forEach((c) => {
+      drupelets.push({ cx: c[0], cy: c[1], r: c[2] });
+      pips.push({ cx: c[0], cy: c[1] });
+    });
+
+    /* burdock: many stiff bracts, each ending in a backward hook */
+    const burrhooks = [];
+    for (let i = 0; i < 22; i += 1) {
+      const a = (i / 22) * Math.PI * 2;
+      burrhooks.push({ d: hook(310, 452, a, 15, 22, 3.4) });
+    }
+
+    const px = WIDTHS[this.state.w].px;
+    return {
+      fibres: fibres,
+      voids: voids,
+      goosehooks: goosehooks,
+      pappus: pappus,
+      drupelets: drupelets,
+      pips: pips,
+      burrhooks: burrhooks,
+      widths: WIDTHS.map((x, i) => ({
+        label: x.label,
+        pressed: i === this.state.w,
+        style: 'cursor:pointer;font-family:var(--ks3-font-mono);font-size:14px;font-weight:500;padding:9px 14px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+          (i === this.state.w ? 'var(--ks3-band)' : 'transparent') + ';color:var(--ks3-ink);box-shadow:' +
+          (i === this.state.w ? '3px 3px 0 var(--ks3-ink)' : 'none') + ';',
+        onClick: () => this.setState({ w: i })
+      })),
+      frameStyle: 'margin:26px 0 0;padding:0;max-width:' + (px ? px + 'px' : '100%') + ';'
+    };
+  }
+}
+
+</script>
+</body>
+</html>

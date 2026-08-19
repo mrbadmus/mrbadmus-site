@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="../support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Figure b7-leaf-section · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+  <div style="max-width: 1180px; margin: 0 auto; padding: 34px 24px 80px;">
+
+    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px; border-bottom: 3px solid var(--ks3-ink); padding-bottom: 20px;">
+      <div>
+        <p class="ks3-eyebrow" style="margin: 0;">Figure for review · 3 of 12</p>
+        <h1 style="margin: 8px 0 0; font-size: clamp(32px, 4.4vw, 46px); line-height: 1.02; letter-spacing: -.035em;">A leaf, sliced through</h1>
+        <p style="margin: 10px 0 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">b7-leaf-section · photosynthesis/leaves-built-for-the-job · WS1 #3</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Check the labels at</p>
+        <div style="display: flex; gap: 8px;">
+          <sc-for list="{{ widths }}" as="w" hint-placeholder-count="3">
+            <button type="button" onClick="{{ w.onClick }}" aria-pressed="{{ w.pressed }}" style="{{ w.style }}">{{ w.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+    </header>
+
+    <div style="margin: 22px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+      <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">What has to be checkable</p>
+      <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.5; max-width: 62ch;">The rule block's two positional claims have to be true in the drawing and countable off it: the palisade cells are the top layer and hold most of the chloroplasts, and the stomata are on the underside — none on top. One arrow runs from outside the leaf, through a stoma, up an air space and into a palisade cell.</p>
+    </div>
+
+    <figure style="{{ frameStyle }}">
+      <div tabindex="0" role="group" aria-label="A leaf in cross-section — scrollable diagram" style="overflow-x: auto; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-ink); background: var(--ks3-ground);">
+        <svg viewBox="0 0 860 500" width="860" height="500" role="img" aria-labelledby="f3-title f3-desc" style="display: block; width: 860px; height: auto;">
+          <title id="f3-title">A leaf in cross-section, from the cuticle on top to the stoma underneath</title>
+          <desc id="f3-desc">A slice through a leaf, drawn with the top of the leaf at the top. From the top down: a thin waxy cuticle; a single row of upper epidermis cells; then the palisade layer, ten tall narrow cells standing side by side, each packed with small oval chloroplasts; then the spongy mesophyll, rounded cells with wide air spaces between them and a vein embedded among them; then a single row of lower epidermis cells; then the lower cuticle. The lower cuticle and epidermis are interrupted once, by a pore between two rounded guard cells. There is no such pore in the top surface. A dimension line down the left of the slice marks the whole thickness as less than half a millimetre. An arrow enters from below the leaf, passes through the pore, runs straight up through an air space between the spongy cells, and ends at the base of a palisade cell: this is carbon dioxide reaching the cell that will use it. A second arrow arrives from the side along the vein and turns upward inside it: this is water.</desc>
+
+          <defs>
+            <clipPath id="f3sec"><rect x="150" y="90" width="420" height="306"></rect></clipPath>
+          </defs>
+
+          <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+
+            <text x="24" y="44" fill="#5F564F" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="14" letter-spacing="1.4">A SLICE THROUGH THE LEAF · TOP OF THE LEAF AT THE TOP</text>
+
+            <rect x="150" y="90" width="420" height="306" fill="#FBF3E6" stroke="none"></rect>
+
+            <g clip-path="url(#f3sec)">
+              <!-- upper cuticle -->
+              <rect x="150" y="90" width="420" height="10" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></rect>
+
+              <!-- upper epidermis -->
+              <rect x="152" y="102" width="56" height="38" rx="8" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></rect>
+              <rect x="212" y="102" width="56" height="38" rx="8" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></rect>
+              <rect x="272" y="102" width="56" height="38" rx="8" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></rect>
+              <rect x="332" y="102" width="56" height="38" rx="8" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></rect>
+              <rect x="392" y="102" width="56" height="38" rx="8" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></rect>
+              <rect x="452" y="102" width="56" height="38" rx="8" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></rect>
+              <rect x="512" y="102" width="56" height="38" rx="8" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></rect>
+
+              <!-- palisade: ten tall cells, the top layer -->
+              <sc-for list="{{ palisade }}" as="c" hint-placeholder-count="10">
+                <rect x="{{ c.x }}" y="146" width="38" height="96" rx="10" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></rect>
+              </sc-for>
+              <sc-for list="{{ chloroplasts }}" as="p" hint-placeholder-count="80">
+                <ellipse cx="{{ p.cx }}" cy="{{ p.cy }}" rx="6" ry="4" fill="#F4E9D8" stroke="#221E1B" stroke-width="1.5"></ellipse>
+              </sc-for>
+
+              <!-- spongy mesophyll, with air between the cells -->
+              <ellipse cx="180" cy="270" rx="27" ry="20" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></ellipse>
+              <ellipse cx="176" cy="322" rx="25" ry="18" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></ellipse>
+              <ellipse cx="238" cy="264" rx="24" ry="18" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></ellipse>
+              <ellipse cx="246" cy="318" rx="27" ry="20" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></ellipse>
+              <ellipse cx="400" cy="268" rx="24" ry="18" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></ellipse>
+              <ellipse cx="398" cy="322" rx="22" ry="17" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></ellipse>
+              <ellipse cx="470" cy="266" rx="26" ry="19" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></ellipse>
+              <ellipse cx="474" cy="320" rx="24" ry="18" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></ellipse>
+              <ellipse cx="536" cy="290" rx="26" ry="20" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></ellipse>
+
+              <!-- the vein -->
+              <ellipse cx="340" cy="294" rx="44" ry="32" fill="#FFFCF5" stroke="#221E1B" stroke-width="2.5"></ellipse>
+              <text x="340" y="284" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16" font-weight="700">vein</text>
+              <path d="M 340,322 V 306" stroke="#221E1B" stroke-width="3"></path>
+              <path d="M 333,306 L 347,306 L 340,294 Z" fill="#221E1B" stroke="none"></path>
+
+              <!-- lower epidermis, interrupted once by the pore -->
+              <rect x="152" y="346" width="56" height="38" rx="8" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></rect>
+              <rect x="212" y="346" width="56" height="38" rx="8" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></rect>
+              <rect x="272" y="346" width="56" height="38" rx="8" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></rect>
+              <rect x="332" y="346" width="48" height="38" rx="8" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></rect>
+              <rect x="488" y="346" width="38" height="38" rx="8" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></rect>
+              <rect x="530" y="346" width="38" height="38" rx="8" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></rect>
+              <circle cx="400" cy="362" r="20" fill="#F4E9D8" stroke="#221E1B" stroke-width="2.5"></circle>
+              <circle cx="470" cy="362" r="20" fill="#F4E9D8" stroke="#221E1B" stroke-width="2.5"></circle>
+
+              <!-- lower cuticle, with the pore through it -->
+              <rect x="150" y="386" width="270" height="10" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></rect>
+              <rect x="450" y="386" width="120" height="10" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></rect>
+            </g>
+
+            <rect x="150" y="90" width="420" height="306" stroke="#221E1B" stroke-width="2.5"></rect>
+
+            <!-- carbon dioxide: outside, through the pore, up the air space, into a palisade cell -->
+            <path d="M 434,444 V 250" stroke="#221E1B" stroke-width="3"></path>
+            <path d="M 427,252 L 441,252 L 434,238 Z" fill="#221E1B" stroke="none"></path>
+
+            <!-- water, in along the vein -->
+            <path d="M 132,294 H 292" stroke="#221E1B" stroke-width="3"></path>
+            <path d="M 292,287 L 292,301 L 304,294 Z" fill="#221E1B" stroke="none"></path>
+            <text x="24" y="258" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16" font-weight="700">water arrives</text>
+            <text x="24" y="280" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16" font-weight="700">along the vein</text>
+
+            <!-- how thick the whole thing is -->
+            <path d="M 584,90 V 396 M 576,90 H 592 M 576,396 H 592" stroke="#221E1B" stroke-width="2"></path>
+            <text x="584" y="78" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="16">less than 0.5 mm thick</text>
+
+            <!-- labels -->
+            <text x="600" y="100" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16">cuticle — waxy, keeps water in</text>
+            <path d="M 596,96 L 574,95" stroke="#221E1B" stroke-width="1.4"></path>
+            <text x="600" y="132" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16">upper epidermis</text>
+            <path d="M 596,128 L 574,121" stroke="#221E1B" stroke-width="1.4"></path>
+            <text x="600" y="182" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16" font-weight="700">palisade cells — the top layer</text>
+            <text x="600" y="204" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16">packed with chloroplasts, and</text>
+            <text x="600" y="226" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16">first in the way of the light</text>
+            <path d="M 596,190 L 574,190" stroke="#221E1B" stroke-width="1.4"></path>
+            <text x="600" y="288" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16">spongy mesophyll</text>
+            <path d="M 596,284 L 574,286" stroke="#221E1B" stroke-width="1.4"></path>
+            <text x="600" y="320" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16">air spaces between the cells</text>
+            <path d="M 596,316 L 574,322" stroke="#221E1B" stroke-width="1.4"></path>
+            <text x="600" y="368" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16">lower epidermis</text>
+            <path d="M 596,364 L 574,365" stroke="#221E1B" stroke-width="1.4"></path>
+
+            <text x="150" y="430" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16" font-weight="700">the stoma and its two guard cells</text>
+            <text x="150" y="452" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16" font-weight="700">— on the underside, and nowhere on top</text>
+            <path d="M 400,424 L 414,400" stroke="#221E1B" stroke-width="1.4"></path>
+            <text x="452" y="470" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16">carbon dioxide, in through the stoma</text>
+            <path d="M 448,466 L 436,450" stroke="#221E1B" stroke-width="1.4"></path>
+          </g>
+        </svg>
+      </div>
+      <figcaption style="margin: 14px 2px 0; font-size: 17px; line-height: 1.55; color: var(--ks3-ink-body); max-width: 74ch;">The whole slice is less than half a millimetre from top to bottom. Two of its features are claims you can check by looking: the palisade cells are the layer nearest the light, and they hold most of the chloroplasts — count them against the spongy cells below. The only break in either surface is the one pore, and it is underneath. Follow the arrow to see why that still works: carbon dioxide goes in through the pore, up through the air spaces, and into a palisade cell, without anything having to carry it.</figcaption>
+    </figure>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1180}}">
+const WIDTHS = [
+  { label: 'Full', px: null },
+  { label: '768px', px: 768 },
+  { label: '390px', px: 390 }
+];
+
+/* Ten palisade cells across the 420-unit slice, and the chloroplasts inside
+   them. The count is the fact — most of the leaf's chloroplasts are in this
+   layer — so they are placed, not suggested. */
+const PAL_X = [152, 194, 236, 278, 320, 362, 404, 446, 488, 530];
+const CHL_ROWS = [166, 186, 206, 226];
+
+class Component extends DCLogic {
+  state = { w: 0 };
+
+  renderVals() {
+    const palisade = PAL_X.map((x) => ({ x: x }));
+    const chloroplasts = [];
+    PAL_X.forEach((x, i) => {
+      CHL_ROWS.forEach((y, r) => {
+        chloroplasts.push({ cx: x + 11, cy: y + ((i * 7 + r * 3) % 5) - 2 });
+        chloroplasts.push({ cx: x + 27, cy: y + ((i * 5 + r * 11) % 5) + 6 });
+      });
+    });
+    /* the spongy layer keeps a few, and visibly fewer */
+    [[180, 270], [238, 264], [400, 268], [470, 266], [176, 322], [246, 318], [474, 320], [536, 290]]
+      .forEach((p) => chloroplasts.push({ cx: p[0] + 6, cy: p[1] + 2 }));
+
+    const px = WIDTHS[this.state.w].px;
+    return {
+      palisade: palisade,
+      chloroplasts: chloroplasts,
+      widths: WIDTHS.map((x, i) => ({
+        label: x.label,
+        pressed: i === this.state.w,
+        style: 'cursor:pointer;font-family:var(--ks3-font-mono);font-size:14px;font-weight:500;padding:9px 14px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+          (i === this.state.w ? 'var(--ks3-band)' : 'transparent') + ';color:var(--ks3-ink);box-shadow:' +
+          (i === this.state.w ? '3px 3px 0 var(--ks3-ink)' : 'none') + ';',
+        onClick: () => this.setState({ w: i })
+      })),
+      frameStyle: 'margin:26px 0 0;padding:0;max-width:' + (px ? px + 'px' : '100%') + ';'
+    };
+  }
+}
+
+</script>
+</body>
+</html>

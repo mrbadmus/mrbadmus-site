@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="../support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Figure b10-nested-scale · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+  <div style="max-width: 1180px; margin: 0 auto; padding: 34px 24px 80px;">
+
+    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px; border-bottom: 3px solid var(--ks3-ink); padding-bottom: 20px;">
+      <div>
+        <p class="ks3-eyebrow" style="margin: 0;">Figure for review · 1 of 12</p>
+        <h1 style="margin: 8px 0 0; font-size: clamp(32px, 4.4vw, 46px); line-height: 1.02; letter-spacing: -.035em;">One strand, five magnifications</h1>
+        <p style="margin: 10px 0 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">b10-nested-scale · inheritance-and-dna/chromosomes-genes-and-dna · WS1 #1</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Check the labels at</p>
+        <div style="display: flex; gap: 8px;">
+          <sc-for list="{{ widths }}" as="w" hint-placeholder-count="3">
+            <button type="button" onClick="{{ w.onClick }}" aria-pressed="{{ w.pressed }}" style="{{ w.style }}">{{ w.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+    </header>
+
+    <div style="margin: 22px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+      <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">What has to be checkable</p>
+      <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.5; max-width: 62ch;">One physically continuous strand runs through every panel. The gene in panel 04 is a marked length of the same strand the student watched coil in panel 03. Nothing is swapped for anything else on the way down.</p>
+    </div>
+
+    <figure style="{{ frameStyle }}">
+      <div tabindex="0" role="group" aria-label="One strand at five magnifications — scrollable diagram" style="overflow-x: auto; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-ink); background: var(--ks3-ground);">
+        <svg viewBox="0 0 860 1400" width="860" height="1400" role="img" aria-labelledby="f1-title f1-desc" style="display: block; width: 860px; height: auto;">
+          <title id="f1-title">Chromosomes, genes and DNA: one strand at five magnifications</title>
+          <desc id="f1-desc">Five framed drawings in a column, each a magnified callout of the one above it, joined by tapering wedges. Panel 01, a cell 0.02 mm across, with a nucleus at its centre; a single orange fleck inside the nucleus is the strand the figure follows. Panel 02, that nucleus enlarged to 0.006 mm, holding 46 chromosomes in 23 pairs drawn in grey, with one of them picked out in orange. Panel 03, that one chromosome, 0.002 mm long, drawn as an orange strand coiled around grey proteins and unwinding at its lower end. Panel 04, the unwound strand as two orange backbones with rungs between them, running the width of the frame; a bracket marks one length of it as a gene. Panel 05, four rungs of that same length, each a pair of lettered boxes: A with T, C with G, T with A, G with C, the letters 0.0000003 mm apart. Orange is DNA in every panel. Grey and dark ink are everything that is not DNA.</desc>
+
+          <defs>
+            <clipPath id="f1p3"><rect x="36" y="556" width="380" height="236" rx="18"></rect></clipPath>
+            <clipPath id="f1p4"><rect x="36" y="852" width="380" height="210" rx="18"></rect></clipPath>
+            <clipPath id="f1p5"><rect x="36" y="1108" width="380" height="210" rx="18"></rect></clipPath>
+          </defs>
+
+          <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+
+            <!-- wedge 1 -->
+            <path d="M 192,182 L 36,300 L 416,300 L 260,182 Z" fill="#FCE7DE" stroke="none"></path>
+            <path d="M 192,182 L 36,300" stroke="#C3B191" stroke-width="1.6" stroke-dasharray="6 5"></path>
+            <path d="M 260,182 L 416,300" stroke="#C3B191" stroke-width="1.6" stroke-dasharray="6 5"></path>
+            <path d="M 222,240 C 218,262 196,282 180,300 L 222,300 C 228,282 230,262 230,240 Z" fill="#E4572E" stroke="none" opacity=".9"></path>
+
+            <!-- wedge 2 -->
+            <path d="M 176,378 L 36,556 L 416,556 L 226,378 Z" fill="#FCE7DE" stroke="none"></path>
+            <path d="M 176,378 L 36,556" stroke="#C3B191" stroke-width="1.6" stroke-dasharray="6 5"></path>
+            <path d="M 226,378 L 416,556" stroke="#C3B191" stroke-width="1.6" stroke-dasharray="6 5"></path>
+            <path d="M 196,498 C 192,518 168,538 152,556 L 208,556 C 210,538 208,518 206,498 Z" fill="#E4572E" stroke="none" opacity=".9"></path>
+
+            <!-- wedge 3 -->
+            <path d="M 340,792 L 36,852 L 416,852 L 372,792 Z" fill="#FCE7DE" stroke="none"></path>
+            <path d="M 340,792 L 36,852" stroke="#C3B191" stroke-width="1.6" stroke-dasharray="6 5"></path>
+            <path d="M 372,792 L 416,852" stroke="#C3B191" stroke-width="1.6" stroke-dasharray="6 5"></path>
+            <path d="M 344,786 C 340,808 318,832 288,852 L 340,852 C 356,832 358,808 358,786 Z" fill="#E4572E" stroke="none" opacity=".9"></path>
+
+            <!-- wedge 4 -->
+            <path d="M 192,990 L 36,1108 L 416,1108 L 250,990 Z" fill="#FCE7DE" stroke="none"></path>
+            <path d="M 192,990 L 36,1108" stroke="#C3B191" stroke-width="1.6" stroke-dasharray="6 5"></path>
+            <path d="M 250,990 L 416,1108" stroke="#C3B191" stroke-width="1.6" stroke-dasharray="6 5"></path>
+            <path d="M 206,1050 C 200,1070 174,1090 156,1108 L 256,1108 C 250,1090 234,1070 232,1050 Z" fill="#E4572E" stroke="none" opacity=".9"></path>
+
+            <!-- ── panel 01 · a cell ── -->
+            <rect x="36" y="44" width="380" height="210" rx="18" fill="#FFFCF5" stroke="#221E1B" stroke-width="2.5"></rect>
+            <ellipse cx="226" cy="149" rx="146" ry="78" fill="#F7EFE1" stroke="#221E1B" stroke-width="2.5"></ellipse>
+            <circle cx="226" cy="149" r="30" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <path d="M 213,141 q 6,-7 12,0" stroke="#6E655D" stroke-width="2"></path>
+            <path d="M 228,138 q 7,6 13,-1" stroke="#6E655D" stroke-width="2"></path>
+            <path d="M 212,157 q 8,7 15,0" stroke="#6E655D" stroke-width="2"></path>
+            <path d="M 231,160 q 7,-6 12,1" stroke="#6E655D" stroke-width="2"></path>
+            <path d="M 219,150 q 6,4 12,-1" stroke="#6E655D" stroke-width="2"></path>
+            <path d="M 220,146 q 7,8 14,1" stroke="#E4572E" stroke-width="3.2"></path>
+            <circle cx="226" cy="149" r="42" stroke="#221E1B" stroke-width="1.6" stroke-dasharray="6 5"></circle>
+
+            <rect x="452" y="48" width="42" height="32" rx="10" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></rect>
+            <text x="473" y="70" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="17">01</text>
+            <text x="506" y="72" fill="#221E1B" stroke="none" font-family="'Bricolage Grotesque', system-ui, sans-serif" font-size="25" font-weight="800" letter-spacing="-.5">A cell</text>
+            <text x="452" y="106" fill="#A93411" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="16">0.02 mm across</text>
+            <text x="452" y="136" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17">Any body cell will do. The instructions</text>
+            <text x="452" y="158" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17">are kept in the nucleus.</text>
+
+            <!-- ── panel 02 · the nucleus ── -->
+            <rect x="36" y="300" width="380" height="210" rx="18" fill="#FFFCF5" stroke="#221E1B" stroke-width="2.5"></rect>
+            <circle cx="226" cy="405" r="88" fill="#F4E9D8" stroke="#221E1B" stroke-width="2.5"></circle>
+            <circle cx="226" cy="405" r="82" stroke="#221E1B" stroke-width="1.4"></circle>
+            <sc-for list="{{ chromosomes }}" as="c" hint-placeholder-count="46">
+              <path d="{{ c.d }}" stroke="{{ c.stroke }}" stroke-width="{{ c.w }}"></path>
+            </sc-for>
+            <circle cx="201" cy="356" r="25" stroke="#221E1B" stroke-width="1.6" stroke-dasharray="6 5"></circle>
+
+            <rect x="452" y="304" width="42" height="32" rx="10" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></rect>
+            <text x="473" y="326" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="17">02</text>
+            <text x="506" y="328" fill="#221E1B" stroke="none" font-family="'Bricolage Grotesque', system-ui, sans-serif" font-size="25" font-weight="800" letter-spacing="-.5">The nucleus</text>
+            <text x="452" y="362" fill="#A93411" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="16">0.006 mm across</text>
+            <text x="452" y="392" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17">46 chromosomes, in 23 pairs. We follow</text>
+            <text x="452" y="414" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17">one of them from here down.</text>
+
+            <!-- ── panel 03 · a chromosome ── -->
+            <rect x="36" y="556" width="380" height="236" rx="18" fill="#FFFCF5" stroke="#221E1B" stroke-width="2.5"></rect>
+            <g clip-path="url(#f1p3)">
+            <circle cx="205" cy="582" r="13" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <circle cx="155" cy="602" r="13" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <circle cx="205" cy="622" r="13" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <circle cx="155" cy="642" r="13" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <circle cx="205" cy="662" r="13" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <circle cx="155" cy="682" r="13" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></circle>
+            <path d="M 180,566 Q 226,576 180,586 Q 134,596 180,606 Q 226,616 180,626 Q 134,636 180,646 Q 226,656 180,666 Q 134,676 180,686 Q 228,698 180,712 Q 130,728 184,742 C 216,756 256,762 300,760 C 344,758 382,764 416,770" stroke="#221E1B" stroke-width="10"></path>
+            <path d="M 180,566 Q 226,576 180,586 Q 134,596 180,606 Q 226,616 180,626 Q 134,636 180,646 Q 226,656 180,666 Q 134,676 180,686 Q 228,698 180,712 Q 130,728 184,742 C 216,756 256,762 300,760 C 344,758 382,764 424,770" stroke="#E4572E" stroke-width="6"></path>
+            </g>
+            <circle cx="352" cy="766" r="24" stroke="#221E1B" stroke-width="1.6" stroke-dasharray="6 5"></circle>
+            <text x="248" y="576" fill="#5F564F" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="15">proteins</text>
+            <path d="M 244,580 L 216,582" stroke="#5F564F" stroke-width="1.4"></path>
+
+            <rect x="452" y="560" width="42" height="32" rx="10" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></rect>
+            <text x="473" y="582" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="17">03</text>
+            <text x="506" y="584" fill="#221E1B" stroke="none" font-family="'Bricolage Grotesque', system-ui, sans-serif" font-size="25" font-weight="800" letter-spacing="-.5">A chromosome</text>
+            <text x="452" y="618" fill="#A93411" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="16">0.002 mm long</text>
+            <text x="452" y="648" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17">One DNA molecule, coiled and wound</text>
+            <text x="452" y="670" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17">around proteins. Not a different</text>
+            <text x="452" y="692" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17">substance from DNA — DNA, packed.</text>
+            <text x="452" y="726" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17" font-weight="700">It unwinds at the bottom of the frame.</text>
+
+            <!-- ── panel 04 · a gene ── -->
+            <rect x="36" y="852" width="380" height="210" rx="18" fill="#FFFCF5" stroke="#221E1B" stroke-width="2.5"></rect>
+            <g clip-path="url(#f1p4)">
+            <rect x="158" y="920" width="122" height="58" rx="10" fill="#FCE7DE" stroke="none"></rect>
+            <path d="M 30,930 H 422" stroke="#E4572E" stroke-width="5"></path>
+            <path d="M 30,968 H 422" stroke="#E4572E" stroke-width="5"></path>
+            <path d="M 158,928 H 280" stroke="#E4572E" stroke-width="8"></path>
+            <path d="M 158,970 H 280" stroke="#E4572E" stroke-width="8"></path>
+            <path d="M 68,932 V 966 M 92,932 V 966 M 116,932 V 966 M 140,932 V 966 M 164,932 V 966 M 188,932 V 966 M 212,932 V 966 M 236,932 V 966 M 260,932 V 966 M 284,932 V 966 M 308,932 V 966 M 332,932 V 966 M 356,932 V 966 M 380,932 V 966" stroke="#221E1B" stroke-width="2.2"></path>
+            </g>
+            <path d="M 158,994 v 12 H 280 v -12" stroke="#221E1B" stroke-width="2.5"></path>
+            <text x="219" y="1032" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="17">one gene</text>
+            <circle cx="219" cy="949" r="30" stroke="#221E1B" stroke-width="1.6" stroke-dasharray="6 5"></circle>
+            <text x="52" y="898" fill="#5F564F" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="15">the same strand, uncoiled</text>
+
+            <rect x="452" y="856" width="42" height="32" rx="10" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></rect>
+            <text x="473" y="878" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="17">04</text>
+            <text x="506" y="880" fill="#221E1B" stroke="none" font-family="'Bricolage Grotesque', system-ui, sans-serif" font-size="25" font-weight="800" letter-spacing="-.5">A gene</text>
+            <text x="452" y="914" fill="#A93411" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="16">a section of the same strand</text>
+            <text x="452" y="944" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17">A length of it, carrying the instruction</text>
+            <text x="452" y="966" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17">for one characteristic. Part of the</text>
+            <text x="452" y="988" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17">strand, not an object attached to it.</text>
+
+            <!-- ── panel 05 · the bases ── -->
+            <rect x="36" y="1108" width="380" height="210" rx="18" fill="#FFFCF5" stroke="#221E1B" stroke-width="2.5"></rect>
+            <g clip-path="url(#f1p5)">
+            <path d="M 30,1166 H 422" stroke="#E4572E" stroke-width="7"></path>
+            <path d="M 30,1266 H 422" stroke="#E4572E" stroke-width="7"></path>
+            </g>
+            <path d="M 116,1170 V 1188 M 196,1170 V 1188 M 276,1170 V 1188 M 356,1170 V 1188" stroke="#221E1B" stroke-width="2.2"></path>
+            <path d="M 116,1214 V 1218 M 196,1214 V 1218 M 276,1214 V 1218 M 356,1214 V 1218" stroke="#221E1B" stroke-width="2.2"></path>
+            <path d="M 116,1244 V 1262 M 196,1244 V 1262 M 276,1244 V 1262 M 356,1244 V 1262" stroke="#221E1B" stroke-width="2.2"></path>
+            <rect x="94" y="1188" width="44" height="26" rx="8" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></rect>
+            <rect x="174" y="1188" width="44" height="26" rx="8" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></rect>
+            <rect x="254" y="1188" width="44" height="26" rx="8" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></rect>
+            <rect x="334" y="1188" width="44" height="26" rx="8" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></rect>
+            <rect x="94" y="1218" width="44" height="26" rx="8" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></rect>
+            <rect x="174" y="1218" width="44" height="26" rx="8" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></rect>
+            <rect x="254" y="1218" width="44" height="26" rx="8" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></rect>
+            <rect x="334" y="1218" width="44" height="26" rx="8" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></rect>
+            <text x="116" y="1207" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="18">A</text>
+            <text x="196" y="1207" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="18">C</text>
+            <text x="276" y="1207" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="18">T</text>
+            <text x="356" y="1207" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="18">G</text>
+            <text x="116" y="1237" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="18">T</text>
+            <text x="196" y="1237" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="18">G</text>
+            <text x="276" y="1237" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="18">A</text>
+            <text x="356" y="1237" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="18">C</text>
+            <text x="56" y="1148" fill="#5F564F" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="15">four rungs of that same length</text>
+
+            <rect x="452" y="1112" width="42" height="32" rx="10" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></rect>
+            <text x="473" y="1134" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="17">05</text>
+            <text x="506" y="1136" fill="#221E1B" stroke="none" font-family="'Bricolage Grotesque', system-ui, sans-serif" font-size="25" font-weight="800" letter-spacing="-.5">The bases</text>
+            <text x="452" y="1170" fill="#A93411" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="16">0.0000003 mm apart</text>
+            <text x="452" y="1200" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17">Four letters, paired across the strand.</text>
+            <text x="452" y="1222" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17">The order of them along the gene is</text>
+            <text x="452" y="1244" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17">the information.</text>
+
+            <!-- legend -->
+            <path d="M 36,1348 H 824" stroke="#E0D2B9" stroke-width="2"></path>
+            <path d="M 44,1376 h 34" stroke="#E4572E" stroke-width="6"></path>
+            <text x="88" y="1382" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17" font-weight="700">DNA — the same molecule in all five panels</text>
+            <path d="M 470,1376 h 34" stroke="#221E1B" stroke-width="6"></path>
+            <text x="514" y="1382" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17">Everything that is not DNA</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption style="margin: 14px 2px 0; font-size: 17px; line-height: 1.55; color: var(--ks3-ink-body); max-width: 74ch;">One molecule, five magnifications. Each frame is a callout of the frame above it, and the orange strand you can trace from the top of the column to the bottom never stops being the same strand. Orange is DNA wherever it appears; ink and grey are everything that is not DNA. The gene in panel 04 is a marked length of the strand that was coiled in panel 03 — a section of it, not a separate object sitting on it.</figcaption>
+    </figure>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1180}}">
+const WIDTHS = [
+  { label: 'Full', px: null },
+  { label: '768px', px: 768 },
+  { label: '390px', px: 390 }
+];
+
+/* 23 pairs on a jittered grid inside the nuclear envelope: 46 marks, so a
+   student who counts them finds the number the label claims. One member of
+   one pair is the strand the rest of the figure follows. */
+const ROWS = [356, 382, 408, 434, 460];
+const COLS = [176, 201, 226, 251, 276];
+const SKIP = [0, 24];
+const PICKED = 1;
+
+function jitter(n) {
+  const x = Math.sin(n * 12.9898) * 43758.5453;
+  return x - Math.floor(x);
+}
+
+function chrPath(px, py, angle, half, bow) {
+  const dx = Math.sin(angle), dy = -Math.cos(angle);
+  const x1 = px - dx * half, y1 = py - dy * half;
+  const x2 = px + dx * half, y2 = py + dy * half;
+  const cx = px + dy * bow, cy = py - dx * bow;
+  const r = (v) => Math.round(v * 10) / 10;
+  return 'M ' + r(x1) + ',' + r(y1) + ' Q ' + r(cx) + ',' + r(cy) + ' ' + r(x2) + ',' + r(y2);
+}
+
+class Component extends DCLogic {
+  state = { w: 0 };
+
+  renderVals() {
+    const chromosomes = [];
+    let slot = -1;
+    for (let i = 0; i < ROWS.length; i += 1) {
+      for (let j = 0; j < COLS.length; j += 1) {
+        slot += 1;
+        if (SKIP.indexOf(slot) >= 0) continue;
+        const seed = slot * 7 + 3;
+        const ox = (jitter(seed) - 0.5) * 7;
+        const oy = (jitter(seed + 1) - 0.5) * 7;
+        const angle = (jitter(seed + 2) - 0.5) * 2.2;
+        const cx = COLS[j] + ox, cy = ROWS[i] + oy;
+        for (let m = 0; m < 2; m += 1) {
+          const off = m === 0 ? -4.5 : 4.5;
+          const picked = slot === PICKED && m === 1;
+          chromosomes.push({
+            d: chrPath(cx + off, cy + (m === 0 ? -1.5 : 1.5), angle, picked ? 13 : 9, picked ? 6 : 4.5),
+            stroke: picked ? '#E4572E' : '#6E655D',
+            w: picked ? 4.4 : 2.3
+          });
+        }
+      }
+    }
+
+    const px = WIDTHS[this.state.w].px;
+    return {
+      chromosomes: chromosomes,
+      widths: WIDTHS.map((x, i) => ({
+        label: x.label,
+        pressed: i === this.state.w,
+        style: 'cursor:pointer;font-family:var(--ks3-font-mono);font-size:14px;font-weight:500;padding:9px 14px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+          (i === this.state.w ? 'var(--ks3-band)' : 'transparent') + ';color:var(--ks3-ink);box-shadow:' +
+          (i === this.state.w ? '3px 3px 0 var(--ks3-ink)' : 'none') + ';',
+        onClick: () => this.setState({ w: i })
+      })),
+      frameStyle: 'margin:26px 0 0;padding:0;max-width:' + (px ? px + 'px' : '100%') + ';'
+    };
+  }
+}
+
+</script>
+</body>
+</html>

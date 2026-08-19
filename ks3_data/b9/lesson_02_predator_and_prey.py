@@ -327,6 +327,20 @@ module's, and it is recorded here because this payload feeds it; as of MRB-245
 `ks3_parity.check_dark_text_specificity()` gates it.
 """
 
+# ── the model, in one place (MRB-254) ────────────────────────────────────
+#
+# ⊕ ONE MODEL, TWO READERS. The bench runs it and the figure draws it, and
+# they take it from here rather than each carrying a copy. Build contract
+# §5A.1: any count or figure quoted must match the instrument, and the
+# instrument is the measurement. The figure's lag is COUNTED off the peaks
+# this dict produces — so if a parameter is ever touched, the drawing prints
+# the new number and disagrees with the seven sentences on this page that say
+# five, loudly, instead of agreeing with them while showing something else.
+CYCLE_MODEL = {"r": 0.6, "k": 2000, "a": 0.0015, "b": 0.35, "m": 0.35,
+               "start_prey": 800, "start_pred": 120, "history": 26,
+               "prey_cap_mult": 1.1, "pred_floor": 1}
+
+
 # ── the four cycle cards (page lines 308–313) ────────────────────────────
 #
 # Design draws the number in a 38px accent chip; `_rule_card()` reads `role` for
@@ -587,7 +601,60 @@ LESSON = {
     # zero times on this page — grepped — and every `<svg>` is the nav chevron
     # or a `ks3-mark` glyph. The chart is drawn by the instrument from the
     # model's own history, so there is nothing to source.
-    "figures": [],
+    # ⊕ MRB-254 · WS1 audit #12 — THE ONE PAGE WHERE THE BENCH ATTEMPTS THE
+    # SEQUENTIAL IDEA AND MEASURABLY FAILS AT 390px. The chart is 274px there,
+    # holding fifty-two bars at two pixels each, with no year axis and no year
+    # label anywhere; the prompt says "Look at when each peak happens — not
+    # how high, when", and a two-pixel bar has no when. The bench is not
+    # replaced — it is where a student changes the field and watches it
+    # respond, which no drawing can do — but the claim it demonstrates needs
+    # one picture that holds still and carries an axis.
+    #
+    # ⚠️ THIS SUPERSEDES §15 OF THE NOTES BLOCK ABOVE, which recorded that this
+    # page carried no figure and that the fact was measured rather than
+    # assumed. That was true and is no longer. NOTES-B9 flag 17 named b9-01 and
+    # b9-03 and is still Mide's to rule on; this figure comes from the KS3
+    # Biology audit of 18 Aug 2026, which is later, names THIS lesson, and
+    # gives the measurement above as its reason. Recorded here, in the record
+    # it touches, per §5A.7.
+    "figures": [
+        {"id": "b9-predator-prey-cycle", "kind": "diagram", "status": "drawn",
+         "art": "cycle-lag",
+         "title": "One turn of the rabbit and fox cycle, with the gap between "
+                  "the two peaks measured",
+         "desc": "A line graph of one complete turn of the cycle. Along the "
+                 "bottom is a year axis, ticked every year and numbered every "
+                 "second year. Up the left-hand side is a scale for the "
+                 "rabbits and up the right-hand side a separate scale for the "
+                 "foxes, because the two are counted on their own scales. Two "
+                 "lines cross the plot. The rabbit line is solid and thicker; "
+                 "the fox line is dashed. Each carries a dot at every year, "
+                 "which is where the numbers actually are, and each is named "
+                 "at its right-hand end rather than in a key. The rabbit line "
+                 "rises to a peak and then falls away. The fox line is still "
+                 "rising while the rabbit line falls, reaches its own peak "
+                 "later, and only then turns down, after which the rabbit "
+                 "line begins to climb again. The rabbit peak is marked with "
+                 "a filled circle and the fox peak with an open one, each "
+                 "labelled with the year it happens in, and a dashed line "
+                 "drops from each down to the year axis. Between those two "
+                 "dropped lines, below the axis, a measured line with a tick "
+                 "at each end spans the gap and is labelled with the number "
+                 "of years in it. A line at the foot of the figure repeats "
+                 "that the two are counted on their own scales and that what "
+                 "to look at is when each peak happens, not how high it is.",
+         "caption": "The fox line is still going up while the rabbit line is "
+                    "already coming down, and it does not turn over until "
+                    "years later. That gap is the whole idea: foxes cannot "
+                    "become more foxes the moment there is more to eat — "
+                    "breeding takes time — so the fox peak always follows the "
+                    "rabbit peak rather than arriving with it. Look at when "
+                    "each peak happens, not how high it is: the two are "
+                    "counted on their own scales.",
+         "data": {"model": CYCLE_MODEL, "span": 60,
+                  "prey_name": "Rabbits", "pred_name": "Foxes",
+                  "prey_axis": 1000, "pred_axis": 400}},
+    ],
 
     # ── core, in the approved page's document order ─────────────────────────
     "core": [
@@ -620,9 +687,7 @@ LESSON = {
          # overshooting or oscillating negative; both are required, and
          # `pred_floor` is an extinction floor rather than a rounding artefact
          # — below one animal there is no breeding pair.
-         "model": {"r": 0.6, "k": 2000, "a": 0.0015, "b": 0.35, "m": 0.35,
-                   "start_prey": 800, "start_pred": 120, "history": 26,
-                   "prey_cap_mult": 1.1, "pred_floor": 1},
+         "model": CYCLE_MODEL,
 
          # ⚖️ SCALED INDEPENDENTLY, and `chart_caption` says so in words. On
          # one scale the fox series flattens into the axis and the lag — the
@@ -645,6 +710,15 @@ LESSON = {
          "reset_label": "Reset the field",
 
          "notes": NOTES},
+
+        # ⊕ MRB-254 — THE FIGURE SITS BETWEEN THE BENCH AND THE FOUR STEPS.
+        # The bench has just been run; `#s-cycle` is about to state the loop in
+        # four cards. The graph is what turns "the fox peak follows the rabbit
+        # peak" from a sentence the student is asked to take on trust into
+        # something they can point at, and it has to be read before the cards
+        # for the cards to be a summary rather than an introduction.
+        {"type": "figure", "ref": "b9-predator-prey-cycle",
+         "anchor": "s-lag"},
 
         # #s-cycle — the band panel, and the mirror stop. Design draws it with
         # no class at all, on `--ks3-band` with a 3px ink border (page line

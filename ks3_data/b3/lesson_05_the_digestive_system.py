@@ -263,15 +263,67 @@ LESSON = {
     # turns a dangling reference into a tracked sourcing task. No `figure`
     # block is added to `core` — Design draws none, and a slot on the page
     # would be a component nobody drew.
+    # ⊕ MRB-254 — DRAWN. The bench gives the order as a strip of chips that
+    # wraps to two rows, and nothing on the page shows the TUBE, the coiling,
+    # or the accessory-organ distinction the bench's own stop 05 rests on.
+    #
+    # ⚖️ THE SIMPLIFICATION IS RULED IN, AND SO IS ITS DISCLOSURE. The whole
+    # gut runs down the frame in one line rather than sitting in anatomical
+    # position. Drawn anatomically, the transverse colon has to cross in FRONT
+    # of the small intestine and the duodenum has to cross back BEHIND it, and
+    # the reader is then untangling two tubes instead of seeing one — which
+    # destroys the single claim the figure exists to make. The plate says so on
+    # its own face, bottom right, and that note is load-bearing: it is what
+    # makes the simplification honest rather than hidden, and it carries
+    # `data-disclosure` so its absence is a red gate rather than a quiet loss.
     "figures": [
         {"id": "b3-gut-labelled",
          "kind": "diagram",
-         "caption": "The human digestive system, labelled: mouth, oesophagus, "
-                    "stomach, small intestine, large intestine, rectum and "
-                    "anus, with the pancreas, liver and gall bladder shown "
-                    "feeding into the small intestine without food passing "
-                    "through them.",
-         "status": "needed"},
+         "status": "drawn",
+         "art": "gut-tube",
+         "title": "The digestive system: one continuous coiled tube with "
+                  "seven stops",
+         "desc": "A wide framed drawing above a key of seven stops. In the "
+                 "drawing, one tube runs from the top of the frame to the "
+                 "bottom with an orange line down the middle of it that is a "
+                 "single unbroken path from beginning to end. From the top: "
+                 "01, the mouth, at the top of a straight narrow run. 02, the "
+                 "oesophagus, that run. 03, the stomach, drawn as a bag whose "
+                 "muscular wall bulges out to the right, open at the top "
+                 "where the oesophagus enters and open at the lower left "
+                 "where the tube leaves; the orange line curves through the "
+                 "inside of the bag. 04, the small intestine, a narrow tube "
+                 "in six tight coils across the middle of the frame, noted as "
+                 "six to seven metres of narrow tube, coiled. 06, the large "
+                 "intestine, below it, drawn distinctly wider and shorter. "
+                 "07, the rectum and anus, at the bottom. On the left of the "
+                 "frame, well clear of the tube, a dashed boundary encloses "
+                 "stop 05: the liver as a large wedge, the gall bladder as a "
+                 "small pear below it, and the pancreas as a tapering shape "
+                 "below that. Ducts leave those three, join into one, and run "
+                 "right to meet the tube just after the stomach. The orange "
+                 "line does not enter the dashed boundary at any point. The "
+                 "key reads: 01 mouth, chewed and mixed with saliva. 02 "
+                 "oesophagus, squeezed down by muscle, nothing is broken "
+                 "here. 03 stomach, churned in acid, protein begins. 04 small "
+                 "intestine, every nutrient finished, and almost all "
+                 "absorption. 05 pancreas, liver and gall bladder, juices in "
+                 "and no food passes through, its badge dashed because it is "
+                 "off the tube. 06 large intestine, water absorbed, the "
+                 "nutrients have already gone. 07 rectum and anus, stored "
+                 "then out, material that was never absorbed.",
+         "caption": "One tube, from 01 at the top to 07 at the bottom, with "
+                    "the orange line running down the middle of it the whole "
+                    "way. The small intestine is the long narrow coiled run; "
+                    "the large intestine below it is visibly wider and "
+                    "shorter. Stop 05 — pancreas, liver and gall bladder — "
+                    "sits inside the dashed boundary, with ducts leading out "
+                    "of it into the tube. That is the distinction the bench’s "
+                    "own stop 05 rests on: those three send juices in, and "
+                    "food never passes through them. Put a finger on 01 and "
+                    "follow the orange line down: it does not stop, branch or "
+                    "start again anywhere between there and 07, and it never "
+                    "once goes into the dashed boundary."},
     ],
 
     # ── core, in the approved page's document order ─────────────────────────
@@ -443,6 +495,21 @@ LESSON = {
          ]},
 
         {"type": "key-fact", "ref": "digestion-is-chemical"},
+
+        # ⊕ MRB-254 — THE BENCH'S OWN STOP 05 DEPENDS ON A DISTINCTION NOTHING DRAWS.
+
+        # "Pancreas, liver, gall bladder" is a stop in a list of stops, so the one
+
+        # thing that makes it different — that food goes PAST these and not THROUGH
+
+        # them — is exactly what a strip of chips cannot show. On the plate they sit
+
+        # outside a dashed boundary, joined by ducts, and the orange line never
+
+        # enters it.
+
+        {"type": "figure", "ref": "b3-gut-labelled", "anchor": "s-tube"},
+
 
         {"type": "misconception", "id": "two-wrong-ideas",
          "anchor": "s-think", "targets": "DIET-11"},

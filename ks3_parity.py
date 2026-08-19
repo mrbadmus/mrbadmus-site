@@ -3766,16 +3766,45 @@ COMPONENTS = [
     # resolves to the ink the arrow has stopped being the accent; if the
     # element is absent the arrow has been typed, which the generator refuses
     # and the glyph audit would catch second.
+    # ⊕ MRB-254 — RE-POINTED, and the two old selectors are gone from the page
+    # rather than merely unused. b7-01's condition was one full-width mono line
+    # under the whole row; it is now two, one over the arrow and one under it,
+    # because light is the energy the change runs on and chlorophyll is what
+    # absorbs it and the two positions are the convention that says so. The
+    # wrapper the arrow sat in became a column that holds the arrow and both
+    # labels, so `.ks3-eqn-arrowwrap` and `.ks3-eqn-condition` no longer exist
+    # HERE — and this gate is what said so, in the same run as the change.
+    #
+    # ⚠️ `.ks3-eqn-arrowwrap` and `.ks3-eqn-condition` ARE STILL LIVE ELSEWHERE:
+    # b8-01 and b8-03 carry a single `condition` that is commentary on the
+    # whole equation rather than a condition on the arrow, and they keep the
+    # unsplit shell. They are registered below on their own page so the two
+    # variants are each measured in the state a student meets, rather than one
+    # of them being assumed from the other.
     dict(name="the drawn reaction arrow is the accent text colour",
-         on=B7_BENCH, sel=".ks3-eqn-arrowwrap",
+         on=B7_BENCH, sel=".ks3-eqn-arrowstack",
          props={"color": "#A93411"}),
     dict(name="the summary's two sides are ink display type on the card",
          on=B7_BENCH, sel=".ks3-eqn-side",
          props={"color": "#221E1B", "font-family": "Bricolage Grotesque"}),
-    dict(name="the reaction condition is a muted mono line under the row",
-         on=B7_BENCH, sel=".ks3-eqn-condition",
+    dict(name="the condition over the arrow is a muted mono line",
+         on=B7_BENCH, sel=".ks3-eqn-cond-over",
+         props={"color": "#5F564F", "font-family": "DM Mono",
+                "font-size": "13px"}),
+    dict(name="the condition under the arrow is the same line, below",
+         on=B7_BENCH, sel=".ks3-eqn-cond-under",
+         props={"color": "#5F564F", "font-family": "DM Mono",
+                "font-size": "13px"}),
+    # The unsplit shell, on the page that still uses it. Registered because a
+    # variant nobody measures is the hole MRB-202 cost: the four states a
+    # student ends up looking at were compared against nothing.
+    dict(name="the unsplit condition is still a muted mono line under the row",
+         on=B8_LEDGER, sel=".ks3-eqn-condition",
          props={"color": "#5F564F", "font-family": "DM Mono",
                 "font-size": "15px"}),
+    dict(name="the unsplit arrow wrapper is still the accent text colour",
+         on=B8_LEDGER, sel=".ks3-eqn-arrowwrap",
+         props={"color": "#A93411"}),
     dict(name="the equation sits on the card inside the band panel",
          on=B7_BENCH, sel=".ks3-eqn",
          props={"background-color": "#FFFCF5", "border-top-width": "2px",
@@ -13524,10 +13553,20 @@ def check_figure_cue(browser_mod, url_for, rel):
     """Audit 3.9 — the edge fade is on when the figure is scrollable, off when
     it is not. Both ends, because a mask that is always on is not a cue."""
     problems = []
-    JS = ("(function(){var f=document.querySelector('.ks3-figure-scroll');"
-          " if(!f){return null;}var cs=getComputedStyle(f);"
-          " return {cw:f.clientWidth, sw:f.scrollWidth,"
-          "         mask:(cs.maskImage||cs.webkitMaskImage||'none')};})()")
+    # ⊕ MRB-254 — TWO FRAMES BEFORE MEASURING. The fade is no longer a media
+    # query; it is a class `wireFigureCues()` sets from a ResizeObserver, and
+    # an observer callback runs BEFORE the next paint but AFTER the eval that
+    # changed the viewport would otherwise return. Reading `maskImage`
+    # synchronously after `set_viewport` measures the PREVIOUS viewport's
+    # answer, and at 390-then-1440 that reads as "fade drawn where the figure
+    # fits" — the gate failing on its own timing and blaming the page.
+    JS = ("new Promise(function(res){requestAnimationFrame(function(){"
+          " requestAnimationFrame(function(){"
+          " var f=document.querySelector('.ks3-figure-scroll');"
+          " if(!f){res(null);return;}var cs=getComputedStyle(f);"
+          " res({cw:f.clientWidth, sw:f.scrollWidth,"
+          "      mask:(cs.maskImage||cs.webkitMaskImage||'none')});"
+          "});});})")
     with browser_mod.Browser() as b:
         page = b.page(url_for(rel))
         page.set_viewport(390, 844)
@@ -13637,6 +13676,1683 @@ def check_figure_content_truth(browser_mod, url_for, rel):
 
 
 
+# ═══ MRB-254 · content truth on the biology figure set ═══════════════════
+#
+# ⚖️ §5A.4, and it is a rule about COMPLETENESS rather than about coverage:
+#
+#     "Every code-drawn figure's parity rows include at least one assertion
+#      tying the visual encoding to the fact it teaches, mutation-tested at
+#      source. A content-truth row walks EVERY element a defect could touch."
+#
+# The base-pair figure is why the second sentence exists. Its fills were keyed
+# to the COLUMN rather than to the base and were wrong on 4 of 10 boxes; the
+# obvious form of the assertion — four rows, one per letter — catches only two
+# of the four, because a selector returns the first match and rung 1 is correct
+# even under the bug. An assertion that passes on the majority of a defect is
+# how these reach production.
+#
+# So every row below walks its whole set. Where a claim is about a RELATION
+# (this sits inside that, this comes after that, these are all one scale), the
+# row measures the DRAWN GEOMETRY and never the label, because a label agreeing
+# with itself is the defect being guarded against.
+#
+# ⚠️ EACH ROW FAILS LOUDLY IF ITS FIGURE IS ABSENT. A content-truth row that
+# finds no elements does not fail — it returns nothing and reports green, which
+# is the exact absence these exist to close. So `null` from the probe is a
+# problem, not a skip, on every one of them.
+
+FIGURE_TRUTH = [
+
+    dict(fig="b10-punnett-pp",
+         page="biology/inheritance-and-dna/passing-it-on-heredity.html",
+         name="⊕ MRB-254 · every Punnett square is its own column × row",
+         claim="all 4 squares: genotype = column + row gamete, phenotype "
+               "white iff pp, flower filled iff purple",
+         js=r"""
+    (function () {
+      var cells = document.querySelectorAll('.ks3-figure-svg rect[data-cell]');
+      if (!cells.length) { return null; }
+      var bad = [], seen = {}, order = [];
+      for (var i = 0; i < cells.length; i++) {
+        var c = cells[i];
+        var n = c.getAttribute('data-cell');
+        var g = c.getAttribute('data-genotype');
+        var col = c.getAttribute('data-col-gamete');
+        var row = c.getAttribute('data-row-gamete');
+        var ph = c.getAttribute('data-phenotype');
+        if (seen[n]) { bad.push('square ' + n + ' appears twice'); }
+        seen[n] = 1; order.push(n);
+        /* dominant-first, matching the bench's own normalisation */
+        var want = (col === col.toUpperCase()) ? col + row : row + col;
+        if (g !== want) {
+          bad.push('square ' + n + ' is ' + col + ' x ' + row
+                   + ' and prints ' + g + ', not ' + want);
+        }
+        var recessive = (g === g.toLowerCase());
+        var wantPh = recessive ? 'white' : 'purple';
+        if (ph !== wantPh) {
+          bad.push('square ' + n + ' is ' + g + ' and is called ' + ph
+                   + '; P beats p, so it is ' + wantPh);
+        }
+        /* the printed genotype, read off the page rather than the attribute */
+        var t = document.querySelector(
+          '.ks3-figure-svg text[data-cell-genotype="' + n + '"]');
+        if (!t || t.textContent !== g) {
+          bad.push('square ' + n + ' declares ' + g + ' and prints '
+                   + (t ? t.textContent : 'nothing'));
+        }
+        var s = document.querySelector(
+          '.ks3-figure-svg text[data-strip-genotype="' + n + '"]');
+        if (!s || s.textContent !== g) {
+          bad.push('square ' + n + ' is ' + g + ' in the grid and '
+                   + (s ? s.textContent : 'absent') + ' in the strip');
+        }
+      }
+      /* the brackets, and the ratio they are read off */
+      var tallies = document.querySelectorAll('.ks3-figure-svg [data-tally]');
+      var counted = 0, tbad = [];
+      for (var k = 0; k < tallies.length; k++) {
+        var word = tallies[k].getAttribute('data-tally');
+        var cnt = parseInt(tallies[k].getAttribute('data-tally-count'), 10);
+        var from = parseInt(tallies[k].getAttribute('data-tally-from'), 10);
+        var to = parseInt(tallies[k].getAttribute('data-tally-to'), 10);
+        counted += cnt;
+        if (to - from + 1 !== cnt) {
+          tbad.push('the ' + word + ' bracket spans squares ' + from + '-' + to
+                    + ' and claims ' + cnt);
+        }
+        for (var q = from; q <= to; q++) {
+          var sq = document.querySelector(
+            '.ks3-figure-svg rect[data-cell="' + q + '"]');
+          if (sq && sq.getAttribute('data-phenotype') !== word) {
+            tbad.push('the ' + word + ' bracket encloses square ' + q
+                      + ', which is '
+                      + (sq ? sq.getAttribute('data-phenotype') : '?'));
+          }
+        }
+      }
+      return {n: cells.length, counted: counted,
+              bad: bad.concat(tbad)};
+    })()
+""",
+         expect=lambda got: (
+             [] if got["n"] == 4 and got["counted"] == 4 else
+             ["draws %d square(s) and brackets %d of them; Pp x Pp is four "
+              "combinations and every one must be counted once"
+              % (got["n"], got["counted"])])),
+
+    dict(fig="b9-predator-prey-cycle",
+         page="biology/ecosystems-and-interdependence/predator-and-prey.html",
+         name="⊕ MRB-254 · the predator peak follows the prey peak, measured",
+         claim="both peaks on the drawn curves, the later one the predator's, "
+               "and the dimension equal to the difference of the two years",
+         js=r"""
+    (function () {
+      var peaks = document.querySelectorAll('.ks3-figure-svg circle[data-peak]');
+      if (peaks.length !== 2) { return {n: peaks.length, bad: []}; }
+      var by = {}, bad = [];
+      for (var i = 0; i < peaks.length; i++) {
+        by[peaks[i].getAttribute('data-peak')] =
+          {year: parseInt(peaks[i].getAttribute('data-peak-year'), 10),
+           x: parseFloat(peaks[i].getAttribute('cx'))};
+      }
+      if (!by.prey || !by.pred) {
+        bad.push('the two peaks are not one prey and one predator');
+        return {n: peaks.length, bad: bad};
+      }
+      if (!(by.pred.year > by.prey.year)) {
+        bad.push('the predator peak is at year ' + by.pred.year
+                 + ' and the prey peak at year ' + by.prey.year
+                 + '; the predator peak FOLLOWS the prey peak');
+      }
+      if (!(by.pred.x > by.prey.x)) {
+        bad.push('the predator peak is drawn to the LEFT of the prey peak '
+                 + '(x ' + by.pred.x + ' against ' + by.prey.x + ')');
+      }
+      /* the dimension, and the label printed on it */
+      var lag = by.pred.year - by.prey.year;
+      var dim = document.querySelector('.ks3-figure-svg [data-lag-dimension]');
+      var lab = document.querySelector('.ks3-figure-svg text[data-lag]');
+      if (!dim || parseInt(dim.getAttribute('data-lag-dimension'), 10) !== lag) {
+        bad.push('the dimension between the peaks says '
+                 + (dim ? dim.getAttribute('data-lag-dimension') : 'nothing')
+                 + ' and the two peak years differ by ' + lag);
+      }
+      if (!lab || lab.textContent.indexOf(String(lag)) !== 0) {
+        bad.push('the label reads "' + (lab ? lab.textContent : '')
+                 + '" over a gap of ' + lag + ' years');
+      }
+      /* every peak marker must sit ON its own series' drawn sample */
+      var bothOn = 0;
+      ['prey', 'pred'].forEach(function (k) {
+        var dot = document.querySelector(
+          '.ks3-figure-svg circle[data-series="' + k + '"][data-year="'
+          + by[k].year + '"]');
+        if (!dot) {
+          bad.push('the ' + k + ' peak at year ' + by[k].year
+                   + ' has no sample dot under it');
+          return;
+        }
+        bothOn += 1;
+        if (Math.abs(parseFloat(dot.getAttribute('cx')) - by[k].x) > 0.5) {
+          bad.push('the ' + k + ' peak marker is not on its own curve');
+        }
+        /* and it must really be the maximum of that series */
+        var all = document.querySelectorAll(
+          '.ks3-figure-svg circle[data-series="' + k + '"][data-count]');
+        var best = -1, bestYear = null;
+        for (var j = 0; j < all.length; j++) {
+          var v = parseInt(all[j].getAttribute('data-count'), 10);
+          if (v > best) { best = v; bestYear = all[j].getAttribute('data-year'); }
+        }
+        if (parseInt(bestYear, 10) !== by[k].year) {
+          bad.push('the ' + k + ' marker is on year ' + by[k].year
+                   + ' but the highest drawn count is year ' + bestYear);
+        }
+      });
+      return {n: peaks.length, bad: bad, on: bothOn};
+    })()
+""",
+         expect=lambda got: (
+             [] if got["n"] == 2 else
+             ["marks %d peak(s); the figure is two, one of each" % got["n"]])),
+
+    dict(fig="b5-placenta-exchange",
+         page="biology/reproduction/gestation-placenta-and-birth.html",
+         name="⊕ MRB-254 · the two circulations never meet",
+         claim="no element carries both streams, none carries a stream and "
+               "the barrier, and all four crossings agree with their direction",
+         js=r"""
+    (function () {
+      var all = document.querySelectorAll('.ks3-figure-svg [data-stream]');
+      if (!all.length) { return null; }
+      var bad = [], counts = {mother: 0, foetus: 0};
+      for (var i = 0; i < all.length; i++) {
+        var s = all[i].getAttribute('data-stream');
+        if (s !== 'mother' && s !== 'foetus') {
+          bad.push('an element is in stream "' + s + '", which is neither');
+          continue;
+        }
+        counts[s] += 1;
+        if (all[i].hasAttribute('data-gap')) {
+          bad.push('an element is both stream "' + s + '" and the barrier '
+                   + 'between the streams');
+        }
+      }
+      /* the barrier exists, and nothing in it belongs to a circulation */
+      var gaps = document.querySelectorAll('.ks3-figure-svg [data-gap]');
+      if (!gaps.length) {
+        bad.push('nothing is marked as the tissue between the two bloods; '
+                 + 'the whole claim of this figure is that it is there');
+      }
+      /* every crossing: substance and direction must agree, all four */
+      var WANT = {oxygen: 'in', glucose: 'in',
+                  'carbon-dioxide': 'out', urea: 'out'};
+      var cross = document.querySelectorAll('.ks3-figure-svg [data-crosses]');
+      var seen = {};
+      for (var k = 0; k < cross.length; k++) {
+        var what = cross[k].getAttribute('data-crosses');
+        var dir = cross[k].getAttribute('data-direction');
+        seen[what] = 1;
+        if (!(what in WANT)) {
+          bad.push('"' + what + '" crosses the placenta and is not one of the '
+                   + 'four the lesson names');
+        } else if (dir !== WANT[what]) {
+          bad.push(what + ' is drawn crossing ' + dir + '; it crosses '
+                   + WANT[what]);
+        }
+        if (cross[k].hasAttribute('data-stream')) {
+          bad.push(what + '’s arrow belongs to a circulation; a substance '
+                   + 'crossing is not part of either blood');
+        }
+      }
+      for (var w in WANT) {
+        if (!seen[w]) { bad.push(w + ' is not drawn crossing at all'); }
+      }
+      return {n: all.length, mother: counts.mother, foetus: counts.foetus,
+              gaps: gaps.length, bad: bad};
+    })()
+""",
+         expect=lambda got: (
+             [] if got["mother"] and got["foetus"] and got["gaps"] else
+             ["draws %d mother element(s), %d foetal and %d barrier; all three "
+              "are required for 'brought close and never joined' to be a thing "
+              "the drawing says" % (got["mother"], got["foetus"],
+                                    got["gaps"])])),
+
+    dict(fig="b4-guard-cells-two-state",
+         page="biology/breathing-and-gas-exchange/"
+              "stomata-and-gas-exchange-in-plants.html",
+         name="⊕ MRB-254 · the inner wall is thicker in BOTH states, and "
+              "every pore is on the underside",
+         claim="inner wall > outer wall in the open panel and the closed one; "
+               "every pore in the lower surface, upper surface unbroken",
+         js=r"""
+    (function () {
+      var walls = document.querySelectorAll('.ks3-figure-svg [data-wall]');
+      if (!walls.length) { return null; }
+      var bad = [], thick = {}, thin = {};
+      for (var i = 0; i < walls.length; i++) {
+        var w = walls[i];
+        var st = w.getAttribute('data-state');
+        var kind = w.getAttribute('data-wall');
+        var px = parseFloat(w.getAttribute('stroke-width'));
+        if (!st) { bad.push('a wall is drawn in neither state'); continue; }
+        var box = (kind === 'inner') ? thick : thin;
+        if (box[st] === undefined || px > box[st]) { box[st] = px; }
+      }
+      /* ⚠️ BOTH PANELS. The thickened inner wall is the whole mechanism, and
+         a defect that dropped it from ONE panel still looks right in the
+         other — which is the state a one-panel assertion would measure. */
+      ['open', 'closed'].forEach(function (st) {
+        if (thick[st] === undefined) {
+          bad.push('the ' + st + ' panel draws no inner wall at all');
+        } else if (thin[st] === undefined) {
+          bad.push('the ' + st + ' panel draws no outer wall to compare');
+        } else if (!(thick[st] > thin[st])) {
+          bad.push('in the ' + st + ' panel the inner wall is ' + thick[st]
+                   + ' and the outer is ' + thin[st]
+                   + '; the inner wall is the thick one, and that is why a '
+                   + 'filling cell curves instead of swelling evenly');
+        }
+      });
+      /* every pore, and which surface it is in */
+      var pores = document.querySelectorAll('.ks3-figure-svg [data-pore]');
+      if (!pores.length) {
+        bad.push('the section draws no pores, so it makes no claim about '
+                 + 'which surface they are in');
+      }
+      for (var k = 0; k < pores.length; k++) {
+        var s = pores[k].getAttribute('data-surface');
+        if (s !== 'lower') {
+          bad.push('a pore is drawn in the ' + (s || 'unnamed')
+                   + ' surface; every stoma in this drawing is in the '
+                   + 'underside, and that is what rung 1 examines');
+        }
+      }
+      var upper = document.querySelectorAll(
+        '.ks3-figure-svg [data-surface="upper"][data-run]');
+      if (upper.length !== 1) {
+        bad.push('the upper surface is drawn in ' + upper.length
+                 + ' runs; unbroken means one');
+      }
+      return {n: walls.length, pores: pores.length, bad: bad};
+    })()
+""",
+         expect=lambda got: (
+             [] if got["pores"] >= 1 else
+             ["draws no pore in the leaf section"])),
+
+    dict(fig="b3-villus-labelled",
+         page="biology/nutrition-and-digestion/"
+              "absorption-and-the-small-intestine.html",
+         name="⊕ MRB-254 · the villus wall is one cell thick ALL THE WAY along",
+         claim="every cross line the same span, each frame opened from the one "
+               "before it, and all three crossings drawn",
+         js=r"""
+    (function () {
+      var cells = document.querySelectorAll('.ks3-figure-svg [data-wall-cell]');
+      if (!cells.length) { return null; }
+      var bad = [], spans = {};
+      /* ⚠️ WALKS EVERY DIVIDER. "One cell thick" is a claim about the WHOLE
+         wall, and a wall drawn one cell thick where the label touches it and
+         two cells thick further along is the defect this figure exists to
+         rule out — it would read as correct at the only point anybody checks. */
+      for (var i = 0; i < cells.length; i++) {
+        var sp = cells[i].getAttribute('data-wall-span');
+        spans[sp] = (spans[sp] || 0) + 1;
+      }
+      var keys = Object.keys(spans);
+      if (keys.length !== 1) {
+        bad.push('the wall is divided into cells of ' + keys.length
+                 + ' different depths (' + keys.join(', ')
+                 + '); one cell thick means one depth everywhere');
+      }
+      /* the nesting: each frame opened from the frame before it */
+      var ORDER = ['tube', 'villi', 'microvilli'];
+      var frames = {};
+      var fs = document.querySelectorAll('.ks3-figure-svg [data-scale]');
+      for (var k = 0; k < fs.length; k++) {
+        frames[fs[k].getAttribute('data-scale')] = 1;
+      }
+      ORDER.forEach(function (s) {
+        if (!frames[s]) { bad.push('there is no ' + s + ' frame'); }
+      });
+      var wedges = document.querySelectorAll('.ks3-figure-svg [data-zoom-from]');
+      var pairs = {};
+      for (var w = 0; w < wedges.length; w++) {
+        pairs[wedges[w].getAttribute('data-zoom-from') + '>'
+              + wedges[w].getAttribute('data-zoom-to')] = 1;
+      }
+      for (var n = 0; n < ORDER.length - 1; n++) {
+        var want = ORDER[n] + '>' + ORDER[n + 1];
+        if (!pairs[want]) {
+          bad.push('nothing opens the ' + ORDER[n + 1] + ' frame out of the '
+                   + ORDER[n] + ' frame; the nesting is the figure');
+        }
+      }
+      /* the three things that cross, each one drawn */
+      var WANT = ['glucose', 'amino-acids', 'fatty-acids'];
+      var got = {};
+      var cr = document.querySelectorAll('.ks3-figure-svg [data-crossing]');
+      for (var c = 0; c < cr.length; c++) {
+        got[cr[c].getAttribute('data-crossing')] = 1;
+      }
+      WANT.forEach(function (x) {
+        if (!got[x]) { bad.push(x + ' is not drawn crossing the wall'); }
+      });
+      return {n: cells.length, depths: keys.length, bad: bad};
+    })()
+""",
+         expect=lambda got: (
+             [] if got["n"] >= 4 else
+             ["divides the villus wall into %d cell(s); the point of the "
+              "section is that the count across it is checkable" % got["n"]])),
+
+    dict(fig="b10-nested-scale",
+         page="biology/inheritance-and-dna/chromosomes-genes-and-dna.html",
+         name="⊕ MRB-254 · all 46 chromosomes, 23 pairs, and ONE accent "
+              "thread through all five panels",
+         claim="46 marks indexed 1-46 in 23 pairs of two; five data-followed "
+               "elements, one per panel, one computed stroke; each callout "
+               "opening panel N out of panel N-1 and no other",
+         js=r"""
+    (function () {
+      var marks = document.querySelectorAll('.ks3-figure-svg [data-chromosome]');
+      if (!marks.length) { return null; }
+      var bad = [], seen = {}, pairs = {};
+      /* ⚠️ WALKS ALL 46. "23 pairs" is a claim about the whole set: a drawer
+         that emitted 22 pairs and one triple still draws 46 marks, and a row
+         that only counted them would report green over a karyotype that says
+         a human has three copies of one chromosome. */
+      for (var i = 0; i < marks.length; i++) {
+        var m = marks[i];
+        var n = m.getAttribute('data-chromosome');
+        var p = m.getAttribute('data-pair');
+        var mem = m.getAttribute('data-member');
+        if (seen[n]) {
+          bad.push('chromosome ' + n + ' is drawn twice, so the 46 a student '
+                   + 'counts is not 46 different chromosomes');
+        }
+        seen[n] = 1;
+        var r = pairs[p] || (pairs[p] = {n: 0, mem: {}});
+        r.n += 1;
+        if (r.mem[mem]) {
+          bad.push('pair ' + p + ' has two copies of member ' + mem
+                   + '; a pair is one from each parent, not two of the same');
+        }
+        r.mem[mem] = 1;
+      }
+      for (var k = 1; k <= 46; k++) {
+        if (!seen[String(k)]) {
+          bad.push('chromosome ' + k + ' is not drawn; the panel is a whole '
+                   + 'human cell, and the number in it is the fact it carries');
+        }
+      }
+      var npairs = 0;
+      for (var q in pairs) {
+        npairs += 1;
+        if (pairs[q].n !== 2) {
+          bad.push('pair ' + q + ' is drawn with ' + pairs[q].n
+                   + ' chromosome(s); every one of the 23 is a pair of two');
+        }
+      }
+      /* the accent thread. ⚠️ getComputedStyle, NOT the attribute: the whole
+         figure is one thing at five magnifications, and the accent is the
+         only thing holding a student's place between panels. A panel whose
+         thread resolves to a different colour has quietly become a different
+         thing, and the attribute would still read "followed". */
+      var fol = document.querySelectorAll('.ks3-figure-svg [data-followed]');
+      var panels = {}, strokes = {}, nstroke = 0;
+      for (var f = 0; f < fol.length; f++) {
+        var pn = fol[f].getAttribute('data-panel');
+        if (!pn) {
+          bad.push('the followed thread is drawn on an element that names no '
+                   + 'panel, so it cannot be checked against the zoom');
+          continue;
+        }
+        if (panels[pn]) {
+          bad.push('panel ' + pn + ' marks two different things as the thread '
+                   + 'being followed');
+        }
+        panels[pn] = 1;
+        var s = getComputedStyle(fol[f]).stroke;
+        if (!strokes[s]) { strokes[s] = 1; nstroke += 1; }
+      }
+      for (var t = 1; t <= 5; t++) {
+        if (!panels[String(t)]) {
+          bad.push('panel ' + t + ' marks nothing as the thread being '
+                   + 'followed; a student loses which of the things in front '
+                   + 'of them is the one the previous panel zoomed into');
+        }
+      }
+      if (nstroke > 1) {
+        bad.push('the followed thread resolves to ' + nstroke + ' different '
+                 + 'colours across the five panels; it is ONE molecule seen '
+                 + 'five times, and a change of colour says it is not');
+      }
+      /* the callouts */
+      var wedge = document.querySelectorAll('.ks3-figure-svg [data-zoom-from]');
+      var opens = {}, npair = 0, pairseen = {};
+      for (var w = 0; w < wedge.length; w++) {
+        var a = parseInt(wedge[w].getAttribute('data-zoom-from'), 10);
+        var b = parseInt(wedge[w].getAttribute('data-zoom-to'), 10);
+        if (b !== a + 1) {
+          bad.push('a callout opens panel ' + b + ' out of panel ' + a
+                   + '; each panel is the panel before it, magnified, and a '
+                   + 'jump makes the scale ladder skip a level');
+        }
+        if (!pairseen[a + '>' + b]) { pairseen[a + '>' + b] = 1; npair += 1; }
+        opens[b] = opens[b] || {};
+        opens[b][a] = 1;
+      }
+      for (var u = 2; u <= 5; u++) {
+        if (!opens[u]) {
+          bad.push('nothing opens panel ' + u + ' out of panel ' + (u - 1)
+                   + '; the nesting is the whole figure');
+        } else {
+          var srcs = Object.keys(opens[u]);
+          if (srcs.length !== 1) {
+            bad.push('panel ' + u + ' is opened out of panels '
+                     + srcs.join(' and ') + '; it comes from exactly one');
+          }
+        }
+      }
+      return {n: marks.length, pairs: npairs, followed: fol.length,
+              wedges: npair, bad: bad};
+    })()
+""",
+         expect=lambda got: (
+             [] if (got["n"] == 46 and got["pairs"] == 23
+                    and got["followed"] == 5 and got["wedges"] == 4) else
+             ["draws %d chromosome(s) in %d pair(s), %d followed thread(s) and "
+              "%d callout(s); the figure is 46 in 23 pairs, one thread through "
+              "five panels, and four zooms"
+              % (got["n"], got["pairs"], got["followed"], got["wedges"])])),
+
+    dict(fig="b5-reproductive-systems",
+         page="biology/reproduction/human-reproductive-systems.html",
+         name="⊕ MRB-254 · nine structures, and every badge's FILL agrees "
+              "with what it means",
+         claim="01-09 once in each of the two zones, structure and system "
+               "consistent between them, filled iff there is only one of it, "
+               "read from the computed fill; eight leaders and the bladder "
+               "outside the nine",
+         js=r"""
+    (function () {
+      var badges = document.querySelectorAll('.ks3-figure-svg [data-badge]');
+      if (!badges.length) { return null; }
+      var bad = [], zones = {}, nzone = 0, part = {}, sys = {}, want = {};
+      var lone = null;
+      /* ⚠️ ALL EIGHTEEN BADGES, both zones. The fill is a legend entry — solid
+         means "there is only one of these in the body" — and a defect that
+         keyed it to the zone, or to the row index, or to the system, would be
+         right on the majority and wrong on the rest. A row that sampled the
+         key would have read the plate as correct without looking at it. */
+      for (var i = 0; i < badges.length; i++) {
+        var b = badges[i];
+        var z = b.getAttribute('data-badge');
+        var n = b.getAttribute('data-number');
+        var st = b.getAttribute('data-structure');
+        var cp = b.getAttribute('data-counterpart');
+        if (!zones[z]) { zones[z] = {}; nzone += 1; }
+        if (zones[z][n]) {
+          bad.push('number ' + n + ' is used twice in the ' + z
+                   + '; a student following a number finds two organs');
+        }
+        zones[z][n] = 1;
+        if (part[n] === undefined) { part[n] = st; } else if (part[n] !== st) {
+          bad.push('number ' + n + ' is the ' + part[n] + ' in one zone and '
+                   + 'the ' + st + ' in the other; the key and the drawing '
+                   + 'are the same numbering or they are no key at all');
+        }
+        var sy = b.getAttribute('data-system');
+        if (sys[n] === undefined) { sys[n] = sy; } else if (sys[n] !== sy) {
+          bad.push('number ' + n + ' (' + st + ') is in the ' + sys[n]
+                   + ' system in one zone and the ' + sy + ' in the other');
+        }
+        if (cp !== 'none' && cp !== 'paired') {
+          bad.push(st + '’s badge declares data-counterpart="' + cp
+                   + '", which is neither of the two things it can be');
+          continue;
+        }
+        if (cp === 'none') { lone = lone || st; }
+        want[n] = cp;
+        /* filled = the badge's own fill has become its own outline colour.
+           Read from the computed style, so a token rename cannot make a
+           hollow badge pass as a solid one. */
+        var cs = getComputedStyle(b);
+        var filled = (cs.fill === cs.stroke);
+        if (cp === 'none' && !filled) {
+          bad.push('the ' + st + ' is the one there is only ONE of, and its '
+                   + z + ' badge is drawn hollow — which the legend beside it '
+                   + 'reads as "there is a pair of these"');
+        }
+        if (cp === 'paired' && filled) {
+          bad.push('the ' + st + ' comes as a PAIR, and its ' + z + ' badge is '
+                   + 'drawn solid — which the legend beside it reads as '
+                   + '"there is only one of these"');
+        }
+      }
+      /* the numerals print their own number, in both zones */
+      var nums = document.querySelectorAll('.ks3-figure-svg text[data-numeral]');
+      for (var k = 0; k < nums.length; k++) {
+        var t = nums[k];
+        if (t.textContent.trim() !== t.getAttribute('data-number')) {
+          bad.push('a badge in the ' + t.getAttribute('data-numeral')
+                   + ' is numbered ' + t.getAttribute('data-number')
+                   + ' and prints "' + t.textContent.trim() + '"');
+        }
+      }
+      /* eight leaders for nine badges is CORRECT — the uterus's badge sits
+         inside the organ and needs no line to it. So the absence is asserted
+         as precisely as the presence: exactly one number may go without. */
+      var leads = document.querySelectorAll('.ks3-figure-svg [data-leader]');
+      var led = {};
+      for (var l = 0; l < leads.length; l++) {
+        var e = leads[l];
+        var ln = e.getAttribute('data-number');
+        led[ln] = 1;
+        if (part[ln] !== e.getAttribute('data-leader')) {
+          bad.push('a leader labelled ' + e.getAttribute('data-leader')
+                   + ' carries number ' + ln + ', which the key gives to the '
+                   + part[ln]);
+        }
+      }
+      for (var p in part) {
+        var isUterus = (part[p] === 'uterus');
+        if (!led[p] && !isUterus) {
+          bad.push('nothing points at the ' + part[p] + ' (' + p + '); its '
+                   + 'badge names an organ the student cannot find');
+        }
+        if (led[p] && isUterus) {
+          bad.push('the uterus has a leader line as well as a badge inside '
+                   + 'it; the port’s count of eight leaders for nine badges '
+                   + 'was the uterus, and it has changed');
+        }
+      }
+      /* the bladder is drawn because it is in the way, and it must stay out
+         of the nine — a numbered bladder is a reproductive organ */
+      var off = document.querySelectorAll('.ks3-figure-svg [data-role]');
+      for (var o = 0; o < off.length; o++) {
+        var x = off[o];
+        if (x.getAttribute('data-role') !== 'no-reproductive-job') { continue; }
+        if (x.hasAttribute('data-number') || x.hasAttribute('data-badge')
+            || x.hasAttribute('data-structure')
+            || x.hasAttribute('data-numeral')) {
+          bad.push('the bladder is numbered into the key; it is drawn only '
+                   + 'because it sits in the way, and the lesson names NINE '
+                   + 'reproductive structures');
+        }
+      }
+      var count = 0;
+      for (var c in part) { count += 1; }
+      return {badges: badges.length, zones: nzone, numbers: count,
+              leaders: leads.length, lone: lone, bad: bad};
+    })()
+""",
+         expect=lambda got: (
+             [] if (got["numbers"] == 9 and got["zones"] == 2
+                    and got["badges"] == 18 and got["leaders"] == 8) else
+             ["numbers %d structure(s) across %d zone(s) with %d badge(s) and "
+              "%d leader(s); the lesson names nine, drawn once on the plate and "
+              "once in the key, with the uterus's badge inside the organ"
+              % (got["numbers"], got["zones"], got["badges"],
+                 got["leaders"])])),
+
+    dict(fig="b7-leaf-section",
+         page="biology/photosynthesis/leaves-built-for-the-job.html",
+         name="⊕ MRB-254 · the six layers are in the order they are DRAWN in",
+         claim="every layer's drawn band below the one before it and its "
+               "data-order agreeing; every stoma in the lower surface; upper "
+               "cuticle one run and lower more than one; the CO₂ route "
+               "contiguous and ending inside a palisade cell",
+         js=r"""
+    (function () {
+      var ORDER = ['upper-cuticle', 'upper-epidermis', 'palisade',
+                   'spongy-mesophyll', 'lower-epidermis', 'lower-cuticle'];
+      var els = document.querySelectorAll('.ks3-figure-svg [data-layer]');
+      if (!els.length) { return null; }
+      var bad = [], band = {}, nband = 0;
+      /* ⚠️ MEASURED, not read off data-order. The order attribute and the
+         drawing are two copies of the same claim, and a figure whose palisade
+         is drawn under the spongy layer while still declaring order 3 teaches
+         the wrong leaf to everyone who looks at it and passes any assertion
+         made of attributes. So both, and they must agree. */
+      for (var i = 0; i < els.length; i++) {
+        var e = els[i];
+        /* the side labels carry the layer name too and sit outside the
+           section; the claim is about the drawn band */
+        if (e.tagName.toLowerCase() === 'text') { continue; }
+        var n = e.getAttribute('data-layer');
+        var b = e.getBBox();
+        var r = band[n];
+        if (!r) { r = band[n] = {n: 0, sum: 0, top: 1e9, bot: -1e9, ord: {}};
+                  nband += 1; }
+        r.n += 1;
+        r.sum += b.y + b.height / 2;
+        r.top = Math.min(r.top, b.y);
+        r.bot = Math.max(r.bot, b.y + b.height);
+        r.ord[e.getAttribute('data-order')] = 1;
+      }
+      var prev = null;
+      for (var k = 0; k < ORDER.length; k++) {
+        var name = ORDER[k], r2 = band[name];
+        if (!r2) {
+          bad.push('the section draws no ' + name + '; a leaf section that is '
+                   + 'missing a layer teaches a leaf that has not got one');
+          continue;
+        }
+        var os = Object.keys(r2.ord);
+        if (os.length !== 1 || os[0] !== String(k + 1)) {
+          bad.push(name + ' declares data-order ' + os.join('/')
+                   + '; counting down from the top surface it is layer '
+                   + (k + 1));
+        }
+        r2.mean = r2.sum / r2.n;
+        r2.name = name;
+        if (prev) {
+          if (!(prev.mean < r2.mean)) {
+            bad.push(name + ' is DRAWN above the ' + prev.name + ' (centre y '
+                     + Math.round(r2.mean) + ' against '
+                     + Math.round(prev.mean) + '); a student reads the picture, '
+                     + 'and the picture has the layers the wrong way round');
+          }
+          if (prev.bot > r2.top + 1) {
+            bad.push(name + ' overlaps the ' + prev.name + ' (it starts at y '
+                     + Math.round(r2.top) + ' and the ' + prev.name
+                     + ' runs to ' + Math.round(prev.bot) + '); the layers are '
+                     + 'a stack, and a section that blurs two of them is a '
+                     + 'section that cannot be counted');
+          }
+        }
+        prev = r2;
+      }
+      /* every stoma, including the two that are only labels */
+      var stomata = document.querySelectorAll('.ks3-figure-svg [data-stoma]');
+      for (var s = 0; s < stomata.length; s++) {
+        var sf = stomata[s].getAttribute('data-surface');
+        if (sf !== 'lower') {
+          bad.push('a stoma hook is in the ' + (sf || 'unnamed') + ' surface; '
+                   + 'every stoma in this section is on the UNDERSIDE, which '
+                   + 'is the whole reason the two cuticles are drawn '
+                   + 'differently');
+        }
+      }
+      var up = document.querySelectorAll(
+        '.ks3-figure-svg [data-layer="upper-cuticle"][data-run]');
+      var low = document.querySelectorAll(
+        '.ks3-figure-svg [data-layer="lower-cuticle"][data-run]');
+      if (up.length !== 1) {
+        bad.push('the upper cuticle is drawn in ' + up.length + ' runs; it is '
+                 + 'unbroken, and that is the contrast the pores are read '
+                 + 'against');
+      }
+      if (low.length < 2) {
+        bad.push('the lower cuticle is drawn as one unbroken run; it is broken '
+                 + 'BY the stomata, and drawn whole it says the gas gets in '
+                 + 'through solid wax');
+      }
+      /* the carbon dioxide route: every step, in order, joined end to start */
+      var rt = document.querySelectorAll('.ks3-figure-svg [data-route="co2"]');
+      var steps = {}, maxs = 0, ends = {}, starts = {}, through = {};
+      for (var q = 0; q < rt.length; q++) {
+        var el = rt[q], sv = el.getAttribute('data-step');
+        if (!sv) { continue; }
+        var si = parseInt(sv, 10);
+        if (si > maxs) { maxs = si; }
+        var g = steps[si] || (steps[si] = {els: [], line: null});
+        g.els.push(el);
+        if (el.tagName.toLowerCase() === 'line') { g.line = el; }
+        if (el.hasAttribute('data-end')) {
+          ends[si] = el.getAttribute('data-end');
+        }
+        if (el.hasAttribute('data-start')) {
+          starts[si] = el.getAttribute('data-start');
+        }
+        if (el.hasAttribute('data-through')) {
+          through[el.getAttribute('data-through')] = si;
+        }
+      }
+      for (var m = 1; m <= maxs; m++) {
+        if (!steps[m]) {
+          bad.push('the carbon dioxide route has no step ' + m + '; a route '
+                   + 'with a hole in it does not show a way in');
+        }
+      }
+      for (var j = 1; j < maxs; j++) {
+        var a = steps[j] && steps[j].line, b2 = steps[j + 1] && steps[j + 1].line;
+        if (!a || !b2) { continue; }
+        var dx = parseFloat(a.getAttribute('x2'))
+                 - parseFloat(b2.getAttribute('x1'));
+        var dy = parseFloat(a.getAttribute('y2'))
+                 - parseFloat(b2.getAttribute('y1'));
+        var d = Math.sqrt(dx * dx + dy * dy);
+        if (d > 1) {
+          bad.push('step ' + (j + 1) + ' of the carbon dioxide route starts '
+                   + Math.round(d) + ' units from where step ' + j
+                   + ' ended; the gas is shown jumping a gap, and a student '
+                   + 'can read the entry point as somewhere other than the '
+                   + 'pore');
+        }
+      }
+      if (starts[1] !== 'outside') {
+        bad.push('step 1 of the carbon dioxide route does not begin outside '
+                 + 'the leaf');
+      }
+      if (!through.stoma) {
+        bad.push('no step of the carbon dioxide route is marked as passing '
+                 + 'through the stoma; that pore is the only way in');
+      }
+      if (ends[maxs] !== 'palisade') {
+        bad.push('the carbon dioxide route ends at "' + ends[maxs] + '"; it '
+                 + 'ends at the palisade cells, where the chloroplasts are');
+      }
+      /* and it ends there in the DRAWING, not only in the attribute */
+      var last = steps[maxs];
+      if (last) {
+        var tipY = 1e9, tipX = null;
+        for (var z = 0; z < last.els.length; z++) {
+          var bb = last.els[z].getBBox();
+          if (bb.y < tipY) { tipY = bb.y; tipX = bb.x + bb.width / 2; }
+        }
+        var cells = document.querySelectorAll(
+          '.ks3-figure-svg [data-cell="palisade"]');
+        var inside = false;
+        for (var c = 0; c < cells.length; c++) {
+          var cb = cells[c].getBBox();
+          if (tipX >= cb.x && tipX <= cb.x + cb.width
+              && tipY >= cb.y && tipY <= cb.y + cb.height) { inside = true; }
+        }
+        if (!inside) {
+          bad.push('the carbon dioxide arrow stops at (' + Math.round(tipX)
+                   + ', ' + Math.round(tipY) + '), which is inside no palisade '
+                   + 'cell; the arrow says the gas reaches the chloroplasts and '
+                   + 'the drawing stops it short of them');
+        }
+      }
+      /* the scale bar prints the number it declares */
+      var bar = document.querySelector('.ks3-figure-svg [data-scale-mm]');
+      var mm = bar && bar.getAttribute('data-scale-mm');
+      var lab = null;
+      var sc = document.querySelectorAll('.ks3-figure-svg text[data-scale-mm]');
+      for (var y = 0; y < sc.length; y++) { lab = sc[y].textContent; }
+      if (!bar) {
+        bad.push('the section carries no scale, so its thickness is a '
+                 + 'drawing rather than a measurement');
+      } else if (!lab || lab.indexOf(mm) < 0) {
+        bad.push('the scale is declared as ' + mm + ' mm and the label under '
+                 + 'it reads "' + lab + '"');
+      }
+      return {layers: nband, stomata: stomata.length, co2steps: maxs,
+              upperRuns: up.length, lowerRuns: low.length, bad: bad};
+    })()
+""",
+         expect=lambda got: (
+             [] if (got["layers"] == 6 and got["stomata"] >= 1
+                    and got["co2steps"] >= 2) else
+             ["draws %d layer(s), %d stoma hook(s) and a %d-step carbon dioxide "
+              "route; the section is six layers, a pore on the underside, and a "
+              "way in through it"
+              % (got["layers"], got["stomata"], got["co2steps"])])),
+
+    dict(fig="b3-gut-labelled",
+         page="biology/nutrition-and-digestion/the-digestive-system.html",
+         name="⊕ MRB-254 · the gut is ONE tube, walked join by join",
+         claim="stops 01-07 without gap or repeat in the plate and the key; "
+               "every segment's end meeting the next one's start in the "
+               "drawing; no accessory organ on the tube; the simplification "
+               "disclosed on the figure",
+         js=r"""
+    (function () {
+      var stops = document.querySelectorAll('.ks3-figure-svg [data-stop]');
+      if (!stops.length) { return null; }
+      var bad = [], seen = {}, organ = {}, count = 0;
+      for (var i = 0; i < stops.length; i++) {
+        var s = stops[i], n = s.getAttribute('data-stop');
+        if (seen[n]) {
+          bad.push('stop ' + n + ' is drawn twice on the plate; the numbers '
+                   + 'are the order food travels in');
+        }
+        seen[n] = 1; count += 1;
+        organ[n] = s.getAttribute('data-organ');
+      }
+      var KEYS = document.querySelectorAll('.ks3-figure-svg [data-key-stop]');
+      var kseen = {};
+      for (var k = 0; k < KEYS.length; k++) {
+        var e = KEYS[k], kn = e.getAttribute('data-key-stop');
+        if (kseen[kn]) { bad.push('stop ' + kn + ' is listed twice in the key'); }
+        kseen[kn] = 1;
+        if (organ[kn] !== e.getAttribute('data-key-organ')) {
+          bad.push('stop ' + kn + ' is the ' + organ[kn] + ' on the plate and '
+                   + 'the ' + e.getAttribute('data-key-organ') + ' in the key');
+        }
+      }
+      for (var q = 1; q <= count; q++) {
+        var num = (q < 10 ? '0' : '') + q;
+        if (!seen[num]) {
+          bad.push('stop ' + num + ' is missing from the plate, so the numbers '
+                   + 'a student follows skip a place in the journey');
+        }
+        if (!kseen[num]) { bad.push('stop ' + num + ' is missing from the key'); }
+      }
+      var nums = document.querySelectorAll(
+        '.ks3-figure-svg text[data-stop-numeral]');
+      for (var m = 0; m < nums.length; m++) {
+        if (nums[m].textContent.trim()
+            !== nums[m].getAttribute('data-stop-numeral')) {
+          bad.push('a badge declares stop '
+                   + nums[m].getAttribute('data-stop-numeral') + ' and prints "'
+                   + nums[m].textContent.trim() + '"');
+        }
+      }
+      /* ⚠️ EVERY JOIN, from the drawn paths. "One continuous tube from mouth
+         to anus" is the sentence the figure exists to make true, and a tube
+         drawn in four pieces with a gap between two of them still looks like a
+         gut. The end of each segment must be where the next one starts, and
+         that is a measurement of the path data, not of a label. */
+      var walls = document.querySelectorAll(
+        '.ks3-figure-svg path[data-segment][data-tube-layer="wall"]');
+      var seg = [], nseg = 0;
+      for (var w = 0; w < walls.length; w++) {
+        var p = walls[w], L = p.getTotalLength();
+        var a = p.getPointAtLength(0), b = p.getPointAtLength(L);
+        var si = parseInt(p.getAttribute('data-segment'), 10);
+        if (seg[si]) {
+          bad.push('segment ' + si + ' has two outlines, so which one the '
+                   + 'food goes down is not decidable');
+        }
+        seg[si] = {i: si, part: p.getAttribute('data-tube-part'),
+                   a: a, b: b};
+        nseg += 1;
+      }
+      for (var j = 1; j < nseg; j++) {
+        var one = seg[j], two = seg[j + 1];
+        if (!one || !two) {
+          bad.push('the tube has no segment ' + (one ? j + 1 : j)
+                   + '; a gut drawn in pieces is not one tube');
+          continue;
+        }
+        var dx = one.b.x - two.a.x, dy = one.b.y - two.a.y;
+        var d = Math.sqrt(dx * dx + dy * dy);
+        /* the tube is 21 units across at its narrowest, so anything under
+           half a bore is a drawn join and anything over it is a hole */
+        if (d > 12) {
+          bad.push('the ' + one.part + ' ends ' + Math.round(d)
+                   + ' units from where the ' + two.part + ' begins; the gut '
+                   + 'is drawn with a gap in it, and "one continuous tube" is '
+                   + 'the sentence this figure exists to make checkable');
+        }
+      }
+      /* the three accessory organs are beside the tube, never on it */
+      var acc = document.querySelectorAll('.ks3-figure-svg [data-accessory]');
+      for (var c = 0; c < acc.length; c++) {
+        var x = acc[c];
+        if (x.hasAttribute('data-tube') || x.hasAttribute('data-segment')
+            || x.hasAttribute('data-tube-part')) {
+          bad.push('the ' + x.getAttribute('data-accessory') + ' is drawn as '
+                   + 'part of the tube; food never passes through it, and a '
+                   + 'student who thinks it does has the wrong gut');
+        }
+      }
+      var onTube = document.querySelectorAll('.ks3-figure-svg [data-on-tube]');
+      var off = 0;
+      for (var o = 0; o < onTube.length; o++) {
+        if (onTube[o].getAttribute('data-on-tube') === '0') { off += 1; }
+      }
+      if (off !== 1) {
+        bad.push(off + ' of the numbered stops are marked as off the tube; '
+                 + 'exactly one is — the liver, pancreas and gall bladder, '
+                 + 'which pour in without the food going through them');
+      }
+      /* the drawing straightens the coils, and says so on itself */
+      var disc = document.querySelectorAll('.ks3-figure-svg [data-disclosure]');
+      var words = '';
+      for (var d2 = 0; d2 < disc.length; d2++) { words += disc[d2].textContent; }
+      if (!disc.length || words.replace(/\s+/g, '').length < 20) {
+        bad.push('the figure states no simplification. The coils are drawn as '
+                 + 'one run down the frame rather than where they really sit, '
+                 + 'and a diagram that reorganises the body without saying so '
+                 + 'is teaching the arrangement as fact');
+      }
+      return {stops: count, keys: KEYS.length, segments: nseg,
+              accessories: acc.length, disclosure: disc.length, bad: bad};
+    })()
+""",
+         expect=lambda got: (
+             [] if (got["stops"] == 7 and got["keys"] == 7
+                    and got["segments"] >= 2 and got["accessories"] == 3
+                    and got["disclosure"] >= 1) else
+             ["draws %d stop(s) against %d key row(s), %d tube segment(s), %d "
+              "accessory organ(s) and %d disclosure line(s); the journey is "
+              "seven stops down one tube, with three organs beside it"
+              % (got["stops"], got["keys"], got["segments"],
+                 got["accessories"], got["disclosure"])])),
+
+    dict(fig="b4-gas-exchange-labelled",
+         page="biology/breathing-and-gas-exchange/"
+              "the-gas-exchange-system.html",
+         name="⊕ MRB-254 · the sacs are at the ENDS, and only at the ends",
+         claim="all 48 sac clusters on a branch that exists and is terminal, "
+               "every terminal branch carrying sacs, no dividing branch "
+               "carrying any; the five route steps printing their own names in "
+               "order; nothing that moves the lungs marked as an airway",
+         js=r"""
+    (function () {
+      var sacs = document.querySelectorAll('.ks3-figure-svg [data-sacs]');
+      var branches = document.querySelectorAll('.ks3-figure-svg [data-branch]');
+      if (!sacs.length || !branches.length) { return null; }
+      var bad = [], byId = {}, gens = {}, ngen = 0, nterm = 0;
+      for (var i = 0; i < branches.length; i++) {
+        var b = branches[i], id = b.getAttribute('data-branch-id');
+        if (byId[id]) {
+          bad.push('branch ' + id + ' is drawn twice, so what hangs off it is '
+                   + 'not decidable');
+        }
+        var term = (b.getAttribute('data-terminal') === '1');
+        if (term) { nterm += 1; }
+        byId[id] = {term: term, gen: b.getAttribute('data-generation'),
+                    sacs: 0};
+        if (!gens[b.getAttribute('data-generation')]) {
+          gens[b.getAttribute('data-generation')] = 1; ngen += 1;
+        }
+      }
+      /* ⚠️ WALKS ALL 48 CLUSTERS AND ALL 30 BRANCHES, and both converses with
+         them. The fact the drawing carries is that gas exchange happens at the
+         ENDS of the tree and nowhere else; a defect that hung one cluster off
+         a dividing branch would be right 47 times out of 48, and a defect that
+         left one terminal tip bare would be right 15 times out of 16. Either
+         is a lung a student can read as "the tubes themselves do the
+         exchanging", which is the misconception the alveoli lessons then
+         spend their time undoing. */
+      for (var j = 0; j < sacs.length; j++) {
+        var id2 = sacs[j].getAttribute('data-branch-id');
+        if (!id2 || !byId[id2]) {
+          bad.push('a cluster of air sacs hangs off "' + id2 + '", which is '
+                   + 'not a branch of this tree; the sacs are drawn attached '
+                   + 'to nothing');
+          continue;
+        }
+        byId[id2].sacs += 1;
+        if (!byId[id2].term) {
+          bad.push('air sacs are drawn on branch ' + id2 + ', which is '
+                   + 'generation ' + byId[id2].gen + ' and goes on to divide; '
+                   + 'a student reads this as exchange happening part way '
+                   + 'down the airway instead of at its end');
+        }
+      }
+      for (var id3 in byId) {
+        if (byId[id3].term && byId[id3].sacs === 0) {
+          bad.push('branch ' + id3 + ' is a terminal airway with no air sacs '
+                   + 'on the end of it; an airway that ends in nothing is an '
+                   + 'airway that does no exchanging, and the tree stops '
+                   + 'meaning what it draws');
+        }
+      }
+      /* the generations are 1-based: the trachea's first division is
+         generation 1, and a tree numbered from 0 would put the sacs on
+         generation 3 while still drawing four divisions */
+      for (var g = 1; g <= 4; g++) {
+        if (!gens[String(g)]) {
+          bad.push('no branch is drawn at generation ' + g + '; the tree in '
+                   + 'this figure divides four times, numbered 1 to 4');
+        }
+      }
+      /* the route, read off the strings the figure prints */
+      var NAMES = ['nose and mouth', 'trachea', 'bronchi', 'bronchioles',
+                   'alveoli'];
+      for (var s = 1; s <= NAMES.length; s++) {
+        var txt = document.querySelectorAll(
+          '.ks3-figure-svg text[data-route-step="' + s + '"]');
+        var strs = [], parts = {};
+        for (var t = 0; t < txt.length; t++) {
+          strs.push(txt[t].textContent.trim());
+          parts[txt[t].getAttribute('data-route-part')] = 1;
+        }
+        var num = (s < 10 ? '0' : '') + s;
+        if (!strs.length) {
+          bad.push('step ' + num + ' of the route into the lungs is not drawn; '
+                   + 'the five stops are the order the air goes in');
+          continue;
+        }
+        if (strs.indexOf(NAMES[s - 1]) < 0) {
+          bad.push('step ' + num + ' of the route prints "' + strs.join('" / "')
+                   + '"; the ' + s + 'th place the air passes through is the '
+                   + NAMES[s - 1]);
+        }
+        if (strs.indexOf(num) < 0) {
+          bad.push('step ' + s + ' does not print its own number ' + num);
+        }
+        var want = NAMES[s - 1].split(' ').join('-');
+        if (!parts[want]) {
+          bad.push('step ' + num + ' names the ' + Object.keys(parts).join('/')
+                   + ' where the route reaches the ' + NAMES[s - 1]);
+        }
+      }
+      /* the ribs, the intercostals and the diaphragm move the lungs; none of
+         them is a tube the air goes down */
+      var around = document.querySelectorAll('.ks3-figure-svg [data-around]');
+      for (var a = 0; a < around.length; a++) {
+        if (around[a].hasAttribute('data-branch')
+            || around[a].hasAttribute('data-sacs')) {
+          bad.push('the ' + around[a].getAttribute('data-around-part')
+                   + ' is marked as part of the airway tree; it is what moves '
+                   + 'the lungs, not what the air travels through');
+        }
+      }
+      return {sacs: sacs.length, branches: branches.length,
+              terminals: nterm, generations: ngen,
+              around: around.length, bad: bad};
+    })()
+""",
+         expect=lambda got: (
+             [] if (got["sacs"] >= 1 and got["branches"] >= 2
+                    and got["terminals"] >= 1
+                    and got["generations"] == 4) else
+             ["draws %d sac cluster(s) over %d branch(es), %d of them terminal, "
+              "across %d generation(s); the tree divides four times and ends in "
+              "sacs" % (got["sacs"], got["branches"], got["terminals"],
+                        got["generations"])])),
+
+    dict(fig="b5-flower-parts-labelled",
+         page="biology/reproduction/flowers-and-pollination.html",
+         name="⊕ MRB-254 · inside and outside are MEASURED, and every barb is "
+              "on its own curve",
+         claim="nine parts numbered once, the same number meaning the same "
+               "part everywhere; both insect anthers inside the drawn petal "
+               "envelope and all three wind anthers clear of the floret "
+               "ellipse; all 36 barbs on their own plume's cubic",
+         js=r"""
+    (function () {
+      var key = document.querySelectorAll(
+        '.ks3-figure-svg circle[data-key][data-number]');
+      if (!key.length) { return null; }
+      var bad = [], part = {}, nkey = 0;
+      for (var i = 0; i < key.length; i++) {
+        var n = key[i].getAttribute('data-number');
+        var p = key[i].getAttribute('data-part');
+        if (part[n]) {
+          bad.push('number ' + n + ' is given to the ' + part[n] + ' and to '
+                   + 'the ' + p + ' in the key');
+        }
+        part[n] = p; nkey += 1;
+      }
+      for (var k = 1; k <= nkey; k++) {
+        var num = (k < 10 ? '0' : '') + k;
+        if (!part[num]) {
+          bad.push('number ' + num + ' is missing from the key, so the badges '
+                   + 'on the drawings point at a row that is not there');
+        }
+      }
+      /* ⚠️ EVERY numbered element on BOTH drawings, not the key alone. The
+         floret re-uses 01, 02 and 03 from the same key on purpose — the
+         numbering being identical is what makes the POSITION the only
+         variable — and a drawing that quietly re-minted 01 for a different
+         organ would still look numbered. */
+      var all = document.querySelectorAll(
+        '.ks3-figure-svg [data-number][data-part]');
+      for (var a = 0; a < all.length; a++) {
+        var an = all[a].getAttribute('data-number');
+        var ap = all[a].getAttribute('data-part');
+        if (part[an] && part[an] !== ap) {
+          bad.push('number ' + an + ' is the ' + ap + ' on one drawing and the '
+                   + part[an] + ' in the key; both flowers are numbered from '
+                   + 'ONE key, and that is what makes the comparison readable');
+        }
+      }
+      /* ⛔ THE POSITIONS, FROM THE GEOMETRY. A drawing can put the word
+         "outside" beside an anther drawn inside the petals and it will read
+         as right to anybody who reads the word — which is the entire
+         comparison this figure replaces a table with. So the dashed boundary
+         is flattened and the anther's own drawn box is tested against it. */
+      var env = {};
+      var evs = document.querySelectorAll('.ks3-figure-svg [data-envelope]');
+      for (var e = 0; e < evs.length; e++) {
+        env[evs[e].getAttribute('data-envelope')] = evs[e].getBBox();
+      }
+      var anth = document.querySelectorAll(
+        '.ks3-figure-svg [data-anther-position]');
+      var nin = 0, nout = 0;
+      for (var q = 0; q < anth.length; q++) {
+        var el = anth[q];
+        var pos = el.getAttribute('data-anther-position');
+        var fl = el.getAttribute('data-flower');
+        var b = el.getBBox(), E = env[fl];
+        if (!E) {
+          bad.push('the ' + fl + ' flower draws no boundary, so "' + pos
+                   + '" is a word with nothing to be inside or outside of');
+          continue;
+        }
+        var within = (b.x >= E.x && b.y >= E.y
+                      && b.x + b.width <= E.x + E.width
+                      && b.y + b.height <= E.y + E.height);
+        var clear = (b.x + b.width < E.x || b.x > E.x + E.width
+                     || b.y + b.height < E.y || b.y > E.y + E.height);
+        if (pos === 'inside') {
+          nin += 1;
+          if (!within) {
+            bad.push('an anther on the ' + fl + ' flower is labelled INSIDE '
+                     + 'and is drawn outside the petal envelope; the position '
+                     + 'is the fact this drawing exists to let a student check, '
+                     + 'and the label would tell them the opposite of the '
+                     + 'picture');
+          }
+        } else if (pos === 'outside') {
+          nout += 1;
+          if (!clear) {
+            bad.push('an anther on the ' + fl + ' floret is labelled OUTSIDE '
+                     + 'and its drawn box overlaps the floret; wind-pollinated '
+                     + 'anthers dangle clear on long filaments, which is why '
+                     + 'the wind can reach them');
+          }
+        } else {
+          bad.push('an anther declares position "' + pos + '", which is '
+                   + 'neither inside nor outside');
+        }
+      }
+      /* the feathery stigma: a net is a net EVERYWHERE, so every barb must
+         start on the curve it claims to have been sampled from. The plume is
+         a cubic and `data-t` is its Bézier parameter, so the curve is
+         evaluated at t rather than walked by arc length — the two are not the
+         same point on a curve that is not straight. */
+      var barbs = document.querySelectorAll('.ks3-figure-svg [data-barb]');
+      var worst = 0, offCurve = 0;
+      for (var z = 0; z < barbs.length; z++) {
+        var bb = barbs[z];
+        var pl = document.querySelector(
+          '.ks3-figure-svg path[data-plume="' + bb.getAttribute('data-plume')
+          + '"]:not([data-barb])');
+        if (!pl) {
+          bad.push('barb ' + bb.getAttribute('data-barb') + ' names plume '
+                   + bb.getAttribute('data-plume') + ', which is not drawn');
+          continue;
+        }
+        var c = (pl.getAttribute('d').match(/-?[\d.]+/g) || []).map(Number);
+        if (c.length < 8) {
+          bad.push('plume ' + bb.getAttribute('data-plume') + ' is not a '
+                   + 'single cubic, so its barbs cannot be checked against it');
+          continue;
+        }
+        var t = parseFloat(bb.getAttribute('data-t')), u = 1 - t;
+        var px = u * u * u * c[0] + 3 * u * u * t * c[2]
+                 + 3 * u * t * t * c[4] + t * t * t * c[6];
+        var py = u * u * u * c[1] + 3 * u * u * t * c[3]
+                 + 3 * u * t * t * c[5] + t * t * t * c[7];
+        var s0 = bb.getPointAtLength(0);
+        var d = Math.sqrt((px - s0.x) * (px - s0.x)
+                          + (py - s0.y) * (py - s0.y));
+        if (d > worst) { worst = d; }
+        /* 0.12 units. Every coordinate is rounded to one decimal, which can
+           move a point by at most 0.0707 units; the port measured a worst
+           real offset of 0.065. Anything above 0.12 is a barb that was placed
+           rather than sampled. */
+        if (d > 0.12) {
+          offCurve += 1;
+          bad.push('barb ' + bb.getAttribute('data-barb') + ' starts '
+                   + d.toFixed(2) + ' units off its own plume at t='
+                   + bb.getAttribute('data-t') + '; the fringe is supposed to '
+                   + 'be sampled FROM the curve, and one that hangs beside it '
+                   + 'draws a stigma whose net has a hole in it');
+        }
+      }
+      return {parts: nkey, barbs: barbs.length, inside: nin, outside: nout,
+              offCurve: offCurve, worst: Math.round(worst * 1000) / 1000,
+              envelopes: evs.length, bad: bad};
+    })()
+""",
+         expect=lambda got: (
+             [] if (got["parts"] == 9 and got["inside"] == 2
+                    and got["outside"] == 3 and got["barbs"] == 36
+                    and got["envelopes"] == 2) else
+             ["numbers %d part(s), draws %d anther(s) inside and %d outside "
+              "against %d boundary lines, and fringes the stigma with %d barb(s); "
+              "the figure is nine parts, two anthers in, three out, and nine "
+              "sample points fringed both sides on each of two plumes"
+              % (got["parts"], got["inside"], got["outside"],
+                 got["envelopes"], got["barbs"])])),
+
+    dict(fig="b5-gametes-journey",
+         page="biology/reproduction/gametes-and-fertilisation.html",
+         name="⊕ MRB-254 · fertilisation and implantation are two events, in "
+              "two places, six days apart",
+         claim="steps 1-5 once in the map and once in the key; each route's "
+               "own steps running one way along the tract; the two events "
+               "differing in place AND day, both in the tract, and the gap "
+               "equal to the difference and printed as such",
+         js=r"""
+    (function () {
+      var badges = document.querySelectorAll(
+        '.ks3-figure-svg circle[data-step][data-zone]');
+      if (!badges.length) { return null; }
+      var bad = [], zones = {}, nzone = 0, routes = {}, nstep = 0;
+      for (var i = 0; i < badges.length; i++) {
+        var e = badges[i];
+        var z = e.getAttribute('data-zone'), s = e.getAttribute('data-step');
+        if (!zones[z]) { zones[z] = {n: 0, seen: {}}; nzone += 1; }
+        if (zones[z].seen[s]) {
+          bad.push('step ' + s + ' is badged twice in the ' + z
+                   + '; the five steps happen once each, in order');
+        }
+        zones[z].seen[s] = 1; zones[z].n += 1;
+        if (zones[z].n > nstep) { nstep = zones[z].n; }
+        var rt = e.getAttribute('data-route');
+        if (rt) {
+          routes[rt] = routes[rt] || [];
+          routes[rt].push({s: parseInt(s, 10),
+                           along: parseFloat(e.getAttribute('data-along'))});
+        }
+      }
+      for (var z2 in zones) {
+        for (var k = 1; k <= nstep; k++) {
+          if (!zones[z2].seen[String(k)]) {
+            bad.push('step ' + k + ' is missing from the ' + z2
+                     + '; the map and the key are the same journey');
+          }
+        }
+      }
+      /* ⚠️ ORDER IS CHECKED PER ROUTE, NEVER 1 THROUGH 5. Step 02 is the
+         sperm, and the sperm travel UP the tract while the egg travels down
+         it, so a monotone check over all five steps would assert that the
+         sperm start where the egg started — which is not what the drawing
+         says and not what happens. Each route runs one way along the tract;
+         the two routes run opposite ways and meet. */
+      var nroute = 0;
+      for (var r in routes) {
+        nroute += 1;
+        var a = routes[r].slice().sort(function (x, y) { return x.s - y.s; });
+        for (var q = 1; q < a.length; q++) {
+          if (!(a[q].along > a[q - 1].along)) {
+            bad.push('on the ' + r + ' route, step ' + a[q].s + ' sits '
+                     + a[q].along + ' along the tract and step ' + a[q - 1].s
+                     + ' sits at ' + a[q - 1].along + '; the steps of one route '
+                     + 'run one way, and drawn backwards they show the cell '
+                     + 'returning the way it came');
+          }
+        }
+      }
+      /* the two events */
+      var evs = document.querySelectorAll('.ks3-figure-svg [data-event]');
+      var by = {}, names = [];
+      for (var j = 0; j < evs.length; j++) {
+        var el = evs[j], n = el.getAttribute('data-event');
+        if (!by[n]) { by[n] = {places: {}, np: 0, days: {}, nd: 0, tract: 0};
+                      names.push(n); }
+        var rec = by[n];
+        if (el.hasAttribute('data-place')) {
+          var pv = el.getAttribute('data-place');
+          if (!rec.places[pv]) { rec.places[pv] = 1; rec.np += 1; }
+        }
+        if (el.hasAttribute('data-day')) {
+          var dv = el.getAttribute('data-day');
+          if (!rec.days[dv]) { rec.days[dv] = 1; rec.nd += 1; }
+        }
+        if (el.hasAttribute('data-tract')) { rec.tract += 1; }
+      }
+      var placeOf = {}, dayOf = {}, byDay = {};
+      for (var m = 0; m < names.length; m++) {
+        var nm = names[m], rc = by[nm];
+        if (rc.np !== 1) {
+          bad.push(nm + ' is drawn in ' + rc.np + ' different places ('
+                   + Object.keys(rc.places).join(', ') + '); it happens in one');
+        }
+        if (rc.nd !== 1) {
+          bad.push(nm + ' is drawn on ' + rc.nd + ' different days ('
+                   + Object.keys(rc.days).join(', ') + '); it happens on one');
+        }
+        if (!rc.tract) {
+          bad.push(nm + ' is drawn outside the tract; both of these happen '
+                   + 'inside the female reproductive system, and that is half '
+                   + 'of what the figure is answering');
+        }
+        placeOf[nm] = Object.keys(rc.places)[0];
+        dayOf[nm] = Object.keys(rc.days)[0];
+        byDay[dayOf[nm]] = placeOf[nm];
+      }
+      if (names.length !== 2) {
+        bad.push('the figure marks ' + names.length + ' event(s); it marks two '
+                 + '— fertilisation and implantation');
+      } else {
+        if (placeOf[names[0]] === placeOf[names[1]]) {
+          bad.push(names[0] + ' and ' + names[1] + ' are both drawn in the '
+                   + placeOf[names[0]] + '; they are different events in '
+                   + 'DIFFERENT organs, and running them together is the '
+                   + 'misconception this figure exists to break');
+        }
+        if (dayOf[names[0]] === dayOf[names[1]]) {
+          bad.push(names[0] + ' and ' + names[1] + ' are both drawn on day '
+                   + dayOf[names[0]] + '; they are days apart, and drawn on '
+                   + 'the same day they read as one moment');
+        }
+      }
+      /* the gap: derived from the two days, and agreeing with the sentence */
+      var note = document.querySelector('.ks3-figure-svg [data-gap-days]');
+      if (!note) {
+        bad.push('nothing on the figure states the gap between the two '
+                 + 'events, so "six days apart" is a thing the prose says and '
+                 + 'the drawing does not');
+      } else {
+        var gap = parseInt(note.getAttribute('data-gap-days'), 10);
+        var fd = parseInt(note.getAttribute('data-from-day'), 10);
+        var td = parseInt(note.getAttribute('data-to-day'), 10);
+        if (td - fd !== gap) {
+          bad.push('the note spans day ' + fd + ' to day ' + td + ' and calls '
+                   + 'it ' + gap + ' days');
+        }
+        if (byDay[String(fd)] !== note.getAttribute('data-from-place')
+            || byDay[String(td)] !== note.getAttribute('data-to-place')) {
+          bad.push('the note runs from the '
+                   + note.getAttribute('data-from-place') + ' on day ' + fd
+                   + ' to the ' + note.getAttribute('data-to-place') + ' on day '
+                   + td + ', and the two events are drawn in the '
+                   + byDay[String(fd)] + ' and the ' + byDay[String(td)]
+                   + '; the sentence has come loose from the markers');
+        }
+        var WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six',
+                     'seven', 'eight', 'nine', 'ten'];
+        var say = note.textContent;
+        var digit = say.indexOf(String(gap)) >= 0;
+        var word = (gap >= 0 && gap < WORDS.length
+                    && say.toLowerCase().indexOf(WORDS[gap]) >= 0);
+        if (!digit && !word) {
+          bad.push('the note reads "' + say + '" over a gap the drawing '
+                   + 'measures as ' + gap + ' days');
+        }
+      }
+      return {steps: nstep, zones: nzone, events: names.length,
+              routes: nroute, bad: bad};
+    })()
+""",
+         expect=lambda got: (
+             [] if (got["steps"] == 5 and got["zones"] == 2
+                    and got["events"] == 2 and got["routes"] == 2) else
+             ["draws %d step(s) across %d zone(s), %d marked event(s) and %d "
+              "route(s); the journey is five steps shown twice, two events, and "
+              "two cells travelling opposite ways"
+              % (got["steps"], got["zones"], got["events"], got["routes"])])),
+
+    dict(fig="b5-pollen-tube",
+         page="biology/reproduction/fertilisation-seeds-and-fruit.html",
+         name="⊕ MRB-254 · what is inside what, measured in BOTH panels",
+         claim="all three ovules inside the drawn ovary cavity and all three "
+               "seeds inside the drawn fruit cavity; the before→after map "
+               "total and single-valued, with the stigma and the style both "
+               "arriving at the withered remains",
+         js=r"""
+    (function () {
+      var held = document.querySelectorAll('.ks3-figure-svg [data-contains]');
+      if (!held.length) { return null; }
+      var bad = [], per = {}, npanel = 0;
+      /* ⚠️ ALL SIX, BOTH PANELS. "The ovules are inside the ovary, and they
+         are still inside it when it is a fruit" is the one relation this
+         figure exists to carry, and it is the relation a drawing can get
+         wrong while every label stays true. A row that measured the before
+         panel would have passed over an after panel with a seed sitting on
+         the outside of the fruit. */
+      for (var i = 0; i < held.length; i++) {
+        var e = held[i];
+        var into = e.getAttribute('data-contains');
+        var st = e.getAttribute('data-state');
+        var me = e.getAttribute('data-part');
+        var cav = document.querySelector(
+          '.ks3-figure-svg [data-cavity][data-part="' + into
+          + '"][data-state="' + st + '"]');
+        if (!cav) {
+          bad.push('a ' + me + ' says it is inside the ' + into + ' in the '
+                   + st + ' panel, and that ' + into + ' draws no cavity for '
+                   + 'it to be inside of');
+          continue;
+        }
+        if (!per[st]) { per[st] = 0; npanel += 1; }
+        per[st] += 1;
+        var b = e.getBBox(), C = cav.getBBox();
+        var inside = (b.x >= C.x && b.y >= C.y
+                      && b.x + b.width <= C.x + C.width
+                      && b.y + b.height <= C.y + C.height);
+        if (!inside) {
+          bad.push('the ' + me + ' at position '
+                   + (e.getAttribute('data-index') || '?') + ' in the ' + st
+                   + ' panel is drawn outside the ' + into + '’s cavity; the '
+                   + 'whole point of the pair of drawings is that the thing '
+                   + 'that becomes the seed was inside the thing that becomes '
+                   + 'the fruit, all along');
+        }
+      }
+      /* the before→after map, walked both ways */
+      var to = {}, nto = 0, image = {};
+      var srcs = document.querySelectorAll('.ks3-figure-svg [data-becomes-to]');
+      for (var j = 0; j < srcs.length; j++) {
+        var s = srcs[j];
+        var from = s.getAttribute('data-becomes-from')
+                   || s.getAttribute('data-part');
+        var t = s.getAttribute('data-becomes-to');
+        if (to[from] === undefined) { to[from] = t; nto += 1; }
+        else if (to[from] !== t) {
+          bad.push('the ' + from + ' is shown becoming both the ' + to[from]
+                   + ' and the ' + t + '; one thing becomes one thing');
+        }
+        image[t] = image[t] || {};
+        image[t][from] = 1;
+      }
+      /* every part drawn in the before panel must go somewhere, and every
+         part drawn in the after panel must have come from somewhere */
+      var before = {}, after = {}, nbefore = 0, nafter = 0;
+      var parts = document.querySelectorAll(
+        '.ks3-figure-svg [data-part][data-state]');
+      for (var k = 0; k < parts.length; k++) {
+        var pp = parts[k].getAttribute('data-part');
+        var ps = parts[k].getAttribute('data-state');
+        if (ps === 'before' && !before[pp]) { before[pp] = 1; nbefore += 1; }
+        if (ps === 'after' && !after[pp]) { after[pp] = 1; nafter += 1; }
+      }
+      for (var b2 in before) {
+        if (!to[b2]) {
+          bad.push('the ' + b2 + ' is drawn before fertilisation and the '
+                   + 'figure never says what becomes of it; a part that just '
+                   + 'disappears between the panels is a part a student has to '
+                   + 'guess about');
+        } else if (!after[to[b2]]) {
+          bad.push('the ' + b2 + ' is said to become the ' + to[b2]
+                   + ', which is not drawn in the after panel');
+        }
+      }
+      for (var a2 in after) {
+        if (!image[a2]) {
+          bad.push('the ' + a2 + ' appears after fertilisation out of nothing; '
+                   + 'every part of the fruit was already part of the flower');
+        }
+      }
+      /* many-to-one is CORRECT here and is asserted as such: the shrivelled
+         stub and the dried scraps are the same leftovers, so the stigma and
+         the style both arrive at the withered remains */
+      var W = image['withered-remains'];
+      if (!W) {
+        bad.push('nothing is shown withering; the stigma and the style do not '
+                 + 'vanish when the job is done, and a drawing that drops them '
+                 + 'teaches a flower that tidies itself away');
+      } else if (!W.stigma || !W.style) {
+        bad.push('the withered remains are drawn as what became of '
+                 + Object.keys(W).join(' and ') + ' only; both the stigma and '
+                 + 'the style end up there');
+      }
+      return {held: held.length, panels: npanel, mapped: nto,
+              before: nbefore, after: nafter, bad: bad};
+    })()
+""",
+         expect=lambda got: (
+             [] if (got["held"] == 6 and got["panels"] == 2
+                    and got["mapped"] == got["before"]
+                    and got["before"] >= 3 and got["after"] >= 2) else
+             ["measures %d containment(s) across %d panel(s), and maps %d of "
+              "its %d before-parts onto %d after-parts; the figure is three "
+              "ovules in an ovary, three seeds in a fruit, and a map with "
+              "nothing left over on either side"
+              % (got["held"], got["panels"], got["mapped"], got["before"],
+                 got["after"])])),
+
+    dict(fig="b5-dispersal-specimens",
+         page="biology/reproduction/seed-dispersal.html",
+         name="⊕ MRB-254 · all EIGHT specimens on the one scale the ruler "
+              "declares",
+         claim="every specimen's drawn width ÷ its stated mm equal to the "
+               "measured scale bar; coconut:goosegrass drawn as 250:9; the ×4 "
+               "detail excluded from the eight and really ×4",
+         js=r"""
+    (function () {
+      var sp = document.querySelectorAll('.ks3-figure-svg [data-specimen]');
+      if (!sp.length) { return null; }
+      var bad = [];
+      /* the ruler, MEASURED — a scale bar that declares 152px and is drawn
+         120px long is a scale bar that lies about every specimen at once */
+      var bar = document.querySelector('.ks3-figure-svg [data-scale-bar-px]');
+      var ref = null;
+      if (!bar) {
+        bad.push('the plate carries no scale bar, so "all on one scale" is a '
+                 + 'claim with nothing to check it against');
+      } else {
+        var declared = parseFloat(bar.getAttribute('data-scale-bar-px'));
+        var mmbar = parseFloat(bar.getAttribute('data-scale-bar-mm'));
+        var drawn = bar.getTotalLength();
+        if (Math.abs(drawn - declared) > 0.5) {
+          bad.push('the scale bar declares ' + declared + 'px for ' + mmbar
+                   + ' mm and is drawn ' + drawn.toFixed(1) + 'px long; every '
+                   + 'specimen on the plate is read against this ruler');
+        }
+        ref = declared / mmbar;
+      }
+      /* ⚠️ ALL EIGHT, EVERY ONE, and this is the assertion that stands behind
+         the 250 mm coconut. Design's original plate had FOUR of her own eight
+         off her own stated scale; a coconut-against-goosegrass check — the
+         obvious one, because they are the extremes — passes over all four.
+         "Every specimen on this one scale" is a claim about the set. */
+      var ratios = [], names = [], sizes = {};
+      for (var i = 0; i < sp.length; i++) {
+        var g = sp[i], nm = g.getAttribute('data-specimen');
+        var mm = parseFloat(g.getAttribute('data-mm'));
+        var dw = parseFloat(g.getAttribute('data-drawn-w'));
+        if (!(mm > 0) || !(dw > 0)) {
+          bad.push('the ' + nm + ' is drawn without a real size on it, so it '
+                   + 'is on no scale at all');
+          continue;
+        }
+        names.push(nm); ratios.push(dw / mm);
+        sizes[nm] = {mm: mm, dw: dw, on: g.getBoundingClientRect().width};
+        if (ref !== null && Math.abs(dw - mm * ref) > 1) {
+          bad.push('the ' + nm + ' is ' + mm + ' mm across and is drawn '
+                   + dw + 'px, where the plate’s own ruler makes ' + mm
+                   + ' mm ' + (mm * ref).toFixed(1) + 'px; a student comparing '
+                   + 'it with the others is comparing two different scales '
+                   + 'and cannot see it');
+        }
+        /* the declared width against the width the browser actually lays out,
+           so a drawer that changed the artwork without the attribute — or the
+           attribute without the artwork — is caught either way round */
+        var k = sizes[nm].on / dw;
+        sizes[nm].k = k;
+      }
+      var lo = null, hi = null;
+      for (var n2 in sizes) {
+        var kk = sizes[n2].k;
+        if (lo === null || kk < lo) { lo = kk; }
+        if (hi === null || kk > hi) { hi = kk; }
+      }
+      if (hi !== null && (hi - lo) > 0.01 * hi) {
+        bad.push('the specimens lay out at ' + lo.toFixed(4) + ' to '
+                 + hi.toFixed(4) + ' times their declared widths; at least one '
+                 + 'of them is drawn a different size from the number written '
+                 + 'against it');
+      }
+      var rlo = Math.min.apply(null, ratios);
+      var rhi = Math.max.apply(null, ratios);
+      if (ratios.length && (rhi - rlo) > 0.01) {
+        bad.push('the eight specimens are drawn at ' + rlo.toFixed(3) + ' to '
+                 + rhi.toFixed(3) + ' px per mm; they are meant to be one '
+                 + 'plate at one scale, and drawn at two the whole comparison '
+                 + 'the lesson asks for is off');
+      }
+      /* the extremes, from the laid-out geometry rather than the attributes */
+      var C = sizes.coconut, G = sizes.goosegrass;
+      if (!C || !G) {
+        bad.push('the plate is missing the coconut or the goosegrass; they are '
+                 + 'the two ends of the range, and the 250 mm coconut is the '
+                 + 'reason the plate has a ruler on it at all');
+      } else {
+        var want = C.mm / G.mm, got2 = C.on / G.on;
+        if (Math.abs(got2 - want) > 0.01 * want) {
+          bad.push('the coconut is drawn ' + got2.toFixed(2) + ' times the '
+                   + 'goosegrass and is ' + want.toFixed(2) + ' times its real '
+                   + 'size; the coconut being enormous is the whole reason the '
+                   + 'water-dispersal row makes sense');
+        }
+      }
+      /* the ×4 inset is a magnification and must be outside the eight */
+      var det = document.querySelectorAll('.ks3-figure-svg [data-magnified]');
+      var ndet = 0;
+      for (var d = 0; d < det.length; d++) {
+        var e = det[d];
+        if (e.tagName.toLowerCase() !== 'g') { continue; }
+        ndet += 1;
+        if (e.hasAttribute('data-specimen') || e.hasAttribute('data-mm')) {
+          bad.push('the magnified detail is counted as one of the specimens; '
+                   + 'it is the same seed again at ×'
+                   + e.getAttribute('data-magnified')
+                   + ', and on the plate’s scale it would be a lie');
+        }
+        var of = e.getAttribute('data-detail-of');
+        var host = sizes[of];
+        var mag = parseFloat(e.getAttribute('data-magnified'));
+        var dw2 = parseFloat(e.getAttribute('data-drawn-w'));
+        if (!host) {
+          bad.push('the magnified detail magnifies "' + of + '", which is not '
+                   + 'on the plate');
+          continue;
+        }
+        if (Math.abs(dw2 / host.dw - mag) > 0.02) {
+          bad.push('the detail says ×' + mag + ' and is drawn '
+                   + (dw2 / host.dw).toFixed(2) + ' times the ' + of
+                   + ' beside it');
+        }
+        var on = e.getBoundingClientRect().width / host.on;
+        if (Math.abs(on - mag) > 0.02 * mag) {
+          bad.push('the detail lays out at ×' + on.toFixed(2) + ' against the '
+                   + of + ' it magnifies, and is labelled ×' + mag);
+        }
+      }
+      return {n: sp.length, details: ndet, spread: Math.round(
+                (rhi - rlo) * 10000) / 10000, bad: bad};
+    })()
+""",
+         expect=lambda got: (
+             [] if got["n"] == 8 and got["details"] == 1 else
+             ["draws %d specimen(s) and %d magnified detail(s); the plate is "
+              "eight fruits and seeds on one scale, with one of them shown "
+              "again enlarged" % (got["n"], got["details"])])),
+]
+
+
+def check_figure_truth(browser_mod, url_for, spec, ks3_root):
+    """One figure's content-truth row. Absence is a FAILURE, never a skip."""
+    problems = []
+    if not os.path.exists(os.path.join(ks3_root, spec["page"])):
+        return ["CONTENT TRUTH: /%s is not in the built tree, so %s's "
+                "encoding assertion did not run."
+                % (spec["page"], spec["fig"])]
+    with browser_mod.Browser() as b:
+        got = b.page(url_for(spec["page"])).eval(spec["js"])
+    if got is None:
+        return ["CONTENT TRUTH: /%s draws none of %s's hooks, so the "
+                "assertion did not run. A row that finds nothing does not "
+                "fail — it reports green over an absent figure, which is the "
+                "exact hole MRB-257 decision 4 was written to close."
+                % (spec["page"], spec["fig"])]
+    for line in spec["expect"](got):
+        problems.append("CONTENT TRUTH: /%s (%s) %s"
+                        % (spec["page"], spec["fig"], line))
+    for line in got.get("bad") or []:
+        problems.append("CONTENT TRUTH: /%s (%s) — %s"
+                        % (spec["page"], spec["fig"], line))
+    return problems
+
+
 def check_derived_side_labels(browser_mod, url_for, rel):
     """MRB-257 (6.15) — a comparative label must be TRUE IN EVERY STATE.
 
@@ -13741,7 +15457,8 @@ def check_derived_side_labels(browser_mod, url_for, rel):
 
 
 def check_container_dial_is_modelled(browser_mod, url_for, rel):
-    """MRB-257 phase 4 — a dial that is DRAWN must also be MODELLED.
+    """MRB-257 phase 4, carried by MRB-254 — the dial is `P ∝ 1/V`, asserted
+    as a RATIO rather than as a direction.
 
     `gas-pressure`'s container control reached `draw()` and nothing else. The
     simulation runs in normalised box coordinates with walls fixed at
@@ -13757,11 +15474,41 @@ def check_container_dial_is_modelled(browser_mod, url_for, rel):
     particles, same speed — and the count is up". A student who predicted
     correctly was reading an instrument that disproved them.
 
-    ⚠️ IT IS A RATE, SO IT IS SAMPLED, NOT READ ONCE. A single one-second count
-    on the large box ranges 9–19; one sample per setting would flip this gate
-    green or red at random and a gate that does that is worse than none. Six
-    samples per setting, compared on the MEDIAN, with a margin well inside the
-    ~1.6× and ~2.5× the geometry implies.
+    ⊕ MRB-257's carried gas-pressure ruling has since landed: `VOLS[].scale`
+    (a LINEAR figure, 0.62 / 0.40) became `VOLS[].volume` (a volume factor,
+    1 / 0.5 / 0.25); the wall-hit rate is `1 / volume`; the drawn box is
+    scaled by `√volume` so its visible AREA reads as the label. So the claim
+    the instrument now makes is not "smaller means more" — it is
+    **half the volume, exactly twice the hits; a quarter, exactly four
+    times**, which is the proportionality the lesson's first prediction is
+    about. A row that asserted only the direction would pass on the old linear
+    0.62 / 0.40 — ×1.61 and ×2.50 under labels reading half and quarter — and
+    that is the reading a student would take away as the law.
+
+    ⚠️ IT IS A RATE, SO IT IS SAMPLED — AND THE SAMPLE IS SIZED FOR THE
+    TOLERANCE, not the tolerance widened for the sample. **Forty one-second
+    windows per setting**, warm, 24 particles, compared on the MEAN. Measured
+    over three runs of this harness on the shipped bench:
+
+        n=24  Large 14.67 (sd 1.60)  Half 29.17  Quarter 58.04  →  ×1.988 ×3.956
+        n=24  Large 14.58 (sd 2.58)  Half 28.62  Quarter 56.42  →  ×1.963 ×3.870
+        n=40  Large 14.60 (sd 2.59)  Half 28.85  Quarter 57.35  →  ×1.976 ×3.928
+
+    The worst deviation from the ideal ×2 / ×4 across all three was 3.2%, and
+    it is consistently a small SHORTFALL — a one-second window counts whole
+    arrivals and clips the ones straddling its edges. The gate allows 10%,
+    which is three times the worst observed drift; the nearest wrong model
+    (`1/√volume`, ×1.41 and ×2.00) sits 29% and 50% away, so the margin costs
+    nothing in discrimination.
+
+    ⚠️ THE BOX IS MEASURED OFF THE CANVAS, not recomputed from `VOLS`. The
+    ruling is about what a student SEES: "half size" has to put half the paper
+    on screen, and a box scaled linearly by 0.5 shows a quarter of it while
+    every label still reads half. So the container's fill colour is found in
+    the pixels and its extent measured. The measured ratios are 0.4925 and
+    0.2454 rather than 0.5000 and 0.2500 because the 3px outline is centred on
+    the rectangle and eats 3 device pixels of fill off each edge; the gate
+    allows 5%, against a linear-scaled box which would read 0.25 and 0.0625.
     """
     problems = []
     SET = """(function (l) {
@@ -13774,18 +15521,48 @@ def check_container_dial_is_modelled(browser_mod, url_for, rel):
     HITS = ("(document.querySelector('[data-counter-canvas]')"
             " || {getAttribute: function () { return ''; }})"
             ".getAttribute('aria-label')")
+    # The container's fill, #F6EEE0 — `COUNTER_INK.box` in `shared/ks3.js`.
+    # Particles are drawn over it and can only remove interior pixels, so the
+    # extent of the fill is the box however many particles are in front of it.
+    BOX = """
+    (function () {
+      var c = document.querySelector('[data-counter-canvas]');
+      if (!c || !c.getContext) { return null; }
+      var g = c.getContext('2d'), W = c.width, H = c.height;
+      var d = g.getImageData(0, 0, W, H).data;
+      var x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1, n = 0;
+      for (var y = 0; y < H; y++) {
+        for (var x = 0; x < W; x++) {
+          var i = (y * W + x) * 4;
+          if (d[i] === 246 && d[i + 1] === 238 && d[i + 2] === 224) {
+            n += 1;
+            if (x < x0) { x0 = x; }
+            if (x > x1) { x1 = x; }
+            if (y < y0) { y0 = y; }
+            if (y > y1) { y1 = y; }
+          }
+        }
+      }
+      if (n === 0) { return null; }
+      return {w: x1 - x0 + 1, h: y1 - y0 + 1};
+    })()
+    """
+    VOLS = ("(function(){var w=document.querySelector('[data-counter]');"
+            "if(!w){return null;}"
+            "try{return (JSON.parse(w.getAttribute('data-cfg')||'{}').vols)||null;}"
+            "catch(e){return null;}})()")
     import re as _re, time as _time
 
     def _settle(secs):
+        # ⚠️ A SPIN, NOT `time.sleep`. Measured both: the spin holds the
+        # machine awake and the Large setting's per-window spread drops from
+        # sd 2.58 to 1.60, because an idling core lets the animation frame
+        # budget wander. The rate being measured is a frame-driven one.
         t0 = _time.time()
         while _time.time() - t0 < secs:
             pass
 
-    def _median(xs):
-        xs = sorted(xs)
-        n = len(xs)
-        return xs[n // 2] if n % 2 else (xs[n // 2 - 1] + xs[n // 2]) / 2.0
-
+    WANT = (("Large", 1.0), ("Half size", 0.5), ("Quarter size", 0.25))
     with browser_mod.Browser() as b:
         page = b.page(url_for(rel))
         # the bench is gated; any option opens it
@@ -13794,36 +15571,96 @@ def check_container_dial_is_modelled(browser_mod, url_for, rel):
         if not page.eval("!!document.querySelector('[data-counter]')"):
             return ["CONTENT TRUTH: /%s has no `[data-counter]` bench, so the "
                     "container-dial assertion did not run." % rel]
-        got = {}
-        for label in ("Large", "Half size", "Quarter size"):
+        vols = page.eval(VOLS)
+        got, boxes = {}, {}
+        for label, _vf in WANT:
             if not page.eval(SET % label):
                 problems.append("CONTENT TRUTH: /%s has no container setting "
                                 "%r." % (rel, label))
                 continue
-            _settle(1.4)
+            _settle(1.6)
+            boxes[label] = page.eval(BOX)
             vals = []
-            for _ in range(6):
+            for _ in range(40):
                 _settle(1.05)
                 m = _re.search(r"last second: (\d+)", page.eval(HITS) or "")
                 if m:
                     vals.append(int(m.group(1)))
             if vals:
-                got[label] = _median(vals)
+                got[label] = sum(vals) / float(len(vals))
+
+    # ── the payload states the ruling, or the instrument cannot keep it ──
+    if not vols:
+        problems.append(
+            "CONTENT TRUTH: /%s — the bench carries no `vols` in its config, "
+            "so there is nothing for the wall-hit rate to be one over." % rel)
+    else:
+        for i, (label, want) in enumerate(WANT):
+            row = vols[i] if i < len(vols) else None
+            if not row or row.get("label") != label:
+                problems.append(
+                    "CONTENT TRUTH: /%s — container setting %d is %r, not %r."
+                    % (rel, i + 1, (row or {}).get("label"), label))
+                continue
+            if "scale" in row:
+                problems.append(
+                    "CONTENT TRUTH: /%s — the %r setting still carries a "
+                    "`scale`. MRB-257's ruling renamed the field to `volume` "
+                    "on purpose: `scale` is what `draw()` needs and it is now "
+                    "DERIVED, so a field that still said scale while holding a "
+                    "volume would be read as a linear figure by the next "
+                    "person to open the file." % (rel, label))
+            if abs(float(row.get("volume") or 0) - want) > 1e-9:
+                problems.append(
+                    "CONTENT TRUTH: /%s — %r declares volume %r; the dial's "
+                    "three stops are one, a half and a quarter, and every "
+                    "number the bench shows is computed off them."
+                    % (rel, label, row.get("volume")))
+
+    # ── the RATE is one over the volume, at both steps ──
     if len(got) == 3:
-        big, half, quarter = got["Large"], got["Half size"], got["Quarter size"]
-        if not (half > big * 1.2):
-            problems.append(
-                "CONTENT TRUTH: /%s — halving the container moved the wall-hit "
-                "rate from %.1f/s to %.1f/s. The lesson's first prediction is "
-                "that it goes UP, and marks that correct; a dial that is drawn "
-                "smaller and modelled the same size disproves the student."
-                % (rel, big, half))
-        if not (quarter > half * 1.2):
-            problems.append(
-                "CONTENT TRUTH: /%s — the quarter-size container reads %.1f/s "
-                "against half size at %.1f/s. Smaller has to mean more "
-                "arrivals at every step of the dial, not only the first."
-                % (rel, quarter, half))
+        big = got["Large"]
+        for label, vf in WANT[1:]:
+            want = 1.0 / vf
+            ratio = got[label] / big if big else 0.0
+            if abs(ratio - want) > 0.10 * want:
+                problems.append(
+                    "CONTENT TRUTH: /%s — %s reads %.1f wall hits a second "
+                    "against %.1f at Large, which is ×%.2f where a container "
+                    "of %g the volume is ×%g. Pressure is one over volume, and "
+                    "the lesson's first prediction is exactly that "
+                    "proportionality; an instrument that only goes UP teaches "
+                    "a student that halving a box does something unspecified "
+                    "to the pressure."
+                    % (rel, label, got[label], big, ratio, vf, want))
+
+    # ── the DRAWN box is a half and a quarter of the paper ──
+    if boxes.get("Large"):
+        L = boxes["Large"]
+        area0 = float(L["w"] * L["h"])
+        for label, vf in WANT[1:]:
+            B = boxes.get(label)
+            if not B:
+                problems.append(
+                    "CONTENT TRUTH: /%s — nothing of the container is drawn at "
+                    "the %s setting, so the label has no picture under it."
+                    % (rel, label))
+                continue
+            frac = (B["w"] * B["h"]) / area0 if area0 else 0.0
+            if abs(frac - vf) > 0.05 * vf:
+                problems.append(
+                    "CONTENT TRUTH: /%s — the %s container is drawn %.4f of "
+                    "the area of the Large one, and the label says %g. The box "
+                    "is scaled by √volume for exactly this reason: a box scaled "
+                    "linearly by %g shows %g of the paper, and a student who "
+                    "reads the label off the picture learns that halving "
+                    "something quarters it."
+                    % (rel, label, frac, vf, vf, vf * vf))
+    else:
+        problems.append(
+            "CONTENT TRUTH: /%s — the container's fill was not found on the "
+            "canvas, so the drawn-area half of this assertion did not run."
+            % rel)
     return problems
 
 
@@ -14465,6 +16302,17 @@ def run_browser_layers(ks3_root, browser_mod):
              "0 problems", "%d problem(s)" % len(truth_problems),
              not truth_problems))
 
+        # ⊕ MRB-254 — content truth on the biology figure set. One row per
+        # figure, each walking its whole set rather than a sample; see the
+        # note above FIGURE_TRUTH for why a sample is how these reach
+        # production.
+        for spec in FIGURE_TRUTH:
+            fp = check_figure_truth(browser_mod, _url, spec, ks3_root)
+            problems.extend(fp)
+            style_rows.append(
+                (spec["name"], spec["claim"], "0 problems",
+                 "%d problem(s)" % len(fp), not fp))
+
         # ⊕ MRB-257 (6.15) — content truth on the one label that is DERIVED
         # rather than authored, driven through all four states including the
         # equal one.
@@ -14485,8 +16333,9 @@ def run_browser_layers(ks3_root, browser_mod):
                                "gas-pressure.html")
         problems.extend(vol_problems)
         style_rows.append(
-            ("⊕ phase 4 · the container dial reaches the physics",
-             "wall-hit rate rises at each step down in box size",
+            ("⊕ phase 4 · the container dial IS one over the volume",
+             "wall-hit rate x2 at half and x4 at a quarter, and the drawn "
+             "box half and a quarter of the paper",
              "0 problems", "%d problem(s)" % len(vol_problems),
              not vol_problems))
     finally:

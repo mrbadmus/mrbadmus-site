@@ -7811,7 +7811,14 @@
          setting is arithmetically unchanged, so the resting page is untouched.
          Temperature and particle count were always modelled and are not
          touched here. */
-      var box = Number(VOLS[state.vol].scale) || 1;
+      // ⊕ MRB-254 (carrying MRB-257) — the dial is a VOLUME factor, and the
+      // wall-hit rate is `1 / volume`. Half the volume is exactly twice the
+      // hits; a quarter is exactly four times. That is `P ∝ 1/V`, and it is
+      // the relationship the lesson's first prediction asks about, so the
+      // instrument had better be it rather than approximate it: the old
+      // linear 0.62 / 0.40 gave ×1.6 and ×2.5 under labels reading half and
+      // quarter.
+      var box = Number(VOLS[state.vol].volume) || 1;
       var speed = (Number(TEMPS[state.temp].speed_multiplier) || 0)
         * scale * STEP * dt * 60 / box;
       var n = live();
@@ -7900,7 +7907,13 @@
       ctx.fillStyle = COUNTER_INK.ground;
       ctx.fillRect(0, 0, W, H);
 
-      var scale = Number(VOLS[state.vol].scale) || 1;
+      // ⊕ MRB-254 (carrying MRB-257) — √volume, so the AREA reads as the
+      // label. The dial says "Half size"; a box drawn at linear 0.5 shows a
+      // QUARTER of the paper, and a student who reads the label off the
+      // picture learns that halving something quarters it. Linear √0.5 =
+      // 0.7071 puts half the area on screen, which is what "half size" means
+      // for a container.
+      var scale = Math.sqrt(Number(VOLS[state.vol].volume) || 1);
       var maxW = 520, maxH = 236;
       var bw = maxW * scale, bh = maxH * scale;
       var bx = 60 + (maxW - bw) / 2, by = 46 + (maxH - bh) / 2;
@@ -17697,8 +17710,59 @@
     if (bar) { ro.observe(bar); }
   }
 
+  /* ⊕ MRB-254 — DOES THIS FIGURE ACTUALLY CONTINUE OFF THE EDGE?
+
+     Audit 3.9 asked for an edge fade so that a figure cut off at 390px does
+     not read as a finished one. It shipped as `@media (max-width: 747px)`,
+     which is the right cue hung on a number derived from the only figure that
+     existed: 760 units wide, in a column 48px narrower than the viewport.
+
+     Fourteen more figures arrive at 860 and 900 units wide and there is no
+     number that is right for all of them. A 900px plate overflows to a 948px
+     viewport; the media query stops drawing the cue at 747. Between those two
+     the figure ends in a hard edge and says nothing about it — which is the
+     defect, not a version of the fix.
+
+     So this measures. `scrollWidth > clientWidth` is the exact question the
+     breakpoint was approximating, it is free to ask, and it cannot drift from
+     the figure's width, the column's padding or the reader's zoom, because all
+     three are already inside the two numbers being compared.
+
+     ⚠️ `ResizeObserver`, not `resize`. The box changes width when the RAIL
+     swaps variant at 1340px and when a font loads late, neither of which fires
+     a window resize. Falls back to `resize` where the observer is missing, and
+     to no cue at all where JavaScript is off — see the note in ks3.css for why
+     that is the safe direction to fail in. */
+  function wireFigureCues(root) {
+    var boxes = root.querySelectorAll(".ks3-figure-scroll");
+    if (!boxes.length) { return; }
+
+    function measure() {
+      each(boxes, function (box) {
+        // A 1px tolerance: sub-pixel layout can leave scrollWidth a fraction
+        // above clientWidth on a figure that fits exactly, and a fade drawn
+        // over nothing is the failure the old rule had at the other end.
+        var over = box.scrollWidth - box.clientWidth > 1;
+        if (over) {
+          box.classList.add("is-overflowing");
+        } else {
+          box.classList.remove("is-overflowing");
+        }
+      });
+    }
+
+    measure();
+    if (!window.ResizeObserver) {
+      window.addEventListener("resize", measure);
+      return;
+    }
+    var ro = new ResizeObserver(measure);
+    each(boxes, function (box) { ro.observe(box); });
+  }
+
   function init() {
     wireStickyHeight();
+    wireFigureCues(document);
     wirePredictions(document);
     wireCriteria(document);
     wireCards(document);

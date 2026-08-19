@@ -523,12 +523,66 @@ LESSON = {
     ],
 
     # ── figures (§4.10) ─────────────────────────────────────────────────────
-    # EMPTY, deliberately, and MEASURED: the page draws no <img>, no <figure>
-    # and no placeholder, and its foot line names no diagram slot. NOTES-B7
-    # flag 12 stands open — see the docstring. Nothing is declared here, because
-    # declaring a slot means writing a caption, and a caption would pre-empt the
-    # ruling flag 12 asks for.
-    "figures": [],
+    # ⊕ MRB-254 — NO LONGER EMPTY, AND NOTES-B7 FLAG 12 IS ANSWERED BY THE
+    # KS3 BIOLOGY AUDIT OF 18 AUG 2026 RATHER THAN PRE-EMPTED BY US.
+    #
+    # The note here used to say that declaring a slot meant writing a caption,
+    # and that a caption would pre-empt the ruling flag 12 asks for. That was
+    # the right call while the only thing available was a caption. What the
+    # audit supplies instead is a REASON, measured on this page: the whole
+    # lesson is anatomy — the rule block gives each feature an explicit
+    # POSITION ("Palisade cells · Top layer", "Stomata · Underside") and rung 1
+    # asks WHY palisade cells are at the top — while the bench is four dials
+    # producing two percentages and a habitat verdict. And **no leaf
+    # cross-section exists anywhere on the site**, so this figure is the only
+    # place a student ever sees one.
+    #
+    # ⚠️ ONE DEPARTURE FROM DESIGN'S DELIVERY, and it is a defect fix. Her
+    # paint order puts the chloroplast loop — which carries the palisade's 80
+    # AND the spongy layer's 8 — before the opaque spongy cell bodies, so all
+    # eight spongy chloroplasts are painted over and render as nothing. Her own
+    # source comment says "the spongy layer keeps a few, and visibly fewer",
+    # and her figcaption asks the student to "count them against the spongy
+    # cells below" — a count that came out as zero. The bodies are now painted
+    # first. Nothing else moved: no palisade chloroplast reaches the spongy
+    # layer's top edge and none falls inside the vein's span.
+    "figures": [
+        {"id": "b7-leaf-section",
+         "kind": "diagram",
+         "status": "drawn",
+         "art": "leaf-section",
+         "title": "A leaf in cross-section, from the cuticle on top to the "
+                  "stoma underneath",
+         "desc": "A slice through a leaf, drawn with the top of the leaf at "
+                 "the top. From the top down: a thin waxy cuticle; a single "
+                 "row of upper epidermis cells; then the palisade layer, ten "
+                 "tall narrow cells standing side by side, each packed with "
+                 "small oval chloroplasts; then the spongy mesophyll, rounded "
+                 "cells with wide air spaces between them and a vein embedded "
+                 "among them, most of these cells carrying a single "
+                 "chloroplast where a palisade cell carries eight; then a "
+                 "single row of lower epidermis cells; then the lower "
+                 "cuticle. The lower cuticle and epidermis are interrupted "
+                 "once, by a pore between two rounded guard cells. There is "
+                 "no such pore in the top surface. A dimension line down the "
+                 "left of the slice marks the whole thickness as less than "
+                 "half a millimetre. An arrow enters from below the leaf, "
+                 "passes through the pore, runs straight up through an air "
+                 "space between the spongy cells, and ends at the base of a "
+                 "palisade cell: this is carbon dioxide reaching the cell "
+                 "that will use it. A second arrow arrives from the side "
+                 "along the vein and turns upward inside it: this is water.",
+         "caption": "The whole slice is less than half a millimetre from top "
+                    "to bottom. Two of its features are claims you can check "
+                    "by looking: the palisade cells are the layer nearest the "
+                    "light, and they hold most of the chloroplasts — count "
+                    "them against the spongy cells below. The only break in "
+                    "either surface is the one pore, and it is underneath. "
+                    "Follow the arrow to see why that still works: carbon "
+                    "dioxide goes in through the pore, up through the air "
+                    "spaces, and into a palisade cell, without anything "
+                    "having to carry it."},
+    ],
 
     # ── core, in the approved page's document order ─────────────────────────
     "core": [
@@ -647,6 +701,21 @@ LESSON = {
         # so it renders directly under the panel in document order. See "What
         # could not be lifted" 2.
         {"type": "key-fact", "ref": "each-feature-costs-water"},
+
+        # ⊕ MRB-254 — THE LESSON IS ANATOMY AND HAD NO ANATOMY IN IT.
+
+        # The rule block gives every feature a POSITION and rung 1 asks why the
+
+        # palisade cells are at the top; the bench is four dials and a habitat
+
+        # verdict. No leaf cross-section existed anywhere on the site, so until now a
+
+        # student could answer rung 1 correctly having never seen the layer it is
+
+        # about.
+
+        {"type": "figure", "ref": "b7-leaf-section", "anchor": "s-section"},
+
 
         {"type": "misconception", "id": "two-wrong-ideas",
          "anchor": "s-think", "targets": "PLANT-03"},

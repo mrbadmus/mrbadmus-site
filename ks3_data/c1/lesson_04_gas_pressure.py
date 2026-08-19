@@ -102,17 +102,51 @@ DISTINCT control groups. Map §4.4 names this finding.
 # ── the three segmented control groups ───────────────────────────────────
 # Page lines 355–357, lifted by `tools/extract_design_payload.js`. `v` is split
 # into the name of the quantity it actually is, because one renderer reads all
-# three and `v` would tell it nothing: a speed multiplier, a linear box scale
-# and a particle count are three different things.
+# three and `v` would tell it nothing: a speed multiplier, a VOLUME factor and
+# a particle count are three different things. (That middle one used to read
+# "a linear box scale", and the line below is the whole reason it no longer
+# does.)
 TEMPS = [
     {"label": "Cold", "speed_multiplier": 0.55},
     {"label": "Warm", "speed_multiplier": 1},
     {"label": "Hot", "speed_multiplier": 1.75},
 ]
+# ⊕ MRB-257, carried to MRB-254 — ONE RATIO, SAID FOUR TIMES.
+#
+# `scale` was a LINEAR figure — 0.62 and 0.4 — and the three things that read it
+# each ended up stating a different ratio for the same dial:
+#
+#   the LABEL said            half            and  a quarter
+#   the DRAWING showed        0.62² = 0.38    and  0.40² = 0.16 of the area
+#   the PHYSICS gave          1/0.62 = ×1.6   and  1/0.40 = ×2.5 wall hits
+#
+# None of the three agreed with either of the others, and the lesson's FIRST
+# prediction turns on the third. MRB-257 phase 4 had already fixed the graver
+# fault — the dial reached `draw()` and nothing else, so the box got smaller and
+# the hit rate did not move at all — and left the numbers as it found them. This
+# is the rest of it.
+#
+# The field is now a VOLUME factor, which is what the label has always claimed
+# it was, and the two readers derive from it rather than reusing it:
+#
+#   · WALL-HIT RATE is `1 / volume`, so half the volume is exactly twice the
+#     hits and a quarter is exactly four times. That is `P ∝ 1/V` at constant
+#     temperature — the relationship this lesson's `ks4_becomes` names as the
+#     gas laws — and it is now true of the instrument rather than asserted
+#     beside it.
+#   · THE DRAWN BOX is scaled by `√volume` — 0.7071 and 0.5 — so its visible
+#     AREA is a half and a quarter. A box drawn at linear 0.5 looks like a
+#     quarter, and a student reading "Half size" over it learns that halving
+#     means quartering.
+#
+# ⚠️ THE FIELD IS RENAMED `volume`, deliberately, rather than kept as `scale`
+# with new numbers. `scale` is what `draw()` needs and it is now DERIVED; a
+# field that still said `scale` while holding a volume would be read as a
+# linear number by the next person, which is the mistake being fixed.
 VOLS = [
-    {"label": "Large", "scale": 1},
-    {"label": "Half size", "scale": 0.62},
-    {"label": "Quarter size", "scale": 0.4},
+    {"label": "Large", "volume": 1},
+    {"label": "Half size", "volume": 0.5},
+    {"label": "Quarter size", "volume": 0.25},
 ]
 COUNTS = [
     {"label": "12", "n": 12},

@@ -303,6 +303,115 @@ def main():
           % sum(1 for u in units for l in u["lessons"] if l.get("authored"))
           if not esc_leaks else "%d: %s" % (len(esc_leaks), esc_leaks[:3]))
 
+    # ⊕ MRB-254 — NO EMPTY `<text>` IN ANY FIGURE, ANYWHERE IN THE TREE.
+    #
+    # Design hit exactly this during the build of the biology set: a nine-row
+    # key rendered as NINE EMPTY BADGES — the shapes all there, the strings all
+    # gone. It is the same class of hole as `{brace}` and `[object Object]`,
+    # and it is worse than either in one specific way: those two put a WRONG
+    # string on the page, which a reader notices. An empty `<text>` puts
+    # nothing on the page. The badge is still drawn, the leader still points at
+    # it, the layout is unchanged, and the figure simply says less than it
+    # claims to — silently, and identically in every browser.
+    #
+    # `_label` refuses an empty string at source, which is the first net and
+    # the one that catches an author. This is the second net and it catches the
+    # case `_label` cannot see: a string that is non-empty in Python and empty
+    # once it reaches the file, or a `<text>` built by some future route that
+    # does not go through `_label` at all.
+    #
+    # ⚠️ SWEEPS THE SERVED TREE, NOT THE DRAWERS. A drawer that is correct and
+    # a page that is wrong is the whole failure mode; only the built bytes
+    # settle it. Whitespace-only counts as empty — a `<text> </text>` renders
+    # exactly as nothing does.
+    empty_text, n_text = [], 0
+    for u in units:
+        for l in u["lessons"]:
+            if not l.get("authored"):
+                continue
+            page = ("mrbadmus_site/ks3/%s/%s/%s.html"
+                    % (u["discipline"], u["slug"], l["slug"]))
+            if not os.path.exists(page):
+                continue
+            raw = open(page).read()
+            for m in re.finditer(r"(?is)<text\b([^>]*)>(.*?)</text>", raw):
+                n_text += 1
+                if not re.sub(r"(?s)<[^>]*>", "", m.group(2)).strip():
+                    empty_text.append("%s: <text%s></text>"
+                                      % (l["slug"], m.group(1)[:70]))
+    check("⊕ MRB-254 · no figure draws an empty <text> anywhere in the tree",
+          not empty_text,
+          "%d <text> element(s) swept across the built tree, every one of "
+          "them carrying a string" % n_text
+          if not empty_text else "%d: %s" % (len(empty_text), empty_text[:4]))
+
+    # ⊕ MRB-254 · the figure record's own shape.
+    #
+    # ⚠️ THE `retired_reason` HALF IS THE ONE THAT MATTERS, and it is here
+    # because this pass broke it. Replacing `b5-gametes-labelled` with the
+    # figure that supersedes it, the whole `figures` list was rewritten and the
+    # old record went with it — a DELETION, which §5A.4 forbids in as many
+    # words: "a deleted record loses the reasoning and lets the figure be
+    # re-declared later". `docs/ks3/diagram-manifest.md` is generated from this
+    # field, so a deletion is also a silent removal from the sourcing worklist:
+    # the manifest simply comes out one row shorter and nothing says why.
+    #
+    # Nothing caught it. The build was green, the manifest regenerated cleanly,
+    # and the only reason it was found is that a human counted the rows. So the
+    # rule gets a gate: a figure may be retired, and a retired figure must say
+    # why, in the record, where the next pass will read it.
+    fig_shape = []
+    STATUSES = {"needed", "drafted", "drawn", "final", "retired"}
+    n_figs = 0
+    for u in units:
+        for l in u["lessons"]:
+            for f in l.get("figures") or []:
+                n_figs += 1
+                where = "%s/%s %s" % (u["code"], l["slug"], f.get("id", "?"))
+                if not f.get("id"):
+                    fig_shape.append("%s has no `id`" % where)
+                st = f.get("status", "needed")
+                if st not in STATUSES:
+                    fig_shape.append(
+                        "%s is status %r; the five are %s"
+                        % (where, st, ", ".join(sorted(STATUSES))))
+                if st == "retired" and not f.get("retired_reason"):
+                    fig_shape.append(
+                        "%s is retired with no `retired_reason`. A retired "
+                        "record exists to carry the reasoning a deletion would "
+                        "have lost; without it the row says only that "
+                        "something was dropped." % where)
+                if st == "drawn" and not f.get("art"):
+                    fig_shape.append("%s is drawn and names no `art`" % where)
+                for key in ("caption",):
+                    if not f.get(key):
+                        fig_shape.append("%s has no %r" % (where, key))
+    check("⊕ MRB-254 · every figure record is shaped, and a retirement says why",
+          not fig_shape,
+          "%d figure record(s) across the corpus; every status legal, every "
+          "retirement carrying its reason" % n_figs
+          if not fig_shape else "%d: %s" % (len(fig_shape), fig_shape[:4]))
+
+    # ⊕ MRB-254 · every drawn figure, driven at 390 / 768 / 1440.
+    #
+    # Its own module because it needs a browser and a device-metrics override,
+    # and because what it measures is RENDERED GEOMETRY — the one thing none of
+    # the three gates around it can see. A `<text font-size="15">` inside a
+    # viewBox scaled to 78% is 11.7px on a phone and 15 in the file; the served
+    # bytes are right, the computed style is right, and the label is unreadable.
+    # See the module docstring for the other four assertions.
+    import ks3_figure_sweep
+    fig_problems, fig_rows, fig_pages = ks3_figure_sweep.sweep()
+    check("⊕ MRB-254 · every drawn figure reads at 390, 768 and 1440",
+          not fig_problems,
+          "%d figure page(s) × %d width(s) = %d measurement(s): scroll box "
+          "focusable, nothing clipped out of the viewBox, no label under 13px "
+          "on screen, no page-level horizontal scroll, edge cue agreeing with "
+          "the overflow"
+          % (len(fig_pages), len(ks3_figure_sweep.WIDTHS), len(fig_rows))
+          if not fig_problems
+          else "%d problem(s): %s" % (len(fig_problems), fig_problems[:3]))
+
     check("no lesson page leaks a year or a half-term (sequence is data)",
           not seq_leaks,
           "%s" % seq_leaks[:5] if seq_leaks

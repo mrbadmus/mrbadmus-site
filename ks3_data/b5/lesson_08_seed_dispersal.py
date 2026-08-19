@@ -506,11 +506,53 @@ LESSON = {
     "figures": [
         {"id": "b5-dispersal-specimens",
          "kind": "diagram",
-         "caption": "The eight specimens drawn to scale from their structures "
-                    "and left unlabelled by method: dandelion, sycamore key, "
-                    "poppy capsule, blackberry, goosegrass, burdock burr, "
-                    "coconut and gorse pod.",
-         "status": "needed"},
+         "status": "drawn",
+         "art": "dispersal",
+         "title": "Seed dispersal: eight fruits and seeds drawn to one scale",
+         "desc": "A framed plate of eight specimens, all standing on one "
+                 "ground line at one scale, numbered but not named by any "
+                 "method of travel. From the left, smallest first. 01, a pair "
+                 "of tiny round fruits covered in short stiff bristles, each "
+                 "bristle ending in a hook; a magnified detail above it, "
+                 "marked four times, shows three of those hooks. 02, a single "
+                 "small seed carrying a spray of about ten fine hairs on a "
+                 "thin stalk above it. 03, a dry urn-shaped capsule with a "
+                 "rim and a ring of small holes just under the rim, on a "
+                 "stem. 04, a rounded cluster of about eight soft segments, "
+                 "each with one small hard pip drawn inside it. 05, a dense "
+                 "round burr made of many stiff bracts, each ending in a "
+                 "backward-facing hook. 06, a slim dry pod, split along its "
+                 "length and slightly twisted, with four seeds visible "
+                 "inside. 07, a hard seed at one end of a long stiff papery "
+                 "blade, the blade curving and set off to one side of the "
+                 "seed rather than balanced around it. 08, an enormous ovoid: "
+                 "a thick outer layer drawn full of fibres with small voids "
+                 "among them, a hard shell inside that, and a cavity within "
+                 "the shell holding liquid. Below the ground line a scale bar "
+                 "reads one hundred millimetres, divided into ten-millimetre "
+                 "steps. The key names the eight specimens and nothing else: "
+                 "01 goosegrass, or cleavers. 02 dandelion. 03 poppy capsule. "
+                 "04 blackberry. 05 burdock burr. 06 gorse pod. 07 sycamore "
+                 "key. 08 coconut, whole fruit with husk. The scale bar's own "
+                 "label says that every specimen is drawn on this one scale, "
+                 "and a closing note under the key says that the names are "
+                 "all there is: nothing on the plate says how any of them "
+                 "travels.",
+         "caption": "Eight fruits and seeds on one ground line at one scale, "
+                    "smallest first, numbered and named — and nothing else. "
+                    "The hooks, the hairs, the ring of holes under the rim, "
+                    "the flesh around a hard pip, the off-centre wing, the "
+                    "fibrous layer full of voids: all of it is drawn, none of "
+                    "it is captioned with a method. The scale is real, which "
+                    "is why the coconut is that size and the goosegrass is "
+                    "that size, and why one of them was never going to be "
+                    "moved by wind. The goosegrass detail is magnified four "
+                    "times and says so on the drawing. Measure any of them "
+                    "against the bar under the ground line: the coconut is "
+                    "250 mm across, husk and all, the goosegrass pair is 9 "
+                    "mm, and both are drawn against that same bar. Then work "
+                    "out, from what is drawn and from nothing else, how each "
+                    "one gets away from the plant it grew on."},
     ],
 
     # ── core, in the approved page's document order ─────────────────────────
@@ -574,6 +616,19 @@ LESSON = {
          "rows": [{"name": m["name"], "cells": [m["tell"], m["cost"]]}
                   for m in METHODS],
          "key_fact": {"ref": "one-problem", "ground": "card"}},
+
+        # ⊕ MRB-254 — THE BENCH ASKS FOR INFERENCE FROM STRUCTURE AND SUPPLIES THE
+
+        # STRUCTURE AS PROSE. That converts the one skill this page examines into
+
+        # reading comprehension. The plate draws the eight specimens to one real
+
+        # scale and names them and nothing else — no description, no tell, no
+
+        # method — so the inference is the student's again.
+
+        {"type": "figure", "ref": "b5-dispersal-specimens", "anchor": "s-plate"},
+
 
         {"type": "misconception", "id": "two-wrong-ideas",
          "anchor": "s-think", "targets": "REPRO-15"},

@@ -654,15 +654,60 @@ LESSON = {
     ],
 
     # ── figures (§4.10) ─────────────────────────────────────────────────────
-    # ⚠️ EMPTY, AND MEASURED. `<img>`, `<figure>` and `<picture>` each appear
-    # zero times on this page — grepped — and every `<svg>` is chrome. Schema
-    # §11 records why B10 draws none and says of THIS lesson specifically that
-    # its `zoom-bench` is already the chromosome-to-DNA nesting figure NOTES
-    # flag 19 asks for, built out of DOM. Declaring a slot the page never
-    # references would invent a sourcing task in `docs/ks3/diagram-manifest.md`
-    # for a drawing that already ships. The flag is NOT dropped by this and it
-    # is Mide's to rule on.
-    "figures": [],
+    # ⊕ MRB-254 — NO LONGER EMPTY, AND THE REASONING THAT KEPT IT EMPTY IS
+    # THE REASONING THE AUDIT OVERTURNED.
+    #
+    # The note here used to say that `zoom-bench` "is already the
+    # chromosome-to-DNA nesting figure NOTES flag 19 asks for, built out of
+    # DOM", so declaring a slot would invent a sourcing task for a drawing that
+    # already ships. The KS3 Biology audit of 18 Aug 2026 drove that bench and
+    # found the opposite, measured: at level 6 it renders **six equally-sized
+    # sibling cards stacked vertically**. Nothing is drawn inside anything.
+    #
+    # This lesson's named misconception is *"three different things in the
+    # nucleus"* → *"one thing at three magnifications"*, and a stack of equal
+    # siblings is a picture of three things side by side. **The bench's own
+    # layout is the misconception the lesson is trying to kill.** It remains a
+    # good instrument for everything else it does; what it cannot do is nest,
+    # and nesting is the claim.
+    "figures": [
+        {"id": "b10-nested-scale",
+         "kind": "diagram",
+         "status": "drawn",
+         "art": "nested-scale",
+         "title": "Chromosomes, genes and DNA: one strand at five "
+                  "magnifications",
+         "desc": "Five framed drawings in a column, each a magnified callout "
+                 "of the one above it, joined by tapering wedges. Panel 01, a "
+                 "cell 0.02 mm across, with a nucleus at its centre; a single "
+                 "orange fleck inside the nucleus is the strand the figure "
+                 "follows. Panel 02, that nucleus enlarged to 0.006 mm, "
+                 "holding 46 chromosomes in 23 pairs drawn in grey, with one "
+                 "of them picked out in orange. Panel 03, that one "
+                 "chromosome, 0.002 mm long, drawn as an orange strand coiled "
+                 "around grey proteins and unwinding at its lower end. Panel "
+                 "04, the unwound strand as two orange backbones with rungs "
+                 "between them, running the width of the frame; a bracket "
+                 "marks one length of it as a gene. Panel 05, four rungs of "
+                 "that same length, each a pair of lettered boxes: A with T, "
+                 "C with G, T with A, G with C, the letters 0.0000003 mm "
+                 "apart. Orange is DNA in every panel. Grey and dark ink are "
+                 "everything that is not DNA.",
+         "caption": "One molecule, five magnifications. Each frame is a "
+                    "callout of the frame above it, and the orange strand you "
+                    "can trace from the top of the column to the bottom never "
+                    "stops being the same strand. Orange is DNA wherever it "
+                    "appears; ink and grey are everything that is not DNA. "
+                    "The gene in panel 04 is a marked length of the strand "
+                    "that was coiled in panel 03 — a section of it, not a "
+                    "separate object sitting on it. Nothing is swapped for "
+                    "anything else on the way down: a chromosome, a gene and "
+                    "DNA are not three things sitting side by side in the "
+                    "nucleus, they are one thing at three magnifications. "
+                    "Count the marks in panel 02 — there are 46, in 23 pairs "
+                    "— and the orange one is the member of one pair that the "
+                    "rest of the column follows."},
+    ],
 
     # ── core, in the approved page's document order ─────────────────────────
     "core": [
@@ -758,6 +803,21 @@ LESSON = {
          # the section itself is `--ks3-band` and band on band is invisible —
          # the same arrangement and the same reason as b7-01's and b9-01's.
          "key_fact": {"ref": "the-four-levels", "ground": "card"}},
+
+        # ⊕ MRB-254 — NESTED, WHERE THE BENCH IS STACKED.
+
+        # `zoom-bench` at level 6 renders six equally-sized sibling cards in a
+
+        # vertical column — six things side by side, which is this lesson's named
+
+        # misconception drawn as a layout. The figure puts every panel inside a
+
+        # callout of the one before it, so the nesting is physical, and carries one
+
+        # orange strand the whole way down so the reader can see it is one thing.
+
+        {"type": "figure", "ref": "b10-nested-scale", "anchor": "s-nested"},
+
 
         {"type": "misconception", "id": "three-things-and-the-cells-that-need-them",
          "anchor": "s-think", "targets": "GENE-03"},

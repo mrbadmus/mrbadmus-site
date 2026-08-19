@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="../support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Figure b3-villus-labelled · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+  <div style="max-width: 1180px; margin: 0 auto; padding: 34px 24px 80px;">
+
+    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px; border-bottom: 3px solid var(--ks3-ink); padding-bottom: 20px;">
+      <div>
+        <p class="ks3-eyebrow" style="margin: 0;">Figure for review · 5 of 12</p>
+        <h1 style="margin: 8px 0 0; font-size: clamp(32px, 4.4vw, 46px); line-height: 1.02; letter-spacing: -.035em;">Folds on folds on folds</h1>
+        <p style="margin: 10px 0 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">b3-villus-labelled · nutrition-and-digestion/absorption-and-the-small-intestine · WS1 #4</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Check the labels at</p>
+        <div style="display: flex; gap: 8px;">
+          <sc-for list="{{ widths }}" as="w" hint-placeholder-count="3">
+            <button type="button" onClick="{{ w.onClick }}" aria-pressed="{{ w.pressed }}" style="{{ w.style }}">{{ w.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+    </header>
+
+    <div style="margin: 22px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+      <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">What has to be checkable</p>
+      <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.5; max-width: 62ch;">Three levels of folding, each one drawn inside the level above it, so the nesting is physical rather than three claims in a row. The section then shows what the folding is for: a wall one cell thick — countable — with the blood already on the other side of it.</p>
+    </div>
+
+    <figure style="{{ frameStyle }}">
+      <div tabindex="0" role="group" aria-label="Three scales of folding in the small intestine, and a villus in section — scrollable diagram" style="overflow-x: auto; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-ink); background: var(--ks3-ground);">
+        <svg viewBox="0 0 860 640" width="860" height="640" role="img" aria-labelledby="f4-title f4-desc" style="display: block; width: 860px; height: auto;">
+          <title id="f4-title">Three scales of folding in the small intestine, and one villus cut through</title>
+          <desc id="f4-desc">Three framed drawings across the top, each a magnified callout of the one before it. The first shows a length of the small intestine as a tube, cut open at the near end, its inner wall thrown into ring-shaped ridges rather than being smooth. A callout from one ridge opens into the second frame, where the surface of that single ridge is covered in upright finger-shaped villi. A callout from one villus opens into the third frame, where the surface of a single villus cell is covered in far smaller projections, the microvilli. A second callout from the same row of villi opens downward into a wide panel beneath, showing one villus cut lengthways. Its wall is drawn as a single row of cells, divided by cross lines so the count can be checked, and inside the villus a capillary runs up to the tip and back. Three arrows cross the wall from the gut into the capillary, labelled glucose, amino acids and fatty acids.</desc>
+
+          <defs>
+            <clipPath id="f4A"><rect x="30" y="70" width="240" height="230" rx="16"></rect></clipPath>
+            <clipPath id="f4B"><rect x="310" y="70" width="240" height="230" rx="16"></rect></clipPath>
+            <clipPath id="f4C"><rect x="590" y="70" width="240" height="230" rx="16"></rect></clipPath>
+            <clipPath id="f4D"><rect x="30" y="378" width="800" height="252" rx="16"></rect></clipPath>
+          </defs>
+
+          <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+
+            <!-- callout wedges -->
+            <path d="M 200,178 L 310,70 L 310,300 L 200,222 Z" fill="#FCE7DE" stroke="none"></path>
+            <path d="M 200,178 L 310,70" stroke="#C3B191" stroke-width="1.6" stroke-dasharray="6 5"></path>
+            <path d="M 200,222 L 310,300" stroke="#C3B191" stroke-width="1.6" stroke-dasharray="6 5"></path>
+            <path d="M 458,168 L 590,70 L 590,300 L 458,212 Z" fill="#FCE7DE" stroke="none"></path>
+            <path d="M 458,168 L 590,70" stroke="#C3B191" stroke-width="1.6" stroke-dasharray="6 5"></path>
+            <path d="M 458,212 L 590,300" stroke="#C3B191" stroke-width="1.6" stroke-dasharray="6 5"></path>
+            <path d="M 386,300 L 120,378 L 700,378 L 430,300 Z" fill="#FCE7DE" stroke="none"></path>
+            <path d="M 386,300 L 120,378" stroke="#C3B191" stroke-width="1.6" stroke-dasharray="6 5"></path>
+            <path d="M 430,300 L 700,378" stroke="#C3B191" stroke-width="1.6" stroke-dasharray="6 5"></path>
+
+            <!-- 1 · the tube -->
+            <text x="30" y="58" fill="#5F564F" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="14" letter-spacing="1.4">1 · RINGED FOLDS</text>
+            <rect x="30" y="70" width="240" height="230" rx="16" fill="#FFFCF5" stroke="#221E1B" stroke-width="2.5"></rect>
+            <g clip-path="url(#f4A)">
+              <path d="M 60,150 H 262 M 60,250 H 262" stroke="#221E1B" stroke-width="2.5"></path>
+              <path d="M 100,150 A 16,50 0 0 1 100,250 M 140,150 A 16,50 0 0 1 140,250 M 180,150 A 16,50 0 0 1 180,250 M 220,150 A 16,50 0 0 1 220,250 M 260,150 A 16,50 0 0 1 260,250" stroke="#221E1B" stroke-width="2.5"></path>
+              <ellipse cx="60" cy="200" rx="16" ry="50" fill="#F4E9D8" stroke="#221E1B" stroke-width="2.5"></ellipse>
+            </g>
+            <circle cx="180" cy="200" r="30" stroke="#221E1B" stroke-width="1.6" stroke-dasharray="6 5"></circle>
+            <text x="30" y="326" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17">Not a smooth pipe. The wall</text>
+            <text x="30" y="348" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17">is thrown into ridges.</text>
+
+            <!-- 2 · villi -->
+            <text x="310" y="58" fill="#5F564F" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="14" letter-spacing="1.4">2 · VILLI ON EVERY FOLD</text>
+            <rect x="310" y="70" width="240" height="230" rx="16" fill="#FFFCF5" stroke="#221E1B" stroke-width="2.5"></rect>
+            <g clip-path="url(#f4B)">
+              <sc-for list="{{ villi }}" as="v" hint-placeholder-count="12">
+                <path d="{{ v.d }}" fill="#F4E9D8" stroke="#221E1B" stroke-width="2"></path>
+              </sc-for>
+              <path d="M 310,246 C 380,238 480,238 550,246" stroke="#221E1B" stroke-width="3"></path>
+              <path d="M 310,272 C 380,264 480,264 550,272" stroke="#221E1B" stroke-width="2"></path>
+            </g>
+            <circle cx="404" cy="190" r="26" stroke="#221E1B" stroke-width="1.6" stroke-dasharray="6 5"></circle>
+            <circle cx="470" cy="190" r="26" stroke="#221E1B" stroke-width="1.6" stroke-dasharray="6 5"></circle>
+            <text x="310" y="326" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17">Every ridge is furred with</text>
+            <text x="310" y="348" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17">villi, standing upright.</text>
+
+            <!-- 3 · microvilli -->
+            <text x="590" y="58" fill="#5F564F" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="14" letter-spacing="1.4">3 · MICROVILLI ON EVERY CELL</text>
+            <rect x="590" y="70" width="240" height="230" rx="16" fill="#FFFCF5" stroke="#221E1B" stroke-width="2.5"></rect>
+            <g clip-path="url(#f4C)">
+              <sc-for list="{{ microvilli }}" as="m" hint-placeholder-count="22">
+                <path d="{{ m.d }}" fill="#F4E9D8" stroke="#221E1B" stroke-width="1.6"></path>
+              </sc-for>
+              <path d="M 610,196 H 812 V 268 H 610 Z" fill="#F4E9D8" stroke="#221E1B" stroke-width="2.5"></path>
+              <circle cx="710" cy="238" r="11" fill="#FFFCF5" stroke="#221E1B" stroke-width="2"></circle>
+            </g>
+            <text x="590" y="326" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17">And every cell of every</text>
+            <text x="590" y="348" fill="#3B342E" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="17">villus is furred again.</text>
+
+            <!-- one villus, cut through -->
+            <text x="30" y="370" fill="#5F564F" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="14" letter-spacing="1.4">ONE VILLUS, CUT LENGTHWAYS</text>
+            <rect x="30" y="378" width="800" height="252" rx="16" fill="#F4E9D8" stroke="#221E1B" stroke-width="2.5"></rect>
+            <g clip-path="url(#f4D)">
+              <sc-for list="{{ food }}" as="f" hint-placeholder-count="14">
+                <circle cx="{{ f.cx }}" cy="{{ f.cy }}" r="5" fill="#FFFCF5" stroke="#221E1B" stroke-width="1.6"></circle>
+              </sc-for>
+              <path d="M 30,432 H 640 C 706,432 706,576 640,576 H 30 Z" fill="#FFFCF5" stroke="#221E1B" stroke-width="2.5"></path>
+              <path d="M 30,462 H 628 C 676,462 676,546 628,546 H 30" stroke="#221E1B" stroke-width="2.5"></path>
+              <sc-for list="{{ wallCells }}" as="c" hint-placeholder-count="24">
+                <path d="{{ c.d }}" stroke="#221E1B" stroke-width="1.6"></path>
+              </sc-for>
+              <path d="M 30,492 H 592 C 622,492 622,516 592,516 H 30" stroke="#2545A8" stroke-width="7"></path>
+              <path d="M 120,485 L 120,499 L 136,492 Z" fill="#2545A8" stroke="none"></path>
+              <path d="M 136,509 L 136,523 L 120,516 Z" fill="#2545A8" stroke="none"></path>
+
+              <path d="M 400,392 V 448" stroke="#221E1B" stroke-width="3"></path>
+              <path d="M 393,446 L 407,446 L 400,460 Z" fill="#221E1B" stroke="none"></path>
+              <path d="M 520,392 V 448" stroke="#221E1B" stroke-width="3"></path>
+              <path d="M 513,446 L 527,446 L 520,460 Z" fill="#221E1B" stroke="none"></path>
+              <path d="M 640,392 V 448" stroke="#221E1B" stroke-width="3"></path>
+              <path d="M 633,446 L 647,446 L 640,460 Z" fill="#221E1B" stroke="none"></path>
+            </g>
+
+            <text x="400" y="404" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16">glucose</text>
+            <text x="520" y="404" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16">amino acids</text>
+            <text x="640" y="404" text-anchor="middle" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16">fatty acids</text>
+            <text x="52" y="404" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16">digested food, in the gut</text>
+            <text x="52" y="482" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16" font-weight="700">the wall — one cell thick</text>
+            <path d="M 240,472 L 262,462" stroke="#221E1B" stroke-width="1.4"></path>
+            <text x="160" y="540" fill="#221E1B" stroke="none" font-family="'Instrument Sans', system-ui, sans-serif" font-size="16" font-weight="700">a capillary, right inside the villus</text>
+            <path d="M 300,530 L 320,518" stroke="#221E1B" stroke-width="1.4"></path>
+            <text x="700" y="608" text-anchor="end" fill="#5F564F" stroke="none" font-family="'DM Mono', ui-monospace, monospace" font-size="14">one cell, and the food is in the blood</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption style="margin: 14px 2px 0; font-size: 17px; line-height: 1.55; color: var(--ks3-ink-body); max-width: 74ch;">Each frame is drawn from a callout of the frame before it, so the folding is one thing at three sizes rather than three separate facts: the tube is ridged, every ridge is covered in villi, and every cell of every villus is covered in microvilli. The panel underneath shows why it is worth doing. Count the cells across the wall of the villus — there is one. On the far side of that single cell is a capillary, which is why a glucose molecule in the gut is in the bloodstream a moment later.</figcaption>
+    </figure>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1180}}">
+const WIDTHS = [
+  { label: 'Full', px: null },
+  { label: '768px', px: 768 },
+  { label: '390px', px: 390 }
+];
+
+class Component extends DCLogic {
+  state = { w: 0 };
+
+  renderVals() {
+    /* frame 2 — villi standing on one fold */
+    const villi = [];
+    for (let i = 0; i < 12; i += 1) {
+      const x = 322 + i * 19;
+      const base = 250 - Math.round(Math.sin((i / 11) * Math.PI) * 8);
+      const top = base - 74;
+      villi.push({
+        d: 'M ' + x + ',' + base + ' V ' + (top + 9) +
+           ' Q ' + (x + 7) + ',' + (top - 2) + ' ' + (x + 14) + ',' + (top + 9) +
+           ' V ' + base + ' Z'
+      });
+    }
+
+    /* frame 3 — microvilli on one villus cell */
+    const microvilli = [];
+    for (let i = 0; i < 22; i += 1) {
+      const x = 614 + i * 9;
+      microvilli.push({
+        d: 'M ' + x + ',200 V 174 Q ' + (x + 2.5) + ',168 ' + (x + 5) + ',174 V 200 Z'
+      });
+    }
+
+    /* the section — cross lines dividing the wall into single cells */
+    const wallCells = [];
+    for (let x = 74; x <= 604; x += 44) {
+      wallCells.push({ d: 'M ' + x + ',432 V 462' });
+      wallCells.push({ d: 'M ' + x + ',546 V 576' });
+    }
+
+    /* dissolved food in the gut, above and below the villus */
+    const food = [];
+    [[90, 400], [150, 416], [220, 398], [300, 414], [360, 400], [470, 414], [560, 400],
+     [700, 470], [740, 520], [96, 600], [200, 604], [330, 596], [470, 606], [600, 598]]
+      .forEach((p) => food.push({ cx: p[0], cy: p[1] }));
+
+    const px = WIDTHS[this.state.w].px;
+    return {
+      villi: villi,
+      microvilli: microvilli,
+      wallCells: wallCells,
+      food: food,
+      widths: WIDTHS.map((v, i) => ({
+        label: v.label,
+        pressed: i === this.state.w,
+        style: 'cursor:pointer;font-family:var(--ks3-font-mono);font-size:14px;font-weight:500;padding:9px 14px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+          (i === this.state.w ? 'var(--ks3-band)' : 'transparent') + ';color:var(--ks3-ink);box-shadow:' +
+          (i === this.state.w ? '3px 3px 0 var(--ks3-ink)' : 'none') + ';',
+        onClick: () => this.setState({ w: i })
+      })),
+      frameStyle: 'margin:26px 0 0;padding:0;max-width:' + (px ? px + 'px' : '100%') + ';'
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -6,7 +6,7 @@ MRB-220 build contract (`docs/ks3/mrb-220-build-contract.md`).
 
 Every student-facing string is lifted byte-identical from the approved page
 except the items listed under "What could not be lifted", none of which is a
-sentence of science. The nine functions, the eight structures with their
+sentence of science. The nine functions, the nine structures with their
 four-option pools, the five job rows and all four ladder rungs came out of
 `node tools/extract_design_payload.js`, not off a keyboard.
 
@@ -38,11 +38,11 @@ foetus` owns `e`, and §5.7's exactly-once rule would fail the build on the
 overlap. The page names the placenta and names fertilisation, and teaches
 neither; both are `touches`.
 
-── The flagship: eight structures, and every distractor is a real job ───
+── The flagship: nine structures, and every distractor is a real job ────
 
 `#s-jobs` is `job-match`, on `ks3-block ks3-dark ks3-practical` (page line 104),
 so `practical` is MEASURED from Design's own markup rather than inherited from
-the hook above it. Nine functions, eight structures, four options per structure,
+the hook above it. Nine functions, nine structures, four options per structure,
 and **every option in every pool is the correct function of a different
 structure** — no invented wrong answers anywhere. That is the instrument's
 second purpose and NOTES-B5 §2.4 states the rule in terms for b5-06, which is
@@ -77,7 +77,7 @@ section holds no control because the instrument already took the commitment.
 That is a MIRROR, resolved at rail level in `wireRail`'s `paint()`.
 
 So the fourth stop is declared: anchor `s-pair`, `mirrors: "s-jobs"`,
-`done_when: "all_eight_checked"` — the instrument's own predicate, named as
+`done_when: "all_nine_checked"` — the instrument's own predicate, named as
 borrowed, and gated by `check_rail_matches_design` against
 `docs/ks3/rail-manifest.md`. b4-01's `#s-parts`, c1-02's `#s-matrix`, c1-05's
 `#s-scale`, b3-01's `#s-nutrients` and b3-02's `#s-limits` are restored the
@@ -178,7 +178,7 @@ FUNCTIONS = [
      "text": "Closes the lower end of the uterus and opens for birth"},
 ]
 
-# ── the eight structures (page lines 337–370) ───────────────────────────
+# ── the nine structures (page lines 337–370, plus MRB-254) ──────────────
 #
 # `label` is the tab face and `name` is the panel heading: they differ on
 # exactly one row, the oviduct, where the panel carries the second term
@@ -248,6 +248,32 @@ STRUCTURES = [
             "much a job as opening it at the end, and the second one takes "
             "hours.",
      "options": ["close", "transfer", "carry", "add-fluid"]},
+
+    # ⊕ MRB-254 — THE NINTH STRUCTURE, ADDED. Ruled 19 Aug 2026 alongside the
+    # reproductive-systems figure, which numbers nine and asked for the ninth
+    # to be confirmed.
+    #
+    # It was already named three times on this page and matchable nowhere: the
+    # key note names nine structures a student must place; `FUNCTIONS` carries
+    # nine jobs; and `receive` — "Receives gametes and leads towards the egg" —
+    # was the job of NO structure in the array. It appeared only as a
+    # distractor, in the glands' pool and the penis's. So the instrument was
+    # offering a wrong answer that was not the right answer to anything, which
+    # is the one kind of distractor the block's own docstring rules out: "the
+    # other three in each pool are the correct functions of other structures."
+    # The vagina makes that sentence true.
+    #
+    # It is also the structure the male side's own `transfer` answer points at
+    # — the penis "transfers semen into the vagina" — so the array named it in
+    # an answer while refusing to let a student place it.
+    {"id": "vagina", "label": "Vagina", "name": "Vagina",
+     "system": "Female system", "func": "receive",
+     "answer": "It receives semen, and it is the canal the baby passes "
+               "through at birth.",
+     "why": "Two jobs at opposite ends of the nine months, and the second one "
+            "is why the cervix has to open. Nothing in the male system "
+            "corresponds to it.",
+     "options": ["receive", "transfer", "hold", "close"]},
 ]
 
 # ── the five jobs (page lines 372–388) ──────────────────────────────────
@@ -337,14 +363,14 @@ LESSON = {
     "rail": [
         {"anchor": "s-hook", "short": "HOOK", "label": "A million eggs",
          "done_when": "committed"},
-        # Design's own threshold, kept: the stage ticks when all eight
+        # Design's own threshold, kept: the stage ticks when all nine
         # structures have been CHECKED, not when the first one is picked. A
         # stop that ticked on the first check would call the instrument
-        # finished at an eighth of it.
+        # finished at a ninth of it.
         {"anchor": "s-jobs", "short": "MATCH", "label": "Match the job",
-         "done_when": "all_eight_checked"},
+         "done_when": "all_nine_checked"},
         {"anchor": "s-pair", "short": "PAIR", "label": "Not mirrors",
-         "mirrors": "s-jobs", "done_when": "all_eight_checked"},
+         "mirrors": "s-jobs", "done_when": "all_nine_checked"},
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -454,27 +480,101 @@ LESSON = {
     ],
 
     # ── figures (§4.10) ─────────────────────────────────────────────────────
-    # Design's legal line names BOTH slots and no artwork exists for either, so
-    # they are DECLARED at `needed` rather than dropped: the manifest is
-    # generated from this field, which turns two dangling references into two
-    # tracked sourcing tasks. `needed` is not a build blocker. No `figure` block
-    # is added to `core` — Design draws no figure slot on the page, and one
-    # here would be a component nobody drew. NOTES-B5 flag 13 asks Mide to
-    # confirm what is illustrated and at what level of detail BEFORE anything
-    # is commissioned; the captions below name only the structures this lesson
-    # teaches, in the page's own order and words.
+    # ⊕ MRB-254 — TWO SLOTS BECOME ONE FIGURE, AND THE TWO OLD RECORDS ARE
+    # RETIRED RATHER THAN DELETED (§5A.4).
+    #
+    # The audit's brief is "two labelled tracts SIDE BY SIDE, each structure in
+    # its actual position", and the reason is the lesson's named misconception:
+    # that the two systems are mirror images of each other. Two separate
+    # drawings on two separate slots cannot refute that — a claim about
+    # CORRESPONDENCE is only visible when the two are on one plate, where a
+    # structure with nothing opposite it is a hole the reader can see. So the
+    # drawing is one figure and the two records point at it.
+    #
+    # ⚠️ RETIRED, NOT REMOVED. §5A.4: "Retiring a declared figure is a
+    # `status: "retired"` plus a `retired_reason` on the record, never a
+    # deletion — the manifest is generated, and a deleted record loses the
+    # reasoning and lets the figure be re-declared later." Both old ids stay
+    # here saying where they went, so nobody commissions a male-system diagram
+    # in six months having found a gap that was closed.
     "figures": [
+        {"id": "b5-reproductive-systems",
+         "kind": "diagram",
+         "status": "drawn",
+         "art": "repro-systems",
+         "title": "The human reproductive systems: two labelled tracts, side "
+                  "by side",
+         "desc": "Two framed schematic drawings above a shared numbered key "
+                 "of nine structures. Left frame, the male system, seen from "
+                 "the front. A dashed line across the frame marks where the "
+                 "body cavity ends. Above it: the bladder, drawn in grey "
+                 "because it has no reproductive job, and two glands. Below "
+                 "it, outside the body cavity, two testes numbered 01, held "
+                 "in a pouch of skin. A sperm duct numbered 02 runs from each "
+                 "testis up past the body cavity line to the glands numbered "
+                 "03. From the glands one tube continues down the centre "
+                 "through the penis numbered 04. A grey tube joins the "
+                 "bladder to that same tube, because the urethra carries "
+                 "urine as well. Right frame, the female system, seen from "
+                 "the front. In the centre the uterus numbered 07, with a "
+                 "thick lining drawn inside it, narrowing at its base to the "
+                 "cervix numbered 08 and then to the vagina numbered 09. From "
+                 "each upper corner of the uterus an oviduct numbered 06 "
+                 "curves out and up, then down to a fringed funnel that sits "
+                 "over an ovary numbered 05, with a small gap between funnel "
+                 "and ovary. Each ovary holds several small circles, the egg "
+                 "cells already present. An orange ring on the right oviduct "
+                 "marks the one place fertilisation happens. Below both "
+                 "frames, a key: male, 01 testes make sperm cells from "
+                 "puberty onwards, 02 sperm duct carries sperm towards the "
+                 "urethra, 03 glands add fluid so that sperm plus fluid is "
+                 "semen, 04 penis transfers semen into the vagina. Female, 05 "
+                 "ovaries contain the egg cells and release one about a "
+                 "month, 06 oviduct carries the egg and is where "
+                 "fertilisation happens, 07 uterus holds and supplies the "
+                 "developing embryo, 08 cervix closes the uterus and opens "
+                 "for birth, 09 vagina receives semen and is the birth canal. "
+                 "Badges 07, 08 and 09 are filled solid, marking the three "
+                 "structures the male system has no counterpart for. A dashed "
+                 "link joins 01 to 05: both make gametes, and that is the "
+                 "only pairing across the two systems.",
+         "caption": "The nine structures the lesson asks a student to place, "
+                    "each drawn where the body puts it. Two things are true "
+                    "here that a name-to-job list cannot show: the testes sit "
+                    "below the dashed line, outside the body cavity, and the "
+                    "orange ring is in the oviduct — fertilisation happens "
+                    "there and not in the uterus. The dashed link between 01 "
+                    "and 05 is the only pairing that runs across the two "
+                    "systems; both make gametes. Everything with a filled "
+                    "badge has no counterpart on the other side, which is why "
+                    "the systems are not mirror images. Count the filled "
+                    "badges: there are three, and all three are on the female "
+                    "side."},
         {"id": "b5-male-system-labelled",
          "kind": "diagram",
+         "status": "retired",
+         "retired_reason": "Answered by `b5-reproductive-systems`, which draws "
+                           "both tracts on one plate. Kept separate, the male "
+                           "system's five structures could be labelled "
+                           "correctly and still leave the lesson's named "
+                           "misconception — that the two systems are mirror "
+                           "images — untouched, because a missing counterpart "
+                           "is only visible beside the thing it is missing "
+                           "from.",
          "caption": "The male reproductive system, labelled: the testes, the "
                     "sperm duct, the glands that add fluid, the urethra and "
-                    "the penis.",
-         "status": "needed"},
+                    "the penis."},
         {"id": "b5-female-system-labelled",
          "kind": "diagram",
+         "status": "retired",
+         "retired_reason": "Answered by `b5-reproductive-systems`. Same reason "
+                           "as the male slot above, and with the extra point "
+                           "that three of this system's structures have no "
+                           "counterpart at all — which is a fact about the "
+                           "PAIR of systems and cannot be drawn on one of "
+                           "them.",
          "caption": "The female reproductive system, labelled: the ovaries, "
-                    "the oviducts, the uterus, the cervix and the vagina.",
-         "status": "needed"},
+                    "the oviducts, the uterus, the cervix and the vagina."},
     ],
 
     # ── core, in the approved page's document order ─────────────────────────
@@ -494,9 +594,9 @@ LESSON = {
         {"type": "job-match", "id": "match-the-job", "anchor": "s-jobs",
          "demand": "investigate",
          "targets": "REPRO-01",
-         "eyebrow": "Match the job · eight structures",
+         "eyebrow": "Match the job · nine structures",
          "heading": "What is each one actually for?",
-         "head_counter": {"format": "{n} of 8 checked", "total": 8},
+         "head_counter": {"format": "{n} of 9 checked", "total": 9},
          "prompt": "Pick a structure, then choose the function that belongs "
                    "to it. Only one structure has more than one job.",
 
@@ -540,6 +640,21 @@ LESSON = {
          # accent offset shadow. `r_comparison` is the one block with a nested
          # key-fact slot, so this renders exactly where she drew it.
          "key_fact": {"ref": "two-shared-three-not", "ground": "card"}},
+
+        # ⊕ MRB-254 — THE BENCH CONTAINS NOT ONE ITEM OF SPATIAL INFORMATION.
+
+        # It matches nine names to nine jobs, which is worth doing and is not what
+
+        # the lesson asks for: the student must PLACE nine structures. The figure is
+
+        # where they get their positions — and it is where the named misconception,
+
+        # that the two systems are mirror images, is refuted by three filled badges
+
+        # on one side and none on the other.
+
+        {"type": "figure", "ref": "b5-reproductive-systems", "anchor": "s-where"},
+
 
         {"type": "misconception", "id": "think-not-mirrors",
          "anchor": "s-think", "targets": ["REPRO-01", "REPRO-02"]},

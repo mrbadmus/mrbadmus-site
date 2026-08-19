@@ -687,7 +687,51 @@ LESSON = {
     # drawn out of DOM and run rather than looked at, and the argument it makes
     # (a proportion over many seeds) is one a static grid of four boxes cannot
     # make. Reported, not built.
-    "figures": [],
+    # ⊕ MRB-254 · WS1 audit #8 — the four combinations that MAKE the 3 : 1.
+    #
+    # The bench above returns tallies. It is a good instrument and it is
+    # deliberately unseeded, so a student who runs it twice gets two numbers
+    # either side of three and learns that chance decides each seed. What it
+    # cannot show is WHY three: the four gamete combinations happen inside the
+    # model, so the result this lesson is NAMED FOR is simulated and asserted
+    # and never explained. The grid is the explanation, and the bottom-right
+    # cell is `GENE-07`'s refutation in one square — both parents purple, both
+    # carrying p, one seed in four getting p twice.
+    "figures": [
+        {"id": "b10-punnett-pp", "kind": "diagram", "status": "drawn",
+         "art": "punnett",
+         "title": "Every way two Pp parents can pass their gene versions on",
+         "desc": "A two-by-two grid with a parent plant drawn above it and "
+                 "another to the left of it, both labelled Pp. Two arrows "
+                 "lead down from the parent above the grid, one to each "
+                 "column heading, and two more lead across from the parent "
+                 "beside it, one to each row heading. Each heading is a "
+                 "single letter in a circle — P and p on the columns, P and p "
+                 "on the rows — because each parent carries two versions and "
+                 "passes one of them, chosen at random. Every square of the "
+                 "grid holds the pair of letters made by its own column and "
+                 "row, numbered one to four: PP, then Pp, then Pp, then pp. "
+                 "Under each pair is a flower drawn with five petals and the "
+                 "word for its colour. The first three flowers are drawn with "
+                 "solid petals and labelled purple; the fourth is drawn as an "
+                 "outline only and labelled white. A dashed line runs from "
+                 "the fourth square to a note reading that neither parent is "
+                 "white and this one is. Beneath the grid the same four are "
+                 "listed again in a row, in the same numbered order, and a "
+                 "drawn bracket gathers the first three under the words three "
+                 "of the four, purple, with a second bracket under the fourth "
+                 "reading one of the four, white. The ratio three purple to "
+                 "one white is printed below them.",
+         "caption": "Each parent has two versions and passes one, so there "
+                    "are four ways the pair can land — and the grid is all "
+                    "four. Three of them contain at least one P, and P beats "
+                    "p, so three of the four flower purple. The fourth got p "
+                    "from both parents. That is where three to one comes "
+                    "from, and it is why a white plant can appear from two "
+                    "purple ones.",
+         "data": {"parent1": "Pp", "parent2": "Pp",
+                  "dominant": "purple", "recessive": "white"}},
+    ],
 
     # ── core, in the approved page's document order ─────────────────────────
     "core": [
@@ -877,6 +921,13 @@ LESSON = {
          "key_fact": {"ref": "heredity-halved-combined-copied",
                       "ground": "card"}},
 
+        # ⊕ MRB-254 — THE GRID SITS BETWEEN THE BENCH AND THE MISCONCEPTION,
+        # and the position is the argument. The bench has just shown the ratio
+        # arriving without saying where it comes from; `#s-think` is about to
+        # claim that an unshown version has gone away. The figure answers the
+        # first and refutes the second, and it has to be read before the
+        # second to do the second job.
+        {"type": "figure", "ref": "b10-punnett-pp", "anchor": "s-grid"},
         {"type": "misconception", "id": "blending-and-the-skipped-generation",
          "anchor": "s-think", "targets": "GENE-07"},
         {"type": "quiz", "ref": "ladder", "anchor": "s-ladder"},
