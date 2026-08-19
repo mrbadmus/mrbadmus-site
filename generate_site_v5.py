@@ -5550,13 +5550,43 @@ def build_site(output_dir="mrbadmus_site"):
     # teacher-data.js, and both were loaded as bare unversioned <script> tags.
     # Shipping it unbusted would have reached new visitors only — the same
     # failure mode as mrbadmus.v2.js above, and just as invisible from the
-    # outside. The other shared modules the dashboards load bare
-    # (config.js, the two guards, shoutouts.js, search*.js) still carry it;
-    # that is a known hole, not a decision, and belongs to whoever next
-    # changes one of them.
-    _versioned_assets = ["tokens.css", "styles.css", "nav.css", "nav.js",
-                         "class-entry.js", "mrbadmus.v2.js",
-                         "student-data.js", "teacher-data.js"]
+    # outside.
+    #
+    # ⊕ AND THE REST OF THE HOLE IS CLOSED, same day. The paragraph above
+    # used to end by naming what it had NOT fixed — "config.js, the two
+    # guards, shoutouts.js, search*.js still carry it; that is a known hole,
+    # not a decision". Adding only the two files a change happened to touch
+    # is how this list has grown every time, and it guarantees the next fix
+    # to any other shared module ships silently broken for returning
+    # visitors and is then debugged from scratch. So EVERY shared asset the
+    # built tree loads is stamped now, not the ones this run needed:
+    #
+    #   · the six that were named as outstanding — config.js, the student
+    #     and teacher guards, shoutouts.js, search-index.js, search.js
+    #     (search* is on 1,000 pages);
+    #   · and the ten instrument engines the KS4 bonding-redesign pages load
+    #     — rd-page.js, quiz.js and the eight exam engines — which were
+    #     never named but carry the identical defect on 46 pages. Leaving
+    #     them would have been the same decision that produced this
+    #     paragraph's first draft.
+    #
+    # KS3 loads none of these (checked: zero references in the built ks3/
+    # tree), so build_ks3.py's VERSIONED_ASSETS is unchanged.
+    #
+    # Longest-first, because the alternation below is ordered and a name
+    # that prefixes another would otherwise mask it.
+    _versioned_assets = sorted([
+        "tokens.css", "styles.css", "nav.css", "nav.js",
+        "class-entry.js", "mrbadmus.v2.js",
+        "student-data.js", "teacher-data.js",
+        # the six named as outstanding
+        "config.js", "student-guard.js", "teacher-guard.js", "shoutouts.js",
+        "search-index.js", "search.js",
+        # the instrument engines, same hole, never named
+        "rd-page.js", "quiz.js", "tap-match.js", "predict-wrapper.js",
+        "write-then-mark.js", "periodic-table.js", "formula-deducer.js",
+        "exam-ladder.js", "chain-builder.js", "username-generator.js",
+    ], key=len, reverse=True)
     _asset_ver = {}
     for _name in _versioned_assets:
         _p = os.path.join(output_dir, "shared", _name)
