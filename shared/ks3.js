@@ -101,7 +101,7 @@
   }
 
   /* ── the visit log (MRB-212) ────────────────────────────────────
-     ks3_visits — { "<slug>": { t: <epoch ms>, done: <bool> } }
+     ks3_visits2 — { "<slug>": { t: <epoch ms>, done: <bool> } }
 
      One key for the whole key stage rather than one per lesson: the hub's
      picker has to sort ALL published lessons on open, and 183 separate
@@ -118,7 +118,12 @@
 
      ⚠️ Deliberately LOCAL ONLY. Server-side progress logging is broken
      platform-wide; this neither calls it nor waits on it. */
-  var VISITS_KEY = "ks3_visits";
+  /* MRB-257 decision 1 — the key is versioned at the C2 fix. Every "done"
+     mark ever written was earned under the one-rung bug (`if (resolved)`
+     on a COUNT), so the old store is discarded rather than migrated:
+     grandfathering wrong marks into the pilot term would poison the first
+     dashboard reads. `ks3_visits` is simply abandoned in place. */
+  var VISITS_KEY = "ks3_visits2";
   var VISITS_CAP = 50;
 
   function readVisits() {
@@ -238,6 +243,26 @@
     }
   }
 
+  /* MRB-257 (5.43) — where a result APPEARS and the control that produced
+     it DISABLES in the same breath, a keyboard user is dropped to
+     `<body>` and has to tab the whole page back to find what they just
+     made happen. Four B10/B11 benches, the enzyme run (the only timed
+     one, so the only one where the result lands after focus is already
+     gone) and the food-tests bench all did exactly that. The panel takes
+     a programmatic-only `tabindex="-1"` — it never enters the tab order —
+     and is focused BEFORE the button is disabled, which is the half that
+     matters: disable first and the browser has already moved focus.
+     No-ops on a panel that is missing or still hidden, so a payload
+     without one is unaffected. */
+  function focusReveal(el) {
+    if (!el || el.hasAttribute("hidden")) { return; }
+    if (!el.hasAttribute("tabindex")) { el.setAttribute("tabindex", "-1"); }
+    if (el.focus) {
+      try { el.focus({ preventScroll: true }); }
+      catch (err) { el.focus(); }
+    }
+  }
+
   /* ═══════════════════════════════════════════════════════════════
      Law 4 / R3 — a reveal is gated behind a committed prediction.
 
@@ -332,6 +357,19 @@
     var work = readStore(WORK_PREFIX + slug) || {};
     var WHO = "";
     var submitted = false;
+    /* MRB-257 (C3) — the score and note lines describe THIS sitting. A
+       returning student's self-marked work is restored on load (wireSelf
+       below), which used to make `resolved` non-zero before anything was
+       touched: the ladder read "You got 2 of 4. Your best so far is 4 of
+       4." over an untouched page, and the note was overwritten with the
+       past-tense "You marked rungs 3 and 4 yourself." while the score
+       still said "Not started yet.". Neither line is written until the
+       student has actually done something here, which leaves the
+       authored resting strings ("Not started yet." / "Rungs 3 and 4 you
+       mark yourself.") in place. */
+    var touched = false;
+    var restScore = scoreEl ? scoreEl.textContent : "";
+    var restNote = noteEl ? noteEl.textContent : "";
 
     // The best is read ONCE, at load, and the score line is compared against
     // that snapshot rather than against a value this sitting keeps raising.
@@ -387,7 +425,10 @@
       return "You marked rung" + (nums.length > 1 ? "s " : " ") + list + " yourself.";
     }
 
-    function refresh() {
+    // `live` marks a refresh caused by the student acting on the page, as
+    // opposed to the one refresh at load that only reflects restored work.
+    function refresh(live) {
+      if (live) { touched = true; }
       var got = 0, resolved = 0, misses = 0, total = rungs.length;
       rungs.forEach(function (r) {
         if (r.resolved) { resolved += 1; }
@@ -397,21 +438,27 @@
         if (r.resolved && !r.met) { misses += 1; }
       });
 
-      if (scoreEl) {
-        scoreEl.textContent = resolved
-          ? "You got " + got + " of " + total + "."
-          : "Not started yet.";
-      }
-      if (noteEl) {
+      // MRB-257 (C3) — either a claim about THIS sitting, or the authored
+      // resting strings left exactly as the build wrote them. Untouched, the
+      // ladder says nothing at all; and "Retry my misses" can empty it
+      // again, at which point it is genuinely not started.
+      var claiming = touched && resolved > 0;
+      if (claiming) {
         var lead = "";
-        if (resolved && bestAtLoad !== null) {
+        if (bestAtLoad !== null) {
           if (got > bestAtLoad) {
             lead = "That's your best yet — up " + (got - bestAtLoad) + ". ";
           } else if (got < bestAtLoad) {
             lead = "Your best so far is " + bestAtLoad + " of " + total + ". ";
           }
         }
-        noteEl.textContent = lead + WHO;
+        if (scoreEl) {
+          scoreEl.textContent = "You got " + got + " of " + total + ".";
+        }
+        if (noteEl) { noteEl.textContent = lead + WHO; }
+      } else if (touched) {
+        if (scoreEl) { scoreEl.textContent = restScore; }
+        if (noteEl) { noteEl.textContent = restNote; }
       }
       if (resolved && (bestSaved === null || got > bestSaved)) {
         bestSaved = got;
@@ -419,8 +466,11 @@
       }
       /* MRB-212: all four rungs resolved means finished, whatever the
          score. The picker stops offering it — "pick up where you left
-         off" is about unfinished work, not about marks. */
-      if (resolved) { markVisit(slug, true); }
+         off" is about unfinished work, not about marks.
+         MRB-257 (C2) — this read `if (resolved)`, and `resolved` is a
+         COUNT, so ONE rung marked a lesson finished on all 58 lessons.
+         Same form as the MRB-235 guard immediately below. */
+      if (total > 0 && resolved === total) { markVisit(slug, true); }
       setHidden(retryWrap, misses === 0);
       // MRB-235 — record the attempt server-side once all four rungs are
       // resolved. Fires once per page load: `submitted` guards a re-fire
@@ -491,7 +541,7 @@
             }
           });
           feedback(correct, btn.getAttribute("data-feedback"));
-          refresh();
+          refresh(true);
         });
       });
 
@@ -565,11 +615,11 @@
           if (checkBtn.getAttribute("aria-expanded") === "true") { collapse(); }
           else { show(); }
           saveWork();
-          refresh();
+          refresh(true);
         });
       }
       boxes.forEach(function (b) {
-        b.addEventListener("change", function () { tell(); saveWork(); refresh(); });
+        b.addEventListener("change", function () { tell(); saveWork(); refresh(true); });
       });
       if (answer) {
         answer.addEventListener("input", function () { saveWork(); });
@@ -641,7 +691,7 @@
         if (r.reopen) { r.reopen(); }
         if (!first) { first = r.el; }
       });
-      refresh();
+      refresh(true);
       if (first) {
         var h = first.querySelector("h3");
         if (h && h.focus) { h.focus(); }
@@ -2255,8 +2305,15 @@
               + "part of a row."
             : "About " + cellsAcross(CELL_W) + " onion cells fit across the "
               + "view — straight sides, packed in rows like bricks.")
+            /* MRB-257 (5.44) — "About 1½ onion cells fit across… Some of
+               them show a small dark nucleus." At ×400 the view holds one
+               cell and half of its neighbour, and "some of them" is a
+               plural about that. The clause agrees with what is actually
+               in the view. */
             + (CELL_W * ppm > 22
-               ? " Some of them show a small dark nucleus." : "")
+               ? (fovMM() / CELL_W < 2
+                  ? " There is a small dark nucleus inside it."
+                  : " Some of them show a small dark nucleus.") : "")
             + depthNote;
         }
         if (offMM(midL.depth) < 2 * sharpWindowMM()) {
@@ -3158,8 +3215,19 @@
      what finished means and the rail does not (MRB-208).
      ═══════════════════════════════════════════════════════════════ */
 
+  /* MRB-257 decision 2 — rail credit is a RATCHET. MRB-208's rule is
+     "nothing un-finishes it", and two instruments were breaking it by
+     recomputing a live predicate every repaint: b8-04's "Empty the day"
+     took a student from 2/4 to 0/4 (5.28), and b6-04's route tracer
+     withdrew credit for exploring a second drug (5.29). Both, and every
+     future caller, are fixed here rather than at each call site: a
+     `markStage(sec, false)` that would LOWER an already-earned stage is a
+     no-op. The wire-time `markStage(sec, false)` inits still work — the
+     build emits `data-stage-done="0"`, so there is nothing to lower. */
   function markStage(sec, done) {
-    if (sec) { sec.setAttribute("data-stage-done", done ? "1" : "0"); }
+    if (!sec) { return; }
+    if (!done && sec.getAttribute("data-stage-done") === "1") { return; }
+    sec.setAttribute("data-stage-done", done ? "1" : "0");
   }
 
   function wireBoard(sec) {
@@ -4552,9 +4620,22 @@
       scopeNote: wrap.querySelector("[data-readout-scope-note]")
     };
 
-    var specimen = specBtns.length ? specBtns[0].getAttribute("data-specimen")
-                                   : spec.specimens[0].id;
-    var view = viewBtns.length ? viewBtns[0].getAttribute("data-view") : "diagram";
+    /* MRB-253 (5.1) — seed from the PRESSED button, not from DOM order.
+       The markup ships `aria-pressed="true"` on the leaf, DOM order puts
+       cheek first, and `refresh()` never repainted the buttons: the page
+       said "Leaf cell" while the engine drew and answered for a cheek
+       cell, under a gate question about a leaf cell. Zero interaction
+       required to be taught the inverse of the lesson. */
+    function pressedAttr(btns, attr, fallback) {
+      for (var i = 0; i < btns.length; i++) {
+        if (btns[i].getAttribute("aria-pressed") === "true") {
+          return btns[i].getAttribute(attr);
+        }
+      }
+      return btns.length ? btns[0].getAttribute(attr) : fallback;
+    }
+    var specimen = pressedAttr(specBtns, "data-specimen", spec.specimens[0].id);
+    var view = pressedAttr(viewBtns, "data-view", "diagram");
     var partId = spec.parts[0].id;
     var gateAnswered = !gate;
     var seen = {};
@@ -4572,6 +4653,27 @@
       return spec.parts[0];
     }
 
+    /* MRB-253 (5.2) — `alt`, `caption` and `tally` are authored as
+       VIEW-KEYED dicts ({diagram, scope, "scope+stain"}), and were being
+       assigned straight to `textContent`: students read the literal
+       string "[object Object]" in the caption, the tally and the canvas's
+       accessible name, on load, on the only drawn cell diagram in B1.
+       Indexed by the live view key, with the plain view as the fallback
+       for the "+extra" forms — `paint()` hardcodes `stained = false` and
+       no stain control ships, so "scope+stain" is currently unreachable
+       and falling back to "scope" is what a student should read.
+       A plain string is still honoured, so a specimen authored without
+       per-view text keeps working. */
+    function viewText(field) {
+      if (field === null || field === undefined) { return ""; }
+      if (typeof field === "string") { return field; }
+      var stained = false;                       // no stain control ships yet
+      var exact = stained ? (view + "+stain") : view;
+      if (typeof field[exact] === "string") { return field[exact]; }
+      if (typeof field[view] === "string") { return field[view]; }
+      return "";
+    }
+
     function paint() {
       if (!canvas || !canvas.getContext) { return; }
       var ctx = canvas.getContext("2d");
@@ -4584,9 +4686,9 @@
       drawPartMarker(ctx, partDef(partId), specimen, scope);
       ctx.filter = "none";
       var sp = specDef(specimen);
-      canvas.setAttribute("aria-label", sp.alt || "");
-      if (caption) { caption.textContent = sp.caption || ""; }
-      if (tally) { tally.textContent = sp.tally || ""; }
+      canvas.setAttribute("aria-label", viewText(sp.alt));
+      if (caption) { caption.textContent = viewText(sp.caption); }
+      if (tally) { tally.textContent = viewText(sp.tally); }
     }
 
     function readout() {
@@ -4632,6 +4734,17 @@
           tag.textContent = ((spec.where_labels || {})[gone ? "absent" : pd.where] || {}).tag
             || (gone ? (specDef(specimen).absent_tag || "") : "");
         }
+      });
+      /* MRB-253 (5.1) — the controls are repainted from the state on every
+         readout, not only inside their own click handlers, so a control can
+         never claim a specimen or a view the engine is not rendering. */
+      each(specBtns, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-specimen") === specimen ? "true" : "false");
+      });
+      each(viewBtns, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-view") === view ? "true" : "false");
       });
       seen[specimen + ":" + view] = true;
       markStage(sec, gateAnswered && Object.keys(seen).length >= 2);
@@ -4846,7 +4959,13 @@
       var d = def(current);
       if (jobText) { jobText.textContent = d.job || ""; }
       if (jobWhere) { jobWhere.textContent = d.where || ""; }
-      if (clearBtn) { clearBtn.textContent = L.clear || ""; }
+      if (clearBtn) {
+        clearBtn.textContent = L.clear || "";
+        /* MRB-257 (5.48) — "Strip it back out" was enabled over an empty
+           cell, where there is nothing to strip: an enabled control that
+           does nothing. Same rule as the Run button on the line below. */
+        clearBtn.disabled = !count();
+      }
       if (runBtn) {
         runBtn.textContent = ran[current] ? (L.rerun || "") : (L.run || "");
         if (!count()) { runBtn.setAttribute("disabled", ""); }
@@ -5593,7 +5712,15 @@
 
     function repaint() {
       var j = joint();
-      var twisting = !!twists[j.id];
+      /* MRB-257 (5.26) — `j.twist &&`, exactly as `draw()` has it. Without
+         it, pressing "Try to twist it" on a hinge or a fixed joint set
+         `aria-pressed="true"`, relabelled the button "Twisting" and — worse
+         — replaced `j.twist_no` ("It will not. The end of one bone sits in
+         a groove in the other.") with the empty `j.twist_yes`, deleting the
+         explanation the press exists to produce, while the canvas went on
+         drawing the struck-through refusal. Two readouts of one fact, and
+         they disagreed. */
+      var twisting = !!(j.twist && twists[j.id]);
       var locked = j.bend[1] === 0;
       if (slider) {
         slider.min = String(j.bend[0]);
@@ -5694,12 +5821,15 @@
      and watching it come down more slowly than it went up; equalise the
      two rates and the lesson is gone, leaving the animation.
 
-     ⚠️ The settings counter is over a MIXED KEY SPACE — four mode ids
-     and two kill ids — so "4 of 4 settings tried" is reachable as two
-     modes plus two kills. That is Design's own behaviour and its own
-     label; it is honest about "settings touched" and loose about "all
-     four contraction modes tried". Reproduced as drawn and reported,
-     because tightening it would contradict the label on the page. */
+     ⚠️ The settings counter counts THE FOUR CONTRACTION MODES and nothing
+     else. It used to run over a mixed key space — four mode ids and two
+     kill ids — so "4 of 4 settings tried" was reachable as two modes plus
+     two kills, and the stop ticked without the student ever pressing
+     "Both" (the joint locks) or "Neither" (it falls), which is what the
+     block exists to teach. MRB-257 (5.49). The denominator on the page is
+     4 and there are exactly four modes, so this is the label meaning what
+     it says; the kill switches still change the arm, they just do not
+     count towards a total they were never part of. */
   function wireMusclePair(sec) {
     var wrap = sec.querySelector("[data-musclepair]");
     if (!wrap) { return; }
@@ -5902,6 +6032,7 @@
       draw();
     }
 
+    /* Only the four contraction modes are counted — see the header. */
     function touch(key) {
       tried[key] = true;
       var n = 0;
@@ -5926,7 +6057,6 @@
         var id = b.getAttribute("data-kill");
         dead[id] = !dead[id];
         b.setAttribute("aria-pressed", dead[id] ? "true" : "false");
-        touch("off-" + id);
         repaintReadouts();
       });
     });
@@ -10143,6 +10273,16 @@
        must still render this block's resting state rather than throwing. */
     document.addEventListener("ks3:lever", function (ev) {
       if (!ev.detail || (RIG && ev.detail.rig !== RIG)) { return; }
+      /* MRB-257 (5.27) — once the four steps are open, this block is a
+         RECORD of the problem the student answered, and the rig above it
+         has stopped being its subject. Adopting a later rig state rewrote
+         the worked answer underneath a locked, disabled answer box: a
+         student who wrote 320 N, was told "the worked answer is 320 N",
+         then nudged the load slider, was told "You wrote 320 N. The worked
+         answer is 80 N." — marked wrong for having been right. The picks,
+         the box and the unit all lock at the same moment; the numbers now
+         lock with them. */
+      if (open) { return; }
       adopt(ev.detail);
       repaintText();
     });
@@ -10614,6 +10754,12 @@
     var clock = 0;
     var everRan = false;
     var finished = false;
+    /* MRB-257 (5.51) — the verdict is DECIDED WHEN THE RUN ENDS and then
+       held. `repaint()` used to re-derive it from the live rate, so
+       finishing a run and then pressing a different pH flipped the verdict
+       while the three counters underneath it did not move: the panel
+       described a run that had not happened. */
+    var finishedWhich = "";
     var timer = null;
 
     function fill(tpl, map) {
@@ -10690,16 +10836,45 @@
       /* ⊕ Any finished run shows a verdict — see the header. Which branch
          is Design's, unchanged: denatured first, then a rate too low to be
          doing anything, then the run that worked. */
-      if (finished && !running) {
-        var which = denatured ? "denatured" : (pct < SLOW ? "slow" : "worked");
+      if (finished && !running && finishedWhich) {
         each(verdicts, function (el) {
-          setHidden(el, el.getAttribute("data-verdict") !== which);
+          setHidden(el, el.getAttribute("data-verdict") !== finishedWhich);
         });
+        var wasHidden = verdict && verdict.hasAttribute("hidden");
         setHidden(verdict, false);
+        /* MRB-257 (5.43) — this is the only TIMED instrument on the estate,
+           so it is the only one where the result arrives after the Run
+           button has already disabled and dropped focus to `<body>`. Once,
+           on the transition, so a later repaint does not steal focus back. */
+        if (wasHidden) { focusReveal(verdict); }
       }
 
       setCount(sec, everRan ? 1 : 0);
       markStage(sec, everRan);
+    }
+
+    /* ⊕ Design's branch order, unchanged — denatured first, then a rate too
+       low to be doing anything, then the run that worked — with one branch
+       added in front of "slow".
+       MRB-257 (5.7) — "A little product, slowly" was printed over `Rate 0%`
+       and `0 units made` on protease + pH 7, lipase + pH 2 and carbohydrase
+       + pH 2: nothing was produced, and the sentence says a little was. The
+       honest branch is `product === 0`, tested BEFORE the rate. It needs an
+       authored `[data-verdict="nothing"]` span, which no payload carries
+       yet, so the branch falls back to Design's three when the page has not
+       shipped one — see HANDOFF. */
+    function verdictFor() {
+      var pct = Math.round(rateFor() * 100);
+      if (denatured) { return "denatured"; }
+      if (product === 0 && hasVerdict("nothing")) { return "nothing"; }
+      return pct < SLOW ? "slow" : "worked";
+    }
+
+    function hasVerdict(key) {
+      for (var i = 0; i < verdicts.length; i++) {
+        if (verdicts[i].getAttribute("data-verdict") === key) { return true; }
+      }
+      return false;
     }
 
     function stop() {
@@ -10720,6 +10895,7 @@
       clock += 1;
       if (clock >= TICKS || (converted === 0 && rate === 0) || !substrate) {
         finished = true;
+        finishedWhich = verdictFor();
         stop();
       } else {
         timer = setTimeout(tick, TICK_MS / scale);
@@ -10741,6 +10917,7 @@
         product = 0;
         clock = 0;
         finished = false;
+        finishedWhich = "";
         denatured = temp >= DENATURE;
         setHidden(verdict, true);
         repaint();
@@ -10777,6 +10954,7 @@
       running = true;
       everRan = true;
       finished = false;
+      finishedWhich = "";
       clock = 0;
       setHidden(verdict, true);
       repaint();
@@ -10796,6 +10974,7 @@
         product = 0;
         clock = 0;
         finished = false;
+        finishedWhich = "";
         /* Re-latches if the tube is still hot: a fresh tube in a hot bath
            is a fresh enzyme that denatures on arrival. */
         denatured = temp >= DENATURE;
@@ -10910,8 +11089,38 @@
         barEl.style.width = Math.max(2, (area / most) * 100).toFixed(1) + "%";
         barEl.setAttribute("data-full", on === levels.length ? "1" : "0");
       }
+      /* MRB-257 (5.18) — the note is keyed to WHICH levels are on, not to
+         how many. Keyed on the count, villi-only printed "Corrugating the
+         wall triples it" (that is the folds), microvilli-only printed the
+         same note about a level that "needs an electron microscope", and
+         folds+microvilli printed "Villi are where most of the gain comes
+         from. Ten square metres" with the villi switched off.
+         Three ways to choose a note, in order:
+           1. an authored set note — `data-note-set="folds+villi"`;
+           2. the cumulative note, but ONLY when the levels that are on are
+              the first `on` levels in document order, which is the stack
+              the four shipped notes were written for;
+           3. nothing. A blank line is worse than a stale one, but it is
+              better than a sentence describing a level that is switched
+              off, and the area, the multiple and the bar all still read.
+         The eight authored set notes are a records job — see HANDOFF. */
+      var onIds = [], prefix = true;
+      each(levels, function (li, i) {
+        var lit = li.getAttribute("data-on") === "1";
+        if (lit) { onIds.push(li.getAttribute("data-level") || String(i)); }
+        if (lit !== (i < on)) { prefix = false; }
+      });
+      var setKey = onIds.join("+");
+      var hasSet = false;
       each(notes, function (p) {
-        setHidden(p, p.getAttribute("data-note") !== String(on));
+        if (p.getAttribute("data-note-set") === setKey) { hasSet = true; }
+      });
+      each(notes, function (p) {
+        var show = hasSet
+          ? p.getAttribute("data-note-set") === setKey
+          : (prefix && p.getAttribute("data-note") === String(on)
+             && !p.hasAttribute("data-note-set"));
+        setHidden(p, !show);
       });
       setCount(sec, on);
       if (on === levels.length) { markStage(sec, true); }
@@ -11236,9 +11445,16 @@
       }
 
       if (portionEl) {
+        /* MRB-257 (5.44) — the singular. This line reads "1 portions,
+           2,400 kJ" on a plate holding one thing, which is a state every
+           student passes through on the way to the second. `data-format-one`
+           is the same opt-in `setCount` has carried since MRB-248, read
+           here for the same reason; no payload carries one yet, so nothing
+           shipped moves until it does — see HANDOFF. */
+        var pFmt = (portions === 1 && portionEl.getAttribute("data-format-one"))
+          ? "data-format-one" : "data-format";
         portionEl.textContent = portions
-          ? fill(portionEl, "data-format",
-              { n: portions, total: group(total) })
+          ? fill(portionEl, pFmt, { n: portions, total: group(total) })
           : (portionEl.getAttribute("data-empty") || "");
       }
 
@@ -11250,7 +11466,13 @@
       }
 
       setCount(sec, portions);
-      markStage(sec, portions > 0);   // `food_on_the_plate`
+      /* `food_on_the_plate`. MRB-257 (5.28) — this is a LIVE predicate, so
+         "Empty the day" used to take the rail from 2/4 to 0/4 and strip the
+         ticks off the ledger stop and its mirror. `markStage` is a ratchet
+         now (MRB-257 decision 2), so the first portion ticks it and nothing
+         un-ticks it — MRB-208's "nothing un-finishes it", enforced once at
+         the writer rather than at each of fifty call sites. */
+      markStage(sec, portions > 0);
     }
 
     each(wrap.querySelectorAll(".ks3-ledger-tab[data-person]"), function (b) {
@@ -11434,6 +11656,12 @@
           ran[k] = parseInt(btn.getAttribute("data-i"), 10);
           count += 1;
           paint();
+          /* MRB-257 (5.43) — committing the prediction removes the whole
+             predict block, which is where focus was: a keyboard user was
+             ejected past the result panel AND the two tab rows into the
+             mastery ladder. The result is the thing they just made happen,
+             so it is where they should be. */
+          focusReveal(wrap.querySelector("[data-result='" + k + "']"));
           return;
         }
         each(opts, function (b) { b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
@@ -11510,6 +11738,13 @@
     function refresh() {
       var n = committed();
       if (countEl) { countEl.textContent = fill(COMMITTED, n); }
+      /* MRB-257 (C1) — the BLOCK HEAD's readout, which is a different
+         element from the bench's own count line and was never written:
+         `data-format="{n} of 4 predicted"` sat at "0 of 4 predicted" for
+         ever, including after the reveal. The reveal is gated on
+         `committed() === total`, so this line is already at 4 of 4 by the
+         time the two bags appear. */
+      setCount(sec, n);
       btn.disabled = n < total;
     }
 
@@ -11544,6 +11779,15 @@
       setHidden(table, false);
       setHidden(close, false);
       if (table) { table.setAttribute("role", "status"); }
+      /* MRB-257 (5.48) — the twelve gas-choice buttons are SPENT once the
+         bags are open. The handler already early-returns on `open`, but the
+         buttons stayed enabled and in the tab order, so a keyboard user
+         tabbed through twelve controls that do nothing. */
+      each(rows, function (row) {
+        each(row.querySelectorAll(".ks3-gas-choice"), function (choice) {
+          choice.disabled = true;
+        });
+      });
       /* ⚖️ THE STAGE TICKS ON THE REVEAL, NOT ON THE FOURTH PREDICTION.
          Design's own `isDone` for this stop reads `airOpen`, and it is the
          right reading: a student who committed four predictions and never
@@ -11661,6 +11905,11 @@
          is the ORDER the chain reports, and the order cannot be read without
          moving the sheet. */
       markStage(sec, true);
+      /* MRB-257 (C1) — and so does the head readout, off the same flag.
+         `data-on="model worked"` was unreachable, so the head said "not
+         moved yet" over a worked model. Sticky, like the stage: sliding
+         back to rest does not un-work the model. */
+      setCount(sec, 1);
     }
 
     /* Bound to both, per NOTES-B4 §6. `input` is the live drag and `change`
@@ -11766,6 +12015,11 @@
            all four states would make the stop turn on exploring rather than on
            the thing being explored. */
         markStage(sec, true);
+        /* MRB-257 (C1) — the head readout ticks with the stage and off the
+           same fact. `data-on="switches used"` was unreachable, so the head
+           read "both flows running" with a flow switched off. Sticky, to
+           match the stage and the past tense of the authored label. */
+        setCount(sec, 1);
       });
     });
 
@@ -11843,6 +12097,10 @@
          hit different parts of the same system, and a student who has opened
          one has met a case rather than the comparison. */
       markStage(sec, openedCount() >= total);
+      /* MRB-257 (C1) — the head readout counts the same thing the stage
+         does. `data-format="{n} of 3 opened"` was never written, so it read
+         "0 of 3 opened" after all three were opened. */
+      setCount(sec, openedCount());
     }
 
     each(tabs, function (tab) {
@@ -11912,10 +12170,15 @@
         ? "balanced" : (net > 0 ? "uptake" : "release");
 
       if (lightEl) {
+        /* MRB-257 (5.44) — "1 units" at the bottom of the slider's travel.
+           `data-format-one` is the MRB-248 opt-in; no payload carries one
+           yet — see HANDOFF. */
+        var lFmt = (light === 1 && lightEl.getAttribute("data-format-one"))
+          ? lightEl.getAttribute("data-format-one")
+          : (lightEl.getAttribute("data-format") || "");
         lightEl.textContent = light === 0
           ? (lightEl.getAttribute("data-dark") || "")
-          : (lightEl.getAttribute("data-format") || "")
-              .split("{n}").join(String(light));
+          : lFmt.split("{n}").join(String(light));
       }
       if (photoVal) {
         photoVal.textContent = RATE.split("{v}").join(photo.toFixed(1));
@@ -11941,6 +12204,13 @@
         b.setAttribute("aria-pressed",
           Number(b.getAttribute("data-preset")) === light ? "true" : "false");
       });
+      /* MRB-257 (C1) — the head readout, which was never written: it said
+         "currently dark" beside a light readout of 100 units, on every
+         state, for ever. Keyed to the LIGHT rather than to a moved flag,
+         because "currently dark" is a claim about the state and not about
+         the student — dragged back to zero, the ledger is dark again and
+         the head should say so. */
+      setCount(sec, light > 0 ? 1 : 0);
     }
 
     function onMove() {
@@ -11994,10 +12264,16 @@
      is no order of taps that opens nicotine's consequences having followed
      caffeine's dose.
 
-     ⚠️ THE STOP UNTICKS WHEN THE ROUTE IS RESTARTED, and that is deliberate
-     rather than an oversight. Design's `isDone` for this stop is `step >= 5`,
-     a pure function of the state, so a student who presses "New dose" is
-     mid-journey again and the rail says so. */
+     ⚠️ THE STOP DOES NOT UNTICK WHEN THE ROUTE IS RESTARTED. ⊕ MRB-257
+     (5.29) — it used to. Design's `isDone` for this stop is `step >= 5`, a
+     pure function of the state, and this comment used to defend that as
+     deliberate: press "New dose" and you are mid-journey again, so the rail
+     says so. The audit measured what that costs a student — complete
+     caffeine, rail 2/4, then click Nicotine to explore the second of the
+     four drugs the instrument's own copy invites, and the rail drops to
+     0/4. Exploring is punished. MRB-208 rules the rail records
+     PARTICIPATION, and `markStage` is a ratchet, so the predicate below is
+     unchanged and what it can no longer do is take credit back. */
   function wireRouteTracer(sec) {
     var wrap = sec.querySelector("[data-route]");
     if (!wrap) { return; }
@@ -12160,8 +12436,17 @@
         hoursEl.textContent = units === 0 ? T.none : b6Fill(T.hours, {n: units});
       }
       if (fillEl) {
+        /* MRB-257 (5.20) — normalised to the bench's own ceiling, not to the
+           evening's own total. Under a label reading "Alcohol still in the
+           blood", one unit drew 274px and six units drew 137px: one unit
+           was twice as long as six, because every evening was being scaled
+           to itself. `data-max` is the most the Add buttons can reach, so
+           two evenings on this bench are now comparable by eye — which is
+           the only reason to draw a bar at all. */
+        var span = MAX > 0 ? MAX : units;
         fillEl.style.width =
-          (units === 0 ? 0 : (remaining / units) * 100).toFixed(1) + "%";
+          (span > 0 ? Math.min(100, (remaining / span) * 100) : 0)
+            .toFixed(1) + "%";
       }
       if (remainEl) {
         remainEl.textContent = b6Fill(T.remaining, {h: hour, r: remaining});
@@ -12176,7 +12461,12 @@
       });
 
       waitBtn.disabled = units === 0 || clear;
-      waitBtn.textContent = clear ? T.clear : T.wait;
+      /* MRB-257 (5.48) — "Blood is clear" is a statement about a person who
+         drank and has finished clearing it. Pressing "Empty the glass" as a
+         first action used to put it on the button about someone who has not
+         had a drink; the verdict line beside it already says the honest
+         thing ("Nothing drunk, nothing to clear."). */
+      waitBtn.textContent = (units > 0 && clear) ? T.clear : T.wait;
 
       if (verdictEl) {
         verdictEl.textContent = units === 0
@@ -12196,10 +12486,14 @@
     each(addBtns, function (b) {
       b.addEventListener("click", function () {
         units = Math.min(MAX, units + (parseInt(b.getAttribute("data-add"), 10) || 0));
-        /* Design's own. Another drink means the clock is measuring a
-           different evening, and keeping the elapsed hours would credit the
-           new units with hours that passed before they existed. */
-        hour = 0;
+        /* MRB-257 (5.19) — the elapsed hours STAY. This used to reset
+           `hour` to 0 while keeping the gross total, so 4 units → wait 2 h
+           (2 left) → add 1 unit read "0 hours elapsed · 5 units left" with
+           the bar back at full: two hours of the liver's work were handed
+           back. In this model the total drunk IS the total hours, so five
+           units take five hours, two of which have passed and three of
+           which have not — which is what all three lines now say, and what
+           "one unit an hour, nothing else has a vote" means. */
         draw();
       });
     });
@@ -12612,6 +12906,9 @@
       return "held";
     }
 
+    var prev = w.querySelector("[data-dial-prev]");
+    var next = w.querySelector("[data-dial-next]");
+
     function draw() {
       /* ⚖️ DERIVED. Not looked up, not stored, not cached. */
       var release = length - LUTEAL;
@@ -12648,6 +12945,14 @@
           ? NOTE_PROMPT
           : (notes[String(length)] || NOTE_PROMPT);
       }
+      /* MRB-257 (5.48) — the day steppers stop at the ends of the cycle.
+         They stayed enabled and focusable at day 1 and at the last day, so
+         five presses produced no DOM change at all: an enabled control that
+         does nothing, which reads as a broken instrument rather than as a
+         boundary. `draw()` already clamps, so this is the clamp made
+         visible. */
+      if (prev) { prev.disabled = day <= 1; }
+      if (next) { next.disabled = day >= length; }
       w.setAttribute("data-length", String(length));
       w.setAttribute("data-day", String(day));
       setCount(sec, n);
@@ -12666,8 +12971,6 @@
       day = parseInt(slider.value, 10) || 1;
       draw();
     });
-    var prev = w.querySelector("[data-dial-prev]");
-    var next = w.querySelector("[data-dial-next]");
     if (prev) {
       prev.addEventListener("click", function () { day -= 1; draw(); });
     }
@@ -12775,10 +13078,31 @@
 
     /* Design lower-cases the dial names inside the sentence — "Missing: light"
        — because the name is a heading elsewhere and a clause here. */
+    /* MRB-257 (5.32) — WHAT IS MISSING IS NAMED BY THE OPTION, not by the
+       dial, where the option says something different. Three dials name the
+       thing they remove ("light", "carbon dioxide", "water") but the fourth
+       is "The leaf tested", and its zero option is "White part of a
+       variegated leaf" — so choosing it printed "Missing: the leaf tested"
+       with the leaf plainly present. What is missing is chlorophyll, which
+       is the control's entire teaching point, and the same wrong name leaked
+       into the multi-fault line ("carbon dioxide and the leaf tested").
+       `data-missing` on the option carries the true name; no payload ships
+       one yet, so this falls back to the dial name — see HANDOFF. */
+    function missingName(dial) {
+      for (var i = 0; i < opts.length; i++) {
+        if (opts[i].getAttribute("data-dial") === dial &&
+            opts[i].getAttribute("data-opt") === picks[dial]) {
+          var authored = opts[i].getAttribute("data-missing");
+          if (authored) { return authored; }
+        }
+      }
+      return (names[dial] || dial).toLowerCase();
+    }
+
     function missing() {
       var out = [], i;
       for (i = 0; i < order.length; i++) {
-        if (factor(order[i]) === 0) { out.push(names[order[i]].toLowerCase()); }
+        if (factor(order[i]) === 0) { out.push(missingName(order[i])); }
       }
       return out;
     }
@@ -12941,6 +13265,30 @@
       return out;
     }
 
+    /* MRB-257 (5.52) — the bar's SCALE, measured off the dials rather than
+       assumed. Both bars were `min(100, pct / 2)`, which saturates at 200%,
+       and the water loss reaches 363%: moving a dial took the readout from
+       363% to 242% while the bar sat at 100% both times — a control with no
+       visible effect on the graphic it drives. The largest product the dials
+       can actually produce is the top of the track, so every setting is
+       somewhere on it and every press moves something. */
+    function maxProduct(key) {
+      var out = 1, i, j, best, f;
+      for (i = 0; i < order.length; i++) {
+        best = 0;
+        for (j = 0; j < opts.length; j++) {
+          if (opts[j].getAttribute("data-dial") !== order[i]) { continue; }
+          f = parseFloat(opts[j].getAttribute("data-" + key));
+          if (!isNaN(f) && f > best) { best = f; }
+        }
+        out *= best;
+      }
+      return out;
+    }
+
+    var MAX_R = maxProduct("r") * 100;
+    var MAX_W = maxProduct("w") * 100;
+
     function verdictFor(ratePct, waterPct) {
       for (var i = 0; i < rules.length; i++) {
         var rule = rules[i], ok = true, key;
@@ -12976,8 +13324,11 @@
           (/^[A-Za-z0-9]/.test(suffix) ? " " : "") + suffix;
       });
       each(w.querySelectorAll("[data-lt-bar]"), function (b) {
-        var pct = b.getAttribute("data-lt-bar") === "rate" ? ratePct : waterPct;
-        b.style.width = Math.min(100, pct / 2) + "%";
+        var isRate = b.getAttribute("data-lt-bar") === "rate";
+        var pct = isRate ? ratePct : waterPct;
+        var top = isRate ? MAX_R : MAX_W;
+        b.style.width =
+          (top > 0 ? Math.min(100, (pct / top) * 100) : 0).toFixed(1) + "%";
       });
 
       var id = verdictFor(ratePct, waterPct);
@@ -13073,11 +13424,31 @@
       return "full";
     }
 
+    /* MRB-257 (5.31) — a SKIP is a step not done at all, and that is not the
+       same as a step done differently. `heat` offers "water bath" or "Bunsen,
+       directly": both heat the ethanol, so choosing the Bunsen skips nothing
+       — it is a method choice, and a dangerous one, which is why it still
+       takes its own verdict branch. Counting any pick that differed from the
+       full method read "1 step skipped" over a method with every step in it,
+       and "2 steps skipped" for one real skip plus the Bunsen.
+       "no" is the payload's own word for an omitted step and never appears
+       in `data-full`; `data-skip` on the option overrides it if a future
+       bench needs a different vocabulary. */
+    function isSkip(step, pick) {
+      if (pick === full[step]) { return false; }
+      var btn = w.querySelector('.ks3-mb-opt[data-step="' + step +
+        '"][data-opt="' + pick + '"]');
+      if (btn && btn.hasAttribute("data-skip")) {
+        return btn.getAttribute("data-skip") === "1";
+      }
+      return pick === "no";
+    }
+
     function faults() {
       var n = 0, key;
       for (key in full) {
         if (Object.prototype.hasOwnProperty.call(full, key) &&
-            picks[key] !== full[key]) { n += 1; }
+            isSkip(key, picks[key])) { n += 1; }
       }
       return n;
     }
@@ -13218,13 +13589,18 @@
       backBtn.textContent = arrived ? DONE : STEP;
       backBtn.disabled = arrived;
 
-      /* The head counter's denominator is this food's chain length, and
-         `data-full` fires at the top of the count — so passing the total once
-         a chain has been traced reproduces Design's "chain traced", which
-         persists across a food change. */
+      /* The head counter's denominator is this food's chain length.
+         MRB-257 (5.34) — the READOUT reports where the student is standing,
+         `everArrived` reports what they have done, and the two are not the
+         same thing. Feeding the sticky flag into the count made `data-full`
+         fire at the top of the count for ever: "Start again", or switching
+         food, reset the bench to link one and the head still read "chain
+         traced" — on Salmon it said so at step 1 of 5. The RAIL stays
+         sticky (MRB-208, and `markStage` is a ratchet): what the student
+         found out is not un-found by starting a second chain. */
       var count = sec.querySelector("[data-count]");
       if (count) { count.setAttribute("data-total", String(t)); }
-      setCount(sec, everArrived ? t : Math.min(shown, t));
+      setCount(sec, Math.min(shown, t));
       markStage(sec, everArrived);
     }
 
@@ -13542,10 +13918,17 @@
       if (tb.getAttribute("aria-pressed") === "true") { pace = tb; }
     });
 
-    var supply, lactate, seconds, phase, everRecovered = false;
+    var supply, lactate, seconds, phase, peakLactate, everRecovered = false;
     function reset() {
       supply = M.supply_rest;
       lactate = 0;
+      /* MRB-257 (5.13) — the HIGHEST lactate reached since the last reset.
+         Recovery used to print "Lactic acid cleared… The debt is paid" off
+         `lactate <= 1`, which is also true of a student who never made any:
+         Walking → Run 10 s → Recover 30 s reads "the debt is paid" with the
+         acid bar at 0 units throughout. A debt has to be incurred before it
+         can be repaid. */
+      peakLactate = 0;
       seconds = 0;
       phase = "ready";
     }
@@ -13557,8 +13940,16 @@
 
     /* Design's own reads, and the only copy of them in the runtime. */
     function read() {
+      /* MRB-257 (5.15) — the ready phase's demand. It reused `supply_rest`,
+         which is the resting SUPPLY, so standing on the line cost 25 units
+         and walking cost 20: the bench said walking is cheaper than standing
+         still. `demand_rest` is the authored resting demand; no shipped
+         payload carries one yet, so the fallback is the old value and this
+         finding is only half-fixed from here — see HANDOFF. */
+      var restDemand = typeof M.demand_rest === "number"
+        ? M.demand_rest : M.supply_rest;
       var demand = phase === "recovering" ? M.recover_demand
-        : (phase === "ready" ? M.supply_rest : paceDemand());
+        : (phase === "ready" ? restDemand : paceDemand());
       var b = M.breathing;
       return {
         demand: demand,
@@ -13583,10 +13974,25 @@
     function noteFor(r) {
       if (phase === "ready") { return NOTES.rest; }
       if (phase === "recovering") {
-        return lactate > 1 ? NOTES.debt : NOTES.cleared;
+        if (lactate > 1) { return NOTES.debt; }
+        /* MRB-257 (5.13) — nothing was borrowed, so there is nothing to
+           repay. `NOTES.rest` is the authored sentence for exactly this
+           state ("no lactic acid is being made") and is true of a student
+           who has stopped without ever going anaerobic; an authored
+           `nothing_to_repay` takes precedence if one is ever written. */
+        if (peakLactate <= 1) { return NOTES.nothing_to_repay || NOTES.rest; }
+        return NOTES.cleared;
       }
-      return r.shortfall > 0 ? fill(NOTES.shortfall, r.shortfall)
-                             : NOTES.within;
+      if (r.shortfall > 0) { return fill(NOTES.shortfall, r.shortfall); }
+      /* MRB-257 (5.14) — supply has caught up, so nothing further is being
+         made; but `within` says "nothing is building up" over an acid bar
+         still reading 4 units, indefinitely. The two facts are different and
+         need two sentences. No shipped payload carries the second one yet,
+         so this falls back to `within` — see HANDOFF. */
+      if (lactate > 1 && NOTES.within_with_lactate) {
+        return NOTES.within_with_lactate;
+      }
+      return NOTES.within;
     }
 
     function draw() {
@@ -13620,7 +14026,13 @@
       runBtn.textContent = phase === "running" ? LABELS.running : LABELS.run;
       stopBtn.textContent = phase === "recovering" ? LABELS.recovering
                                                    : LABELS.stop;
-      stopBtn.disabled = phase === "ready";
+      /* MRB-257 (5.50) — "Recover another 30 s" kept adding thirty seconds
+         after the acid was gone and the supply was back at rest: 190 s →
+         220 s with every other readout identical. Once there is nothing left
+         to recover, there is nothing left for the button to do. Pressing Run
+         puts the bench back into `running` and re-enables it. */
+      stopBtn.disabled = phase === "ready" ||
+        (phase === "recovering" && lactate <= 0 && supply <= M.supply_rest);
 
       /* The clock lives in the block's head row, as three named states — two
          of which quote the seconds. See `_KIND_HEAD_FROM` in build_ks3.py. */
@@ -13633,6 +14045,7 @@
       supply = Math.min(M.supply_max, supply + M.supply_step);
       var gap = Math.max(0, paceDemand() - supply);
       lactate = Math.min(M.lactate_max, lactate + gap * M.lactate_factor);
+      if (lactate > peakLactate) { peakLactate = lactate; }
       seconds += M.run_seconds;
       phase = "running";
       draw();
@@ -13708,7 +14121,27 @@
     } catch (x) { return; }
     if (!branches.length) { return; }
     var AFTER = parseInt(w.getAttribute("data-done-after"), 10) || 1;
-    var seen = 0;
+    /* MRB-257 (5.49) — DISTINCT SET-UPS, not presses. The head readout says
+       "{n} set-up{s} tried", and it used to count every press: pressing the
+       already-selected Yeast option five times read "5 set-ups tried" with
+       the panel unchanged, and the bench reached "19 set-ups tried" with ten
+       distinct set-ups on the dials. A set-up is a combination of the four
+       dials, so that is what is counted — the opening combination included,
+       because it is on screen from the first paint. This replaces the older
+       "every press counts, including one that changes nothing" reading: a
+       press that changes nothing has not tried anything. */
+    var tried = {}, seen = 0;
+    function noteSetup() {
+      var sig = [], d;
+      for (d in picks) {
+        if (Object.prototype.hasOwnProperty.call(picks, d)) {
+          sig.push(d + "=" + picks[d]);
+        }
+      }
+      sig.sort();
+      var key = sig.join("|");
+      if (!tried[key]) { tried[key] = true; seen += 1; }
+    }
 
     /* Design's own first-match-wins. Order is the pedagogy: killed beats
        starved beats aerobic beats fermenting — a dead culture is dead whatever
@@ -13737,20 +14170,18 @@
       each(blocks, function (bl) {
         setHidden(bl, bl.getAttribute("data-fm-branch") !== id);
       });
+      /* The opening combination is on the dials and its panel is on screen,
+         but it is not something the student TRIED — the readout opens on
+         "nothing changed yet" and stays there until they act. */
       setCountState(sec, seen ? "some" : "zero",
         { n: seen, s: seen === 1 ? "" : "s" });
       markStage(sec, seen >= AFTER);
     }
 
-    /* ⚑ EVERY PRESS COUNTS, INCLUDING ONE THAT CHANGES NOTHING. The bench
-       opens already set as a brewery, so pressing "Set it up as a brewery"
-       first moves no dial — and still counts, exactly as Design has it.
-       Measured, deliberate-looking, and left alone: "fixing" it would cost the
-       brewery/yoghurt contrast its symmetry. */
     each(opts, function (o) {
       o.addEventListener("click", function () {
         picks[o.getAttribute("data-dial")] = o.getAttribute("data-opt");
-        seen += 1;
+        noteSetup();
         draw();
       });
     });
@@ -13766,7 +14197,7 @@
             picks[d] = next[d];
           }
         }
-        seen += 1;
+        noteSetup();
         draw();
       });
     });
@@ -13892,6 +14323,11 @@
     var LEAD = w.getAttribute("data-verdict-lead") || "";
     var MID = w.getAttribute("data-verdict-mid") || "";
     var TAIL = w.getAttribute("data-verdict-tail") || "";
+    /* MRB-257 (5.53) — the widget has carried `data-energy-unit=" kJ"` since
+       it shipped and this function never read it, so the verdict printed a
+       bare "…and 10 arrived here" (and "1 arrived here" on the sea chain)
+       while every other figure on the block reads "10 kJ". */
+    var UNIT = w.getAttribute("data-energy-unit") || "";
 
     /* The opening state IS the markup: the chain Design opens on is already
        pressed, so there is no second copy of the default to fall out of step
@@ -13937,7 +14373,7 @@
       if (verdictEl) {
         if (topped) {
           verdictEl.textContent =
-            LEAD + b9Amount(START / Math.pow(FACTOR, total - 1)) + MID +
+            LEAD + b9Amount(START / Math.pow(FACTOR, total - 1)) + UNIT + MID +
             b9Strip2(100 / Math.pow(FACTOR, total - 1)) + TAIL;
         }
         setHidden(verdictEl, !topped);
@@ -14033,10 +14469,31 @@
        never fires and *Remove every fox* stops teaching carrying capacity.
        Tested on the ROUNDED values, as Design does, so "no foxes" means the
        number on screen rather than a hundredth of one. */
+    /* MRB-257 (5.11) — has the oscillation stopped? Measured over the drawn
+       window: if the highest and lowest prey counts in it differ by less than
+       a per cent of the high, the model has arrived at its fixed point.
+       MRB-255 S5 rules that the MATHS STAYS — a discrete logistic
+       Lotka–Volterra damps to 667 rabbits / 267 foxes by year 260, and a
+       neutral model that cycled forever at its starting amplitude would look
+       like perpetual motion — so what has to give is any string promising a
+       cycle that continues undiminished. That is a records job, and so is
+       the `settled` note itself; this branch fires only when one is authored,
+       so nothing shipped moves until it is. See HANDOFF. */
+    function settledNow() {
+      if (hist.length < M.history) { return false; }
+      var lo = hist[0].prey, hi = hist[0].prey, i;
+      for (i = 1; i < hist.length; i++) {
+        if (hist[i].prey < lo) { lo = hist[i].prey; }
+        if (hist[i].prey > hi) { hi = hist[i].prey; }
+      }
+      return hi > 0 && (hi - lo) / hi < 0.01;
+    }
+
     function noteId(p, q) {
       if (year === 0) { return "year_zero"; }
       if (q === 0 && p > M.k * 0.9) { return "no_pred_at_ceiling"; }
       if (q === 0) { return "no_pred"; }
+      if (NOTES.settled && settledNow()) { return "settled"; }
       if (p > 1200 && q < 200) { return "prey_high_pred_low"; }
       if (p < 500) { return "prey_low"; }
       return "steady";
@@ -14253,7 +14710,12 @@
           status.textContent = li.getAttribute("data-how") || "";
         } else if (gone) {
           status.textContent = GONE;
-        } else if (remaining < 0.85) {
+        } else if (remaining < 0.85 + 1e-6) {
+          /* MRB-257 (5.24) — `<` against a value a tile lands on EXACTLY.
+             Milk is `data-dep="0.15"`, so at zero pollinators `remaining`
+             is exactly 0.85 and the strict test failed: the tile printed
+             "unaffected" in every state including none, while its 15% was
+             inside the calorie arithmetic pulling the total down. */
           status.textContent =
             PART.split("{n}").join(String(Math.round(remaining * 100)));
         } else {
@@ -14274,18 +14736,30 @@
           .split("{cal}").join(String(pct.cal))
           .split("{vit}").join(String(pct.vit));
       }
-      toggle.textContent = level === "none" ? RESTORE : REMOVE;
+      /* MRB-257 (5.25) — the way back is signposted from EVERY state. From
+         "half" the toggle used to read "Remove every insect pollinator", so
+         the only route to the intact shelf was to empty it first; and the
+         half button was still enabled at half, where a second press
+         produced an identical DOM. Now the toggle is intact ↔ none and
+         says which it will do, and the half button is spent once the shelf
+         is at half. */
+      toggle.textContent = level === "all" ? REMOVE : RESTORE;
+      if (half) { half.disabled = level === "half"; }
       setCountState(sec, level);
       if (level !== "all") { ever = true; }
       markStage(sec, ever);
     }
 
     toggle.addEventListener("click", function () {
-      level = level === "none" ? "all" : "none";
+      level = level === "all" ? "none" : "all";
       draw();
     });
     if (half) {
-      half.addEventListener("click", function () { level = "half"; draw(); });
+      half.addEventListener("click", function () {
+        if (level === "half") { return; }
+        level = "half";
+        draw();
+      });
     }
     draw();
   }
@@ -14330,11 +14804,46 @@
     var shown = 1, everTopped = false;
     var total = levels.length;
 
+    /* MRB-257 (5.23) — the bars are LOGARITHMIC, over one domain shared by
+       every chemical.
+       Linear, and rescaled per tab, they were unreadable and incomparable
+       at once: 0.0030, 0.030, 0.300 and 3.0 ppm all drew at the 1% floor —
+       including the step from "no measurable effect" to "above the level
+       that causes harm", drawn as no change — while 0.729 ppm on one tab
+       drew 72.9% against 300 ppm at 100% on another. A hundred-thousandfold
+       range is what the lesson is about, and a linear axis cannot show it.
+       The domain runs from the lowest starting concentration on any tab to
+       the highest top (or the harm line, whichever is greater), so one
+       decade is the same width everywhere and the three chemicals can be
+       read against each other. */
+    var logMin = 0, logSpan = 0;
+    (function () {
+      var lo = 0, hi = HARM;
+      each(tabs, function (tb) {
+        var st = parseFloat(tb.getAttribute("data-start")) || 0;
+        var fa = parseFloat(tb.getAttribute("data-factor")) || 1;
+        if (st > 0 && (lo === 0 || st < lo)) { lo = st; }
+        var tp = st * Math.pow(fa, total - 1);
+        if (tp > hi) { hi = tp; }
+      });
+      if (lo > 0 && hi > lo) {
+        logMin = Math.log(lo);
+        logSpan = Math.log(hi) - logMin;
+      }
+    }());
+
+    function barPct(conc) {
+      if (!(conc > 0)) { return 1; }
+      var pct = logSpan > 0
+        ? ((Math.log(conc) - logMin) / logSpan) * 100
+        : 100;
+      return Math.max(1, Math.min(100, pct));
+    }
+
     function draw() {
       var factor = parseFloat(current.getAttribute("data-factor")) || 1;
       var start = parseFloat(current.getAttribute("data-start")) || 0;
       var top = start * Math.pow(factor, total - 1);
-      var scale = Math.max(top, HARM);
       each(tabs, function (tb) {
         tb.setAttribute("aria-pressed", tb === current ? "true" : "false");
       });
@@ -14355,10 +14864,7 @@
         var bar = li.querySelector("[data-ba-bar]");
         if (ppm) { ppm.textContent = b9Ppm(conc) + SUFFIX; }
         if (lv) { lv.textContent = harmful ? HARMV : SAFEV; }
-        if (bar) {
-          bar.style.width =
-            Math.max(1, Math.min(100, (conc / scale) * 100)) + "%";
-        }
+        if (bar) { bar.style.width = barPct(conc) + "%"; }
         setHidden(li.querySelector(".ks3-ba-readout"), !on);
       });
 
@@ -14426,6 +14932,7 @@
     var countTabs = toArray(w.querySelectorAll("[data-qb-count]"));
     var figuresEl = w.querySelector("[data-qb-figures]");
     var captionEl = w.querySelector("[data-qb-caption]");
+    var gridEl = w.querySelector("[data-qb-grid]");
     var sampleBtn = w.querySelector("[data-qb-sample]");
     var truthBtn = w.querySelector("[data-qb-truth]");
     var verdictEl = w.querySelector("[data-qb-verdict]");
@@ -14438,6 +14945,12 @@
     var CAP_S = w.getAttribute("data-caption-sampled") || "";
     var CAP_R = w.getAttribute("data-caption-revealed") || "";
     var HIDDEN = w.getAttribute("data-hidden-value") || "";
+    /* MRB-257 (5.6) — the error a random sample lands on, in per cent, at or
+       below which the sample counts as a good one. Read from the widget so
+       the number stays the author's; the fallback is only there because no
+       shipped payload carries the attribute yet. */
+    var GOOD_WITHIN = Number(w.getAttribute("data-good-within"));
+    if (!(GOOD_WITHIN > 0)) { GOOD_WITHIN = 10; }
 
     /* The clustering model, term for term as `build_ks3.py` asserts against
        it. The square on the richness is what makes a tight CLUSTER rather than
@@ -14497,7 +15010,16 @@
       var sampled = picked.length > 0, i, sum = 0;
       for (i = 0; i < picked.length; i++) { sum += field[picked[i]]; }
       var mean = sampled ? sum / picked.length : 0;
-      var estimate = Math.round(mean * SIDE * SIDE);
+      /* MRB-257 (5.5) — the estimate is computed from the mean AS PRINTED,
+         not from the unrounded one. It used to print "Mean per quadrat 9.1"
+         beside "Estimated total 913", so a student doing the bench's own
+         arithmetic — the method card's "divide by the number of quadrats…
+         then multiply", which rung 1 marks — was wrong about two runs in
+         three. Two decimals, because the mean is what a student writes down
+         and then multiplies; the error line follows the estimate that is
+         actually on screen. */
+      var meanText = mean.toFixed(2);
+      var estimate = Math.round(Number(meanText) * SIDE * SIDE);
       var errPct = sampled
         ? Math.round(((estimate - realTotal) / realTotal) * 100) : 0;
 
@@ -14522,11 +15044,15 @@
         else { el.removeAttribute("data-in-sample"); }
       });
 
-      if (captionEl) {
-        captionEl.textContent =
-          truthShown ? CAP_R : (sampled ? CAP_S : CAP_UN);
-      }
-      fig("mean", mean.toFixed(1));
+      var capNow = truthShown ? CAP_R : (sampled ? CAP_S : CAP_UN);
+      if (captionEl) { captionEl.textContent = capNow; }
+      /* MRB-257 (5.55) — the grid is `role="img"`, so its `aria-label` IS
+         the picture for a screen-reader user. It was authored once and
+         never updated, leaving "one hundred square metres, contents
+         hidden" after every square had been revealed. Same string the
+         sighted caption gets, which is the point: one description. */
+      if (gridEl) { gridEl.setAttribute("aria-label", capNow); }
+      fig("mean", meanText);
       fig("estimate", b9Group(estimate));
       fig("real", truthShown ? b9Group(realTotal) : HIDDEN);
       if (figuresEl) { setHidden(figuresEl, !sampled); }
@@ -14545,9 +15071,16 @@
              OF THE THREE THAT CAN FIRE. Bias is named before chance, because a
              biased three-quadrat sample is biased AND unlucky and only one of
              those is the thing more work cannot fix. */
+          /* MRB-257 (5.6) — the last branch tests the ERROR, not the sample
+             size. It used to read `picked.length <= 3`, so eight quadrats
+             28% out were congratulated ("the sample size kept it steady")
+             and three quadrats 2% out were scolded — on the one bench in
+             the key stage built to teach the difference between chance
+             error and bias. Bias is still named first, for the reason
+             below. */
           var key = method === "corner" ? "corner"
             : (method === "path" ? "path"
-              : (picked.length <= 3 ? "chance" : "good"));
+              : (Math.abs(errPct) > GOOD_WITHIN ? "chance" : "good"));
           verdictEl.textContent = (VERDICTS[key] || "")
             .split("{err}").join(String(Math.abs(errPct)))
             .split("{n}").join(String(picked.length))
@@ -14743,6 +15276,10 @@
       if (plotted[id] || !predictionIn(panelFor(id))) { return; }
       plotted[id] = true;
       draw();
+      /* MRB-257 (5.43) — the graph has just replaced the prediction buttons
+         and this button has just disabled. Focused after `draw()` because a
+         hidden element cannot take focus. */
+      focusReveal(panelFor(id).querySelector("[data-vp-graph]"));
     });
 
     draw();
@@ -14804,7 +15341,13 @@
       markStage(sec, everBottomed);
     }
 
-    inBtn.addEventListener("click", function () { shown += 1; draw(); });
+    inBtn.addEventListener("click", function () {
+      shown += 1;
+      draw();
+      /* MRB-257 (5.43) — the last press disables `Zoom in` and unhides the
+         closing panel, which is where the reader now is. */
+      if (shown >= TOTAL) { focusReveal(closeEl); }
+    });
     if (outBtn) {
       outBtn.addEventListener("click", function () { shown = 1; draw(); });
     }
@@ -15021,11 +15564,36 @@
     /* Design's four-branch chain, in HER order, first match wins.
        `both_carriers` before `mixed` or Pp × Pp stops being Mendel's 3:1 and
        becomes the generic line. */
+    function hasNote(id) {
+      for (var i = 0; i < notes.length; i++) {
+        if (notes[i].getAttribute("data-pc-note") === id) { return true; }
+      }
+      return false;
+    }
+
     function noteId(g1, g2) {
       var a = G[g1] || [], b = G[g2] || [];
       function has(x, ch) { return x.indexOf(ch) >= 0; }
       function pure(x, ch) { return x.length === 2 && x[0] === ch && x[1] === ch; }
       if (!(has(a, REC) && has(b, REC)) && (pure(a, DOM) || pure(b, DOM))) {
+        /* MRB-257 / MRB-255 (5.38) — ONE BRANCH WAS COVERING THREE CROSSES
+           and its sentence is only true of one of them. It ends "…and some
+           of them are quietly carrying p, which will show up in the
+           generation after." That is right for PP × Pp; with both parents
+           PP no offspring can carry p at all, and for PP × pp every single
+           one does. A promise of hidden recessives that cannot exist is the
+           misconception this lesson is built to remove, printed by the
+           lesson.
+           The split is here; the two new sentences are a records job, so
+           each specific id falls back to the old branch until one is
+           authored — see HANDOFF. */
+        if (pure(a, DOM) && pure(b, DOM) && hasNote("both_pure_dominant")) {
+          return "both_pure_dominant";
+        }
+        if (((pure(a, DOM) && pure(b, REC)) || (pure(a, REC) && pure(b, DOM)))
+            && hasNote("pure_dominant_x_pure_recessive")) {
+          return "pure_dominant_x_pure_recessive";
+        }
         return "one_pure_dominant";
       }
       if (pure(a, REC) && pure(b, REC)) { return "both_pure_recessive"; }
@@ -15083,10 +15651,26 @@
         row.querySelector("[data-pc-bar]").style.width = pct + "%";
       });
       if (ratioEl) {
-        ratioEl.textContent = tally.recessive === 0
-          ? (total ? NOREC_T.replace("{total}", String(total)) : "")
-          : RATIO_T.replace("{ratio}",
-              (tally.dominant / tally.recessive).toFixed(2));
+        /* MRB-257 (5.45) — a ratio needs both phenotypes. `pp × pp` grows a
+           hundred white plants and printed "Ratio purple to white — 0.00 :
+           1", and so did any sample of one that came up white; the mirror
+           case already had its own authored line ("No white plants at all
+           in {total} seeds"). With no dominant plants there is no ratio to
+           state, so an authored line if one exists and otherwise nothing —
+           see HANDOFF. A sample of one falls out of the same rule: one of
+           the two counts is always zero. */
+        if (tally.recessive === 0) {
+          ratioEl.textContent = total
+            ? NOREC_T.replace("{total}", String(total)) : "";
+        } else if (tally.dominant === 0) {
+          ratioEl.textContent = total
+            ? (w.getAttribute("data-no-dominant-template") || "")
+                .replace("{total}", String(total))
+            : "";
+        } else {
+          ratioEl.textContent = RATIO_T.replace("{ratio}",
+            (tally.dominant / tally.recessive).toFixed(2));
+        }
       }
 
       var want = noteId(g1, g2);
@@ -15113,6 +15697,10 @@
     each(genoBtns, function (b) {
       b.addEventListener("click", function () {
         var p = b.getAttribute("data-pc-parent");
+        /* MRB-257 (5.45) — pressing the genotype that is ALREADY selected
+           changes no cross, and used to wipe the plot anyway: a hundred
+           grown seeds became "no seeds grown". */
+        if (b.getAttribute("aria-pressed") === "true") { return; }
         each(genoBtns, function (other) {
           if (other.getAttribute("data-pc-parent") === p) {
             other.setAttribute("aria-pressed", other === b ? "true" : "false");
@@ -15259,6 +15847,7 @@
       if (opened[id] || !pickIn(panelFor(id))) { return; }
       opened[id] = true;
       draw();
+      focusReveal(panelFor(id).querySelector("[data-sc-out]"));   // MRB-257 (5.43)
     });
 
     draw();
@@ -15424,9 +16013,32 @@
              and it is the model's own number rather than a rendering of it.
              Nothing reads this at runtime; it exists to be measured. */
           cols[i].setAttribute("data-nr-pale", String(hist[i]));
+          /* MRB-257 (5.40) — WHICH generation this column is. The chart is a
+             sliding window `M.history` wide, so past generation 23 the axis
+             caption's "oldest on the left" stops being true: at generation
+             50 column 0 was generation 27, and the whole change the lesson
+             is about had scrolled out silently. Stamping the generation
+             makes the window self-describing rather than implied.
+             ⚠️ The window itself cannot be widened from here. `ks3_parity.py`
+             asserts that after sixty generations EVERY drawn column equals
+             the control's fraction, which is only true because the window
+             flushes the selecting bark's run — so keeping generation 0 on
+             screen turns that gate red. Widening the window and re-writing
+             that assertion is one coordinated change across two files; see
+             HANDOFF. */
+          cols[i].setAttribute("data-nr-gen", String(gen - hist.length + 1 + i));
         } else {
           cols[i].removeAttribute("data-nr-pale");
+          cols[i].removeAttribute("data-nr-gen");
         }
+      }
+      /* The axis caption names the window it is drawing, if the author has
+         written it as a template. No payload carries one yet — see HANDOFF. */
+      var axis = w.querySelector("[data-nr-axis]");
+      if (axis && axis.getAttribute("data-format")) {
+        axis.textContent = axis.getAttribute("data-format")
+          .split("{from}").join(String(gen - hist.length + 1))
+          .split("{to}").join(String(gen));
       }
       each(figures, function (f) {
         var which = f.getAttribute("data-nr-series");
@@ -15615,6 +16227,8 @@
       released = true;
       if (!tried[field]) { tried[field] = true; nTried += 1; }
       draw();
+      var live = w.querySelector('[data-bb-fieldpanel="' + field + '"]');
+      if (live) { focusReveal(live.querySelector("[data-bb-verdict]")); }  // MRB-257 (5.43)
     });
     if (clearBtn) {
       clearBtn.addEventListener("click", function () {

@@ -8282,21 +8282,45 @@ DRIVES = {
     return "AN INTERVENTION MOVED THE RUNNING CLOCK: " + Object.keys(mid).join(" / ");
   }
 
-  // ⚠️ ANOTHER DRINK RESTARTS THE ELAPSED CLOCK — Design's own `hour: 0`.
-  // Leaving the hours where they were would credit the new units with hours
-  // that passed before they existed.
+  // ⊕ MRB-257 · audit 5.19 — POURING ANOTHER DRINK MUST NOT RESTART THE CLOCK.
+  //
+  // This drive used to assert the OPPOSITE: `data-hour === '0'` after a pour,
+  // defended here as "Design's own `hour: 0`" on the reasoning that leaving
+  // the hours alone would credit new units with time that passed before they
+  // existed. That reasoning is backwards. The reset zeroed the hours while
+  // KEEPING the gross total, so a student who waited two hours and then poured
+  // one more unit was shown five units left and no time elapsed — the drink
+  // they had already cleared came back. The whole authority of this bench is
+  // "one unit an hour, nothing else has a vote", and the reset was the single
+  // thing on the page breaking it.
+  //
+  // The audit rules the reset out, so the gate now pins the RULE rather than
+  // the defect, and pins it harder than before: the clock does not move when
+  // you pour, what is left is always what you poured less the hours you have
+  // waited, and that is asserted against the READOUT as well as the model.
+  var hourBefore = Number(w.getAttribute('data-hour'));
   drinks[0].click();
-  if (w.getAttribute('data-hour') !== '0') {
-    return "pouring another drink left the elapsed clock at "
-      + w.getAttribute('data-hour');
+  var hourAfter = Number(w.getAttribute('data-hour'));
+  if (hourAfter !== hourBefore) {
+    return "pouring another drink moved the elapsed clock from " + hourBefore
+      + " to " + hourAfter;
   }
   poured = Number(w.getAttribute('data-units'));
 
-  // Run it out. The hours taken must equal the units poured — one an hour.
+  // What is still in the blood, and what the student is told is still in it.
+  var owed = poured - hourAfter;
+  if (!(new RegExp('(^|\\D)' + owed + '(\\D|$)')).test(remainEl.textContent)) {
+    return "after pouring at hour " + hourAfter + ", " + owed
+      + " units should be left and the readout says " + remainEl.textContent;
+  }
+
+  // Run it out. The waits left must equal what is owed — never the gross
+  // total again, which is what the old assertion was really measuring.
   var hours = 0, guard = 0;
   while (!waitBtn.disabled && guard < 60) { waitBtn.click(); hours += 1; guard += 1; }
-  if (hours !== poured) {
-    return poured + " units took " + hours + " hours to clear";
+  if (hours !== owed) {
+    return poured + " units poured at hour " + hourAfter + " took " + hours
+      + " hours to clear, not " + owed;
   }
   if (fillEl.getBoundingClientRect().width > 1) {
     return "the blood is clear and the bar still has width";
@@ -9269,9 +9293,21 @@ DRIVES = {
       "water. The opening leaf is deliberately BAD; a sensible one deletes " +
       "the lesson.";
   }
-  if (parseFloat(bar.style.width) !== 100) {
-    return "the water bar is drawn at " + bar.style.width +
-      " at " + pct + "% — it is the percentage HALVED and clamped at 100";
+  // ⊕ MRB-257 · audit 5.52 — THE BAR MUST MOVE WITH THE READOUT.
+  //
+  // This used to assert `width === 100`, and its own message named the formula
+  // it was pinning: "the percentage HALVED and clamped at 100". That formula
+  // saturates at every value above 200%, and the opening leaf is above 300% —
+  // so the readout could fall from 363% to 242% with the bar pinned flat
+  // against the end of the track at both ends. A control with no visible
+  // effect on the graphic it drives is the defect, and the gate was holding it
+  // in place. It now pins the fix: the bar keeps headroom, so a worse leaf has
+  // somewhere to draw. (The opening leaf is still deliberately bad — that is
+  // the `pct > 150` assertion above, which has not moved.)
+  var barOpen = parseFloat(bar.style.width);
+  if (!(barOpen > 0 && barOpen < 100)) {
+    return "the water bar is drawn at " + bar.style.width + " at " + pct +
+      "% — it must keep headroom, or a worse leaf cannot draw any differently";
   }
   var count = sec.querySelector('[data-count]');
   if (count && count.textContent !== count.getAttribute('data-zero')) {
@@ -9288,6 +9324,20 @@ DRIVES = {
   if (open[0].getAttribute('data-lt-verdict') === first) {
     return "the oak button left the leaf in the same habitat (" + first +
       "), so pressing it reveals nothing";
+  }
+
+  // ⊕ MRB-257 · audit 5.52 — and the bar TRACKED it. The oak leaf is the
+  // sensible one, so water loss falls; a readout that falls while the bar
+  // stands still is exactly the defect above, caught from the other end. One
+  // assertion each way costs nothing and pins a re-clamp at either extreme.
+  var pctOak = parseFloat(water.textContent);
+  var barOak = parseFloat(bar.style.width);
+  if (!(pctOak < pct)) {
+    return "the oak button left water loss at " + pctOak + "%, up from " + pct + "%";
+  }
+  if (!(barOak < barOpen)) {
+    return "water loss fell from " + pct + "% to " + pctOak +
+      "% and the bar did not follow: " + barOpen + "% then " + barOak + "%";
   }
   if (count) {
     if (count.textContent === count.getAttribute('data-zero')) {
