@@ -271,8 +271,8 @@ QUESTIONS = [
              "why": "Needing little is an advantage in a drought, not a "
                     "definition of fitness. What settles this is the five "
                     "hundred eggs."},
-            {"text": "The mayfly, because fitness is counted in surviving "
-                     "offspring and the other animal leaves none.",
+            {"text": "The mayfly: fitness is counted in surviving offspring, "
+                     "and the other leaves none.",
              "correct": True},
         ],
         "figure": None,
@@ -297,13 +297,13 @@ QUESTIONS = [
              "why": "An individual cannot rebuild itself to suit its "
                     "conditions. The shell a snail has is the shell it has — "
                     "the environment does the choosing, not the snail."},
-            {"text": "Neither shell can really be an advantage, because each of "
-                     "them carries a cost too.", "correct": False,
+            {"text": "Neither shell can really be an advantage, because each "
+                     "of them carries a cost that cancels it out.", "correct": False,
              "why": "Every variation carries a cost — a thick coat does, and it "
                     "still wins the winter. An advantage is one that pays for "
                     "itself in the conditions the organism is actually in."},
-            {"text": "Where thrushes are common the thick shell is the "
-                     "advantage; where calcium is scarce, the thin one is.",
+            {"text": "Where thrushes hunt, the thick shell is the advantage; "
+                     "where calcium is scarce, the thin one.",
              "correct": True},
         ],
         "figure": None,
@@ -315,9 +315,8 @@ QUESTIONS = [
                 "1977 drought and fell again after the 1983 rains. Which "
                 "reading of that is right?",
         "options": [
-            {"text": "No bird changed its own beak — deeper-beaked birds "
-                     "survived the drought, shallower-beaked ones did better "
-                     "after the rains.", "correct": True},
+            {"text": "No bird changed its beak — deep-beaked birds survived "
+                     "the drought, shallow-beaked ones the wet years.", "correct": True},
             {"text": "The finches grew deeper beaks to deal with the tough "
                      "seeds, then shrank them when soft seeds came back.",
              "correct": False,

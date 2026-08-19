@@ -188,8 +188,8 @@ QUESTIONS = [
         "band": "standard",
         "text": "During a flat-out sprint, what is aerobic respiration doing?",
         "options": [
-            {"text": "It shuts down, and anaerobic respiration takes over "
-                     "from it",
+            {"text": "It shuts down as soon as the oxygen runs short, and "
+                     "anaerobic respiration takes over",
              "correct": False,
              "why": "Nothing switches off. Aerobic respiration carries on at "
                     "the highest rate the oxygen supply allows, and anaerobic "

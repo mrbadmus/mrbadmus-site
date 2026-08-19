@@ -301,8 +301,8 @@ QUESTIONS = [
                 "then admits that this is a deliberate simplification. Which "
                 "observation shows the simplification straining?",
         "options": [
-            {"text": "Height varies smoothly across a population, because "
-                     "many genes affect it together", "correct": True},
+            {"text": "Height varies smoothly in a population, because many "
+                     "genes affect it", "correct": True},
             {"text": "Every cell in one person's body carries the same gene "
                      "for eye colour", "correct": False,
              "why": "That is about where genes are kept, not about how many "

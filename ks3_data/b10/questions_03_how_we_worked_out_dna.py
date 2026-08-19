@@ -126,8 +126,8 @@ QUESTIONS = [
                      "ruled out", "correct": False,
              "why": "That was Pauling, in California. Franklin's measurements "
                     "are part of what ruled his model out."},
-            {"text": "She produced the X-ray diffraction images and the "
-                     "measurements taken from them", "correct": True},
+            {"text": "She took the X-ray diffraction images and the "
+                     "measurements from them", "correct": True},
         ],
         "figure": None,
     },
@@ -284,10 +284,10 @@ QUESTIONS = [
              "why": "Prizes follow work, they do not make it science. "
                     "Pauling's model won nothing and still narrowed the field "
                     "for everyone."},
-            {"text": "Model building is a method in itself — a model still "
-                     "has to fit everyone's measurements", "correct": True},
-            {"text": "It only counts as science if the model turns out to be "
-                     "correct", "correct": False,
+            {"text": "Model building is a method — a model still has to fit "
+                     "everyone's measurements", "correct": True},
+            {"text": "It only counts as science once the model turns out to "
+                     "match the real structure", "correct": False,
              "why": "Pauling's triple helix was wrong and still mattered, "
                     "because seeing why it failed ruled a whole combination "
                     "out. Being testable is what counts, not being right."},
@@ -306,8 +306,8 @@ QUESTIONS = [
              "why": "The date of publication is right. What is wrong is the "
                     "picture of a single moment standing in for twenty years "
                     "of work in several laboratories."},
-            {"text": "Five laboratories in three countries over two decades "
-                     "produced what the model had to fit", "correct": True},
+            {"text": "Five laboratories over two decades produced what the "
+                     "model had to fit", "correct": True},
             {"text": "It should name Wilkins as well, since he shared the "
                      "1962 Nobel Prize", "correct": False,
              "why": "Adding a name does not repair it. The sentence would "

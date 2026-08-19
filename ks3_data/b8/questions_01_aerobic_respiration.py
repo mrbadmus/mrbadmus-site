@@ -328,8 +328,8 @@ QUESTIONS = [
                 "mitochondria. A cell from the skin of its foot has very few. "
                 "What does that tell you?",
         "options": [
-            {"text": "The flight muscle cell respires far faster, because "
-                     "contracting constantly needs energy constantly.",
+            {"text": "The flight muscle cell respires far faster — "
+                     "contracting constantly needs energy.",
              "correct": True},
             {"text": "The flight muscle cell is simply larger, so it holds "
                      "more of everything a cell has.",

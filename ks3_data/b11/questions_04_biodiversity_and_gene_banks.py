@@ -75,8 +75,8 @@ QUESTIONS = [
                     "what they lived in. Frozen material also needs a "
                     "surrogate mother of a close species before it is an "
                     "animal at all."},
-            {"text": "Protected habitat, because the populations are left "
-                     "where they are, still breeding and still evolving.",
+            {"text": "Protected habitat: populations stay where they are, "
+                     "still breeding and evolving.",
              "correct": True},
             {"text": "Botanic gardens and zoos, because the organisms there "
                      "are alive rather than frozen.",
@@ -218,7 +218,7 @@ QUESTIONS = [
                 "fifty years to save money. What goes wrong?",
         "options": [
             {"text": "Seeds do not keep for ever — never tested, never "
-                     "regrown, they die quietly in the dark.",
+                     "regrown, they die quietly.",
              "correct": True},
             {"text": "The stored seed slowly adapts to the cold and stops "
                      "matching the wild plants.",
@@ -302,8 +302,8 @@ QUESTIONS = [
              "why": "Grafting is a way of copying a tree you already like, "
                     "not of toughening it. Growing from seed is what would "
                     "have given the orchard variation."},
-            {"text": "Every tree can be infected, because there is no "
-                     "resistant minority for selection to work with.",
+            {"text": "Every tree can be infected: no resistant minority "
+                     "exists for selection to act on.",
              "correct": True},
         ],
         "figure": None,

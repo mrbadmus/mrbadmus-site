@@ -50,9 +50,9 @@ QUESTIONS = [
         "text": "Your friend says: \"Respiration is just another word for "
                 "breathing.\" What is wrong with that?",
         "options": [
-            {"text": "Respiration is a reaction inside every living cell that "
-                     "releases energy from glucose; breathing only supplies "
-                     "the oxygen for it.",
+            {"text": "Respiration releases energy from glucose inside every "
+                     "living cell; breathing only supplies the oxygen for "
+                     "it.",
              "correct": True},
             {"text": "Nothing is wrong with it — breathing air in and out is "
                      "how your body releases the energy it gets from food.",
