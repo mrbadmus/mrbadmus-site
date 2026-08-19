@@ -5512,8 +5512,24 @@ def build_site(output_dir="mrbadmus_site"):
     # had already loaded the site. The regex below is written against a bare
     # `/shared/<name>"`, which is the shape of both the <link> and the <script>
     # tag, so extending the list is the whole change.
+    # ⊕ MRB-260, 19 Aug 2026 — mrbadmus.v2.js joins the list, and its absence
+    # was the more expensive of the two holes on it.
+    #
+    # Every page includes the chat engine as a BARE `<script
+    # src="/shared/mrbadmus.v2.js">` — 1,966 tags, all identical, none
+    # versioned — while the KS3 tree has carried per-build stamps on its shared
+    # assets since §8.5. So MRB-234's auth-header fix shipped to new visitors
+    # only: a returning student keeps whatever copy their browser cached, for
+    # as long as the cache lives, and no amount of redeploying changes that.
+    # `chat_logs` sitting at zero after MRB-234 shipped is exactly what that
+    # looks like from the outside, and it is indistinguishable from the fix not
+    # working — which is the real cost. Without this line every future
+    # chat-engine fix would be debugged the same way again.
+    #
+    # The regex below is written against a bare `/shared/<name>"`, which is the
+    # shape of this tag as much as of the <link>s, so the list is the change.
     _versioned_assets = ["tokens.css", "styles.css", "nav.css", "nav.js",
-                         "class-entry.js"]
+                         "class-entry.js", "mrbadmus.v2.js"]
     _asset_ver = {}
     for _name in _versioned_assets:
         _p = os.path.join(output_dir, "shared", _name)
