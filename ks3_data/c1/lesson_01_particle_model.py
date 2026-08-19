@@ -290,9 +290,16 @@ LESSON = {
                            "like a solid block four cuts ago is a countable "
                            "number of particles, and you can see the end "
                            "coming.",
-             "at_start": "A centimetre of sugar. Cut it and watch the size, "
-                         "not the picture — the numbers are where this "
-                         "lesson happens.",
+             # ⊕ REWORDED (Mide, 19 Aug 2026). This read "Cut it and watch
+             # the size, not the picture — the numbers are where this lesson
+             # happens", which was Design's honest description of a bench
+             # whose picture never moved. The picture moves now, so the line
+             # would be telling a student to ignore the evidence. The
+             # sentence keeps its shape, its length and its job: it says what
+             # to watch.
+             "at_start": "A centimetre of sugar. Cut it and watch it go "
+                         "— the size on the ruler and the piece on the "
+                         "bench are the same claim.",
              "mid": "Still sugar, still sweet, still white, still behaving "
                     "exactly like sugar. Halving does not seem to be getting "
                     "you anywhere. Keep going.",
@@ -312,7 +319,16 @@ LESSON = {
                            "one": "ONE PARTICLE",
                            "many": "{n} PARTICLES LEFT",
                            "start": "CUT 0",
-                           "end": "CUT {floor}"}},
+                           "end": "CUT {floor}",
+                           # ⊕ RULING (Mide, 19 Aug 2026). Twenty-four honest
+                           # halvings span a factor of 16 million, so the view
+                           # rescales in stages — and it SAYS so, because a
+                           # view that silently jumps teaches that the piece
+                           # stopped shrinking. `{n}` is the magnification,
+                           # computed from the drawn sizes rather than
+                           # asserted: ×8 at every stage but the one that
+                           # lands on the grain, which is ×4.
+                           "zoom": "ZOOMED IN ×{n}"}},
 
         {"type": "key-fact", "ref": "nothing-between"},
 

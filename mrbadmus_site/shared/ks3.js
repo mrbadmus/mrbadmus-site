@@ -7686,6 +7686,28 @@
        beside it and the one quantity the lesson is about was the only
        readout on the bench a student could not read off. See `draw()`. */
     var KPA = Number(cfg.kpa_per_hit) || 7;
+    /* ⊕ RULING (Mide, 19 Aug 2026) — THE READOUT IS SETTLED, NOT LIVE.
+       `SMOOTH` is how much simulation the displayed number averages over;
+       `SHOW` is how often the display is allowed to change. Both are
+       teaching decisions in exactly the way `window_ms` is, so both are
+       authored in the payload beside it.
+
+       ⚑ ANSWERING THE FLAG ON `kpa_per_hit`, which reads: "A reading that
+       curved, floored, capped or smoothed would quietly teach the
+       opposite. Do not add any of those." The flag is kept and answered
+       rather than deleted, because what it protects is still protected.
+       It guards ONE property — that pressure is exactly proportional to
+       the hit rate — and that property is untouched: `shownKpa` is
+       `shownHits * KPA` and nothing else, so a student who checks the
+       arithmetic on screen finds it holds at every setting. What is
+       smoothed is the MEASUREMENT NOISE, not the relationship. The live
+       count swung 11 → 16 hits (77 → 112 kPa) several times a second on
+       the shipped bench, which does not teach proportionality either — it
+       hides it behind a number nobody can read. A curve, a floor or a cap
+       would all change `kpa` as a function of `hits`; averaging the hits
+       changes only how steady the pair is. */
+    var SMOOTH = Number(cfg.smooth_ms) || 900;
+    var SHOW = Number(cfg.readout_ms) || 500;
     if (!TEMPS.length || !VOLS.length || !COUNTS.length) { return; }
 
     var start = cfg.start || {};
@@ -7707,6 +7729,42 @@
     var parts = [];
     var last = 0;
     var lastAlt = 0;
+
+    /* The settled readout. `samples` holds one hits-per-second estimate per
+       frame over the last `SMOOTH` ms; `shownHits` is the integer latched
+       out of their mean every `SHOW` ms, and it is the ONLY hit figure that
+       reaches the drawing, the bar or the aria-label. `moveAt` is when it
+       last stepped to a different value, which is what the accent fade on
+       the big number is timed from. */
+    var samples = [];
+    var shownHits = 0;
+    var lastShow = 0;
+    var moveAt = -1e9;
+    /* When the gas last changed. Hits counted under the PREVIOUS gas are
+       not evidence about this one, so a control press drops them — and
+       until a full `WINDOW` has elapsed the rate is measured over however
+       much time has actually passed, rather than over a second that has
+       not happened yet. Without that the first reading after every press
+       dips towards zero and then climbs, which reads as the opposite of
+       the change the student just made. */
+    var regimeAt = 0;
+
+    function nowTs() {
+      return (window.performance && window.performance.now)
+        ? window.performance.now() : last;
+    }
+
+    function newRegime(now) {
+      hits = [];
+      samples = [];
+      regimeAt = now;
+      /* NOT `now - SHOW`. Latching immediately would average an empty
+         sample buffer and drop the readout to zero for half a second on
+         the way to a value that is usually higher — a dip the student did
+         not cause. The number holds its last settled value for one cadence
+         and then steps to the new one. */
+      lastShow = now;
+    }
 
     var most = 0;
     each(COUNTS, function (c) { most = Math.max(most, Number(c.n) || 0); });
@@ -7789,6 +7847,34 @@
       // is what happened in the last second, counted, not modelled.
       while (hits.length && now - hits[0] > WINDOW) { hits.shift(); }
       flashes = flashes.filter(function (f) { return now - f.t < FLASH; });
+
+      /* Hits per second, still COUNTED — the divisor is the time actually
+         spent counting, capped at the window. A floor of 200 ms keeps the
+         first two or three frames after a control press from dividing by
+         something near zero. */
+      var span = Math.min(WINDOW, Math.max(200, now - regimeAt)) / 1000;
+      samples.push({ t: now, v: hits.length / span });
+      while (samples.length && now - samples[0].t > SMOOTH) { samples.shift(); }
+    }
+
+    /* Latched twice a second, from the mean of the last `SMOOTH` ms of
+       estimates. Everything downstream reads `shownHits`, so the drawing,
+       the bar and the label always agree with one another and with the
+       arithmetic a student can do on screen. */
+    function settle(now) {
+      if (now - lastShow < SHOW) { return; }
+      lastShow = now;
+      var mean = 0, i;
+      if (samples.length) {
+        for (i = 0; i < samples.length; i++) { mean += samples[i].v; }
+        mean = mean / samples.length;
+      }
+      var next = Math.round(mean);
+      if (next !== shownHits) {
+        shownHits = next;
+        moveAt = now;
+        setAlt();
+      }
     }
 
     // The three status lines are a mono table, so the values line up in a
@@ -7909,36 +7995,71 @@
 
          Whole kilopascals; one decimal below 10, so a cold, large, sparse
          box reads a small pressure rather than "0 kPa". */
-      var count = hits.length;
+      /* ⊕ RULING (Mide, 19 Aug 2026) — PRESSURE IS THE BIG NUMBER.
+         The two readouts have swapped positions. Wall hits per second was
+         in the 58px slot and pressure was a 20px value beside the bar,
+         which put the instrument's typography behind the quantity the
+         lesson is NOT about: hits are the mechanism, kilopascals are the
+         science. The shapes are unchanged and simply exchanged — big
+         value under a mono caption, and the caption-left / value-right row
+         — so nothing new was drawn, only re-ranked. The bar stays with
+         pressure, where it always belonged.
+
+         Both figures come from `shownHits`, never from `hits.length`, so
+         `pressure = hits × 7` is exact on what is ON SCREEN and not merely
+         on a value that flickered past between two paints. */
+      var count = shownHits;
       var kpa = count * KPA;
-      var kpaText = (kpa < 10 ? kpa.toFixed(1) : String(Math.round(kpa)))
-        + " " + (CL.pressure_unit || "kPa");
+      var kpaText = (kpa < 10 ? kpa.toFixed(1) : String(Math.round(kpa)));
+      var kpaUnit = " " + (CL.pressure_unit || "kPa");
       var px = 620;
-      ctx.fillStyle = COUNTER_INK.label;
-      ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
-      ctx.fillText(CL.hits || "", px, 66);
-      ctx.fillStyle = COUNTER_INK.line;
-      ctx.font = '700 58px "Bricolage Grotesque", system-ui, sans-serif';
-      ctx.fillText(String(count), px, 122);
+      var barW = 220, barH = 22;
 
       ctx.fillStyle = COUNTER_INK.label;
       ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
-      ctx.fillText(CL.pressure || "", px, 158);
-      var barW = 220, barH = 22;
-      // Caption left, value right, bar spanning between them on the row
-      // below — the ordinary shape of a dial, and it costs no new height.
+      ctx.fillText(CL.pressure || "", px, 66);
+
+      // The unit rides at caption size beside the figure rather than inside
+      // it: "1015 kPa" at 58px would run off the panel, and a dial's unit
+      // is not the same size as its reading anywhere else either.
+      ctx.font = '700 58px "Bricolage Grotesque", system-ui, sans-serif';
+      var numW = ctx.measureText(kpaText).width;
+      ctx.fillStyle = COUNTER_INK.line;
+      ctx.fillText(kpaText, px, 122);
+      /* ⊕ The moment the number moves, marked in the accent and faded out
+         over `FLASH` — the same colour and the same decay the wall-hit
+         rings already use, so this is the instrument's existing vocabulary
+         rather than a second one. It exists because a settled readout that
+         simply appears at a new value can be missed; the lesson is the
+         CHANGE, so the change is what is marked. */
+      var moveAge = (now - moveAt) / FLASH;
+      if (moveAge >= 0 && moveAge < 1) {
+        ctx.fillStyle = "rgba(" + COUNTER_INK.flash + ","
+          + (1 - moveAge).toFixed(3) + ")";
+        ctx.fillText(kpaText, px, 122);
+      }
+      ctx.fillStyle = COUNTER_INK.label;
+      ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+      ctx.fillText(kpaUnit, px + numW, 122);
+
+      ctx.fillStyle = COUNTER_INK.dash;
+      ctx.fillRect(px, 138, barW, barH);
+      ctx.fillStyle = COUNTER_INK.bar;
+      ctx.fillRect(px, 138, barW * Math.min(1, count / FULL), barH);
+      ctx.strokeStyle = COUNTER_INK.line;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(px, 138, barW, barH);
+
+      // Wall hits per second, demoted to the row the pressure value used to
+      // occupy: caption left, value right, same sizes as before.
+      ctx.fillStyle = COUNTER_INK.label;
+      ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+      ctx.fillText(CL.hits || "", px, 184);
       ctx.textAlign = "right";
       ctx.fillStyle = COUNTER_INK.line;
       ctx.font = '700 20px "Bricolage Grotesque", system-ui, sans-serif';
-      ctx.fillText(kpaText, px + barW, 158);
+      ctx.fillText(String(count), px + barW, 184);
       ctx.textAlign = "left";
-      ctx.fillStyle = COUNTER_INK.dash;
-      ctx.fillRect(px, 168, barW, barH);
-      ctx.fillStyle = COUNTER_INK.bar;
-      ctx.fillRect(px, 168, barW * Math.min(1, count / FULL), barH);
-      ctx.strokeStyle = COUNTER_INK.line;
-      ctx.lineWidth = 2;
-      ctx.strokeRect(px, 168, barW, barH);
 
       ctx.fillStyle = COUNTER_INK.label;
       ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
@@ -7985,8 +8106,11 @@
           + " " + (CL.pressure_unit || "kPa"));
     }
 
+    /* ⊕ The SETTLED figure, not the instantaneous one. A screen-reader
+       student and a sighted student have to be reading the same bench, and
+       `shownHits * KPA` is the pair the arithmetic holds on. */
     function setAlt() {
-      if (canvas) { canvas.setAttribute("aria-label", altText(hits.length)); }
+      if (canvas) { canvas.setAttribute("aria-label", altText(shownHits)); }
     }
 
     /* The head counter. `setCount` owns the element for every value the
@@ -8018,6 +8142,11 @@
           }
         });
         tried[group] = true;
+        /* The gas has changed, so the second of hits already banked was
+           measured on a different gas. Dropping it is what lets the
+           readout reach its new level inside a second instead of drifting
+           there through a blend of the two. */
+        newRegime(nowTs());
         progress();
         repaintNote();
         setAlt();
@@ -8043,7 +8172,11 @@
     function tick(now) {
       var dt = Math.min(0.05, (now - (last || now)) / 1000);
       last = now;
+      // The clock starts at the first frame, not at the time origin: hits
+      // are only counted from here, so the rate must be divided from here.
+      if (!regimeAt) { regimeAt = now; lastShow = now; }
       step(now, dt);
+      settle(now);
       draw(now);
       // The label is state-bound, but the state includes a number that
       // moves every frame. Rewritten once a second — often enough that a
@@ -8190,6 +8323,43 @@
     var choice = null;
     var test = null;
 
+    /* ⊕ RULING (Mide, 19 Aug 2026) — A TEST HAS TO RUN.
+       ⚑ ANSWERING THE FLAG ABOVE ("Nothing animates: the two boxes are a
+       before-and-after, not a process"), kept rather than deleted. The
+       boxes were a before-and-after of the CHOICE, and the flag is right
+       about that much. But the three buttons are the argument of the whole
+       lesson, and what they did was swap a paragraph: `draw()` never read
+       `test` at all, so a student pressed `Squash the gas` under a caption
+       reading "run a test and watch it fail" and watched nothing happen.
+       Prose describing a demonstration is not a demonstration. Each test
+       is now a process — squash, pour, spread — and it fails on screen
+       when the gaps are filled. Reduced motion now has something real to
+       degrade, and degrades to the END STATE rather than to nothing: the
+       compressed box, the risen level, the stalled particle. */
+    var RUN_MS = 1500;
+    var testAt = -1e9;
+    var raf = 0;
+
+    function nowMs() {
+      return (window.performance && window.performance.now)
+        ? window.performance.now() : new Date().getTime();
+    }
+
+    function pump() {
+      if (!raf && window.requestAnimationFrame) {
+        raf = window.requestAnimationFrame(frame);
+      }
+    }
+
+    function frame() {
+      raf = 0;
+      draw();
+      if (test !== null && nowMs() - testAt < RUN_MS
+          && window.requestAnimationFrame) {
+        raf = window.requestAnimationFrame(frame);
+      }
+    }
+
     // "Something is in the gap" — the state every test is about to
     // contradict. A choice not yet made is not a filled gap.
     function filled() { return choice !== null && choice !== EMPTY; }
@@ -8207,10 +8377,32 @@
       var half = W / 2;
       var packed = filled();
 
+      /* ── running a test ──
+         `u` is how far through the demonstration we are, 0 → 1, and it
+         holds at 1 so the end state stays on screen to be read. `solid`
+         is the only thing that differs between the two boxes, so every
+         effect below is written once and asked the same question: what
+         does this test do when there is somewhere to go, and what does it
+         do when there is not. */
+      var u = 0;
+      if (test !== null) {
+        u = Math.min(1, Math.max(0, (nowMs() - testAt) / RUN_MS));
+        u = 1 - Math.pow(1 - u, 3);
+      }
+
       function drawBox(x0, label, solid) {
+        var bx = x0 + 34, by = 52, bw = half - 68, bh = H - 108;
+
+        /* SQUASH — the wall comes in. With gaps the particles are pushed
+           closer and the gas gives; packed, there is nothing left to
+           squash and the wall stops almost at once. */
+        var sq = 0;
+        if (test === "squash") { sq = (solid ? 0.03 : 0.38) * u; }
+        var iw = bw * (1 - sq);
+
         ctx.save();
         ctx.beginPath();
-        ctx.rect(x0 + 34, 52, half - 68, H - 108);
+        ctx.rect(bx, by, iw, bh);
         ctx.clip();
         // The fill IS the answer: the space between the particles stops
         // being space. Clipped to the box so it cannot read as a
@@ -8218,12 +8410,20 @@
         // boxes so the only difference on screen is the gap.
         if (solid) {
           ctx.fillStyle = "#4A4038";
-          ctx.fillRect(x0 + 34, 52, half - 68, H - 108);
+          ctx.fillRect(bx, by, iw, bh);
         }
+
+        /* MIX — small particles are poured in. With gaps they fall into
+           the spaces between the large ones and the level does not rise
+           to meet the sum; packed, they have nowhere to go but on top,
+           and the level lands exactly on the dashed prediction. */
+        var poured = test === "mix";
+
         for (var row = 0; row < 4; row++) {
           for (var col = 0; col < 7; col++) {
-            var x = x0 + 62 + col * 54 + (row % 2 ? 16 : 0);
+            var x = bx + 28 + col * 54 + (row % 2 ? 16 : 0);
             var y = 78 + row * 44;
+            x = bx + (x - bx) * (1 - sq);
             ctx.beginPath();
             ctx.arc(x, y, 17, 0, Math.PI * 2);
             ctx.fillStyle = "#D98A4A";
@@ -8233,10 +8433,102 @@
             ctx.stroke();
           }
         }
+
+        if (poured) {
+          /* Twelve small particles poured in from above.
+
+             With gaps, they DROP INTO the spaces between the large ones —
+             two rows of six, in the interstices — and the level does not
+             rise to meet the prediction. That is 50 + 50 = 97 on screen.
+
+             Packed, there is no interstice to drop into, so they come to
+             rest in a single layer ON TOP of the pile, and the level rises
+             to land exactly on the dashed line. That is the failure: with
+             the gap filled the volumes must simply add, and they do not. */
+          for (var k = 0; k < 12; k++) {
+            var tx = solid ? bx + 26 + k * ((bw - 52) / 11)
+                           : bx + 89 + (k % 6) * 54;
+            var ty1 = solid ? 68 : 100 + Math.floor(k / 6) * 88;
+            var ty = 30 + (ty1 - 30) * u;
+            ctx.beginPath();
+            ctx.arc(tx, ty, 7, 0, Math.PI * 2);
+            ctx.fillStyle = "#FFC53D";
+            ctx.fill();
+            ctx.strokeStyle = "#6B4A12";
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+          }
+        }
+
+        /* SMELL — one particle tries to cross. With gaps it works its way
+           the full width of the box; packed, it gets a fraction of the
+           way and stops dead against the fill. */
+        if (test === "smell") {
+          var reach = solid ? 0.07 : 0.92;
+          var sx = bx + 30 + (bw - 60) * reach * u;
+          var sy = 100 + Math.sin(u * 9) * 30;
+          ctx.beginPath();
+          ctx.moveTo(bx + 30, 100);
+          var t2;
+          for (t2 = 0; t2 <= u; t2 += 0.02) {
+            ctx.lineTo(bx + 30 + (bw - 60) * reach * t2,
+                       100 + Math.sin(t2 * 9) * 30);
+          }
+          ctx.strokeStyle = "rgba(255,197,61,0.45)";
+          ctx.lineWidth = 2;
+          ctx.setLineDash([5, 4]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.beginPath();
+          ctx.arc(sx, sy, 12, 0, Math.PI * 2);
+          ctx.fillStyle = "#FFC53D";
+          ctx.fill();
+          ctx.strokeStyle = "#6B4A12";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
         ctx.restore();
+
+        // The dashed prediction line: where the level would sit if the two
+        // volumes simply added. Drawn on both boxes so the comparison is
+        // between them and not against a memory.
+        if (poured) {
+          // Where the level would sit if the two volumes simply added.
+          // Drawn on BOTH boxes at the same height, so the comparison a
+          // student makes is between the two lines and not against memory.
+          ctx.strokeStyle = "rgba(255,197,61,0.55)";
+          ctx.lineWidth = 2;
+          ctx.setLineDash([6, 5]);
+          ctx.beginPath();
+          ctx.moveTo(bx, 58);
+          ctx.lineTo(bx + iw, 58);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          // The level actually reached: up to the prediction when the gap
+          // is packed, short of it when the gap did the absorbing.
+          var lvl = 84 - (solid ? 26 * u : 0);
+          ctx.strokeStyle = "#FF8A5B";
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(bx, lvl);
+          ctx.lineTo(bx + iw, lvl);
+          ctx.stroke();
+        }
+
         ctx.strokeStyle = "#5C5249";
         ctx.lineWidth = 2;
-        ctx.strokeRect(x0 + 34, 52, half - 68, H - 108);
+        ctx.strokeRect(bx, by, iw, bh);
+
+        // The plunger, drawn only while squashing — it is what the moving
+        // wall IS, and without it the box merely gets narrower.
+        if (test === "squash") {
+          ctx.fillStyle = "#8A7B6B";
+          ctx.fillRect(bx + iw, by, 12, bh);
+          ctx.strokeStyle = "#5C5249";
+          ctx.lineWidth = 2;
+          ctx.strokeRect(bx + iw, by, 12, bh);
+        }
+
         ctx.fillStyle = solid ? "#FF8A5B" : "#FFC53D";
         ctx.font = '500 14px "DM Mono", ui-monospace, monospace';
         ctx.textAlign = "center";
@@ -8284,7 +8576,12 @@
         // is not there to be looked at until a claim has been made about
         // what it is going to show.
         if (rig) { setHidden(rig, false); }
+        // "Changing the answer afterwards re-runs the same test against
+        // the new gap, which is the point" — so it re-runs, rather than
+        // repainting the old test's finished frame with a new gap in it.
+        if (test !== null && !motionReduced()) { testAt = nowMs(); }
         repaint();
+        if (test !== null && !motionReduced()) { pump(); }
       });
     });
 
@@ -8294,7 +8591,13 @@
         each(testBtns, function (b) {
           b.setAttribute("aria-pressed", b === btn ? "true" : "false");
         });
+        /* Under reduced motion the run is over before it starts: `u`
+           computes to 1 on the first paint, so the student gets the whole
+           result and none of the movement. Pressing the same button again
+           re-runs it, which is what a student does when they missed it. */
+        testAt = motionReduced() ? -1e9 : nowMs();
         repaint();
+        if (test !== null && !motionReduced()) { pump(); }
       });
     });
 
@@ -8322,6 +8625,16 @@
      `wireClaimSwitch` carries), and the reduced-motion experience is the
      complete one rather than a lesser one.
 
+     ⊕ SUPERSEDED BY MIDE, 19 Aug 2026; kept, because it records what was
+     believed. Ten halvings IS the journey — it is the same journey the
+     single-cut button makes, ten times, and the intermediate sizes are the
+     evidence that the piece keeps halving right down to the floor. Jumping
+     to the end state showed a student the destination and none of the road.
+     The run is played at `STEP_MS` per cut instead. Reduced motion still
+     has the complete instrument, and now has something real to degrade: it
+     loses the sub-second glide between sizes and keeps every size, every
+     cut and every zoom announcement.
+
      The size ladder is duplicated in `build_ks3.py` (`_size_label`) on
      purpose: the resting page has to render "10 mm" and its aria-label
      before any JS runs. Two implementations, one composition, checked at
@@ -8343,6 +8656,10 @@
     var L_MANY = wrap.getAttribute("data-label-many") || "";
     var L_START = wrap.getAttribute("data-label-start") || "";
     var L_END = wrap.getAttribute("data-label-end") || "";
+    // ⊕ The zoom annotation. Authored in the lesson record like every other
+    // string set into this drawing; the fallback exists only so a payload
+    // that predates the ruling renders rather than printing "undefined".
+    var L_ZOOM = wrap.getAttribute("data-label-zoom") || "ZOOMED IN ×{n}";
 
     var canvas = wrap.querySelector("[data-cut-canvas]");
     var outCount = wrap.querySelector('[data-cut-out="count"]');
@@ -8354,6 +8671,74 @@
 
     var n = 0;
     var reached = false;
+
+    /* ═══ ⊕ RULING (Mide, 19 Aug 2026) — THE PIECE VISIBLY SHRINKS ═══════
+       ⚑ ANSWERING TWO FLAGS, both kept above and in the renderer's
+       docstring rather than deleted, because they record what was believed
+       and this records what replaced it.
+
+       Flag: "NOTHING ANIMATES … ten halvings is not a journey".
+       Flag: "THE NUMBERS ARE THE LESSON, NOT THE PICTURE … a drawing that
+       stays deliberately dull."
+
+       What shipped drew the piece at a fixed 176px at every one of the 24
+       cuts. A student pressed `Cut it in half` five times and watched a
+       number change beside a picture that did not — so the claim the unit
+       rests on, that halving TERMINATES, was being made by a caption while
+       the drawing quietly said the opposite. The flags were protecting the
+       instrument against decoration; a piece that does not halve when you
+       halve it is not restraint, it is the instrument contradicting its own
+       readout. Mide's rule governs: what matters is that a student SEES the
+       science happen.
+
+       ⚖️ HOW 24 HONEST HALVINGS FIT ON ONE CANVAS. They do not — the span
+       is a factor of 16 million — so the view RESCALES IN STAGES and says
+       so. Inside a stage each cut halves the drawn edge for real: 240 → 120
+       → 60. The fourth would land near 30px, which is below reading size,
+       so the view zooms and the piece is drawn large again. The rhythm the
+       student learns is shrink, shrink, shrink, ZOOM — and the zoom is
+       itself the powers-of-ten lesson, which is why it is announced on the
+       canvas rather than performed silently.
+
+       ⚖️ THE GRAIN PHASE RE-ANCHORS ITS STAGE, and that is not a tidy-up.
+       `across` is 2^(FLOOR - n) particles per edge, so within a stage the
+       box and the particle count halve together and the drawn PARTICLE
+       RADIUS is constant — particles do not shrink, the piece does, which
+       is the whole claim. Anchoring the stage at `FLOOR - GRAIN` puts a
+       zoom exactly where the block resolves into countable particles, and
+       leaves the floor as one large particle instead of a 15px dot. */
+    var BASE = 240;
+    var STAGE = 3;
+    var TWEEN = 260;
+    var ZOOM_MS = 1100;
+    var STEP_MS = 130;
+
+    // Where the current stage starts. The smooth run anchors at 0; the
+    // grain phase anchors at its own first cut.
+    function anchor(k) { return k >= FLOOR - GRAIN ? FLOOR - GRAIN : 0; }
+    function level(k) { return (k - anchor(k)) % STAGE; }
+    function boxFor(k) { return BASE / Math.pow(2, level(k)); }
+
+    /* The magnification the view gained arriving at `k` from `k - 1`, or 0
+       for an ordinary cut. The piece halved in truth, so the factor is the
+       change in drawn size times two — computed, never assumed, because the
+       jump into the grain stage is ×4 where every other one is ×8. */
+    function zoomInto(k) {
+      if (k <= 0) { return 0; }
+      var f = (boxFor(k) / boxFor(k - 1)) * 2;
+      return f > 1.01 ? Math.round(f) : 0;
+    }
+
+    var drawnBox = boxFor(0);
+    var tweenFrom = drawnBox, tweenTo = drawnBox, tweenAt = -1e9;
+    var zoomBy = 0, zoomAt = -1e9;
+    var queue = 0, queueAt = 0;
+    var raf = 0;
+
+    function ms() {
+      return (window.performance && window.performance.now)
+        ? window.performance.now() : new Date().getTime();
+    }
 
     /* Design's `sig()`. `Math.round` on the top branch, one trailing zero
        stripped on the bottom one — reproduced rather than tidied, because
@@ -8403,15 +8788,27 @@
     function draw() {
       if (!canvas || !canvas.getContext) { return; }
       var ctx = canvas.getContext("2d");
-      var W = 900, H = 320;
+      var W = 900, H = 380;
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.setTransform(2, 0, 0, 2, 0, 0);
       ctx.fillStyle = "#FFFDF8";
       ctx.fillRect(0, 0, W, H);
 
-      var cx = W / 2, cy = H / 2 - 4;
-      var box = 176;
+      /* ⊕ THE PIECE HANGS FROM A FIXED BASELINE, and it has to now that the
+         piece changes size. Everything under the drawing — the particle
+         count, the scale bar, the ruler — is positioned at `cy + box / 2`,
+         which was a constant while `box` was pinned at 176 and would
+         otherwise now swing 90px between stages and push the ruler clean
+         off the canvas. Anchoring the BOTTOM edge keeps every one of those
+         expressions untouched and makes them all constant again: the piece
+         grows upward out of the ruler, which is also the right picture. */
+      var BOTTOM = 258;
+      var cx = W / 2;
+      // The PAINTED edge, which is the tween's current value rather than
+      // the resting size for `n` — so a cut is watched, not discovered.
+      var box = drawnBox;
+      var cy = BOTTOM - box / 2;
 
       // The ghost of the piece before this cut, at twice the size. Its top
       // and bottom edges run off the canvas on purpose — the piece you
@@ -8500,6 +8897,23 @@
       ctx.textAlign = "center";
       ctx.fillText(sizeLabel(n), cx, cy + box / 2 + 72);
 
+      /* ⊕ THE ZOOM SAYS SO. A view that rescales without saying it has
+         rescaled teaches that the piece stopped shrinking, which is the
+         defect this whole change exists to remove. Terse mono in the
+         accent, fading out over `ZOOM_MS` — the instrument's own caption
+         voice, no new words on the page and no new colour. It is drawn
+         under reduced motion too: the tween is what degrades, never the
+         announcement. */
+      var zAge = (ms() - zoomAt) / ZOOM_MS;
+      if (zoomBy && zAge >= 0 && zAge < 1) {
+        ctx.fillStyle = "rgba(228,87,46," + (1 - zAge * zAge).toFixed(3) + ")";
+        ctx.font = '500 13px "DM Mono", ui-monospace, monospace';
+        // Top left, clear of both the piece at its largest and the ghost's
+        // own caption, which starts at `cx - box`.
+        ctx.textAlign = "left";
+        ctx.fillText(L_ZOOM.replace("{n}", String(zoomBy)), 60, 26);
+      }
+
       // How far down to the floor, drawn rather than counted.
       var bw = (W - 120) / FLOOR;
       for (var i = 0; i < FLOOR; i++) {
@@ -8542,18 +8956,112 @@
       if (n >= FLOOR && FULL && counter) { counter.textContent = FULL; }
       else { setCount(sec, n); }
       draw();
+      pump();
       if (n >= FLOOR) { reached = true; }
       if (reached) { markStage(sec, true); }
+    }
+
+    /* ── the animation loop ──
+       Runs only while something is in flight: a size tween, a fading zoom
+       annotation, or a queued run of cuts. It stops itself, so an idle
+       bench costs nothing and the resting page still paints exactly once.
+
+       ⚖️ REDUCED MOTION DROPS THE TWEEN, NOT THE SEQUENCE. The sizes
+       still step, one state at a time, because those states ARE the
+       lesson and skipping to the end is what the shipped bench did. What
+       goes is the sub-second glide between them. */
+    function easeOut(u) { return 1 - Math.pow(1 - u, 3); }
+
+    function frame() {
+      raf = 0;
+      var now = ms();
+      var busy = false;
+
+      if (queue) {
+        if (now - queueAt >= STEP_MS) {
+          queueAt = now;
+          var dir = queue > 0 ? 1 : -1;
+          var was = queue;
+          stepOne(dir);
+          // `stepOne` zeroes the queue when it runs out of ladder, so the
+          // decrement only applies when a cut actually happened.
+          if (queue === was) { queue = was - dir; }
+        }
+        if (queue) { busy = true; }
+      }
+
+      var u = (now - tweenAt) / TWEEN;
+      if (u < 1) {
+        drawnBox = tweenFrom + (tweenTo - tweenFrom) * easeOut(Math.max(0, u));
+        busy = true;
+      } else {
+        drawnBox = tweenTo;
+      }
+      if (zoomBy && now - zoomAt < ZOOM_MS) { busy = true; }
+
+      draw();
+      // `stepOne` → `repaint` → `pump` may already have booked the next
+      // frame from inside this one; booking a second would fork the loop.
+      if (busy && !raf && window.requestAnimationFrame) {
+        raf = window.requestAnimationFrame(frame);
+      }
+    }
+
+    function pump() {
+      if (!raf && window.requestAnimationFrame) {
+        raf = window.requestAnimationFrame(frame);
+      } else if (!window.requestAnimationFrame) {
+        drawnBox = tweenTo;
+        draw();
+      }
+    }
+
+    /* One cut, or one undo. Everything that moves the bench goes through
+       here, so the tween, the zoom announcement and the readouts can never
+       disagree about which cut the piece is on. */
+    function stepOne(dir) {
+      var next = Math.max(0, Math.min(FLOOR, n + dir));
+      if (next === n) { queue = 0; return; }
+      var z = dir > 0 ? zoomInto(next) : 0;
+      n = next;
+      tweenFrom = drawnBox;
+      tweenTo = boxFor(n);
+      if (motionReduced()) {
+        drawnBox = tweenTo;
+        tweenAt = -1e9;
+      } else {
+        tweenAt = ms();
+      }
+      // Undo walks back down the ladder without announcing a zoom: the
+      // student is retracing, not discovering.
+      if (z) { zoomBy = z; zoomAt = ms(); }
+      repaint();
     }
 
     each(btns, function (b) {
       b.addEventListener("click", function () {
         var step = parseInt(b.getAttribute("data-step"), 10) || 0;
         if (b.getAttribute("data-act") === "undo") { step = -step; }
-        var next = Math.max(0, Math.min(FLOOR, n + step));
-        if (next === n) { return; }
-        n = next;
-        repaint();
+        if (!step) { return; }
+        /* ⊕ A RUN OF CUTS IS PLAYED, NOT JUMPED. `Cut ten more times` used
+           to move the count by ten in one frame. Ten halvings IS a journey
+           — it is the same journey the single-cut button makes, ten times
+           over, and the intermediate sizes are the evidence. Played at
+           `STEP_MS` so it is quick and still perceptible. */
+        var want = Math.max(0, Math.min(FLOOR, n + step)) - n;
+        if (!want) { return; }
+        /* THE FIRST CUT LANDS ON THE CLICK, the rest are played. A control
+           that does nothing until the next animation frame feels broken on
+           a single press, and it would also make the count unreadable to
+           anything driving the bench synchronously — the parity gate cuts
+           to the floor in a tight loop and reads `[data-cut-out]` between
+           clicks. The readouts stay a direct consequence of the press; only
+           the SIZES are what take time. */
+        var dir = want > 0 ? 1 : -1;
+        queue = want - dir;
+        queueAt = ms();
+        stepOne(dir);
+        if (queue) { pump(); }
       });
     });
 

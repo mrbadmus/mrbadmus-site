@@ -40,6 +40,14 @@ actual count of the last second — which is why "smaller box, same particles,
 same speed, and the count is up" is something a student watches happen rather
 than something the page asserts. Flashes last 420 ms.
 
+⊕ AND IT IS STILL COUNTED (Mide, 19 Aug 2026). The displayed figure is now a
+mean of those counts over ~900 ms, latched twice a second, because the raw
+count churned every frame and a student could not read it — let alone see
+which WAY it moved when they pressed a control, which is the entire lesson.
+Nothing became a formula: the samples averaged are counts divided by the time
+spent counting them, and pressure is still exactly `displayed hits × 7`. What
+changed is the shutter speed, not the instrument.
+
 ⚖️ REDUCED MOTION SCALES THE SPEED BY 0.35 RATHER THAN STOPPING, so the count
 still runs and the instrument still teaches. Design's own value; the engine
 asks for it inside the tick rather than once at construction (ruling R4).
@@ -70,6 +78,17 @@ DISTINCT control groups. Map §4.4 names this finding.
   * flag 6 holds — pressure is reported as a count and a bar, never in pascals.
     There is no unit anywhere on the bench, deliberately: `p = F/A` is a KS4
     calculation and naming a pascal here would invite it three years early.
+    ⊕ SUPERSEDED BY MIDE, 19 Aug 2026, twice over, and kept here because the
+    flag records what was believed and the ruling records what replaced it.
+    First: pressure IS given a unit, in kilopascals — a `PRESSURE` caption
+    over an unlabelled bar is a dial with no value on it, and the quantity
+    the lesson exists to build was the one thing on the bench a student could
+    not read off. It is a stated calibration (7 kPa per wall hit, anchoring
+    the resting bench at atmospheric), never a computed `p = F/A`, so the
+    flag's actual worry — KS4 arriving three years early — does not follow.
+    Second, and later the same day: pressure is now the BIG number and wall
+    hits the small one, because kilopascals are the science and hits are the
+    mechanism that explains them.
   * The `benchNote` branch table has a hole Design left. At Warm / Large / 12
     particles no branch matches except the resting one, which opens "Twenty-four
     particles at room temperature." while the canvas draws twelve. Closing it
@@ -362,6 +381,24 @@ LESSON = {
          # proportionality. A reading that curved, floored, capped or smoothed
          # would quietly teach the opposite. Do not add any of those.
          "kpa_per_hit": 7,
+         # ⊕ RULING (Mide, 19 Aug 2026), ANSWERING THE LINE DIRECTLY ABOVE.
+         # The flag is kept, not deleted, because what it protects is still
+         # protected. It guards ONE property — pressure exactly proportional
+         # to the hit rate — and that is untouched: the bench draws
+         # `shown_hits × 7` and nothing else, so the arithmetic holds on the
+         # two numbers a student can actually see. What is smoothed is the
+         # MEASUREMENT, not the relationship. The shipped bench swung 11 to 16
+         # hits (77 to 112 kPa) several times a second, which does not teach
+         # proportionality either; it hides it behind a number nobody can read.
+         # A curve, a floor or a cap would each change kPa AS A FUNCTION OF
+         # hits, and none of those is here.
+         #
+         # `smooth_ms` is how much simulation one displayed reading averages
+         # over; `readout_ms` is how often the display is allowed to change.
+         # Both are teaching decisions in exactly the way `window_ms` is: a
+         # dial a student cannot read is not a more truthful dial.
+         "smooth_ms": 900,
+         "readout_ms": 500,
          # The rolling window IS the measurement (page line 501), and the flash
          # is how long one collision stays visible (502). Both authored because
          # both are teaching decisions: a 1000 ms window is what makes the

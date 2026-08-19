@@ -1923,10 +1923,14 @@ COMPONENTS = [
          on=C1_MODEL, drive="bench-gate-opened", sel=".ks3-cut-frame",
          props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
                 "border-top-width": "2px", "border-top-left-radius": "22px"}),
-    # The readouts are the lesson — "watch the size, not the picture" — so they
-    # are display type at 30px, not the 25px mono a sim readout takes. If this
-    # row ever reports the mono face, the numbers have stopped being the
-    # headline of the block.
+    # The readouts are display type at 30px, not the 25px mono a sim readout
+    # takes. If this row ever reports the mono face, the numbers have stopped
+    # being the headline of the block.
+    # ⊕ The justification used to quote the lede — "watch the size, not the
+    # picture". That sentence was reworded on 19 Aug 2026 when Mide ruled the
+    # piece must visibly shrink, so the quote is gone and the row is not: the
+    # readouts are still the headline, they just no longer have to carry the
+    # lesson alone.
     dict(name="cut readout value is display 700 30px ink", on=C1_MODEL,
          drive="bench-gate-opened", sel=".ks3-cut-value",
          props={"font-family": "Bricolage Grotesque", "font-weight": "700",

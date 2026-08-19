@@ -5631,6 +5631,14 @@ def r_collision_counter(a, act_id):
         "kpa_per_hit": a.get("kpa_per_hit", 7),
         "window_ms": a.get("window_ms", 1000),
         "flash_ms": a.get("flash_ms", 420),
+        # ⊕ RULING (Mide, 19 Aug 2026). How much simulation one displayed
+        # reading averages over, and how often the display may change. The
+        # raw count churned every frame; a number a student cannot read
+        # cannot show them which way it moved, and the direction of the
+        # move is the lesson. `hits × kpa_per_hit` is exact on the pair
+        # actually drawn, so the proportionality is unaffected.
+        "smooth_ms": a.get("smooth_ms", 900),
+        "readout_ms": a.get("readout_ms", 500),
         "reduced_motion_scale": a.get("reduced_motion_scale", 0.35),
         "step_per_frame": a.get("step_per_frame", 0.0075),
         "alt": alt,
@@ -5994,6 +6002,18 @@ def r_halving_bench(a, act_id):
     one teaches that halving TERMINATES, which is a different claim and the one
     the unit rests on.
 
+    ⊕ SUPERSEDED BY MIDE, 19 Aug 2026, and kept because it records what was
+    believed. The flag is right that decoration is not evidence — and what it
+    produced was a drawing pinned at 176px for all 24 cuts, so a student cut
+    five times and watched a NUMBER fall beside a PICTURE that did not move.
+    That is not a dull drawing, it is a drawing contradicting the readout
+    beside it, and the claim the unit rests on was left to a caption. The rule
+    now is Mide's: what matters is that a student sees the science happen. The
+    piece halves visibly at every cut; the view rescales in stages and says so;
+    the lede was reworded, because it was telling students to ignore the one
+    thing that now shows them the answer. Nothing was made prettier — the same
+    box, the same ghost, the same ruler, at an honest size.
+
     ⚖️ THE FLOOR IS STICKY. `reachedFloor` is a one-way flag on Design's page
     and it stays one-way here: undoing a cut walks the piece back up the ladder
     and does NOT untick the rail. What a student found out at 24 cuts cannot be
@@ -6087,7 +6107,11 @@ def r_halving_bench(a, act_id):
                 "screen reader." % (act_id, key))
 
     labels = a.get("canvas_labels") or {}
-    for key in ("ghost", "one", "many", "start", "end"):
+    # ⊕ `zoom` joins the required set (Mide, 19 Aug 2026). It is the only
+    # thing the instrument says when the view rescales, and a bench that
+    # rescaled without saying so is the defect the ruling removes — so a
+    # payload that forgets it should fail the build, not ship silently.
+    for key in ("ghost", "one", "many", "start", "end", "zoom"):
         if not labels.get(key):
             raise ValueError(
                 "halving-bench %r canvas_labels is missing %r." % (act_id, key))
@@ -6135,7 +6159,12 @@ def r_halving_bench(a, act_id):
         % (e(k), "" if k == "at_start" else " hidden", rich(notes[k]))
         for k in _CUT_NOTES)
 
-    canvas = ('<canvas class="ks3-cut-canvas" width="1800" height="640" '
+    # ⊕ 640 → 760 (Mide, 19 Aug 2026). The piece is drawn at up to 240px now
+    # instead of a pinned 176, and the ruler under it — the one element that
+    # always states the true edge length — fell off the bottom of a 320-tall
+    # design space at the largest stage. The drawing gained 60 design px of
+    # headroom rather than the ruler being moved out from under the piece.
+    canvas = ('<canvas class="ks3-cut-canvas" width="1800" height="760" '
               'role="img" aria-label="%s" data-cut-canvas></canvas>' % e(alt0))
 
     return (gate_html
@@ -6143,7 +6172,8 @@ def r_halving_bench(a, act_id):
               'data-start-cm="%s" data-grain="%d" data-full="%s" '
               'data-alt="%s" data-alt-smooth="%s" data-alt-grainy="%s" '
               'data-label-ghost="%s" data-label-one="%s" data-label-many="%s" '
-              'data-label-start="%s" data-label-end="%s">'
+              'data-label-start="%s" data-label-end="%s" '
+              'data-label-zoom="%s">'
               '<div class="ks3-cut-frame">%s'
               '<div class="ks3-cut-foot">'
               '<div class="ks3-cut-readouts">%s</div>'
@@ -6156,6 +6186,7 @@ def r_halving_bench(a, act_id):
                e(labels["ghost"]), e(labels["one"]), e(labels["many"]),
                e(labels["start"]),
                e(labels["end"].replace("{floor}", str(floor))),
+               e(labels["zoom"]),
                canvas, "".join(cells), "".join(btns), note_ps))
 
 
