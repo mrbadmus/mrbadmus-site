@@ -106,10 +106,21 @@
      Dates are ISO `YYYY-MM-DD` from Postgres `date` columns, so string
      comparison IS date comparison — no parsing, no timezone to get wrong.
 
-     Kept in sync by hand with the identical helper in shared/student-data.js
-     and shared/teacher-data.js. This file is deliberately dependency-free
-     (it loads on all 294 KS3 pages, which pull neither the SDK nor
-     config.js), so it cannot import a shared module.
+     ⊕ MRB-267, 19 Aug 2026 — THIS IS NOW THE ONLY COPY. It used to say "kept
+     in sync by hand with the identical helper in shared/student-data.js and
+     shared/teacher-data.js", and hand-syncing three copies of a date
+     predicate is a bug waiting for the 1st of September. The other two are
+     deleted; both files call `window.MRBClassEntry.workingAcademicYear`.
+
+     ⚠️ THE DEPENDENCY RUNS ONE WAY ONLY. This file stays dependency-free —
+     it loads on all 294 KS3 pages, which pull neither the SDK nor config.js
+     — so it cannot import anything. The data layers depend on IT, never the
+     reverse, and they resolve the reference AT CALL TIME rather than at load
+     time. That is load-bearing: this module is `defer`red on all four
+     dashboard pages and the data layers are not, so this file EXECUTES LAST.
+     Every call site is behind an `await` on a Supabase query, so the module
+     is always present by the time the predicate is asked — checked at all
+     four, not assumed.
      ───────────────────────────────────────────────────────────────────── */
   var YEAR_LOOKAHEAD_DAYS = 30;
 
@@ -400,7 +411,18 @@
     }).catch(function () { /* never break a page over a nav affordance */ });
   }
 
-  window.MRBClassEntry = { resolve: resolve, mount: mount };
+  /* ⊕ MRB-267 — `workingAcademicYear` is exported because it is the KEY
+     STAGE'S ONE ANSWER to "which year are we working in", and it was
+     previously answered by three hand-synced copies that had already drifted
+     apart cosmetically. See the block comment above it: never `is_current`,
+     which is moved by hand on 1 September, and never a bare `end_date >=
+     today`, because academic years run to 31 August and through the summer
+     two of them are unfinished at once. */
+  window.MRBClassEntry = {
+    resolve: resolve,
+    mount: mount,
+    workingAcademicYear: workingAcademicYear,
+  };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', mount);

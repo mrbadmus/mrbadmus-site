@@ -275,14 +275,31 @@
   </div>
 </main>
 
-<!-- Bootstrap: SDK -> config -> guard -> data -> render. Same order as every
-     other /student/* page. class-entry.js is deliberately NOT loaded here: this
-     IS the class entry's destination, and it would only render a link back to
-     the page the viewer is standing on. -->
+<!-- Bootstrap: SDK -> config -> guard -> entry -> data -> render. Same order as
+     every other /student/* page.
+
+     ⊕ MRB-267, 19 Aug 2026 — class-entry.js IS now loaded here, and the note
+     that used to stand in this spot ("deliberately NOT loaded: this IS the
+     class entry's destination, and it would only render a link back to the
+     page the viewer is standing on") is answered rather than deleted.
+
+     Two things changed. First, class-entry.js now owns `workingAcademicYear`
+     as the key stage's single copy, and `student-data.js` — which this page
+     does load — calls through to it. This was the ONE page in the whole repo
+     loading a consumer without the owner, found by sweeping every page rather
+     than assuming the include order held.
+
+     Second, the original worry does not arise: `mount()` already returns
+     early on `isHere(entry.href)`, so for the multi-class student this page
+     exists to serve, the entry href IS this page and nothing renders. A
+     single-class student never lands here at all (see the note further up),
+     and if one navigated here by hand a link to their one class is useful,
+     not redundant. -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/shared/config.js?v=06f24811"></script>
 <script src="/shared/student-guard.js?v=b685be4a"></script>
-<script src="/shared/student-data.js?v=c8a051cc"></script>
+<script src="/shared/class-entry.js?v=8be18391" defer></script>
+<script src="/shared/student-data.js?v=c5e12014"></script>
 <script>
 (function () {
   const STATES = {

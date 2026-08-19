@@ -63,50 +63,34 @@ window.MrBadmusTeacherData = (function () {
   };
 
   /* ── The working academic year (MRB-261) ────────────────────────────────
-     Which year's classes are the ones that matter right now.
+     ⊕ MRB-267, 19 Aug 2026 — THE COPY THAT LIVED HERE IS DELETED. There were
+     three hand-synced implementations of this predicate (here, class-entry.js,
+     teacher-data.js) and they had already drifted apart — identical logic,
+     different `var`/`const`. A date rule that decides which year a student's
+     classes belong to should have one answer, and hand-syncing three copies
+     of it is a bug waiting for the 1st of September.
 
-     NOT `academic_years.is_current`: that flag is moved by hand on 1
-     September (MRB-237), so through late August it still points at the year
-     that finished in July.
+     `shared/class-entry.js` owns it and carries the full reasoning: never
+     `is_current` (moved by hand on 1 Sep, so through late August it still
+     points at the year that finished in July), and never a bare
+     `end_date >= today` (academic years run to 31 August, so through the
+     summer two are unfinished at once).
 
-     NOT a plain `end_date >= today` either: 2025-26 runs to 31 Aug 2026, so
-     on 19 Aug BOTH years are unfinished and both match.
-
-     The rule: a year has effectively finished once it has less than
-     YEAR_LOOKAHEAD_DAYS left to run, and the working year is the EARLIEST
-     year still running past that horizon — "the year we will be in a month
-     from now". The horizon only crosses a boundary inside the last month of
-     a year, i.e. during the summer holiday.
-
-     Full worked table of dates lives in shared/class-entry.js. Keep the three
-     copies (here, class-entry.js, student-data.js) in sync by hand — there is
-     no build step and class-entry.js must stay dependency-free.
-     ───────────────────────────────────────────────────────────────────── */
-  const YEAR_LOOKAHEAD_DAYS = 30;
-
-  function pad2(n) { return (n < 10 ? '0' : '') + n; }
-
-  function lookaheadDate() {
-    const d = new Date();
-    d.setDate(d.getDate() + YEAR_LOOKAHEAD_DAYS);
-    return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
-  }
-
-  // Dates are ISO YYYY-MM-DD from Postgres `date` columns, so string
-  // comparison IS date comparison.
+     ⚠️ RESOLVED AT CALL TIME, NOT AT LOAD TIME, and that is deliberate:
+     class-entry.js is `defer`red on the pages that load it and this file is
+     not, so it executes AFTER this one. Every call site here is behind an
+     `await` on a Supabase query, by which point it is long since present.
+     If it is genuinely absent the throw is loud — a missing module must not
+     degrade into a silently wrong academic year, which would show a student
+     last year's classes and look like data loss. */
   function workingAcademicYear(years) {
-    const rows = (years || []).filter(function (y) { return y && y.end_date; });
-    if (!rows.length) return null;
-    const horizon = lookaheadDate();
-    const live = rows.filter(function (y) { return y.end_date >= horizon; });
-    if (live.length) {
-      return live.reduce(function (best, y) {
-        return (!best || y.end_date < best.end_date) ? y : best;
-      }, null);
+    const mod = window.MRBClassEntry;
+    if (!mod || !mod.workingAcademicYear) {
+      throw new Error(
+        '[teacher-data] shared/class-entry.js is not loaded, and it owns ' +
+        'workingAcademicYear(). Add it to this page BEFORE this file.');
     }
-    return rows.reduce(function (best, y) {
-      return (!best || y.end_date > best.end_date) ? y : best;
-    }, null);
+    return mod.workingAcademicYear(years);
   }
 
   /**

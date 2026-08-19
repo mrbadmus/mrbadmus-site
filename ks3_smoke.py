@@ -51,6 +51,11 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import ks3_browser as cdp
 
+# ⊕ MRB-267 — the host `shared/mrbadmus.v2.js` pings to keep Render warm.
+# Its console failure is demoted out of this gate's pass/fail set; the
+# same string is filtered in ks3_parity.py, which carries the reasoning.
+BACKEND_HOST = "mrbadmus-backend.onrender.com"
+
 REPO = os.path.dirname(os.path.abspath(__file__))
 BUILT = os.path.join(REPO, "mrbadmus_site", "ks3")
 
@@ -496,6 +501,9 @@ def main():
         return 2
 
     problems = []
+    # ⊕ MRB-267 — pages whose Render keep-alive failed. Counted, never
+    # fatal, and printed at the end so the demotion is auditable.
+    backend_notes = set()
 
     # ── the static half ───────────────────────────────────────────────────
     for rel, path in pages:
@@ -594,6 +602,22 @@ def main():
                                 "control and now has none" % (rel, key, ))
 
                     for e in pg.console_errors():
+                        # ⊕ MRB-267, 19 Aug 2026 — the Render keep-alive is
+                        # demoted here for the same reason it is in
+                        # ks3_parity.py, and this gate had no filter at all.
+                        # `shared/mrbadmus.v2.js` pings the backend 2s after
+                        # every load to keep Render warm; it is `.catch()`-ed,
+                        # but the browser still logs the failure. Whether this
+                        # gate saw it came down to network reachability and to
+                        # whether the drain ran before or after that timer —
+                        # so a green run here was partly luck. Liveness is
+                        # check_ks3_live.sh's job, after a push, where a red
+                        # result means something. Counted, not failed.
+                        if BACKEND_HOST in e:
+                            backend_notes.add(rel)
+                            continue
+                        if "favicon" in e.lower():
+                            continue
                         problems.append("%s [console] %s" % (rel, e))
             except Exception as exc:                       # noqa: BLE001
                 problems.append("%s [harness] %s: %s"
@@ -602,6 +626,11 @@ def main():
     finally:
         server.shutdown()
 
+    if backend_notes:
+        print("  note · the Render keep-alive to %s failed on %d page(s) "
+              "and was NOT counted (MRB-267). Backend liveness is "
+              "check_ks3_live.sh's job, after a push."
+              % (BACKEND_HOST, len(backend_notes)))
     return report(problems)
 
 

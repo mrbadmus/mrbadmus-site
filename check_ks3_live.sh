@@ -104,6 +104,31 @@ done
 
 echo
 echo "checked $N authored lesson(s); skipped $SKIP still-placeholder slot(s)"
+
+# ── backend liveness ────────────────────────────────────────────────────
+# ⊕ MRB-267, 19 Aug 2026. This moved HERE from the build gates, and the move
+# is the point. Every KS3 page pings /api/health two seconds after load to
+# keep Render warm; ks3_parity.py and ks3_smoke.py were counting that ping's
+# failure as a console error, so their verdict turned on network reachability
+# and on a race with a 2s timer. A gate that fails at random teaches people
+# to ignore gates.
+#
+# Here the same question is worth asking and the answer means something: real
+# origin, no CORS, after a push, at the moment a student would be arriving.
+#
+# ⚠️ IT DOES NOT SET $FAIL. A cold Render instance takes tens of seconds to
+# wake and the KS3 lessons do not need the backend to render — the chat panel
+# does. Reporting it as a warning keeps the signal without making a sleeping
+# free-tier dyno able to fail a KS3 deploy check.
+hcode=$(curl -sL -o /dev/null -w '%{http_code}' --max-time 45 \
+        "https://mrbadmus-backend.onrender.com/api/health" 2>/dev/null)
+if [ "$hcode" = "200" ]; then
+  echo "backend /api/health: 200 ✅ (the chat panel has something to talk to)"
+else
+  echo "backend /api/health: ${hcode:-no response} ⚠️  — NOT failing this check."
+  echo "   Lessons render without it; the AI chat panel does not. If this stays"
+  echo "   non-200, Render is asleep or down — check the dashboard."
+fi
 if [ $FAIL -eq 0 ] && [ $N -gt 0 ]; then
   echo "✅ all live, clean of the revoked marker, on THIS build's assets"
 elif [ $N -eq 0 ]; then

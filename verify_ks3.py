@@ -652,6 +652,22 @@ def main():
         # output by generate_site_v5.py, so it appears in the KS4 tree by
         # design rather than by drift — which is what this list is for.
         "404.html",
+        # ⊕ MRB-267, 19 Aug 2026 — the student class picker.
+        #
+        # It gained a `<script src="/shared/class-entry.js">` tag, which is a
+        # real markup change and so correctly not a stamp-only restamp. It is
+        # here because it is INTENDED: `class-entry.js` became the single owner
+        # of `workingAcademicYear()` (there were three hand-synced copies), and
+        # a sweep of every page in the repo found this was the ONE page loading
+        # a consumer of that predicate without loading its owner.
+        #
+        # ⚠️ LISTED, NOT EXCLUDED. The tempting fix is to drop `student/` and
+        # `teacher/` from the scan the way MRB-248 dropped `docs/`. That would
+        # be a loosening and not the same case: `docs/` is genuinely not
+        # published and the gate asserts as much, whereas these dashboards ARE
+        # served. So each intended change is declared, one line at a time, and
+        # an undeclared one still fails.
+        "student/classes.html",
     }
 
     # ⚠️ GATE CORRECTED 2026-08-07 (MRB-179). As written, this compared a KS4
@@ -675,7 +691,38 @@ def main():
     # silently dropped; ANY other byte difference still fails, on any path
     # outside KS4_INTENDED. This is strictly stronger than the path check it
     # replaces — it now catches a content change to an ALLOWED page too.
-    VER = re.compile(rb"\?v=[0-9a-f]{8}")   # bytes: pages are compared raw
+    # ⊕ MRB-267, 19 Aug 2026 — THE STAMP PATTERN IS BROADENED, AND THE
+    # NORM MARKER IS DELIBERATELY KEPT.
+    #
+    # The ask was to normalise the stamp away ENTIRELY on both sides —
+    # `/shared/x.js?v=abc` → `/shared/x.js` — on the grounds that it is
+    # strictly stronger. It is not; it is weaker, and measurably so. A
+    # normalisation that deletes the stamp makes these two pages equal:
+    #
+    #     HEAD:  <script src="/shared/x.js">
+    #     now:   <script src="/shared/x.js?v=bbbbbbbb">
+    #
+    # An asset that GAINED or LOST its cache-bust would be filed as a
+    # stamp-only restamp and waved through. That is not hypothetical — it
+    # is precisely MRB-260, the commit immediately before this one, whose
+    # whole subject was assets that were loaded without a stamp. Deleting
+    # the stamp would have hidden it.
+    #
+    # The real weakness in the old pattern was the other end: `[0-9a-f]{8}`
+    # only recognises a stamp of exactly eight lowercase hex characters, so
+    # a stamp of any other shape was not normalised at all and read as KS4
+    # CONTENT DRIFT — a false failure. Broadening the character class fixes
+    # that, and keeping `?v=NORM` keeps presence distinguishable from
+    # absence. Checked against all five cases; this is the only one of the
+    # three schemes that is right on every one:
+    #
+    #   case                              want        old   delete  this
+    #   a stamp moved                     stamp-only   ✓      ✓       ✓
+    #   a stamp was ADDED                 CONTENT      ✓      ✗       ✓
+    #   a stamp was REMOVED               CONTENT      ✓      ✗       ✓
+    #   content changed beside a stamp    CONTENT      ✓      ✓       ✓
+    #   a stamp of another length moved   stamp-only   ✗      ✓       ✓
+    VER = re.compile(rb"\?v=[0-9A-Za-z]+")   # bytes: pages are compared raw
 
     def head_bytes(path):
         r = subprocess.run(["git", "show", "HEAD:%s" % path],

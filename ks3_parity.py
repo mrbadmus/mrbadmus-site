@@ -609,6 +609,12 @@ YEAR = "year-7/index.html"
 # ═══ BEGIN C1 ═══
 C1_PRESSURE = "chemistry/particles-and-their-behaviour/gas-pressure.html"
 C1_TEST = "chemistry/particles-and-their-behaviour/testing-the-model.html"
+# ⊕ MRB-267 — the host `shared/mrbadmus.v2.js` pings to keep Render warm.
+# Its console failure is demoted out of the pass/fail set; see
+# `drain_console`. Named once so the smoke gate and this one filter the
+# same string, and so changing the backend is one edit, not a hunt.
+BACKEND_HOST = "mrbadmus-backend.onrender.com"
+
 C1_MODEL = "chemistry/particles-and-their-behaviour/particle-model.html"
 C1_STATE = "chemistry/particles-and-their-behaviour/changes-of-state.html"
 C1_DIFF = "chemistry/particles-and-their-behaviour/diffusion.html"
@@ -14086,6 +14092,10 @@ def run_browser_layers(ks3_root, browser_mod):
     problems.extend("PARITY: " + u for u in _unregistered_drives())
 
     seen_console = set()
+    # Pages that logged the Render keep-alive failure. Counted, never fatal —
+    # see `drain_console`. Printed once at the end so the demotion is visible
+    # rather than silent: a filter nobody can see is a filter nobody audits.
+    backend_notes = set()
 
     def fresh(b, url, rel):
         """Load the page clean and prove the stylesheet applied. None if not."""
@@ -14113,9 +14123,30 @@ def run_browser_layers(ks3_root, browser_mod):
     def drain_console(page, rel, doing):
         """A favicon 404 is an artefact of serving a bare tree, not a defect in
         the page. Every other console error stays fatal. The same page is now
-        loaded several times, so each distinct message is reported once."""
+        loaded several times, so each distinct message is reported once.
+
+        ⊕ MRB-267, 19 Aug 2026 — THE BACKEND KEEP-ALIVE IS DEMOTED, and it is
+        reported rather than dropped.
+
+        `shared/mrbadmus.v2.js` pings `mrbadmus-backend.onrender.com/api/health`
+        two seconds after every page load, purely to keep Render warm. It is
+        `.catch()`-ed in JS, but the browser still logs the failure, so this
+        gate's verdict depended on two things that have nothing to do with the
+        page: whether Render was reachable from the machine, and whether the
+        drain happened to run before or after that 2s timer. From a localhost
+        origin it also fails CORS outright, so a green run was luck.
+
+        A gate that fails at random teaches people to ignore gates, which is
+        far more expensive than the liveness signal is worth. Liveness belongs
+        somewhere a failure MEANS something — `check_ks3_live.sh` now probes
+        the endpoint after a push, against the real origin, where a red result
+        is a real result. Here the line is counted and printed as a NOTE.
+        """
         for e in page.console_errors():
             if "favicon" in e.lower():
+                continue
+            if BACKEND_HOST in e:
+                backend_notes.add(rel)
                 continue
             key = (rel, e)
             if key in seen_console:
@@ -14460,6 +14491,16 @@ def run_browser_layers(ks3_root, browser_mod):
              not vol_problems))
     finally:
         server.shutdown()
+
+    # ⊕ MRB-267 — the demotion, made visible. This is a NOTE, never a problem
+    # and never a style row: it does not enter the pass/fail set. It is printed
+    # so that "the backend ping was ignored" is something a reader can see,
+    # rather than a filter buried in `drain_console` that nobody re-reads.
+    if backend_notes:
+        print("  note · the Render keep-alive to %s failed on %d page(s) and was "
+              "NOT counted (MRB-267). Backend liveness is check_ks3_live.sh's "
+              "job, after a push, against the real origin."
+              % (BACKEND_HOST, len(backend_notes)))
 
     return (problems, style_rows, contrast_rows,
             (hidden_problems, n_hidden_checked),
