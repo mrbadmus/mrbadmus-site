@@ -272,18 +272,6 @@
       transition: opacity 0.15s;
     }
     .assignment-card-start-btn:hover { opacity: 0.85; }
-    .assignment-card-start-soon {
-      display: inline-flex;
-      align-items: center;
-      padding: 8px 18px;
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      font-family: var(--font-sans);
-      font-weight: 700;
-      font-size: 0.85rem;
-    }
     .assignment-card-score {
       color: var(--text);
       font-size: 0.85rem;
@@ -920,18 +908,26 @@
         '<span class="assignment-card-score">' + pct + '%</span>' +
       '</div>';
     } else if (!card.is_submitted && opts.actionable) {
-      if (currentClassKeyStage === 'KS3') {
-        // The weekly challenge is GCSE-only. For KS3 classes the Start button
-        // would funnel students into the GCSE profile wizard, so disable it.
-        actionsHtml = '<div class="assignment-card-actions">' +
-          '<span class="assignment-card-start-soon">Coming soon for KS3</span>' +
-        '</div>';
-      } else {
-        // Future or overdue in current week → Start button still available
-        actionsHtml = '<div class="assignment-card-actions">' +
-          '<a class="assignment-card-start-btn" href="' + escapeHtml(buildStartUrl(card.id)) + '">Start</a>' +
-        '</div>';
-      }
+      // ⊖ MRB-258, 19 Aug 2026 — the `currentClassKeyStage === 'KS3'` branch
+      // that stood here is DELETED, not disabled. It rendered "Coming soon for
+      // KS3" in place of the Start button, and its own comment gave the
+      // reason: "The weekly challenge is GCSE-only. For KS3 classes the Start
+      // button would funnel students into the GCSE profile wizard."
+      //
+      // That was true when Start pointed at weekly-challenge.html. MRB-238
+      // repointed buildStartUrl() at /student/assignment.html — a dedicated
+      // take-and-submit page whose questions are references into the KS3
+      // lesson tree and whose submission target is
+      // assignment_submissions / assignment_question_attempts. There is no
+      // profile wizard on that path and nothing GCSE-only about it.
+      //
+      // So the guard outlived its premise and was blocking the exact journey
+      // MRB-238 was built for: the one hand-authored assignment in production
+      // is on a KS3 class, and a Year 8 opening their class page was told to
+      // come back later for the only homework on the platform.
+      actionsHtml = '<div class="assignment-card-actions">' +
+        '<a class="assignment-card-start-btn" href="' + escapeHtml(buildStartUrl(card.id)) + '">Start</a>' +
+      '</div>';
     }
 
     const cardClasses = ['assignment-card'];
@@ -1201,7 +1197,6 @@
   // ── Shoutouts feed (sidebar, read-only) ── */
   const PAGE_SIZE = 20;
   let currentClassId = null;
-  let currentClassKeyStage = null;
   const feedState = {
     shoutouts: [], hasMore: false, loading: false, initialLoaded: false, error: null,
   };
@@ -1347,7 +1342,6 @@
         });
 
         currentClassId = detail.class.id;
-        currentClassKeyStage = detail.class.key_stage;
         renderClassHeader(detail.class, ctx.profile.first_name);
         renderStarsLeaderboard(detail.leaderboard, ctx.user.id);
         renderStatsStrip(detail.viewerStats);
