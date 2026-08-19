@@ -5253,6 +5253,37 @@
     return !!(B2_RM && B2_RM.matches);
   }
 
+  /* ── a loop that stops, and the one thing that has to wake it (⊕ MRB-257,
+     audit 3.20) ────────────────────────────────────────────────────────────
+     `motionReduced()` is asked EVERY FRAME on purpose: an OS setting or the
+     page's own motion toggle changed mid-lesson takes effect without a
+     reload, and two benches' comments say so. That property is free while a
+     loop runs forever, and it is the property a loop that stops would lose —
+     a student who turns reduced motion OFF would sit in front of a bench that
+     never restarts, because nothing was scheduled to notice.
+     So the loops stop, and this is what wakes them. Both sources, because
+     there are two: the media query, and the `data-motion` attribute
+     `wireMotion` writes on <html>. Listeners are attached once, on first
+     registration, and only on a page that has an animated bench. */
+  var MOTION_LISTENERS = null;
+  function onMotionChange(fn) {
+    if (!MOTION_LISTENERS) {
+      MOTION_LISTENERS = [];
+      var fire = function () {
+        for (var i = 0; i < MOTION_LISTENERS.length; i++) { MOTION_LISTENERS[i](); }
+      };
+      if (B2_RM) {
+        if (B2_RM.addEventListener) { B2_RM.addEventListener("change", fire); }
+        else if (B2_RM.addListener) { B2_RM.addListener(fire); }
+      }
+      if (window.MutationObserver) {
+        new window.MutationObserver(fire).observe(document.documentElement,
+          { attributes: true, attributeFilter: ["data-motion"] });
+      }
+    }
+    MOTION_LISTENERS.push(fn);
+  }
+
   /* The block head's live progress readout. Three authored shapes — a count
      ("3 of 6 decided"), a two-state label ("Meter fitted") and a count with
      a bespoke zero ("All three claims on" → "2 switched off") — one element
@@ -5767,6 +5798,7 @@
         });
         touch(current);
         repaint();
+        pump();
       });
     });
 
@@ -5779,6 +5811,7 @@
           angles[j.id] = Number(slider.value) || 0;
           touch(j.id);
           repaint();
+          pump();
         });
       });
     }
@@ -5788,24 +5821,51 @@
         twists[j.id] = !twists[j.id];
         touch(j.id);
         repaint();
+        pump();
       });
     }
 
+    /* ⊕ MRB-257 · audit 3.20 — THIS LOOP USED TO RUN FOR EVER, FROM LOAD, WITH
+       NOTHING ANIMATING. The old `tick` re-scheduled itself unconditionally
+       and only the DRAWING was gated on `spinning()`. Verified by patching
+       `requestAnimationFrame` before the document's own scripts: `joints`
+       scheduled frames continuously at idle with zero interaction, and at the
+       same 60fps with `prefers-reduced-motion: reduce` emulated, while 16
+       other pages in the same slice scheduled none. Nothing was visibly wrong
+       — the cost was a permanent wake-up on a school Chromebook, which is the
+       machine this whole key stage is built for.
+       Now the loop exists only while something is actually turning, and
+       `pump()` is called from every control that could start it. */
+    var raf = 0;
+    function spinning() {
+      var j = joint();
+      return !!(j.twist && twists[j.id] && !motionReduced());
+    }
+    function pump() {
+      if (raf || !window.requestAnimationFrame) { return; }
+      if (!spinning()) { last = 0; return; }
+      raf = window.requestAnimationFrame(tick);
+    }
     function tick(now) {
+      raf = 0;
       var dt = Math.min(0.05, (now - (last || now)) / 1000);
       last = now;
-      var j = joint();
-      // Asked EVERY FRAME, not once at construction.
-      if (j.twist && twists[j.id] && !motionReduced()) {
+      // Still asked every frame, so a preference changed mid-spin still lands
+      // on the next one — and `onMotionChange` below covers the other
+      // direction, where there is no next frame to land on.
+      if (spinning()) {
         spin += dt * 1.1;
         draw();
+        pump();
+      } else {
+        last = 0;
       }
-      window.requestAnimationFrame(tick);
     }
 
     repaint();
     setCount(sec, 0);
-    if (window.requestAnimationFrame) { window.requestAnimationFrame(tick); }
+    onMotionChange(pump);
+    pump();
     wireBenchGate(sec);
   }
 
@@ -6050,6 +6110,7 @@
         });
         touch(mode);
         repaintReadouts();
+        pump();
       });
     });
     each(killBtns, function (b) {
@@ -6058,10 +6119,23 @@
         dead[id] = !dead[id];
         b.setAttribute("aria-pressed", dead[id] ? "true" : "false");
         repaintReadouts();
+        pump();
       });
     });
 
+    /* ⊕ MRB-257 · audit 3.20 — the same permanent idle loop as `joints`, on
+       the same two pages the audit measured. Here the condition is physical
+       rather than a preference: the arm is either travelling towards its
+       target or it has arrived, and there is nothing to draw once it has. */
+    var raf = 0;
+    function travelling() { return Math.abs(target() - angle) > 0.3; }
+    function pump() {
+      if (raf || !window.requestAnimationFrame) { return; }
+      if (!travelling()) { last = 0; return; }
+      raf = window.requestAnimationFrame(tick);
+    }
     function tick(now) {
+      raf = 0;
       var dt = Math.min(0.05, (now - (last || now)) / 1000);
       last = now;
       var t = target();
@@ -6084,13 +6158,19 @@
           // number a student reads is the number the arm is at.
           if (Math.abs(t - angle) <= 0.3) { tile("angle", Math.round(angle) + "°"); }
         }
+        pump();
+      } else {
+        last = 0;
       }
-      window.requestAnimationFrame(tick);
     }
 
     repaintReadouts();
     setCount(sec, 0);
-    if (window.requestAnimationFrame) { window.requestAnimationFrame(tick); }
+    // Reduced motion SNAPS rather than travels, so switching it ON while the
+    // arm is mid-flight needs one more frame to land the snap, and switching
+    // it OFF needs the loop back. One registration covers both.
+    onMotionChange(pump);
+    pump();
     wireBenchGate(sec);
   }
 
@@ -16660,7 +16740,74 @@
     paint();
   }
 
+  /* ── the sticky height, measured rather than guessed (⊕ MRB-229 comment 2)
+     `shared/ks3.css` used to offset in-page anchors with
+     `.ks3-lesson [id] { scroll-margin-top: 92px }`. `header.ks3-nav` is
+     `position: sticky; top: 0` and its measured height runs from 86.3px to
+     214.8px, so on 36 of 58 lesson pages a rail stop landed its section behind
+     the header — up to 123.2px of it, an entire `<h2>`, or "START HERE" on
+     eleven pages in B8–B11. That breaks the page's primary navigation on the
+     viewport most students use.
+
+     MRB-229 rules two fixes and says explicitly that they COMPOSE. The trail
+     truncation (in the stylesheet) stops the header wrapping on most pages;
+     this one makes the offset unable to be wrong on the rest. A second fixed
+     number would drift again the moment a Chemistry or Physics unit title runs
+     longer than Biology's, which is a matter of weeks.
+
+     Two properties, because two different things need two different answers:
+
+       --ks3-nav-h     the sticky header alone. `.ks3-railbar` sits AT this,
+                       so that a bar which now genuinely sticks (audit 3.15)
+                       sticks below the header rather than under it.
+       --ks3-sticky-h  everything sticky stacked. What an anchor has to clear.
+
+     A bar is only counted if it is really sticky and really visible: below
+     1340px the rail is the top bar, above it the side rail is `position:
+     fixed` and the bar is `display: none`, and measuring a hidden element's
+     height would push every anchor 47px too far on desktop.
+
+     Degrades rather than fails: without `ResizeObserver` the CSS fallbacks
+     stand, which are the generous ones — landing a heading 30px low is a
+     blemish and landing it behind the header is a broken link. */
+  function wireStickyHeight() {
+    var root = document.documentElement;
+    var nav = document.querySelector("header.ks3-nav");
+    if (!nav) { return; }
+    var bar = document.querySelector(".ks3-railbar");
+
+    function sticks(el) {
+      if (!el) { return false; }
+      var cs = window.getComputedStyle(el);
+      if (cs.position !== "sticky" && cs.position !== "fixed") { return false; }
+      return el.getBoundingClientRect().height > 0;
+    }
+
+    function measure() {
+      var navH = nav.getBoundingClientRect().height;
+      var total = navH + (sticks(bar) ? bar.getBoundingClientRect().height : 0);
+      root.style.setProperty("--ks3-nav-h", navH.toFixed(2) + "px");
+      root.style.setProperty("--ks3-sticky-h", total.toFixed(2) + "px");
+    }
+
+    measure();
+    if (!window.ResizeObserver) {
+      // No observer: still better than the old constant, and still live for
+      // the one event that changes the header most — a rotation or a resize.
+      window.addEventListener("resize", measure);
+      return;
+    }
+    var ro = new ResizeObserver(measure);
+    ro.observe(nav);
+    // The bar's height is fixed but WHETHER IT COUNTS is not: crossing 1340px
+    // swaps the rail variant, and `.ks3-rails` is `display: contents` so the
+    // bar itself is what changes. Observing it is how the swap is noticed
+    // without polling.
+    if (bar) { ro.observe(bar); }
+  }
+
   function init() {
+    wireStickyHeight();
     wirePredictions(document);
     wireCriteria(document);
     wireCards(document);

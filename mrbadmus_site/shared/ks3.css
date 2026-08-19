@@ -195,6 +195,21 @@ body.rd[data-mode="ks3"] {
   font-size: 17px;
   line-height: 1.3;
 }
+/* ⊕ MRB-257 · audit 3.12 — 44px OF TAP, AND NOT ONE PIXEL OF LAYOUT.
+   A crumb link measured 20px tall on every page. WCAG 2.2 SC 2.5.8 wants
+   24×24 and is satisfied either way, so this is the comfort target and not a
+   failure — but the trail is the only way back up out of a lesson and a 20px
+   strip is a poor one on a phone. The padding buys the height and the matching
+   negative margin gives it straight back to the layout, so `nav.ks3-nav` is
+   the same height it was and no approved page moves. 22px of line box + 24px
+   of padding = 46px. */
+.ks3-trail a,
+.ks3-trail [aria-current] {
+  display: block;
+  min-width: 0;
+  padding-block: 12px;
+  margin-block: -12px;
+}
 .ks3-trail a {
   color: var(--ks3-accent-text);
   font-weight: 600;
@@ -644,9 +659,17 @@ body.rd[data-mode="ks3"] {
   background: var(--ks3-band);
   color: var(--ks3-ink-muted);
 }
+/* ⊕ MRB-257 · audit 3.19 — THE TOKEN'S OWN ANNOTATION, ENFORCED.
+   `--ks3-accent` is "3.4:1 — LARGE TEXT ONLY. Never body size" and this is a
+   15px/800 letter: cream on it measures 3.34:1 on seven pages, on a control
+   verified NOT disabled. Ink on the same fill is 4.49:1, which is the pairing
+   `.ks3-dark .ks3-option[aria-pressed="true"] .ks3-opt-mark` has always used —
+   a fill and ink, never a fill and cream. The FILL does not move: the accent
+   is what says "chosen", and R3 is untouched because the treatment is still
+   identical whether the answer was right or wrong. */
 .ks3-option[aria-pressed="true"] .ks3-opt-mark {
   background: var(--ks3-accent);
-  color: var(--ks3-on-dark);
+  color: var(--ks3-ink);
 }
 .ks3-opt-label { flex: 1; }
 
@@ -888,6 +911,45 @@ body.rd[data-mode="ks3"] {
      thing that takes focus. Inset so it is not clipped by the rounding. */
   outline-offset: -3px;
 }
+/* ⊕ MRB-257 · audit 3.9 — A PANEL THAT ENDS AT A PANEL BOUNDARY LOOKS
+   FINISHED. On `natural-selection` at 390px this box is 358px wide over 700px
+   of drawing — 49% of the figure off screen — and the visible window ends at
+   SVG x≈388, which is EXACTLY where the left panel's rounded frame and closing
+   rule end. There is no scrollbar (overlay scrollbars), no shadow, no mask.
+   Meanwhile the figcaption underneath reads "A bird hunting on the left panel
+   finds the dark moth first; ON THE RIGHT it finds the pale one" — about a
+   panel the student has no reason to believe exists. The key stage's three
+   other figures cut mid-object ("Aphids", "Fu[ngi]"), and that ragged cut is
+   itself the cue this one lacks.
+
+   The audit offers "edge fade when scrollWidth > clientWidth, and/or stack the
+   two panels vertically below ~700px". THE FADE, and here is why not the
+   other: stacking is a change to the SVG drawer in `build_ks3.py`, which this
+   pass does not own, and it would re-draw a figure Mide has approved.
+
+   THE THRESHOLD IS MEASURED, NOT GUESSED. Swept in a browser on the one page
+   that carries a figure: the box is 288/358/448/512/552/652/692px at
+   320/390/480/544/600/700/740, and 712px at 760 — so it is scrollable at every
+   width up to 747 and at none above it, because `.ks3-figure-svg` declares
+   `min-width: 700px` and the box is the viewport less 48px of `.ks3-main`
+   padding. A parity row asserts the mask IS there at 390 and is NOT at 1440,
+   so the day that padding changes the gate says so rather than the fade
+   quietly detaching from the condition it stands for.
+
+   ⚠️ NAMED COST: the fade is on the trailing edge and does not know the scroll
+   position, so a student who has scrolled to the far end still sees it. The
+   defect being fixed is the state the page LOADS in — a complete-looking panel
+   — and a soft edge at the end is a much smaller lie than a hard one at the
+   start. Making it scroll-aware in CSS alone needs `animation-timeline:
+   scroll()`, which is Chrome-only; doing it in JS is outside this pass. */
+@media (max-width: 747px) {
+  .ks3-figure-scroll {
+    -webkit-mask-image:
+      linear-gradient(to right, #000 calc(100% - 56px), transparent);
+    mask-image:
+      linear-gradient(to right, #000 calc(100% - 56px), transparent);
+  }
+}
 .ks3-figure-svg {
   display: block;
   width: 100%;
@@ -993,7 +1055,13 @@ body.rd[data-mode="ks3"] {
   border-color: var(--ks3-option-spent);
   color: var(--ks3-ink-faint);
 }
-.ks3-option.is-spent .ks3-opt-mark { background: var(--ks3-band); color: var(--ks3-ink-ghost); }
+/* ⊕ MRB-257 · audit 3.21 — 2.63:1, AND NO OPACITY IS INVOLVED. This one is an
+   explicit pair: `--ks3-ink-ghost` #9A8F86 on `--ks3-band` #F4E9D8. The glyph
+   is the letter of an answer the student has already spent, on all 18 pages
+   measured. `--ks3-ink-faint` #6E655D on the same band is 4.75:1 and is still
+   plainly the quietest thing on the row — `--ks3-ink-muted` would have been
+   5.97 and would have started competing with the live options. */
+.ks3-option.is-spent .ks3-opt-mark { background: var(--ks3-band); color: var(--ks3-ink-faint); }
 .ks3-option:disabled { cursor: default; }
 .ks3-option:disabled:hover { transform: none; }
 
@@ -1400,7 +1468,14 @@ body.rd[data-mode="ks3"] {
   line-height: 1.25;
   letter-spacing: -.01em;
 }
-.ks3-endmatter ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+/* ⊕ MRB-257 · audit 3.12 — the endmatter links measured 28.8px tall, 68+ of
+   them, and this is the "what next" a student taps at the end of every lesson.
+   The 8px row gap goes and the 44px comes out of the link itself: 28.8 + 8 =
+   36.8px of pitch could not hold a 44px target without OVERLAPPING its
+   neighbour, and two overlapping targets in a link list is a worse defect than
+   a small one — you tap the second and get the third. So the block grows 7.2px
+   per link instead, and the targets sit exactly adjacent. */
+.ks3-endmatter ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0; }
 .ks3-endmatter a {
   font-size: 18px;
   font-weight: 600;
@@ -1408,6 +1483,7 @@ body.rd[data-mode="ks3"] {
   text-decoration: none;
   display: inline-flex;
   align-items: center;
+  min-height: var(--ks3-tap);
   gap: 6px;
 }
 .ks3-endmatter a:hover { color: var(--ks3-accent-hover); text-decoration: underline; }
@@ -1621,9 +1697,17 @@ body.rd[data-mode="ks3"] {
 
 /* ── the hub ────────────────────────────────────────────────────── */
 
+/* ⊕ MRB-257, found in passing while gating MRB-229's 390px assertion, and NOT
+   in the audit — which swept lesson pages at 320px and browse pages only at
+   390. `minmax(340px, 1fr)` is a floor, not a preference: below 340px of
+   available width the track stays 340px and the grid overflows its own
+   container. At the 320px reflow width the hub pushed the document to 356px.
+   `min(340px, 100%)` is the standard repair and changes nothing at any width
+   where 340px fits, which is every width the hub was designed at. Same shape
+   one rule down at `minmax(320px, 1fr)`, repaired with it. */
 .ks3-hub-top {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
   gap: 56px;
   align-items: end;
 }
@@ -1867,7 +1951,7 @@ body.rd[data-mode="ks3"] {
    subject screens; only what sits in the right-hand column differs. */
 .ks3-browse-head {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: 52px;
   align-items: end;
 }
@@ -2354,12 +2438,49 @@ body.rd[data-mode="ks3"] {
    viewport is still wide (MRB-210 finding 3).
    ═══════════════════════════════════════════════════════════════ */
 
-/* ── anchors ──
-   EVERY id-bearing element in the lesson column, not only the rail's
-   stages. A hash link from the trail, the endmatter, the tutor card or
-   another lesson lands under the sticky bar without it. 92px, measured
-   by driving the rail's own links: #s-sort lands at top: 91.94px. */
-.ks3-lesson [id] { scroll-margin-top: 92px; }
+/* ── anchors (⊕ MRB-229 comment 2 · audit 3.3) ──
+   EVERY id-bearing element in the lesson column, not only the rail's stages.
+   A hash link from the trail, the endmatter, the tutor card or another lesson
+   lands under the sticky bar without it.
+
+   ⊖ THIS USED TO BE `.ks3-lesson [id] { scroll-margin-top: 92px }`, "measured
+   by driving the rail's own links: #s-sort lands at top: 91.94px". It was
+   measured on ONE page. `header.ks3-nav` is `position: sticky; top: 0` and its
+   height varies from 86.3px to 214.8px, because `.ks3-trail` wraps to as many
+   as four lines — so a single number was right on the three pages where the
+   header stayed one line and wrong on the other 36 of 58, where a student
+   taps a rail stop and arrives at a section whose heading is behind the
+   header. Up to 123.2px of it: an entire `<h2>`, or "START HERE" on eleven
+   pages in B8–B11. That breaks the rail, which is the page's primary
+   navigation on a phone, and the tutor CTA with it.
+
+   ANOTHER FIXED NUMBER IS NOT THE FIX. Chemistry and Physics have longer unit
+   titles still to come, and this would drift again the day one lands. So:
+
+     1. `scroll-padding-top` on the scrollport, not `scroll-margin-top` on the
+        target — one declaration for the whole document instead of one per id,
+        and it composes with the sticky bar rather than with each section.
+     2. The value is `--ks3-sticky-h`, which `shared/ks3.js` REWRITES from a
+        `ResizeObserver` on the header and the rail bar. Whatever those two
+        actually measure, at whatever viewport, in whatever language, is what
+        an anchor clears.
+     3. The values below are the FALLBACK, for the moment before the observer
+        first fires and for any engine without one. They are deliberately
+        generous — landing a heading 30px low is a blemish, landing it behind
+        the header is a broken link — and the narrow one accounts for the rail
+        bar, which below 1340px is sticky and sits under the header.
+
+   ⚠️ `scroll-margin-top` and `scroll-padding-top` ADD. The old rule is gone
+   rather than kept "as a fallback": leaving it would have over-scrolled every
+   anchor by 92px the moment this one started working. */
+:root {
+  --ks3-nav-h: 72px;      /* the sticky header alone */
+  --ks3-sticky-h: 92px;   /* header + anything sticky under it */
+}
+@media (max-width: 1339px) {
+  :root { --ks3-sticky-h: 140px; }   /* the rail bar is sticky down here */
+}
+html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 
 /* ── the progress rail, both variants (MRB-208 rule 2) ──
    There is never a viewport with both and never one with neither. */
@@ -2397,13 +2518,26 @@ body.rd[data-mode="ks3"] {
   text-decoration: none;
   color: inherit;
 }
+/* ⊕ MRB-257 · audit 3.6 — THE RAIL'S RESTING STATE IS `--ks3-ink-muted`, NOT
+   `--ks3-ink-ghost`, and this is on all 58 lesson pages.
+   `--ks3-ink-ghost` #9A8F86 is documented in tokens.css as the SPENT OPTION
+   BADGE GLYPH — a state nobody has to read. The rail is not spent, it is
+   upcoming, and it is a live `<a>`: on desktop it is the only in-page
+   navigation there is. Measured on the page ground it was 2.87:1 for the
+   11px/500 label and 3.08:1 for the 16px/800 chip (bold under 18.66px is NOT
+   large text, so the bar is 4.5 and not 3.0). `--ks3-ink-muted` #5F564F takes
+   both to 6.5:1.
+   Nothing else moves: `is-current`'s ring and ink and `is-done`'s accent fill
+   both already passed and both still carry the state, so the rail still says
+   where you are and how far you have got — it is only the stops you have not
+   reached yet that stop being a rumour. */
 .ks3-rail-chip {
   width: 32px;
   height: 32px;
   border-radius: 10px;
   border: 2px solid var(--ks3-rule-strong);
   background: var(--ks3-card);
-  color: var(--ks3-ink-ghost);
+  color: var(--ks3-ink-muted);
   font-family: var(--ks3-font-display);
   font-weight: 800;
   font-size: 16px;
@@ -2418,7 +2552,7 @@ body.rd[data-mode="ks3"] {
   letter-spacing: .09em;
   text-transform: uppercase;
   text-align: center;
-  color: var(--ks3-ink-ghost);
+  color: var(--ks3-ink-muted);
 }
 /* CURRENT is scroll — "where am I". It is a ring and an ink border, never
    a tick, so it cannot be mistaken for progress. */
@@ -2443,9 +2577,31 @@ body.rd[data-mode="ks3"] {
 }
 .ks3-rail li.is-done .ks3-rail-line { background: var(--ks3-accent); }
 
+/* ⊕ MRB-257 · audit 3.15 — `display: contents` IS WHAT MAKES THE STICKY BELOW
+   REAL. `.ks3-railbar` has always declared `position: sticky; top: 0`, and it
+   has never once stuck: its containing block `div.ks3-rails` is exactly as
+   tall as the bar (46.6px), so the sticky range is zero. Measured at scrollY
+   2500 the bar's rect top is −2414 and `visibleBelowHeader = 0`. The desktop
+   `[data-rail="side"]` is `position: fixed` and does persist — so **a phone
+   student never sees `data-rail-count` or `data-rail-fill` move at all**,
+   which is the whole progress mechanism, on the viewport most of them use.
+
+   Dropping the declaration was the audit's other option and it is the wrong
+   one: it would make the file honest about a rail that does not work rather
+   than making the rail work. `display: contents` removes `.ks3-rails`' box, so
+   the bar's containing block becomes the document and the sticky range becomes
+   the page. The div keeps its `data-rail-stages` payload and every JS
+   `querySelector` still finds it — nothing about the element changes except
+   that it stops generating a box, and it painted nothing to lose.
+
+   `top` is the LIVE header height rather than 0. At `top: 0` the bar would
+   share the edge with `.ks3-nav`, whose `z-index: 60` beats this one's 20, so
+   a bar that finally stuck would have stuck UNDER the header. Same custom
+   property the anchors use, written by the same observer. */
+.ks3-rails { display: contents; }
 .ks3-railbar {
   position: sticky;
-  top: 0;
+  top: var(--ks3-nav-h, 72px);
   z-index: 20;
   background: var(--ks3-ground);
   border-bottom: 2px solid var(--ks3-rule);
@@ -2708,7 +2864,14 @@ body.rd[data-mode="ks3"] {
   font-family: var(--ks3-font-display);
   font-weight: 800;
   background: var(--ks3-accent);
-  color: var(--ks3-on-dark);
+  /* ⊕ MRB-257 · audit 3.13 — INK ON THE ACCENT, NOT CREAM. `--ks3-accent`
+     #E4572E is annotated "3.4:1 — LARGE TEXT ONLY. Never body size", and cream
+     on it measures exactly that 3.34:1 at 16px/800. Ink on the same fill is
+     4.49:1. Identical correction to audit 3.19's on the option badge, and the
+     dark-block rule at `.ks3-dark .ks3-option[aria-pressed="true"]
+     .ks3-opt-mark` has always paired a fill with ink — this is that pattern,
+     applied where it was missed. */
+  color: var(--ks3-ink);
 }
 .ks3-rule-badge[data-badge="initials"] {
   width: 44px;
@@ -2805,8 +2968,14 @@ body.rd[data-mode="ks3"] {
   border-top: 2px solid var(--ks3-rule);
 }
 .ks3-compare-head { background: var(--ks3-ink); color: var(--ks3-on-dark); }
+/* ⊕ MRB-257 · audit 3.14 — A FIXED 118px BASIS IS A PHONE MEASUREMENT USED AT
+   1440. Minus 32px of padding it leaves 86px of text width at EVERY width
+   above 820, so "Job 2 · Deliver gametes — shared, but different" renders as
+   six lines in 95px on a desktop with room to spare. The clamp keeps the
+   narrow end exactly where Design put it and lets the column breathe as the
+   row does; the 820px rule below still takes it to a full-width row. */
 .ks3-compare-name {
-  flex: 0 0 118px;
+  flex: 0 0 clamp(118px, 18%, 240px);
   padding: 14px 16px;
   font-weight: 700;
 }
@@ -3127,7 +3296,27 @@ body.rd[data-mode="ks3"] {
   gap: 16px;
   flex-wrap: wrap;
 }
-.ks3-sort-reveal[disabled] { opacity: .45; cursor: default; transform: none; }
+/* ⊕ MRB-257 · audit 3.21 / 3.8 — `--ks3-dim-spent`, AND WHAT IT IS AND IS NOT.
+   Fourteen rules dimmed a locked or spent control by eye, at .45 or .5, and
+   the labels landed between 2.63:1 and 4.11:1. WCAG 1.4.3 exempts an inactive
+   component, and the audit says so in as many words — every locked button here
+   sits beside a progress readout that explains the lock, so nothing is
+   FAILING. This is not a compliance fix and it does not claim to be. It is
+   that "you may not read this yet" and "you may not read this at all" are two
+   different sentences, and .45 was saying the second one.
+   .65 measures 4.86:1 on the reveal button's own ground (#FDF8EE on #9C9893 →
+   #FCF6EB on #6F6C67) and stays visibly, obviously off.
+
+   ⚠️ ABOUT THIRTY OTHER `[disabled] { opacity: .45 }` RULES IN THIS FILE ARE
+   NOT ROUTED HERE — `.ks3-cl-up`, `.ks3-rs-next`, `.ks3-ba-up`, `.ks3-zb-in`,
+   `.ks3-qb-truth`, `.ks3-vp-plot`, `.ks3-sc-check`, `.ks3-bb-run`,
+   `.ks3-test-btn`, `.ks3-b5c-check` and the rest. That is deliberate and it is
+   a known incompleteness, not an oversight: the audit measured the fourteen
+   above and did not measure those, several are pinned by their own parity
+   rows at 0.45, and changing a value nobody has measured is how a palette
+   drifts. Route each to `var(--ks3-dim-spent)` when you next touch its
+   instrument, and move its parity row in the same edit. */
+.ks3-sort-reveal[disabled] { opacity: var(--ks3-dim-spent); cursor: default; transform: none; }
 .ks3-sort-progress {
   font-family: var(--ks3-font-mono);
   font-size: 15px;
@@ -3236,7 +3425,7 @@ body.rd[data-mode="ks3"] {
 }
 .ks3-step-word { font-family: var(--ks3-font-display); color: var(--ks3-ink); }
 .ks3-steps-foot { margin-top: 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-.ks3-steps-reveal[disabled] { opacity: .45; cursor: default; transform: none; }
+.ks3-steps-reveal[disabled] { opacity: var(--ks3-dim-spent); cursor: default; transform: none; }
 .ks3-steps-progress {
   font-family: var(--ks3-font-mono);
   font-size: 15px;
@@ -3316,7 +3505,7 @@ body.rd[data-mode="ks3"] {
   color: var(--ks3-ink);
 }
 .ks3-construct-foot { margin-top: 18px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-.ks3-construct-check[disabled] { opacity: .45; cursor: default; transform: none; }
+.ks3-construct-check[disabled] { opacity: var(--ks3-dim-spent); cursor: default; transform: none; }
 .ks3-construct-hint {
   font-family: var(--ks3-font-mono);
   font-size: 15px;
@@ -3432,7 +3621,8 @@ body.rd[data-mode="ks3"] {
   font-weight: 800;
   font-size: 15px;
 }
-.ks3-part[aria-pressed="true"] .ks3-part-num { background: var(--ks3-accent); color: var(--ks3-on-dark); }
+/* ⊕ MRB-257 · audit 3.19 — the same pair, same reasoning, 15px/800. */
+.ks3-part[aria-pressed="true"] .ks3-part-num { background: var(--ks3-accent); color: var(--ks3-ink); }
 .ks3-part-name { display: block; font-size: 17px; font-weight: 700; line-height: 1.25; }
 .ks3-part-tag {
   display: block;
@@ -3458,7 +3648,9 @@ body.rd[data-mode="ks3"] {
   width: 34px; height: 34px;
   border-radius: 10px;
   background: var(--ks3-accent);
-  color: var(--ks3-on-dark);
+  /* ⊕ MRB-257 · audit 3.19 — 18px/800 is still under the 18.66px bold
+     threshold, so this is body size and takes ink, not cream. */
+  color: var(--ks3-ink);
   border: 2px solid var(--ks3-ink);
   font-family: var(--ks3-font-display);
   font-weight: 800;
@@ -3524,7 +3716,7 @@ body.rd[data-mode="ks3"] {
 .ks3-pairrow-note { margin: 12px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body); }
 .ks3-pairrow-word { font-family: var(--ks3-font-display); }
 .ks3-pair-foot { margin-top: 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-.ks3-pair-reveal[disabled] { opacity: .45; cursor: default; transform: none; }
+.ks3-pair-reveal[disabled] { opacity: var(--ks3-dim-spent); cursor: default; transform: none; }
 .ks3-pair-progress {
   font-family: var(--ks3-font-mono);
   font-size: 15px;
@@ -3613,7 +3805,7 @@ body.rd[data-mode="ks3"] {
   font-size: 14px;
 }
 .ks3-fit-foot { margin-top: 18px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-.ks3-fit-run[disabled] { opacity: .45; cursor: default; transform: none; }
+.ks3-fit-run[disabled] { opacity: var(--ks3-dim-spent); cursor: default; transform: none; }
 .ks3-fit-clear {
   cursor: pointer;
   font: inherit;
@@ -3936,7 +4128,7 @@ body.rd[data-mode="ks3"] {
 .ks3-hardrow-answer { margin: 12px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body); }
 .ks3-hardrow-word { font-family: var(--ks3-font-display); }
 .ks3-hard-foot { margin-top: 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-.ks3-hard-reveal[disabled] { opacity: .45; cursor: default; transform: none; }
+.ks3-hard-reveal[disabled] { opacity: var(--ks3-dim-spent); cursor: default; transform: none; }
 .ks3-hard-progress {
   font-family: var(--ks3-font-mono);
   font-size: 15px;
@@ -4366,7 +4558,7 @@ body.rd[data-mode="ks3"] {
   background: var(--ks3-accent-tint);
 }
 .ks3-settle-choice[disabled] { cursor: default; }
-.ks3-settle-choice[disabled][aria-pressed="false"] { opacity: .5; }
+.ks3-settle-choice[disabled][aria-pressed="false"] { opacity: var(--ks3-dim-spent); }
 /* ⚖️ MRB-196 — ONE tone. Design paints this `--ks3-ink` when the student
    agreed and `--ks3-ink-body` when they did not: about 6 ΔL* apart, a mark
    nobody can read, and a mark all the same. The self-check asks instead. */
@@ -4385,7 +4577,7 @@ body.rd[data-mode="ks3"] {
   gap: 16px;
   flex-wrap: wrap;
 }
-.ks3-settle-reveal[disabled] { opacity: .45; cursor: default; transform: none; }
+.ks3-settle-reveal[disabled] { opacity: var(--ks3-dim-spent); cursor: default; transform: none; }
 .ks3-settle-progress {
   font-family: var(--ks3-font-mono);
   font-size: 15px;
@@ -4595,7 +4787,7 @@ body.rd[data-mode="ks3"] {
   background: var(--ks3-accent-tint);
 }
 .ks3-jobsort-opt[disabled] { cursor: default; }
-.ks3-jobsort-opt[disabled][aria-pressed="false"] { opacity: .5; }
+.ks3-jobsort-opt[disabled][aria-pressed="false"] { opacity: var(--ks3-dim-spent); }
 .ks3-jobsort-why {
   margin: 12px 0 0;
   font-size: 18px;
@@ -4644,7 +4836,20 @@ body.rd[data-mode="ks3"] {
   max-width: 58ch;
 }
 .ks3-switch-predict { margin-top: 20px; }
-.ks3-switch-predict .ks3-commit { margin: 0 0 12px; }
+/* ⊕ MRB-257 · audit 3.18 — AMBER ON CREAM AT 1.54:1, and the correction
+   already existed twice in this file. `.ks3-commit` carries `--ks3-alert`,
+   which is right on the ink grounds where nearly every gate sits and wrong
+   here: this panel is `--ks3-card`, and #FFC53D on #FFFCF5 measures 1.54:1 at
+   22px/700 against a 3:1 bar. `.ks3-walk-block .ks3-benchgate .ks3-commit` and
+   its `.ks3-sbench-block` twin both route to `--ks3-accent-text` for exactly
+   this reason; `.ks3-switch-predict` is the third cream-ground gate and was
+   simply missed. 6.43:1. The string is "Switch it off. What is the first
+   thing that goes wrong?" — the instruction the whole block asks the student
+   to act on, unreadable at every viewport and in every interaction state. */
+.ks3-switch-predict .ks3-commit {
+  margin: 0 0 12px;
+  color: var(--ks3-accent-text);
+}
 .ks3-switch-foot {
   margin-top: 18px;
   display: flex;
@@ -4652,7 +4857,7 @@ body.rd[data-mode="ks3"] {
   gap: 16px;
   flex-wrap: wrap;
 }
-.ks3-switch-btn[disabled] { opacity: .45; cursor: default; transform: none; }
+.ks3-switch-btn[disabled] { opacity: var(--ks3-dim-spent); cursor: default; transform: none; }
 .ks3-switch-hint {
   font-family: var(--ks3-font-mono);
   font-size: 15px;
@@ -5901,16 +6106,28 @@ body.rd[data-mode="ks3"] {
   .ks3-main.is-browse,
   .ks3-main.is-hub { padding: 28px 16px 64px; }
   .ks3-nav-rail { padding: 0 16px; gap: 12px; min-height: 64px; }
-  /* The lesson trail's links are `white-space: nowrap` by design (no
-     mid-word break in a crumb label) — fine on a wide rail, but past the
-     brand + divider + spacer a 390px rail leaves too little room for an
-     unwrapped long unit name, and flex-wrap alone can't help a child that
-     can't itself break. Letting the label wrap is the least visible
-     departure: the crumb still reads as one phrase, just on two lines. */
-  .ks3-trail a { white-space: normal; overflow-wrap: break-word; }
+  /* ⊖ SUPERSEDED by MRB-229's ruling — see the ≤700px block below, which is
+     later in the file and wins. This rule read
+       `.ks3-trail a { white-space: normal; overflow-wrap: break-word; }`
+     and its reasoning was that letting a long unit name wrap is "the least
+     visible departure". It was the wrong trade and it is the direct cause of
+     two live defects: the wrapped trail grew the sticky header to as much as
+     214.8px (25% of a phone viewport, 37.6% at the 320px reflow width), and
+     the height it grew to is what put in-page anchors behind the header on 36
+     of 58 pages. Wrapping also did not stop the sideways scroll — `nowrap` on
+     the anchor kept the crumb itself unbreakable at the word level, so B9's
+     longest trail still pushed the document to 577px against a 390 viewport.
+     Kept as a record rather than deleted: the reasoning is the interesting
+     part, and the next person to reach for wrapping should meet it here. */
   .ks3-footer-rail { padding: 24px 16px; gap: 12px; }
 
   .ks3-hub-top { gap: 34px; }
+  /* ⊕ MRB-257, also found in passing. "Ecosystems and interdependence" cannot
+     break at display size in 288px of content width, so a unit index pushed
+     the document to 324px at the 320 reflow width. Only engages when a word
+     genuinely cannot fit — at 390 there is room and nothing breaks. */
+  .ks3-unit-head h1,
+  .ks3-hub-title { overflow-wrap: break-word; }
   .ks3-hub-actions { gap: 10px; }
   .ks3-btn { padding: 15px 20px; font-size: 17px; }
   .ks3-live { padding: 22px 20px 20px; }
@@ -5957,6 +6174,81 @@ body.rd[data-mode="ks3"] {
   .ks3-keynote p { font-size: 24px; }
   .ks3-hook h2 { font-size: 30px; }
   .ks3-rung { padding-left: 16px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   THE HEADER ON A NARROW SCREEN — ⊕ MRB-229, RULED 18 Aug 2026
+
+   Every one of the 294 KS3 pages scrolled sideways on a 390px phone, and the
+   header trail was the whole cause. Measured with device metrics overridden
+   to a true 390px (NOT `--window-size`, which headless Chrome floors at about
+   500 and hides this entirely):
+
+       b8-05  document 397px   trail  91px
+       b5-05  document 416px   trail 110px
+       b3-07  document 490px   trail 184px
+       b9-04  document 577px   trail 271px   ← the longest trail in Biology
+
+   Nothing else on any of those pages overflowed — the shelf instrument on
+   b9-04 measures scrollWidth == clientWidth == 322 at 390 — so this is one
+   shell defect fixed once, not per-page layout debt. It also took the "KS3"
+   pill entirely off-screen on 33 pages (left edge 468 in a 390 viewport), and
+   because the header is sticky the pill never came back on a vertical scroll:
+   a nav link that could only be reached by swiping sideways to maximum.
+
+   THE RULING: below 700px the trail shows UNIT AND PAGE ONLY, elides what
+   does not fit, and the page never scrolls sideways.
+
+   Written as "keep the last three children" rather than "hide the first four"
+   so it cannot go wrong the day a trail is a different depth — `<li>`s come in
+   crumb/separator pairs, so the last three are always [unit][›][this page].
+   The same selector serves `.ks3-crumbs`, whose children are bare spans and
+   anchors rather than list items: a unit index at 390 was overflowing for
+   exactly the same reason, one component along, and the hub's single-crumb
+   row matches nothing here and is left alone.
+
+   What is NOT lost: the hidden crumbs are `display: none`, so a screen reader
+   announces the two that are shown — the same two a sighted student sees —
+   and every level above them is one tap away through the unit index the first
+   shown crumb points at. `.ks3-brand` still goes to the site root and the KS3
+   pill, now on screen, still goes to the key stage index.
+
+   This is also the first half of audit 3.3's fix. A header that no longer
+   wraps is a header that no longer varies from 86px to 215px, which fixes most
+   of the anchor occlusion for free — the ResizeObserver in `shared/ks3.js`
+   fixes the rest, and it is the half that holds when Chemistry's and Physics'
+   unit titles turn out longer than Biology's.
+   ═══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 700px) {
+  .ks3-trail > li:not(:nth-last-child(-n + 3)),
+  .ks3-crumbs > *:not(:nth-last-child(-n + 3)) { display: none; }
+
+  /* `nowrap` on the row is what turns "too long" into "elide" rather than
+     "wrap to a fourth line". Everything from here down exists so the elision
+     has somewhere to happen: a flex item will not shrink below its content
+     without `min-width: 0`, at any depth. */
+  .ks3-trail,
+  .ks3-crumbs { flex-wrap: nowrap; }
+  .ks3-trail > li { min-width: 0; }
+  .ks3-trail-sep,
+  .ks3-crumb-sep { flex: 0 0 auto; }
+  .ks3-trail a,
+  .ks3-trail [aria-current],
+  .ks3-crumbs a,
+  .ks3-crumbs [aria-current] {
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* The brand is the other unshrinkable thing on the rail. It is one word and
+     a chevron, so it cannot elide usefully — but it can stop being allowed to
+     push the trail off the edge, which is what `flex-shrink: 0` on a 177px
+     item does at 390. */
+  .ks3-brand { min-width: 0; }
+  .ks3-brand svg { flex: 0 0 auto; }
 }
 
 /* ═══ BEGIN C1 ═══ */
@@ -7459,7 +7751,7 @@ body.rd[data-mode="ks3"] {
   gap: 16px;
   flex-wrap: wrap;
 }
-.ks3-lstep-btn[disabled] { opacity: .45; cursor: default; }
+.ks3-lstep-btn[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }
 .ks3-lstep-progress {
   font-family: var(--ks3-font-mono);
   font-size: 15px;
@@ -7719,7 +8011,7 @@ body.rd[data-mode="ks3"] {
    two dim. Nothing here says whether the choice was right — that is the row's
    job and the why panel's, and it is the whole of R3 in this instrument. */
 .ks3-plate-band[disabled] { cursor: default; }
-.ks3-plate-band[disabled][aria-pressed="false"] { opacity: .45; }
+.ks3-plate-band[disabled][aria-pressed="false"] { opacity: var(--ks3-dim-spent); }
 .ks3-plate-why {
   margin-top: 12px;
   padding: 14px 16px;
@@ -7743,7 +8035,7 @@ body.rd[data-mode="ks3"] {
   gap: 16px;
   flex-wrap: wrap;
 }
-.ks3-plate-open[disabled] { opacity: .45; cursor: default; transform: none; }
+.ks3-plate-open[disabled] { opacity: var(--ks3-dim-spent); cursor: default; transform: none; }
 .ks3-plate-count {
   font-family: var(--ks3-font-mono);
   font-size: 15px;
@@ -10775,7 +11067,7 @@ body.rd[data-mode="ks3"] {
   color: var(--ks3-ink);
 }
 .ks3-ccheck-fault[disabled] { cursor: default; }
-.ks3-ccheck-fault[disabled][aria-pressed="false"] { opacity: .5; }
+.ks3-ccheck-fault[disabled][aria-pressed="false"] { opacity: var(--ks3-dim-spent); }
 .ks3-ccheck-mark {
   flex: 0 0 26px;
   display: grid;
@@ -10864,6 +11156,19 @@ body.rd[data-mode="ks3"] {
 .ks3-dark .ks3-ccheck-mark {
   border-color: var(--ks3-on-dark-muted);
   color: var(--ks3-on-dark-muted);
+}
+/* ⊕ MRB-257 · audit 3.8 — THE LETTER GOES ON-DARK WHEN THE BUTTON IS SPENT,
+   and the dim alone could not have carried this. After "Check it" the fault
+   buttons lock; the unpicked ones dim, and this is the state where the student
+   reads what was wrong. At .5 the 18px fault TEXT measured 3.96:1 and the
+   14px/800 A/B/C/D mark measured 2.70:1 — two different numbers because they
+   are two different colours under one opacity. `--ks3-dim-spent` .65 takes the
+   text to ~5.5:1 on its own; the mark, starting from `--ks3-on-dark-muted`,
+   would only reach ~3.5. So the mark takes `--ks3-on-dark` in this state and
+   lands at ~5.5:1 with it. The PICKED button's alert mark below is untouched
+   — it is not dimmed and it was never the problem. */
+.ks3-dark .ks3-ccheck-fault[disabled][aria-pressed="false"] .ks3-ccheck-mark {
+  color: var(--ks3-on-dark);
 }
 /* ⚖️ THE ONLY STATE A FAULT BUTTON HAS. Alert border, alert letter, a lifted
    ground — and the label colour does not move, because a chosen option is not
@@ -11307,7 +11612,18 @@ body.rd[data-mode="ks3"] {
 .ks3-dark .ks3-cmp-name { color: var(--ks3-on-dark); }
 .ks3-dark .ks3-cmp-val { color: var(--ks3-on-dark-body); }
 .ks3-dark .ks3-cmp-cell[data-lead] .ks3-cmp-val { color: var(--ks3-alert); }
-.ks3-dark .ks3-cmp-cap { color: var(--ks3-accent-text); }
+/* ⊕ MRB-257 · audit 3.2 — NO ACCENT-TEXT TOKEN ON A DARK GROUND, EVER.
+   `--ks3-accent-text` #A93411 is specified as the small-text partner ON CREAM
+   ("the only orange under 24px"); landed on `--ks3-dark-panel` it measures
+   1.78:1, and 1.62:1 on the zebra row. That is the same class of error as the
+   on-dark green MRB-252 rules on, one token along.
+
+   It matters more here than a contrast number suggests. Below 880px the
+   header row above is `display: none` and THESE CAPTIONS ARE THE ONLY THING
+   SAYING WHICH COLUMN IS WHICH — "SPERM CELL" / "EGG CELL", "BEFORE" /
+   "AFTER FERTILISATION". On a 390px phone the block collapses to stacked
+   pairs and its entire teaching point rests on four strings at 1.78:1. */
+.ks3-dark .ks3-cmp-cap { color: var(--ks3-on-dark); }
 .ks3-dark .ks3-cmp-why { color: var(--ks3-on-dark-body); }
 .ks3-dark .ks3-cmp-whylabel { color: var(--ks3-on-dark); }
 .ks3-dark .ks3-cmp-scale { background: var(--ks3-dark-panel); }
@@ -11860,7 +12176,13 @@ body.rd[data-mode="ks3"] {
 }
 .ks3-mb-steptitle { font-size: 19px; font-weight: 700; }
 .ks3-mb-stepdetail { font-size: 17px; line-height: 1.5; }
-.ks3-mb-opts { flex: 0 0 auto; }
+/* ⊕ MRB-257 · audit 3.17 — `flex: 0 0 auto` CANNOT SHRINK, and at 320px
+   (WCAG 1.4.10 reflow) the step's option row reached right=335 against a 320
+   viewport — the only content-level overflow in the key stage. `0 1 auto`
+   lets it give way; `min-width: 0` lets the buttons inside it wrap, which
+   they already declare. Below 34rem it takes its own row outright rather than
+   being squeezed beside the step text. */
+.ks3-mb-opts { flex: 0 1 auto; min-width: 0; }
 
 /* ⚠️ NO `display` — every verdict ships `hidden`. */
 .ks3-mb-verdict[hidden] { display: none; }
@@ -11960,6 +12282,15 @@ body.rd[data-mode="ks3"] {
   flex-direction: column;
   gap: 10px;
 }
+/* ⊕ MRB-257 · audit 3.5 / 3.7 — `--ks3-dim-ahead`, AND THE AUDIT'S OWN NUMBER
+   IS WRONG. It says "raise to ≈opacity: .72 (lands ≈4.5:1)". Measured, .72
+   composites `--ks3-on-dark-muted` #C6B9A7 to #A09586 on `--ks3-dark-panel` =
+   3.98:1, which still fails the bar the fix was written to clear. .78 lands
+   4.35; .80 lands 4.51. The value shipped is the one that does the thing the
+   audit asked for, not the one it wrote down.
+   The state survives the change: an unreached row is ALSO borderless, and its
+   name is muted where a reached one is on-dark, so "not yet" is carried by
+   three treatments and not by the dim alone. */
 .ks3-tb-link {
   display: flex;
   gap: 14px;
@@ -11967,7 +12298,7 @@ body.rd[data-mode="ks3"] {
   padding: 14px 16px;
   border-radius: var(--ks3-r-panel);
   border: 2px solid transparent;
-  opacity: .45;
+  opacity: var(--ks3-dim-ahead);
 }
 .ks3-tb-link[data-shown] { opacity: 1; }
 .ks3-tb-num {
@@ -13093,7 +13424,7 @@ body.rd[data-mode="ks3"] {
   border-radius: var(--ks3-r-panel);
   background: transparent;
   border: 2px solid transparent;
-  opacity: .45;
+  opacity: var(--ks3-dim-ahead);
 }
 /* ⚖️ AN UNREACHED LEVEL DIMS AND STAYS ON-DARK. It is not a wrong answer and
    it is not absent: the whole chain is drawn from the start, so a student
@@ -13104,7 +13435,7 @@ body.rd[data-mode="ks3"] {
   border-color: var(--ks3-on-dark-muted);
 }
 .ks3-cl-level[data-top] {
-  background: rgba(255, 255, 255, .10);
+  background: rgba(255, 255, 255, .06);
   border-color: var(--ks3-alert);
 }
 .ks3-cl-levelhead {
@@ -13230,7 +13561,13 @@ body.rd[data-mode="ks3"] {
    foxes" — and a student matches the chart to the numbers by colour. Both are
    20px/700, which is large text, and both clear 3:1 on the nested panel. */
 .ks3-dark .ks3-cy-live[data-series="prey"] { color: var(--ks3-alert); }
-.ks3-dark .ks3-cy-live[data-series="pred"] { color: var(--ks3-ok); }
+/* ⊕ MRB-252 (RULED) · audit 3.4 — the on-dark GREEN, not the mark green.
+   `--ks3-ok` measures 3.48:1 at this size on `--ks3-dark-panel` and its own
+   annotation forbids it as text. The caption beside this chart names the
+   series BY COLOUR ("amber = rabbits · green = foxes"), so the hue has to
+   survive the swap and it does: `--ks3-ok-dark` is the same 146° hue at
+   6.6:1. Six sites moved together; the FILLS below did not move. */
+.ks3-dark .ks3-cy-live[data-series="pred"] { color: var(--ks3-ok-dark); }
 .ks3-dark .ks3-cy-caption { color: var(--ks3-on-dark-muted); }
 .ks3-dark .ks3-cy-note { color: var(--ks3-on-dark-body); }
 
@@ -13276,14 +13613,14 @@ body.rd[data-mode="ks3"] {
   border-radius: var(--ks3-r-panel);
   background: transparent;
   border: 2px solid transparent;
-  opacity: .45;
+  opacity: var(--ks3-dim-ahead);
 }
 .ks3-rs-round[data-shown] {
   opacity: 1;
   border-color: var(--ks3-on-dark-muted);
 }
 .ks3-rs-round[data-cur] {
-  background: rgba(255, 255, 255, .10);
+  background: rgba(255, 255, 255, .06);
   border-color: var(--ks3-alert);
 }
 .ks3-rs-num {
@@ -13438,14 +13775,14 @@ body.rd[data-mode="ks3"] {
   border-radius: var(--ks3-r-panel);
   background: transparent;
   border: 2px solid transparent;
-  opacity: .45;
+  opacity: var(--ks3-dim-ahead);
 }
 .ks3-ba-level[data-shown] {
   opacity: 1;
   border-color: var(--ks3-on-dark-muted);
 }
 .ks3-ba-level[data-cur] {
-  background: rgba(255, 255, 255, .10);
+  background: rgba(255, 255, 255, .06);
   border-color: var(--ks3-alert);
 }
 .ks3-ba-levelhead {
@@ -13585,8 +13922,15 @@ body.rd[data-mode="ks3"] {
 .ks3-dark .ks3-qb-figure[data-qb-figure="real"] .ks3-qb-figvalue {
   color: var(--ks3-on-dark-muted);
 }
+/* ⊕ MRB-252 (RULED) · audit 3.4 — THE WORST OF THE SIX, and the reason the
+   ruling could not be "use it at 24px and take the 3:1 bar". This figure is
+   26px/800, which IS large text — and it still measured 2.89:1, because it
+   sits on `.ks3-qb-figures`' rgba(255,255,255,.06) well, which composites
+   to #4A433C rather than the #3E3730 the token was rated against. A ground
+   one step lighter than the one a token is measured on is enough to take it
+   under the LARGE bar. `--ks3-ok-dark` is measured on that tile: 5.51:1. */
 .ks3-dark .ks3-qb-figure[data-revealed] .ks3-qb-figvalue {
-  color: var(--ks3-ok);
+  color: var(--ks3-ok-dark);
 }
 
 /* ═══ END B9 ═══ */
@@ -13708,18 +14052,42 @@ body.rd[data-mode="ks3"] {
   padding: 12px;
   border-radius: var(--ks3-r-panel);
 }
+/* ⊕ MRB-257 · audit 5.4 — THE BARS WERE FLEX-SHRUNK TO A COMMON CAP, so a
+   histogram drew a plateau where its own verdict said "a smooth hump".
+   This column was a column flex container holding [count][bar][bin label].
+   The bar's height is an authored percentage, which resolved against the
+   column's full 146px — but the two labels take 42.4px of that column, and a
+   flex item shrinks. So EVERY bar authored above 70.96% rendered at exactly
+   103.6px. Verified live on Height: 81.25% / 100% / 75% → 103.6 / 103.6 /
+   103.6px, with the modal bin indistinguishable from its neighbours, under a
+   verdict reading "most people are near the middle". Eye colour drew a true
+   2.0 ratio as 1.42. At 390px the cap fell to 90.4px and it was worse.
+
+   GRID, NOT FLEX, IS "TAKE THE LABELS OUT OF THE FLEX FLOW". Three rows —
+   `auto` for the count, `minmax(0, 1fr)` for the bar, `auto` for the label —
+   and the bar's percentage now resolves against a track that is what is left
+   after the labels, so it cannot be asked for more space than exists and
+   cannot be shrunk out of what it asked for. A 100% bar fills the track and a
+   75% bar is three quarters of it, at every viewport and every bin count.
+
+   `align-self: end` keeps the bar sitting on the axis the way `flex-end` did;
+   `justify-items: center` keeps the labels centred while the bar's own width
+   rule (100%, or 100% − 6px for a bar chart) still decides whether
+   neighbouring bars meet. That width rule is the lesson's other half and it
+   does not move — `b10-plot-both` measures it on painted geometry, and it now
+   measures the heights the same way. */
 .ks3-vp-col {
   flex: 1 1 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  justify-items: center;
   height: 100%;
   min-width: 0;
   gap: 5px;
 }
 .ks3-vp-bar {
   display: block;
+  align-self: end;
   border-radius: 3px 3px 0 0;
   transition: height .3s;
 }
@@ -13874,7 +14242,7 @@ body.rd[data-mode="ks3"] {
   border-radius: var(--ks3-r-panel);
   border: 2px solid transparent;
   background: transparent;
-  opacity: .45;
+  opacity: var(--ks3-dim-ahead);
 }
 .ks3-zb-level[data-shown] { opacity: 1; }
 .ks3-zb-num {
@@ -13992,7 +14360,7 @@ body.rd[data-mode="ks3"] {
    is nothing on this bench to be right or wrong about. */
 .ks3-dark .ks3-zb-level[data-here] {
   border-color: var(--ks3-alert);
-  background: rgba(255, 255, 255, .1);
+  background: rgba(255, 255, 255, .06);
 }
 .ks3-dark .ks3-zb-level[data-shown]:not([data-here]) {
   border-color: var(--ks3-on-dark-muted);
@@ -14137,7 +14505,9 @@ body.rd[data-mode="ks3"] {
 .ks3-dark .ks3-dh-card[data-pass] { border-color: var(--ks3-ok); }
 .ks3-dark .ks3-dh-card:not([data-pass]) { border-color: var(--ks3-alert); }
 .ks3-dark .ks3-dh-cardname { color: var(--ks3-on-dark); }
-.ks3-dark .ks3-dh-tag[data-dh-tag="pass"] { color: var(--ks3-ok); }
+/* ⊕ MRB-252 (RULED) · audit 3.4 — 14px mono. The card OUTLINE above stays
+   `--ks3-ok`: an outline is a mark and marks are what the token is for. */
+.ks3-dark .ks3-dh-tag[data-dh-tag="pass"] { color: var(--ks3-ok-dark); }
 .ks3-dark .ks3-dh-tag[data-dh-tag="fail"] { color: var(--ks3-alert); }
 .ks3-dark .ks3-dh-what { color: var(--ks3-on-dark-body); }
 .ks3-dark .ks3-dh-why { color: var(--ks3-alert); }
@@ -14650,15 +15020,35 @@ body.rd[data-mode="ks3"] {
 
    ⚑ AND THE TWO COLOURS ARE DATA HERE, NOT A MARK. Amber is the bottom of a
    column, not a wrong answer; green is the top of one, not a right answer.
-   The student has predicted nothing on this bench. Both are drawn as Design
-   drew them and both carry the WORD as well as the colour — " · best here",
-   " · worst here" — so nothing here is signalled by colour alone (R2). */
+   The student has predicted nothing on this bench. Both carry the WORD as
+   well as the colour — " · best here", " · worst here" — so nothing here is
+   signalled by colour alone (R2).
+
+   ⊕ RULED, 19 Aug 2026 (MRB-252 comment 2). This comment used to end "both
+   are drawn as Design drew them", flag the palette question as OPEN and hand
+   it to Mide. It is no longer open, and the reasoning above is exactly why it
+   went the way it did: THE COLOURS ARE DATA, AND AMBER IS NOT THE DATA
+   COLOUR. Amber is reserved for warning and confrontation — the `#s-think`
+   register and genuine caution or loss — so "the bottom of a column" is a
+   category and moves to `--ks3-data`. The green moves for a different reason,
+   under the same ruling: `--ks3-ok` is a mark and this is a 16px figure, so
+   the FIGURE takes `--ks3-ok-dark` while the BAR keeps `--ks3-ok`.
+
+   Design's drawing is not overruled here so much as re-tokenised: the bench
+   still reads as one colour at the top of a column and a different one at the
+   bottom, still with the word beside each. What changed is which colour, and
+   that is a palette decision the ticket has now taken. */
 .ks3-dark .ks3-ab-chance { color: var(--ks3-on-dark-muted); }
 .ks3-dark .ks3-ab-bar { background: var(--ks3-on-dark-muted); }
-.ks3-dark .ks3-ab-chance[data-ab-rank="best"] { color: var(--ks3-ok); }
-.ks3-dark .ks3-ab-chance[data-ab-rank="worst"] { color: var(--ks3-alert); }
+/* ⊕ MRB-252 (RULED) · audit 3.4 + the amber ruling, on one pair of rows.
+   The FIGURES are text and take the text greens/blues; the BARS are fills
+   and keep the mark tokens. That split is the whole of the ruling in four
+   lines: `--ks3-ok` never paints a letter again, and amber never labels a
+   column again. */
+.ks3-dark .ks3-ab-chance[data-ab-rank="best"] { color: var(--ks3-ok-dark); }
+.ks3-dark .ks3-ab-chance[data-ab-rank="worst"] { color: var(--ks3-data); }
 .ks3-dark .ks3-ab-bar[data-ab-rank="best"] { background: var(--ks3-ok); }
-.ks3-dark .ks3-ab-bar[data-ab-rank="worst"] { background: var(--ks3-alert); }
+.ks3-dark .ks3-ab-bar[data-ab-rank="worst"] { background: var(--ks3-data); }
 /* ⚠️ (0,2,0) — the verdict is cream inside ink, so it re-declares INK against
    `.ks3-dark p` rather than inheriting the on-dark body colour. It is the
    element the whole switch exists to reach, and it is ONE TONE: the bench
@@ -14950,7 +15340,8 @@ body.rd[data-mode="ks3"] {
    signal (R2). Design drew all three; they are reproduced as drawn and
    asserted in parity rows so the day the palette question is ruled the gate
    names every value. */
-.ks3-dark .ks3-pb-outpct[data-pb-band="ok"] { color: var(--ks3-ok); }
+/* ⊕ MRB-252 (RULED) · audit 3.4 — 17px mono, 3.48:1 as it shipped. */
+.ks3-dark .ks3-pb-outpct[data-pb-band="ok"] { color: var(--ks3-ok-dark); }
 .ks3-dark .ks3-pb-outpct[data-pb-band="mid"] { color: var(--ks3-on-dark-muted); }
 .ks3-dark .ks3-pb-outpct[data-pb-band="bad"] { color: var(--ks3-alert); }
 .ks3-dark .ks3-pb-bar[data-pb-band="ok"] { background: var(--ks3-ok); }
@@ -15063,9 +15454,20 @@ body.rd[data-mode="ks3"] {
 .ks3-dark .ks3-bb-barname { color: var(--ks3-on-dark); }
 .ks3-dark .ks3-bb-value { color: var(--ks3-on-dark-muted); }
 .ks3-dark .ks3-bb-track { background: rgba(255, 255, 255, .08); }
+/* ⊕ MRB-252 (RULED, 19 Aug 2026) — THIS IS A SELECTION, NOT A WARNING, so it
+   is the one amber on this bench that moves. "Which field am I looking at" is
+   the plainest category use in the key stage: four tabs, one of them on, and
+   nothing about it is a caution. The ruling's line is "amber warns; it never
+   merely labels", and this only labels.
+
+   The `color: var(--ks3-ink)` does not move — ink on `--ks3-data` measures
+   8.2:1, better than ink on the amber it replaces was obliged to be, and the
+   tab keeps its 44px target. The two LOSS states below stay amber, which is
+   the same ruling read the other way: they are caution, and caution is what
+   amber is now for. */
 .ks3-dark .ks3-bb-tab[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
+  background: var(--ks3-data);
+  border-color: var(--ks3-data);
   color: var(--ks3-ink);
 }
 .ks3-dark .ks3-bb-run,
@@ -15074,27 +15476,41 @@ body.rd[data-mode="ks3"] {
   border-color: var(--ks3-on-dark);
   color: var(--ks3-ink);
 }
-/* ⚑⚑ ZERO IS ITS OWN BAND AND IT IS AMBER. Design's rule is
-   `pct === 0 ? alert : (pct >= 50 ? ok : muted)` — the clone field does not do
-   badly, it returns NOTHING, and that is the one number this lesson exists to
-   show. Amber here is DATA, not a mark: the student has predicted nothing on
-   this bench, and the row prints "0 of 1000" beside the bar so the band is
-   never the only signal (R2). Reproduced as drawn and asserted in a parity
-   row so the day the palette question is ruled the gate names the value. */
+/* ⚑⚑ ZERO IS ITS OWN BAND AND IT IS AMBER, AND IT STAYS AMBER. Design's rule
+   is `pct === 0 ? alert : (pct >= 50 ? ok : muted)` — the clone field does not
+   do badly, it returns NOTHING, and that is the one number this lesson exists
+   to show. The row prints "0 of 1000" beside the bar so the band is never the
+   only signal (R2).
+
+   ⊕ RULED, 19 Aug 2026 (MRB-252 comment 2). The line above used to say "amber
+   here is DATA, not a mark" and to park the palette question for Mide. The
+   ruling splits that sentence: amber is no longer available as a category
+   colour — but "nothing survived" is not a category, it is a LOSS, and loss
+   is caution-adjacent, which is precisely what amber is now reserved for.
+   So this one does not move, and the field TAB above it does. The `ok` band
+   in the next rule moves to `--ks3-ok-dark` for the other half of the ruling:
+   it is a 16px figure, and `--ks3-ok` is a fill. */
 .ks3-dark .ks3-bb-value[data-bb-band="none"] { color: var(--ks3-alert); }
-.ks3-dark .ks3-bb-value[data-bb-band="ok"] { color: var(--ks3-ok); }
+.ks3-dark .ks3-bb-value[data-bb-band="ok"] { color: var(--ks3-ok-dark); }
 .ks3-dark .ks3-bb-value[data-bb-band="mid"] { color: var(--ks3-on-dark-muted); }
 .ks3-dark .ks3-bb-bar[data-bb-band="none"] { background: var(--ks3-alert); }
 .ks3-dark .ks3-bb-bar[data-bb-band="ok"] { background: var(--ks3-ok); }
 .ks3-dark .ks3-bb-bar[data-bb-band="mid"] {
   background: var(--ks3-on-dark-muted);
 }
-/* ⚑ AND THE YIELD BAR IS AMBER TOO, WHICH IS DESIGN'S AND IS THE THIRD JOB
-   THE COLOUR DOES ON THIS PAGE. It is the COST of variation — the reason a
-   farmer plants a clone in the first place — and it is drawn in the same ink
-   as "nothing survived" two rows above it. Not a mark either; flagged rather
-   than repainted, because it is drawn that way and the palette question is
-   Mide's. The variation bar beside it stays muted, as drawn. */
+/* ⚑ AND THE YIELD BAR IS AMBER TOO, WHICH IS DESIGN'S. It is the COST of
+   variation — the reason a farmer plants a clone in the first place — and it
+   is drawn in the same ink as "nothing survived" two rows above it. The
+   variation bar beside it stays muted, as drawn.
+
+   ⊕ RULED, 19 Aug 2026 (MRB-252 comment 2). This was flagged rather than
+   repainted, on the grounds that the palette question was Mide's. It has been
+   answered, and it answers this one as KEEP: "what you gave up" is a cost, a
+   cost is a loss, and loss is inside the warning register the ruling reserves
+   amber for. Sharing the ink with "nothing survived" is now correct rather
+   than merely drawn — the two ARE the same kind of statement. After this run
+   the page carries amber twice, for one meaning, instead of four times for
+   three. */
 .ks3-dark .ks3-bb-bar[data-bb-tone="muted"] {
   background: var(--ks3-on-dark-muted);
 }

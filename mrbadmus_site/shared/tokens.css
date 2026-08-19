@@ -278,6 +278,36 @@
   --ks3-option-border: #DDCFB6;  /* resting answer-button border */
   --ks3-option-spent:  #EBDFCB;  /* answer button, question already spent */
 
+  /* ── the two dims (⊕ MRB-257 · audit 3.5, 3.7, 3.8, 3.21) ──
+     Not colours — the two opacities the key stage dims WITH. They are here
+     rather than repeated forty times in ks3.css because they were repeated
+     forty times in ks3.css, at two values chosen by eye, and neither survived
+     measurement. Both are stated as the ratio they LAND, not as a look:
+
+     --ks3-dim-ahead   a row the student has not reached YET, on ink dark.
+                       Progressive disclosure — the whole chain is drawn from
+                       the start so a student can read how far there is to go,
+                       which means the dim state is text they are meant to READ.
+                       At .45 `--ks3-on-dark-muted` composites to #7B7266 on
+                       `--ks3-dark-panel` = 2.48:1, and the affected strings are
+                       the science: "Algae", "Water fleas", "A chromosome",
+                       "10% of the original". At .8 it composites to #AB9F8F =
+                       4.51:1 ✓ AA. (The audit proposed .72; measured, .72 lands
+                       3.98:1 — see the note at the first site.)
+
+     --ks3-dim-spent   a control that is locked or spent. WCAG 1.4.3 exempts an
+                       inactive component, so this is a legibility decision and
+                       not a compliance one — but "exempt" is not the same as
+                       "unreadable", and at .45 a locked reveal button painted
+                       #FDF8EE on #9C9893 = 2.71:1. At .65 it is 4.86:1.
+     ⚠️ NOT every dim in ks3.css is routed through these yet; roughly thirty
+     `[disabled] { opacity: .45 }` rules the audit did not measure are left
+     where they are and named in the comment beside the routed ones. Route each
+     when you next touch its instrument — same convention as CLAUDE.md's
+     --chemistry/--danger split. */
+  --ks3-dim-ahead:     .8;
+  --ks3-dim-spent:     .65;
+
   /* ── ink ── */
   --ks3-ink:           #221E1B;  /* 14.2:1 on ground ✓ AAA — body text, every 2px outline */
   --ks3-ink-body:      #3B342E;  /* softened body copy inside panels */
@@ -296,14 +326,52 @@
   --ks3-accent-tint:   #FCE7DE;
   --ks3-accent-hover:  #7F2408;  /* link hover */
 
-  /* ── success · green · ONLY the ladder marks correctness ── */
-  --ks3-ok:            #12A150;  /* 3.0:1 — NEVER body text */
-  --ks3-ok-text:       #0A6B36;  /* 5.9:1 on tint ✓ AA — the word "Correct." */
+  /* ── success · green · marks, fills, and two text greens ──
+     ⊕ MRB-252 comment 2, RULED 19 Aug 2026 (Mide delegated; recorded on the
+     ticket). The engine had been painting `--ks3-ok` as `color:` on 16–26px
+     readouts across six instruments — 3.48:1 on `--ks3-dark-panel`, and 2.89:1
+     on the lighter #4A433C figures tile, which fails even the LARGE-text bar.
+     The token file already forbade exactly that ("NEVER body text"); what it
+     did not do was offer a legal alternative, so the violation had nowhere to
+     go. The ruling mints the pair, mirroring the shape the accent already has
+     (`--ks3-accent` / `--ks3-accent-text`):
+
+         --ks3-ok        a MARK or a FILL. Never `color:` on text, any size.
+         --ks3-ok-text   body-size green on a LIGHT ground.
+         --ks3-ok-dark   body-size green on an INK-DARK ground.
+
+     Every value below is measured against the resolved painted ground with
+     `opacity` compositing, not read off a table. */
+  --ks3-ok:            #12A150;  /* 3.0:1 — MARKS AND FILLS ONLY. Never text. */
+  --ks3-ok-text:       #0A6B36;  /* 5.5:1 or better on EVERY light ground —
+                                    tint 5.9 · ground 6.0 · card 6.5 ·
+                                    band 5.5 · inset 5.8 ✓ AA */
+  /* ⊕ MINTED under MRB-252's ruling, so it is the one KS3 colour with no line
+     in Claude Design's frozen reference — see MINTED_TOKENS in ks3_parity.py,
+     which records that rather than letting Layer A pass it quietly. Same hue
+     as `--ks3-ok` (146°), lifted and eased so it reads as a mint and not as
+     neon. The BINDING ground is the #4A433C figures tile, not the panel. */
+  --ks3-ok-dark:       #40DD84;  /* 5.5:1 on the #4A433C tile · 6.6:1 on
+                                    dark-panel · 7.0:1 on dark-track ✓ AA —
+                                    body-size green on any ink-dark ground */
   --ks3-ok-tint:       #E4F7EB;
 
   /* ── alert · amber · a wrong IDEA being confronted ──
      Misconception blocks only. Never "you got it wrong" — the student
-     is not the error. Ink on the amber measures 11.4:1 ✓. */
+     is not the error. Ink on the amber measures 11.4:1 ✓.
+
+     ⊕ MRB-252 comment 2, RULED 19 Aug 2026 — AMBER WARNS; IT NEVER MERELY
+     LABELS. By B11 this one colour was carrying four jobs on two benches: a
+     wrong idea being confronted (its original, load-bearing meaning), a
+     species, "the field you are looking at", "nothing survived" and "what you
+     gave up". Nothing was broken — every instance carried a word as well as
+     the colour — but a student who has learned across B1–B9 that amber means
+     "careful, this is a wrong idea" cannot then meet amber meaning "a moth"
+     without the first meaning wearing away.
+
+     The ruling reserves amber for WARNING AND CONFRONTATION: the `#s-think`
+     register, and genuine caution or loss states. Category and selection uses
+     move to `--ks3-data` below. */
   --ks3-alert:         #FFC53D;
   --ks3-alert-text:    #5A430A;
   --ks3-alert-tint:    #FFF3D4;
@@ -324,6 +392,22 @@
   --ks3-blue-text:     #2545A8;
   --ks3-blue-tint:     #E1E8FE;
   --ks3-blue-light:    #8FB7FF;  /* on ink-dark only */
+
+  /* ── data · the category and selection colour (⊕ MRB-252, RULED) ──
+     Minted so that an instrument which needs to say "this column, not that
+     one" or "this is the field you are looking at" has a colour of its own
+     and does not have to borrow the warning one. It carries a DUAL
+     constraint, because it is used both as text on ink and as a fill that ink
+     sits on, and both ends are measured.
+
+     The value is the existing `--ks3-blue-light`, deliberately: nothing is
+     invented, so Layer A's provenance still traces it to Design's reference.
+     What is new is the ROLE having a name, so the two can move apart later
+     without either dragging the other. Distinct in hue from the alert
+     (#FFC53D), the accent (#E4572E) and the mint (#40DD84). */
+  --ks3-data:          #8FB7FF;  /* CATEGORY AND SELECTION, never a mark.
+                                    5.8:1 as text on dark-panel · 4.8:1 on the
+                                    #4A433C tile · ink reads ON it at 8.2:1 ✓ */
 
   /* ── subject identity ──
      Biology shares the success hue and Chemistry shares the accent hue;

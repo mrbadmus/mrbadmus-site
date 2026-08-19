@@ -127,11 +127,44 @@ def ks3_token_colours(repo_root="."):
     return out
 
 
+# ⊕ MRB-252, RULED 19 Aug 2026 — THE ONE COLOUR THAT IS NOT DESIGN'S, AND WHY
+# THAT IS RECORDED HERE RATHER THAN WAIVED.
+#
+# Layer A exists to fail a colour that is in tokens.css and in none of Claude
+# Design's frozen artifacts, because that colour is either invented or drifted
+# and both are the same defect. `--ks3-ok-dark` is genuinely invented — Design
+# never drew an on-dark green, which is precisely the gap MRB-252 was raised
+# about and the reason the engine had been using a mark colour as body text at
+# 2.89:1 for six instruments.
+#
+# So this is not an exemption list and it must never become one. Each entry
+# carries the ticket that ruled it and the grounds it was measured against, and
+# an entry only silences the "not in the reference" problem — it REPLACES it
+# with a reported line, so a run of the gate still says out loud which colours
+# do not trace to Design. Two further rules make it a gate rather than a hole:
+#
+#   · the VALUE is pinned here. Change #40DD84 in tokens.css and Layer A fails
+#     naming both values, exactly as a drift would.
+#   · a token listed here that no longer exists in tokens.css also fails. A
+#     stale waiver outliving the thing it waived is how a list like this rots.
+MINTED_TOKENS = {
+    "--ks3-ok-dark": (
+        "#40DD84",
+        "MRB-252 comment 2 (Mide delegated; ruled 19 Aug 2026). Design drew no "
+        "on-dark green, so `--ks3-ok` #12A150 was being used as body text at "
+        "3.48:1 on --ks3-dark-panel and 2.89:1 on the #4A433C figures tile — "
+        "against its own annotation. Same 146° hue, lifted. Measured 5.51:1 on "
+        "the #4A433C tile (the binding ground), 6.63:1 on --ks3-dark-panel, "
+        "7.03:1 on --ks3-dark-track, 9.37:1 on --ks3-ink."),
+}
+
+
 def check_provenance(repo_root="."):
     """Layer A. Returns (problems, checked_count).
 
     A colour that is not in any artifact is either invented or drifted. Both
-    are exactly the failure this gate exists to prevent, so both fail.
+    are exactly the failure this gate exists to prevent, so both fail — unless
+    it is in MINTED_TOKENS, in which case it is REPORTED rather than passed.
     """
     blob = _artifact_text(repo_root)
     if not blob:
@@ -139,11 +172,40 @@ def check_provenance(repo_root="."):
     problems = []
     tokens = ks3_token_colours(repo_root)
     for name, hexval in sorted(tokens.items()):
+        minted = MINTED_TOKENS.get(name)
+        if minted and minted[0].lower() != hexval.lower():
+            problems.append(
+                "%s is minted at %s in ks3_parity.MINTED_TOKENS and tokens.css "
+                "now says %s. A minted colour is a RULING with a measured "
+                "value; moving it needs the ruling re-taken, not a token edit."
+                % (name, minted[0], hexval))
+            continue
+        if minted:
+            continue
         if hexval.lower() not in blob:
             problems.append(
                 "%s = %s does not appear anywhere in Claude Design's frozen "
                 "reference — invented or drifted" % (name, hexval))
+    for name, (hexval, _why) in sorted(MINTED_TOKENS.items()):
+        if name not in tokens:
+            problems.append(
+                "%s is listed in ks3_parity.MINTED_TOKENS and is not declared "
+                "in tokens.css at all. Delete the entry with the token — a "
+                "waiver that outlives what it waived is how this list rots."
+                % name)
+    # ⚠️ PRINTED, not returned. `verify_ks3.py` renders Layer A as one PASS
+    # line with a colour count, and a minted colour that vanished into that
+    # count would be a waiver nobody ever reads again. This is the one place
+    # the run can say "these did not come from Design" out loud, so it does.
+    for line in minted_report():
+        print("     ⊕ minted, not from Design's reference: %s" % line)
     return (problems, len(tokens))
+
+
+def minted_report():
+    """The colours Layer A did NOT trace to Design, said out loud."""
+    return ["%s = %s — %s" % (n, v, why)
+            for n, (v, why) in sorted(MINTED_TOKENS.items())]
 
 
 # ── B. structural rules ──────────────────────────────────────────────────
@@ -909,9 +971,15 @@ COMPONENTS = [
          sel='.ks3-check .ks3-option[aria-pressed="true"]',
          props={"background-color": "#FCE7DE", "border-top-color": "#E4572E",
                 "border-top-width": "2px"}),
+    # ⊕ MRB-257 · audit 3.19 — THIS ROW PINNED CREAM ON THE ACCENT, which is
+    # 3.34:1 at 15px/800 against a token annotated "LARGE TEXT ONLY. Never body
+    # size". Seven pages. The FILL is unchanged — the accent is what says
+    # "chosen" — and only the letter moves, to ink, at 4.49:1. The contrast
+    # pair in layer D moves with it, from a 3.0 mark bar to the 4.5 a letter
+    # a student reads actually needs.
     dict(name="activity option CHOSEN badge", on=LESSON, drive="activity-chosen",
          sel='.ks3-check .ks3-option[aria-pressed="true"] .ks3-opt-mark',
-         props={"background-color": "#E4572E", "color": "#FBF3E6"}),
+         props={"background-color": "#E4572E", "color": "#221E1B"}),
 
     # ── activity options on an INK-DARK block (hook, practical). ──
     #
@@ -976,9 +1044,13 @@ COMPONENTS = [
          sel='.ks3-rung[data-mode="marked"] .ks3-option.is-spent',
          props={"background-color": "#FBF6EC", "border-top-color": "#EBDFCB",
                 "color": "#6E655D"}),
+    # ⊕ MRB-257 · audit 3.21 — 2.63:1, on all 18 pages measured, and no
+    # opacity involved: this is an explicit pair, `--ks3-ink-ghost` on
+    # `--ks3-band`. `--ks3-ink-faint` #6E655D is 4.75:1 and is still the
+    # quietest thing on the row.
     dict(name="ladder option SPENT badge", on=LESSON, drive="ladder-answered",
          sel='.ks3-rung[data-mode="marked"] .ks3-option.is-spent .ks3-opt-mark',
-         props={"background-color": "#F4E9D8", "color": "#9A8F86"}),
+         props={"background-color": "#F4E9D8", "color": "#6E655D"}),
 
     # The feedback line carries the same verdict in words, so it is registered
     # with the states rather than apart from them — a green option above a
@@ -1404,10 +1476,13 @@ COMPONENTS = [
          on=B2_SKEL, drive="jobsort-decided",
          sel='.ks3-jobsort-opt[aria-pressed="true"]',
          props={"background-color": "#FCE7DE", "border-top-color": "#E4572E"}),
+    # ⊕ MRB-257 · audit 3.21 — the row's claim ("dims rather than
+    # disappearing") was always right; .5 measured 3.11:1, which is nearer
+    # disappearing than the claim allows. `--ks3-dim-spent` .65.
     dict(name="sorter SPENT option dims rather than disappearing",
          on=B2_SKEL, drive="jobsort-decided",
          sel='.ks3-jobsort-opt[disabled][aria-pressed="false"]',
-         props={"opacity": "0.5"}),
+         props={"opacity": "0.65"}),
     dict(name="sorter answer word is display type", on=B2_SKEL,
          sel=".ks3-jobsort-answer", props={"font-family": "Bricolage Grotesque"}),
 
@@ -3263,10 +3338,19 @@ COMPONENTS = [
     # THEY ARE NOT RECOLOURED. Every one of them is a TRUE statement about
     # evidence — the pool is one-to-one — so nothing here may present them as
     # wrong answers.
+    # ⊕ MRB-257 · audit 3.8 — 0.5 PUT THE FEEDBACK AT 3.96:1 AND ITS LETTER AT
+    # 2.70:1, and this is the state where a student reads what was wrong.
+    # `--ks3-dim-spent` is .65. The letter needed a second change as well — at
+    # .65 `--ks3-on-dark-muted` would still only reach ~3.5 — so it takes
+    # `--ks3-on-dark` in this state, and the row below is what holds that.
     dict(name="an unpicked fault dims and stays on-dark", on=B6_CLAIMS,
          drive="claims-checked",
          sel='.ks3-ccheck-fault[disabled][aria-pressed="false"]',
-         props={"opacity": "0.5", "color": "#FBF3E6"}),
+         props={"opacity": "0.65", "color": "#FBF3E6"}),
+    dict(name="a spent fault's letter goes on-dark so the dim cannot bury it",
+         on=B6_CLAIMS, drive="claims-checked",
+         sel='.ks3-ccheck-fault[disabled][aria-pressed="false"] .ks3-ccheck-mark',
+         props={"color": "#FBF3E6"}),
     dict(name="the claim itself is display type on ink", on=B6_CLAIMS,
          sel=".ks3-ccheck-claim",
          props={"color": "#FBF3E6", "font-family": "Bricolage Grotesque",
@@ -3807,9 +3891,18 @@ COMPONENTS = [
     # it is not absent: the whole chain is drawn from the start so a student
     # reads how far there is to go. If the opacity ever resolves to 1 the
     # instrument has given away where the chain ends before the first press.
+    # ⊕ MRB-257 · audit 3.7 — THIS ROW PINNED THE DEFECT AT 0.45.
+    # The reasoning above is right and the number was wrong: a row a
+    # student is meant to READ, in order to see how far there is to go,
+    # composited `--ks3-on-dark-muted` to #7B7266 on the dark panel =
+    # 2.48:1, and the text is the science itself. `--ks3-dim-ahead` is
+    # .8, which lands 4.51:1. The row is not deleted and not loosened —
+    # it still asserts that the dim EXISTS, which is what stops the bench
+    # giving away where the chain ends before the first press; it now
+    # asserts the value that is also legible.
     dict(name="an unreached link dims and keeps its on-dark name", on=B7_TRACE,
          sel=".ks3-tb-food:not([hidden]) .ks3-tb-link:not([data-shown])",
-         props={"opacity": "0.45"}),
+         props={"opacity": "0.8"}),
     dict(name="an unreached link's name is muted, not headline", on=B7_TRACE,
          sel=(".ks3-tb-food:not([hidden]) "
               ".ks3-tb-link:not([data-shown]) .ks3-tb-linkname"),
@@ -3929,10 +4022,19 @@ COMPONENTS = [
     # and it is not absent: the whole chain is drawn from the start so a
     # student reads how far there is to go. If the opacity resolves to 1 the
     # bench has given away where the chain ends before the first press.
+    # ⊕ MRB-257 · audit 3.5 — THIS ROW PINNED THE DEFECT AT 0.45.
+    # The reasoning above is right and the number was wrong: a row a
+    # student is meant to READ, in order to see how far there is to go,
+    # composited `--ks3-on-dark-muted` to #7B7266 on the dark panel =
+    # 2.48:1, and the text is the science itself. `--ks3-dim-ahead` is
+    # .8, which lands 4.51:1. The row is not deleted and not loosened —
+    # it still asserts that the dim EXISTS, which is what stops the bench
+    # giving away where the chain ends before the first press; it now
+    # asserts the value that is also legible.
     dict(name="B9 chain-ledger · an unreached level dims and takes no outline",
          on=B9_CHAIN,
          sel=".ks3-cl-levels:not([hidden]) .ks3-cl-level:not([data-shown])",
-         props={"opacity": "0.45", "border-top-color": "rgba(0, 0, 0, 0)"}),
+         props={"opacity": "0.8", "border-top-color": "rgba(0, 0, 0, 0)"}),
     dict(name="B9 chain-ledger · an unreached level's name is muted",
          on=B9_CHAIN,
          sel=(".ks3-cl-levels:not([hidden]) "
@@ -3997,10 +4099,16 @@ COMPONENTS = [
     dict(name="B9 chain-ledger · the spent step button dims", on=B9_CHAIN,
          drive="b9-chain-topped", sel=".ks3-cl-up[disabled]",
          props={"opacity": "0.45"}),
+    # ⊕ MRB-257 · audit 3.13 — the lit ground was rgba(255,255,255,.10), which
+    # composites to #514B45 and put four revealed readouts at 4.46:1 against a
+    # 4.5 bar. .06 composites to #4A433C = 5.05:1. The row still asserts that
+    # the top level IS lit — which is the claim — at the value that lets the
+    # figures on it be read. Four instruments carry the same wash; this is the
+    # one with a row.
     dict(name="B9 chain-ledger · the top level lights its ground", on=B9_CHAIN,
          drive="b9-chain-topped",
          sel=".ks3-cl-levels:not([hidden]) .ks3-cl-level[data-top]",
-         props={"background-color": "rgba(255, 255, 255, 0.1)"}),
+         props={"background-color": "rgba(255, 255, 255, 0.06)"}),
 
     # ── b9-02 · cycle-runner ──
     # ⚖️⚖️ THE TWO SERIES ARE TWO COLOURS AND THE CAPTION NAMES THEM BY
@@ -4013,9 +4121,15 @@ COMPONENTS = [
          on=B9_CYCLE, sel='.ks3-cy-live[data-series="prey"]',
          props={"color": "#FFC53D", "font-size": "20px",
                 "font-weight": "700"}),
+    # ⊕ MRB-252 (RULED) · audit 3.4 — THIS ROW PINNED #12A150 AS TEXT, which
+    # is the value the token file forbids as text and the value the audit
+    # measured at 3.48:1 on this ground. A gate holding a defect in place is
+    # not weakened by correcting it: re-pointed at `--ks3-ok-dark`, and the
+    # `font-size` and `font-weight` stay because they are what make it text
+    # rather than a mark, and therefore what makes 4.5:1 the bar.
     dict(name="B9 cycle-runner · the predator readout is the green it names",
          on=B9_CYCLE, sel='.ks3-cy-live[data-series="pred"]',
-         props={"color": "#12A150", "font-size": "20px",
+         props={"color": "#40DD84", "font-size": "20px",
                 "font-weight": "700"}),
     dict(name="B9 cycle-runner · the prey bar is amber and flat-bottomed",
          on=B9_CYCLE, sel='.ks3-cy-bar[data-series="prey"]',
@@ -4071,7 +4185,7 @@ COMPONENTS = [
          props={"color": "#E7DECE"}),
     dict(name="B9 cycle-runner · the fox readout keeps its green at zero",
          on=B9_CYCLE, drive="b9-cycle-culled",
-         sel='.ks3-cy-live[data-series="pred"]', props={"color": "#12A150"}),
+         sel='.ks3-cy-live[data-series="pred"]', props={"color": "#40DD84"}),
 
     # ── b9-03 · remove-a-species ──
     dict(name="B9 remove-a-species · the web label is muted mono on ink",
@@ -4107,7 +4221,7 @@ COMPONENTS = [
     dict(name="B9 remove-a-species · an unreached round dims and has no outline",
          on=B9_REMOVE,
          sel="[data-rs-panel]:not([hidden]) .ks3-rs-round:not([data-shown])",
-         props={"opacity": "0.45", "border-top-color": "rgba(0, 0, 0, 0)"}),
+         props={"opacity": "0.8", "border-top-color": "rgba(0, 0, 0, 0)"}),
     dict(name="B9 remove-a-species · an unreached round chip is a muted outline",
          on=B9_REMOVE,
          sel=("[data-rs-panel]:not([hidden]) "
@@ -4142,11 +4256,14 @@ COMPONENTS = [
          sel=("[data-rs-panel]:not([hidden]) "
               ".ks3-rs-round[data-shown] .ks3-rs-roundbody"),
          props={"color": "#E7DECE", "font-size": "18px"}),
+    # ⊕ MRB-257 · audit 3.13 — the same wash, two instruments further on. .10
+    # composited to #514B45 and put the readouts on it at 4.46:1; .06 is
+    # #4A433C at 5.05:1. The claim ("the round just reached is lit") stands.
     dict(name="B9 remove-a-species · the round just reached is outlined in alert",
          on=B9_REMOVE, drive="b9-web-followed",
          sel="[data-rs-panel]:not([hidden]) .ks3-rs-round[data-cur]",
          props={"border-top-color": "#FFC53D",
-                "background-color": "rgba(255, 255, 255, 0.1)"}),
+                "background-color": "rgba(255, 255, 255, 0.06)"}),
     dict(name="B9 remove-a-species · the verdict is the page ground on ink",
          on=B9_REMOVE, drive="b9-web-followed",
          sel="[data-rs-panel]:not([hidden]) [data-rs-verdict]:not([hidden])",
@@ -4254,7 +4371,7 @@ COMPONENTS = [
          props={"color": "#C6B9A7", "font-size": "18px"}),
     dict(name="B9 bioaccumulation · an unreached level dims and has no outline",
          on=B9_TOXIC, sel=".ks3-ba-level:not([data-shown])",
-         props={"opacity": "0.45", "border-top-color": "rgba(0, 0, 0, 0)"}),
+         props={"opacity": "0.8", "border-top-color": "rgba(0, 0, 0, 0)"}),
     dict(name="B9 bioaccumulation · an unreached level's name is muted",
          on=B9_TOXIC, sel=".ks3-ba-level:not([data-shown]) .ks3-ba-name",
          props={"color": "#C6B9A7", "font-size": "19px"}),
@@ -4391,10 +4508,16 @@ COMPONENTS = [
          on=B9_QUADRAT, drive="b9-field-sampled",
          sel=".ks3-qb-cell[data-in-sample]",
          props={"border-top-color": "#FBF3E6", "border-top-width": "2px"}),
+    # ⊕ MRB-252 (RULED) · audit 3.4 — the sharpest of the six. 26px/800 IS
+    # large text and it still measured 2.89:1, because `.ks3-qb-figures` sits
+    # on rgba(255,255,255,.06) over the dark panel and composites to #4A433C,
+    # one step lighter than the ground `--ks3-ok` was ever rated on. That is
+    # the whole argument for a token measured against the tile: this row would
+    # have passed a naive re-derivation done against #3E3730.
     dict(name="B9 quadrat-bench · the revealed total turns green", on=B9_QUADRAT,
          drive="b9-field-revealed",
          sel='[data-qb-figure="real"][data-revealed] .ks3-qb-figvalue',
-         props={"color": "#12A150"}),
+         props={"color": "#40DD84"}),
     dict(name="B9 quadrat-bench · the verdict is the page ground on ink",
          on=B9_QUADRAT, drive="b9-field-revealed",
          sel=".ks3-qb-verdict:not([hidden])",
@@ -4554,7 +4677,7 @@ COMPONENTS = [
     # column stops existing and six levels become six facts in a list.
     dict(name="B10 zoom-bench · an unreached level dims and takes no outline",
          on=B10_ZOOM, sel=".ks3-zb-level:not([data-shown])",
-         props={"opacity": "0.45", "border-top-color": "rgba(0, 0, 0, 0)"}),
+         props={"opacity": "0.8", "border-top-color": "rgba(0, 0, 0, 0)"}),
     dict(name="B10 zoom-bench · an unreached level's name is muted",
          on=B10_ZOOM, sel=".ks3-zb-level:not([data-shown]) .ks3-zb-name",
          props={"color": "#C6B9A7", "font-size": "19px",
@@ -4572,10 +4695,11 @@ COMPONENTS = [
          on=B10_ZOOM, sel=".ks3-zb-level:not([data-shown]) .ks3-zb-scale",
          props={"color": "#FFC53D", "font-family": "DM Mono",
                 "font-size": "15px"}),
+    # ⊕ MRB-257 · audit 3.13 — same wash, same repair. .06 = #4A433C.
     dict(name="B10 zoom-bench · the level just reached takes the alert outline",
          on=B10_ZOOM, sel=".ks3-zb-level[data-here]",
          props={"border-top-color": "#FFC53D", "border-top-width": "2px",
-                "background-color": "rgba(255, 255, 255, 0.1)"}),
+                "background-color": "rgba(255, 255, 255, 0.06)"}),
     dict(name="B10 zoom-bench · a reached level's number is the alert chip",
          on=B10_ZOOM, sel=".ks3-zb-level[data-shown] .ks3-zb-num",
          props={"background-color": "#FFC53D", "color": "#221E1B",
@@ -4649,10 +4773,13 @@ COMPONENTS = [
     dict(name="badged card is a two-column grid", on=B10_MODEL,
          sel=".ks3-rule-cards > li[data-badge]",
          props={"display": "grid"}),
+    # ⊕ MRB-257 · audit 3.13 — the second row that pinned cream on the accent.
+    # 16px/800 is body size; the token says "LARGE TEXT ONLY. Never body size",
+    # and cream on it is 3.34:1. Ink is 4.49:1 and the fill does not move.
     dict(name="initials badge is a 44px accent square", on=B10_MODEL,
          sel='.ks3-rule-badge[data-badge="initials"]',
          props={"width": "44px", "height": "44px",
-                "background-color": "#E4572E", "color": "#FBF3E6",
+                "background-color": "#E4572E", "color": "#221E1B",
                 "font-size": "16px"}),
     # ⚠️ ON A BADGED CARD THE NAME IS THE HEADLINE AND THE ROLE SITS UNDER IT,
     # which is the reverse of a b1-04 card. The badge already does the
@@ -4748,10 +4875,14 @@ COMPONENTS = [
          on=B10_MODEL, drive="b10-model-solved",
          sel=".ks3-dh-card[data-pass]",
          props={"border-top-color": "#12A150", "border-top-width": "2px"}),
+    # ⊕ MRB-252 (RULED) · audit 3.4 — 14px mono is text. The card OUTLINE in
+    # the row above stays #12A150 and is meant to: an outline is a mark, and
+    # the ruling narrows the token to marks and fills rather than retiring it.
+    # The two rows sitting next to each other is the ruling, legible.
     dict(name="B10 model-builder · a passing card's verdict is green mono",
          on=B10_MODEL, drive="b10-model-solved",
          sel='.ks3-dh-card[data-pass] [data-dh-tag="pass"]:not([hidden])',
-         props={"color": "#12A150", "font-family": "DM Mono",
+         props={"color": "#40DD84", "font-family": "DM Mono",
                 "font-size": "14px"}),
 
     # ── b10-04 · pea-cross ──
@@ -4963,13 +5094,30 @@ COMPONENTS = [
     dict(name="B11 advantage-bench · the column's best is green and says so",
          on=B11_ADV,
          sel='[data-ab-envpanel]:not([hidden]) .ks3-ab-chance[data-ab-rank="best"]',
-         props={"color": "#12A150", "font-family": "DM Mono",
+         props={"color": "#40DD84", "font-family": "DM Mono",
                 "font-size": "16px"}),
-    dict(name="B11 advantage-bench · the column's worst is amber and says so",
+    # ⊕ MRB-252 (RULED) · the amber half. This row's own comment above said
+    # the two colours were DATA and asked for the ruling; the ruling agrees
+    # that they are data and takes amber away from that job — amber warns, it
+    # never merely labels. The bottom of a column is a category, so it is
+    # `--ks3-data`. The BARS below follow the same split as the greens: the
+    # figure is text and takes the text token, the bar is a fill.
+    dict(name="B11 advantage-bench · the column's worst is the data colour and says so",
          on=B11_ADV,
          sel='[data-ab-envpanel]:not([hidden]) .ks3-ab-chance[data-ab-rank="worst"]',
-         props={"color": "#FFC53D", "font-family": "DM Mono",
+         props={"color": "#8FB7FF", "font-family": "DM Mono",
                 "font-size": "16px"}),
+    # ⊕ NEW under MRB-252 — the two ranked BARS were never registered at all,
+    # so the re-point could have moved the figure and left the bar amber and
+    # nothing would have said so. Both ends of the encoding, now.
+    dict(name="B11 advantage-bench · the best bar is the mark green fill",
+         on=B11_ADV,
+         sel='[data-ab-envpanel]:not([hidden]) .ks3-ab-bar[data-ab-rank="best"]',
+         props={"background-color": "#12A150"}),
+    dict(name="B11 advantage-bench · the worst bar is the data fill, not the alert",
+         on=B11_ADV,
+         sel='[data-ab-envpanel]:not([hidden]) .ks3-ab-bar[data-ab-rank="worst"]',
+         props={"background-color": "#8FB7FF"}),
     dict(name="B11 advantage-bench · an unranked figure is muted mono",
          on=B11_ADV,
          sel="[data-ab-envpanel]:not([hidden]) .ks3-ab-chance:not([data-ab-rank])",
@@ -5141,7 +5289,7 @@ COMPONENTS = [
     dict(name="B11 pressure-bench · a top-band outcome is green",
          on=B11_PRESS, drive="b11-combinations-tried",
          sel='[data-pb-cell]:not([hidden]) .ks3-pb-outpct[data-pb-band="ok"]',
-         props={"color": "#12A150"}),
+         props={"color": "#40DD84"}),
     dict(name="B11 pressure-bench · a top-band bar is the green fill",
          on=B11_PRESS, drive="b11-combinations-tried",
          sel='[data-pb-cell]:not([hidden]) .ks3-pb-bar[data-pb-band="ok"]',
@@ -5152,9 +5300,14 @@ COMPONENTS = [
          on=B11_BLIGHT, sel=".ks3-bb-tabslabel",
          props={"color": "#C6B9A7", "font-family": "DM Mono",
                 "font-size": "14px", "text-transform": "uppercase"}),
-    dict(name="B11 blight-bench · the chosen field is the alert ground",
+    # ⊕ MRB-252 (RULED) — "which field am I looking at" is the plainest
+    # selection use in the key stage, so it is the amber that moves. Ink on
+    # `--ks3-data` is 8.18:1, better than ink on the alert had to be, and the
+    # 44px target is asserted in the same row so a re-colour cannot quietly
+    # take the tap size with it.
+    dict(name="B11 blight-bench · the chosen field is the data ground, not the alert",
          on=B11_BLIGHT, sel='.ks3-bb-tab[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
+         props={"background-color": "#8FB7FF", "color": "#221E1B",
                 "min-height": "44px"}),
     dict(name="B11 blight-bench · an unchosen field stays on the block ground",
          on=B11_BLIGHT, sel='.ks3-bb-tab[aria-pressed="false"]',
@@ -5197,6 +5350,15 @@ COMPONENTS = [
          on=B11_BLIGHT,
          sel='[data-bb-fieldpanel]:not([hidden]) [data-bb-surv="before"] .ks3-bb-bar',
          props={"background-color": "#12A150"}),
+    # ⊕ NEW under MRB-252 · audit 3.4 — the survivor VALUE beside that bar was
+    # one of the four measured violations (16px/400 at 3.48:1) and had no row
+    # of its own; only the bar did. A fill and the text on top of it are two
+    # different contrast questions and now they are two different rows.
+    dict(name="B11 blight-bench · the survivor figure is the on-dark green, not the fill",
+         on=B11_BLIGHT,
+         sel='[data-bb-fieldpanel]:not([hidden]) [data-bb-surv="before"] .ks3-bb-value[data-bb-band="ok"]',
+         props={"color": "#40DD84", "font-family": "DM Mono",
+                "font-size": "16px"}),
     dict(name="B11 blight-bench · the release button is inverted on ink",
          on=B11_BLIGHT, sel=".ks3-bb-run",
          props={"background-color": "#FBF3E6", "color": "#221E1B",
@@ -5301,11 +5463,29 @@ CONTRAST = [
          drive="activity-chosen",
          fg='.ks3-check .ks3-option[aria-pressed="true"] .ks3-opt-label',
          bg='.ks3-check .ks3-option[aria-pressed="true"]', need=4.5),
+    # ⊕ MRB-257 · audit 3.19 — THE BAR MOVES FROM 3.0 TO 4.49, AND 4.49 IS NOT
+    # A ROUNDED 4.5. It is the CEILING of this pairing, measured: `--ks3-ink`
+    # #221E1B on `--ks3-accent` #E4572E is 4.490975:1, and #221E1B is the
+    # darkest ink the key stage has. No implementation choice reaches AA here.
+    #
+    # Why not leave it at R1's 3.0 mark bar: this badge draws the letter
+    # A/B/C/D at 15px/800, which is a letter a student reads, and bold under
+    # 18.66px is not large text. At 3.0 the row passed at 3.34:1 — cream on the
+    # accent — while `--ks3-accent`'s own annotation read "LARGE TEXT ONLY.
+    # Never body size". The gate was licensing exactly what the token forbade.
+    #
+    # Why not 4.5: the ruled fix would then fail by nine thousandths and the
+    # only ways to pass would be to change `--ks3-accent` itself or to stop
+    # filling the badge with it — both brand decisions, both Mide's, neither
+    # this pass's to take. Pinning the ceiling is the strongest honest
+    # assertion available: cream (3.34) fails it, and any future drift in the
+    # accent that lowers the pairing fails it too. ⚑ FOR MIDE: the accent fill
+    # cannot carry body-size text at AA. Reported, not hidden.
     dict(name="MARK activity CHOSEN badge letter on accent", on=LESSON,
          drive="activity-chosen",
          fg='.ks3-check .ks3-option[aria-pressed="true"] .ks3-opt-mark',
          bg='.ks3-check .ks3-option[aria-pressed="true"] .ks3-opt-mark',
-         need=3.0),
+         need=4.49),
     dict(name="dark-block option label on dark panel", on=LESSON,
          fg=".ks3-dark .ks3-option .ks3-opt-label",
          bg=".ks3-dark .ks3-option", need=4.5),
@@ -5360,12 +5540,18 @@ CONTRAST = [
     # it: the gate proves the control is really disabled, and if a future
     # change leaves spent options clickable, the exemption stops applying and
     # 2.63:1 becomes a failure naming this row.
+    # ⊕ MRB-257 · audit 3.21 — THE EXEMPTION GOES, because the thing it
+    # excused is fixed. This row measured 2.63:1 and passed by claiming WCAG
+    # 1.4.3's inactive-component carve-out, which was true and was also the
+    # reason nobody looked again. `--ks3-ink-faint` on the band is 4.75:1, so
+    # the pair now clears the bar a letter needs on merit — and the escape
+    # hatch is removed rather than left standing, so it cannot quietly cover a
+    # regression back to 2.63.
     dict(name="MARK ladder SPENT badge glyph on band", on=LESSON,
          drive="ladder-answered",
          fg='.ks3-rung[data-mode="marked"] .ks3-option.is-spent .ks3-opt-mark',
          bg='.ks3-rung[data-mode="marked"] .ks3-option.is-spent .ks3-opt-mark',
-         need=3.0,
-         exempt_if_disabled='.ks3-rung[data-mode="marked"] .ks3-option.is-spent'),
+         need=4.5),
     dict(name="ladder feedback CORRECT text on ok tint", on=LESSON,
          drive="ladder-answered",
          fg=".ks3-feedback.is-correct", bg=".ks3-feedback.is-correct", need=4.5),
@@ -5496,6 +5682,144 @@ CONTRAST = [
     dict(name="MARK focus ring on page ground", on=LESSON,
          fg=".ks3-check .ks3-option", bg="body", need=3.0,
          prop="outline-color", force_focus=True),
+
+    # ═══ MRB-257 · the WS3 contrast batch ═══════════════════════════════
+    #
+    # Every pair below is a surface the audit measured failing and no row in
+    # this list was watching. That is the finding under the finding: the gate
+    # had 56 pairs, all on the page shell and the shared block vocabulary, and
+    # none on an instrument's readouts — which is exactly where a student reads
+    # a number and where six of these live.
+    #
+    # `need` is R1's: 4.5 for text, 3.0 for a state-bearing mark. Where a value
+    # is drawn at 26px/800 and therefore qualifies as large text, it is STILL
+    # registered at 4.5 here, because these all clear it comfortably and a bar
+    # set at the legal minimum lets a regression halfway back pass in silence.
+
+    # ── the three tokens MRB-252 ruled, each on a page that renders it ──
+    #
+    # ⚖️ `--ks3-ok-dark` IS PINNED ON THE TILE, NOT THE PANEL. b9-06's figures
+    # sit on `.ks3-qb-figures`, an rgba(255,255,255,.06) well that composites
+    # to #4A433C — one step lighter than `--ks3-dark-panel`, and the step that
+    # took the old green under even the LARGE-text bar at 2.89:1. A token
+    # measured only against the darker ground would have passed a value that
+    # fails here, so the binding ground is the one that binds.
+    dict(name="TOKEN --ks3-ok-dark · revealed total on the b9-06 figures tile",
+         on=B9_QUADRAT, drive="b9-field-revealed",
+         fg='[data-qb-figure="real"][data-revealed] .ks3-qb-figvalue',
+         bg=".ks3-qb-figures", need=4.5),
+    dict(name="TOKEN --ks3-ok-dark · predator readout on the dark panel",
+         on=B9_CYCLE, fg='.ks3-cy-live[data-series="pred"]',
+         bg=".ks3-cy-panel", need=4.5),
+    dict(name="TOKEN --ks3-ok-dark · top-band outcome on the b11-03 panel",
+         on=B11_PRESS, drive="b11-combinations-tried",
+         fg='[data-pb-cell]:not([hidden]) .ks3-pb-outpct[data-pb-band="ok"]',
+         bg="[data-pb-cell]:not([hidden])", need=4.5),
+    # ⚖️ `--ks3-data` CARRIES A DUAL CONSTRAINT and both ends are measured: it
+    # is text on ink on b11-01, and a FILL that ink sits on on b11-04. A colour
+    # that only ever passed one of those would be half a token.
+    dict(name="TOKEN --ks3-data · the worst-in-column figure, as text on ink",
+         on=B11_ADV,
+         fg='[data-ab-envpanel]:not([hidden]) .ks3-ab-chance[data-ab-rank="worst"]',
+         bg="[data-ab-envpanel]:not([hidden])", need=4.5),
+    dict(name="TOKEN --ks3-data · ink ON it, on the chosen field tab",
+         on=B11_BLIGHT, fg='.ks3-bb-tab[aria-pressed="true"]',
+         bg='.ks3-bb-tab[aria-pressed="true"]', need=4.5),
+    # ⚖️ `--ks3-ok-text` did not change value and is registered anyway. MRB-252
+    # widened its annotation from "5.9:1 on tint" to a claim about EVERY light
+    # ground it lands on, and an annotation that is law needs a measurement
+    # behind it. The ladder's correct-answer verdict is the ground it lands on
+    # most often and the one a student reads at the moment it matters.
+    dict(name="TOKEN --ks3-ok-text · the correct verdict on its own tint",
+         on=LESSON, drive="ladder-answered",
+         fg=".ks3-feedback.is-correct", bg=".ks3-feedback.is-correct", need=4.5),
+
+    # ── audit 3.2 · the comparison captions, on the phone layout ──
+    # Below 880px the header row is `display: none` and these four strings are
+    # the only thing saying which column is which. They measured 1.78:1.
+    dict(name="comparison column caption on the dark table (audit 3.2)",
+         on=B5_CMP, fg=".ks3-dark .ks3-cmp-cap", bg=".ks3-dark .ks3-cmp-table",
+         need=4.5),
+
+    # ── audit 3.6 · the section rail, which had no row at all ──
+    # A live `<a>`, and on desktop the only in-page navigation there is. Both
+    # halves: the 11px mono label and the 16px/800 chip, which is bold under
+    # 18.66px and so needs 4.5 and not 3.0.
+    #
+    # ⚠️ `:not(.is-current):not(.is-done)` IS LOAD-BEARING AND WAS FOUND BY
+    # MUTATION. Written as a bare `.ks3-rail-label` these two rows measured
+    # 15.02:1 and 16.14:1 and could not be made to fail: `wireRail` marks the
+    # FIRST stop `is-current` on load, `querySelector` returns the first match,
+    # and `is-current` has always been ink. So the rows were measuring the one
+    # state of the rail that already passed, and reverting the fix left them
+    # green — an assertion incapable of failing, which is the exact defect
+    # `ks3_mutation.py` exists to expose. The audit's finding is about the
+    # stops a student has NOT reached, and now so is the row.
+    dict(name="rail label, stage not yet reached (audit 3.6)", on=LESSON,
+         fg=".ks3-rail li:not(.is-current):not(.is-done) .ks3-rail-label",
+         bg="body", need=4.5),
+    dict(name="rail chip number, stage not yet reached (audit 3.6)", on=LESSON,
+         fg=".ks3-rail li:not(.is-current):not(.is-done) .ks3-rail-chip",
+         bg=".ks3-rail li:not(.is-current):not(.is-done) .ks3-rail-chip",
+         need=4.5),
+
+    # ── audit 3.18 · the commit instruction on a cream gate ──
+    # Formally this is large text (22px/700) and the requirement is 3:1; it is
+    # registered at 4.5 because the fix lands 6.43:1 and because it is a
+    # SENTENCE the block asks the student to act on, not a number. A bar at 3.0
+    # would let it drift back to 3.5:1 without a word.
+    dict(name="switch-bench commit instruction on cream (audit 3.18)",
+         on=B2_SKEL, fg=".ks3-switch-predict .ks3-commit",
+         bg=".ks3-switch-panel", need=4.5),
+
+    # ── audit 3.13 · the rule card's badge, the accent's other body-size use ──
+    # ⚑ 4.49, not 4.5, and for the reason set out beside the option badge
+    # above: `--ks3-ink` on `--ks3-accent` measures 4.490975:1 and that is the
+    # ceiling of the pairing, not a rounding of AA. Cream, which is what this
+    # shipped as, is 3.34 and fails the row.
+    dict(name="rule-card badge initials on the accent fill (audit 3.13)",
+         on=B10_MODEL, fg=".ks3-rule-badge", bg=".ks3-rule-badge", need=4.49),
+
+    # ── audit 3.5 / 3.7 / 3.8 · the dimmed states, as RATIOS ──
+    #
+    # These are the rows the old contrast layer could not have carried at all.
+    # It read `color` and a stack of background colours and knew nothing about
+    # `opacity`, so a row dimmed to 45% reported the undimmed 6.08:1 and passed
+    # while a browser painted 2.48:1. Now that `_flatten` and `measure_d`
+    # composite the opacity chain, the dim states can be asserted as what they
+    # actually are — a contrast number — and not only as the opacity value that
+    # produces it. Both are kept: the `props` opacity rows say WHAT the dim is,
+    # these say what it COSTS, and a change to the ground under a row would
+    # move one and not the other.
+    #
+    # The text is the science itself: "Algae", "Water fleas", "A chromosome",
+    # "10% of the original", and it is on screen from the first paint because
+    # the whole chain is drawn from the start so a student can see how far
+    # there is to go.
+    dict(name="an unreached chain level's role, dimmed (audit 3.5)",
+         on=B9_CHAIN,
+         fg=".ks3-cl-levels:not([hidden]) .ks3-cl-level:not([data-shown]) .ks3-cl-levelrole",
+         bg=".ks3-cl-panel", need=4.5),
+    dict(name="an unreached food-chain link's number, dimmed (audit 3.7)",
+         on=B7_TRACE,
+         fg=".ks3-tb-food:not([hidden]) .ks3-tb-link:not([data-shown]) .ks3-tb-num",
+         bg=".ks3-tb-panel", need=4.5),
+    # The A/B/C/D letter on a fault the student did NOT pick, after "Check it"
+    # — the state in which they read what was wrong. 2.70:1 as it shipped, and
+    # it needed both halves of the fix: the dim raised AND the letter moved off
+    # `--ks3-on-dark-muted`, because .65 alone would only have reached ~3.5.
+    dict(name="a spent fault's letter, dimmed (audit 3.8)",
+         on=B6_CLAIMS, drive="claims-checked",
+         fg='.ks3-ccheck-fault[disabled][aria-pressed="false"] .ks3-ccheck-mark',
+         bg=".ks3-ccheck-panel", need=4.5),
+    # ⊖ NO ROW FOR audit 3.21's LOCKED BUTTONS, deliberately. WCAG 1.4.3
+    # exempts an inactive component and the audit says so twice; asserting 4.5
+    # on a disabled control would be this gate inventing a requirement, and the
+    # next person to meet it would have to argue with it rather than with the
+    # standard. What holds 3.21 is the `opacity: 0.65` props rows, which pin
+    # the decision that was actually taken. Measured after the fix for the
+    # record: the locked reveal button paints #FCF6EB on #6F6C67 = 4.86:1,
+    # from 2.71:1.
 ]
 
 
@@ -6333,16 +6657,39 @@ window.__ks3 = {
   // composite translucent layers instead of guessing. A veil at 0.85 alpha is
   // not "opaque enough to ignore" — it shifts the ground it sits on, and the
   // locked simulation cover is exactly that case.
+  //
+  // ⊕ MRB-257 — AND THE `opacity` OF EVERY LEVEL WITH IT. This used to return
+  // background colours alone, which makes the gate blind to the single most
+  // common way KS3 loses contrast: an ancestor at `opacity: .45`. CSS renders
+  // such an element's whole subtree into a group and composites the GROUP, so
+  // a row dimmed to .45 paints `--ks3-on-dark-muted` as #7B7266 and not
+  // #C6B9A7 — 2.48:1 rather than 6.08:1, on text a student is meant to read.
+  // Audit findings 3.5, 3.7, 3.8 and 3.21 are all that one mechanism, 40-odd
+  // elements of it, and not one of them could have been caught here.
   groundStack: function (sel) {
     var el = document.querySelector(sel);
     if (!el) { return null; }
     var out = [];
     while (el) {
-      out.push(getComputedStyle(el).backgroundColor);
+      var cs = getComputedStyle(el);
+      out.push({bg: cs.backgroundColor, op: cs.opacity});
       el = el.parentElement;
     }
-    out.push(getComputedStyle(document.body).backgroundColor);
+    out.push({bg: getComputedStyle(document.body).backgroundColor, op: "1"});
     return out;
+  },
+  // The product of `opacity` from an element out to the root. What a text
+  // colour's own alpha has to be multiplied by before it is composited.
+  opacityChain: function (sel) {
+    var el = document.querySelector(sel);
+    if (!el) { return null; }
+    var k = 1;
+    while (el) {
+      var v = parseFloat(getComputedStyle(el).opacity);
+      if (!isNaN(v)) { k *= v; }
+      el = el.parentElement;
+    }
+    return k;
   },
   token: function (sel, name) {
     var el = document.querySelector(sel) || document.body;
@@ -10303,6 +10650,43 @@ DRIVES = {
         return type + " drew a bin with no bar at all";
       }
     }
+    // ⊕ MRB-257 · audit 5.4 — AND THE HEIGHTS ARE THE RATIO THEY WERE
+    // AUTHORED AS. This was the gap under the gap: the width rules above are
+    // measured on painted geometry and the HEIGHTS were not measured at all,
+    // so `.ks3-vp-bar` inheriting `flex-shrink: 1` inside a 146px column
+    // whose labels took 42.4px drew every bar authored above 70.96% at
+    // exactly 103.6px. Height's 81.25% / 100% / 75% all rendered 103.6 /
+    // 103.6 / 103.6, under a verdict reading "a smooth hump... most people
+    // are near the middle", over a flat-topped plateau. Eye colour drew a
+    // true 2.0 ratio as 1.42.
+    //
+    // The claim is a RELATION, like the widths above: the tallest bar sets
+    // the scale, and every other bar stands in the same proportion to it that
+    // its authored percentage does. That cannot be a `props` row — it is two
+    // measurements — and it is what a student reads the chart FOR.
+    var pcts = [], pxs = [], topPct = 0, topPx = 0;
+    for (var h = 0; h < cols.length; h++) {
+      var barEl = cols[h].querySelector('.ks3-vp-bar');
+      var pc = parseFloat(barEl.style.height);
+      if (!(pc > 0)) {
+        return type + " bin " + h + " carries no authored height (style.height "
+          + JSON.stringify(barEl.style.height) + "), so the ratio the chart "
+          + "claims cannot be checked against anything";
+      }
+      var px = barEl.getBoundingClientRect().height;
+      pcts.push(pc); pxs.push(px);
+      if (pc > topPct) { topPct = pc; topPx = px; }
+    }
+    for (var h2 = 0; h2 < cols.length; h2++) {
+      var want = (pcts[h2] / topPct) * topPx;
+      if (Math.abs(pxs[h2] - want) > 1.5) {
+        return type + " bin " + h2 + " is authored at " + pcts[h2] +
+          "% of a " + topPct + "% tallest bar and is DRAWN at " +
+          pxs[h2].toFixed(1) + "px against the tallest bar's " +
+          topPx.toFixed(1) + "px — it should be " + want.toFixed(1) +
+          "px. The chart is not showing the distribution it was given.";
+      }
+    }
     seen[type] = true;
     return "";
   }
@@ -12820,18 +13204,34 @@ def check_rendered_glyphs(page):
 
 
 def _flatten(stack):
-    """Composite a background stack (innermost first) into one opaque colour."""
+    """Composite a background stack (innermost first) into one opaque colour.
+
+    ⊕ MRB-257 — the stack is now a list of `{"bg": ..., "op": ...}` and the
+    `opacity` matters. CSS paints an element with `opacity < 1` by rendering
+    its subtree into a group and compositing the GROUP, so every background
+    inside that element is multiplied by it — and by every dimmed ancestor
+    above it. Walking outermost-inwards is what makes that expressible: at each
+    level the effective alpha is the background's own alpha times the opacity
+    of that level AND everything outside it.
+
+    The old version read background colours only and would have reported the
+    grounds under audit 3.5's four instruments at full strength, on rows that
+    paint at 45% — which is the "read it from the source" error the audit
+    exists to catch, committed by the gate meant to catch it.
+    """
     if not stack:
         return None
-    layers = [parse_rgba(s) for s in stack]
-    layers = [l for l in layers if l]
-    base = None
-    for l in reversed(layers):
-        if l[1] >= 0.999:
-            base = l[0]
-        elif base is not None:
-            base = over(l, base)
-    return base
+    ops = [float(n.get("op") or 1) for n in stack]
+    ground = (255, 255, 255)
+    for k in range(len(stack) - 1, -1, -1):
+        bg = parse_rgba(stack[k].get("bg"))
+        if not bg or bg[1] <= 0:
+            continue
+        eff = bg[1]
+        for j in range(k, len(stack)):
+            eff *= ops[j]
+        ground = over((bg[0], eff), ground)
+    return ground
 
 
 def _awaiting_pages(ks3_root):
@@ -13015,6 +13415,142 @@ def mutation_test_correct_state(ks3_root, browser_mod):
                   "component: %s" % (len(caught), "; ".join(caught[:4])))
 
 
+# ── MRB-229 · the 390px reflow gate ──────────────────────────────────────
+#
+# Three pages, one assertion: `document.scrollWidth === document.clientWidth`.
+# Every KS3 page scrolled sideways on a 390px phone until this run — B1 pushed
+# the document to 483px, B2 to 572, b9-04 to 577 — and the cause was the header
+# trail on all 294 of them. Rainford's students arrive in September and most
+# meet the platform on a phone; a page that scrolls sideways on open reads as
+# broken before a word of science is read.
+#
+# ⚠️⚠️ THE VIEWPORT MUST COME FROM `Emulation.setDeviceMetricsOverride`, WHICH
+# IS WHAT `page.set_viewport()` SENDS. This is stated in the ticket, in
+# ks3_browser.py's header and in the note beside `check_range_binding`, and it
+# is the single most likely way to ship a fake pass here: shrinking a container
+# does not fire a `max-width` media query — the viewport is still wide — so a
+# probe that resizes an element instead measures a layout the truncation rule
+# never applied to, and passes silently over the broken one. Headless Chrome
+# also FLOORS `--window-size` at about 500px, so a `--window-size=390` run
+# would report a 500px layout and find nothing.
+#
+# One page of each kind, because they are three different header components:
+# a lesson carries `<ol class="ks3-trail">`, a unit index and the hub carry
+# `<nav class="ks3-crumbs">`, and the truncation rule has to hold for both.
+# The lesson is b9-04, which carries the longest trail in Biology and was the
+# worst measured page in the key stage.
+_REFLOW_PAGES = (
+    (B9_SHELF, "lesson · the longest trail in Biology"),
+    (_B9_UNIT + "index.html", "unit index"),
+    (LANDING, "browse hub"),
+)
+
+
+def check_reflow(browser_mod, url_for, rel, label, width=390):
+    """Returns a list of problems. One page, one viewport, measured."""
+    problems = []
+    with browser_mod.Browser() as b:
+        page = b.page(url_for(rel))
+        page.set_viewport(width, 844)
+        got = page.eval(
+            "(function(){var d=document.documentElement;"
+            " var t=document.querySelector('.ks3-trail,.ks3-crumbs');"
+            " var wide=[];var all=document.querySelectorAll('*');"
+            " for(var i=0;i<all.length && wide.length<4;i++){"
+            "   var e=all[i];"
+            "   if(e.closest('.ks3-figure-scroll')){continue;}"
+            "   var r=e.getBoundingClientRect();"
+            "   if(r.width>0 && r.right>d.clientWidth+0.5){"
+            "     wide.push((e.tagName+'.'+(typeof e.className==='string'?e.className:''))"
+            "       .slice(0,52)+' right='+r.right.toFixed(1));}}"
+            # A box can sit inside the viewport and still push the document
+            # out, because its own CONTENT overflows it — a `nowrap` crumb in
+            # a shrunk flex item does exactly that, and a rect-only walk finds
+            # nothing to name. Asked as a second question rather than folded
+            # into the first, so the message says which kind it is.
+            " if(!wide.length){for(var k=0;k<all.length && wide.length<4;k++){"
+            "   var x=all[k];"
+            "   if(x.closest('.ks3-figure-scroll')){continue;}"
+            "   if(x.clientWidth>0 && x.scrollWidth>x.clientWidth+0.5){"
+            "     wide.push('content overflows '"
+            "       +(x.tagName+'.'+(typeof x.className==='string'?x.className:'')).slice(0,44)"
+            "       +' scrollWidth='+x.scrollWidth+' clientWidth='+x.clientWidth);}}}"
+            " return {sw:d.scrollWidth, cw:d.clientWidth, iw:window.innerWidth,"
+            "         nav:(document.querySelector('header.ks3-nav')||{getBoundingClientRect:"
+            "              function(){return{height:-1};}}).getBoundingClientRect().height,"
+            r"         crumbs: t ? t.textContent.replace(/\s+/g,' ').trim() : null,"
+            "         shown: t ? [].slice.call(t.children).filter(function(c){"
+            "              return getComputedStyle(c).display !== 'none';}).length : -1,"
+            "         wide: wide};})()")
+    # The override itself is asserted. A run where `innerWidth` came back at
+    # Chrome's ~500px floor would "pass" this gate on every page while proving
+    # nothing at all about a phone.
+    if got["iw"] != width:
+        problems.append(
+            "REFLOW: the device-metrics override did not take on /%s — asked "
+            "for %dpx and innerWidth is %s. Every number below would be "
+            "measured at the wrong viewport, so none of them is reported."
+            % (rel, width, got["iw"]))
+        return problems
+    if got["sw"] > got["cw"]:
+        problems.append(
+            "REFLOW: /%s (%s) scrolls sideways at %dpx — scrollWidth %s vs "
+            "clientWidth %s. Overflowing: %s"
+            % (rel, label, width, got["sw"], got["cw"],
+               "; ".join(got["wide"]) or "nothing found by either walk, so "
+               "the overflow is a margin, a pseudo-element or a shadow"))
+    # The truncation itself, not only its consequence. A page could stop
+    # overflowing because someone shrank the type, and this gate would smile.
+    if got["shown"] > 3:
+        problems.append(
+            "REFLOW: /%s (%s) shows %d crumb elements at %dpx — MRB-229 rules "
+            "unit and page only, which is three: the crumb, its separator and "
+            "the current page. Reading: %r"
+            % (rel, label, got["shown"], width, got["crumbs"]))
+    return problems
+
+
+def check_figure_cue(browser_mod, url_for, rel):
+    """Audit 3.9 — the edge fade is on when the figure is scrollable, off when
+    it is not. Both ends, because a mask that is always on is not a cue."""
+    problems = []
+    JS = ("(function(){var f=document.querySelector('.ks3-figure-scroll');"
+          " if(!f){return null;}var cs=getComputedStyle(f);"
+          " return {cw:f.clientWidth, sw:f.scrollWidth,"
+          "         mask:(cs.maskImage||cs.webkitMaskImage||'none')};})()")
+    with browser_mod.Browser() as b:
+        page = b.page(url_for(rel))
+        page.set_viewport(390, 844)
+        narrow = page.eval(JS)
+        page.set_viewport(1440, 900)
+        wide = page.eval(JS)
+    if narrow is None or wide is None:
+        problems.append(
+            "FIGURE CUE: /%s renders no `.ks3-figure-scroll`, so audit 3.9's "
+            "assertion did not run. It is registered on this page because this "
+            "page carries the two-panel moth figure." % rel)
+        return problems
+    if not (narrow["sw"] > narrow["cw"]):
+        problems.append(
+            "FIGURE CUE: /%s does not overflow at 390px (%s in %s), so the "
+            "premise of audit 3.9 has changed and the fade needs re-thinking "
+            "rather than keeping." % (rel, narrow["sw"], narrow["cw"]))
+    elif narrow["mask"] == "none":
+        problems.append(
+            "FIGURE CUE: /%s hides %d of %dpx of the figure at 390px and draws "
+            "NO edge fade. The visible window ends exactly at the panel "
+            "boundary, so it reads as a complete diagram — while the caption "
+            "under it talks about the panel on the right."
+            % (rel, narrow["sw"] - narrow["cw"], narrow["sw"]))
+    if wide["sw"] <= wide["cw"] and wide["mask"] != "none":
+        problems.append(
+            "FIGURE CUE: /%s draws the edge fade at 1440px, where the figure "
+            "fits (%s in %s). A fade that is always there says nothing; the "
+            "threshold has detached from the condition it stands for."
+            % (rel, wide["sw"], wide["cw"]))
+    return problems
+
+
 def run_browser_layers(ks3_root, browser_mod):
     """Layers C and D. Returns (problems, style_rows, contrast_rows).
 
@@ -13143,7 +13679,33 @@ def run_browser_layers(ks3_root, browser_mod):
                                % (fg_sel, spec.get("prop", "color")))
             stack = page.eval("window.__ks3.groundStack(%r)" % bg_sel)
             bg = _flatten(stack)
-            f, g = parse_rgb(fg), bg
+            # ⊕ MRB-257 — the FOREGROUND is dimmed by the same ancestors the
+            # ground is. Reading `color` and stopping there is how a 2.48:1 row
+            # measures 6.08:1 and passes.
+            #
+            # ⚠️ AND IT COMPOSITES OVER THE BACKDROP BEHIND ITS OWN ELEMENT,
+            # NOT OVER THE ELEMENT'S PAINTED BACKGROUND. This is the one place
+            # the naive model is wrong in a way that matters. CSS renders an
+            # element with `opacity` by drawing its subtree into a group — the
+            # background first, the glyphs over it — and compositing the whole
+            # GROUP once. Inside the group the glyph REPLACES the background,
+            # so the glyph and the background each land on the same backdrop
+            # and neither lands on the other. Compositing the glyph over the
+            # already-composited background applies the opacity twice and
+            # reports a locked control at 3.02:1 that a browser paints at
+            # 4.86:1 — a number that is wrong in the safe direction today and
+            # would be wrong in the unsafe one the moment a light glyph sat on
+            # a dark dimmed fill.
+            fg_op = page.eval("window.__ks3.opacityChain(%r)" % fg_sel)
+            fg_stack = page.eval("window.__ks3.groundStack(%r)" % fg_sel)
+            backdrop = _flatten(fg_stack[1:]) if fg_stack else bg
+            fg_rgba = parse_rgba(fg)
+            g = bg
+            if fg_rgba is not None and backdrop is not None:
+                a = fg_rgba[1] * (fg_op if fg_op is not None else 1.0)
+                f = over((fg_rgba[0], a), backdrop) if a < 0.999 else fg_rgba[0]
+            else:
+                f = parse_rgb(fg)
             if f is None or g is None:
                 problems.append("CONTRAST: %s — could not resolve (fg=%r bg=%r)"
                                 % (spec["name"], fg, bg))
@@ -13319,6 +13881,40 @@ def run_browser_layers(ks3_root, browser_mod):
                              "behavioural assertions", "0 problems",
                              "%d problem(s)" % len(audit_problems),
                              not audit_problems))
+        # ── MRB-229 · zero horizontal overflow at a true 390px ──
+        # Its own loop and its own fresh browser per page, because it changes
+        # the viewport and every measurement above assumes the default one.
+        def _url(rel):
+            return "http://127.0.0.1:%d/%s/%s" % (port, prefix, rel)
+
+        reflow_problems = []
+        for rel, label in _REFLOW_PAGES:
+            if not os.path.exists(os.path.join(ks3_root, rel)):
+                reflow_problems.append(
+                    "REFLOW: /%s (%s) is not in the built tree, so MRB-229's "
+                    "assertion did not run on it." % (rel, label))
+                continue
+            reflow_problems.extend(
+                check_reflow(browser_mod, _url, rel, label))
+        problems.extend(reflow_problems)
+        style_rows.append(
+            ("⊕ MRB-229 · no horizontal overflow at 390px (device metrics)",
+             "document.scrollWidth == clientWidth, on a lesson, a unit index "
+             "and the hub",
+             "0 problems across %d page(s)" % len(_REFLOW_PAGES),
+             "%d problem(s)" % len(reflow_problems),
+             not reflow_problems))
+
+        # ── audit 3.9 · the figure's edge cue, asserted at both ends ──
+        cue_problems = []
+        if os.path.exists(os.path.join(ks3_root, B11_SEL)):
+            cue_problems = check_figure_cue(browser_mod, _url, B11_SEL)
+        problems.extend(cue_problems)
+        style_rows.append(
+            ("⊕ audit 3.9 · the moth figure says it continues",
+             "edge fade present at 390px, absent at 1440px",
+             "0 problems", "%d problem(s)" % len(cue_problems),
+             not cue_problems))
     finally:
         server.shutdown()
 
