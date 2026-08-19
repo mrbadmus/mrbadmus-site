@@ -183,8 +183,8 @@ QUESTIONS = [
                 "are still rabbits. What keeps the rabbits from being wiped "
                 "out?",
         "options": [
-            {"text": "As rabbits become scarce the foxes go hungry, so fox "
-                     "numbers fall and the pressure comes off.",
+            {"text": "As rabbits get scarce foxes go hungry, so fox "
+                     "numbers fall and pressure eases.",
              "correct": True},
             {"text": "Foxes leave enough rabbits alive to breed, so that there "
                      "will be food next year.",
@@ -266,8 +266,8 @@ QUESTIONS = [
                     "foxes are still eating them. The ceiling is what they "
                     "reach when every fox is removed, which is a different "
                     "result."},
-            {"text": "The two populations have settled at a pair of numbers "
-                     "that hold each other in place.",
+            {"text": "The populations have settled at numbers that hold "
+                     "each other in place.",
              "correct": True},
         ],
         "figure": None,
@@ -301,8 +301,8 @@ QUESTIONS = [
                     "shared with the lynx and it does not explain why the lynx "
                     "peak trails the hare peak. The record is imperfect, not "
                     "invented."},
-            {"text": "The price of fur and the number of trappers working are "
-                     "in the line too, not just animals.",
+            {"text": "Fur prices and the number of trappers are in the "
+                     "line too, not just hares.",
              "correct": True},
         ],
         "figure": None,

@@ -94,7 +94,7 @@ QUESTIONS = [
                 "should the class have done?",
         "options": [
             {"text": "Agreed one rule for plants on the line before starting "
-                     "— usually count two sides and not the others.",
+                     "— count two sides, not all four.",
              "correct": True},
             {"text": "Let each person decide as they go, because over a whole "
                      "survey the differences even out.",
@@ -142,8 +142,8 @@ QUESTIONS = [
              "why": "Typical is a judgement you made by eye, so the sample is "
                     "only as good as your guess about the field — which is "
                     "the thing you set out to measure."},
-            {"text": "Lay two tape measures at right angles and place a "
-                     "quadrat wherever each random number pair lands.",
+            {"text": "Lay two tapes at right angles and place quadrats "
+                     "where random number pairs land.",
              "correct": True},
         ],
         "figure": None,
@@ -239,8 +239,8 @@ QUESTIONS = [
              "why": "Too few quadrats is a real problem, but a different one: "
                     "it makes an estimate wobble rather than lean. Here the "
                     "error is where they chose to look."},
-            {"text": "No — the area was chosen by looking, so the sample is "
-                     "biased however the quadrats fell inside it.",
+            {"text": "No — the area was chosen by eye, so the sample is "
+                     "biased whatever fell inside it.",
              "correct": True},
         ],
         "figure": None,

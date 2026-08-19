@@ -323,7 +323,7 @@ QUESTIONS = [
                     "which nutrients cereals supply and which ones they do "
                     "not."},
             {"text": "The calories were replaced, but the vitamins and "
-                     "minerals the lost crops carried were not.",
+                     "minerals in them were not.",
              "correct": True},
             {"text": "Nobody is going hungry, so the illness cannot have "
                      "anything to do with the diet.",
@@ -347,8 +347,8 @@ QUESTIONS = [
                 "do with each other, because neither one is food for the "
                 "other. Where does that argument fail?",
         "options": [
-            {"text": "Insect pollination is a service one group provides to "
-                     "another, and the crop depends on it.",
+            {"text": "Pollination is a service the insects provide, and "
+                     "the crop depends on it.",
              "correct": True},
             {"text": "It does not fail — a plant with no pollinator at all "
                      "still grows perfectly well.",

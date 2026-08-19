@@ -100,8 +100,8 @@ QUESTIONS = [
              "why": "That is rule one, effects travelling sideways. Rule "
                     "three is about time: the same effect, arriving long "
                     "after the removal."},
-            {"text": "Populations take seasons or years to respond, so the "
-                     "damage often appears after people stop watching",
+            {"text": "The response takes seasons or years, so damage "
+                     "appears once people stop watching",
              "correct": True},
         ],
         "figure": None,
@@ -113,7 +113,7 @@ QUESTIONS = [
                 "real ecosystem, how well does putting a species back work?",
         "options": [
             {"text": "It always works, because it is the same species going "
-                     "back in",
+                     "back into the same wood",
              "correct": False,
              "why": "The wood you put it back into is not the wood it left. "
                     "While it was gone another organism may have moved into "
@@ -124,8 +124,8 @@ QUESTIONS = [
              "why": "Too strong the other way. Reintroduction sometimes "
                     "succeeds — Yellowstone's wolves did. The point is that "
                     "it is unreliable, not that it is impossible."},
-            {"text": "Sometimes it works, but it is expensive, slow and often "
-                     "only partly successful",
+            {"text": "Sometimes it works, but it is slow, costly and often "
+                     "incomplete",
              "correct": True},
             {"text": "It works as long as you do it before the next breeding "
                      "season",
@@ -214,8 +214,8 @@ QUESTIONS = [
              "why": "The bees are in no food chain here and their removal "
                     "still empties the web. Feeding is not the only kind of "
                     "dependence."},
-            {"text": "The flowers are already grown, but they set almost no "
-                     "seed, so the next generation barely appears",
+            {"text": "The flowers are grown already, but they set almost "
+                     "no seed, so few will follow",
              "correct": True},
             {"text": "The wildflowers should have wilted within days, so the "
                      "student has misread the wood",
@@ -332,7 +332,7 @@ QUESTIONS = [
                 "oak did something different in kind. What?",
         "options": [
             {"text": "Removing the producer removes the energy itself, and "
-                     "there is no alternative producer at this scale",
+                     "no other producer replaces it",
              "correct": True},
             {"text": "The oak is the largest organism there, so more "
                      "organisms fall with it",
@@ -346,8 +346,8 @@ QUESTIONS = [
              "why": "Counting species misses it. The other five moved the "
                     "wood's energy around; this one took the supply away, so "
                     "the web empties instead of reorganising."},
-            {"text": "The oak had the most feeding lines, so the shock was "
-                     "absorbed most easily",
+            {"text": "The oak had the most feeding lines, so the web had "
+                     "the most alternative routes to absorb the shock",
              "correct": False,
              "why": "Alternative routes belong to the survivors, not to the "
                     "species that has gone. Losing the thing everything runs "

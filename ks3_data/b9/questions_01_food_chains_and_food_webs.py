@@ -165,7 +165,8 @@ QUESTIONS = [
         "text": "On the bench, the grass holds 10,000 kJ and about a tenth "
                 "passes on at each step. How much reaches the foxes?",
         "options": [
-            {"text": "1,000 kJ, because a tenth of 10,000 kJ is 1,000 kJ.",
+            {"text": "1,000 kJ, because a tenth of 10,000 kJ is 1,000 kJ, "
+                     "and the foxes eat rabbits.",
              "correct": False,
              "why": "That is what reaches the rabbits. The foxes are one step "
                     "further up, so take a tenth again: 100 kJ."},
@@ -174,7 +175,7 @@ QUESTIONS = [
              "why": "It is the other way round. About a tenth is passed ON, "
                     "and the other nine tenths leave the chain — mostly "
                     "warming the surroundings through respiration."},
-            {"text": "100 kJ, because the energy takes two steps: grass to "
+            {"text": "100 kJ, because it takes two steps: grass to "
                      "rabbits, then rabbits to foxes.", "correct": True},
             {"text": "10 kJ, because the field chain has four levels in it "
                      "altogether.", "correct": False,
@@ -335,9 +336,9 @@ QUESTIONS = [
                 "with eight links in it. What does this lesson's arithmetic "
                 "say about that claim?",
         "options": [
-            {"text": "Seven steps at a tenth each leave about a "
-                     "ten-millionth of what the plants captured — too little "
-                     "to feed an animal.", "correct": True},
+            {"text": "Seven steps at a tenth each leave a ten-millionth "
+                     "of the plants' energy — too little to live on.",
+             "correct": True},
             {"text": "It is possible in a rainforest, because rainforests "
                      "capture far more sunlight than other ecosystems do.",
              "correct": False,
