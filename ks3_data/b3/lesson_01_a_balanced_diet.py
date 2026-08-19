@@ -377,10 +377,9 @@ LESSON = {
          # Opens at ZERO. Design's own `plateProgress` also opens at zero
          # (`setCount` of an empty map), so nothing is corrected here.
          "head_counter": {"format": "{n} of 7 set", "total": 7, "start": 0},
-         "prompt": "For each of the seven, choose how much a 13-year-old needs "
-                   "in one day. Commit to all seven before you open the "
-                   "answers — a guess you did not make cannot be wrong, and a "
-                   "guess that is never wrong teaches you nothing.",
+         "prompt": "For each of the seven, choose how much a 13-year-old "
+                   "needs in one day. Commit to all seven before you open "
+                   "the answers.",
 
          # ⚠️ `miss_label` is AUTHORED rather than composed. Design writes
          # `'Actually ' + band.label.toLowerCase()`, which lower-cases an

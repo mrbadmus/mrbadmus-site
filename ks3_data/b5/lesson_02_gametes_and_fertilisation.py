@@ -323,9 +323,9 @@ STEPS = [
      "and muscle begin moving it along. It remains able to be fertilised for "
      "roughly a day."),
     ("Transfer and travel", "Vagina → uterus → oviduct",
-     "Semen is transferred into the vagina. Sperm swim through the cervix and "
-     "uterus into the oviduct — a journey of several inches for a cell 0.005 "
-     "mm long. Hundreds of millions set out; a few hundred arrive."),
+     "Semen is transferred into the vagina. Sperm swim through the cervix "
+     "and uterus into the oviduct — a journey of about 15 cm for a cell "
+     "0.005 mm long. Hundreds of millions set out; a few hundred arrive."),
     ("Fertilisation", "Oviduct — and nowhere else",
      "One sperm passes through the egg’s outer layer and its nucleus fuses "
      "with the egg’s nucleus. 23 plus 23 makes 46. The outer layer then "
@@ -803,6 +803,25 @@ LESSON = {
               "cta": "Ask about this lesson",
               "anchor": "s-fert"},
 
+    # ⊕ MRB-257 · audit 6.4 — RULED BY MIDE, and the wording is the ruling.
+    # The safeguarding blocks named no confidential service: a sweep for
+    # childline|0800 1111|nspcc|samaritans|papyrus|frank|shout across all 58
+    # rendered pages returned ZERO. This is a public site, and the student who
+    # most needs this block is reading it at 11pm, when "your school's PSHE
+    # materials" is not reachable. The service is Childline, the number is
+    # 0800 1111, joined by a spaced em dash. Shout and FRANK were offered and
+    # NOT taken up. The PSHE deferral STAYS as the daytime route — Childline is
+    # the out-of-hours one, not a replacement for it.
+    #
+    # ⚠️ THE TREATMENT IS THE RULING TOO (§8.10): a small `ks3-legal` foot line
+    # alongside the existing school-nurse / pharmacist / GP routes, NEVER a
+    # callout block. A helpline should be findable and quiet.
+    "safeguarding_note": "If any of this is about you or someone you know, "
+                         "talk to someone you trust — a parent or carer, a "
+                         "teacher, your school nurse, a pharmacist or your "
+                         "GP. Out of school hours: Childline — 0800 1111, "
+                         "free and confidential.",
+
     # ⊕ MRB-228's `convention_note`, not `safety_note` — see finding D in the
     # docstring. Design draws ONE plain `.ks3-legal` paragraph at the bottom
     # edge and nothing in it is a safety instruction: it is a note about how
@@ -812,12 +831,15 @@ LESSON = {
     # ⚠️ The figure id keeps its plain text; Design sets it in mono inside the
     # sentence and a foot line is escaped, so the id renders in body copy and
     # the words are unchanged.
+    # ⊕ MRB-257 · C4 / audit 4.6 — the "… is declared in the lesson record
+    # as `b5-…`, awaiting illustration" sentence was our own build metadata,
+    # printed to a student on eleven pages (§8.10). Cut. The measurement
+    # caveat before it is the part that was doing work and it stays.
     "convention_note": "Cell sizes are typical values: egg about 0.1 mm "
                        "diameter, sperm head about 0.005 mm. This is the "
                        "biology of the cells and the process; relationships "
-                       "and consent are covered in your RSE and PSHE lessons. "
-                       "The labelled gamete diagram is declared in the lesson "
-                       "record as b5-gametes-labelled, awaiting illustration.",
+                       "and consent are covered in your RSE and PSHE "
+                       "lessons.",
 
     # ── working scientifically (§5.7) ───────────────────────────────────────
     # The instrument is read-the-evidence-then-reason: six paired observations

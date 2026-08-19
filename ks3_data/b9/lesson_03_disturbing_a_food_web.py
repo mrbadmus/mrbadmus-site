@@ -347,8 +347,8 @@ WEB_LINES = [
 # line at all, and finally the producer — the one the web cannot absorb.
 SPECIES = [
     {"id": "ladybirds", "label": "Ladybirds",
-     "why": "They eat aphids and nothing else, so on a simple diagram they "
-            "have exactly one line coming out of them.",
+     "why": "On a simple diagram they have exactly one line coming out of "
+            "them.",
      "rounds": [
          {"title": "Straight away",
           "body": "Nothing is eating aphids except the blue tits, and aphids "

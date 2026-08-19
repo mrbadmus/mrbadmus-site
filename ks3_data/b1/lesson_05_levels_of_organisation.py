@@ -246,10 +246,8 @@ LESSON = {
          "eyebrow": "Zoom in · five stops",
          "heading": "From a whole plant to one cell, without leaving the "
                     "leaf",
-         "prompt": "Drag the slider. The orange box shows you where the "
-                   "next stop down is hiding inside this one — and the "
-                   "panel underneath says what this level can do that the "
-                   "level below cannot.",
+         "prompt": "Drag the slider. Each stop is hiding inside the one "
+                   "before it.",
          "slider": True,
          "slider_label": "Zoom level",  # visually hidden <label for>
          "start": "organism",  # the startZoom prop: organism | cell

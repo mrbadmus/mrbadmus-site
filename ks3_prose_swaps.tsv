@@ -1,0 +1,57 @@
+# ks3_prose_swaps.tsv — WS4 · PROSE BAR swap table
+# Source: docs/ks3/audits/2026-08-18-ks3-biology.md, section "WS4 · PROSE BAR" (audit dated 2026-08-18)
+# Generated 2026-08-19. Fields: id<TAB>page<TAB>old<TAB>new. Empty `new` means cut the string.
+# EXCLUDED deliberately: finding 4.6 / C4 (generator's job), C7 "Four rungs..." (site-wide,
+#   generator), the exercise-asthma-and-smoking [data-fault-hint] row (no replacement string given),
+#   and everything in the audit's "Left alone deliberately" list.
+4.1	alcohol-and-smoking.html	Which substance does which damage is b4-04’s subject, not this lesson’s.	
+4.2	the-photosynthesis-reaction.html	Change the conditions and watch three readouts: the rate of the reaction, the oxygen coming off, and what the iodine test says.	
+4.3	chromosomes-genes-and-dna.html	Each step down is inside the one above it. Watch the scale column: it drops by roughly a factor of a thousand at every step, and nothing new is added — you are looking at the same material, closer.	Each step down is inside the one above it, and nothing new is added — you are looking at the same material, closer.
+4.4	aerobic-respiration.html	Pick an amount of glucose and the ledger works out what your cells must take in and what must come out. Watch the two totals at the bottom, and watch the energy column, which is not part of either total.	The energy transferred is not part of either total.
+4.5	biodiversity-and-gene-banks.html	Every plant grown from cuttings of the same original. Highest yield per hectare, easiest to harvest by machine, and every plant has exactly the same weaknesses.	Every plant grown from cuttings of the same original, easiest to harvest by machine, and every plant has exactly the same weaknesses.
+4.7	when-diet-goes-wrong.html	Each column has a different cause, a different mechanism inside the body, and a different remedy. Reading across the rows is the point of this lesson.	Each of the three has a different cause, a different mechanism inside the body, and a different remedy. Compare them line by line.
+4.8	using-a-microscope.html	Your own table says it: at ×400 there are fewer than two cells in front of you and only a slice of each one is sharp.	Your own readout says it: at ×400 the field of view is 0.45 mm — fewer than two onion cells across — and the slice in focus is thinner than one cell.
+W4-01	natural-selection.html	Neither moth changed. The bark did. A bird hunting on the left panel finds the dark moth first; on the right it finds the pale one — and being found is the whole of the disadvantage.	Neither moth changed. The bark did. Being found is the whole of the disadvantage.
+W4-02	natural-selection.html	Choose the bark, run the generations, and watch the population change while no individual moth changes at all.	The population changes while no individual moth changes at all.
+W4-03a	natural-selection.html	Nine moths in ten are pale, which is where the British population started. Choose a bark and run some generations.	Nine moths in ten are pale, which is where the British population started.
+W4-03b	natural-selection.html	Half the moths are pale and half are dark — not where the British population started, but the clearest place to watch a change from. Choose a bark and run some generations.	Half the moths are pale and half are dark — not where the British population started, but the clearest place to watch a change from.
+W4-04	food-chains-and-food-webs.html	Ten thousand kilojoules of sunlight energy captured by the producers at the bottom. Step up one level at a time and watch what arrives — and where the rest of it went.	Watch what arrives at each level — and where the rest of it went.
+W4-05	food-chains-and-food-webs.html	Every arrow points the way the energy travels, from the eaten to the eater.	
+W4-06	predator-and-prey.html	Year zero: eight hundred rabbits, a hundred and twenty foxes. Nothing has happened yet. Run ten years and look at the shape before you read anything else.	Nothing has happened yet. Look at the shape before you read anything else.
+W4-07	predator-and-prey.html	Run a few decades and look at when	Look at when
+W4-08	sampling-an-ecosystem.html	A hundred-square field with daisies in it. The daisies are not spread evenly — they never are — and the real total is hidden until you have committed to an estimate.	The daisies are not spread evenly — they never are.
+W4-09	why-every-cell-respires.html	Five very different cells, including one from a plant. For each: what it spends energy on, how many mitochondria it carries, and what fails first when respiration stops.	Five very different cells, including one from a plant.
+W4-10	anaerobic-respiration-in-humans.html	Pick a pace and run it ten seconds at a time.	
+W4-11	variation-continuous-and-discontinuous.html	Data from one year group. Choose a characteristic, say what shape you expect before you look, then plot it — and read the cause line underneath, which is a separate question from the shape.	Data from one year group. The cause line underneath is a separate question from the shape.
+W4-12	when-the-environment-changes-extinction.html	Each species is described by four things that decide its resilience. Apply a pressure and see how it copes — and note how a species can be tough against one pressure and helpless against another.	A species can be tough against one pressure and helpless against another.
+W4-13	pollinators-and-food-security.html	Remove the insect pollinators and see what is left, then read what has happened to the two numbers underneath	Watch the two numbers underneath
+W4-14	toxic-build-up-in-a-food-chain.html	Choose how persistent the chemical is — whether the body can break it down — then climb the chain. The persistence dial is the one that decides everything.	Persistence — whether the body can break the chemical down — is the dial that decides everything.
+W4-15a	how-we-worked-out-dna.html	A always with T, C always with G — and the reason is width.	The reason is width.
+W4-15b	how-we-worked-out-dna.html	A and G are the big bases, C and T the small ones, so every rung is one big and one small	Every rung is one big and one small
+W4-16	how-we-worked-out-dna.html	Read the red lines.	
+W4-17	fermentation.html	Change one and the product changes with it — or you get nothing at all, which is just as informative.	Some settings give you nothing at all, which is just as informative.
+W4-18	fermentation.html	Sealed, warm and fed. Ethanol and carbon dioxide are being produced steadily.	
+W4-19	variation-and-competitive-success.html	Only the conditions change, and the survival column changes with them.	Only the conditions change.
+W4-20	biodiversity-and-gene-banks.html	A thousand potato plants. Choose how many varieties to plant them as, then release a blight that a few varieties happen to resist. Watch the harvest, and watch what is left to plant next year.	A thousand potato plants, and a blight that a few varieties happen to resist. Watch what is left to plant next year.
+W4-21	disturbing-a-food-web.html	They eat aphids and nothing else, so on a simple diagram they have exactly one line coming out of them.	On a simple diagram they have exactly one line coming out of them.
+W4-22	stomata-and-gas-exchange-in-plants.html	Respiration is the top bar. Photosynthesis is the second. What a sensor outside the leaf measures is only the difference — the third.	
+W4-23	leaves-built-for-the-job.html	Four dials, two readouts, and the readouts disagree. Push the rate up and watch the water loss follow it. The verdict at the bottom says where your leaf could actually live.	The two readouts disagree. Push the rate up and watch the water loss follow it.
+W4-24	the-menstrual-cycle.html	That movement is the point of this instrument.	
+W4-25	how-breathing-works.html	Move the diaphragm and this list fills in with real numbers.	
+W4-26	alveoli-built-for-exchange.html	— 1197 in, 477 out —	
+W4-27	human-reproductive-systems.html	, and the reveal says which	
+W4-28	biomechanics-forces-in-the-body.html	The rig gives you the load, and the two distances from the elbow. It does not tell you the force in the muscle, because that is the thing worth working out.	
+W4-29	levels-of-organisation.html	Drag the slider. The orange box shows you where the next stop down is hiding inside this one — and the panel underneath says what this level can do that the level below cannot.	Drag the slider. Each stop is hiding inside the one before it.
+W4-30	enzymes-in-digestion.html	Three counters run while the reaction runs: substrate left, product made, and enzyme molecules present. Watch all three, and watch what happens to the third one.	Watch all three counters, and watch what happens to the third one.
+W4-31	bacteria-in-the-gut.html	Each row is something your gut bacteria do that your own cells cannot. Switch it off to see what the host loses.	Every one of these is something your gut bacteria do that your own cells cannot.
+W4-32	a-balanced-diet.html	answers — a guess you did not make cannot be wrong, and a guess that is never wrong teaches you nothing.	answers.
+W4-33	energy-in-food-and-what-you-need.html	You will meet that in Physics, in the unit Energy at home.	
+W4-34	absorption-and-the-small-intestine.html	Note that the older number is still in print	The older number is still in print
+W4L-01	bacteria-in-the-gut.html	Bacteria in the large intestine synthesise vitamin K	Bacteria in the large intestine make vitamin K
+W4L-02	when-diet-goes-wrong.html	the distinction is not pedantry	the difference is not nit-picking
+W4L-03	when-diet-goes-wrong.html	Two people on identical diets can differ substantially	Two people on the same diet can differ a lot
+W4L-04	energy-in-food-and-what-you-need.html	the great majority of it	most of it
+W4L-05	when-the-environment-changes-extinction.html	the overwhelming majority died out	almost all died out
+W4L-06	pollinators-and-food-security.html	provide the majority of the calories	provide most of the calories
+W4L-07	biodiversity-and-gene-banks.html	a biodiversity of essentially nothing	a biodiversity of almost nothing
+W4L-08	variation-and-competitive-success.html	essentially every bird on it	almost every bird on it

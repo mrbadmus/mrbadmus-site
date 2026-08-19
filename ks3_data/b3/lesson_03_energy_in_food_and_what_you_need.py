@@ -215,11 +215,11 @@ FOODS = [
      "kj_label": "1100 kJ each"},
     {"id": "banana", "name": "Banana", "kj": 450, "kj_label": "450 kJ each"},
     {"id": "apple", "name": "Apple", "kj": 320, "kj_label": "320 kJ each"},
-    {"id": "sandwich", "name": "Cheese sandwich", "kj": 1750,
+    {"id": "sandwich", "name": "Two chapatis with dal", "kj": 1750,
      "kj_label": "1750 kJ each"},
     {"id": "pasta", "name": "Plate of pasta and sauce", "kj": 2400,
      "kj_label": "2400 kJ each"},
-    {"id": "chicken", "name": "Chicken breast and rice", "kj": 2100,
+    {"id": "chicken", "name": "Plate of jollof rice and chicken", "kj": 2100,
      "kj_label": "2100 kJ each"},
     {"id": "yoghurt", "name": "Pot of yoghurt", "kj": 520,
      "kj_label": "520 kJ each"},
@@ -455,9 +455,8 @@ LESSON = {
                   "versus energy needed. The full treatment belongs to "
                   "Physics: what a joule actually is, how energy is "
                   "transferred rather than used up, and how to calculate it "
-                  "from power and time. You will meet that in Physics, in the "
-                  "unit Energy at home. Nothing here contradicts it; it is the "
-                  "same joule, counted less formally."},
+                  "from power and time.  Nothing here contradicts it; it is "
+                  "the same joule, counted less formally."},
 
         {"type": "misconception", "id": "think-requirement",
          "anchor": "s-think", "targets": "DIET-07"},
@@ -565,15 +564,15 @@ LESSON = {
               "body": ["You met this in Energy stores and it comes back "
                        "wearing a chef's hat. Nothing about eating destroys "
                        "energy. The chemical store in your food is "
-                       "transferred: some to movement when you walk, some to "
-                       "the chemical store of new tissue while you grow, and — "
-                       "this is the part people miss — the great majority of "
-                       "it to the thermal store of your surroundings. You are "
-                       "a 70-watt heater. Sit in a small room with the door "
+                       "transferred: some to movement when you walk, some "
+                       "to the chemical store of new tissue while you grow, "
+                       "and — this is the part people miss — most of it to "
+                       "the thermal store of your surroundings. You are a "
+                       "70-watt heater. Sit in a small room with the door "
                        "shut and the temperature rises measurably, and that "
-                       "rise is the energy from your breakfast, still entirely "
-                       "present, just no longer anywhere useful. “Where did "
-                       "the energy go” always has an answer."]},
+                       "rise is the energy from your breakfast, still "
+                       "entirely present, just no longer anywhere useful. "
+                       "“Where did the energy go” always has an answer."]},
          ]},
     ],
 
@@ -587,8 +586,8 @@ LESSON = {
     "ladder": {
         "recall": {
             "title": "Rung 1 · Do the sum",
-            "q": "A 13-year-old needing 9500 kJ eats: cereal (1100 kJ), a "
-                 "cheese sandwich (1750 kJ), an apple (320 kJ), pasta "
+            "q": "A 13-year-old needing 9500 kJ eats: cereal (1100 kJ), two "
+                 "chapatis with dal (1750 kJ), an apple (320 kJ), pasta "
                  "(2400 kJ) and two chocolate bars (1050 kJ each). What is "
                  "their intake, and how does it compare?",
             "options": [

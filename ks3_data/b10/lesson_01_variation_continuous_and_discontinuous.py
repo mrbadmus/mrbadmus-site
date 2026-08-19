@@ -704,10 +704,8 @@ LESSON = {
          "demand": "investigate",
          "eyebrow": "At the bench · sixty students, six characteristics",
          "heading": "Predict the graph, then plot it",
-         "prompt": "Data from one year group. Choose a characteristic, say "
-                   "what shape you expect before you look, then plot it — and "
-                   "read the cause line underneath, which is a separate "
-                   "question from the shape.",
+         "prompt": "Data from one year group. The cause line underneath is "
+                   "a separate question from the shape.",
 
          # The mono label over the six tabs, and the mono word at the end of the
          # head readout. `_KIND_HEAD_FROM` composes "{n} of {total} plotted" from

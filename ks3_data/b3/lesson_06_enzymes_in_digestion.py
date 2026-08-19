@@ -350,9 +350,8 @@ LESSON = {
          # A two-state readout rather than a count: there is one thing to
          # report and it is a boolean.
          "head_counter": {"off": "not run yet", "on": "reaction run"},
-         "prompt": "Three counters run while the reaction runs: substrate "
-                   "left, product made, and enzyme molecules present. Watch "
-                   "all three, and watch what happens to the third one.",
+         "prompt": "Watch all three counters, and watch what happens to the "
+                   "third one.",
          "group_labels": {"enzyme": "Enzyme",
                           "ph": "pH of the tube",
                           "temp": "Temperature"},

@@ -264,7 +264,8 @@ JOBS_COMPARE = [
      "Sperm duct, glands and penis: transport out, fluid to swim in, and "
      "transfer.",
      "Oviduct: the egg is moved along it by cilia and muscle towards the "
-     "sperm. It travels a few centimetres, not the sperm’s several inches."),
+     "sperm. It travels a few centimetres, not the sperm’s journey of about "
+     "15 cm."),
 
     ("Job 3 · Receive a gamete — female only",
      "No structure. The male system has no equivalent, because it never "
@@ -496,9 +497,8 @@ LESSON = {
          "eyebrow": "Match the job · eight structures",
          "heading": "What is each one actually for?",
          "head_counter": {"format": "{n} of 8 checked", "total": 8},
-         "prompt": "Pick a structure, then choose the function that belongs to "
-                   "it. Only one structure has more than one job, and the "
-                   "reveal says which.",
+         "prompt": "Pick a structure, then choose the function that belongs "
+                   "to it. Only one structure has more than one job.",
 
          "functions": FUNCTIONS,
          "structures": STRUCTURES,
@@ -740,6 +740,25 @@ LESSON = {
               "cta": "Ask about this lesson",
               "anchor": "s-jobs"},
 
+    # ⊕ MRB-257 · audit 6.4 — RULED BY MIDE, and the wording is the ruling.
+    # The safeguarding blocks named no confidential service: a sweep for
+    # childline|0800 1111|nspcc|samaritans|papyrus|frank|shout across all 58
+    # rendered pages returned ZERO. This is a public site, and the student who
+    # most needs this block is reading it at 11pm, when "your school's PSHE
+    # materials" is not reachable. The service is Childline, the number is
+    # 0800 1111, joined by a spaced em dash. Shout and FRANK were offered and
+    # NOT taken up. The PSHE deferral STAYS as the daytime route — Childline is
+    # the out-of-hours one, not a replacement for it.
+    #
+    # ⚠️ THE TREATMENT IS THE RULING TOO (§8.10): a small `ks3-legal` foot line
+    # alongside the existing school-nurse / pharmacist / GP routes, NEVER a
+    # callout block. A helpline should be findable and quiet.
+    "safeguarding_note": "If any of this is about you or someone you know, "
+                         "talk to someone you trust — a parent or carer, a "
+                         "teacher, your school nurse, a pharmacist or your "
+                         "GP. Out of school hours: Childline — 0800 1111, "
+                         "free and confidential.",
+
     # ⊕ MRB-228's `convention_note`, not `safety_note`. MEASURED: Design draws
     # ONE plain `.ks3-legal` paragraph (page line 306) with no `ks3-safety`
     # modifier, and nothing in it is a safety instruction — it is a scope note
@@ -754,16 +773,17 @@ LESSON = {
     # see the docstring's second tone flag. The two figure ids keep their plain
     # text; Design sets them in mono inside the sentence and a foot line is
     # escaped, so they render in body copy and the words are unchanged.
-    "convention_note": "This is the biology: the structures and what each one "
-                       "does. Relationships, consent and staying safe are "
-                       "covered in your RSE and PSHE lessons, and those "
+    # ⊕ MRB-257 · C4 / audit 4.6 — the "… is declared in the lesson record
+    # as `b5-…`, awaiting illustration" sentence was our own build metadata,
+    # printed to a student on eleven pages (§8.10). Cut. The measurement
+    # caveat before it is the part that was doing work and it stays.
+    "convention_note": "This is the biology: the structures and what each "
+                       "one does. Relationships, consent and staying safe "
+                       "are covered in your RSE and PSHE lessons, and those "
                        "lessons are where questions about them belong. If "
                        "anything here raises a question or a worry about "
                        "yourself, a trusted adult, your school nurse or a "
-                       "doctor is the right person to ask. The labelled "
-                       "diagrams are declared in the lesson records as "
-                       "b5-male-system-labelled and b5-female-system-labelled, "
-                       "awaiting illustration.",
+                       "doctor is the right person to ask.",
 
     # ── working scientifically (§5.7) ───────────────────────────────────────
     # The instrument is commit-then-check against a shared pool of functions:

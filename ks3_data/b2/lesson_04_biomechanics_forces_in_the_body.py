@@ -242,9 +242,7 @@ LESSON = {
          "head_counter": {"off": "Meter not fitted yet", "on": "Meter fitted"},
          "demand": "investigate",
          "targets": "BODY-10",
-         "prompt": "The rig gives you the load, and the two distances from "
-                   "the elbow. It does not tell you the force in the muscle, "
-                   "because that is the thing worth working out.",
+         "prompt": "",
          "gate": {
              "prompt": "Commit first. You move the load from 32 cm out to "
                        "16 cm — half the distance. What happens to the force "

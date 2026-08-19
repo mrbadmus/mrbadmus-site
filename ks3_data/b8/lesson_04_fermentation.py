@@ -533,11 +533,10 @@ BRANCHES = [
      "rate": 100,
      "line": "glucose → ethanol + carbon dioxide",
      "title": "Beer, wine, or a rising loaf",
-     "body": "Sealed, warm and fed. Ethanol and carbon dioxide are being "
-             "produced steadily. A brewer lets the gas out through an airlock "
-             "and keeps the liquid; a baker keeps the gas in the dough and "
-             "lets the ethanol boil off in the oven. Same reaction, opposite "
-             "product wanted.",
+     "body": "A brewer lets the gas out through an airlock and keeps the "
+             "liquid; a baker keeps the gas in the dough and lets the "
+             "ethanol boil off in the oven. Same reaction, opposite product "
+             "wanted.",
      "products": [{"name": "Carbon dioxide", "tone": "alert",
                    "value": "100 units"},
                   {"name": "Ethanol", "tone": "ok", "value": "100 units"}]},
@@ -754,10 +753,9 @@ LESSON = {
          "demand": "investigate",
          "eyebrow": "At the bench · one vessel, four dials",
          "heading": "Set the conditions, see what you have made",
-         "prompt": "The same four dials that a brewer, a baker and a yoghurt "
-                   "maker all set differently. Change one and the product "
-                   "changes with it — or you get nothing at all, which is just "
-                   "as informative.",
+         "prompt": "The same four dials that a brewer, a baker and a "
+                   "yoghurt maker all set differently. Some settings give "
+                   "you nothing at all, which is just as informative.",
          # `{n}` is the set-up count; `{s}` is Design's plural marker.
          "progress": {"zero": "nothing changed yet",
                       "some": "{n} set-up{s} tried"},

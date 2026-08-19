@@ -680,9 +680,8 @@ LESSON = {
          "demand": "investigate",
          "eyebrow": "At the bench · supply against demand",
          "heading": "Run it, then stop and watch",
-         "prompt": "Pick a pace and run it ten seconds at a time. The "
-                   "interesting part is not the running — it is what the "
-                   "breathing bar does after you stop.",
+         "prompt": "The interesting part is not the running — it is what "
+                   "the breathing bar does after you stop.",
 
          "options_label": "Pace",
          "paces": PACES,
@@ -960,10 +959,11 @@ LESSON = {
         # why `ws` carries the experimental-skills strand.
         "produce": {
             "title": "Rung 4 · Take it somewhere new",
-            "q": "Two students run the same distance at the same speed. One is "
-                 "back to normal breathing in 40 seconds, the other takes "
-                 "three minutes. Explain what that difference shows, and "
-                 "design a fair test to compare recovery time across a class.",
+            "q": "Two students run the same distance at the same speed. One "
+                 "is back to normal breathing in 40 seconds, the other "
+                 "takes three minutes. Explain what that difference shows, "
+                 "and design a fair test to compare one person’s recovery "
+                 "before and after six weeks of training.",
             "field_label": "Your answer",
             "placeholder": "The student who recovers faster…",
             "success": [

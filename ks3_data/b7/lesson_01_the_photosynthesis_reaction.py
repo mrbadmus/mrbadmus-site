@@ -637,9 +637,7 @@ LESSON = {
          "eyebrow": "At the bench · take one thing away",
          "heading": "Four things it needs. Remove any one.",
          "prompt": "A pot plant under a bell jar, kept for a day, then one "
-                   "leaf tested for starch. Change the conditions and watch "
-                   "three readouts: the rate of the reaction, the oxygen "
-                   "coming off, and what the iodine test says.",
+                   "leaf tested for starch. ",
          # Design's mono line beside the heading (page line 509): the two
          # states of the section, not a counter.
          "progress": {"before": "not tested yet", "after": "leaf tested"},

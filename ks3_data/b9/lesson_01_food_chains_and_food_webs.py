@@ -666,10 +666,9 @@ LESSON = {
                  "caterpillars, 3 blue tits, 4 the sparrowhawk. A dashed line "
                  "from the bees to the wildflowers is labelled pollinates, and "
                  "carries no energy.",
-            caption="One oak wood. Every arrow points the way the energy "
-                    "travels, from the eaten to the eater. The numbered orange "
-                    "chain is one route through it — the same four steps the "
-                    "bench above climbs.",
+            caption="One oak wood.  The numbered orange chain is one route "
+                    "through it — the same four steps the bench above "
+                    "climbs.",
             thread=["oak", "caterpillars", "bluetits", "hawk"]),
     ],
 
@@ -691,9 +690,8 @@ LESSON = {
          "demand": "investigate",
          "eyebrow": "At the bench · climb the chain",
          "heading": "Follow the energy up",
-         "prompt": "Ten thousand kilojoules of sunlight energy captured by the "
-                   "producers at the bottom. Step up one level at a time and "
-                   "watch what arrives — and where the rest of it went.",
+         "prompt": "Watch what arrives at each level — and where the rest "
+                   "of it went.",
          # Design's mono line beside the heading (page line 500). `before`
          # carries both placeholders because the denominator follows the tab —
          # four levels on the field and the wood, five on the sea — and

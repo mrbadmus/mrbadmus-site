@@ -260,8 +260,7 @@ PHASES = {
             "Pressure inside equals atmospheric.",
             "No net air movement in either direction.",
         ],
-        "note": "Move the diaphragm and this list fills in with real numbers. "
-                "Notice which line changes first."},
+        "note": " Notice which line changes first."},
 }
 
 LESSON = {

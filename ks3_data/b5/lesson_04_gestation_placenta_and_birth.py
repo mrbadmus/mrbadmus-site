@@ -1042,6 +1042,25 @@ LESSON = {
               "cta": "Ask about this lesson",
               "anchor": "s-cross"},
 
+    # ⊕ MRB-257 · audit 6.4 — RULED BY MIDE, and the wording is the ruling.
+    # The safeguarding blocks named no confidential service: a sweep for
+    # childline|0800 1111|nspcc|samaritans|papyrus|frank|shout across all 58
+    # rendered pages returned ZERO. This is a public site, and the student who
+    # most needs this block is reading it at 11pm, when "your school's PSHE
+    # materials" is not reachable. The service is Childline, the number is
+    # 0800 1111, joined by a spaced em dash. Shout and FRANK were offered and
+    # NOT taken up. The PSHE deferral STAYS as the daytime route — Childline is
+    # the out-of-hours one, not a replacement for it.
+    #
+    # ⚠️ THE TREATMENT IS THE RULING TOO (§8.10): a small `ks3-legal` foot line
+    # alongside the existing school-nurse / pharmacist / GP routes, NEVER a
+    # callout block. A helpline should be findable and quiet.
+    "safeguarding_note": "If any of this is about you or someone you know, "
+                         "talk to someone you trust — a parent or carer, a "
+                         "teacher, your school nurse, a pharmacist or your "
+                         "GP. Out of school hours: Childline — 0800 1111, "
+                         "free and confidential.",
+
     # ⊕ MRB-228's `convention_note`, not `safety_note`. Design draws ONE plain
     # `.ks3-legal` paragraph and nothing in it is a safety instruction: it is a
     # note about how the numbers on this page were taken, a correction about how
@@ -1060,16 +1079,18 @@ LESSON = {
     # ⚠️ Design sets the figure id in mono inside the sentence; a foot line is
     # escaped, so `b5-placenta-exchange` renders in body copy. The words are
     # unchanged.
-    "convention_note": "Times are typical values. Pregnancy is dated in weeks "
-                       "from the first day of the last period rather than from "
-                       "fertilisation, so the familiar forty weeks is about "
-                       "two weeks longer than the time the foetus has existed. "
-                       "This lesson covers the biology; anything personal "
-                       "belongs with your school nurse, doctor or midwife, and "
-                       "relationships and consent are covered in RSE and PSHE. "
-                       "The labelled placenta diagram is declared in the "
-                       "lesson record as b5-placenta-exchange, awaiting "
-                       "illustration.",
+    # ⊕ MRB-257 · C4 / audit 4.6 — the "… is declared in the lesson record
+    # as `b5-…`, awaiting illustration" sentence was our own build metadata,
+    # printed to a student on eleven pages (§8.10). Cut. The measurement
+    # caveat before it is the part that was doing work and it stays.
+    "convention_note": "Times are typical values. Pregnancy is dated in "
+                       "weeks from the first day of the last period rather "
+                       "than from fertilisation, so the familiar forty "
+                       "weeks is about two weeks longer than the time the "
+                       "foetus has existed. This lesson covers the biology; "
+                       "anything personal belongs with your school nurse, "
+                       "doctor or midwife, and relationships and consent "
+                       "are covered in RSE and PSHE.",
 
     # ── working scientifically (§5.7) ───────────────────────────────────────
     # `analysis-and-evaluation`: the bench is commit-then-check across six

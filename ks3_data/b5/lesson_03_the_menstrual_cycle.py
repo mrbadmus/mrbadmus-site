@@ -547,6 +547,19 @@ LESSON = {
     # lesson teaches, and names no release day — the diagram has to show the
     # release marker MOVING with the length or it would draw the misconception.
     "figures": [
+         # ⊕ MRB-257 · decision 5 — RETIRED, not deleted.
+         #
+         # The audit went looking for this diagram and found the page already
+         # has it: the dial instrument IS the timeline, and it redraws for 21 /
+         # 28 / 35 days, which is the whole point a static drawing would have to
+         # make. A drawn copy would be a worse, frozen duplicate of a working
+         # instrument sitting inches above it.
+         #
+         # The record STAYS. Deleting it would let the same figure be declared
+         # innocently again by someone reading only the manifest — the exact
+         # loop this reconciliation exists to close. `status` carries the
+         # decision so `docs/ks3/diagram-manifest.md` reports it as settled
+         # rather than counting it as an open sourcing task.
         {"id": "b5-cycle-timeline",
          "kind": "diagram",
          "caption": "One cycle drawn as a timeline for each of the three "
@@ -555,7 +568,8 @@ LESSON = {
                     "end, and the fortnight in which the lining is held ready "
                     "— with the release marker landing on a different day in "
                     "each of the three.",
-         "status": "needed"},
+         "status": "retired",
+         "retired_reason": "the instrument is the timeline and redraws for all three cycle lengths; a static copy would be a frozen duplicate of a working instrument"},
     ],
 
     # ── core, in the approved page's document order ─────────────────────────
@@ -623,8 +637,7 @@ LESSON = {
          # instrument needs the student to do; after that each length prints
          # its own note.
          "note_prompt": "Now change the cycle length and watch the release "
-                        "marker move. That movement is the point of this "
-                        "instrument."},
+                        "marker move. "},
 
         # #s-events — the band panel. Rail stop 3, mirroring `s-dial`; see the
         # docstring. `rule` is the component: band ground, 3px ink border, an accent-text
@@ -865,6 +878,25 @@ LESSON = {
               "cta": "Ask about this lesson",
               "anchor": "s-dial"},
 
+    # ⊕ MRB-257 · audit 6.4 — RULED BY MIDE, and the wording is the ruling.
+    # The safeguarding blocks named no confidential service: a sweep for
+    # childline|0800 1111|nspcc|samaritans|papyrus|frank|shout across all 58
+    # rendered pages returned ZERO. This is a public site, and the student who
+    # most needs this block is reading it at 11pm, when "your school's PSHE
+    # materials" is not reachable. The service is Childline, the number is
+    # 0800 1111, joined by a spaced em dash. Shout and FRANK were offered and
+    # NOT taken up. The PSHE deferral STAYS as the daytime route — Childline is
+    # the out-of-hours one, not a replacement for it.
+    #
+    # ⚠️ THE TREATMENT IS THE RULING TOO (§8.10): a small `ks3-legal` foot line
+    # alongside the existing school-nurse / pharmacist / GP routes, NEVER a
+    # callout block. A helpline should be findable and quiet.
+    "safeguarding_note": "If any of this is about you or someone you know, "
+                         "talk to someone you trust — a parent or carer, a "
+                         "teacher, your school nurse, a pharmacist or your "
+                         "GP. Out of school hours: Childline — 0800 1111, "
+                         "free and confidential.",
+
     # ⊕ MRB-228's `convention_note`, not `safety_note`. Design draws ONE plain
     # `.ks3-legal` paragraph and nothing in it is a safety instruction: it is a
     # note about how the numbers on this page were taken, a statement of what
@@ -877,16 +909,19 @@ LESSON = {
     #
     # ⚠️ Lifted whole. The signpost sentence is part of it and is not trimmed,
     # rewritten or promoted into the body of the lesson.
+    # ⊕ MRB-257 · C4 / audit 4.6 — the "… is declared in the lesson record
+    # as `b5-…`, awaiting illustration" sentence was our own build metadata,
+    # printed to a student on eleven pages (§8.10). Cut. The measurement
+    # caveat before it is the part that was doing work and it stays.
     "convention_note": "Cycle lengths and the day of release are typical "
                        "values: about 21 to 35 days is ordinary, and one "
-                       "person's cycles vary between themselves. Hormone names "
-                       "and hormone graphs are deliberately outside Key Stage "
-                       "3 and are met at GCSE. This lesson covers the biology; "
-                       "anything personal belongs with your school nurse, "
-                       "doctor or a trusted adult, and relationships and "
-                       "consent are covered in RSE and PSHE. The labelled "
-                       "cycle diagram is declared in the lesson record as "
-                       "b5-cycle-timeline, awaiting illustration.",
+                       "person's cycles vary between themselves. Hormone "
+                       "names and hormone graphs are deliberately outside "
+                       "Key Stage 3 and are met at GCSE. This lesson covers "
+                       "the biology; anything personal belongs with your "
+                       "school nurse, doctor or a trusted adult, and "
+                       "relationships and consent are covered in RSE and "
+                       "PSHE.",
 
     # ── working scientifically (§5.7) ───────────────────────────────────────
     # `analysis-and-evaluation`: the dial is a model the student changes one

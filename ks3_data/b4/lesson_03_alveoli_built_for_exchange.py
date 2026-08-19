@@ -195,9 +195,9 @@ COMPARE = [
 STATES = [
     {"breathing": True, "blood_flow": True,
      "alveolar_kpa": 13.3, "blood_kpa": 5.3,
-     "note": "Both flows running. Crossings happen in both directions — 1197 "
-             "in, 477 out — and you gain the difference. Neither number is "
-             "zero, and the outward one never stops."},
+     "note": "Both flows running. Crossings happen in both directions  and "
+             "you gain the difference. Neither number is zero, and the "
+             "outward one never stops."},
     {"breathing": True, "blood_flow": False,
      "alveolar_kpa": 13.3, "blood_kpa": 13.1,
      "note": "Blood flow stopped. Oxygen keeps crossing inwards until the "

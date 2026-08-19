@@ -578,6 +578,16 @@ LESSON = {
     # wants illustrated on the human pages before anything is commissioned,
     # and this caption is a proposal, not a commission.
     "figures": [
+         # ⊕ MRB-257 · decision 5 — RETIRED, not deleted.
+         #
+         # It would duplicate `b5-placenta-exchange` on the neighbouring lesson:
+         # both drawings answer "what gets across the placenta and what does
+         # not", and the substance table on this page already carries the
+         # per-substance verdict. Two diagrams of one idea teach it once and
+         # cost twice.
+         #
+         # The record STAYS, for the reason given on b5-03: a deleted figure
+         # gets re-declared innocently later.
         {"id": "b5-what-crosses",
          "kind": "diagram",
          "caption": "What crosses the placenta and what does not: small "
@@ -587,7 +597,8 @@ LESSON = {
                     "shown too big to pass and antibodies shown carried "
                     "across using energy. The two blood supplies are drawn "
                     "separately and never mixing.",
-         "status": "needed"},
+         "status": "retired",
+         "retired_reason": "would duplicate b5-placenta-exchange on the neighbouring lesson; the substance table already carries the per-substance verdict"},
     ],
 
     # ── core, in the approved page's document order ─────────────────────────
@@ -915,6 +926,25 @@ LESSON = {
               "cta": "Ask about this lesson",
               "anchor": "s-cross"},
 
+    # ⊕ MRB-257 · audit 6.4 — RULED BY MIDE, and the wording is the ruling.
+    # The safeguarding blocks named no confidential service: a sweep for
+    # childline|0800 1111|nspcc|samaritans|papyrus|frank|shout across all 58
+    # rendered pages returned ZERO. This is a public site, and the student who
+    # most needs this block is reading it at 11pm, when "your school's PSHE
+    # materials" is not reachable. The service is Childline, the number is
+    # 0800 1111, joined by a spaced em dash. Shout and FRANK were offered and
+    # NOT taken up. The PSHE deferral STAYS as the daytime route — Childline is
+    # the out-of-hours one, not a replacement for it.
+    #
+    # ⚠️ THE TREATMENT IS THE RULING TOO (§8.10): a small `ks3-legal` foot line
+    # alongside the existing school-nurse / pharmacist / GP routes, NEVER a
+    # callout block. A helpline should be findable and quiet.
+    "safeguarding_note": "If any of this is about you or someone you know, "
+                         "talk to someone you trust — a parent or carer, a "
+                         "teacher, your school nurse, a pharmacist or your "
+                         "GP. Out of school hours: Childline — 0800 1111, "
+                         "free and confidential.",
+
     # ⚠️⚠️ THE LEGAL LINE, BYTE-IDENTICAL AND WHOLE. It is safeguarding copy
     # and it is load-bearing: risk is not a verdict, nothing here judges any
     # person or family, anyone pregnant or who might be speaks to a midwife,
@@ -933,18 +963,20 @@ LESSON = {
     # ⚠️ Design sets the figure id in mono inside the sentence; a foot line is
     # escaped, so `b5-what-crosses` renders in body copy. The words are
     # unchanged.
+    # ⊕ MRB-257 · C4 / audit 4.6 — the "… is declared in the lesson record
+    # as `b5-…`, awaiting illustration" sentence was our own build metadata,
+    # printed to a student on eleven pages (§8.10). Cut. The measurement
+    # caveat before it is the part that was doing work and it stays.
     "convention_note": "This lesson describes exposures and risk. Risk is a "
                        "probability measured across large numbers of "
-                       "pregnancies, not a prediction about any one of them, "
-                       "and nothing here is a judgement about any person or "
-                       "family. Anyone who is pregnant or might be should "
-                       "speak to a midwife, doctor or pharmacist before "
-                       "starting or stopping anything, including prescribed "
-                       "medicines; that advice is free and confidential. "
-                       "Relationships and consent are covered in your RSE and "
-                       "PSHE lessons. The what-crosses diagram is declared in "
-                       "the lesson record as b5-what-crosses, awaiting "
-                       "illustration.",
+                       "pregnancies, not a prediction about any one of "
+                       "them, and nothing here is a judgement about any "
+                       "person or family. Anyone who is pregnant or might "
+                       "be should speak to a midwife, doctor or pharmacist "
+                       "before starting or stopping anything, including "
+                       "prescribed medicines; that advice is free and "
+                       "confidential. Relationships and consent are covered "
+                       "in your RSE and PSHE lessons.",
 
     # ── working scientifically (§5.7) ───────────────────────────────────────
     # The panel is commit-then-check across six cases, and rung 4 asks what

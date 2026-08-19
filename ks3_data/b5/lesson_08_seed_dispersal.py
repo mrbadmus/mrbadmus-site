@@ -795,14 +795,16 @@ LESSON = {
     # fruit/seed distinction she made in the previous lesson, and the figure
     # declaration. The mono span around the figure id renders as body text
     # because a foot line is escaped; the words are unchanged.
-    "convention_note": "The specimens are typical British examples described "
-                       "from their structures. Several of them are strictly "
-                       "fruits rather than seeds — a dandelion “seed"
-                       "” and a sycamore “key” are both "
-                       "single-seeded fruits — which is the distinction "
-                       "drawn in the previous lesson. The specimen plate is "
-                       "declared in the lesson record as "
-                       "b5-dispersal-specimens, awaiting illustration.",
+    # ⊕ MRB-257 · C4 / audit 4.6 — the "… is declared in the lesson record
+    # as `b5-…`, awaiting illustration" sentence was our own build metadata,
+    # printed to a student on eleven pages (§8.10). Cut. The measurement
+    # caveat before it is the part that was doing work and it stays.
+    "convention_note": "The specimens are typical British examples "
+                       "described from their structures. Several of them "
+                       "are strictly fruits rather than seeds — a dandelion "
+                       "“seed” and a sycamore “key” are both single-seeded "
+                       "fruits — which is the distinction drawn in the "
+                       "previous lesson.",
 
     # ── working scientifically (§5.7) ───────────────────────────────────────
     # ⚑ `measurement` is deliberately NOT claimed. The student measures nothing

@@ -364,9 +364,9 @@ confrontation already states.
 FIELDS = [
     {"id": "clone", "label": "One variety",
      "name": "One variety, a thousand identical plants",
-     "note": "Every plant grown from cuttings of the same original. Highest "
-             "yield per hectare, easiest to harvest by machine, and every "
-             "plant has exactly the same weaknesses.",
+     "note": "Every plant grown from cuttings of the same original, easiest "
+             "to harvest by machine, and every plant has exactly the same "
+             "weaknesses.",
      "varieties": 1, "resistant": 0,
      "variation_word": "none", "variation_bar": 9,
      "yield_word": "highest", "yield_bar": 100},
@@ -695,10 +695,9 @@ LESSON = {
          "demand": "investigate",
          "eyebrow": "At the bench · four fields, one disease",
          "title": "Plant it, then release the blight",
-         "intro": "A thousand potato plants. Choose how many varieties to "
-                  "plant them as, then release a blight that a few varieties "
-                  "happen to resist. Watch the harvest, and watch what is left "
-                  "to plant next year.",
+         "intro": "A thousand potato plants, and a blight that a few "
+                  "varieties happen to resist. Watch what is left to plant "
+                  "next year.",
 
          # The mono label over the four field tabs, and the head-row counter.
          # `progress_zero` is the resting state Design draws before anything has
@@ -838,22 +837,23 @@ LESSON = {
              # not be lifted" 2.
              {"quote": "Biodiversity means how many different species there "
                        "are.",
-              "body": ["That is one of the two things it means, and the other "
-                       "one is doing more work in this unit. Biodiversity "
-                       "includes the variation <em>within</em> each species — "
-                       "how genetically different the individuals of one "
-                       "population are from each other. A wood with forty "
-                       "species in it, each reduced to a handful of closely "
-                       "related survivors, is in far more trouble than the "
-                       "species count suggests, and this is exactly the "
-                       "vulnerability that appeared as risk factor four in "
-                       "When the environment changes: extinction. It is also "
-                       "the sense in which a field of one thousand identical "
-                       "potato plants has a biodiversity of essentially "
-                       "nothing, despite being a thousand living organisms. "
-                       "Count species when you want to describe a habitat; ask "
-                       "about variation within a species when you want to know "
-                       "whether it can survive what happens next."]},
+              "body": ["That is one of the two things it means, and the "
+                       "other one is doing more work in this unit. "
+                       "Biodiversity includes the variation <em>within</em> "
+                       "each species — how genetically different the "
+                       "individuals of one population are from each other. "
+                       "A wood with forty species in it, each reduced to a "
+                       "handful of closely related survivors, is in far "
+                       "more trouble than the species count suggests, and "
+                       "this is exactly the vulnerability that appeared as "
+                       "risk factor four in When the environment changes: "
+                       "extinction. It is also the sense in which a field "
+                       "of one thousand identical potato plants has a "
+                       "biodiversity of almost nothing, despite being a "
+                       "thousand living organisms. Count species when you "
+                       "want to describe a habitat; ask about variation "
+                       "within a species when you want to know whether it "
+                       "can survive what happens next."]},
              # EVOL-08. ⚖️ The last sentence is the one that makes this a
              # correction rather than a dismissal — gene banks are "worth every
              # penny", and the objection is to what they are being claimed to

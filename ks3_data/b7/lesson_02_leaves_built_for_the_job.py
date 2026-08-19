@@ -547,9 +547,8 @@ LESSON = {
          # counter that is not computed.
          "head_counter": {"format": "{rate}% rate · {water}% water",
                           "idle": "nothing changed yet"},
-         "prompt": "Four dials, two readouts, and the readouts disagree. Push "
-                   "the rate up and watch the water loss follow it. The verdict "
-                   "at the bottom says where your leaf could actually live.",
+         "prompt": "The two readouts disagree. Push the rate up and watch "
+                   "the water loss follow it.",
 
          "dials":    DIALS,
          "readouts": READOUTS,

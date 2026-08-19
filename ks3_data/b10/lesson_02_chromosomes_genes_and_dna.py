@@ -692,10 +692,9 @@ LESSON = {
          # ruling, and NOTES flag 5 asks him about the figures but not about the
          # claim made over them. It lands in this one string and nothing else in
          # the lesson depends on a ratio. Raised in the report.
-         "prompt": "Each step down is inside the one above it. Watch the scale "
-                   "column: it drops by roughly a factor of a thousand at "
-                   "every step, and nothing new is added — you are looking at "
-                   "the same material, closer.",
+         "prompt": "Each step down is inside the one above it, and nothing "
+                   "new is added — you are looking at the same material, "
+                   "closer.",
          # Design's mono line beside the heading (page line 473):
          # `bottomed ? 'all six levels' : 'level ' + shown + ' of ' + total`.
          # Three fragments, one computed count and one computed total — the

@@ -110,9 +110,9 @@ JOBS = [
                 "germ-free mouse needs 30% more food for the same growth, and "
                 "this is most of the reason."},
     {"id": "vitamins", "tag": "Job 2", "name": "Making vitamins",
-     "what": "Bacteria in the large intestine synthesise vitamin K and "
-             "several B vitamins as by-products of their own metabolism, and "
-             "you absorb them.",
+     "what": "Bacteria in the large intestine make vitamin K and several B "
+             "vitamins as by-products of their own metabolism, and you "
+             "absorb them.",
      "without": "Vitamin K deficiency, and blood that clots poorly. Newborn "
                 "babies have almost no gut bacteria yet, which is exactly why "
                 "they are given a vitamin K injection at birth."},
@@ -302,8 +302,8 @@ LESSON = {
          "heading": "Take one job away and see what breaks",
          "head_counter": {"format": "{n} of 5 switched off", "total": 5,
                           "start": 0},
-         "prompt": "Each row is something your gut bacteria do that your own "
-                   "cells cannot. Switch it off to see what the host loses.",
+         "prompt": "Every one of these is something your gut bacteria do "
+                   "that your own cells cannot.",
 
          "jobs": JOBS,
          "labels": {"on": "Switch it off", "off": "Switched off",

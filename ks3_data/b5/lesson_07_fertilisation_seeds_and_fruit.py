@@ -602,22 +602,23 @@ LESSON = {
                        "animal or in a plant."]},
              {"quote": "A tomato is a vegetable.",
               "body": ["In a kitchen, certainly. In biology the word "
-                       "<em>fruit</em> has a definition and it has nothing to "
-                       "do with sweetness: a fruit is the structure that "
-                       "develops from the ovary of a flower, and it contains "
-                       "the seeds. Cut anything open and the seeds settle it. "
-                       "Tomatoes, cucumbers, peppers, courgettes, pea pods, "
-                       "aubergines and — the one that surprises everybody — "
-                       "the tough case around a grain of wheat are all fruits. "
-                       "Carrots are roots, potatoes are underground stems, "
-                       "celery is a leaf stalk, and none of those has ever "
-                       "been near an ovary. <em>Vegetable</em> is a culinary "
-                       "word covering any plant part we happen to eat savoury; "
+                       "<em>fruit</em> has a definition and it has nothing "
+                       "to do with sweetness: a fruit is the structure that "
+                       "develops from the ovary of a flower, and it "
+                       "contains the seeds. Cut anything open and the seeds "
+                       "settle it. Tomatoes, cucumbers, peppers, "
+                       "courgettes, pea pods, aubergines and — the one that "
+                       "surprises everybody — the tough case around a grain "
+                       "of wheat are all fruits. Carrots are roots, "
+                       "potatoes are underground stems, celery is a leaf "
+                       "stalk, and none of those has ever been near an "
+                       "ovary. <em>Vegetable</em> is a culinary word "
+                       "covering any plant part we happen to eat savoury; "
                        "it draws no biological line at all. This is worth "
-                       "having straight for a reason beyond pub quizzes: once "
-                       "you know a fruit is a converted ovary, you can look at "
-                       "any one and read backwards to the flower it used to "
-                       "be."]},
+                       "having straight for a reason beyond winning an "
+                       "argument: once you know a fruit is a converted "
+                       "ovary, you can look at any one and read backwards "
+                       "to the flower it used to be."]},
          ]},
     ],
 
@@ -765,11 +766,13 @@ LESSON = {
     # ⚠️ The figure id keeps its plain text; Design sets it in mono inside the
     # sentence and a foot line is escaped, so the id renders in body copy and the
     # words are unchanged.
-    "convention_note": "Timings vary enormously between species: a pollen tube "
-                       "may reach the ovule in a few hours or, in some trees, "
-                       "after several months. The pollen tube diagram is "
-                       "declared in the lesson record as b5-pollen-tube, "
-                       "awaiting illustration.",
+    # ⊕ MRB-257 · C4 / audit 4.6 — the "… is declared in the lesson record
+    # as `b5-…`, awaiting illustration" sentence was our own build metadata,
+    # printed to a student on eleven pages (§8.10). Cut. The measurement
+    # caveat before it is the part that was doing work and it stays.
+    "convention_note": "Timings vary enormously between species: a pollen "
+                       "tube may reach the ovule in a few hours or, in some "
+                       "trees, after several months.",
 
     # ── working scientifically (§5.7) ───────────────────────────────────────
     # A judgement, and the weaker of the record's calls: nothing on this page is

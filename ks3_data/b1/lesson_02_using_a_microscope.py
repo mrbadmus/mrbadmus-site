@@ -563,10 +563,11 @@ LESSON = {
          "demand": "explain",
          "targets": "CELL-02",
          "paragraphs": [                                           # NEW
-             "Magnification makes things bigger. It does not make them easier "
-             "to find, and it takes away depth as fast as it adds size. Your "
-             "own table says it: at ×400 there are fewer than two cells in "
-             "front of you and only a slice of each one is sharp.",
+             "Magnification makes things bigger. It does not make them "
+             "easier to find, and it takes away depth as fast as it adds "
+             "size. Your own readout says it: at ×400 the field of view is "
+             "0.45 mm — fewer than two onion cells across — and the slice "
+             "in focus is thinner than one cell.",
              "So the method is: find it on the lowest power, get it in the "
              "middle, then climb.",
          ]},

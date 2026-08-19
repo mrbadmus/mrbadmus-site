@@ -635,11 +635,13 @@ LESSON = {
     # adult". Design sets the figure id in mono inside the sentence; the slot
     # takes plain text, so the id renders in body copy and the words are
     # unchanged.
-    "convention_note": "Transit times are typical figures for a mixed meal in "
-                       "a healthy adult and vary widely between people and "
-                       "between meals. Figures for the labelled diagram are "
-                       "declared in the lesson record as b3-gut-labelled, "
-                       "awaiting illustration.",
+    # ⊕ MRB-257 · C4 / audit 4.6 — the "… is declared in the lesson record
+    # as `b5-…`, awaiting illustration" sentence was our own build metadata,
+    # printed to a student on eleven pages (§8.10). Cut. The measurement
+    # caveat before it is the part that was doing work and it stays.
+    "convention_note": "Transit times are typical figures for a mixed meal "
+                       "in a healthy adult and vary widely between people "
+                       "and between meals.",
 
     # ── governance (§5.10) ──────────────────────────────────────────────────
     "review_state": "draft",

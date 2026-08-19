@@ -835,11 +835,9 @@ LESSON = {
                  "comes to the same width — marked down the right-hand side. "
                  "That is why the molecule has the constant width measured from "
                  "the diffraction images.",
-            caption="A always with T, C always with G — and the reason is width. "
-                    "A and G are the big bases, C and T the small ones, so every "
-                    "rung is one big and one small and every rung comes out the "
-                    "same length. Two big bases would bulge; two small ones "
-                    "would pinch.",
+            caption="The reason is width. Every rung is one big and one "
+                    "small and every rung comes out the same length. Two "
+                    "big bases would bulge; two small ones would pinch.",
             rungs=[("A", "T"), ("T", "A"), ("C", "G"), ("G", "C"), ("A", "T")]),
     ],
 
@@ -900,10 +898,10 @@ LESSON = {
                      "structure published in April 1953. Notice what just "
                      "happened: the evidence did not show you the answer — it "
                      "eliminated everything else.",
-             "fail": "Read the red lines. Each failing test is telling you "
-                     "which decision to change, and none of them requires you "
-                     "to know the answer in advance — which is exactly the "
-                     "position everyone was in during 1952.",
+             "fail": "Each failing test is telling you which decision to "
+                     "change, and none of them requires you to know the "
+                     "answer in advance — which is exactly the position "
+                     "everyone was in during 1952.",
          },
          # The head counter's authored word. Design's `benchProgress` is
          # `passes + ' of ' + EVIDENCE.length + ' tests passed'`, so the

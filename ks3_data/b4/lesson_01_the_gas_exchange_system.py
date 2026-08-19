@@ -651,11 +651,13 @@ LESSON = {
     # ⚠️ The figure id keeps its plain text; Design sets it in mono inside the
     # sentence and a foot line is escaped, so the id renders in body copy and
     # the words are unchanged.
-    "convention_note": "Composition figures are rounded typical values for a "
-                       "person at rest; exhaled composition changes with "
-                       "activity and with how long the breath is held. The "
-                       "labelled diagram is declared in the lesson record as "
-                       "b4-gas-exchange-labelled, awaiting illustration.",
+    # ⊕ MRB-257 · C4 / audit 4.6 — the "… is declared in the lesson record
+    # as `b5-…`, awaiting illustration" sentence was our own build metadata,
+    # printed to a student on eleven pages (§8.10). Cut. The measurement
+    # caveat before it is the part that was doing work and it stays.
+    "convention_note": "Composition figures are rounded typical values for "
+                       "a person at rest; exhaled composition changes with "
+                       "activity and with how long the breath is held.",
 
     # ── working scientifically (§5.7) ───────────────────────────────────────
     # The bench is predict-then-read-the-data: four committed predictions

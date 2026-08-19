@@ -321,9 +321,9 @@ LESSON = {
          ],
          # Design's lede, which sits between the statement and the columns on
          # the page and which `r_rule` can only place after them. Unchanged.
-         "close": "Each column has a different cause, a different mechanism "
-                  "inside the body, and a different remedy. Reading across the "
-                  "rows is the point of this lesson."},
+         "close": "Each of the three has a different cause, a different "
+                  "mechanism inside the body, and a different remedy. "
+                  "Compare them line by line."},
 
         # Design nests the key fact INSIDE the band section; `r_rule` has no
         # slot for it, so it renders as the next block on the `card` ground —
@@ -493,17 +493,17 @@ LESSON = {
              {"quote": "Malnourished means not having enough to eat.",
               "body": [
                   "The word means badly nourished, not under-nourished, and "
-                  "the distinction is not pedantry — it changes what you look "
-                  "for and what you do. Rickets was widespread in industrial "
-                  "British cities among children who were fed enough, because "
-                  "vitamin D needs either oily fish or sunlight and a "
-                  "smoke-filled street supplies neither. Iron deficiency is "
-                  "the most common nutritional disorder in the world and it is "
-                  "not concentrated in places where food is scarce. If you "
-                  "diagnose every dietary problem as a shortage of food, you "
-                  "will treat these by handing over more of the same food, and "
-                  "nothing will improve, because the missing nutrient is still "
-                  "missing."]},
+                  "the difference is not nit-picking — it changes what you "
+                  "look for and what you do. Rickets was widespread in "
+                  "industrial British cities among children who were fed "
+                  "enough, because vitamin D needs either oily fish or "
+                  "sunlight and a smoke-filled street supplies neither. "
+                  "Iron deficiency is the most common nutritional disorder "
+                  "in the world and it is not concentrated in places where "
+                  "food is scarce. If you diagnose every dietary problem as "
+                  "a shortage of food, you will treat these by handing over "
+                  "more of the same food, and nothing will improve, because "
+                  "the missing nutrient is still missing."]},
              {"quote": "Deficiency diseases are all in the past.",
               "body": [
                   "Scurvy still appears in hospitals. So does rickets, so does "
@@ -519,16 +519,16 @@ LESSON = {
              # hedged and no reassurance is added.
              {"quote": "You can tell what someone eats by looking at them.",
               "body": [
-                  "You cannot, and this is the most important sentence in the "
-                  "lesson. Body mass is affected by genetics, by illness, by "
-                  "medication, by how much someone can move, by sleep, by "
-                  "stress and by whether they can afford or reach particular "
-                  "foods — as well as by what they eat. Two people on "
-                  "identical diets can differ substantially, which is exactly "
-                  "what the hook in the energy lesson showed. The three "
-                  "imbalances in this lesson are described by measurements and "
-                  "by clinical signs, not by appearance, and a biologist "
-                  "reasons from the measurements."]},
+                  "You cannot, and this is the most important sentence in "
+                  "the lesson. Body mass is affected by genetics, by "
+                  "illness, by medication, by how much someone can move, by "
+                  "sleep, by stress and by whether they can afford or reach "
+                  "particular foods — as well as by what they eat. Two "
+                  "people on the same diet can differ a lot, which is "
+                  "exactly what the hook in the energy lesson showed. The "
+                  "three imbalances in this lesson are described by "
+                  "measurements and by clinical signs, not by appearance, "
+                  "and a biologist reasons from the measurements."]},
          ]},
     ],
 
@@ -674,6 +674,25 @@ LESSON = {
     # Every clinic is a set of measurements and signs reasoned from, and the
     # third confrontation is a direct instruction about which evidence counts.
     "ws": ["analysis-and-evaluation"],
+
+    # ⊕ MRB-257 · audit 6.4 — RULED BY MIDE, and the wording is the ruling.
+    # The safeguarding blocks named no confidential service: a sweep for
+    # childline|0800 1111|nspcc|samaritans|papyrus|frank|shout across all 58
+    # rendered pages returned ZERO. This is a public site, and the student who
+    # most needs this block is reading it at 11pm, when "your school's PSHE
+    # materials" is not reachable. The service is Childline, the number is
+    # 0800 1111, joined by a spaced em dash. Shout and FRANK were offered and
+    # NOT taken up. The PSHE deferral STAYS as the daytime route — Childline is
+    # the out-of-hours one, not a replacement for it.
+    #
+    # ⚠️ THE TREATMENT IS THE RULING TOO (§8.10): a small `ks3-legal` foot line
+    # alongside the existing school-nurse / pharmacist / GP routes, NEVER a
+    # callout block. A helpline should be findable and quiet.
+    "safeguarding_note": "If any of this is about you or someone you know, "
+                         "talk to someone you trust — a parent or carer, a "
+                         "teacher, your school nurse, a pharmacist or your "
+                         "GP. Out of school hours: Childline — 0800 1111, "
+                         "free and confidential.",
 
     # ⚠️ THE LESSON'S CLOSING LINE, BYTE-IDENTICAL. It sets no targets, gives
     # no advice about anybody's own eating, and points at a trusted adult.

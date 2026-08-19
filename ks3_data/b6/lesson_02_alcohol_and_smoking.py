@@ -253,8 +253,7 @@ LONG_TERM = [
         # docstring. Lifted byte-identical, curly apostrophes and all, because
         # the page wins.
         ("Airways and alveoli",
-         "Damaged by tar and by the other substances in the smoke. Which "
-         "substance does which damage is b4-04’s subject, not this lesson’s."),
+         "Damaged by tar and by the other substances in the smoke. "),
     ]),
 ]
 
@@ -469,11 +468,12 @@ LESSON = {
         {"type": "clearance-clock", "id": "beat-the-liver", "anchor": "s-clock",
          "demand": "investigate",
          "eyebrow": "At the bench · one liver, one clock",
-         "heading": "Try to beat the liver",
-         "prompt": "Build an evening's drinks, pick something to speed the "
-                   "clearing up, then run the clock. Every trick on this bench "
-                   "is one people genuinely believe in. Only one of them "
-                   "changes anything, and not the thing they think.",
+         "heading": "The liver cannot be hurried",
+         "prompt": "Build an evening's drinks for someone else, pick "
+                   "something to speed the clearing up, then run the clock. "
+                   "Every trick on this bench is one people genuinely "
+                   "believe in. Only one of them changes anything, and not "
+                   "the thing they think.",
 
          # The mono readout on the eyebrow row (page line 111). THREE states,
          # driven by the instrument's own arithmetic: nothing run yet, running,
@@ -787,6 +787,25 @@ LESSON = {
                       "hurried?",
               "cta": "Ask about this lesson",
               "anchor": "s-clock"},
+
+    # ⊕ MRB-257 · audit 6.4 — RULED BY MIDE, and the wording is the ruling.
+    # The safeguarding blocks named no confidential service: a sweep for
+    # childline|0800 1111|nspcc|samaritans|papyrus|frank|shout across all 58
+    # rendered pages returned ZERO. This is a public site, and the student who
+    # most needs this block is reading it at 11pm, when "your school's PSHE
+    # materials" is not reachable. The service is Childline, the number is
+    # 0800 1111, joined by a spaced em dash. Shout and FRANK were offered and
+    # NOT taken up. The PSHE deferral STAYS as the daytime route — Childline is
+    # the out-of-hours one, not a replacement for it.
+    #
+    # ⚠️ THE TREATMENT IS THE RULING TOO (§8.10): a small `ks3-legal` foot line
+    # alongside the existing school-nurse / pharmacist / GP routes, NEVER a
+    # callout block. A helpline should be findable and quiet.
+    "safeguarding_note": "If any of this is about you or someone you know, "
+                         "talk to someone you trust — a parent or carer, a "
+                         "teacher, your school nurse, a pharmacist or your "
+                         "GP. Out of school hours: Childline — 0800 1111, "
+                         "free and confidential.",
 
     # ⊕ MRB-228's `convention_note`, not `safety_note` — see "What could not be
     # lifted" 5. Design draws ONE plain `.ks3-legal` paragraph and this is it:

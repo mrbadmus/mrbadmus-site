@@ -622,9 +622,7 @@ LESSON = {
          "demand": "investigate",
          "eyebrow": "At the bench · a field you can check your answer against",
          "heading": "Survey it, then see the truth",
-         "prompt": "A hundred-square field with daisies in it. The daisies are "
-                   "not spread evenly — they never are — and the real total is "
-                   "hidden until you have committed to an estimate.",
+         "prompt": "The daisies are not spread evenly — they never are.",
          # Design's mono line beside the heading (page line 527). `after`
          # carries `{n}`, which `_KIND_HEAD_FROM` turns into the head
          # counter's format; `before` becomes its bespoke zero, so the resting

@@ -251,17 +251,19 @@ LESSON = {
                    "not what most people say.",
          "items": [
              {"id": "m1",
-              "text": "You stand up from a chair. The knee straightens.",
+              "text": "Someone stands up from a chair. The knee "
+                      "straightens.",
               "options": _KNEE,
               "answer": "The quadriceps contract.",
               "why": "They pull the lower leg straight while the hamstrings relax. Gravity is pulling the other way here, which is why standing up is work and sitting down is not."},
              {"id": "m2",
-              "text": "You pull your heel up towards your bottom, bending the knee.",
+              "text": "Someone pulls their heel up towards their bottom, "
+                      "bending the knee.",
               "options": _KNEE,
               "answer": "The hamstrings contract.",
               "why": "The same joint, the opposite muscle. Every pair is one muscle for each direction, and neither can do the other one’s job."},
              {"id": "m3",
-              "text": "You rise onto your tiptoes.",
+              "text": "Someone rises onto their tiptoes.",
               "options": [
                   "The calf muscle, behind the shin",
                   "The muscle down the front of the shin",
@@ -273,7 +275,8 @@ LESSON = {
              # The eccentric-contraction case (NOTES flag 13) — the one most
              # people get wrong, and the reason the sorter reveals per row.
              {"id": "m4",
-              "text": "You lower a heavy box slowly to the floor, straightening your arms as it goes down.",
+              "text": "Someone lowers a heavy box slowly to the floor, "
+                      "straightening their arms as it goes down.",
               "options": [
                   "The biceps, still contracting",
                   "The triceps, contracting",

@@ -794,10 +794,8 @@ LESSON = {
                  "same pale moth now stands out sharply and the same dark "
                  "moth is almost invisible. Neither moth has changed. Only "
                  "the bark has.",
-         "caption": "Neither moth changed. The bark did. A bird hunting on "
-                    "the left panel finds the dark moth first; on the right "
-                    "it finds the pale one — and being found is the whole of "
-                    "the disadvantage.",
+         "caption": "Neither moth changed. The bark did. Being found is the "
+                    "whole of the disadvantage.",
          "data": {
              "key": "Being hard to see is not a property of the moth. It is a "
                     "property of the moth and the background together.",
@@ -836,10 +834,9 @@ LESSON = {
          "demand": "investigate",
          "eyebrow": "At the bench · a hundred moths on a tree trunk",
          "title": "Run the generations",
-         "intro": "Pale and dark moths resting on tree bark, hunted by birds "
-                  "that find whatever they can see. Choose the bark, run the "
-                  "generations, and watch the population change while no "
-                  "individual moth changes at all.",
+         "intro": "Pale and dark moths resting on tree bark, hunted by "
+                  "birds that find whatever they can see. The population "
+                  "changes while no individual moth changes at all.",
 
          # ⚑ The eyebrow says "a hundred moths" and nothing in the model is a
          # count of a hundred individuals — it is a proportion throughout.
@@ -888,19 +885,17 @@ LESSON = {
              # `gen === 0 && pale === start_pale`. The gate on the second half
              # is the §11 item 3 fix; without it this sentence is printed over a
              # fifty-fifty population after a reset.
-             "start": "Nine moths in ten are pale, which is where the British "
-                      "population started. Choose a bark and run some "
-                      "generations.",
+             "start": "Nine moths in ten are pale, which is where the "
+                      "British population started.",
              # ⚠️ AUTHORED, NOT LIFTED — it does not exist in the delivered
              # bytes. `gen === 0 && pale === reset_pale`. Written to do exactly
              # what `notes.start` does one branch over: state the proportion on
              # screen, then say what to do next. It is honest about why
              # fifty-fifty is offered at all — it is not history, it is the
              # cleanest place to watch a change from.
-             "reset": "Half the moths are pale and half are dark — not where "
-                      "the British population started, but the clearest place "
-                      "to watch a change from. Choose a bark and run some "
-                      "generations.",
+             "reset": "Half the moths are pale and half are dark — not "
+                      "where the British population started, but the "
+                      "clearest place to watch a change from.",
              # `bark === 'mixed'`. THE CONTROL, and the note says so in the
              # words that matter: without a difference in survival there is no
              # selection.

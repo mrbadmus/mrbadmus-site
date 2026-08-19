@@ -585,15 +585,16 @@ LESSON = {
          "text": "The figure for intestinal surface area has been revised "
                  "downwards, and the story is a good lesson in reading "
                  "numbers sceptically. Textbooks for decades gave 200 to "
-                 "300 m² — a tennis court — a figure that came from measuring "
-                 "folds and villi on tissue that had been fixed, dried and "
-                 "stretched. Careful measurements on fresh tissue published "
-                 "in 2014 put it closer to 30 m², about the floor of a "
-                 "bedroom. The biology did not change; the method did. Note "
-                 "that the older number is still in print in many places, so "
-                 "you will meet both, and the honest thing to say in an exam "
-                 "is that the area is very large and why, rather than "
-                 "committing to a figure someone may have learnt differently."},
+                 "300 m² — a tennis court — a figure that came from "
+                 "measuring folds and villi on tissue that had been fixed, "
+                 "dried and stretched. Careful measurements on fresh tissue "
+                 "published in 2014 put it closer to 30 m², about the floor "
+                 "of a bedroom. The biology did not change; the method did. "
+                 "The older number is still in print in many places, so you "
+                 "will meet both, and the honest thing to say in an exam is "
+                 "that the area is very large and why, rather than "
+                 "committing to a figure someone may have learnt "
+                 "differently."},
     ],
 
     # Present and empty — §5.6's ruling: may be empty, never absent.
@@ -617,10 +618,12 @@ LESSON = {
     #
     # ⚠️ The figure id keeps its plain text; Design sets it in mono and a foot
     # line is escaped. See "What could not be lifted" 2.
+    # ⊕ MRB-257 · C4 / audit 4.6 — the "… is declared in the lesson record
+    # as `b5-…`, awaiting illustration" sentence was our own build metadata,
+    # printed to a student on eleven pages (§8.10). Cut. The measurement
+    # caveat before it is the part that was doing work and it stays.
     "convention_note": "Area figures are approximate and follow the 2014 "
-                       "fresh-tissue measurements. The labelled villus "
-                       "diagram is declared in the lesson record as "
-                       "b3-villus-labelled, awaiting illustration.",
+                       "fresh-tissue measurements.",
 
     # ── working scientifically (§5.7) ───────────────────────────────────────
     # `analysis-and-evaluation` for the four-features reasoning (remove one,

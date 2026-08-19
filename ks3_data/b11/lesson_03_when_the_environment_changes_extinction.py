@@ -869,10 +869,8 @@ LESSON = {
          # against one pressure and helpless against another. The panda and the
          # dormouse show it on the first two presses. Same sentence shape, same
          # instruction to look, and now there is something there to see.
-         "intro": "Each species is described by four things that decide its "
-                  "resilience. Apply a pressure and see how it copes — and "
-                  "note how a species can be tough against one pressure and "
-                  "helpless against another.",
+         "intro": "A species can be tough against one pressure and helpless "
+                  "against another.",
 
          # The two mono labels over the two tab rows, and the mono counter in
          # the head. Design composes "{n} combination(s) tried"; §1 names the
@@ -967,24 +965,24 @@ LESSON = {
              {"quote": "Extinction is unnatural — it only happens because of "
                        "us.",
               "body": ["Over ninety-nine per cent of all species that have "
-                      "ever existed are extinct, and the overwhelming "
-                      "majority died out long before there were any humans. "
-                      "There have been five mass extinctions in the fossil "
-                      "record; the largest, at the end of the Permian, "
-                      "removed something like nine tenths of marine species, "
-                      "and the most famous ended the non-bird dinosaurs "
-                      "sixty-six million years ago after an asteroid impact. "
-                      "Species go extinct in ordinary times too, at a slow "
-                      "background rate, simply because environments change. "
-                      "None of that lets anybody off. What is different now "
-                      "is the <em>rate</em>: current extinction rates are "
-                      "estimated at tens to hundreds of times the background "
-                      "rate, driven by habitat loss, introduced species, "
-                      "hunting and a changing climate. The argument for "
-                      "acting is not that extinction is unnatural — it is "
-                      "that we have made it happen far faster than it "
-                      "otherwise would, which is a claim you can check with "
-                      "numbers."],
+                       "ever existed are extinct, and almost all died out "
+                       "long before there were any humans. There have been "
+                       "five mass extinctions in the fossil record; the "
+                       "largest, at the end of the Permian, removed "
+                       "something like nine tenths of marine species, and "
+                       "the most famous ended the non-bird dinosaurs "
+                       "sixty-six million years ago after an asteroid "
+                       "impact. Species go extinct in ordinary times too, "
+                       "at a slow background rate, simply because "
+                       "environments change. None of that lets anybody off. "
+                       "What is different now is the <em>rate</em>: current "
+                       "extinction rates are estimated at tens to hundreds "
+                       "of times the background rate, driven by habitat "
+                       "loss, introduced species, hunting and a changing "
+                       "climate. The argument for acting is not that "
+                       "extinction is unnatural — it is that we have made "
+                       "it happen far faster than it otherwise would, which "
+                       "is a claim you can check with numbers."],
              },
              # EVOL-06. ⚠️ THIS BODY CARRIES THE ONE COPY CHANGE RULED IN B11 —
              # NOTES flag 11, schema §14. The fraction is out and three named

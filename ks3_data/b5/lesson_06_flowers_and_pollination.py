@@ -861,14 +861,14 @@ LESSON = {
     # ⚠️ Both figure ids keep their plain text; Design sets them in mono inside
     # the sentence and a foot line is escaped, so they render in body copy and
     # the words are unchanged.
-    "convention_note": "The flower described is a generalised one: many real "
-                       "flowers lack petals, sepals or nectaries, some carry "
-                       "only male or only female parts, and a few carry them "
-                       "on separate plants entirely. The labelled flower "
-                       "diagram is declared in the lesson record as "
-                       "b5-flower-parts-labelled and the wind-and-insect "
-                       "comparison as b5-wind-vs-insect, both awaiting "
-                       "illustration.",
+    # ⊕ MRB-257 · C4 / audit 4.6 — the "… is declared in the lesson record
+    # as `b5-…`, awaiting illustration" sentence was our own build metadata,
+    # printed to a student on eleven pages (§8.10). Cut. The measurement
+    # caveat before it is the part that was doing work and it stays.
+    "convention_note": "The flower described is a generalised one: many "
+                       "real flowers lack petals, sepals or nectaries, some "
+                       "carry only male or only female parts, and a few "
+                       "carry them on separate plants entirely.",
 
     # ── working scientifically (§5.7) ───────────────────────────────────────
     # The instrument is classification against evidence, and rung 4 asks for

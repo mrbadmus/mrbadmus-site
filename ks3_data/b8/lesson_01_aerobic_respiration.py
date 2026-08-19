@@ -634,10 +634,7 @@ LESSON = {
          "demand": "investigate",
          "eyebrow": "At the bench · weigh both sides",
          "heading": "The books have to balance",
-         "prompt": "Pick an amount of glucose and the ledger works out what "
-                   "your cells must take in and what must come out. Watch the "
-                   "two totals at the bottom, and watch the energy column, "
-                   "which is not part of either total.",
+         "prompt": "The energy transferred is not part of either total.",
          # Design's mono line beside the heading (page line 504): the two
          # states of the section, not a counter.
          "progress": {"before": "ledger only", "after": "exits shown"},
@@ -960,6 +957,29 @@ LESSON = {
                       "up?",
               "cta": "Ask about this lesson",
               "anchor": "s-bench"},
+
+    # ⊕ MRB-257 · audit 6.4 — RULED BY MIDE, and the wording is the ruling.
+    # The safeguarding blocks named no confidential service: a sweep for
+    # childline|0800 1111|nspcc|samaritans|papyrus|frank|shout across all 58
+    # rendered pages returned ZERO. This is a public site, and the student who
+    # most needs this block is reading it at 11pm, when "your school's PSHE
+    # materials" is not reachable. The service is Childline, the number is
+    # 0800 1111, joined by a spaced em dash. Shout and FRANK were offered and
+    # NOT taken up. The PSHE deferral STAYS as the daytime route — Childline is
+    # the out-of-hours one, not a replacement for it.
+    #
+    # ⚠️ THE TREATMENT IS THE RULING TOO (§8.10): a small `ks3-legal` foot line
+    # alongside the existing school-nurse / pharmacist / GP routes, NEVER a
+    # callout block. A helpline should be findable and quiet.
+    #
+    # ⊕ Also audit 6.19 — this was the ONE body-related hook in 58 lessons with
+    # no closing safeguarding line ("Someone loses 10 kg of fat. Where does the
+    # 10 kg go?"). Every other body-touching page carries one; this closes it.
+    "safeguarding_note": "If any of this is about you or someone you know, "
+                         "talk to someone you trust — a parent or carer, a "
+                         "teacher, your school nurse, a pharmacist or your "
+                         "GP. Out of school hours: Childline — 0800 1111, "
+                         "free and confidential.",
 
     # ⊕ `convention_note`, not `safety_note`. Design draws ONE plain
     # `.ks3-legal` paragraph (page line 332) and nothing in it is a safety

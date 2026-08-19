@@ -359,7 +359,8 @@ DRUGS = [{"id": "caffeine",
                          "effect": "Damaged by tar and by the other "
                                    "substances in smoke rather than by "
                                    "nicotine itself. Which substance does "
-                                   "which damage is the subject of b4-04."}],
+                                   "which damage is the subject of "
+                                   "Exercise, asthma and smoking."}],
           "verdict": "Nicotine is the reason people keep smoking. The "
                      "substances that cause most of the harm are different "
                      "molecules travelling in the same smoke."},
@@ -997,6 +998,25 @@ LESSON = {
                               "unavoidable rather than a fault?",
                       "cta": "Ask about this lesson",
                       "anchor": "s-dose"},
+
+    # ⊕ MRB-257 · audit 6.4 — RULED BY MIDE, and the wording is the ruling.
+    # The safeguarding blocks named no confidential service: a sweep for
+    # childline|0800 1111|nspcc|samaritans|papyrus|frank|shout across all 58
+    # rendered pages returned ZERO. This is a public site, and the student who
+    # most needs this block is reading it at 11pm, when "your school's PSHE
+    # materials" is not reachable. The service is Childline, the number is
+    # 0800 1111, joined by a spaced em dash. Shout and FRANK were offered and
+    # NOT taken up. The PSHE deferral STAYS as the daytime route — Childline is
+    # the out-of-hours one, not a replacement for it.
+    #
+    # ⚠️ THE TREATMENT IS THE RULING TOO (§8.10): a small `ks3-legal` foot line
+    # alongside the existing school-nurse / pharmacist / GP routes, NEVER a
+    # callout block. A helpline should be findable and quiet.
+    "safeguarding_note": "If any of this is about you or someone you know, "
+                         "talk to someone you trust — a parent or carer, a "
+                         "teacher, your school nurse, a pharmacist or your "
+                         "GP. Out of school hours: Childline — 0800 1111, "
+                         "free and confidential.",
 
     # ⊕ MRB-228's `convention_note`, not `safety_note`. Design draws ONE plain
     # `.ks3-legal` paragraph at the bottom edge and nothing in it is a safety

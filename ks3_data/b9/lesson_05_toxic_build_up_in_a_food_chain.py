@@ -633,9 +633,8 @@ LESSON = {
          # the water they stand in.
          "eyebrow": "At the bench · one lake, six levels",
          "heading": "Follow the concentration up",
-         "prompt": "Choose how persistent the chemical is — whether the body "
-                   "can break it down — then climb the chain. The persistence "
-                   "dial is the one that decides everything.",
+         "prompt": "Persistence — whether the body can break the chemical "
+                   "down — is the dial that decides everything.",
          # Design's mono line beside the heading (page line 108). `_b9_head`
          # converts it into the head counter: format from `before`, `full` from
          # `after`, opening at level 1 because a student is already looking at
@@ -887,10 +886,11 @@ LESSON = {
             # ⚑ NOTES-B9 flag 15. Checked and left as a rung: the advice is
             # handed to the student as GIVEN and they are asked to explain it
             # from food chains. Nothing here tells a student what to eat.
-            "q": "Health advice tells pregnant women to limit how much tuna "
-                 "and swordfish they eat, because of mercury, while sardines "
-                 "and prawns carry no such warning. Explain the difference "
-                 "using what you know about food chains.",
+            "q": "Health advice tells anyone who is pregnant or might be to "
+                 "limit how much tuna and swordfish they eat, because of "
+                 "mercury, while sardines and prawns carry no such warning. "
+                 "Explain the difference using what you know about food "
+                 "chains.",
             "field_label": "Your answer",
             "placeholder": "Tuna and swordfish are…",
             "success": [

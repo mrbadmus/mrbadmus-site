@@ -405,7 +405,31 @@ LESSON = {
     # the obvious second slot" and says it has not invented one; declaring it
     # here would invent a sourcing task in `docs/ks3/diagram-manifest.md` for
     # artwork this page never references.
-    "figures": [],
+    # ⊕ MRB-257 · decision 5 / audit WS1 #11 — AN INDEPENDENT FIND, now declared.
+    #
+    # This was the one diagram gap in the ranked list that sat in no lesson
+    # record at all, so it was invisible to `docs/ks3/diagram-manifest.md` and
+    # would have been missed by a wiring run that worked from the manifest.
+    # The caption below IS the brief — it is written to be drawn from, which is
+    # how the other eleven declared gaps already carry their specifications.
+    #
+    # Why the page needs it: the bench is a light→net-flux instrument that never
+    # touches guard cells, and the mechanism — a shape change — is currently one
+    # sentence of prose. A shape change is the thing prose is worst at.
+    #
+    # ⚠️ DECLARED, NOT DRAWN. No `{"type": "figure"}` block is added to `core[]`
+    # this run: landing a diagram needs both a declaration and a drawer, and the
+    # diagram run is a separate one. `status: "needed"` is what makes it a
+    # tracked sourcing task rather than a dangling reference.
+    "figures": [
+        {"id": "b4-guard-cells-two-state",
+         "kind": "diagram",
+         "caption": "A guard-cell pair drawn in two states side by side: "
+                    "turgid, bowed apart, with the pore open between them, and "
+                    "flaccid, straight, with the pore closed — beside a leaf in "
+                    "section showing the stomata on the underside.",
+         "status": "needed"},
+    ],
 
     # ── core, in the approved page's document order ─────────────────────────
     "core": [
@@ -421,9 +445,7 @@ LESSON = {
          "eyebrow": "At the bench · turn the light up",
          "heading": "Two processes, one net figure",
          "head_counter": {"off": "currently dark", "on": "light adjusted"},
-         "prompt": "Respiration is the top bar. Photosynthesis is the second. "
-                   "What a sensor outside the leaf measures is only the "
-                   "difference — the third.",
+         "prompt": "",
 
          "start_light": 0,
          "light_label": "Light level",

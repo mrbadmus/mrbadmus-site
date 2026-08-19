@@ -856,9 +856,8 @@ LESSON = {
          "eyebrow": "At the bench · one population, five conditions",
          "heading": "Change the world, not the mice",
          "prompt": "The same five mice every time. Only the conditions "
-                   "change, and the survival column changes with them. Watch "
-                   "one mouse across all five and see how often the same "
-                   "animal is at the top and at the bottom.",
+                   "change. Watch one mouse across all five and see how "
+                   "often the same animal is at the top and at the bottom.",
 
          # The mono label over the five tabs, and the mono word at the end of
          # the head readout. `_KIND_HEAD_FROM` composes
@@ -1177,21 +1176,21 @@ LESSON = {
     # the b11-02 Lamarckian error refused in advance.
     "stretch": [
         {"type": "explainer", "id": "the-grants-and-the-finches",
-         "text": "Peter and Rosemary Grant spent forty years measuring finches "
-                 "on Daphne Major, a small island in the Galápagos, catching "
-                 "and weighing essentially every bird on it year after year. "
-                 "In the drought of 1977 the small soft seeds ran out and only "
-                 "the large tough ones were left, and the finches with "
-                 "slightly deeper, stronger beaks survived at a much higher "
-                 "rate. The average beak depth in the population measurably "
-                 "increased in a single generation. Then in 1983 came "
-                 "exceptional rains, the small soft seeds returned in "
-                 "abundance, and the average beak size went back down. That is "
-                 "the whole of this lesson in one data set: the same "
-                 "variation, an advantage in one year and a disadvantage six "
-                 "years later, with no bird ever changing its own beak. It is "
-                 "also one of the few places where evolution has been watched "
-                 "happening rather than reconstructed afterwards."},
+         "text": "Peter and Rosemary Grant spent forty years measuring "
+                 "finches on Daphne Major, a small island in the Galápagos, "
+                 "catching and weighing almost every bird on it year after "
+                 "year. In the drought of 1977 the small soft seeds ran out "
+                 "and only the large tough ones were left, and the finches "
+                 "with slightly deeper, stronger beaks survived at a much "
+                 "higher rate. The average beak depth in the population "
+                 "measurably increased in a single generation. Then in 1983 "
+                 "came exceptional rains, the small soft seeds returned in "
+                 "abundance, and the average beak size went back down. That "
+                 "is the whole of this lesson in one data set: the same "
+                 "variation, an advantage in one year and a disadvantage "
+                 "six years later, with no bird ever changing its own beak. "
+                 "It is also one of the few places where evolution has been "
+                 "watched happening rather than reconstructed afterwards."},
     ],
 
     "support": [],

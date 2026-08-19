@@ -143,18 +143,121 @@ RAIL_JS = """
 # authored pressed state, so two sources of truth existed at once.
 PRESSED_JS = """
 (function () {
-  var groups = {}, out = [];
-  document.querySelectorAll('[aria-pressed]').forEach(function (b) {
-    var g = b.getAttribute('data-specimen') !== null ? 'specimen'
-          : (b.className.match(/ks3-[a-z0-9]+/) || ['?'])[0];
-    var host = b.closest('section') ? b.closest('section').id : 'doc';
-    var key = host + '::' + g;
-    groups[key] = groups[key] || {on: 0, n: 0};
-    groups[key].n += 1;
-    if (b.getAttribute('aria-pressed') === 'true') groups[key].on += 1;
+  // ⚠️ THE GROUP IS THE PARENT ELEMENT, not the section.
+  //
+  // Keying on the section lumped every `.ks3-option` in `#s-bench` into one
+  // "group" — eleven buttons belonging to three separate questions — so
+  // answering two questions looked like two controls pressed in one radio
+  // group. That is a grouping artifact reported as a defect, and it is the
+  // second false alarm this check produced; a gate that cries wolf gets
+  // switched off, and this one guards a real defect (b1-03's specimen control
+  // claiming "Leaf cell" while the engine drew cheek).
+  //
+  // Controls that exclude one another are SIBLINGS under one list or panel.
+  // So the parent node is the group, and nothing coarser is safe.
+  var groups = new Map(), out = [], seq = 0;
+  document.querySelectorAll('main [aria-pressed]').forEach(function (b) {
+    var p = b.parentElement;
+    if (!p) { return; }
+    if (!p.__ks3grp) { p.__ks3grp = 'g' + (++seq) + ':' + (p.className || p.tagName); }
+    var rec = groups.get(p.__ks3grp) || {on: 0, n: 0};
+    rec.n += 1;
+    if (b.getAttribute('aria-pressed') === 'true') { rec.on += 1; }
+    groups.set(p.__ks3grp, rec);
   });
-  for (var k in groups) { out.push([k, groups[k].on, groups[k].n]); }
+  groups.forEach(function (v, k) { out.push([k, v.on, v.n]); });
   return JSON.stringify(out);
+})()
+"""
+
+
+
+# ── invariant 3b · a control that is clicked must become the pressed one ──
+#
+# This is the one that actually stands for b1-03, and the weaker "exactly one
+# pressed" check above does NOT: under the original bug the specimen control
+# shipped aria-pressed="true" on "Leaf cell" while `wireCellBench` seeded its
+# state from `specBtns[0]` ("cheek") and `refresh()` never repainted the
+# buttons. Exactly one button was pressed at load and exactly one after — the
+# count invariant passes the whole way through, while the page teaches that a
+# leaf cell has no wall, no vacuole and no chloroplasts, under a gate question
+# about a leaf cell.
+#
+# What was actually broken is cheaper to state: you press a control and it does
+# not become the pressed one. That generalises without knowing anything about
+# any instrument, and it is what MRB-253 asked for — "a control's label and the
+# state the engine renders must agree".
+#
+# Radio-like groups only, decided by the group's own load state, for the same
+# reason as above: in a toggle bank a second press legitimately turns it OFF.
+CLICK_FOLLOWS_JS = """
+(function () {
+  var seq = 0, groups = new Map(), bad = [];
+  document.querySelectorAll('main [aria-pressed]').forEach(function (b) {
+    var p = b.parentElement; if (!p) { return; }
+    if (!p.__ks3g) { p.__ks3g = ++seq; }
+    var g = groups.get(p.__ks3g) || [];
+    g.push(b); groups.set(p.__ks3g, g);
+  });
+
+  // ⚠️ THE PROGRESS READOUT IS EXCLUDED FROM THE FINGERPRINT.
+  // `[data-count]` is the head counter every instrument carries — "0 of 4
+  // joints tried". Pressing a control legitimately advances it, so including
+  // it made every radio group on `joints` and `antagonistic-muscle-pairs`
+  // look like a load disagreement. Two false alarms, and this check only
+  // earns its place if it is quiet when nothing is wrong.
+  function fingerprint(root) {
+    var out = [], w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        for (var e = n.parentElement; e && e !== root; e = e.parentElement) {
+          if (e.hasAttribute && e.hasAttribute('data-count')) {
+            return NodeFilter.FILTER_REJECT;
+          }
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var n; while ((n = w.nextNode())) { out.push(n.nodeValue); }
+    return out.join(' ').replace(/[\\s]+/g, ' ').trim();
+  }
+
+  groups.forEach(function (btns) {
+    if (btns.length < 2) { return; }
+    var on = btns.filter(function (b) {
+      return b.getAttribute('aria-pressed') === 'true'; });
+    if (on.length !== 1) { return; }          // not radio-like
+
+    // ══ THE LOAD-STATE AGREEMENT CHECK — the b1-03 assertion ══
+    //
+    // Pressing the control that ALREADY claims to be pressed must be a no-op.
+    // If the section's rendered text changes, what was on screen at load was
+    // not what the pressed control said was on screen. That is exactly b1-03:
+    // the specimen button read "Leaf cell" while `wireCellBench` seeded from
+    // DOM order and drew a cheek cell, so the page taught that a leaf cell has
+    // no wall, no vacuole and no chloroplasts — with zero interaction, under a
+    // gate question about a leaf cell.
+    //
+    // The count-based invariant above cannot see this: exactly one control was
+    // pressed before and exactly one after, the whole way through.
+    //
+    // ⊕ The companion "a clicked control becomes the pressed one" check was
+    // REMOVED. Load state cannot reliably tell a radio group from a toggle
+    // bank, and in a toggle bank a second press legitimately turns a control
+    // OFF — which the check read as the click being ignored, six times on
+    // `specialised-cells` alone. It added no signal the load check does not
+    // already carry, and noise in a gate is not free.
+    var host = btns[0].closest('section') || document.body;
+    var before = fingerprint(host);
+    try { on[0].click(); } catch (e) { return; }
+    var after = fingerprint(host);
+    if (before !== after) {
+      bad.push('LOAD DISAGREEMENT | "'
+        + (on[0].textContent || '').trim().slice(0, 40)
+        + '" shipped aria-pressed="true", but pressing it CHANGED the section — '
+        + 'so the engine was not rendering what the control claimed');
+    }
+  });
+  return JSON.stringify(bad);
 })()
 """
 
@@ -413,6 +516,13 @@ def main():
                     rail0 = json.loads(pg.eval(RAIL_JS))
                     press0 = json.loads(pg.eval(PRESSED_JS))
 
+                    for line in json.loads(pg.eval(CLICK_FOLLOWS_JS)):
+                        problems.append(
+                            "%s [control] %s. A control and the state it claims "
+                            "must agree — this is how b1-03 taught, on load and "
+                            "with no interaction, that a leaf cell has no wall, "
+                            "no vacuole and no chloroplasts." % (rel, line))
+
                     pg.eval(SWEEP_JS % {"cap": a.click_cap})
 
                     after_txt = pg.eval(visible_text_js())
@@ -428,17 +538,39 @@ def main():
                                 "%s [rail] stage %s went %s -> %s. MRB-208: "
                                 "nothing un-finishes it." % (rel, sid, was, done))
 
-                    for key, on, n in press1:
-                        if n > 1 and on > 1:
-                            problems.append(
-                                "%s [aria-pressed] %d of %d controls in '%s' claim "
-                                "to be pressed at once" % (rel, on, n, key))
+                    # ⚠️ ONLY RADIO-LIKE GROUPS ARE CONSTRAINED, and the group's
+                    # own load state is what says whether it is one.
+                    #
+                    # The first cut of this asserted "at most one pressed" on
+                    # every group and produced 41 findings across the corpus,
+                    # every one of them wrong: `s-fold`'s three levels and
+                    # `s-jobs`' five switches are TOGGLE BANKS, where all-on is
+                    # the state the block exists to reach. Proven not guessed —
+                    # five flagged pages had built HTML byte-identical to HEAD.
+                    #
+                    # A gate that cries wolf gets switched off, which would have
+                    # cost the one real defect this invariant is for: b1-03's
+                    # specimen control shipping aria-pressed="true" while the
+                    # engine rendered a different specimen. That IS a radio
+                    # group — exactly one pressed at load — so the empirical
+                    # test is also the correct one. If a group opens with
+                    # exactly one control pressed, mutual exclusion is what it
+                    # means, and it must still hold after the sweep.
                     b0 = {k: (on, n) for k, on, n in press0}
                     for key, on, n in press1:
-                        if key in b0 and b0[key][0] == 1 and on == 0 and n > 1:
+                        was = b0.get(key)
+                        if not was or was[1] < 2 or was[0] != 1:
+                            continue          # toggle bank, or new — not radio
+                        if on > 1:
                             problems.append(
-                                "%s [aria-pressed] group '%s' had a pressed control "
-                                "and now has none" % (rel, key))
+                                "%s [aria-pressed] '%s' opened with exactly one of "
+                                "%d controls pressed, so it is a radio group — and "
+                                "after the sweep %d of them claim to be pressed at "
+                                "once" % (rel, key, n, on))
+                        elif on == 0:
+                            problems.append(
+                                "%s [aria-pressed] radio group '%s' had a pressed "
+                                "control and now has none" % (rel, key, ))
 
                     for e in pg.console_errors():
                         problems.append("%s [console] %s" % (rel, e))

@@ -632,10 +632,9 @@ LESSON = {
          "demand": "investigate",
          "eyebrow": "At the bench · empty the shelves",
          "heading": "Which foods survive?",
-         "prompt": "Twelve foods from an ordinary shop. Remove the insect "
-                   "pollinators and see what is left, then read what has "
-                   "happened to the two numbers underneath — because they do "
-                   "not fall by the same amount, and that is the whole lesson.",
+         "prompt": "Twelve foods from an ordinary shop. Watch the two "
+                   "numbers underneath — because they do not fall by the "
+                   "same amount, and that is the whole lesson.",
          # Design's mono line beside the heading (page line 490): three named
          # states, no number in any of them. ⚠️ `all` is FIRST because the
          # readout prints the first authored state at rest and the shelf opens
@@ -747,21 +746,21 @@ LESSON = {
              # lesson title — and the edge is in `references`.
              {"quote": "No bees, no food — we would starve within a few years.",
               "body": ["Overstating a real problem is not a harmless way of "
-                       "getting people to care, because the overstatement is "
-                       "the part that gets checked. Wheat, rice, maize, barley "
-                       "and oats are wind-pollinated and between them provide "
-                       "the majority of the calories eaten on Earth; they "
-                       "would be entirely unaffected. What the exaggeration "
-                       "hides is a genuine and more specific problem: the "
-                       "crops that do depend on insects are the fruit, nuts "
-                       "and vegetables that supply vitamin C, vitamin A, "
-                       "folate, iron and calcium, and losing them means a "
-                       "population with enough energy and widespread "
-                       "deficiency diseases — the situation When diet goes "
-                       "wrong describes. That is worth acting on, it is "
-                       "defensible against anyone who checks it, and it does "
-                       "not need a fake quotation from Einstein attached to "
-                       "it."]},
+                       "getting people to care, because the overstatement "
+                       "is the part that gets checked. Wheat, rice, maize, "
+                       "barley and oats are wind-pollinated and between "
+                       "them provide most of the calories eaten on Earth; "
+                       "they would be entirely unaffected. What the "
+                       "exaggeration hides is a genuine and more specific "
+                       "problem: the crops that do depend on insects are "
+                       "the fruit, nuts and vegetables that supply vitamin "
+                       "C, vitamin A, folate, iron and calcium, and losing "
+                       "them means a population with enough energy and "
+                       "widespread deficiency diseases — the situation When "
+                       "diet goes wrong describes. That is worth acting on, "
+                       "it is defensible against anyone who checks it, and "
+                       "it does not need a fake quotation from Einstein "
+                       "attached to it."]},
              # ⚑ NOTES-B9 flag 11 lands here. Checked and left; the two claims
              # are about two different populations and the paragraph keeps them
              # apart in every sentence. See the docstring.

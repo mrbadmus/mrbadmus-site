@@ -360,9 +360,8 @@ CYCLE_CARDS = [
 # the docstring.
 NOTES = [
     {"id": "year_zero",
-     "text": "Year zero: eight hundred rabbits, a hundred and twenty foxes. "
-             "Nothing has happened yet. Run ten years and look at the shape "
-             "before you read anything else."},
+     "text": "Nothing has happened yet. Look at the shape before you read "
+             "anything else."},
     # ⚖️ `ECO-04`'s answer, and the reason K exists. The rabbits are at the
     # ceiling with nothing hunting them and the note refuses to call it
     # thriving.
@@ -584,9 +583,9 @@ LESSON = {
          "demand": "investigate",
          "eyebrow": "At the bench · one field, two populations",
          "heading": "Run the years and watch the lag",
-         "prompt": "Two rules, and nothing else. Rabbits breed and are eaten; "
-                   "foxes eat and die. Run a few decades and look at when each "
-                   "peak happens — not how high, when.",
+         "prompt": "Two rules, and nothing else. Rabbits breed and are "
+                   "eaten; foxes eat and die. Look at when each peak "
+                   "happens — not how high, when.",
          # Design's mono line beside the heading (page line 111): "year 0" to
          # "year 26". One number, no denominator anywhere on the page.
          "progress": {"prefix": "year "},

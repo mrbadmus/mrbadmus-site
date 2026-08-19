@@ -725,9 +725,7 @@ LESSON = {
          "anchor": "s-bench", "demand": "compare",
          "eyebrow": "At the bench · five cells, one reaction",
          "heading": "What is the energy actually for?",
-         "prompt": "Five very different cells, including one from a plant. For "
-                   "each: what it spends energy on, how many mitochondria it "
-                   "carries, and what fails first when respiration stops.",
+         "prompt": "Five very different cells, including one from a plant.",
          # `{n}` is the number of distinct cells cut; `{total}` is len(cells).
          "progress": {"zero": "no cells cut off yet",
                       "some": "{n} of {total} cut off"},
