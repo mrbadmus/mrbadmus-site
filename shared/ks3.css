@@ -1119,6 +1119,15 @@ body.rd[data-mode="ks3"] {
   transition: transform .14s;
 }
 .ks3-check-btn:hover { transform: translateY(-2px); }
+/* ⊕ RULING (Mide, 19 Aug 2026) — the missing half of R8. The criteria are
+   not reachable until the student has committed an answer, so the control
+   that opens them is inactive until then. Routed straight to the MEASURED
+   `--ks3-dim-spent` rather than to another by-eye .45 (see the note above
+   `.ks3-sort-reveal[disabled]`), and `:hover` is cancelled with it — a lift
+   on a dead button reads as "press me". No copy accompanies it: the lock
+   explains itself by the empty box directly above. */
+.ks3-check-btn[disabled] { opacity: var(--ks3-dim-spent); cursor: default; transform: none; }
+.ks3-check-btn[disabled]:hover { transform: none; }
 
 .ks3-ticks {
   margin: 16px 0 0;

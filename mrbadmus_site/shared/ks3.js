@@ -667,6 +667,45 @@
       rec.answer = answer;
       rec.boxes = boxes;
 
+      /* ⊕ RULING (Mide, 19 Aug 2026) — NO SELF-MARKING BEFORE A COMMITMENT.
+         R8 already said the criteria "are not on the page until the student
+         has written an answer, because a visible checklist is the answer"
+         (see the load-bearing note on `.ks3-ticks` in ks3.css). What shipped
+         only ever required a BUTTON PRESS: press it with an empty box and
+         the whole success-criteria list — the model answer — arrived before
+         a word had been written. This is the missing half of R8.
+
+         The gate is LENGTH, and only length. Sixty characters is about a
+         dozen words: enough to be an attempt at a sentence, low enough that
+         a terse but genuine answer still gets through. Nothing here reads
+         what was written — no keywords, no parsing, no judgement of any
+         kind. It is the COMMITMENT that is required, not the correctness,
+         and a page that marked the words before the student asked it to
+         would be doing the very thing R8 exists to stop (R3 / MRB-196 R10).
+
+         ⚠️ NO COPY, deliberately — §8.10. No "write at least 60 characters",
+         no character counter, no nag. The control is simply not active yet
+         and looks the way an inactive control looks. This is therefore the
+         one dimmed control in the key stage with no progress readout beside
+         it explaining the lock; that is Mide's ruling, taken knowingly, and
+         WCAG 1.4.3 exempts an inactive component either way.
+
+         ⚖️ THE GATE IS SPENT ONCE THE LIST HAS OPENED. From then on the
+         button is a fold/unfold for work already committed, and taking it
+         away because the student trimmed a sentence would strand them with
+         the list open. `reopen()` clears `shown`, so a retry re-arms it —
+         and a retry keeps the writing, so a real answer stays through. */
+      var MIN_COMMIT = 60;
+
+      function committed() {
+        return !answer || (answer.value || "").trim().length >= MIN_COMMIT;
+      }
+
+      function gate() {
+        if (!checkBtn) { return; }
+        checkBtn.disabled = !(rec.shown || committed());
+      }
+
       function tell() {
         var n = 0, all = boxes.length;
         boxes.forEach(function (b) { if (b.checked) { n += 1; } });
@@ -689,6 +728,7 @@
           checkBtn.setAttribute("aria-expanded", "true");
           checkBtn.textContent = "Hide the list";
         }
+        gate();
         tell();
       }
 
@@ -701,11 +741,15 @@
           checkBtn.setAttribute("aria-expanded", "false");
           checkBtn.textContent = "Check my answer";
         }
+        gate();
       }
 
       if (checkBtn) {
         checkBtn.setAttribute("aria-expanded", "false");
         checkBtn.addEventListener("click", function () {
+          // A disabled button fires no click, so this is belt and braces —
+          // but it keeps the invariant readable at the one place it matters.
+          if (!rec.shown && !committed()) { return; }
           if (checkBtn.getAttribute("aria-expanded") === "true") { collapse(); }
           else {
             // ⊕ MRB-262 — stamp on the FIRST check, which is the moment the
@@ -725,7 +769,7 @@
         b.addEventListener("change", function () { tell(); saveWork(); refresh(true); });
       });
       if (answer) {
-        answer.addEventListener("input", function () { saveWork(); });
+        answer.addEventListener("input", function () { gate(); saveWork(); });
       }
 
       rec.reopen = function () {
@@ -758,6 +802,7 @@
       } else {
         collapse();
       }
+      gate();
     }
 
     each(ladder.querySelectorAll(".ks3-rung"), function (rung) {
@@ -7521,6 +7566,11 @@
     var STEP = Number(cfg.step_per_frame) || 0.0075;
     var BUMP_T = Number(cfg.bump_threshold) || 0.0022;
     var FULL = Number(cfg.pressure_full) || 170;
+    /* ⊕ RULING (Mide, 19 Aug 2026) — PRESSURE IS A NUMBER, IN KILOPASCALS.
+       The bar carried no value, so `PRESSURE` was a label with nothing
+       beside it and the one quantity the lesson is about was the only
+       readout on the bench a student could not read off. See `draw()`. */
+    var KPA = Number(cfg.kpa_per_hit) || 7;
     if (!TEMPS.length || !VOLS.length || !COUNTS.length) { return; }
 
     var start = cfg.start || {};
@@ -7718,10 +7768,36 @@
       ctx.textAlign = "left";
       ctx.fillText(CL.reference || "", 92, H - 30);
 
-      // ── the live readout ──
-      // ⚑ NOTES flag 6 — a COUNT and a BAR, never a pascal. There is no
-      // unit anywhere here, deliberately: p = F/A is a KS4 calculation.
+      /* ── the live readout ──
+         ⊕ SUPERSEDES NOTES flag 6, ruled by Mide on 19 Aug 2026. The flag
+         said "a COUNT and a BAR, never a pascal", and what shipped was a
+         `PRESSURE` caption over an unlabelled bar — a dial with no value
+         on it. A bar without a number teaches nothing quantitative, and
+         pressure is the quantity this lesson exists to build.
+
+         ⚖️ THE NUMBER IS A STATED CALIBRATION, NOT A CALCULATION, and
+         nothing on the page pretends otherwise. Twelve particles in a box
+         have no meaningful pressure; computing one from first principles
+         would give something like 10⁻²³ kPa and would be a lie wearing
+         rigour. This bench is a model of a SAMPLE of a real gas, so the
+         honest treatment is to anchor it: the resting bench — warm, large
+         box, 24 particles — runs at 14.4 wall hits per second, and
+         `kpa_per_hit` is authored at 7 so that reads ~101 kPa, which is
+         atmospheric, the one pressure a student meets everywhere else.
+
+         ⚖️ AND IT IS EXACTLY LINEAR IN THE HIT RATE, by construction:
+         `kpa = count * KPA` and nothing else. Double the hits, double the
+         pressure, at every one of the 27 control combinations — that
+         proportionality IS the lesson, and a reading that drifted away
+         from the count would teach its opposite. Anything that makes this
+         a curve, a floor, a cap or a smoothed average breaks it.
+
+         Whole kilopascals; one decimal below 10, so a cold, large, sparse
+         box reads a small pressure rather than "0 kPa". */
       var count = hits.length;
+      var kpa = count * KPA;
+      var kpaText = (kpa < 10 ? kpa.toFixed(1) : String(Math.round(kpa)))
+        + " " + (CL.pressure_unit || "kPa");
       var px = 620;
       ctx.fillStyle = COUNTER_INK.label;
       ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
@@ -7734,6 +7810,13 @@
       ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
       ctx.fillText(CL.pressure || "", px, 158);
       var barW = 220, barH = 22;
+      // Caption left, value right, bar spanning between them on the row
+      // below — the ordinary shape of a dial, and it costs no new height.
+      ctx.textAlign = "right";
+      ctx.fillStyle = COUNTER_INK.line;
+      ctx.font = '700 20px "Bricolage Grotesque", system-ui, sans-serif';
+      ctx.fillText(kpaText, px + barW, 158);
+      ctx.textAlign = "left";
       ctx.fillStyle = COUNTER_INK.dash;
       ctx.fillRect(px, 168, barW, barH);
       ctx.fillStyle = COUNTER_INK.bar;
@@ -7771,12 +7854,20 @@
       });
     }
 
+    /* ⊕ The pressure number joins the label for the same reason the hit
+       count did (map §4.6): every readout on this bench is drawn INSIDE
+       the canvas, so `aria-label` is the only route to any of it. Ruling
+       "pressure must be shown as a number" is not met by showing it to
+       sighted students only. Same rounding as the drawing. */
     function altText(h) {
+      var k = h * KPA;
       return (ALT.template || "")
         .split("{temp}").join((TEMPS[state.temp].label || "").toLowerCase())
         .split("{vol}").join((VOLS[state.vol].label || "").toLowerCase())
         .split("{n}").join(String(live()))
-        .split("{hits}").join(String(h));
+        .split("{hits}").join(String(h))
+        .split("{kpa}").join((k < 10 ? k.toFixed(1) : String(Math.round(k)))
+          + " " + (CL.pressure_unit || "kPa"));
     }
 
     function setAlt() {

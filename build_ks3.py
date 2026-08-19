@@ -5447,7 +5447,8 @@ _COUNTER_GROUPS = (
 )
 
 
-def _counter_alt(alt, temps, vols, counts, temp, vol, count, hits):
+def _counter_alt(alt, temps, vols, counts, temp, vol, count, hits, kpa_per_hit=7,
+                 unit="kPa"):
     """The bench canvas's aria-label. Same composition in Python and in JS.
 
     ⊕ CORRECTION (PAYLOAD-MAP §4.6). Design's label (page 705–706) names the
@@ -5458,11 +5459,17 @@ def _counter_alt(alt, temps, vols, counts, temp, vol, count, hits):
     to any of it. Design's sentence is carried byte-identical and the count is
     added as a second sentence after it.
     """
+    k = hits * kpa_per_hit
     return (alt.get("template", "")
             .replace("{temp}", (temps[temp].get("label") or "").lower())
             .replace("{vol}", (vols[vol].get("label") or "").lower())
             .replace("{n}", str(counts[count].get("n", "")))
-            .replace("{hits}", str(hits)))
+            .replace("{hits}", str(hits))
+            # Same rounding rule as `draw()`: whole kilopascals, one decimal
+            # below 10. The static label is written with hits = 0, which is
+            # honest — the gas has not started moving when the page is built.
+            .replace("{kpa}", ("%.1f" % k if k < 10 else "%d" % round(k))
+                     + " " + unit))
 
 
 def r_collision_counter(a, act_id):
@@ -5485,8 +5492,21 @@ def r_collision_counter(a, act_id):
     makes "smaller box, same particles, same speed, and the count is up"
     something a student watches rather than something the page claims.
 
-    ⚑ NOTES flag 6 — pressure is a COUNT and a BAR, never a pascal. The bar
-    fills to `min(1, hits / pressure_full)` and carries no number and no unit.
+    ⊕ SUPERSEDES NOTES flag 6 (Mide, 19 Aug 2026). The flag said pressure is
+    "a COUNT and a BAR, never a pascal", and what shipped was a `PRESSURE`
+    caption over an unlabelled bar — a dial with no value on it, teaching
+    nothing quantitative about the one quantity the lesson is for. Pressure is
+    now drawn as a NUMBER in kilopascals beside the bar, which stays.
+
+    ⚖️ The number is a STATED CALIBRATION, not a calculation from first
+    principles: twelve particles in a box have no meaningful pressure, and a
+    literal figure would be ~10⁻²³ kPa, which is a lie wearing rigour. The
+    bench models a SAMPLE of a real gas, so `kpa_per_hit` anchors the resting
+    setting (warm, large, 24 particles → 14.4 hits/s) at ~101 kPa. Pressure is
+    then EXACTLY linear in the hit rate at every one of the 27 control
+    combinations, because it is `hits × kpa_per_hit` and nothing else — and
+    that proportionality is the lesson. A reading that drifted from the count
+    would teach the opposite of it.
 
     ⊕ Two corrections, both reported: the aria-label gains the wall-hit count
     (see `_counter_alt`), and the rail's "controls tried" predicate is a SET of
@@ -5539,7 +5559,10 @@ def r_collision_counter(a, act_id):
                 "PART-08's confrontation and cannot ship unlabelled."
                 % (act_id, field))
 
-    for token in ("{temp}", "{vol}", "{n}", "{hits}"):
+    # ⊕ `{kpa}` joins the list for exactly the reason `{hits}` is in it: the
+    # pressure number is drawn INSIDE the canvas like every other readout, so
+    # a label without it shows the ruled figure to sighted students only.
+    for token in ("{temp}", "{vol}", "{n}", "{hits}", "{kpa}"):
         if token not in (alt.get("template") or ""):
             raise ValueError(
                 "collision-counter %r: `alt.template` is missing %s. Every "
@@ -5602,6 +5625,10 @@ def r_collision_counter(a, act_id):
         "bump_threshold": bumps.get("threshold", 0.0022),
         "canvas_labels": canvas_labels,
         "pressure_full": a.get("pressure_full", 170),
+        # ⊕ RULING (Mide, 19 Aug 2026). Kilopascals per wall hit per second.
+        # See the docstring above and `draw()` in shared/ks3.js: the resting
+        # bench runs at 14.4 hits/s, so 7 puts it at ~101 kPa — atmospheric.
+        "kpa_per_hit": a.get("kpa_per_hit", 7),
         "window_ms": a.get("window_ms", 1000),
         "flash_ms": a.get("flash_ms", 420),
         "reduced_motion_scale": a.get("reduced_motion_scale", 0.35),
@@ -5632,7 +5659,9 @@ def r_collision_counter(a, act_id):
                e(json.dumps(cfg, separators=(",", ":"), sort_keys=True,
                             ensure_ascii=False)),
                e(_counter_alt(alt, groups["temps"], groups["vols"],
-                              groups["counts"], temp0, vol0, count0, 0)),
+                              groups["counts"], temp0, vol0, count0, 0,
+                              a.get("kpa_per_hit", 7),
+                              canvas_labels.get("pressure_unit") or "kPa")),
                "".join(group_html), bump_btn, t(bumps["caption"]),
                note_html))
 
@@ -20442,8 +20471,15 @@ def _rung_self(slug, key, num, name, q):
             '<label class="ks3-answer-label" for="%s">%s</label>'
             '<textarea class="ks3-answer" id="%s" data-answer rows="5"%s>'
             '</textarea>'
+            # ⊕ RULING (Mide, 19 Aug 2026) — ships INACTIVE, like every other
+            # gated reveal in the key stage (`data-sort-reveal disabled`, and
+            # the rest). `wireSelf` in shared/ks3.js releases it once the
+            # answer box holds 60 characters, and re-arms it on a retry.
+            # Emitting the attribute rather than adding it in JS means the
+            # control is never briefly live in the window before a 700 KB
+            # deferred script runs.
             '<button type="button" class="ks3-check-btn" data-check '
-            'aria-expanded="false">Check my answer</button>'
+            'aria-expanded="false" disabled>Check my answer</button>'
             '<ul class="ks3-ticks" hidden data-ticks role="list">%s</ul>'
             '<p class="ks3-tally" hidden data-tally role="status"></p>'
             '</div>'

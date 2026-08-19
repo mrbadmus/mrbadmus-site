@@ -329,14 +329,39 @@ LESSON = {
              "reference": "ONE PARTICLE — SAME SIZE AT EVERY SETTING",
              "hits": "WALL HITS PER SECOND",
              "pressure": "PRESSURE",
+             # ⊕ RULING (Mide, 19 Aug 2026). kPa, not Pa — the unit a student
+             # meets on a weather chart and a tyre gauge, and the one that
+             # puts atmospheric at a memorable 100 rather than 101325.
+             "pressure_unit": "kPa",
              "temperature": "TEMPERATURE",
              "container": "CONTAINER",
              "particles": "PARTICLES"},
 
-         # ⚑ NOTES flag 6. The bar fills to `min(1, hits / 170)` and carries no
-         # number and no unit. Pressure is a count and a bar here, never a
-         # pascal — the quantity arrives at KS4 with `p = F/A` behind it.
+         # The bar's full-scale reference: it fills to `min(1, hits / 170)`.
          "pressure_full": 170,
+
+         # ⊕ RULING (Mide, 19 Aug 2026), SUPERSEDING NOTES flag 6. Flag 6 said
+         # "pressure is a count and a bar here, never a pascal — the quantity
+         # arrives at KS4 with p = F/A behind it". What that produced on the
+         # live bench was a `PRESSURE` caption over an unlabelled bar: a dial
+         # with no value on it. The number IS the science, and a bar without
+         # one teaches nothing quantitative about the very quantity the lesson
+         # is building. Pressure is now drawn in kilopascals beside the bar.
+         #
+         # ⚖️ IT IS A CALIBRATION, AND THE PAGE NEVER CLAIMS OTHERWISE. Twelve
+         # particles in a box do not have a pressure worth computing; doing it
+         # literally would give about 10⁻²³ kPa, which is rigour used as a lie.
+         # This bench is a model of a SAMPLE of a real gas, so it is anchored:
+         # the resting setting (Warm · Large · 24) runs at 14.4 wall hits per
+         # second, and 7 kPa per hit puts that at ~101 kPa — atmospheric.
+         #
+         # ⚖️ AND LINEARITY IS THE WHOLE POINT. Pressure is `hits × 7` and
+         # nothing else, so double the hit rate is exactly double the pressure
+         # at all 27 control combinations. Every prediction in this lesson —
+         # smaller box, hotter, more particles — is a statement about that
+         # proportionality. A reading that curved, floored, capped or smoothed
+         # would quietly teach the opposite. Do not add any of those.
+         "kpa_per_hit": 7,
          # The rolling window IS the measurement (page line 501), and the flash
          # is how long one collision stays visible (502). Both authored because
          # both are teaching decisions: a 1000 ms window is what makes the
@@ -383,11 +408,14 @@ LESSON = {
          # sentence, because it is the one number the lesson is about and a
          # screen reader can reach it nowhere else — every readout is drawn
          # inside the canvas.
+         # ⊕ AND THE PRESSURE JOINS IT (19 Aug 2026), for exactly that reason.
+         # It is drawn inside the canvas like everything else, so a label
+         # without it would show the ruled figure to sighted students only.
          "alt": {"template": "A sealed box of gas particles at {temp} "
                              "temperature, container {vol}, with {n} "
                              "particles, and a live count of collisions with "
                              "the walls each second. Wall hits in the last "
-                             "second: {hits}."}},
+                             "second: {hits}. Pressure: {kpa}."}},
 
         {"type": "key-fact", "ref": "pressure-is-collisions"},
 
