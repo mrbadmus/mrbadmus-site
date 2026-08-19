@@ -17,7 +17,11 @@ is either valid or it is not.
    correct.
 3. A wrong option with no ``why``, or an empty one.
 4. A duplicate ``id`` anywhere in the bank.
-5. A ``figure`` naming something that does not exist in that lesson.
+5. A ``figure`` naming something that does not exist in that lesson, **or that exists
+   but cannot render** — a figure at ``status: "needed"`` has no artwork drawn and one
+   at ``status: "retired"`` has been removed, so pointing a question at either shows the
+   student an empty slot. Membership in ``figures[]`` is not enough; the figure has to be
+   a picture a student can actually look at.
 6. A question whose ``text`` matches a ladder rung's question text.
 7. A question attached to a lesson slug not in ``structure.py``.
 
@@ -45,6 +49,13 @@ def _normalise(text):
     that is not a letter or a digit.
     """
     return re.sub(r"[^a-z0-9]+", " ", (text or "").lower()).strip()
+
+
+# A figure a student can actually see. `needed` means commissioned but not drawn;
+# `retired` means removed (e.g. MRB-257 decision 5, where the dial replaced the
+# timeline). Both are still declared in `figures[]`, which is why membership alone is
+# not the test.
+RENDERABLE_FIGURE_STATUS = {"final", "drawn", "drafted"}
 
 
 def _ladder_texts(lesson):
@@ -93,7 +104,9 @@ def verify():
                  "answerable from the lesson it belongs to" % (slug, unit))
             continue
 
-        figure_ids = {f.get("id") for f in (lesson.get("figures") or [])}
+        figures = {f.get("id"): f.get("status")
+                   for f in (lesson.get("figures") or [])}
+        figure_ids = set(figures)
         ladder = _ladder_texts(lesson)
 
         # ── check 1 — twelve per lesson, four per band ──────────────────
@@ -153,9 +166,14 @@ def verify():
 
             # ── check 5 — figure must already exist in the lesson ───────
             figure = q.get("figure")
-            if figure is not None and figure not in figure_ids:
-                fail(5, at, "figure %r is not in lesson %r (has: %s)"
-                     % (figure, slug, sorted(figure_ids) or "none"))
+            if figure is not None:
+                if figure not in figure_ids:
+                    fail(5, at, "figure %r is not in lesson %r (has: %s)"
+                         % (figure, slug, sorted(figure_ids) or "none"))
+                elif figures[figure] not in RENDERABLE_FIGURE_STATUS:
+                    fail(5, at, "figure %r is %r — there is no artwork to show, so the "
+                                "question would point the student at an empty slot"
+                         % (figure, figures[figure]))
 
             # ── check 6 — must not restate a ladder rung ────────────────
             if _normalise(q.get("text")) in ladder:
