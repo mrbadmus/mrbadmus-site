@@ -62,6 +62,100 @@ window.MrBadmusTeacherData = (function () {
     Physics:   'var(--physics)',
   };
 
+  /* ── The working academic year (MRB-261) ────────────────────────────────
+     Which year's classes are the ones that matter right now.
+
+     NOT `academic_years.is_current`: that flag is moved by hand on 1
+     September (MRB-237), so through late August it still points at the year
+     that finished in July.
+
+     NOT a plain `end_date >= today` either: 2025-26 runs to 31 Aug 2026, so
+     on 19 Aug BOTH years are unfinished and both match.
+
+     The rule: a year has effectively finished once it has less than
+     YEAR_LOOKAHEAD_DAYS left to run, and the working year is the EARLIEST
+     year still running past that horizon — "the year we will be in a month
+     from now". The horizon only crosses a boundary inside the last month of
+     a year, i.e. during the summer holiday.
+
+     Full worked table of dates lives in shared/class-entry.js. Keep the three
+     copies (here, class-entry.js, student-data.js) in sync by hand — there is
+     no build step and class-entry.js must stay dependency-free.
+     ───────────────────────────────────────────────────────────────────── */
+  const YEAR_LOOKAHEAD_DAYS = 30;
+
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+  function lookaheadDate() {
+    const d = new Date();
+    d.setDate(d.getDate() + YEAR_LOOKAHEAD_DAYS);
+    return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+  }
+
+  // Dates are ISO YYYY-MM-DD from Postgres `date` columns, so string
+  // comparison IS date comparison.
+  function workingAcademicYear(years) {
+    const rows = (years || []).filter(function (y) { return y && y.end_date; });
+    if (!rows.length) return null;
+    const horizon = lookaheadDate();
+    const live = rows.filter(function (y) { return y.end_date >= horizon; });
+    if (live.length) {
+      return live.reduce(function (best, y) {
+        return (!best || y.end_date < best.end_date) ? y : best;
+      }, null);
+    }
+    return rows.reduce(function (best, y) {
+      return (!best || y.end_date > best.end_date) ? y : best;
+    }, null);
+  }
+
+  /**
+   * loadAcademicYears() — MRB-261.
+   *
+   * Every academic year the school has, newest first, each tagged with how it
+   * stands relative to the working year. The teacher grid uses this twice: to
+   * decide what to land on (always the working year, every load) and to build
+   * the quiet "previous years" control at the foot of the grid.
+   *
+   * Returns { years: [{ id, name, start_date, end_date, is_working, is_past,
+   *                     is_future }], working: <that row or null> }
+   *
+   * A year later than the working one is FUTURE, not past — a school that has
+   * created 2027-28 early must not have it offered under "previous years".
+   */
+  async function loadAcademicYears() {
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
+    }
+
+    const { data, error } = await sb
+      .from('academic_years')
+      .select('id, name, start_date, end_date')
+      .is('deleted_at', null)
+      .order('start_date', { ascending: false });
+    if (error) {
+      console.error('[teacher-data] academic years query failed', error);
+      throw error;
+    }
+
+    const rows = data || [];
+    const working = workingAcademicYear(rows);
+    const years = rows.map(function (y) {
+      return {
+        id: y.id,
+        name: y.name,
+        start_date: y.start_date,
+        end_date: y.end_date,
+        is_working: !!working && y.id === working.id,
+        is_past:    !!working && y.end_date < working.end_date,
+        is_future:  !!working && y.end_date > working.end_date,
+      };
+    });
+    return { years: years, working: working };
+  }
+
   // Decide the subject pill for a class given the (possibly multiple)
   // class_teachers rows that link THIS teacher to it. KS3 + KS4 Combined
   // ignore the rows entirely (pill is derived from the class itself).
@@ -507,7 +601,7 @@ window.MrBadmusTeacherData = (function () {
     return { eligible: eligible, is_empty: false, empty_reason: null };
   }
 
-  async function loadTeacherClasses() {
+  async function loadTeacherClasses(academicYearId) {
     const guard = window.MrBadmusTeacherGuard;
     const sb = guard && guard.getClient ? guard.getClient() : null;
     if (!sb) {
@@ -520,12 +614,25 @@ window.MrBadmusTeacherData = (function () {
     // the LINK row's own soft-delete column — i.e. we drop links that have
     // been retired. The class's own deleted_at is filtered in JS below
     // (PostgREST can't filter on embedded resources cleanly).
+    // Which year's classes (MRB-261). Caller may name one — the grid does,
+    // when a teacher has opened a past year — otherwise the working year.
+    // The grid ALWAYS lands on the working year: nothing here is persisted,
+    // so a teacher who looked at 2025-26 on Friday lands on 2026-27 on
+    // Monday. Persisting it would silently hand someone a historical
+    // dashboard they believed was current.
+    let yearId = academicYearId || null;
+    if (!yearId) {
+      const y = await loadAcademicYears();
+      yearId = y.working ? y.working.id : null;
+    }
+
     const { data: links, error } = await sb
       .from('class_teachers')
       .select(
         'class_id, subject_id, ' +
         'subject:subject_id ( name ), ' +
-        'class:class_id ( id, name, key_stage, year_group, tier, science_pathway, deleted_at )'
+        'class:class_id ( id, name, key_stage, year_group, tier, science_pathway, deleted_at, ' +
+                         'academic_year_id, academic_year:academic_year_id ( id, name ) )'
       )
       .is('deleted_at', null)
       .is('ended_at', null);
@@ -535,11 +642,15 @@ window.MrBadmusTeacherData = (function () {
       throw error;
     }
 
-    // Group by class_id, drop soft-deleted classes and orphans.
+    // Group by class_id, drop soft-deleted classes, orphans, and — the point
+    // of MRB-261 — anything outside the year being viewed. 10H/Ph1 (2025-26)
+    // and 11h/Ph1 (2026-27) are the same 17 students a year apart, and with
+    // both in one undifferentiated list they read as a duplicate.
     const byClassId = new Map();
     (links || []).forEach(function (row) {
       if (!row.class) return;
       if (row.class.deleted_at) return;
+      if (yearId && row.class.academic_year_id !== yearId) return;
       const id = row.class.id;
       if (!byClassId.has(id)) {
         byClassId.set(id, { klass: row.class, rows: [] });
@@ -561,6 +672,8 @@ window.MrBadmusTeacherData = (function () {
         year_group: klass.year_group,
         tier: klass.tier,
         science_pathway: klass.science_pathway,
+        academic_year_id: klass.academic_year_id,
+        academic_year_name: (klass.academic_year && klass.academic_year.name) || null,
         pill_label: pill.pill_label,
         pill_colour_var: pill.pill_colour_var,
         student_count: metrics.student_count,
@@ -689,7 +802,8 @@ window.MrBadmusTeacherData = (function () {
         .select(
           'subject_id, ' +
           'subject:subject_id ( id, name ), ' +
-          'class:class_id ( id, name, key_stage, year_group, tier, science_pathway, assignment_day_of_week, deleted_at )'
+          'class:class_id ( id, name, key_stage, year_group, tier, science_pathway, assignment_day_of_week, deleted_at, ' +
+                          'academic_year_id, academic_year:academic_year_id ( id, name, end_date ) )'
         )
         .eq('class_id', classId)
         .is('deleted_at', null)
@@ -820,6 +934,20 @@ window.MrBadmusTeacherData = (function () {
 
     const leaderboard = calcLeaderboard(weekAssignments, students, week, firstAttemptByKey);
 
+    // MRB-261 — is this class history? Same definition as loadAcademicYears'
+    // is_past: its year ends before the working year does. A school with only
+    // one year has that year as the working one, so nothing is ever falsely
+    // read-only. A failed years read leaves the page writable (fail-open on a
+    // presentation rule; the DB is the actual gate).
+    let isPastYear = false;
+    try {
+      const y = await loadAcademicYears();
+      const end = klass.academic_year && klass.academic_year.end_date;
+      isPastYear = !!(y.working && end && end < y.working.end_date);
+    } catch (e) {
+      console.error('[teacher-data] academic years read failed; treating class as current', e);
+    }
+
     return {
       class: {
         id: klass.id,
@@ -828,6 +956,12 @@ window.MrBadmusTeacherData = (function () {
         year_group: klass.year_group,
         tier: klass.tier,
         science_pathway: klass.science_pathway,
+        academic_year_id: klass.academic_year_id,
+        academic_year_name: (klass.academic_year && klass.academic_year.name) || null,
+        // MRB-261 — a past year is read-only. Computed here rather than on the
+        // page so both the grid and the detail screen agree on what "past"
+        // means, and so the answer travels with the class it describes.
+        is_past_year: isPastYear,
         pill_label: pill.pill_label,
         pill_colour_var: pill.pill_colour_var,
         student_count: activeMembers.length,
@@ -1301,6 +1435,7 @@ window.MrBadmusTeacherData = (function () {
   }
 
   return {
+    loadAcademicYears,
     loadTeacherClasses,
     loadClassDetail,
     loadStudentDetail,

@@ -202,6 +202,86 @@
       border-top: 1px dashed var(--border);
     }
 
+    /* ── PAST-YEAR BAND + YEAR SWITCH (MRB-261) ──────────────────────────
+       Two halves of one rule: the dashboard ALWAYS lands on the working
+       academic year, and a past year is unmistakable for as long as it is
+       on screen.
+
+       The band is sticky so it stays with the grid rather than scrolling
+       away, and it says the year and NOTHING else — no sentence explaining
+       what a past year is, no warning copy. This is a screen a teacher uses
+       daily; the year alone does the job and anything more is clutter.
+
+       The switch is deliberately quiet and sits BELOW the cards: a teacher
+       opening this page in September is not thinking about last year and
+       must not be prompted to. Discoverable when looked for, invisible when
+       not. */
+    .year-band {
+      display: none;
+      position: sticky;
+      top: 60px;
+      z-index: 9;
+      margin-bottom: 20px;
+      padding: 11px 18px;
+      border-radius: 10px;
+      background: var(--sunken);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-weight: 800;
+      font-size: 0.9rem;
+      letter-spacing: 0.16em;
+      text-align: center;
+    }
+    .year-band.show { display: block; }
+
+    .year-switch {
+      margin-top: 36px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      opacity: 0.75;
+      transition: opacity 0.15s;
+    }
+    .year-switch:hover, .year-switch:focus-within { opacity: 1; }
+    .year-switch-toggle {
+      background: none;
+      border: none;
+      padding: 0;
+      font: inherit;
+      color: var(--muted);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+    }
+    .year-switch-toggle:hover { color: var(--text); }
+    .year-switch-list {
+      display: none;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .year-switch-list.show { display: flex; }
+    .year-option {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font: inherit;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .year-option:hover { border-color: var(--accent-border); }
+    .year-option[aria-current="true"] {
+      border-color: var(--accent);
+      color: var(--accent);
+      cursor: default;
+    }
+
     /* ── STATES (loading / empty / error) ── */
     .state-block { display: none; padding: 60px 20px; text-align: center; }
     .state-block.show { display: block; }
@@ -297,6 +377,9 @@
     <a class="state-btn secondary" id="import-link" href="/teacher/import.html" style="margin-top:14px;">Import students (CSV)</a>
   </header>
 
+  <!-- The year, and nothing else. Present only while a past year is open. -->
+  <div id="year-band" class="year-band" role="status"></div>
+
   <div id="state-loading" class="state-block state-loading show">
     <p>Loading your classes</p>
     <div class="dots"><span></span><span></span><span></span></div>
@@ -315,6 +398,16 @@
     <p>Something went wrong. Please refresh the page.</p>
     <button class="state-btn" onclick="window.location.reload()">Refresh</button>
   </div>
+
+  <!-- Quiet, at the foot, below the cards. Hidden entirely when the school
+       has no earlier year to reach. -->
+  <div id="year-switch" class="year-switch" hidden>
+    <span id="year-switch-current"></span>
+    <span aria-hidden="true"> &middot; </span>
+    <button type="button" class="year-switch-toggle" id="year-switch-toggle"
+            aria-expanded="false" aria-controls="year-switch-list">previous years</button>
+    <div class="year-switch-list" id="year-switch-list"></div>
+  </div>
 </main>
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -322,9 +415,9 @@
 <!-- ── Bootstrap: SDK → config → guard → data → render ─────────────────────── -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/shared/config.js"></script>
-<script src="/shared/class-entry.js?v=75f0573c" defer></script>
+<script src="/shared/class-entry.js?v=59d97451" defer></script>
 <script src="/shared/teacher-guard.js"></script>
-<script src="/shared/teacher-data.js"></script>
+<script src="/shared/teacher-data.js?v=b46adefe"></script>
 <script>
 (function () {
   const STATES = {
@@ -393,17 +486,22 @@
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
   }
-  function capitalise(str) {
-    if (!str) return '';
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
-
+  // MRB-263 — every card carries the same fields. Tier and pathway are gone:
+  // they are populated on the two classes MRB-237 rolled forward and null on
+  // the twelve that came from the timetable import, so the grid read
+  // "Year 10 · KS4 · Higher · Triple" on some cards and "Year 10 · KS4" on
+  // others for no reason a teacher could see. The columns are NOT dropped —
+  // they are candidates for driving KS4 content targeting later, and hiding
+  // costs nothing where a migration would have to be reversed.
+  //
+  // The academic year is on EVERY card regardless of which year is selected,
+  // so 10H/Ph1 and 11h/Ph1 — the same 17 students a year apart — can never
+  // read as a duplicate again.
   function buildMetaLine(klass) {
     const parts = [];
-    if (klass.year_group != null) parts.push('Year ' + klass.year_group);
-    if (klass.key_stage)          parts.push(klass.key_stage);
-    if (klass.tier)               parts.push(capitalise(klass.tier));
-    if (klass.science_pathway)    parts.push(capitalise(klass.science_pathway));
+    if (klass.year_group != null)   parts.push('Year ' + klass.year_group);
+    if (klass.key_stage)            parts.push(klass.key_stage);
+    if (klass.academic_year_name)   parts.push(klass.academic_year_name);
     return parts.join(' · ');
   }
 
@@ -517,23 +615,129 @@
       // loading state is already visible inside the body wrapper.
       document.body.style.display = 'block';
 
-      try {
-        const classes = await MrBadmusTeacherData.loadTeacherClasses();
-        if (!classes || classes.length === 0) {
-          subtitleEl.style.display = 'none';
-          showState('empty');
-          return;
-        }
-        const n = classes.length;
-        subtitleEl.textContent =
-          firstName + ', you teach ' + n + ' class' + (n === 1 ? '' : 'es');
-        renderCards(classes);
-        showState('cards');
-      } catch (e) {
-        console.error('[classes.html] loadTeacherClasses failed', e);
-        subtitleEl.style.display = 'none';
-        showState('error');
+      /* ── Academic year, MRB-261 ─────────────────────────────────────────
+         The dashboard lands on the working year on EVERY load, no exceptions.
+         `selectedYearId` is a plain local — deliberately not sessionStorage,
+         not localStorage, not a URL param. The selection lasts for this visit
+         and no longer: a teacher who looked at 2025-26 on Friday lands on
+         2026-27 on Monday. Persisting it would silently hand someone a
+         historical dashboard they believed was current, which is the exact
+         confusion this whole change exists to remove.
+         ───────────────────────────────────────────────────────────────── */
+      const bandEl     = document.getElementById('year-band');
+      const switchEl   = document.getElementById('year-switch');
+      const currentEl  = document.getElementById('year-switch-current');
+      const toggleEl   = document.getElementById('year-switch-toggle');
+      const listEl     = document.getElementById('year-switch-list');
+      const importEl   = document.getElementById('import-link');
+
+      let yearIndex = { years: [], working: null };
+      let selectedYearId = null;
+
+      function selectedYear() {
+        return yearIndex.years.filter(function (y) {
+          return y.id === selectedYearId;
+        })[0] || null;
       }
+
+      function isViewingPast() {
+        const y = selectedYear();
+        return !!(y && y.is_past);
+      }
+
+      // A past year is READ-ONLY (Mide's ruling, 19 Aug 2026). The controls
+      // are ABSENT, not present-and-disabled — setting homework against a
+      // class that no longer runs is not a mistake worth leaving available.
+      // The only write control on this screen is the CSV import; the shoutout
+      // composer on class-detail.html is suppressed the same way, from
+      // detail.class.is_past_year.
+      function applyWriteControls() {
+        if (!importEl) return;
+        importEl.hidden = isViewingPast();
+      }
+
+      function renderYearChrome() {
+        const y = selectedYear();
+        const past = isViewingPast();
+
+        // The band: the year, and nothing else.
+        bandEl.textContent = past && y ? y.name : '';
+        bandEl.classList.toggle('show', past);
+
+        // The foot control. Nothing to reach → no control at all.
+        const others = yearIndex.years.filter(function (o) {
+          return o.id !== selectedYearId && !o.is_future;
+        });
+        if (!others.length) { switchEl.hidden = true; return; }
+        switchEl.hidden = false;
+        currentEl.textContent = 'Viewing ' + (y ? y.name : '—');
+        toggleEl.textContent = past ? 'other years' : 'previous years';
+
+        listEl.innerHTML = '';
+        yearIndex.years.filter(function (o) { return !o.is_future; })
+          .forEach(function (o) {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'year-option';
+            b.textContent = o.name;
+            if (o.id === selectedYearId) {
+              b.setAttribute('aria-current', 'true');
+              b.disabled = true;
+            } else {
+              b.addEventListener('click', function () { selectYear(o.id); });
+            }
+            listEl.appendChild(b);
+          });
+      }
+
+      async function loadAndRender() {
+        showState('loading');
+        renderYearChrome();
+        applyWriteControls();
+        try {
+          const classes = await MrBadmusTeacherData.loadTeacherClasses(selectedYearId);
+          if (!classes || classes.length === 0) {
+            subtitleEl.style.display = 'none';
+            showState('empty');
+            return;
+          }
+          subtitleEl.style.display = '';
+          const n = classes.length;
+          subtitleEl.textContent =
+            firstName + ', you teach ' + n + ' class' + (n === 1 ? '' : 'es');
+          renderCards(classes);
+          showState('cards');
+        } catch (e) {
+          console.error('[classes.html] loadTeacherClasses failed', e);
+          subtitleEl.style.display = 'none';
+          showState('error');
+        }
+      }
+
+      function selectYear(id) {
+        selectedYearId = id;
+        listEl.classList.remove('show');
+        toggleEl.setAttribute('aria-expanded', 'false');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        loadAndRender();
+      }
+
+      toggleEl.addEventListener('click', function () {
+        const open = listEl.classList.toggle('show');
+        toggleEl.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+
+      try {
+        yearIndex = await MrBadmusTeacherData.loadAcademicYears();
+      } catch (e) {
+        // A failed years read must not cost the teacher their classes — fall
+        // through with no year selected, which lists every class the old way
+        // and simply offers no switch.
+        console.error('[classes.html] loadAcademicYears failed', e);
+      }
+      selectedYearId = yearIndex.working ? yearIndex.working.id : null;
+
+      await loadAndRender();
     },
   });
 })();

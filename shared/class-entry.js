@@ -65,11 +65,76 @@
   var PROD_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
   var PROD_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
 
-  var CACHE_PREFIX = 'mrb-class-entry:v1:';
+  var CACHE_PREFIX = 'mrb-class-entry:v2:';   // v2: year-scoped (MRB-261)
   var CACHE_TTL_MS = 10 * 60 * 1000;   // 10 min: long enough that walking the
                                        // 294 KS3 pages costs one round trip,
                                        // short enough that a mid-session
                                        // enrolment shows up the same lesson.
+
+  /* ── The working academic year (MRB-261) ────────────────────────────────
+     Which year's classes are the ones that matter right now.
+
+     NOT `academic_years.is_current`. That flag is moved by hand on 1
+     September (MRB-237), so for the whole of late August it still points at
+     the year that finished in July. Scoping on it in August would show a
+     Year 11 their Year 10 class and hide the one they start in a fortnight
+     — the exact inverse of the bug this fixes.
+
+     NOT a plain `end_date >= today` either. 2025-26 runs to 31 Aug 2026, so
+     on 19 Aug BOTH years are unfinished, both match, and the student is
+     offered two classes. That IS the bug.
+
+     The rule: a year has effectively finished once it has less than
+     YEAR_LOOKAHEAD_DAYS left to run, and the working year is the EARLIEST
+     year still running past that horizon. In plain English, "the year we
+     will be in a month from now". The horizon only ever crosses a boundary
+     inside the last month of an academic year — i.e. during the summer
+     holiday, which is exactly the stretch where "this year" is ambiguous
+     and where forward-looking is what a school actually means.
+
+       19 Aug 2026   horizon 18 Sep 2026   2025-26 ends 31 Aug -> out  -> 2026-27
+       31 Aug 2026   horizon 30 Sep 2026   2025-26 ends 31 Aug -> out  -> 2026-27
+        1 Sep 2026   horizon  1 Oct 2026   2025-26 already ended       -> 2026-27
+       15 Jan 2027   horizon 14 Feb 2027   2026-27 running, earliest   -> 2026-27
+       15 Jul 2027   horizon 14 Aug 2027   2026-27 running, earliest   -> 2026-27
+       19 Aug 2027   horizon 18 Sep 2027   2026-27 ends 31 Aug -> out  -> 2027-28
+
+     Fallback: if no year clears the horizon (a school whose next year has
+     not been created yet) use the latest year that exists, so the page shows
+     what there is rather than nothing.
+
+     Dates are ISO `YYYY-MM-DD` from Postgres `date` columns, so string
+     comparison IS date comparison — no parsing, no timezone to get wrong.
+
+     Kept in sync by hand with the identical helper in shared/student-data.js
+     and shared/teacher-data.js. This file is deliberately dependency-free
+     (it loads on all 294 KS3 pages, which pull neither the SDK nor
+     config.js), so it cannot import a shared module.
+     ───────────────────────────────────────────────────────────────────── */
+  var YEAR_LOOKAHEAD_DAYS = 30;
+
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+  function lookaheadDate() {
+    var d = new Date();
+    d.setDate(d.getDate() + YEAR_LOOKAHEAD_DAYS);
+    return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+  }
+
+  function workingAcademicYear(years) {
+    var rows = (years || []).filter(function (y) { return y && y.end_date; });
+    if (!rows.length) return null;
+    var horizon = lookaheadDate();
+    var live = rows.filter(function (y) { return y.end_date >= horizon; });
+    if (live.length) {
+      return live.reduce(function (best, y) {
+        return (!best || y.end_date < best.end_date) ? y : best;
+      }, null);
+    }
+    return rows.reduce(function (best, y) {
+      return (!best || y.end_date > best.end_date) ? y : best;
+    }, null);
+  }
 
   function cfg() {
     var c = window.MrBadmusConfig;
@@ -158,16 +223,21 @@
 
       var uid = encodeURIComponent(session.user.id);
 
-      // Role and membership in parallel. A teacher is never a class_member, so
-      // the two answers can't both be positive; asking for both at once costs
-      // one round trip instead of two.
+      // Role, membership and the school's academic years in parallel. A
+      // teacher is never a class_member, so the first two answers can't both
+      // be positive; asking for all three at once still costs one round trip.
+      // academic_years is readable by any member of the school
+      // (academic_years_member_read), so this needs no new grant.
       return Promise.all([
         rest(conf, session, 'profiles?id=eq.' + uid + '&select=role'),
         rest(conf, session,
              'class_members?student_id=eq.' + uid +
-             '&left_at=is.null&deleted_at=is.null&select=class_id')
+             '&left_at=is.null&deleted_at=is.null&select=class_id'),
+        rest(conf, session,
+             'academic_years?deleted_at=is.null' +
+             '&select=id,name,start_date,end_date&order=start_date.asc')
       ]).then(function (res) {
-        var roleRows = res[0], memberRows = res[1];
+        var roleRows = res[0], memberRows = res[1], yearRows = res[2];
         var role = (roleRows && roleRows[0] && roleRows[0].role) || null;
 
         // Staff get the equivalent entry, pointing at their own classes page.
@@ -188,8 +258,21 @@
         // `deleted_at=is.null` filter is the fiddlier syntax of the two and
         // this one cannot silently return the wrong shape.
         var list = ids.map(encodeURIComponent).join(',');
+
+        // Year-scope (MRB-261). Without this a Year 11 signing in today is
+        // offered a choice between 11r/Sc1 and the 10R1 they left in July —
+        // MRB-237 deliberately kept last year's membership rows so the record
+        // of what they were taught in Year 10 survives, and the fix belongs
+        // here in the view rather than in the data.
+        var working = workingAcademicYear(yearRows);
+        var yearFilter = working
+          ? '&academic_year_id=eq.' + encodeURIComponent(working.id)
+          : '';                       // no years readable (self-serve visitor
+                                      // with no school) -> don't hide anything
+
         return rest(conf, session,
                     'classes?id=in.(' + list + ')&deleted_at=is.null' +
+                    yearFilter +
                     '&select=id,name&order=name.asc')
           .then(function (classes) {
             classes = classes || [];

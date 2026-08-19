@@ -282,7 +282,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/shared/config.js"></script>
 <script src="/shared/student-guard.js"></script>
-<script src="/shared/student-data.js"></script>
+<script src="/shared/student-data.js?v=fa40f52c"></script>
 <script>
 (function () {
   const STATES = {
@@ -310,15 +310,19 @@
     return d.innerHTML;
   }
 
-  // Year 8 / Higher / Triple, whichever the class actually declares. KS3
-  // classes carry no tier or pathway, so they contribute a year and stop.
+  // MRB-263 — tier and pathway are off the class card. They are populated on
+  // the two classes MRB-237 rolled forward and null on the twelve from the
+  // timetable import, so identical-looking classes described themselves
+  // differently. Year group and key stage are on every class there is, so
+  // every card now reads the same.
+  //
+  // No academic year here, unlike the teacher grid: a student's list is
+  // year-scoped to exactly one year (MRB-261), so the year would be the same
+  // word on every card and would tell them nothing.
   function buildMetaLine(klass) {
     const bits = [];
     if (klass.year_group) bits.push('Year ' + klass.year_group);
-    if (klass.tier) bits.push(klass.tier.charAt(0).toUpperCase() + klass.tier.slice(1));
-    if (klass.science_pathway) {
-      bits.push(klass.science_pathway.charAt(0).toUpperCase() + klass.science_pathway.slice(1));
-    }
+    if (klass.key_stage)  bits.push(klass.key_stage);
     return bits.join(' \u00b7 ');
   }
 

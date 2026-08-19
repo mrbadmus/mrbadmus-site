@@ -5543,8 +5543,20 @@ def build_site(output_dir="mrbadmus_site"):
     #
     # The regex below is written against a bare `/shared/<name>"`, which is the
     # shape of this tag as much as of the <link>s, so the list is the change.
+    #
+    # ⊕ MRB-261, 19 Aug 2026 — the two dashboard data layers join the list.
+    # The year-scoping fix (a student must be shown this year's class, not the
+    # one they left in July) lives entirely inside student-data.js and
+    # teacher-data.js, and both were loaded as bare unversioned <script> tags.
+    # Shipping it unbusted would have reached new visitors only — the same
+    # failure mode as mrbadmus.v2.js above, and just as invisible from the
+    # outside. The other shared modules the dashboards load bare
+    # (config.js, the two guards, shoutouts.js, search*.js) still carry it;
+    # that is a known hole, not a decision, and belongs to whoever next
+    # changes one of them.
     _versioned_assets = ["tokens.css", "styles.css", "nav.css", "nav.js",
-                         "class-entry.js", "mrbadmus.v2.js"]
+                         "class-entry.js", "mrbadmus.v2.js",
+                         "student-data.js", "teacher-data.js"]
     _asset_ver = {}
     for _name in _versioned_assets:
         _p = os.path.join(output_dir, "shared", _name)

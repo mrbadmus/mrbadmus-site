@@ -1090,9 +1090,9 @@
 <!-- ── Bootstrap: SDK → config → guard → data → render ─────────────────────── -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/shared/config.js"></script>
-<script src="/shared/class-entry.js?v=75f0573c" defer></script>
+<script src="/shared/class-entry.js?v=59d97451" defer></script>
 <script src="/shared/teacher-guard.js"></script>
-<script src="/shared/teacher-data.js"></script>
+<script src="/shared/teacher-data.js?v=b46adefe"></script>
 <script src="/shared/shoutouts.js"></script>
 <script>
 (function () {
@@ -1126,17 +1126,13 @@
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
   }
-  function capitalise(str) {
-    if (!str) return '';
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
-
+  // MRB-263 — same fields as the grid card: tier and pathway off, academic
+  // year on. The columns stay in the database; only the display goes.
   function buildMetaLine(klass) {
     const parts = [];
-    if (klass.year_group != null) parts.push('Year ' + klass.year_group);
-    if (klass.key_stage)          parts.push(klass.key_stage);
-    if (klass.tier)               parts.push(capitalise(klass.tier));
-    if (klass.science_pathway)    parts.push(capitalise(klass.science_pathway));
+    if (klass.year_group != null)  parts.push('Year ' + klass.year_group);
+    if (klass.key_stage)           parts.push(klass.key_stage);
+    if (klass.academic_year_name)  parts.push(klass.academic_year_name);
     return parts.join(' · ');
   }
 
@@ -1150,6 +1146,7 @@
   // Roster rows link here (MRB-34 Stage 2B). Captures the closure's
   // classId once it's set in onAllowed below; called per row at render.
   let currentClassId = null;
+  let isPastYear = false;   // MRB-261 — read-only when the class's year has passed
   function buildStudentDetailUrl(studentId) {
     const env = (window.MrBadmusConfig && window.MrBadmusConfig.environment) === 'test'
       ? '&env=test' : '';
@@ -1880,12 +1877,12 @@
         '<h2 class="section-title">Shoutouts</h2>' +
         '<span class="section-count" id="shoutouts-count"></span>' +
       '</div>' +
-      buildComposeHtml(shoutoutsClassStudents) +
+      (isPastYear ? '' : buildComposeHtml(shoutoutsClassStudents)) +
       '<div class="shoutouts-feed" id="shoutouts-feed">' +
         '<div class="shoutouts-loading">Loading shoutouts</div>' +
       '</div>';
 
-    wireComposeHandlers();
+    if (!isPastYear) wireComposeHandlers();
     loadAndRenderFeedFirstPage();
   }
 
@@ -2162,7 +2159,7 @@
 
     const cardsHtml = feedState.shoutouts.map(function (s) {
       return MrBadmusShoutouts.renderShoutoutCard(s, {
-        showDelete: true,
+        showDelete: !isPastYear,
         currentUserId: currentUserId,
       });
     }).join('');
@@ -2303,6 +2300,11 @@
         // returned) rather than the raw URL param means we never emit
         // a link with an id we haven't actually verified.
         currentClassId = detail.class.id;
+        // MRB-261 — a past academic year is read-only. Set BEFORE any section
+        // renders, so the composer is never built rather than built and
+        // disabled: setting homework or a shoutout against a class that no
+        // longer runs is not a mistake worth leaving available.
+        isPastYear = !!detail.class.is_past_year;
         renderClassHeader(detail.class);
         renderRoster(detail.students);
         renderAssignments(detail.assignments);

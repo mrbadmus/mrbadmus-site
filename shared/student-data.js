@@ -63,6 +63,57 @@ window.MrBadmusStudentData = (function () {
       /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
   }
 
+  /* ── The working academic year (MRB-261) ────────────────────────────────
+     Which year's classes are the ones that matter right now.
+
+     NOT `academic_years.is_current`: that flag is moved by hand on 1
+     September (MRB-237), so through late August it still points at the year
+     that finished in July — scoping on it would show a Year 11 their Year 10
+     class and hide the one they start in a fortnight.
+
+     NOT a plain `end_date >= today` either: 2025-26 runs to 31 Aug 2026, so
+     on 19 Aug BOTH years are unfinished and the student is offered two
+     classes. That is the bug itself.
+
+     The rule: a year has effectively finished once it has less than
+     YEAR_LOOKAHEAD_DAYS left to run, and the working year is the EARLIEST
+     year still running past that horizon — "the year we will be in a month
+     from now". The horizon only crosses a boundary inside the last month of
+     a year, i.e. during the summer holiday, which is the one stretch where
+     "this year" is genuinely ambiguous and forward-looking is what a school
+     means.
+
+     Full worked table of dates lives in shared/class-entry.js. Keep the three
+     copies (here, class-entry.js, teacher-data.js) in sync by hand — there is
+     no build step and class-entry.js must stay dependency-free.
+     ───────────────────────────────────────────────────────────────────── */
+  const YEAR_LOOKAHEAD_DAYS = 30;
+
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+  function lookaheadDate() {
+    const d = new Date();
+    d.setDate(d.getDate() + YEAR_LOOKAHEAD_DAYS);
+    return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+  }
+
+  // Dates are ISO YYYY-MM-DD from Postgres `date` columns, so string
+  // comparison IS date comparison.
+  function workingAcademicYear(years) {
+    const rows = (years || []).filter(function (y) { return y && y.end_date; });
+    if (!rows.length) return null;
+    const horizon = lookaheadDate();
+    const live = rows.filter(function (y) { return y.end_date >= horizon; });
+    if (live.length) {
+      return live.reduce(function (best, y) {
+        return (!best || y.end_date < best.end_date) ? y : best;
+      }, null);
+    }
+    return rows.reduce(function (best, y) {
+      return (!best || y.end_date > best.end_date) ? y : best;
+    }, null);
+  }
+
   // Student-side pill derivation. See JSDoc above.
   function deriveStudentPill(klass) {
     if (klass.key_stage === 'KS3') {
@@ -511,12 +562,31 @@ window.MrBadmusStudentData = (function () {
       .filter(Boolean);
     if (!ids.length) return [];
 
-    const classRes = await sb
+    // Year-scope (MRB-261). MRB-237 rolled students forward by creating NEW
+    // rows and deliberately leaving 2025-26 intact, so the record of what a
+    // Year 11 was taught in Year 10 survives. Both memberships are therefore
+    // live and both were being listed — a student was offered this year's
+    // class and the one they left in July. The data is right; the view was
+    // not. Filtering here, not on `is_current` — see workingAcademicYear.
+    const yearRes = await sb
+      .from('academic_years')
+      .select('id, name, start_date, end_date')
+      .is('deleted_at', null);
+    if (yearRes.error) {
+      console.error('[student-data] academic years query failed', yearRes.error);
+      throw yearRes.error;
+    }
+    const workingYear = workingAcademicYear(yearRes.data);
+
+    let classQuery = sb
       .from('classes')
-      .select('id, name, key_stage, year_group, tier, science_pathway')
+      .select('id, name, key_stage, year_group, tier, science_pathway, academic_year_id')
       .in('id', ids)
-      .is('deleted_at', null)
-      .order('name', { ascending: true });
+      .is('deleted_at', null);
+    // No readable years at all (a self-serve visitor with no school) — don't
+    // hide anything rather than showing an empty picker.
+    if (workingYear) classQuery = classQuery.eq('academic_year_id', workingYear.id);
+    const classRes = await classQuery.order('name', { ascending: true });
     if (classRes.error) {
       console.error('[student-data] classes query failed', classRes.error);
       throw classRes.error;
