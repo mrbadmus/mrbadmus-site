@@ -5663,5 +5663,21 @@ def build_site(output_dir="mrbadmus_site"):
 
 
 if __name__ == "__main__":
+    # ⊕ MRB-271 — BUILD YOUR OWN TREE, NEVER SOMEBODY ELSE'S.
+    #
+    # Every path in this file is relative, and a relative path resolves against
+    # the CURRENT DIRECTORY, not against this script. So
+    # `python3 /elsewhere/generate_site_v5.py` run from inside a worktree imported
+    # /elsewhere's modules and wrote the output into the WORKTREE — one tree's
+    # source, another tree's deploy directory, and `generate_site_v5.build_site()`
+    # opens by deleting most of what it finds there.
+    #
+    # With four worktrees live (see docs/ks3/worktrees.md) that stopped being
+    # hypothetical. Anchoring to the script's own directory makes the invocation
+    # path irrelevant: this file always builds the checkout it is part of.
+    #
+    # `__main__` only. Importing this module must NOT move the caller's cwd —
+    # verify_ks3.py imports it and builds into its own scratch directories.
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
     build_site()
 

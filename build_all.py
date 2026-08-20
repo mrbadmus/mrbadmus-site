@@ -38,6 +38,7 @@ notes and the commit history describe, and there is no reason to diverge from
 it now that either order is safe.
 """
 
+import os
 import subprocess
 import sys
 
@@ -54,6 +55,15 @@ STEPS = [
 
 
 def main():
+    # ⊕ MRB-271 — the steps below are BARE SCRIPT NAMES, and a bare name
+    # resolves against the current directory. Without this, running
+    # `python3 /elsewhere/build_all.py` from inside a worktree ran the
+    # WORKTREE's generators while reporting /elsewhere's name, and running it
+    # from a directory with no generators at all failed three times over with
+    # "can't open file". Anchor to this file's own directory: build_all always
+    # builds the checkout it belongs to, whatever the invocation path.
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
     print("\n🏗️  build_all — %d generators, in order\n" % len(STEPS))
 
     for i, (label, script) in enumerate(STEPS, 1):
