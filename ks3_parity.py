@@ -15736,7 +15736,7 @@ def parse_token_rules(repo_root="."):
 
 
 _TOKEN_SWEEP_JS = r"""
-(function (spec) {
+(function (spec, ROOT) {
   // Every element that PAINTS TEXT OF ITS OWN — a node with a non-empty direct
   // text child. Walking all elements would attribute an ancestor's colour to a
   // container that draws nothing.
@@ -15777,7 +15777,10 @@ _TOKEN_SWEEP_JS = r"""
     return out;
   }
   var bad = [];
-  var els = document.querySelectorAll("main *");
+  var scope = document.querySelector(ROOT);
+  if (!scope) { return [{token: "(root)", why: "the sweep root " + ROOT +
+    " is not on this page, so this gate measured nothing", text: "", sel: ROOT}]; }
+  var els = scope.querySelectorAll("*");
   for (var i = 0; i < els.length; i++) {
     var el = els[i];
     var txt = ownText(el);
@@ -15813,7 +15816,7 @@ _TOKEN_SWEEP_JS = r"""
     }
   }
   return bad;
-})(%s)
+})(%s, %s)
 """
 
 
@@ -15853,7 +15856,7 @@ def check_token_contract(ks3_root, browser_mod, repo_root="."):
 
     spec = [{"name": n, "rule": r, "hex": v.upper()}
             for n, (r, v) in sorted(rules.items()) if v.startswith("#")]
-    js = _TOKEN_SWEEP_JS % _json.dumps(spec)
+    js = _TOKEN_SWEEP_JS % (_json.dumps(spec), _json.dumps("main"))
 
     served_root = os.path.dirname(os.path.abspath(ks3_root))
     prefix = os.path.basename(os.path.abspath(ks3_root))
@@ -16354,3 +16357,265 @@ def run_browser_layers(ks3_root, browser_mod):
     return (problems, style_rows, contrast_rows,
             (hidden_problems, n_hidden_checked),
             (dark_problems, n_dark_checked))
+
+
+# ── the --st-* token contract (MRB-197 extended · RULED 20 Aug 2026) ──────
+#
+# `--st-ok-room` was minted on 20 Aug 2026 at Claude Design's request and with
+# Mide's ruling, and the ruling came with a constraint: it is GRAPHIC ONLY, the
+# same prohibition `--ks3-ok` already carries, and it is to be ENFORCED rather
+# than written down.
+#
+# ⚠️ WHY THIS IS A SECOND FUNCTION AND NOT A THIRD ENTRY IN THE FIRST ONE.
+# `check_token_contract` reads `shared/tokens.css` and sweeps the built KS3
+# lesson pages. Neither half fits here:
+#
+#   * The `--st-*` family does NOT live in `shared/tokens.css` and deliberately
+#     never has. It is the 3D Studio's own scoped set (`3d-studio/src/styles/
+#     tokens.css`, which /design-sync exports into Design's bundle under the
+#     path-mangled name `src-styles-tokens.css` — the name Design's note and
+#     the ruling both use). Its own header says why the prefix exists: that app
+#     never loads the site-wide file, so the two cannot collide.
+#   * `--st-ok-room` appears on NO KS3 lesson page. It appears on the student
+#     class view, which has no `<main>` and is not under `ks3/`.
+#
+# So the rule is read from the file that actually declares it and swept on the
+# pages that actually use it. The alternative — copying the token into
+# `shared/tokens.css` so the existing gate would find it — would put a second
+# copy of a value in a second file, which is the exact drift this repo spends
+# a lot of comments avoiding.
+#
+# ── THE MEASUREMENTS, so the gate is not asserting a number it never took ──
+#
+# `--st-ok-room` #55B36A against every dark ground it lands on, computed with
+# the WCAG 2.x relative-luminance formula, `rgba()` composited over what is
+# behind it:
+#
+#     --st-room-panel  #1E1913   6.68:1   bench, leader card, feedback panel
+#     --st-room        #15110C   7.20:1   recall panel (the option border)
+#     bar trough       #241E17   6.32:1   the leader card's on-time segment
+#     right-option wash          6.09:1   rgba(85,179,106,.12) over --st-room
+#     --st-room-raise  #2A2119   6.05:1   selected row on dark
+#     --st-room-well   #120F0B   7.32:1   input trough
+#
+# Every one clears 3:1 for a graphic. Design's quoted 6.6:1 is the
+# --st-room-panel figure and is right to within 0.08. A figure of 7.4:1 does
+# not correspond to any ground in the palette — it would need a ground of
+# luminance 0.0043, about #0E0E0E, darker than --st-room-well; the closest real
+# grounds are --st-room-well at 7.32:1 and --st-room at 7.20:1.
+#
+# ⚑ AND THE REASON DESIGN GAVE FOR THE MINT IS WRONG, which is recorded because
+# a wrong number left standing gets re-derived from. The note says `--ks3-ok`
+# #12A150 "measures 2.3:1 on --st-room-panel, under the 3:1 graphic threshold".
+# It measures 5.18:1. 2.3:1 would need a ground of luminance 0.086 — a mid
+# charcoal, nothing in the dark-room family. The token is still worth having;
+# it is just not a rescue.
+ST_TOKENS_CSS = os.path.join("3d-studio", "src", "styles", "tokens.css")
+
+ST_TOKEN_RULES_EXPECTED = {
+    "--st-ok-room": "no-text",
+}
+
+# The student pages this contract is swept on, and the root to sweep inside.
+ST_SWEEP_ROOT = '.rd[data-mode="ks3"]'
+ST_SWEEP_PAGES = [
+    "student/class-preview.html",
+    "student/assignment-preview.html",
+]
+
+# ── the one violation that is already in the DELIVERY ─────────────────────
+#
+# ⚑ FOUND BY DRIVING, not by reading. Design's own class view paints
+# `--st-ok-room` as `color:` on the 9.5px `CORRECT` label in the recall
+# feedback panel (`fbEdge` serves double duty as the panel's 3px left edge —
+# legal, a graphic — and as the label's ink — not legal). It is reachable only
+# after Recall → pick the right option → Check, so a snapshot of the page at
+# rest cannot see it and neither could a reading of the handoff note, which
+# says the token is "Graphic only".
+#
+# ⚖️ IT IS NOT A CONTRAST DEFECT. `--st-ok-room` on `--st-room-panel` is
+# 6.68:1, which passes AA for text twice over. It is a SYSTEM defect: the
+# family has a token for exactly this job and the label is not using it. The
+# fix in the vanilla port is one value — `--ks3-ok-dark` #40DD84, 9.88:1 on the
+# same panel, minted under MRB-252 as "body-size green on an INK-DARK ground".
+#
+# ASSERTED BOTH WAYS, in the shape `student_parity.py` uses for the 390px gap.
+# The delivery is expected to carry it; if a future delivery fixes it this goes
+# red and somebody deletes this block. The PORT is expected NOT to carry it,
+# and that is the assertion that actually protects a student.
+ST_DELIVERY_KNOWN = {
+    "class view": {
+        "page": "standalone/MrBadmusAI Class View.html",
+        "state": "recall · right option picked · checked",
+        "token": "--st-ok-room",
+        "text": "CORRECT",
+        "why": "the recall feedback panel's label shares `fbEdge` with the "
+               "panel's 3px left edge; the edge is a legal graphic use and "
+               "the label is not",
+        "fix_in_port": "--ks3-ok-dark",
+    },
+}
+
+
+def parse_st_token_rules(repo_root="."):
+    """Read the usage rules out of `3d-studio/src/styles/tokens.css`.
+
+    Returns {token_name: (rule, value)}.
+
+    ⚠️ THE COMMENT COMES BEFORE THE DECLARATION HERE, not after it as in
+    `shared/tokens.css`. That is not a style choice this gate can ignore: the
+    rule block for `--st-ok-room` is thirty lines of measured reasoning and it
+    would be unreadable trailing a one-line declaration. So this parser looks
+    BACKWARDS from each `--st-*` declaration to the comment block immediately
+    above it, and `parse_token_rules` keeps looking forwards. Two files, two
+    conventions, two parsers, one vocabulary of prohibitions — which is the
+    part that must not fork.
+    """
+    import re as _re
+    path = os.path.join(repo_root, ST_TOKENS_CSS)
+    src = open(path, encoding="utf-8").read()
+    out = {}
+    for m in _re.finditer(
+            r"(/\*(?:[^*]|\*(?!/))*\*/)\s*(--st-[a-z0-9-]+)\s*:\s*([^;]+);",
+            src, _re.S):
+        comment, name, value = m.group(1), m.group(2), m.group(3).strip()
+        low = comment.lower()
+        rule = None
+        # The SAME vocabulary `parse_token_rules` reads, deliberately. A second
+        # set of phrases would be a second rule language to keep in step.
+        if "never text" in low or "graphic only" in low:
+            rule = "no-text"
+        elif "never body size" in low or "large text only" in low:
+            rule = "no-body-text"
+        elif "on a light ground" in low:
+            rule = "light-ground-only"
+        elif "ink-dark ground" in low:
+            rule = "dark-ground-only"
+        if rule and name not in out:
+            out[name] = (rule, value)
+    return out
+
+
+def check_st_token_contract(site_root, browser_mod, repo_root="."):
+    """`--st-*` usage rules, enforced on the built student pages.
+
+    Returns (problems, n_rules, n_pages, n_proofs).
+
+    The last of those is the point. A colour gate's real failure mode is not a
+    violation it misses; it is a violation it CANNOT SEE — a blind parser, a
+    stylesheet that did not load, a sweep root that is not on the page. All
+    three look exactly like a clean corpus from the outside. So every page is
+    swept twice: once as it is, and once with a DELIBERATE VIOLATION injected
+    into it. If the second sweep does not go red, the first sweep's silence
+    proves nothing and this gate says so.
+    """
+    import json as _json
+    rules = parse_st_token_rules(repo_root)
+    problems = []
+
+    # THE ANTI-ROT ASSERTION, as in `check_token_contract`.
+    for name, want in sorted(ST_TOKEN_RULES_EXPECTED.items()):
+        got = rules.get(name)
+        if not got:
+            problems.append(
+                "ST TOKEN CONTRACT: `%s` carries no usage rule this gate can "
+                "read in %s. The rule is stated in prose beside the token and "
+                "it is LAW; if the wording has moved, move the parser with it "
+                "— a rule nothing reads is a comment." % (name, ST_TOKENS_CSS))
+        elif got[0] != want:
+            problems.append(
+                "ST TOKEN CONTRACT: `%s` parses as %r and is expected to be %r."
+                % (name, got[0], want))
+    if problems:
+        return problems, len(rules), 0, 0
+
+    spec = [{"name": n, "rule": r, "hex": v.upper()}
+            for n, (r, v) in sorted(rules.items()) if v.startswith("#")]
+    js = _TOKEN_SWEEP_JS % (_json.dumps(spec), _json.dumps(ST_SWEEP_ROOT))
+
+    # The deliberate violation: one element, painted with the token as `color:`
+    # at body size, inside the sweep root. Removed again immediately, and the
+    # page is reloaded for each fresh measurement anyway.
+    violate_js = """(function (hex, root) {
+      var scope = document.querySelector(root);
+      if (!scope) { return 'no root'; }
+      var el = document.createElement('span');
+      el.id = '__st_contract_probe__';
+      el.setAttribute('style', 'color:' + hex + ';font-size:15px');
+      el.appendChild(document.createTextNode('DELIBERATE VIOLATION'));
+      scope.appendChild(el);
+      return 'ok';
+    })(%s, %s)"""
+
+    server, port = browser_mod.serve(site_root)
+    seen, proofs = 0, 0
+    try:
+        with browser_mod.Browser() as b:
+            for rel in ST_SWEEP_PAGES:
+                page = b.page("http://localhost:%d/%s" % (port, rel))
+
+                # ── the did-the-design-system-load guard ─────────────
+                #
+                # ⚠️ IT ASKS FOR A TOKEN EVERY PAGE HAS, not for the one being
+                # policed. The first draft asked for `--st-ok-room` itself and
+                # went red on the assignment — correctly, in the sense that the
+                # token genuinely is not declared there, and wrongly, in the
+                # sense that this is Design's deliberate choice and not a
+                # broken stylesheet. The assignment note says so in as many
+                # words: "`--st-ok-room` is not needed here: the one dark
+                # surface marks right with a cream fill and an ink tick, not
+                # with green."
+                #
+                # A token that is not declared on a page cannot be violated on
+                # that page, so its absence is not a finding. What WOULD be a
+                # finding, and what this asks, is the `_ds` bundle failing to
+                # load at all — after which every colour on the page is a UA
+                # default, no sweep can match anything, and a clean run means
+                # nothing whatsoever.
+                got = page.eval(
+                    "(function(){var r=document.querySelector(%s);"
+                    "return r?getComputedStyle(r).getPropertyValue"
+                    "('--st-room-panel').trim():'';})()"
+                    % _json.dumps(ST_SWEEP_ROOT))
+                if not got:
+                    problems.append(
+                        "ST TOKEN CONTRACT: `--st-room-panel` does not resolve "
+                        "on the design root of /%s, so the design-system "
+                        "bundle did not load and this gate measured nothing."
+                        % rel)
+                    continue
+
+                bad = page.eval(js) or []
+                seen += 1
+                for f in bad:
+                    problems.append(
+                        "ST TOKEN CONTRACT: /%s — `%s` %s on %s (%r). The "
+                        "token is GRAPHIC ONLY by the 20 Aug 2026 ruling; the "
+                        "dark-ground green for words is `--ks3-ok-dark`."
+                        % (rel, f["token"], f["why"], f["sel"], f["text"]))
+
+                # ── the proof ────────────────────────────────────────────
+                for t in spec:
+                    if t["rule"] != "no-text":
+                        continue
+                    page.eval(violate_js % (_json.dumps(t["hex"]),
+                                            _json.dumps(ST_SWEEP_ROOT)))
+                    after = page.eval(js) or []
+                    caught = [x for x in after
+                              if x.get("text") == "DELIBERATE VIOLATION"
+                              and x.get("token") == t["name"]]
+                    page.eval("(function(){var e=document.getElementById("
+                              "'__st_contract_probe__'); if(e){e.remove();} "
+                              "return 1;})()")
+                    if caught:
+                        proofs += 1
+                    else:
+                        problems.append(
+                            "ST TOKEN CONTRACT: /%s — a DELIBERATE `color: %s` "
+                            "on a 15px text node inside %s was NOT caught by "
+                            "the sweep. The gate is blind, so its silence on "
+                            "the real page proves nothing."
+                            % (rel, t["hex"], ST_SWEEP_ROOT))
+    finally:
+        server.shutdown()
+    return problems, len(rules), seen, proofs

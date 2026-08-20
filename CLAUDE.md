@@ -103,15 +103,16 @@ The name "MrBadmus" refers to Mide Badmus, the teacher who built this site for h
 
 ## Brand presentation rule
 
-The site has THREE brand presentations. Always check which applies before adding nav markup to a new page.
+The site has FOUR brand presentations. Always check which applies before adding nav markup to a new page.
 
-**Why:** External pages need a visible brand for prospective students, parents, and schools (first impression, marketing). Dashboards stay clean and utilitarian — they're for authenticated users in a working context, no marketing surface needed. KS3 pages take Claude Design's mark (MRB-197, ruled by Mide) — the same key-stage split already ruled for the palette under MRB-183.
+**Why:** External pages need a visible brand for prospective students, parents, and schools (first impression, marketing). STAFF surfaces stay clean and utilitarian — they're working instruments for authenticated adults, no marketing surface needed. KS3 pages take Claude Design's mark (MRB-197, ruled by Mide) — the same key-stage split already ruled for the palette under MRB-183. STUDENT surfaces take Design's mark too (MRB-197 extended, 20 Aug 2026): a student's class page is the product, and it is continuous with the KS3 lesson pages the same student has been reading all term.
 
 | Surface | Brand markup |
 |---|---|
 | **External / public pages (KS4 + root)** | Gold-to-rust two-chevron SVG **+** "MrBadmusAI" text. Uses `nav-brand` + `brand-logo` classes from `shared/styles.css`. Applies to: `index.html`, `auth.html`, `combined/index.html`, `triple/index.html`, all generator-output KS4 topic pages, and any future external/public page **outside KS3**. |
 | **KS3 pages** | Claude Design's mark: a single bold `#E4572E` chevron + "MrBadmusAI" wordmark in Bricolage Grotesque 800, exactly as drawn in the frozen reference (`docs/ks3/design-reference/`). Emitted by `build_ks3.py` (`NAV_BRAND`), styled by `.ks3-brand` in `shared/ks3.css`. Never hand-copy it onto a page — KS3 pages are generated. |
-| **Dashboards / school-operations pages** | Plain white text "MrBadmusAI", **no logo asset**, with the exact styling pinned below. Applies to: all `/teacher/*` pages, and all current/future student / HoD / SLT / admin dashboards. |
+| **Student surfaces** | Claude Design's `BrandMark`: a right-pointing **double** chevron in `#E4572E` (the second chevron at `stroke-opacity="0.34"`) **+** "MrBadmusAI" in Bricolage Grotesque 600. Drawn by Design in the 19 Aug 2026 student delivery; emitted by `build_student.py` from that delivery. Applies to: `student/class.html`, `student/assignment.html` and every future student-facing page. ⚠️ This is NOT the same drawing as the KS3 lessons' mark — that one is a single *upward* chevron at stroke-width 4.6. Both are Design's, both `#E4572E`, both carry the wordmark; they are not interchangeable, and neither is hand-copied (both are generated). |
+| **Staff / school-operations pages** | Plain white text "MrBadmusAI", **no logo asset**, with the exact styling pinned below. Applies to: all `/teacher/*`, `/admin/*` and `/hod/*` pages, and all current/future HoD / SLT / admin dashboards. |
 
 ### Canonical external chevron markup (KS4 + root — NOT KS3)
 
@@ -123,15 +124,38 @@ Copy this verbatim into the nav of any external page outside KS3:
 
 Requires `shared/styles.css` to be loaded (for `.nav-brand` + `.brand-logo`).
 
-### Canonical dashboard text markup
+### Canonical staff text markup
 
-Copy this verbatim into the nav of any dashboard page:
+Copy this verbatim into the nav of any staff / school-operations page:
 
 ```html
 <a href="/index.html" style="font-family:'Sora',sans-serif;font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;letter-spacing:0.01em;">MrBadmusAI</a>
 ```
 
-No stylesheet dependency — fully inline-styled. This is the canonical dashboard brand styling — match it exactly on every new dashboard page.
+No stylesheet dependency — fully inline-styled. This is the canonical staff brand styling — match it exactly on every new staff page.
+
+### ⊕ Superseded 20 Aug 2026 (MRB-197 extended) — the student/staff fork
+
+The staff row above used to read *"Dashboards / school-operations pages … Applies to:
+all `/teacher/*` pages, and all current/future **student** / HoD / SLT / admin
+dashboards."* That sentence is kept here rather than deleted, because it is the one
+that caused the fork.
+
+**Two written rules disagreed.** The 19 August 2026 student handover told Design that
+student pages carry the chevron, and Design drew them that way. This file said student
+dashboards take the plain white wordmark, and the then-live `student/class.html`
+followed it and carried no logo. Design flagged the contradiction rather than resolving
+it unilaterally: *"If Mide reads the plain-white-text rule as covering these too, it is
+one component swap in the header."*
+
+**Ruled 20 Aug 2026: the chevron stays on student surfaces.** The plain-white-wordmark
+rule covers STAFF surfaces only — `/teacher/*`, `/admin/*`, `/hod/*` and school-ops
+pages — because those are working instruments for adults. A student's class page is the
+product.
+
+So "dashboard" is no longer the word that decides it; **who the page is for** is. A page
+for a student takes Design's mark whether or not it is shaped like a dashboard; a page
+for a teacher takes the plain wordmark whether or not it is.
 
 ### ⚠️ Retired placeholders — never use on a new page
 

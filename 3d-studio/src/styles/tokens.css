@@ -87,6 +87,36 @@
   --st-room-note: #C9BDAC;   /* why-it-matters body */
   --st-ember: #F2946E;       /* accent text on dark */
   --st-ember-strong: #F0885F;
+  /* ⊕ MINTED 20 Aug 2026 — Claude Design's request in the 19 Aug student
+     delivery ("Class view v1 - README.md" §7), RULED ACCEPTED by Mide.
+     Design's own comment, preserved verbatim:
+
+         dark-room success green. 6.6:1 on --st-room-panel.
+         Graphic only: bar segments, the recall tick, a 3px panel edge.
+         The dark-surface counterpart of --ks3-ok, as --st-ember is of
+         --ks3-accent.
+
+     ⚠️ TWO CORRECTIONS TO THE NOTE THAT ASKED FOR IT, both measured rather
+     than transcribed (the arithmetic is in `check_st_token_contract`'s
+     docstring and re-run by the gate):
+
+     1. Design's 6.6:1 is RIGHT — measured 6.68:1 on --st-room-panel #1E1913.
+        Across every dark ground this token actually lands on it runs
+        6.05:1 (--st-room-raise) to 7.32:1 (--st-room-well), so it clears the
+        3:1 graphic bar everywhere with room to spare.
+     2. Design's STATED REASON does not hold. The note says --ks3-ok #12A150
+        "measures 2.3:1 on --st-room-panel, under the 3:1 graphic threshold".
+        It measures 5.18:1 and clears the bar comfortably. So this token is
+        not a contrast RESCUE; it is a nicer green on dark, which is a fine
+        reason to have it and a different one. Recorded so nobody later
+        re-derives a rule from a number that was never true.
+
+     GRAPHIC ONLY. Never text. Bar segments, the recall tick, a 3px panel
+     edge. The dark-ground green for WORDS is --ks3-ok-dark (#40DD84, 9.88:1
+     on --st-room-panel) — minted under MRB-252 for exactly that job. The
+     prohibition binds because the alternative exists, which is MRB-252's own
+     test for when a prohibition may bind. */
+  --st-ok-room: #55B36A;
   --st-cream: #FBF3E6;       /* cream as used ON dark surfaces */
 
   /* stage dressing */
