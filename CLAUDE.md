@@ -95,7 +95,7 @@ The name "MrBadmus" refers to Mide Badmus, the teacher who built this site for h
 | **AI model** | Claude (Anthropic) — accessed via a custom backend |
 | **Backend API** | Separate Node/Express server at `https://mrbadmus-backend.onrender.com` — lives in a separate repo |
 | **Auth & database** | Supabase — handles user sign-in, session tokens, profiles, and leaderboard data (project ID `urklkrwevjtlfbwnipjn`) |
-| **Site generation** | A Python script (`generate_site_v5.py`) that builds all topic HTML pages from structured data |
+| **Site generation** | **`build_all.py`** — the entry point. It runs THREE generators in a load-bearing order: `generate_site_v5.py` (KS4), then `build_ks3.py` (KS3), then `build_student.py`. ⚠️ `generate_site_v5.py` alone does NOT build KS3 — see "How the Site is Generated" below |
 | **Hosting** | Cloudflare Pages at mrbadmus.com (auto-deploys from GitHub) |
 | **Email** | Resend.com from noreply@mrbadmus.com |
 
@@ -189,7 +189,12 @@ mrbadmus-site/
 ├── triple/                 — Triple Science pages (auto-generated)
 ├── combined/               — Combined Science pages (auto-generated)
 │
-├── generate_site_v5.py     — Python script that generates all topic pages AND copies files into mrbadmus_site/
+├── build_all.py            — ⭐ THE ENTRY POINT. Runs all three generators, in the correct order.
+├── generate_site_v5.py     — KS4 generator: topic pages + copies root HTML into mrbadmus_site/
+├── build_ks3.py            — KS3 generator (ks3/). SEPARATE ON PURPOSE. generate_site_v5.py never builds KS3.
+├── build_student.py        — student preview pages. Runs LAST.
+├── ks3_art/                — one module per KS3 unit: that unit's drawers, instruments and registrations.
+│                             Adding a unit = adding ONE file here. See docs/ks3/worktrees.md.
 ├── all_subtopics_*.py      — Python files defining subtopic content per subject/tier
 │
 └── mrbadmus_site/          — OUTPUT FOLDER. Cloudflare Pages serves from HERE, not from the repo root.
@@ -243,7 +248,7 @@ The two repos share an API contract documented in **`API-CONTRACT.md` in the bac
 **Rule: frontend and backend changes that affect the API contract must be deployed together.** A breaking change pushed to only one side will cause student-visible errors. The correct deployment sequence:
 1. Run any required SQL migrations in Supabase
 2. Push backend repo (Render auto-deploys, wait for "Live")
-3. Run `python3 generate_site_v5.py`
+3. Run `python3 build_all.py` (NOT `generate_site_v5.py` alone — that skips KS3 and the student previews)
 4. Push frontend repo (Cloudflare auto-deploys)
 5. Smoke test
 
@@ -251,11 +256,51 @@ The two repos share an API contract documented in **`API-CONTRACT.md` in the bac
 
 ## How the Site is Generated
 
-Topic pages (e.g. `/physics/energy.html`, `/biology/bioenergetics/photosynthesis.html`) are **not written by hand** — they're produced by:
+### ⚠️ There are THREE generators, and one entry point
+
+Run this, always:
 
 ```bash
-python3 generate_site_v5.py
+python3 build_all.py
 ```
+
+It runs, in this order:
+
+| # | Script | Builds |
+|---|---|---|
+| 1 | `generate_site_v5.py` | the KS4 site — `combined/`, `triple/`, root pages, `shared/` |
+| 2 | `build_ks3.py` | the KS3 site — everything under `ks3/` |
+| 3 | `build_student.py` | the student preview pages |
+
+**The order is load-bearing.** `generate_site_v5.build_site()` opens by wiping
+`mrbadmus_site/` — everything except the foreign output trees it is told to skip
+(`ks3/`, `3d/`) — so anything else emitted before it is deleted by it. KS3 is
+safe in either order because it is on that skip list; the student previews are
+not, which is why they run last.
+
+**`generate_site_v5.py` does NOT build KS3.** This is the single easiest mistake
+to make here, and it fails *silently in the direction that looks fine*: after a
+KS3 change, running the KS4 generator alone exits 0, prints a successful build,
+and leaves `ks3/` exactly as it was. A green run that did nothing. If you have
+changed anything under `ks3_data/`, `ks3_art/` or `build_ks3.py`, you need
+`build_all.py` or `build_ks3.py` — never `generate_site_v5.py` on its own.
+
+They are separate on purpose: wiring KS3 into `build_site()` would rebuild 300+
+KS4 pages on every KS3 content change, and would make architecture.md §9's
+"zero KS4 pages changed" gate impossible to demonstrate.
+
+### KS3 units live in `ks3_art/`, one module each
+
+Since MRB-271, a KS3 unit's drawers, instruments and registrations live in
+`ks3_art/<unit>.py` and nowhere else. Adding a unit is adding ONE new file —
+the registry discovers its modules rather than listing them, so there is no
+shared manifest to edit. **If you are working in a worktree, read
+`docs/ks3/worktrees.md` first**: it says which lane owns which units, which
+files are still genuinely shared, and how a lane merges back.
+
+### The KS4 generator
+
+Topic pages (e.g. `/physics/energy.html`, `/biology/bioenergetics/photosynthesis.html`) are **not written by hand** — they're produced by `generate_site_v5.py` (step 1 above).
 
 The script reads structured data from `all_subtopics_*.py` files (topics, subtopics, equations, required practicals, higher-tier flags, triple-only flags) and outputs complete HTML files for every spec point. It also copies hand-edited root HTML files (weekly-challenge.html, leaderboard.html, etc.) into `mrbadmus_site/` which Cloudflare serves.
 
@@ -269,12 +314,12 @@ The script reads structured data from `all_subtopics_*.py` files (topics, subtop
 
 ```bash
 cd 3d-studio && npm run build && cd ..   # 1. build the studio  ← easy to forget
-python3 generate_site_v5.py              # 2. build the site and publish the studio
+python3 build_all.py                     # 2. build the site and publish the studio
 git add -A && git commit && git push     # 3. commit + push (authorised, see the
                                          #    Autonomy Contract) — then verify live
 ```
 
-**Step 1 is only needed when `3d-studio/` has changed.** For an ordinary KS4 content change, `python3 generate_site_v5.py` on its own is still the whole job.
+**Step 1 is only needed when `3d-studio/` has changed.** For everything else, `python3 build_all.py` on its own is the whole job.
 
 **If you forget step 1, the generator will tell you** — it compares the build against the source and prints a large `!!!!` banner, twice, once where it happens and again as the last thing on screen. It is deliberately hard to miss, because it is otherwise invisible: the studio would simply ship as whatever it was last time.
 
