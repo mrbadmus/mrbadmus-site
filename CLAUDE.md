@@ -361,10 +361,23 @@ If the backend is unreachable, the chat falls back to a static message.
 - **A class belongs to an academic year, and every class list must say so**
   (MRB-261). Never scope a class list on `academic_years.is_current` — that flag
   is moved by hand on 1 September, so through late August it still points at the
-  year that finished in July. Use the `workingAcademicYear()` helper (three
-  hand-synced copies: `shared/class-entry.js`, `shared/student-data.js`,
-  `shared/teacher-data.js`). A plain `end_date >= today` is also wrong: academic
+  year that finished in July. Use the `workingAcademicYear()` helper.
+  A plain `end_date >= today` is also wrong: academic
   years run to 31 August, so through the summer two years are both unfinished.
+  The helper resolves that with a 30-day LOOKAHEAD — the earliest year whose
+  `end_date` is still ahead of today+30 — falling back to the latest year if
+  none qualifies.
+  ⊕ **Superseded 21 Aug 2026.** This used to read *"the `workingAcademicYear()`
+  helper (three hand-synced copies: `shared/class-entry.js`,
+  `shared/student-data.js`, `shared/teacher-data.js`)"*. MRB-267 consolidated
+  them on 19 Aug 2026: there is now exactly ONE implementation, in
+  **`shared/class-entry.js`**, and the copies in `student-data.js` and
+  `teacher-data.js` are delegating shims that throw a named error if
+  `class-entry.js` has not been loaded onto the page first. The superseded
+  sentence is kept rather than deleted because it is an instruction to go and
+  hand-sync three files, and doing that would reintroduce precisely the drift
+  MRB-267 removed. ⚠️ Load order is now load-bearing: `class-entry.js` must come
+  before `student-data.js` / `teacher-data.js` on any page that uses either.
 - **Shared JS via `window.MrBadmus`.** The chat engine exposes itself as a global so any page can call `MrBadmus.init(...)`.
 - **Supabase auth is client-side.** Sessions in `localStorage` under `sb-urklkrwevjtlfbwnipjn-auth-token`. Supabase JS SDK loaded via CDN — no import system.
 - **Inline auth-check scripts.** Each HTML page has a small inline `<script>` at the top of `<nav>` that swaps Sign In / Sign Up for the logged-in user's name + avatar.
