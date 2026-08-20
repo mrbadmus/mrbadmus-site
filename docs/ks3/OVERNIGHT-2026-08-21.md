@@ -461,3 +461,69 @@ it: v1 ships with three feedback strings and the right-answer slot closes. So th
 not outstanding work — it is a ruling, already applied. The distractor feedback, by contrast,
 is complete: **2,520 wrong options, every one carrying its `why`; 924 correct options, not
 one of them carrying a line it should not have.**
+
+### B3 — the drive passed. A real assignment now exists on production.
+
+```
+assignment  72a5b315-f8ef-4c04-9369-664c8d1a4b8e
+title       Breathing and gas exchange · Pressure · Chemical reactions
+due         2026-09-03T17:00:00Z   ← Thursday 3 Sep, 18:00 British Summer Time
+week        1        auto_generated  true      quiz_type  subtopic_quiz
+questions   b4-01-s01 … s04, positions 1-4, rung NULL, band 'standard'
+source_sow  → the week-1 Biology row, `the-gas-exchange-system`
+```
+
+Every field read back from production and checked. `teacher_id` is the class's own teacher,
+`subject_id` is `Science` (the KS3 filing subject), `school_id` / `key_stage` / `year_group`
+match the class, and the `rung XOR band` constraint held — every question row carries a band
+and no rung, which is what the migration was for.
+
+**All 21 drive checks pass**, including the two that matter most for trust:
+
+```
+✅ second call did NOT create; same id, same questions, same order
+✅ a class the student is NOT in → 403;  no bearer token → 401
+✅ the RIGHT-ANSWER slot is closed (why is null, not a generic line)
+✅ exactly three feedback strings, one per distractor
+```
+
+**It is four questions, not fifteen**, and that is the ruled behaviour rather than a fault:
+week 1's three lessons are Biology `the-gas-exchange-system` (banked), Physics
+`pressure-force-over-area` (not banked) and Chemistry `chemical-vs-physical-change` (not
+banked). One banked lesson supplies four standard questions, week one is allowed to be short,
+and there is nothing earlier in the scheme to fill from. **From week 2 onward this class gets
+no assignment at all until Physics and C4+ are banked** — the producer refuses rather than
+shipping short. That is a content gap, and it is the other session's territory.
+
+### ⚑ The pools: 1 MB applied in two seconds, via one guarded function
+
+Loading 924 + 154 rows as generated SQL through MCP round-trips was slow and kept stalling
+part-way. Replaced with `ks3_pools_ingest(pool, payload)` — SECURITY DEFINER, taking the whole
+pool as one jsonb payload over PostgREST. Both pools now apply in about two seconds.
+
+⚠️ **The guard is the entire safety story**, so it is written down plainly: it is *not* open
+to `authenticated` at large — a student with a valid JWT must not be able to rewrite the
+question bank — and it raises unless the caller's email is Mide's own. Migration
+`20260820220000`. If Mide would rather it did not exist, dropping it costs nothing but speed;
+nothing calls it except the exporter.
+
+**Deviation: I burned time on this the wrong way first.** Three separate subagents were asked
+to apply the SQL and between them managed two chunks in half an hour. I should have reached
+for a different mechanism after the first one stalled instead of the second and third.
+
+### ⚠️ B4 CONDITION NOT MET — fixture content is still reachable in production
+
+The seam closed every class field and every bound template literal, and
+`grep "Ayo\|Mr Badmus\|28 students\|Tiwa A\."` on the production page is 0. But four strings
+are welded inside **method bodies** rather than field initialisers, so the extractor could not
+see them, and they still ship:
+
+| line | what still ships |
+|---|---|
+| `shoutouts:` | `{ who: 'MB', text: 'Best score in the class on digestion this week.', meta: 'MR BADMUS · 2 DAYS AGO' }` |
+| `crumbRight:` | `'AUTUMN TERM · WEEK 04 / 12'` and `'WK 04 / 12'` |
+| `boardScopeNote:` | `'WHOLE AUTUMN TERM'`, `'WEEK 04'` |
+| `<title>` | `8r/Sc1 · My class · MrBadmusAI` |
+
+The seam unit reported all four rather than hiding them, and the build names them on every
+run. **This alone is enough to hold the B4 swap**, and it is being closed next.

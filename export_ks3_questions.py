@@ -66,7 +66,7 @@ OUT_DIR = os.path.join("build", "ks3-questions")
 # whatever the ceiling is, it is not worth finding by binary search on a
 # production table. 28 small statements apply in well under a minute and any
 # one of them can be re-run on its own, because they are upserts.
-ROWS_PER_STATEMENT = 40
+ROWS_PER_STATEMENT = 250
 
 LETTERS = ("A", "B", "C", "D")
 

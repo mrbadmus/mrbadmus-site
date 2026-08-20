@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mass in a reaction · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemical reactions</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Mass in a reaction</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Chemical reactions · Quantitative</p>
+        <h1>Mass in a reaction</h1>
+        <p class="ks3-bigq">One reaction on a balance loses two grams and another gains one and a half. Both obey the same rule — so what is the balance actually telling you?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>A candle burns away to almost nothing. Steel wool burns and gets heavier.</h2>
+        <p class="ks3-hook-prompt">Both are burning. Both are on a balance. One reading falls and the other rises, and neither of them is doing anything strange — the same rule is behind both.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What is the rule?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Nothing is created and nothing is destroyed — but the balance only weighs what is <strong>on the pan</strong>. The candle's products float away, so the reading falls. The steel wool takes oxygen out of the air and keeps it, so the reading rises. Count everything, including the gases, and the total never changes at all.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Your turn · the balance bench</p>
+        <h2 style="margin: 6px 0 0;">Two reactions, two flasks. Predict what the balance does.</h2>
+
+        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 16px;">
+          <sc-for list="{{ dials }}" as="dial" hint-placeholder-count="2">
+            <div>
+              <p style="margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ dial.label }}</p>
+              <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ dial.options }}" as="o" hint-placeholder-count="2">
+                  <button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" style="{{ o.style }}">{{ o.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 20px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-alert-tint); border: 2px solid var(--ks3-ink);">
+          <p style="margin: 0; font-size: 19px; font-weight: 700;">Before you run it: what will the balance reading do?</p>
+          <ul class="ks3-options" style="max-width: 30rem;">
+            <sc-for list="{{ predictOptions }}" as="opt" hint-placeholder-count="3">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ canRun }}">
+            <button type="button" class="ks3-reveal-btn" style="margin-top: 14px;" onClick="{{ onRun }}">Run the reaction</button>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{ runOpen }}">
+          <div data-arrive="1" style="margin-top: 20px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px;">
+              <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="3">
+                <div style="{{ t.style }}">
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ t.label }}</p>
+                  <p style="{{ t.valueStyle }}">{{ t.value }}</p>
+                  <p style="margin: 8px 0 0; font-size: 16px; line-height: 1.45; color: var(--ks3-ink-body);">{{ t.note }}</p>
+                </div>
+              </sc-for>
+            </div>
+            <div style="margin-top: 18px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-size: 19px; line-height: 1.6;">{{ benchNote }}</p>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ allFour }}">
+          <div data-arrive="1" style="margin-top: 16px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">All four runs. Open and fizzing: the reading falls. Open and burning: the reading rises. Sealed, either reaction: the reading does not move by so much as a hundredth of a gram. <strong>The reaction never changes the mass. The lid decides whether the balance can see it.</strong></p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">The rule</p>
+        <p style="margin: 14px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 30px; line-height: 1.25; letter-spacing: -.02em;">total mass of reactants = total mass of products</p>
+        <p style="margin: 16px 0 0; font-size: 19px; line-height: 1.6; max-width: 52ch;">Nothing else is in this block, because nothing else needs to be. Every calculation in this lesson is that line with one of its numbers missing.</p>
+      </section>
+
+      <section id="s-cover" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(24px, 3.2vw, 36px); line-height: 1.14; letter-spacing: -.03em; text-align: center;">Total mass of everything before = total mass of everything after</p>
+        </div>
+        <p class="ks3-eyebrow" style="margin: 24px 0 0;">The bar</p>
+        <h2 style="margin: 6px 0 0;">Cover the one you want</h2>
+
+        <div role="img" aria-label="{{ barLabel }}" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+          <div style="position: relative; padding: 18px 20px; border-radius: 14px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">Everything before</p>
+            <p style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px;">{{ barTotal }}</p>
+            <sc-if value="{{ coverTotal }}">
+              <span aria-hidden="true" style="position: absolute; inset: 0; border-radius: 12px; background: var(--ks3-ink); opacity: .9; display: grid; place-items: center; color: var(--ks3-alert); font-family: var(--ks3-font-display); font-weight: 800; font-size: 26px;">?</span>
+            </sc-if>
+          </div>
+          <div style="margin-top: 10px; display: grid; grid-template-columns: 68fr 32fr; gap: 10px;">
+            <div style="position: relative; padding: 18px 20px; border-radius: 14px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">Left in the flask</p>
+              <p style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px;">{{ barLeft }}</p>
+              <sc-if value="{{ coverLeft }}">
+                <span aria-hidden="true" style="position: absolute; inset: 0; border-radius: 12px; background: var(--ks3-ink); opacity: .9; display: grid; place-items: center; color: var(--ks3-alert); font-family: var(--ks3-font-display); font-weight: 800; font-size: 26px;">?</span>
+              </sc-if>
+            </div>
+            <div style="position: relative; padding: 18px 20px; border-radius: 14px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">The gas</p>
+              <p style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px;">{{ barGas }}</p>
+              <sc-if value="{{ coverGas }}">
+                <span aria-hidden="true" style="position: absolute; inset: 0; border-radius: 12px; background: var(--ks3-ink); opacity: .9; display: grid; place-items: center; color: var(--ks3-alert); font-family: var(--ks3-font-display); font-weight: 800; font-size: 26px;">?</span>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 18px; display: flex; gap: 9px; flex-wrap: wrap;">
+          <sc-for list="{{ coverButtons }}" as="b" hint-placeholder-count="3">
+            <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ coverOpen }}">
+          <div data-arrive="1" style="margin-top: 18px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(24px, 3.2vw, 30px); line-height: 1.2; letter-spacing: -.02em;">{{ coverResult }}</p>
+          </div>
+        </sc-if>
+        <p style="margin: 18px 0 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body);">Two parts side by side make the whole. Cover the part you want and take the other one away from the whole.</p>
+        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 9px;">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">everything before, gases included</span>
+            <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">g</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">left in the flask</span>
+            <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">g</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">the gas that left</span>
+            <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">g</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-worked" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Watched first · FIFA</p>
+        <h2 style="margin: 6px 0 0;">How much carbon dioxide left the open flask?</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Marble chips and acid in an open flask. The balance read 152.00 g at the start and 149.80 g when the fizzing stopped. Four steps, one at a time.</p>
+
+        <ol style="list-style: none; margin: 20px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ workedSteps }}" as="st" hint-placeholder-count="4">
+            <li style="{{ st.style }}">
+              <div style="display: flex; gap: 14px; align-items: flex-start;">
+                <span aria-hidden="true" style="{{ st.badgeStyle }}">{{ st.letter }}</span>
+                <div style="flex: 1;">
+                  <p style="margin: 0; font-size: 19px; font-weight: 700;">{{ st.name }}</p>
+                  <sc-if value="{{ st.open }}">
+                    <div data-arrive="1">
+                      <p style="margin: 8px 0 0; font-family: var(--ks3-font-mono); font-size: 19px; line-height: 1.5; color: var(--ks3-accent-text);">{{ st.maths }}</p>
+                      <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body);">{{ st.note }}</p>
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+            </li>
+          </sc-for>
+        </ol>
+
+        <sc-if value="{{ showWorkedBtn }}">
+          <button type="button" class="ks3-reveal-btn" style="margin-top: 16px;" onClick="{{ onWorkedNext }}">{{ workedBtnLabel }}</button>
+        </sc-if>
+      </section>
+
+      <section id="s-check" class="ks3-block ks3-check" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Now you · same four steps</p>
+        <h2 style="margin: 6px 0 0;">2.40 g of magnesium burns and leaves 4.00 g of magnesium oxide. What mass of oxygen joined in?</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Do each step yourself, then open it to compare. The steps are the same four; only the numbers and the missing quantity have moved.</p>
+
+        <ol style="list-style: none; margin: 20px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ checkSteps }}" as="st" hint-placeholder-count="4">
+            <li style="{{ st.style }}">
+              <div style="display: flex; gap: 14px; align-items: flex-start;">
+                <span aria-hidden="true" style="{{ st.badgeStyle }}">{{ st.letter }}</span>
+                <div style="flex: 1;">
+                  <p style="margin: 0; font-size: 19px; font-weight: 700;">{{ st.name }}</p>
+                  <p style="margin: 6px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body);">{{ st.prompt }}</p>
+                  <sc-if value="{{ st.open }}">
+                    <div data-arrive="1">
+                      <p style="margin: 10px 0 0; font-family: var(--ks3-font-mono); font-size: 19px; line-height: 1.5; color: var(--ks3-accent-text);">{{ st.maths }}</p>
+                      <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body);">{{ st.note }}</p>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ st.showButton }}">
+                    <button type="button" class="ks3-reveal-btn" style="margin-top: 12px;" onClick="{{ st.onOpen }}">Compare step {{ st.num }}</button>
+                  </sc-if>
+                </div>
+              </div>
+            </li>
+          </sc-for>
+        </ol>
+
+        <sc-if value="{{ checkDone }}">
+          <div data-arrive="1" style="margin-top: 18px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">Notice what changed between the two questions and what did not. The formula did not change. The rearranging did — in the first one the missing quantity was a part, in this one it is also a part, but it was on the other side of the arrow. <strong>Which side a substance is on decides whether it is added or subtracted; the rule itself never moves.</strong></p>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">Total mass of reactants = total mass of products. A balance reading that changes is telling you a gas has entered or left the pan — not that mass has been created or destroyed.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Gases do not weigh anything, so the missing 2.20 g cannot be the carbon dioxide.”</p>
+        <p style="max-width: 54ch;">You cannot feel the air, and nothing you have ever picked up has felt heavier for having gas in it. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">Gases have mass, and it is easy to measure. The air in an ordinary classroom weighs around 150 kilograms. A cubic metre of carbon dioxide is nearly two kilograms. Weigh a football, pump it up hard, weigh it again: the reading goes up, and the only thing you added was air.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">What gases lack is not mass but <strong>weight you can notice</strong> — they are spread out, and the air around you pushes up on everything, so nothing feels heavier for containing gas. The sealed flask settles it: seal the reaction so the gas cannot leave and the balance does not move at all. The gas was on the pan the whole time. This is the same wrong idea as thinking a dried-up puddle was destroyed, in a chemical costume.</p>
+          </div>
+        </sc-if>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Total mass of reactants = total mass of products. Atoms are rearranged, never created or destroyed, so the total cannot change. A balance reading that falls means a gas has left the pan; one that rises means a gas has joined from the air. Seal the vessel and the reading does not move. The relationship is a sum, so it is drawn as a part-whole bar: cover the quantity you want and what is left is the calculation.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>This rule was the argument that ended a whole theory. For most of the eighteenth century, burning was explained by <em>phlogiston</em> — a substance said to escape from things as they burned, which neatly explained why a candle got lighter. Then metals were burned in sealed vessels and weighed, and they got <em>heavier</em>. Defenders of the theory were reduced to suggesting phlogiston had negative mass. Lavoisier weighed everything, including the air, and showed that the gain in the metal was exactly the loss from the air in the vessel. The theory did not survive a balance.</p>
+          <p>Two honest footnotes. First, a school balance reads to a hundredth of a gram, so a reaction losing a milligram of gas looks perfectly conserved — the rule is exact and the measurement is not. Second, mass is conserved in chemical reactions and in nuclear reactions it is not quite: a tiny amount of mass becomes energy, which is where the Sun's output comes from. Nothing you do in a flask goes anywhere near that, and the rule you have just learned is safe for the whole of chemistry.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c4-03-word-equations.html">Word equations<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c4-05-symbol-equations-and-balancing.html">Symbol equations and balancing<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Relative formula mass, moles, and reacting-mass calculations — all of them this rule with the arithmetic done in particles.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still not sure how burning magnesium can get heavier?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Candle and steel wool', short: 'HOOK' },
+  { id: 's-bench', label: 'The balance bench', short: 'BENCH' },
+  { id: 's-cover', label: 'The rule, drawn', short: 'COVER' },
+  { id: 's-worked', label: 'Watched first', short: 'WORKED' },
+  { id: 's-check', label: 'Now you', short: 'CHECK' },
+  { id: 's-think', label: 'Do gases weigh?', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const RUNS = {
+  'marble:open': { before: '152.00 g', after: '149.80 g', third: 'not measured — you work it out',
+    thirdNote: 'The mass of carbon dioxide that left the flask.',
+    note: 'The reading fell by 2.20 g. Nothing was destroyed: carbon dioxide bubbled out of the open neck and walked off the pan. The 2.20 g is now in the room.' },
+  'marble:sealed': { before: '152.00 g', after: '152.00 g', third: '0.00 g',
+    thirdNote: 'Nothing left the flask.',
+    note: 'Not a hundredth of a gram. The same reaction happened — the chips still fizzed away — and with the gas trapped on the pan the balance has nothing to report.' },
+  'magnesium:open': { before: '2.40 g', after: '4.00 g', third: 'not measured — you work it out',
+    thirdNote: 'The mass of oxygen that joined the magnesium.',
+    note: 'The reading rose by 1.60 g. The extra mass came out of the air: oxygen atoms are now part of the white powder, and they are being weighed for the first time.' },
+  'magnesium:sealed': { before: '250.00 g', after: '250.00 g', third: '0.00 g',
+    thirdNote: 'Nothing entered or left the flask.',
+    note: 'Sealed, with the air already inside and weighed. The magnesium still burns and still takes oxygen, but the oxygen was on the pan before the reaction and is on the pan after it. No change.' }
+};
+
+const WORKED = [
+  { letter: 'F', name: 'Formula', maths: 'total mass of reactants = total mass of products',
+    note: 'Write the rule before you touch a number. It is the same rule for every question in this lesson.' },
+  { letter: 'I', name: 'Insert', maths: '152.00 = 149.80 + mass of gas',
+    note: 'The flask started at 152.00 g. Afterwards, 149.80 g is still on the balance and the rest of the products left as gas.' },
+  { letter: 'F', name: 'Fine-tune', maths: 'mass of gas = 152.00 − 149.80',
+    note: 'The quantity asked for is not on the left, so rearrange until it is on its own. Covering "the gas" on the bar gives you this line.' },
+  { letter: 'A', name: 'Answer', maths: 'mass of carbon dioxide = 2.20 g',
+    note: 'Two decimal places, because that is what the balance gave you, and grams — the unit belongs to the answer.' }
+];
+
+const CHECKS = [
+  { letter: 'F', name: 'Formula', prompt: 'Write the rule down.',
+    maths: 'total mass of reactants = total mass of products',
+    note: 'Unchanged. It does not matter that this reaction gains mass rather than losing it.' },
+  { letter: 'I', name: 'Insert', prompt: 'Put in what you know. The reactants are the magnesium and the oxygen; the product is the magnesium oxide.',
+    maths: '2.40 + mass of oxygen = 4.00',
+    note: 'Both reactants go on the left of the equals sign, because both of them were there at the start — even though one came out of the air.' },
+  { letter: 'F', name: 'Fine-tune', prompt: 'Rearrange so the quantity you want is on its own.',
+    maths: 'mass of oxygen = 4.00 − 2.40',
+    note: 'A part, again — so a subtraction, again. The bar with "the gas" covered is the same picture, with the gas joining instead of leaving.' },
+  { letter: 'A', name: 'Answer', prompt: 'Work it out, and give the unit.',
+    maths: 'mass of oxygen = 1.60 g',
+    note: '1.60 g of oxygen came out of the air and is now part of the powder. Weigh the flask before and after in a sealed vessel and you would see no change at all.' }
+];
+
+const COVERS = {
+  total: { result: 'everything before = left in the flask + the gas',
+    sentence: 'An addition. Use this when you know what stayed and what left, and want the mass you started with — 149.80 + 2.20 = 152.00 g.' },
+  left: { result: 'left in the flask = everything before − the gas',
+    sentence: 'A subtraction. Use this when you know the starting mass and how much gas escaped, and want the mass remaining.' },
+  gas: { result: 'the gas = everything before − left in the flask',
+    sentence: 'A subtraction, and the one an open flask always asks for: the gas is the quantity nobody measured, so it is the difference between the two readings.' }
+};
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'A reaction is carried out in a sealed flask on a balance. What happens to the reading?',
+    options: [
+      { text: 'It stays the same', correct: true },
+      { text: 'It falls, because a gas is made', correction: 'A gas may well be made — and in a sealed flask it is still on the pan, so the balance does not notice.' },
+      { text: 'It rises, because new substances are made', correction: 'New substances are made from the atoms already present. No atoms were added, so no mass was added.' },
+      { text: 'It depends whether the reaction gives out heat', correction: 'Heat leaving does not take any measurable mass with it. The reading is unmoved.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: '2.40 g of magnesium is burned in an open dish and 4.00 g of white powder is left. What has happened?',
+    options: [
+      { text: '1.60 g of oxygen from the air has joined the magnesium', correct: true },
+      { text: '1.60 g of mass has been created by the reaction', correction: 'Mass is never created. Every gram of the extra 1.60 g can be traced to oxygen that was in the air before the reaction.' },
+      { text: 'The balance has drifted and needs re-zeroing', correction: 'A gain of 1.60 g on 2.40 g is far too large to be drift, and it is repeatable — the same gain every time.' },
+      { text: 'The magnesium has absorbed heat, which has mass', correction: 'Heat carries no measurable mass. What was absorbed was oxygen, and it is now part of the powder.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Produce a calculation',
+    question: '8.00 g of calcium carbonate is heated in an open crucible. It decomposes to calcium oxide and carbon dioxide, and 4.48 g of calcium oxide is left. Work out the mass of carbon dioxide given off, showing all four steps, and then explain what the balance would have read if the crucible had been sealed.',
+    fieldLabel: 'Your calculation and explanation',
+    placeholder: 'Formula: total mass of reactants = total mass of products…',
+    criteria: [
+      'Writes the rule down as the first step.',
+      'Inserts the values correctly: 8.00 = 4.48 + mass of carbon dioxide.',
+      'Rearranges to make the unknown the subject: mass of carbon dioxide = 8.00 − 4.48.',
+      'Gives the answer as 3.52 g, with the unit.',
+      'Says a sealed crucible would show no change, because the gas would still be on the pan.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A student burns a candle on a balance and records a loss of 4.10 g. They conclude that burning destroys matter. Design the measurement that would prove them wrong, say what result you would expect, and explain why their reading was not evidence of destruction.',
+    fieldLabel: 'Your answer',
+    placeholder: 'The problem with the open balance is…',
+    criteria: [
+      'Identifies the problem: the products are gases and left the pan.',
+      'Proposes enclosing the reaction so nothing can enter or leave — a sealed vessel with enough air in it.',
+      'Predicts the result: the balance reading does not change.',
+      'Explains that the candle wax and the oxygen used are together equal in mass to the carbon dioxide and water made.',
+      'Says the open reading measured what stayed behind, not what existed — which is a limitation of the method, not a fact about matter.'
+    ] }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return Object.keys(s.ran).length >= 4;
+  if (id === 's-cover') return s.cover !== null;
+  if (id === 's-worked') return s.worked >= WORKED.length;
+  if (id === 's-check') return s.checks.length >= CHECKS.length;
+  if (id === 's-think') return s.thinkChoice !== null;
+  if (id === 's-ladder') return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  return false;
+}
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: {},
+    text: {},
+    checked: {},
+    ticks: {}
+  }, { hookChoice: null, reaction: 'marble', vessel: 'open', predict: null, ran: {}, cover: null, worked: 0, checks: [], thinkChoice: null });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.45;' : '');
+  }
+
+  ladderDone() {
+    const s = this.state;
+    return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  }
+
+  badge(on) {
+    return 'flex:0 0 34px;height:34px;border-radius:11px;display:grid;place-items:center;font-family:var(--ks3-font-display);font-weight:800;font-size:17px;background:' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-band)') + ';color:' + (on ? 'var(--ks3-on-dark)' : 'var(--ks3-ink-muted)') + ';border:2px solid var(--ks3-ink);';
+  }
+
+  stepBox(open, next) {
+    return 'padding:18px 20px;border-radius:var(--ks3-r-panel);background:' + (open ? 'var(--ks3-inset)' : 'var(--ks3-card)') +
+      ';border:2px solid ' + (next ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';';
+  }
+
+  lessonVals(s) {
+    const key = s.reaction + ':' + s.vessel;
+    const run = RUNS[key];
+    const ran = !!s.ran[key];
+    const cover = s.cover;
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'Burning destroys some matter and creates some' },
+        { letter: 'B', text: 'The total mass never changes — the balance only weighs what stays on the pan' },
+        { letter: 'C', text: 'Heat has mass, and it leaves or arrives' },
+        { letter: 'D', text: 'Solids gain mass when they burn and liquids lose it' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      dials: [
+        { label: 'The reaction',
+          options: [{ k: 'marble', label: 'Marble chips + acid' }, { k: 'magnesium', label: 'Burning magnesium' }].map((o) => ({
+            label: o.label, pressed: s.reaction === o.k, style: this.seg(s.reaction === o.k, false),
+            onClick: () => this.setState({ reaction: o.k, predict: null })
+          })) },
+        { label: 'The flask',
+          options: [{ k: 'open', label: 'Open to the air' }, { k: 'sealed', label: 'Sealed' }].map((o) => ({
+            label: o.label, pressed: s.vessel === o.k, style: this.seg(s.vessel === o.k, false),
+            onClick: () => this.setState({ vessel: o.k, predict: null })
+          })) }
+      ],
+      predictOptions: [
+        { letter: 'A', text: 'Go down' }, { letter: 'B', text: 'Stay the same' }, { letter: 'C', text: 'Go up' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.predict === i, onClick: () => this.setState({ predict: i }) })),
+      canRun: s.predict !== null && !ran,
+      onRun: () => this.setState((st) => ({ ran: Object.assign({}, st.ran, { [key]: true }) })),
+      runOpen: ran,
+      tiles: [
+        { label: 'Balance before', value: run.before, note: 'Flask, contents and everything on the pan.',
+          style: 'padding:18px 20px;border-radius:var(--ks3-r-panel);background:var(--ks3-inset);border:2px solid var(--ks3-ink);',
+          valueStyle: 'margin:8px 0 0;font-family:var(--ks3-font-mono);font-weight:500;font-size:26px;line-height:1.15;color:var(--ks3-accent-text);' },
+        { label: 'Balance after', value: run.after, note: 'The same pan, once the reaction has finished.',
+          style: 'padding:18px 20px;border-radius:var(--ks3-r-panel);background:var(--ks3-inset);border:2px solid var(--ks3-ink);',
+          valueStyle: 'margin:8px 0 0;font-family:var(--ks3-font-mono);font-weight:500;font-size:26px;line-height:1.15;color:var(--ks3-accent-text);' },
+        { label: 'Mass of gas', value: run.third, note: run.thirdNote,
+          style: 'padding:18px 20px;border-radius:var(--ks3-r-panel);background:var(--ks3-band);border:2px dashed var(--ks3-ink);',
+          valueStyle: 'margin:8px 0 0;font-family:var(--ks3-font-mono);font-weight:500;font-size:18px;line-height:1.35;color:var(--ks3-ink-muted);' }
+      ],
+      benchNote: run.note,
+      allFour: Object.keys(s.ran).length >= 4,
+
+      barLabel: 'A part-whole bar. One long bar labelled everything before, 152.00 grams, sits above two shorter bars that together fill the same width: left in the flask, 149.80 grams, and the gas, 2.20 grams.',
+      barTotal: '152.00 g',
+      barLeft: '149.80 g',
+      barGas: '2.20 g',
+      coverTotal: cover === 'total',
+      coverLeft: cover === 'left',
+      coverGas: cover === 'gas',
+      coverButtons: [
+        { id: 'total', label: 'Cover everything before' },
+        { id: 'left', label: 'Cover left in the flask' },
+        { id: 'gas', label: 'Cover the gas' }
+      ].map((b) => ({
+        label: b.label, pressed: cover === b.id, style: this.seg(cover === b.id, false),
+        onClick: () => this.setState({ cover: b.id })
+      })),
+      coverOpen: cover !== null,
+      coverResult: cover ? COVERS[cover].result : '',
+
+      workedSteps: WORKED.map((w, i) => {
+        const open = i < s.worked;
+        return {
+          letter: w.letter, name: w.name, maths: w.maths, note: w.note, open: open,
+          style: this.stepBox(open, i === s.worked),
+          badgeStyle: this.badge(open)
+        };
+      }),
+      showWorkedBtn: s.worked < WORKED.length,
+      workedBtnLabel: s.worked === 0 ? 'Show the first step' : 'Show the next step',
+      onWorkedNext: () => this.setState((st) => ({ worked: st.worked + 1 })),
+
+      checkSteps: CHECKS.map((c, i) => {
+        const open = s.checks.indexOf(i) >= 0;
+        const isNext = i === s.checks.length;
+        return {
+          letter: c.letter, name: c.name, prompt: c.prompt, maths: c.maths, note: c.note,
+          num: String(i + 1),
+          open: open, showButton: isNext,
+          style: this.stepBox(open, isNext),
+          badgeStyle: this.badge(open),
+          onOpen: () => this.setState((st) => (st.checks.indexOf(i) >= 0 ? null : { checks: st.checks.concat([i]) }))
+        };
+      }),
+      checkDone: s.checks.length >= CHECKS.length,
+
+      thinkOptions: [
+        { letter: 'A', text: 'Right — gases are weightless' },
+        { letter: 'B', text: 'Wrong — gases have mass, and a sealed flask proves it' },
+        { letter: 'C', text: 'Right, unless the gas is under pressure' },
+        { letter: 'D', text: 'Wrong — gases have mass but it cannot be measured' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.thinkChoice === i, onClick: () => this.setState({ thinkChoice: i }) })),
+      thinkOpen: s.thinkChoice !== null
+    };
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s, this);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals(s)
+    );
+  }
+}
+</script>
+</body>
+</html>

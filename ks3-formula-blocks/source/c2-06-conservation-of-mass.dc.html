@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conservation of mass · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes c2-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: c2-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Atoms, elements and compounds</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Conservation of mass</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Atoms, elements and compounds · Quantitative</p>
+        <h1>Conservation of mass</h1>
+        <p class="ks3-bigq">A candle burns down to nothing. A nail rusts and gets heavier. One of those looks like mass being destroyed and one like mass being made. Neither is.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Sixty grams of candle, and by morning there is nothing on the plate.</h2>
+        <p class="ks3-hook-prompt">Light a candle in the evening and leave it. In the morning the wax is gone, the plate is clean, and the balance reads what an empty plate reads. Nothing was taken away and nobody touched it.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">So where did sixty grams of wax go?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Into the air, as two invisible gases, and it weighs <em>more</em> than the wax did — because oxygen from the room joined it. Every atom that was in the wax is still somewhere in the room. Catching them is a matter of choosing the right container.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>A reaction rearranges atoms. It does not make any and it does not destroy any. So the mass of everything you started with must equal the mass of everything you end with — as long as you can weigh all of it.</p>
+      </section>
+
+      <section id="s-balance" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · two reactions, two vessels</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">The balance reports. It does not explain.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">One reaction gives off a gas and one takes a gas in. Run each of them open to the air and then sealed, and read what the balance says.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 22px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. Marble chips react with acid in an open flask, fizzing hard. What does the balance do?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 24px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div>
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Reaction</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ rxnTabs }}" as="t" hint-placeholder-count="2">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Vessel</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ vesselTabs }}" as="t" hint-placeholder-count="2">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 20px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-on-dark-muted); overflow: hidden;">
+              <canvas width="1700" height="560" ref="{{ benchRef }}" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+              <div style="padding: 15px 18px 17px; border-top: 2px solid var(--ks3-on-dark-muted); background: var(--ks3-dark-panel); display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+                <button type="button" onClick="{{ onRun }}" disabled="{{ ranNow }}" style="{{ runStyle }}">{{ runLabel }}</button>
+                <p style="margin: 0; font-size: 18px; font-weight: 700; color: var(--ks3-on-dark);">{{ benchStatus }}</p>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Mass before</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 25px; font-weight: 500; color: var(--ks3-on-dark);">{{ beforeLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Mass after</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 25px; font-weight: 500; color: var(--ks3-alert);">{{ afterLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Where it went</p>
+                <p style="margin: 5px 0 0; font-size: 19px; font-weight: 700; color: var(--ks3-on-dark);">not measured — you work it out</p>
+              </div>
+            </div>
+
+            <p style="margin: 18px 0 0; padding: 17px 19px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink); font-size: 19px; line-height: 1.6;">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section style="margin: 28px 0 0; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text); text-align: center;">The rule</p>
+        <div style="display: flex; justify-content: center; margin-top: 18px;">
+          <svg viewBox="0 0 520 210" role="img" aria-label="A balance beam, level. On the left pan: the total mass of everything you started with. On the right pan: the total mass of everything you ended with. The two are equal." style="width: 100%; max-width: 470px; height: auto;">
+            <path d="M260 176L216 200H304Z" style="fill: var(--ks3-ink);"></path>
+            <line x1="260" y1="60" x2="260" y2="178" style="stroke: var(--ks3-ink); stroke-width: 7; stroke-linecap: round;"></line>
+            <line x1="70" y1="60" x2="450" y2="60" style="stroke: var(--ks3-ink); stroke-width: 7; stroke-linecap: round;"></line>
+            <circle cx="260" cy="60" r="13" style="fill: var(--ks3-accent); stroke: var(--ks3-ink); stroke-width: 5;"></circle>
+            <line x1="70" y1="60" x2="70" y2="96" style="stroke: var(--ks3-ink); stroke-width: 4;"></line>
+            <line x1="450" y1="60" x2="450" y2="96" style="stroke: var(--ks3-ink); stroke-width: 4;"></line>
+            <rect x="10" y="96" width="120" height="44" rx="12" style="fill: var(--ks3-card); stroke: var(--ks3-ink); stroke-width: 5;"></rect>
+            <rect x="390" y="96" width="120" height="44" rx="12" style="fill: var(--ks3-card); stroke: var(--ks3-ink); stroke-width: 5;"></rect>
+            <text x="70" y="126" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 27px; fill: var(--ks3-ink);">before</text>
+            <text x="450" y="126" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 27px; fill: var(--ks3-ink);">after</text>
+            <text x="260" y="30" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 30px; fill: var(--ks3-ink);">always level</text>
+          </svg>
+        </div>
+        <div style="margin: 22px 0 0; padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(24px, 3.2vw, 36px); line-height: 1.14; letter-spacing: -.03em; text-align: center;">Total mass of everything before = total mass of everything after</p>
+        </div>
+
+        <div style="margin-top: 30px; padding-top: 28px; border-top: 3px solid var(--ks3-ink);">
+          <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The bar</p>
+          <h2 style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 32px; line-height: 1.1; letter-spacing: -.03em;">Cover the one you want</h2>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 30px 44px; margin-top: 22px;">
+            <svg viewBox="0 0 470 196" role="img" aria-label="A bar model. One long bar is everything before the reaction. Underneath, the same length is split into two: what is left in the flask, and the gas. Covering one part leaves the way to work it out." style="flex: 1 1 300px; min-width: 280px; max-width: 470px; height: auto;">
+              <rect x="10" y="18" width="450" height="56" rx="12" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+              <text x="235" y="54" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; fill: var(--ks3-ink);">everything before</text>
+              <rect x="10" y="108" width="296" height="56" rx="12" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+              <text x="158" y="144" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; fill: var(--ks3-ink);">left in the flask</text>
+              <rect x="314" y="108" width="146" height="56" rx="12" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+              <text x="387" y="144" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; fill: var(--ks3-ink);">the gas</text>
+              <line x1="10" y1="86" x2="460" y2="86" style="stroke: var(--ks3-rule-strong); stroke-width: 3; stroke-dasharray: 8 7;"></line>
+              <sc-if value="{{ coverWhole }}">
+                <rect x="10" y="18" width="450" height="56" rx="12" style="fill: var(--ks3-ink);"></rect>
+                <text x="235" y="54" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; fill: var(--ks3-ink-ghost);">everything before</text>
+              </sc-if>
+              <sc-if value="{{ coverLeft }}">
+                <rect x="10" y="108" width="296" height="56" rx="12" style="fill: var(--ks3-ink);"></rect>
+                <text x="158" y="144" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; fill: var(--ks3-ink-ghost);">left in the flask</text>
+              </sc-if>
+              <sc-if value="{{ coverGas }}">
+                <rect x="314" y="108" width="146" height="56" rx="12" style="fill: var(--ks3-ink);"></rect>
+                <text x="387" y="144" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; fill: var(--ks3-ink-ghost);">the gas</text>
+              </sc-if>
+            </svg>
+            <div style="flex: 1 1 300px; min-width: 260px;">
+              <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ coverTabs }}" as="t" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                </sc-for>
+              </div>
+              <p style="margin: 20px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.4vw, 34px); line-height: 1.14; letter-spacing: -.02em;">{{ coverResult }}</p>
+              <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body);">Two parts side by side make the whole. Cover the part you want and take the other one away from the whole.</p>
+              <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 9px;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                  <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">everything before, gases included</span>
+                  <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">g</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 14px;">
+                  <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">left in the flask</span>
+                  <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">g</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 14px;">
+                  <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">the gas that left</span>
+                  <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">g</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-worked" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">Worked example · one step at a time</p>
+            <h2 style="margin: 6px 0 0;">2.40 g of magnesium burns and leaves 4.00 g of white powder.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ workedProgress }}</p>
+        </div>
+        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ workedSteps }}" as="st" hint-placeholder-count="4">
+            <div style="display: flex; gap: 16px; align-items: flex-start; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+              <span aria-hidden="true" style="flex: 0 0 38px; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">{{ st.letter }}</span>
+              <div style="flex: 1 1 auto; min-width: 0;">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ st.label }}</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 26px; line-height: 1.25; letter-spacing: -.02em; color: var(--ks3-ink);">{{ st.line }}</p>
+                <p style="margin: 6px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body);">{{ st.note }}</p>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin-top: 18px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onWorked }}" disabled="{{ workedDone }}" style="{{ workedBtnStyle }}">{{ workedBtnLabel }}</button>
+          <sc-if value="{{ workedDone }}"><span style="font-size: 18px; font-weight: 700; color: var(--ks3-ink-body);">Now the same four steps on the other reaction.</span></sc-if>
+        </div>
+      </section>
+
+      <section id="s-build" class="ks3-block" style="scroll-margin-top: 92px; background: var(--ks3-inset);">
+        <p class="ks3-eyebrow">Your turn · the same four steps</p>
+        <h2 style="margin: 6px 0 14px;">Marble and acid, open flask: 152.00 g before, 149.80 g after.</h2>
+        <p style="margin: 0; font-size: 19px; line-height: 1.6; max-width: 52ch;">Work out the mass of gas that left the flask. Commit to each line, then open the worked version.</p>
+
+        <div style="margin-top: 22px; display: flex; flex-direction: column; gap: 18px;">
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0 0 12px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Step 1 · The rule</p>
+            <div style="display: flex; flex-direction: column; gap: 9px;">
+              <sc-for list="{{ formPicks }}" as="p" hint-placeholder-count="3">
+                <button type="button" onClick="{{ p.onClick }}" aria-pressed="{{ p.pressed }}" disabled="{{ p.disabled }}" style="{{ p.style }}">{{ p.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0 0 12px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Step 2 · Insert</p>
+            <div style="display: flex; flex-direction: column; gap: 9px;">
+              <sc-for list="{{ insertPicks }}" as="p" hint-placeholder-count="3">
+                <button type="button" onClick="{{ p.onClick }}" aria-pressed="{{ p.pressed }}" disabled="{{ p.disabled }}" style="{{ p.style }}">{{ p.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0 0 12px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Steps 3 and 4 · Work it out, then answer</p>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+              <label for="c2ans" style="position: absolute; left: -9999px;">Your answer as a number</label>
+              <input type="text" inputMode="decimal" id="c2ans" value="{{ ansValue }}" onChange="{{ onAns }}" onInput="{{ onAns }}" disabled="{{ buildLocked }}" placeholder="0.00" style="font: inherit; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; width: 8.5rem; padding: 12px 14px; min-height: 44px; border-radius: var(--ks3-r-option); border: 2px solid var(--ks3-option-border); background: var(--ks3-ground); color: var(--ks3-ink);">
+              <label for="c2unit" style="position: absolute; left: -9999px;">Unit</label>
+              <select id="c2unit" class="ks3-sim-units" value="{{ unitValue }}" onChange="{{ onUnit }}" disabled="{{ buildLocked }}" style="font-size: 18px;">
+                <option value="">choose a unit</option>
+                <option value="g">g</option>
+                <option value="kg">kg</option>
+                <option value="cm³">cm³</option>
+                <option value="N">N</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onBuild }}" disabled="{{ buildBtnLocked }}" style="{{ buildBtnStyle }}">Show the four steps</button>
+          <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ buildProgress }}</span>
+        </div>
+
+        <sc-if value="{{ buildOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-ink); color: var(--ks3-on-dark);">
+            <p style="margin: 0 0 16px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-alert);">The open flask, done four ways</p>
+            <sc-for list="{{ buildSteps }}" as="st" hint-placeholder-count="4">
+              <div style="{{ st.style }}">
+                <span aria-hidden="true" style="flex: 0 0 34px; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-alert); color: var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 18px;">{{ st.letter }}</span>
+                <div style="flex: 1 1 auto; min-width: 0;">
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">{{ st.label }}</p>
+                  <p style="margin: 5px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1.25; letter-spacing: -.02em; color: var(--ks3-on-dark);">{{ st.line }}</p>
+                  <p style="margin: 6px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ st.note }}</p>
+                </div>
+              </div>
+            </sc-for>
+            <p style="margin: 18px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-on-dark-body);">{{ buildClose }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">Atoms are rearranged in a reaction, never created or destroyed. If the mass appears to change, a gas has come in from the air or escaped into it.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“When something burns, the mass is destroyed — it turns into heat and light.”</p>
+        <p style="max-width: 54ch;">This is the same wrong idea you met when a puddle dried up, wearing different clothes. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">Heat and light are not made of atoms, so nothing that leaves as heat or light can account for a gram of anything. Burn 60 g of candle wax in a sealed box and weigh the box afterwards: it reads exactly what it read before, warm or not.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">What actually happens is that the wax joins with oxygen from the air and leaves as carbon dioxide and water vapour — which together weigh <strong>more</strong> than the wax did. The reason it looks like destruction is that the products are invisible and they float away. Put a lid on and the illusion goes with them.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Total mass before a reaction equals total mass after it, because atoms are only rearranged. In an open vessel a gas can leave or join, so the balance changes; seal the vessel and it never does.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>For two hundred years chemists explained burning by saying that a substance called phlogiston escaped from things as they burnt. It fitted: burning wood loses mass, and a candle goes out in a sealed jar because the air is full of phlogiston and cannot take any more. Then someone weighed a burning metal carefully, found it got <em>heavier</em>, and the theory needed phlogiston to have negative mass. That is the point at which a model stops being repairable — and the weighing had been possible the whole time.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c2-05-formulae.html">Formulae<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="c1-03-changes-of-state.html">Changes of state<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Balancing equations by mass, reacting masses, and calculating what a reaction can produce.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Not sure why a sealed flask behaves differently?</p>
+          <a class="ks3-tutor-cta" href="#s-balance">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">Burning magnesium is dangerously bright. Never look straight at it, and never seal a flask that is being heated.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startSealed&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;The balance bench&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Where the wax went', short: 'HOOK' },
+  { id: 's-balance', label: 'Open and sealed', short: 'BALANCE' },
+  { id: 's-build', label: 'Your own four steps', short: 'STEPS' },
+  { id: 's-think', label: 'Burning and mass', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const RUNS = {
+  'marble:open': { before: 152.00, after: 149.80, gas: 'out',
+    note: 'The balance falls by 2.20 g. Carbon dioxide is bubbling out of the flask and into the room, and it has mass — the reading is not wrong, the weighing is incomplete.' },
+  'marble:sealed': { before: 152.00, after: 152.00, gas: 'none',
+    note: 'Exactly the same reading. The gas is still made, and it is still in the flask, so it is still on the balance. Nothing about the reaction changed; what changed is how much of it you weighed.' },
+  'magnesium:open': { before: 2.40, after: 4.00, gas: 'in',
+    note: 'The balance rises by 1.60 g. Nothing was added by hand — oxygen from the air has joined the magnesium, and it weighs something.' },
+  'magnesium:sealed': { before: 152.00, after: 152.00, gas: 'none',
+    note: 'No change. The oxygen that joins the magnesium was already inside the sealed flask and already on the balance, so moving it from the air into the powder changes nothing.' }
+};
+
+const WORKED = [
+  { letter: 'F', label: 'Formula', line: 'total mass before = total mass after', note: 'Nothing is created and nothing is destroyed. Everything has to be counted, including the gas.' },
+  { letter: 'I', label: 'Insert', line: '2.40 g + mass of oxygen = 4.00 g', note: 'The magnesium was weighed; the oxygen came from the air and was not.' },
+  { letter: 'F', label: 'Fine-tune', line: 'mass of oxygen = 4.00 − 2.40', note: 'Cover the part you want on the bar. Rearranged so the unknown is on its own, with both masses in grams.' },
+  { letter: 'A', label: 'Answer', line: '1.60 g of oxygen joined from the air', note: 'The powder is heavier than the metal because it contains something that was not on the balance to start with.' }
+];
+
+const COVERS = {
+  whole: { result: 'before = left in the flask + the gas', sentence: 'Cover the whole bar and you are left with the two parts side by side — add them.' },
+  left: { result: 'left in the flask = before − the gas', sentence: 'Cover the left part and you are left with the whole bar and the gas — take the gas away from the whole.' },
+  gas: { result: 'the gas = before − left in the flask', sentence: 'Cover the gas and you are left with the whole bar and what stayed behind — take one away from the other. This is the one an open flask asks you for.' }
+};
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Calculate',
+    question: '18 g of a metal reacts completely with 32 g of sulfur in a sealed tube. What mass of metal sulfide is made?',
+    options: [
+      { text: '50 g', correct: true },
+      { text: '14 g', correction: 'That is 32 − 18. Nothing has been taken away here; the two substances joined.' },
+      { text: '32 g', correction: 'That is the sulfur alone. The metal is still in the tube and still has mass.' },
+      { text: 'It cannot be worked out without knowing the metal', correction: 'Conservation of mass does not care which metal it is. Everything that went in is still in the sealed tube.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'An iron nail is weighed, left to rust for a month, and weighed again. It is heavier. Why?',
+    options: [
+      { text: 'Oxygen from the air has joined the iron, and it has mass', correct: true },
+      { text: 'Rust is denser than iron', correction: 'Density is mass in a given space. The balance measures mass, and mass does not increase by rearranging what is already there.' },
+      { text: 'Water has been absorbed into the metal', correction: 'Water speeds rusting up, but the extra mass is oxygen that has chemically joined the iron.' },
+      { text: 'Mass is not conserved when something is left for a long time', correction: 'Time changes nothing. The nail was simply never a closed system — the air was part of the reaction all along.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A candle is weighed, burnt for an hour, and weighed again. It has lost 12 g. Explain where the 12 g went, and describe an experiment that would prove you right.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The wax has reacted with…',
+    criteria: [
+      'Says the wax reacted with oxygen from the air.',
+      'Says the products are gases — carbon dioxide and water vapour — which floated away.',
+      'Says the gases have mass, and that they were not weighed.',
+      'Says the total mass of the products is more than 12 g, because the oxygen is in them too.',
+      'Describes burning the candle in a sealed container and weighing the whole thing before and after.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A sealed bag of steel wool is weighed, shaken and left until the wool has rusted, then weighed again. Predict the reading, then say what would be different if the bag had a small hole in it, and explain both.',
+    fieldLabel: 'Your answer',
+    placeholder: 'In the sealed bag the reading would…',
+    criteria: [
+      'Predicts no change in the sealed bag.',
+      'Says the oxygen that joins the iron was already inside the bag and already on the balance.',
+      'Says with a hole the reading would go up.',
+      'Explains that more oxygen can be drawn in from outside through the hole.',
+      'States conservation of mass as the reason both readings make sense.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    rxn: 'marble',
+    vessel: this.props.startSealed === true ? 'sealed' : 'open',
+    ran: {},
+    showAfter: false,
+    workedStep: 0,
+    cover: 'gas',
+    formPick: null,
+    insertPick: null,
+    ansText: '',
+    ansUnit: '',
+    buildOpen: false,
+    thinkChoice: null,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+    this.draw();
+  }
+
+  componentDidUpdate() { this.draw(); }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  runKey() { return this.state.rxn + ':' + this.state.vessel; }
+  run() { return RUNS[this.runKey()]; }
+
+  draw() {
+    const c = this.canvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 850, H = 280;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#100D0A';
+    ctx.fillRect(0, 0, W, H);
+
+    const s = this.state;
+    const r = this.run();
+    const done = !!s.ran[this.runKey()] && s.showAfter;
+    const cx = 300, base = 214;
+
+    // balance body
+    ctx.fillStyle = '#3E3730';
+    ctx.beginPath();
+    ctx.moveTo(cx - 150, base);
+    ctx.lineTo(cx + 150, base);
+    ctx.lineTo(cx + 132, base + 34);
+    ctx.lineTo(cx - 132, base + 34);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#5C5249';
+    ctx.fillRect(cx - 128, base - 10, 256, 12);
+
+    // flask
+    ctx.strokeStyle = '#C6B9A7';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(cx - 22, base - 122);
+    ctx.lineTo(cx - 22, base - 74);
+    ctx.lineTo(cx - 62, base - 12);
+    ctx.lineTo(cx + 62, base - 12);
+    ctx.lineTo(cx + 22, base - 74);
+    ctx.lineTo(cx + 22, base - 122);
+    ctx.stroke();
+    ctx.fillStyle = s.rxn === 'marble' ? 'rgba(143,183,255,0.35)' : 'rgba(255,197,61,0.28)';
+    ctx.beginPath();
+    ctx.moveTo(cx - 54, base - 24);
+    ctx.lineTo(cx + 54, base - 24);
+    ctx.lineTo(cx + 40, base - 44);
+    ctx.lineTo(cx - 40, base - 44);
+    ctx.closePath();
+    ctx.fill();
+
+    if (s.vessel === 'sealed') {
+      ctx.fillStyle = '#8A7A62';
+      ctx.fillRect(cx - 28, base - 132, 56, 16);
+    }
+
+    // gas
+    if (done && r.gas !== 'none') {
+      ctx.fillStyle = r.gas === 'out' ? '#8FB7FF' : '#FFC53D';
+      for (let i = 0; i < 7; i++) {
+        const y = base - 140 - i * 16;
+        const x = cx + Math.sin(i * 1.7) * 26;
+        ctx.beginPath();
+        ctx.arc(x, r.gas === 'out' ? y : y, 6 - i * 0.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(r.gas === 'out' ? 'gas leaving the flask' : 'oxygen joining from the air', cx + 44, base - 168);
+    }
+
+    // display
+    const dx = 570, dy = 96;
+    ctx.fillStyle = '#221E1B';
+    ctx.fillRect(dx, dy, 236, 86);
+    ctx.strokeStyle = '#5C5249';
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(dx, dy, 236, 86);
+    ctx.fillStyle = '#C6B9A7';
+    ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(done ? 'AFTER' : 'BEFORE', dx + 16, dy + 24);
+    ctx.fillStyle = '#FFC53D';
+    ctx.font = '500 34px "DM Mono", ui-monospace, monospace';
+    ctx.fillText((done ? r.after : r.before).toFixed(2), dx + 16, dy + 64);
+    ctx.fillStyle = '#C6B9A7';
+    ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+    ctx.fillText('g', dx + 150, dy + 64);
+    ctx.fillText(s.vessel === 'sealed' ? 'sealed flask' : 'open flask', dx, dy + 116);
+    ctx.textAlign = 'center';
+  }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') +
+      ';border:2px solid ' + (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';' + (dis ? 'opacity:.5;' : '');
+  }
+
+  segLight(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') +
+      ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') +
+      ';color:var(--ks3-ink);text-align:left;' + (dis && !on ? 'opacity:.45;' : '');
+  }
+
+  renderVals() {
+    const s = this.state;
+    const r = this.run();
+    const ranThis = !!s.ran[this.runKey()];
+    const gasMass = 152.00 - 149.80;
+
+    let score = 0;
+    RUNGS.forEach((rr) => { if (s.answers[rr.id] === rr.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((rr) => {
+      const t = s.ticks[rr.id] || [];
+      if (s.checked[rr.id] && t.filter(Boolean).length === rr.criteria.length) score += 1;
+    });
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((rw, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-balance') return Object.keys(s.ran).length >= 3;
+          if (id === 's-build') return s.buildOpen;
+          if (id === 's-think') return s.thinkChoice !== null;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(rw.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + rw.id, label: rw.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'It was destroyed' },
+        { letter: 'B', text: 'It turned into heat and light' },
+        { letter: 'C', text: 'It left as invisible gases' },
+        { letter: 'D', text: 'It soaked into the plate' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'The reading goes down' },
+        { letter: 'B', text: 'The reading goes up' },
+        { letter: 'C', text: 'The reading does not change' },
+        { letter: 'D', text: 'It goes up while it fizzes, then back down' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      benchOpen: s.gate !== null,
+      benchProgress: Object.keys(s.ran).length + ' of 4 runs done',
+      rxnTabs: [
+        { id: 'marble', label: 'Marble chips and acid' },
+        { id: 'magnesium', label: 'Burning magnesium' }
+      ].map((x) => ({
+        label: x.label, pressed: s.rxn === x.id, style: this.seg(s.rxn === x.id, false),
+        onClick: () => this.setState({ rxn: x.id, showAfter: false })
+      })),
+      vesselTabs: [
+        { id: 'open', label: 'Open flask' },
+        { id: 'sealed', label: 'Sealed flask' }
+      ].map((x) => ({
+        label: x.label, pressed: s.vessel === x.id, style: this.seg(s.vessel === x.id, false),
+        onClick: () => this.setState({ vessel: x.id, showAfter: false })
+      })),
+      benchRef: (el) => { this.canvas = el; if (el) this.draw(); },
+      benchAlt: 'A flask on a top-pan balance, ' + (s.vessel === 'sealed' ? 'sealed with a bung' : 'open to the air') +
+        '. The display reads ' + (s.showAfter ? r.after.toFixed(2) : r.before.toFixed(2)) + ' grams ' + (s.showAfter ? 'after' : 'before') + ' the reaction.',
+      ranNow: s.showAfter,
+      runLabel: s.showAfter ? 'Reaction finished' : 'Start the reaction',
+      runStyle: 'font:inherit;font-size:18px;font-weight:700;padding:13px 22px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:var(--ks3-alert);color:var(--ks3-ink);cursor:' +
+        (s.showAfter ? 'default' : 'pointer') + ';' + (s.showAfter ? 'opacity:.55;' : ''),
+      onRun: () => this.setState((st) => ({ showAfter: true, ran: Object.assign({}, st.ran, { [this.runKey()]: true }) })),
+      benchStatus: s.showAfter ? 'Read the two numbers, then change something and run it again.' : 'The balance is zeroed with everything on it, flask included.',
+      beforeLabel: r.before.toFixed(2) + ' g',
+      afterLabel: s.showAfter ? r.after.toFixed(2) + ' g' : '—',
+      benchNote: s.showAfter ? r.note : 'Nothing has happened yet. The display shows the mass of the whole apparatus before the reaction starts.',
+
+      coverWhole: s.cover === 'whole',
+      coverLeft: s.cover === 'left',
+      coverGas: s.cover === 'gas',
+      coverTabs: [
+        { id: 'gas', label: 'Cover the gas' },
+        { id: 'left', label: 'Cover what is left' },
+        { id: 'whole', label: 'Cover the whole' }
+      ].map((c) => ({
+        label: c.label, pressed: s.cover === c.id,
+        style: 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 18px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+          (s.cover === c.id ? 'var(--ks3-ink)' : 'var(--ks3-card)') + ';color:' + (s.cover === c.id ? 'var(--ks3-on-dark)' : 'var(--ks3-ink)') + ';',
+        onClick: () => this.setState({ cover: c.id })
+      })),
+      coverResult: COVERS[s.cover].result,
+
+      workedProgress: 'Step ' + s.workedStep + ' of 4',
+      workedSteps: WORKED.slice(0, s.workedStep).map((st) => ({
+        letter: st.letter, label: st.label, line: st.line, note: st.note
+      })),
+      workedDone: s.workedStep >= 4,
+      workedBtnLabel: s.workedStep === 0 ? 'Show the first step' : (s.workedStep >= 4 ? 'All four shown' : 'Show the next step'),
+      workedBtnStyle: s.workedStep >= 4 ? 'opacity:.45;cursor:default;' : '',
+      onWorked: () => this.setState((st) => ({ workedStep: Math.min(4, st.workedStep + 1) })),
+
+      formPicks: [
+        'total mass before = total mass after',
+        'mass of solid before = mass of solid after',
+        'mass after = mass before + mass of gas'
+      ].map((lab, i) => ({
+        label: lab, pressed: s.formPick === i, disabled: s.buildOpen,
+        style: this.segLight(s.formPick === i, s.buildOpen) + 'font-family:var(--ks3-font-mono);font-weight:500;',
+        onClick: () => { if (!this.state.buildOpen) this.setState({ formPick: i }); }
+      })),
+      insertPicks: [
+        '152.00 = 149.80 + mass of gas',
+        '149.80 = 152.00 + mass of gas',
+        'mass of gas = 152.00 + 149.80'
+      ].map((lab, i) => ({
+        label: lab, pressed: s.insertPick === i, disabled: s.buildOpen,
+        style: this.segLight(s.insertPick === i, s.buildOpen) + 'font-family:var(--ks3-font-mono);font-weight:500;',
+        onClick: () => { if (!this.state.buildOpen) this.setState({ insertPick: i }); }
+      })),
+      ansValue: s.ansText,
+      onAns: (e) => this.setState({ ansText: e.target.value }),
+      unitValue: s.ansUnit,
+      onUnit: (e) => this.setState({ ansUnit: e.target.value }),
+      buildLocked: s.buildOpen,
+      buildBtnLocked: s.buildOpen || s.formPick === null || s.insertPick === null || !s.ansText.trim() || !s.ansUnit,
+      buildBtnStyle: (s.buildOpen || s.formPick === null || s.insertPick === null || !s.ansText.trim() || !s.ansUnit) ? 'opacity:.45;cursor:default;' : '',
+      buildProgress: s.buildOpen ? 'Opened' :
+        ((s.formPick !== null ? 1 : 0) + (s.insertPick !== null ? 1 : 0) + (s.ansText.trim() && s.ansUnit ? 1 : 0)) + ' of 3 lines committed',
+      onBuild: () => this.setState({ buildOpen: true }),
+      buildOpen: s.buildOpen,
+      buildSteps: [
+        { letter: 'F', label: 'Formula', line: 'total mass before = total mass after', note: 'The gas counts, even though it has left the flask.' },
+        { letter: 'I', label: 'Insert', line: '152.00 = 149.80 + mass of gas', note: 'Everything that started on the balance is on the left; everything that ended up anywhere is on the right.' },
+        { letter: 'F', label: 'Fine-tune', line: 'mass of gas = 152.00 − 149.80', note: 'Cover the gas on the bar. Rearranged so the unknown is alone, and both masses are already in grams.' },
+        { letter: 'A', label: 'Answer', line: 'mass of gas = ' + gasMass.toFixed(2) + ' g', note: 'That is carbon dioxide, now in the room. Seal the flask and those 2.20 g stay on the balance.' }
+      ].map((st, i) => ({
+        letter: st.letter, label: st.label, line: st.line, note: st.note,
+        style: 'display:flex;gap:14px;align-items:flex-start;' + (i ? 'margin-top:16px;padding-top:16px;border-top:2px solid var(--ks3-dark-rule);' : '')
+      })),
+      buildClose: 'You wrote ' + (s.ansText.trim() || '—') + ' ' + (s.ansUnit || '') + '. The worked answer is ' + gasMass.toFixed(2) + ' g.',
+
+      thinkOptions: [
+        { letter: 'A', text: 'The mass really is destroyed when something burns' },
+        { letter: 'B', text: 'The mass leaves as gases, and the products weigh more than the fuel did' },
+        { letter: 'C', text: 'The mass turns into heat, which has weight' },
+        { letter: 'D', text: 'The mass stays behind in the ash' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.thinkChoice === i,
+        onClick: () => this.setState({ thinkChoice: i })
+      })),
+      thinkOpen: s.thinkChoice !== null,
+
+      markedRungs: RUNGS.map((rr) => {
+        const chosen = s.answers[rr.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = rr.options.findIndex((x) => x.correct);
+        return {
+          title: rr.title, question: rr.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? rr.options[chosen].correction : ''),
+          options: rr.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[rr.id] !== null && st.answers[rr.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [rr.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((rr) => {
+        const ticks = s.ticks[rr.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === rr.criteria.length;
+        return {
+          title: rr.title, question: rr.question,
+          fieldId: 'ans-' + rr.id, fieldLabel: rr.fieldLabel, placeholder: rr.placeholder,
+          value: s.text[rr.id] || '', checked: !!s.checked[rr.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [rr.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [rr.id]: true }) })),
+          criteria: rr.criteria.map((cr, i) => ({
+            id: rr.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[rr.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [rr.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + rr.criteria.length + ' ticked — rung met.' : met + ' of ' + rr.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>
