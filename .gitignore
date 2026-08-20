@@ -74,3 +74,6 @@ docs/ks3/b1-comparison/*/*.png
 # styled; never tracked, because 568K x 15 units of duplicate fonts is not a
 # record of anything.
 docs/ks3/design-reference/*/_ds/
+
+# generated question-pool upserts (export_ks3_questions.py)
+build/

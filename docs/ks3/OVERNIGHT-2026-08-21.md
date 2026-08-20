@@ -174,3 +174,82 @@ that can drift.
 
 **Order:** A2 data seam → schema → exporter → backend producer + submit fix → wire pages → drive →
 gate → swap.
+
+---
+
+## C3 landed on main mid-run — pulled, and the nine instruments checked
+
+Mide sent word mid-run that C3 had merged. Pulled before pushing anything further.
+
+**It was a clean fast-forward, so there was nothing to resolve.** `origin/main` was two
+commits ahead (`5306f1e20` C3, then merge `4df7c4dae`) and this branch was zero ahead, so
+C3's contribution to `shared/ks3.js` and `shared/ks3.css` arrives byte-identical — it *is*
+those commits. No hand-merge, no chance of losing a marked region. Verified after the pull:
+
+| C3 region | expected | found |
+|---|---|---|
+| `wireCards` replacement | ~line 1046 | `shared/ks3.js:1060` |
+| `BEGIN/END C3 wiring` block before `wireInstruments` | 1,257 lines | 17323–18578, **1,256 lines**, immediately before `wireInstruments` at 18580 |
+| nine dispatch lines in their own BEGIN/END pair | 9 | 9, at 18844–18859 |
+| appended `ks3.css` hunk | one | `BEGIN C3` 15634 → `END C3` 16731 |
+
+⚠️ **A rebase was not possible and was not forced.** `git pull --rebase` refused because the
+working tree was dirty — a subagent was mid-edit on `build_student_port.py` and
+`shared/student-runtime.js`. Stashing would have pulled files out from under a running
+process. Instead the incoming file list (620 files) was diffed against the dirty file list;
+the intersection was **empty**, so `git merge --ff-only` was safe and was used. Recorded
+because "I used ff-only instead of rebase" is exactly the kind of thing that should not be
+silent.
+
+### The nine instruments — and the one that looked dead and was not
+
+Mide named the failure mode precisely: *a page that renders with a dead instrument looks
+fine*. Every existing KS3 gate measures the page **at rest**, so none of them can see it.
+
+So a new gate was written — **`ks3_instrument_liveness.py`**. It serves the built site,
+loads each page in headless Chrome, presses the controls inside each instrument block, and
+asserts the block's own DOM changed. A wired instrument responds to its own controls; a dead
+one is inert, and inert is invisible in a screenshot.
+
+**First run flagged `dissolve-lab` as INERT. It is not. My probe was wrong.**
+
+The dissolving bench ships `<div class="ks3-dlab" data-dlab hidden data-dlab-lock=
+"gate-which-dial">`. It is **deliberately locked** behind the predict block above it:
+`ks3.js:17708` reads `data-dlab-lock`, finds the sibling `[data-activity]` block it names,
+hides the whole section, and re-opens it when any option in that gate is clicked. Every
+control was therefore 0×0 and my probe skipped all eleven of them.
+
+⚠️ **Two things nearly let that false positive through as a real finding.** First, a
+`grep --include=*.py` run under zsh errored on the glob (`no matches found`) and printed
+nothing — which reads exactly like "this string appears nowhere", and I briefly took it that
+way. Second, the lock names its gate by `data-activity`, not by `id`, so searching for
+`id="gate-which-dial"` also found nothing. Both dead ends pointed the same wrong way. What
+settled it was reading the wire function itself.
+
+The probe now opens gates before pressing, and the distinction it draws — *locked* versus
+*dead* — is the whole value of the gate. A liveness check that cannot tell them apart
+reports every gated instrument as broken and is worse than no check at all.
+
+**Result: 9/9 C3 instruments live.**
+
+```
+✅ purity-sorter        pure-or-mixture.html            ✅ still-run            distillation.html
+✅ dissolve-lab         dissolving-and-solutions.html   ✅ chroma-run           chromatography.html
+✅ sequence-rebuild     filtration.html (2 blocks)      ✅ plan-critique        proving-something-is-pure.html
+✅ crystal-bench        evaporation-and-crystallisation ✅ melting-point-bench  proving-something-is-pure.html
+✅ method-choice        evaporation-and-crystallisation
+```
+
+Zero console errors on any of the seven pages.
+
+### And C3 grew the question pools
+
+C3 brought seven new `questions_*.py` modules, so the export is no longer 70 lessons:
+
+| pool | before C3 | after C3 |
+|---|---|---|
+| bank | 840 questions / 70 lessons | **924 / 77** |
+| ladder | 140 / 70 | **154 / 77** |
+
+The export is idempotent upserts, so re-running it after a content merge is the whole
+maintenance story. It has been re-run and re-applied.
