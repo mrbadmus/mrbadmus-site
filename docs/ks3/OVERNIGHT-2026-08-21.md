@@ -571,3 +571,26 @@ school, so the submission is visible to this class's teacher and to nobody else'
 "the submission shows on the teacher dashboard" is proved by the policy and the row, not by
 signing in as the teacher and looking. That is the one part of B3 I could not do end-to-end,
 and it is named here rather than glossed.
+
+### The mirror is now gated, not just asserted
+
+The migration comment claimed "a gate asserts they match". It does now:
+`export_ks3_questions.py --verify` reads both live tables over PostgREST and compares them
+against Python **row for row, field for field**, including the options JSON.
+
+```
+✅ bank      924 in Python,  924 live, 0 missing, 0 extra, 0 differing
+✅ ladder    154 in Python,  154 live, 0 missing, 0 extra, 0 differing
+✅ the database is exactly what these files say it is.
+```
+
+It names the three ways a mirror rots, separately, because they mean different things: rows in
+Python and not live (*the export was never applied*), rows live and not in Python (*a retired
+question is still being served*), and rows that differ (*edited and not re-exported*).
+
+⚠️ It **SKIPS LOUDLY** without `MRB_TEST_STUDENT_PASSWORD` rather than passing — same rule as
+the JS/Python cross-check in the backend. A gate that goes green because it could not run is
+the exact failure this project keeps naming.
+
+Cross-check: `verify_questions.py` independently reports **77 lessons, 924 questions, all nine
+checks clean** — the same numbers the exporter produces and the same numbers now live.

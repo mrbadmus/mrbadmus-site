@@ -2,8 +2,11 @@
 """export_ks3_questions.py — mirror the KS3 question pools into Postgres.
 
     python3 export_ks3_questions.py            # write SQL under build/ks3-questions/
+    python3 export_ks3_questions.py --json     # write bank.json / ladder.json for the RPC
     python3 export_ks3_questions.py --stdout   # one statement per line, to stdout
     python3 export_ks3_questions.py --check    # counts only, write nothing
+    python3 export_ks3_questions.py --verify   # ⭐ THE GATE: does the database still
+                                               #   match Python, row for row?
 
 ── Why this exists ──────────────────────────────────────────────────────
 
@@ -248,6 +251,10 @@ def main():
                     help="print the statements instead of writing files")
     ap.add_argument("--check", action="store_true",
                     help="validate and count; write nothing")
+    ap.add_argument("--json", action="store_true",
+                    help="write bank.json / ladder.json for ks3_pools_ingest")
+    ap.add_argument("--verify", action="store_true",
+                    help="compare the live tables against Python, row for row")
     args = ap.parse_args()
 
     bank = bank_rows()
@@ -264,6 +271,21 @@ def main():
 
     if args.check:
         print("\n     --check: nothing written.\n")
+        return
+
+    if args.verify:
+        sys.exit(verify(bank, ladder))
+
+    if args.json:
+        os.makedirs(OUT_DIR, exist_ok=True)
+        for name, rows in (("bank", bank), ("ladder", ladder)):
+            path = os.path.join(OUT_DIR, name + ".json")
+            with open(path, "w", encoding="utf-8") as fh:
+                json.dump(rows, fh, ensure_ascii=False)
+            print("     ✅ %-12s %8d bytes  → %s"
+                  % (name + ".json", os.path.getsize(path), path))
+        print("\n     Apply with ks3_pools_ingest(pool, payload). See the "
+              "migration for the guard.\n")
         return
 
     stmts = (upsert_statements("ks3_bank_questions", BANK_COLUMNS, bank, "id")
@@ -286,6 +308,121 @@ def main():
     print("\n     ✅ %d statement(s) → %s/" % (len(stmts), OUT_DIR))
     print("\n     These are upserts. Applying them twice is applying them "
           "once.\n")
+
+
+# ── the gate ─────────────────────────────────────────────────────────────
+
+def verify(bank, ladder):
+    """Does the database still match Python, row for row?
+
+    The tables are a mirror. A mirror nobody checks is just a second copy, and
+    the failure it hides is the quiet one: a question edited in Python, the
+    export not re-run, and every class served the old wording for a term while
+    the repo says otherwise.
+
+    Reads over PostgREST with a real session rather than a service key, because
+    the pools are readable by any signed-in user and this only needs to READ.
+    SKIPS LOUDLY when there are no credentials — a gate that passes because it
+    could not run is worse than no gate.
+    """
+    import ssl
+    import urllib.error
+    import urllib.request
+
+    pw = os.environ.get("MRB_TEST_STUDENT_PASSWORD")
+    if not pw:
+        print("\n     ⏭️  --verify SKIPPED: MRB_TEST_STUDENT_PASSWORD is not set,")
+        print("        so the live tables cannot be read. This is the only check")
+        print("        that the database still matches these files.\n")
+        return 0
+
+    url = "https://urklkrwevjtlfbwnipjn.supabase.co"
+    src = open(os.path.join(REPO, "leaderboard.html"), encoding="utf-8").read()
+    import re
+    key = re.search(r"eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{10,}",
+                    src).group(0)
+    ctx = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
+
+    def api(path, headers, body=None):
+        data = json.dumps(body).encode() if body is not None else None
+        req = urllib.request.Request(
+            url + path, data=data, method=("POST" if data else "GET"),
+            headers=dict({"Content-Type": "application/json"}, **headers))
+        with urllib.request.urlopen(req, timeout=90, context=ctx) as r:
+            return json.loads(r.read().decode())
+
+    tok = api("/auth/v1/token?grant_type=password", {"apikey": key},
+              {"email": "midebolabadmus@gmail.com", "password": pw})
+    del pw
+    auth = {"apikey": key, "Authorization": "Bearer " + tok["access_token"]}
+
+    def fetch(table, cols):
+        out, step = [], 1000
+        while True:
+            page = api("/rest/v1/%s?select=%s&order=%s&limit=%d&offset=%d"
+                       % (table, cols, cols.split(",")[0], step, len(out)), auth)
+            out.extend(page)
+            if len(page) < step:
+                return out
+
+    problems = []
+
+    def compare(name, want, got, keyfield, fields):
+        w = {r[keyfield]: r for r in want}
+        g = {r[keyfield]: r for r in got}
+        missing = sorted(set(w) - set(g))
+        extra = sorted(set(g) - set(w))
+        if missing:
+            problems.append("%s: %d row(s) in Python and NOT in the database — "
+                            "the export has not been applied: %s"
+                            % (name, len(missing), ", ".join(missing[:5])))
+        if extra:
+            problems.append("%s: %d row(s) in the database that Python does not "
+                            "have — a retired question is still being served: %s"
+                            % (name, len(extra), ", ".join(extra[:5])))
+        differing = []
+        for k in sorted(set(w) & set(g)):
+            for f in fields:
+                a, b_ = w[k][f], g[k][f]
+                if f == "options":
+                    a = json.dumps(a, sort_keys=True, ensure_ascii=False)
+                    b_ = json.dumps(b_, sort_keys=True, ensure_ascii=False)
+                if a != b_:
+                    differing.append("%s.%s" % (k, f))
+                    break
+        if differing:
+            problems.append("%s: %d row(s) differ between Python and the "
+                            "database: %s" % (name, len(differing),
+                                              ", ".join(differing[:5])))
+        print("     %s %-8s %4d in Python, %4d live, %d missing, %d extra, %d differing"
+              % ("❌" if (missing or extra or differing) else "✅", name,
+                 len(w), len(g), len(missing), len(extra), len(differing)))
+
+    print("\n     comparing the live tables against Python\n")
+    compare("bank",
+            bank,
+            fetch("ks3_bank_questions",
+                  "id,unit_code,lesson_slug,band,bank_position,text,figure,options"),
+            "id",
+            ["unit_code", "lesson_slug", "band", "bank_position", "text",
+             "figure", "options"])
+    compare("ladder",
+            ladder,
+            fetch("ks3_ladder_questions",
+                  "question_ref,unit_code,lesson_slug,rung,text,answer_letter,options"),
+            "question_ref",
+            ["unit_code", "lesson_slug", "rung", "text", "answer_letter",
+             "options"])
+
+    print()
+    if problems:
+        for p in problems:
+            print("        · " + p)
+        print("\n     Re-run:  python3 export_ks3_questions.py --json  and apply "
+              "it.\n")
+        return 1
+    print("     ✅ the database is exactly what these files say it is.\n")
+    return 0
 
 
 if __name__ == "__main__":
