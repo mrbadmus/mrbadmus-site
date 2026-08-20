@@ -1799,6 +1799,30 @@ def main():
         # all 295: neither is true. MRB-229 fixed the trail below 700px, and
         # every wide figure is already in a scroller. Nothing was broken; what
         # was missing was the gate, so the fix could not regress silently.
+        # ⊕ MRB-270 phase 7b — DOES THE CANVAS ACTUALLY REDRAW? The parity
+        # gate covers the C1 instruments' every colour, length and state and
+        # covers their canvases NOT AT ALL — `check_canvas_contrast` computes
+        # contrast from tokens.css arithmetically and never opens a browser.
+        # That is exactly where the instruments were broken: controls
+        # responding, aria-pressed flipping, readouts updating, and the drawing
+        # not moving. Every parity assertion stayed green through all of it.
+        import ks3_canvas
+        cv_rows, cv_problems = ks3_canvas.run(
+            ks3_browser, settle_js=PARITY._JS_SETTLE,
+            gate_js=PARITY.DRIVES["bench-gate-opened"],
+            gates=dict(PARITY.DRIVES))
+        _cv_stable = sum(1 for r in cv_rows if r[1] == ks3_canvas.STABLE)
+        check("⊕ MRB-270 · every C1 canvas redraws when its own controls are "
+              "driven", not cv_problems,
+              "%d instrument(s) — %d stable (byte-identical at rest, and the "
+              "drive moved the pixels) and %d animated (the render loop is "
+              "running and the drive moved the live readout; a pixel diff is "
+              "not claimed there and would prove nothing)"
+              % (len(cv_rows), _cv_stable, len(cv_rows) - _cv_stable)
+              if not cv_problems
+              else "%d problem(s): %s"
+                   % (len(cv_problems), "; ".join(cv_problems[:2])))
+
         import ks3_overflow
         ov_problems, ov_checked = ks3_overflow.run(
             ks3_overflow.sample(), ks3_browser)
