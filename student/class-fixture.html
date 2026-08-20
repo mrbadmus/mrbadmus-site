@@ -177,7 +177,7 @@ class Component extends DCLogic {
       const isMarked = w.status === 'marked';
       const showScore = isMarked && !hideScores;
       const expanded = st.open === w.id;
-      const longWord = w.status === 'open' ? 'DUE THU 18:00' : w.status === 'pending' ? 'WITH MR BADMUS' : w.status === 'missed' ? 'MISSED' : 'MARKED';
+      const longWord = w.status === 'open' ? 'DUE THU 18:00' : w.status === 'pending' ? 'WITH ' + MRB_DATA('teacherName').toUpperCase() : w.status === 'missed' ? 'MISSED' : 'MARKED';
       const shortWord = w.status === 'open' ? 'DUE THU' : w.status === 'pending' ? 'SENT' : w.status === 'missed' ? 'MISSED' : 'MARKED';
       return {
         wk: 'W' + pad(w.week), title: w.title, brief: w.brief,

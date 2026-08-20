@@ -258,6 +258,19 @@ REWRITES = {
              pat=r"'COUNTS TOWARDS WEEK (?P<weekNumber>\d+)'",
              new="'COUNTS TOWARDS WEEK ' + MRB_DATA('weekNumber')",
              keys=dict(weekNumber="str")),
+        # ⚑ ALSO NOT ON THE BRIEF, AND A NAME RATHER THAN A FIGURE. A piece of
+        # work awaiting marking reads `WITH MR BADMUS` — the teacher's real
+        # name, upper-cased, welded into a status word where no grep for
+        # `Mr Badmus` would ever find it. `teacherName` is already bound from
+        # the markup, so nothing new is carried: the capture is CHECKED
+        # against that binding through the same `upper` transform the label
+        # applies, which is why the two cannot drift apart.
+        dict(name="work row — WITH <teacher>",
+             pat=r"w\.status === 'pending' \? "
+                 r"'WITH (?P<teacherName>[A-Z][A-Z ]*)'",
+             new="w.status === 'pending' ? "
+                 "'WITH ' + MRB_DATA('teacherName').toUpperCase()",
+             keys={}, check=dict(teacherName="upper")),
     ],
 }
 
@@ -705,14 +718,19 @@ def rewrite_seams(page, logic, fixture, bind_values):
             kind = spec["keys"].get(key)
             if kind is None:
                 # Not ours to carry — it must already be bound from the markup.
-                if bind_values.get(key) != val:
+                # A label that upper-cases what it prints is compared through
+                # the same transform, not against the raw binding.
+                bound = bind_values.get(key)
+                how = spec.get("check", {}).get(key)
+                if how == "upper" and bound is not None:
+                    bound = bound.upper()
+                if bound != val:
                     raise SystemExit(
                         "build_student_port.py: %s — the seam %r reads %r as "
                         "%r, but the markup binds that key to %r. The template "
                         "and the logic disagree about the same datum; one key "
                         "is one value."
-                        % (page, spec["name"], key, val,
-                           bind_values.get(key)))
+                        % (page, spec["name"], key, val, bound))
                 continue
             js = _q(val) if kind == "str" else val
             if key in fixture and fixture[key] != js:
