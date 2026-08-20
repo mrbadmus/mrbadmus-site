@@ -82,10 +82,36 @@ def t(s):
 # lesson's science lands on, and a general HTML pass-through there is an
 # injection hole and a styling backdoor at the same time. Two tags carry every
 # case in the delivery, and a third needs a ruling rather than a regex.
-_RICH_OK = ("em", "strong")
+#
+# ⊕ THE THIRD TAG, RULED 20 Aug 2026 (MRB-272, C3). The line above said a
+# third needed a ruling rather than a regex. This is the ruling, and `<sub>`
+# is admitted.
+#
+# What forced it: c3-06 writes the Rf symbol as `R<sub>f</sub>` in three
+# strings, because Design ruled the convention for the whole course under C2
+# flag 13 — a real `<sub>` element, never a Unicode subscript. It is not a
+# preference. THERE IS NO UNICODE SUBSCRIPT `f`, so for this symbol the
+# alternative does not exist, and without the tag the page shipped a visible
+# `R&lt;sub&gt;f&lt;/sub&gt;` to a student. That is the escape-as-visible
+# defect, not a styling nicety.
+#
+# It meets the bar the allow-list is drawn at, which is why it is admitted
+# and `<a>` and `<span class>` still are not:
+#   * it is SEMANTIC, not styling — a subscript in Rf, and in CaCO3, is part
+#     of how the symbol is spelled, and a reader who loses it loses meaning;
+#   * it CARRIES NO ATTRIBUTES, so it is neither an injection hole nor a
+#     styling backdoor, which is the two-part test the paragraph above sets;
+#   * it is needed beyond this unit — C4 renders every formula from
+#     `parts: [{sym, sub}]` precisely so that subscripts are real elements,
+#     and C4/C5 cannot be built without it.
+#
+# Measured before admitting it: no lesson outside C3 authors `<sub>` in any
+# string, so this widens what `rich()` will emit without changing a byte of
+# any page already built.
+_RICH_OK = ("em", "strong", "sub")
 _RICH_RE = re.compile(r"&lt;(/?)(%s)&gt;" % "|".join(_RICH_OK))
 def rich(s):
-    """`t()` plus `<em>` and `<strong>`, and nothing else."""
+    """`t()` plus `<em>`, `<strong>` and `<sub>`, and nothing else."""
     return _RICH_RE.sub(r"<\1\2>", t(s))
 # ⚠️ ← (U+2190) is absent from the same subsets, and the browse layer used to
 # open three back-links with one. Design's system has no left-arrow mark to

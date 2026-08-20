@@ -586,7 +586,25 @@ UNIT = "chemistry/particles-and-their-behaviour/index.html"
 # anywhere in the repo and is in no queued ticket's scope — not this run's
 # B3–B7, not MRB-223's P1–P3 — so it will still have coming-soon rows long
 # after the biology units are done.
-UNIT_SOON = "chemistry/mixtures-and-separation/index.html"
+#
+# ⊕ DISCHARGED 20 Aug 2026 (MRB-272). The paragraph above is kept rather than
+# deleted, per the build contract §12 reversal rule: its prediction was wrong
+# inside four days and the record of that is worth more than the tidiness of
+# removing it. C3 IS the unit this run delivered. Its index now carries seven
+# authored lessons and not one `.ks3-badge.is-soon`, so both rows below stopped
+# measuring anything and started reporting "selector not present" — the exact
+# noise the paragraph was written to avoid.
+#
+# ⚠️ AND THERE IS NO STOP-MOVING CHOICE LEFT TO MAKE. Every unauthored unit in
+# the key stage now belongs to an active lane: C4–C10 to `content-chem` and
+# P1–P12 to `content-phys` (docs/ks3/worktrees.md §1). So the honest rule is
+# not "pick one that will never be delivered" — it is **pick the one furthest
+# down the last lane's queue, and expect to move it again**. P12 `space` is
+# that unit: six slots, none authored, last in the physics sequence.
+#
+# The rows are NOT weakened and NOT deleted. They assert the same two pairs on
+# a page that really renders them; what changed is which page has the thing.
+UNIT_SOON = "physics/space/index.html"
 UNIT_REF = "biology/nutrition-and-digestion/index.html"
 # ⊖ PARKED 16 Aug 2026 (MRB-228). B3's `energy-in-food` slot was the LAST §4.6
 # reference slot in the key stage — a slot that generates no page of its own
@@ -771,6 +789,39 @@ B5_PARTS = "biology/reproduction/flowers-and-pollination.html"
 B5_BECOMES = "biology/reproduction/fertilisation-seeds-and-fruit.html"
 B5_SORT = "biology/reproduction/seed-dispersal.html"
 # ═══ END B5 ═══
+
+# ═══ BEGIN C3 ═══
+# ⊕ C3 · Mixtures and separation (MRB-272). NINE instrument families over seven
+# lessons, all DOM, no canvas anywhere in the unit.
+#
+# Same registration rule as B2's and C2's, and it is the rule that makes this
+# block worth anything: a component is registered on the page that RENDERS it.
+# A component registered on a page that lacks it reports "selector not present"
+# and passes, which is the absence-of-assertion failure this whole file exists
+# to close — and it is the specific hole MRB-203 names, because C3's nine
+# families were invisible to the gate until these rows landed.
+#
+# Two families appear on a page that also carries a second instrument, so the
+# drives below are scoped by SECTION ID rather than by document:
+#
+#   c3-03  #s-steps (sequence-rebuild, watch) AND #s-build (rebuild)
+#   c3-04  #s-bench (crystal-bench)           AND #s-jobs  (method-choice)
+#   c3-07  #s-critique (plan-critique)        AND #s-bench (melting-point-bench)
+#
+# ⚠️ EVERY ONE OF THE NINE SITS ON A LIGHT `ks3-block ks3-check`. There is no
+# ink-dark practical block anywhere in C3, so every ground below is cream —
+# and the only ink grounds are the nested REVEAL PANELS Design paints herself.
+# A row here resolving `#221E1B` where it expects `#F7EFE1` is the whole
+# instrument having been mapped to `practical`, which is the trap the payload
+# map names and the one these rows are pointed at.
+C3_PURE = "chemistry/mixtures-and-separation/pure-or-mixture.html"
+C3_DISS = "chemistry/mixtures-and-separation/dissolving-and-solutions.html"
+C3_FILT = "chemistry/mixtures-and-separation/filtration.html"
+C3_CRYST = "chemistry/mixtures-and-separation/evaporation-and-crystallisation.html"
+C3_STILL = "chemistry/mixtures-and-separation/distillation.html"
+C3_CHROM = "chemistry/mixtures-and-separation/chromatography.html"
+C3_PURITY = "chemistry/mixtures-and-separation/proving-something-is-pure.html"
+# ═══ END C3 ═══
 
 COMPONENTS = [
     # ── foundations ──
@@ -5453,6 +5504,108 @@ COMPONENTS = [
          on=B11_SEL,
          sel='.ks3-moth-bark[data-bark="soot"]', props={"fill": "#221E1B"}),
     # ═══ END B11 ═══ rows
+
+    # ══ C3 · Mixtures and separation (⊕ MRB-272) ════════════════════════
+    #
+    # Nine families over seven lessons, and the rule that makes these rows
+    # worth anything is the one B2 and C2 already follow: a component is
+    # registered on the page that RENDERS it. Registered on a page that lacks
+    # it, a row reports "selector not present" and PASSES — the
+    # absence-of-assertion failure MRB-203 exists to close, and the precise
+    # hole C3's nine families sat in until these landed.
+    #
+    # ⚠️ EVERY ONE OF THE NINE SITS ON A LIGHT `ks3-block ks3-check`. There is
+    # no ink-dark practical block anywhere in C3. So every panel ground below
+    # is cream, and the ONLY ink grounds are the nested reveal panels Design
+    # paints herself. A row here resolving #221E1B where it expects #F7EFE1
+    # would be the whole instrument having been mapped to `practical` — the
+    # trap the C2 payload map names by name, and what these grounds are
+    # pointed at.
+
+    # ── purity-sorter (c3-01 #s-sorter) ──
+    dict(name="C3 sorter card is inset on a 2px ink border", on=C3_PURE,
+         sel=".ks3-psort-card",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+    # ⚖️ The reveal is the ONE ink ground in this instrument, and it is one
+    # tone whether the student had it or not (R3). If it ever resolves two
+    # different grounds, the panel has started marking.
+    dict(name="C3 sorter reveal is the ink panel, one tone for both verdicts",
+         on=C3_PURE, drive="c3-psort-committed", sel=".ks3-psort-reveal",
+         props={"background-color": "#221E1B", "color": "#FBF3E6",
+                "border-top-left-radius": "16px"}),
+
+    # ── dissolve-lab (c3-02 #s-lab) ──
+    dict(name="C3 dissolve readout tile is inset on a 2px ink border",
+         on=C3_DISS, drive="c3-dlab-open", sel=".ks3-dlab-readout",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px"}),
+
+    # ── sequence-rebuild (c3-03 #s-steps / #s-build) ──
+    # A step at REST is a card on the hairline. The open and next treatments
+    # are enhancements over this; the resting card is what a browser without
+    # `:has()` shows, and it must still read as a step.
+    # ⚠️ TWO STATES, AND THE BARE `.ks3-seq-step` SELECTOR MEASURES THE WRONG
+    # ONE. On load exactly one step carries the reveal control — step 0, the
+    # one the student acts on next — and it takes the ACCENT border. A
+    # selector returns its FIRST match, so `.ks3-seq-step` resolves the
+    # next-step treatment and reports the resting card as broken. That is the
+    # same shape as the base-pair defect, met here by the row rather than by
+    # the page, and the fix is to pin each state to the step that is in it.
+    dict(name="C3 sequence step rests as a card on the hairline rule",
+         on=C3_FILT, sel='.ks3-seq-step[data-seq-i="1"]',
+         props={"background-color": "#FFFCF5", "border-top-color": "#E0D2B9",
+                "border-top-width": "2px"}),
+    # The step the student acts on next is the ONE thing on the list that is
+    # not a resting card, and the accent border is the whole of that signal.
+    # It is a border, not text, so the large-text rule does not bite.
+    dict(name="C3 sequence NEXT step takes the accent border",
+         on=C3_FILT, sel='.ks3-seq-step[data-seq-i="0"]',
+         props={"border-top-color": "#E4572E", "border-top-width": "2px"}),
+    # ⚖️ THE REPORT IS INK AND IT IS NOT A MARK. Wrong orders are answered
+    # with consequences on the bench, never with a score, so this panel takes
+    # the same ground whether the order was right or wrong.
+    dict(name="C3 sequence report is the ink panel, never a mark",
+         on=C3_FILT, sel=".ks3-seq-report",
+         props={"background-color": "#221E1B", "color": "#FBF3E6"}),
+
+    # ── crystal-bench + method-choice (c3-04 #s-bench / #s-jobs) ──
+    dict(name="C3 crystal tile is inset on a 2px ink border", on=C3_CRYST,
+         drive="c3-cryst-run", sel=".ks3-cryst-tile",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B"}),
+    dict(name="C3 crystal dish is a card, not an inset tile", on=C3_CRYST,
+         drive="c3-cryst-run", sel=".ks3-cryst-dish",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px"}),
+    dict(name="C3 method-choice reveal is the ink panel", on=C3_CRYST,
+         drive="c3-mchoice-committed", sel=".ks3-mchoice-reveal",
+         props={"background-color": "#221E1B", "color": "#FBF3E6"}),
+
+    # ── still-run (c3-05 #s-still) ──
+    dict(name="C3 still gauge is inset on a 2px ink border", on=C3_STILL,
+         sel=".ks3-still-gauge",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px"}),
+
+    # ── chroma-run (c3-06 #s-lab) ──
+    # The strip is the paper. It is a CARD ground with an ink edge, and the
+    # spots are positioned against it — if the border ever thins, the lane
+    # stops reading as a piece of paper and the Rf geometry loses its frame.
+    dict(name="C3 chromatography strip is a card behind a 2px ink edge",
+         on=C3_CHROM, drive="c3-chroma-run", sel=".ks3-chroma-strip",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px"}),
+
+    # ── plan-critique + melting-point-bench (c3-07 #s-critique / #s-bench) ──
+    dict(name="C3 critique reveal is the ink panel", on=C3_PURITY,
+         drive="c3-critiq-committed", sel=".ks3-critiq-reveal",
+         props={"background-color": "#221E1B", "color": "#FBF3E6"}),
+    # The data table is MONO, and that is not decoration: three runs are read
+    # down a column and compared digit by digit. A proportional face makes the
+    # columns stop lining up, which is the whole reading task.
+    dict(name="C3 melting-point table is mono, so the columns line up",
+         on=C3_PURITY, drive="c3-mpb-run", sel=".ks3-mpb-table",
+         props={"font-family": "DM Mono", "font-size": "17px"}),
 ]
 
 
@@ -6759,6 +6912,83 @@ window.__ks3 = {
 # measuring a spent button and calling it resting.
 
 DRIVES = {
+    # ── C3 · Mixtures and separation (⊕ MRB-272) ────────────────────────
+    #
+    # Nine instruments, and most of what they draw exists only AFTER a
+    # commitment. A row measured without its drive is measured against the
+    # resting DOM and reports green over a panel a student never sees in that
+    # state — which is what MRB-202 cost.
+    #
+    # Every drive below goes through the CONTROL A STUDENT USES rather than by
+    # stripping `hidden`, so a regression in the reveal path fails here instead
+    # of being measured around.
+    "c3-psort-committed": r"""
+(function () {
+  var card = document.querySelector('[data-psort-card]');
+  if (!card) { return "no purity-sorter card"; }
+  var opt = card.querySelector('[data-psort-opt]');
+  if (!opt) { return "no verdict button on the first card"; }
+  opt.click();
+  return "";
+})()
+""",
+    # The bench is LOCKED until the predict-gate is answered — that lock is
+    # the lesson's, not the engine's, so the drive answers the gate.
+    "c3-dlab-open": r"""
+(function () {
+  var gate = document.querySelector('#s-gate .ks3-option');
+  if (!gate) { return "no predict-gate option on #s-gate"; }
+  gate.click();
+  return "";
+})()
+""",
+    "c3-cryst-run": r"""
+(function () {
+  var g = document.querySelector('[data-cryst-gate-opts] .ks3-option')
+       || document.querySelector('[data-cryst-gate-opts] button');
+  if (g) { g.click(); }
+  var run = document.querySelector('[data-cryst-run]');
+  if (!run) { return "no crystal-bench run button"; }
+  run.click();
+  return "";
+})()
+""",
+    "c3-mchoice-committed": r"""
+(function () {
+  var item = document.querySelector('[data-mchoice-item]');
+  if (!item) { return "no method-choice item"; }
+  var opt = item.querySelector('[data-mchoice-opt]');
+  if (!opt) { return "no option on the first job"; }
+  opt.click();
+  return "";
+})()
+""",
+    "c3-chroma-run": r"""
+(function () {
+  var run = document.querySelector('[data-chroma-run]');
+  if (!run) { return "no chromatography run button"; }
+  run.click();
+  return "";
+})()
+""",
+    "c3-critiq-committed": r"""
+(function () {
+  var item = document.querySelector('[data-critiq-item]');
+  if (!item) { return "no plan-critique step"; }
+  var opt = item.querySelector('[data-critiq-opt]');
+  if (!opt) { return "no ruling button on the first step"; }
+  opt.click();
+  return "";
+})()
+""",
+    "c3-mpb-run": r"""
+(function () {
+  var run = document.querySelector('[data-mpb-run]');
+  if (!run) { return "no melting-point run button"; }
+  run.click();
+  return "";
+})()
+""",
     # One wrong answer in the first page-marked rung, one right answer in the
     # second. Between them that produces all four option states and both
     # feedback verdicts in a single document: the rung answered wrongly holds
@@ -13702,6 +13932,139 @@ def check_figure_content_truth(browser_mod, url_for, rel):
 # problem, not a skip, on every one of them.
 
 FIGURE_TRUTH = [
+    # ══ C3 · Mixtures and separation (⊕ MRB-272) ════════════════════════
+
+    # ── particle-panels (c3-03) — the load-bearing drawing of the unit ──
+    #
+    # The claim is why NO filter can hold back salt: a grain of sand is far
+    # WIDER than the gaps between the paper's fibres, and a dissolved salt
+    # particle is far SMALLER. Design carried that claim in WORDS only, and
+    # the drawing contradicted it — her dash rhythm gives gaps of 6 units
+    # against salt particles of 7 and 10. Nothing showed it, because nothing
+    # was comparing the drawn sizes to the drawn gap.
+    #
+    # ⚠️ THIS WALKS EVERY PARTICLE, NOT A SAMPLE. The obvious form of this
+    # assertion — check the biggest sand and the smallest salt — passes on a
+    # drawing where one middling salt particle has crept over the gap, which
+    # is exactly the base-pair defect (right on the rungs it was asked about,
+    # wrong on the ones it was not).
+    dict(fig="c3-particle-panels",
+         name="⊕ C3 particle-panels · sand is WIDER than the gap, salt NARROWER",
+         claim="every retained particle > the drawn gap > every passing "
+               "particle, and nothing passes on the sand side",
+         page="chemistry/mixtures-and-separation/filtration.html",
+         js=r"""
+(function () {
+  var dots = document.querySelectorAll('.ks3-figure-svg [data-particle]');
+  if (!dots.length) { return null; }
+  var paper = document.querySelector('.ks3-figure-svg [data-gap]');
+  var gap = paper ? parseFloat(paper.getAttribute('data-gap')) : NaN;
+  var fibre = paper ? parseFloat(paper.getAttribute('data-fibre')) : NaN;
+  var held = [], small = [], through = 0, bad = [];
+  for (var i = 0; i < dots.length; i++) {
+    var d = dots[i];
+    var kind = d.getAttribute('data-particle');
+    var w = parseFloat(d.getAttribute('data-diameter'));
+    if (!isFinite(w)) {
+      bad.push('a particle carries no data-diameter, so its size cannot be '
+               + 'compared with the gap it is said to pass or not pass');
+      continue;
+    }
+    if (kind === 'held') { held.push(w); }
+    else { small.push(w); }
+    if (kind === 'through') { through += 1; }
+  }
+  /* EVERY sand particle wider than the gap, EVERY salt particle narrower.
+     Walked in full: checking only the extremes passes on a drawing where one
+     middling particle has crept across, which is the base-pair defect. */
+  for (var s = 0; s < held.length; s++) {
+    if (!(held[s] > gap)) {
+      bad.push('a sand particle is drawn ' + held[s] + ' against a gap of '
+               + gap + ', so the drawing says it fits through — the lesson '
+               + 'says sand is exactly what the paper stops');
+    }
+  }
+  for (var t = 0; t < small.length; t++) {
+    if (!(small[t] < gap)) {
+      bad.push('a dissolved salt particle is drawn ' + small[t]
+               + ' against a gap of ' + gap + ', so the drawing says the '
+               + 'paper stops it — which is misconception MIX-07, the thing '
+               + 'this figure exists to kill');
+    }
+  }
+  /* Nothing gets through on the sand side, and that ABSENCE is the argument. */
+  var sandThrough = document.querySelectorAll(
+    '.ks3-figure-svg [data-panel="held"] [data-particle="through"]').length;
+  if (sandThrough) {
+    bad.push(sandThrough + ' sand particle(s) are drawn below the paper; '
+             + 'nothing passes on the sand side, and that absence is half '
+             + 'the comparison');
+  }
+  return {gap: gap, fibre: fibre, held: held.length, small: small.length,
+          through: through, bad: bad};
+})()
+""",
+         expect=lambda got: (
+             [] if (got["held"] >= 3 and got["small"] >= 8
+                    and got["through"] >= 3 and got["gap"] > 0
+                    and got["fibre"] > got["gap"])
+             else ["draws %d sand and %d salt particle(s), %d of them through "
+                   "the paper, against gap=%s in a fibre of %s. The plate is "
+                   "two panels: sand held above, salt through. A figure "
+                   "missing either half makes no claim at all"
+                   % (got["held"], got["small"], got["through"],
+                      got["gap"], got["fibre"])])),
+
+    # ── chroma-run (c3-06) — a spot's HEIGHT is its Rf, or it is nothing ──
+    #
+    # Every spot is placed by `baseline_pct + rf x span_pct`. If a spot's
+    # rendered offset ever stops agreeing with its authored `rf`, the
+    # chromatogram still LOOKS like a chromatogram and every rung about
+    # reading one becomes unanswerable — the student is comparing heights
+    # that no longer mean anything.
+    #
+    # ⚠️ EVERY SPOT IN EVERY LANE. Checking one lane passes on a drawing where
+    # a single lane's geometry has drifted, and comparing lanes is the entire
+    # forensic task.
+    dict(fig="c3-chroma-rf",
+         name="⊕ C3 chroma-run · a spot's HEIGHT is its Rf",
+         claim="all 11 spots sit at baseline_pct + rf x span_pct",
+         page="chemistry/mixtures-and-separation/chromatography.html",
+         js=r"""
+(function () {
+  var run = document.querySelector('[data-chroma-run]');
+  if (run) { run.click(); }
+  var spots = document.querySelectorAll('[data-chroma-spot]');
+  if (!spots.length) { return null; }
+  var wrap = document.querySelector('[data-chroma]');
+  var cfg = {};
+  try { cfg = JSON.parse(wrap.getAttribute('data-cfg') || '{}'); } catch (e) {}
+  var g = cfg.geometry || cfg.lane_geometry || {};
+  var base = Number(g.baseline_pct), span = Number(g.span_pct);
+  var bad = [], n = 0;
+  for (var i = 0; i < spots.length; i++) {
+    var sp = spots[i];
+    var rf = parseFloat(sp.getAttribute('data-rf'));
+    var bottom = parseFloat((sp.style.bottom || '').replace('%', ''));
+    if (!isFinite(rf) || !isFinite(bottom)) { continue; }
+    n += 1;
+    var want = base + rf * span;
+    if (Math.abs(bottom - want) > 0.2) {
+      bad.push('a spot with Rf ' + rf + ' sits at ' + bottom
+               + '% when its Rf puts it at ' + want.toFixed(1)
+               + '%; the height of a spot IS its Rf, and a spot drawn '
+               + 'anywhere else is a reading the student cannot make');
+    }
+  }
+  return {n: n, base: base, span: span, bad: bad};
+})()
+""",
+         expect=lambda got: (
+             [] if got["n"] >= 8 and got["span"] == got["span"]
+             else ["measured %d positioned spot(s) against geometry "
+                   "base=%s span=%s; the five lanes carry eleven spots "
+                   "between them and every one is a claim about height"
+                   % (got["n"], got["base"], got["span"])])),
 
     dict(fig="b10-punnett-pp",
          page="biology/inheritance-and-dna/passing-it-on-heredity.html",

@@ -883,11 +883,23 @@ def r_figure(lesson, block):
         # finger can reach is unreachable from a keyboard (WCAG 2.1.1); the
         # `role`/`aria-label` give that focus stop something to announce, so it
         # does not arrive as a nameless tab stop.
-        return ('<figure class="ks3-figure ks3-figure-drawn">'
+        # ⊕ C3 (MRB-272) — A DRAWN FIGURE MAY CARRY AN ANCHOR.
+        #
+        # `_id_attr` emits nothing unless the BLOCK authors an `anchor`, so no
+        # figure already built moves a byte. What it buys is that a drawing
+        # becomes addressable, and the misconception register needs exactly
+        # that: MRB-244 requires every `confronted_by` to name an element on
+        # its own page, and c3-03's MIX-07 ("a fine enough filter would
+        # separate salt from water") is confronted by the particle-panel
+        # figure and by nothing else. Without an anchor the honest join could
+        # not be expressed and the author would have had to point the entry at
+        # some nearby activity that does not, in fact, confront it.
+        return ('<figure class="ks3-figure ks3-figure-drawn"%s>'
                 '<div class="ks3-figure-scroll" tabindex="0" role="group" '
                 'aria-label="%s — scrollable diagram">%s</div>'
                 '<figcaption>%s</figcaption></figure>'
-                % (e(fig["title"]), SVG_ART[art](fig), t(fig["caption"])))
+                % (_id_attr(block), e(fig["title"]), SVG_ART[art](fig),
+                   t(fig["caption"])))
     return ('<figure class="ks3-figure"><img src="/ks3/figures/%s.svg" alt="%s"/>'
             '<figcaption>%s</figcaption></figure>'
             % (e(fig["id"]), e(fig["caption"]), t(fig["caption"])))
@@ -927,16 +939,48 @@ def r_keyword(lesson, block):
             % (t(v["term"]), t(v["definition"]), note, MARK_ARROW))
     if not items:
         return ""
+    # ⊕ C3 (MRB-272) — THE ANCHOR, AND WHY IT WAS MISSING THIS LONG.
+    #
+    # This block emitted no `id`, and nothing caught it because NO LESSON IN
+    # B1–C2 AUTHORS A `keyword` BLOCK: C3 places the first three in the key
+    # stage. On c3-01, c3-02 and c3-05 `#s-words` is a RAIL STOP, so without
+    # an anchor the rail pointed at an element that does not exist — the stop
+    # could not be scrolled to and could never tick. That is the same defect
+    # MRB-208 fixed for `#s-hook` and `#s-ladder`, surfacing on the one block
+    # type that had never been used.
+    #
+    # Measured before changing it: zero built pages contain `ks3-keywords`,
+    # so the anchor, the stage hook and the authorable strings together
+    # cannot move a byte on any page already shipped.
+    #
+    # `eyebrow` and `lead` are honoured when the block authors them and fall
+    # back to the strings this function has always emitted. Design heads the
+    # grid "Four words" / "Five words" rather than a bare "Words to know",
+    # and her lead is the sharper one — *"Say your answer out loud before you
+    # turn each card over. If you cannot say it, you do not know it yet."*
+    # The fallbacks stay, so a block authoring neither renders as before.
+    #
     # The lead line is R4's declaration ask, in words: a card grid discharges
     # Law 4 through a DECLARED prediction (§5.1.2a), and a declared prediction
     # nobody asked for does not happen. verify_ks3.py fails the build if a card
-    # grid ships without it, so this sentence is a gate, not decoration.
-    return ('<section class="ks3-block ks3-keywords">'
-            '<h2>Words to know</h2>'
-            '<p class="ks3-keywords-lead">Say the meaning out loud before you '
-            'tap the card.</p>'
-            '<ul class="ks3-cards" data-cards role="list">%s</ul>'
-            '</section>' % "".join(items))
+    # grid ships without it, so this sentence is a gate, not decoration —
+    # which is why an authored `lead` may REPLACE it but may never empty it.
+    eyebrow = block.get("eyebrow") or "Words to know"
+    lead = block.get("lead") or ("Say the meaning out loud before you tap "
+                                 "the card.")
+    # `data-cards-total` is what lets the section tick: ks3.js marks the stage
+    # done once every card in the grid has been turned at least once, which is
+    # the completion Design's own `DONE('s-words')` describes. Nothing is
+    # ticked on load, and `markStage` is a ratchet, so a card turned back over
+    # does not withdraw the credit.
+    return ('<section class="ks3-block ks3-keywords"%s data-stage-done="0">'
+            '<h2>%s</h2>'
+            '<p class="ks3-keywords-lead">%s</p>'
+            '<ul class="ks3-cards" data-cards data-cards-total="%d" '
+            'role="list">%s</ul>'
+            '</section>'
+            % (_id_attr(block), t(eyebrow), t(lead), len(items),
+               "".join(items)))
 
 
 def _misconception_quote(lesson, target_id):
@@ -1762,7 +1806,7 @@ def r_criteria(success):
     """
     items = "".join(
         '<li class="ks3-crit"><span class="ks3-crit-num" aria-hidden="true">%d'
-        '</span><span>%s</span></li>' % (i, t(s))
+        '</span><span>%s</span></li>' % (i, rich(s))
         for i, s in enumerate(success, 1))
     return ('<button type="button" class="ks3-reveal-btn" data-criteria-btn '
             'aria-expanded="false">Check your answer</button>'
@@ -2947,7 +2991,7 @@ def _rung_self(slug, key, num, name, q):
             '<li class="ks3-tick">'
             '<input type="checkbox" id="%s" data-crit>'
             '<label for="%s"><span class="ks3-tick-num">%d</span> %s</label>'
-            '</li>' % (e(cid), e(cid), i + 1, t(s)))
+            '</li>' % (e(cid), e(cid), i + 1, rich(s)))
     aid = "ks3-ans-%s-%s" % (slug, key)
     return ('<div class="ks3-rung ks3-rung-self" data-rung="%s" data-mode="self">'
             '<h3 tabindex="-1">Rung %d · %s</h3>'
@@ -4189,7 +4233,7 @@ def lesson_page(unit, lesson, registry, units_by_code, neighbours=None):
                        else "Nothing — this is where the unit starts.")]
     if not ks4 and lesson.get("ks4_becomes"):
         ks4 = ['<li><span class="ks3-endmatter-prose">%s</span></li>'
-               % t(lesson["ks4_becomes"])]
+               % rich(lesson["ks4_becomes"])]
 
     # ⊕ MRB-220 — the middle card's heading is authorable. It was fixed at
     # "Connects to", which is right for B1's sideways links and wrong for

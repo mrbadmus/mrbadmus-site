@@ -15630,3 +15630,1102 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 }
 
 /* ═══ END B11 ═══ */
+
+/* ═══ BEGIN C3 ═══════════════════════════════════════════════════════════
+   C3 · Mixtures and separation (⊕ MRB-272)
+
+   NINE instrument families, all DOM, no canvas anywhere in the unit —
+   `purity-sorter`, `dissolve-lab`, `sequence-rebuild` (two phases, one
+   family), `crystal-bench`, `method-choice`, `still-run`, `chroma-run`,
+   `plan-critique`, `melting-point-bench`. Every value below is measured off
+   Design's seven approved pages in `docs/ks3/design-reference/c3/`, which
+   are React prototypes carrying their real design in inline `style`
+   attributes and in the style strings their component script composes.
+   Where a page and the engine disagreed, the page won.
+
+   ⚠️ EVERY ONE OF THE NINE SITS ON A LIGHT `ks3-block ks3-check`. There is
+   no ink-dark practical block anywhere in C3 — checked against all seven
+   built pages, not inferred from the kind names. So this whole block is
+   written for cream, and the ONLY ink grounds below are nested REVEAL
+   PANELS that Design paints `--ks3-ink` herself (the sorter's verdict, the
+   jobs answer, the critique answer, the rebuild report, the still result,
+   the chromatography and melting-point verdicts). Those take
+   `--ks3-on-dark` / `--ks3-on-dark-body` and NEVER `--ks3-accent-text`.
+
+   ⚠️ AND EVERY TEXT RULE IS SELF-SCOPED AT (0,2,0) — `.ks3-psort
+   .ks3-psort-why`, not a bare `.ks3-psort-why`. A bare component class is
+   (0,1,0) and loses to `.ks3-dark p` at (0,1,1) the day anything moves one
+   of these instruments onto ink, and it loses SILENTLY: the CSS reads
+   correctly and the sentence ships at ~1.2:1. C1's block says the same
+   thing for the same reason; two builds have been bitten by it.
+
+   ⚑ AMBER, AND WHY IT STAYS ON FOUR PANELS. `--ks3-alert-tint` grounds the
+   predict gates on c3-03 (`.ks3-seq-gate`), c3-04 (`.ks3-cryst-gate`) and
+   c3-05 (`.ks3-still-predict`) — Design draws all three that way, and
+   c3-02's `#s-gate` the same, which is the shell's `.ks3-misconception` and
+   not mine. That is amber carrying its RULED meaning and not drifting into
+   category: each of those gates exists to elicit a named misconception
+   (MIX-07, MIX-09, MIX-10) a paragraph before the bench confronts it. It is
+   never a selection and never a reading. Every live value and every
+   category hue in this unit is `--ks3-accent-text`, which is what Design
+   paints them; `--ks3-data` is `#8FB7FF` and is an on-ink token, unusable
+   on these cream grounds, so there is nothing to route to it here.
+
+   ⚠️ AND NOTHING BELOW IS A MARK (R3, MRB-196 R10). Only the mastery ladder
+   marks correctness. No option in any of these nine takes green or red at
+   any size: a committed control keeps the platform's ordinary accent-tint
+   pressed treatment, its spent siblings dim to `--ks3-dim-spent`, and every
+   verdict is a PANEL OF WORDS. `--ks3-ok` does not appear in this block at
+   all, and neither does `--ks3-danger`.
+
+   ⚠️ `--ks3-accent` IS 3.4:1 — LARGE TEXT ONLY, and it appears below on
+   exactly two things, neither of them text: the 6px offset shadow on the
+   two "you have seen it all" summaries, and the fill behind an opened
+   step's aria-hidden number chip. Every readout, every wide-range cell and
+   every reason line takes `--ks3-accent-text` (6.0:1) instead.
+
+   ⊖ AND THERE IS NO C3 REDUCED-MOTION BLOCK, DELIBERATELY — B10's and
+   B11's reason exactly, and NOTES-C3 §6 says it out loud: no canvas, no
+   rAF, no timer, so there is no tick that would have to re-test the query
+   inside itself (contract R4). This block also declares NO transition and
+   NO animation of its own, which is the other half of it: the gate that
+   freezes transitions before reading computed style has nothing here to
+   freeze, and the shared arrive treatment is the shell's.
+
+   ⚠️ NO `display` ON ANYTHING THAT ALSO TAKES `[hidden]`. An author
+   `display` beats the UA stylesheet's `[hidden] { display: none }` at ANY
+   specificity, and eleven things in this unit are emitted hidden — the
+   whole `.ks3-dlab` while the bench is locked, every reveal, every
+   emit-both-show-one panel, and the melting-point rows beyond the opening
+   repeat count. The guard is the LAST rule in this block so source order
+   settles the (0,2,0) ties in its favour. */
+
+/* ── the dial rows, shared by five benches ─────────────────────────────
+   Design draws ONE control strip on c3-02, c3-04, c3-05, c3-06 and c3-07:
+   a column of captioned groups, caption in mono over a wrapping row of
+   segmented buttons. Five families, one set of values, grouped rather than
+   copied — a sixth copy is the drift Drift 4's ruling exists to stop.
+
+   The BUTTONS are `.ks3-seg-btn` and take nothing from here. Design's own
+   `seg()` is 16px / 11px 16px on `--ks3-option-border`; the platform's is
+   17px / 11px 17px on `--ks3-rule-strong`, and Drift 4 ruled the platform's
+   one the key stage's only segmented control. Reported rather than
+   re-declared. */
+.ks3-dlab-dials,
+.ks3-cryst-dials,
+.ks3-still-dials,
+.ks3-chroma-dials,
+.ks3-mpb-dials {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ks3-dlab .ks3-dlab-diallabel,
+.ks3-cryst .ks3-cryst-diallabel,
+.ks3-still .ks3-still-diallabel,
+.ks3-chroma .ks3-chroma-diallabel,
+.ks3-mpb .ks3-mpb-diallabel {
+  margin: 0 0 8px;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-dlab-btns,
+.ks3-cryst-btns,
+.ks3-still-btns,
+.ks3-chroma-btns,
+.ks3-mpb-btns {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+/* ── the one-shot commit banks ─────────────────────────────────────────
+   Six controls in this unit commit ONCE and then disable: the sorter's two
+   verdicts, the jobs sorter, the plan critique, the pen identification, the
+   batch identification and the rebuild's chips. Design dims a disabled
+   button that was NOT the one pressed and leaves the pressed one at full
+   strength, so the card still says what the student chose.
+
+   ⚖️ `--ks3-dim-spent` (.65), not Design's .45. MRB-257 audit 3.21 ruled
+   that value for exactly this state: "you may not press this any more" and
+   "you may not read this" are two different sentences and .45 says the
+   second. Design's .45 is the value this block deliberately does not
+   reproduce, and it is the only such divergence in C3. */
+.ks3-psort-opt[disabled],
+.ks3-mchoice-opt[disabled],
+.ks3-critiq-opt[disabled],
+.ks3-chroma-pen[disabled],
+.ks3-mpb-verdict-btn[disabled],
+.ks3-seq-chip[disabled] { cursor: default; }
+.ks3-psort-opt[disabled][aria-pressed="false"],
+.ks3-mchoice-opt[disabled][aria-pressed="false"],
+.ks3-critiq-opt[disabled][aria-pressed="false"],
+.ks3-chroma-pen[disabled][aria-pressed="false"],
+.ks3-mpb-verdict-btn[disabled][aria-pressed="false"] { opacity: var(--ks3-dim-spent); }
+
+/* ── the predict gates (c3-03, c3-04, c3-05) ───────────────────────────
+   ⚑ THE AMBER GROUND IS DESIGN'S AND IT STAYS. See the block header.
+
+   ⚠️ AND THE PROMPT INSIDE IT IS INK, NOT `.ks3-commit`'s AMBER.
+   `ks3_art/c3.py` emits `<p class="ks3-commit">` in all three gates, and
+   `.ks3-commit` carries `--ks3-alert` — right on the ink grounds where most
+   of the key stage's gates sit, and 1.5:1 here, on cream and on
+   `--ks3-alert-tint` alike. That is the identical defect MRB-257 audit 3.18
+   found on `.ks3-switch-predict`, and `.ks3-walk-block .ks3-benchgate
+   .ks3-commit` and its `.ks3-sbench-block` twin are the two standing
+   precedents. Design draws these three prompts as plain 19px/700 ink inside
+   the amber panel — 13:1 — so that is what they get, at (0,2,0), which
+   beats both `.ks3-commit` (0,1,0) and `.ks3-dark .ks3-commit` (0,2,0,
+   earlier). Scoped to the three gates so the shared component stays
+   shared. */
+.ks3-seq-gate,
+.ks3-cryst-gate,
+.ks3-still-predict {
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-alert-tint);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-cryst-gate,
+.ks3-still-predict { margin-top: 22px; }
+.ks3-seq-gate { margin-top: 14px; padding: 18px 20px; }
+.ks3-seq-gate .ks3-commit,
+.ks3-cryst-gate .ks3-commit,
+.ks3-still-predict .ks3-commit {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.45;
+  color: var(--ks3-ink);
+}
+/* Design caps the lettered list rather than letting four options run the
+   full width of a 1240px rail. */
+.ks3-seq-gate .ks3-options { max-width: 30rem; }
+.ks3-cryst-gate .ks3-options,
+.ks3-still-predict .ks3-options { max-width: 32rem; }
+
+/* ═══ c3-01 `#s-sorter` · purity-sorter ═════════════════════════════════
+   Eight independent commitments in a reflowing grid. Design's own track is
+   `repeat(auto-fit, minmax(272px, 1fr))`; the `min(272px, 100%)` is the
+   390px translation — at 390px a `ks3-block`'s content box is 330px wide,
+   so a bare 272px minimum fits, but it stops fitting the moment the block
+   padding or the rail changes, and a grid track wider than its container is
+   a page that scrolls sideways.
+
+   ⚠️ THE CARD IS `--ks3-inset` ON A `--ks3-card` BLOCK and the reveal
+   inside it is `--ks3-ink`. Three grounds stacked, which is Design's
+   drawing: the block is the page, the card is a sample, and the answer is
+   the thing that arrives on top of it. */
+.ks3-psort-grid {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(272px, 100%), 1fr));
+  gap: 16px;
+}
+.ks3-psort-card {
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+  display: flex;
+  flex-direction: column;
+}
+.ks3-psort .ks3-psort-num {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-psort .ks3-psort-name {
+  margin: 6px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.25;
+  letter-spacing: -.02em;
+}
+.ks3-psort .ks3-psort-look {
+  margin: 8px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+/* The particle strip. It is a `role="img"` carrying a per-sample
+   `aria-label`, so everything here is the picture and nothing here is
+   information: eight strips, eight different sentences, authored in the
+   payload. Design caps it at 200px so a fourteen-particle strip reads as a
+   sample of a liquid and not as a rule across the card. */
+.ks3-psort-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 14px;
+  max-width: 200px;
+}
+/* Each dot's whole appearance — diameter, colour, radius, hairline — is an
+   AUTHORED inline declaration passed through by `r_purity_sorter`, so the
+   only thing left for the stylesheet is to stop flexbox resizing it. */
+.ks3-psort-dot { flex: 0 0 auto; }
+.ks3-psort .ks3-psort-ingredients {
+  margin: 12px 0 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ks3-ink-muted);
+}
+.ks3-psort-opts {
+  margin-top: 16px;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+.ks3-psort-reveal {
+  margin-top: 14px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+}
+.ks3-psort .ks3-psort-verdict {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 1.25;
+  color: var(--ks3-on-dark);
+}
+.ks3-psort .ks3-psort-why {
+  margin: 8px 0 0;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+/* The all-eight close. A BAND panel, which is this unit's "here is what the
+   bench just showed you" treatment and not a verdict on the student — the
+   same panel c3-02's verdict, c3-03's close, c3-04's summary bar, c3-06's
+   run report and c3-07's data note take. */
+.ks3-psort-close,
+.ks3-seq-close,
+.ks3-critiq-close,
+.ks3-dlab-verdict,
+.ks3-cryst-verdict,
+.ks3-chroma-outcome,
+.ks3-mpb-notes {
+  margin-top: 20px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-psort .ks3-psort-close p,
+.ks3-seq .ks3-seq-close p,
+.ks3-critiq .ks3-critiq-close p,
+.ks3-dlab .ks3-dlab-verdict p,
+.ks3-mpb .ks3-mpb-note {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+
+/* ═══ c3-02 `#s-lab` · dissolve-lab ═════════════════════════════════════
+   ⚖️ THE RATE/AMOUNT SPLIT IS THE LESSON, AND THE THREE READOUTS ARE HOW A
+   STUDENT SEES IT. They are one row of equal tiles on purpose: grams,
+   seconds and appearance sit at the same weight and the same size, so that
+   moving the stir dial and watching ONE of the three numbers change is the
+   whole argument. Nothing here may emphasise one tile over another — a
+   larger or brighter "how much" tile would answer the question the bench is
+   asking.
+
+   ⚠️ The whole instrument is emitted `hidden` (`locked_by:
+   "gate-which-dial"`) and `wireDissolveLab` unhides the section. So
+   `.ks3-dlab` takes no `display` — see the guard at the foot. */
+.ks3-dlab-readouts {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
+  gap: 16px;
+}
+.ks3-dlab-readout,
+.ks3-cryst-tile,
+.ks3-still-gauge {
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-dlab .ks3-dlab-rlabel,
+.ks3-cryst .ks3-cryst-tilelabel,
+.ks3-still .ks3-still-glabel,
+.ks3-dlab .ks3-dlab-caption,
+.ks3-cryst .ks3-cryst-caption {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+/* ⚠️ `--ks3-accent-text`, NOT `--ks3-accent`. Design paints these readouts
+   in the orange and they are 26–30px, so the large-text branch would be
+   legal — but they are the one thing on the bench that CHANGES, they are
+   read as a value rather than as a heading, and `--ks3-accent-text` is
+   6.0:1 against `--ks3-accent`'s 3.4:1 on the same inset. Same ink, one
+   step darker, no visual change worth the name. */
+.ks3-dlab .ks3-dlab-rvalue,
+.ks3-cryst .ks3-cryst-value,
+.ks3-still .ks3-still-gvalue {
+  margin: 8px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--ks3-accent-text);
+}
+.ks3-dlab .ks3-dlab-rvalue { font-size: 30px; }
+.ks3-cryst .ks3-cryst-value { font-size: 27px; }
+.ks3-still .ks3-still-gvalue { font-size: 26px; line-height: 1.15; }
+/* ⚖️ `.ks3-cryst-mass` IS DELIBERATELY GIVEN NOTHING OF ITS OWN. It is the
+   third tile on c3-04's bench, it carries the one authored `recovered_mass`
+   in all nine states, and it is the only readout in C3 with no data hook —
+   there is nothing for the runtime to write into. Painting it differently
+   from the two tiles beside it would argue that the mass is the special
+   one, and the teaching is the exact opposite: the mass is the thing that
+   never moves while everything around it does. */
+.ks3-dlab .ks3-dlab-rnote {
+  margin: 8px 0 0;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--ks3-ink-body);
+}
+/* The beaker. An inset frame carrying the mono caption, and inside it the
+   jar: a THREE-SIDED 2px ink box, open at the top, rounded only at the
+   bottom two corners. That is Design's drawing of a vessel seen from the
+   front and the reason `border-top: 0` is load-bearing rather than tidy. */
+.ks3-dlab-beaker {
+  margin-top: 22px;
+  padding: 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-dlab .ks3-dlab-caption { margin: 0 0 14px; }
+.ks3-dlab-jar {
+  border: 2px solid var(--ks3-ink);
+  border-top: 0;
+  border-radius: 0 0 20px 20px;
+  background: var(--ks3-card);
+  padding: 16px;
+  min-height: 132px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+.ks3-dlab-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-content: flex-start;
+}
+/* Unlike the sorter's, these dots are COMPOSED by `_dlab_dots`, which emits
+   only what varies between two states — the diameter and the colour. The
+   hairline, the pill radius and the refusal to be flex-resized live here,
+   which is what keeps the runtime from having to restate them. */
+.ks3-dlab-dot {
+  display: block;
+  flex: 0 0 auto;
+  border-radius: 99px;
+  border: 1.5px solid var(--ks3-ink);
+}
+/* Undissolved solid on the floor of the beaker, under a dashed rule. Two of
+   the four solutes are insoluble, so this is a reachable, honest state and
+   not an error — nothing here is amber and nothing here is red. */
+.ks3-dlab-bottom {
+  border-top: 2px dashed var(--ks3-rule-strong);
+  padding-top: 10px;
+}
+.ks3-dlab-bottomdots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.ks3-dlab .ks3-dlab-bottomnote {
+  margin: 8px 0 0;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--ks3-ink-muted);
+}
+/* The two "you have now seen the whole thing" summaries — c3-02's after all
+   three temperatures, c3-04's after all three methods. A CARD panel lifted
+   off the block by Design's 6px accent offset, which is the KEY FACT
+   treatment: the hardest-earned sentence on the page, in the same voice as
+   the page's own key fact and not as a verdict on the student. */
+.ks3-dlab-summary,
+.ks3-cryst-summary {
+  margin-top: 16px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+  box-shadow: 6px 6px 0 var(--ks3-accent);
+}
+.ks3-dlab .ks3-dlab-summary p,
+.ks3-cryst .ks3-cryst-summary p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+
+/* ═══ c3-03 `#s-steps` / `#s-build` · sequence-rebuild ══════════════════
+   ONE FAMILY, TWO PHASES, ONE VISUAL SYSTEM. `.ks3-seq-watch` and
+   `.ks3-seq-rebuild` are modifiers this block deliberately gives no
+   declarations of their own: they are the same five records rendered two
+   ways, and a phase that looked different from its own other half would
+   invite the student to read them as two exercises.
+
+   ⚠️ THE STEP'S OPEN AND NEXT TREATMENTS ARE A `:has()` ENHANCEMENT, and
+   the base rule below is a complete, correct resting card without them.
+   Design keys them off component state (`open ? inset : card`, `isNext ?
+   accent : rule`); the built markup carries that state only as `[hidden]`
+   on a DESCENDANT — the body, and the reveal button — and this file uses
+   `:has()` nowhere else and does not introduce a hard dependency on it. A
+   browser without `:has()` gets every step on card with a rule border,
+   which is exactly what steps 2–5 look like in Design's own opening state.
+   Nothing is lost but emphasis; no text and no state word depends on it. */
+.ks3-seq-steps {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ks3-seq-step {
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule);
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.ks3-seq-step:has([data-seq-body]:not([hidden])) { background: var(--ks3-inset); }
+.ks3-seq-step:has(.ks3-seq-open:not([hidden])) { border-color: var(--ks3-accent); }
+/* Numbering, aria-hidden: the `<ol>` already carries the position for a
+   screen reader, so this is the drawn version of a fact that is stated
+   twice. Accent fill under `--ks3-on-dark` is 3.4:1 — an identifying mark
+   against a 3:1 bar, and it is Design's own pairing. */
+.ks3-seq-num,
+.ks3-still-num {
+  flex: 0 0 34px;
+  height: 34px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 17px;
+  background: var(--ks3-band);
+  color: var(--ks3-ink-muted);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-seq-step:has([data-seq-body]:not([hidden])) .ks3-seq-num {
+  background: var(--ks3-accent);
+  color: var(--ks3-on-dark);
+}
+.ks3-seq-stepbody,
+.ks3-still-stagebody {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.ks3-seq .ks3-seq-title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.45;
+  font-weight: 700;
+  color: var(--ks3-ink);
+}
+.ks3-seq .ks3-seq-detail {
+  margin: 10px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+/* The reason. `--ks3-accent-text` at 17px/600 — body size, so this is the
+   6.0:1 token and never `--ks3-accent`. It is a category of sentence ("why
+   this step exists"), not a mark on anything the student did. */
+.ks3-seq .ks3-seq-why {
+  margin: 10px 0 0;
+  font-size: 17px;
+  line-height: 1.55;
+  font-weight: 600;
+  color: var(--ks3-accent-text);
+}
+.ks3-seq-open { margin-top: 12px; }
+
+/* The rebuild half. */
+.ks3-seq-bank {
+  margin-top: 20px;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+/* ⚠️ THE ORDER IS AN `<ol>` AND IT KEEPS ITS NUMBERS. Design's own list is
+   `display: flex; flex-direction: column; gap: 8px` with `padding-left:
+   26px` — and blockification strips `display: list-item` off a flex item,
+   so her markers never render and the 26px of gutter she reserved for them
+   sits empty. The shape she drew is an indented numbered list with 8px
+   between rows; it is reproduced with the numbers, because the whole
+   exercise is "put them in order" and an unnumbered list of five sentences
+   is the one thing that cannot show an order. Reported. */
+.ks3-seq-order {
+  margin: 20px 0 0;
+  padding: 0 0 0 26px;
+  font-size: 19px;
+}
+.ks3-seq .ks3-seq-slot { line-height: 1.5; }
+.ks3-seq .ks3-seq-slot + .ks3-seq-slot { margin-top: 8px; }
+.ks3-seq-foot,
+.ks3-still-controls,
+.ks3-chroma-foot {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.ks3-chroma-foot { margin-top: 20px; }
+/* ⚖️ THE REPORT IS INK AND IT IS NOT A MARK. A wrong order is answered with
+   what happened on the bench — the offending step's own `tooSoon` string —
+   and a right one with the same panel in the same tone. Nothing green,
+   nothing red, no score. It is ink for the same reason the sorter's reveal
+   is ink: it is the consequence arriving, not a judgement being handed
+   down. */
+.ks3-seq-report,
+.ks3-still-result {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+}
+.ks3-seq .ks3-seq-reporttitle,
+.ks3-still .ks3-still-resulttitle {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--ks3-on-dark);
+}
+.ks3-seq .ks3-seq-reporttitle { font-size: 23px; }
+.ks3-still .ks3-still-resulttitle { font-size: 22px; }
+.ks3-seq .ks3-seq-reporttext,
+.ks3-still .ks3-still-resulttext {
+  margin: 12px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ks3-on-dark-body);
+}
+
+/* ═══ c3-04 `#s-bench` · crystal-bench ══════════════════════════════════
+   ⚖️ NINE STATES, ONE MASS. The three tiles below share their whole
+   treatment with c3-02's readouts — see there — and `.ks3-cryst-mass` gets
+   nothing of its own on purpose.
+
+   ⚠️ THE GATE IS PER-RUN AND DOES NOT GO AWAY. It is styled above with the
+   other two amber gates; the run button lives INSIDE it because Design only
+   shows the button once a prediction is in, which is what makes the gate
+   unskippable on all nine states rather than only the first. */
+.ks3-cryst-run { margin-top: 14px; }
+.ks3-cryst-panel { margin-top: 20px; }
+.ks3-cryst-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: 16px;
+}
+/* The evaporating dish. A CARD ground inside an inset-tiled bench, because
+   the dish is the thing being looked into and the tiles are the instruments
+   reading it. The 74px floor keeps the dish the same size whether it holds
+   three big crystals or forty small ones — a dish that shrank with its
+   contents would say the yield had changed, and the yield never changes. */
+.ks3-cryst-dish {
+  margin-top: 18px;
+  padding: 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-cryst .ks3-cryst-caption { margin: 0 0 16px; }
+.ks3-cryst-crystals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  min-height: 74px;
+}
+/* ⚠️ 18px, not the band group's 20px. Design lifts this panel two pixels
+   tighter to the dish above it than the other five band panels sit to what
+   precedes them — the verdict is what the dish just showed, not a separate
+   remark about it. */
+.ks3-cryst-verdict { margin-top: 18px; }
+.ks3-cryst .ks3-cryst-verdict p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+/* The hazard line is the second paragraph of the same panel, one step
+   quieter — it is what the method costs you, not what the run produced. */
+.ks3-cryst .ks3-cryst-verdict p + p {
+  margin-top: 12px;
+  font-size: 18px;
+  color: var(--ks3-ink-body);
+}
+
+/* ═══ c3-04 `#s-jobs` · method-choice · and c3-07 `#s-critique` ═════════
+   Two instruments, one drawing: a column of inset cards, each a statement,
+   a row of one-shot buttons and an ink reveal. Design draws them
+   identically on two different pages, so they are grouped rather than
+   copied. They differ in exactly one place — the critique quotes somebody
+   else's plan and sets it in italic, because it is speech and not the
+   platform's own instruction.
+
+   ⚠️ NEITHER MARKS, and neither payload carries a `correct` key to mark
+   with. A student who chose the other button reads the same panel in the
+   same tone and works out the difference. */
+.ks3-mchoice,
+.ks3-critiq {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ks3-mchoice-item,
+.ks3-critiq-item,
+.ks3-mpb-sample {
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-mchoice .ks3-mchoice-task {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.5;
+  font-weight: 700;
+  color: var(--ks3-ink);
+}
+/* ⚠️ 4px, because the flex column above already supplies 16 of Design's 20.
+   The close is a direct child of the same `display: flex` list the four
+   judgements sit in, so the container's `gap: 16px` is already between it
+   and the last card; the band group's own 20px would put 36px there. */
+.ks3-critiq .ks3-critiq-close { margin-top: 4px; }
+.ks3-critiq .ks3-critiq-step {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.55;
+  font-style: italic;
+  color: var(--ks3-ink);
+}
+.ks3-mchoice-opts,
+.ks3-critiq-opts,
+.ks3-chroma-pens,
+.ks3-mpb-verdicts {
+  margin-top: 14px;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+.ks3-mchoice-reveal,
+.ks3-critiq-reveal {
+  margin-top: 14px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+}
+.ks3-mchoice .ks3-mchoice-answer,
+.ks3-critiq .ks3-critiq-answer {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 19px;
+  line-height: 1.3;
+  color: var(--ks3-on-dark);
+}
+.ks3-mchoice .ks3-mchoice-why,
+.ks3-critiq .ks3-critiq-why {
+  margin: 8px 0 0;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+
+/* ═══ c3-05 `#s-still` · still-run ══════════════════════════════════════
+   ⚖️ THE NO-COOLING BRANCH IS DRAWN AT FULL WEIGHT. Turning the condenser
+   off is a reachable state that separates the mixture perfectly and
+   collects nothing, and it is the argument of the lesson — so
+   `[data-still-warm]` is a `.ks3-still-stagetext` like any other and takes
+   no warning treatment of any kind. It is not an error and it must not look
+   like one. Amber here would say the student had done something wrong; what
+   they have done is exactly one of distillation's two jobs.
+
+   The stage list is the same idiom as c3-03's stepper at one size down —
+   Design's own 30px chip against 34px, 16px/18px padding against 20px/22px,
+   16px radius against `--ks3-r-panel`. Same `:has()` note applies. */
+.ks3-still-body { margin-top: 22px; }
+.ks3-still-gauges {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 14px;
+}
+.ks3-still-gauge { padding: 18px 20px; }
+.ks3-still-stages {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ks3-still-stage {
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule);
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.ks3-still-stage:has([data-still-stagebody]:not([hidden])) { background: var(--ks3-inset); }
+.ks3-still-num {
+  flex: 0 0 30px;
+  height: 30px;
+  border-radius: 10px;
+  font-size: 15px;
+}
+.ks3-still-stage:has([data-still-stagebody]:not([hidden])) .ks3-still-num {
+  background: var(--ks3-accent);
+  color: var(--ks3-on-dark);
+}
+.ks3-still .ks3-still-stagetitle {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.5;
+  font-weight: 700;
+  color: var(--ks3-ink);
+}
+.ks3-still .ks3-still-stagetext {
+  margin: 8px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+
+/* ═══ c3-06 `#s-lab` · chroma-run ═══════════════════════════════════════
+   ⚖️ THE LANES ARE PROPORTIONAL AND THE SCROLLER IS THE 390px TRANSLATION.
+   Every spot is placed by `bottom: <baseline + rf × span>%` off
+   `lane_geometry`, so a photographed chromatogram can replace the drawing
+   without a payload change; the only absolute number in the figure is the
+   strip's authored `height_px`, which arrives inline.
+
+   Design's five lanes are `flex: 1` in a row, which at 390px gives each one
+   about 50px — narrower than a spot's own label and too narrow to compare
+   heights across, which is the entire task. `min-width: 64px` plus
+   `overflow-x: auto` ON THE LANE ROW keeps the comparison readable and
+   keeps the scrolling inside the figure: the PAGE never scrolls sideways,
+   which is the requirement. */
+.ks3-chroma-paper {
+  margin-top: 22px;
+  padding: 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-chroma-lanes {
+  display: flex;
+  gap: 14px;
+  align-items: flex-end;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.ks3-chroma-lane {
+  flex: 1 1 0;
+  min-width: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+/* ⚠️ Design paints the strip `var(--ks3-paper-strip, #FFFDF8)` and
+   `--ks3-paper-strip` does not exist in `shared/tokens.css` — every page
+   she delivered renders the literal fallback. Rule 1 of this file forbids a
+   raw palette value here, and #FFFDF8 against `--ks3-card` #FFFCF5 is a
+   difference of two units on one channel, invisible on any screen. The
+   strip is defined by its 2px ink outline in Design's drawing and it still
+   is. Reported rather than minting a token for a value nobody chose. */
+.ks3-chroma-strip {
+  position: relative;
+  width: 100%;
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+  border-radius: 6px;
+}
+/* The pencil baseline. `--ks3-rule-strong` on `--ks3-card` measures 2.05:1
+   and it STAYS THAT WAY, deliberately and against the 3:1 bar for an
+   identifying mark, for two reasons that are both the lesson's.
+
+   A pencil line on paper IS faint — that is why pencil is used: graphite is
+   insoluble, so it stays where you drew it and it barely shows. And the
+   FAULT state is the contrast: Design draws the pen baseline 3px and dark,
+   because a pen line climbs the paper and smears its own dyes across every
+   lane. Darkening the pencil line towards the 3:1 bar would make the clean
+   run look like the ruined one, which is the one comparison this figure
+   exists to make.
+
+   Nothing rides on it: the span is `aria-hidden` inside a `role="img"`
+   whose label is swapped per outcome and describes the whole chromatogram
+   in words, and the outcome panel below names which of the three decisions
+   ruined the run. R2 is satisfied by the words, not by this. */
+.ks3-chroma-baseline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--ks3-rule-strong);
+}
+/* A spot. The `bottom` and the `background` are the payload's, inline; the
+   geometry is Design's clean-run spot and lives here so the runtime has one
+   thing to change per state rather than six. */
+.ks3-chroma-spot {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 58%;
+  height: 16px;
+  border-radius: 99px;
+  opacity: .85;
+}
+.ks3-chroma .ks3-chroma-lanelabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--ks3-ink-muted);
+}
+/* ⚖️ THE FOUR OUTCOMES ARE ONE PANEL IN ONE TONE. Three of them are ruined
+   runs and one is a clean one, and they take the same band ground and the
+   same type — because each fault names WHICH DECISION caused it, and none
+   of them says the student was wrong. A ruined run painted in amber would
+   turn a diagnosis into a mark. */
+.ks3-chroma-outcomes { margin-top: 18px; }
+.ks3-chroma-outcome { margin-top: 0; }
+.ks3-chroma .ks3-chroma-outtitle {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 21px;
+  line-height: 1.3;
+  color: var(--ks3-ink);
+}
+.ks3-chroma .ks3-chroma-outtext {
+  margin: 10px 0 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+/* The forensic question. An INSET panel — a second question inside the
+   bench rather than a result of it — and its answer arrives on ink like
+   every other reveal in the unit. */
+.ks3-chroma-verdict {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-chroma .ks3-chroma-ask,
+.ks3-mpb .ks3-mpb-ask {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--ks3-ink);
+}
+.ks3-chroma .ks3-chroma-note {
+  margin: 8px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+.ks3-chroma-say,
+.ks3-mpb-say {
+  margin-top: 16px;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+}
+.ks3-chroma .ks3-chroma-saytitle,
+.ks3-mpb .ks3-mpb-saytitle {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 21px;
+  line-height: 1.25;
+  color: var(--ks3-on-dark);
+}
+.ks3-chroma .ks3-chroma-saytext,
+.ks3-mpb .ks3-mpb-saytext {
+  margin: 10px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ks3-on-dark-body);
+}
+
+/* ═══ c3-07 `#s-bench` · melting-point-bench ════════════════════════════
+   ⚖️ THE ANOMALY IS REPORTED, NOT DELETED, AND THE TABLE IS WHERE THAT
+   HAPPENS. Batch 3's odd run sits in the table at full weight, in the same
+   type as its two neighbours, and only its RANGE cell is marked wide. There
+   is no strike-through, no dimming and no colour that would let a student
+   read "ignore this row" off the page.
+
+   ⚖️ AND A WIDE RANGE IS `--ks3-accent-text` AT 700, NEVER AMBER AND NEVER
+   RED. It is the reading the whole lesson turns on — a pure sample melts
+   sharply, an impure one melts over a range — so it is a DATUM being
+   emphasised, not a warning and not a mark. #A93411 on `--ks3-inset`
+   measures 5.9:1, and the emphasis carries a second signal in the weight as
+   well as the hue (R2). */
+.ks3-mpb-foot { margin-top: 18px; }
+.ks3-mpb-data { margin-top: 22px; }
+.ks3-mpb-samples {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ks3-mpb .ks3-mpb-name {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 21px;
+  line-height: 1.25;
+  color: var(--ks3-ink);
+}
+.ks3-mpb-table {
+  margin-top: 14px;
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 32rem;
+  font-family: var(--ks3-font-mono);
+  font-size: 17px;
+}
+.ks3-mpb .ks3-mpb-table th {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 2px solid var(--ks3-ink);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+  white-space: nowrap;
+}
+.ks3-mpb .ks3-mpb-table td {
+  padding: 8px 10px;
+  border-bottom: 2px solid var(--ks3-rule);
+  color: var(--ks3-ink);
+  white-space: nowrap;
+}
+.ks3-mpb .ks3-mpb-range[data-mpb-wide="1"] {
+  color: var(--ks3-accent-text);
+  font-weight: 700;
+}
+/* The verdict question sits on CARD inside an inset-carded bench — Design's
+   own inversion, and it is doing a job: the three sample panels above are
+   the data, and this is the page asking you to read it. */
+.ks3-mpb-verdict {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+
+/* ── 390px ─────────────────────────────────────────────────────────────
+   The reference set is desktop-first and every rule here is a translation
+   decision, stated as one.
+
+   ⚠️ THE MELTING-POINT TABLE IS THE ONLY THING IN C3 THAT CANNOT FIT, and
+   the breakpoint is MEASURED rather than guessed. Four columns of 17px DM
+   Mono, `white-space: nowrap`, need 433px of content; the sample panel it
+   sits in offers viewport − 168px once the lesson rail stops being capped.
+   433 + 168 = 601, so the table overflows every viewport under about 600px
+   and 34rem (544px) would have left a 56px band where it still spilled.
+   40rem (640px) clears it with room, and is the honest number.
+
+   Below it the table becomes its own scroller — GitHub's proven form,
+   which keeps the cells laid out as a table while the block around them
+   scrolls — rather than wrapping "52.5 °C" onto two lines or shrinking a
+   readable measurement to 12px. The PAGE still does not scroll sideways.
+   The cost, between 544px and 640px, is that the table sizes to its
+   content (433px) instead of stretching to Design's `width: 100%`; a
+   39-pixel-narrower data table on a small tablet is the right side of that
+   trade.
+
+   The grids above need nothing here: every one is `auto-fit` over
+   `minmax(min(Npx, 100%), 1fr)` and collapses to one column on its own,
+   and the chromatography lanes carry their own `overflow-x: auto` at every
+   width. */
+@media (max-width: 40rem) {
+  .ks3-mpb-table {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  /* A 44px tap target that has been squeezed to fit is not a tap target, so
+     the control rows keep their gap and wrap instead. */
+  .ks3-psort-opts,
+  .ks3-mchoice-opts,
+  .ks3-critiq-opts,
+  .ks3-chroma-pens,
+  .ks3-mpb-verdicts,
+  .ks3-seq-bank { gap: 10px; }
+}
+
+/* ── the `[hidden]` guard, and it is LAST on purpose ───────────────────
+   An author `display` beats the UA stylesheet's `[hidden] { display: none }`
+   at ANY specificity, and this unit is built on emit-both-show-one: the
+   whole locked bench, every reveal, every per-mixture panel, every outcome,
+   every verdict and the melting-point rows beyond the opening repeat count
+   are all in the document and hidden. Several of the rules above set
+   `display` on elements that also take `[hidden]` — `.ks3-cryst-panel`'s
+   descendants, `.ks3-still-stages`, `.ks3-mpb-samples`, `.ks3-critiq`'s
+   items — so the guard is written at (0,2,0) and placed at the END of this
+   block, where source order settles the ties in its favour.
+
+   `.ks3-dlab[hidden]` is called out separately because it is the WRAPPER
+   that is hidden, not a descendant: the bench does not open until
+   `gate-which-dial` is answered, and `demo_mode` is authored `false`. */
+.ks3-psort [hidden],
+.ks3-dlab [hidden],
+.ks3-seq [hidden],
+.ks3-cryst [hidden],
+.ks3-mchoice [hidden],
+.ks3-still [hidden],
+.ks3-chroma [hidden],
+.ks3-critiq [hidden],
+.ks3-mpb [hidden] { display: none; }
+.ks3-dlab[hidden] { display: none; }
+
+/* ═══ END C3 ═══ */

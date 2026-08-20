@@ -19,11 +19,11 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | Status | Figures |
 |---|---|
 | `drafted` | 1 |
-| `drawn` | 18 |
+| `drawn` | 19 |
 | `final` | 1 |
-| `needed` | 2 |
+| `needed` | 3 |
 | `retired` | 6 |
-| **Total** | **28** |
+| **Total** | **30** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -59,3 +59,5 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | B9 | `disturbing-a-food-web` | `b9-oak-wood-web` | diagram | `drawn` | The wood, before anything is taken out of it. Count the arrows into and out of each organism before you choose one to remove — the ones with a single line are not always the ones that matter least. |
 | B9 | `food-chains-and-food-webs` | `b9-oak-wood-web-thread` | diagram | `drawn` | One oak wood.  The numbered orange chain is one route through it — the same four steps the bench above climbs. |
 | B9 | `predator-and-prey` | `b9-predator-prey-cycle` | diagram | `drawn` | The fox line is still going up while the rabbit line is already coming down, and it does not turn over until years later. That gap is the whole idea: foxes cannot become more foxes the moment there is more to eat — breeding takes time — so the fox peak always follows the rabbit peak rather than arriving with it. Look at when each peak happens, not how high it is: the two are counted on their own scales. |
+| C3 | `distillation` | `c3-distillation-apparatus` | diagram | `needed` | Distillation apparatus: round-bottomed flask over a Bunsen with anti-bumping granules, thermometer bulb level with the side arm, Liebig condenser with cold water entering at the bottom and leaving at the top, and a beaker collecting the distillate. The apparatus is open to the air at the collecting end. |
+| C3 | `filtration` | `particle-panels` | diagram | `drawn` | A grain of sand is a lump of many millions of particles stuck together, thousands of times wider than the gaps between the paper's fibres. A dissolved salt particle is on its own, and it is smaller than the gap by more than the gap is smaller than the grain. There is no filter paper that stops one and passes the other. |

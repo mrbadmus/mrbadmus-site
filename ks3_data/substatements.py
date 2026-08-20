@@ -318,6 +318,48 @@ SUBSTATEMENTS = {
         ("b", "How that difference in competitive success, repeated over "
               "generations, drives natural selection.", "B11"),
     ],
+    # Minted for C3 (2026-08-20, MRB-272). The bullet reads:
+    #   "mixtures, including dissolving"
+    # The bullet's own "including" is the seam, and it is the same seam
+    # NOTES-C3 §1 splits on: what a mixture IS, and then the one kind of
+    # mixture the statutory wording singles out. Teaching both in one sitting
+    # is what produces students who think dissolving is the definition of
+    # mixing — a student who has only met sugar in tea does not recognise air,
+    # sea water or a rock as mixtures at all.
+    "KS3.C.PIS.02": [
+        ("a", "Mixtures: two or more substances together but not chemically "
+              "joined, in any proportion, and separable again without a "
+              "reaction.", "C3"),
+        ("b", "Dissolving, and what a solution is — the kind of mixture the "
+              "bullet names.", "C3"),
+    ],
+    # Minted for C3 (2026-08-20, MRB-272). The bullet reads:
+    #   "simple techniques for separating mixtures: filtration, evaporation,
+    #    distillation and chromatography"
+    # ⚠️ THIS BULLET NAMES ITS OWN CLAUSES, IN ORDER, AND C3 GIVES EACH ONE A
+    # LESSON. The sub-IDs are allocated in the order the bullet prints them,
+    # which is also the order the unit teaches them.
+    #
+    # The alternative — one "separating mixtures" lesson owning the parent —
+    # is what §4.2 calls two lessons wearing one title, and here it would be
+    # four. Each technique has its own apparatus, its own failure modes and
+    # its own answer to "what can this one separate that the last one could
+    # not", which is the thread the unit is actually built on.
+    #
+    # These four are minted for the BOOKKEEPING, not to make a claim about
+    # what may be repeated: a fact taught in four lessons is taught four
+    # times on purpose. What `covers` records is which lesson is answerable
+    # for a clause, and four techniques have four answerable lessons.
+    "KS3.C.PIS.04": [
+        ("a", "Filtration: separating an insoluble solid from a liquid.",
+         "C3"),
+        ("b", "Evaporation and crystallisation: recovering a dissolved solid "
+              "from its solution.", "C3"),
+        ("c", "Distillation: recovering the solvent, or separating liquids "
+              "by boiling point.", "C3"),
+        ("d", "Chromatography: separating substances dissolved in the same "
+              "solvent from each other.", "C3"),
+    ],
 }
 
 

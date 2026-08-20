@@ -44,6 +44,7 @@ read. It catches a field authored and then forgotten. The browser-driven
 assertions in verify_ks3.py are what cover the rest.
 """
 
+import glob
 import re
 import sys
 
@@ -81,6 +82,49 @@ SOURCES = (
     "ks3_data/b5/__init__.py", "ks3_data/b6/__init__.py",
     "ks3_data/b7/__init__.py",
 )
+
+
+def _discovered_sources():
+    """`SOURCES`, plus the two families of file that must never be listed.
+
+    ⊕ MRB-272 (C3, 20 Aug 2026). THIS LIST WENT BLIND AT MRB-271 AND NOTHING
+    SAID SO.
+
+    The split moved 20,242 lines — 322 symbols, every unit's drawers and
+    instruments — out of `build_ks3.py` and into `ks3_art/<unit>.py`. Those
+    renderers are where an instrument's payload keys are actually read, and
+    `SOURCES` names `build_ks3.py` and not one file in `ks3_art/`. So from
+    MRB-271 onward the audit could not see a renderer read site at all, and
+    every instrument key in every unit built since was reportable as dead.
+
+    Measured on C3 before the fix: **135 keys "read by nothing"**, essentially
+    the whole of nine instruments' payloads, every one of them read in
+    `ks3_art/c3.py`. That is the false POSITIVE the comments above already
+    identify as the failure mode that gets a gate switched off — three
+    separate amendments (MRB-244, MRB-245 twice) are each one more file
+    hand-added after it bit someone.
+
+    So the fix is the one MRB-271 itself used: DISCOVER, DO NOT LIST. A
+    hand-written list of read sites is a shared file that every lane must
+    remember to edit, and the evidence of this file's own history is that
+    nobody does. Two families are globbed:
+
+      ``ks3_art/*.py``            every unit's drawers and instruments
+      ``ks3_data/*/__init__.py``  every unit's normaliser
+
+    `SOURCES` keeps its explicit entries for everything else, because those
+    are genuinely a fixed set rather than a growing one.
+
+    ⚠️ This makes the gate see MORE read sites, so it can only ever report
+    FEWER dead keys. It cannot mask a real one: a key still has to be
+    mentioned somewhere in a file that actually runs.
+    """
+    paths = list(SOURCES)
+    for pattern in ("ks3_art/*.py", "ks3_data/*/__init__.py"):
+        paths.extend(sorted(glob.glob(pattern)))
+    # dict.fromkeys rather than set(): the order is what makes a run
+    # reproducible, and `SOURCES` first keeps the explicit entries explicit.
+    return tuple(dict.fromkeys(paths))
 
 
 def _keys(node, out):
@@ -199,7 +243,7 @@ def deref_maps(reads):
     be dereferenced, so its keys are not freed either.
     """
     found, alias = set(), {}
-    for path in SOURCES:
+    for path in _discovered_sources():
         try:
             with open(path, "r", encoding="utf-8") as fh:
                 src = fh.read()
@@ -238,7 +282,7 @@ def dereferenced_map_reads(node, deref, out, key=None):
 def read_sites():
     """Every identifier the generator, runtime, gates and data layer mention."""
     seen = set()
-    for path in SOURCES:
+    for path in _discovered_sources():
         try:
             with open(path, "r", encoding="utf-8") as fh:
                 src = fh.read()
