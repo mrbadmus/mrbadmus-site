@@ -26688,8 +26688,15 @@ def _rung_self(slug, key, num, name, q):
             # Emitting the attribute rather than adding it in JS means the
             # control is never briefly live in the window before a 700 KB
             # deferred script runs.
+            # ⊕ MRB-269 phase 4a (Mide, 20 Aug 2026) — this button used to
+            # read "Check my answer". Nothing checks it: the student writes
+            # prose, this reveals the success criteria, and the student marks
+            # themselves against them. A label promising a check implied a
+            # verdict the platform never had — the same false claim the
+            # payload was making in `is_correct`, made in words. "Complete" is
+            # what the button actually does.
             '<button type="button" class="ks3-check-btn" data-check '
-            'aria-expanded="false" disabled>Check my answer</button>'
+            'aria-expanded="false" disabled>Complete</button>'
             '<ul class="ks3-ticks" hidden data-ticks role="list">%s</ul>'
             '<p class="ks3-tally" hidden data-tally role="status"></p>'
             '</div>'

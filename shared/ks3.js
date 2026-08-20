@@ -126,7 +126,24 @@
         // which is what the columns mean there: there were no criteria.
         criteria_met: r.criteriaMet || null,
         criteria_total: r.criteriaTotal == null ? null : r.criteriaTotal,
-        is_correct: !!r.met,
+        /* ⊕ MRB-269 phase 4a (Mide, 20 Aug 2026). This line used to read
+             is_correct: !!r.met,
+           on every rung. On a SELF-marked rung `r.met` means one thing only:
+           the student ticked every box. Nothing here reads their prose, so
+           this page cannot know whether the answer is right — and it said
+           `true` anyway. The proof is in the data it wrote: a `produce` rung
+           whose answer was "test tsgd test tesb,da,hsc czlg test tsgd" landed
+           as is_correct=true.
+
+           Null is the honest value, and the column was made nullable to hold
+           it (migration 20260820002…). What the student CLAIMED is already
+           carried, in `criteria_met` / `criteria_total`, and that is real
+           data — it is the claim that is being labelled as a claim.
+
+           `got` is deliberately NOT touched: the student's own screen still
+           scores all four rungs, which is what R8 ruled and what the ladder's
+           "You marked rungs 3 and 4 yourself" line already discloses. */
+        is_correct: r.mode === "self" ? null : !!r.met,
         time_spent_seconds: r.timeSpent
       };
     });
@@ -848,7 +865,7 @@
         setHidden(tally, true);
         if (checkBtn) {
           checkBtn.setAttribute("aria-expanded", "false");
-          checkBtn.textContent = "Check my answer";
+          checkBtn.textContent = "Complete";
         }
         gate();
       }
