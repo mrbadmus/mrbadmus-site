@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pure or mixture? · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Mixtures and separation</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Pure or mixture?</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Mixtures and separation · Classify</p>
+        <h1>Pure or mixture?</h1>
+        <p class="ks3-bigq">A carton of juice, a gold ring and a bottle of lab water all claim to be pure. Only one of them is — so what is the chemist actually asking?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>One of these two labels means nothing to a chemist.</h2>
+        <p class="ks3-hook-prompt">A carton says <strong>100% pure orange juice</strong>. A bottle in the lab says <strong>distilled water</strong>. Both are honest labels. Only one of them describes something a chemist would call pure.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Which one is pure, and what is the word doing in the other?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">The water is pure. The juice contains water, three different sugars, citric acid, pulp, vitamin C and more — dozens of substances, and no two cartons contain quite the same amounts. On the carton, <em>pure</em> means nothing was added to it. To a chemist it means something far stricter: one substance, and nothing else.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>A <strong>pure substance</strong> contains one substance and nothing else — every particle in it is the same kind. A <strong>mixture</strong> contains two or more substances that are not chemically joined, and its recipe can be varied: you can make sea water saltier, or brass with more copper in it, and it is still sea water and still brass.</p>
+        <p>That second half is the useful test. A pure substance has a <strong>fixed composition</strong> you cannot change without turning it into something else. A mixture does not.</p>
+      </section>
+
+      <section id="s-sorter" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">Your turn · eight samples on the bench</p>
+            <h2 style="margin: 6px 0 0;">Pure, or mixture? Decide on all eight.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-accent-text);">{{ tally }}</p>
+        </div>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Commit before you read the answer. Three of these are labelled or sold as pure and are not; one of them you cannot even see.</p>
+
+        <div style="margin-top: 22px; display: grid; grid-template-columns: repeat(auto-fit, minmax(272px, 1fr)); gap: 16px;">
+          <sc-for list="{{ samples }}" as="sample" hint-placeholder-count="8">
+            <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink); display: flex; flex-direction: column;">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ sample.num }}</p>
+              <p style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.25; letter-spacing: -.02em;">{{ sample.name }}</p>
+              <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.5; color: var(--ks3-ink-body);">{{ sample.look }}</p>
+
+              <sc-if value="{{ sample.showDots }}" hint-placeholder-val="{{ true }}">
+                <span role="img" aria-label="{{ sample.diagramLabel }}" style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 14px; max-width: 200px;">
+                  <sc-for list="{{ sample.dots }}" as="d" hint-placeholder-count="12">
+                    <span style="{{ d.style }}"></span>
+                  </sc-for>
+                </span>
+              </sc-if>
+
+              <sc-if value="{{ sample.showIngredients }}">
+                <p style="margin: 12px 0 0; font-size: 16px; line-height: 1.5; color: var(--ks3-ink-muted);">{{ sample.ingredients }}</p>
+              </sc-if>
+
+              <div style="margin-top: 16px; display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ sample.buttons }}" as="b" hint-placeholder-count="2">
+                  <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" disabled="{{ b.disabled }}" style="{{ b.style }}">{{ b.label }}</button>
+                </sc-for>
+              </div>
+
+              <sc-if value="{{ sample.open }}">
+                <div data-arrive="1" style="margin-top: 14px; padding: 16px 18px; border-radius: 16px; background: var(--ks3-ink); color: var(--ks3-on-dark);">
+                  <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px; line-height: 1.25;">{{ sample.verdict }}</p>
+                  <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ sample.why }}</p>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ allDecided }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">Four pure, four mixtures — and not one of the eight was settled by looking at it. The gold ring, the milk and the juice all look completely uniform and all three are mixtures; the oxygen is invisible and is pure. Every verdict came down to the same question: is there one substance in there, or more than one?</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">A pure substance contains only one substance, in a fixed composition. A mixture contains more than one, in any proportion you like — and looking uniform is no evidence either way.</p>
+      </div>
+
+      <section id="s-words" class="ks3-block ks3-keywords" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Four words</p>
+        <p class="ks3-keywords-lead">Say your answer out loud before you turn each card over. If you cannot say it, you do not know it yet.</p>
+        <ul class="ks3-cards">
+          <sc-for list="{{ cards }}" as="card" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="{{ card.className }}" onClick="{{ card.onClick }}">
+                <span class="ks3-card-front">{{ card.front }}</span>
+                <span class="ks3-card-back" hidden="{{ card.hidden }}">
+                  <span class="ks3-card-def">{{ card.def }}</span>
+                  <span class="ks3-card-note">{{ card.note }}</span>
+                </span>
+                <span class="ks3-card-hint">Say it, then tap</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“It says 100% pure on the carton, and there is nothing bad in it, so it is pure.”</p>
+        <p style="max-width: 54ch;">Everything in that sentence is true about the juice. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">The carton is not lying. In food labelling, <em>pure</em> means nothing was added — no water, no sugar, no preservative. It is a promise about what was <strong>put in</strong>. A chemist's <em>pure</em> is a claim about what is <strong>there</strong>: one substance only. Orange juice fails that on its own, with nothing added at all.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">The same word is used for clean, safe, natural and untouched, and none of those are chemistry. Distilled water is pure and will keep you alive for about a week before something else kills you. Pure sodium is pure and will set fire to your hand. <strong>Pure says how many substances, not how good.</strong></p>
+          </div>
+        </sc-if>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>A pure substance contains one substance only, and its composition is fixed. A mixture contains two or more substances, not chemically joined, in proportions you can vary. Neither can be identified by looking: air and oxygen are both invisible, and only one of them is pure.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Chemists and food labels are both allowed their meanings, and the law is on the label's side: in the UK, calling a juice "100% pure" is a claim that nothing was added, not a claim about composition. The chemist's version is the one that matters when it has to work — paracetamol is sold at 99.9% purity, and the missing 0.1% is checked, named and limited, because a tablet is swallowed by someone who cannot inspect it.</p>
+          <p>Some things are deliberately made impure. Pure gold is soft enough to mark with a fingernail, so a ring is an alloy — 9-carat gold is only 37.5% gold, and it lasts. Pure iron is soft too; adding a little carbon makes steel. In the same way, road salt is not pure sodium chloride, and that is on purpose. Mixtures designed for a job have their own name at GCSE: formulations.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c2-06-conservation-of-mass.html">Conservation of mass<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c3-02-dissolving-and-solutions.html">Dissolving and solutions<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Pure substances have sharp melting points, and mixtures designed for a job — paints, fuels, alloys, medicines — are called formulations.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still not sure why the gold ring counts as a mixture?</p>
+          <a class="ks3-tutor-cta" href="#s-sorter">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showParticles&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;The sample bench&quot;},&quot;revealIngredients&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;The sample bench&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Two labels', short: 'HOOK' },
+  { id: 's-sorter', label: 'Eight samples', short: 'SORT' },
+  { id: 's-words', label: 'Four words', short: 'WORDS' },
+  { id: 's-think', label: 'Pure juice', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const BLUE = '#2F5D8A';
+const ORANGE = '#E4572E';
+const GREY = '#8C8377';
+
+function dots(spec) {
+  const out = [];
+  spec.forEach((part) => {
+    for (let i = 0; i < part.n; i += 1) {
+      out.push({ style: 'display:block;width:' + (part.big ? 15 : 11) + 'px;height:' + (part.big ? 15 : 11) +
+        'px;border-radius:99px;background:' + part.c + ';border:1.5px solid var(--ks3-ink);' });
+    }
+  });
+  return out;
+}
+
+const SAMPLES = [
+  { id: 'water', name: 'Distilled water', pure: true,
+    look: 'A colourless liquid from the bottle on the prep-room shelf.',
+    ingredients: 'Water and nothing else.',
+    dots: dots([{ n: 14, c: BLUE }]),
+    diagramLabel: 'A particle diagram of distilled water: fourteen identical particles, all the same kind.',
+    verdict: 'Pure.',
+    why: 'One substance. Every particle in the bottle is a water particle, and you cannot make it more or less watery.' },
+  { id: 'juice', name: 'Orange juice, "100% pure"', pure: false,
+    look: 'Cloudy orange, straight from the carton in the fridge.',
+    ingredients: 'Water, three sugars, citric acid, pulp, vitamin C, and more.',
+    dots: dots([{ n: 7, c: BLUE }, { n: 3, c: ORANGE, big: true }, { n: 2, c: GREY }, { n: 2, c: ORANGE }]),
+    diagramLabel: 'A particle diagram of orange juice: mostly water particles with several different other kinds mixed among them.',
+    verdict: 'Mixture.',
+    why: 'Dozens of substances, and the amounts differ between oranges. Nothing was added — that is what the label claims — but plenty is in there.' },
+  { id: 'sea', name: 'Sea water', pure: false,
+    look: 'Clear, colourless, and it tastes of salt.',
+    ingredients: 'Water with sodium chloride and several other salts dissolved in it.',
+    dots: dots([{ n: 11, c: BLUE }, { n: 3, c: ORANGE }]),
+    diagramLabel: 'A particle diagram of sea water: water particles with a few dissolved salt particles spread evenly among them.',
+    verdict: 'Mixture.',
+    why: 'The Dead Sea is nine times saltier than the Atlantic and both are sea water. A composition you can vary is the signature of a mixture.' },
+  { id: 'oxygen', name: 'Oxygen from a cylinder', pure: true,
+    look: 'Invisible. You cannot see it, smell it or taste it.',
+    ingredients: 'Oxygen and nothing else.',
+    dots: dots([{ n: 9, c: GREY }]),
+    diagramLabel: 'A particle diagram of oxygen gas: nine identical particles, far apart.',
+    verdict: 'Pure.',
+    why: 'Being invisible tells you nothing about purity. This cylinder holds one substance; the air outside it holds several.' },
+  { id: 'sugar', name: 'Granulated sugar', pure: true,
+    look: 'White crystals from a paper bag.',
+    ingredients: 'Sucrose and nothing else.',
+    dots: dots([{ n: 12, c: ORANGE, big: true }]),
+    diagramLabel: 'A particle diagram of sugar: twelve identical large particles packed in a regular arrangement.',
+    verdict: 'Pure.',
+    why: 'A bag of sugar is one substance, sucrose, refined until nothing else is left. Being made in a factory does not make it impure.' },
+  { id: 'air', name: 'Air', pure: false,
+    look: 'Invisible, exactly like the oxygen.',
+    ingredients: 'Nitrogen, oxygen, argon, carbon dioxide, water vapour.',
+    dots: dots([{ n: 6, c: BLUE }, { n: 2, c: GREY }, { n: 1, c: ORANGE }]),
+    diagramLabel: 'A particle diagram of air: mostly nitrogen particles with fewer oxygen particles and one other kind among them.',
+    verdict: 'Mixture.',
+    why: 'Several gases, and the proportions change with where you are standing. Two invisible samples, two different answers.' },
+  { id: 'ring', name: 'A 9-carat gold ring', pure: false,
+    look: 'Uniform, shiny, gold-coloured all the way through.',
+    ingredients: '37.5% gold, the rest copper and silver.',
+    dots: dots([{ n: 5, c: ORANGE, big: true }, { n: 6, c: GREY, big: true }, { n: 3, c: BLUE, big: true }]),
+    diagramLabel: 'A particle diagram of 9-carat gold: three different kinds of particle packed together in one regular arrangement.',
+    verdict: 'Mixture.',
+    why: 'Under a third of it by count is gold. It is uniform, hard-wearing and worth having — and it is a mixture, on purpose.' },
+  { id: 'milk', name: 'Milk', pure: false,
+    look: 'Uniform white, with no bits you can pick out.',
+    ingredients: 'Water, fats, proteins, sugars, minerals.',
+    dots: dots([{ n: 8, c: BLUE }, { n: 3, c: GREY, big: true }, { n: 3, c: ORANGE }]),
+    diagramLabel: 'A particle diagram of milk: water particles with larger fat particles and other kinds dispersed through them.',
+    verdict: 'Mixture.',
+    why: 'Leave it to stand and the cream rises, which no pure substance ever does. Looking uniform is not the same as being one substance.' }
+];
+
+const CARDS = [
+  { front: 'Pure substance', def: 'A substance containing only one substance — every particle the same kind.', note: 'Fixed composition. You cannot make it more or less of itself.' },
+  { front: 'Mixture', def: 'Two or more substances together, not chemically joined.', note: 'The proportions can be varied and it is still the same mixture.' },
+  { front: 'Composition', def: 'What a sample is made of, and how much of each.', note: 'Fixed for a pure substance; adjustable for a mixture.' },
+  { front: 'Impurity', def: 'Anything present that is not the substance you wanted.', note: 'Not the same as dirt. An impurity can be perfectly clean.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'What does a chemist mean by a pure substance?',
+    options: [
+      { text: 'It contains only one substance', correct: true },
+      { text: 'It has had nothing added to it', correction: 'That is the food-label meaning. Orange juice has had nothing added and contains dozens of substances.' },
+      { text: 'It is clean and safe to drink or eat', correction: 'Pure sodium will set fire to your hand and pure carbon monoxide will kill you. Purity is a count, not a safety rating.' },
+      { text: 'It is natural rather than made in a factory', correction: 'Sea water is natural and is a mixture; factory-refined sugar is pure. Where it came from is not the test.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'Which one of these is a pure substance?',
+    options: [
+      { text: 'Nitrogen from a gas cylinder', correct: true },
+      { text: 'Sea water that has been filtered until it is completely clear', correction: 'Filtering removed the bits you could see. Everything dissolved in it is still there — clear is not pure.' },
+      { text: 'Rainwater collected in a clean jar', correction: 'Rain falls through the atmosphere and arrives with dissolved gases and dust in it. Clean, and still a mixture.' },
+      { text: 'Milk labelled "no additives"', correction: '"No additives" is a promise about what was put in. Milk is water, fats, proteins and sugars before anyone adds anything.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A student filters sea water until it is completely clear and says "it is pure now — look at it". Explain why the sample is not pure, and what the clearness does tell you.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Filtering removed…',
+    criteria: [
+      'Says the salt is dissolved, so it passes straight through the filter paper.',
+      'Says the sample still contains more than one substance, so it is still a mixture.',
+      'Says clearness only tells you there are no undissolved bits left.',
+      'Gives a test that would show the salt is still there — taste, boil it dry, or weigh what is left.',
+      'Notes that "looks uniform" is never evidence of purity.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A bottle of mineral water lists fourteen dissolved minerals on the label and calls itself pure. A ring is sold as 9-carat gold and is only 37.5% gold. Neither seller is breaking the law. Explain what "pure" is doing in the first case, why the ring is deliberately not pure, and what a chemist would say about both.',
+    fieldLabel: 'Your answer',
+    placeholder: 'On the label, pure means…',
+    criteria: [
+      'Says the label uses pure to mean untouched or nothing added, not one substance.',
+      'Says a chemist would call the mineral water a mixture, because of the dissolved minerals.',
+      'Says pure gold is too soft for a ring, so other metals are added on purpose.',
+      'Says the ring is therefore a mixture by design, not by carelessness.',
+      'Draws the general point — one word, two meanings, and only one of them is chemistry.'
+    ] }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-sorter') return Object.keys(s.verdicts).length >= SAMPLES.length;
+  if (id === 's-words') return s.flipped.length >= CARDS.length;
+  if (id === 's-think') return s.thinkChoice !== null;
+  if (id === 's-ladder') return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  return false;
+}
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: {},
+    text: {},
+    checked: {},
+    ticks: {}
+  }, { hookChoice: null, verdicts: {}, flipped: [], thinkChoice: null });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.45;' : '');
+  }
+
+  ladderDone() {
+    const s = this.state;
+    return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  }
+
+  lessonVals(s) {
+    const showAll = this.props.revealIngredients === true;
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'The juice — it says 100% pure on the carton' },
+        { letter: 'B', text: 'The water — it is one substance and the juice is many' },
+        { letter: 'C', text: 'Both — neither has anything added to it' },
+        { letter: 'D', text: 'Neither — nothing is ever completely pure' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      tally: Object.keys(s.verdicts).length + ' of ' + SAMPLES.length + ' decided',
+      samples: SAMPLES.map((x, i) => {
+        const chosen = s.verdicts[x.id];
+        const decided = chosen !== undefined;
+        return {
+          num: 'Sample ' + (i + 1),
+          name: x.name, look: x.look, ingredients: x.ingredients,
+          dots: x.dots, diagramLabel: x.diagramLabel,
+          showDots: this.props.showParticles !== false,
+          showIngredients: showAll || decided,
+          buttons: [
+            { id: 'pure', label: 'Pure substance' },
+            { id: 'mix', label: 'Mixture' }
+          ].map((b) => ({
+            label: b.label,
+            pressed: chosen === b.id,
+            disabled: decided,
+            style: this.seg(chosen === b.id, decided),
+            onClick: () => this.setState((st) => {
+              if (st.verdicts[x.id] !== undefined) return null;
+              return { verdicts: Object.assign({}, st.verdicts, { [x.id]: b.id }) };
+            })
+          })),
+          open: decided,
+          verdict: x.verdict,
+          why: x.why
+        };
+      }),
+      allDecided: Object.keys(s.verdicts).length >= SAMPLES.length,
+
+      cards: CARDS.map((c, i) => {
+        const on = s.flipped.indexOf(i) >= 0;
+        return {
+          front: c.front, def: c.def, note: c.note,
+          hidden: !on,
+          className: 'ks3-card-btn' + (on ? ' is-flipped' : ''),
+          onClick: () => this.setState((st) => (st.flipped.indexOf(i) >= 0 ? null : { flipped: st.flipped.concat([i]) }))
+        };
+      }),
+
+      thinkOptions: [
+        { letter: 'A', text: 'It is pure — nothing was added to it' },
+        { letter: 'B', text: 'It is not pure — it contains many substances, added or not' },
+        { letter: 'C', text: 'It is pure until you add sugar to it' },
+        { letter: 'D', text: 'It is pure because it came from real oranges' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.thinkChoice === i,
+        onClick: () => this.setState({ thinkChoice: i })
+      })),
+      thinkOpen: s.thinkChoice !== null
+    };
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s, this);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals(s)
+    );
+  }
+}
+</script>
+</body>
+</html>

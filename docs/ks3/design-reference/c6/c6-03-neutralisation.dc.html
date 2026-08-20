@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neutralisation · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Acids and alkalis</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Neutralisation</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Acids and alkalis · Process</p>
+        <h1>Neutralisation</h1>
+        <p class="ks3-bigq">Mix the two most dangerous bottles in the lab in the right amounts and you can pour the result down the sink. Where did the danger go?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Hydrochloric acid in one beaker. Sodium hydroxide in the other. Both would burn you. Mixed carefully, the result is salty water.</h2>
+        <p class="ks3-hook-prompt">The mixture warms up while it happens. Test it afterwards and universal indicator comes out green — pH 7. Boil the water off and there are white crystals in the bottom of the dish. Taste them, if it were a kitchen and not a laboratory, and they would taste of table salt.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What happened to the acid and the alkali?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">They reacted, and made two new substances. Nothing vanished — the atoms are all still in the beaker, rearranged into <strong>water</strong> and a compound called a <strong>salt</strong>. The white crystals are the proof: they were not in either bottle at the start. This is a chemical reaction like any other, and it has a name: <strong>neutralisation</strong>.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p><strong>Neutralisation</strong> is the reaction between an acid and a base. The products are always the same two things:</p>
+        <p style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; line-height: 1.3;">acid + alkali → salt + water</p>
+        <p>“Salt” here does not only mean the stuff on chips. It means the whole family of compounds made when an acid loses its hydrogen to a metal — sodium chloride is one of thousands. Which salt you get depends on which acid and which alkali you started with, and that is a lesson of its own.</p>
+      </section>
+
+      <section id="s-titrate" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Your turn · add the alkali drop by drop</p>
+        <h2 style="margin: 6px 0 0;">25 cm³ of hydrochloric acid. Universal indicator already added.</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">{{ dropLead }}</p>
+
+        <div style="margin-top: 20px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 22rem); gap: 22px; align-items: start;">
+          <div style="padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+            <div style="display: flex; gap: 18px; align-items: center; flex-wrap: wrap;">
+              <span style="{{ beakerStyle }}"></span>
+              <div>
+                <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 34px; line-height: 1;">{{ phLabel }}</p>
+                <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ dropsLabel }}</p>
+                <p style="margin: 8px 0 0; font-size: 18px; font-weight: 700;">{{ stateLabel }}</p>
+              </div>
+            </div>
+            <p style="margin: 14px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body);">{{ stateNote }}</p>
+            <div style="margin-top: 16px; display: flex; gap: 9px; flex-wrap: wrap;">
+              <button type="button" onClick="{{ onDrop1 }}" style="{{ dropBtnStyle }}">Add 1 drop</button>
+              <button type="button" onClick="{{ onDrop5 }}" style="{{ dropBtnStyle }}">Add 5 drops</button>
+              <button type="button" onClick="{{ onReset }}" style="{{ resetBtnStyle }}">Start again</button>
+            </div>
+          </div>
+
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">The reading, drop by drop</p>
+            <div style="margin-top: 12px; display: flex; align-items: flex-end; gap: 3px; height: 150px;">
+              <sc-for list="{{ trace }}" as="t" hint-placeholder-count="21">
+                <span style="{{ t.style }}"></span>
+              </sc-for>
+            </div>
+            <p style="margin: 10px 0 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">0 drops · · · 20 drops</p>
+          </div>
+        </div>
+
+        <sc-if value="{{ curveOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25;">Look at the shape of what you just did.</p>
+            <p style="margin: 10px 0 0; font-size: 19px; line-height: 1.6;">For the first nine drops almost nothing moves. Then one single drop takes the reading from 3 to 11 and the colour goes straight through green without stopping. After that it flattens off again.</p>
+            <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6;">That cliff is the moment the last of the acid is used up. Before it, every drop of alkali is consumed instantly by acid that is still there. After it, there is no acid left to consume anything, so the alkali just piles up. <strong>Neutral is not a region you drift into. It is a single point you cross.</strong></p>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">acid + alkali → salt + water. Nothing is destroyed: the atoms are rearranged into two new substances, and the pH ends at 7 only if the amounts match exactly.</p>
+      </div>
+
+      <section id="s-uses" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Four problems · one reaction</p>
+        <h2 style="margin: 6px 0 0;">What would you add, and why that?</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Every one of these is neutralisation doing a job outside a laboratory. Commit before you read.</p>
+        <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 14px;">
+          <sc-for list="{{ uses }}" as="u" hint-placeholder-count="4">
+            <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-size: 19px; line-height: 1.55;">{{ u.q }}</p>
+              <div style="margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ u.options }}" as="o" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ u.open }}">
+                <p data-arrive="1" style="margin: 12px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-rule); font-size: 17px; line-height: 1.55;">{{ u.answer }}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Neutralising an acid gets rid of it. Once it is neutral there is nothing left but water.”</p>
+        <p style="max-width: 54ch;">The beaker does end up looking like water. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">Boil the water off and the answer is sitting in the dish. A neutralised beaker contains a <strong>salt</strong> dissolved in water, and that salt is made of atoms that came out of the acid and the alkali. Weigh everything before and after: the mass is unchanged, because this is conservation of mass and no reaction escapes it.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">What has gone is the <em>behaviour</em>. The thing that made the acid corrosive has been used up in making water, and so has the thing that made the alkali corrosive. <strong>Neutralisation does not delete the atoms. It puts them somewhere harmless.</strong></p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Neutralisation is the reaction of an acid with a base: acid + alkali → salt + water. The pH moves towards 7 as the acid is used up, and the change is sudden rather than gradual. Nothing is destroyed — the salt formed is still dissolved in the beaker, and boiling the water off leaves it behind as crystals.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The cliff you plotted is why a chemist measuring an unknown acid uses a single drop of a sharp indicator rather than universal indicator. Run alkali in from a burette, watch for the one drop that flips the colour, and read the volume off the scale: that volume tells you exactly how much acid was in the flask. The technique is called titration and it is how the strength of everything from vinegar to blood plasma is checked.</p>
+          <p>Neutralisation also runs on an industrial scale where nobody would call it chemistry. Power station chimneys are washed with a spray of calcium hydroxide to catch the sulfur dioxide that would otherwise fall as acid rain; the salt produced is calcium sulfate, which is plasterboard. A reaction that started as two beakers on a bench ends up as the walls of a house.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c6-02-indicators-and-the-ph-scale.html">Indicators and the pH scale<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c6-04-acids-and-metals.html">Acids and metals<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Titration with a burette, the ionic equation H⁺ + OH⁻ → H₂O, and calculating concentrations from titration results.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still not sure why the pH jumps instead of climbing?</p>
+          <a class="ks3-tutor-cta" href="#s-titrate">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Two dangerous bottles', short: 'HOOK' },
+  { id: 's-titrate', label: 'Drop by drop', short: 'DROPS' },
+  { id: 's-uses', label: 'Four problems', short: 'USES' },
+  { id: 's-think', label: 'Where the acid went', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const PH_COLOURS = ['#C1272D', '#D2382B', '#E04A22', '#EA6A1E', '#EE8C1B', '#EFB120', '#D7CA2A', '#4FA352', '#3E9C86', '#2F8DA8', '#2A6FA8', '#2E4E96', '#453C8E', '#553191', '#5E2483'];
+const CURVE = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 7, 11, 11, 12, 12, 12, 13, 13, 13, 13, 13];
+
+const USES = [
+  { id: 'u1', q: 'A field is too acidic for wheat. What does the farmer spread on it?',
+    options: [{ id: 'a', label: 'Lime' }, { id: 'b', label: 'Vinegar' }, { id: 'c', label: 'More fertiliser' }],
+    answer: 'Lime — calcium hydroxide or calcium carbonate, an alkali. It neutralises the acid in the soil and brings the pH up towards 7, where most crops take up nutrients best. Vinegar would make it worse; fertiliser feeds the plant but does nothing about the pH.' },
+  { id: 'u2', q: 'Someone has indigestion: stomach acid where it should not be. What is in the tablet they take?',
+    options: [{ id: 'a', label: 'A weak acid' }, { id: 'b', label: 'A base' }, { id: 'c', label: 'Salt' }],
+    answer: 'A base — usually magnesium hydroxide or calcium carbonate. It neutralises the excess acid on contact. It has to be a mild one: a strong alkali would do more damage than the acid it was sent to deal with.' },
+  { id: 'u3', q: 'Bacteria in your mouth make acid that dissolves tooth enamel below about pH 5.5. What does toothpaste do about it?',
+    options: [{ id: 'a', label: 'Nothing — it only scrubs' }, { id: 'b', label: 'It is mildly alkaline and neutralises the acid' }, { id: 'c', label: 'It coats the teeth in acid-proof plastic' }],
+    answer: 'It is mildly alkaline, so it neutralises the acid the bacteria produce and lifts the mouth back above the level at which enamel dissolves. The scrubbing matters too — it removes the plaque the bacteria live in — but the chemistry is neutralisation.' },
+  { id: 'u4', q: 'A factory must dispose of a tank of dilute sulfuric acid. Pouring it into the river would kill the fish. What is done first?',
+    options: [{ id: 'a', label: 'Dilute it with much more water' }, { id: 'b', label: 'Neutralise it with a base, then check the pH' }, { id: 'c', label: 'Boil it away' }],
+    answer: 'Neutralise it, then measure the pH before anything is released. Dilution lowers the concentration but the water going into the river is still acidic, and a river has its own life that depends on staying near neutral. Boiling it concentrates the acid rather than removing it.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'Complete the word equation: acid + alkali → ?',
+    options: [
+      { text: 'salt + water', correct: true },
+      { text: 'water only', correction: 'Water is one product. The atoms from the metal part of the alkali and the rest of the acid have to go somewhere — they become the salt.' },
+      { text: 'salt + hydrogen', correction: 'That is what an acid does with a metal, not with an alkali. No gas is produced here.' },
+      { text: 'a weaker acid', correction: 'Neutralisation makes new substances, not a diluted version of the old one.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A beaker of acid has alkali added drop by drop. After nine drops the pH is 3; after ten it is 11. What happened at the tenth drop?',
+    options: [
+      { text: 'The last of the acid was used up, so the next drop of alkali had nothing to react with', correct: true },
+      { text: 'The tenth drop was more concentrated than the others', correction: 'Every drop came from the same bottle. What changed was what was waiting for it in the beaker.' },
+      { text: 'The indicator stopped working at that point', correction: 'The indicator reported the change faithfully — the change was real and sudden.' },
+      { text: 'The solution boiled and became alkaline', correction: 'The mixture warms slightly but nothing boils, and warming does not move a solution across the scale.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A student neutralises hydrochloric acid with sodium hydroxide and says “the acid has disappeared”. Explain what has actually happened to the atoms, and how you could prove it.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The atoms have not disappeared — they have…',
+    criteria: [
+      'Says the acid and alkali reacted to form new substances.',
+      'Names the products as a salt (sodium chloride) and water.',
+      'Says the atoms are all still present, just rearranged.',
+      'Says mass is conserved and could be checked on a balance.',
+      'Says evaporating the water would leave the salt behind as crystals.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A lake has become acidic because of pollution and the fish are dying. Explain how you would decide how much lime to add, and why adding a very large amount all at once would be a bad idea.',
+    fieldLabel: 'Your answer',
+    placeholder: 'First I would measure…',
+    criteria: [
+      'Says to measure the pH of the lake water first.',
+      'Says lime is a base and will neutralise the acid.',
+      'Says to add it gradually and re-test the pH as you go.',
+      'Says too much would push the water past 7 and make it alkaline.',
+      'Says a sudden large change in pH would itself harm the fish.'
+    ] }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-titrate') return s.drops >= 12;
+  if (id === 's-uses') return Object.keys(s.uses).length >= USES.length;
+  if (id === 's-think') return s.thinkChoice !== null;
+  if (id === 's-ladder') return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  return false;
+}
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0, answers: {}, text: {}, checked: {}, ticks: {}
+  }, { hookChoice: null, drops: 0, seenJump: false, uses: {}, thinkChoice: null });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.45;' : '');
+  }
+
+  addDrops(n) {
+    this.setState((st) => {
+      const next = Math.min(20, st.drops + n);
+      return { drops: next, seenJump: st.seenJump || next >= 11 };
+    });
+  }
+
+  lessonVals(s) {
+    const ph = CURVE[s.drops];
+    const state = s.drops < 10 ? 'Still acidic' : s.drops === 10 ? 'Neutral — exactly' : 'Now alkaline';
+    const note = s.drops === 0
+      ? 'Red, and strongly acidic. Every drop of alkali that goes in will be destroyed on contact by the acid already there.'
+      : s.drops < 9
+        ? 'The reading has barely moved. There is far more acid in the beaker than alkali added so far, so each drop is used up as fast as it arrives.'
+        : s.drops === 9
+          ? 'Orange, pH 3, and almost all the acid is gone. The next drop has almost nothing left to react with.'
+          : s.drops === 10
+            ? 'Green. Every particle of acid has met a particle of alkali and both are gone, replaced by salt and water. One drop either side of this and you would miss it.'
+            : s.drops < 14
+              ? 'Past it. There is no acid left to consume the alkali, so alkali is now simply accumulating in the beaker.'
+              : 'Deep purple. From here, adding more barely moves the reading either — the same flattening as at the start, in the other direction.';
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'They cancelled out and both disappeared' },
+        { letter: 'B', text: 'They reacted and made two new substances' },
+        { letter: 'C', text: 'The acid was diluted until it was too weak to matter' },
+        { letter: 'D', text: 'The alkali evaporated and left the acid behind' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      dropLead: 'Alkali goes in one drop at a time. Watch the number, not the colour — the colour is only the number in disguise.',
+      phLabel: 'pH ' + ph,
+      dropsLabel: s.drops + ' drops of alkali added',
+      stateLabel: state,
+      stateNote: note,
+      beakerStyle: 'display:block;width:96px;height:96px;border-radius:18px;border:2px solid var(--ks3-ink);background:' + PH_COLOURS[ph] + ';',
+      dropBtnStyle: this.seg(false, false),
+      resetBtnStyle: 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;border:2px solid var(--ks3-rule-strong);background:transparent;color:var(--ks3-ink-muted);',
+      onDrop1: () => this.addDrops(1),
+      onDrop5: () => this.addDrops(5),
+      onReset: () => this.setState({ drops: 0 }),
+      trace: CURVE.map((v, i) => ({
+        style: 'flex:1 1 0;border-radius:3px 3px 0 0;height:' + Math.round((v / 14) * 100) + '%;background:' +
+          (i <= s.drops ? PH_COLOURS[v] : 'var(--ks3-band)') + ';border:1px solid ' + (i <= s.drops ? 'var(--ks3-ink)' : 'transparent') + ';'
+      })),
+      curveOpen: s.seenJump,
+
+      uses: USES.map((u) => {
+        const chosen = s.uses[u.id];
+        const decided = chosen !== undefined;
+        return {
+          q: u.q,
+          options: u.options.map((o) => ({
+            label: o.label, pressed: chosen === o.id, disabled: decided,
+            style: this.seg(chosen === o.id, decided),
+            onClick: () => this.setState((st) => (st.uses[u.id] !== undefined ? null
+              : { uses: Object.assign({}, st.uses, { [u.id]: o.id }) }))
+          })),
+          open: decided, answer: u.answer
+        };
+      }),
+
+      thinkOptions: [
+        { letter: 'A', text: 'Right — the acid is destroyed and only water remains' },
+        { letter: 'B', text: 'Wrong — a salt is dissolved in the water, made from the acid and the alkali' },
+        { letter: 'C', text: 'Right, because the pH is 7 and 7 means empty' },
+        { letter: 'D', text: 'Wrong — the acid is still there, just hidden' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.thinkChoice === i, onClick: () => this.setState({ thinkChoice: i }) })),
+      thinkOpen: s.thinkChoice !== null
+    };
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals(s)
+    );
+  }
+}
+</script>
+</body>
+</html>

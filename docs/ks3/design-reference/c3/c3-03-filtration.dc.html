@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Filtration · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Mixtures and separation</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Filtration</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Mixtures and separation · Process</p>
+        <h1>Filtration</h1>
+        <p class="ks3-bigq">Getting sand out of water takes one piece of paper. Getting salt out of water cannot be done with any paper at all — and the reason is a matter of size.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Two beakers of water. One has sand in it, one has salt. The same filter paper is about to meet both.</h2>
+        <p class="ks3-hook-prompt">Stir a spoon of sand into the first: it goes cloudy and the grains settle. Stir a spoon of salt into the second: it goes clear and stays clear. Pour each through a filter paper.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What is left in the two filter papers afterwards?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Sand in the first paper. Nothing at all in the second — the salt went straight through with the water and is still in the liquid underneath, exactly as it was. <strong>Filtration separates an insoluble solid from a liquid, and never separates anything dissolved.</strong> That one sentence is the whole lesson; the rest is how to do it without ruining it.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>The solid caught in the paper is the <strong>residue</strong>. The liquid that comes through is the <strong>filtrate</strong>. Both are worth keeping — which one you actually want depends on what you are doing.</p>
+      </section>
+
+      <section id="s-steps" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Watched first · five steps</p>
+        <h2 style="margin: 6px 0 0;">Filtering sand out of water</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Each step has a reason. Reveal them one at a time — and there is a prediction to make before you pour.</p>
+
+        <ol style="list-style: none; margin: 22px 0 0; padding: 0; display: flex; flex-direction: column; gap: 14px;">
+          <sc-for list="{{ steps }}" as="step" hint-placeholder-count="5">
+            <li style="{{ step.style }}">
+              <div style="display: flex; gap: 14px; align-items: flex-start;">
+                <span aria-hidden="true" style="{{ step.numStyle }}">{{ step.num }}</span>
+                <div style="flex: 1;">
+                  <p style="margin: 0; font-size: 20px; line-height: 1.45; font-weight: 700;">{{ step.title }}</p>
+                  <sc-if value="{{ step.open }}">
+                    <div data-arrive="1">
+                      <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body);">{{ step.detail }}</p>
+                      <p style="margin: 10px 0 0; font-size: 17px; line-height: 1.55; color: var(--ks3-accent-text); font-weight: 600;">{{ step.why }}</p>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ step.showButton }}">
+                    <button type="button" class="ks3-reveal-btn" style="margin-top: 12px;" onClick="{{ step.onOpen }}">{{ step.buttonLabel }}</button>
+                  </sc-if>
+                  <sc-if value="{{ step.showGate }}">
+                    <div data-arrive="1" style="margin-top: 14px; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-alert-tint); border: 2px solid var(--ks3-ink);">
+                      <p style="margin: 0; font-size: 19px; font-weight: 700;">Before you pour: where does the salt beaker's salt end up?</p>
+                      <ul class="ks3-options" style="max-width: 30rem;">
+                        <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="3">
+                          <li>
+                            <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                              <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                              <span class="ks3-opt-label">{{ opt.text }}</span>
+                            </button>
+                          </li>
+                        </sc-for>
+                      </ul>
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+            </li>
+          </sc-for>
+        </ol>
+
+        <sc-if value="{{ allSteps }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">Sand in the paper, water in the flask — and in the other beaker, salt water in the flask and a clean, dry, empty filter paper. Nothing was removed from the salt water at all.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-build" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Your turn · build the same sequence</p>
+        <h2 style="margin: 6px 0 0;">Same five steps, shuffled. Put them in order.</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Tap them in the order you would do them. Nobody is marking this — you will simply be told what happened on the bench as a result.</p>
+
+        <div style="margin-top: 20px; display: flex; gap: 9px; flex-wrap: wrap;">
+          <sc-for list="{{ bank }}" as="b" hint-placeholder-count="5">
+            <button type="button" onClick="{{ b.onClick }}" disabled="{{ b.disabled }}" style="{{ b.style }}">{{ b.label }}</button>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ hasOrder }}">
+          <ol data-arrive="1" style="margin: 20px 0 0; padding: 0 0 0 26px; display: flex; flex-direction: column; gap: 8px; font-size: 19px;">
+            <sc-for list="{{ chosen }}" as="c" hint-placeholder-count="3">
+              <li>{{ c.label }}</li>
+            </sc-for>
+          </ol>
+        </sc-if>
+
+        <div style="margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap;">
+          <button type="button" class="ks3-retry" onClick="{{ onClear }}">Clear and start again</button>
+        </div>
+
+        <sc-if value="{{ reportOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-ink); color: var(--ks3-on-dark);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 23px; line-height: 1.25;">{{ reportTitle }}</p>
+            <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-on-dark-body);">{{ reportText }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Why it works · and why it cannot work on salt</p>
+        <h2 style="margin: 6px 0 0;">The holes in the paper are the whole story</h2>
+        <div role="img" aria-label="Two particle diagrams either side of a filter paper. Above: sand shown as large clumps of many particles joined together, too big to pass the gaps. Below: dissolved salt shown as single particles far smaller than the gaps, passing straight through with the water." style="margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+          <sc-for list="{{ panels }}" as="p" hint-placeholder-count="2">
+            <div style="padding: 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ p.label }}</p>
+              <div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px; min-height: 46px;">
+                <sc-for list="{{ p.dots }}" as="d" hint-placeholder-count="8">
+                  <span style="{{ d.style }}"></span>
+                </sc-for>
+              </div>
+              <div aria-hidden="true" style="margin-top: 12px; height: 14px; border-radius: 4px; background: repeating-linear-gradient(90deg, var(--ks3-rule-strong) 0 9px, transparent 9px 15px); border-top: 2px solid var(--ks3-ink); border-bottom: 2px solid var(--ks3-ink);"></div>
+              <p style="margin: 12px 0 0; font-size: 17px; line-height: 1.55;">{{ p.text }}</p>
+            </div>
+          </sc-for>
+        </div>
+        <p style="margin: 18px 0 0; font-size: 19px; line-height: 1.65; max-width: 56ch;">A grain of sand is a lump of many millions of particles stuck together, thousands of times wider than the gaps between the paper's fibres. A dissolved salt particle is on its own, and it is smaller than the gap by more than the gap is smaller than the grain. There is no filter paper that stops one and passes the other.</p>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">Filtration separates an insoluble solid from a liquid. The solid left in the paper is the residue; the liquid through it is the filtrate. Anything dissolved goes straight through.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“I filtered the pond water and it came out clear, so it is clean water now.”</p>
+        <p style="max-width: 54ch;">It went in murky and came out clear. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">Clear means the bits you could see are gone. Everything dissolved is still there — and so is almost everything dangerous. Bacteria are far smaller than the mud you removed and most of them pass through filter paper without noticing it. Dissolved lead, nitrate and pesticide are single particles and pass straight through.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">A water treatment works does filter — and then it settles, adds chemicals to clump the fine particles, filters again through sand, and finally kills what is left with chlorine or ultraviolet light. <strong>Filtration is one step of several, and it is the step that deals with the least dangerous thing in the water.</strong></p>
+          </div>
+        </sc-if>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Filtration separates an insoluble solid from a liquid. The solid caught in the paper is the residue; the liquid that passes through is the filtrate. It works because the solid is in lumps far larger than the gaps in the paper — so anything dissolved, being single particles far smaller than those gaps, goes straight through. Clear is not the same as pure.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>A filter paper is not a sieve with holes in it. It is a tangle of cellulose fibres, and a particle can be caught by hitting a fibre, by sticking to one, or by being trapped in a bend well below the surface — which is why a paper stops particles smaller than the widest gap through it, and why pouring too fast pushes them through anyway. Slow filtration is cleaner filtration, and that is not a rule about patience.</p>
+          <p>Nothing on this bench will take the salt out of sea water, because the salt is dissolved and dissolved things go where the water goes. The way round it is to move the water and leave the salt behind — which is the next lesson but one. Industry does have filters fine enough to hold back dissolved particles: reverse osmosis membranes desalinate sea water by forcing it through under enormous pressure. They are not filter paper, and the pressure is the reason they are expensive.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c3-02-dissolving-and-solutions.html">Dissolving and solutions<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c3-04-evaporation-and-crystallisation.html">Evaporation and crystallisation<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Choosing and justifying a separation method for a given mixture, and required practicals where the technique itself is assessed.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still not sure why no filter can hold back dissolved salt?</p>
+          <a class="ks3-tutor-cta" href="#s-build">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;requirePourPrediction&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;The stepper&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Sand and salt', short: 'HOOK' },
+  { id: 's-steps', label: 'Watched first', short: 'STEPS' },
+  { id: 's-build', label: 'Your sequence', short: 'BUILD' },
+  { id: 's-think', label: 'Clear water', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const BLUE = '#2F5D8A';
+const ORANGE = '#E4572E';
+const SAND = '#9C8F62';
+
+const STEPS = [
+  { id: 'fold', short: 'Fold the paper',
+    title: 'Fold the circle of filter paper into a cone.',
+    detail: 'In half, in half again, then open one side out so it makes a cone with three thicknesses on one side and one on the other.',
+    why: 'A cone fits the funnel. A flat disc laid in the funnel leaves gaps at the edge, and the mixture runs round it.',
+    tooSoon: 'nothing goes wrong — but you fold the paper before doing anything else, so this is where it belongs.' },
+  { id: 'seat', short: 'Seat and wet it',
+    title: 'Sit the cone in the funnel and wet it with a little distilled water.',
+    detail: 'A few drops, then press the paper gently against the glass.',
+    why: 'Wet paper clings to the funnel. Dry paper lifts as the mixture arrives, and the mixture runs down the gap unfiltered.',
+    tooSoon: 'you wet the paper before it was in the funnel, so it tore as you tried to seat it and you started again with a new one.' },
+  { id: 'stand', short: 'Stand the funnel in the flask',
+    title: 'Stand the funnel in a conical flask, with its tip touching the inside wall.',
+    detail: 'The stem should reach inside the flask, not hover above it.',
+    why: 'Touching the wall stops the filtrate splashing back up into the paper, and stops drops running down the outside of the flask.',
+    tooSoon: 'the funnel was standing in the flask with no paper in it, so the mixture went straight through and you had to pour it back and start again.' },
+  { id: 'pour', short: 'Pour down a rod',
+    title: 'Pour the mixture down a stirring rod, keeping the level below the rim of the paper.',
+    detail: 'The rod touches the paper on the three-thickness side. Fill to about two thirds of the paper, no higher.',
+    why: 'Poured straight from the beaker it splashes over the rim, and anything that goes over the rim has not been filtered.',
+    tooSoon: 'you poured before the paper and funnel were ready, so the sand went into the flask with the water and the whole thing had to be done again.' },
+  { id: 'rinse', short: 'Wait, then rinse',
+    title: 'Let it drip through, then rinse the residue with a little distilled water.',
+    detail: 'Do not squeeze or poke the paper. Rinsing washes the last of the filtrate out of the sand.',
+    why: 'Squeezing tears the paper and lets the residue through. Rinsing matters when you want a clean residue — otherwise it dries with dissolved substances in it.',
+    tooSoon: 'you rinsed before there was anything in the paper, which just wet the paper again and told you nothing.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'A sand and water mixture is filtered. What are the sand and the water now called?',
+    options: [
+      { text: 'The sand is the residue, the water is the filtrate', correct: true },
+      { text: 'The sand is the filtrate, the water is the residue', correction: 'The other way round. The filtrate is what filters through; the residue is what is left behind.' },
+      { text: 'Both are called the filtrate', correction: 'Only the liquid that passes through the paper is the filtrate.' },
+      { text: 'The sand is the solute, the water is the solvent', correction: 'Those words are for dissolving. Sand does not dissolve — that is why it can be filtered.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A student cannot separate salt from water with a filter and asks for finer filter paper. What should you tell them?',
+    options: [
+      { text: 'No paper will do it — the dissolved salt particles are smaller than any gap in any paper', correct: true },
+      { text: 'A fine enough paper stops anything, so filtering out salt is a matter of the right grade', correction: 'Fineness is not the problem. Dissolved particles are single particles, thousands of times smaller than the fibres — there is no paper fine enough.' },
+      { text: 'Filtering twice removes what one pass missed, so a second pour would take the salt out', correction: 'The salt passes through every time, because it is dissolved. Pouring it through again changes nothing.' },
+      { text: 'Hot water passes through more easily, so heating it first would leave the salt behind', correction: 'Heating dissolves the salt more thoroughly, if anything. It does not make the salt filterable.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Sand and salt are both stirred into the same beaker of water and the mixture is filtered. Explain exactly what is in the filter paper and what is in the flask afterwards, and how you know.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'In the paper there is…',
+    criteria: [
+      'Says the sand is in the paper because it is insoluble, so it stays as visible lumps.',
+      'Says the salt is in the flask, dissolved in the water.',
+      'Explains it by size: the sand grains are far bigger than the gaps, the dissolved salt particles are far smaller.',
+      'Says the liquid in the flask is a salt solution, not pure water.',
+      'Gives a way to show the salt is there — taste, boil it dry, or weigh what is left.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A camping filter bottle claims to make river water safe to drink. Using what you know about filtration, explain what such a bottle can and cannot do, and what you would want to know before trusting it.',
+    fieldLabel: 'Your answer',
+    placeholder: 'A filter can remove…',
+    criteria: [
+      'Says a filter removes insoluble solids — mud, grit, silt — and makes the water look clear.',
+      'Says anything dissolved passes through, so clear does not mean safe.',
+      'Names something dangerous a paper filter would not stop — bacteria, or a dissolved chemical.',
+      'Says a real bottle must do something more, such as a membrane fine enough to hold back microbes or a chemical treatment.',
+      'Asks a sensible question of the manufacturer — what size of particle it stops, or what it is tested against.'
+    ] }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-steps') return s.opened.length >= STEPS.length;
+  if (id === 's-build') return s.order.length >= STEPS.length;
+  if (id === 's-think') return s.thinkChoice !== null;
+  if (id === 's-ladder') return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  return false;
+}
+
+const SHUFFLED = [3, 0, 4, 2, 1];
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: {},
+    text: {},
+    checked: {},
+    ticks: {}
+  }, { hookChoice: null, opened: [], gateChoice: null, order: [], thinkChoice: null });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.45;' : '');
+  }
+
+  ladderDone() {
+    const s = this.state;
+    return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  }
+
+  dot(colour, size) {
+    return { style: 'display:block;width:' + size + 'px;height:' + size + 'px;border-radius:99px;background:' + colour + ';border:1.5px solid var(--ks3-ink);' };
+  }
+
+  lessonVals(s) {
+    const opened = s.opened;
+    const nextIndex = opened.length;
+    const gateNeeded = this.props.requirePourPrediction !== false;
+
+    const chosen = s.order.map((i) => ({ label: STEPS[i].title }));
+    let reportTitle = '';
+    let reportText = '';
+    if (s.order.length >= STEPS.length) {
+      let firstWrong = -1;
+      for (let i = 0; i < STEPS.length; i += 1) { if (s.order[i] !== i) { firstWrong = i; break; } }
+      if (firstWrong < 0) {
+        reportTitle = 'That is the order, and here is what came out.';
+        reportText = 'Paper folded, seated and wet, funnel standing in the flask, mixture poured down the rod below the rim, then rinsed. Clean sand in the paper, clear filtrate in the flask, nothing spilled. Every step you did was protecting the step after it.';
+      } else {
+        const bad = STEPS[s.order[firstWrong]];
+        reportTitle = 'It ran, but look at what happened at step ' + (firstWrong + 1) + '.';
+        reportText = 'You did "' + bad.short + '" ' + (s.order[firstWrong] > firstWrong ? 'too early' : 'too late') + ': ' + bad.tooSoon + ' The order that works is the one you were shown — fold, seat and wet, stand in the flask, pour down the rod, rinse.';
+      }
+    }
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'Sand in one paper, salt in the other' },
+        { letter: 'B', text: 'Sand in one paper, nothing in the other' },
+        { letter: 'C', text: 'Nothing in either — both pass through' },
+        { letter: 'D', text: 'Sand in one, and the other paper turns salty but stays empty' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      steps: STEPS.map((st, i) => {
+        const open = opened.indexOf(i) >= 0;
+        const isNext = i === nextIndex;
+        const blockedByGate = gateNeeded && st.id === 'pour' && s.gateChoice === null;
+        return {
+          num: String(i + 1),
+          title: st.title, detail: st.detail, why: st.why,
+          open: open,
+          showButton: isNext && !blockedByGate,
+          showGate: isNext && blockedByGate,
+          buttonLabel: 'Show step ' + (i + 1),
+          style: 'padding:20px 22px;border-radius:var(--ks3-r-panel);background:' + (open ? 'var(--ks3-inset)' : 'var(--ks3-card)') +
+            ';border:2px solid ' + (isNext ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';',
+          numStyle: 'flex:0 0 34px;height:34px;border-radius:11px;display:grid;place-items:center;font-family:var(--ks3-font-display);font-weight:800;font-size:17px;background:' +
+            (open ? 'var(--ks3-accent)' : 'var(--ks3-band)') + ';color:' + (open ? 'var(--ks3-on-dark)' : 'var(--ks3-ink-muted)') + ';border:2px solid var(--ks3-ink);',
+          onOpen: () => this.setState((prev) => (prev.opened.indexOf(i) >= 0 ? null : { opened: prev.opened.concat([i]) }))
+        };
+      }),
+      gateOptions: [
+        { letter: 'A', text: 'In the paper, with the sand' },
+        { letter: 'B', text: 'Through the paper, in the flask' },
+        { letter: 'C', text: 'Half in the paper, half through' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.gateChoice === i, onClick: () => this.setState({ gateChoice: i }) })),
+      allSteps: opened.length >= STEPS.length,
+
+      bank: SHUFFLED.map((i) => ({
+        label: STEPS[i].short,
+        disabled: s.order.indexOf(i) >= 0,
+        style: this.seg(s.order.indexOf(i) >= 0, s.order.indexOf(i) >= 0),
+        onClick: () => this.setState((st) => (st.order.indexOf(i) >= 0 ? null : { order: st.order.concat([i]) }))
+      })),
+      hasOrder: s.order.length > 0,
+      chosen: chosen,
+      onClear: () => this.setState({ order: [] }),
+      reportOpen: s.order.length >= STEPS.length,
+      reportTitle: reportTitle,
+      reportText: reportText,
+
+      panels: [
+        { label: 'A grain of sand', dots: [this.dot(SAND, 26), this.dot(SAND, 22), this.dot(SAND, 30)],
+          text: 'Millions of particles stuck together in one lump, thousands of times wider than the gaps. It cannot get through, and it does not.' },
+        { label: 'Dissolved salt', dots: [this.dot(BLUE, 10), this.dot(ORANGE, 7), this.dot(BLUE, 10), this.dot(BLUE, 10), this.dot(ORANGE, 7), this.dot(BLUE, 10), this.dot(BLUE, 10), this.dot(ORANGE, 7)],
+          text: 'Single particles, mixed among the water particles and far smaller than the gaps. They go wherever the water goes.' }
+      ],
+
+      thinkOptions: [
+        { letter: 'A', text: 'Right — clear water is clean water' },
+        { letter: 'B', text: 'Wrong — everything dissolved is still in it, including things that could harm you' },
+        { letter: 'C', text: 'Right, as long as you filter it twice' },
+        { letter: 'D', text: 'Wrong — filtering adds something to the water' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.thinkChoice === i, onClick: () => this.setState({ thinkChoice: i }) })),
+      thinkOpen: s.thinkChoice !== null
+    };
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s, this);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals(s)
+    );
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inside the Earth · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Earth and its atmosphere</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Inside the Earth</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">The Earth and its atmosphere · Model</p>
+        <h1>Inside the Earth</h1>
+        <p class="ks3-bigq">Nobody has ever been more than twelve kilometres into the ground, and the centre is six thousand kilometres down. So how does anyone know what is there?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>The deepest hole ever drilled took twenty years and reached 12.3 kilometres. The centre of the Earth is 6371 kilometres down.</h2>
+        <p class="ks3-hook-prompt">The Kola borehole was abandoned because the rock at the bottom was 180 °C and behaving like plastic — it kept closing the hole. Twelve kilometres is two tenths of one per cent of the way to the middle. On a football-sized Earth, that hole would not break the skin of the leather.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">So how do we know what the inside is made of?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">By listening to earthquakes. Every large earthquake sends waves through the whole planet, and those waves bend, speed up, slow down and sometimes stop dead depending on what they are travelling through. Hundreds of seismometers around the world record when each wave arrives. From those arrival times — and nothing else — you can work out where the boundaries are and whether each layer is solid or liquid. <strong>The inside of the Earth was mapped by sound, not by digging.</strong></p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>The Earth is not one substance. It is a set of <strong>layers</strong>, each with its own composition, temperature and state — and the boundaries between them are sharp.</p>
+        <p>Everything you have ever seen, mined or built on is the <strong>crust</strong>: a skin so thin that on the scale of the whole planet it is barely there.</p>
+      </section>
+
+      <section id="s-layers" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Your turn · four layers</p>
+        <h2 style="margin: 6px 0 0;">Tap a layer. The bar is drawn to scale.</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">{{ layersLead }}</p>
+
+        <div style="margin: 22px 0 0; display: flex; height: 96px; gap: 3px;">
+          <sc-for list="{{ bars }}" as="b" hint-placeholder-count="4">
+            <button type="button" onClick="{{ b.onClick }}" aria-label="{{ b.aria }}" style="{{ b.style }}">
+              <span style="{{ b.labelStyle }}">{{ b.short }}</span>
+            </button>
+          </sc-for>
+        </div>
+        <div style="margin-top: 8px; display: flex; justify-content: space-between; gap: 12px;">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Surface · 0 km</p>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Centre · 6371 km</p>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+          <div style="display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap; justify-content: space-between;">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 26px; line-height: 1.2;">{{ layerName }}</p>
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ layerDepth }}</p>
+          </div>
+          <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 12px;">
+            <sc-for list="{{ layerFacts }}" as="f" hint-placeholder-count="3">
+              <div style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-rule);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 11px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ f.label }}</p>
+                <p style="margin: 5px 0 0; font-size: 17px; font-weight: 700; line-height: 1.35;">{{ f.value }}</p>
+              </div>
+            </sc-for>
+          </div>
+          <p style="margin: 14px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body);">{{ layerNote }}</p>
+        </div>
+
+        <sc-if value="{{ scaleOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25;">Look at how little of that bar is crust.</p>
+            <p style="margin: 10px 0 0; font-size: 19px; line-height: 1.6;">Every mine, every borehole, every fossil, every ocean and every mountain range is in the thin strip on the left. Scale the Earth down to the size of an apple and the crust is thinner than the skin. Nearly all of the planet, by volume, is mantle — and nearly all of it by mass is iron.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">Crust, mantle, outer core, inner core. The mantle is solid rock that flows very slowly; the outer core is liquid iron; the inner core is solid iron held rigid by pressure.</p>
+      </div>
+
+      <section id="s-evidence" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Three questions · how we know</p>
+        <h2 style="margin: 6px 0 0;">The evidence, not the picture in the textbook</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Commit before you read. Every one of these was worked out without anyone going down there.</p>
+        <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 14px;">
+          <sc-for list="{{ evidence }}" as="u" hint-placeholder-count="3">
+            <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-size: 19px; line-height: 1.55;">{{ u.q }}</p>
+              <div style="margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ u.options }}" as="o" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ u.open }}">
+                <p data-arrive="1" style="margin: 12px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-rule); font-size: 17px; line-height: 1.55;">{{ u.answer }}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“The mantle is a sea of molten lava, and volcanoes are holes that let it out.”</p>
+        <p style="max-width: 54ch;">Lava does come out of volcanoes, and it comes from below. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">The mantle is <strong>solid rock</strong>. It has to be: earthquake waves that cannot travel through liquid pass straight through it, which is how anyone knows. What makes it confusing is that solid rock under that much heat and pressure can <em>flow</em> — a few centimetres a year, like extremely stiff toffee. Solid and rigid are not the same word.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">Magma exists only in small pockets, mostly where the pressure drops enough to let a little of the rock melt. It is the exception, not the ocean. <strong>If the mantle really were liquid, the crust would not be floating on it — it would have sunk into it long ago.</strong></p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>The Earth has four layers: a thin rocky crust, a thick mantle of solid rock that flows very slowly, a liquid iron outer core and a solid iron inner core. The structure is known from the way earthquake waves travel through the planet, because different waves behave differently in solids and liquids.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The liquid outer core is the reason a compass works. Iron that hot cannot be a magnet in the ordinary sense — heat destroys magnetism — but the core is molten metal, it moves, and moving metal carries electric currents. Those currents generate the magnetic field that surrounds the planet, deflects the solar wind and keeps the atmosphere from being stripped away. Mars has a cold, solid core, no field worth the name, and almost no atmosphere left.</p>
+          <p>The inner core is the strangest part. It is hotter than the liquid layer above it — around 5500 °C, roughly the surface temperature of the Sun — and it is solid anyway, because the pressure at the centre of the Earth is over three million times atmospheric pressure and will not let the atoms move apart. It is also growing: every year a little more of the outer core freezes onto it, and the energy released as it does helps drive the currents that make the magnetic field.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c9-04-ceramics-polymers-and-composites.html">Ceramics, polymers and composites<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c10-02-three-ways-to-make-a-rock.html">Three ways to make a rock<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Plate tectonics driven by convection in the mantle, and using P-wave and S-wave shadow zones as evidence for a liquid outer core.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still not sure how solid rock can flow?</p>
+          <a class="ks3-tutor-cta" href="#s-layers">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Twelve kilometres', short: 'HOOK' },
+  { id: 's-layers', label: 'Four layers', short: 'LAYERS' },
+  { id: 's-evidence', label: 'How we know', short: 'PROOF' },
+  { id: 's-think', label: 'The mantle', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const LAYERS = [
+  { id: 'crust', name: 'Crust', short: 'Crust', thickness: 35, depth: '0 – 35 km',
+    facts: [['State', 'Solid rock'], ['Temperature', 'Up to about 400 °C'], ['Made of', 'Silicon and oxygen compounds']],
+    note: 'Thinner under the oceans, thicker under mountains, and cracked into plates that move a few centimetres a year. Everything anyone has ever mined or built on is in this layer, and the deepest borehole reached only a third of the way through it.' },
+  { id: 'mantle', name: 'Mantle', short: 'Mantle', thickness: 2865, depth: '35 – 2900 km',
+    facts: [['State', 'Solid, but flows slowly'], ['Temperature', '500 – 4000 °C'], ['Made of', 'Silicon, oxygen, iron, magnesium']],
+    note: 'By far the largest layer — around 84 per cent of the Earth by volume. It is solid rock, but hot enough and under enough pressure to creep like extremely stiff toffee. Those slow currents are what drag the plates of the crust around.' },
+  { id: 'outer', name: 'Outer core', short: 'Outer core', thickness: 2250, depth: '2900 – 5150 km',
+    facts: [['State', 'Liquid'], ['Temperature', '4000 – 5000 °C'], ['Made of', 'Iron and nickel']],
+    note: 'Molten metal, and the only genuinely liquid layer in the planet. It is known to be liquid because one type of earthquake wave cannot pass through it at all — and that same swirling liquid metal generates the Earth\u2019s magnetic field.' },
+  { id: 'inner', name: 'Inner core', short: 'Inner core', thickness: 1221, depth: '5150 – 6371 km',
+    facts: [['State', 'Solid'], ['Temperature', 'About 5500 °C'], ['Made of', 'Iron and nickel']],
+    note: 'Hotter than the liquid layer above it and solid anyway, because the pressure at the centre of the Earth is too great to let the atoms move apart. A ball of iron roughly the size of the Moon, as hot as the surface of the Sun.' }
+];
+
+const EVIDENCE = [
+  { id: 'e1', q: 'One type of earthquake wave travels through the mantle but stops dead at 2900 km. What does that show?',
+    options: [{ id: 'a', label: 'There is a layer of liquid there' }, { id: 'b', label: 'The rock gets too hot' }, { id: 'c', label: 'The wave runs out of energy' }],
+    answer: 'A liquid layer. S-waves cannot travel through liquids at all, so the depth at which they vanish marks the top of the liquid outer core exactly. The wave that stops tells you as much as the wave that arrives.' },
+  { id: 'e2', q: 'The whole Earth is much denser than any rock found at the surface. What does that suggest?',
+    options: [{ id: 'a', label: 'The surface rocks are unusual' }, { id: 'b', label: 'Something much denser is inside' }, { id: 'c', label: 'The Earth is hollow' }],
+    answer: 'Something far denser is inside. Surface rock averages about 2.7 g/cm³ and the whole planet averages 5.5 — so the interior must be made of something heavy. Iron fits, and meteorites, which formed from the same material, are full of it.' },
+  { id: 'e3', q: 'The Earth has a magnetic field strong enough to swing a compass needle anywhere on the surface. What does that require?',
+    options: [{ id: 'a', label: 'A giant bar magnet in the middle' }, { id: 'b', label: 'Moving liquid metal inside' }, { id: 'c', label: 'The Sun\u2019s magnetism' }],
+    answer: 'Moving liquid metal. A permanent magnet cannot survive those temperatures — heat destroys magnetism. What does work is electric current, and a churning ocean of molten iron carries enormous currents. The field is evidence that part of the core is liquid and in motion.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'Name the four layers of the Earth in order from the surface inwards.',
+    options: [
+      { text: 'Crust, mantle, outer core, inner core', correct: true },
+      { text: 'Crust, outer core, mantle, inner core', correction: 'The mantle comes immediately below the crust; the core is the innermost region.' },
+      { text: 'Mantle, crust, core, inner core', correction: 'The crust is on the outside — it is the layer you are standing on.' },
+      { text: 'Crust, mantle, core, magma', correction: 'Magma is not a layer. It is melted rock in pockets, mostly near the top of the mantle.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'The inner core is hotter than the outer core, yet it is solid and the outer core is liquid. Why?',
+    options: [
+      { text: 'The pressure at the centre is so great that the iron cannot melt', correct: true },
+      { text: 'The inner core is made of a different metal with a higher melting point', correction: 'Both are iron and nickel. The difference is the pressure, not the material.' },
+      { text: 'The inner core has cooled down more than the outer core', correction: 'It is the hottest part of the planet, at around 5500 °C.' },
+      { text: 'The outer core is closer to the surface, so it is heated by the Sun', correction: 'The Sun heats nothing below a metre or so of soil. Core heat is left over from formation and from radioactive decay.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Explain how scientists know the Earth has a liquid layer inside it, when nobody has ever been deeper than 12 km.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Earthquakes send waves…',
+    criteria: [
+      'Says earthquakes send waves right through the Earth.',
+      'Says the waves are detected at stations all over the world.',
+      'Says one type of wave cannot travel through liquid.',
+      'Says that wave disappears beyond a certain depth, marking the liquid outer core.',
+      'Says the conclusion comes from measurement and inference, not from direct observation.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'Mars has a cold, largely solid core and almost no magnetic field, and its atmosphere is very thin. Suggest how these three facts might be connected, and say what evidence would test your idea.',
+    fieldLabel: 'Your answer',
+    placeholder: 'A magnetic field needs…',
+    criteria: [
+      'Says a magnetic field needs moving liquid metal in the core.',
+      'Says a cold solid core cannot generate one.',
+      'Says the Earth\u2019s field deflects charged particles from the Sun.',
+      'Says without a field the solar wind can strip a planet\u2019s atmosphere away over time.',
+      'Suggests testable evidence, such as measuring Mars\u2019s remaining field or looking for magnetism locked into its oldest rocks.'
+    ] }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-layers') return Object.keys(s.seen).length >= LAYERS.length;
+  if (id === 's-evidence') return Object.keys(s.ev).length >= EVIDENCE.length;
+  if (id === 's-think') return s.thinkChoice !== null;
+  if (id === 's-ladder') return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  return false;
+}
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0, answers: {}, text: {}, checked: {}, ticks: {}
+  }, { hookChoice: null, layer: 'crust', seen: { crust: true }, ev: {}, thinkChoice: null });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.45;' : '');
+  }
+
+  lessonVals(s) {
+    const layer = LAYERS.find((l) => l.id === s.layer) || LAYERS[0];
+    const total = LAYERS.reduce((a, l) => a + l.thickness, 0);
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'Deeper boreholes that were never published' },
+        { letter: 'B', text: 'From the way earthquake waves travel through the planet' },
+        { letter: 'C', text: 'From what comes out of volcanoes, all the way down' },
+        { letter: 'D', text: 'Nobody knows; it is a guess' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      layersLead: Object.keys(s.seen).length + ' of 4 opened. The widths below are the real proportions — the crust is the sliver you can barely see.',
+      bars: LAYERS.map((l) => {
+        const on = l.id === s.layer;
+        const pct = (l.thickness / total) * 100;
+        return {
+          short: l.short,
+          aria: l.name + ', ' + l.depth,
+          style: 'font:inherit;flex:' + pct.toFixed(2) + ' 1 0;min-width:' + (l.id === 'crust' ? '30px' : '48px') +
+            ';display:grid;place-items:center;padding:6px 2px;border-radius:10px;cursor:pointer;border:2px solid ' +
+            (on ? 'var(--ks3-accent)' : 'var(--ks3-ink)') + ';background:' +
+            (on ? 'var(--ks3-accent-tint)' : l.id === 'outer' ? 'var(--ks3-band)' : 'var(--ks3-card)') +
+            ';box-shadow:' + (on ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          labelStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--ks3-ink);writing-mode:vertical-rl;text-orientation:mixed;',
+          onClick: () => this.setState((st) => ({ layer: l.id, seen: Object.assign({}, st.seen, { [l.id]: true }) }))
+        };
+      }),
+      layerName: layer.name,
+      layerDepth: layer.depth,
+      layerFacts: layer.facts.map((f) => ({ label: f[0], value: f[1] })),
+      layerNote: layer.note,
+      scaleOpen: Object.keys(s.seen).length >= LAYERS.length,
+
+      evidence: EVIDENCE.map((u) => {
+        const chosen = s.ev[u.id];
+        const decided = chosen !== undefined;
+        return {
+          q: u.q,
+          options: u.options.map((o) => ({
+            label: o.label, pressed: chosen === o.id, disabled: decided,
+            style: this.seg(chosen === o.id, decided),
+            onClick: () => this.setState((st) => (st.ev[u.id] !== undefined ? null
+              : { ev: Object.assign({}, st.ev, { [u.id]: o.id }) }))
+          })),
+          open: decided, answer: u.answer
+        };
+      }),
+
+      thinkOptions: [
+        { letter: 'A', text: 'Right — the mantle is molten and volcanoes tap into it' },
+        { letter: 'B', text: 'Wrong — the mantle is solid rock that flows slowly; magma forms only in pockets' },
+        { letter: 'C', text: 'Right, because the crust floats on liquid' },
+        { letter: 'D', text: 'Wrong — lava comes from the core' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.thinkChoice === i, onClick: () => this.setState({ thinkChoice: i }) })),
+      thinkOpen: s.thinkChoice !== null
+    };
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals(s)
+    );
+  }
+}
+</script>
+</body>
+</html>

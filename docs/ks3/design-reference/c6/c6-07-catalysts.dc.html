@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catalysts · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Acids and alkalis</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Catalysts</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Acids and alkalis · Model</p>
+        <h1>Catalysts</h1>
+        <p class="ks3-bigq">A spatula of black powder turns a bottle that has been sitting still for a year into a reaction that is over in twenty seconds. Weigh the powder afterwards and none of it has gone.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Hydrogen peroxide slowly falls apart into water and oxygen. Left alone, a bottle takes about a year.</h2>
+        <p class="ks3-hook-prompt">Tip in a spatula of manganese dioxide — a black powder that is not one of the reactants and not one of the products — and the same bottle froths over in seconds, giving off enough oxygen to relight a glowing splint. Filter the mixture afterwards and the black powder is still there, all of it, dry and weighing exactly what it did.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What did the black powder do?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">It made the reaction go faster, and took no part in it. The reaction was always going to happen — hydrogen peroxide decomposes on its own — and the powder only changed how long it took. Nothing was added to the products, nothing was consumed, and the powder can be dried and used again tomorrow. That is a <strong>catalyst</strong>.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>A <strong>catalyst</strong> is a substance that speeds up a chemical reaction without being used up by it. At the end there is exactly as much catalyst as there was at the start, and it can be recovered and reused.</p>
+        <p>A catalyst does not make an impossible reaction happen, and it does not change what the products are. It changes one thing only: <strong>how fast</strong>.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Your turn · five flasks</p>
+        <h2 style="margin: 6px 0 0;">Same hydrogen peroxide in every flask. One spatula of something added to each.</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">{{ benchProgress }}</p>
+
+        <div style="margin-top: 18px; display: flex; gap: 9px; flex-wrap: wrap;">
+          <sc-for list="{{ addedButtons }}" as="b" hint-placeholder-count="5">
+            <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 21px; line-height: 1.3;">{{ trialTitle }}</p>
+          <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body);">{{ trialSetup }}</p>
+
+          <sc-if value="{{ needPredict }}">
+            <div style="margin-top: 14px;">
+              <p style="margin: 0; font-size: 19px; font-weight: 700;">Predict before you run it.</p>
+              <div style="margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ predictButtons }}" as="b" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ b.onClick }}" style="{{ b.style }}">{{ b.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ trialOpen }}">
+            <div data-arrive="1" style="margin-top: 16px; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-ink); color: var(--ks3-on-dark);">
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px; line-height: 1.3;">{{ trialResult }}</p>
+              <div style="margin: 12px 0 0; display: flex; gap: 20px; flex-wrap: wrap;">
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-body);">Oxygen after 60 s</p>
+                  <p style="margin: 2px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 26px; line-height: 1;">{{ trialVolume }}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-body);">Solid recovered</p>
+                  <p style="margin: 2px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 26px; line-height: 1;">{{ trialMass }}</p>
+                </div>
+              </div>
+              <p style="margin: 12px 0 0; font-size: 17px; line-height: 1.6; color: var(--ks3-on-dark-body);">{{ trialWhy }}</p>
+            </div>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{ patternOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25;">Two of the five were catalysts, and one of those was alive.</p>
+            <p style="margin: 10px 0 0; font-size: 19px; line-height: 1.6;">The sand did nothing, which is the control: adding a solid is not enough on its own. The acid changed the speed too, but it was consumed doing it — so it is a reactant, not a catalyst. Manganese dioxide and liver both sped the reaction up and both came back weighing the same.</p>
+            <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6;">Note the total oxygen. Every flask that was left long enough produced the same amount in the end. <strong>A catalyst changes when the reaction finishes, not how much it makes.</strong></p>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">A catalyst speeds up a reaction and is not used up by it. The mass of catalyst at the end equals the mass at the start, and the products are unchanged.</p>
+      </div>
+
+      <section id="s-uses" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Three judgements</p>
+        <h2 style="margin: 6px 0 0;">Why anybody cares</h2>
+        <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 14px;">
+          <sc-for list="{{ uses }}" as="u" hint-placeholder-count="3">
+            <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-size: 19px; line-height: 1.55;">{{ u.q }}</p>
+              <div style="margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ u.options }}" as="o" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ u.open }}">
+                <p data-arrive="1" style="margin: 12px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-rule); font-size: 17px; line-height: 1.55;">{{ u.answer }}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“The catalyst does get used up — just very slowly. That is why it eventually stops working.”</p>
+        <p style="max-width: 54ch;">Catalytic converters really do have to be replaced eventually. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">The balance settles it. Weigh the manganese dioxide before, filter it out afterwards, dry it and weigh it again: the mass is the same, and the same spatula of powder will run the reaction again tomorrow. Nothing is being slowly consumed.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">Catalysts do fail in the real world, but not by being used up. They get <strong>poisoned</strong> — coated by something else that sticks to the surface and blocks it — or physically clogged, or damaged by heat. That is why leaded petrol destroys a catalytic converter: the lead covers the surface the reaction needs. <strong>Blocked is not the same as consumed.</strong></p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>A catalyst speeds up a chemical reaction without being used up. It can be filtered out at the end, weighs the same as it did at the start, and can be used again. It does not change the products and it does not make impossible reactions happen — it only changes the rate. Enzymes are the catalysts living things use.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Roughly nine tenths of everything manufactured by the chemical industry passes over a catalyst at some point. The reason is money and energy: a reaction that needs 400 °C without a catalyst and 200 °C with one costs half as much to run, every hour, for the life of the plant. The ammonia process that makes the world's fertiliser runs over iron, and the catalyst is the difference between a reaction that is possible and a reaction that is worth doing.</p>
+          <p>Your own body is running thousands of catalysed reactions at this moment, at 37 °C, which is a temperature at which almost none of them would otherwise proceed usefully. The catalysts are enzymes — large protein molecules, each shaped to fit one particular reaction. The liver in the flask worked because it is full of catalase, an enzyme whose job is to destroy hydrogen peroxide before it damages cells. Boil the liver first and nothing happens: heat wrecks the shape, and an enzyme with the wrong shape is no longer a catalyst.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c6-06-making-a-salt.html">Making a salt<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c7-01-energy-and-changes-of-state.html">Energy and changes of state<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Catalysts lowering activation energy, reaction profiles with and without one, and enzymes as biological catalysts with optimum temperatures and pH.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still not sure how something can change a reaction and not take part?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The black powder', short: 'HOOK' },
+  { id: 's-bench', label: 'Five flasks', short: 'BENCH' },
+  { id: 's-uses', label: 'Three judgements', short: 'USES' },
+  { id: 's-think', label: 'Used up or blocked', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const TRIALS = [
+  { id: 't1', label: 'Nothing added', cat: false, vol: '2 cm³', mass: 'none added',
+    setup: '50 cm³ of hydrogen peroxide solution in a conical flask, with a delivery tube to a gas syringe. Nothing else.',
+    result: 'A few bubbles. Almost nothing in a minute.',
+    why: 'The control, and the one that proves the reaction was always happening. Hydrogen peroxide decomposes into water and oxygen on its own — it is simply too slow to watch. Everything that follows is a comparison against this flask.' },
+  { id: 't2', label: 'Sand', cat: false, vol: '2 cm³', mass: '1.00 g of 1.00 g',
+    setup: 'The same peroxide, with one spatula of clean dry sand stirred in.',
+    result: 'No change. The same few bubbles as the empty flask.',
+    why: 'The second control, and the important one. Sand is a solid, it is insoluble, it has a large surface area — and it does nothing. Adding a powder is not what makes a catalyst; being the right powder is.' },
+  { id: 't3', label: 'Manganese dioxide', cat: true, vol: '48 cm³', mass: '1.00 g of 1.00 g',
+    setup: 'The same peroxide, with one spatula of black manganese dioxide stirred in.',
+    result: 'Immediate vigorous frothing. The syringe fills in under a minute.',
+    why: 'A catalyst. The reaction is the same reaction giving the same products — the oxygen relights a glowing splint either way — but it is finished in a minute rather than a year. Filter, dry and weigh the powder and every milligram is still there.' },
+  { id: 't4', label: 'Fresh liver', cat: true, vol: '55 cm³', mass: 'unchanged',
+    setup: 'The same peroxide, with a small piece of fresh liver dropped in.',
+    result: 'Violent frothing, faster than the manganese dioxide, and the foam climbs the flask.',
+    why: 'Also a catalyst, and a biological one. Liver is full of catalase, an enzyme that exists to destroy hydrogen peroxide inside cells. Boil the liver first and it does nothing at all — heat destroys the enzyme\u2019s shape, and the shape is what does the work.' },
+  { id: 't5', label: 'Dilute acid', cat: false, vol: '19 cm³', mass: 'partly consumed',
+    setup: 'The same peroxide, with 5 cm³ of dilute acid added.',
+    result: 'A noticeable increase in bubbling, then it tails off.',
+    why: 'Faster, but not a catalyst. The acid is consumed as it goes, which is why the rate falls away and why you cannot recover what you added. Changing the speed is not sufficient — a catalyst must also come out unchanged.' }
+];
+
+const USES = [
+  { id: 'u1', q: 'A catalytic converter in a car exhaust contains platinum and rhodium — expensive metals. Why is the cost tolerable?',
+    options: [{ id: 'a', label: 'Only a tiny amount is needed and it is not used up' }, { id: 'b', label: 'They are cheap in bulk' }, { id: 'c', label: 'They are replaced every service' }],
+    answer: 'Because a catalyst is not consumed, a few grams coating a honeycomb can process the exhaust of a car for its entire life. If the metal were a reactant it would need topping up like fuel, and no car would be affordable. The converter turns carbon monoxide and unburnt fuel into carbon dioxide and water on the way out of the engine.' },
+  { id: 'u2', q: 'A factory reaction runs at 450 °C without a catalyst and 250 °C with one, producing the same amount of product. Which matters more to the company?',
+    options: [{ id: 'a', label: 'The temperature saving' }, { id: 'b', label: 'The amount of product' }, { id: 'c', label: 'Neither' }],
+    answer: 'The temperature. The yield is the same either way, so the catalyst is not making more of anything — it is making the same amount for less fuel, every hour, for decades. Two hundred degrees across an industrial plant is an enormous quantity of energy, which is why almost every large-scale process is catalysed.' },
+  { id: 'u3', q: 'Would adding a catalyst make copper react with dilute hydrochloric acid?',
+    options: [{ id: 'a', label: 'Yes, that is what catalysts are for' }, { id: 'b', label: 'No — a catalyst only speeds up a reaction that can already happen' }, { id: 'c', label: 'Only with enough catalyst' }],
+    answer: 'No, and this is the limit of what a catalyst is. Copper is below hydrogen in the reactivity series, so there is no reaction to speed up. A catalyst shortens the time a possible reaction takes; it cannot make an impossible one occur, however much you add.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'What does a catalyst do?',
+    options: [
+      { text: 'Speeds up a reaction without being used up', correct: true },
+      { text: 'Makes a reaction produce more product', correction: 'The amount of product is unchanged. Only the time taken is different.' },
+      { text: 'Starts reactions that could not otherwise happen', correction: 'A catalyst can only speed up a reaction that is already possible.' },
+      { text: 'Is used up gradually as the reaction proceeds', correction: 'That would make it a reactant. A catalyst weighs the same at the end as at the start.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'Two flasks of hydrogen peroxide are left until the reaction is completely finished. One had a catalyst, one did not. How do the volumes of oxygen compare?',
+    options: [
+      { text: 'They are the same — the catalyst changed the speed, not the amount', correct: true },
+      { text: 'The catalysed flask produces more oxygen', correction: 'The same peroxide can only give the same oxygen. What changed was how long it took.' },
+      { text: 'The catalysed flask produces less, because some is used by the catalyst', correction: 'The catalyst consumes nothing. Filter it out at the end and it is all still there.' },
+      { text: 'It depends how much catalyst was added', correction: 'More catalyst goes faster still, but the final volume is set by the amount of peroxide.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Describe an experiment that would prove a black powder is acting as a catalyst in the decomposition of hydrogen peroxide, and say what results would settle it.',
+    fieldLabel: 'Your method',
+    placeholder: 'I would run the reaction with and without…',
+    criteria: [
+      'Runs the reaction with and without the powder, keeping everything else the same.',
+      'Measures the volume of gas produced against time, or the time taken.',
+      'Says the reaction is faster with the powder present.',
+      'Weighs the powder before, then filters, dries and weighs it afterwards.',
+      'Says an unchanged mass, plus a faster rate, shows it is a catalyst.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'Catalytic converters stop working if a car runs on leaded petrol, but the platinum inside has not been consumed. Explain how a catalyst can fail without being used up, and what that tells you about how catalysts work.',
+    fieldLabel: 'Your answer',
+    placeholder: 'The platinum is still there, but…',
+    criteria: [
+      'Says the platinum is still present and has not been consumed.',
+      'Says the lead coats or sticks to the platinum.',
+      'Says the reacting substances can no longer reach the catalyst.',
+      'Concludes that the reaction must happen on the surface of the catalyst.',
+      'Says this is why catalysts are made with a very large surface area.'
+    ] }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return Object.keys(s.ran).length >= TRIALS.length;
+  if (id === 's-uses') return Object.keys(s.uses).length >= USES.length;
+  if (id === 's-think') return s.thinkChoice !== null;
+  if (id === 's-ladder') return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  return false;
+}
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0, answers: {}, text: {}, checked: {}, ticks: {}
+  }, { hookChoice: null, pick: 't1', ran: {}, uses: {}, thinkChoice: null });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.45;' : '');
+  }
+
+  lessonVals(s) {
+    const tr = TRIALS.find((t) => t.id === s.pick) || TRIALS[0];
+    const ran = !!s.ran[tr.id];
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'It reacted with the hydrogen peroxide' },
+        { letter: 'B', text: 'It made the reaction go faster without taking part' },
+        { letter: 'C', text: 'It produced the oxygen itself' },
+        { letter: 'D', text: 'It made a reaction happen that could not otherwise occur' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      benchProgress: Object.keys(s.ran).length + ' of ' + TRIALS.length + ' run. Two of the five are catalysts, two are controls, and one speeds the reaction up and still does not qualify.',
+      addedButtons: TRIALS.map((t) => ({
+        label: t.label, pressed: t.id === s.pick, style: this.seg(t.id === s.pick, false),
+        onClick: () => this.setState({ pick: t.id })
+      })),
+      trialTitle: tr.label,
+      trialSetup: tr.setup,
+      needPredict: !ran,
+      predictButtons: [
+        { id: 'fast', label: 'Much faster' },
+        { id: 'same', label: 'No real change' },
+        { id: 'slow', label: 'Slower' }
+      ].map((b) => ({
+        label: b.label, style: this.seg(false, false),
+        onClick: () => this.setState((st) => ({ ran: Object.assign({}, st.ran, { [tr.id]: b.id }) }))
+      })),
+      trialOpen: ran,
+      trialResult: tr.result,
+      trialVolume: tr.vol,
+      trialMass: tr.mass,
+      trialWhy: tr.why,
+      patternOpen: Object.keys(s.ran).length >= TRIALS.length,
+
+      uses: USES.map((u) => {
+        const chosen = s.uses[u.id];
+        const decided = chosen !== undefined;
+        return {
+          q: u.q,
+          options: u.options.map((o) => ({
+            label: o.label, pressed: chosen === o.id, disabled: decided,
+            style: this.seg(chosen === o.id, decided),
+            onClick: () => this.setState((st) => (st.uses[u.id] !== undefined ? null
+              : { uses: Object.assign({}, st.uses, { [u.id]: o.id }) }))
+          })),
+          open: decided, answer: u.answer
+        };
+      }),
+
+      thinkOptions: [
+        { letter: 'A', text: 'Right — it is consumed slowly, which is why it wears out' },
+        { letter: 'B', text: 'Wrong — the mass is unchanged; catalysts fail by being coated or damaged, not consumed' },
+        { letter: 'C', text: 'Right, because nothing lasts forever' },
+        { letter: 'D', text: 'Wrong — catalysts never stop working' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.thinkChoice === i, onClick: () => this.setState({ thinkChoice: i }) })),
+      thinkOpen: s.thinkChoice !== null
+    };
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals(s)
+    );
+  }
+}
+</script>
+</body>
+</html>

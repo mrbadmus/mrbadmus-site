@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Displacement · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Types of reaction</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Displacement</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Types of reaction · Process</p>
+        <h1>Displacement</h1>
+        <p class="ks3-bigq">An iron nail in blue solution comes out plated with copper. Two metals swapped places — and which way round they swap is never a matter of chance.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Leave an iron nail in blue copper sulfate. Come back to a copper-plated nail and a pale green solution.</h2>
+        <p class="ks3-hook-prompt">Nothing was added and nothing was heated. The nail is now furry and orange-brown. The blue has drained out of the solution and been replaced by a faint green. Weigh the nail: it has gained mass.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Where did the copper on the nail come from?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Out of the solution. The copper was dissolved in it all along — that is what made it blue — and the iron has <strong>taken its place</strong>, pushing the copper out as solid metal and dissolving in its stead. The green is iron sulfate, which was not there before. Two metals swapped positions, and the more reactive one won.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>A <strong>displacement</strong> reaction is one metal taking the place of another in its compound. It happens in one direction only: a <strong>more reactive</strong> metal displaces a <strong>less reactive</strong> one, and never the other way round.</p>
+        <p>Which means displacement is also a measuring instrument. Put every metal into every other metal's solution and the results put them in order of reactivity — an order nobody had to be told.</p>
+      </section>
+
+      <sc-if value="{{ seriesVisible }}" hint-placeholder-val="{{ true }}">
+      <section id="s-series" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Reference · keep this one open</p>
+        <h2 style="margin: 6px 0 0;">The reactivity series</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.65; max-width: 56ch;">Most reactive at the top, least reactive at the bottom. A metal higher in this list will displace any metal below it, and will never be displaced by one below it. The four metals on the bench below are marked — and two non-metals are in the list because they take part in exactly the same way.</p>
+
+        <div style="margin: 20px 0 0; display: grid; grid-template-columns: minmax(0, 30rem) 148px; gap: 24px; align-items: stretch; max-width: 38rem;">
+          <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 5px;">
+            <sc-for list="{{ series }}" as="row" hint-placeholder-count="12">
+              <li style="{{ row.style }}">
+                <span aria-hidden="true" style="{{ row.numStyle }}">{{ row.num }}</span>
+                <span style="{{ row.nameStyle }}">{{ row.name }}</span>
+                <sc-if value="{{ row.hasNote }}">
+                  <span style="{{ row.noteStyle }}">{{ row.note }}</span>
+                </sc-if>
+                <span style="{{ row.symbolStyle }}">{{ row.symbol }}</span>
+              </li>
+            </sc-for>
+          </ol>
+
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 4px 0;">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .07em; line-height: 1.45; text-transform: uppercase; color: var(--ks3-ink-muted); text-align: center;">Most reactive at the top</p>
+            <div aria-hidden="true" style="flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; min-height: 120px;">
+              <span style="width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-bottom: 17px solid var(--ks3-accent);"></span>
+              <span style="flex: 1 1 auto; width: 10px; background: var(--ks3-accent);"></span>
+              <span style="width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 17px solid var(--ks3-accent);"></span>
+            </div>
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .07em; line-height: 1.45; text-transform: uppercase; color: var(--ks3-ink-muted); text-align: center;">Least reactive at the bottom</p>
+          </div>
+        </div>
+
+        <p style="margin: 18px 0 0; font-size: 19px; line-height: 1.65; max-width: 56ch;">Nobody was told this order. It was assembled by doing what you are about to do — putting metals into each other's solutions and recording which way the swap went. The bench below covers four of these twelve; the same method extended down the list produces the rest of it.</p>
+      </section>
+      </sc-if>
+
+      <section id="s-grid" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Your turn · sixteen combinations</p>
+        <h2 style="margin: 6px 0 0;">Four metals, four solutions. Pick a cell, predict, then run it.</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">{{ gridProgress }}</p>
+
+        <div style="margin-top: 20px; overflow-x: auto;">
+          <table style="border-collapse: collapse; min-width: 34rem;">
+            <thead>
+              <tr>
+                <th scope="col" style="padding: 10px 12px; text-align: left; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Metal added to</th>
+                <sc-for list="{{ headers }}" as="h" hint-placeholder-count="4">
+                  <th scope="col" style="padding: 10px 12px; text-align: left; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ h.label }}</th>
+                </sc-for>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ rows }}" as="row" hint-placeholder-count="4">
+                <tr>
+                  <th scope="row" style="padding: 10px 12px; text-align: left; font-size: 18px; font-weight: 700; border-top: 2px solid var(--ks3-rule);">{{ row.label }}</th>
+                  <sc-for list="{{ row.cells }}" as="cell" hint-placeholder-count="4">
+                    <td style="padding: 6px; border-top: 2px solid var(--ks3-rule);">
+                      <button type="button" onClick="{{ cell.onClick }}" aria-pressed="{{ cell.selected }}" aria-label="{{ cell.aria }}" style="{{ cell.style }}">{{ cell.mark }}</button>
+                    </td>
+                  </sc-for>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 21px; line-height: 1.3;">{{ cellTitle }}</p>
+          <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body);">{{ cellSetup }}</p>
+          <sc-if value="{{ needPredict }}">
+            <div style="margin-top: 14px;">
+              <p style="margin: 0; font-size: 19px; font-weight: 700;">Predict before you run it.</p>
+              <div style="margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ predictButtons }}" as="b" hint-placeholder-count="2">
+                  <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ cellOpen }}">
+            <div data-arrive="1" style="margin-top: 16px; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-ink); color: var(--ks3-on-dark);">
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px; line-height: 1.3;">{{ cellResult }}</p>
+              <p style="margin: 10px 0 0; font-size: 17px; line-height: 1.6; color: var(--ks3-on-dark-body);">{{ cellWhy }}</p>
+              <sc-if value="{{ cellHasEq }}">
+                <p style="margin: 12px 0 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-family: var(--ks3-font-display); font-weight: 700; font-size: 19px; color: var(--ks3-on-dark);">
+                  <span>{{ cellEqLeft }}</span><svg viewBox="0 0 44 24" width="44" height="24" aria-hidden="true" style="flex: 0 0 auto;"><path d="M4 12h30M26 5l8 7-8 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>{{ cellEqRight }}</span>
+                </p>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{ patternOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25;">Now look at the shape of the table.</p>
+            <p style="margin: 10px 0 0; font-size: 19px; line-height: 1.6;">Every reaction is on one side of the diagonal and every blank is on the other. That is not a coincidence about these four metals — it is what an <strong>order</strong> looks like when you draw it as a grid. Read the rows: magnesium displaced everything, zinc displaced two, iron displaced one, copper displaced nothing.</p>
+            <p style="margin: 14px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 21px;">magnesium · zinc · iron · copper — most reactive to least</p>
+            <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6;">Compare that with the reference list above: your four metals sit in exactly that order. The list is not something to be believed — sixteen test tubes have just reproduced the part of it you can reach, and the same method extended down the list is where the whole of it came from.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">A more reactive metal displaces a less reactive metal from its compound — and never the reverse. Which metal wins tells you their order of reactivity.</p>
+      </div>
+
+      <section id="s-uses" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Three consequences</p>
+        <h2 style="margin: 6px 0 0;">One rule, three places it decides the answer</h2>
+        <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 14px;">
+          <sc-for list="{{ uses }}" as="u" hint-placeholder-count="3">
+            <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-size: 19px; line-height: 1.55;">{{ u.q }}</p>
+              <div style="margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ u.options }}" as="o" hint-placeholder-count="2">
+                  <button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ u.open }}">
+                <p data-arrive="1" style="margin: 12px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-rule); font-size: 17px; line-height: 1.55;">{{ u.answer }}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“The copper on the nail came out of the nail — the iron turned into copper on the outside.”</p>
+        <p style="max-width: 54ch;">The copper is on the nail, and nothing else was put in the tube. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">Iron atoms cannot become copper atoms — that is the rule from two lessons ago, and no beaker of blue solution overturns it. The copper came from the solution, where it was dissolved and invisible. The evidence is the colour: the blue drained away because the dissolved copper left, and the new green is dissolved iron that was not there before.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">And the swap is exact. Weigh the nail and the mass gained is copper deposited; weigh what is left and iron has gone into solution. <strong>Two metals changed places. Neither changed identity.</strong></p>
+          </div>
+        </sc-if>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>In a displacement reaction a more reactive metal takes the place of a less reactive metal in its compound, and never the other way round. The displaced metal appears as a solid and the solution changes colour as one dissolved metal is replaced by another. Testing every metal against every solution puts them in order of reactivity — which is how the reactivity series was built.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Displacement is how railway track is welded in the middle of nowhere. A crucible of iron oxide mixed with aluminium powder is lit; aluminium is more reactive than iron, so it takes the oxygen and the iron is displaced as a white-hot liquid that pours straight into the gap between the rails. It reaches around 2500 °C, needs no power supply, and is the same rule you have just measured with test tubes and a wire.</p>
+          <p>It is also why some metals were known to the ancient world and others were not. Gold and copper are unreactive enough to be found as the metal, so they were used thousands of years before anyone understood chemistry. Iron needs displacing from its ore with carbon in a furnace, which is a Bronze-Age-ending piece of technology. Aluminium is more reactive than carbon, so no furnace will do it — it stayed undiscovered until electricity could be used to break the ore apart, which is why aluminium was once more valuable than silver.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c5-03-oxidation.html">Oxidation<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c5-05-which-reaction-is-this.html">Which reaction is this?<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>The reactivity series in full, extracting metals with carbon and by electrolysis, and displacement as electron transfer.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still not sure why half the grid is empty?</p>
+          <a class="ks3-tutor-cta" href="#s-grid">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showSeriesUpFront&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;The reactivity series&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The plated nail', short: 'HOOK' },
+  { id: 's-grid', label: 'Sixteen tubes', short: 'GRID' },
+  { id: 's-uses', label: 'Three consequences', short: 'USES' },
+  { id: 's-think', label: 'Where the copper came from', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const METALS = [
+  { id: 'mg', name: 'Magnesium', order: 0, solution: 'magnesium sulfate', solColour: 'colourless', deposit: 'silvery-grey magnesium' },
+  { id: 'zn', name: 'Zinc', order: 1, solution: 'zinc sulfate', solColour: 'colourless', deposit: 'grey zinc' },
+  { id: 'fe', name: 'Iron', order: 2, solution: 'iron sulfate', solColour: 'pale green', deposit: 'dark grey iron' },
+  { id: 'cu', name: 'Copper', order: 3, solution: 'copper sulfate', solColour: 'blue', deposit: 'orange-brown copper' }
+];
+
+const SERIES = [
+  { name: 'Potassium', symbol: 'K' }, { name: 'Sodium', symbol: 'Na' }, { name: 'Calcium', symbol: 'Ca' },
+  { name: 'Magnesium', symbol: 'Mg', bench: true }, { name: 'Aluminium', symbol: 'Al' },
+  { name: 'Carbon', symbol: 'C', nonMetal: true },
+  { name: 'Zinc', symbol: 'Zn', bench: true }, { name: 'Iron', symbol: 'Fe', bench: true },
+  { name: 'Hydrogen', symbol: 'H', nonMetal: true },
+  { name: 'Copper', symbol: 'Cu', bench: true }, { name: 'Silver', symbol: 'Ag' }, { name: 'Gold', symbol: 'Au' }
+];
+
+const USES = [
+  { id: 'u1', q: 'A works stores copper sulfate solution. Would a galvanised steel tank do the job?',
+    correct: 'no',
+    answer: 'No. Zinc and iron are both more reactive than copper, so the tank itself would displace copper out of the solution — plating the tank, weakening it, and ruining the solution. Copper sulfate is stored in plastic or glass.' },
+  { id: 'u2', q: 'Iron is obtained from iron oxide by heating it with carbon in a blast furnace. Would the same trick get aluminium out of aluminium oxide?',
+    correct: 'no',
+    answer: 'No. Carbon can displace iron because carbon sits above iron in the reactivity order — but aluminium is above carbon, so carbon cannot displace it. Aluminium needs electricity, which is why it was the last common metal to be discovered.' },
+  { id: 'u3', q: 'An unknown metal X is put into copper sulfate and copper appears. It is then put into magnesium sulfate and nothing happens. Can you place X in the order?',
+    correct: 'yes',
+    answer: 'Yes — between the two. X displaced copper, so it is above copper. It failed to displace magnesium, so it is below magnesium. Two tubes and X is bracketed, which is exactly how the reactivity series was assembled.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'What happens in a displacement reaction?',
+    options: [
+      { text: 'A more reactive metal takes the place of a less reactive metal in its compound', correct: true },
+      { text: 'A less reactive metal takes the place of a more reactive one', correction: 'It only runs one way. A less reactive metal cannot push out a more reactive one — that is what makes the grid half empty.' },
+      { text: 'Two compounds swap their metals', correction: 'One of the reactants is a metal on its own. It is the metal that does the displacing.' },
+      { text: 'A metal is broken down into simpler substances', correction: 'A metal is an element and cannot be broken down. Displacement swaps partners; it does not split anything.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A copper wire is left in zinc sulfate solution for a week and nothing happens. What does that tell you?',
+    options: [
+      { text: 'Copper is less reactive than zinc, so it cannot displace it', correct: true },
+      { text: 'A dilute solution reacts slowly, so a stronger one would show the reaction', correction: 'Concentration changes the speed of a reaction that can happen. This one cannot happen at all.' },
+      { text: 'Copper takes no part in displacement, so it never reacts with a salt solution', correction: 'Copper is displaced by zinc, iron and magnesium. It takes part constantly — always on the losing side.' },
+      { text: 'Heating speeds up any reaction, so warming the tube would make the copper displace the zinc', correction: 'Heat speeds reactions up; it does not reverse the reactivity order. Zinc stays above copper at every temperature.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'An iron nail is left in blue copper sulfate solution. Describe everything you would observe, and explain each observation in terms of which metal is where.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The nail becomes coated with…',
+    criteria: [
+      'Says an orange-brown coating of copper forms on the nail.',
+      'Says the blue colour fades, because the dissolved copper is leaving the solution.',
+      'Says the solution becomes pale green, because iron sulfate has formed.',
+      'Says iron is more reactive than copper, which is why it can take its place.',
+      'Says the copper came from the solution and not from the nail.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'You are given an unknown metal and solutions of magnesium sulfate, zinc sulfate, iron sulfate and copper sulfate. Design the smallest set of tests that would place the unknown metal in the reactivity order, and say how you would know when you had finished.',
+    fieldLabel: 'Your plan',
+    placeholder: 'I would put a piece of the metal into…',
+    criteria: [
+      'Puts a piece of the metal into each solution, keeping the amount and conditions the same.',
+      'Says a reaction means the unknown is more reactive than that solution s metal.',
+      'Says no reaction means it is less reactive than that solution s metal.',
+      'Explains how the results bracket the metal between two known ones.',
+      'Says you have finished when you have found the highest metal it displaces and the lowest it fails to displace.'
+    ] }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-grid') return Object.keys(s.ran).length >= 12;
+  if (id === 's-uses') return Object.keys(s.uses).length >= USES.length;
+  if (id === 's-think') return s.thinkChoice !== null;
+  if (id === 's-ladder') return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  return false;
+}
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: {},
+    text: {},
+    checked: {},
+    ticks: {}
+  }, { hookChoice: null, metal: 'fe', sol: 'cu', ran: {}, uses: {}, thinkChoice: null });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.45;' : '');
+  }
+
+  ladderDone() {
+    const s = this.state;
+    return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  }
+
+  lessonVals(s) {
+    const metal = METALS.find((m) => m.id === s.metal) || METALS[0];
+    const sol = METALS.find((m) => m.id === s.sol) || METALS[3];
+    const key = metal.id + ':' + sol.id;
+    const ran = !!s.ran[key];
+    const same = metal.id === sol.id;
+    const reacts = !same && metal.order < sol.order;
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'The iron turned into copper on the surface' },
+        { letter: 'B', text: 'It came out of the solution, where it was dissolved' },
+        { letter: 'C', text: 'It was already on the nail under the grey' },
+        { letter: 'D', text: 'The blue colour became solid copper' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      seriesVisible: this.props.showSeriesUpFront !== false || Object.keys(s.ran).length >= 12,
+      series: SERIES.map(function (row, i) {
+        return {
+          num: String(i + 1),
+          name: row.name,
+          symbol: row.symbol,
+          hasNote: !!row.nonMetal,
+          note: 'non-metal',
+          style: 'display:grid;grid-template-columns:30px 1fr auto 46px;gap:10px;align-items:center;padding:9px 12px 9px 14px;border-radius:12px;background:' +
+            (row.bench ? 'var(--ks3-accent-tint)' : (row.nonMetal ? 'var(--ks3-band)' : 'var(--ks3-inset)')) +
+            ';border:2px solid ' + (row.bench ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';',
+          numStyle: 'font-family:var(--ks3-font-mono);font-size:14px;font-weight:500;color:var(--ks3-ink-muted);',
+          nameStyle: 'font-family:var(--ks3-font-display);font-weight:' + (row.bench ? '800' : '700') +
+            ';font-size:20px;line-height:1.25;color:' + (row.nonMetal ? 'var(--ks3-accent-text)' : 'var(--ks3-ink)') + ';',
+          noteStyle: 'font-family:var(--ks3-font-mono);font-size:13px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--ks3-accent-text);text-align:right;',
+          symbolStyle: 'grid-column:4;font-family:var(--ks3-font-mono);font-size:15px;font-weight:600;text-align:center;padding:3px 0;border-radius:8px;border:1px solid var(--ks3-rule);background:var(--ks3-card);color:' +
+            (row.nonMetal ? 'var(--ks3-accent-text)' : 'var(--ks3-ink)') + ';'
+        };
+      }),
+
+      gridProgress: Object.keys(s.ran).length + ' of 16 run. The four cells down the diagonal put a metal in its own solution, and they are worth running too — a test that cannot give a result is still worth having done once.',
+      headers: METALS.map((m) => ({ label: m.solution })),
+      rows: METALS.map((m) => ({
+        label: m.name,
+        cells: METALS.map((so) => {
+          const k = m.id + ':' + so.id;
+          const done = !!s.ran[k];
+          const sm = m.id === so.id;
+          const rx = !sm && m.order < so.order;
+          const selected = k === key;
+          return {
+            selected: selected,
+            aria: m.name + ' in ' + so.solution + (done ? (rx ? ': reaction' : ': no reaction') : ': not yet run'),
+            mark: done ? (rx ? 'reacts' : 'none') : '?',
+            style: 'font:inherit;font-family:var(--ks3-font-mono);font-size:13px;font-weight:500;min-width:5.6rem;min-height:44px;padding:8px 10px;border-radius:12px;cursor:pointer;border:2px solid ' +
+              (selected ? 'var(--ks3-accent)' : 'var(--ks3-ink)') + ';background:' +
+              (done ? (rx ? 'var(--ks3-accent-tint)' : 'var(--ks3-band)') : 'var(--ks3-card)') + ';color:' +
+              (done ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') + ';box-shadow:' + (selected ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+            onClick: () => this.setState({ metal: m.id, sol: so.id })
+          };
+        })
+      })),
+
+      cellTitle: metal.name + ' in ' + sol.solution,
+      cellSetup: same
+        ? 'A piece of ' + metal.name.toLowerCase() + ' in a ' + sol.solColour + ' solution of its own sulfate.'
+        : 'A piece of ' + metal.name.toLowerCase() + ' in a ' + sol.solColour + ' solution of ' + sol.solution + '.',
+      needPredict: !ran,
+      predictButtons: [
+        { id: 'yes', label: 'A reaction happens' },
+        { id: 'no', label: 'Nothing happens' }
+      ].map((b) => ({
+        label: b.label, pressed: false, style: this.seg(false, false),
+        onClick: () => this.setState((st) => ({ ran: Object.assign({}, st.ran, { [key]: b.id }) }))
+      })),
+      cellOpen: ran,
+      cellResult: same ? 'Nothing, and nothing could have happened.'
+        : reacts ? 'A reaction. ' + sol.deposit.charAt(0).toUpperCase() + sol.deposit.slice(1) + ' appears on the metal.'
+        : 'Nothing, after twenty minutes and after a week.',
+      cellWhy: same
+        ? 'The metal and the dissolved metal are the same element, so there is nobody to displace. Blank cells down the diagonal are not failed experiments; they are the shape of the question.'
+        : reacts
+          ? 'The ' + sol.solColour + ' solution fades as the ' + metal.name.toLowerCase() + ' dissolves in place of the ' + sol.name.toLowerCase() + ', and the mixture warms slightly. ' + metal.name + ' is more reactive than ' + sol.name.toLowerCase() + ', so it takes its place.'
+          : metal.name + ' is less reactive than ' + sol.name.toLowerCase() + ', so it cannot push it out of its compound. No amount of waiting, warming or stirring changes that — the reaction has no way to run.',
+      cellHasEq: reacts,
+      cellEqLeft: metal.name.toLowerCase() + ' + ' + sol.solution,
+      cellEqRight: metal.solution + ' + ' + sol.name.toLowerCase(),
+      patternOpen: Object.keys(s.ran).length >= 12,
+
+      uses: USES.map((u) => {
+        const chosen = s.uses[u.id];
+        const decided = chosen !== undefined;
+        return {
+          q: u.q,
+          options: [
+            { id: 'yes', label: 'Yes' },
+            { id: 'no', label: 'No' }
+          ].map((o) => ({
+            label: o.label, pressed: chosen === o.id, disabled: decided,
+            style: this.seg(chosen === o.id, decided),
+            onClick: () => this.setState((st) => (st.uses[u.id] !== undefined ? null
+              : { uses: Object.assign({}, st.uses, { [u.id]: o.id }) }))
+          })),
+          open: decided, answer: u.answer
+        };
+      }),
+
+      thinkOptions: [
+        { letter: 'A', text: 'Right — the iron surface changed into copper' },
+        { letter: 'B', text: 'Wrong — the copper came out of the solution, and iron went into it' },
+        { letter: 'C', text: 'Right, because the nail got heavier' },
+        { letter: 'D', text: 'Wrong — the copper came from the water' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.thinkChoice === i, onClick: () => this.setState({ thinkChoice: i }) })),
+      thinkOpen: s.thinkChoice !== null
+    };
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s, this);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals(s)
+    );
+  }
+}
+</script>
+</body>
+</html>

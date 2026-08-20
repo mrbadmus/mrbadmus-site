@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Group 7 — the halogens · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">The periodic table</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Group 7 — the halogens</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">The periodic table · Pattern</p>
+        <h1>Group 7 — the halogens</h1>
+        <p class="ks3-bigq">Group 1 got more reactive as you went down. This column does the opposite — and knowing which way round tells you which way every swap will go.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Three sealed tubes on the bench: a pale green gas, a red-brown liquid and a grey-black solid.</h2>
+        <p class="ks3-hook-prompt">They are all in the same group of the periodic table, one under the other. Nothing about them looks like a family: a gas, a liquid and a solid, in three different colours. Warm the grey-black solid gently and it turns straight into a violet vapour.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">If they are so different, why are they in the same group?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Because a group is about <strong>chemical behaviour</strong>, not appearance. All three react with metals to make the same kind of compound — a chloride, a bromide, an iodide, all with the same formula pattern. Whether an element happens to be a gas, a liquid or a solid at room temperature is a detail about melting points, and those change steadily down the column. The chemistry is the family resemblance.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Group 7 — the <strong>halogens</strong> — are coloured, poisonous non-metals. Going down the column they get darker and their melting points rise, which is why the top of the group is a gas and the bottom is a solid.</p>
+        <p>And going down, they get <strong>less</strong> reactive. Fluorine at the top is the most reactive element in the whole table; iodine near the bottom is mild enough to be painted on skin as an antiseptic. That is the reverse of group 1, and it is the fact this lesson is built on.</p>
+      </section>
+
+      <section id="s-family" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Reference · keep this one open</p>
+        <h2 style="margin: 6px 0 0;">The four you need</h2>
+        <div style="margin-top: 20px; overflow-x: auto;">
+          <table style="border-collapse: collapse; width: 100%; min-width: 34rem;">
+            <thead>
+              <tr>
+                <th scope="col" style="padding: 12px 14px; text-align: left; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Element</th>
+                <th scope="col" style="padding: 12px 14px; text-align: left; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">At room temperature</th>
+                <th scope="col" style="padding: 12px 14px; text-align: left; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Reactivity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ family }}" as="row" hint-placeholder-count="4">
+                <tr>
+                  <th scope="row" style="padding: 12px 14px; text-align: left; font-size: 18px; font-weight: 700; border-top: 2px solid var(--ks3-rule);">{{ row.name }}</th>
+                  <td style="padding: 12px 14px; font-size: 17px; line-height: 1.5; border-top: 2px solid var(--ks3-rule);">{{ row.state }}</td>
+                  <td style="padding: 12px 14px; font-size: 17px; line-height: 1.5; border-top: 2px solid var(--ks3-rule);">{{ row.react }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin: 16px 0 0; font-size: 18px; line-height: 1.6; max-width: 56ch; color: var(--ks3-ink-body);">Read the last column downwards. Group 1 got fiercer as you descended; this one calms down.</p>
+      </section>
+
+      <section id="s-grid" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Your turn · nine tubes</p>
+        <h2 style="margin: 6px 0 0;">Three halogens, three salt solutions. Pick a cell, predict, then run it.</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">{{ gridProgress }}</p>
+
+        <div style="margin-top: 20px; overflow-x: auto;">
+          <table style="border-collapse: collapse; min-width: 34rem;">
+            <thead>
+              <tr>
+                <th scope="col" style="padding: 10px 12px; text-align: left; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Halogen added to</th>
+                <sc-for list="{{ headers }}" as="h" hint-placeholder-count="3">
+                  <th scope="col" style="padding: 10px 12px; text-align: left; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ h.label }}</th>
+                </sc-for>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ rows }}" as="row" hint-placeholder-count="3">
+                <tr>
+                  <th scope="row" style="padding: 10px 12px; text-align: left; font-size: 18px; font-weight: 700; border-top: 2px solid var(--ks3-rule);">{{ row.label }}</th>
+                  <sc-for list="{{ row.cells }}" as="cell" hint-placeholder-count="3">
+                    <td style="padding: 6px; border-top: 2px solid var(--ks3-rule);">
+                      <button type="button" onClick="{{ cell.onClick }}" aria-pressed="{{ cell.selected }}" aria-label="{{ cell.aria }}" style="{{ cell.style }}">{{ cell.mark }}</button>
+                    </td>
+                  </sc-for>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 21px; line-height: 1.3;">{{ cellTitle }}</p>
+          <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body);">{{ cellSetup }}</p>
+          <sc-if value="{{ needPredict }}">
+            <div style="margin-top: 14px;">
+              <p style="margin: 0; font-size: 19px; font-weight: 700;">Predict before you run it.</p>
+              <div style="margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ predictButtons }}" as="b" hint-placeholder-count="2">
+                  <button type="button" onClick="{{ b.onClick }}" style="{{ b.style }}">{{ b.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ cellOpen }}">
+            <div data-arrive="1" style="margin-top: 16px; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-ink); color: var(--ks3-on-dark);">
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px; line-height: 1.3;">{{ cellResult }}</p>
+              <p style="margin: 10px 0 0; font-size: 17px; line-height: 1.6; color: var(--ks3-on-dark-body);">{{ cellWhy }}</p>
+              <sc-if value="{{ cellHasEq }}">
+                <p style="margin: 12px 0 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-family: var(--ks3-font-display); font-weight: 700; font-size: 18px;">
+                  <span>{{ cellEqLeft }}</span><svg viewBox="0 0 44 24" width="44" height="24" aria-hidden="true" style="flex: 0 0 auto;"><path d="M4 12h30M26 5l8 7-8 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>{{ cellEqRight }}</span>
+                </p>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{ patternOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25;">Half the grid is empty, and it is the other half from last time.</p>
+            <p style="margin: 10px 0 0; font-size: 19px; line-height: 1.6;">Chlorine displaced both the others. Bromine displaced only iodine. Iodine displaced nothing at all. Read that as an order and it says chlorine, then bromine, then iodine — which is the order they appear going down the column.</p>
+            <p style="margin: 14px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 21px;">Reactivity decreases going down group 7.</p>
+            <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6;">Same experiment you ran on the metals, same logic, opposite direction. <strong>A group has a trend; it is not always the same trend.</strong></p>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">The halogens get darker, denser and less reactive going down the group. A more reactive halogen displaces a less reactive one from its salt — never the other way round.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Reactivity always increases as you go down a group — that is what group 1 did.”</p>
+        <p style="max-width: 54ch;">Group 1 was unambiguous about it. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">The two groups do opposite things because they want opposite things. A group 1 atom reacts by <strong>losing</strong> its outer electron, and the further out that electron sits, the easier it goes — so bigger atoms lower down react more. A group 7 atom reacts by <strong>gaining</strong> an electron, and a bigger atom pulls an incoming electron in less strongly — so bigger atoms lower down react less.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">One rule about atom size, two opposite trends. <strong>Learn the reason and you never have to remember which group goes which way.</strong></p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>The halogens are coloured, poisonous non-metals that exist as pairs of atoms. Going down the group they become darker and change from gas to liquid to solid, and they become less reactive. A more reactive halogen displaces a less reactive one from a solution of its salt, which is how their order is established.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Chlorine is the reason tap water is safe. Added at about one part per million it kills the bacteria that cause cholera and typhoid, and the introduction of chlorination to city water supplies saved more lives than almost any medicine. The same element in quantity was used as a weapon in 1915. Dose is the whole difference.</p>
+          <p>Fluorine is so reactive that isolating it killed or injured several chemists before Henri Moissan managed it in 1886, and it still has to be handled in vessels that have been deliberately coated with their own fluoride. Yet its compounds are the tamest things imaginable: fluoride in toothpaste, and PTFE — a chain of carbon wrapped in fluorine — as the coating on a non-stick pan. An element and its compounds are different substances, and this group proves it four times over.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c8-04-group-1-the-alkali-metals.html">Group 1 — the alkali metals<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c8-06-group-0-and-why-groups-exist.html">Group 0 and why groups exist<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Halogen displacement as electron transfer, the trend explained by atomic radius, and testing for halide ions with silver nitrate.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still not sure why this group runs the other way?</p>
+          <a class="ks3-tutor-cta" href="#s-grid">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Three sealed tubes', short: 'HOOK' },
+  { id: 's-family', label: 'The four you need', short: 'FAMILY' },
+  { id: 's-grid', label: 'Nine tubes', short: 'GRID' },
+  { id: 's-think', label: 'Which way the trend runs', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const FAMILY = [
+  { name: 'Fluorine', state: 'Pale yellow gas', react: 'The most reactive element in the table' },
+  { name: 'Chlorine', state: 'Green gas, choking', react: 'Very reactive — kills bacteria in tap water' },
+  { name: 'Bromine', state: 'Red-brown liquid, orange vapour', react: 'Reactive, but less so than chlorine' },
+  { name: 'Iodine', state: 'Grey-black solid, violet vapour', react: 'The mildest of the four — used as an antiseptic' }
+];
+
+const HALOGENS = [
+  { id: 'cl', name: 'Chlorine', rank: 0, salt: 'chloride', colour: 'pale green solution' },
+  { id: 'br', name: 'Bromine', rank: 1, salt: 'bromide', colour: 'orange solution' },
+  { id: 'i', name: 'Iodine', rank: 2, salt: 'iodide', colour: 'brown solution' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'What happens to reactivity going down group 7?',
+    options: [
+      { text: 'It decreases — fluorine at the top is the most reactive', correct: true },
+      { text: 'It increases, as it does in group 1', correction: 'Group 1 increases downwards; group 7 does the opposite, because those atoms react by gaining an electron rather than losing one.' },
+      { text: 'It stays the same all the way down', correction: 'Chlorine displaces bromine and bromine displaces iodine. That is a clear order.' },
+      { text: 'It increases and then decreases', correction: 'There is no turning point — the trend runs one way from fluorine to astatine.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'Bromine water is added to potassium chloride solution and nothing happens. Why not?',
+    options: [
+      { text: 'Bromine is below chlorine, so it is less reactive and cannot displace it', correct: true },
+      { text: 'Potassium chloride does not dissolve', correction: 'It dissolves readily. The solution is there; the reaction is not.' },
+      { text: 'The bromine water was too dilute', correction: 'Concentration changes the speed of a reaction that can happen. This one cannot happen at all.' },
+      { text: 'Bromine only reacts with metals', correction: 'Bromine displaces iodine from potassium iodide perfectly well. It just cannot beat chlorine.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Chlorine water is added to colourless potassium iodide solution. Describe what you would see, name the products, and explain why the reaction happens.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The solution would turn…',
+    criteria: [
+      'Says the colourless solution turns brown.',
+      'Says the brown colour is iodine being released.',
+      'Names the products as potassium chloride and iodine.',
+      'Says chlorine is more reactive than iodine.',
+      'Says chlorine is higher up group 7, and reactivity decreases down the group.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'Astatine sits below iodine in group 7. Predict its appearance and its reactivity, and explain how you would test your prediction about reactivity using only the halogens in this lesson.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Astatine would be…',
+    criteria: [
+      'Predicts a dark, almost black solid.',
+      'Predicts it is less reactive than iodine.',
+      'Says the trend down the group is towards darker colour and lower reactivity.',
+      'Proposes adding astatine to a solution of a chloride, bromide and iodide.',
+      'Says no displacement in any of them would confirm it is the least reactive.'
+    ] }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-family') return s.hookChoice !== null;
+  if (id === 's-grid') return Object.keys(s.ran).length >= 7;
+  if (id === 's-think') return s.thinkChoice !== null;
+  if (id === 's-ladder') return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  return false;
+}
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0, answers: {}, text: {}, checked: {}, ticks: {}
+  }, { hookChoice: null, hal: 'cl', sol: 'i', ran: {}, thinkChoice: null });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.45;' : '');
+  }
+
+  lessonVals(s) {
+    const hal = HALOGENS.find((h) => h.id === s.hal) || HALOGENS[0];
+    const sol = HALOGENS.find((h) => h.id === s.sol) || HALOGENS[2];
+    const key = hal.id + ':' + sol.id;
+    const ran = !!s.ran[key];
+    const same = hal.id === sol.id;
+    const reacts = !same && hal.rank < sol.rank;
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'They are not really a group — the table is wrong here' },
+        { letter: 'B', text: 'Because they react in the same way and form the same kinds of compound' },
+        { letter: 'C', text: 'Because they were all discovered together' },
+        { letter: 'D', text: 'Because they are all the same colour underneath' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      family: FAMILY.map((f) => ({ name: f.name, state: f.state, react: f.react })),
+
+      gridProgress: Object.keys(s.ran).length + ' of 9 run. The three down the diagonal add a halogen to a solution of its own salt — worth running, and worth thinking about before you do.',
+      headers: HALOGENS.map((h) => ({ label: 'potassium ' + h.salt })),
+      rows: HALOGENS.map((h) => ({
+        label: h.name + ' water',
+        cells: HALOGENS.map((so) => {
+          const k = h.id + ':' + so.id;
+          const done = !!s.ran[k];
+          const sm = h.id === so.id;
+          const rx = !sm && h.rank < so.rank;
+          const selected = k === key;
+          return {
+            selected: selected,
+            aria: h.name + ' in potassium ' + so.salt + (done ? (rx ? ': reaction' : ': no reaction') : ': not yet run'),
+            mark: done ? (rx ? 'reacts' : 'none') : '?',
+            style: 'font:inherit;font-family:var(--ks3-font-mono);font-size:13px;font-weight:500;min-width:5.6rem;min-height:44px;padding:8px 10px;border-radius:12px;cursor:pointer;border:2px solid ' +
+              (selected ? 'var(--ks3-accent)' : 'var(--ks3-ink)') + ';background:' +
+              (done ? (rx ? 'var(--ks3-accent-tint)' : 'var(--ks3-band)') : 'var(--ks3-card)') + ';color:' +
+              (done ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') + ';box-shadow:' + (selected ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+            onClick: () => this.setState({ hal: h.id, sol: so.id })
+          };
+        })
+      })),
+
+      cellTitle: hal.name + ' water added to potassium ' + sol.salt,
+      cellSetup: 'A few cm³ of colourless potassium ' + sol.salt + ' solution in a test tube, with ' + hal.name.toLowerCase() + ' water added on top and shaken.',
+      needPredict: !ran,
+      predictButtons: [
+        { id: 'yes', label: 'The colour changes' },
+        { id: 'no', label: 'Nothing happens' }
+      ].map((b) => ({
+        label: b.label, style: this.seg(false, false),
+        onClick: () => this.setState((st) => ({ ran: Object.assign({}, st.ran, { [key]: b.id }) }))
+      })),
+      cellOpen: ran,
+      cellResult: same ? 'Nothing, and nothing could have happened.'
+        : reacts ? 'A reaction. The solution turns ' + (sol.id === 'i' ? 'brown' : 'orange') + '.'
+        : 'Nothing. The solution stays colourless.',
+      cellWhy: same
+        ? 'The halogen and the halogen in the salt are the same element, so there is nothing to displace. A blank down the diagonal is the shape of the question, not a failed experiment.'
+        : reacts
+          ? hal.name + ' is higher up group 7 than ' + sol.name.toLowerCase() + ', so it is more reactive and takes its place in the compound. The ' + sol.name.toLowerCase() + ' is pushed out as the element, and it is the released ' + sol.name.toLowerCase() + ' that colours the solution.'
+          : hal.name + ' is lower down group 7 than ' + sol.name.toLowerCase() + ', so it is less reactive and cannot displace it. Shaking, warming or waiting will not change that.',
+      cellHasEq: reacts,
+      cellEqLeft: hal.name.toLowerCase() + ' + potassium ' + sol.salt,
+      cellEqRight: 'potassium ' + hal.salt + ' + ' + sol.name.toLowerCase(),
+      patternOpen: Object.keys(s.ran).length >= 7,
+
+      thinkOptions: [
+        { letter: 'A', text: 'Right — every group gets more reactive downwards' },
+        { letter: 'B', text: 'Wrong — group 7 gets less reactive downwards, because those atoms gain an electron instead of losing one' },
+        { letter: 'C', text: 'Right, because bigger atoms always react more' },
+        { letter: 'D', text: 'Wrong — reactivity has nothing to do with position in a group' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.thinkChoice === i, onClick: () => this.setState({ thinkChoice: i }) })),
+      thinkOpen: s.thinkChoice !== null
+    };
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals(s)
+    );
+  }
+}
+</script>
+</body>
+</html>

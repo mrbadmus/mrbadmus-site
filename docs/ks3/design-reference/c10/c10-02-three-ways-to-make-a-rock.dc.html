@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three ways to make a rock · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Earth and its atmosphere</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Three ways to make a rock</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">The Earth and its atmosphere · Classify</p>
+        <h1>Three ways to make a rock</h1>
+        <p class="ks3-bigq">Every rock on Earth was made in one of three ways, and the rock still carries the evidence of which one — if you know what to look at.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>A kitchen worktop of polished granite, and a statue of polished marble. Both hard, both shiny, both full of crystals.</h2>
+        <p class="ks3-hook-prompt">Look closely and the granite has separate specks of pink, white and black locked together like a jigsaw. The marble is one colour running in soft swirls. Drip acid on each: the granite ignores it and the marble fizzes.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What does that fizzing tell you about the marble?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">That it is a carbonate — and that is a clue to its history. Marble started life as <strong>limestone</strong>, made from crushed shells on a sea floor, and was then cooked and squeezed deep in the crust until its crystals grew and rearranged. The granite crystallised from molten rock and was never anything else. Same look, entirely different life story, and the acid found the difference in two seconds.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Rocks are grouped by <strong>how they formed</strong>, not by how they look. There are three routes.</p>
+        <p><strong>Igneous</strong> rocks cooled from molten rock. <strong>Sedimentary</strong> rocks were built up from fragments, shells or crystals left behind by water. <strong>Metamorphic</strong> rocks were something else first, and were changed by heat and pressure without ever melting.</p>
+      </section>
+
+      <section id="s-table" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Reference · keep this one open</p>
+        <h2 style="margin: 6px 0 0;">What to look for</h2>
+        <div style="margin-top: 20px; overflow-x: auto;">
+          <table style="border-collapse: collapse; width: 100%; min-width: 40rem;">
+            <thead>
+              <tr>
+                <th scope="col" style="padding: 12px 14px; text-align: left; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Type</th>
+                <th scope="col" style="padding: 12px 14px; text-align: left; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">How it formed</th>
+                <th scope="col" style="padding: 12px 14px; text-align: left; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Look for</th>
+                <th scope="col" style="padding: 12px 14px; text-align: left; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Fossils?</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ types }}" as="row" hint-placeholder-count="3">
+                <tr>
+                  <th scope="row" style="padding: 12px 14px; text-align: left; font-size: 18px; font-weight: 700; border-top: 2px solid var(--ks3-rule); vertical-align: top;">{{ row.type }}</th>
+                  <td style="padding: 12px 14px; font-size: 17px; line-height: 1.5; border-top: 2px solid var(--ks3-rule); vertical-align: top;">{{ row.how }}</td>
+                  <td style="padding: 12px 14px; font-size: 17px; line-height: 1.5; border-top: 2px solid var(--ks3-rule); vertical-align: top;">{{ row.look }}</td>
+                  <td style="padding: 12px 14px; font-size: 17px; line-height: 1.5; border-top: 2px solid var(--ks3-rule); vertical-align: top;">{{ row.fossils }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin: 16px 0 0; font-size: 18px; line-height: 1.6; max-width: 56ch; color: var(--ks3-ink-body);">Crystal size in an igneous rock is a clock. Big crystals mean the melt cooled slowly, deep underground, with time for them to grow. Crystals too small to see mean it cooled in days at the surface.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Your turn · six samples</p>
+        <h2 style="margin: 6px 0 0;">Read the evidence. Igneous, sedimentary or metamorphic?</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">{{ benchProgress }}</p>
+
+        <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ bench }}" as="row" hint-placeholder-count="6">
+            <div style="{{ row.style }}">
+              <div style="display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; justify-content: space-between;">
+                <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px; line-height: 1.25;">{{ row.code }}</p>
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ row.found }}</p>
+              </div>
+              <ul style="margin: 10px 0 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; font-size: 17px; line-height: 1.5; color: var(--ks3-ink-body);">
+                <sc-for list="{{ row.facts }}" as="f" hint-placeholder-count="3">
+                  <li>{{ f.text }}</li>
+                </sc-for>
+              </ul>
+              <div style="margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ row.options }}" as="o" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ row.open }}">
+                <div data-arrive="1" style="margin-top: 12px; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-rule);">
+                  <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 18px;">{{ row.verdict }}</p>
+                  <p style="margin: 7px 0 0; font-size: 17px; line-height: 1.55; color: var(--ks3-ink-body);">{{ row.why }}</p>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ benchPatternOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25;">Notice which clues actually decided it.</p>
+            <p style="margin: 10px 0 0; font-size: 19px; line-height: 1.6;">Not colour, not hardness, not weight. What settled every one of those six was <strong>texture</strong> — whether the pieces interlock like a jigsaw or sit as separate grains — plus layers, fossils and how the rock breaks. Two of the samples were the same chemical compound as each other and ended up in different groups.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">Igneous rocks cooled from molten rock and have interlocking crystals. Sedimentary rocks are layers of grains and can hold fossils. Metamorphic rocks were changed by heat and pressure without melting.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“If it has crystals in it, it must be igneous.”</p>
+        <p style="max-width: 54ch;">Crystals do form when molten rock cools. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">Marble is packed with interlocking crystals and never melted. Heat and pressure let the crystals in the original limestone grow and re-form while the rock stayed solid — the same thing that happens to slate, and to the bands in a piece of gneiss.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">So crystals narrow the answer to <em>igneous or metamorphic</em> and no further. What separates the two is the rest of the evidence: banding, swirls or a rock that splits into sheets says metamorphic; a random jigsaw of different minerals with no layering says igneous. <strong>One clue rarely closes a classification. It just removes an option.</strong></p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Igneous rocks form when molten rock cools and crystallises; slow cooling underground gives large crystals and fast cooling at the surface gives small ones. Sedimentary rocks form when fragments settle in layers and are cemented together, and they are the only rocks that contain fossils. Metamorphic rocks form when existing rock is changed by heat and pressure without melting.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Sedimentary rock is history written in order. The layers were laid down oldest at the bottom, and each one records the conditions of its own moment — a desert leaves rounded wind-blown sand, a warm shallow sea leaves shell limestone, a swamp leaves coal. Read a cliff face from bottom to top and you are reading millions of years in sequence, with the fossils in each layer telling you what was alive when it formed.</p>
+          <p>Metamorphic rock is why slate roofs exist. Mudstone squeezed under a mountain range has its flat mineral grains rotated until they all line up in the same direction, and a rock whose grains are all aligned splits cleanly along that direction into sheets. Nobody designed that property; it is a fossil record of the direction the pressure came from, and Welsh slate roofed half of Victorian Britain because of it.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c10-01-inside-the-earth.html">Inside the Earth<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c10-03-the-rock-cycle.html">The rock cycle<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Mineral identification, grain size and cooling rate, and using rock sequences to date events in the Earth's history.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still unsure how marble and limestone are related?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Granite and marble', short: 'HOOK' },
+  { id: 's-table', label: 'What to look for', short: 'CLUES' },
+  { id: 's-bench', label: 'Six samples', short: 'BENCH' },
+  { id: 's-think', label: 'Crystals', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const TYPES = [
+  { type: 'Igneous', how: 'Molten rock cooled and crystallised', look: 'Interlocking crystals like a jigsaw, no layers. Large crystals if it cooled slowly underground, tiny ones if it cooled fast at the surface', fossils: 'Never — nothing survives the melt' },
+  { type: 'Sedimentary', how: 'Fragments, shells or crystals settled in layers and were cemented together', look: 'Visible layers, separate rounded grains, often crumbly and porous', fossils: 'Yes — the only rocks that contain them' },
+  { type: 'Metamorphic', how: 'Existing rock changed by heat and pressure, without melting', look: 'Interlocking crystals with bands, swirls, or a tendency to split into flat sheets', fossils: 'Rarely, and usually distorted beyond recognition' }
+];
+
+const BENCH = [
+  { id: 'r1', code: 'Sample 1', found: 'quarry in Cornwall', answer: 'igneous',
+    facts: ['Interlocking crystals of pink, white and black, a few millimetres across', 'No layers of any kind', 'Very hard; does not fizz with acid'],
+    why: 'Granite. Large interlocking crystals with no layering means it crystallised from molten rock, and the size of the crystals means it cooled slowly, deep underground.' },
+  { id: 'r2', code: 'Sample 2', found: 'cliff face, Yorkshire', answer: 'sedimentary',
+    facts: ['Clear horizontal layers', 'Made of rounded grains that rub off on your fingers', 'Soaks up water; a drop disappears into it'],
+    why: 'Sandstone. Rounded separate grains and visible layers mean this was sand carried by water or wind, dropped, buried and cemented. The gaps between the grains are why it soaks up water.' },
+  { id: 'r3', code: 'Sample 3', found: 'near an old volcano', answer: 'igneous',
+    facts: ['Dark grey, almost black', 'Crystals too small to see even with a hand lens', 'Solid all the way through, no layers'],
+    why: 'Basalt. Crystals that small mean the melt cooled in days rather than millennia — this is lava that reached the surface. Same origin as granite, opposite cooling rate.' },
+  { id: 'r4', code: 'Sample 4', found: 'building stone, quarried', answer: 'metamorphic',
+    facts: ['Interlocking crystals with pale swirls running through it', 'No fossils, though the surrounding rock is full of them', 'Fizzes with dilute acid'],
+    why: 'Marble. It fizzes because it is calcium carbonate, and it sits among fossil-bearing limestone — so it was limestone, cooked and squeezed until the crystals grew and the fossils were destroyed.' },
+  { id: 'r5', code: 'Sample 5', found: 'coastal cliff', answer: 'sedimentary',
+    facts: ['Pale grey, and shell shapes are visible on the broken surface', 'Fizzes vigorously with dilute acid', 'Soft enough to scratch with a coin'],
+    why: 'Limestone. Fossils are the giveaway — no fossil survives melting or heavy metamorphism, so a rock full of shells was built up gently from the remains of sea creatures.' },
+  { id: 'r6', code: 'Sample 6', found: 'roof of an old house', answer: 'metamorphic',
+    facts: ['Dark grey and splits cleanly into thin flat sheets', 'Grains far too small to see', 'Was originally mudstone'],
+    why: 'Slate. Mudstone put under pressure has its flat grains rotated until they all point the same way, and the rock then splits along that direction. It never melted — which is exactly what metamorphic means.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'Which type of rock can contain fossils, and why only that one?',
+    options: [
+      { text: 'Sedimentary, because remains are buried gently in layers rather than melted or crushed', correct: true },
+      { text: 'Igneous, because the crystals trap them', correction: 'Nothing survives molten rock at over 700 °C. Igneous rocks never contain fossils.' },
+      { text: 'Metamorphic, because heat preserves them', correction: 'Heat and pressure destroy or distort fossils. Any that survive are barely recognisable.' },
+      { text: 'All three equally', correction: 'Only one of the three forms in conditions gentle enough to preserve a shell or a bone.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'Two igneous rocks have the same composition, but one has crystals 5 mm across and the other has crystals too small to see. What is the difference between them?',
+    options: [
+      { text: 'How fast the molten rock cooled — slow cooling grows large crystals', correct: true },
+      { text: 'One is older than the other', correction: 'Age has no effect on crystal size. Crystals do not keep growing once the rock is solid.' },
+      { text: 'One was under more pressure', correction: 'Pressure matters in metamorphic rock. In igneous rock the crystal size is set by cooling rate.' },
+      { text: 'The small-crystal one is actually sedimentary', correction: 'Both are described as igneous. Fine-grained igneous rock such as basalt is very common.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'You are handed an unknown rock. Describe the observations you would make and explain how each one narrows down which of the three types it is.',
+    fieldLabel: 'Your method',
+    placeholder: 'First I would look for layers…',
+    criteria: [
+      'Looks for layers, which suggest sedimentary.',
+      'Looks for fossils, which mean sedimentary.',
+      'Checks whether crystals interlock like a jigsaw or sit as separate grains.',
+      'Checks for banding, swirls or splitting into sheets, which suggest metamorphic.',
+      'Says one observation narrows the options and several together identify it.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A geologist finds a band of marble running through a region of limestone, and an old igneous intrusion nearby. Explain how the marble got there, and what the arrangement tells you about the order of events.',
+    fieldLabel: 'Your answer',
+    placeholder: 'The marble was originally…',
+    criteria: [
+      'Says the marble was originally limestone.',
+      'Says heat from the igneous intrusion changed it.',
+      'Says the change happened without the rock melting.',
+      'Says the limestone must have formed before the intrusion arrived.',
+      'Says the marble is found closest to the intrusion, where the heating was strongest.'
+    ] }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-table') return s.hookChoice !== null;
+  if (id === 's-bench') return Object.keys(s.bench).length >= BENCH.length;
+  if (id === 's-think') return s.thinkChoice !== null;
+  if (id === 's-ladder') return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  return false;
+}
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0, answers: {}, text: {}, checked: {}, ticks: {}
+  }, { hookChoice: null, bench: {}, thinkChoice: null });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.45;' : '');
+  }
+
+  lessonVals(s) {
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'That it is softer than granite' },
+        { letter: 'B', text: 'That it contains a carbonate, so it was once limestone' },
+        { letter: 'C', text: 'That it is an igneous rock' },
+        { letter: 'D', text: 'That the acid was too concentrated' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      types: TYPES.map((t) => ({ type: t.type, how: t.how, look: t.look, fossils: t.fossils })),
+
+      benchProgress: Object.keys(s.bench).length + ' of ' + BENCH.length + ' decided. Two of these six are made of the same compound and belong to different groups.',
+      bench: BENCH.map((row) => {
+        const chosen = s.bench[row.id];
+        const decided = chosen !== undefined;
+        return {
+          code: row.code, found: row.found,
+          facts: row.facts.map((f) => ({ text: f })),
+          style: 'padding:20px 22px;border-radius:var(--ks3-r-panel);border:2px solid var(--ks3-ink);background:' +
+            (decided ? 'var(--ks3-card)' : 'var(--ks3-inset)') + ';',
+          options: [
+            { id: 'igneous', label: 'Igneous' },
+            { id: 'sedimentary', label: 'Sedimentary' },
+            { id: 'metamorphic', label: 'Metamorphic' }
+          ].map((o) => ({
+            label: o.label, pressed: chosen === o.id, disabled: decided,
+            style: this.seg(chosen === o.id, decided),
+            onClick: () => this.setState((st) => (st.bench[row.id] !== undefined ? null
+              : { bench: Object.assign({}, st.bench, { [row.id]: o.id }) }))
+          })),
+          open: decided,
+          verdict: decided ? (chosen === row.answer ? 'You said ' + chosen + ' — correct.' : 'It is ' + row.answer + '.') : '',
+          why: row.why
+        };
+      }),
+      benchPatternOpen: Object.keys(s.bench).length >= BENCH.length,
+
+      thinkOptions: [
+        { letter: 'A', text: 'Right — only molten rock makes crystals' },
+        { letter: 'B', text: 'Wrong — marble and other metamorphic rocks are full of crystals and never melted' },
+        { letter: 'C', text: 'Right, because sedimentary rocks have grains instead' },
+        { letter: 'D', text: 'Wrong — crystals only form in sedimentary rock' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.thinkChoice === i, onClick: () => this.setState({ thinkChoice: i }) })),
+      thinkOpen: s.thinkChoice !== null
+    };
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals(s)
+    );
+  }
+}
+</script>
+</body>
+</html>

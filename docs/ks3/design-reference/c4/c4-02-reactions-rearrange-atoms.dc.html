@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reactions rearrange atoms · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemical reactions</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Reactions rearrange atoms</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Chemical reactions · Model</p>
+        <h1>Reactions rearrange atoms</h1>
+        <p class="ks3-bigq">A new substance appears where two old ones were. Nothing was added and nothing left — so what actually happened?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Two invisible gases. Set fire to them and you get something you can drink.</h2>
+        <p class="ks3-hook-prompt">Hydrogen in one balloon, oxygen in another. Both colourless, both weightless in the hand, neither of them wet. Light them and what condenses on the cold glass afterwards is water.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Where did the water come from?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Nothing arrived and nothing left. The same atoms that were in the two balloons are in the water — hydrogen atoms and oxygen atoms, joined up differently. <strong>A reaction does not make new matter. It rearranges the matter it is given.</strong> Every reaction you will ever meet is that sentence with different atoms in it.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Atoms are joined together in the substances you start with. A chemical reaction <strong>breaks those joins and makes different ones</strong>. The atoms are not changed, created or destroyed — they are the same atoms throughout, and only their partners are new.</p>
+        <p>That is why a new substance can appear out of two old ones, and why the atom count on each side is always identical. It has to be. There is nowhere else for an atom to come from.</p>
+      </section>
+
+      <section id="s-rearr" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Your turn · take a reaction apart</p>
+        <h2 style="margin: 6px 0 0;">Break the joins, count the atoms, make the new joins</h2>
+
+        <div style="margin-top: 20px;">
+          <p style="margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">The reaction</p>
+          <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+            <sc-for list="{{ reactionTabs }}" as="t" hint-placeholder-count="3">
+              <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <p style="margin: 18px 0 0; font-size: 20px; line-height: 1.5; font-weight: 600;">{{ reactionWords }}</p>
+
+        <div role="img" aria-label="{{ stageLabel }}" style="margin-top: 18px; padding: 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink); min-height: 128px;">
+          <p style="margin: 0 0 16px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ stageName }}</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start;">
+            <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+              <div style="{{ g.boxStyle }}">
+                <div style="display: flex; gap: 4px; align-items: center;">
+                  <sc-for list="{{ g.atoms }}" as="a" hint-placeholder-count="2">
+                    <span style="{{ a.style }}">{{ a.el }}</span>
+                  </sc-for>
+                </div>
+                <sc-if value="{{ g.showLabel }}">
+                  <p style="margin: 8px 0 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; text-align: center; color: var(--ks3-ink-muted);">{{ g.label }}</p>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0 0 12px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">Atom count</p>
+            <table style="border-collapse: collapse; width: 100%; font-family: var(--ks3-font-mono); font-size: 17px;">
+              <thead>
+                <tr>
+                  <th scope="col" style="text-align: left; padding: 7px 8px; border-bottom: 2px solid var(--ks3-ink); font-weight: 500; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Atom</th>
+                  <th scope="col" style="text-align: left; padding: 7px 8px; border-bottom: 2px solid var(--ks3-ink); font-weight: 500; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Before</th>
+                  <th scope="col" style="text-align: left; padding: 7px 8px; border-bottom: 2px solid var(--ks3-ink); font-weight: 500; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">After</th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ counts }}" as="c" hint-placeholder-count="2">
+                  <tr>
+                    <td style="padding: 7px 8px; border-bottom: 2px solid var(--ks3-rule);">{{ c.el }}</td>
+                    <td style="padding: 7px 8px; border-bottom: 2px solid var(--ks3-rule);">{{ c.before }}</td>
+                    <td style="{{ c.afterStyle }}">{{ c.after }}</td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 18px; line-height: 1.6;">{{ stageText }}</p>
+          </div>
+        </div>
+
+        <sc-if value="{{ needGate }}">
+          <div data-arrive="1" style="margin-top: 18px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-alert-tint); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; font-weight: 700;">{{ gateQuestion }}</p>
+            <ul class="ks3-options" style="max-width: 30rem;">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="3">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <div style="margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap;">
+          <sc-if value="{{ showAdvance }}">
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onAdvance }}">{{ advanceLabel }}</button>
+          </sc-if>
+          <button type="button" class="ks3-retry" onClick="{{ onReset }}">Put it back</button>
+        </div>
+
+        <sc-if value="{{ allDone }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">All three reactions taken apart, and the atom count came out identical every time — because at the loose-atom stage there was nothing to add and nothing to take away. Whatever the products turn out to be, they can only be built from the atoms on the table.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-impossible" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">The rule has teeth · try to break it</p>
+        <h2 style="margin: 6px 0 0;">Ask the bench for a product it cannot build</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">You have hydrogen and oxygen on the table and nothing else. Pick something for the bench to make.</p>
+
+        <div style="margin-top: 18px; display: flex; gap: 9px; flex-wrap: wrap;">
+          <sc-for list="{{ asks }}" as="a" hint-placeholder-count="3">
+            <button type="button" onClick="{{ a.onClick }}" aria-pressed="{{ a.pressed }}" style="{{ a.style }}">{{ a.label }}</button>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ askOpen }}">
+          <div data-arrive="1" style="margin-top: 18px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-ink); color: var(--ks3-on-dark);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25;">{{ askTitle }}</p>
+            <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-on-dark-body);">{{ askText }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">A chemical reaction breaks the joins between atoms and makes new ones. The atoms themselves are unchanged, and there are exactly as many of each kind afterwards as there were before.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“When magnesium burns, the magnesium atoms turn into magnesium oxide atoms.”</p>
+        <p style="max-width: 54ch;">It sounds right, and it uses the right words in the right order. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">There is no such thing as a magnesium oxide atom. Magnesium oxide is a <strong>compound</strong>, built from magnesium atoms and oxygen atoms held together — and both kinds of atom are still exactly what they were. Nothing in the flame changed one element into another; the periodic table has not been edited.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">This is the same idea as thinking a copper atom is orange and conducts. <strong>An atom does not carry the properties of the substance it ends up in.</strong> Turning one element into another is possible, but not with a Bunsen burner and not in chemistry — it takes a nuclear reaction, and that is a different subject.</p>
+          </div>
+        </sc-if>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>A chemical reaction breaks the joins between atoms and makes new ones. The atoms are the same atoms all the way through: not created, not destroyed, and never changed into other kinds of atom. So the count of each kind of atom is identical before and after, and a reaction can only build products from the atoms it was given.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The reason a reaction takes or gives out energy sits exactly here. Breaking the joins between atoms always costs energy, and making new joins always gives energy back. If the new joins give back more than the old ones cost, the surplus leaves as heat and the reaction warms its surroundings; if they give back less, the reaction takes the difference from its surroundings and everything gets cold. Nothing else needs to be added to that story — it is bookkeeping on joins.</p>
+          <p>It also explains why some reactions need a match. A mixture of hydrogen and oxygen will sit in a balloon indefinitely, even though the reaction gives out an enormous amount of energy, because the first joins still have to be broken and nothing has paid for them. A flame pays for the first few, those release enough energy to pay for the next few, and the balloon goes off. Chemistry is full of things that are worth doing and still need starting.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c4-01-chemical-vs-physical-change.html">Chemical change vs physical change<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c4-03-word-equations.html">Word equations<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Bond breaking and bond making as the energy story of a reaction, and balanced symbol equations with state symbols.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still not sure why no reaction can make gold?</p>
+          <a class="ks3-tutor-cta" href="#s-impossible">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Two balloons', short: 'HOOK' },
+  { id: 's-rearr', label: 'Take it apart', short: 'ATOMS' },
+  { id: 's-impossible', label: 'Break the rule', short: 'RULE' },
+  { id: 's-think', label: 'New atoms?', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const EL = {
+  H: { colour: '#F3EDE1', ink: '#1A1714' },
+  O: { colour: '#E4572E', ink: '#FFFDF8' },
+  Mg: { colour: '#2F5D8A', ink: '#FFFDF8' },
+  C: { colour: '#1A1714', ink: '#FFFDF8' }
+};
+
+const REACTIONS = [
+  { id: 'water', tab: 'Hydrogen + oxygen',
+    words: 'hydrogen + oxygen makes water',
+    reactants: [{ label: 'H2', atoms: ['H', 'H'] }, { label: 'H2', atoms: ['H', 'H'] }, { label: 'O2', atoms: ['O', 'O'] }],
+    products: [{ label: 'H2O', atoms: ['H', 'H', 'O'] }, { label: 'H2O', atoms: ['H', 'H', 'O'] }],
+    counts: [{ el: 'Hydrogen', n: 4 }, { el: 'Oxygen', n: 2 }],
+    gate: { q: 'The loose atoms are on the table. How many oxygen atoms will be in the water you make?',
+      options: ['One — water only needs one', 'Two — the same two that were there', 'Four — one for each hydrogen'] },
+    productText: 'Two water particles, each one oxygen atom joined to two hydrogen atoms. Four hydrogens and two oxygens, exactly as before — and a liquid, from two gases.' },
+  { id: 'mgo', tab: 'Magnesium + oxygen',
+    words: 'magnesium + oxygen makes magnesium oxide',
+    reactants: [{ label: 'Mg', atoms: ['Mg'] }, { label: 'Mg', atoms: ['Mg'] }, { label: 'O2', atoms: ['O', 'O'] }],
+    products: [{ label: 'MgO', atoms: ['Mg', 'O'] }, { label: 'MgO', atoms: ['Mg', 'O'] }],
+    counts: [{ el: 'Magnesium', n: 2 }, { el: 'Oxygen', n: 2 }],
+    gate: { q: 'Two magnesium atoms and two oxygen atoms are loose. How many magnesium oxide units can you build?',
+      options: ['One', 'Two', 'Four'] },
+    productText: 'Two magnesium oxide units, each one magnesium joined to one oxygen. The white powder weighs more than the ribbon did — because the oxygen atoms came from the air and are now part of it.' },
+  { id: 'methane', tab: 'Methane + oxygen',
+    words: 'methane + oxygen makes carbon dioxide + water',
+    reactants: [{ label: 'CH4', atoms: ['C', 'H', 'H', 'H', 'H'] }, { label: 'O2', atoms: ['O', 'O'] }, { label: 'O2', atoms: ['O', 'O'] }],
+    products: [{ label: 'CO2', atoms: ['C', 'O', 'O'] }, { label: 'H2O', atoms: ['H', 'H', 'O'] }, { label: 'H2O', atoms: ['H', 'H', 'O'] }],
+    counts: [{ el: 'Carbon', n: 1 }, { el: 'Hydrogen', n: 4 }, { el: 'Oxygen', n: 4 }],
+    gate: { q: 'One carbon, four hydrogens and four oxygens are loose. Which set of products uses all of them exactly?',
+      options: ['One carbon dioxide and one water', 'One carbon dioxide and two waters', 'Two carbon dioxides and two waters'] },
+    productText: 'One carbon dioxide and two waters — and every one of the nine atoms is used, with none left over and none invented. This is what a gas hob does, several times a second.' }
+];
+
+const ASKS = [
+  { id: 'water', label: 'Water', possible: true,
+    title: 'Built. Two hydrogens and one oxygen, and you had both.',
+    text: 'Everything water needs was on the table. That is the only condition a reaction has to meet.' },
+  { id: 'peroxide', label: 'Hydrogen peroxide', possible: true,
+    title: 'Built — and it is a different substance from water.',
+    text: 'Two hydrogens and two oxygens. Same two elements as water, one extra oxygen atom, and a substance that bleaches hair rather than quenching thirst. The atoms decide, and so does how many of them.' },
+  { id: 'ammonia', label: 'Ammonia', possible: false,
+    title: 'Refused. There is no nitrogen on this table.',
+    text: 'Ammonia is nitrogen joined to three hydrogens, and nothing in either balloon contains a nitrogen atom. No reaction can make one — atoms are not created. If you want nitrogen in your product, you have to put nitrogen in your reactants.' },
+  { id: 'gold', label: 'Gold', possible: false,
+    title: 'Refused, and not because the bench is not trying hard enough.',
+    text: 'Gold is an element. The only way to have gold atoms at the end is to have had gold atoms at the start. Fifteen hundred years of alchemy is the evidence, and this rule is why it never worked.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'What happens to the atoms during a chemical reaction?',
+    options: [
+      { text: 'The joins between them are broken and new joins are made', correct: true },
+      { text: 'Some atoms are destroyed and new ones are made', correction: 'Atoms are not created or destroyed in a chemical reaction. Count them on each side and the numbers match.' },
+      { text: 'The atoms themselves change into different kinds of atom', correction: 'That takes a nuclear reaction, not chemistry. A magnesium atom is still a magnesium atom after it burns.' },
+      { text: 'The atoms stay exactly as they were, joined to the same partners', correction: 'Then nothing would have happened. New partners are precisely what makes it a reaction.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'Methane burns in oxygen. There are four hydrogen atoms in the methane. How many hydrogen atoms are in the products?',
+    options: [
+      { text: 'Four — the same four, now in two water particles', correct: true },
+      { text: 'Two, because water only has two hydrogens', correction: 'Water has two hydrogens each, and two waters are made. Four atoms in, four atoms out.' },
+      { text: 'None — they are burnt up', correction: 'Burning is not disappearing. The hydrogen atoms end up in the water that condenses on a cold window above a hob.' },
+      { text: 'It depends how much oxygen there is', correction: 'The oxygen decides whether the reaction can finish, not how many hydrogen atoms exist. Those were fixed by the methane.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A ribbon of magnesium is weighed, burned in air, and the white powder left behind is weighed. It is heavier. Explain how the powder can be heavier than the ribbon if atoms are never created.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The magnesium atoms have joined with…',
+    criteria: [
+      'Says the magnesium has joined with oxygen from the air.',
+      'Says the oxygen atoms are now part of the powder, so their mass is included in the reading.',
+      'Says no atoms were created — the oxygen atoms already existed, in the air.',
+      'Says the mass of the ribbon plus the mass of the oxygen used equals the mass of the powder.',
+      'Notes that weighing the air is what makes the sum come out right, and that this is why an open dish seems to gain mass.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A student proposes making gold by reacting two cheap substances together, and says the reason nobody has done it is that no-one has found the right conditions. Use what you know about reactions and atoms to explain why the plan cannot work, and what would be needed instead.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Gold is an element, which means…',
+    criteria: [
+      'Says gold is an element, so it is made of gold atoms only.',
+      'Says a reaction can only rearrange the atoms it is given.',
+      'Says there is no gold atom in the starting materials, so there can be none in the products.',
+      'Says conditions — heat, pressure, catalyst — change how a reaction goes, not which atoms exist.',
+      'Says making gold from another element means changing the atoms themselves, which is a nuclear change, not chemistry.'
+    ] }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-rearr') return Object.keys(s.done).length >= REACTIONS.length;
+  if (id === 's-impossible') return s.ask !== null;
+  if (id === 's-think') return s.thinkChoice !== null;
+  if (id === 's-ladder') return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  return false;
+}
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: {},
+    text: {},
+    checked: {},
+    ticks: {}
+  }, { hookChoice: null, rx: 'water', stage: 0, gate: null, done: {}, ask: null, thinkChoice: null });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.45;' : '');
+  }
+
+  ladderDone() {
+    const s = this.state;
+    return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  }
+
+  atomSpan(el, small) {
+    const e = EL[el] || EL.H;
+    const d = small ? 30 : 36;
+    return { el: el, style: 'display:grid;place-items:center;width:' + d + 'px;height:' + d + 'px;border-radius:99px;background:' + e.colour +
+      ';color:' + e.ink + ';border:2px solid var(--ks3-ink);font-family:var(--ks3-font-mono);font-weight:500;font-size:' + (small ? 13 : 15) + 'px;' };
+  }
+
+  lessonVals(s) {
+    const rx = REACTIONS.find((r) => r.id === s.rx) || REACTIONS[0];
+    const stage = s.stage;
+    const gateNeeded = stage === 1 && s.gate === null;
+
+    let groups;
+    if (stage === 0) {
+      groups = rx.reactants.map((g) => ({
+        atoms: g.atoms.map((a) => this.atomSpan(a, false)),
+        label: g.label, showLabel: true,
+        boxStyle: 'padding:12px 14px;border-radius:18px;background:var(--ks3-card);border:2px solid var(--ks3-ink);display:flex;flex-direction:column;align-items:center;'
+      }));
+    } else if (stage === 1) {
+      const loose = [];
+      rx.reactants.forEach((g) => g.atoms.forEach((a) => loose.push(a)));
+      groups = loose.map((a) => ({
+        atoms: [this.atomSpan(a, true)], label: '', showLabel: false,
+        boxStyle: 'padding:0;border:0;background:none;display:flex;flex-direction:column;align-items:center;'
+      }));
+    } else {
+      groups = rx.products.map((g) => ({
+        atoms: g.atoms.map((a) => this.atomSpan(a, false)),
+        label: g.label, showLabel: true,
+        boxStyle: 'padding:12px 14px;border-radius:18px;background:var(--ks3-accent-tint);border:2px solid var(--ks3-accent);display:flex;flex-direction:column;align-items:center;'
+      }));
+    }
+
+    const stageNames = ['Before · the substances you start with', 'The joins are broken · loose atoms on the table', 'After · the new substances'];
+    const stageTexts = [
+      'Each box is one particle of a starting substance, and the atoms inside it are joined together. Nothing has happened yet.',
+      'Every join has been broken and nothing else has been done. This stage is not real — no chemist ever sees it — but it is the honest way to see what a reaction has to work with. Count what is on the table: that is your entire budget.',
+      rx.productText
+    ];
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'The flame made it out of the heat' },
+        { letter: 'B', text: 'It was hidden in the balloons all along as water' },
+        { letter: 'C', text: 'The same atoms, joined together in a new way' },
+        { letter: 'D', text: 'Hydrogen atoms turned into water atoms' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      reactionTabs: REACTIONS.map((r) => ({
+        label: r.tab, pressed: r.id === s.rx, style: this.seg(r.id === s.rx, false),
+        onClick: () => this.setState({ rx: r.id, stage: 0, gate: null })
+      })),
+      reactionWords: rx.words,
+      stageName: stageNames[stage],
+      stageText: stageTexts[stage],
+      stageLabel: stage === 0
+        ? 'A particle diagram of the reactants: ' + rx.reactants.length + ' separate particles, each drawn as its atoms joined inside one outline.'
+        : stage === 1
+          ? 'The same atoms, all separate, with no joins between any of them.'
+          : 'A particle diagram of the products: ' + rx.products.length + ' new particles, built from exactly the same atoms.',
+      groups: groups,
+      counts: rx.counts.map((c) => ({
+        el: c.el, before: String(c.n), after: stage === 2 ? String(c.n) : '—',
+        afterStyle: 'padding:7px 8px;border-bottom:2px solid var(--ks3-rule);color:' +
+          (stage === 2 ? 'var(--ks3-accent-text)' : 'var(--ks3-ink-ghost)') + ';font-weight:' + (stage === 2 ? '700' : '400') + ';'
+      })),
+
+      needGate: gateNeeded,
+      gateQuestion: rx.gate.q,
+      gateOptions: rx.gate.options.map((t, i) => ({
+        letter: String.fromCharCode(65 + i), text: t, pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      showAdvance: stage < 2 && !gateNeeded,
+      advanceLabel: stage === 0 ? 'Break the joins' : 'Make the new joins',
+      onAdvance: () => this.setState((st) => {
+        const next = st.stage + 1;
+        if (next === 2) return { stage: next, done: Object.assign({}, st.done, { [st.rx]: true }) };
+        return { stage: next };
+      }),
+      onReset: () => this.setState({ stage: 0, gate: null }),
+      allDone: Object.keys(s.done).length >= REACTIONS.length,
+
+      asks: ASKS.map((a) => ({
+        label: a.label, pressed: s.ask === a.id, style: this.seg(s.ask === a.id, false),
+        onClick: () => this.setState({ ask: a.id })
+      })),
+      askOpen: s.ask !== null,
+      askTitle: s.ask ? (ASKS.find((a) => a.id === s.ask) || ASKS[0]).title : '',
+      askText: s.ask ? (ASKS.find((a) => a.id === s.ask) || ASKS[0]).text : '',
+
+      thinkOptions: [
+        { letter: 'A', text: 'Right — that is what burning does' },
+        { letter: 'B', text: 'Wrong — there is no such thing as a magnesium oxide atom' },
+        { letter: 'C', text: 'Right, because the powder is a new substance' },
+        { letter: 'D', text: 'Wrong — the magnesium atoms are destroyed' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.thinkChoice === i, onClick: () => this.setState({ thinkChoice: i }) })),
+      thinkOpen: s.thinkChoice !== null
+    };
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s, this);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals(s)
+    );
+  }
+}
+</script>
+</body>
+</html>

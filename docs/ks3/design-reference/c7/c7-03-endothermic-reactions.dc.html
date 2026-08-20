@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Endothermic reactions · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Energy changes in reactions</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Endothermic reactions</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Energy changes in reactions · Contrast</p>
+        <h1>Endothermic reactions</h1>
+        <p class="ks3-bigq">Two powders, both at room temperature, stirred together in a beaker. Thirty seconds later the beaker is cold enough to freeze it to a wet bench.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Nothing was cooled. Nothing was refrigerated. The beaker got cold on its own.</h2>
+        <p class="ks3-hook-prompt">Citric acid and sodium hydrogencarbonate, both at 20 °C, both dry, are stirred into water. The thermometer falls to 12 °C and keeps going. Put a drop of water under the beaker first and it freezes the beaker to the bench.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Where has the energy gone?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Into the reaction. This one needs energy to proceed, and it takes it from the nearest available source — the water, the beaker, the bench and the air. Those things lose energy, so they get colder, and the thermometer reports it. A change that <strong>takes energy in</strong> from its surroundings is <strong>endothermic</strong>. It is the mirror image of last lesson, and it is far rarer.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>An <strong>endothermic</strong> change takes energy in from its surroundings, so the surroundings get colder. The thermometer falls, and nothing has been refrigerated.</p>
+        <p>Both kinds obey the same law. Energy is never created and never destroyed — it is transferred. Exothermic moves it out of the chemicals and into the surroundings; endothermic moves it the other way. <strong>The only question is which direction.</strong></p>
+      </section>
+
+      <section id="s-compare" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Your turn · eight changes</p>
+        <h2 style="margin: 6px 0 0;">Exothermic or endothermic? The thermometer decides.</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">{{ sortProgress }}</p>
+
+        <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ items }}" as="row" hint-placeholder-count="8">
+            <div style="{{ row.style }}">
+              <div style="display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; justify-content: space-between;">
+                <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px; line-height: 1.25;">{{ row.name }}</p>
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ row.where }}</p>
+              </div>
+              <div style="margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ row.options }}" as="o" hint-placeholder-count="2">
+                  <button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ row.open }}">
+                <div data-arrive="1" style="margin-top: 12px; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-rule);">
+                  <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 18px;">{{ row.verdict }}</p>
+                  <p style="margin: 7px 0 0; font-size: 17px; line-height: 1.55; color: var(--ks3-ink-body);">{{ row.why }}</p>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ sortOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25;">Look at how lopsided that list is.</p>
+            <p style="margin: 10px 0 0; font-size: 19px; line-height: 1.6;">Most changes give energy out. Endothermic ones are the exceptions, and they tend to be the ones that need something driving them — a Bunsen under a carbonate, sunlight falling on a leaf, or a solid pulling itself apart as it dissolves.</p>
+            <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6;">Notice the pairs. Melting is endothermic and freezing is exothermic; photosynthesis is endothermic and respiration is exothermic. <strong>Run a change backwards and the energy runs backwards with it, by exactly the same amount.</strong></p>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">Endothermic changes take energy in from the surroundings, so the temperature falls. Exothermic changes give it out and the temperature rises. Reverse a change and you reverse its energy transfer.</p>
+      </div>
+
+      <section id="s-uses" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Three judgements</p>
+        <h2 style="margin: 6px 0 0;">Cold on demand</h2>
+        <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 14px;">
+          <sc-for list="{{ uses }}" as="u" hint-placeholder-count="3">
+            <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-size: 19px; line-height: 1.55;">{{ u.q }}</p>
+              <div style="margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ u.options }}" as="o" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ u.open }}">
+                <p data-arrive="1" style="margin: 12px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-rule); font-size: 17px; line-height: 1.55;">{{ u.answer }}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“An endothermic reaction produces cold.”</p>
+        <p style="max-width: 54ch;">The beaker genuinely does get cold. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">There is no such substance as cold. Cold is not a thing that can be made, pumped or released — it is simply the absence of energy. The reaction did not produce anything; it <strong>took energy away</strong>, and what is left behind has less than it did.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">The same correction applies to a fridge, which does not make cold but moves energy out of the food and dumps it out of the grille at the back. <strong>Every temperature change is energy going somewhere. Naming the direction is the whole of this unit.</strong></p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>An endothermic change takes energy in from its surroundings, so the temperature falls. Thermal decomposition, photosynthesis, melting and many dissolvings are endothermic; most other changes are exothermic. Energy is never created or destroyed in either case — only transferred, and reversing a change reverses the transfer.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Instant cold packs in a first aid kit are a sealed bag of ammonium nitrate with a pouch of water inside it. Squeeze the pack, the pouch bursts, the ammonium nitrate dissolves, and the temperature drops to near 0 °C within seconds — no freezer, no electricity, and it works on a mountainside. It is a single-use device because the dissolving cannot be undone in the bag.</p>
+          <p>The largest endothermic process on Earth is photosynthesis, and it runs on sunlight. Every joule stored in a leaf, and therefore in every food, every fuel and every living thing, was taken in by an endothermic reaction powered by a star. The exothermic reactions that follow — respiration, combustion, digestion — are all spending what photosynthesis banked. The whole carbon cycle is one endothermic reaction feeding an enormous number of exothermic ones.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c7-02-exothermic-reactions.html">Exothermic reactions<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c7-04-measuring-a-temperature-change.html">Measuring a temperature change<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Energy level diagrams for endothermic changes, and bond breaking as the energy-absorbing half of every reaction.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still not sure why cold is not a substance?</p>
+          <a class="ks3-tutor-cta" href="#s-think">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The cold beaker', short: 'HOOK' },
+  { id: 's-compare', label: 'Eight changes', short: 'SORT' },
+  { id: 's-uses', label: 'Cold on demand', short: 'USES' },
+  { id: 's-think', label: 'Making cold', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const ITEMS = [
+  { id: 'i1', name: 'Burning natural gas', where: 'a hob', endo: false,
+    why: 'Combustion is exothermic, always. The whole reason for burning anything is the energy it gives out.' },
+  { id: 'i2', name: 'Thermal decomposition of copper carbonate', where: 'a Bunsen', endo: true,
+    why: 'Endothermic. The Bunsen has to keep running: take the flame away and the reaction stops, because it can only proceed while energy is being supplied. That is why every decomposition you did in C5 needed heating throughout.' },
+  { id: 'i3', name: 'Neutralising an acid with an alkali', where: 'a beaker', endo: false,
+    why: 'Exothermic — the mixture warms by several degrees. You measured this in the acids unit without naming it.' },
+  { id: 'i4', name: 'Photosynthesis', where: 'a leaf', endo: true,
+    why: 'Endothermic, and the biggest one on the planet. The energy comes from sunlight, which is why a plant in the dark cannot do it however much carbon dioxide and water it has.' },
+  { id: 'i5', name: 'Respiration', where: 'every living cell', endo: false,
+    why: 'Exothermic. It is the reverse of photosynthesis, so it releases what photosynthesis stored — and it is why a crowded room warms up.' },
+  { id: 'i6', name: 'Ice melting', where: 'a drink', endo: true,
+    why: 'Endothermic. Melting takes energy in, taken from the drink — which is exactly how the ice keeps it cold, as you worked out last lesson.' },
+  { id: 'i7', name: 'Water freezing', where: 'a freezer', endo: false,
+    why: 'Exothermic. Freezing is melting run backwards, so the energy runs backwards too: the water gives energy out, and the freezer has to carry it away. That is the heat coming off the back of the appliance.' },
+  { id: 'i8', name: 'Ammonium nitrate dissolving', where: 'a cold pack', endo: true,
+    why: 'Endothermic, strongly enough to be sold as a first aid device. Not every dissolving is — some warm up — but this one takes in enough energy to bring water close to freezing.' }
+];
+
+const USES = [
+  { id: 'u1', q: 'A sports cold pack is squeezed and goes cold in seconds. Why can it only be used once?',
+    options: [{ id: 'a', label: 'The chemicals are used up' }, { id: 'b', label: 'The dissolving cannot be reversed inside the bag' }, { id: 'c', label: 'The bag leaks' }],
+    answer: 'Because the change cannot be undone in the packet. To reset it you would have to evaporate the water off and recover the solid, which needs a heat source and an open container. Compare the reusable hand warmer from last lesson, which resets by boiling — the difference is whether the reverse change is practical, not whether it is possible.' },
+  { id: 'u2', q: 'Would an endothermic reaction be any use as a fuel?',
+    options: [{ id: 'a', label: 'Yes, a very efficient one' }, { id: 'b', label: 'No — it takes energy in rather than giving it out' }, { id: 'c', label: 'Only in an engine' }],
+    answer: 'No. A fuel is something you burn to get energy out, and an endothermic reaction does the opposite: you would have to keep supplying energy to make it run, and get nothing back. Endothermic reactions are useful for cooling, for storing energy and for taking things apart — not for powering anything.' },
+  { id: 'u3', q: 'A student claims an endothermic reaction breaks the law of conservation of energy, because energy disappears.',
+    options: [{ id: 'a', label: 'They are right' }, { id: 'b', label: 'They are wrong — the energy is stored in the products' }, { id: 'c', label: 'The law does not apply to chemistry' }],
+    answer: 'Wrong, and instructively so. The energy has not disappeared: it has been taken out of the surroundings and stored in the new substances, where a thermometer cannot see it. Run the reaction backwards and it comes out again. Nothing is lost — the accounting simply moved to a place the instrument does not read.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'What happens to the temperature of the surroundings during an endothermic change?',
+    options: [
+      { text: 'It falls, because energy is taken in by the reaction', correct: true },
+      { text: 'It rises, because energy is released', correction: 'That is exothermic — the previous lesson.' },
+      { text: 'It stays the same', correction: 'If nothing changed there would be nothing to measure. The thermometer falls.' },
+      { text: 'It falls, because cold is produced by the reaction', correction: 'The direction is right but the reason is wrong. Cold is not produced; energy is removed.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'Melting is endothermic. What does that tell you about freezing?',
+    options: [
+      { text: 'It is exothermic — the same energy comes back out', correct: true },
+      { text: 'It is also endothermic, because both involve ice', correction: 'They are opposite changes, so the energy travels in opposite directions.' },
+      { text: 'It involves no energy change at all', correction: 'A freezer has to remove energy continuously. That energy is coming out of the water.' },
+      { text: 'It depends on how cold the freezer is', correction: 'The direction of the transfer is fixed. The freezer temperature affects the rate, not the direction.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Two powders at room temperature are stirred into water and the temperature falls to 12 °C. Explain what has happened in terms of energy, and why it does not break the law of conservation of energy.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The temperature fell because…',
+    criteria: [
+      'Says the reaction is endothermic.',
+      'Says energy has been taken in from the surroundings.',
+      'Says the surroundings include the water, beaker and air, which therefore cool.',
+      'Says the energy is now stored in the products.',
+      'Says no energy has been destroyed — only transferred.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A designer wants a cold pack that can be reused indefinitely. Explain what the chemistry would have to allow, and why the ammonium nitrate pack cannot do it.',
+    fieldLabel: 'Your answer',
+    placeholder: 'For a pack to be reusable the change would have to…',
+    criteria: [
+      'Says the change would have to be reversible.',
+      'Says reversing it would release the energy that was taken in.',
+      'Says the reverse change would need energy supplied from outside, such as heating.',
+      'Says the ammonium nitrate would have to be recovered from solution by evaporating the water.',
+      'Says that cannot be done inside a sealed bag, unlike the hand warmer which resets by boiling.'
+    ] }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-compare') return Object.keys(s.sorted).length >= ITEMS.length;
+  if (id === 's-uses') return Object.keys(s.uses).length >= USES.length;
+  if (id === 's-think') return s.thinkChoice !== null;
+  if (id === 's-ladder') return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  return false;
+}
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0, answers: {}, text: {}, checked: {}, ticks: {}
+  }, { hookChoice: null, sorted: {}, uses: {}, thinkChoice: null });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.45;' : '');
+  }
+
+  lessonVals(s) {
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'It was destroyed by the reaction' },
+        { letter: 'B', text: 'The reaction took it in from the surroundings' },
+        { letter: 'C', text: 'It escaped as an invisible gas' },
+        { letter: 'D', text: 'There was never any energy there to begin with' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      sortProgress: Object.keys(s.sorted).length + ' of ' + ITEMS.length + ' sorted. Three of the eight are endothermic, and two of those three are changes you have already met under another name.',
+      items: ITEMS.map((row) => {
+        const chosen = s.sorted[row.id];
+        const decided = chosen !== undefined;
+        return {
+          name: row.name, where: row.where,
+          style: 'padding:20px 22px;border-radius:var(--ks3-r-panel);border:2px solid var(--ks3-ink);background:' +
+            (decided ? 'var(--ks3-card)' : 'var(--ks3-inset)') + ';',
+          options: [
+            { id: 'exo', label: 'Exothermic' },
+            { id: 'endo', label: 'Endothermic' }
+          ].map((o) => ({
+            label: o.label, pressed: chosen === o.id, disabled: decided,
+            style: this.seg(chosen === o.id, decided),
+            onClick: () => this.setState((st) => (st.sorted[row.id] !== undefined ? null
+              : { sorted: Object.assign({}, st.sorted, { [row.id]: o.id }) }))
+          })),
+          open: decided,
+          verdict: decided ? (row.endo ? 'Endothermic — the surroundings cool.' : 'Exothermic — the surroundings warm.') : '',
+          why: row.why
+        };
+      }),
+      sortOpen: Object.keys(s.sorted).length >= ITEMS.length,
+
+      uses: USES.map((u) => {
+        const chosen = s.uses[u.id];
+        const decided = chosen !== undefined;
+        return {
+          q: u.q,
+          options: u.options.map((o) => ({
+            label: o.label, pressed: chosen === o.id, disabled: decided,
+            style: this.seg(chosen === o.id, decided),
+            onClick: () => this.setState((st) => (st.uses[u.id] !== undefined ? null
+              : { uses: Object.assign({}, st.uses, { [u.id]: o.id }) }))
+          })),
+          open: decided, answer: u.answer
+        };
+      }),
+
+      thinkOptions: [
+        { letter: 'A', text: 'Right — it makes cold and releases it into the beaker' },
+        { letter: 'B', text: 'Wrong — there is no such thing as cold; the reaction removes energy' },
+        { letter: 'C', text: 'Right, because the temperature falls' },
+        { letter: 'D', text: 'Wrong — the beaker only feels cold, it is not really colder' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.thinkChoice === i, onClick: () => this.setState({ thinkChoice: i }) })),
+      thinkOpen: s.thinkChoice !== null
+    };
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals(s)
+    );
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Making a salt · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Acids and alkalis</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Making a salt</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Acids and alkalis · Investigation</p>
+        <h1>Making a salt</h1>
+        <p class="ks3-bigq">Blue crystals big enough to hold, grown from a beaker of clear acid and a spoonful of black powder. Every step of getting there is a decision you can get wrong.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>You are asked for a jar of pure copper sulfate crystals. You are given sulfuric acid and black copper oxide powder.</h2>
+        <p class="ks3-hook-prompt">The reaction itself is easy — the acid neutralises the oxide and the solution turns blue. The hard part is what comes after: getting a pure, dry, crystalline solid out of a beaker of blue liquid, with no leftover acid and no black powder in it.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">How much copper oxide should you add?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">More than you need, and then stop when no more will dissolve. Copper oxide is a base that does not dissolve in water, so the excess just sits on the bottom where you can <strong>filter it off</strong>. Leftover acid could not be removed like that — it would be dissolved in with your product. Adding too much of the insoluble one is a problem with a solution; adding too much acid is not.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Every neutralisation makes a salt, and the salt's name is built from the two things that made it. The <strong>metal</strong> gives the first word. The <strong>acid</strong> gives the second: hydrochloric makes chlorides, sulfuric makes sulfates, nitric makes nitrates.</p>
+        <p>So the name tells you the recipe backwards. Copper sulfate had to come from copper — as the metal, its oxide, its hydroxide or its carbonate — and sulfuric acid. Nothing else could have made it.</p>
+      </section>
+
+      <section id="s-name" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Your turn · the naming bench</p>
+        <h2 style="margin: 6px 0 0;">Pick an acid and a base. Name the salt before you check.</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">{{ nameProgress }}</p>
+
+        <div style="margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 18px;">
+          <div>
+            <p style="margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">The acid</p>
+            <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+              <sc-for list="{{ acidButtons }}" as="b" hint-placeholder-count="3">
+                <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div>
+            <p style="margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">The base</p>
+            <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+              <sc-for list="{{ baseButtons }}" as="b" hint-placeholder-count="4">
+                <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 21px; line-height: 1.3;">{{ mixTitle }}</p>
+          <sc-if value="{{ needName }}">
+            <div style="margin-top: 14px;">
+              <p style="margin: 0; font-size: 19px; font-weight: 700;">Which salt does this make?</p>
+              <div style="margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ nameOptions }}" as="b" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ b.onClick }}" style="{{ b.style }}">{{ b.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ mixOpen }}">
+            <div data-arrive="1" style="margin-top: 16px; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-ink); color: var(--ks3-on-dark);">
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25;">{{ saltName }}</p>
+              <p style="margin: 10px 0 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-family: var(--ks3-font-display); font-weight: 700; font-size: 18px;">
+                <span>{{ eqLeft }}</span><svg viewBox="0 0 44 24" width="44" height="24" aria-hidden="true" style="flex: 0 0 auto;"><path d="M4 12h30M26 5l8 7-8 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>{{ eqRight }}</span>
+              </p>
+              <p style="margin: 12px 0 0; font-size: 17px; line-height: 1.6; color: var(--ks3-on-dark-body);">{{ mixNote }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-method" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Your turn · build the method</p>
+        <h2 style="margin: 6px 0 0;">Six steps, shuffled. Put them in the order you would do them.</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">{{ methodLead }}</p>
+
+        <ol style="list-style: none; margin: 20px 0 0; padding: 0; display: flex; flex-direction: column; gap: 9px;">
+          <sc-for list="{{ methodChoices }}" as="c" hint-placeholder-count="6">
+            <li>
+              <button type="button" onClick="{{ c.onClick }}" disabled="{{ c.disabled }}" style="{{ c.style }}">
+                <span aria-hidden="true" style="{{ c.badgeStyle }}">{{ c.badge }}</span>
+                <span style="text-align: left;">{{ c.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ol>
+
+        <div style="margin-top: 14px; display: flex; gap: 9px; flex-wrap: wrap;">
+          <button type="button" onClick="{{ onClearOrder }}" style="{{ clearBtnStyle }}">Start the order again</button>
+        </div>
+
+        <sc-if value="{{ methodOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25;">{{ methodVerdict }}</p>
+            <ol style="margin: 14px 0 0; padding-left: 22px; display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{ methodAnswer }}" as="m" hint-placeholder-count="6">
+                <li style="font-size: 18px; line-height: 1.55;"><strong>{{ m.text }}</strong> — {{ m.why }}</li>
+              </sc-for>
+            </ol>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">The metal names the salt and the acid names its ending. Use excess insoluble base, filter it off, then crystallise — because excess solid can be removed and excess acid cannot.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Boil the solution dry and you get the crystals faster.”</p>
+        <p style="max-width: 54ch;">You do get a solid, and quickly. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">You get a solid, but not crystals. Boiling to dryness throws thousands of tiny crystals out of solution at once and leaves a caked powder, with whatever else was dissolved in the water trapped in it. Crystals need time: heat the solution until it is concentrated, stop while there is still liquid, and let it cool slowly.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">This is the same rule you met when you crystallised salt from solution — fast drying gives powder, slow cooling gives crystals. <strong>Big clean crystals are a product of patience, not heat.</strong></p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>A salt is named after the metal and the acid that made it: sulfuric acid gives sulfates, hydrochloric gives chlorides, nitric gives nitrates. To make a pure sample, react the acid with excess insoluble base, filter off what is left over, then evaporate part of the water and let the solution cool slowly so crystals grow.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Making a salt with a soluble alkali instead of an insoluble base is a much harder job, and it is worth knowing why. Sodium hydroxide dissolves, so excess cannot be filtered off — there is no way to see when you have added enough. The answer is to do the reaction twice: once with indicator to find the exact volume that neutralises the acid, then again with the same volumes and no indicator, so the crystals are not stained with dye.</p>
+          <p>Salts are not laboratory curiosities. Ammonium nitrate and ammonium sulfate, made by neutralising acids with ammonia, are the fertilisers that feed a large fraction of the world; the process that makes the ammonia consumes about one per cent of all energy generated on Earth. Copper sulfate goes on vines as a fungicide, calcium sulfate is plasterboard, and sodium chloride is on the table.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c6-05-acids-and-carbonates.html">Acids and carbonates<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c7-01-energy-and-changes-of-state.html">Energy and changes of state<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Preparing soluble salts by titration, calculating percentage yield, and predicting solubility from the rules.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still not sure why you add too much of the base on purpose?</p>
+          <a class="ks3-tutor-cta" href="#s-method">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Blue crystals', short: 'HOOK' },
+  { id: 's-name', label: 'Naming bench', short: 'NAME' },
+  { id: 's-method', label: 'Build the method', short: 'METHOD' },
+  { id: 's-think', label: 'Boiling dry', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const ACIDS = [
+  { id: 'hcl', label: 'Hydrochloric', name: 'hydrochloric acid', ending: 'chloride' },
+  { id: 'h2so4', label: 'Sulfuric', name: 'sulfuric acid', ending: 'sulfate' },
+  { id: 'hno3', label: 'Nitric', name: 'nitric acid', ending: 'nitrate' }
+];
+
+const BASES = [
+  { id: 'cuo', label: 'Copper oxide', name: 'copper oxide', metal: 'copper', kind: 'oxide', soluble: false },
+  { id: 'mgo', label: 'Magnesium oxide', name: 'magnesium oxide', metal: 'magnesium', kind: 'oxide', soluble: false },
+  { id: 'naoh', label: 'Sodium hydroxide', name: 'sodium hydroxide', metal: 'sodium', kind: 'hydroxide', soluble: true },
+  { id: 'caco3', label: 'Calcium carbonate', name: 'calcium carbonate', metal: 'calcium', kind: 'carbonate', soluble: false }
+];
+
+const METHOD = [
+  { id: 'm1', text: 'Warm the acid gently in a beaker.',
+    why: 'Warming speeds the reaction up. It is not boiled — that would drive acid off before it has reacted with anything.' },
+  { id: 'm2', text: 'Add the copper oxide a spatula at a time, stirring, until no more will dissolve.',
+    why: 'Excess is deliberate. The black powder settling out means every last bit of acid has been used up, which is the only way to be sure none is left in your product.' },
+  { id: 'm3', text: 'Filter the mixture to remove the leftover copper oxide.',
+    why: 'The excess base is insoluble, so it stays on the filter paper while the blue copper sulfate solution passes through. This is the step that pays for adding too much.' },
+  { id: 'm4', text: 'Heat the filtrate to evaporate about half the water.',
+    why: 'Concentrating the solution, not drying it. You stop while there is still plenty of liquid — the test is a drop on a cold glass rod forming crystals.' },
+  { id: 'm5', text: 'Leave the concentrated solution to cool slowly.',
+    why: 'Slow cooling is what grows large, regular crystals. Fast cooling gives a mass of tiny ones, and boiling to dryness gives powder.' },
+  { id: 'm6', text: 'Pat the crystals dry between filter papers.',
+    why: 'The last of the mother liquor is dissolved salt, and it would dry as a crust on the surface. Patting rather than rubbing keeps the crystals whole.' }
+];
+
+const SHUFFLED = ['m3', 'm5', 'm1', 'm6', 'm2', 'm4'];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'Nitric acid is neutralised with magnesium oxide. What salt is made?',
+    options: [
+      { text: 'Magnesium nitrate', correct: true },
+      { text: 'Magnesium sulfate', correction: 'Sulfates come from sulfuric acid. Nitric acid gives nitrates.' },
+      { text: 'Nitrogen magnesate', correction: 'The metal always comes first and the acid supplies the ending. There is no such compound.' },
+      { text: 'Magnesium oxide nitrate', correction: 'The oxide is used up in the reaction — its oxygen leaves as part of the water.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'Why is excess copper oxide added rather than an exactly measured amount?',
+    options: [
+      { text: 'Because leftover solid can be filtered out, while leftover acid could not be', correct: true },
+      { text: 'Because more copper oxide makes more salt', correction: 'Once the acid is used up, extra base makes nothing. The yield is set by the acid.' },
+      { text: 'Because copper oxide is cheap', correction: 'Cost is not the reason. The reason is that the excess can be removed and acid could not.' },
+      { text: 'Because the reaction needs a catalyst', correction: 'No catalyst is involved — the excess is simply insurance that no acid survives.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Describe how you would make pure, dry crystals of magnesium sulfate from sulfuric acid and magnesium oxide, and explain the reason behind each of the three decisions that could ruin it.',
+    fieldLabel: 'Your method',
+    placeholder: 'I would warm the acid and then…',
+    criteria: [
+      'Adds magnesium oxide in excess to warm sulfuric acid, stirring.',
+      'Filters to remove the unreacted magnesium oxide.',
+      'Evaporates some of the water rather than boiling to dryness.',
+      'Leaves the solution to cool slowly so crystals grow.',
+      'Explains that excess is used because the solid can be filtered off but excess acid could not.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A student needs to make sodium chloride crystals from hydrochloric acid and sodium hydroxide. Explain why the method above will not work, and what they must do instead.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Sodium hydroxide is different because…',
+    criteria: [
+      'Says sodium hydroxide is soluble, so excess cannot be filtered off.',
+      'Says there is no visible sign of when enough has been added.',
+      'Says an indicator is used to find the exact volume that neutralises the acid.',
+      'Says the experiment is then repeated with the same volumes and no indicator.',
+      'Says the solution is then evaporated and cooled slowly to crystallise, as before.'
+    ] }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-name') return Object.keys(s.named).length >= 3;
+  if (id === 's-method') return s.order.length >= METHOD.length;
+  if (id === 's-think') return s.thinkChoice !== null;
+  if (id === 's-ladder') return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  return false;
+}
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0, answers: {}, text: {}, checked: {}, ticks: {}
+  }, { hookChoice: null, acid: 'h2so4', base: 'cuo', named: {}, order: [], thinkChoice: null });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.45;' : '');
+  }
+
+  lessonVals(s) {
+    const acid = ACIDS.find((a) => a.id === s.acid) || ACIDS[0];
+    const base = BASES.find((b) => b.id === s.base) || BASES[0];
+    const key = acid.id + ':' + base.id;
+    const named = s.named[key] !== undefined;
+    const salt = base.metal + ' ' + acid.ending;
+    const wrongA = base.metal + ' ' + (acid.ending === 'chloride' ? 'sulfate' : 'chloride');
+    const wrongB = (base.metal === 'copper' ? 'sodium' : 'copper') + ' ' + acid.ending;
+    const options = [
+      { label: salt.charAt(0).toUpperCase() + salt.slice(1) },
+      { label: wrongA.charAt(0).toUpperCase() + wrongA.slice(1) },
+      { label: wrongB.charAt(0).toUpperCase() + wrongB.slice(1) }
+    ];
+    const orderDone = s.order.length >= METHOD.length;
+    const correctOrder = METHOD.map((m) => m.id);
+    const gotItRight = orderDone && s.order.every((id, i) => id === correctOrder[i]);
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'Exactly the amount the equation says, weighed out' },
+        { letter: 'B', text: 'A little less than you need, to be safe' },
+        { letter: 'C', text: 'More than you need, until no more will react' },
+        { letter: 'D', text: 'It makes no difference how much you add' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      nameProgress: Object.keys(s.named).length + ' combinations named. Twelve are possible — three is enough to see the rule.',
+      acidButtons: ACIDS.map((a) => ({
+        label: a.label, pressed: a.id === s.acid, style: this.seg(a.id === s.acid, false),
+        onClick: () => this.setState({ acid: a.id })
+      })),
+      baseButtons: BASES.map((b) => ({
+        label: b.label, pressed: b.id === s.base, style: this.seg(b.id === s.base, false),
+        onClick: () => this.setState({ base: b.id })
+      })),
+      mixTitle: acid.name.charAt(0).toUpperCase() + acid.name.slice(1) + ' + ' + base.name,
+      needName: !named,
+      nameOptions: options.map((o) => ({
+        label: o.label, style: this.seg(false, false),
+        onClick: () => this.setState((st) => ({ named: Object.assign({}, st.named, { [key]: o.label }) }))
+      })),
+      mixOpen: named,
+      saltName: salt.charAt(0).toUpperCase() + salt.slice(1),
+      eqLeft: acid.name + ' + ' + base.name,
+      eqRight: base.kind === 'carbonate' ? salt + ' + water + carbon dioxide' : salt + ' + water',
+      mixNote: (base.kind === 'carbonate'
+        ? 'A carbonate gives carbon dioxide as well, so this one fizzes while it reacts. '
+        : '') + (base.soluble
+        ? 'Sodium hydroxide dissolves, so excess cannot be filtered off — this salt has to be made by titration instead.'
+        : base.name.charAt(0).toUpperCase() + base.name.slice(1) + ' is insoluble, so you can add it in excess and filter off what is left.'),
+
+      methodLead: s.order.length === 0
+        ? 'Tap them in the order you would carry them out. Nothing is marked until all six are placed.'
+        : s.order.length + ' of 6 placed.',
+      methodChoices: SHUFFLED.map((id) => {
+        const step = METHOD.find((m) => m.id === id);
+        const pos = s.order.indexOf(id);
+        const placed = pos >= 0;
+        return {
+          text: step.text,
+          badge: placed ? String(pos + 1) : '',
+          disabled: placed,
+          badgeStyle: 'display:grid;place-items:center;width:30px;height:30px;flex:0 0 30px;border-radius:9px;font-family:var(--ks3-font-mono);font-size:14px;font-weight:500;background:' +
+            (placed ? 'var(--ks3-accent)' : 'var(--ks3-band)') + ';color:' + (placed ? 'var(--ks3-on-dark)' : 'var(--ks3-ink-ghost)') + ';',
+          style: 'font:inherit;font-size:17px;line-height:1.5;width:100%;display:flex;gap:14px;align-items:center;padding:14px 16px;border-radius:var(--ks3-r-panel);cursor:' +
+            (placed ? 'default' : 'pointer') + ';border:2px solid ' + (placed ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+            ';background:' + (placed ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';color:var(--ks3-ink);',
+          onClick: () => this.setState((st) => (st.order.indexOf(id) >= 0 ? null : { order: st.order.concat([id]) }))
+        };
+      }),
+      onClearOrder: () => this.setState({ order: [] }),
+      clearBtnStyle: 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;border:2px solid var(--ks3-rule-strong);background:transparent;color:var(--ks3-ink-muted);',
+      methodOpen: orderDone,
+      methodVerdict: gotItRight
+        ? 'That is the order, and every step earns its place.'
+        : 'Not the order that works. Here is the sequence and what each step is for.',
+      methodAnswer: METHOD.map((m) => ({ text: m.text, why: m.why })),
+
+      thinkOptions: [
+        { letter: 'A', text: 'Right — heat gets the water off quickest' },
+        { letter: 'B', text: 'Wrong — boiling dry gives a caked powder; crystals need slow cooling' },
+        { letter: 'C', text: 'Right, because the crystals cannot boil away' },
+        { letter: 'D', text: 'Wrong — the salt would be destroyed by the heat' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.thinkChoice === i, onClick: () => this.setState({ thinkChoice: i }) })),
+      thinkOpen: s.thinkChoice !== null
+    };
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals(s)
+    );
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chemical change vs physical change · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemical reactions</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Chemical change vs physical change</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Chemical reactions · Contrast</p>
+        <h1>Chemical change vs physical change</h1>
+        <p class="ks3-bigq">Two changes can look identical — same bubbling, same colour, same heat — and only one of them makes something new. Which question separates them every time?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Melt a chocolate bar and it comes back. Fry an egg and nothing brings it back.</h2>
+        <p class="ks3-hook-prompt">Both changes were caused by heat. Both changed how the thing looked, felt and poured. In one of them you still have chocolate. In the other you no longer have egg white — you have something else that happens to be sitting where the egg white was.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What is the difference that actually matters?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Whether a <strong>new substance</strong> was made. Melted chocolate is chocolate — same substance, different state. Fried egg is not egg white with the temperature turned up; it is a different substance with different properties, and there is nothing you can do to the pan to get the old one back. Everything else — the colour, the smell, the bubbling, whether it can be undone — is a clue. This is the question.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>In a <strong>physical change</strong>, the same substances are still there. They have moved, changed state, or mixed — and the particles themselves are untouched.</p>
+        <p>In a <strong>chemical change</strong> — a <strong>chemical reaction</strong> — at least one new substance is made. The atoms are all still there, but they have been joined up differently, and what you have now behaves differently from what you started with.</p>
+      </section>
+
+      <section id="s-pairs" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Your turn · three pairs, side by side</p>
+        <h2 style="margin: 6px 0 0;">Each pair looks alike. In each pair, one is a reaction and one is not.</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Commit on both halves of a pair before you run any tests on it. Then buy the evidence and see which of your two verdicts survives.</p>
+
+        <div style="margin-top: 22px; display: flex; flex-direction: column; gap: 20px;">
+          <sc-for list="{{ pairs }}" as="pair" hint-placeholder-count="3">
+            <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ pair.label }}</p>
+              <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(266px, 1fr)); gap: 16px;">
+                <sc-for list="{{ pair.sides }}" as="side" hint-placeholder-count="2">
+                  <div style="padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); display: flex; flex-direction: column;">
+                    <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 20px; line-height: 1.3;">{{ side.name }}</p>
+                    <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.5; color: var(--ks3-ink-body);">{{ side.what }}</p>
+                    <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+                      <sc-for list="{{ side.buttons }}" as="b" hint-placeholder-count="2">
+                        <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" disabled="{{ b.disabled }}" style="{{ b.style }}">{{ b.label }}</button>
+                      </sc-for>
+                    </div>
+                    <sc-if value="{{ side.open }}">
+                      <div data-arrive="1" style="margin-top: 14px;">
+                        <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px;">
+                          <sc-for list="{{ side.evidence }}" as="e" hint-placeholder-count="3">
+                            <li style="padding: 12px 14px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-rule);">
+                              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ e.test }}</p>
+                              <p style="margin: 5px 0 0; font-size: 17px; line-height: 1.5;">{{ e.result }}</p>
+                            </li>
+                          </sc-for>
+                        </ul>
+                        <div style="margin-top: 12px; padding: 14px 16px; border-radius: 14px; background: var(--ks3-ink); color: var(--ks3-on-dark);">
+                          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 18px; line-height: 1.3;">{{ side.verdict }}</p>
+                          <p style="margin: 7px 0 0; font-size: 16px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ side.why }}</p>
+                        </div>
+                      </div>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ allDecided }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">Six changes. Bubbles appeared in two of them and only one was a reaction. Something got hot in two of them and only one was a reaction. Colour changed in two and only one was a reaction. <strong>Every clue you can see appears on both sides of the line.</strong> The only question that sorted all six was whether the substance you ended with was a different substance.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">A chemical change makes at least one new substance. A physical change does not — the same substances are still there, in a different state or a different place.</p>
+      </div>
+
+      <section class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Reference · the two columns</p>
+        <h2 style="margin: 6px 0 0;">What each kind of change does and does not do</h2>
+        <div style="margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Physical change</p>
+            <ul style="margin: 12px 0 0; padding: 0 0 0 20px; font-size: 18px; line-height: 1.6; display: flex; flex-direction: column; gap: 8px;">
+              <li>No new substance.</li>
+              <li>The particles are unchanged — only their arrangement or spacing.</li>
+              <li>Usually easy to reverse, and the same mass comes back.</li>
+              <li>Melting, boiling, dissolving, breaking, mixing.</li>
+            </ul>
+          </div>
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Chemical change</p>
+            <ul style="margin: 12px 0 0; padding: 0 0 0 20px; font-size: 18px; line-height: 1.6; display: flex; flex-direction: column; gap: 8px;">
+              <li>At least one new substance, with different properties.</li>
+              <li>The atoms are the same atoms, joined up differently.</li>
+              <li>Usually hard to reverse, and never by cooling it down.</li>
+              <li>Burning, rusting, cooking, acid on marble, respiration.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-chain" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Say it as one sentence</p>
+        <h2 style="margin: 6px 0 0;">Build the comparison, not two descriptions</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Melting wax and burning wax. Pick one clause for each half — then read what a linked comparison has to do that two separate statements do not.</p>
+
+        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 18px;">
+          <sc-for list="{{ chainSlots }}" as="slot" hint-placeholder-count="2">
+            <div>
+              <p style="margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ slot.label }}</p>
+              <ul class="ks3-options" style="max-width: 40rem;">
+                <sc-for list="{{ slot.options }}" as="o" hint-placeholder-count="3">
+                  <li>
+                    <button type="button" class="ks3-option" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">{{ o.letter }}</span>
+                      <span class="ks3-opt-label">{{ o.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ chainOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">Your sentence</p>
+            <p style="margin: 10px 0 0; font-size: 21px; line-height: 1.5;">{{ chainSentence }}</p>
+            <p style="margin: 18px 0 0; font-size: 19px; line-height: 1.65;">{{ chainNote }}</p>
+            <p style="margin: 14px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">A sentence that would get full marks</p>
+            <p style="margin: 10px 0 0; font-size: 20px; line-height: 1.55; font-weight: 600;">Melting wax is a physical change because the wax is still wax and cools back to a solid, whereas burning wax is a chemical change because the wax is turned into carbon dioxide and water, which cannot be turned back into wax by cooling.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“If you can undo it, it is physical. If you cannot undo it, it is chemical.”</p>
+        <p style="max-width: 54ch;">This rule gets the right answer most of the time, which is exactly what makes it dangerous. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">Smash a glass and you cannot undo it — and no new substance was made, so it is a physical change. It is broken glass, which is glass. Meanwhile a rusty nail can be turned back into iron: a steelworks does exactly that to iron ore, which is mostly rust, and rusting is unquestionably a chemical change.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">Reversibility is about <strong>how hard</strong> the change is to undo, and that is a fact about energy and equipment, not about what happened to the substances. It is a useful hint and it is not the test. <strong>Ask what you have now, not whether you can get back.</strong></p>
+          </div>
+        </sc-if>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>A chemical change makes at least one new substance, with properties the starting materials did not have. A physical change makes none — the same substances are still there, melted, dissolved, broken or moved. Bubbling, colour change, heat and irreversibility are clues that appear on both sides of the line, so none of them is the test. The test is: what have you got now?</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Some changes are genuinely awkward to place, and that is not a flaw in the definition — it is what happens at a boundary. Dissolving salt in water is physical: the salt is still there and evaporating gets it back. Dissolving marble chips in acid is chemical: the marble is gone, replaced by a gas, a salt and water. Both are described in everyday speech as "it dissolved", and the word is doing two completely different jobs.</p>
+          <p>Cooking is the case worth arguing about. Boiling a potato is mostly physical — heat and water soften it. Browning a steak is chemical: hundreds of new substances form between the amino acids and sugars on the surface, which is why it smells of something the raw meat did not. Whipping cream is physical, and whipping it too far is not, which is how you end up with butter. The same pan can host both kinds of change in the same minute.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c3-07-proving-something-is-pure.html">Proving something is pure<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c4-02-reactions-rearrange-atoms.html">Reactions rearrange atoms<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Reaction profiles, bond breaking and bond making, and why a chemical change involves an energy change every time.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still not sure why irreversible is not the same as chemical?</p>
+          <a class="ks3-tutor-cta" href="#s-think">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Chocolate and egg', short: 'HOOK' },
+  { id: 's-pairs', label: 'Three pairs', short: 'PAIRS' },
+  { id: 's-chain', label: 'One sentence', short: 'SENTENCE' },
+  { id: 's-think', label: 'Undo it', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const PAIRS = [
+  { id: 'p1', label: 'Pair 1 · both involve a candle and a flame',
+    sides: [
+      { id: 'wax-melt', name: 'Wax melting', what: 'The wax near the flame turns to a clear liquid and runs down the side.',
+        chemical: false,
+        evidence: [
+          { test: 'Does it come back?', result: 'It sets again as it cools, into wax.' },
+          { test: 'New properties?', result: 'Liquid wax and solid wax burn the same way, smell the same and weigh the same.' },
+          { test: 'Mass', result: 'The wax that ran down weighs what it weighed before.' }
+        ],
+        verdict: 'Physical change.', why: 'A change of state. Same substance, different arrangement of the same particles.' },
+      { id: 'wax-burn', name: 'Wax burning', what: 'The wick burns with a yellow flame and the candle gets shorter.',
+        chemical: true,
+        evidence: [
+          { test: 'Does it come back?', result: 'Nothing you can do to the air above the candle turns it back into wax.' },
+          { test: 'New properties?', result: 'Carbon dioxide and water vapour come off. Neither is waxy, neither burns.' },
+          { test: 'Mass', result: 'The candle loses mass — and the products, if you could weigh them all, weigh more than the wax did, because oxygen joined in.' }
+        ],
+        verdict: 'Chemical change.', why: 'The wax has been turned into different substances. The atoms are all still there, joined up differently.' }
+    ] },
+  { id: 'p2', label: 'Pair 2 · both fizz, both feel like something happening',
+    sides: [
+      { id: 'salt', name: 'Salt stirred into water', what: 'The crystals disappear and the water stays clear.',
+        chemical: false,
+        evidence: [
+          { test: 'Does it come back?', result: 'Evaporate the water and the salt is back, to the gram.' },
+          { test: 'New properties?', result: 'The solution still tastes of salt, because the salt is still salt.' },
+          { test: 'Mass', result: 'Unchanged. 100 g of water plus 10 g of salt weighs 110 g.' }
+        ],
+        verdict: 'Physical change.', why: 'Dissolving is mixing at the particle scale. Nothing new was made — which is exactly why you could get it back.' },
+      { id: 'marble', name: 'Marble chips in acid', what: 'The chips fizz vigorously and slowly disappear.',
+        chemical: true,
+        evidence: [
+          { test: 'Does it come back?', result: 'Evaporate the liquid and you get a different white solid, not marble chips.' },
+          { test: 'New properties?', result: 'The gas given off puts out a lit splint and turns limewater cloudy. Marble does neither.' },
+          { test: 'Mass', result: 'The open flask gets lighter, because the gas leaves. Seal it and the mass does not change at all.' }
+        ],
+        verdict: 'Chemical change.', why: 'Marble and acid have become a gas, a salt and water. "It dissolved" is the same phrase describing a completely different event.' }
+    ] },
+  { id: 'p3', label: 'Pair 3 · both change colour, both take time',
+    sides: [
+      { id: 'ice', name: 'Ice left in a warm room', what: 'The clear block goes cloudy at the edges and becomes a puddle.',
+        chemical: false,
+        evidence: [
+          { test: 'Does it come back?', result: 'Put the puddle in the freezer and you have ice again.' },
+          { test: 'New properties?', result: 'Ice and water are the same substance. Both are water.' },
+          { test: 'Mass', result: 'The puddle weighs what the block weighed.' }
+        ],
+        verdict: 'Physical change.', why: 'Melting. The particles have not changed at all — they have only broken out of a fixed arrangement.' },
+      { id: 'rust', name: 'An iron nail left outside', what: 'The grey nail turns orange-brown and flakes.',
+        chemical: true,
+        evidence: [
+          { test: 'Does it come back?', result: 'Not by cooling or drying. A steelworks can get iron back from rust, with a furnace and carbon.' },
+          { test: 'New properties?', result: 'Rust is soft, crumbly and not magnetic in the way iron is. Iron is strong and grey.' },
+          { test: 'Mass', result: 'The nail gets heavier. The extra mass came out of the air.' }
+        ],
+        verdict: 'Chemical change.', why: 'Iron and oxygen have become iron oxide, a new substance with new properties — including being useless as a nail.' }
+    ] }
+];
+
+const CHAIN_A = [
+  'Melting wax is a physical change because the wax is still wax and cools back to a solid,',
+  'Melting wax is a physical change because it can be undone,',
+  'Melting wax turns a solid into a liquid,'
+];
+const CHAIN_B = [
+  'whereas burning wax is a chemical change because the wax is turned into carbon dioxide and water, which cannot be turned back into wax by cooling.',
+  'and burning wax is a chemical change.',
+  'but burning wax gives off heat and light.'
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'What single thing tells you that a change is a chemical change?',
+    options: [
+      { text: 'At least one new substance has been made', correct: true },
+      { text: 'It cannot be reversed', correction: 'Smashing a glass cannot be reversed and is physical; rusting can be reversed in a furnace and is chemical.' },
+      { text: 'The colour has changed', correction: 'Ice going cloudy and a nail going orange both change colour, and only one of them is a reaction.' },
+      { text: 'Heat was involved', correction: 'Melting needs heat and makes nothing new. Rusting needs no heat at all.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'Salt dissolving in water and marble fizzing in acid are both described as "it dissolved". Which pair of verdicts is right?',
+    options: [
+      { text: 'Salt: physical. Marble: chemical.', correct: true },
+      { text: 'Both physical — in both cases the solid disappears into the liquid', correction: 'The marble has become a gas, a salt and water, and the gas can be tested. Something disappearing is not evidence of anything.' },
+      { text: 'Both chemical — the solid is destroyed in both', correction: 'The salt is not destroyed. Evaporate the water and every gram of it comes back unchanged.' },
+      { text: 'Salt: chemical. Marble: physical.', correction: 'Exactly the wrong way round. Test the gas from the marble: it turns limewater cloudy, so it is a new substance.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A student heats sugar in a pan. First it melts to a clear syrup; then it turns brown, smells of caramel and sets hard. They say "the whole thing was one change". Explain how many changes happened, which kind each was, and what evidence separates them.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'There were two changes. The first…',
+    criteria: [
+      'Says there were two changes, not one.',
+      'Says melting is a physical change — still sugar, and it would set back to sugar on cooling.',
+      'Says the browning is a chemical change, because new substances with new properties were made.',
+      'Uses evidence for the second: the new smell, the new colour, and that cooling does not bring the sugar back.',
+      'Makes the comparison linked, not two separate descriptions — for example using "whereas".'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A cook says "cooking is just heating food up". Take two examples from a kitchen — one physical change and one chemical — and use them to explain why that sentence is wrong, and why it is easy to believe.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Boiling a potato is mostly…',
+    criteria: [
+      'Names a kitchen change that is physical, and says why no new substance is made.',
+      'Names a kitchen change that is chemical, and names or describes a new substance.',
+      'Uses the new-substance test explicitly as the thing that distinguishes them.',
+      'Explains why the sentence is tempting — heat is involved in both, and both look dramatic.',
+      'Notes that one of them can be undone and the other cannot, and that this is a consequence rather than the definition.'
+    ] }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-pairs') return Object.keys(s.verdicts).length >= 6;
+  if (id === 's-chain') return s.chainA !== null && s.chainB !== null;
+  if (id === 's-think') return s.thinkChoice !== null;
+  if (id === 's-ladder') return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  return false;
+}
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: {},
+    text: {},
+    checked: {},
+    ticks: {}
+  }, { hookChoice: null, verdicts: {}, chainA: null, chainB: null, thinkChoice: null });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.45;' : '');
+  }
+
+  ladderDone() {
+    const s = this.state;
+    return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  }
+
+  lessonVals(s) {
+    const bothChosen = s.chainA !== null && s.chainB !== null;
+    const ideal = s.chainA === 0 && s.chainB === 0;
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'How much heat was used' },
+        { letter: 'B', text: 'Whether a new substance was made' },
+        { letter: 'C', text: 'Whether the change can be undone' },
+        { letter: 'D', text: 'Whether the thing changed colour' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      pairs: PAIRS.map((p) => ({
+        label: p.label,
+        sides: p.sides.map((sd) => {
+          const chosen = s.verdicts[sd.id];
+          const decided = chosen !== undefined;
+          return {
+            name: sd.name, what: sd.what,
+            buttons: [
+              { id: 'phys', label: 'Physical' },
+              { id: 'chem', label: 'Chemical' }
+            ].map((b) => ({
+              label: b.label, pressed: chosen === b.id, disabled: decided,
+              style: this.seg(chosen === b.id, decided),
+              onClick: () => this.setState((st) => (st.verdicts[sd.id] !== undefined ? null
+                : { verdicts: Object.assign({}, st.verdicts, { [sd.id]: b.id }) }))
+            })),
+            open: decided,
+            evidence: sd.evidence,
+            verdict: sd.verdict, why: sd.why
+          };
+        })
+      })),
+      allDecided: Object.keys(s.verdicts).length >= 6,
+
+      chainSlots: [
+        { label: 'First half', options: CHAIN_A.map((t, i) => ({
+            letter: String.fromCharCode(65 + i), text: t, pressed: s.chainA === i,
+            onClick: () => this.setState({ chainA: i }) })) },
+        { label: 'Second half', options: CHAIN_B.map((t, i) => ({
+            letter: String.fromCharCode(65 + i), text: t, pressed: s.chainB === i,
+            onClick: () => this.setState({ chainB: i }) })) }
+      ],
+      chainOpen: bothChosen,
+      chainSentence: bothChosen ? CHAIN_A[s.chainA] + ' ' + CHAIN_B[s.chainB] : '',
+      chainNote: ideal
+        ? 'That is the sentence. Both halves name the change, both give the reason, and the second half answers the first — the wax is still wax against the wax is now something else. An examiner is looking for the link, and "whereas" is where it lives.'
+        : 'Every clause you could pick is true. What decides the marks is whether the two halves are about the same thing: a comparison has to say what is different, not describe two changes and leave the reader to spot it. "It can be undone" and "it gives off heat and light" are both true and neither is the difference — one is a consequence and the other happens in physical changes too.',
+
+      thinkOptions: [
+        { letter: 'A', text: 'A good rule — it always works' },
+        { letter: 'B', text: 'Not the test — smashing glass is irreversible and physical, and rust can be turned back into iron' },
+        { letter: 'C', text: 'A good rule for solids only' },
+        { letter: 'D', text: 'Wrong the other way round — chemical changes are the reversible ones' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.thinkChoice === i, onClick: () => this.setState({ thinkChoice: i }) })),
+      thinkOpen: s.thinkChoice !== null
+    };
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s, this);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals(s)
+    );
+  }
+}
+</script>
+</body>
+</html>

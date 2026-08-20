@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Word equations · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemical reactions</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Word equations</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Chemical reactions · Model</p>
+        <h1>Word equations</h1>
+        <p class="ks3-bigq">You can describe a reaction in a paragraph and still not have said what reacted. What has to be in the sentence for it to count?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Twenty-two words, and not one of them says what the reaction was.</h2>
+        <p class="ks3-hook-prompt">“I held the magnesium ribbon in the flame with tongs and it burned with a really bright white light and left a white powder behind.” Every word is true. A chemist reading it still does not know what reacted with what.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What is missing from that sentence?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">The other reactant, and the name of the product. The sentence describes what it looked like; it never says that the magnesium joined with the <strong>oxygen in the air</strong>, or that the white powder is <strong>magnesium oxide</strong>. A word equation says all of it in six words and cannot avoid saying it.</p>
+              <p style="margin: 12px 0 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px;">
+                <span>magnesium + oxygen</span><svg viewBox="0 0 44 24" width="44" height="24" aria-hidden="true" style="flex: 0 0 auto;"><path d="M4 12h30M26 5l8 7-8 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>magnesium oxide</span>
+              </p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>A <strong>word equation</strong> puts the substances you start with — the <strong>reactants</strong> — on the left, and the substances you end with — the <strong>products</strong> — on the right. The arrow is read as <strong>“makes”</strong> or <strong>“turns into”</strong>. It is not an equals sign, and the two sides are not interchangeable: a reaction runs one way, and so does the arrow.</p>
+        <p>The plus sign is read as <strong>“and”</strong>. It never means add up.</p>
+      </section>
+
+      <section id="s-builder" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Your turn · build the equation</p>
+        <h2 style="margin: 6px 0 0;">Read what happened. Put each substance where it belongs.</h2>
+
+        <div style="margin-top: 18px; display: flex; gap: 9px; flex-wrap: wrap;">
+          <sc-for list="{{ caseTabs }}" as="t" hint-placeholder-count="3">
+            <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+
+        <p style="margin: 18px 0 0; font-size: 19px; line-height: 1.65; max-width: 56ch;">{{ caseStory }}</p>
+
+        <div style="margin-top: 20px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+          <p style="margin: 0 0 12px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">On the bench · not everything here belongs in the equation</p>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <sc-for list="{{ bank }}" as="b" hint-placeholder-count="5">
+              <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                <span style="{{ b.chipStyle }}">{{ b.name }}</span>
+                <sc-for list="{{ b.buttons }}" as="btn" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ btn.onClick }}" aria-pressed="{{ btn.pressed }}" style="{{ btn.style }}">{{ btn.label }}</button>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+          <p style="margin: 0 0 14px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">Your equation</p>
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.3; min-height: 44px;">
+            <sc-for list="{{ leftSide }}" as="c" hint-placeholder-count="2">
+              <span style="display: flex; align-items: center; gap: 12px;">
+                <sc-if value="{{ c.showPlus }}"><span style="color: var(--ks3-ink-muted);">+</span></sc-if>
+                <span>{{ c.name }}</span>
+              </span>
+            </sc-for>
+            <sc-if value="{{ leftEmpty }}" hint-placeholder-val="{{ true }}"><span style="color: var(--ks3-ink-ghost);">nothing yet</span></sc-if>
+            <svg viewBox="0 0 44 24" width="44" height="24" aria-hidden="true" style="flex: 0 0 auto;"><path d="M4 12h30M26 5l8 7-8 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            <sc-for list="{{ rightSide }}" as="c" hint-placeholder-count="2">
+              <span style="display: flex; align-items: center; gap: 12px;">
+                <sc-if value="{{ c.showPlus }}"><span style="color: var(--ks3-ink-muted);">+</span></sc-if>
+                <span>{{ c.name }}</span>
+              </span>
+            </sc-for>
+            <sc-if value="{{ rightEmpty }}" hint-placeholder-val="{{ true }}"><span style="color: var(--ks3-ink-ghost);">nothing yet</span></sc-if>
+          </div>
+        </div>
+
+        <div style="margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap;">
+          <sc-if value="{{ canCheck }}">
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onCheck }}">Check this equation</button>
+          </sc-if>
+          <button type="button" class="ks3-retry" onClick="{{ onClear }}">Clear it</button>
+        </div>
+
+        <sc-if value="{{ checkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-ink); color: var(--ks3-on-dark);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25;">{{ checkTitle }}</p>
+            <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-on-dark-body);">{{ checkText }}</p>
+            <p style="margin: 16px 0 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-family: var(--ks3-font-display); font-weight: 700; font-size: 20px; color: var(--ks3-on-dark);">
+              <span>{{ modelLeft }}</span><svg viewBox="0 0 44 24" width="44" height="24" aria-hidden="true" style="flex: 0 0 auto;"><path d="M4 12h30M26 5l8 7-8 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>{{ modelRight }}</span>
+            </p>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">Reactants on the left, products on the right, and the arrow means “makes”. Only substances go in a word equation — never conditions, never energy, and never anything that was only watching.</p>
+      </div>
+
+      <section id="s-read" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Read it back</p>
+        <h2 style="margin: 6px 0 0;">Which sentence is the equation actually saying?</h2>
+        <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 16px;">
+          <sc-for list="{{ readings }}" as="r" hint-placeholder-count="3">
+            <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-family: var(--ks3-font-display); font-weight: 700; font-size: 21px;">
+                <span>{{ r.left }}</span><svg viewBox="0 0 44 24" width="44" height="24" aria-hidden="true" style="flex: 0 0 auto;"><path d="M4 12h30M26 5l8 7-8 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>{{ r.right }}</span>
+              </p>
+              <div style="margin-top: 14px; display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ r.options }}" as="o" hint-placeholder-count="2">
+                  <button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ r.open }}">
+                <p data-arrive="1" style="margin: 14px 0 0; padding: 16px 18px; border-radius: 16px; background: var(--ks3-card); border: 2px solid var(--ks3-rule); font-size: 18px; line-height: 1.6;">{{ r.answer }}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“The arrow is like an equals sign, so you could write the equation the other way round.”</p>
+        <p style="max-width: 54ch;">The two sides do have the same atoms in them, which is exactly why this is tempting. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">The two sides balance in atoms and they are not the same thing. Written the other way round, “magnesium oxide makes magnesium and oxygen” claims that white powder spontaneously turns back into burning metal and air, which it does not — it takes a furnace, and it is a different reaction with a different equation.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">So the arrow carries information an equals sign does not: <strong>which way it went.</strong> Two other habits follow from the same mistake. You cannot cancel a substance that appears on both sides the way you cancel in algebra — it is doing something on each side. And “heat”, “energy” and “a flame” are not substances, so they never appear in the equation; if the conditions matter, they are written above the arrow.</p>
+          </div>
+        </sc-if>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>A word equation puts the reactants on the left, the products on the right, and reads the arrow as “makes”. Plus means “and”, never add. Only substances appear — not heat, not energy, not a flame, and not anything that was merely present. The arrow runs one way, because so does the reaction.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Word equations run out of road quickly, and it is worth knowing exactly where. They can say which substances react and which are made. They cannot say <em>how many</em> particles of each — and that turns out to be most of chemistry. Two hydrogen particles react with one oxygen particle; "hydrogen + oxygen makes water" cannot tell you that, so it cannot tell you how much oxygen to supply or how much water to expect.</p>
+          <p>They also depend on the name being agreed. "Iron oxide" names three different compounds, and rust is a hydrated one, so a word equation for rusting is honest only if everyone reading it knows which iron oxide is meant. Symbols fix both problems at once, and that is the next lesson but one: formulae name the substance exactly, and the numbers in front of them say how many.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c4-02-reactions-rearrange-atoms.html">Reactions rearrange atoms<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c4-04-mass-in-a-reaction.html">Mass in a reaction<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Balanced symbol equations with state symbols, ionic equations, and half equations.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still not sure why heat cannot go in the equation?</p>
+          <a class="ks3-tutor-cta" href="#s-think">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Twenty-two words', short: 'HOOK' },
+  { id: 's-builder', label: 'Build it', short: 'BUILD' },
+  { id: 's-read', label: 'Read it back', short: 'READ' },
+  { id: 's-think', label: 'Not an equals sign', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const CASES = [
+  { id: 'mg', tab: 'Burning magnesium',
+    story: 'A ribbon of magnesium is held in a hot flame with tongs. It burns with a fierce white light, taking oxygen out of the air as it goes, and leaves a white powder called magnesium oxide. The tongs are unchanged. Air also contains nitrogen, which takes no part.',
+    reactants: ['Magnesium', 'Oxygen'], products: ['Magnesium oxide'],
+    distractors: {
+      'Nitrogen': 'Nitrogen was in the air and took no part in the reaction. A substance that is only present does not go in the equation — only what reacts and what is made.',
+      'Heat': 'Heat is not a substance. It is a condition, and conditions are written above the arrow if they are written at all.'
+    } },
+  { id: 'marble', tab: 'Marble and acid',
+    story: 'Marble chips — calcium carbonate — are dropped into hydrochloric acid. The mixture fizzes hard. The gas given off turns limewater cloudy, so it is carbon dioxide. Left in the flask are water and a dissolved salt, calcium chloride. The limewater was in a separate test tube.',
+    reactants: ['Calcium carbonate', 'Hydrochloric acid'], products: ['Calcium chloride', 'Water', 'Carbon dioxide'],
+    distractors: {
+      'Limewater': 'Limewater was used to test the gas in a different tube. It never met the marble, so it is not part of this reaction.',
+      'Bubbles': 'Bubbles are what you saw, not a substance. The substance is carbon dioxide — name it.'
+    } },
+  { id: 'methane', tab: 'A gas hob',
+    story: 'Methane from the gas supply burns in the oxygen of the air. Carbon dioxide goes up into the room and water vapour condenses on a cold window above the hob. The flame itself is the reaction happening, not an ingredient.',
+    reactants: ['Methane', 'Oxygen'], products: ['Carbon dioxide', 'Water'],
+    distractors: {
+      'Energy': 'Energy is given out, and it is still not a substance. It has no place on either side of a word equation.',
+      'Flame': 'The flame is the reaction, seen. Nothing is made of flame.'
+    } }
+];
+
+const READINGS = [
+  { id: 'x1', left: 'zinc + copper sulfate', right: 'zinc sulfate + copper',
+    options: ['Zinc and copper sulfate react to make zinc sulfate and copper', 'Zinc plus copper sulfate equals zinc sulfate plus copper'],
+    correct: 0,
+    answer: 'The first. "Plus" and "equals" describe an arithmetic sum; this is a reaction, so it is read as "and" and "makes". Say it out loud the wrong way and you will write it the wrong way.' },
+  { id: 'x2', left: 'copper carbonate', right: 'copper oxide + carbon dioxide',
+    options: ['One substance has broken down into two', 'Two substances have joined to make one'],
+    correct: 0,
+    answer: 'One reactant, two products: the copper carbonate has been broken apart. Nothing joined it and nothing needed to — you will meet this as thermal decomposition next unit.' },
+  { id: 'x3', left: 'iron + sulfur', right: 'iron sulfide',
+    options: ['A mixture of iron and sulfur has been made', 'A compound has been made, and the iron is no longer magnetic'],
+    correct: 1,
+    answer: 'The arrow means a reaction happened, so the product is a compound, not a mixture. A mixture of iron and sulfur would still be separable with a magnet; iron sulfide is not.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'In a word equation, what does the arrow mean?',
+    options: [
+      { text: 'Makes, or turns into', correct: true },
+      { text: 'Equals', correction: 'An equals sign works both ways. The arrow says which way the reaction went, and reversing it usually describes something that does not happen.' },
+      { text: 'And', correction: 'That is the plus sign. The arrow separates the reactants from the products.' },
+      { text: 'Is heated to give', correction: 'Heating may or may not be involved. Many reactions need no heat, and the arrow means the same thing in all of them.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A student writes: magnesium + oxygen + heat makes magnesium oxide. What is wrong with it?',
+    options: [
+      { text: 'Heat is not a substance, so it does not belong in the equation', correct: true },
+      { text: 'Nothing — heat is needed, so it should be included', correction: 'Heat is needed, and it is a condition rather than a reactant. Conditions go above the arrow, not in the line of substances.' },
+      { text: 'Heat should be on the right, because burning gives out heat', correction: 'Energy does give out — and it still is not a substance. Neither side of a word equation is the place for it.' },
+      { text: 'The reactants and products are the wrong way round', correction: 'Those are in the right places. The problem is the extra term between them.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Write the word equation for marble chips reacting with hydrochloric acid, then explain how someone reading only your equation would know that a gas was given off and that a new substance was made.',
+    fieldLabel: 'Your equation and explanation',
+    placeholder: 'calcium carbonate + hydrochloric acid makes…',
+    criteria: [
+      'Gives the correct reactants on the left: calcium carbonate and hydrochloric acid.',
+      'Gives all three products: calcium chloride, water and carbon dioxide.',
+      'Says the arrow means the reactants made the products, so a change happened.',
+      'Identifies carbon dioxide as the gas, and says how that is known — it turns limewater cloudy.',
+      'Says the products are substances that were not there before, which is what makes it a chemical reaction.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A student says word equations are pointless because you could just describe the reaction in a sentence. Give two things a word equation forces you to say that a description can leave out, and one thing a word equation cannot say at all.',
+    fieldLabel: 'Your answer',
+    placeholder: 'A word equation forces you to name…',
+    criteria: [
+      'Says it forces you to name every reactant, including one from the air that is easy to forget.',
+      'Says it forces you to name the products rather than describing their appearance.',
+      'Says it makes the direction of the change explicit.',
+      'Says it cannot show how many particles of each substance are involved.',
+      'Draws the consequence — you cannot work out amounts from a word equation, which is why symbol equations exist.'
+    ] }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-builder') return Object.keys(s.checked2).length >= CASES.length;
+  if (id === 's-read') return Object.keys(s.reads).length >= READINGS.length;
+  if (id === 's-think') return s.thinkChoice !== null;
+  if (id === 's-ladder') return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  return false;
+}
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: {},
+    text: {},
+    checked: {},
+    ticks: {}
+  }, { hookChoice: null, cs: 'mg', places: {}, shown: {}, checked2: {}, reads: {}, thinkChoice: null });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.45;' : '');
+  }
+
+  ladderDone() {
+    const s = this.state;
+    return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  }
+
+  lessonVals(s) {
+    const cs = CASES.find((c) => c.id === s.cs) || CASES[0];
+    const place = s.places[cs.id] || {};
+    const names = cs.reactants.concat(cs.products).concat(Object.keys(cs.distractors));
+    const ordered = [names[0], names[1]].concat(names.slice(2));
+
+    const leftNames = names.filter((n) => place[n] === 'left');
+    const rightNames = names.filter((n) => place[n] === 'right');
+    const shown = s.shown[cs.id];
+
+    const wrongSide = names.filter((n) => {
+      if (!place[n]) return false;
+      if (cs.reactants.indexOf(n) >= 0) return place[n] !== 'left';
+      if (cs.products.indexOf(n) >= 0) return place[n] !== 'right';
+      return false;
+    });
+    const usedDistractors = Object.keys(cs.distractors).filter((n) => !!place[n]);
+    const missing = cs.reactants.concat(cs.products).filter((n) => !place[n]);
+    const perfect = wrongSide.length === 0 && usedDistractors.length === 0 && missing.length === 0;
+
+    let checkTitle = '', checkText = '';
+    if (shown) {
+      if (perfect) {
+        checkTitle = 'That is the equation.';
+        checkText = 'Every reactant on the left, every product on the right, nothing in it that is not a substance, and nothing in it that was only watching.';
+      } else if (usedDistractors.length > 0) {
+        checkTitle = 'One thing in there does not belong.';
+        checkText = cs.distractors[usedDistractors[0]];
+      } else if (wrongSide.length > 0) {
+        const n = wrongSide[0];
+        const isProduct = cs.products.indexOf(n) >= 0;
+        checkTitle = n + ' is on the wrong side.';
+        checkText = isProduct
+          ? 'You have said ' + n.toLowerCase() + ' was there before the reaction started. It was made by the reaction, so it belongs on the right of the arrow.'
+          : 'You have said ' + n.toLowerCase() + ' was made by the reaction. It was one of the things you started with, so it belongs on the left.';
+      } else {
+        checkTitle = 'Something is missing.';
+        checkText = 'You have left out ' + missing.map((m) => m.toLowerCase()).join(' and ') + '. A word equation with a missing substance implies the atoms in it came from nowhere.';
+      }
+    }
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'The temperature of the flame' },
+        { letter: 'B', text: 'What the magnesium reacted with, and what the powder is' },
+        { letter: 'C', text: 'How long it burned for' },
+        { letter: 'D', text: 'Nothing — it describes the reaction fully' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      caseTabs: CASES.map((c) => ({
+        label: c.tab, pressed: c.id === s.cs, style: this.seg(c.id === s.cs, false),
+        onClick: () => this.setState({ cs: c.id })
+      })),
+      caseStory: cs.story,
+
+      bank: ordered.map((n) => ({
+        name: n,
+        chipStyle: 'display:inline-block;min-width:11rem;padding:10px 14px;border-radius:var(--ks3-r-control);background:var(--ks3-card);border:2px solid ' +
+          (place[n] ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';font-size:18px;font-weight:600;',
+        buttons: [
+          { id: 'left', label: 'Reactant' },
+          { id: 'right', label: 'Product' },
+          { id: null, label: 'Leave it out' }
+        ].map((b) => ({
+          label: b.label,
+          pressed: (place[n] || null) === b.id,
+          style: this.seg((place[n] || null) === b.id, false),
+          onClick: () => this.setState((st) => {
+            const cur = Object.assign({}, st.places[cs.id] || {});
+            if (b.id === null) { delete cur[n]; } else { cur[n] = b.id; }
+            return { places: Object.assign({}, st.places, { [cs.id]: cur }),
+              shown: Object.assign({}, st.shown, { [cs.id]: false }) };
+          })
+        }))
+      })),
+
+      leftSide: leftNames.map((n, i) => ({ name: n, showPlus: i > 0 })),
+      rightSide: rightNames.map((n, i) => ({ name: n, showPlus: i > 0 })),
+      leftEmpty: leftNames.length === 0,
+      rightEmpty: rightNames.length === 0,
+
+      canCheck: leftNames.length > 0 && rightNames.length > 0 && !shown,
+      onCheck: () => this.setState((st) => ({
+        shown: Object.assign({}, st.shown, { [cs.id]: true }),
+        checked2: Object.assign({}, st.checked2, { [cs.id]: true })
+      })),
+      onClear: () => this.setState((st) => ({
+        places: Object.assign({}, st.places, { [cs.id]: {} }),
+        shown: Object.assign({}, st.shown, { [cs.id]: false })
+      })),
+      checkOpen: !!shown,
+      checkTitle: checkTitle,
+      checkText: checkText,
+      modelLeft: cs.reactants.join(' + '),
+      modelRight: cs.products.join(' + '),
+
+      readings: READINGS.map((r) => {
+        const chosen = s.reads[r.id];
+        const decided = chosen !== undefined;
+        return {
+          left: r.left, right: r.right,
+          options: r.options.map((t, i) => ({
+            label: t, pressed: chosen === i, disabled: decided,
+            style: this.seg(chosen === i, decided),
+            onClick: () => this.setState((st) => (st.reads[r.id] !== undefined ? null
+              : { reads: Object.assign({}, st.reads, { [r.id]: i }) }))
+          })),
+          open: decided, answer: r.answer
+        };
+      }),
+
+      thinkOptions: [
+        { letter: 'A', text: 'Right — both sides have the same atoms' },
+        { letter: 'B', text: 'Wrong — the arrow says which way the reaction went' },
+        { letter: 'C', text: 'Right, as long as you keep the plus signs' },
+        { letter: 'D', text: 'Wrong — the two sides do not have the same atoms' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.thinkChoice === i, onClick: () => this.setState({ thinkChoice: i }) })),
+      thinkOpen: s.thinkChoice !== null
+    };
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s, this);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals(s)
+    );
+  }
+}
+</script>
+</body>
+</html>

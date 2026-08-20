@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oxidation · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Types of reaction</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Oxidation</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Types of reaction · Process</p>
+        <h1>Oxidation</h1>
+        <p class="ks3-bigq">A flash of burning magnesium and twenty years of a rusting gate are the same reaction. What is it, and what does it need?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Magnesium burns in two seconds. A gate rusts over twenty years. It is the same reaction.</h2>
+        <p class="ks3-hook-prompt">One is a flash of white light and a puff of powder. The other is so slow that nobody has ever watched it happen. Both take a metal and turn it into a metal oxide, and both end up heavier than they started.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What do the two have in common?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Both are <strong>oxidation</strong>: a substance gaining oxygen. Speed is the only difference, and speed is not what a reaction is named after. Combustion is oxidation fast enough to produce a flame; rusting is oxidation slow enough to be somebody else's problem in ten years' time.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p><strong>Oxidation</strong> is a reaction in which a substance gains oxygen. Metal plus oxygen makes a metal oxide, and the product always weighs more than the metal did, because the oxygen atoms are now part of it.</p>
+        <p>That makes oxidation the widest of the four reaction types in this unit. Every combustion is an oxidation. So is rusting, so is the browning of a cut apple, and so — inside every cell in your body, at a temperature you can survive — is respiration.</p>
+      </section>
+
+      <section id="s-rust" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Your turn · four tubes, four weeks</p>
+        <h2 style="margin: 6px 0 0;">An identical nail in each. Only what surrounds it is different.</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Predict every tube before you open any of them. The tubes are designed so that the four results together answer the question no single tube could.</p>
+
+        <div style="margin-top: 22px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+          <sc-for list="{{ tubes }}" as="tube" hint-placeholder-count="4">
+            <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink); display: flex; flex-direction: column;">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ tube.num }}</p>
+              <p style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 20px; line-height: 1.3;">{{ tube.name }}</p>
+              <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.5; color: var(--ks3-ink-body);">{{ tube.setup }}</p>
+              <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <sc-for list="{{ tube.chips }}" as="ch" hint-placeholder-count="2">
+                  <span style="{{ ch.style }}">{{ ch.label }}</span>
+                </sc-for>
+              </div>
+              <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+                <sc-for list="{{ tube.buttons }}" as="b" hint-placeholder-count="2">
+                  <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" disabled="{{ b.disabled }}" style="{{ b.style }}">{{ b.label }}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ tube.open }}">
+                <div data-arrive="1" style="margin-top: 14px; padding: 16px 18px; border-radius: 16px; background: var(--ks3-ink); color: var(--ks3-on-dark);">
+                  <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ tube.result }}</p>
+                  <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ tube.why }}</p>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ allOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25;">Read the four together.</p>
+            <p style="margin: 10px 0 0; font-size: 19px; line-height: 1.6;">Tube 1 had air and water and rusted. Tube 2 had air and no water: no rust. Tube 3 had water and no air: no rust. So <strong>both</strong> are needed, and neither on its own will do it — which is a conclusion no single tube could have supported. Tube 4 had both plus salt and rusted fastest, so salt is not needed but it speeds the reaction up. Tubes 2 and 3 are the controls, and they are doing the actual work.</p>
+            <p style="margin: 14px 0 0; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; font-family: var(--ks3-font-display); font-weight: 700; font-size: 20px;">
+              <span>iron + oxygen + water</span><svg viewBox="0 0 44 24" width="44" height="24" aria-hidden="true" style="flex: 0 0 auto;"><path d="M4 12h30M26 5l8 7-8 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>hydrated iron oxide (rust)</span>
+            </p>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">Oxidation is a substance gaining oxygen, and the product is always heavier than what you started with. Rusting needs oxygen and water together; salt only makes it faster.</p>
+      </div>
+
+      <section id="s-stop" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Five ways to stop it</p>
+        <h2 style="margin: 6px 0 0;">Four keep the oxygen and water out. One does something cleverer.</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Decide which kind each method is before you read it. If you know the rule, one of the five should feel wrong under it — that is the one worth understanding.</p>
+
+        <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 14px;">
+          <sc-for list="{{ methods }}" as="m" hint-placeholder-count="5">
+            <div style="padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-size: 19px; line-height: 1.5; font-weight: 700;">{{ m.name }}</p>
+              <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.5; color: var(--ks3-ink-body);">{{ m.what }}</p>
+              <div style="margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ m.options }}" as="o" hint-placeholder-count="2">
+                  <button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ m.open }}">
+                <p data-arrive="1" style="margin: 12px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-rule); font-size: 17px; line-height: 1.55;">{{ m.answer }}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Aluminium does not corrode — that is why drinks cans and window frames are made of it.”</p>
+        <p style="max-width: 54ch;">Aluminium really does last outdoors for decades without going orange and flaking. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">Aluminium oxidises the moment it meets air, and faster than iron does — it is one of the more reactive metals you will meet. Every piece of aluminium you have ever touched was already covered in a layer of aluminium oxide before you got to it.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">The difference is what the oxide does next. Aluminium oxide is tough, invisible and <strong>sticks tightly to the metal underneath</strong>, so it seals the surface and the reaction stops. Rust is crumbly and flakes off, exposing fresh iron, so the reaction never stops — a nail left long enough rusts all the way through. <strong>Both metals corrode; only one of them is protected by the result.</strong></p>
+          </div>
+        </sc-if>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Oxidation is a substance gaining oxygen, and the product weighs more than the starting material. Combustion is oxidation fast enough to burn; rusting is oxidation slow enough to take years, and it needs oxygen and water together — salt only speeds it up. Rust flakes off and exposes fresh iron, which is why iron keeps rusting while aluminium, whose oxide clings, does not.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Oxidation does not need a flame, a bench or a metal. Cut an apple and the surface browns within minutes as substances in the flesh oxidise in air; lemon juice slows it because vitamin C is oxidised first, which is what "antioxidant" means on a label. And the reaction that keeps you alive is an oxidation: glucose plus oxygen makes carbon dioxide and water, exactly the products of burning it, released slowly enough at 37 °C that your cells can use the energy instead of catching fire.</p>
+          <p>The cleverest anti-rusting trick is worth knowing in full. Bolt blocks of zinc to a steel ship's hull and the zinc corrodes instead of the steel — not by covering it, but because zinc is more reactive, so it gives up its electrons first. The blocks are inspected and replaced every few years, which is why they are called sacrificial. Galvanising is the same idea in a thin layer: a scratch in a galvanised gate does not start rusting, because the zinc around the scratch is still doing the corroding for it.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c5-02-thermal-decomposition.html">Thermal decomposition<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c5-04-displacement.html">Displacement<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Oxidation and reduction as electron transfer, corrosion and its prevention, and the reactivity series explained.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still not sure why tubes 2 and 3 are the important ones?</p>
+          <a class="ks3-tutor-cta" href="#s-rust">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Fast and slow', short: 'HOOK' },
+  { id: 's-rust', label: 'Four tubes', short: 'TUBES' },
+  { id: 's-stop', label: 'Stopping it', short: 'STOP' },
+  { id: 's-think', label: 'Aluminium', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const TUBES = [
+  { id: 't1', name: 'Air and water', setup: 'An iron nail half in tap water, tube open to the air.',
+    chips: [{ label: 'Oxygen', on: true }, { label: 'Water', on: true }],
+    rust: true, result: 'Rusted — orange and flaking at the water line.',
+    why: 'Both requirements present. The worst of it is at the surface, where the nail meets air and water at once.' },
+  { id: 't2', name: 'Dry air, no water', setup: 'A nail in a bunged tube with a drying agent to take all moisture out of the air.',
+    chips: [{ label: 'Oxygen', on: true }, { label: 'Water', on: false }],
+    rust: false, result: 'No rust. The nail is as shiny as the day it went in.',
+    why: 'Oxygen on its own is not enough. This tube is the control that rules out air being the whole story.' },
+  { id: 't3', name: 'Water, no air', setup: 'A nail in water that was boiled to drive out dissolved air, with a layer of oil on top to keep more out.',
+    chips: [{ label: 'Oxygen', on: false }, { label: 'Water', on: true }],
+    rust: false, result: 'No rust, or the faintest trace where the oil did not quite seal.',
+    why: 'Water on its own is not enough either. Together with tube 2, this proves both are needed — and the faint trace is honest data, not a failure.' },
+  { id: 't4', name: 'Salt water and air', setup: 'A nail half in salt water, tube open to the air.',
+    chips: [{ label: 'Oxygen', on: true }, { label: 'Water', on: true }, { label: 'Salt', on: true }],
+    rust: true, result: 'Rusted heavily — much worse than tube 1 in the same four weeks.',
+    why: 'Salt is not a requirement; it is an accelerator. It is why cars rust faster near the coast and after a gritted winter.' }
+];
+
+const METHODS = [
+  { id: 'm1', name: 'Painting a bridge', what: 'A continuous film of paint over every exposed surface.', barrier: true,
+    answer: 'A barrier. It works only while it is unbroken — a chip in the paint is where the rust starts, and it then spreads underneath.' },
+  { id: 'm2', name: 'Oiling a bicycle chain', what: 'A thin film of oil, renewed regularly.', barrier: true,
+    answer: 'A barrier, and a deliberately temporary one. It has to be renewed because it wears off, which is why chains need oiling rather than painting.' },
+  { id: 'm3', name: 'Stainless steel cutlery', what: 'Iron mixed with chromium and nickel.', barrier: true,
+    answer: 'A barrier, made by the alloy itself: the chromium oxidises into a tough invisible layer that seals the surface. Not paint, and the same trick aluminium performs.' },
+  { id: 'm4', name: 'Zinc blocks bolted to a ship', what: 'Lumps of zinc attached below the waterline and replaced every few years.', barrier: false,
+    answer: 'Not a barrier — the blocks do not cover anything. Zinc is more reactive than iron, so it corrodes instead of the hull. It is called sacrificial protection, and the blocks being eaten away is the method working.' },
+  { id: 'm5', name: 'A galvanised gate', what: 'Steel dipped in molten zinc, leaving a zinc coat.', barrier: false,
+    answer: 'Both, and the second one is why it is worth the money. The zinc is a barrier — and when the barrier is scratched the exposed zinc still corrodes in preference to the iron, so a scratch in galvanising does not start rusting.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'What happens to a substance during oxidation?',
+    options: [
+      { text: 'It gains oxygen', correct: true },
+      { text: 'It loses oxygen', correction: 'That is reduction, which you will meet at GCSE. Oxidation is the gain.' },
+      { text: 'It is broken down by heat', correction: 'That is thermal decomposition, and it needs no oxygen at all.' },
+      { text: 'It reacts with water', correction: 'Rusting does need water as well — but the reaction is named for the oxygen the iron gains.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A nail in boiled water under a layer of oil does not rust. What does that tube on its own prove?',
+    options: [
+      { text: 'Only that water alone is not enough — you need the other tubes to conclude anything more', correct: true },
+      { text: 'That water is not involved in rusting', correction: 'Tube 1 rusted and had water in it. This tube shows water is not sufficient, not that it is unnecessary.' },
+      { text: 'That oil prevents rusting', correction: 'The oil is there to keep air out. Concluding that oil is the active ingredient confuses the method with the variable.' },
+      { text: 'That rusting needs salt', correction: 'Tube 1 had no salt and rusted anyway. Salt changes the speed, not the requirements.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Explain why the four-tube experiment needs tubes 2 and 3, when tube 1 already shows that a nail rusts. Then state the conclusion the whole set supports, and what tube 4 adds.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Tube 1 on its own shows that…',
+    criteria: [
+      'Says tube 1 alone shows rusting happens but not what is needed for it.',
+      'Says tube 2 removes water while keeping air, and tube 3 removes air while keeping water.',
+      'Says each of those tubes rules out one factor being sufficient on its own.',
+      'States the conclusion: both oxygen and water are needed for rusting.',
+      'Says tube 4 shows salt speeds it up without being a requirement.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A boat owner is told that bolting blocks of a more reactive metal to the hull will protect it, and replies that adding more reactive metal to a corroding boat sounds like the worst possible idea. Explain why the method works, what happens to the blocks, and why they have to be checked.',
+    fieldLabel: 'Your answer',
+    placeholder: 'The blocks are more reactive than iron, so…',
+    criteria: [
+      'Says the blocks are made of a metal more reactive than iron, such as zinc.',
+      'Says the more reactive metal corrodes in preference to the iron.',
+      'Says the hull is therefore protected while the blocks last.',
+      'Says the blocks are gradually eaten away, which is the method working rather than failing.',
+      'Says they must be inspected and replaced, or the protection ends and the hull starts to corrode.'
+    ] }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-rust') return Object.keys(s.preds).length >= TUBES.length;
+  if (id === 's-stop') return Object.keys(s.mets).length >= METHODS.length;
+  if (id === 's-think') return s.thinkChoice !== null;
+  if (id === 's-ladder') return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  return false;
+}
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: {},
+    text: {},
+    checked: {},
+    ticks: {}
+  }, { hookChoice: null, preds: {}, mets: {}, thinkChoice: null });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.45;' : '');
+  }
+
+  ladderDone() {
+    const s = this.state;
+    return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  }
+
+  lessonVals(s) {
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'Both give out light' },
+        { letter: 'B', text: 'Both are a metal gaining oxygen' },
+        { letter: 'C', text: 'Both need water' },
+        { letter: 'D', text: 'Both destroy the metal completely' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      tubes: TUBES.map((t, i) => {
+        const chosen = s.preds[t.id];
+        const decided = chosen !== undefined;
+        return {
+          num: 'Tube ' + (i + 1),
+          name: t.name, setup: t.setup,
+          chips: t.chips.map((c) => ({
+            label: c.label + (c.on ? ' present' : ' removed'),
+            style: 'display:inline-block;padding:6px 12px;border-radius:var(--ks3-r-pill);font-family:var(--ks3-font-mono);font-size:13px;font-weight:500;border:2px solid var(--ks3-ink);background:' +
+              (c.on ? 'var(--ks3-accent-tint)' : 'var(--ks3-band)') + ';color:var(--ks3-ink);'
+          })),
+          buttons: [
+            { id: 'rust', label: 'Will rust' },
+            { id: 'no', label: 'Will not rust' }
+          ].map((b) => ({
+            label: b.label, pressed: chosen === b.id, disabled: decided,
+            style: this.seg(chosen === b.id, decided),
+            onClick: () => this.setState((st) => (st.preds[t.id] !== undefined ? null
+              : { preds: Object.assign({}, st.preds, { [t.id]: b.id }) }))
+          })),
+          open: decided, result: t.result, why: t.why
+        };
+      }),
+      allOpen: Object.keys(s.preds).length >= TUBES.length,
+
+      methods: METHODS.map((m) => {
+        const chosen = s.mets[m.id];
+        const decided = chosen !== undefined;
+        return {
+          name: m.name, what: m.what,
+          options: [
+            { id: 'barrier', label: 'Keeps oxygen and water out' },
+            { id: 'other', label: 'Works some other way' }
+          ].map((o) => ({
+            label: o.label, pressed: chosen === o.id, disabled: decided,
+            style: this.seg(chosen === o.id, decided),
+            onClick: () => this.setState((st) => (st.mets[m.id] !== undefined ? null
+              : { mets: Object.assign({}, st.mets, { [m.id]: o.id }) }))
+          })),
+          open: decided, answer: m.answer
+        };
+      }),
+
+      thinkOptions: [
+        { letter: 'A', text: 'Right — aluminium does not react with oxygen' },
+        { letter: 'B', text: 'Wrong — it oxidises immediately, and the oxide layer protects it' },
+        { letter: 'C', text: 'Right, because aluminium is a very unreactive metal' },
+        { letter: 'D', text: 'Wrong — aluminium corrodes faster than iron and cans are lined to stop it' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.thinkChoice === i, onClick: () => this.setState({ thinkChoice: i }) })),
+      thinkOpen: s.thinkChoice !== null
+    };
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s, this);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals(s)
+    );
+  }
+}
+</script>
+</body>
+</html>

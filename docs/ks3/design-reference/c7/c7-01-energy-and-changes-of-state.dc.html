@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Energy and changes of state · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Energy changes in reactions</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Energy and changes of state</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Energy changes in reactions · Model</p>
+        <h1>Energy and changes of state</h1>
+        <p class="ks3-bigq">Keep heating a beaker of melting ice and the thermometer refuses to move. The energy is still going in — so where is it going?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>A beaker of ice on a Bunsen. The thermometer climbs to 0 °C and then stops for four minutes.</h2>
+        <p class="ks3-hook-prompt">The flame has not changed. Energy is going in at exactly the same rate it was a minute ago. The ice is visibly melting. And the thermometer sits at 0 °C and will not move until the last piece of ice has gone — then it climbs again.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Where is the energy going during those four minutes?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Into pulling the particles apart. In ice the particles are held in a fixed arrangement by forces of attraction, and melting means breaking out of that arrangement. That takes energy — a great deal of it — and while it is being spent, none is left over to make the particles move faster. <strong>Temperature is how fast the particles are moving. During a change of state they are not speeding up; they are being separated.</strong></p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Changing state always involves energy, and the direction is fixed. <strong>Melting, evaporating and boiling take energy in</strong> — the particles have to be pulled apart against the forces holding them together. <strong>Freezing and condensing give energy out</strong> — the particles fall back together and release it.</p>
+        <p>Nothing new is made and nothing is destroyed. A change of state is a <strong>physical change</strong>: the same particles, rearranged, and reversible by putting the energy back or taking it away again.</p>
+      </section>
+
+      <section id="s-curve" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Your turn · heat it a minute at a time</p>
+        <h2 style="margin: 6px 0 0;">Ice at −20 °C, a steady flame, and a thermometer.</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">{{ curveLead }}</p>
+
+        <div style="margin-top: 20px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 21rem); gap: 22px; align-items: start;">
+          <div style="padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+            <div style="display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap;">
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 40px; line-height: 1;">{{ tempLabel }}</p>
+              <div>
+                <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 21px; line-height: 1.25;">{{ stateLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ minuteLabel }}</p>
+              </div>
+            </div>
+            <p style="margin: 14px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body);">{{ stateNote }}</p>
+            <div style="margin-top: 16px; display: flex; gap: 9px; flex-wrap: wrap;">
+              <button type="button" onClick="{{ onStep }}" style="{{ stepBtnStyle }}">{{ stepLabel }}</button>
+              <button type="button" onClick="{{ onReset }}" style="{{ resetBtnStyle }}">Start again</button>
+            </div>
+          </div>
+
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">Temperature against time</p>
+            <div style="margin-top: 12px; display: flex; align-items: flex-end; gap: 3px; height: 160px;">
+              <sc-for list="{{ trace }}" as="t" hint-placeholder-count="13">
+                <span style="{{ t.style }}"></span>
+              </sc-for>
+            </div>
+            <p style="margin: 10px 0 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">0 min · · · 12 min</p>
+          </div>
+        </div>
+
+        <sc-if value="{{ curveOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25;">Two flat steps in a graph that should be a straight climb.</p>
+            <p style="margin: 10px 0 0; font-size: 19px; line-height: 1.6;">The flame delivered energy at the same rate for all twelve minutes. For eight of them the temperature rose. For four of them it did not move at all — once at 0 °C and once at 100 °C.</p>
+            <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6;">Those flat steps are the changes of state, and they are where the energy went into <strong>separating particles</strong> rather than speeding them up. The boiling step is much longer than the melting step, because pulling particles completely apart takes far more energy than merely letting them slide past each other.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">Melting and boiling take energy in; freezing and condensing give energy out. During a change of state the temperature does not change, because the energy is separating particles rather than speeding them up.</p>
+      </div>
+
+      <section id="s-uses" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Three judgements</p>
+        <h2 style="margin: 6px 0 0;">Where this shows up outside a beaker</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Commit to each before reading. All three are the same idea wearing different clothes.</p>
+        <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 14px;">
+          <sc-for list="{{ uses }}" as="u" hint-placeholder-count="3">
+            <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-size: 19px; line-height: 1.55;">{{ u.q }}</p>
+              <div style="margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ u.options }}" as="o" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ u.open }}">
+                <p data-arrive="1" style="margin: 12px 0 0; padding: 14px 16px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-rule); font-size: 17px; line-height: 1.55;">{{ u.answer }}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“The temperature stops rising at 0 °C because the ice has stopped absorbing heat.”</p>
+        <p style="max-width: 54ch;">The thermometer genuinely does not move. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">It is absorbing heat faster than at any other point in the experiment. Melting a beaker of ice takes several times more energy than warming the same water by a single degree — the flat step is not a pause, it is the most energy-hungry part of the whole run.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">The confusion comes from treating the thermometer as an energy meter. It is not. <strong>A thermometer measures how fast the particles are moving, and during melting they are not moving faster — they are being pulled out of position.</strong> Energy in, no temperature change, and nothing contradictory about it.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Melting, evaporating and boiling take energy in, because the particles must be separated against the forces attracting them. Freezing and condensing give the same energy back out. While a substance is changing state its temperature stays constant, which produces the flat steps on a heating curve — the energy is going into separating particles rather than making them move faster.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The energy taken in during a change of state has a name: latent heat, from the Latin for hidden. It is hidden in the sense that a thermometer cannot see it. Joseph Black worked it out in Glasgow in the 1760s by noticing exactly what you just plotted — that ice in a warm room takes hours to melt while staying at 0 °C the whole time — and the idea went straight into James Watt's improvements to the steam engine.</p>
+          <p>It is also why steam at 100 °C burns far worse than water at 100 °C. Both are at the same temperature, so a thermometer cannot tell them apart, but the steam carries all the energy that went into boiling it and dumps that energy into your skin as it condenses. The same arithmetic keeps a cold drink cold: the ice holds the drink at 0 °C not by being cold but by absorbing energy while it melts, and the moment the last cube disappears the drink starts warming.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c6-07-catalysts.html">Catalysts<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c7-02-exothermic-reactions.html">Exothermic reactions<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Specific heat capacity and specific latent heat with real calculations, and energy level diagrams for changes of state.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still not sure why the thermometer stops?</p>
+          <a class="ks3-tutor-cta" href="#s-curve">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Four still minutes', short: 'HOOK' },
+  { id: 's-curve', label: 'The heating curve', short: 'CURVE' },
+  { id: 's-uses', label: 'Three judgements', short: 'USES' },
+  { id: 's-think', label: 'Where the energy went', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const CURVE = [
+  { t: -20, state: 'Solid — ice', note: 'Below freezing. The particles are locked in a fixed arrangement and can only vibrate. Energy going in makes them vibrate faster, so the temperature climbs steadily.' },
+  { t: -10, state: 'Solid — ice', note: 'Still solid, still climbing. Every joule from the flame is going into making the particles vibrate harder.' },
+  { t: 0, state: 'Solid — at its melting point', note: 'The ice has reached 0 °C. The next joule of energy will not raise the temperature — it will start breaking particles out of the arrangement instead.' },
+  { t: 0, state: 'Melting — solid and liquid together', note: 'The thermometer has stopped. The flame has not. Energy is being spent pulling particles out of the fixed arrangement, and separating particles does not make the remaining ones move any faster.' },
+  { t: 0, state: 'Melting — solid and liquid together', note: 'Still 0 °C, still melting. This is the most energy-hungry part of the run so far, and the thermometer shows nothing at all.' },
+  { t: 0, state: 'Just melted — all liquid', note: 'The last of the ice has gone. From here the energy has nothing to separate, so it goes back into making particles move faster.' },
+  { t: 30, state: 'Liquid — water', note: 'Climbing again, at the same rate as it climbed through the ice. The particles are sliding past each other and speeding up.' },
+  { t: 60, state: 'Liquid — water', note: 'Still climbing. Some particles are already escaping from the surface as vapour — evaporation happens at any temperature — but the bulk of the liquid is simply warming.' },
+  { t: 100, state: 'Liquid — at its boiling point', note: 'At 100 °C the liquid is about to change state throughout, not just at the surface. Bubbles of vapour can now form inside the liquid.' },
+  { t: 100, state: 'Boiling — liquid and gas together', note: 'Flat again. Energy is now pulling particles completely away from each other, which takes far more than merely loosening them did at 0 °C.' },
+  { t: 100, state: 'Boiling — liquid and gas together', note: 'Still 100 °C. The boiling step is longer than the melting step for a reason: separating particles fully takes several times the energy of letting them slide.' },
+  { t: 100, state: 'Just boiled — all gas', note: 'The last of the liquid has gone. Everything in the beaker is now steam at 100 °C, carrying all the energy that boiling put into it.' },
+  { t: 120, state: 'Gas — steam', note: 'Climbing once more. Steam above 100 °C is called superheated, and it is the state that does the work in a power station turbine.' }
+];
+
+const USES = [
+  { id: 'u1', q: 'Why does sweating cool you down?',
+    options: [{ id: 'a', label: 'The sweat is cold' }, { id: 'b', label: 'Evaporating sweat takes energy from your skin' }, { id: 'c', label: 'It makes the air move' }],
+    answer: 'Evaporation takes energy in, and it takes it from the nearest available source — your skin. The sweat leaves as vapour carrying that energy with it, and what is left behind is cooler. This is why a humid day feels so much worse: if the air is already saturated the sweat cannot evaporate, so the cooling mechanism stops working.' },
+  { id: 'u2', q: 'Steam at 100 °C and water at 100 °C touch your hand. Which does more damage?',
+    options: [{ id: 'a', label: 'The water' }, { id: 'b', label: 'The steam' }, { id: 'c', label: 'The same — equal temperatures' }],
+    answer: 'The steam, by a long way. Both are at the same temperature, so a thermometer cannot separate them — but the steam also carries all the energy that went into boiling it, and it releases that energy into your skin as it condenses. Same temperature, very different quantity of energy.' },
+  { id: 'u3', q: 'Orange growers spray their trees with water when a frost is forecast. Does that help?',
+    options: [{ id: 'a', label: 'Yes' }, { id: 'b', label: 'No, it makes it worse' }, { id: 'c', label: 'It makes no difference' }],
+    answer: 'It genuinely helps, and it looks like madness. Freezing gives energy out, so as the sprayed water turns to ice it releases energy into the fruit and holds the temperature at 0 °C — which is cold, but not cold enough to destroy the crop. The ice coating is doing the protecting.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'Which of these changes of state gives energy out?',
+    options: [
+      { text: 'Condensing', correct: true },
+      { text: 'Melting', correction: 'Melting takes energy in — the particles have to be pulled out of a fixed arrangement.' },
+      { text: 'Boiling', correction: 'Boiling takes energy in, and more of it than melting does.' },
+      { text: 'Evaporating', correction: 'Evaporating takes energy in, which is exactly why sweating cools you.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A beaker of ice and water is heated steadily. For four minutes the temperature stays at 0 °C. What is happening to the energy?',
+    options: [
+      { text: 'It is being used to separate the particles as the ice melts', correct: true },
+      { text: 'It is being lost to the room, so nothing changes', correction: 'Some heat always escapes, but the ice is visibly melting — the energy is going into the change of state.' },
+      { text: 'It is being destroyed', correction: 'Energy cannot be destroyed. It is still there, stored in the separated particles.' },
+      { text: 'It stops entering while the ice is melting', correction: 'The flame has not changed. Energy enters at the same rate throughout — the thermometer just cannot show it.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Sketch in words the shape of a heating curve for ice heated from −20 °C to 120 °C, and explain what is happening to the particles in each part.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The temperature rises steadily until…',
+    criteria: [
+      'Says the temperature rises while the ice warms.',
+      'Says the graph flattens at 0 °C while the ice melts.',
+      'Says the energy during the flat step separates the particles rather than speeding them up.',
+      'Says the temperature rises again once all the ice has melted.',
+      'Says there is a second, longer flat step at 100 °C while the water boils.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A cool box is packed with either 1 kg of ice at 0 °C or 1 kg of water at 0 °C. Predict which keeps the food cold for longer and explain why, using the ideas from this lesson.',
+    fieldLabel: 'Your answer',
+    placeholder: 'The ice would keep it cold for longer because…',
+    criteria: [
+      'Says the ice keeps the food cold for longer.',
+      'Says both start at the same temperature, so temperature alone cannot explain it.',
+      'Says the ice must absorb energy in order to melt.',
+      'Says that absorbed energy is taken from the food and the air in the box.',
+      'Says the water at 0 °C simply warms up straight away, absorbing far less energy.'
+    ] }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-curve') return s.minute >= 11;
+  if (id === 's-uses') return Object.keys(s.uses).length >= USES.length;
+  if (id === 's-think') return s.thinkChoice !== null;
+  if (id === 's-ladder') return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  return false;
+}
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0, answers: {}, text: {}, checked: {}, ticks: {}
+  }, { hookChoice: null, minute: 0, seenEnd: false, uses: {}, thinkChoice: null });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.45;' : '');
+  }
+
+  lessonVals(s) {
+    const pt = CURVE[s.minute];
+    const flat = s.minute > 0 && CURVE[s.minute - 1].t === pt.t;
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'It is escaping into the room' },
+        { letter: 'B', text: 'It is going into pulling the particles apart' },
+        { letter: 'C', text: 'It stops entering while the ice melts' },
+        { letter: 'D', text: 'It is destroyed by the change of state' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      curveLead: 'The flame is steady, so every minute delivers the same energy. Step through and watch for the minutes where the thermometer refuses to move.',
+      tempLabel: pt.t + ' °C',
+      stateLabel: pt.state,
+      minuteLabel: 'Minute ' + s.minute + (flat ? ' · temperature unchanged' : ''),
+      stateNote: pt.note,
+      stepBtnStyle: this.seg(false, s.minute >= CURVE.length - 1),
+      resetBtnStyle: 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;border:2px solid var(--ks3-rule-strong);background:transparent;color:var(--ks3-ink-muted);',
+      stepLabel: s.minute >= CURVE.length - 1 ? 'Run complete' : 'Heat for one more minute',
+      onStep: () => this.setState((st) => {
+        const next = Math.min(CURVE.length - 1, st.minute + 1);
+        return { minute: next, seenEnd: st.seenEnd || next >= CURVE.length - 1 };
+      }),
+      onReset: () => this.setState({ minute: 0 }),
+      trace: CURVE.map((p, i) => ({
+        style: 'flex:1 1 0;border-radius:3px 3px 0 0;height:' + Math.round(((p.t + 30) / 150) * 100) + '%;background:' +
+          (i <= s.minute ? (i > 0 && CURVE[i - 1].t === p.t ? 'var(--ks3-accent)' : 'var(--ks3-ink)') : 'var(--ks3-band)') + ';'
+      })),
+      curveOpen: s.seenEnd,
+
+      uses: USES.map((u) => {
+        const chosen = s.uses[u.id];
+        const decided = chosen !== undefined;
+        return {
+          q: u.q,
+          options: u.options.map((o) => ({
+            label: o.label, pressed: chosen === o.id, disabled: decided,
+            style: this.seg(chosen === o.id, decided),
+            onClick: () => this.setState((st) => (st.uses[u.id] !== undefined ? null
+              : { uses: Object.assign({}, st.uses, { [u.id]: o.id }) }))
+          })),
+          open: decided, answer: u.answer
+        };
+      }),
+
+      thinkOptions: [
+        { letter: 'A', text: 'Right — it cannot absorb any more heat at 0 °C' },
+        { letter: 'B', text: 'Wrong — it is absorbing more energy than at any other point, and using it to separate particles' },
+        { letter: 'C', text: 'Right, because 0 °C is as cold as water gets' },
+        { letter: 'D', text: 'Wrong — the thermometer is simply too slow to respond' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.thinkChoice === i, onClick: () => this.setState({ thinkChoice: i }) })),
+      thinkOpen: s.thinkChoice !== null
+    };
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals(s)
+    );
+  }
+}
+</script>
+</body>
+</html>

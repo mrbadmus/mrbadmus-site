@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chromatography · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Mixtures and separation</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Chromatography</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Mixtures and separation · Process</p>
+        <h1>Chromatography</h1>
+        <p class="ks3-bigq">Everything in the mixture is dissolved, and all of it is the same colour. How do you separate substances that will not sit still to be picked apart?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Black ink is not black. It is three or four colours pretending.</h2>
+        <p class="ks3-hook-prompt">A note has been written in black ink and four black pens have been collected. All four inks look identical on paper, and no amount of staring at them will tell you which pen wrote the note.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Draw a dot of each ink near the bottom of a strip of paper and let water creep up through it. What happens?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Each dot climbs and splits into separate coloured spots — and the pattern is different for each pen, because each manufacturer mixes its black from a different set of dyes. The inks are indistinguishable until you separate them. Then they are as distinctive as handwriting.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p><strong>Chromatography</strong> separates substances that are all dissolved in the same solvent. The solvent soaks up through the paper and carries the dyes with it — but each dye is pulled two ways: it sticks to the paper, and it dissolves in the moving solvent. A dye that holds the solvent's side travels a long way. A dye that clings to the paper barely moves.</p>
+        <p>Nothing here is about size, and nothing is about how much you put on. It is a tug of war, and each substance loses it by a different amount.</p>
+      </section>
+
+      <section id="s-lab" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Your turn · the case of the four pens</p>
+        <h2 style="margin: 6px 0 0;">Set the paper up, run it, and see whether it can be read</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Three decisions before you start. Each one can ruin the whole run — and each one ruins it in its own particular way.</p>
+
+        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 16px;">
+          <sc-for list="{{ dials }}" as="dial" hint-placeholder-count="3">
+            <div>
+              <p style="margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ dial.label }}</p>
+              <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ dial.options }}" as="o" hint-placeholder-count="2">
+                  <button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" style="{{ o.style }}">{{ o.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onRun }}">Run the chromatogram</button>
+        </div>
+
+        <sc-if value="{{ runOpen }}">
+          <div data-arrive="1" role="img" aria-label="{{ paperLabel }}" style="margin-top: 22px; padding: 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <div style="display: flex; gap: 14px; align-items: flex-end;">
+              <sc-for list="{{ lanes }}" as="lane" hint-placeholder-count="5">
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                  <div style="position: relative; width: 100%; height: 230px; background: var(--ks3-paper-strip, #FFFDF8); border: 2px solid var(--ks3-ink); border-radius: 6px;">
+                    <sc-for list="{{ lane.spots }}" as="sp" hint-placeholder-count="3">
+                      <span style="{{ sp.style }}"></span>
+                    </sc-for>
+                    <span aria-hidden="true" style="{{ lane.baselineStyle }}"></span>
+                  </div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; text-align: center; color: var(--ks3-ink-muted);">{{ lane.label }}</p>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="margin-top: 18px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px; line-height: 1.3;">{{ runTitle }}</p>
+            <p style="margin: 10px 0 0; font-size: 19px; line-height: 1.6;">{{ runText }}</p>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ readable }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 20px; font-weight: 700;">Which pen wrote the note?</p>
+            <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body);">A match means every spot at the same height, and no spot that the other one does not have.</p>
+            <div style="margin-top: 14px; display: flex; gap: 9px; flex-wrap: wrap;">
+              <sc-for list="{{ verdictButtons }}" as="b" hint-placeholder-count="4">
+                <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" disabled="{{ b.disabled }}" style="{{ b.style }}">{{ b.label }}</button>
+              </sc-for>
+            </div>
+            <sc-if value="{{ verdictOpen }}">
+              <div data-arrive="1" style="margin-top: 16px; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-ink); color: var(--ks3-on-dark);">
+                <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px; line-height: 1.25;">{{ verdictTitle }}</p>
+                <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-on-dark-body);">{{ verdictText }}</p>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">Chromatography separates dissolved substances by how strongly each one sticks to the paper compared with how well it dissolves in the moving solvent. The further a substance travels, the more it favoured the solvent.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“The spot that travelled furthest must be the dye there is most of in the ink.”</p>
+        <p style="max-width: 54ch;">It went the furthest, so surely there was the most of it pushing. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">How far a spot travels says nothing about how much of it there is. It is decided entirely by the tug of war between the paper and the solvent — and one particle of a dye is pulled exactly as hard as a million of them. Put a tiny dot of a fast dye on the paper and it still goes to the top; put a heavy blob of a slow dye on and it still crawls.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">What the amount changes is the <strong>size and darkness</strong> of the spot, not its height. So a chromatogram is read two ways: <strong>height tells you which substance</strong>, and <strong>darkness hints at how much</strong>. Confusing the two is how you end up accusing the wrong pen.</p>
+          </div>
+        </sc-if>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Chromatography separates substances dissolved in the same solvent. The solvent rises through the paper and each substance is pulled two ways — sticking to the paper, or dissolving in the moving solvent. Whichever pull wins decides how far it travels. The baseline is pencil, the solvent starts below the spots, and everything being compared is run on the same paper at the same time.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Height is only comparable within one run — a warmer room, a different paper or a different solvent moves every spot. So chemists quote a ratio instead: the distance the spot travelled divided by the distance the solvent travelled. That number, the R<sub>f</sub> value, is between 0 and 1, has no units, and can be compared between one lab and another. It is the reason a chromatogram can be evidence rather than an anecdote.</p>
+          <p>Most substances worth separating are colourless, which makes the school version of this look easy and the real version look like a blank sheet of paper. Amino acids from a protein, sugars from a plant extract and drugs in an athlete's urine all separate perfectly well and all arrive invisible; the paper is then sprayed with a chemical that reacts to show them, or looked at under ultraviolet light. The separation is the same. Only the seeing is harder.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c3-05-distillation.html">Distillation<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c3-07-proving-something-is-pure.html">Proving something is pure<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>R<sub>f</sub> values calculated and compared, and chromatography as a required practical for identifying substances.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still not sure why the baseline has to be pencil?</p>
+          <a class="ks3-tutor-cta" href="#s-lab">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Four black pens', short: 'HOOK' },
+  { id: 's-lab', label: 'Run the paper', short: 'RUN' },
+  { id: 's-think', label: 'Furthest spot', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const YEL = '#E0A62B';
+const MAG = '#B3336B';
+const CYA = '#2F7D8A';
+const BLU = '#2F5D8A';
+
+const LANES = [
+  { id: 'note', label: 'The note', spots: [{ c: YEL, rf: 0.35 }, { c: MAG, rf: 0.55 }, { c: CYA, rf: 0.80 }] },
+  { id: 'a', label: 'Pen A', spots: [{ c: YEL, rf: 0.35 }, { c: MAG, rf: 0.55 }, { c: CYA, rf: 0.80 }] },
+  { id: 'b', label: 'Pen B', spots: [{ c: MAG, rf: 0.45 }, { c: CYA, rf: 0.80 }] },
+  { id: 'c', label: 'Pen C', spots: [{ c: YEL, rf: 0.30 }, { c: CYA, rf: 0.75 }] },
+  { id: 'd', label: 'Pen D', spots: [{ c: BLU, rf: 0.60 }] }
+];
+
+const FAULTS = {
+  penline: { title: 'The baseline has run, and it has run through everything.',
+    text: 'You drew the baseline in pen. Pen ink is a mixture of dyes dissolved in a solvent — exactly the thing this experiment separates — so the line itself climbed the paper and smeared its own colours across all five lanes. Nothing can be read. Pencil is graphite: insoluble, so it stays where you drew it.' },
+  drowned: { title: 'The spots have gone. All of them.',
+    text: 'The solvent level was above the baseline, so the ink dots were sitting in the liquid rather than above it. They dissolved straight into the solvent in the tank and were carried nowhere. The solvent has to start below the spots and climb up to them.' },
+  overrun: { title: 'Every spot is jammed against the top edge.',
+    text: 'You left the paper in until the solvent reached the top. Once the solvent front runs off the end, the fast spots pile up against the edge and stop being separable — and there is no solvent front left to measure distances against. Take the paper out while the front is still short of the top.' }
+};
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'What kind of mixture can chromatography separate?',
+    options: [
+      { text: 'Substances dissolved in the same solvent', correct: true },
+      { text: 'An insoluble solid from a liquid', correction: 'That is filtration. Chromatography needs everything dissolved and moving.' },
+      { text: 'Two liquids with different boiling points', correction: 'That is fractional distillation. Chromatography does not boil anything.' },
+      { text: 'A dissolved solid from its solvent', correction: 'That is evaporation or distillation. Chromatography separates dissolved substances from each other.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'Why must the baseline be drawn in pencil rather than pen?',
+    options: [
+      { text: 'Pen ink is itself a mixture of dyes and would separate and smear across the paper', correct: true },
+      { text: 'Pencil is easier to see against the spots', correction: 'Visibility is not the reason — and pencil is fainter, not clearer.' },
+      { text: 'Pen ink would react with the solvent', correction: 'No reaction is involved. The ink simply dissolves and travels, like every other dye on the paper.' },
+      { text: 'Pencil holds the spots in place', correction: 'The pencil line does nothing to the spots. It stays put because graphite is insoluble, and that is all that is asked of it.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'On one chromatogram, a yellow dye travels a third of the way up and a blue dye travels most of the way. Explain what makes the difference — and explain why the height of a spot says nothing about how much of that dye was in the ink.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Each dye is pulled two ways…',
+    criteria: [
+      'Says each dye is caught between sticking to the paper and dissolving in the moving solvent.',
+      'Says the blue dye dissolves in the solvent more readily, or sticks to the paper less, so it travels further.',
+      'Says the yellow dye is held by the paper more strongly, so it moves less.',
+      'Says the pull on a dye does not depend on how much of it is present.',
+      'Says the amount affects how big or dark the spot is, not how high it goes.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A food company is accused of using a banned red colouring in its sweets. You have the sweets, pure samples of the banned dye and of three legal red dyes, and ordinary lab equipment. Describe the investigation, and say exactly what result would convict them.',
+    fieldLabel: 'Your answer',
+    placeholder: 'First I would dissolve the colouring out of…',
+    criteria: [
+      'Dissolves the colouring out of the sweets to make a solution to spot.',
+      'Runs the extract and all four reference dyes side by side on the same paper.',
+      'Says the baseline is pencil and the solvent starts below the spots.',
+      'Says a spot in the extract at the same height as the banned dye is the incriminating result.',
+      'Says running them on the same paper — or comparing R<sub>f</sub> values — is what makes the comparison fair.'
+    ] }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-lab') return s.verdict !== null;
+  if (id === 's-think') return s.thinkChoice !== null;
+  if (id === 's-ladder') return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  return false;
+}
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: {},
+    text: {},
+    checked: {},
+    ticks: {}
+  }, { hookChoice: null, pencil: true, below: true, overrun: false, ran: false, verdict: null, thinkChoice: null });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.45;' : '');
+  }
+
+  ladderDone() {
+    const s = this.state;
+    return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  }
+
+  lessonVals(s) {
+    const fault = !s.pencil ? 'penline' : (!s.below ? 'drowned' : (s.overrun ? 'overrun' : null));
+    const good = fault === null;
+    const front = s.overrun ? 1 : 0.9;
+
+    const lanes = LANES.map((lane) => {
+      let spots = [];
+      if (fault === 'drowned') {
+        spots = [];
+      } else if (fault === 'penline') {
+        spots = lane.spots.map((sp, i) => ({ c: sp.c, rf: 0.2 + i * 0.12, smear: true }));
+      } else if (fault === 'overrun') {
+        spots = lane.spots.map((sp) => ({ c: sp.c, rf: Math.min(0.97, sp.rf + (1 - sp.rf) * 0.85) }));
+      } else {
+        spots = lane.spots.map((sp) => ({ c: sp.c, rf: sp.rf }));
+      }
+      return {
+        label: lane.label,
+        baselineStyle: 'position:absolute;left:0;right:0;bottom:12%;height:' + (s.pencil ? '2px' : '3px') +
+          ';background:' + (s.pencil ? 'var(--ks3-rule-strong)' : '#3B3B4A') + ';',
+        spots: spots.map((sp) => ({
+          style: 'position:absolute;left:50%;bottom:' + Math.round(12 + sp.rf * 78) + '%;transform:translateX(-50%);width:' +
+            (sp.smear ? '92%' : '58%') + ';height:' + (sp.smear ? '10px' : '16px') + ';border-radius:' + (sp.smear ? '3px' : '99px') +
+            ';background:' + sp.c + ';opacity:' + (sp.smear ? '.5' : '.85') + ';'
+        }))
+      };
+    });
+
+    const guilty = 'a';
+    const chosen = s.verdict;
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'The dots wash away and the paper stays blank' },
+        { letter: 'B', text: 'Each dot climbs and splits into separate coloured spots' },
+        { letter: 'C', text: 'The dots stay where they are and go paler' },
+        { letter: 'D', text: 'All four inks give exactly the same pattern' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      dials: [
+        { label: 'The baseline is drawn in',
+          options: [{ k: true, label: 'Pencil' }, { k: false, label: 'Pen' }].map((o) => ({
+            label: o.label, pressed: s.pencil === o.k, style: this.seg(s.pencil === o.k, false),
+            onClick: () => this.setState({ pencil: o.k, ran: false, verdict: null })
+          })) },
+        { label: 'The solvent in the tank starts',
+          options: [{ k: true, label: 'Below the spots' }, { k: false, label: 'Above the spots' }].map((o) => ({
+            label: o.label, pressed: s.below === o.k, style: this.seg(s.below === o.k, false),
+            onClick: () => this.setState({ below: o.k, ran: false, verdict: null })
+          })) },
+        { label: 'You take the paper out',
+          options: [{ k: false, label: 'Before the solvent reaches the top' }, { k: true, label: 'When the solvent reaches the top' }].map((o) => ({
+            label: o.label, pressed: s.overrun === o.k, style: this.seg(s.overrun === o.k, false),
+            onClick: () => this.setState({ overrun: o.k, ran: false, verdict: null })
+          })) }
+      ],
+
+      onRun: () => this.setState({ ran: true }),
+      runOpen: s.ran,
+      lanes: lanes,
+      paperLabel: good
+        ? 'A chromatogram with five lanes. The note and Pen A each show a yellow spot low down, a magenta spot in the middle and a cyan spot high up, at matching heights. Pen B shows magenta and cyan only, Pen C shows yellow and cyan at slightly different heights, and Pen D shows a single blue spot.'
+        : 'A ruined chromatogram: ' + (fault === 'drowned' ? 'five empty lanes, the ink having dissolved into the solvent.' : fault === 'penline' ? 'colour smeared across all five lanes from the baseline upwards.' : 'every spot crushed against the top edge of the paper.'),
+      runTitle: good ? 'A chromatogram you can read.' : FAULTS[fault].title,
+      runText: good
+        ? 'Five lanes, run side by side on one piece of paper, in one solvent, for the same length of time. That is the only way the heights can be compared — and now they can be.'
+        : FAULTS[fault].text,
+      readable: s.ran && good,
+
+      verdictButtons: [
+        { id: 'a', label: 'Pen A' }, { id: 'b', label: 'Pen B' },
+        { id: 'c', label: 'Pen C' }, { id: 'd', label: 'Pen D' }
+      ].map((b) => ({
+        label: b.label, pressed: chosen === b.id, disabled: chosen !== null,
+        style: this.seg(chosen === b.id, chosen !== null),
+        onClick: () => this.setState((st) => (st.verdict !== null ? null : { verdict: b.id }))
+      })),
+      verdictOpen: chosen !== null,
+      verdictTitle: chosen === guilty ? 'Pen A. Three spots, three matching heights, nothing extra.' : 'Pen A is the match — look again at the heights.',
+      verdictText: chosen === guilty
+        ? 'The note and Pen A separate into the same three dyes at the same three heights. Pen B has no yellow at all. Pen C has yellow and cyan but both sit slightly low, and it has no magenta. Pen D was never in the running: one blue dye, and the note has three.'
+        : (chosen === 'b' ? 'Pen B has magenta and cyan, and its magenta sits lower than the note. It is also missing the yellow entirely — a missing spot rules a sample out as firmly as a wrong one.'
+          : chosen === 'c' ? 'Pen C looks close because it shares yellow and cyan, but both spots sit lower than the note and there is no magenta. Close is not a match.'
+          : 'Pen D gives one blue spot. The note gives three, in three colours, so they cannot be the same ink.'),
+
+      thinkOptions: [
+        { letter: 'A', text: 'Right — furthest means most' },
+        { letter: 'B', text: 'Wrong — distance depends on the dye, not the amount' },
+        { letter: 'C', text: 'Right, as long as the paper is dry to start with' },
+        { letter: 'D', text: 'Wrong — the furthest spot is the smallest amount' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.thinkChoice === i, onClick: () => this.setState({ thinkChoice: i }) })),
+      thinkOpen: s.thinkChoice !== null
+    };
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s, this);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals(s)
+    );
+  }
+}
+</script>
+</body>
+</html>

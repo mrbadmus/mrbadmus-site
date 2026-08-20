@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proving something is pure · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Mixtures and separation</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Proving something is pure</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Mixtures and separation · Investigation</p>
+        <h1>Proving something is pure</h1>
+        <p class="ks3-bigq">Someone hands you a white powder and tells you it is pure. Believing them is not chemistry — so what measurement would make them prove it?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Three bags of white powder. All three labelled pure. One of them is not.</h2>
+        <p class="ks3-hook-prompt">A supplier has sent three batches of the same white solid, all sold as pure. Somewhere in the delivery, one batch has something else mixed into it. Every bag looks identical, and the label is not evidence.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">You can make one measurement on each. Which measurement would settle it?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">The melting point. A pure substance melts at one temperature — sharply, within a degree. A mixture melts over a <strong>range</strong>, and it starts melting <strong>lower</strong> than the pure substance would. That difference is measurable with a thermometer, and it does not care what the bag says.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-critique" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Before you plan · judge someone else's method</p>
+        <h2 style="margin: 6px 0 0;">A student has written a plan. Four steps. Rule on each one.</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">For each step, decide whether it could settle whether the powder is pure — before you read what it is actually worth.</p>
+
+        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 16px;">
+          <sc-for list="{{ critiques }}" as="c" hint-placeholder-count="4">
+            <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-size: 19px; line-height: 1.55; font-style: italic;">{{ c.step }}</p>
+              <div style="margin-top: 14px; display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ c.options }}" as="o" hint-placeholder-count="2">
+                  <button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ c.open }}">
+                <div data-arrive="1" style="margin-top: 14px; padding: 16px 18px; border-radius: 16px; background: var(--ks3-ink); color: var(--ks3-on-dark);">
+                  <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; line-height: 1.3;">{{ c.answer }}</p>
+                  <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ c.why }}</p>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ allJudged }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">Four steps, none of them useless, and not one of them able to answer the question. The plan is not lazy — it is a plan built out of observations rather than out of a <strong>measurement with a known expected value</strong>. That is the difference you are about to build.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Your turn · the melting point bench</p>
+        <h2 style="margin: 6px 0 0;">The pure substance should melt at 53 °C. Go and find out what you have.</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">A little of each sample in a tube, in a heated block, with a thermometer. You record the temperature when melting <em>starts</em> and when it <em>finishes</em>. Two decisions are yours.</p>
+
+        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 16px;">
+          <sc-for list="{{ dials }}" as="dial" hint-placeholder-count="2">
+            <div>
+              <p style="margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ dial.label }}</p>
+              <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ dial.options }}" as="o" hint-placeholder-count="2">
+                  <button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" style="{{ o.style }}">{{ o.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <button type="button" class="ks3-reveal-btn" style="margin-top: 18px;" onClick="{{ onRun }}">{{ runLabel }}</button>
+
+        <sc-if value="{{ dataOpen }}">
+          <div data-arrive="1" style="margin-top: 22px; display: flex; flex-direction: column; gap: 16px;">
+            <sc-for list="{{ samples }}" as="sm" hint-placeholder-count="3">
+              <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+                <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 21px; line-height: 1.25;">{{ sm.name }}</p>
+                <table style="margin-top: 14px; border-collapse: collapse; width: 100%; max-width: 32rem; font-family: var(--ks3-font-mono); font-size: 17px;">
+                  <thead>
+                    <tr>
+                      <th scope="col" style="text-align: left; padding: 8px 10px; border-bottom: 2px solid var(--ks3-ink); font-weight: 500; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Run</th>
+                      <th scope="col" style="text-align: left; padding: 8px 10px; border-bottom: 2px solid var(--ks3-ink); font-weight: 500; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Melting started</th>
+                      <th scope="col" style="text-align: left; padding: 8px 10px; border-bottom: 2px solid var(--ks3-ink); font-weight: 500; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Melting finished</th>
+                      <th scope="col" style="text-align: left; padding: 8px 10px; border-bottom: 2px solid var(--ks3-ink); font-weight: 500; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Range</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <sc-for list="{{ sm.runs }}" as="r" hint-placeholder-count="3">
+                      <tr>
+                        <td style="padding: 8px 10px; border-bottom: 2px solid var(--ks3-rule);">{{ r.n }}</td>
+                        <td style="padding: 8px 10px; border-bottom: 2px solid var(--ks3-rule);">{{ r.start }}</td>
+                        <td style="padding: 8px 10px; border-bottom: 2px solid var(--ks3-rule);">{{ r.end }}</td>
+                        <td style="{{ r.rangeStyle }}">{{ r.range }}</td>
+                      </tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="margin-top: 20px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">{{ dataNote }}</p>
+          </div>
+
+          <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 20px; font-weight: 700;">Which batch is the impure one?</p>
+            <div style="margin-top: 14px; display: flex; gap: 9px; flex-wrap: wrap;">
+              <sc-for list="{{ verdictButtons }}" as="b" hint-placeholder-count="3">
+                <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" disabled="{{ b.disabled }}" style="{{ b.style }}">{{ b.label }}</button>
+              </sc-for>
+            </div>
+            <sc-if value="{{ verdictOpen }}">
+              <div data-arrive="1" style="margin-top: 16px; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-ink); color: var(--ks3-on-dark);">
+                <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px; line-height: 1.25;">{{ verdictTitle }}</p>
+                <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-on-dark-body);">{{ verdictText }}</p>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">A pure substance melts sharply, at one temperature. A mixture melts over a range, and it starts lower than the pure substance would. Purity is proved by a measurement with a known expected value — never by looking.</p>
+      </div>
+
+      <section class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Evaluate · what this method cannot do</p>
+        <h2 style="margin: 6px 0 0;">Three honest limits</h2>
+        <ul style="margin: 16px 0 0; padding: 0 0 0 22px; display: flex; flex-direction: column; gap: 12px; font-size: 19px; line-height: 1.6; max-width: 58ch;">
+          <li>A sharp melting point at the expected temperature says the sample is pure. A sharp melting point at the <strong>wrong</strong> temperature says it is a pure substance that is not the one you ordered.</li>
+          <li>Without an expected value the measurement means nothing. You have to know what 53 °C was supposed to be.</li>
+          <li>It says <em>that</em> something else is present, never <em>what</em>. Identifying the impurity is a different job — and chromatography is where you would start.</li>
+        </ul>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“I measured it once and got 53 °C, which is the right answer. That proves it is pure.”</p>
+        <p style="max-width: 54ch;">The reading was right and the sample really might be pure. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">One reading cannot tell you whether it was a good reading. Heat the block too fast and the thermometer lags behind the sample, so a wide range reads narrow and a low start reads high — a single fast run on an impure sample can produce exactly the answer you were hoping for. Repeat it and the readings that agree with each other are the ones you can defend.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">And note what the batch 3 data did. Two runs agreed, one did not. The anomalous run is not deleted and it is not averaged in — it is <strong>reported, explained and set aside</strong>, and the reason is written down: the tube was packed loosely, or the block was still warming. That sentence is the difference between data and a result.</p>
+          </div>
+        </sc-if>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>A pure substance melts sharply at one fixed temperature; a mixture melts over a range and starts lower. That makes melting point the test for purity — but only against a known expected value, only with repeats, and only if the sample is heated slowly enough for the thermometer to keep up. An anomalous run is reported and explained, never quietly deleted.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The reason a mixture melts low is worth knowing, because it is used on every road in the country. In a pure solid, every particle sits in the same regular arrangement, and the whole thing gives way at one temperature. Mix something else in and the arrangement is interrupted — the particles no longer fit together as neatly, so less energy is needed to break them apart, and different regions give way at different temperatures. That is a lower melting point and a range, from the same cause.</p>
+          <p>Salt on an icy road is that effect run deliberately: salt water freezes several degrees below 0 °C, so the ice melts at a temperature at which pure water would stay solid. A pharmacist checking a batch of aspirin uses the same physics in the opposite direction — a melting range wider than a degree means something is in there that should not be, and the batch does not ship. Same measurement, same reasoning, and one of them is on a gritter and the other is in a laboratory.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c3-06-chromatography.html">Chromatography<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c4-01-chemical-vs-physical-change.html">Chemical change vs physical change<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Melting point as evidence of purity, and the distinction between a pure substance and a formulation.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still not sure what to do with the anomalous run in batch 3?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Three bags', short: 'HOOK' },
+  { id: 's-critique', label: 'Judge the plan', short: 'CRITIQUE' },
+  { id: 's-bench', label: 'Melting points', short: 'DATA' },
+  { id: 's-think', label: 'One reading', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const CRITIQUES = [
+  { id: 'q1', step: '"Look at the powder under a hand lens and check the crystals all look the same."',
+    answer: 'Tells you nothing about purity.',
+    why: 'Two white powders ground together look like one white powder, and a single substance can crystallise in more than one shape. Uniform appearance is exactly the evidence that has failed in every lesson of this unit.' },
+  { id: 'q2', step: '"Taste a little of it and see if it tastes of anything else."',
+    answer: 'Never done, and it would not settle it anyway.',
+    why: 'Nothing in a laboratory is tasted, and the reason is not squeamishness — an unknown white powder is exactly the thing that can be poisonous. Even if it were safe, most impurities are tasteless at a few per cent.' },
+  { id: 'q3', step: '"Stir some into water and check that it all dissolves."',
+    answer: 'Useful, and not enough.',
+    why: 'It would catch an impurity that does not dissolve — sand mixed into salt would leave a residue. It catches nothing that dissolves, and most things that get mixed into a powder do dissolve.' },
+  { id: 'q4', step: '"Weigh 10 g of it and check that it weighs 10 g."',
+    answer: 'Measures the balance, not the powder.',
+    why: 'Mass tells you how much you have, never what it is. A mixture weighs whatever a mixture weighs. There is no expected value to compare it against, which is what makes it useless here.' }
+];
+
+const SAMPLES = [
+  { id: 'b1', name: 'Batch 1',
+    runs: [{ start: 52.5, end: 53.0 }, { start: 52.5, end: 53.5 }, { start: 53.0, end: 53.5 }] },
+  { id: 'b2', name: 'Batch 2',
+    runs: [{ start: 45.0, end: 52.0 }, { start: 44.0, end: 51.0 }, { start: 46.0, end: 52.5 }] },
+  { id: 'b3', name: 'Batch 3',
+    runs: [{ start: 52.0, end: 53.0 }, { start: 47.5, end: 52.0 }, { start: 52.5, end: 53.5 }] }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'How does the melting behaviour of a pure substance differ from that of a mixture?',
+    options: [
+      { text: 'A pure substance melts sharply at one temperature; a mixture melts over a range, starting lower', correct: true },
+      { text: 'A pure substance melts over a range; a mixture melts sharply', correction: 'The other way round. The regular arrangement in a pure solid gives way all at once.' },
+      { text: 'A pure substance melts higher than a mixture, but both melt sharply', correction: 'Half right. The pure substance does melt higher — but the mixture melts over a range, and that range is the more useful clue.' },
+      { text: 'They melt identically — melting point cannot show purity', correction: 'Melting point is the standard test for purity, in schools and in the pharmaceutical industry.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A sample melts sharply, within half a degree — but at 61 °C, when the pure substance should melt at 53 °C. What can you conclude?',
+    options: [
+      { text: 'It is pure, but it is not the substance you were expecting', correct: true },
+      { text: 'It is impure, because the temperature is wrong', correction: 'An impurity would give a range and a lower start. A sharp melt is the signature of purity — this is a pure something else.' },
+      { text: 'The thermometer must be broken', correction: 'Possible, and checkable — but the reading is sharp and repeatable, which is not how a broken thermometer usually behaves. Read the data before blaming the kit.' },
+      { text: 'Nothing — a melting point cannot identify a substance', correction: 'It cannot identify it on its own, but a sharp melt at the wrong value is strong evidence about what you do and do not have.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Evaluate',
+    question: 'In batch 3, two runs gave 52–53 °C and one gave 47.5–52 °C. Explain what you should do with the odd run, what you must write down, and what your conclusion about batch 3 should be.',
+    fieldLabel: 'Your evaluation',
+    placeholder: 'The odd run is an anomaly, so…',
+    criteria: [
+      'Identifies the middle run as an anomalous result.',
+      'Says it should be reported and set aside, not silently deleted and not averaged in.',
+      'Gives a plausible cause — sample packed loosely, block heated too fast, tube not in contact with the block.',
+      'Says the anomaly should be repeated to check it.',
+      'Concludes that the evidence points to batch 3 being pure, and says the conclusion rests on the two runs that agree.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Design it yourself',
+    question: 'A shop suspects a supplier is bulking out bags of pure sugar with something cheaper. You have a melting point apparatus, a balance, filter equipment, chromatography paper and a known pure sample of the sugar. Design an investigation that would show whether the bags have been tampered with, and say what result would prove it.',
+    fieldLabel: 'Your plan',
+    placeholder: 'I would first measure the melting point of the known pure sample…',
+    criteria: [
+      'Measures the known pure sample first, to establish the expected value.',
+      'Measures the suspect sample the same way, with repeats.',
+      'States the incriminating result: a melting range wider than the pure sample, starting lower.',
+      'Controls something that would otherwise spoil the comparison — same apparatus, same heating rate, same amount in the tube.',
+      'Adds a step to find out what the impurity is, or says that this method cannot identify it.'
+    ] }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-critique') return Object.keys(s.judged).length >= CRITIQUES.length;
+  if (id === 's-bench') return s.verdict !== null;
+  if (id === 's-think') return s.thinkChoice !== null;
+  if (id === 's-ladder') return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  return false;
+}
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: {},
+    text: {},
+    checked: {},
+    ticks: {}
+  }, { hookChoice: null, judged: {}, rate: 'slow', repeats: 3, ran: false, verdict: null, thinkChoice: null });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.45;' : '');
+  }
+
+  ladderDone() {
+    const s = this.state;
+    return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  }
+
+  lessonVals(s) {
+    const fast = s.rate === 'fast';
+    const repeats = s.repeats;
+    const fix = (n) => n.toFixed(1);
+
+    const samples = SAMPLES.map((sm) => ({
+      name: sm.name,
+      runs: sm.runs.slice(0, repeats).map((r, i) => {
+        const start = fast ? r.start + (r.end - r.start) * 0.55 : r.start;
+        const end = fast ? r.end + 1.5 : r.end;
+        const range = end - start;
+        return {
+          n: String(i + 1),
+          start: fix(start) + ' °C',
+          end: fix(end) + ' °C',
+          range: fix(range) + ' °C',
+          rangeStyle: 'padding:8px 10px;border-bottom:2px solid var(--ks3-rule);color:' +
+            (range > 2 ? 'var(--ks3-accent-text)' : 'var(--ks3-ink)') + ';font-weight:' + (range > 2 ? '700' : '400') + ';'
+        };
+      })
+    }));
+
+    let dataNote;
+    if (fast && repeats === 1) {
+      dataNote = 'One run each, heated fast — and on this evidence all three batches look about the same. The thermometer cannot keep up with a fast block, so every range came out narrower than it really is and every start came out higher. This table cannot answer the question, and nothing about looking at it harder will fix that.';
+    } else if (fast) {
+      dataNote = 'Three runs each, heated fast. The repeats agree with each other, which is reassuring and misleading: they agree because the same error happened three times. Batch 2 is still visibly worse than the others, but the ranges are all squashed and the starts are all too high. Slow the block down and run it again.';
+    } else if (repeats === 1) {
+      dataNote = 'One run each, heated slowly. Batch 2 stands out — a range of seven degrees, starting eight degrees low. But with one reading each you cannot tell a real difference from a bad run, and batch 3 looks fine on a single measurement that you have no way of checking.';
+    } else {
+      dataNote = 'Three runs each, heated slowly. Batch 1 melts within a degree, every time. Batch 2 melts over six or seven degrees and starts around 45 °C, well below the expected 53 °C. Batch 3 agrees with batch 1 twice and disagrees with itself once — which is what an anomalous result looks like when you have bothered to repeat.';
+    }
+
+    const chosen = s.verdict;
+    const good = !fast && repeats > 1;
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'Weigh a spoonful of each' },
+        { letter: 'B', text: 'Check whether each one dissolves in water' },
+        { letter: 'C', text: 'Measure the temperature at which each one melts' },
+        { letter: 'D', text: 'Look at all three under a microscope' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      critiques: CRITIQUES.map((c) => {
+        const j = s.judged[c.id];
+        const decided = j !== undefined;
+        return {
+          step: c.step,
+          options: [
+            { id: 'settles', label: 'Could settle it' },
+            { id: 'nothing', label: 'Cannot settle it' }
+          ].map((o) => ({
+            label: o.label, pressed: j === o.id, disabled: decided,
+            style: this.seg(j === o.id, decided),
+            onClick: () => this.setState((st) => (st.judged[c.id] !== undefined ? null
+              : { judged: Object.assign({}, st.judged, { [c.id]: o.id }) }))
+          })),
+          open: decided, answer: c.answer, why: c.why
+        };
+      }),
+      allJudged: Object.keys(s.judged).length >= CRITIQUES.length,
+
+      dials: [
+        { label: 'How fast you heat the block',
+          options: [{ k: 'slow', label: 'Slowly, about 1 °C a minute' }, { k: 'fast', label: 'Quickly, to save time' }].map((o) => ({
+            label: o.label, pressed: s.rate === o.k, style: this.seg(s.rate === o.k, false),
+            onClick: () => this.setState({ rate: o.k, ran: false, verdict: null })
+          })) },
+        { label: 'How many times you run each sample',
+          options: [{ k: 1, label: 'Once' }, { k: 3, label: 'Three times' }].map((o) => ({
+            label: o.label, pressed: s.repeats === o.k, style: this.seg(s.repeats === o.k, false),
+            onClick: () => this.setState({ repeats: o.k, ran: false, verdict: null })
+          })) }
+      ],
+      onRun: () => this.setState({ ran: true }),
+      runLabel: s.ran ? 'Run it again with these settings' : 'Run the samples',
+      dataOpen: s.ran,
+      samples: samples,
+      dataNote: dataNote,
+
+      verdictButtons: [
+        { id: 'b1', label: 'Batch 1' }, { id: 'b2', label: 'Batch 2' }, { id: 'b3', label: 'Batch 3' }
+      ].map((b) => ({
+        label: b.label, pressed: chosen === b.id, disabled: chosen !== null,
+        style: this.seg(chosen === b.id, chosen !== null),
+        onClick: () => this.setState((st) => (st.verdict !== null ? null : { verdict: b.id }))
+      })),
+      verdictOpen: chosen !== null,
+      verdictTitle: chosen === 'b2' ? 'Batch 2. A range of six or seven degrees, starting eight degrees low.'
+        : (chosen === 'b1' ? 'Batch 1 is the clean one — look at its range.' : 'Batch 3 is pure. Its odd run is an anomaly, not evidence.'),
+      verdictText: chosen === 'b2'
+        ? ('Something else is dissolved in it, interrupting the arrangement, so it starts giving way early and finishes late. ' +
+           (good ? 'Your data can carry that claim: three slow runs, agreeing with each other, on all three batches.'
+                 : 'Your data points the right way but cannot carry the claim — heated fast, or run once, the ranges are not trustworthy. Run it slowly, three times, before you accuse a supplier of anything.'))
+        : (chosen === 'b1'
+          ? 'Batch 1 melts within a degree on every run. That is the signature of a pure substance, and it is your reference for what the other two should look like. Batch 2 is the one that melts over six or seven degrees.'
+          : 'Two of batch 3\'s runs melt within a degree, at the expected temperature. The third disagrees with both — one anomalous run, most likely a loosely packed tube. Set it aside with a reason written down and batch 3 is pure. The impure batch is batch 2.'),
+
+      thinkOptions: [
+        { letter: 'A', text: 'Right — the reading was correct, so the job is done' },
+        { letter: 'B', text: 'Wrong — one reading cannot tell you whether it was a good reading' },
+        { letter: 'C', text: 'Right, as long as the thermometer was accurate' },
+        { letter: 'D', text: 'Wrong — melting point cannot show purity at all' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.thinkChoice === i, onClick: () => this.setState({ thinkChoice: i }) })),
+      thinkOpen: s.thinkChoice !== null
+    };
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s, this);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals(s)
+    );
+  }
+}
+</script>
+</body>
+</html>
