@@ -53,7 +53,7 @@ The renderer, the wiring and the parity rows all treat it as load-bearing.
 # that is passed straight through untouched (page line 677), and a named
 # constant says so.
 SCALE_CARDS = [
-    {"distance": "Across a cell · 0.01 mm", "time": "Under a millisecond",
+    {"distance": "Across a cell · 0.01 mm", "time": "About a hundredth of a second",
      "text": "Fast enough that a cell needs no delivery system at all. Oxygen "
              "simply arrives."},
     {"distance": "Across a fingertip · 10 mm", "time": "About three hours",

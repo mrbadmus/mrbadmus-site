@@ -168,6 +168,13 @@ be "fixed".
              lifted, and they are load-bearing honesty about the model.
   * flag 17  guard cells open the pore by becoming turgid, with no potassium
              ions and no ABA. Confirm the depth.
+  * ⊕ MRB-269 (safety/register): the CAM stretch used to read "Taste a
+             pineapple leaf early in the morning…" — an INSTRUCTION to put
+             plant material in the mouth, on a page carrying a
+             `convention_note` rather than a `safety_note`, so nothing on it
+             addresses doing that. Rewritten as a statement of fact. Flag 18
+             below still owns the truth of the CLAIM; this was about the
+             instruction to act on it, which is a separate thing.
   * flag 18  CAM in GOING FURTHER, including that a pineapple leaf tastes sour
              in the morning and not in the evening. Design has not verified the
              tasting claim and neither have we.
@@ -179,6 +186,10 @@ be "fixed".
              reference: declaring it would invent a sourcing task for artwork
              the page never asks for. `figures` is empty and that is measured,
              not an omission.
+             ⊕ SUPERSEDED by MRB-257 decision 5 / audit WS1 #11 (MRB-269 doc
+             drift): `b4-guard-cells-two-state` IS now declared and `figures`
+             has one entry. The flag above records why it was empty, not the
+             state of the file.
   * ⚖️ MRB-225 holds. The stretch layer adds a strategy, retracts nothing above
     it, and the body's claim that stomata are a trade-off is what makes CAM
     legible.
@@ -399,7 +410,13 @@ LESSON = {
          "note": None},
     ],
 
-    # ⚠️ EMPTY, AND MEASURED. This page's foot line names no figure slot —
+    # ⊕ MRB-269 (doc drift): THIS LIST IS NO LONGER EMPTY. The header below
+    # read "⚠️ EMPTY, AND MEASURED" while `figures` carried
+    # `b4-guard-cells-two-state`, declared by the MRB-257 note further down.
+    # The reasoning is kept because it is why the slot was NOT declared at
+    # first, and MRB-257 is why it now is.
+    #
+    # WAS EMPTY, AND MEASURED. This page's foot line names no figure slot —
     # unlike b4-01's and b4-03's, which name `b4-gas-exchange-labelled`.
     # NOTES-B4 flag 20 suggests a labelled stoma / guard-cell pair "would be
     # the obvious second slot" and says it has not invented one; declaring it
@@ -773,9 +790,10 @@ LESSON = {
                  "closed stomata. It is called CAM photosynthesis, and it "
                  "costs energy and limits growth rate — which is why cacti "
                  "grow so slowly, and why the strategy only makes sense where "
-                 "water, not time, is the thing in shortest supply. Taste a "
-                 "pineapple leaf early in the morning and it is noticeably "
-                 "sour; by evening it is not."},
+                 "water, not time, is the thing in shortest supply. A "
+                 "pineapple leaf is at its most sour early in the morning "
+                 "and much less so by evening: that is the stored acid, "
+                 "used up over the course of the day."},
     ],
 
     "support": [],

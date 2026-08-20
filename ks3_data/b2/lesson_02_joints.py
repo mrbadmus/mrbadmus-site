@@ -219,7 +219,7 @@ LESSON = {
               "angle_label": "This joint does not bend",
               "where": "Top of the neck, and between the two bones of the forearm",
               "hold": "A ring of ligament that one bone turns inside",
-              "trade": "It cannot bend at all, and it turns further than anything else. Shaking your head \"no\" happens here; nodding \"yes\" happens at the joint below it.",
+              "trade": "It cannot bend at all, and it turns further than anything else. Shaking your head \"no\" happens here; nodding \"yes\" happens at the joint above it.",
               "twist_yes": "It turns about 80 degrees each way. That is the whole of its job.",
               "twist_no": ""},
              {"id": "fixed",

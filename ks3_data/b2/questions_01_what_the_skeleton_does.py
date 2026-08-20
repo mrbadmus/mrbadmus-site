@@ -159,8 +159,9 @@ QUESTIONS = [
             {"text": "The ribcage one is worse, because it leaves the heart "
                      "unprotected", "correct": False,
              "why": "The ribcage does shield the heart, but that is not what "
-                    "kills in minutes. It is the movement job: nothing lifts "
-                    "the chest wall, so no air comes in."},
+                    "kills in minutes. It is the movement job: with the "
+                    "chest wall loose, each breath moves far too little "
+                    "air."},
         ],
         "figure": None,
     },
@@ -291,8 +292,9 @@ QUESTIONS = [
             {"text": "The bones weaken first, so the chest cannot be lifted "
                      "and less air comes in", "correct": False,
              "why": "That is the ribcage's movement job, and here the bones "
-                    "are strong. This failure is about what the blood can "
-                    "carry, not about air getting in."},
+                    "are strong and the chest wall is intact. This failure "
+                    "is about what the blood can carry, not about how much "
+                    "air gets in."},
             {"text": "The lungs take several weeks to stop loading oxygen onto "
                      "the blood", "correct": False,
              "why": "The lungs are untouched and load oxygen perfectly well. "

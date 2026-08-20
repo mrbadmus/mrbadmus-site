@@ -152,7 +152,7 @@ LESSON = {
     "ks4_links":   [],
 
     # ---- the teaching payload ------------------------------------------
-    "big_question": "Two single cells, the same size. One is a whole animal. "
+    "big_question": "Two single cells, one much smaller. One is a whole animal. "
                     "One is a piece of you. What tells them apart?",
 
     # §3.2 — the hook is ink-dark and its commitment stays inside the block:
@@ -164,9 +164,9 @@ LESSON = {
         "kind": "demo",
         "title": "A quarter of a millimetre long, and it hunts.",
         "prompt": "A Paramecium swims, finds food, eats it, senses obstacles, "
-                  "reverses, grows and splits in two. A cheek cell is about "
-                  "the same size and lines your mouth. Neither is bigger than "
-                  "the other, and neither is more alive.",
+                  "reverses, grows and splits in two. A cheek cell is four "
+                  "times smaller and lines your mouth. Neither is more "
+                  "alive than the other.",
         "commit": "One is an organism. One is part of one. What settles it?",
         "options": [
             "It can move on its own",
@@ -204,7 +204,7 @@ LESSON = {
          "confronted_by": "s-think",
          "pairs_with": {"lesson": "specialised-cells",
                         "relation": "qualifies",
-                        "claim": "Last lesson: no nucleus, no "
+                        "claim": "Two lessons ago: no nucleus, no "
                                  "instructions, no repair, no dividing."}},
         {"id": "CELL-08",
          "statement": "A single-celled organism is just a simpler version "

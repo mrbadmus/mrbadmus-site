@@ -972,8 +972,8 @@ LESSON = {
                  "hidden cost of the trade — cargo space bought with a "
                  "maintenance bill handed to the rest of the body. Why keep "
                  "paying it? Because roughly five in every six of your "
-                 "cells are red blood cells, and every one would otherwise "
-                 "carry a third less oxygen."},
+                 "cells are red blood cells, and the space the nucleus "
+                 "would have taken is haemoglobin in every single one."},
     ],
 
     # Present-but-empty by design (§11 decision 4). Empty renders

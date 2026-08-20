@@ -300,8 +300,8 @@ DRUGS = [{"id": "caffeine",
                          "effect": "Beats faster. Two mugs is enough to "
                                    "measure the difference."},
                         {"organ": "Kidneys",
-                         "effect": "Produce more urine, so more water leaves "
-                                   "the body than you drank in the coffee."},
+                         "effect": "Produce more urine, which is why coffee "
+                                   "sends you to the toilet."},
                         {"organ": "Stomach",
                          "effect": "Releases more acid, which is why coffee "
                                    "on an empty stomach can hurt."}],

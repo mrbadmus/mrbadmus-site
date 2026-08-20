@@ -343,7 +343,7 @@ LESSON = {
     # ── the stretch layer (§5.6) — visible and opt-in to all ────────────────
     "stretch": [
         {"type": "explainer", "id": "hydrogen-and-oxygen",
-         "text": "A mixture of hydrogen and oxygen gas is one of the most "
+         "text": "A 2:1 mixture of hydrogen and oxygen gas is one of the most "
                  "dangerous things you can have in a laboratory: a spark and "
                  "it detonates. Join the same atoms chemically, in the ratio "
                  "of two to one, and you get water — which you use to put "

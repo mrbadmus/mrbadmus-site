@@ -88,9 +88,10 @@ QUESTIONS = [
             {"text": "The part of a cell that stores oxygen, so the cell can "
                      "keep going for a while if the supply stops.",
              "correct": False,
-             "why": "Nothing in the body stores oxygen — a few seconds' worth "
-                    "dissolved in the blood is all there is. That is exactly "
-                    "why a heart cut off from oxygen is permanently damaged "
+             "why": "Nothing in the body sets oxygen aside in reserve — "
+                    "there is only what the blood is carrying at that "
+                    "moment, a few minutes' worth. That is exactly why a "
+                    "heart cut off from oxygen is permanently damaged "
                     "within minutes."},
             {"text": "The part of a cell where aerobic respiration happens, "
                      "releasing energy from glucose using oxygen.",
@@ -261,7 +262,8 @@ QUESTIONS = [
             {"text": "Mitochondria are where a cell keeps its oxygen, so extra "
                      "ones let it carry on if the supply drops.",
              "correct": False,
-             "why": "No cell stores oxygen — that is why four minutes without "
+             "why": "No cell sets oxygen aside — the only supply is what the "
+                    "blood is carrying, which is why four minutes without "
                     "it does permanent damage. Mitochondria release energy "
                     "from glucose using oxygen; they hold none of it in "
                     "reserve."},
@@ -336,10 +338,10 @@ QUESTIONS = [
             {"text": "The brain is storing oxygen that the rest of the body "
                      "may need later, and storing it costs energy.",
              "correct": False,
-             "why": "There is no oxygen store anywhere in you — a few seconds' "
-                    "worth dissolved in the blood is all of it, which is why "
-                    "brain cells begin to die within about four minutes "
-                    "without it."},
+             "why": "There is no oxygen store anywhere in you — only what the "
+                    "blood is carrying at that moment, which is why brain "
+                    "cells begin to die within about four minutes without "
+                    "it."},
         ],
         "figure": None,
     },

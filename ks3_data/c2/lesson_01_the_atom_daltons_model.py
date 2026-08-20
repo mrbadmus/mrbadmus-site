@@ -278,6 +278,13 @@ LESSON = {
          # would hold less than one atom, while the drawing is a lattice. The
          # level is now 0.000001 mm (1 nm), about four copper atoms across,
          # and the count is copper's.
+         #
+         # Third (⊕ MRB-269 finding 2): level 4 read 0.001 mm (1 µm) under
+         # the label "Beyond any light microscope". Visible light's
+         # diffraction limit is ~0.2 µm, so a 1 µm field is WITHIN reach —
+         # the label contradicted the scale. The level is now 0.0001 mm
+         # (0.1 µm), which is genuinely past the limit, so the label, the
+         # caption and the note all stand as written.
          "levels": [
              {"scale": "1 cm across",
               "label": "A piece of copper wire",
@@ -291,7 +298,7 @@ LESSON = {
               "label": "Under a school microscope",
               "drawing": "scratches",
               "note": "This is about as far as the microscope from B1 reaches. Scratches and grains, and still no sign of anything smaller."},
-             {"scale": "0.001 mm across",
+             {"scale": "0.0001 mm across",
               "label": "Beyond any light microscope",
               "drawing": "beyond-light",
               # The canvas caption, drawn in mono at the centre of the frame.

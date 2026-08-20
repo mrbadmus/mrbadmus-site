@@ -203,7 +203,7 @@ on is a misconception whether or not it is quoted in amber.
 SPECIMENS = [
     {"id": "dandelion", "label": "Dandelion", "name": "Dandelion",
      "answer": "wind",
-     "desc": "A single tiny seed, a few milligrams, carrying a spray of fine "
+     "desc": "A single tiny seed, under a milligram, carrying a spray of fine "
              "white hairs on a thin stalk above it.",
      "tell": "A parachute of hairs on a seed light enough for it to matter.",
      "why": "The hairs give a large surface area against the air and almost no "
@@ -261,7 +261,7 @@ SPECIMENS = [
              "bracts each ending in a backward-facing hook.",
      "tell": "The same hook principle, built at a larger scale.",
      "why": "Worth knowing for what it caused. In 1941 a Swiss engineer, "
-            "George de Mestral, pulled burdock burrs out of his dog’s "
+            "Georges de Mestral, pulled burdock burrs out of his dog’s "
             "coat, looked at one under a microscope, saw hooks catching in "
             "loops of fur — and spent the next decade turning that into "
             "Velcro. A dispersal mechanism, copied exactly."},
@@ -692,8 +692,8 @@ LESSON = {
                        "journey through a gut and come out able to grow, in "
                        "the middle of a small heap of fertiliser some distance "
                        "from the parent. Notice also the timing. An unripe "
-                       "blackberry is green, hard, sour and often mildly "
-                       "toxic, and it becomes sweet, soft and black only when "
+                       "blackberry is green, hard and mouth-puckeringly sour, "
+                       "and it becomes sweet, soft and black only when "
                        "the seeds inside are finished — the colour change is a "
                        "signal that says <em>now</em>, and everything before "
                        "it says <em>not yet</em>. And plenty of fruits are "

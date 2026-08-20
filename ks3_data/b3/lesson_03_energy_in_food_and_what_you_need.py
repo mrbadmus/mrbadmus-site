@@ -358,8 +358,9 @@ LESSON = {
         {"term": "kilojoule",
          "definition": "The unit energy in food is measured in. One kilojoule "
                        "is a thousand joules.",
-         "note": "Written kJ. A packet may also print calories, which are an "
-                 "older unit for the same thing."},
+         "note": "Written kJ. A packet may also print kilocalories, an "
+                 "older unit for the same thing — one kilocalorie is "
+                 "about 4.2 kJ."},
         {"term": "energy requirement",
          "definition": "The amount of energy a particular person needs to take "
                        "in over a day.",
@@ -554,7 +555,8 @@ LESSON = {
                        "percentage, and it is the rounded average for an adult "
                        "woman doing moderate activity. Run the bench above "
                        "through all five people and the honest range is "
-                       "roughly 5000 to 20 000 kJ a day — a fourfold spread, "
+                       "roughly 6000 to 25 000 kJ a day — more than a fourfold "
+                       "spread, "
                        "and the top of it is a professional athlete rather "
                        "than an extreme case. A 4-year-old fed an adult's day "
                        "would be badly overfed; a rower fed a 4-year-old's day "

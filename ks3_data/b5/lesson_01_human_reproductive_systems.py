@@ -123,7 +123,10 @@ link into it still works.
   * flag 1 — ~1 million immature egg cells at birth, ~400 maturing in a
     lifetime. In the hook, in the second confrontation and in the `#s-pair`
     table. Sources give 1–2 million for the birth figure.
-  * flag 2 — "around a thousand sperm per second" (~1500/s is the usual
+  * flag 2 — ⊕ RESOLVED MRB-269 finding 22(a): the page now reads ~1500/s
+    on both sites and "over a hundred million a day", which reconcile
+    (1500/s = ~130 million/day). Superseded text:
+    "around a thousand sperm per second" (~1500/s is the usual
     figure). In the hook and in job row 1.
   * flag 4 — fertilisation in the oviduct, with *fallopian tube* as the
     parenthetical. The structure's `name` is the only place the second term
@@ -167,7 +170,7 @@ link into it still works.
 # destroys the instrument.
 FUNCTIONS = [
     {"id": "make-sperm",     "text": "Makes sperm cells"},
-    {"id": "make-eggs",      "text": "Makes and releases egg cells"},
+    {"id": "make-eggs",      "text": "Contains and releases egg cells"},
     {"id": "carry",          "text": "Carries gametes from where they are made"},
     {"id": "add-fluid",      "text": "Adds fluid that gametes can swim in"},
     {"id": "transfer",       "text": "Transfers gametes into the other system"},
@@ -282,7 +285,7 @@ STRUCTURES = [
 # is the section's whole argument — it is not a gap to be filled or varied.
 JOBS_COMPARE = [
     ("Job 1 · Make gametes — shared",
-     "Testes, from puberty onwards, at around a thousand sperm per second.",
+     "Testes, from puberty onwards, at around fifteen hundred sperm per second.",
      "Ovaries — which release, rather than make. All the immature eggs were "
      "there at birth; about four hundred ever mature."),
 
@@ -384,7 +387,7 @@ LESSON = {
         "prompt": "About a million immature egg cells are present in the "
                   "ovaries of a newborn baby. No more are ever made. Sperm "
                   "cells, by contrast, are produced continuously from puberty "
-                  "onwards, at something like a thousand per second.",
+                  "onwards, at something like fifteen hundred per second.",
         "commit": "Two systems with the same purpose. Why such different "
                   "strategies?",
         "options": [
@@ -721,7 +724,7 @@ LESSON = {
                        "complete maturing and be released across a lifetime. "
                        "Sperm production is the opposite in every respect: it "
                        "begins at puberty, continues indefinitely, and runs "
-                       "at hundreds of millions a day. This is not a detail "
+                       "at over a hundred million a day. This is not a detail "
                        "about timing. It is the reason age affects the two "
                        "systems so differently, and it is the reason the "
                        "ovary is the organ that runs out."]},
@@ -819,7 +822,7 @@ LESSON = {
     # ── the key note (fixed, last, photographable) ──────────────────────────
     "key_note": "The testes make sperm; the sperm duct carries them and the "
                 "glands add fluid to make semen; the penis transfers semen "
-                "into the vagina. The ovaries make and release egg cells; the "
+                "into the vagina. The ovaries contain and release egg cells; the "
                 "oviduct carries the egg towards the uterus and is where "
                 "fertilisation happens; the uterus holds and supplies a "
                 "developing embryo; the cervix is its lower opening. All "

@@ -483,8 +483,8 @@ LESSON = {
     "key_facts": [
         {"id": "balanced-means-targets",
          "text": "Balanced means each nutrient in the amount that nutrient "
-                 "needs — not the same amount of each. Three of the seven are "
-                 "measured in hundreds of grams. Three are measured in "
+                 "needs — not the same amount of each. Two of the seven are "
+                 "measured in hundreds of grams. One is measured in "
                  "milligrams. None of them is optional.",
          "placement": "top-level",
          "ground": "card",

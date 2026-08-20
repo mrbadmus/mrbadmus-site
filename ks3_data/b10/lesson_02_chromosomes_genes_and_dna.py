@@ -368,7 +368,7 @@ lesson is handled in `references` — see the comment there.
 #
 # ⚠️ ROW 5 IS `A gene` AND ROW 6 IS `The bases`. NOTES §1.2 and the dispatch brief both say
 # DNA and a base pair; schema §10 item 1 records that they are the ones that are wrong. The
-# page's own close — "the last four are all the same molecule seen at different
+# page's own close — "the last three are all the same molecule seen at different
 # magnifications" — is only true of the list as drawn.
 LEVELS = [
     {"name": "A person", "scale": "1.6 m",
@@ -410,9 +410,9 @@ LEVELS = [
 # saying the thing the bench exists to show. Design's order is otherwise kept.
 QUIZ = [
     {"id": "longest", "label": "Which is the longest?",
-     "answer": "The DNA molecule — about two metres per cell if you uncoiled "
-               "it all. A chromosome is that DNA packed down to a few "
-               "thousandths of a millimetre."},
+     "answer": "All the DNA in one cell — about two metres if you uncoiled "
+               "it all. It is divided between 46 chromosomes, each packed "
+               "down to a few thousandths of a millimetre."},
     {"id": "contains", "label": "What contains what?",
      "answer": "The nucleus contains the chromosomes; each chromosome is one "
                "coiled DNA molecule; each gene is a section of that DNA; the "

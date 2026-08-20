@@ -32,7 +32,8 @@ is deliberate and ruled:
     approved microscopes were reconciled onto one instrument. Corrected wording is
     in `sim["resolve_notes"]["100"]` below. ×40 and ×400 are untouched — both survive the
     ruled table (×40 holds all three layers at the lesson's starting focus of 50;
-    ×400's window is ±0.0048 mm, ~24× thinner than one 0.115 mm cell).
+    ×400's window is ±0.0048 mm — 0.0096 mm in full, ~12× thinner than one
+    0.115 mm cell).
 
 Keys this record uses that §4.8 does not yet name are listed in the build report
 and marked `# NEW` below. Every one sits INSIDE a component Design drew and

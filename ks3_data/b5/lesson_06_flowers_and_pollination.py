@@ -237,15 +237,19 @@ JOBS = {
 # `group` is Design's mono alert-coloured tag beside the part name, and it is
 # science: it is the only place on the page that assigns each part to male,
 # female or neither, which is exactly what rung 3 asks the student to do.
-# `options` are the four job KEYS shown, in Design's order — the correct one is
-# first in every set, and the renderer is responsible for not making that a
-# tell (the page shuffles nothing; A is always right, which is a finding
-# reported to the commander, not something this module can fix by reordering
-# without changing what the student reads).
+# `options` are the four job KEYS shown. ⊕ MRB-269 finding 24: Design's order
+# put the correct key FIRST in all nine sets, so a student who noticed could
+# pick A nine times and score full marks without reading. The page shuffles
+# nothing, so the order is fixed HERE: the answer now sits at index
+# 2,0,3,1,2,3,1,0,2 down the list. Correctness is keyed on `answer`, never on
+# position (`r_flower_jobs` builds `options=[(k, jobs[k]) for k in options]`
+# and marks against `answer`), and every set still offers exactly the same
+# four jobs — so the student reads the same options, in a different order.
+# ⚖️ The ovary/ovule mutual distractor (REPRO-22) is preserved in both sets.
 PARTS = [
     {"id": "anther", "label": "Anther", "name": "Anther",
      "group": "Male part · stamen", "answer": "pollen",
-     "options": ["pollen", "hold", "catch", "ovule"],
+     "options": ["hold", "catch", "pollen", "ovule"],
      "why": "Pollen grains are not gametes and it is worth being exact: each "
             "grain is a tough case carrying a nucleus that will become the "
             "male gamete. The anther’s whole job is manufacture and "
@@ -261,7 +265,7 @@ PARTS = [
 
     {"id": "stigma", "label": "Stigma", "name": "Stigma",
      "group": "Female part · carpel", "answer": "catch",
-     "options": ["catch", "attract", "route", "ovary"],
+     "options": ["attract", "route", "ovary", "catch"],
      "why": "The receiving surface, and its texture tells you how the pollen "
             "arrives. Sticky and small means pollen is being delivered by an "
             "animal; large and feathery means it is being fished out of "
@@ -269,7 +273,7 @@ PARTS = [
 
     {"id": "style", "label": "Style", "name": "Style",
      "group": "Female part · carpel", "answer": "route",
-     "options": ["route", "hold", "catch", "pay"],
+     "options": ["hold", "route", "catch", "pay"],
      "why": "Two jobs in one stalk. It holds the stigma up where pollen will "
             "reach it, and once a grain has landed the pollen tube grows down "
             "through it to the ovary — which is the whole of the next "
@@ -277,7 +281,7 @@ PARTS = [
 
     {"id": "ovary", "label": "Ovary", "name": "Ovary",
      "group": "Female part · carpel", "answer": "ovary",
-     "options": ["ovary", "ovule", "protect", "catch"],
+     "options": ["ovule", "protect", "ovary", "catch"],
      "why": "Note what it becomes. Every fruit you have ever eaten was the "
             "ovary of a flower, swollen after fertilisation — which is "
             "why a pea pod, a tomato and an apple are all fruits whatever a "
@@ -287,7 +291,7 @@ PARTS = [
     # elicitation: `ovule` and `ovary` each carry the other as a distractor.
     {"id": "ovule", "label": "Ovule", "name": "Ovule",
      "group": "Female part · inside the ovary", "answer": "ovule",
-     "options": ["ovule", "ovary", "pollen", "route"],
+     "options": ["ovary", "pollen", "route", "ovule"],
      "why": "The female half of the pairing, and the one students most often "
             "confuse with the ovary that contains it. One ovule becomes one "
             "seed, so counting the seeds in a fruit tells you how many ovules "
@@ -295,7 +299,7 @@ PARTS = [
 
     {"id": "petal", "label": "Petal", "name": "Petal",
      "group": "Neither · attraction", "answer": "attract",
-     "options": ["attract", "protect", "pay", "catch"],
+     "options": ["protect", "attract", "pay", "catch"],
      "why": "An advertisement, not a reproductive organ — which is why "
             "the plants that need no advertising have no petals worth the "
             "name. Colour, pattern and scent are all aimed at a specific kind "
@@ -311,7 +315,7 @@ PARTS = [
 
     {"id": "nectary", "label": "Nectary", "name": "Nectary",
      "group": "Neither · payment", "answer": "pay",
-     "options": ["pay", "attract", "ovule", "pollen"],
+     "options": ["attract", "ovule", "pay", "pollen"],
      "why": "Nectar is a real cost: the plant makes sugar by photosynthesis "
             "and then gives some of it away. It is worth it, because a paid "
             "courier that visits flower after flower of the same species "

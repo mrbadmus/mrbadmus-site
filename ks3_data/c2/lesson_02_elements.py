@@ -99,8 +99,8 @@ LESSON = {
                  "a hundred to choose from.",
         "prompt": "Every substance in the world — every rock, gas, liquid, "
                   "plastic, medicine and living thing — is built from the same "
-                  "short list. Not a long list. Ninety-odd entries, and roughly "
-                  "two thirds of them are in the phone in your pocket.",
+                  "short list. Not a long list. About a hundred entries, and "
+                  "roughly sixty of them are in the phone in your pocket.",
         "commit": "If you had a sample of something, how would you find out "
                   "whether it was on that list?",
         "options": [

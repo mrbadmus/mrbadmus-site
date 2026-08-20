@@ -264,8 +264,8 @@ CMP = [
             "and it is the cheap one."},
     {"id": "mito",
      "name": "Mitochondria",
-     "sperm": "Many, packed behind the head",
-     "egg": "Many — and these are the ones you inherit",
+     "sperm": "A few dozen, packed behind the head",
+     "egg": "Hundreds of thousands — and these are the ones you inherit",
      "why": "The sperm’s mitochondria release energy for swimming and are "
             "destroyed after fusion. Every mitochondrion in your body came "
             "from the egg."},

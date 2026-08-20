@@ -244,7 +244,7 @@ PARTS = [{"id": "membrane",
                     "cell — is packed with them. That is the whole "
                     "difference between it and a cheek cell on this list.",
           "visible": False,
-          "scope_note": "Around a hundred times smaller across than the "
+          "scope_note": "Around fifty times smaller across than the "
                         "cell itself, and below what a school microscope "
                         "can separate. Turning the magnification up gives "
                         "you a bigger blur, not a mitochondrion.",

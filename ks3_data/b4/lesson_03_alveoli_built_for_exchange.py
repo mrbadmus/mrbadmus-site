@@ -149,8 +149,11 @@ finding open until Mide ruled. He has now ruled, and the rewrite is his.
     with wide ranges in the literature (270–790 million; 50–100 m²). Both
     numbers are load-bearing here: the hook's *"about seventy"*, the key fact,
     the key note and comparison row 1 all carry one of them, and the hook's
-    *"roughly a hundredth of a square metre"* is the smooth bag against the
-    same 70. Same class of problem as B3 flag 17.
+    *"roughly a twelfth of a square metre"* is the smooth bag against the
+    same 70 — ⊕ MRB-269 finding 23: the flag said "a hundredth" and the page
+    said "a sixth"; a six-litre sphere has a surface of ~0.077 m², so both
+    were wrong and both now read a twelfth. Same class of problem as B3
+    flag 17.
   * **flag 20** — this unit has no anatomical diagrams. This page's legal line
     names **no** figure slot (the one B4 slot, `b4-gas-exchange-labelled`, is
     named in b4-01's legal line, not this one), so `figures` is EMPTY here and
@@ -320,7 +323,7 @@ LESSON = {
             "Indefinitely, as long as you kept the airway clear",
         ],
         "reveal": "Minutes. The bag holds the same air and offers roughly a "
-                  "sixth of a square metre of exchange surface instead of "
+                  "twelfth of a square metre of exchange surface instead of "
                   "about seventy. Volume is not what keeps you alive — "
                   "surface is, and a bag is the worst possible shape for "
                   "it.",
@@ -561,8 +564,9 @@ LESSON = {
                         "more reasonable. A molecule has no aim, no preference "
                         "and no information about where it is. Look at the "
                         "bench above with the blood flow switched off: within "
-                        "seconds the two sides equalise and the net absorption "
-                        "drops to zero — not because the molecules have "
+                        "seconds the two sides very nearly equalise and the "
+                        "net absorption drops to about zero — not because "
+                        "the molecules have "
                         "finished spreading, but because crossings inwards and "
                         "crossings outwards have become equally likely. "
                         "Molecules are still moving at hundreds of metres per "

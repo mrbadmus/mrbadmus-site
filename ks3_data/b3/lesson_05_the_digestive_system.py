@@ -255,7 +255,13 @@ LESSON = {
     ],
 
     # ── figures (§4.10) ─────────────────────────────────────────────────────
-    # ⚠️ DECLARED BECAUSE THE LEGAL LINE NAMES IT. Design's foot line says the
+    # ⊕ MRB-269 (doc drift): the paragraph immediately below describes Design's
+    # foot line and an "awaiting illustration" state that MRB-257 cut — the
+    # line is no longer emitted and `status` is now "drawn" (see the ⊕ MRB-254
+    # note). It is kept as the record of why the id was declared at all, not
+    # as a description of what this file now does.
+    #
+    # WAS: DECLARED BECAUSE THE LEGAL LINE NAMES IT. Design's foot line says the
     # figures for the labelled diagram "are declared in the lesson record as
     # b3-gut-labelled, awaiting illustration", and NOTES-B3 flag 24 records
     # that the id is in no manifest. `status: "needed"` is legal and is not a
@@ -542,8 +548,9 @@ LESSON = {
                   "If that were true, the blender in the hook would have done "
                   "the whole job. Follow the sizes instead. A starch molecule "
                   "in bread is a chain of a few thousand glucose units; a "
-                  "glucose unit is about 0.0000009 mm across; the gaps that "
-                  "let molecules cross a cell membrane are of that order. "
+                  "glucose unit is about 0.0000009 mm across, and that is "
+                  "about the size limit for a molecule crossing a cell "
+                  "membrane. "
                   "Cutting the bread into a million crumbs leaves every starch "
                   "molecule exactly as long as it was — you have made more, "
                   "smaller pieces of the same molecule. What has to happen is "

@@ -86,7 +86,7 @@ QUESTIONS = [
                 "three distances. About how long does it take to cross a "
                 "fingertip, roughly 10 mm?",
         "options": [
-            {"text": "Under a millisecond", "correct": False,
+            {"text": "About a hundredth of a second", "correct": False,
              "why": "That is the time across a single cell, 0.01 mm — a "
                     "thousand times shorter. Diffusion falls apart as the "
                     "distance grows."},

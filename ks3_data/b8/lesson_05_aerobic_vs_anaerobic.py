@@ -391,7 +391,8 @@ CASES = [
     {"id": "sitting", "label": "Sitting in class", "answer": "aerobic",
      "text": "You are sitting still, reading this page.",
      "why": "Demand is low and the oxygen supply covers it easily, so the "
-            "glucose is broken down completely and no lactic acid is produced. "
+            "glucose is broken down completely and effectively no lactic "
+            "acid accumulates. "
             "Almost all the respiration you do in a lifetime is this, which is "
             "worth remembering when the topic makes it sound like an emergency "
             "measure."},

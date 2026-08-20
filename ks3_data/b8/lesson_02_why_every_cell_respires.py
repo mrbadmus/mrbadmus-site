@@ -615,8 +615,9 @@ LESSON = {
         ],
         "reveal": "Because there is no store of it and every cell needs it "
                   "every second. Fat is a store of fuel that lasts weeks. "
-                  "There is no oxygen tank anywhere in the body — a few "
-                  "seconds' worth is dissolved in the blood and that is all. "
+                  "There is no oxygen tank anywhere in the body — only "
+                  "what the blood is carrying at that moment, a few "
+                  "minutes' worth. "
                   "Stop the supply and every cell in the body loses its main "
                   "source of energy at once, which is why the deadline is "
                   "minutes rather than weeks.",

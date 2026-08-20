@@ -572,10 +572,14 @@ LESSON = {
         # directions, with one crossing that is not diffusion at all.
         {"anchor": "s-cross", "short": "CROSS", "label": "Which way?",
          "done_when": "all_six_checked"},
-        # `isDone('s-ladder')` is both marked rungs answered AND both
-        # self-marked rungs checked (page line 413).
+        # ⊕ MRB-269 finding 27(a): the `isDone('s-ladder')` note below used
+        # to sit HERE, above `s-stages`, whose predicate is `all_six_checked`
+        # — it documented and contradicted the wrong entry. Leftover from the
+        # MRB-249 insertion of the fourth stop; moved down one.
         {"anchor": "s-stages", "short": "STAGES", "label": "Forty weeks",
          "mirrors": "s-cross", "done_when": "all_six_checked"},
+        # `isDone('s-ladder')` is both marked rungs answered AND both
+        # self-marked rungs checked (page line 413).
         {"anchor": "s-ladder", "short": "LADDER", "label": "Mastery ladder",
          "done_when": "ladder_complete"},
     ],
@@ -833,6 +837,14 @@ LESSON = {
         {"type": "figure", "ref": "b5-placenta-exchange", "anchor": "s-surface"},
 
 
+        # ⊕ MRB-269 finding 27(b): `targets` is a SINGLE id — `r_misconception`
+        # matches it against one `misconceptions[].id` to print that statement
+        # as the block's opening quote, so it cannot carry a list without a
+        # renderer change. This block confronts REPRO-07 too (its second
+        # statement is entirely about it); the edge back is recorded on
+        # `misconceptions[].confronted_by`, which BOTH entries carry, and that
+        # is the field a coverage audit should read. `targets` names only the
+        # one whose statement is quoted.
         {"type": "misconception", "id": "two-wrong-ideas",
          "anchor": "s-think", "targets": "REPRO-08"},
         {"type": "quiz", "ref": "ladder", "anchor": "s-ladder"},

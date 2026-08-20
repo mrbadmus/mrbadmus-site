@@ -200,9 +200,11 @@ LESSON = {
     # ── the hook (Law 1) ────────────────────────────────────────────────────
     # ⚠️ MRB-225. The germ-free mouse is introduced HERE and paid off in the
     # instrument's summary panel; nothing later takes it back. The four
-    # consequences named in the prompt are the same four the five jobs then
-    # explain, in the same order, which is what makes the payoff a conclusion
-    # rather than a repeat.
+    # consequences named in the prompt are what the five jobs then explain.
+    # ⊕ MRB-269 finding 25: the two lists are NOT the same four in the same
+    # order — the reveal includes vitamins and excludes the gut wall, and the
+    # prompt does the reverse — so the reveal reads "all of these", not "all
+    # four". The payoff is still a conclusion rather than a repeat.
     "phenomenon": {
         "kind": "narrative",
         "title": "Raise a mouse in a sterile bubble with no bacteria at all.",
@@ -222,7 +224,7 @@ LESSON = {
                   "from fibre your own enzymes cannot touch, making vitamins "
                   "you cannot make, occupying space so that harmful species "
                   "have nowhere to settle, and training the immune system by "
-                  "being there. The mouse lost all four at once.",
+                  "being there. The mouse lost all of these at once.",
     },
 
     # ── misconceptions (Law 3) ──────────────────────────────────────────────
