@@ -821,6 +821,11 @@ C3_CRYST = "chemistry/mixtures-and-separation/evaporation-and-crystallisation.ht
 C3_STILL = "chemistry/mixtures-and-separation/distillation.html"
 C3_CHROM = "chemistry/mixtures-and-separation/chromatography.html"
 C3_PURITY = "chemistry/mixtures-and-separation/proving-something-is-pure.html"
+C4_CHANGE = "chemistry/chemical-reactions/chemical-vs-physical-change.html"
+C4_REARR = "chemistry/chemical-reactions/reactions-rearrange-atoms.html"
+C4_WORDS = "chemistry/chemical-reactions/word-equations.html"
+C4_MASS = "chemistry/chemical-reactions/mass-in-a-reaction.html"
+C4_SYMBOL = "chemistry/chemical-reactions/symbol-equations-and-balancing.html"
 # ═══ END C3 ═══
 
 COMPONENTS = [
@@ -5606,6 +5611,94 @@ COMPONENTS = [
     dict(name="C3 melting-point table is mono, so the columns line up",
          on=C3_PURITY, drive="c3-mpb-run", sel=".ks3-mpb-table",
          props={"font-family": "DM Mono", "font-size": "17px"}),
+
+    # ── C4 · Chemical reactions (⊕ MRB-246) ─────────────────────────────
+    #
+    # ⚠️ WHAT THESE ROWS ARE ACTUALLY ASSERTING, because a row that merely
+    # restates what the CSS happens to do is a green light bolted to its own
+    # wiring. Every row below is anchored on the GROUND its instrument sits
+    # on, and the ground is the thing that goes wrong.
+    #
+    # C4's twelve families are ALL mapped to a light segment — eleven to
+    # `check`, one to `misconception` — because that is what Design drew.
+    # There is no ink-dark practical block anywhere in the unit. If a future
+    # pass re-maps any of them to `practical`, the block flips to a
+    # `ks3-dark` ground and EVERY text token inside it resolves wrong: the
+    # instrument would still render, still be interactive, still pass smoke,
+    # and be unreadable. That is the failure `ks3_data/c4/__init__.py`'s
+    # segment table exists to prevent and this is the assertion that catches
+    # it — a cream ground resolving #221E1B fires here and nowhere else.
+    #
+    # Values MEASURED in headless Chrome against the built pages, not read
+    # off the stylesheet. Grounds: #FFFCF5 `--ks3-card`, #F7EFE1
+    # `--ks3-inset`, #E1E8FE `--ks3-blue-tint`.
+
+    # ── change-pairs (c4-01 #s-pairs) ──
+    dict(name="C4 pair side is a card on a 2px ink border", on=C4_CHANGE,
+         sel=".ks3-cpair-side",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── atom-rearranger (c4-02 #s-rearr) ──
+    dict(name="C4 rearranger panel is a card on a 2px ink border", on=C4_REARR,
+         sel=".ks3-arr-panel",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── equation-builder (c4-03 #s-builder) ──
+    dict(name="C4 equation bench is inset on a 2px ink border", on=C4_WORDS,
+         sel=".ks3-eqb-bench",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── equation-read (c4-03 #s-read) ──
+    dict(name="C4 reading card is inset on a 2px ink border", on=C4_WORDS,
+         sel=".ks3-eqr-card",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── mass-bench (c4-04 #s-bench) ──
+    dict(name="C4 balance tile is inset on a 2px ink border", on=C4_MASS,
+         sel=".ks3-bbench-tile",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── mass-cover (c4-04 #s-cover) ──
+    # ⚖️ THE COVERED CELL IS BLUE-TINT, NOT AMBER, AND THAT IS A RULING.
+    # MRB-252 reserves amber for warning and confrontation; covering a cell is
+    # SELECTION — this is the one you want to find — and neither a caution nor
+    # a loss. A row here resolving the alert tint means the plate has started
+    # warning a student about an ordinary choice.
+    dict(name="C4 covered cell is the blue tint, never the alert", on=C4_MASS,
+         sel=".ks3-mcov-cell",
+         props={"background-color": "#E1E8FE", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "14px"}),
+
+    # ── mass-worked (c4-04 #s-worked) ──
+    # The accent border is what separates a WORKED step from an ordinary card:
+    # it is the one the page is walking the student through.
+    dict(name="C4 worked step is a card on a 2px accent border", on=C4_MASS,
+         sel=".ks3-mwork-step",
+         props={"background-color": "#FFFCF5", "border-top-color": "#E4572E",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── mass-check (c4-04 #s-check) ──
+    dict(name="C4 check step takes the worked step's treatment", on=C4_MASS,
+         sel=".ks3-mchk-step",
+         props={"background-color": "#FFFCF5", "border-top-color": "#E4572E",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── coefficient-balancer (c4-05 #s-balance) ──
+    # ⚖️ A MATCHED COUNTER IS BLUE AND MUST NEVER BE GREEN. R3 reserves green
+    # for the ladder — and more than that, `REACT-09` is "a balanced equation
+    # is a correct equation". A counter going green the instant the counts
+    # agree IS that misconception, rendered in CSS, forty lines above the
+    # block that refutes it. If this row ever resolves #12A150 the instrument
+    # has begun teaching the thing the lesson exists to break.
+    dict(name="C4 element counter is blue-tint on blue, never the mark green",
+         on=C4_SYMBOL, sel=".ks3-cbal-counter",
+         props={"background-color": "#E1E8FE", "border-top-color": "#2F5CE0",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
 ]
 
 

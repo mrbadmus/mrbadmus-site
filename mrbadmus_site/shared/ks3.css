@@ -16729,3 +16729,1779 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 .ks3-dlab[hidden] { display: none; }
 
 /* ═══ END C3 ═══ */
+
+/* ═══ BEGIN C4 ═══════════════════════════════════════════════════════════
+   C4's instrument styling. A PURE APPEND at EOF — every byte above this
+   marker is unchanged, which is the one conflict shape that resolves
+   mechanically when another lane merges.
+   ═══ */
+
+/* ── from css_01.css ── */
+/* ═══ c4-01 `#s-pairs` · change-pairs ═══════════════════════════════════
+   Three pair panels, two side cards each, and the pairing is the argument:
+   `.ks3-cpair-pairs` is a COLUMN of pairs and `.ks3-cpair-sides` is the row
+   inside one — never one six-up grid, because a student has to be able to
+   see the two halves of a pair beside each other to see that the clue they
+   share settles nothing.
+
+   ⚠️ THREE GROUNDS STACKED, and that is Design's drawing: the block is the
+   page (`ks3-block`, cream), the pair is a band, the side is a card, and the
+   verdict that arrives on top of a decided side is INK. The verdict panel is
+   the only ink in this block, so `--ks3-on-dark` / `--ks3-on-dark-body` live
+   there and `--ks3-accent-text` appears nowhere near it.
+
+   ⚠️ Design's grid track is `repeat(auto-fit, minmax(266px, 1fr))`; the
+   `min(266px, 100%)` is the 390px translation — at 390px a `ks3-block`'s
+   content box is narrower than 266px once the pair panel's own padding is
+   taken off, and a grid track wider than its container is a page that
+   scrolls sideways.
+
+   ⚠️ AND NOTHING HERE IS A MARK (R3). No option in this instrument takes
+   green or red at any size: the committed button keeps the segmented
+   control's ordinary pressed treatment, its spent sibling dims to
+   `--ks3-dim-spent`, and the verdict is a PANEL OF WORDS. `--ks3-ok` and
+   `--ks3-danger` do not appear in this block at all. */
+.ks3-cpair-pairs {
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.ks3-cpair-pair {
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+/* ⚠️ (0,2,0), self-scoped — a bare component class is (0,1,0) and loses to
+   `.ks3-dark p` at (0,1,1) the day anything moves this instrument onto ink,
+   and it loses silently: the CSS reads correctly and the sentence ships at
+   ~1.2:1. The whole C3 block says the same thing for the same reason. */
+.ks3-cpair .ks3-cpair-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-cpair-sides {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(266px, 100%), 1fr));
+  gap: 16px;
+}
+.ks3-cpair-side {
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+  display: flex;
+  flex-direction: column;
+}
+.ks3-cpair .ks3-cpair-name {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.3;
+}
+.ks3-cpair .ks3-cpair-what {
+  margin: 8px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+.ks3-cpair-opts {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+/* The one-shot commit bank. Design dims a disabled button that was NOT the
+   one pressed and leaves the pressed one at full strength, so the card still
+   says what the student chose.
+
+   ⚖️ `--ks3-dim-spent` (.65), not Design's .45 — MRB-257 audit 3.21 ruled
+   that value for exactly this state: "you may not press this any more" and
+   "you may not read this" are two different sentences, and .45 says the
+   second. Same divergence C3 makes, for the same reason. */
+.ks3-cpair-opt[disabled] { cursor: default; }
+.ks3-cpair-opt[disabled][aria-pressed="false"] { opacity: var(--ks3-dim-spent); }
+
+.ks3-cpair-reveal { margin-top: 14px; }
+.ks3-cpair-tests {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.ks3-cpair-test {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-rule);
+}
+.ks3-cpair .ks3-cpair-testname {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-cpair .ks3-cpair-testresult {
+  margin: 5px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+}
+/* The verdict — the only ink ground in this block, and it arrives AFTER the
+   commitment. It is a statement about the substance, never about whether the
+   student was right, so it carries no tick, no cross and no second tone. */
+.ks3-cpair-verdict {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+}
+.ks3-cpair .ks3-cpair-verdict-head {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 18px;
+  line-height: 1.3;
+}
+.ks3-cpair .ks3-cpair-why {
+  margin: 7px 0 0;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+/* "You have seen it all" — six of six decided. `--ks3-accent` is 3.4:1 and
+   appears here on a 6px offset shadow, which is not text. */
+.ks3-cpair-close {
+  margin-top: 20px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+  box-shadow: 6px 6px 0 var(--ks3-accent);
+}
+.ks3-cpair .ks3-cpair-close p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+}
+
+/* ═══ c4-01 `#s-chain` · chain-build ═════════════════════════════════════
+   Two clause banks and one panel. Everything in the panel is authored text
+   in `--ks3-inset` on ink rule; the sentence the student built sits at 21px
+   and the full-marks sentence at 20px/600, which is Design's own hierarchy —
+   the model answer is the heavier of the two because it is the thing to copy.
+
+   ⚠️ The two notes are EMIT-BOTH-SHOW-ONE and share one class, one ground
+   and one measure. Neither is a verdict on the student and neither takes a
+   tone: every clause on offer is true, and what the note is about is whether
+   the two halves answer each other.
+
+   ⚠️ NOT `.ks3-chain` — that class already exists in this stylesheet for a
+   different component (`.ks3-chain-link` / `.ks3-chain-scale`), so the
+   wrapper here is `.ks3-chain-wrap`. A shared class would inherit another
+   unit's box silently. */
+.ks3-chain-slots {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.ks3-chain-wrap .ks3-chain-slotlabel {
+  margin: 0 0 8px;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+/* Design caps the clause list rather than letting a 24-word clause run the
+   full width of a 1240px rail — a clause you have to track across the page
+   is a clause you cannot compare with the one under it. */
+.ks3-chain-slot .ks3-options { margin-top: 0; max-width: 40rem; }
+.ks3-chain-reveal {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-chain-wrap .ks3-chain-eyebrow,
+.ks3-chain-wrap .ks3-chain-modelhead {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-chain-wrap .ks3-chain-modelhead { margin: 14px 0 0; }
+.ks3-chain-wrap .ks3-chain-sentence {
+  margin: 10px 0 0;
+  font-size: 21px;
+  line-height: 1.5;
+}
+.ks3-chain-wrap .ks3-chain-note {
+  margin: 18px 0 0;
+  font-size: 19px;
+  line-height: 1.65;
+}
+.ks3-chain-wrap .ks3-chain-model {
+  margin: 10px 0 0;
+  font-size: 20px;
+  line-height: 1.55;
+  font-weight: 600;
+}
+
+/* ⚠️ NO `display` ON ANYTHING THAT ALSO TAKES `[hidden]`, and this is the
+   LAST rule of the c4-01 group so source order settles the (0,2,0) ties in
+   its favour. An author `display` beats the UA stylesheet's
+   `[hidden] { display: none }` at ANY specificity, and eight things here
+   ship hidden: six side reveals, the close panel, the chain panel — and both
+   chain notes inside it, which are the emit-both-show-one pair and would
+   otherwise both be on screen at once, contradicting each other.
+
+   Nothing in the c4-01 rules above sets `display` on an element that also
+   takes `[hidden]` — checked, element by element — so this is insurance
+   against the next rule added to this group rather than a fix for one
+   already here. Written at (0,2,0) and placed last, the way C3's is. */
+.ks3-cpair [hidden],
+.ks3-chain-wrap [hidden] { display: none; }
+
+/* ── from css_02.css ── */
+/* ═══ c4-02 · atom-rearranger + impossible-ask ═══════════════════════════
+   Two DOM instruments, no canvas. Every value below is measured off Design's
+   approved page, `docs/ks3/design-reference/c4/c4-02-reactions-rearrange-
+   atoms.dc.html`, which carries its real design in inline `style` attributes
+   and in the style strings `atomSpan()` and `seg()` compose. Where the page
+   and the engine disagreed, the page won.
+
+   ⚠️ BOTH INSTRUMENTS SIT ON A LIGHT `ks3-block ks3-check`. Measured, not
+   inferred from the kind names: `#s-rearr` and `#s-impossible` both carry
+   `class="ks3-block"` and nothing else. So this whole block is written for
+   cream, and the ONLY ink ground in it is the ask bench's verdict panel,
+   which Design paints `--ks3-ink` herself. That panel takes `--ks3-on-dark`
+   and `--ks3-on-dark-body` and NEVER `--ks3-accent-text`.
+
+   ⚠️ EVERY TEXT RULE IS SELF-SCOPED AT (0,2,0) — `.ks3-arr .ks3-arr-label`,
+   never a bare `.ks3-arr-label`. A bare component class is (0,1,0) and loses
+   to `.ks3-dark p` at (0,1,1) the day anything moves one of these onto ink,
+   and it loses SILENTLY: the CSS reads correctly and the sentence ships at
+   about 1.2:1. C1's and C3's blocks say the same thing for the same reason.
+
+   ⚑ AMBER, AND WHY IT IS ON THE GATE. `--ks3-alert-tint` grounds the
+   rearranger's commitment panel, which is what Design draws. That is amber
+   carrying its ruled meaning: every wrong option in that gate is a wrong
+   idea about how many atoms there are ("Four — one for each hydrogen"),
+   offered one press before the products take it apart. It is never a
+   category and never a selection. `--ks3-data` is an on-ink token and both
+   of these instruments live on cream, so there is nothing to route to it
+   here; every live value in this block — the atom counts — is
+   `--ks3-accent-text` at 6.0:1, which is what Design paints it.
+
+   ⚠️ NOTHING BELOW IS A MARK (R3). Only the mastery ladder marks. No option
+   in either instrument takes green or red at any size: a committed gate
+   option keeps the platform's ordinary pressed treatment and the verdict is
+   a PANEL OF WORDS. `--ks3-ok` does not appear in this block and neither
+   does `--ks3-danger`.
+
+   ⚠️ `--ks3-accent` IS 3.4:1 — LARGE TEXT ONLY, and it appears below on
+   exactly one thing and it is not text: the 2px border round a product
+   particle at stage 2.
+
+   ⊖ AND THERE IS NO C4 REDUCED-MOTION BLOCK, deliberately, on B10's, B11's
+   and C3's reasoning: no canvas, no rAF, no timer, and this block declares
+   no transition and no animation of its own, so there is nothing here for
+   the gate that freezes transitions to freeze. What motion these sections
+   have is the shell's arrive treatment.
+
+   ⚠️ NO `display` ON ANYTHING THAT ALSO TAKES `[hidden]`. An author
+   `display` beats the UA stylesheet's `[hidden] { display: none }` at ANY
+   specificity, and a great deal in these two instruments ships hidden: eight
+   of the nine stage views, two of the three word equations, two of the three
+   stage headings, four of the five commentary lines, two of the three count
+   bodies, all three gates, one of the two advance labels, every "after"
+   number, the summary and all four verdict panels. Everything that needs a
+   `display` is therefore an element that is NEVER hidden — `.ks3-arr-row`
+   inside a view, `.ks3-arr-group` inside a row, `.ks3-arr-atoms` inside a
+   group — and the guard is the LAST rule in this block so source order
+   settles the (0,2,0) ties in its favour.
+
+   ⊖ AND ONE THING THIS BLOCK DELIBERATELY DOES NOT DO. The dial label / dial
+   row pair below is the same three declarations C3 groups across five
+   families (`.ks3-dlab-diallabel, .ks3-cryst-diallabel, …`) under Drift 4's
+   ruling. It is written out again here rather than added to that selector,
+   because C3's block belongs to another lane and a lane that edits another
+   lane's file stops being a lane. Reported to the commander: when C4 and C5
+   are both in, that grouped selector wants the six new families adding to it
+   in one pass. */
+
+/* ── the reaction dial ─────────────────────────────────────────────────
+   The BUTTONS are `.ks3-seg-btn` and take nothing from here — Drift 4 ruled
+   the platform's segmented control the key stage's only one, and Design's
+   own `seg()` (16px / 11px 16px on `--ks3-option-border`) is reported rather
+   than re-declared. */
+.ks3-arr-dial { margin-top: 20px; }
+.ks3-arr .ks3-arr-diallabel {
+  margin: 0 0 8px;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-arr-tabs {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+/* ── the word equation ─────────────────────────────────────────────────
+   "hydrogen + oxygen makes water" — the reaction in words, above the
+   picture of it. Three of these are in the document and one is shown. */
+.ks3-arr .ks3-arr-words {
+  margin: 18px 0 0;
+  font-size: 20px;
+  line-height: 1.5;
+  font-weight: 600;
+  color: var(--ks3-ink);
+}
+
+/* ── the plate, and the nine views inside it ───────────────────────────
+   `min-height` so the box does not jump between a three-particle stage and
+   a nine-atom one. */
+.ks3-arr-plate {
+  margin-top: 18px;
+  padding: 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+  min-height: 128px;
+}
+.ks3-arr .ks3-arr-stagename {
+  margin: 0 0 16px;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+/* NEVER hidden — the view around it is what hides. This is where the
+   `display` lives, and that is the whole arrangement. */
+.ks3-arr-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: flex-start;
+}
+.ks3-arr-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+/* Stage 2 · the new substances. The accent border is the only use of
+   `--ks3-accent` in this block and it is a 2px rule, not text. */
+.ks3-arr-group.is-product {
+  background: var(--ks3-accent-tint);
+  border-color: var(--ks3-accent);
+}
+/* Stage 1 · the joins are broken. No outline, because an outline round a
+   single atom would be a join put back. */
+.ks3-arr-group.is-loose {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.ks3-arr-atoms {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+/* One labelled circle. The FILL and the INK on it are inline, from the one
+   element table (NOTES §3); everything that is the same for every atom on
+   the page is here. */
+.ks3-arr .ks3-arr-atom {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 99px;
+  border: 2px solid var(--ks3-ink);
+  font-family: var(--ks3-font-mono);
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1;
+}
+.ks3-arr .ks3-arr-atom.is-small {
+  width: 30px;
+  height: 30px;
+  font-size: 13px;
+}
+.ks3-arr .ks3-arr-label {
+  margin: 8px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  color: var(--ks3-ink-muted);
+}
+
+/* ── the two panels under the plate ────────────────────────────────────
+   `auto-fit` at a 240px floor, so they sit side by side on a desk and stack
+   on a phone without a second breakpoint. */
+.ks3-arr-panels {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.ks3-arr-panel {
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-arr .ks3-arr-panelhead {
+  margin: 0 0 12px;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+
+/* ── the atom-count table ──────────────────────────────────────────────
+   Mono, because every reading in the key stage is mono. This is the only
+   place on the page where the budget is readable AS A NUMBER (§5A), which
+   is why it is a table and not a sentence. */
+.ks3-arr-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: var(--ks3-font-mono);
+  font-size: 17px;
+}
+.ks3-arr .ks3-arr-table th[scope="col"] {
+  text-align: left;
+  padding: 7px 8px;
+  border-bottom: 2px solid var(--ks3-ink);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-arr .ks3-arr-el,
+.ks3-arr .ks3-arr-before,
+.ks3-arr .ks3-arr-after {
+  padding: 7px 8px;
+  border-bottom: 2px solid var(--ks3-rule);
+  text-align: left;
+  font-weight: 400;
+  color: var(--ks3-ink);
+}
+/* The two readings of one cell. Which one shows is the stage; neither is
+   ever written by JavaScript, so the treatment is a class and not a colour
+   assembled at run time. */
+.ks3-arr .ks3-arr-pending {
+  color: var(--ks3-ink-ghost);
+  font-weight: 400;
+}
+.ks3-arr .ks3-arr-num {
+  color: var(--ks3-accent-text);
+  font-weight: 700;
+}
+
+/* ── the stage commentary ──────────────────────────────────────────────
+   Stage 1's is the honest one — "This stage is not real — no chemist ever
+   sees it" — and it is the longest of the five, which is why the panel is
+   sized off it rather than off stage 0's. */
+.ks3-arr .ks3-arr-stagetext {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+
+/* ── the commitment gate ───────────────────────────────────────────────
+   Amber, and see the block header for why that is the ruled meaning here
+   and not a category. The options are the platform's `.ks3-options` and
+   take their pressed treatment from there: no mark, no green, no red. */
+.ks3-arr-gate {
+  margin-top: 18px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-alert-tint);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-arr .ks3-arr-gate .ks3-commit {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ks3-ink);
+}
+.ks3-arr-gate .ks3-options { max-width: 30rem; }
+
+/* ── the two controls ──────────────────────────────────────────────────
+   `.ks3-reveal-btn` and `.ks3-retry` are the platform's, and neither takes
+   anything from here beyond the row that holds them. */
+.ks3-arr-controls {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ── all three reactions taken apart ───────────────────────────────────
+   The band ground, which the key stage uses for "you have seen it all". */
+.ks3-arr-summary {
+  margin-top: 20px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-arr .ks3-arr-summary p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+
+/* ── impossible-ask ────────────────────────────────────────────────────
+   Four asks and one verdict slot. The panel is the same treatment whether
+   the bench built it or refused it, which is right: a verdict says in WORDS
+   what happened, and painting a refusal differently would make it a mark. */
+.ks3-iask-asks {
+  margin-top: 18px;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+/* ⚠️ THE ONE INK GROUND IN THIS BLOCK. Both rules below are self-scoped at
+   (0,2,0) so a generic on-dark type rule cannot win the colour, and neither
+   takes `--ks3-accent-text`, which is a cream-ground token. */
+.ks3-iask-verdict {
+  margin-top: 18px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+}
+.ks3-iask .ks3-iask-title {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1.25;
+  color: var(--ks3-on-dark);
+}
+.ks3-iask .ks3-iask-text {
+  margin: 12px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ks3-on-dark-body);
+}
+
+/* ── the hidden guard, LAST ────────────────────────────────────────────
+   Everything in these two instruments that ships `hidden` is listed here, so
+   that a later rule giving one of them a `display` is undone by source order
+   rather than shipping a nine-view plate with all nine views on it.
+
+   Written the way C3's guard is written — (0,2,0), no `!important`, last in
+   its own block — so it ties with every component rule above it and wins on
+   source order, which is the same mechanism and not a second one. */
+.ks3-arr [hidden],
+.ks3-iask [hidden] { display: none; }
+
+/* ── from css_03.css ── */
+/* ═══ c4-03 · equation-builder (#s-builder) and equation-read (#s-read) ══
+   Two families, one page, every value measured off Design's approved page
+   `docs/ks3/design-reference/c4/c4-03-word-equations.dc.html` — a React
+   prototype carrying its real design in inline `style` attributes and in
+   the style strings its component script composes. Where the page and the
+   engine disagreed, the page won.
+
+   ⚠️ BOTH SIT ON A LIGHT `ks3-block ks3-check`. Measured, not inferred:
+   `#s-builder` and `#s-read` are both `class="ks3-block"` and nothing
+   else. There is no ink-dark practical block on this page, so everything
+   below is written for cream, and the ONLY ink ground is the check panel
+   Design paints `--ks3-ink` herself. It takes `--ks3-on-dark` /
+   `--ks3-on-dark-body` and never `--ks3-accent-text`.
+
+   ⚠️ EVERY TEXT RULE IS SELF-SCOPED AT (0,2,0) — `.ks3-eqb
+   .ks3-eqb-story`, not a bare `.ks3-eqb-story`. A bare component class is
+   (0,1,0) and loses to `.ks3-dark p` at (0,1,1) the day anything moves one
+   of these onto ink, and it loses SILENTLY: the CSS reads correctly and
+   the sentence ships at ~1.2:1. C1's block and C3's say the same thing for
+   the same reason.
+
+   ⚠️ NOTHING BELOW IS A MARK (R3). Only the mastery ladder marks. A placed
+   chip takes the accent BORDER Design draws on it and no fill; a committed
+   reading keeps the platform's ordinary pressed treatment; its spent
+   sibling dims. `--ks3-ok` and `--ks3-danger` do not appear in this block
+   at all, and neither does amber: there is no predict gate on this page,
+   because the bench IS the elicitation and the check is the confrontation.
+
+   ⊖ NO `--ks3-data` HERE, and no reading to route to it. It is an on-ink
+   token and the one ink panel on this page carries sentences, not values.
+
+   ⊖ AND NO REDUCED-MOTION BLOCK, deliberately: no canvas, no rAF, no
+   timer, and this block declares no transition and no animation of its
+   own. The arrive treatment on the check panel is the shell's.
+
+   ⚠️ NO `display` ON ANYTHING THAT ALSO TAKES `[hidden]` — and a great
+   deal here is emitted hidden, because both instruments are built on
+   emit-both-show-one: three stories, three benches, three equations, three
+   check panels, four verdict branches per panel, six distractor
+   corrections, every plus sign, both "nothing yet" ghosts, the check
+   button and every reply. An author `display` beats the UA stylesheet's
+   `[hidden] { display: none }` at ANY specificity, so the guard is the
+   LAST rule in this block and source order settles the (0,2,0) ties in its
+   favour. */
+
+/* ── the case tabs ────────────────────────────────────────────────────
+   The BUTTONS are `.ks3-seg-btn` and take nothing from here (Drift 4: one
+   segmented control for the key stage). Design's own `seg()` is 16px /
+   11px 16px on `--ks3-option-border`; the platform's is 17px / 11px 17px
+   on `--ks3-rule-strong`, and the platform's is the ruled one. Reported
+   rather than re-declared. */
+.ks3-eqb-tabs {
+  margin-top: 18px;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+.ks3-eqb .ks3-eqb-story {
+  margin: 18px 0 0;
+  font-size: 19px;
+  line-height: 1.65;
+  max-width: 56ch;
+}
+
+/* ── the bench ────────────────────────────────────────────────────────
+   `--ks3-inset` on the block's own card: the block is the page, and the
+   bench is the tray of things standing on it. This panel carries
+   `id="builder-distractor"` — it is where a student can commit to heat
+   being a reactant, and it is the elicitation half of REACT-06's join. */
+.ks3-eqb-bench {
+  margin-top: 20px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-eqb .ks3-eqb-benchlabel,
+.ks3-eqb .ks3-eqb-eqlabel {
+  margin: 0 0 12px;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-eqb .ks3-eqb-eqlabel { margin-bottom: 14px; }
+.ks3-eqb-bank {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ks3-eqb-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.ks3-eqb-rowbtns {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+/* ⚖️ THE BORDER IS THE WHOLE STATE, AND IT IS NOT A MARK. A chip that has
+   been given a place takes the accent border Design draws on it — it says
+   "you have put this somewhere", which is true whether the somewhere is
+   right or wrong, and it says nothing else. No fill, no tint, no tick. */
+.ks3-eqb .ks3-eqb-chip {
+  display: inline-block;
+  min-width: 11rem;
+  max-width: 100%;
+  padding: 10px 14px;
+  border-radius: var(--ks3-r-control);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule);
+  font-size: 18px;
+  font-weight: 600;
+}
+.ks3-eqb .ks3-eqb-chip[data-eqb-placed="1"] { border-color: var(--ks3-accent); }
+
+/* ── the equation the student is building ─────────────────────────────
+   `min-height: 44px` is Design's and it is load-bearing: the line holds
+   its height while both sides read "nothing yet", so placing the first
+   chip does not shove the bench up the screen. */
+.ks3-eqb-eq {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-eqb .ks3-eqb-line {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.3;
+  min-height: 44px;
+}
+.ks3-eqb-side {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.ks3-eqb-term {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ks3-eqb .ks3-eqb-plus { color: var(--ks3-ink-muted); }
+.ks3-eqb .ks3-eqb-ghost { color: var(--ks3-ink-ghost); }
+
+/* The drawn arrow, on both grounds. `currentColor` is what lets one path
+   serve the cream equation and the ink check panel without a second copy,
+   and `flex: 0 0 auto` stops the flex row squeezing it out of shape. */
+.ks3-eqb-arrow { flex: 0 0 auto; }
+
+.ks3-eqb-btns {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ── the check ────────────────────────────────────────────────────────
+   The one ink ground on the page. It is a PANEL OF WORDS in all four
+   branches and it is the same panel whichever branch it lands on — a right
+   equation and a substance on the wrong side arrive in the same box, in
+   the same colours, and what differs is the sentence. */
+.ks3-eqb-check {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+}
+.ks3-eqb .ks3-eqb-checktitle {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1.25;
+  color: var(--ks3-on-dark);
+}
+.ks3-eqb .ks3-eqb-checktext {
+  margin: 12px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ks3-on-dark-body);
+}
+.ks3-eqb .ks3-eqb-model {
+  margin: 16px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--ks3-on-dark);
+}
+
+/* ═══ #s-read · equation-read ═══════════════════════════════════════════
+   Three cards, one commitment each. `--ks3-inset` for the card and
+   `--ks3-card` for the reply that arrives on top of it — the same two-tone
+   stack the sorter uses, and the reply is deliberately NOT ink: it is the
+   card answering itself, not a verdict arriving from somewhere else. */
+.ks3-eqr {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ks3-eqr-card {
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-eqr .ks3-eqr-eq {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 21px;
+}
+.ks3-eqr-opts {
+  margin-top: 14px;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+.ks3-eqr .ks3-eqr-reply {
+  margin: 14px 0 0;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule);
+  font-size: 18px;
+  line-height: 1.6;
+}
+/* ⚖️ `--ks3-dim-spent` (.65), not Design's .45 — MRB-257 audit 3.21 ruled
+   that value for exactly this state, and C3 carries the same divergence
+   for the same reason: "you may not press this any more" and "you may not
+   read this" are two different sentences, and .45 says the second. The
+   card still has to say what the student chose. */
+.ks3-eqr-opt[disabled] { cursor: default; }
+.ks3-eqr-opt[disabled][aria-pressed="false"] { opacity: var(--ks3-dim-spent); }
+
+/* ── narrow ───────────────────────────────────────────────────────────
+   A 44px tap target that has been squeezed to fit is not a tap target, so
+   the control rows keep their gap and wrap instead. The chip drops its
+   11rem floor at the same point: at 390px a `ks3-block`'s content box is
+   about 330px, and a 176px chip beside three buttons is a row that wraps
+   into a column anyway — full width reads as the label of the row it
+   heads rather than as a stranded pill. */
+@media (max-width: 480px) {
+  .ks3-eqb-tabs,
+  .ks3-eqb-rowbtns,
+  .ks3-eqr-opts { gap: 10px; }
+  .ks3-eqb .ks3-eqb-chip {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+/* ── the `[hidden]` guard, and it is LAST on purpose ───────────────────
+   See the block header: an author `display` beats `[hidden]` at any
+   specificity, and several rules above set `display` on elements that are
+   emitted hidden — every bank, every term, every side, every plus sign and
+   the check button among them. */
+.ks3-eqb [hidden],
+.ks3-eqr [hidden] { display: none; }
+
+/* ── from css_04.css ── */
+/* ═══ c4-04 · mass-in-a-reaction ═══════════════════════════════════════════
+   Four instruments — `mass-bench`, `mass-cover`, `mass-worked`,
+   `mass-check` — and every one of them sits in a LIGHT `ks3-block`. Measured
+   off Design's own markup (page lines 105, 169, 230, 259): there is no
+   ink-dark practical block anywhere on this page, and none anywhere in C4 or
+   C5. A later pass that "restores" a practical shell here would be painting an
+   instrument on a ground Design did not draw it on and resolving every text
+   token inside it wrong.
+
+   ⚠️ EVERY TEXT RULE IS SELF-SCOPED AT (0,2,0) — `.ks3-mwork .ks3-mwork-note`,
+   never a bare `.ks3-mwork-note`. A bare component class is (0,1,0) and loses
+   to `.ks3-dark p` at (0,1,1) the day anything moves one of these onto ink,
+   and it loses SILENTLY: the CSS reads correctly and the sentence ships at
+   about 1.2:1. C1's and C3's blocks say the same thing for the same reason and
+   two builds have been bitten by it.
+
+   ⚑ AMBER, ON ONE PANEL, CARRYING ITS RULED MEANING. `--ks3-alert-tint`
+   grounds the bench's prediction gate, which is exactly where c3-03, c3-04 and
+   c3-05 spend it: a gate that exists to ELICIT a named misconception a few
+   sections before the page confronts it. Here that is `REACT-07` — a student
+   who believes a gas has no mass predicts "go down" for the sealed flask too,
+   and `#s-think` picks that up by name. It is never a selection and never a
+   reading.
+
+   ⊕ AND `--ks3-data` IS SPENT ONCE, ON THE COVER PLATE'S "?", WHICH IS A
+   CORRECTION TO DESIGN. She paints it `--ks3-alert`. MRB-252 reserved amber
+   for WARNING AND CONFRONTATION — the `#s-think` register, genuine caution and
+   loss — and moved CATEGORY AND SELECTION to `--ks3-data`. A plate saying
+   *this is the cell you covered, this is the unknown you are solving for* is
+   selection: it is neither a caution nor a loss, and spending amber on it
+   wears the meaning away one panel at a time. `--ks3-data` is an ON-INK token
+   and the plate's ground is `--ks3-ink` at .9 — measured, the glyph lands at
+   6.4:1 there, and it is 26px display type. This is the first light-ground
+   unit that has had an ink surface to spend it on; C3 correctly spent none.
+
+   ⚠️ EVERY LIVE VALUE ON A CREAM GROUND IS `--ks3-accent-text` (6.0:1), never
+   `--ks3-accent` (3.4:1) and never `--ks3-data` (an on-ink token, unusable
+   here). `--ks3-accent` appears in this block on exactly two things, neither
+   of them text: the 6px offset shadow on the bench's closing summary, and the
+   fill behind an OPENED step's `aria-hidden` F/I/F/A badge.
+
+   ⚠️ NOTHING BELOW IS A MARK (R3, MRB-196 R10). Only the mastery ladder marks
+   correctness. `--ks3-ok` and `--ks3-danger` do not appear in this block at
+   all: a chosen control keeps the platform's ordinary pressed treatment and
+   every verdict is a PANEL OF WORDS.
+
+   ⊖ NO REDUCED-MOTION BLOCK, DELIBERATELY. No canvas, no rAF, no timer, and
+   this block declares no transition and no animation of its own, so there is
+   nothing here for `prefers-reduced-motion` to degrade. What motion the page
+   has is the shell's arrive treatment, which `shared/ks3.css` degrades inside
+   its own media query.
+
+   ⚠️ NO `display` ON ANYTHING THAT ALSO TAKES `[hidden]` — except through the
+   guard at the very bottom of this block. An author `display` beats the UA
+   stylesheet's `[hidden] { display: none }` at ANY specificity, and fourteen
+   things on this page are emitted hidden: every run panel, the Run button, the
+   two closing summaries, all three cover plates, all three cover results, the
+   result wrapper, all eight step bodies and three of the four compare buttons.
+   The guard is LAST so source order settles it at equal specificity. */
+
+
+/* ═══ #s-bench · mass-bench ═══════════════════════════════════════════════
+   Two dials, a prediction gate, a three-tile readout and a verdict. Design's
+   own measurements throughout; the segmented buttons themselves are
+   `.ks3-seg-btn`, the system's ONE segmented control (the Drift-4 ruling), and
+   nothing here restyles it. */
+
+.ks3-bbench .ks3-bbench-dials {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ks3-bbench .ks3-bbench-diallabel {
+  margin: 0 0 8px;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-bbench .ks3-bbench-dialrow {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+/* The gate. Amber, and see the block header for why that is the ruled meaning
+   and not a drift into category. */
+.ks3-bbench .ks3-bbench-gate {
+  margin-top: 20px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-alert-tint);
+  border: 2px solid var(--ks3-ink);
+}
+/* ⚠️ `.ks3-commit` is 22px in `--ks3-alert`, which is right on the ink grounds
+   where nearly every gate in the key stage sits and about 1.1:1 here. Design
+   draws this prompt as plain 19px/700 ink inside the amber panel — 13:1 — so
+   that is what it gets, at (0,2,0), which beats `.ks3-commit` at (0,1,0).
+   Scoped to this gate so the shared component stays shared. The three C3
+   gates are the standing precedent. */
+.ks3-bbench .ks3-commit {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--ks3-ink);
+}
+/* Design caps the lettered list rather than letting three options run the full
+   width of the rail. */
+.ks3-bbench .ks3-options { max-width: 30rem; }
+.ks3-bbench .ks3-bbench-run { margin-top: 14px; }
+
+/* The readout. `auto-fit` at 210px so the three tiles reflow to one column on
+   a phone rather than squeezing a mono 26px reading into 90px. */
+.ks3-bbench .ks3-bbench-tiles {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+  gap: 14px;
+}
+.ks3-bbench .ks3-bbench-tile {
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+/* ⚠️ THE DASHED BORDER IS THE THIRD TILE'S WHOLE POINT, AND IT IS THE SAME ON
+   ALL FOUR RUNS. On the open runs it holds "not measured — you work it out";
+   on the sealed runs it holds a real `0.00 g`. Both are the same slot asking
+   the same question, so the treatment must not fork on which one is showing —
+   a solid border on the sealed runs would read as "this one is a measurement
+   and that one is not", which is backwards. */
+.ks3-bbench .ks3-bbench-tile.is-gas {
+  background: var(--ks3-band);
+  border: 2px dashed var(--ks3-ink);
+}
+.ks3-bbench .ks3-bbench-tilelabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-bbench .ks3-bbench-value {
+  margin: 8px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-weight: 500;
+  font-size: 26px;
+  line-height: 1.15;
+  color: var(--ks3-accent-text);
+}
+/* The unmeasured reading is quieter and smaller, because it is a sentence
+   rather than a number and 26px mono prose is a wall. */
+.ks3-bbench .ks3-bbench-value.is-soft {
+  font-size: 18px;
+  line-height: 1.35;
+  color: var(--ks3-ink-muted);
+}
+.ks3-bbench .ks3-bbench-tilenote {
+  margin: 8px 0 0;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--ks3-ink-body);
+}
+.ks3-bbench .ks3-bbench-note {
+  margin-top: 18px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-bbench .ks3-bbench-note p,
+.ks3-bbench .ks3-bbench-close p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+/* The "you have run all four" summary. `--ks3-accent` as a 6px offset shadow
+   is not text and is legal at any size. */
+.ks3-bbench .ks3-bbench-close {
+  margin-top: 16px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+  box-shadow: 6px 6px 0 var(--ks3-accent);
+}
+
+
+/* ═══ #s-cover · mass-cover ═══════════════════════════════════════════════
+   MRB-204 part 2 — the rule DRAWN, in the shape the relationship has.
+
+   ⚖️ A PART–WHOLE BAR, NEVER A TRIANGLE. Conservation of mass is a SUM. A
+   triangle encodes `A = B × C` and would tell a student two masses multiply
+   together to give a third, which is not a relationship that exists. Ruled at
+   MRB-246; `c2-06` is the same ruling one unit earlier. There is no
+   `.ks3-tri-*` anywhere in this block and there must never be one. */
+
+.ks3-mcov .ks3-mcov-rule {
+  padding: 20px 24px;
+  border-radius: var(--ks3-r-card);
+  background: var(--ks3-card);
+  border: 3px solid var(--ks3-ink);
+}
+.ks3-mcov .ks3-mcov-rule p {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: clamp(24px, 3.2vw, 36px);
+  line-height: 1.14;
+  letter-spacing: -.03em;
+  text-align: center;
+  color: var(--ks3-ink);
+}
+
+.ks3-mcov .ks3-mcov-bar {
+  margin-top: 20px;
+  padding: 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+/* ⚠️ THE TWO PART CELLS TAKE THEIR WIDTHS FROM `flex-grow`, WRITTEN BY THE
+   RENDERER FROM THE PAYLOAD'S WEIGHTS. The ratio is authored in one place and
+   drawn from that one place: a row with the proportions hard-coded here would
+   be free to drift from the labels above it, and a bar whose parts disagree
+   with its own numbers is a bar model that lies.
+
+   `min-width: 0` because a flex item's default `min-width: auto` refuses to
+   shrink below its content, and the gas cell's label is longer than its share
+   of a 390px screen. Without it the 68/32 silently becomes about 55/45 on a
+   phone — the one place the proportions would be worst wrong. */
+.ks3-mcov .ks3-mcov-parts {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+.ks3-mcov .ks3-mcov-parts > .ks3-mcov-cell { min-width: 0; }
+.ks3-mcov .ks3-mcov-cell {
+  position: relative;
+  padding: 18px 20px;
+  border-radius: 14px;
+  background: var(--ks3-blue-tint);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-mcov .ks3-mcov-celllabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-mcov .ks3-mcov-cellvalue {
+  margin: 6px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 1.2;
+  color: var(--ks3-ink);
+}
+/* The plate. `--ks3-data`, not `--ks3-alert` — see the block header. It is
+   `aria-hidden`, so it is reinforcement for a sighted reader and never the
+   only route to which cell is covered; the cell's own label stays underneath
+   it and the bar's `aria-label` names all three. */
+.ks3-mcov .ks3-mcov-plate {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: var(--ks3-ink);
+  opacity: .9;
+  display: grid;
+  place-items: center;
+  color: var(--ks3-data);
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 26px;
+}
+/* ⚠️ NEW ELEMENT, AND IT IS A SCIENCE-HONESTY LINE RATHER THAN A CAPTION.
+   The cells are Design's readable 68/32 and 2.20 g is really about one part in
+   seventy of 152.00 g. §5A asks drawn geometry to express the ratio its label
+   claims; drawn true the gas cell would be a six-pixel sliver holding a 24px
+   number, so the resolution is to say so — quietly, and with the real
+   proportion in it, so the disclaimer teaches something. */
+.ks3-mcov .ks3-mcov-scale {
+  margin: 12px 0 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ks3-ink-muted);
+}
+.ks3-mcov .ks3-mcov-btns {
+  margin-top: 18px;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+.ks3-mcov .ks3-mcov-out {
+  margin-top: 18px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-mcov .ks3-mcov-result {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: clamp(24px, 3.2vw, 30px);
+  line-height: 1.2;
+  letter-spacing: -.02em;
+  color: var(--ks3-ink);
+}
+/* The sentence that NAMES THE OPERATION. Design authored one per cover and her
+   markup drops all three; NOTES-C4 §4 asks for them, so they render. */
+.ks3-mcov .ks3-mcov-sentence {
+  margin: 10px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+.ks3-mcov .ks3-mcov-close {
+  margin: 18px 0 0;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+
+/* The three unit rows — the unit belongs to the quantity, said three times
+   before the worked example's Answer step says it once more. */
+.ks3-mcov .ks3-mcov-units {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.ks3-mcov .ks3-mcov-unitrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.ks3-mcov .ks3-mcov-quantity {
+  flex: 1 1 auto;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ks3-ink);
+}
+/* `--ks3-ground` on `--ks3-accent-text` is 6.0:1 the other way up — the token
+   is measured as a contrast partner for the ground in both directions. */
+.ks3-mcov .ks3-mcov-unit {
+  flex: 0 0 auto;
+  min-width: 4.6rem;
+  padding: 5px 16px;
+  border-radius: 99px;
+  background: var(--ks3-accent-text);
+  color: var(--ks3-ground);
+  font-family: var(--ks3-font-mono);
+  font-size: 18px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-align: center;
+}
+
+
+/* ═══ #s-worked and #s-check · the same four steps, twice ═════════════════
+   MRB-204 parts 3 and 4. ONE SET OF RULES FOR BOTH, because the thing that
+   must not drift between them is precisely that they ARE the same four steps:
+   a student who meets a different badge, a different box or a different rhythm
+   on the second one has been shown a second method, which is the opposite of
+   what the scaffolding is for. The two differ in what OPENS a step and in
+   nothing else.
+
+   The step's state lives in `data-open` and `data-next` on the `<li>`, so
+   "an open step" and "the step you are standing on" each have exactly one
+   definition instead of one per language. */
+
+.ks3-mwork .ks3-mwork-steps,
+.ks3-mchk .ks3-mchk-steps {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ks3-mwork .ks3-mwork-step,
+.ks3-mchk .ks3-mchk-step {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule);
+}
+/* An opened step, and the step the stepper is standing on. NEITHER IS A MARK:
+   an opened step is opened, not correct, and the student has not answered
+   anything on `#s-worked` at all. */
+.ks3-mwork .ks3-mwork-step[data-open="1"],
+.ks3-mchk .ks3-mchk-step[data-open="1"] { background: var(--ks3-inset); }
+.ks3-mwork .ks3-mwork-step[data-next="1"],
+.ks3-mchk .ks3-mchk-step[data-next="1"] { border-color: var(--ks3-accent); }
+
+.ks3-mwork .ks3-mwork-body,
+.ks3-mchk .ks3-mchk-body { flex: 1 1 auto; min-width: 0; }
+
+/* The F / I / F / A badge. `aria-hidden`, so it is decoration reinforcing a
+   name that is real text beside it — which is why `--ks3-accent` as its fill
+   is legal here and would not be as a text colour at 17px. */
+.ks3-mwork .ks3-mwork-badge,
+.ks3-mchk .ks3-mchk-badge {
+  flex: 0 0 34px;
+  height: 34px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 17px;
+  background: var(--ks3-band);
+  color: var(--ks3-ink-muted);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-mwork .ks3-mwork-step[data-open="1"] .ks3-mwork-badge,
+.ks3-mchk .ks3-mchk-step[data-open="1"] .ks3-mchk-badge {
+  background: var(--ks3-accent);
+  color: var(--ks3-on-dark);
+}
+
+.ks3-mwork .ks3-mwork-name,
+.ks3-mchk .ks3-mchk-name {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ks3-ink);
+}
+/* `#s-check` only: the instruction is on the page from the start and the
+   answer is not. That is the difference between scaffolding and a solution. */
+.ks3-mchk .ks3-mchk-prompt {
+  margin: 6px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+/* Mono for the arithmetic, `--ks3-accent-text` at 6.0:1 — never
+   `--ks3-accent`, which is 3.4:1 and illegal under 24px. */
+.ks3-mwork .ks3-mwork-maths,
+.ks3-mchk .ks3-mchk-maths {
+  margin: 8px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--ks3-accent-text);
+  overflow-wrap: anywhere;
+}
+.ks3-mchk .ks3-mchk-maths { margin-top: 10px; }
+.ks3-mwork .ks3-mwork-note,
+.ks3-mchk .ks3-mchk-note {
+  margin: 8px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+
+.ks3-mwork .ks3-mwork-next { margin-top: 16px; }
+.ks3-mchk .ks3-mchk-btn { margin-top: 12px; }
+
+.ks3-mchk .ks3-mchk-close {
+  margin-top: 18px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-mchk .ks3-mchk-close p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+
+
+/* ── the guard, and it is LAST on purpose ────────────────────────────────
+   An author `display` beats the UA stylesheet's `[hidden] { display: none }`
+   at ANY specificity, and fourteen things on this page are emitted hidden. The
+   rules above give `display` to the step rows, the tile grid, the parts row,
+   the cover plate and the badges, several of which are inside — or are —
+   hidden nodes. These four are (0,2,0), the same as the component rules they
+   have to beat, so they win on source order and must stay at the bottom of the
+   block. `setHidden()` also writes an inline `display:none`, but only once JS
+   has run: this is what holds between first paint and then, which is the
+   window a slow phone makes long. */
+.ks3-bbench [hidden],
+.ks3-mcov [hidden],
+.ks3-mwork [hidden],
+.ks3-mchk [hidden] { display: none; }
+
+/* ── from css_05.css ── */
+/* ═══ c4-05 · coefficient-balancer + forbidden-move ══════════════════════
+   Fragment for `shared/ks3.css`. Every value below is measured off Design's
+   approved page `docs/ks3/design-reference/c4/c4-05-symbol-equations-and-
+   balancing.dc.html`, which carries its real design in inline `style`
+   attributes and in the style strings `lessonVals()` composes. Where the page
+   and the engine disagreed, the page won — with the two exceptions written
+   out below, both of which are rulings rather than preferences.
+
+   ⚠️ BOTH SECTIONS ARE LIGHT. `#s-balance` is a plain `ks3-block ks3-check`
+   and `#s-forbidden` is `ks3-block ks3-misconception`; there is no ink-dark
+   practical block anywhere in C4 or C5, measured rather than assumed. So this
+   whole block is written for cream and there is no `.ks3-dark` branch in it.
+   A future pass that moves either instrument onto ink has to write one.
+
+   ⚠️ AND EVERY TEXT RULE IS SELF-SCOPED AT (0,2,0) — `.ks3-cbal
+   .ks3-cbal-words`, never a bare `.ks3-cbal-words`. A bare component class is
+   (0,1,0) and loses to `.ks3-dark p` at (0,1,1) the day anything moves one of
+   these onto ink, and it loses SILENTLY: the CSS reads correctly and the
+   sentence ships at about 1.2:1. C1's and C3's blocks say the same thing for
+   the same reason; two builds have already been bitten by it.
+
+   ══ RULING 1 — A MATCHED COUNTER IS BLUE, NOT GREEN ══════════════════════
+
+   ⚖️ Design paints a counter whose two sides agree with `--ks3-ok-tint` on a
+   `--ks3-ok` border. It is reproduced here as `--ks3-blue-tint` on
+   `--ks3-blue`, and this is the one place in the unit where the page did not
+   win. Three reasons, and the third is the one that decides it:
+
+     1. §11 / R3 reserve green for the mastery ladder. `--ks3-ok` is marks and
+        fills; nothing green reaches an instrument. C3's whole block ships
+        without a single `--ks3-ok` for this reason.
+     2. C2's `mass-ledger` already ruled the identical case — a readout with
+        short / matched / over states — and refused green in as many words:
+        *"green is the ladder's colour for a correct answer, and a plate is
+        not an answer."* This is the same readout one lesson later.
+     3. ⚖️ **ON THIS PAGE IT WOULD TEACH THE MISCONCEPTION THE PAGE EXISTS TO
+        CONFRONT.** `REACT-09` is "a balanced equation is a correct equation".
+        `#s-think` is forty lines below these tiles and takes it apart:
+        H₂ + O₂ → H₂O₂ is perfectly balanced and completely false. A tile that
+        goes GREEN — the platform's own colour for "you got it right" — the
+        instant the counts agree is that misconception rendered in CSS, and it
+        would be teaching it in the same scroll that refutes it.
+
+   `--ks3-blue-tint` / `--ks3-blue` is an existing light-ground pair (it is
+   what `.ks3-lesson-row.is-ref` uses) and ink reads on it. `--ks3-data` was
+   the other candidate and is wrong here: it is `#8FB7FF`, an ON-INK token,
+   and these tiles are on cream — the same finding C3's block records.
+
+   ⚠️ R2 — AND THE COLOUR IS NEVER THE ONLY SIGNAL. Every tile carries one of
+   three sentences underneath it ("Matched." / "Too few on the right." / "Too
+   few on the left."), which is the state, in words, whatever the palette
+   does. All three are reachable on load: the opening methane state reads C
+   matched, H short on the right and O short on the left.
+
+   ══ RULING 2 — THE STEPPER IS 34px, AND WHY THAT IS SAID OUT LOUD ════════
+
+   Design draws the `+` / `−` chips at 34 × 34 with a 6px gap, which is below
+   the system's 44px `--ks3-tap` and above WCAG 2.5.8's 24px floor. Kept as
+   drawn (MRB-205), because a 44px chip in front of a 26px formula is a
+   control that outweighs the equation it is attached to — and because the
+   gap between the pair is what a mis-tap actually turns on. The gap is
+   widened from Design's 6px to 8px, which is the whole of the change and
+   costs nothing. Flagged to the commander rather than adjusted silently.
+
+   ⚠️ AND THE BOUND IS `aria-disabled`, NOT `disabled`. See `js_05.js`: a real
+   `disabled` attribute drops keyboard focus the moment a student steps up to
+   the cap. The dim below is attached to the ARIA state so that the drawn
+   state and the announced state cannot come apart.
+
+   ══ NOTHING BELOW IS A MARK ══════════════════════════════════════════════
+
+   ⚖️ Only the mastery ladder marks correctness. No control here takes green
+   or red at any size, no option carries `data-correct`, and every verdict is
+   a PANEL OF WORDS. `--ks3-ok` and `--ks3-danger` do not appear in this block
+   at all. If a rule below ever resolves to `--ks3-ok` #12A150 or
+   `--ks3-danger` #FF6B6B, this instrument has started marking.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── the subscript, which is the unit's convention made visible ────────── */
+
+/* ⚖️ A REAL `<sub>` ELEMENT, PINNED. `ks3.css` has no `sub` rule of its own
+   and the UA default is `font-size: smaller` + `vertical-align: sub`, which
+   is a different size in every engine and drifts badly inside a 26px
+   Bricolage-700 formula. Pinned here so the 2 in H₂O sits the same way on
+   every machine — because on THIS page the difference between a small number
+   and a big one is the entire lesson, and a subscript that is only slightly
+   smaller than the coefficient beside it is a lesson that does not land.
+   `line-height: 0` keeps the raised baseline from opening the line box. */
+.ks3-cbal .ks3-cbal-sym sub,
+.ks3-forbid .ks3-cbal-sym sub {
+  font-size: .64em;
+  line-height: 0;
+  vertical-align: -.22em;
+  font-weight: inherit;
+}
+
+/* ── #s-balance · the coefficient balancer ─────────────────────────────── */
+
+.ks3-cbal-tabs {
+  margin: 18px 0 0;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+/* The solved dot. Design appends " ·" to a tab whose equation has been driven
+   to its target; the clipped word beside it is what a screen reader gets,
+   because a bare middle dot is read as punctuation or skipped. */
+.ks3-cbal .ks3-cbal-tick { font-weight: 700; }
+
+.ks3-cbal .ks3-cbal-words {
+  margin: 18px 0 0;
+  font-size: 19px;
+  line-height: 1.6;
+  max-width: 54ch;
+  color: var(--ks3-ink);
+}
+
+.ks3-cbal-panel {
+  margin: 20px 0 0;
+  padding: 24px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.ks3-cbal-side {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.ks3-cbal-term {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.ks3-cbal .ks3-cbal-formula {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.2;
+  color: var(--ks3-ink);
+}
+/* THE COEFFICIENT — a LIVE VALUE, and the one number the student may move.
+   Mono, because every live readout in the key stage is mono, and lit in
+   accent-text once it leaves 1. R1: 24px is not above the 24px threshold, so
+   it is `--ks3-accent-text` (6.0:1) and never `--ks3-accent`. It is not a
+   mark and it never goes green: it says "you changed this", not "this is
+   right". */
+.ks3-cbal .ks3-cbal-coeff,
+.ks3-forbid .ks3-cbal-coeff {
+  font-family: var(--ks3-font-mono);
+  font-weight: 500;
+  font-size: 24px;
+  color: var(--ks3-ink-ghost);
+}
+.ks3-cbal .ks3-cbal-coeff[data-cbal-lit="1"],
+.ks3-forbid .ks3-cbal-coeff[data-cbal-lit="1"] {
+  color: var(--ks3-accent-text);
+}
+.ks3-cbal .ks3-cbal-plus,
+.ks3-forbid .ks3-cbal-plus {
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.6;
+  color: var(--ks3-ink-muted);
+}
+.ks3-cbal-arrow,
+.ks3-forbid .ks3-cbal-arrow {
+  flex: 0 0 auto;
+  align-self: center;
+  color: var(--ks3-ink);
+}
+
+/* The stepper. See RULING 2 above for the 34px and for `aria-disabled`. */
+.ks3-cbal-steps {
+  display: flex;
+  gap: 8px;
+}
+.ks3-cbal .ks3-cbal-step {
+  cursor: pointer;
+  font: inherit;
+  font-family: var(--ks3-font-mono);
+  font-size: 16px;
+  font-weight: 500;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 2px solid var(--ks3-ink);
+  background: var(--ks3-card);
+  color: var(--ks3-ink);
+  display: grid;
+  place-items: center;
+  line-height: 1;
+}
+.ks3-cbal .ks3-cbal-step[aria-disabled="true"] {
+  cursor: default;
+  opacity: .38;
+}
+
+/* ── the counters ─────────────────────────────────────────────────────── */
+
+.ks3-cbal-counters {
+  margin: 18px 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+.ks3-cbal-counter {
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule-strong);
+}
+/* RULING 1 — blue, not green. The reason is at the top of this block and it
+   is the lesson's own argument, not a palette preference. */
+.ks3-cbal-counter[data-cbal-match="1"] {
+  background: var(--ks3-blue-tint);
+  border-color: var(--ks3-blue);
+}
+.ks3-cbal .ks3-cbal-el {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+/* THE READING. Mono at 24px because it is an instrument readout, which is the
+   same reason every live value in the key stage is mono. The two numbers live
+   in their own spans and nothing else is ever written into them. */
+.ks3-cbal .ks3-cbal-line {
+  margin: 8px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.15;
+  color: var(--ks3-ink);
+}
+.ks3-cbal .ks3-cbal-state {
+  margin: 6px 0 0;
+  font-size: 16px;
+  color: var(--ks3-ink-body);
+}
+/* The matched tile's own word takes the blue text token, which is the AA half
+   of the pair (R1). The two short states stay body ink: they are not a
+   warning and the student is not the error. */
+.ks3-cbal-counter[data-cbal-match="1"] .ks3-cbal-state {
+  color: var(--ks3-blue-text);
+}
+
+/* ── the "Balanced." panel, the reset and the summary ─────────────────── */
+
+.ks3-cbal-balanced {
+  margin: 18px 0 0;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-cbal .ks3-cbal-balanced-h {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1.25;
+  color: var(--ks3-ink);
+}
+.ks3-cbal .ks3-cbal-note {
+  margin: 10px 0 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+/* The derived multiple. Mono like every other live number on the page, so a
+   student reads it as a reading off the instrument rather than as a word. */
+.ks3-cbal .ks3-cbal-note [data-cbal-k] {
+  font-family: var(--ks3-font-mono);
+  font-weight: 500;
+}
+.ks3-cbal-foot {
+  margin: 16px 0 0;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.ks3-cbal-summary {
+  margin: 18px 0 0;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+  box-shadow: 6px 6px 0 var(--ks3-accent);
+}
+.ks3-cbal .ks3-cbal-summary p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+
+/* ── #s-forbidden · the move that looks like it works ─────────────────── */
+
+/* ⚠️ THE BUTTONS ARE ORDINARY. No warning border, no amber, no red, nothing
+   that marks one of the two as the wrong one before it is pressed — the
+   whole mechanism is that the student is ALLOWED to make the move and is then
+   shown what they wrote. Both take `.ks3-seg-btn`, the system's one segmented
+   control, and the amber on this section is the SHELL's `.ks3-misconception`
+   eyebrow and badge, which is amber carrying its ruled meaning: a wrong idea
+   being confronted. */
+.ks3-forbid .ks3-mis-body { max-width: 56ch; }
+.ks3-forbid-btns {
+  margin: 16px 0 0;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+.ks3-forbid-reveal {
+  margin: 18px 0 0;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+/* R15's focus ring reaches this because `focusReveal` gives the panel a
+   `tabindex="-1"` and the stylesheet's one focus treatment is unscoped. */
+.ks3-forbid .ks3-forbid-eq {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.2;
+  color: var(--ks3-ink);
+}
+.ks3-forbid-product {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+}
+/* ⚠️ AN AUTHOR `display` BEATS THE UA'S `[hidden] { display: none }`
+   REGARDLESS OF SPECIFICITY, so declaring one on a node that ships hidden is
+   how EMIT-BOTH-SHOW-ONE turns into show-both. Both products are in the
+   document and both are `hidden` at rest; without this rule the resting page
+   would print `H₂ + O₂ → H₂O₂ 2H₂O` and give away the section before the
+   student has pressed anything. `setHidden` backs the attribute up with an
+   inline display at runtime — this is the half that has to be right in the
+   SHIPPED BYTES, which is where a crawler and a no-JS reader stop. It is the
+   same trap `.ks3-card-back[hidden]` documents elsewhere in this file, and it
+   is the only node in this fragment that needs it: everything else that ships
+   hidden declares no display at all. */
+.ks3-forbid-product[hidden] { display: none; }
+.ks3-forbid .ks3-forbid-text {
+  margin: 14px 0 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+  max-width: 60ch;
+}
+
+/* ── narrow readers ───────────────────────────────────────────────────── */
+/* The equation panel already wraps (`flex-wrap`), so a four-term equation
+   folds onto two rows on a phone rather than scrolling sideways. The counter
+   grid collapses to one column at 200px on its own. Nothing here needs a
+   media query, and one that only restated the flex behaviour would be a rule
+   that can drift away from it. */
+
+/* ═══ END C4 ═══ */

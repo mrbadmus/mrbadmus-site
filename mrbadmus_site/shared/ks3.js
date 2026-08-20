@@ -18577,6 +18577,1304 @@
 
 /* ═══ END C3 wiring ═══ */
 
+/* ═══ BEGIN C4 wiring ═══════════════════════════════════════════════════
+   C4's instrument families. Added as ONE marked block so that a lane merging
+   into this file resolves mechanically: nothing above this marker moves.
+   ═══ */
+
+/* ── from js_01.js ── */
+  /* ── change-pairs (c4-01 #s-pairs) ──────────────────────────────────
+     Three pairs, six commitments, and the shared clue never decides any of
+     them. This is `c3CommitCards`' contract exactly — one commitment per
+     card, final, with the reveal on screen the instant the card is decided,
+     so a second press would be a student choosing an answer they can already
+     read — so it shares that body rather than growing a fourth copy of the
+     same rule. The nesting is the only difference and it costs nothing:
+     `wrap.querySelectorAll(sel.card)` finds all six sides through the three
+     pair panels.
+
+     ⚠️ NOTHING HERE MARKS. There is no `correct` key in the payload and
+     nothing below looks for one: the verdict panel opens in the same voice
+     whichever button was pressed, and only the mastery ladder marks.
+
+     ⚠️ NO `count: true`. Design draws no head counter on this block, and
+     `setCount` would no-op on the missing `[data-count]` anyway — saying so
+     here so that a future pass adding a counter knows it has to be drawn as
+     well as wired. The rail stop ticks off the close panel instead: six of
+     six decided opens it and calls `markStage`. */
+  function wireChangePairs(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-cpair]", card: "[data-cpair-side]",
+      opt: "[data-cpair-opt]", reveal: "[data-cpair-reveal]",
+      close: "[data-cpair-close]"
+    });
+  }
+
+  /* ── chain-build (c4-01 #s-chain) ───────────────────────────────────
+     The CONTRAST family's linked-comparison step, and the one place in the
+     unit where the model answer is shown in full.
+
+     ⚖️ THE SENTENCE IS JOINED FROM THE BUTTONS THEMSELVES. Both clauses are
+     already in the document, in the `.ks3-opt-label` of the pressed option,
+     so nothing is duplicated between the renderer and this file and no clause
+     can drift between the two. `appendAuthored` puts the joined text in, so
+     an arrow or a tick in a clause is drawn rather than shipped as a
+     character the font subsets do not carry.
+
+     ⚖️ AND NEITHER NOTE IS A MARK. `data-chain-ideal` names the clause pair
+     that makes a linked comparison, and all it chooses is which of the two
+     authored paragraphs is unhidden — same panel, same ground, same voice.
+     Every clause on offer is true; what the note is about is whether the two
+     halves answer each other. No option is ticked, crossed or dimmed here.
+
+     ⚠️ THE SLOTS DO NOT LOCK, which is Design's behaviour: her handler sets
+     the index and nothing else, so a student can re-pick either half and
+     watch the sentence and the note change. `markStage` is a ratchet, so a
+     stop earned by the first complete pair cannot be unticked by re-picking.
+
+     ⚠️ `focusReveal` runs on the FIRST open only. The panel arrives once and
+     a keyboard user is taken to it; re-picking a clause updates it in place
+     and must not yank focus off the control they are still using. */
+  function wireChainBuild(sec) {
+    var wrap = sec.querySelector("[data-chain]");
+    if (!wrap) { return; }
+    var slots = toArray(wrap.querySelectorAll("[data-chain-slot]"));
+    if (slots.length < 2) { return; }
+    var reveal = wrap.querySelector("[data-chain-reveal]");
+    var out = wrap.querySelector("[data-chain-sentence]");
+    var chosen = {};
+    var opened = false;
+
+    /* "a:0,b:0" — the clause pair that earns the marks, per slot id. */
+    var ideal = {};
+    each(String(wrap.getAttribute("data-chain-ideal") || "").split(","),
+      function (bit) {
+        var kv = bit.split(":");
+        if (kv.length === 2) { ideal[kv[0]] = kv[1]; }
+      });
+
+    function labelOf(btn) {
+      var el = btn.querySelector(".ks3-opt-label");
+      return el ? el.textContent : "";
+    }
+
+    function paint() {
+      var i, id, parts = [], isIdeal = true;
+      for (i = 0; i < slots.length; i++) {
+        id = slots[i].getAttribute("data-chain-slot");
+        if (!chosen[id]) { return; }
+        parts.push(labelOf(chosen[id]));
+        if (String(chosen[id].getAttribute("data-i")) !== ideal[id]) {
+          isIdeal = false;
+        }
+      }
+      c3Empty(out);
+      appendAuthored(out, parts.join(" "));
+      each(wrap.querySelectorAll("[data-chain-note]"), function (p) {
+        var want = isIdeal ? "ideal" : "other";
+        setHidden(p, p.getAttribute("data-chain-note") !== want);
+      });
+      setHidden(reveal, false);
+      markStage(sec, true);
+      if (!opened) { opened = true; focusReveal(reveal); }
+    }
+
+    each(slots, function (slot) {
+      var id = slot.getAttribute("data-chain-slot");
+      var opts = toArray(slot.querySelectorAll("[data-i]"));
+      each(opts, function (btn) {
+        btn.addEventListener("click", function () {
+          chosen[id] = btn;
+          each(opts, function (b) {
+            b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+          });
+          paint();
+        });
+      });
+    });
+  }
+
+
+/* ── from js_02.js ── */
+  /* ═══ c4-02 · atom-rearranger + impossible-ask ══════════════════════════
+
+     Two instruments, and between them the flagship of C4.
+
+     ⚖️ NEITHER OF THESE COMPOSES A SENTENCE, A NUMBER OR A COLOUR. Every
+     stage of every reaction and every verdict panel is in the document
+     already, rendered by `ks3_art/c4.py`; all the code below does is decide
+     which one is on screen. There is no `data-cfg` on either family and there
+     is nothing here to parse, so nothing can drift between the Python that
+     drew the page and the JavaScript that drives it.
+
+     ⚖️ ONLY THE LADDER MARKS. Nothing green and nothing red reaches any
+     control in either instrument. The gate options are COMMITMENTS: they take
+     the ordinary pressed treatment, they carry no correctness flag, and the
+     answer arrives as the next stage of the picture. The refusal panel is a
+     panel of WORDS.
+
+     ⊖ NOTHING ANIMATES, NOTHING COUNTS DOWN and there is no canvas — no rAF,
+     no timer, no JS-driven transition — so `prefers-reduced-motion` has
+     nothing to degrade here and neither function asks about it. If a later
+     revision animates anything it must ask `motionReduced()` INSIDE the tick
+     (contract R4). MRB-210's input+change rule has nothing to bind either:
+     neither instrument draws a range.
+
+     ⚠️ THE NO-OP PRESS. Both dials return early when the value pressed is the
+     value already pressed. Design's own handlers do not: pressing the loaded
+     reaction again resets it to stage 0 and discards the gate, which is a
+     control claiming to be pressed and then undoing the student's work.
+     Corrected here rather than reproduced. */
+
+  /* ── atom-rearranger (c4-02 #s-rearr) ────────────────────────────────
+     Three reactions x three stages, plus a commitment between stage 1 and
+     stage 2. Nine views, and exactly one on screen at a time.
+
+     ⚖️ CREDIT IS FOR CARRYING ALL THREE REACTIONS TO THEIR PRODUCTS, which
+     is Design's own `DONE()`. `done` is never emptied — not by "Put it back",
+     not by switching reaction — so a student can take a finished reaction
+     apart again to look at it without losing the stop. `markStage` is the
+     ratchet and this file does not write its own.
+
+     ⚠️ THE STAGE RESETS WHEN THE REACTION CHANGES, and the gate goes with it.
+     A different reaction is a different question — "how many oxygen atoms
+     will be in the water" is not a question about methane — so carrying the
+     old commitment across would leave a gate answered that was never asked.
+
+     ⚠️ THE WHOLE STATE SPACE, and it is enumerated rather than sampled:
+     3 reactions x 3 stages = 9 views, each with its own count table, its own
+     commentary and its own `role="img"` label; the gate is open in exactly
+     one of those nine (stage 1, before an option is pressed); the advance
+     button is hidden in two of them (stage 2, and stage 1 with the gate
+     open); and the resting state — reaction one, stage 0, nothing committed,
+     nothing done — is the tenth thing that has to be right and is the one a
+     page is in before anybody touches it. */
+  function wireAtomRearranger(sec) {
+    var wrap = sec.querySelector("[data-arr]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-arr-tab]"));
+    if (!tabs.length) { return; }
+
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || tabs.length;
+    var words = toArray(wrap.querySelectorAll("[data-arr-words]"));
+    var heads = toArray(wrap.querySelectorAll("[data-arr-stagename]"));
+    var views = toArray(wrap.querySelectorAll("[data-arr-groups]"));
+    var bodies = toArray(wrap.querySelectorAll("[data-arr-counts]"));
+    var pending = toArray(wrap.querySelectorAll("[data-arr-pending]"));
+    var numbers = toArray(wrap.querySelectorAll("[data-arr-num]"));
+    var says = toArray(wrap.querySelectorAll("[data-arr-stagetext]"));
+    var gates = toArray(wrap.querySelectorAll("[data-arr-gate]"));
+    var advance = wrap.querySelector("[data-arr-advance]");
+    var advLabels = toArray(wrap.querySelectorAll("[data-arr-adv]"));
+    var reset = wrap.querySelector("[data-arr-reset]");
+    var closer = wrap.querySelector("[data-arr-done]");
+
+    /* Read the opening reaction off the markup rather than assuming the
+       first button: the renderer decides which tab is pressed at rest, and
+       two places deciding that is two places to change it. */
+    var rx = tabs[0].getAttribute("data-arr-tab");
+    each(tabs, function (b) {
+      if (b.getAttribute("aria-pressed") === "true") {
+        rx = b.getAttribute("data-arr-tab");
+      }
+    });
+    var stage = 0, gate = null, done = {}, nDone = 0;
+
+    function gateOpen() { return stage === 1 && gate === null; }
+
+    function clearGate() {
+      each(wrap.querySelectorAll("[data-arr-gateopt]"), function (b) {
+        b.setAttribute("aria-pressed", "false");
+      });
+    }
+
+    function paint() {
+      var key = rx + "|" + stage;
+      var made = stage === 2;
+      var needed = gateOpen();
+
+      each(tabs, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-arr-tab") === rx ? "true" : "false");
+      });
+      each(words, function (p) {
+        setHidden(p, p.getAttribute("data-arr-words") !== rx);
+      });
+      each(heads, function (p) {
+        setHidden(p, p.getAttribute("data-arr-stagename") !== String(stage));
+      });
+      each(views, function (v) {
+        setHidden(v, v.getAttribute("data-arr-groups") !== key);
+      });
+      each(bodies, function (tb) {
+        setHidden(tb, tb.getAttribute("data-arr-counts") !== rx);
+      });
+      /* The After column reads an em dash until the products exist and the
+         tallied number once they do. Both are in the document; neither is
+         written here, and the accent treatment on the number is a stylesheet
+         rule on a class rather than a colour assembled in JavaScript. */
+      each(pending, function (el) { setHidden(el, made); });
+      each(numbers, function (el) { setHidden(el, !made); });
+      /* Stages 0 and 1 say the same thing whichever reaction is loaded;
+         stage 2 is the reaction's own product text. */
+      each(says, function (p) {
+        setHidden(p, p.getAttribute("data-arr-stagetext") !==
+          (made ? "2|" + rx : String(stage)));
+      });
+      each(gates, function (g) {
+        setHidden(g, !(needed && g.getAttribute("data-arr-gate") === rx));
+      });
+      if (advance) {
+        setHidden(advance, made || needed);
+        each(advLabels, function (s) {
+          setHidden(s, s.getAttribute("data-arr-adv") !== String(stage));
+        });
+      }
+      setHidden(closer, nDone < total);
+      markStage(sec, nDone >= total);
+    }
+
+    each(tabs, function (btn) {
+      btn.addEventListener("click", function () {
+        var v = btn.getAttribute("data-arr-tab");
+        if (v === rx) { return; }        /* the no-op press */
+        rx = v;
+        stage = 0;
+        gate = null;
+        clearGate();
+        paint();
+      });
+    });
+
+    each(wrap.querySelectorAll("[data-arr-gateopt]"), function (btn) {
+      btn.addEventListener("click", function () {
+        /* Scope the pressed state to the gate the button is in, not to the
+           whole instrument: all three gates are in the document and only one
+           is on screen, so a wrap-wide sweep would silently un-press the
+           other two reactions' commitments. */
+        var panel = btn.closest ? btn.closest("[data-arr-gate]") : null;
+        each((panel || wrap).querySelectorAll("[data-arr-gateopt]"),
+          function (x) {
+            x.setAttribute("aria-pressed", x === btn ? "true" : "false");
+          });
+        if (gate !== null) { return; }
+        gate = parseInt(btn.getAttribute("data-arr-gateopt"), 10);
+        paint();
+        focusReveal(advance);            /* MRB-257 (5.43) */
+      });
+    });
+
+    if (advance) {
+      advance.addEventListener("click", function () {
+        if (stage >= 2 || gateOpen()) { return; }
+        stage += 1;
+        if (stage === 2 && !done[rx]) { done[rx] = true; nDone += 1; }
+        paint();
+        if (stage === 2) {
+          var open = null;
+          each(says, function (p) {
+            if (!p.hasAttribute("hidden")) { open = p; }
+          });
+          focusReveal(nDone >= total && closer ? closer : open);
+        }
+      });
+    }
+
+    if (reset) {
+      reset.addEventListener("click", function () {
+        if (stage === 0 && gate === null) { return; }
+        stage = 0;
+        gate = null;
+        clearGate();
+        /* `done` survives, deliberately: a reaction already carried to its
+           products has been carried to its products, and taking it apart
+           again to look at it is not undoing that. */
+        paint();
+      });
+    }
+
+    paint();
+  }
+
+  /* ── impossible-ask (c4-02 #s-impossible) ────────────────────────────
+     Four asks, two of which the bench refuses, and the refusal is where
+     balancing is born three lessons later.
+
+     ⚖️ THE BRANCH IS NOT HERE AND MUST NOT COME HERE. Which asks are refused
+     was decided in `ks3_art/c4.py`, from the atoms on the table against the
+     atoms each product is built from, and it shows up in the DOM as which
+     panel exists under which id. This function cannot tell a refusal from a
+     build and has no reason to: it shows the panel belonging to the button
+     that was pressed. A `possible` flag read here would be a second opinion
+     about the chemistry, free to disagree with the first.
+
+     ⚠️ THE RAIL TICKS ON ANY ASK, refused or built. What is being credited is
+     having asked and read what came back — and a student who asks for water
+     first, and only then for gold, has done the more thorough thing.
+
+     ⚠️ FIVE STATES, and the fifth is the one the page loads in: nothing
+     pressed, no panel open, `data-stage-done="0"`. */
+  function wireImpossibleAsk(sec) {
+    var wrap = sec.querySelector("[data-iask]");
+    if (!wrap) { return; }
+    var btns = toArray(wrap.querySelectorAll("[data-iask-ask]"));
+    var panels = toArray(wrap.querySelectorAll("[data-iask-verdict]"));
+    if (!btns.length || !panels.length) { return; }
+    var open = null;
+
+    each(btns, function (btn) {
+      btn.addEventListener("click", function () {
+        var id = btn.getAttribute("data-iask-ask");
+        if (id === open) { return; }     /* the no-op press */
+        open = id;
+        each(btns, function (b) {
+          b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+        });
+        var shown = null;
+        each(panels, function (p) {
+          var on = p.getAttribute("data-iask-verdict") === id;
+          setHidden(p, !on);
+          if (on) { shown = p; }
+        });
+        markStage(sec, true);
+        focusReveal(shown);              /* MRB-257 (5.43) */
+      });
+    });
+  }
+
+
+//
+// Order between the two does not matter — neither reads the other's DOM and
+// neither broadcasts. Both belong in a new "═══ BEGIN C4 wiring ═══" group.
+
+
+/* ── from js_03.js ── */
+  /* ── equation-builder (c4-03 #s-builder) ────────────────────────────
+     Three cases, one bench, and a check that names the wrong RULE.
+
+     ⚖️ THE DOM IS THE STATE, AT THE CASE LEVEL. All three cases are in the
+     document and one is shown, so a case that has been checked is still
+     checked when the student comes back to it — there is nothing to
+     re-render and nothing to restore. What this file keeps is only what
+     cannot be read off the markup: which side each substance was put on,
+     and whether the case has been checked yet.
+
+     ⚠️ NOT ONE SENTENCE IS COMPOSED HERE THAT IS NOT A TEMPLATE. The six
+     distractor corrections, the four fixed titles, the "that is the
+     equation" text and the three model equations are all authored markup
+     that this file only shows. The two wrong-side sentences and the
+     missing-substance sentence have a NAME substituted into them, and
+     those three templates come out of `data-eqb-cfg` — the payload's own
+     strings, so Python and JS are reading one authored sentence rather
+     than keeping two.
+
+     ⚠️ AND NOTHING HERE MARKS (R3). A placed chip shows that it was
+     PLACED; the buttons keep the platform's ordinary pressed treatment
+     whether the placement was right or wrong. The check panel is a panel
+     of words, and it is the same panel whichever branch it lands on. */
+
+  function c4EqbShowOnly(wrap, attr, id) {
+    each(wrap.querySelectorAll("[" + attr + "]"), function (el) {
+      setHidden(el, el.getAttribute(attr) !== id);
+    });
+  }
+
+  function c4EqbOne(wrap, attr, id) {
+    var found = null;
+    each(wrap.querySelectorAll("[" + attr + "]"), function (el) {
+      if (el.getAttribute(attr) === id) { found = el; }
+    });
+    return found;
+  }
+
+  /* Design's four branches, in her order and with her precedence: a
+     distractor in the equation is reported before a substance on the wrong
+     side, and a wrong side before a missing substance. The order is the
+     teaching — "one thing in there does not belong" is a bigger finding
+     than "magnesium oxide is on the wrong side", and being told the
+     smaller one first would send a student looking in the wrong place. */
+  function c4EqbVerdict(c, place) {
+    var wrong = [], used = [], missing = [], i, n, p, isR, isP;
+    for (i = 0; i < (c.names || []).length; i++) {
+      n = c.names[i];
+      p = place[n];
+      isR = c.reactants.indexOf(n) >= 0;
+      isP = c.products.indexOf(n) >= 0;
+      if (p) {
+        if (isR && p !== "left") { wrong.push(n); }
+        else if (isP && p !== "right") { wrong.push(n); }
+        else if (!isR && !isP) { used.push(n); }
+      } else if (isR || isP) {
+        missing.push(n);
+      }
+    }
+    if (!wrong.length && !used.length && !missing.length) {
+      return { branch: "perfect" };
+    }
+    if (used.length) { return { branch: "distractor", name: used[0] }; }
+    if (wrong.length) {
+      return { branch: "side", name: wrong[0],
+               isProduct: c.products.indexOf(wrong[0]) >= 0 };
+    }
+    return { branch: "missing", names: missing };
+  }
+
+  function wireEquationBuilder(sec) {
+    var wrap = sec.querySelector("[data-eqb]");
+    if (!wrap) { return; }
+    var cfg = c3Cfg(wrap, "data-eqb-cfg");
+    var cases = cfg.cases || [];
+    if (!cases.length) { return; }
+    var verdict = cfg.verdict || {};
+    var join = cfg.missing_join || " and ";
+    var total = parseInt(wrap.getAttribute("data-eqb-total"), 10) || cases.length;
+    var checkBtn = wrap.querySelector("[data-eqb-check]");
+    var clearBtn = wrap.querySelector("[data-eqb-clear]");
+
+    var active = cases[0].id;
+    var places = {}, shown = {}, counted = {}, nChecked = 0;
+    each(cases, function (c) { places[c.id] = {}; });
+
+    function paintVerdict(c, panel) {
+      var v = c4EqbVerdict(c, places[c.id] || {});
+      each(panel.querySelectorAll("[data-eqb-branch]"), function (el) {
+        setHidden(el, el.getAttribute("data-eqb-branch") !== v.branch);
+      });
+      /* The correction is the DISTRACTOR'S OWN, authored beside it and
+         shown — never assembled, and never a generic "that does not go in
+         an equation". Heat is not a substance for a different reason than
+         limewater is not part of this reaction. */
+      each(panel.querySelectorAll("[data-eqb-why]"), function (el) {
+        setHidden(el, el.getAttribute("data-eqb-why") !== v.name);
+      });
+      if (v.branch === "side") {
+        c3Say(panel.querySelector("[data-eqb-sidetitle]"),
+              c3Fill(verdict.side_title, { Name: v.name }));
+        c3Say(panel.querySelector("[data-eqb-sidetext]"),
+              c3Fill(v.isProduct ? verdict.side_product
+                                 : verdict.side_reactant,
+                     { name: String(v.name).toLowerCase() }));
+      } else if (v.branch === "missing") {
+        var list = [];
+        each(v.names, function (n) { list.push(String(n).toLowerCase()); });
+        c3Say(panel.querySelector("[data-eqb-missingtext]"),
+              c3Fill(verdict.missing_text, { names: list.join(join) }));
+      }
+    }
+
+    function paint() {
+      var c = c3By(cases, active) || cases[0];
+      var place = places[c.id] || {};
+
+      each(wrap.querySelectorAll("[data-eqb-tab]"), function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-eqb-tab") === c.id ? "true" : "false");
+      });
+      c4EqbShowOnly(wrap, "data-eqb-story", c.id);
+      c4EqbShowOnly(wrap, "data-eqb-bank", c.id);
+      c4EqbShowOnly(wrap, "data-eqb-eq", c.id);
+
+      var bank = c4EqbOne(wrap, "data-eqb-bank", c.id);
+      var eq = c4EqbOne(wrap, "data-eqb-eq", c.id);
+      /* A case in the payload with no panel in the markup is a build that
+         went wrong, and it must not take the rest of the page's wiring
+         down with it: everything after this in `init()` would be skipped
+         by one thrown TypeError. */
+      if (!bank || !eq) { return; }
+      each(bank.querySelectorAll("[data-eqb-row]"), function (row) {
+        var n = row.getAttribute("data-eqb-row");
+        var cur = place[n] || "out";
+        each(row.querySelectorAll("[data-eqb-place]"), function (b) {
+          b.setAttribute("aria-pressed",
+            b.getAttribute("data-eqb-place") === cur ? "true" : "false");
+        });
+        var chip = row.querySelector("[data-eqb-chip]");
+        if (chip) {
+          if (cur === "out") { chip.removeAttribute("data-eqb-placed"); }
+          else { chip.setAttribute("data-eqb-placed", "1"); }
+        }
+      });
+
+      /* The term nodes are MOVED, never rewritten, so a substance name
+         never round-trips through an attribute and the plus signs stay
+         real markup. Re-appending in the payload's own order on every
+         paint is also what keeps the two sides reading in the order the
+         bench lists them, however the student built them up. */
+      var boxes = {}, ghosts = {}, terms = {}, counts = { left: 0, right: 0 };
+      each(eq.querySelectorAll("[data-eqb-sidebox]"), function (el) {
+        boxes[el.getAttribute("data-eqb-sidebox")] = el;
+      });
+      each(eq.querySelectorAll("[data-eqb-ghost]"), function (el) {
+        ghosts[el.getAttribute("data-eqb-ghost")] = el;
+      });
+      each(eq.querySelectorAll("[data-eqb-term]"), function (el) {
+        terms[el.getAttribute("data-eqb-term")] = el;
+      });
+      var store = eq.querySelector("[data-eqb-store]");
+      each(c.names, function (n) {
+        var el = terms[n];
+        if (!el) { return; }
+        var side = place[n];
+        var box = (side === "left" || side === "right") ? boxes[side] : null;
+        (box || store).appendChild(el);
+        var plus = el.querySelector("[data-eqb-plus]");
+        if (box) {
+          setHidden(plus, counts[side] === 0);
+          counts[side] += 1;
+        } else {
+          setHidden(plus, true);
+        }
+      });
+      setHidden(ghosts.left, counts.left > 0);
+      setHidden(ghosts.right, counts.right > 0);
+
+      setHidden(checkBtn,
+        !(counts.left > 0 && counts.right > 0 && !shown[c.id]));
+
+      each(wrap.querySelectorAll("[data-eqb-checkpanel]"), function (panel) {
+        var id = panel.getAttribute("data-eqb-checkpanel");
+        setHidden(panel, id !== c.id || !shown[c.id]);
+      });
+      if (shown[c.id]) {
+        paintVerdict(c, c4EqbOne(wrap, "data-eqb-checkpanel", c.id));
+      }
+    }
+
+    each(wrap.querySelectorAll("[data-eqb-tab]"), function (b) {
+      b.addEventListener("click", function () {
+        active = b.getAttribute("data-eqb-tab");
+        paint();
+      });
+    });
+
+    each(wrap.querySelectorAll("[data-eqb-row]"), function (row) {
+      var bank = row.parentNode;
+      var caseId = bank ? bank.getAttribute("data-eqb-bank") : null;
+      var n = row.getAttribute("data-eqb-row");
+      each(row.querySelectorAll("[data-eqb-place]"), function (b) {
+        b.addEventListener("click", function () {
+          var side = b.getAttribute("data-eqb-place");
+          var place = places[caseId] || (places[caseId] = {});
+          if (side === "out") { delete place[n]; }
+          else { place[n] = side; }
+          /* Moving a chip retracts the check, exactly as Design does: the
+             panel on screen described the equation as it was, and leaving
+             it up beside a changed equation would be a verdict on
+             something the student is no longer looking at. The rail credit
+             does not retract — `markStage` is a ratchet. */
+          shown[caseId] = false;
+          paint();
+        });
+      });
+    });
+
+    if (checkBtn) {
+      checkBtn.addEventListener("click", function () {
+        if (shown[active]) { return; }
+        /* The rail counts CASES CHECKED, not presses: checking the same
+           case again after moving a chip is the student doing the thing
+           this bench is for, and it is not a second case. */
+        if (!counted[active]) { counted[active] = true; nChecked += 1; }
+        shown[active] = true;
+        paint();
+        markStage(sec, nChecked >= total);
+        focusReveal(c4EqbOne(wrap, "data-eqb-checkpanel", active));
+      });
+    }
+
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        places[active] = {};
+        shown[active] = false;
+        paint();
+      });
+    }
+
+    paint();
+  }
+
+  /* ── equation-read (c4-03 #s-read) ──────────────────────────────────
+     One commitment per card and it is FINAL — `c3CommitCards`' contract,
+     the same one the sorter, the jobs list and the plan critique take. The
+     reply is on screen the instant the card is decided, so a second press
+     would be a student choosing an answer they can already read; both
+     buttons disable and the one that was not pressed dims.
+
+     ⚠️ There is no answer key in this markup and none is needed. The reply
+     names the reading that is right, and it is the same paragraph either
+     way — only the ladder marks. */
+  function wireEquationRead(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-eqr]",
+      card: "[data-eqr-card]",
+      opt: "[data-eqr-opt]",
+      reveal: "[data-eqr-reply]"
+    });
+  }
+
+
+/* ── from js_04.js ── */
+  /* ═══ c4-04 · mass-in-a-reaction ═══════════════════════════════════════
+     Four instruments: `mass-bench`, `mass-cover`, `mass-worked`,
+     `mass-check`. All four tick a rail stop and NOTHING ticks on load
+     (MRB-208) — `markStage` is already a ratchet and none of these writes
+     `data-stage-done` itself.
+
+     ⚖️ NOTHING IS COMPUTED IN THIS BLOCK. Not one number, not one sentence.
+     Every state of every panel is already in the document (EMIT-BOTH-SHOW-ONE)
+     and these four handlers do exactly one thing: choose which node is
+     `hidden`. So an authored `<strong>`, an em dash and a minus sign survive
+     as the author wrote them, no sentence exists twice, and the resting render
+     cannot disagree with the runtime one. The single exception is the compare
+     button's step number, which the RENDERER fills at build time from the
+     step's own index — not here.
+
+     ⚖️ NOTHING GREEN AND NOTHING RED REACHES A CONTROL. A pressed dial, a
+     pressed prediction and a pressed cover button all take the platform's
+     ordinary `aria-pressed` treatment; every verdict on this page is a PANEL
+     OF WORDS. Only the mastery ladder marks (R3 / MRB-196 R10). There is no
+     `data-correct` anywhere in these four instruments.
+
+     ⚖️ NOTHING ANIMATES AND NOTHING COUNTS DOWN — no rAF, no timer, no
+     JS-driven transition — so `prefers-reduced-motion` has nothing to degrade
+     here and no tick has to re-test it (contract R4).
+
+     ⚠️ `wireBalanceBench` IS ALREADY TAKEN, by C2's `[data-balblock]`. This
+     bench is `wireMassBench` on `[data-bbenchblock]`, and its family is
+     `mass-bench`; see the art fragment's header for why the contract's
+     `balance-bench` could not be used. Binding a second handler to C2's hook
+     would have wired c2-06's bench to this one's payload.
+
+     ⚠️ THE NO-OP PRESS. Every dial and every cover button below returns early
+     when the value pressed is the value already pressed. Design's own bench
+     handler does not: pressing the dial that is already lit resets the
+     prediction and withdraws the Run button, which is a control claiming to be
+     pressed and then taking something off screen. Corrected here rather than
+     reproduced — the same correction C3 made across five dials. */
+
+  /* ── mass-bench (c4-04 #s-bench) ────────────────────────────────────
+     Two dials, four runs, and the stop ticks only when all four have been
+     run. Design's `DONE` is `Object.keys(s.ran).length >= 4`: two runs of one
+     reaction say the lid matters, two reactions in one flask say the
+     direction varies, and only all four say the reaction never changes the
+     mass at all.
+
+     The prediction gate holds the Run button (Law 4), and changing either
+     dial withdraws both the prediction and the button — the prediction was
+     about the flask the student has just left, so carrying it across would be
+     crediting a commitment nobody made. That withdrawal is the one place a
+     press does take something off screen, and it is correct there: the dial
+     that changed is a DIFFERENT run. */
+  function wireMassBench(sec) {
+    var wrap = sec.querySelector("[data-bbench]");
+    if (!wrap) { return; }
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || 0;
+    var runBtn = wrap.querySelector("[data-bbench-run]");
+    var closer = wrap.querySelector("[data-bbench-close]");
+    var dials = toArray(wrap.querySelectorAll("[data-bbench-for]"));
+    var predicts = toArray(wrap.querySelectorAll(
+      "[data-bbench-predict] .ks3-option"));
+    var panels = {};
+    each(wrap.querySelectorAll("[data-bbench-panel]"), function (p) {
+      panels[p.getAttribute("data-bbench-panel")] = p;
+    });
+    if (!total || !dials.length) { return; }
+
+    /* The chosen value of each dial, and the dial ORDER, both read off the
+       resting DOM rather than assumed. The renderer lights the payload's FIRST
+       option and emits the dials in the payload's own order, and the run key
+       is those values joined — so which dial comes first, and which value each
+       one opens on, stay the payload's business rather than being written down
+       a second time here where they could drift from it. */
+    var chosen = {}, order = [];
+    each(dials, function (b) {
+      var name = b.getAttribute("data-bbench-for");
+      if (order.indexOf(name) < 0) {
+        order.push(name);
+        /* Falls back to the first button of the dial, so a resting DOM with
+           nothing pressed still produces a real key rather than "null:null". */
+        chosen[name] = b.getAttribute("data-bbench-val");
+      }
+      if (b.getAttribute("aria-pressed") === "true") {
+        chosen[name] = b.getAttribute("data-bbench-val");
+      }
+    });
+
+    var predicted = false;
+    var ran = {};
+
+    function key() {
+      var parts = [], i;
+      for (i = 0; i < order.length; i++) { parts.push(chosen[order[i]]); }
+      return parts.join(":");
+    }
+
+    function paint() {
+      var k = key();
+      var done = !!ran[k];
+      var name;
+      /* One panel visible, and it is this combination's — or none, if this
+         combination has not been run. */
+      for (name in panels) {
+        if (Object.prototype.hasOwnProperty.call(panels, name)) {
+          setHidden(panels[name], name !== k || !done);
+        }
+      }
+      /* `canRun` — a prediction is on the table and this run has not happened
+         yet. Exactly Design's condition. */
+      setHidden(runBtn, !(predicted && !done));
+      var n = 0, x;
+      for (x in ran) {
+        if (Object.prototype.hasOwnProperty.call(ran, x)) { n += 1; }
+      }
+      if (n >= total) {
+        setHidden(closer, false);
+        markStage(sec, true);
+      }
+    }
+
+    each(dials, function (btn) {
+      btn.addEventListener("click", function () {
+        var name = btn.getAttribute("data-bbench-for");
+        var val = btn.getAttribute("data-bbench-val");
+        /* The no-op press. See the block header. */
+        if (chosen[name] === val) { return; }
+        chosen[name] = val;
+        each(dials, function (b) {
+          if (b.getAttribute("data-bbench-for") !== name) { return; }
+          b.setAttribute("aria-pressed",
+                         b.getAttribute("data-bbench-val") === val
+                           ? "true" : "false");
+        });
+        /* A new combination is a new run, so the commitment is withdrawn. */
+        predicted = false;
+        each(predicts, function (p) { p.setAttribute("aria-pressed", "false"); });
+        paint();
+      });
+    });
+
+    each(predicts, function (btn) {
+      btn.addEventListener("click", function () {
+        if (btn.getAttribute("aria-pressed") === "true") { return; }
+        each(predicts, function (p) {
+          p.setAttribute("aria-pressed", p === btn ? "true" : "false");
+        });
+        predicted = true;
+        paint();
+      });
+    });
+
+    if (runBtn) {
+      runBtn.addEventListener("click", function () {
+        var k = key();
+        if (ran[k]) { return; }
+        if (!predicted) { return; }
+        ran[k] = true;
+        paint();
+        focusReveal(panels[k]);  /* MRB-257 (5.43) */
+      });
+    }
+
+    paint();
+  }
+
+  /* ── mass-cover (c4-04 #s-cover) ────────────────────────────────────
+     MRB-204 part 2: the rule DRAWN, as a part–whole bar, with three cover
+     buttons over it.
+
+     ⚖️ THIS IS AN ACTIVITY WITH A REAL COMPLETION SIGNAL, AND THAT IS WHY IT
+     TICKS. Design's `DONE('s-cover')` is `s.cover !== null` — a press. There
+     is a comment in `build_ks3.py` saying the cover panel is read rather than
+     done and belongs off the rail; that is true of C2's READ-ONLY bar and not
+     of this one. See the art fragment's header before "fixing" it.
+
+     ⚠️ RADIO, NEVER A TOGGLE. It opens with nothing covered (Design's
+     `cover: null`) and from the first press exactly one cell is always
+     covered: pressing the lit button again does nothing rather than
+     uncovering, because an uncovered bar is a state the instrument had at the
+     start and has no way back to that teaches anything.
+
+     ⚠️ `markStage` is a RATCHET, so changing which cell is covered never
+     withdraws the credit the first press earned. */
+  function wireMassCover(sec) {
+    var wrap = sec.querySelector("[data-mcov]");
+    if (!wrap) { return; }
+    var btns = toArray(wrap.querySelectorAll("[data-mcov-for]"));
+    var out = wrap.querySelector("[data-mcov-out]");
+    var plates = {}, results = {};
+    each(wrap.querySelectorAll("[data-mcov-plate]"), function (p) {
+      plates[p.getAttribute("data-mcov-plate")] = p;
+    });
+    each(wrap.querySelectorAll("[data-mcov-result]"), function (r) {
+      results[r.getAttribute("data-mcov-result")] = r;
+    });
+    if (!btns.length) { return; }
+    var covered = null;
+
+    each(btns, function (btn) {
+      btn.addEventListener("click", function () {
+        var id = btn.getAttribute("data-mcov-for");
+        /* The no-op press: this cell is already the covered one. */
+        if (covered === id) { return; }
+        covered = id;
+        each(btns, function (b) {
+          b.setAttribute("aria-pressed",
+                         b.getAttribute("data-mcov-for") === id
+                           ? "true" : "false");
+        });
+        var name;
+        for (name in plates) {
+          if (Object.prototype.hasOwnProperty.call(plates, name)) {
+            setHidden(plates[name], name !== id);
+          }
+        }
+        for (name in results) {
+          if (Object.prototype.hasOwnProperty.call(results, name)) {
+            setHidden(results[name], name !== id);
+          }
+        }
+        setHidden(out, false);
+        markStage(sec, true);
+      });
+    });
+  }
+
+  /* ── mass-worked (c4-04 #s-worked) ──────────────────────────────────
+     MRB-204 part 3: four steps, one at a time, F / I / F / A badges visible
+     on each.
+
+     ⚖️ ONE-WAY, AND ONE CONTROL AT A TIME. There is no collapse — unshowing a
+     step teaches nothing and gives a student a way to lose their place — and
+     the button always opens the NEXT step, because the whole point of the
+     pause is that the reader tries the next line before reading it.
+
+     ⚠️ THE TWO BUTTON LABELS ARE BOTH IN THE DOM AND ONE IS SHOWN. "Show the
+     first step" and "Show the next step" are authored sentences; §6 forbids a
+     sentence round-tripping through a `data-` attribute, so this swaps which
+     span is hidden and composes nothing. */
+  function wireMassWorked(sec) {
+    var wrap = sec.querySelector("[data-mwork]");
+    if (!wrap) { return; }
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || 0;
+    var btn = wrap.querySelector("[data-mwork-next]");
+    var first = wrap.querySelector("[data-mwork-label=\"first\"]");
+    var next = wrap.querySelector("[data-mwork-label=\"next\"]");
+    var steps = [];
+    each(wrap.querySelectorAll("[data-mwork-step]"), function (li) {
+      steps[parseInt(li.getAttribute("data-mwork-step"), 10)] = li;
+    });
+    if (!total || !btn) { return; }
+    var opened = 0;
+
+    function paint() {
+      var i;
+      for (i = 0; i < steps.length; i++) {
+        if (!steps[i]) { continue; }
+        steps[i].setAttribute("data-open", i < opened ? "1" : "0");
+        steps[i].setAttribute("data-next", i === opened ? "1" : "0");
+        setHidden(steps[i].querySelector("[data-mwork-open]"), i >= opened);
+      }
+      setHidden(first, opened !== 0);
+      setHidden(next, opened === 0);
+      if (opened >= total) {
+        setHidden(btn, true);
+        markStage(sec, true);
+      }
+    }
+
+    btn.addEventListener("click", function () {
+      if (opened >= total) { return; }
+      opened += 1;
+      paint();
+      if (steps[opened - 1]) { focusReveal(steps[opened - 1]); }
+    });
+
+    paint();
+  }
+
+  /* ── mass-check (c4-04 #s-check) ────────────────────────────────────
+     MRB-204 part 4: the same four steps, done by the student, with a compare
+     button PER STEP.
+
+     ⚖️ **PER STEP, NOT ONE REVEAL AT THE END, AND THAT IS THE POINT OF THIS
+     SECTION.** A student who writes four lines and then opens one panel has
+     marked themselves; a student who commits to a line and opens THAT line is
+     caught at the step they got wrong, before the error is carried into the
+     three after it. It is why this costs a rail stop of its own rather than
+     sharing `#s-worked`'s.
+
+     Each step's PROMPT is on the page from the start and its ANSWER is not:
+     that is the difference between scaffolding and a solution.
+
+     ⚠️ The button label's step number is the RENDERER's, filled at build time
+     from the step's own index. Nothing here writes a number. */
+  function wireMassCheck(sec) {
+    var wrap = sec.querySelector("[data-mchk]");
+    if (!wrap) { return; }
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || 0;
+    var closer = wrap.querySelector("[data-mchk-close]");
+    var steps = [], btns = [];
+    each(wrap.querySelectorAll("[data-mchk-step]"), function (li) {
+      steps[parseInt(li.getAttribute("data-mchk-step"), 10)] = li;
+    });
+    each(wrap.querySelectorAll("[data-mchk-btn]"), function (b) {
+      btns[parseInt(b.getAttribute("data-mchk-btn"), 10)] = b;
+    });
+    if (!total) { return; }
+    var opened = 0;
+
+    function paint() {
+      var i;
+      for (i = 0; i < steps.length; i++) {
+        if (!steps[i]) { continue; }
+        steps[i].setAttribute("data-open", i < opened ? "1" : "0");
+        steps[i].setAttribute("data-next", i === opened ? "1" : "0");
+        setHidden(steps[i].querySelector("[data-mchk-open]"), i >= opened);
+      }
+      /* Exactly one compare button is offered, and it is the next unopened
+         step's — the same discipline as `#s-worked`, so the two halves of the
+         treatment behave identically. */
+      for (i = 0; i < btns.length; i++) {
+        if (btns[i]) { setHidden(btns[i], i !== opened); }
+      }
+      if (opened >= total) {
+        setHidden(closer, false);
+        markStage(sec, true);
+      }
+    }
+
+    /* A plain loop rather than `each`: `btns` is built by index and a hole in
+       it would be SKIPPED by forEach, so a step whose button failed to render
+       would silently become unopenable instead of failing. */
+    for (var b = 0; b < btns.length; b++) {
+      (function (i) {
+        if (!btns[i]) { return; }
+        btns[i].addEventListener("click", function () {
+          /* Only the step the stepper is standing on opens, and only once. */
+          if (i !== opened) { return; }
+          opened = i + 1;
+          paint();
+          if (steps[i]) { focusReveal(steps[i]); }
+        });
+      }(b));
+    }
+
+    paint();
+  }
+
+
+/* ── from js_05.js ── */
+  /* ═══ c4-05 · coefficient-balancer + forbidden-move ═══════════════════
+     Fragment for `shared/ks3.js`. Two wire functions, one shared count.
+
+     ⚖️ NOTHING HERE WRITES A SENTENCE. Every state's words are already in
+     the document (EMIT-BOTH-SHOW-ONE, see `art_05.py`); these two functions
+     choose which node is shown and write NUMBERS into spans that hold
+     nothing else. The one sentence with a variable in it — the "not in its
+     smallest numbers" note — was split around its span in Python, so no
+     template lives in this file and a `{k}` cannot reach a student even if
+     this script never runs.
+
+     ⚖️ NOTHING GREEN AND NOTHING RED REACHES A CONTROL. A matched counter is
+     a READING and takes the blue reading treatment. On this page in
+     particular that is not a palette preference: `REACT-09` is "a balanced
+     equation is a correct equation", and painting "the counts match" in the
+     colour this platform uses for "you got it right" would be the
+     misconception rendered in CSS, forty lines above the section that
+     confronts it.
+
+     ⚖️ NOTHING ANIMATES AND NOTHING COUNTS DOWN. No rAF loop, no timer, no
+     JS-driven transition — so `prefers-reduced-motion` has nothing to
+     degrade here, and `motionReduced()` is deliberately not consulted. If a
+     later revision animates a counter it must ask INSIDE the tick, not once
+     at construction (contract R4, the b2-03 slip).
+
+     ⚠️ THE CAP IS `aria-disabled`, NOT `disabled`, AND THAT IS DELIBERATE.
+     NOTES-C4 §5 flag 15 caps coefficients at 4 and the cap is a help; §11
+     forbids narrating a control, so nothing on the page says so in words and
+     the stepper simply stops at the bound. A real `disabled` attribute would
+     make the browser drop focus the instant a keyboard user steps up to 4 —
+     the control they are standing on vanishes from the tab order and focus
+     falls to the document body. `aria-disabled` dims it, announces it and
+     keeps it focusable; the guard below is what makes it inert.
+
+     ⚠️ EVERY EQUATION IS REPAINTED, NOT ONLY THE VISIBLE ONE. The other
+     three are `hidden`, and a hidden panel holding numbers from three
+     presses ago is a wrong number in the DOM whether or not anyone is
+     looking at it — and it becomes visible the moment a tab is pressed, so
+     "nobody can see it" is not true either. Four equations of at most four
+     terms is nothing to repaint. */
+
+  /* The counters, and the ONLY arithmetic in this block.
+     ⚖️ Identical to `_cbal_counts` in `ks3_art/c4.py`, term for term. Nothing
+     anywhere prints a count that did not come out of one of the two. */
+  function c4Counts(eq, coeffs) {
+    var out = [], els = eq.els || [], atoms = eq.atoms || [], i, k;
+    for (k = 0; k < els.length; k++) {
+      var el = els[k], l = 0, r = 0;
+      for (i = 0; i < eq.nl; i++) { l += (atoms[i][el] || 0) * coeffs[i]; }
+      for (i = eq.nl; i < atoms.length; i++) { r += (atoms[i][el] || 0) * coeffs[i]; }
+      out.push({ el: el, l: l, r: r });
+    }
+    return out;
+  }
+
+  /* Is this vector the target, and if not, what whole multiple of it is it?
+     Returns 0 when the vector is not a clean multiple — which `_cbal_assert`
+     proves cannot happen for any BALANCED vector in this unit's payload, and
+     which is handled anyway rather than trusted. */
+  function c4Multiple(target, coeffs) {
+    var k = 0, i, ratio;
+    for (i = 0; i < target.length; i++) {
+      if (coeffs[i] % target[i]) { return 0; }
+      ratio = coeffs[i] / target[i];
+      if (k && ratio !== k) { return 0; }
+      k = ratio;
+    }
+    return k;
+  }
+
+  function c4Same(a, b) {
+    var i;
+    if (!a || !b || a.length !== b.length) { return false; }
+    for (i = 0; i < a.length; i++) { if (a[i] !== b[i]) { return false; } }
+    return true;
+  }
+
+  /* ── coefficient-balancer (c4-05 #s-balance) ────────────────────────
+     Four equations, a `+`/`−` in front of every formula and nothing at all
+     attached to a subscript, because which number is theirs IS the lesson.
+
+     ⚖️ `solved` IS THE TARGET AND `balanced` IS THE COUNTS, AND THEY ARE NOT
+     THE SAME TEST. Each equation has exactly two balanced states inside the
+     cap — its target and the target doubled — and only the target ticks the
+     tab. At the doubled state the panel still says "Balanced.", because it
+     is, and the note beside it swaps to the one that says it is not in its
+     smallest numbers. That is the state Design's own "Going further"
+     paragraph marks down, answered where the student made it rather than
+     praised now and contradicted four sections later. */
+  function wireCoefficientBalancer(sec) {
+    var wrap = sec.querySelector("[data-cbal]");
+    if (!wrap) { return; }
+    var cfg = c3Cfg(wrap);
+    var eqs = cfg.eqs || [];
+    if (!eqs.length) { return; }
+    var floor = Number(cfg.floor || 1);
+    var cap = Number(cfg.cap || 4);
+
+    var active = cfg.start || eqs[0].id;
+    var coeffs = {}, solved = {}, nSolved = 0;
+    each(eqs, function (eq) {
+      var v = [], i;
+      for (i = 0; i < (eq.target || []).length; i++) { v.push(floor); }
+      coeffs[eq.id] = v;
+    });
+
+    var tabs = toArray(wrap.querySelectorAll("[data-cbal-tab]"));
+    var blocks = {};
+    each(wrap.querySelectorAll("[data-cbal-eq]"), function (el) {
+      blocks[el.getAttribute("data-cbal-eq")] = el;
+    });
+    var summaryEl = wrap.querySelector("[data-cbal-summary]");
+    var resetBtn = wrap.querySelector("[data-cbal-reset]");
+
+    function paintEq(eq) {
+      var block = blocks[eq.id];
+      if (!block) { return; }
+      var c = coeffs[eq.id];
+      var counts = c4Counts(eq, c);
+      var balanced = true, i;
+      for (i = 0; i < counts.length; i++) {
+        if (counts[i].l !== counts[i].r) { balanced = false; }
+      }
+
+      /* The coefficients. `data-cbal-lit` is the accent treatment Design
+         gives a number that has been moved off 1 — a LIVE VALUE, not a mark. */
+      each(block.querySelectorAll("[data-cbal-coeff]"), function (el) {
+        var idx = Number(el.getAttribute("data-cbal-coeff"));
+        c3Say(el, String(c[idx]));
+        el.setAttribute("data-cbal-lit", c[idx] > floor ? "1" : "0");
+      });
+
+      /* The bounds, as a property of the control and never as a sentence. */
+      each(block.querySelectorAll("[data-cbal-for]"), function (btn) {
+        var idx = Number(btn.getAttribute("data-cbal-for"));
+        var d = Number(btn.getAttribute("data-cbal-delta"));
+        var next = c[idx] + d;
+        btn.setAttribute("aria-disabled",
+          (next < floor || next > cap) ? "true" : "false");
+      });
+
+      each(block.querySelectorAll("[data-cbal-counter]"), function (tile) {
+        var el = tile.getAttribute("data-cbal-counter"), found = null, j;
+        for (j = 0; j < counts.length; j++) {
+          if (counts[j].el === el) { found = counts[j]; }
+        }
+        if (!found) { return; }
+        c3Say(tile.querySelector("[data-cbal-left]"), String(found.l));
+        c3Say(tile.querySelector("[data-cbal-right]"), String(found.r));
+        tile.setAttribute("data-cbal-match", found.l === found.r ? "1" : "0");
+        var want = found.l === found.r ? "matched"
+          : (found.l > found.r ? "short_right" : "short_left");
+        each(tile.querySelectorAll("[data-cbal-st]"), function (s) {
+          setHidden(s, s.getAttribute("data-cbal-st") !== want);
+        });
+      });
+
+      var panel = block.querySelector("[data-cbal-balanced]");
+      setHidden(panel, !balanced);
+      if (balanced) {
+        var isTarget = c4Same(eq.target, c);
+        var multiNote = block.querySelector('[data-cbal-note="multiple"]');
+        var kEl = block.querySelector("[data-cbal-k]");
+        /* A balanced state that is not the target is a whole multiple of it
+           — `_cbal_assert` walks the whole space and refuses to build if any
+           equation breaks that. `k` is DERIVED here and is never a literal,
+           even though the cap of 4 admits only k = 2 today. */
+        var k = isTarget ? 1 : c4Multiple(eq.target, c);
+        if (!isTarget && multiNote && k > 1) {
+          c3Say(kEl, String(k));
+          setHidden(block.querySelector('[data-cbal-note="target"]'), true);
+          setHidden(multiNote, false);
+        } else {
+          setHidden(block.querySelector('[data-cbal-note="target"]'), false);
+          setHidden(multiNote, true);
+        }
+        if (isTarget && !solved[eq.id]) { solved[eq.id] = true; nSolved += 1; }
+      }
+    }
+
+    function paint() {
+      each(eqs, paintEq);
+      each(tabs, function (btn) {
+        var id = btn.getAttribute("data-cbal-tab");
+        btn.setAttribute("aria-pressed", id === active ? "true" : "false");
+        setHidden(blocks[id], id !== active);
+        setHidden(wrap.querySelector('[data-cbal-tick="' + id + '"]'),
+                  !solved[id]);
+      });
+      setHidden(summaryEl, nSolved < eqs.length);
+      /* `markStage` is already a ratchet — never write another one. */
+      markStage(sec, nSolved >= eqs.length);
+    }
+
+    each(wrap.querySelectorAll("[data-cbal-for]"), function (btn) {
+      /* ⚠️ THE BUTTON'S OWN EQUATION, NOT THE ACTIVE ONE. Every equation's
+         steppers are bound, and three of the four blocks are hidden at any
+         moment — so reading `active` here would be an assumption about which
+         block a click came from rather than a fact about the click. Resolved
+         from the button's own ancestor, which cannot be wrong. */
+      var block = btn.closest ? btn.closest("[data-cbal-eq]") : null;
+      var owner = block ? block.getAttribute("data-cbal-eq") : null;
+      btn.addEventListener("click", function () {
+        /* The `aria-disabled` half of the bound. Nothing is said about it. */
+        if (btn.getAttribute("aria-disabled") === "true") { return; }
+        var eq = c3By(eqs, owner || active);
+        if (!eq || !coeffs[eq.id]) { return; }
+        var idx = Number(btn.getAttribute("data-cbal-for"));
+        var next = coeffs[eq.id][idx] + Number(btn.getAttribute("data-cbal-delta"));
+        if (next < floor || next > cap) { return; }
+        coeffs[eq.id][idx] = next;
+        paint();
+      });
+    });
+
+    each(tabs, function (btn) {
+      btn.addEventListener("click", function () {
+        var id = btn.getAttribute("data-cbal-tab");
+        /* THE NO-OP PRESS. Pressing the tab that is already lit changes
+           nothing and must therefore DO nothing — a control that claims to
+           be pressed and then repaints the screen is what the smoke gate
+           asserts against. */
+        if (id === active || !blocks[id]) { return; }
+        active = id;
+        paint();
+      });
+    });
+
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        var eq = c3By(eqs, active), i;
+        if (!eq) { return; }
+        for (i = 0; i < coeffs[eq.id].length; i++) { coeffs[eq.id][i] = floor; }
+        /* ⚠️ `solved` IS NOT CLEARED. MRB-208: credit is a RATCHET. An
+           equation the student has already driven to its target stays
+           credited when they set it back to 1 to try it again, and the rail
+           never goes backwards. */
+        paint();
+      });
+    }
+
+    paint();
+  }
+
+  /* ── forbidden-move (c4-05 #s-forbidden) ────────────────────────────
+     ⚖️ THE FORBIDDEN MOVE IS A BUTTON, NOT A WARNING. There is no refusal
+     here, no confirm, no red and no interception: the student presses "Add a
+     small 2 to the water", the equation balances, and the panel shows them
+     that what they have just written says burning hydrogen makes bleach.
+     Being allowed to make the move is the whole mechanism (NOTES-C4 §2) — a
+     warning dialog would confront the misconception with an assertion
+     instead of with the student's own equation.
+
+     ⚖️ AND BOTH MOVES STAY AVAILABLE. Neither button is spent and neither
+     disables: the comparison between the small 2 and the big 2 is the point,
+     so a student who has seen one must be able to see the other.
+
+     ⚑ `REACT-08` is elicited by `#forbidden-small-2` and confronted by
+     `#forbidden-reveal`, both of which are ids the renderer emits by name for
+     exactly this join (MRB-244). Renaming either without renaming the
+     register entry in the same edit breaks a join that will still LOOK
+     resolved in the record. */
+  function wireForbiddenMove(sec) {
+    var wrap = sec.querySelector("[data-forbid]");
+    if (!wrap) { return; }
+    var btns = toArray(wrap.querySelectorAll("[data-forbid-move]"));
+    if (!btns.length) { return; }
+    var reveal = wrap.querySelector("[data-forbid-reveal]");
+    var products = toArray(wrap.querySelectorAll("[data-forbid-product]"));
+    var texts = toArray(wrap.querySelectorAll("[data-forbid-text]"));
+
+    each(btns, function (btn) {
+      btn.addEventListener("click", function () {
+        /* THE NO-OP PRESS again: re-pressing the move that is already open
+           would move focus to a panel that has not changed. */
+        if (btn.getAttribute("aria-pressed") === "true") { return; }
+        var v = btn.getAttribute("data-forbid-move");
+        each(btns, function (b) {
+          b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+        });
+        each(products, function (p) {
+          setHidden(p, p.getAttribute("data-forbid-product") !== v);
+        });
+        each(texts, function (p) {
+          setHidden(p, p.getAttribute("data-forbid-text") !== v);
+        });
+        setHidden(reveal, false);
+        focusReveal(reveal);
+        markStage(sec, true);
+      });
+    });
+  }
+
+
+  //
+  // ⚠️⚠️ `data-cbalblock`, NOT `data-balblock`. The build contract §8 assigns
+  // this family the prefix `bal`, and `[data-balblock]` is ALREADY BOUND, one
+  // dispatch table above, to `wireBalanceBench` for C2's `balance-bench`.
+  // Spliced as assigned, this section would be handed to that handler as well
+  // as to this one — the `data-critiq` case exactly, which §8 itself cites as
+  // the precedent for choosing a prefix that does not collide. `cbal` and
+  // `forbid` are both measured free across this file, `shared/ks3.css` and
+  // every `ks3_art/*.py`. Reported to the commander, not changed quietly.
+  //
+  // MRB-210 does not apply: there is no range control in either instrument.
+  // Every control here is a real `<button>` and there is no `onclick=`
+  // attribute anywhere in the markup.
+
+/* ═══ END C4 wiring ═══ */
+
+
   function wireInstruments(root) {
     each(root.querySelectorAll("[data-board]"), wireBoard);
     each(root.querySelectorAll("[data-sort]"), wireSort);
@@ -18857,6 +20155,20 @@
     each(root.querySelectorAll("[data-critiqueblock]"), wirePlanCritique);
     each(root.querySelectorAll("[data-mpbblock]"), wireMeltingPointBench);
     // ═══ END C3 wiring ═══
+    // ═══ BEGIN C4 wiring ═══
+    each(root.querySelectorAll("[data-cpairblock]"), wireChangePairs);
+    each(root.querySelectorAll("[data-chainblock]"), wireChainBuild);
+    each(root.querySelectorAll("[data-arrblock]"), wireAtomRearranger);
+    each(root.querySelectorAll("[data-iaskblock]"), wireImpossibleAsk);
+    each(root.querySelectorAll("[data-eqbblock]"), wireEquationBuilder);
+    each(root.querySelectorAll("[data-eqrblock]"), wireEquationRead);
+    each(root.querySelectorAll("[data-bbenchblock]"), wireMassBench);
+    each(root.querySelectorAll("[data-mcovblock]"), wireMassCover);
+    each(root.querySelectorAll("[data-mworkblock]"), wireMassWorked);
+    each(root.querySelectorAll("[data-mchkblock]"), wireMassCheck);
+    each(root.querySelectorAll("[data-cbalblock]"), wireCoefficientBalancer);
+    each(root.querySelectorAll("[data-forbidblock]"), wireForbiddenMove);
+    // ═══ END C4 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
   }

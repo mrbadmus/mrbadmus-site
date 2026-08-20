@@ -44,6 +44,16 @@ are authored here for all eight samples.
 
 ── Corrected ───────────────────────────────────────────────────────────
 
+* **The think-again reveal no longer puts a number on it.** Design wrote
+  "Distilled water is pure and will keep you alive for about a week before
+  something else kills you." The teaching point is right — pure says how many
+  substances, not how good — but the week is not, and it is the kind of number
+  a student can check and find wrong. RULED (MRB-246): the timescale comes out
+  and the point stays. The clause is now "Distilled water is pure and has
+  nothing in it you could live on", which is a claim about composition, which
+  is what the paragraph is about, and it runs parallel to the sodium clause
+  beside it rather than cutting across it.
+
 * **"Four pure, four mixtures" was wrong and is now "Three pure, five
   mixtures".** The close paragraph on the approved page quotes a count the
   instrument beside it contradicts: the eight samples are three pure (the
@@ -54,14 +64,6 @@ are authored here for all eight samples.
 
 ⚑ For Mide's science gate:
   * None of NOTES §4's fifteen numbered flags falls on this lesson.
-  * One line of Design's think-again reveal is worth an examiner's eye anyway:
-    "Distilled water is pure and will keep you alive for about a week before
-    something else kills you." The point it is making — pure says how many
-    substances, not how good — is right, and the "week" is not: what kills you
-    is starvation, and that takes very much longer than a week. Kept as
-    Design wrote it rather than rewritten on my own judgement, because it is
-    rhetoric rather than a chemistry claim; flagged here so it is a decision
-    and not an oversight.
   * "Under a third of it by count is gold" (the ring). True — 9-carat gold is
     37.5% gold BY MASS, and gold atoms are heavy, so by count it is nearer a
     sixth. The looser statement is the true one and it stays.
@@ -453,8 +455,8 @@ LESSON = {
              "nothing added at all.",
              "The same word is used for clean, safe, natural and untouched, "
              "and none of those are chemistry. Distilled water is pure and "
-             "will keep you alive for about a week before something else "
-             "kills you. Pure sodium is pure and will set fire to your hand. "
+             "has nothing in it you could live on. Pure sodium is pure and "
+             "will set fire to your hand. "
              "<strong>Pure says how many substances, not how good.</strong>",
          ]},
     ],
