@@ -44,6 +44,12 @@ import sys
 STEPS = [
     ("KS4 site — combined/, triple/, root pages, shared/", "generate_site_v5.py"),
     ("KS3 site — ks3/ (33 units, 183 lesson slots)",       "build_ks3.py"),
+    # ⊕ MRB-270 phase 8a. LAST, and that ordering is load-bearing.
+    # generate_site_v5.py rmtree's mrbadmus_site/ on the way in, so anything
+    # emitted before it is deleted by it. build_student.py writes straight into
+    # mrbadmus_site/student/ and mirrors to student/, exactly as build_ks3.py
+    # does for ks3/, so it has to run after the tree exists.
+    ("student preview pages — student/*-preview.html",     "build_student.py"),
 ]
 
 

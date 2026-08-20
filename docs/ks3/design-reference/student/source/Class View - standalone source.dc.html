@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="ext-resource-dependency" content="https://unpkg.com/react@18.3.1/umd/react.production.min.js" data-resource-id="https://unpkg.com/react@18.3.1/umd/react.production.min.js" />
+<meta name="ext-resource-dependency" content="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" data-resource-id="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" />
+<template id="__bundler_thumbnail" data-bg-color="#FBF3E6">
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+<rect width="1200" height="800" fill="#FBF3E6"/>
+<rect x="300" y="216" width="600" height="368" rx="26" fill="#1E1913"/>
+<rect x="300" y="216" width="600" height="22" fill="#E4572E"/>
+<rect x="348" y="286" width="228" height="24" rx="12" fill="#F2946E"/>
+<rect x="348" y="342" width="300" height="40" rx="10" fill="#FBF3E6"/>
+<rect x="348" y="424" width="150" height="18" rx="9" fill="#4A4036"/>
+<rect x="348" y="466" width="196" height="18" rx="9" fill="#4A4036"/>
+<rect x="348" y="508" width="120" height="18" rx="9" fill="#4A4036"/>
+<rect x="626" y="286" width="240" height="252" rx="14" fill="#FFFDF8"/>
+<rect x="654" y="320" width="104" height="14" rx="7" fill="#D9C9AC"/>
+<rect x="654" y="352" width="72" height="30" rx="8" fill="#221E1B"/>
+<rect x="654" y="404" width="184" height="12" rx="6" fill="#F0E6D3"/>
+<rect x="654" y="440" width="150" height="12" rx="6" fill="#F0E6D3"/>
+<rect x="654" y="490" width="126" height="14" rx="7" fill="#A93411"/>
+<rect x="300" y="626" width="196" height="18" rx="9" fill="#12A150"/>
+<rect x="512" y="626" width="196" height="18" rx="9" fill="#E4572E"/>
+<rect x="724" y="626" width="176" height="18" rx="9" fill="#D6C6A8"/>
+</svg>
+</template>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<script src="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); text-decoration: none; }
+  a:hover { color: var(--ks3-accent-hover); }
+  button { font-family: inherit; }
+</style>
+</helmet>
+
+<div style="background:var(--st-ground);min-height:100vh">
+<div class="rd" data-mode="ks3" ref="{{ rootRef }}" style="width:{{ frameW }};max-width:100%;margin:0 auto;container-type:inline-size;min-height:100vh;background:var(--st-ground);color:var(--st-ink);font-family:var(--st-ui);border-left:{{ frameEdge }};border-right:{{ frameEdge }};-webkit-font-smoothing:antialiased;--st-ink:var(--ks3-ink);--st-ok-room:#55B36A">
+
+  <header style="position:relative;z-index:20;min-height:clamp(56px,4.4cqw,64px);display:flex;align-items:center;gap:clamp(14px,2.4cqw,34px);padding:0 clamp(14px,3cqw,44px);background:var(--st-paper);border-bottom:1px solid var(--st-rule)">
+    <button onClick="{{ goClass }}" style="all:unset;cursor:pointer;display:flex;align-items:center;gap:9px;color:var(--st-ink);flex:none">
+      <x-import component-from-global-scope="MrBadmusDS.BrandMark" size="20" hint-size="20px,20px"></x-import>
+      <span style="font:600 clamp(16px,1.5cqw,19px)/1 var(--st-display);letter-spacing:-0.025em">MrBadmusAI</span>
+    </button>
+    <nav style="display:flex;align-items:center;gap:clamp(14px,2cqw,26px);white-space:nowrap">
+      <sc-for list="{{ nav }}" as="n" hint-placeholder-count="2">
+        <button onClick="{{ n.onClick }}" style="all:unset;cursor:pointer;display:inline-flex;align-items:center;min-height:40px;font:500 clamp(13.5px,1.15cqw,15px)/1 var(--st-ui);box-shadow:inset 0 -2px 0 0 {{ n.under }};color:{{ n.color }}">{{ n.label }}</button>
+      </sc-for>
+    </nav>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:clamp(10px,1.3cqw,16px)">
+      <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+        <span class="kchip" style="border:1px solid var(--st-rule);border-radius:var(--st-r-chip);padding:5px 7px;color:var(--st-ghost)">PROD</span>
+      </sc-if>
+      <button onClick="{{ toggleMenu }}" style="all:unset;cursor:pointer;display:flex;align-items:center;gap:8px;min-height:40px">
+        <span style="width:30px;height:30px;flex:none;border-radius:50%;background:var(--st-num-well);border:1px solid {{ menuRing }};display:flex;align-items:center;justify-content:center;font:500 10.5px/1 var(--st-mono);letter-spacing:0.04em;color:var(--st-body)">AY</span>
+        <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+          <span style="font:500 14.5px/1 var(--st-ui);color:var(--st-body)">Ayo</span>
+        </sc-if>
+      </button>
+      <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+        <a href="#top" style="font:500 14.5px/1 var(--st-ui);color:var(--st-muted)" style-hover="color:var(--st-ink)">Settings</a>
+        <a href="#top" style="display:inline-flex;align-items:center;font:600 14px/1 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);padding:0 14px;min-height:40px" style-hover="border-color:var(--st-edge)">Sign out</a>
+      </sc-if>
+    </div>
+    <sc-if value="{{ menuOpen }}">
+      <span style="position:absolute;top:calc(100% + 6px);right:clamp(14px,3cqw,44px);width:186px;display:flex;flex-direction:column;padding:6px;border-radius:var(--st-r-card);background:var(--st-paper);border:1px solid var(--st-edge);box-shadow:0 18px 40px -20px rgba(40,26,10,0.45)">
+        <a href="#top" style="display:flex;align-items:center;min-height:44px;padding:0 12px;border-radius:var(--st-r-chip);font:500 14.5px/1 var(--st-ui);color:var(--st-body)" style-hover="background:var(--st-num-well)">Settings</a>
+        <a href="#top" style="display:flex;align-items:center;min-height:44px;padding:0 12px;border-radius:var(--st-r-chip);font:500 14.5px/1 var(--st-ui);color:var(--st-body)" style-hover="background:var(--st-num-well)">Sign out</a>
+      </span>
+    </sc-if>
+  </header>
+
+  <div style="min-height:clamp(44px,3.6cqw,52px);display:flex;align-items:center;gap:10px;padding:0 clamp(14px,3cqw,44px);background:var(--st-crumb-bg);border-bottom:1px solid var(--st-rule);white-space:nowrap">
+    <button onClick="{{ goClass }}" style="all:unset;cursor:pointer;font:400 11.5px/1 var(--st-mono);letter-spacing:0.09em;color:var(--st-ink)">8r/Sc1</button>
+    <span style="font:400 11.5px/1 var(--st-mono);color:var(--st-crumb-sep)">&#8250;</span>
+    <span style="font:400 11.5px/1 var(--st-mono);letter-spacing:0.09em;text-transform:uppercase;color:var(--st-caption)">{{ crumbLast }}</span>
+    <span style="margin-left:auto;font:400 11.5px/1 var(--st-mono);letter-spacing:0.09em;color:var(--st-caption)">{{ crumbRight }}</span>
+  </div>
+
+  <sc-if value="{{ onClass }}" hint-placeholder-val="{{ true }}">
+  <main id="top" data-screen-label="Class" style="max-width:1460px;margin:0 auto;padding:0 clamp(14px,3cqw,44px) clamp(48px,5cqw,80px)">
+
+    <section style="display:flex;align-items:flex-end;gap:clamp(22px,3.8cqw,56px);flex-wrap:wrap;padding:clamp(26px,3cqw,44px) 0 clamp(24px,2.4cqw,34px);border-bottom:1px solid var(--st-rule)">
+      <div style="flex:1 1 300px;min-width:0">
+        <span class="eyebrow" style="display:block">Welcome back, Ayo &#183; your class</span>
+        <h1 style="margin:14px 0 0;font:600 clamp(40px,7.4cqw,76px)/0.9 var(--st-display);letter-spacing:-0.048em">8r/Sc1</h1>
+        <div style="margin-top:clamp(16px,1.5cqw,20px);display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font:500 10.5px/1 var(--st-mono);letter-spacing:0.1em;text-transform:uppercase;color:var(--ks3-accent-text);background:var(--st-chip-tint);border:1px solid var(--st-chip-tint-border);border-radius:var(--st-r-chip);padding:6px 8px">Biology</span>
+          <span style="font:500 10.5px/1 var(--st-mono);letter-spacing:0.1em;text-transform:uppercase;color:var(--st-caption);border:1px solid var(--st-rule);border-radius:var(--st-r-chip);padding:6px 8px;white-space:nowrap">Mr Badmus</span>
+          <span style="font:500 10.5px/1 var(--st-mono);letter-spacing:0.1em;text-transform:uppercase;color:var(--st-caption);border:1px solid var(--st-rule);border-radius:var(--st-r-chip);padding:6px 8px;white-space:nowrap">28 students</span>
+        </div>
+      </div>
+      <div style="flex:1 1 {{ statsBasis }};min-width:0;max-width:{{ statsMax }};display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:clamp(16px,1.6cqw,22px) 0">
+        <sc-for list="{{ readings }}" as="r" hint-placeholder-count="4">
+          <div style="min-width:0;padding:2px clamp(12px,1.5cqw,22px);border-left:1px solid var(--st-rule)">
+            <span class="eyebrow" style="display:block">{{ r.label }}</span>
+            <span style="display:block;margin-top:clamp(8px,0.8cqw,11px);font:600 clamp(26px,2.4cqw,34px)/1 var(--st-display);letter-spacing:-0.035em">{{ r.value }}</span>
+            <span style="display:block;margin-top:12px;height:3px;border-radius:2px;background:var(--st-rule-soft);overflow:hidden">
+              <span style="display:block;height:3px;border-radius:2px;background:{{ r.bar }};width:{{ r.pct }}"></span>
+            </span>
+            <span style="display:block;margin-top:9px;font:400 9.5px/1.5 var(--st-mono);letter-spacing:0.1em;color:var(--st-ghost)">{{ r.caption }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section style="margin-top:clamp(24px,2.4cqw,34px);border-radius:var(--st-r-frame);overflow:hidden;background:var(--st-room-panel);border:1px solid var(--st-room-border);box-shadow:var(--st-shadow-frame)">
+      <div style="height:7px;background:repeating-linear-gradient(45deg,var(--st-accent) 0 9px,var(--st-hatch-b) 9px 18px)"></div>
+      <div style="display:grid;grid-template-columns:{{ benchCols }};gap:clamp(22px,2.8cqw,40px);padding:clamp(22px,2.4cqw,32px) clamp(18px,2.5cqw,36px) clamp(24px,2.6cqw,36px)">
+
+        <div style="min-width:0;display:flex;flex-direction:column;order:2">
+          <sc-if value="{{ hasWork }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;height:100%">
+              <span class="eyebrow" style="color:var(--st-ember)">On the bench now &#183; due Thu 18:00</span>
+              <h2 style="margin:clamp(12px,1.2cqw,16px) 0 0;font:600 clamp(27px,3.6cqw,46px)/1 var(--st-display);letter-spacing:-0.04em;color:var(--st-cream)">Cells &amp; microscopy</h2>
+              <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:14px 0 0;max-width:46ch;font:400 16.5px/1.55 var(--st-ui);color:var(--st-room-body);text-wrap:pretty">Eight questions, set from this week's lessons. Open it, answer them, hand it in before Thursday.</p>
+              </sc-if>
+              <div style="margin-top:clamp(20px,1.9cqw,26px);display:flex;flex-direction:column;gap:2px">
+                <sc-for list="{{ benchTasks }}" as="t" hint-placeholder-count="3">
+                  <button onClick="{{ t.toggle }}" style="all:unset;cursor:pointer;display:flex;align-items:center;gap:13px;min-height:40px;padding:6px 10px 6px 2px;border-radius:var(--st-r-chip)" style-hover="background:#241E17">
+                    <span style="width:21px;height:21px;flex:none;border-radius:6px;display:flex;align-items:center;justify-content:center;background:{{ t.boxBg }};border:1.5px solid {{ t.boxBorder }}">
+                      <sc-if value="{{ t.done }}">
+                        <svg width="11" height="9" viewBox="0 0 11 9" aria-hidden="true"><path d="M1.2 4.6 L4 7.4 L9.8 1.4" stroke="#15110C" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                      </sc-if>
+                    </span>
+                    <span style="font:500 clamp(14.5px,1.2cqw,15.5px)/1.3 var(--st-ui);color:{{ t.color }}">{{ t.label }}</span>
+                  </button>
+                </sc-for>
+              </div>
+              <div style="margin-top:auto;padding-top:clamp(22px,2.2cqw,30px);display:flex;align-items:center;gap:clamp(12px,1.6cqw,22px);flex-wrap:wrap">
+                <button onClick="{{ openAssignment }}" style="all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:10px;background:var(--ks3-accent-text);color:var(--st-paper);font:600 15px/1 var(--st-ui);border-radius:var(--st-r-btn);padding:15px 20px" style-hover="background:var(--ks3-accent-hover)">Open the assignment<svg width="11" height="11" viewBox="0 0 22 22" aria-hidden="true"><path d="M6 3.5 L13.5 11 L6 18.5" stroke="currentColor" strokeWidth="3.4" fill="none" strokeLinecap="round" strokeLinejoin="round"></path></svg></button>
+                <button onClick="{{ goRecall }}" style="all:unset;cursor:pointer;display:inline-flex;align-items:center;color:var(--st-cream);font:600 15px/1 var(--st-ui);border:1.5px solid var(--st-room-line);border-radius:var(--st-r-btn);padding:14px 18px" style-hover="border-color:var(--st-room-line-strong)">Practise recall</button>
+                <span style="display:flex;align-items:center;gap:11px;margin-left:auto">
+                  <span style="font:500 10px/1 var(--st-mono);letter-spacing:0.14em;color:var(--st-room-muted)">{{ benchDoneText }}</span>
+                  <span style="display:block;width:clamp(64px,7cqw,104px);height:4px;border-radius:2px;background:#241E17;overflow:hidden">
+                    <span style="display:block;height:4px;border-radius:2px;background:var(--st-accent);width:{{ benchPct }}"></span>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ fresh }}">
+            <div style="display:flex;flex-direction:column;height:100%">
+              <span class="eyebrow" style="color:var(--st-ember)">Bench clear &#183; nothing set</span>
+              <h2 style="margin:clamp(12px,1.2cqw,16px) 0 0;font:600 clamp(27px,3.6cqw,46px)/1 var(--st-display);letter-spacing:-0.04em;color:var(--st-cream)">No work set yet</h2>
+              <p style="margin:14px 0 0;max-width:44ch;font:400 clamp(15px,1.2cqw,16.5px)/1.55 var(--st-ui);color:var(--st-room-body);text-wrap:pretty">Nothing is due. Warm up on recall and your marks start counting the moment work is set.</p>
+              <div style="margin-top:auto;padding-top:clamp(22px,2.2cqw,30px);display:flex;align-items:center;gap:clamp(12px,1.6cqw,22px);flex-wrap:wrap">
+                <button onClick="{{ goRecall }}" style="all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:10px;background:var(--ks3-accent-text);color:var(--st-paper);font:600 15px/1 var(--st-ui);border-radius:var(--st-r-btn);padding:15px 20px" style-hover="background:var(--ks3-accent-hover)">Start recall<svg width="11" height="11" viewBox="0 0 22 22" aria-hidden="true"><path d="M6 3.5 L13.5 11 L6 18.5" stroke="currentColor" strokeWidth="3.4" fill="none" strokeLinecap="round" strokeLinejoin="round"></path></svg></button>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="order:{{ docketOrder }};min-width:0;display:flex;flex-direction:column;border-radius:var(--st-r-stage);background:var(--st-paper);border:1px solid var(--st-edge);overflow:hidden">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:clamp(13px,1.3cqw,17px) clamp(14px,1.5cqw,20px);background:var(--st-num-well);border-bottom:1px solid var(--st-edge)">
+            <span class="eyebrow" style="display:block">{{ docketKicker }}</span>
+            <span style="margin-left:auto;font:500 10px/1 var(--st-mono);letter-spacing:0.12em;color:var(--ks3-accent-text);background:var(--st-chip-tint);border:1px solid var(--st-chip-tint-border);border-radius:var(--st-r-chip);padding:5px 8px;white-space:nowrap">{{ docketFlag }}</span>
+          </div>
+          <div style="flex:1;display:grid;grid-template-columns:{{ docketCols }};align-content:space-between;gap:0 clamp(14px,2cqw,26px);padding:clamp(4px,0.5cqw,8px) clamp(14px,1.5cqw,20px)">
+            <sc-for list="{{ docket }}" as="d" hint-placeholder-count="4">
+              <div style="min-width:0;display:flex;flex-direction:{{ docketDir }};align-items:{{ docketItems }};gap:{{ docketGap }};padding:clamp(11px,1.15cqw,15px) 0;border-bottom:1px solid var(--st-rule-fact)">
+                <span style="font:400 9.5px/1.4 var(--st-mono);letter-spacing:0.12em;color:var(--st-caption);white-space:nowrap">{{ d.label }}</span>
+                <span style="margin-left:{{ docketPush }};min-width:0;text-align:{{ docketText }};font:{{ d.font }};letter-spacing:-0.02em;color:var(--st-ink);text-wrap:pretty">{{ d.value }}</span>
+              </div>
+            </sc-for>
+            <div style="padding:clamp(13px,1.4cqw,18px) 0 clamp(11px,1.2cqw,15px)">
+              <div style="display:flex;align-items:baseline;gap:6px 12px;flex-wrap:wrap">
+                <span style="font:600 clamp(20px,1.7cqw,24px)/1 var(--st-display);letter-spacing:-0.03em;color:var(--ks3-accent-text);white-space:nowrap">{{ docketLeft }}</span>
+                <span style="margin-left:auto;font:400 9.5px/1 var(--st-mono);letter-spacing:0.12em;color:var(--st-ghost);white-space:nowrap">{{ docketWorth }}</span>
+              </div>
+              <span style="display:block;margin-top:12px;height:4px;border-radius:2px;background:var(--st-rule-soft);overflow:hidden">
+                <span style="display:block;height:4px;border-radius:2px;background:var(--st-accent);width:{{ docketElapsed }}"></span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <sc-if value="{{ showSpine }}" hint-placeholder-val="{{ true }}">
+      <section style="margin-top:clamp(30px,3.2cqw,44px)">
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--st-rule)">
+          <span class="eyebrow">Term spine</span>
+          <sc-if value="{{ weekPicked }}">
+            <button onClick="{{ clearWeek }}" style="all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 11px;border-radius:var(--st-r-chip);background:var(--st-ink);color:var(--st-ground);font:500 10px/1 var(--st-mono);letter-spacing:0.12em">
+              <svg width="8" height="8" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1 L9 9 M9 1 L1 9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"></path></svg>SHOW ALL 12 WEEKS
+            </button>
+          </sc-if>
+          <sc-if value="{{ noWeekPicked }}" hint-placeholder-val="{{ true }}">
+            <span style="font:400 10px/1 var(--st-mono);letter-spacing:0.1em;color:var(--st-ghost);white-space:nowrap">TAP A WEEK TO FILTER</span>
+          </sc-if>
+          <span style="margin-left:auto;display:flex;align-items:center;gap:clamp(11px,1.2cqw,16px);flex-wrap:wrap">
+            <span style="display:flex;align-items:center;gap:7px"><span style="width:9px;height:9px;border-radius:50%;background:var(--st-ink);display:block"></span><span style="font:400 10px/1 var(--st-mono);letter-spacing:0.1em;color:var(--st-caption);white-space:nowrap">DONE</span></span>
+            <span style="display:flex;align-items:center;gap:7px"><span style="width:9px;height:9px;border-radius:50%;background:var(--st-accent);display:block"></span><span style="font:400 10px/1 var(--st-mono);letter-spacing:0.1em;color:var(--st-caption);white-space:nowrap">OPEN</span></span>
+            <span style="display:flex;align-items:center;gap:7px"><span style="width:8px;height:8px;border:2px solid var(--err);transform:rotate(45deg);display:block"></span><span style="font:400 10px/1 var(--st-mono);letter-spacing:0.1em;color:var(--st-caption);white-space:nowrap">MISSED</span></span>
+          </span>
+        </div>
+        <div style="display:grid;grid-template-columns:{{ spineCols }};gap:16px clamp(4px,0.7cqw,10px);justify-items:center;padding:clamp(18px,1.7cqw,22px) 0 0">
+          <sc-for list="{{ weeks }}" as="w" hint-placeholder-count="12">
+            <button onClick="{{ w.onClick }}" style="all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;max-width:46px">
+              <span style="width:100%;height:clamp(42px,3.6cqw,50px);border-radius:5px;display:block;position:relative;overflow:hidden;background:{{ w.trough }};box-shadow:{{ w.ring }}">
+                <span style="position:absolute;left:0;right:0;bottom:0;height:{{ w.stackH }};display:flex;flex-direction:column;gap:2px">
+                  <sc-for list="{{ w.segs }}" as="s" hint-placeholder-count="1">
+                    <span style="flex:1;display:block;background:{{ s.bg }}"></span>
+                  </sc-for>
+                </span>
+              </span>
+              <span style="font:400 10px/1 var(--st-mono);letter-spacing:0.06em;color:{{ w.numColor }}">{{ w.num }}</span>
+              <span style="display:block;width:5px;height:5px;border-radius:50%;background:{{ w.nowDot }}"></span>
+            </button>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <div style="margin-top:clamp(30px,3.2cqw,46px);display:{{ railDisplay }};flex-direction:column;grid-template-columns:minmax(0,1fr) minmax(288px,372px);gap:22px clamp(20px,2.8cqw,38px);align-items:{{ railAlign }}">
+
+      <div style="order:1;grid-column:2;grid-row:2;min-width:0;background:var(--st-room);border:1px solid var(--st-room-border);border-radius:var(--st-r-card);padding:22px">
+        <span class="eyebrow" style="color:var(--st-ember);display:block">Recall</span>
+        <div style="display:flex;align-items:flex-end;gap:12px;margin-top:14px">
+          <span style="font:600 clamp(34px,3.6cqw,46px)/1 var(--st-display);letter-spacing:-0.04em;color:var(--st-cream)">{{ retrievalCount }}</span>
+          <span style="font:400 10px/1.4 var(--st-mono);letter-spacing:0.11em;color:var(--st-room-muted);padding-bottom:5px">ANSWERED<br>THIS WEEK</span>
+        </div>
+        <p style="margin:14px 0 0;font:400 13.5px/1.5 var(--st-ui);color:var(--st-room-body);text-wrap:pretty">Questions from the lessons this class has covered. Six a round, unlimited rounds.</p>
+        <button onClick="{{ goRecall }}" style="all:unset;cursor:pointer;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-top:18px;background:var(--ks3-accent-text);color:var(--st-paper);font:600 14.5px/1 var(--st-ui);border-radius:var(--st-r-btn);padding:14px 10px" style-hover="background:var(--ks3-accent-hover)">Start a round<svg width="10" height="10" viewBox="0 0 22 22" aria-hidden="true"><path d="M6 3.5 L13.5 11 L6 18.5" stroke="currentColor" strokeWidth="3.4" fill="none" strokeLinecap="round" strokeLinejoin="round"></path></svg></button>
+      </div>
+
+      <section id="work" style="order:2;grid-column:1;grid-row:1 / span 2;min-width:0">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:14px;border-bottom:1px solid var(--st-rule)">
+          <span class="eyebrow">Work</span>
+          <sc-if value="{{ weekPicked }}">
+            <button onClick="{{ clearWeek }}" style="all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 10px;border-radius:var(--st-r-chip);background:var(--st-chip-tint);border:1px solid var(--st-chip-tint-border);color:var(--ks3-accent-text);font:500 10px/1 var(--st-mono);letter-spacing:0.11em;white-space:nowrap">
+              {{ weekChipText }}<svg width="8" height="8" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1 L9 9 M9 1 L1 9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"></path></svg>
+            </button>
+          </sc-if>
+          <sc-if value="{{ noWeekPicked }}" hint-placeholder-val="{{ true }}">
+            <span style="font:400 10px/1 var(--st-mono);letter-spacing:0.1em;color:var(--st-ghost);white-space:nowrap">AUTUMN TERM</span>
+          </sc-if>
+          <span style="margin-left:auto;display:flex;gap:3px;background:var(--st-seg-bg);border-radius:var(--st-r-control);padding:3px">
+            <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+              <button onClick="{{ t.onClick }}" style="all:unset;cursor:pointer;display:inline-flex;align-items:center;min-height:34px;padding:0 clamp(9px,1cqw,13px);border-radius:8px;font:500 clamp(11px,0.9cqw,12px)/1 var(--st-mono);letter-spacing:0.1em;text-transform:uppercase;white-space:nowrap;background:{{ t.bg }};color:{{ t.color }}">{{ t.label }}</button>
+            </sc-for>
+          </span>
+        </div>
+
+        <div style="display:flex;flex-direction:column;padding-top:8px">
+          <sc-for list="{{ rows }}" as="r" hint-placeholder-count="5">
+            <div style="border-bottom:1px solid var(--st-rule-fact)">
+              <button onClick="{{ r.toggle }}" style="all:unset;cursor:pointer;display:grid;grid-template-columns:{{ rowCols }};align-items:center;gap:clamp(11px,1.2cqw,16px);width:100%;box-sizing:border-box;padding:clamp(14px,1.3cqw,17px) clamp(8px,1.2cqw,16px);border-radius:var(--st-r-card)" style-hover="background:var(--st-paper)">
+                <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+                  <span style="font:400 11px/1 var(--st-mono);letter-spacing:0.08em;color:var(--st-ghost)">{{ r.wk }}</span>
+                </sc-if>
+                <span style="display:flex;align-items:center;justify-content:center">
+                  <sc-if value="{{ r.isMarked }}"><span style="width:13px;height:13px;border-radius:50%;background:var(--st-ink);display:block"></span></sc-if>
+                  <sc-if value="{{ r.isPending }}"><span style="width:13px;height:13px;border-radius:50%;border:2px solid var(--st-rule-strong);display:block"></span></sc-if>
+                  <sc-if value="{{ r.isMissed }}"><span style="width:10px;height:10px;border:2px solid var(--err);transform:rotate(45deg);display:block"></span></sc-if>
+                  <sc-if value="{{ r.isOpen }}"><span style="width:14px;height:14px;border-radius:50%;background:var(--st-accent);box-shadow:0 0 0 3px var(--st-ground),0 0 0 4.5px var(--st-accent);display:block"></span></sc-if>
+                </span>
+                <span style="display:block;min-width:0;text-align:left">
+                  <span style="display:block;font:600 clamp(16.5px,1.4cqw,18px)/1.2 var(--st-display);letter-spacing:-0.025em">{{ r.title }}</span>
+                  <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+                    <span style="display:block;margin-top:5px;font:400 13.5px/1.4 var(--st-ui);color:var(--st-muted)">{{ r.brief }}</span>
+                  </sc-if>
+                  <sc-if value="{{ narrow }}">
+                    <span style="display:block;margin-top:6px;font:400 9.5px/1.4 var(--st-mono);letter-spacing:0.1em;color:{{ r.wordColor }}">{{ r.metaLine }}</span>
+                  </sc-if>
+                </span>
+                <span style="display:flex;align-items:center;gap:clamp(9px,1cqw,14px);justify-self:end">
+                  <sc-if value="{{ r.showScore }}"><span style="font:600 clamp(22px,2cqw,27px)/1 var(--st-display);letter-spacing:-0.035em">{{ r.scoreText }}</span></sc-if>
+                  <sc-if value="{{ r.showWord }}"><span style="font:500 10.5px/1 var(--st-mono);letter-spacing:0.13em;color:{{ r.wordColor }};white-space:nowrap">{{ r.word }}</span></sc-if>
+                  <sc-if value="{{ r.showHint }}"><span style="font:500 10px/1 var(--st-mono);letter-spacing:0.11em;color:var(--st-faint);white-space:nowrap">{{ r.hintText }}</span></sc-if>
+                  <span style="width:9px;height:9px;flex:none;border-right:1.5px solid var(--st-crumb-sep);border-bottom:1.5px solid var(--st-crumb-sep);display:block;transform:rotate({{ r.caret }})"></span>
+                </span>
+              </button>
+
+              <sc-if value="{{ r.expanded }}">
+                <div style="margin:0 clamp(4px,1.2cqw,16px) 20px;border-radius:var(--st-r-card);border:1px solid var(--st-note-border);background:var(--st-note-bg);overflow:hidden">
+                  <div style="display:flex;align-items:center;gap:14px;padding:13px clamp(13px,1.4cqw,18px);border-bottom:1px solid var(--st-note-border);flex-wrap:wrap">
+                    <span style="font:400 10.5px/1.5 var(--st-mono);letter-spacing:0.12em;color:var(--st-caption)">{{ r.detail }}</span>
+                    <sc-if value="{{ r.retake }}">
+                      <span style="font:500 10px/1 var(--st-mono);letter-spacing:0.12em;color:var(--ks3-accent-text);background:var(--st-chip-tint);border:1px solid var(--st-chip-tint-border);border-radius:var(--st-r-chip);padding:5px 8px">RETAKE OPEN</span>
+                    </sc-if>
+                  </div>
+
+                  <sc-if value="{{ r.hasNotes }}">
+                    <div style="display:flex;flex-direction:column">
+                      <sc-for list="{{ r.notes }}" as="n" hint-placeholder-count="2">
+                        <div style="display:flex;gap:13px;padding:16px clamp(13px,1.4cqw,18px);border-bottom:1px solid var(--st-note-border)">
+                          <span style="width:30px;height:30px;flex:none;border-radius:50%;background:var(--st-ink);display:flex;align-items:center;justify-content:center;font:500 10px/1 var(--st-mono);color:var(--st-ground)">MB</span>
+                          <span style="display:block;min-width:0">
+                            <span style="display:block;font:400 clamp(14.5px,1.2cqw,15px)/1.5 var(--st-ui);color:var(--st-ink);text-wrap:pretty">{{ n.text }}</span>
+                            <span style="display:block;margin-top:7px;font:400 9.5px/1 var(--st-mono);letter-spacing:0.11em;color:var(--st-ghost)">{{ n.meta }}</span>
+                          </span>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{ r.hasBreakdown }}">
+                    <div style="padding:16px clamp(13px,1.4cqw,18px);border-bottom:1px solid var(--st-note-border)">
+                      <span class="eyebrow" style="display:block;color:var(--st-caption)">Question by question</span>
+                      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">
+                        <sc-for list="{{ r.items }}" as="it" hint-placeholder-count="6">
+                          <span style="display:flex;align-items:center;gap:6px;padding:6px 9px;border-radius:var(--st-r-chip);background:{{ it.bg }};border:1px solid {{ it.border }}">
+                            <sc-if value="{{ it.ok }}"><svg width="9" height="8" viewBox="0 0 11 9" aria-hidden="true"><path d="M1.2 4.6 L4 7.4 L9.8 1.4" stroke="var(--st-ink)" strokeWidth="2.1" fill="none" strokeLinecap="round" strokeLinejoin="round"></path></svg></sc-if>
+                            <sc-if value="{{ it.bad }}"><span style="width:7px;height:7px;border:1.6px solid var(--err);transform:rotate(45deg);display:block"></span></sc-if>
+                            <span style="font:400 10px/1 var(--st-mono);letter-spacing:0.1em;color:{{ it.color }}">{{ it.numeral }}</span>
+                          </span>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </sc-if>
+
+                  <div style="display:flex;align-items:center;gap:12px;padding:14px clamp(13px,1.4cqw,18px);flex-wrap:wrap">
+                    <button onClick="{{ r.primary }}" style="all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:9px;white-space:nowrap;background:var(--ks3-accent-text);color:var(--st-paper);font:600 13.5px/1 var(--st-ui);border-radius:var(--st-r-btn);padding:13px 16px" style-hover="background:var(--ks3-accent-hover)">{{ r.primaryLabel }}<svg width="10" height="10" viewBox="0 0 22 22" aria-hidden="true"><path d="M6 3.5 L13.5 11 L6 18.5" stroke="currentColor" strokeWidth="3.4" fill="none" strokeLinecap="round" strokeLinejoin="round"></path></svg></button>
+                    <button onClick="{{ r.toggle }}" style="all:unset;cursor:pointer;font:600 13.5px/1 var(--st-ui);color:var(--st-muted);border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);padding:12px 15px" style-hover="color:var(--st-ink);border-color:var(--st-edge)">Close</button>
+                    <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+                      <span style="margin-left:auto;font:400 10px/1 var(--st-mono);letter-spacing:0.11em;color:var(--st-ghost)">{{ r.footNote }}</span>
+                    </sc-if>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+          <sc-if value="{{ noRows }}">
+            <div style="margin-top:14px;padding:40px 16px 34px;text-align:center;border:1px dashed var(--st-rule-strong);border-radius:var(--st-r-card);background:var(--st-note-bg)">
+              <span style="display:block;font:500 10.5px/1.5 var(--st-mono);letter-spacing:0.16em;text-transform:uppercase;color:var(--st-faint)">{{ emptyNote }}</span>
+              <sc-if value="{{ canReset }}">
+                <button onClick="{{ resetFilters }}" style="all:unset;cursor:pointer;display:inline-flex;margin-top:16px;font:600 13.5px/1 var(--st-ui);color:var(--ks3-accent-text);border:1.5px solid var(--st-chip-tint-border);border-radius:var(--st-r-btn);padding:12px 15px" style-hover="color:var(--ks3-accent-hover)">Clear filters</button>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <div style="order:3;grid-column:2;grid-row:1;min-width:0;background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-card);padding:18px">
+        <div style="display:flex;align-items:baseline;gap:10px;padding:0 4px 12px">
+          <span class="eyebrow">Lessons in this topic</span>
+          <span style="margin-left:auto;font:400 11px/1 var(--st-mono);color:var(--st-ghost)">04</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <sc-for list="{{ lessons }}" as="l" hint-placeholder-count="4">
+            <a href="#top" style="display:flex;align-items:center;gap:12px;padding:10px 9px;border-radius:var(--st-r-chip);border:1px solid {{ l.border }};background:{{ l.bg }}" style-hover="border-color:var(--st-edge)">
+              <span style="width:34px;height:34px;flex:none;border-radius:8px;border:1px solid {{ l.numBorder }};background:{{ l.numBg }};display:flex;align-items:center;justify-content:center;font:500 11px/1 var(--st-mono);color:{{ l.numColor }}">{{ l.num }}</span>
+              <span style="display:block;min-width:0;text-align:left">
+                <span style="display:block;font:500 14.5px/1.25 var(--st-ui);letter-spacing:-0.01em;color:var(--st-ink);text-wrap:pretty">{{ l.name }}</span>
+                <span style="display:block;margin-top:5px;font:400 10px/1.4 var(--st-mono);letter-spacing:0.1em;color:{{ l.metaColor }}">{{ l.meta }}</span>
+              </span>
+            </a>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="order:4;grid-column:1;grid-row:3;min-width:0;background:var(--st-note-bg);border:1px dashed var(--st-note-border);border-radius:var(--st-r-card);padding:20px 22px">
+        <div style="display:flex;align-items:baseline;gap:10px">
+          <span class="eyebrow">Shoutouts</span>
+          <span style="margin-left:auto;font:400 10px/1 var(--st-mono);color:var(--st-ghost)">{{ shoutCount }}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;margin-top:16px">
+          <sc-for list="{{ shoutouts }}" as="s" hint-placeholder-count="2">
+            <div style="display:flex;gap:12px;padding-top:14px;border-top:1px solid var(--st-note-border)">
+              <span style="width:30px;height:30px;flex:none;border-radius:50%;background:var(--st-paper);border:1px solid var(--st-note-border);display:flex;align-items:center;justify-content:center;font:500 10px/1 var(--st-mono);color:var(--st-body)">{{ s.who }}</span>
+              <span style="display:block;min-width:0">
+                <span style="display:block;font:400 14.5px/1.45 var(--st-ui);color:var(--st-ink);text-wrap:pretty">{{ s.text }}</span>
+                <span style="display:block;margin-top:7px;font:400 9.5px/1 var(--st-mono);letter-spacing:0.11em;color:var(--st-ghost)">{{ s.meta }}</span>
+              </span>
+            </div>
+          </sc-for>
+          <sc-if value="{{ noShouts }}">
+            <span style="font:500 10.5px/1 var(--st-mono);letter-spacing:0.16em;color:var(--st-faint);padding-top:6px">NONE YET</span>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+
+    <section id="board" data-screen-label="Leaderboard" style="margin-top:clamp(40px,4.2cqw,60px)">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--st-rule)">
+        <span class="eyebrow">Leaderboard</span>
+        <span style="font:400 10px/1 var(--st-mono);letter-spacing:0.1em;color:var(--st-ghost);white-space:nowrap">{{ boardScopeNote }}</span>
+        <span style="margin-left:auto;display:flex;align-items:center;gap:clamp(10px,1.2cqw,16px);flex-wrap:wrap">
+          <span style="display:flex;gap:4px">
+            <sc-for list="{{ boardWeeks }}" as="t" hint-placeholder-count="5">
+              <button onClick="{{ t.onClick }}" style="all:unset;cursor:pointer;display:inline-flex;align-items:center;min-height:40px;box-sizing:border-box;padding:0 clamp(8px,0.9cqw,10px);border-radius:var(--st-r-chip);font:500 10px/1 var(--st-mono);letter-spacing:0.11em;white-space:nowrap;background:{{ t.bg }};color:{{ t.color }};border:1px solid {{ t.border }}">{{ t.label }}</button>
+            </sc-for>
+          </span>
+          <button onClick="{{ toggleSize }}" style="all:unset;cursor:pointer;display:inline-flex;align-items:center;min-height:40px;box-sizing:border-box;font:500 10px/1 var(--st-mono);letter-spacing:0.11em;color:var(--st-body);border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-chip);padding:0 11px;white-space:nowrap" style-hover="border-color:var(--st-edge);color:var(--st-ink)">{{ sizeLabel }}</button>
+        </span>
+      </div>
+
+      <sc-if value="{{ hasBoard }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:24px;display:grid;grid-template-columns:{{ boardCols }};gap:clamp(20px,2.2cqw,30px);align-items:start">
+
+          <div style="position:relative;min-width:0;border-radius:var(--st-r-frame);overflow:hidden;background:var(--st-room-panel);border:1px solid var(--st-room-border);box-shadow:var(--st-shadow-frame)">
+            <div style="height:7px;background:repeating-linear-gradient(45deg,var(--st-accent) 0 9px,var(--st-hatch-b) 9px 18px)"></div>
+            <span style="position:absolute;right:{{ ghostRight }};top:26px;font:600 clamp(104px,13cqw,190px)/0.72 var(--st-display);letter-spacing:-0.06em;color:rgba(251,243,230,0.045);pointer-events:none;display:block">01</span>
+            <div style="position:relative;padding:26px clamp(18px,2cqw,28px) 28px">
+              <span class="eyebrow" style="color:var(--st-ember);display:block">{{ leaderEyebrow }}</span>
+              <div style="display:flex;align-items:center;gap:16px;margin-top:20px">
+                <span style="width:clamp(54px,4.6cqw,66px);height:clamp(54px,4.6cqw,66px);flex:none;border-radius:50%;background:var(--st-cream);border:3px solid var(--st-accent);box-shadow:0 0 0 5px rgba(8,6,4,0.5);display:flex;align-items:center;justify-content:center;font:500 clamp(15px,1.3cqw,17px)/1 var(--st-mono);letter-spacing:0.03em;color:var(--st-ink)">{{ leader.mono }}</span>
+                <span style="display:block;min-width:0">
+                  <span style="display:block;font:600 clamp(26px,3.1cqw,40px)/1 var(--st-display);letter-spacing:-0.04em;color:var(--st-cream)">{{ leader.name }}</span>
+                  <span style="display:flex;align-items:center;gap:8px;margin-top:11px;flex-wrap:wrap">
+                    <span style="font:500 10px/1 var(--st-mono);letter-spacing:0.12em;color:var(--st-ember);border:1px solid var(--st-room-line-strong);border-radius:var(--st-r-chip);padding:5px 8px;white-space:nowrap">{{ leader.streakText }}</span>
+                    <span style="font:500 10px/1 var(--st-mono);letter-spacing:0.12em;color:var(--st-room-muted);white-space:nowrap">{{ leader.deltaText }}</span>
+                  </span>
+                </span>
+              </div>
+              <div style="display:flex;align-items:flex-end;gap:11px;margin-top:26px">
+                <span style="font:600 clamp(38px,4.8cqw,62px)/1 var(--st-display);letter-spacing:-0.045em;color:var(--st-cream)">{{ leader.points }}</span>
+                <span style="font:400 10px/1.4 var(--st-mono);letter-spacing:0.12em;color:var(--st-room-muted);padding-bottom:8px">POINTS</span>
+              </div>
+              <span style="display:flex;height:9px;border-radius:5px;overflow:hidden;background:#241E17;margin-top:16px">
+                <span style="display:block;background:var(--st-ok-room);width:{{ leader.wOnTime }}"></span>
+                <span style="display:block;background:var(--st-accent);width:{{ leader.wScore }}"></span>
+                <span style="display:block;background:var(--st-room-line-strong);width:{{ leader.wRecall }}"></span>
+              </span>
+              <div style="display:flex;gap:0;margin-top:22px">
+                <sc-for list="{{ leader.parts }}" as="p" hint-placeholder-count="3">
+                  <span style="flex:1;min-width:0;padding-right:14px;border-right:{{ p.edge }}">
+                    <span style="display:block;font:400 9.5px/1 var(--st-mono);letter-spacing:0.12em;color:var(--st-room-muted);white-space:nowrap">{{ p.label }}</span>
+                    <span style="display:block;margin-top:9px;font:600 clamp(21px,1.7cqw,24px)/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-cream)">{{ p.value }}</span>
+                  </span>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <div style="min-width:0">
+            <div style="display:flex;flex-direction:column">
+              <sc-for list="{{ chasers }}" as="c" hint-placeholder-count="4">
+                <div style="display:grid;grid-template-columns:{{ chaseCols }};align-items:center;gap:clamp(8px,1cqw,14px);padding:clamp(12px,1.2cqw,14px) clamp(10px,1.3cqw,16px);border-bottom:1px solid var(--st-rule-fact);border-radius:var(--st-r-card);background:{{ c.rowBg }};box-shadow:{{ c.rowRing }}">
+                  <span style="font:600 clamp(16px,1.5cqw,19px)/1 var(--st-display);letter-spacing:-0.03em;color:{{ c.rankColor }}">{{ c.rank }}</span>
+                  <span style="width:clamp(30px,2.5cqw,34px);height:clamp(30px,2.5cqw,34px);border-radius:50%;background:var(--st-num-well);border:1px solid {{ c.monoBorder }};display:flex;align-items:center;justify-content:center;font:500 10.5px/1 var(--st-mono);color:var(--st-body)">{{ c.mono }}</span>
+                  <span style="display:block;min-width:0">
+                    <span style="display:flex;align-items:center;gap:8px">
+                      <span style="font:500 clamp(14.5px,1.3cqw,15.5px)/1.2 var(--st-ui);letter-spacing:-0.01em;color:var(--st-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.name }}</span>
+                      <sc-if value="{{ c.me }}"><span style="flex:none;font:500 9px/1 var(--st-mono);letter-spacing:0.14em;color:var(--ks3-accent-text);background:var(--st-chip-tint);border-radius:var(--st-r-chip);padding:4px 6px">YOU</span></sc-if>
+                    </span>
+                    <span style="display:flex;height:5px;border-radius:3px;overflow:hidden;background:var(--st-rule-soft);margin-top:9px;width:{{ c.barWidth }}">
+                      <span style="display:block;background:var(--ks3-ok);width:{{ c.wOnTime }}"></span>
+                      <span style="display:block;background:var(--st-accent);width:{{ c.wScore }}"></span>
+                      <span style="display:block;background:var(--st-rule-strong);width:{{ c.wRecall }}"></span>
+                    </span>
+                  </span>
+                  <span style="font:600 clamp(18px,1.8cqw,21px)/1 var(--st-display);letter-spacing:-0.03em;text-align:right">{{ c.points }}</span>
+                  <span style="display:flex;align-items:center;justify-content:center">
+                    <sc-if value="{{ c.up }}"><svg width="11" height="9" viewBox="0 0 11 9" aria-hidden="true"><path d="M5.5 0.8 L10.2 8.2 L0.8 8.2 Z" fill="var(--st-accent)"></path></svg></sc-if>
+                    <sc-if value="{{ c.down }}"><svg width="11" height="9" viewBox="0 0 11 9" aria-hidden="true"><path d="M5.5 8.2 L0.8 0.8 L10.2 0.8 Z" fill="var(--st-rule-strong)"></path></svg></sc-if>
+                    <sc-if value="{{ c.flat }}"><span style="width:9px;height:1.5px;background:var(--st-rule-strong);display:block"></span></sc-if>
+                  </span>
+                </div>
+              </sc-for>
+            </div>
+
+            <sc-if value="{{ showPinned }}">
+              <div style="margin-top:14px;padding-top:14px;border-top:1px dashed var(--st-rule-strong)">
+                <div style="display:grid;grid-template-columns:{{ chaseCols }};align-items:center;gap:clamp(8px,1cqw,14px);padding:clamp(12px,1.2cqw,14px) clamp(10px,1.3cqw,16px);border-radius:var(--st-r-card);background:var(--st-chip-tint);box-shadow:0 0 0 1px var(--st-chip-tint-border)">
+                  <span style="font:600 clamp(16px,1.5cqw,19px)/1 var(--st-display);letter-spacing:-0.03em;color:var(--ks3-accent-text)">{{ pinned.rank }}</span>
+                  <span style="width:clamp(30px,2.5cqw,34px);height:clamp(30px,2.5cqw,34px);border-radius:50%;background:var(--st-paper);border:1px solid var(--st-accent);display:flex;align-items:center;justify-content:center;font:500 10.5px/1 var(--st-mono);color:var(--st-ink)">{{ pinned.mono }}</span>
+                  <span style="display:block;min-width:0">
+                    <span style="display:flex;align-items:center;gap:8px">
+                      <span style="font:500 clamp(14.5px,1.3cqw,15.5px)/1.2 var(--st-ui);color:var(--st-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ pinned.name }}</span>
+                      <span style="flex:none;font:500 9px/1 var(--st-mono);letter-spacing:0.14em;color:var(--ks3-accent-text);border:1px solid var(--st-chip-tint-border);border-radius:var(--st-r-chip);padding:4px 6px">YOU</span>
+                    </span>
+                    <span style="display:block;margin-top:8px;font:400 10px/1.4 var(--st-mono);letter-spacing:0.11em;color:var(--ks3-accent-text)">{{ pinned.gapText }}</span>
+                  </span>
+                  <span style="font:600 clamp(18px,1.8cqw,21px)/1 var(--st-display);letter-spacing:-0.03em;text-align:right">{{ pinned.points }}</span>
+                  <span></span>
+                </div>
+              </div>
+            </sc-if>
+
+            <div style="display:flex;align-items:center;gap:clamp(12px,1.5cqw,18px);flex-wrap:wrap;margin-top:20px;padding-top:16px;border-top:1px solid var(--st-rule)">
+              <span style="display:flex;align-items:center;gap:7px"><span style="width:16px;height:5px;border-radius:3px;background:var(--ks3-ok);display:block"></span><span style="font:400 9.5px/1 var(--st-mono);letter-spacing:0.11em;color:var(--st-caption);white-space:nowrap">ON TIME &#183; 40</span></span>
+              <span style="display:flex;align-items:center;gap:7px"><span style="width:16px;height:5px;border-radius:3px;background:var(--st-accent);display:block"></span><span style="font:400 9.5px/1 var(--st-mono);letter-spacing:0.11em;color:var(--st-caption);white-space:nowrap">SCORE &#183; 40</span></span>
+              <span style="display:flex;align-items:center;gap:7px"><span style="width:16px;height:5px;border-radius:3px;background:var(--st-rule-strong);display:block"></span><span style="font:400 9.5px/1 var(--st-mono);letter-spacing:0.11em;color:var(--st-caption);white-space:nowrap">RECALL &#183; 20</span></span>
+              <span style="margin-left:auto;font:400 9.5px/1 var(--st-mono);letter-spacing:0.11em;color:var(--st-ghost)">RESETS EVERY MONDAY 00:00</span>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ noBoard }}">
+        <div style="margin-top:20px;padding:44px 16px;text-align:center;border:1px dashed var(--st-rule-strong);border-radius:var(--st-r-card);background:var(--st-note-bg)">
+          <span style="font:500 10.5px/1.5 var(--st-mono);letter-spacing:0.16em;text-transform:uppercase;color:var(--st-faint)">The leaderboard starts when the first work is marked</span>
+        </div>
+      </sc-if>
+    </section>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ onRecall }}">
+    <div data-screen-label="Recall" style="padding:0 0 40px">
+      <div style="display:flex;align-items:center;gap:clamp(12px,1.6cqw,18px);flex-wrap:wrap;padding:14px clamp(14px,3cqw,44px);background:var(--st-paper);border-bottom:1px solid var(--st-rule)">
+        <button onClick="{{ goClass }}" style="all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:9px;font:600 13.5px/1 var(--st-ui);color:var(--st-body);border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);padding:12px 14px" style-hover="border-color:var(--st-edge);color:var(--st-ink)">
+          <svg width="10" height="10" viewBox="0 0 22 22" aria-hidden="true"><path d="M14 3.5 L6.5 11 L14 18.5" stroke="currentColor" strokeWidth="3.4" fill="none" strokeLinecap="round" strokeLinejoin="round"></path></svg>8r/Sc1
+        </button>
+        <span style="display:block;min-width:0">
+          <span style="display:block;font:600 clamp(18px,1.8cqw,21px)/1 var(--st-display);letter-spacing:-0.03em">Recall</span>
+          <span style="display:block;margin-top:6px;font:400 10px/1.4 var(--st-mono);letter-spacing:0.11em;color:var(--st-ghost)">SIX QUESTIONS &#183; UNLIMITED ROUNDS</span>
+        </span>
+        <span style="margin-left:auto;display:flex;align-items:center;gap:11px">
+          <span style="font:500 10px/1 var(--st-mono);letter-spacing:0.12em;color:var(--st-caption);white-space:nowrap">{{ recallMeter }}</span>
+          <span style="display:block;width:clamp(56px,7cqw,96px);height:4px;border-radius:2px;background:var(--st-rule-soft);overflow:hidden">
+            <span style="display:block;height:4px;border-radius:2px;background:var(--st-accent);width:{{ recallMeterPct }}"></span>
+          </span>
+        </span>
+      </div>
+
+      <div style="padding:clamp(18px,2cqw,26px) clamp(14px,3cqw,44px) 0">
+        <div style="display:grid;grid-template-columns:{{ recallCols }};gap:22px;align-items:stretch">
+
+          <div style="min-width:0;background:var(--st-room);border:1px solid var(--st-room-border);border-radius:var(--st-r-stage);min-height:clamp(520px,42cqw,600px);display:flex;flex-direction:column;padding:clamp(20px,2.6cqw,38px);box-sizing:border-box">
+            <sc-if value="{{ roundLive }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;height:100%;flex:1">
+                <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+                  <span class="eyebrow" style="color:var(--st-ember)">{{ qCounter }}</span>
+                  <span style="margin-left:auto;display:flex;gap:5px">
+                    <sc-for list="{{ pips }}" as="p" hint-placeholder-count="6">
+                      <span style="width:{{ p.w }};height:6px;border-radius:3px;background:{{ p.bg }};display:block"></span>
+                    </sc-for>
+                  </span>
+                </div>
+                <h3 style="margin:clamp(20px,1.9cqw,26px) 0 0;max-width:min(30ch,100%);font:600 clamp(25px,3.1cqw,40px)/1.12 var(--st-display);letter-spacing:-0.035em;color:var(--st-cream);text-wrap:pretty">{{ question }}</h3>
+                <div style="display:grid;grid-template-columns:{{ optCols }};gap:10px;margin-top:auto;padding-top:clamp(20px,2cqw,28px)">
+                  <sc-for list="{{ options }}" as="o" hint-placeholder-count="4">
+                    <button onClick="{{ o.onClick }}" style="all:unset;cursor:pointer;display:flex;align-items:flex-start;gap:13px;padding:clamp(14px,1.5cqw,17px) clamp(14px,1.6cqw,18px);border-radius:var(--st-r-card);background:{{ o.bg }};border:1.5px solid {{ o.border }}">
+                      <span style="width:28px;height:28px;flex:none;border-radius:8px;background:{{ o.keyBg }};border:1.5px solid {{ o.keyBorder }};display:flex;align-items:center;justify-content:center;font:500 11px/1 var(--st-mono);color:{{ o.keyColor }}">{{ o.key }}</span>
+                      <span style="font:500 clamp(14.5px,1.35cqw,16px)/1.35 var(--st-ui);color:{{ o.color }};text-align:left;padding-top:4px;text-wrap:pretty">{{ o.text }}</span>
+                      <span style="margin-left:auto;display:flex;align-items:center;padding-top:8px;flex:none">
+                        <sc-if value="{{ o.ok }}"><svg width="13" height="11" viewBox="0 0 11 9" aria-hidden="true"><path d="M1.2 4.6 L4 7.4 L9.8 1.4" stroke="var(--st-ok-room)" strokeWidth="2.1" fill="none" strokeLinecap="round" strokeLinejoin="round"></path></svg></sc-if>
+                        <sc-if value="{{ o.bad }}"><span style="width:9px;height:9px;border:2px solid var(--err);transform:rotate(45deg);display:block"></span></sc-if>
+                      </span>
+                    </button>
+                  </sc-for>
+                </div>
+                <sc-if value="{{ showFeedback }}">
+                  <div style="display:flex;gap:12px;margin-top:16px;padding:14px 16px;border-radius:var(--st-r-card);background:var(--st-room-panel);border-left:3px solid {{ fbEdge }}">
+                    <span style="display:block;min-width:0">
+                      <span style="display:block;font:500 9.5px/1 var(--st-mono);letter-spacing:0.13em;color:{{ fbEdge }}">{{ fbLabel }}</span>
+                      <span style="display:block;margin-top:8px;font:400 clamp(13.5px,1.15cqw,14.5px)/1.5 var(--st-ui);color:var(--st-room-note);text-wrap:pretty">{{ fbText }}</span>
+                    </span>
+                  </div>
+                </sc-if>
+                <div style="display:flex;align-items:center;gap:clamp(10px,1.2cqw,14px);margin-top:clamp(18px,1.9cqw,26px);flex-wrap:wrap">
+                  <button onClick="{{ primaryRecall }}" style="all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:10px;background:{{ recallBtnBg }};color:{{ recallBtnColor }};font:600 15px/1 var(--st-ui);border:1.5px solid {{ recallBtnBorder }};border-radius:var(--st-r-btn);padding:15px 20px;white-space:nowrap">{{ recallBtnLabel }}<svg width="11" height="11" viewBox="0 0 22 22" aria-hidden="true"><path d="M6 3.5 L13.5 11 L6 18.5" stroke="currentColor" strokeWidth="3.4" fill="none" strokeLinecap="round" strokeLinejoin="round"></path></svg></button>
+                  <button onClick="{{ skipQuestion }}" style="all:unset;cursor:pointer;font:600 14px/1 var(--st-ui);color:var(--st-room-muted);border:1.5px solid var(--st-room-line);border-radius:var(--st-r-btn);padding:14px 16px" style-hover="color:var(--st-cream);border-color:var(--st-room-line-strong)">Skip</button>
+                  <span style="margin-left:auto;font:500 10px/1 var(--st-mono);letter-spacing:0.13em;color:var(--st-room-muted);white-space:nowrap">{{ streakText }}</span>
+                </div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ roundDone }}">
+              <div style="display:flex;flex-direction:column;flex:1;justify-content:center;align-items:flex-start">
+                <span class="eyebrow" style="color:var(--st-ember)">Round complete</span>
+                <span style="display:flex;align-items:flex-end;gap:14px;margin-top:20px">
+                  <span style="font:600 clamp(56px,7.4cqw,96px)/1 var(--st-display);letter-spacing:-0.05em;color:var(--st-cream)">{{ roundScore }}</span>
+                  <span style="font:400 11px/1.4 var(--st-mono);letter-spacing:0.12em;color:var(--st-room-muted);padding-bottom:14px">RIGHT OUT<br>OF SIX</span>
+                </span>
+                <p style="margin:20px 0 0;max-width:40ch;font:400 clamp(15px,1.2cqw,16px)/1.55 var(--st-ui);color:var(--st-room-body);text-wrap:pretty">{{ roundNote }}</p>
+                <div style="display:flex;gap:clamp(10px,1.2cqw,14px);margin-top:30px;flex-wrap:wrap">
+                  <button onClick="{{ newRound }}" style="all:unset;cursor:pointer;background:var(--ks3-accent-text);color:var(--st-paper);font:600 15px/1 var(--st-ui);border-radius:var(--st-r-btn);padding:15px 20px" style-hover="background:var(--ks3-accent-hover)">Another round</button>
+                  <button onClick="{{ goClass }}" style="all:unset;cursor:pointer;color:var(--st-cream);font:600 15px/1 var(--st-ui);border:1.5px solid var(--st-room-line);border-radius:var(--st-r-btn);padding:14px 18px" style-hover="border-color:var(--st-room-line-strong)">Back to class</button>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="min-width:0;background:var(--st-room-panel);border:1px solid var(--st-room-border);border-radius:var(--st-r-card);box-sizing:border-box;padding:22px;display:flex;flex-direction:column">
+            <span class="eyebrow" style="color:var(--st-ember);display:block">This week</span>
+            <div style="display:flex;align-items:flex-end;gap:11px;margin-top:14px">
+              <span style="font:600 clamp(38px,4cqw,52px)/1 var(--st-display);letter-spacing:-0.045em;color:var(--st-cream)">{{ retrievalCount }}</span>
+              <span style="font:400 10px/1.4 var(--st-mono);letter-spacing:0.12em;color:var(--st-room-muted);padding-bottom:6px">ANSWERED</span>
+            </div>
+            <div style="display:flex;gap:0;margin-top:24px;padding-top:20px;border-top:1px solid var(--st-room-line)">
+              <sc-for list="{{ recallStats }}" as="s" hint-placeholder-count="2">
+                <span style="flex:1;min-width:0">
+                  <span style="display:block;font:400 9.5px/1 var(--st-mono);letter-spacing:0.12em;color:var(--st-room-muted)">{{ s.label }}</span>
+                  <span style="display:block;margin-top:9px;font:600 clamp(21px,1.7cqw,24px)/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-cream)">{{ s.value }}</span>
+                </span>
+              </sc-for>
+            </div>
+            <span style="display:block;margin-top:26px;padding-top:20px;border-top:1px solid var(--st-room-line);font:400 13.5px/1.55 var(--st-ui);color:var(--st-room-body);text-wrap:pretty">Recall counts for 20 of the 100 points on the leaderboard. Rounds are unlimited and do not need handing in.</span>
+            <a href="#top" onClick="{{ goClass }}" style="display:flex;align-items:center;justify-content:center;gap:9px;box-sizing:border-box;margin-top:clamp(22px,2cqw,28px);width:100%;color:var(--st-cream);font:600 14.5px/1 var(--st-ui);border:1.5px solid var(--st-room-line);border-radius:var(--st-r-btn);padding:14px 10px" style-hover="border-color:var(--st-room-line-strong);color:var(--st-cream)">Open the assignment instead</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Auto&quot;,&quot;Phone 360&quot;,&quot;Phone 390&quot;,&quot;Tablet 820&quot;,&quot;Desktop 1460&quot;],&quot;default&quot;:&quot;Auto&quot;,&quot;tsType&quot;:&quot;'Auto' | 'Phone 360' | 'Phone 390' | 'Tablet 820' | 'Desktop 1460'&quot;,&quot;section&quot;:&quot;Responsive&quot;},&quot;classState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Work set&quot;,&quot;Fresh class&quot;],&quot;default&quot;:&quot;Work set&quot;,&quot;tsType&quot;:&quot;'Work set' | 'Fresh class'&quot;,&quot;section&quot;:&quot;Class state&quot;},&quot;hideScores&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Class state&quot;},&quot;showSpine&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
+class Component extends DCLogic {
+  rootRef = React.createRef();
+
+  state = {
+    view: 'class', w: 1200, menu: false,
+    tab: 'all', week: null, open: null,
+    bench: { t1: false, t2: false, t3: false },
+    boardWeek: 4, boardSize: 5,
+    qi: 0, pick: null, checked: false, right: 0, streak: 3
+  };
+
+  work = [
+    { id: 'a5', week: 4, title: 'Cells & microscopy', brief: '8 questions \u00B7 draws on this week\u2019s lessons', status: 'open', detail: 'SET MON 15 SEP \u00B7 8 QUESTIONS \u00B7 DUE THU 18:00' },
+    { id: 'a4', week: 3, title: 'Digestion', brief: '6 questions \u00B7 enzymes and the gut', status: 'marked', score: 82, detail: 'MARKED 11 SEP \u00B7 6 OF 8 QUESTIONS RIGHT',
+      notes: [
+        { text: 'Questions 3 and 7 put the enzyme in the wrong part of the gut. Read the second half of the lesson before the next one.', meta: 'ON QUESTIONS 03, 07 \u00B7 11 SEP' },
+        { text: 'Handed in early and the working was set out clearly. Same again this week.', meta: 'ON THE WHOLE PIECE \u00B7 11 SEP' }
+      ], items: [1, 1, 0, 1, 1, 1, 0, 1] },
+    { id: 'a3', week: 3, title: 'Movement & joints', brief: '5 questions \u00B7 muscles and bones', status: 'marked', score: 71, retake: true, detail: 'MARKED 9 SEP \u00B7 3 OF 5 QUESTIONS RIGHT',
+      notes: [{ text: 'Two answers named the wrong bone. The retake is open until Friday and the better mark counts.', meta: 'ON QUESTIONS 02, 04 \u00B7 9 SEP' }],
+      items: [1, 0, 1, 0, 1] },
+    { id: 'a2', week: 2, title: 'Gas exchange', brief: '10 questions \u00B7 lungs and breathing', status: 'pending', late: true, detail: 'HANDED IN 2 DAYS LATE \u00B7 WITH MR BADMUS' },
+    { id: 'a1', week: 1, title: 'Cell parts', brief: '8 questions \u00B7 starter set', status: 'marked', score: 95, detail: 'MARKED 2 SEP \u00B7 8 OF 8 QUESTIONS RIGHT',
+      notes: [{ text: 'Full marks. Move on to the microscopy lesson before Thursday.', meta: 'ON THE WHOLE PIECE \u00B7 2 SEP' }], items: [1, 1, 1, 1, 1, 1, 1, 1] },
+    { id: 'a0', week: 1, title: 'Lab safety check', brief: '8 questions \u00B7 before any practical', status: 'missed', detail: 'CLOSED 1 SEP \u00B7 NOT HANDED IN' }
+  ];
+
+  roster = [
+    { id: 's1', name: 'Tiwa A.', mono: 'TA' }, { id: 's2', name: 'Marcus O.', mono: 'MO' },
+    { id: 's3', name: 'Ayo B.', mono: 'AY', me: true }, { id: 's4', name: 'Hafsah I.', mono: 'HI' },
+    { id: 's5', name: 'Daniel K.', mono: 'DK' }, { id: 's6', name: 'Priya S.', mono: 'PS' },
+    { id: 's7', name: 'Ronke E.', mono: 'RE' }, { id: 's8', name: 'Jamie L.', mono: 'JL' },
+    { id: 's9', name: 'Oscar N.', mono: 'ON' }, { id: 's10', name: 'Zainab F.', mono: 'ZF' },
+    { id: 's11', name: 'Ethan C.', mono: 'EC' }, { id: 's12', name: 'Mira P.', mono: 'MP' }
+  ];
+
+  weekPts = {
+    1: [72, 88, 64, 91, 55, 79, 83, 47, 68, 94, 60, 51],
+    2: [95, 81, 78, 70, 66, 86, 74, 58, 90, 62, 49, 84],
+    3: [84, 92, 88, 76, 71, 63, 97, 55, 67, 80, 73, 59],
+    4: [98, 91, 94, 86, 74, 88, 69, 62, 80, 77, 71, 65]
+  };
+
+  lessonDefs = [
+    { num: '01', name: 'Life processes and cells', meta: 'READ \u00B7 4 RUNGS DONE' },
+    { num: '02', name: 'Using a microscope', meta: 'THIS WEEK \u00B7 SET IN THE ASSIGNMENT', on: true },
+    { num: '03', name: 'Animal and plant cells', meta: 'NOT OPENED' },
+    { num: '04', name: 'Specialised cells', meta: 'NOT OPENED' }
+  ];
+
+  /* Real KS3 ladder questions, rungs 1-2, across the topics this class has covered.
+     Each distractor carries the feedback written against it in the lesson. */
+  questions = [
+    { topic: 'CELLS & MICROSCOPY', a: 'B',
+      q: 'An eyepiece lens of 10 and an objective lens of 40 are used together. What is the total magnification?',
+      o: ['50, because the two lens powers are added together',
+          '400, because the two lens powers are multiplied together',
+          '40, because the objective lens does all of the magnifying',
+          '4, because the objective is divided by the eyepiece'],
+      f: ['Magnification multiplies at each lens. It is never added.',
+          'Right. Each lens magnifies the image the next one receives, so the two powers multiply.',
+          'The objective magnifies first, but the eyepiece then magnifies that image again.',
+          'Nothing is divided here. Both lenses enlarge the image.'] },
+    { topic: 'CELL PARTS', a: 'A',
+      q: 'Which structure would you find in a plant cell but never in an animal cell?',
+      o: ['A chloroplast, where light is absorbed for photosynthesis',
+          'A nucleus, which holds the genetic material',
+          'A mitochondrion, which releases energy from glucose',
+          'A cell membrane, which controls what enters the cell'],
+      f: ['Right. Animal cells cannot photosynthesise, so they have no chloroplasts.',
+          'Both plant and animal cells have a nucleus.',
+          'Both plant and animal cells respire, so both have mitochondria.',
+          'Every cell has a membrane, plant or animal.'] },
+    { topic: 'CELLS & MICROSCOPY', a: 'B',
+      q: 'What is the job of the cell membrane?',
+      o: ['To hold the cell in a rigid shape',
+          'To control which substances enter and leave the cell',
+          'To store sap and keep the cell firm',
+          'To carry the instructions for making proteins'],
+      f: ['That is the cell wall, and only plant cells have one.',
+          'Right. The membrane is partially permeable, so some substances pass through and others do not.',
+          'That is the vacuole, which sits inside the cell.',
+          'That is the nucleus.'] },
+    { topic: 'DIGESTION', a: 'A',
+      q: 'Why does the body use enzymes to digest food?',
+      o: ['They break large food molecules into small ones the body can absorb',
+          'They squeeze the food along the gut a little at a time',
+          'They neutralise the acid that the stomach makes',
+          'They carry the digested food to the cells that need it'],
+      f: ['Right. Only small molecules can pass through the wall of the small intestine.',
+          'That is peristalsis, done by muscles in the gut wall.',
+          'Bile does that, and bile is not an enzyme.',
+          'The blood does that, after absorption.'] },
+    { topic: 'MOVEMENT & JOINTS', a: 'B',
+      q: 'Why do muscles have to work in pairs across a joint?',
+      o: ['One muscle is stronger, so the weaker one helps it',
+          'A muscle can only pull, so a second muscle pulls the bone back',
+          'Two muscles contracting together can lift twice the weight',
+          'Each muscle is joined to a different bone, so both must move'],
+      f: ['Strength is not the reason. Think about what a muscle can and cannot do.',
+          'Right. Muscles pull but never push, so an antagonistic pair moves the bone both ways.',
+          'In a pair, one contracts while the other relaxes. They do not contract together.',
+          'Both muscles of a pair cross the same joint.'] },
+    { topic: 'GAS EXCHANGE', a: 'B',
+      q: 'Alveoli are covered in a dense network of capillaries. Why does that matter?',
+      o: ['It keeps the air inside the lungs warm',
+          'It gives oxygen a very short distance to diffuse into the blood',
+          'It pushes the air back out when you breathe out',
+          'It lets the blood carry whole bubbles of air to the muscles'],
+      f: ['Air is warmed in the nose and airways, and that is not what the capillaries are for.',
+          'Right. A short diffusion distance and a large surface area together make gas exchange fast.',
+          'The diaphragm and the ribs do that.',
+          'Only dissolved gases cross into the blood, never bubbles.'] }
+  ];
+
+  componentDidMount() {
+    const el = this.rootRef.current;
+    if (!el) return;
+    this.measure = () => {
+      const w = el.getBoundingClientRect().width;
+      if (w && Math.abs(w - this.state.w) > 1) this.setState({ w: w });
+    };
+    window.addEventListener('resize', this.measure);
+    window.addEventListener('orientationchange', this.measure);
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', this.measure);
+    /* settle poll: catches font load, scrollbar arrival and any host reframe
+       that a resize event does not announce */
+    let ticks = 0;
+    this.poll = setInterval(() => { this.measure(); if (++ticks > 24) clearInterval(this.poll); }, 250);
+    this.measure();
+    requestAnimationFrame(this.measure);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.measure);
+    window.removeEventListener('orientationchange', this.measure);
+    if (window.visualViewport) window.visualViewport.removeEventListener('resize', this.measure);
+    clearInterval(this.poll);
+  }
+
+  go = (view) => this.setState({ view: view, open: null, menu: false });
+  toggleMenu = () => this.setState((s) => ({ menu: !s.menu }));
+  pickWeek = (n) => this.setState((s) => ({ week: s.week === n ? null : n }));
+  clearWeek = () => this.setState({ week: null });
+  resetFilters = () => this.setState({ week: null, tab: 'all' });
+  pickTab = (id) => this.setState({ tab: id });
+  toggleRow = (id) => this.setState((s) => ({ open: s.open === id ? null : id }));
+  toggleTask = (k) => this.setState((s) => ({ bench: Object.assign({}, s.bench, { [k]: !s.bench[k] }) }));
+  pickBoardWeek = (w) => this.setState({ boardWeek: w });
+  toggleSize = () => this.setState((s) => ({ boardSize: s.boardSize === 5 ? 10 : 5 }));
+
+  /* Routes to /class/8r-sc1/assignments/:id, an existing platform page.
+     Here it records the visit: task one ticks, as it would on return. */
+  openAssignment = () => this.setState((s) => ({ bench: Object.assign({}, s.bench, { t1: true }) }));
+
+  choose = (k) => { if (!this.state.checked) this.setState({ pick: k }); };
+  advance = () => this.setState((s) => {
+    if (!s.checked) {
+      if (!s.pick) return {};
+      const ok = s.pick === this.questions[s.qi].a;
+      return { checked: true, right: s.right + (ok ? 1 : 0), streak: ok ? s.streak + 1 : 0 };
+    }
+    return { qi: s.qi + 1, pick: null, checked: false };
+  });
+  skipQuestion = () => this.setState((s) => ({ qi: s.qi + 1, pick: null, checked: false, streak: 0 }));
+  newRound = () => this.setState({ qi: 0, pick: null, checked: false, right: 0 });
+
+  renderVals() {
+    const st = this.state;
+    const fresh = (this.props.classState ?? 'Work set') === 'Fresh class';
+    const hideScores = this.props.hideScores ?? false;
+    const forced = { 'Phone 360': 360, 'Phone 390': 390, 'Tablet 820': 820, 'Desktop 1460': 1460 }[this.props.layout ?? 'Auto'];
+    const W = forced || st.w;
+
+    /* Breakpoints. desk >= 1024 · tablet 720-1023 · phone < 720 */
+    const desk = W >= 1024;
+    const wide = W >= 720;
+    const narrow = !wide;
+    const onClass = st.view === 'class';
+    const dash = '\u2014';
+    const pad = (n) => (n < 10 ? '0' + n : String(n));
+    const pc = (a, b) => (b ? Math.round((a / b) * 100) + '%' : '0%');
+    const all = fresh ? [] : this.work;
+
+    const marked = all.filter((w) => w.status === 'marked');
+    const handed = all.filter((w) => w.status === 'marked' || w.status === 'pending');
+    const onTime = handed.filter((w) => !w.late).length;
+    const avg = marked.length ? Math.round(marked.reduce((s, w) => s + w.score, 0) / marked.length) : null;
+
+    const readings = ([
+      { label: 'Handed in', value: all.length ? handed.length + '/' + all.length : dash, caption: 'THIS TERM', pct: pc(handed.length, all.length) },
+      { label: 'On time', value: handed.length ? onTime + '/' + handed.length : dash, caption: 'OF HANDED IN', pct: pc(onTime, handed.length), bar: 'var(--ks3-ok)' },
+      { label: 'Avg score', value: avg == null ? dash : avg + '%', caption: marked.length ? marked.length + ' MARKED' : 'NOT MARKED YET', pct: avg == null ? '0%' : avg + '%' },
+      { label: 'Recall', value: fresh ? '0' : '46', caption: 'ANSWERED \u00B7 WK 04', pct: fresh ? '0%' : '77%' }
+    ]).map((r) => Object.assign({ bar: 'var(--st-accent)' }, r));
+
+    const weeks = [];
+    for (let n = 1; n <= 12; n++) {
+      const items = all.filter((w) => w.week === n);
+      const sel = st.week === n;
+      weeks.push({
+        num: pad(n), onClick: () => this.pickWeek(n),
+        trough: n <= 4 ? 'var(--st-rule-fact)' : 'var(--st-crumb-bg)',
+        stackH: !items.length ? '0%' : items.length > 1 ? '100%' : '70%',
+        segs: items.map((w) => ({ bg: w.status === 'open' ? 'var(--st-accent)' : w.status === 'missed' ? 'var(--err)' : 'var(--st-ink)' })),
+        ring: sel ? '0 0 0 1.5px var(--st-ink)' : 'none',
+        numColor: sel ? 'var(--st-ink)' : n === 4 ? 'var(--ks3-accent-text)' : 'var(--st-ghost)',
+        nowDot: n === 4 ? 'var(--st-accent)' : 'transparent'
+      });
+    }
+
+    const tabDefs = [
+      { id: 'all', label: 'All', n: all.length },
+      { id: 'todo', label: 'To do', n: all.filter((w) => w.status === 'open' || w.status === 'missed').length },
+      { id: 'marked', label: 'Marked', n: marked.length }
+    ];
+    const tabs = tabDefs.map((t) => ({
+      label: t.label + ' ' + t.n, onClick: () => this.pickTab(t.id),
+      bg: st.tab === t.id ? 'var(--st-paper)' : 'transparent',
+      color: st.tab === t.id ? 'var(--st-ink)' : 'var(--st-caption)'
+    }));
+
+    let list = all;
+    if (st.tab === 'todo') list = list.filter((w) => w.status === 'open' || w.status === 'missed');
+    if (st.tab === 'marked') list = list.filter((w) => w.status === 'marked');
+    if (st.week != null) list = list.filter((w) => w.week === st.week);
+
+    const rows = list.map((w) => {
+      const isMarked = w.status === 'marked';
+      const showScore = isMarked && !hideScores;
+      const expanded = st.open === w.id;
+      const longWord = w.status === 'open' ? 'DUE THU 18:00' : w.status === 'pending' ? 'WITH MR BADMUS' : w.status === 'missed' ? 'MISSED' : 'MARKED';
+      const shortWord = w.status === 'open' ? 'DUE THU' : w.status === 'pending' ? 'SENT' : w.status === 'missed' ? 'MISSED' : 'MARKED';
+      return {
+        wk: 'W' + pad(w.week), title: w.title, brief: w.brief,
+        metaLine: 'W' + pad(w.week) + ' \u00B7 ' + longWord,
+        isMarked: isMarked, isPending: w.status === 'pending', isMissed: w.status === 'missed', isOpen: w.status === 'open',
+        showScore: showScore, scoreText: w.score + '%',
+        showWord: !showScore && wide, word: wide ? longWord : shortWord,
+        wordColor: w.status === 'open' ? 'var(--ks3-accent-text)' : w.status === 'missed' ? 'var(--err)' : 'var(--st-caption)',
+        showHint: wide && !expanded,
+        hintText: isMarked ? 'READ FEEDBACK' : w.status === 'open' ? 'OPEN IT' : w.status === 'pending' ? 'SEE IT' : 'OPTIONS',
+        detail: w.detail, retake: !!w.retake,
+        hasNotes: !!w.notes, notes: w.notes || [],
+        hasBreakdown: !!w.items,
+        items: (w.items || []).map((ok, i) => ({
+          numeral: pad(i + 1), ok: ok === 1, bad: ok === 0,
+          bg: ok === 1 ? 'var(--st-paper)' : 'transparent',
+          border: ok === 1 ? 'var(--st-rule)' : 'var(--err)',
+          color: ok === 1 ? 'var(--st-body)' : 'var(--err)'
+        })),
+        footNote: isMarked ? 'MARKS ARE FINAL UNLESS A RETAKE IS OPEN' : w.status === 'open' ? 'COUNTS TOWARDS WEEK 04' : '',
+        primaryLabel: w.status === 'open' ? 'Open the assignment' : w.retake ? 'Retake it' : isMarked ? 'Open the lesson' : w.status === 'pending' ? 'See what you sent' : 'Ask for an extension',
+        primary: w.status === 'open' || w.retake ? this.openAssignment : () => this.go('recall'),
+        expanded: expanded, caret: expanded ? '225deg' : '45deg',
+        toggle: () => this.toggleRow(w.id)
+      };
+    });
+
+    const doneCount = ['t1', 't2', 't3'].filter((k) => st.bench[k]).length;
+    const benchTasks = [
+      { key: 't1', label: 'Open it' },
+      { key: 't2', label: 'Answer the eight questions' },
+      { key: 't3', label: 'Hand it in' }
+    ].map((t) => {
+      const done = !!st.bench[t.key];
+      return {
+        label: t.label, done: done,
+        boxBg: done ? 'var(--st-ember)' : 'transparent',
+        boxBorder: done ? 'var(--st-ember)' : 'var(--st-room-line-strong)',
+        color: done ? 'var(--st-room-faint)' : 'var(--st-room-text)',
+        toggle: () => this.toggleTask(t.key)
+      };
+    });
+
+    const bigVal = 'clamp(15px,1.35cqw,17px)';
+    const docket = fresh ? [
+      { label: 'QUESTIONS', value: dash, font: '600 ' + bigVal + '/1.3 var(--st-display)' },
+      { label: 'DRAWS ON', value: dash, font: '500 ' + bigVal + '/1.3 var(--st-ui)' },
+      { label: 'SET', value: dash, font: '500 ' + bigVal + '/1.3 var(--st-ui)' },
+      { label: 'DUE', value: dash, font: '500 ' + bigVal + '/1.3 var(--st-ui)' }
+    ] : [
+      { label: 'QUESTIONS', value: '8', font: '600 clamp(19px,1.7cqw,23px)/1 var(--st-display)' },
+      { label: 'DRAWS ON', value: 'Using a microscope', font: '500 ' + bigVal + '/1.3 var(--st-ui)' },
+      { label: 'SET', value: 'Mon 15 Sep', font: '500 ' + bigVal + '/1.3 var(--st-ui)' },
+      { label: 'DUE', value: 'Thu 18 Sep, 18:00', font: '500 ' + bigVal + '/1.3 var(--st-ui)' }
+    ];
+
+    const lessons = this.lessonDefs.map((l) => ({
+      num: l.num, name: l.name, meta: l.meta,
+      border: l.on ? 'var(--st-accent)' : 'var(--st-rule-soft)',
+      bg: l.on ? 'var(--st-chip-tint)' : 'var(--st-paper)',
+      numBg: l.on ? 'var(--st-paper)' : 'var(--st-num-well)',
+      numBorder: l.on ? 'var(--st-chip-tint-border)' : 'var(--st-rule)',
+      numColor: l.on ? 'var(--ks3-accent-text)' : 'var(--st-caption)',
+      metaColor: l.on ? 'var(--ks3-accent-text)' : 'var(--st-faint)'
+    }));
+
+    const qi = Math.min(st.qi, 5);
+    const q = this.questions[qi];
+    const keys = ['A', 'B', 'C', 'D'];
+    const options = q.o.map((t, i) => {
+      const k = keys[i];
+      const chosen = st.pick === k;
+      const isAns = q.a === k;
+      const ok = st.checked && isAns;
+      const bad = st.checked && chosen && !isAns;
+      return {
+        key: k, text: t, onClick: () => this.choose(k), ok: ok, bad: bad,
+        bg: ok ? 'rgba(85,179,106,0.12)' : chosen ? '#241E17' : 'transparent',
+        border: bad ? 'var(--err)' : ok ? 'var(--st-ok-room)' : chosen ? 'var(--st-room-line-strong)' : 'var(--st-room-line)',
+        keyBg: chosen || ok ? 'var(--st-ember)' : 'transparent',
+        keyBorder: chosen || ok ? 'var(--st-ember)' : 'var(--st-room-line-strong)',
+        keyColor: chosen || ok ? '#15110C' : 'var(--st-room-muted)',
+        color: ok || chosen ? 'var(--st-cream)' : 'var(--st-room-text)'
+      };
+    });
+    const pickIdx = keys.indexOf(st.pick);
+    const rightPick = st.checked && st.pick === q.a;
+    const pips = this.questions.map((x, i) => ({
+      w: i === st.qi ? '26px' : '12px',
+      bg: i < st.qi ? 'var(--st-ember)' : i === st.qi ? 'var(--st-cream)' : 'var(--st-room-line)'
+    }));
+
+    const wk = st.boardWeek;
+    const table = this.roster.map((s, i) => {
+      const pts = wk === 'term' ? [1, 2, 3, 4].reduce((a, w) => a + this.weekPts[w][i], 0) : this.weekPts[wk][i];
+      const capOn = wk === 'term' ? 160 : 40, capRe = wk === 'term' ? 80 : 20;
+      const onT = Math.min(capOn, Math.round(pts * 0.4));
+      const rec = Math.min(capRe, Math.round(pts * 0.19));
+      const sc = Math.max(0, pts - onT - rec);
+      return { id: s.id, name: s.name, mono: s.mono, me: !!s.me, pts: pts, onT: onT, sc: sc, rec: rec };
+    }).sort((a, b) => b.pts - a.pts || a.name.localeCompare(b.name));
+
+    let prev = null;
+    if (wk !== 'term' && wk > 1) {
+      prev = this.roster.map((s, i) => ({ id: s.id, pts: this.weekPts[wk - 1][i] })).sort((a, b) => b.pts - a.pts).map((x) => x.id);
+    }
+    const top = table[0];
+    const maxPts = top ? top.pts : 1;
+    let streak = 0;
+    if (wk !== 'term' && top) {
+      for (let w = wk; w >= 1; w--) {
+        const lead = this.roster.map((s, i) => ({ id: s.id, pts: this.weekPts[w][i] })).sort((a, b) => b.pts - a.pts)[0];
+        if (lead.id === top.id) streak++; else break;
+      }
+    }
+    const rankOf = (id) => table.findIndex((x) => x.id === id) + 1;
+    const mkDelta = (id) => {
+      if (!prev) return { up: false, down: false, flat: true };
+      const was = prev.indexOf(id) + 1, now = rankOf(id);
+      return { up: now < was, down: now > was, flat: now === was };
+    };
+    const size = st.boardSize;
+    const chasers = table.slice(1, size).map((r) => {
+      const d = mkDelta(r.id);
+      return {
+        rank: pad(rankOf(r.id)), name: r.name, mono: r.mono, me: r.me, points: r.pts,
+        rankColor: r.me ? 'var(--ks3-accent-text)' : 'var(--st-ghost)',
+        rowBg: r.me ? 'var(--st-chip-tint)' : 'transparent',
+        rowRing: r.me ? '0 0 0 1px var(--st-chip-tint-border)' : 'none',
+        monoBorder: r.me ? 'var(--st-accent)' : 'var(--st-edge)',
+        barWidth: Math.round((r.pts / maxPts) * 100) + '%',
+        wOnTime: Math.round((r.onT / r.pts) * 100) + '%',
+        wScore: Math.round((r.sc / r.pts) * 100) + '%',
+        wRecall: Math.round((r.rec / r.pts) * 100) + '%',
+        up: d.up, down: d.down, flat: d.flat
+      };
+    });
+    const meRow = table.find((r) => r.me);
+    const meRank = meRow ? rankOf(meRow.id) : 0;
+    const pinned = meRow ? {
+      rank: pad(meRank), name: meRow.name, mono: meRow.mono, points: meRow.pts,
+      gapText: (table[size - 2] ? table[size - 2].pts - meRow.pts : 0) + ' POINTS OFF THE TOP ' + (size === 5 ? 'FIVE' : 'TEN')
+    } : {};
+    const leader = top ? {
+      name: top.name, mono: top.mono, points: top.pts,
+      streakText: wk === 'term' ? 'TERM LEADER' : streak > 1 ? streak + ' WEEKS AT THE TOP' : 'NEW AT THE TOP',
+      deltaText: top.me ? 'THAT IS YOU' : pad(top.pts - (table[1] ? table[1].pts : 0)) + ' POINTS CLEAR',
+      wOnTime: Math.round((top.onT / top.pts) * 100) + '%',
+      wScore: Math.round((top.sc / top.pts) * 100) + '%',
+      wRecall: Math.round((top.rec / top.pts) * 100) + '%',
+      parts: [{ label: 'ON TIME', value: top.onT }, { label: 'SCORE', value: top.sc }, { label: 'RECALL', value: top.rec }].map((p, i) => Object.assign(p, { edge: i < 2 ? '1px solid var(--st-room-line)' : 'none' }))
+    } : {};
+    const boardWeeks = [1, 2, 3, 4, 'term'].map((w) => ({
+      label: w === 'term' ? 'TERM' : 'W' + pad(w), onClick: () => this.pickBoardWeek(w),
+      bg: st.boardWeek === w ? 'var(--st-ink)' : 'transparent',
+      color: st.boardWeek === w ? 'var(--st-ground)' : 'var(--st-caption)',
+      border: st.boardWeek === w ? 'var(--st-ink)' : 'var(--st-rule)'
+    }));
+
+    const nav = [
+      { label: 'My class', onClick: () => this.go('class'), on: onClass },
+      { label: 'Recall', onClick: () => this.go('recall'), on: !onClass }
+    ].map((n) => ({
+      label: n.label, onClick: n.onClick,
+      color: n.on ? 'var(--st-ink)' : 'var(--st-muted)',
+      under: n.on ? 'var(--st-accent)' : 'transparent'
+    }));
+
+    return {
+      rootRef: this.rootRef,
+      frameW: forced ? forced + 'px' : '100%',
+      frameEdge: forced ? '1px solid var(--st-rule)' : 'none',
+      wide: wide, narrow: narrow,
+
+      /* the eight discrete layout switches — everything else is clamp() on cqw */
+      benchCols: desk ? 'minmax(0,1fr) minmax(300px,440px)' : 'minmax(0,1fr)',
+      docketOrder: desk ? 3 : 1,
+      docketCols: desk ? 'minmax(0,1fr)' : 'repeat(auto-fit,minmax(148px,1fr))',
+      statsBasis: desk ? '340px' : '100%',
+      statsMax: desk ? '576px' : 'none',
+      ghostRight: desk ? '-14px' : '12px',
+      docketDir: desk ? 'row' : 'column',
+      docketItems: desk ? 'baseline' : 'flex-start',
+      docketGap: desk ? '14px' : '9px',
+      docketPush: desk ? 'auto' : '0',
+      docketText: desk ? 'right' : 'left',
+      railDisplay: desk ? 'grid' : 'flex',
+      railAlign: desk ? 'start' : 'stretch',
+      spineCols: narrow ? 'repeat(6,minmax(40px,1fr))' : 'repeat(12,46px)',
+      rowCols: wide ? '46px 20px minmax(0,1fr) auto' : '18px minmax(0,1fr) auto',
+      boardCols: desk ? 'minmax(300px,0.92fr) minmax(0,1.35fr)' : 'minmax(0,1fr)',
+      chaseCols: wide ? '30px 34px minmax(0,1fr) 62px 22px' : '24px 30px minmax(0,1fr) 52px 16px',
+      recallCols: desk ? 'minmax(0,1fr) 356px' : 'minmax(0,1fr)',
+      optCols: desk ? '1fr 1fr' : 'minmax(0,1fr)',
+
+      onClass: onClass, onRecall: !onClass,
+      fresh: fresh, hasWork: !fresh,
+      showSpine: this.props.showSpine ?? true,
+      nav: nav, menuOpen: st.menu, toggleMenu: this.toggleMenu,
+      menuRing: st.menu ? 'var(--st-accent)' : 'var(--st-edge)',
+      crumbLast: onClass ? 'Overview' : 'Recall',
+      crumbRight: onClass ? (wide ? 'AUTUMN TERM \u00B7 WEEK 04 / 12' : 'WK 04 / 12') : 'SIX A ROUND',
+      goClass: () => this.go('class'), goRecall: () => this.go('recall'),
+      openAssignment: this.openAssignment,
+
+      readings: readings, weeks: weeks, tabs: tabs, rows: rows, lessons: lessons,
+      weekPicked: st.week != null, noWeekPicked: st.week == null,
+      weekChipText: 'WEEK ' + pad(st.week || 1) + ' ONLY',
+      clearWeek: this.clearWeek, resetFilters: this.resetFilters,
+      canReset: st.week != null || st.tab !== 'all',
+      noRows: rows.length === 0,
+      emptyNote: fresh ? 'No work set in this class yet' : 'Nothing under this filter',
+
+      benchTasks: benchTasks, benchPct: Math.round((doneCount / 3) * 100) + '%', benchDoneText: doneCount + ' / 3 DONE',
+      docket: docket,
+      docketKicker: fresh ? 'Nothing set' : 'This week\u2019s assignment',
+      docketFlag: fresh ? 'BENCH CLEAR' : 'OPEN',
+      docketLeft: fresh ? 'No deadline' : '2 days left',
+      docketWorth: fresh ? '\u2014' : '40 POINTS AT STAKE',
+      docketElapsed: fresh ? '0%' : '58%',
+
+      shoutouts: fresh ? [] : [
+        { who: 'MB', text: 'Best score in the class on digestion this week.', meta: 'MR BADMUS \u00B7 2 DAYS AGO' },
+        { who: 'MB', text: 'Third week running you handed in first. Keep it.', meta: 'MR BADMUS \u00B7 1 WEEK AGO' }
+      ],
+      noShouts: fresh, shoutCount: fresh ? '00' : '02',
+      retrievalCount: fresh ? '0' : '46',
+
+      recallMeter: 'QUESTION ' + pad(Math.min(st.qi + 1, 6)) + ' / 06',
+      recallMeterPct: Math.round((Math.min(st.qi, 6) / 6) * 100) + '%',
+      roundLive: st.qi < 6, roundDone: st.qi >= 6,
+      qCounter: 'QUESTION ' + pad(Math.min(st.qi + 1, 6)) + ' / 06 \u00B7 ' + q.topic,
+      question: q.q, options: options, pips: pips,
+      showFeedback: st.checked && pickIdx > -1,
+      fbLabel: rightPick ? 'CORRECT' : 'NOT THIS ONE',
+      fbEdge: rightPick ? 'var(--st-ok-room)' : 'var(--st-ember)',
+      fbText: pickIdx > -1 ? q.f[pickIdx] : '',
+      primaryRecall: this.advance, skipQuestion: this.skipQuestion, newRound: this.newRound,
+      recallBtnLabel: st.checked ? 'Next question' : 'Check',
+      recallBtnBg: st.pick || st.checked ? 'var(--ks3-accent-text)' : 'transparent',
+      recallBtnColor: st.pick || st.checked ? 'var(--st-paper)' : 'var(--st-room-muted)',
+      recallBtnBorder: st.pick || st.checked ? 'var(--ks3-accent-text)' : 'var(--st-room-line)',
+      streakText: st.streak > 0 ? 'STREAK ' + pad(st.streak) : 'STREAK BROKEN',
+      roundScore: pad(st.right),
+      roundNote: 'Six answers logged against Week 04. Recall is worth 20 of the 100 points on the leaderboard.',
+      recallStats: [{ label: 'BEST STREAK', value: pad(Math.max(9, st.streak)) }, { label: 'ROUNDS', value: '08' }],
+
+      hasBoard: !fresh, noBoard: fresh,
+      boardScopeNote: wk === 'term' ? 'WHOLE AUTUMN TERM' : wk === 4 ? 'CURRENT WEEK' : 'WEEK ' + pad(wk) + ' \u00B7 FINAL',
+      boardWeeks: boardWeeks, toggleSize: this.toggleSize,
+      sizeLabel: size === 5 ? 'SHOW TOP 10' : 'SHOW TOP 5',
+      leaderEyebrow: wk === 'term' ? 'Top of the term' : 'Top of week ' + pad(wk),
+      leader: leader, chasers: chasers,
+      showPinned: !fresh && meRank > Math.max(1, size - 1), pinned: pinned
+    };
+  }
+}
+</script>
+</body>
+</html>
