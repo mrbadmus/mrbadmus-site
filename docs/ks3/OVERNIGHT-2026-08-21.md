@@ -613,3 +613,44 @@ believe you have stopped them. Tonight it was harmless because the writes were i
 identical. If they had not been, I would have had unsupervised concurrent writers on a live
 table with no way to tell which one wrote last. The lesson is not "check the children" — it is
 that a task which writes to production should not be delegated to something that can fan out.
+
+### ⚑ A design point for whoever does the swap — read this first
+
+`generate_site_v5.py:5255` copies the **whole `student/` directory** into the output tree, so
+`student/class.html` is *hand-written source* today. Both generators list it in `_REFUSED` and
+physically cannot write it.
+
+A swap that copies the ported build output over `student/class.html` would put **generated
+output into a source path** — which is precisely the trap that cost this run a red gate and
+`student_rulings.py` to fix (the MRB-275 rulings were hand-edited into `-ported.html`, which
+is build output, and the next build ate them). Doing it that way would set the same trap one
+more time, one file along.
+
+**The swap should therefore be: take `class.html` and `assignment.html` OUT of `_REFUSED` and
+let `build_student_port.py` write them directly.** The old hand-written pages retire to a
+dated name; git holds them regardless. Then a rebuild keeps the live page correct instead of
+reverting it, and nothing about the live pages is ever edited by hand again.
+
+### A second backend deploy — and one I could NOT prove behaviourally
+
+Self-reviewing the producer turned up a latent bug: `schemeLessons()` filtered the scheme by
+key stage and year group and **ignored `tier` and `pathway`**. At KS3 both are NULL by table
+constraint, so it made no difference. At KS4, where a scheme row exists per (tier, pathway),
+it would have handed a Foundation Combined class the Higher Triple scheme — silently, with
+real lessons in it, on a page that would look entirely normal. There are no KS4 scheme rows on
+production yet, which is the reason to fix it now rather than the reason to leave it.
+
+⚠️ **This change is deliberately a no-op on today's data, so it cannot be proved
+behaviourally, and I am not going to pretend otherwise.** The first deploy was provable
+because the route went 404 → 401: a route cannot demand authentication before it exists. This
+one changes a filter whose effect on every row currently on production is nil. There is no
+observable difference to point at.
+
+What I did instead, and what it does and does not show: re-ran the full drive after the
+redeploy — **all 21 checks still pass**, same assignment, same questions, same order. That
+proves the deploy did not break the working path. It does not prove the new build is the one
+answering. `/api/health` returning 200 shows only that the service is up.
+
+The honest state: the guard is committed (`d0b65b5`) and pushed, Render auto-deploys from
+`main`, and its correctness is covered by the KS4 case being unreachable rather than by a
+measurement. **The first KS4 scheme rows to land should be treated as the test.**
