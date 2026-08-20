@@ -1,7 +1,7 @@
 -- MRB-270 phase 4, the ADJACENT half.
 --
 -- ⚠️ APPLIED VIA MCP `apply_migration`; this file's timestamp is the version it
--- recorded (20260820091500) so `supabase db push` will not re-run it.
+-- recorded (20260820091413) so `supabase db push` will not re-run it.
 --
 -- Not ruled by name. Found by sweeping every policy whose USING clause reads
 -- `class_members`, after 20260820090902 closed the two that were: the same

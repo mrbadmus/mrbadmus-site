@@ -43,7 +43,7 @@
 -- it is not worth the window.
 --
 -- ⊕ The two OTHER policies carrying the identical bug are closed in
--- 20260820091500, deliberately in their own migration so the record keeps
+-- 20260820091413, deliberately in their own migration so the record keeps
 -- what was ruled separate from what was found by sweeping.
 
 drop policy if exists quiz_scores_teacher_read on public.quiz_scores;

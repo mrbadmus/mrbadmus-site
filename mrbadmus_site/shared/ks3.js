@@ -118,10 +118,31 @@
     var attempts = rungs.map(function (r, i) {
       return {
         question_index: i,
-        question_text: r.question || r.key,
+        /* ⊕ MRB-270 phase 5 — the `|| r.key` FALLBACK IS GONE. It read
+             question_text: r.question || r.key,
+           and it is the same defect MRB-262 fixed, left with a back door: on
+           any rung whose `.ks3-rung-q` failed to resolve, the rung NAME
+           silently went back into the question column, indistinguishable from
+           a real question and impossible to spot afterwards. A missing
+           question is now an empty string — visibly missing, which is what a
+           gap should look like.
+
+           The IDENTITY of a ladder question is not this prose. It is
+           (subtopic, rung), and both are already carried: subtopic on the
+           quiz_scores row, rung in its own column since 20260819122539. That
+           pair resolves back to the authored ladder, and verify_questions
+           check 9 gates exactly that round trip. This field is the SNAPSHOT —
+           what was on screen at the time — which is a different job and the
+           reason it is stored at all. */
+        question_text: r.question || "",
         rung: r.key,
         selected_answer: r.selectedText || "",
         correct_answer: r.correctText || "",
+        /* ⊕ MRB-270 phase 5 — the letter, beside the text rather than glued
+           to the front of it. Null on a free-text rung, which has no lettered
+           option to record. See `answerParts()`. */
+        selected_option_letter: r.selectedLetter || null,
+        correct_option_letter: r.correctLetter || null,
         // ⊕ MRB-239 — self-marked rungs only. Marked rungs leave both null,
         // which is what the columns mean there: there were no criteria.
         criteria_met: r.criteriaMet || null,
@@ -660,11 +681,31 @@
       // the HTML cannot contain, so a consumer can split on it with no
       // ambiguity at all. Separate columns are the right answer and are
       // proposed to Mide; this is the unambiguous form available today.
-      function answerValue(i, btn) {
+      /* ⊕ MRB-270 phase 5 — this RETURNS THE PARTS now, and the caller puts
+         each in its own field. It used to return `letter + "\t" + text`.
+
+         The tab was MRB-239's fix for a worse bug (letter and label read off
+         one element and concatenated, so "ANothing at all" reached the
+         column) and it chose the one separator authored prose cannot
+         contain. That made the value SPLITTABLE, which is not the same as
+         SPLIT, and MRB-239's own note said so: "two real columns remain the
+         right answer and are still open".
+
+         They are open now — `selected_option_letter` / `correct_option_letter`,
+         migration 20260820091934 — because per-distractor analysis is the main
+         reason the question grain was ruled in at all. Nineteen students
+         choosing the SAME wrong option is what turns a mark into a lesson
+         plan, and that wants a letter you can GROUP BY rather than a prefix
+         whose length every consumer has to guess. An option beginning with a
+         capital is indistinguishable from a prefix.
+
+         A rung with no lettered options returns letter "" — the caller sends
+         null, and null here means "there was no lettered option", not "we
+         failed to read one". */
+      function answerParts(i, btn) {
         var labelEl = btn.querySelector(".ks3-opt-label");
         var text = ((labelEl ? labelEl.textContent : btn.textContent) || "").trim();
-        var letter = letters[i] || "";
-        return letter ? letter + "\t" + text : text;
+        return { letter: letters[i] || "", text: text };
       }
 
       // R2 — the feedback carries the WORD and a drawn mark, not just a
@@ -696,10 +737,14 @@
           var correct = btn.getAttribute("data-correct") === "1";
           rec.met = correct;
           stampTime(rec);                                   // ⊕ MRB-262
-          rec.selectedText = answerValue(options.indexOf(btn), btn);
+          var chosen = answerParts(options.indexOf(btn), btn);
+          rec.selectedText = chosen.text;
+          rec.selectedLetter = chosen.letter;
           options.forEach(function (b, i) {
             if (b.getAttribute("data-correct") === "1") {
-              rec.correctText = answerValue(i, b);
+              var right = answerParts(i, b);
+              rec.correctText = right.text;
+              rec.correctLetter = right.letter;
             }
           });
           each(options, function (b) {

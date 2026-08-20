@@ -1,4 +1,4 @@
--- Rollback for 20260820091500_soft_delete_ends_access_the_other_two.
+-- Rollback for 20260820091413_soft_delete_ends_access_the_other_two.
 -- Apply MANUALLY. The CLI never reads this folder.
 --
 -- ⚠️ Same warning as 20260820090902's rollback, and one of these is worse:

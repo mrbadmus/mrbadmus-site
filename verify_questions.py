@@ -10,7 +10,7 @@ Exit 0 = clean. Exit 1 = at least one finding, printed with the id and file that
 carries it. It never "warns" — a question bank that a teacher sets as homework
 is either valid or it is not.
 
-── The seven checks ─────────────────────────────────────────────────────
+── The nine checks ──────────────────────────────────────────────────────
 
 1. A lesson with fewer than twelve questions, or a band with fewer than four.
 2. A question with other than exactly four options, or other than exactly one
@@ -29,8 +29,29 @@ is either valid or it is not.
    first, week one is allowed to be short, a thin week that is NOT week one
    raises, and the same inputs always give the same fifteen.
 
+9. **A recorded attempt that cannot be resolved back to the question it came
+   from.** Every row `shared/ks3.js` writes to `quiz_question_attempts` claims
+   to be about a question. This check is the proof that the claim can be
+   redeemed — offline, against the authored content and the built page, before
+   a single student generates a row.
+
+   ⚠️ THE PROMPT FOR THIS CHECK SAID "back to a BANK question" AND THAT IS THE
+   WRONG TARGET. Checked rather than assumed: check 6 immediately above exists
+   to guarantee the bank NEVER restates a ladder rung, so the two sets are
+   disjoint BY GATE. A ladder attempt can no more resolve to a bank question
+   than a bank question can appear on a ladder. Two capture paths, two homes:
+
+     ladder rungs  → /api/quiz-score → quiz_question_attempts
+     bank questions → /api/assignment-submit → assignment_question_attempts
+
+   So the resolvable target for a `quiz_question_attempts` row is the LADDER,
+   and the identity is (subtopic, rung) — subtopic on the quiz_scores row, rung
+   in its own column since 20260819122539. What check 9 gates is that this pair
+   round-trips, and that the page can still emit the parts it needs to.
+
 Checks 1–3 and 5–6 are per-lesson; 4 is global; 7 gates the file's own identity;
-8 gates :func:`ks3_data.question_bank.compose_assignment`.
+8 gates :func:`ks3_data.question_bank.compose_assignment`; 9 gates the ladder
+attempt round trip against the BUILT tree.
 A few structural preconditions (a band that is not one of the three, an id that
 does not match its own lesson and band) are folded into the checks they belong
 to, because a question that fails them cannot be selected correctly either.
@@ -70,6 +91,156 @@ def _ladder_texts(lesson):
         if isinstance(rung, dict) and rung.get("q"):
             out.add(_normalise(rung["q"]))
     return out
+
+
+
+# ── check 9 · the ladder attempt round trip ────────────────────────────────
+#
+# The served tree, not ./ks3 — Cloudflare serves from mrbadmus_site/, so this is
+# the markup a student's browser actually runs against.
+KS3_OUT = os.path.join("mrbadmus_site", "ks3")
+
+# What `shared/ks3.js` reads out of a rung, named here so a rename on either
+# side is a FAILURE rather than a silent null column. Every one of these is
+# load-bearing for a field in quiz_question_attempts.
+# ⚠️ `ks3-rung[^"]*` and NOT `ks3-rung`. A SELF-marked rung ships
+# `class="ks3-rung ks3-rung-self"`, so an exact-class match finds the two
+# marked rungs and silently misses the two written ones — which are precisely
+# the rungs MRB-269 phase 4a is about. Caught by this check reporting `explain`
+# and `produce` missing on all 70 lessons at once: a finding that uniform is a
+# finding about the checker.
+# `ks3-rung` then a QUOTE or a SPACE — never `ks3-rung[^"]*`, which also
+# matches the `ks3-rungs` CONTAINER the four rungs sit inside.
+_RUNG_OPEN = r'<div class="ks3-rung(?: [^"]*)?"'
+_RUNG_RE = re.compile(
+    _RUNG_OPEN + r'([^>]*)>(.*?)(?=' + _RUNG_OPEN + r'|</div></div></section>|\Z)',
+    re.S)
+_ATTR_RE = re.compile(r'data-rung="([^"]*)"')
+_MODE_RE = re.compile(r'data-mode="([^"]*)"')
+_Q_RE = re.compile(r'<p class="ks3-rung-q">(.*?)</p>', re.S)
+_OPT_RE = re.compile(r'<button type="button" class="ks3-option"(.*?)</button>', re.S)
+_MARK_RE = re.compile(r'<span class="ks3-opt-mark"[^>]*>([^<]*)</span>')
+_LABEL_RE = re.compile(r'<span class="ks3-opt-label">(.*?)</span>', re.S)
+
+
+def _text(html):
+    """Visible text of a fragment: tags out, entities in, whitespace collapsed."""
+    import html as _h
+    return re.sub(r"\s+", " ", _h.unescape(re.sub(r"<[^>]+>", "", html or ""))).strip()
+
+
+def _built_page(unit_code, lesson):
+    """The built HTML for a lesson, or None if the page is not on disk."""
+    for root, _dirs, files in os.walk(KS3_OUT):
+        if (lesson["slug"] + ".html") in files:
+            return open(os.path.join(root, lesson["slug"] + ".html"),
+                        encoding="utf-8").read()
+    return None
+
+
+def check_attempt_round_trip(lessons, fail):
+    """Every attempt the page can write must resolve back to an authored rung.
+
+    A row in `quiz_question_attempts` says "this student answered this
+    question". Its identity is (subtopic, rung): the lesson slug on the
+    quiz_scores row, and the rung column. This check proves, offline and before
+    any student generates a row, that the pair redeems — and that the page can
+    still emit the parts the row is made of.
+
+    Four ways it can fail, and all four have been demonstrated:
+
+      a. the built page emits a `data-rung` the authored ladder does not have,
+         so the row names a question nobody can find;
+      b. the authored ladder has a rung the built page never emits, so a rung
+         is unanswerable and its column would never be written;
+      c. the question text on the page is not the authored question, so
+         `question_text` is a snapshot of something the content does not
+         contain — the resolver's own cross-check;
+      d. a lettered option no longer exposes its letter and its label as
+         SEPARATE elements, which is the exact shape MRB-270 phase 5 needs to
+         fill selected_option_letter without guessing a prefix length.
+    """
+    for (unit_code, slug), lesson in sorted(lessons.items()):
+        ladder = lesson.get("ladder") or {}
+        authored = {k: v for k, v in ladder.items()
+                    if isinstance(v, dict) and v.get("q")}
+        if not authored:
+            continue
+        where = "%s/%s" % (unit_code, slug)
+
+        html = _built_page(unit_code, lesson)
+        if html is None:
+            fail(9, where,
+                 "authored lesson with a ladder and NO BUILT PAGE in %s — "
+                 "run build_ks3.py; a check that skips a missing page is a "
+                 "check that passes when the build is broken" % KS3_OUT)
+            continue
+
+        emitted = {}
+        for attrs, body in _RUNG_RE.findall(html):
+            m = _ATTR_RE.search(attrs)
+            if not m:
+                fail(9, where,
+                     "a .ks3-rung on the built page carries no `data-rung`. "
+                     "That attribute IS the rung column; without it the row "
+                     "cannot say which question it is about")
+                continue
+            emitted[m.group(1)] = (attrs, body)
+
+        # (a) every emitted rung resolves to an authored one
+        for key in sorted(set(emitted) - set(authored)):
+            fail(9, "%s [%s]" % (where, key),
+                 "the page emits rung %r and the authored ladder has no such "
+                 "rung. An attempt row carrying it could never be resolved "
+                 "back to a question — authored rungs are %s"
+                 % (key, sorted(authored)))
+
+        # (b) every authored rung is actually emitted
+        for key in sorted(set(authored) - set(emitted)):
+            fail(9, "%s [%s]" % (where, key),
+                 "the authored ladder declares rung %r and the built page "
+                 "never emits it, so it can be answered by nobody and its "
+                 "column would never be written" % key)
+
+        for key in sorted(set(authored) & set(emitted)):
+            attrs, body = emitted[key]
+            at = "%s [%s]" % (where, key)
+
+            # (c) the page's question IS the authored question
+            qm = _Q_RE.search(body)
+            if not qm:
+                fail(9, at,
+                     "the rung has no `.ks3-rung-q` on the built page. That "
+                     "element is where shared/ks3.js reads `question_text`; "
+                     "without it the row records an empty question")
+                continue
+            if _normalise(_text(qm.group(1))) != _normalise(authored[key]["q"]):
+                fail(9, at,
+                     "the question on the page is not the authored question, "
+                     "so `question_text` would snapshot text the content does "
+                     "not contain.\n               page:     %r\n"
+                     "               authored: %r"
+                     % (_text(qm.group(1))[:90], authored[key]["q"][:90]))
+
+            # (d) letter and label are separate elements on a lettered rung
+            mm = _MODE_RE.search(attrs)
+            mode = mm.group(1) if mm else ""
+            options = _OPT_RE.findall(body)
+            if mode == "self" or not options:
+                continue
+            for n, opt in enumerate(options):
+                if not _MARK_RE.search(opt):
+                    fail(9, at,
+                         "option %d has no `.ks3-opt-mark`, so its LETTER "
+                         "cannot be read separately and "
+                         "selected_option_letter would be null. This is the "
+                         "shape MRB-270 phase 5 opened the column for" % n)
+                if not _LABEL_RE.search(opt):
+                    fail(9, at,
+                         "option %d has no `.ks3-opt-label`, so the option "
+                         "TEXT can only be read off the button as a whole — "
+                         "which is how \"ANothing at all\" reached the column "
+                         "in the first place (MRB-239)" % n)
 
 
 def verify():
@@ -185,6 +356,9 @@ def verify():
                 fail(6, at, "question text restates a ladder rung — the bank "
                             "is additional depth, not a copy")
 
+    # ── check 9 — the ladder attempt round trip ─────────────────────────
+    check_attempt_round_trip(lessons, fail)
+
     findings.extend(_check_composition())
     return findings
 
@@ -291,14 +465,21 @@ def main():
     n_questions = len(qb.all_questions())
 
     if not findings:
-        print("verify_questions: OK — %d lessons, %d questions, all eight "
+        print("verify_questions: OK — %d lessons, %d questions, all nine "
               "checks clean." % (n_lessons, n_questions))
         return 0
 
     print("verify_questions: %d FINDING(S) across %d lessons, %d questions\n"
           % (len(findings), n_lessons, n_questions))
-    for check, where, message in sorted(findings, key=lambda f: (f[0], f[1])):
-        print("  [check %d] %s\n             %s" % (check, where, message))
+    # ⊕ MRB-270 — `str(f[0])`. Check 8 reports under a NAME ("compose_assignment/
+    # deterministic") while checks 1–7 and 9 report under an int, and sorting a
+    # list holding both raised TypeError: '<' not supported between 'str' and
+    # 'int'. A red gate then printed a traceback instead of its findings —
+    # still non-zero, so it never passed wrongly, but it told you nothing at
+    # the moment you most needed telling. Only reachable when a numbered check
+    # and check 8 fail in the same run, which is why it survived this long.
+    for check, where, message in sorted(findings, key=lambda f: (str(f[0]), f[1])):
+        print("  [check %s] %s\n             %s" % (check, where, message))
     print("\nA red gate means no commit and no push for that unit.")
     return 1
 
