@@ -764,3 +764,104 @@ the page simply does not call it.
 
 Per B5: since B4 did not swap, the demo assignment on `8r/Sc1` and the test student's
 enrolment are **left in place** — they remain the fixtures. Nothing was deleted.
+
+---
+
+## B6 — fresh eyes on the edges
+
+### The concurrency ruling, proved at the mechanism
+
+The one part of B1 the drive could not exercise (it needs two simultaneous first-openers) was
+tested directly against the index, inside a transaction that rolls back either way:
+
+```
+unique_violation (23505) — the second writer lost, as ruled
+```
+
+Nothing was left behind. The route's `catch (23505) → re-read → serve the winner's row` is
+therefore sitting on a mechanism that provably fires.
+
+### What an interrupted or malformed hand-in does
+
+| what a student's browser sends | what comes back |
+|---|---|
+| no `answers` array (connection died mid-post) | `400 assignment_id and a non-empty answers array are required` |
+| an empty `answers` array | `400` — same |
+| no `assignment_id` | `400` — same |
+| **2 of 4 questions answered** — what an interrupted student actually produces | `200 {score: 1, max_score: 2}` — accepted, and scored on what was answered |
+| `band=zzz` | `200`, falls back to `standard` |
+| `class_id` that is not a UUID | `404 class_not_found` |
+| no `class_id` | `400 class_id is required` |
+
+A partial hand-in being accepted and scored on what it contains is the right behaviour: a
+student who loses their connection halfway should not lose the half they did.
+
+### ⚠️ And one real defect, found and fixed
+
+**A hand-in against an assignment id that does not exist returned a 500 carrying raw Postgres
+text** — `insert or update on table "assignment_submissions" violates foreign key constraint …`.
+That tells the student nothing, tells anybody else the table and column names, and reads as
+"the site is broken" when the truthful answer is "that is not a piece of work you have".
+
+Now `404 assignment_not_found`, and `403 not_your_assignment` for one belonging to a class the
+student is not in — the route validates before it writes.
+
+**Proved behaviourally**, the third deploy tonight that could be: 500 at 23:35:48, **404 at
+23:36:03**.
+
+### Flakiness, observed once
+
+One run of the page drive rendered the error state at 390px (20 nodes) while desktop was fine.
+Two further consecutive runs were clean at both widths (371 and 358 nodes). Most likely a cold
+Render instance on the first request of that run. **Recorded rather than dismissed** — one
+failure in five runs is exactly the rate that gets explained away and then turns out to be
+real.
+
+### Still welded, and left deliberately
+
+The seam unit closed **seven** literals, not the four it was given — the current week number is
+also spliced into the readings strip and the work row, and the teacher's real name was hiding
+inside the status word `'WITH MR BADMUS'`, which no grep for the name would have matched in
+that shape.
+
+What remains welded in Design's logic is **figures rather than names**, and it is listed here
+rather than quietly left:
+
+- the docket: `'2 days left'`, `'40 POINTS AT STAKE'`, `'58%'`, and the leak the screenshot
+  caught — the question count, `'Using a microscope'`, `'Mon 15 Sep'`, `'Thu 18 Sep, 18:00'`
+- the recall panel's `'46'` and the readings strip's paired `'46'` / `'77%'`
+- `recallStats` `'ROUNDS', '08'`, and **`pad(Math.max(9, st.streak))` — a hardcoded floor of 9
+  on a real student's best streak**
+- `roundNote: 'Six answers logged against Week 04…'` — the same week datum in lower case,
+  which is the only reason it survives the grep
+- `'DUE THU 18:00'`
+
+Every one of these is student-visible and wrong on real data. They are the reason B4's third
+condition fails, and closing them is the next unit's whole job.
+
+### Two things the units found in passing
+
+- **`_MUST_NOT_LEAK` in `build_student_port.py` is defined and never referenced** — dead since
+  it was written. The assertion that actually runs iterates `bind_values`, which is broader, so
+  nothing is unguarded; but the constant is a promise nothing keeps.
+- **A student can hand the same assignment in repeatedly**, each creating a new
+  `assignment_submissions` row with `attempts: 1`. There is no unique constraint on
+  `(assignment_id, student_id)` and no upsert. Whether a re-do should replace, add an attempt,
+  or be refused is a product decision — Design's own work rows carry a `retake` flag, so the
+  intent exists somewhere. **Not decided tonight.** Flagged because `handIn` will hit it the
+  moment somebody wires it up.
+
+### Test data left on production, precisely
+
+B5's housekeeping is conditional on B4 swapping, and B4 did not, so nothing was deleted. What
+exists on `8r/Sc1` this morning:
+
+| | |
+|---|---|
+| the hand-seeded demo assignment (`282f2277`, `academic_week` null) | **left** — B5 says it stays if there is no swap |
+| the producer's first real assignment (`72a5b315`, week 1, 4 questions) | **left** — it is the working example |
+| 3 submissions by the test student | **left** — one full, one partial, one pre-existing. They are the only worked examples of a real submission with the new columns populated, and the pages are not live, so no student sees them |
+| the test student's enrolment in `8r/Sc1` | **left** — B5 says it stays if there is no swap |
+
+No throwaway account was created; `MRB_TEST_STUDENT_PASSWORD` was set, so the pre-authorised
+fallback was never needed.
