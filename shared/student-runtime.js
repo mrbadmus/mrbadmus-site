@@ -259,6 +259,52 @@
     });
   }
 
+  /* ── binding Design's identity strings, without adding a node ────────
+     Design typed `8r/Sc1`, `Ayo`, `Mr Badmus` and `28 students` straight into
+     the markup, so they are LITERAL text nodes and not `{{ }}`. The obvious
+     fix — rewrite them into interpolations — is the wrong one: Design's
+     compiler wraps every interpolation in text position in a
+     `<span class="sc-interp">`, so eleven rewrites would be eleven extra
+     elements and the parity gate counts elements. A page that says the right
+     name and has a different shape from Design's is not the port.
+
+     So the value is swapped in the COMPILED TEMPLATE instead, before the first
+     render. The node stays exactly the node Design compiled — same position,
+     same kind, still a literal — and only its text differs. The shipped
+     template carries an empty string at each of these paths; the value comes
+     from the data source, and there is no path by which it comes from
+     anywhere else.
+
+     `get` is either the page's `MRB_DATA` (which throws on a missing key) or a
+     plain object. Both are accepted, neither is defaulted: a binding whose key
+     is absent must be loud, because the failure it would otherwise cause is a
+     student greeted by name as somebody else. */
+  function applyBindings(roots, bindings, get) {
+    if (!roots) { throw new Error("student-runtime: applyBindings: no roots"); }
+    if (!bindings || !bindings.length) { return roots; }
+    var read = (typeof get === "function") ? get : function (k) {
+      if (!get || !(k in get)) {
+        throw new Error('student-runtime: no data for binding "' + k + '"');
+      }
+      return get[k];
+    };
+    var out = JSON.parse(JSON.stringify(roots));
+    for (var i = 0; i < bindings.length; i++) {
+      var b = bindings[i], node = out[b.p[0]], j;
+      for (j = 1; j < b.p.length; j++) {
+        node = node && node.c && node.c[b.p[j]];
+      }
+      if (!node || node.t !== "#") {
+        throw new Error('student-runtime: the binding path for "' + b.k +
+                        '" does not land on a text node — the template and ' +
+                        'the binding table were built from different sources.');
+      }
+      var v = read(b.k);
+      node.v = (v === null || v === undefined) ? "" : String(v);
+    }
+    return out;
+  }
+
   /* ── focus and scroll across a rebuild ─────────────────────────────── */
   function focusPath(root) {
     var el = document.activeElement, path = [];
@@ -358,6 +404,7 @@
 
   window.MrbRef = MrbRef;
   window.MrBadmusStudentRuntime = {
-    MrbLogic: MrbLogic, mount: mount, lookup: lookup, resolve: resolve
+    MrbLogic: MrbLogic, mount: mount, lookup: lookup, resolve: resolve,
+    applyBindings: applyBindings
   };
 })();

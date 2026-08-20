@@ -9,30 +9,16 @@
   GENERATED — do not edit. `python3 build_student_port.py`
   ══════════════════════════════════════════════════════════════════════════
 
-  Class view, PORTED: Claude Design's own template and Design's own logic class,
-  rendered by shared/student-runtime.js. No React and none of Design's
-  `support.js` ships here — that was ruled on 20 Aug 2026.
+  Class view, PORTED — THE FIXTURE PAGE. The same file as class-ported.html but for this comment and
+  the script tags at the end: this one loads Design's own extracted example
+  data and mounts, that one loads the live data source and does not.
 
-  The markup is not retyped and neither is the behaviour. Both are extracted
-  from docs/ks3/design-reference/student/ by student_template.py, so the only
-  way this can differ from Design's file is if Design's file changed.
-
-  STILL NOT THE LIVE PAGE: the live pages are student/class.html and
-  student/assignment.html and this build never writes them.
-
-  THERE IS NO DATA IN THIS FILE. Design's example values — the work list, the
-  roster, the week points, the questions, and the identity strings that were
-  typed into the markup — have been lifted out into `window.__MRB_DATA__`, and
-  every read of them goes through `MRB_DATA(k)`, which THROWS when the key is
-  absent. So this page cannot render one child's homework to a different
-  child: with no data source loaded it renders nothing at all and says why.
-  The data arrives from student-live.js, and from nowhere else.
-
-  Its twin, class-fixture.html, is this same file with two differences and no others — this
-  comment, and the script tags at the end, where it loads Design's own
-  extracted example values and mounts. That twin is what student_parity.py and
-  student_behaviour.py drive, which is how Design's data can still be exercised
-  in full without being reachable from here.
+  ⛔ NOT A CANDIDATE FOR ANY LIVE PATH, and not because it is unfinished — it
+  is one real class, hard-coded, for every visitor. It exists so the gates have
+  something with known values to drive: `student_parity.py` compares its render
+  against Design's own file and `student_behaviour.py` drives both through the
+  same 28 journeys. A gate that drove the production page would be asserting
+  against whatever the database happened to hold that morning.
   ══════════════════════════════════════════════════════════════════════════
 -->
 <link rel="stylesheet" href="/shared/student-ds.css">
@@ -483,6 +469,7 @@ window.__MRB_MOUNT__ = function () {
   });
 };
 </script>
-<script src="/shared/student-live.js"></script>
+<script src="/shared/student-fixture-class.js"></script>
+<script>window.__MRB_MOUNT__();</script>
 </body>
 </html>

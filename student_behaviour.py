@@ -36,13 +36,25 @@ import time
 REF = os.path.join("docs", "ks3", "design-reference", "student")
 SITE = "mrbadmus_site"
 
+# ⚠️ THE FIXTURE PAGES, NOT THE PRODUCTION ONES, and that is not a weakening.
+# Since the data seam, `*-ported.html` carries no data at all: it defines
+# `window.__MRB_MOUNT__`, does not call it, and ends by loading
+# `shared/student-live.js`. Driving it would drive a blank page — or, once the
+# live source exists, whatever the database held that morning, which is not
+# something Design's file can be compared against.
+#
+# `*-fixture.html` is the same bytes apart from its banner and its last two
+# script tags, which load Design's own extracted values and mount. So what is
+# driven here is Design's markup, Design's logic and Design's data, on our
+# runtime — which is exactly what this gate was always driving. The seam moved
+# the data out of the page; it did not move it out of the comparison.
 PAIRS = [
     dict(name="class view",
          design="standalone/MrBadmusAI Class View.html",
-         ported="student/class-ported.html"),
+         ported="student/class-fixture.html"),
     dict(name="assignment",
          design="standalone/MrBadmusAI Assignment.html",
-         ported="student/assignment-ported.html"),
+         ported="student/assignment-fixture.html"),
 ]
 
 VIEWPORT = (1460, 1200)

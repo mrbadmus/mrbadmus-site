@@ -364,3 +364,66 @@ which uses the system trust store — was fine all along. Fixed by pointing `ssl
 `/etc/ssl/cert.pem`. ⚠️ Deliberately **not** fixed with an unverified SSL context: this
 script signs in with a real password, and a disabled-verification switch is not a thing to
 leave lying in a drive script where somebody later copies it.
+
+---
+
+## A2 — the data seam. Built before the wiring, as ruled.
+
+The finding from the last run was that `student_behaviour.py` oracles the ported page against
+**Design's own delivered file**, so the moment the port loads real data every drive diverges
+on every screen and the gate stops being able to say anything. The ruling was to build a
+fixture mode first. Done.
+
+**The seam had to reach further than expected (F6).** Design's example data is in two places,
+not one:
+
+1. **Class fields on the logic** — `work`, `roster`, `weekPts`, `lessonDefs`, `questions`
+   (class view); `questions`, `wrongPlan`, `figCaptions`, `KEY`, `DUE` (assignment).
+2. **Literal text nodes inside Design's template** — `8r/Sc1`, `Ayo`, `AY`, `Mr Badmus`,
+   `MB`, `28 students`, `Biology`, `Cells & microscopy`, `AUTUMN TERM`, and the welcome line.
+
+⚠️ **The second half could not be solved the obvious way.** Turning a literal text node into
+an interpolation would have been one line — but `shared/student-runtime.js` wraps every
+interpolation in `<span class="sc-interp">` and leaves a literal bare. That wrapper is
+deliberate (it is 132 nodes on the class view, and the parity gate counts nodes), so
+converting the literals would have silently added wrapper spans and broken structural parity.
+The literals are therefore bound **by path**: the porter records a path into the template
+JSON per binding, and the runtime clones the tree and sets `node.v` in place before
+rendering. The node stays a literal, the node count is unchanged, and the gates never notice
+the seam is there.
+
+**Fixture mode is a separate PAGE, not a flag.** The porter now emits four pages:
+
+| page | last script tags | carries fixture data? |
+|---|---|---|
+| `class-ported.html` / `assignment-ported.html` | `<script src="/shared/student-live.js">` | **no** |
+| `class-fixture.html` / `assignment-fixture.html` | the fixture, then `__MRB_MOUNT__()` | yes |
+
+Both are the same bytes apart from the banner and those last two tags. **The production page
+has no code path to the fixture at all** — which is a stronger guarantee than a flag, because
+a flag can be set. And `student-live.js` **throws** rather than falling back to the fixture:
+a fallback would make "the production page cannot render Design's example data" a matter of
+configuration, and it needs to be a matter of fact.
+
+### Both gates green, with nothing weakened
+
+```
+student_behaviour.py   27 drives, every one "text identical", RULED_DIVERGENCE untouched
+student_parity.py      all 8 layers A–H green at 360 / 390 / 820 / 1460
+```
+
+`grep -c "Ayo\|Mr Badmus\|28 students\|Tiwa A\.\|Cells & microscopy"` on both **production**
+pages: **0**.
+
+### ⚑ A content consequence Mide should see — the closed right-answer slot
+
+Design's own recall data carries **four** feedback strings, one per option, the correct one
+reading *"Right. Each lens magnifies the image the next one receives…"*. The real lesson
+ladder carries **three** — one per distractor. The correct option has none, deliberately, and
+parity layer H forbids inventing a fourth ("0 authored right-answer line(s): none yet, which
+is the ruled state").
+
+**So when a student answers a recall question correctly on real data, there is no sentence
+under it.** That is the ruled behaviour and it is what has been built. It is also a visible
+difference from Design's mock, and it is Mide's call whether to leave it or ask authors to
+write a fourth string per rung. **Not a bug. A ruling with a consequence.**
