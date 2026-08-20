@@ -13,7 +13,7 @@ Every one of those is a chance for the copy to stop being a copy, and none of
 them would announce itself — a page with no fonts, or with the design-system
 CSS half-applied, still renders something that looks broadly right.
 
-── The six layers ─────────────────────────────────────────────────────────
+── The eight layers ───────────────────────────────────────────────────────
 
 A. **Structural parity, measured against Design's file.** Same node count, same
    tag census, same visible text, same root box, same resolved font, ground and
@@ -61,10 +61,38 @@ F. **No fabricated leaderboard split.** RULED 20 Aug 2026. Design's bar split
    Design says do not ship it. A bar that apportions points a student did not
    earn that way is a lie told in a graph.
 
-⚠️ E AND F BOTH PROVE THEMSELVES. Each is a source scan, and a source scan
+G. **Touch targets, asserted two-sidedly.** No control may be smaller than the
+   40px floor Design states — except that Design's own file does not meet it
+   either (11 shortfalls at 390px, 6 at 1460px). So the assertion is "no worse
+   than Design", with the exact shortfall registered per page per band in
+   `DELIVERY_TOUCH_SHORTFALL`. Those four sub-40px controls are Design's
+   drawing and Design is being asked to close them; when a v2 delivery does,
+   the registered count moves and this goes red so somebody updates it
+   deliberately rather than a real regression sliding in under a stale number.
+
+H. **No GENERIC right-answer line.** RULED 21 Aug 2026, and this layer was
+   REPLACED rather than edited. It used to assert the 980-question shortfall in
+   right-answer feedback at its measured value; that shortfall is now a ruling
+   (v1 ships with three strings, the right answer carries none, the slot
+   closes) and a gate asserting a settled ruling is noise. What replaces it
+   guards the half that is still a risk: the tempting fix for 980 blank slots
+   is one string pasted into all 980, which is precisely the generic fallback
+   Design's §15 forbids and which ships as teaching while teaching nothing.
+   Authored lines pass; a line reused past `_REUSE_LIMIT` questions, or one
+   with no substance left after its affirmation, fails.
+
+⚠️ E, F AND H ALL PROVE THEMSELVES. Each is a source scan, and a source scan
 over a corpus that does not yet contain the thing it looks for is
 indistinguishable from a broken scan. So each is also run against a fixture
-that DOES contain it, and goes red if the fixture comes back clean.
+that DOES contain it, and goes red if the fixture comes back clean. H's fixture
+matches on the hit KIND rather than on the wording of the message, because the
+first draft grepped its own prose and went green while seeing only half of what
+it forbids.
+
+⚠️ AND NOTE WHAT THIS FILE DOES *NOT* GATE. Layers A–C compare the PREVIEW
+pages against Design's standalone. The PORTED pages — the ones that actually
+ship — are covered by layer D, layer G and `student_behaviour.py`. Do not read
+a green A–C as a statement about `*-ported.html`.
 """
 
 import json
@@ -703,7 +731,7 @@ def run(cdp):
     problems.extend(problems_d)
 
     for fn in (run_no_literal_count, run_no_fabricated_split,
-               run_feedback_strings):
+               run_no_generic_right_answer_line):
         r, pr = fn()
         rows.extend(r)
         problems.extend(pr)
@@ -711,53 +739,77 @@ def run(cdp):
     return rows, problems
 
 
-# ── H · the four feedback strings Design's design rests on ────────────────
+# ── H · no GENERIC right-answer line ──────────────────────────────────────
 #
-# ⚑ FOUND IN PHASE 4, AND IT IS THE LARGEST OPEN ITEM ON EITHER PAGE.
+# ⊕ REPLACED 21 Aug 2026. This layer used to assert the 980-question shortfall
+# in right-answer feedback lines at its exact measured value (140 ladder rungs +
+# 840 bank questions, every one missing the correct option's "why this").
 #
-# Design's assignment note, §15 "Do not ship", item 1: *"The API needs to serve
-# rungs 1–2 from the class's scheme of work with the per-distractor feedback
-# strings — four per question, one per option, no generic fallbacks. A question
-# without all four is not shippable: the whole design rests on them."*
+# That shortfall is now a RULING, not a defect: v1 ships with three feedback
+# strings, the right answer is marked correct by the tick and the word, and no
+# explanation line appears beneath it. The reasoning, recorded rather than just
+# obeyed: the teaching in a multiple-choice question lands on the MISTAKE. A
+# student who chose correctly does not need a paragraph confirming it, and the
+# lesson page is where the real explanation lives.
 #
-# And §2 says what the fourth one is FOR: *"Every wrong option has its own
-# line… The right answer's line is shown too, so the pair reads why not that /
-# why this."*
+# A gate asserting a settled ruling is noise, so the old assertion is gone. What
+# replaces it is the half that is still a real risk.
 #
-# MEASURED ACROSS THE WHOLE CORPUS, both places a question can come from:
+# ⚠️ THE RISK IS NOT ABSENCE, IT IS A FALLBACK. Design's §15: *"four per
+# question, one per option, NO GENERIC FALLBACKS."* Absence is now ruled and the
+# pages close the slot for it (`noteBlock` / `_line` in assignment-ported.html).
+# But the tempting fix for 980 blank slots is one string — "Correct!", "Well
+# done, that's right" — pasted into all 980, and that ships as teaching while
+# teaching nothing. It is also the exact thing Design forbade, and it would look
+# like progress on every dashboard.
 #
-#     lesson ladder, recall + apply    140 rungs, every one 4 options and
-#                                      exactly 3 feedback strings
-#     ks3_data question bank           840 questions, every one 4 options and
-#                                      exactly 3 `why` strings
-#
-# In all 980, the three are the DISTRACTORS and the missing one is the CORRECT
-# option. So "why not that" is authored everywhere and "why this" is authored
-# nowhere. It is not a gap in coverage — it is a field that was never part of
-# the authoring shape.
-#
-# ⚖️ NOT FILLABLE FROM HERE. A generated "why this" line is exactly the generic
-# fallback Design rules out, and it is science prose on a student page, which
-# is Mide's gate and nobody else's. So this REGISTERS the number and asserts it
-# both ways: it goes red if the shortfall grows, and it goes red when somebody
-# authors them, at which point this block is deleted rather than edited.
-FEEDBACK_SHORTFALL = {
-    "lesson ladder rungs (recall + apply)": 140,
-    "question bank": 840,
-}
+# So: authored lines are WELCOME and pass. What fails is a line that repeats
+# across questions, or a line with no substance once the affirmation is stripped.
+# Design's own delivered example carries all four and shows the shape — "Right.
+# The objective sits closest to the slide, so it magnifies first." The
+# affirmation is the first two words; the teaching is everything after it.
+
+# A genuinely authored line belongs to its question. Two questions on the same
+# idea might legitimately land on the same sentence; three is a template.
+_REUSE_LIMIT = 2
+
+# Once a leading affirmation is stripped, this much real prose must remain.
+# "Right." on its own is 6 characters and teaches nothing; Design's shortest
+# real line in the delivered example is 38.
+_MIN_SUBSTANCE = 25
+
+_AFFIRMATIONS = ("right", "correct", "yes", "exactly", "that's right",
+                 "thats right", "well done", "good", "spot on")
 
 
-def _ladder_feedback_gap():
-    """Recall/apply rungs whose CORRECT option has no feedback line."""
+def _substance(line):
+    """What is left of a feedback line once the affirmation is taken off."""
+    import re
+    s = str(line or "").strip()
+    for a in sorted(_AFFIRMATIONS, key=len, reverse=True):
+        m = re.match(r"(?i)%s\b[\s.,!:—-]*" % re.escape(a), s)
+        if m:
+            s = s[m.end():]
+            break
+    return s.strip()
+
+
+def _right_answer_lines():
+    """Every authored CORRECT-option line, as (source, where, text).
+
+    Walks both places a question can come from. Rungs and bank questions with no
+    such line are simply absent from the result — that is the ruled state, not a
+    finding, and counting them is what this layer stopped doing.
+    """
     import importlib
     import pkgutil
     import ks3_data
+    out = []
+
     root = os.path.dirname(ks3_data.__file__)
-    units = sorted(d for d in os.listdir(root)
-                   if os.path.isdir(os.path.join(root, d))
-                   and not d.startswith("_"))
-    total = missing = 0
-    for unit in units:
+    for unit in sorted(d for d in os.listdir(root)
+                       if os.path.isdir(os.path.join(root, d))
+                       and not d.startswith("_")):
         here = os.path.join(root, unit)
         for mod in sorted(m.name for m in pkgutil.iter_modules([here])):
             if not mod.startswith("lesson_"):
@@ -766,82 +818,101 @@ def _ladder_feedback_gap():
             lesson = getattr(m, "LESSON", None)
             if not isinstance(lesson, dict):
                 continue
-            ladder = lesson.get("ladder") or {}
             for rung in ("recall", "apply"):
-                r = ladder.get(rung)
+                r = (lesson.get("ladder") or {}).get(rung)
                 if not isinstance(r, dict) or "options" not in r:
                     continue
-                total += 1
-                fb = r.get("feedback") or {}
-                ans = r.get("answer")
-                if not str(fb.get(ans) or "").strip():
-                    missing += 1
-    return total, missing
+                text = (r.get("feedback") or {}).get(r.get("answer"))
+                if str(text or "").strip():
+                    out.append(("lesson ladder",
+                                "%s/%s %s" % (unit, mod, rung), str(text)))
 
-
-def _bank_feedback_gap():
-    """Bank questions whose CORRECT option has no `why`."""
     from ks3_data import question_bank as qb
-    total = missing = 0
     for rec in qb.load_bank():
-        for q in rec["questions"]:
-            total += 1
+        for n, q in enumerate(rec["questions"]):
             for opt in q.get("options") or []:
-                if opt.get("correct") and not str(opt.get("why") or "").strip():
-                    missing += 1
-                    break
-    return total, missing
+                if opt.get("correct") and str(opt.get("why") or "").strip():
+                    out.append(("question bank",
+                                "%s q%d" % (rec.get("slug", "?"), n + 1),
+                                str(opt["why"])))
+    return out
 
 
-def run_feedback_strings():
+def run_no_generic_right_answer_line():
+    from collections import Counter
     rows, problems = [], []
-    measured = {}
 
-    lad_total, lad_missing = _ladder_feedback_gap()
-    measured["lesson ladder rungs (recall + apply)"] = lad_missing
-    rows.append(("feedback strings",
-                 "H · lesson ladder: %d of %d recall/apply rung(s) carry the "
-                 "right answer's line" % (lad_total - lad_missing, lad_total),
-                 "PASS" if lad_missing == FEEDBACK_SHORTFALL[
-                     "lesson ladder rungs (recall + apply)"] else "FAIL",
-                 "%d still missing it" % lad_missing))
+    # self-proof first: a scan that cannot see the thing it forbids is worse
+    # than no scan, because a clean corpus and a blind scan look identical.
+    fixture = [("fx", "a", "Correct!"), ("fx", "b", "Correct!"),
+               ("fx", "c", "Correct!"),
+               ("fx", "d", "Right."),
+               ("fx", "e", "Right. The objective sits closest to the slide, "
+                           "so it magnifies first.")]
+    # matched on the hit KIND, not on the wording of the message. A fixture that
+    # greps its own prose passes the day somebody rewrites the sentence and
+    # silently stops proving anything — which is how this very check first went
+    # green while seeing only half of what it forbids.
+    caught = _generic_hits(fixture)
+    saw_reuse = any(k == "reuse" for k, _ in caught)
+    saw_thin = any(k == "thin" for k, _ in caught)
+    spared = not any("magnifies first" in m for _, m in caught)
+    ok = saw_reuse and saw_thin and spared
+    rows.append(("right-answer line",
+                 "H · the scan sees a fallback and spares an authored line",
+                 "PASS" if ok else "FAIL",
+                 "reuse %s · thin %s · authored spared %s"
+                 % (saw_reuse, saw_thin, spared)))
+    if not ok:
+        problems.append(
+            "H — the generic-right-answer scan failed its own fixture "
+            "(reuse=%s thin=%s authored-spared=%s). It is blind or it is "
+            "over-eager, and either way its verdict on the real corpus means "
+            "nothing." % (saw_reuse, saw_thin, spared))
+        return rows, problems
 
-    bank_total, bank_missing = _bank_feedback_gap()
-    measured["question bank"] = bank_missing
-    rows.append(("feedback strings",
-                 "H · question bank: %d of %d question(s) carry the right "
-                 "answer's line" % (bank_total - bank_missing, bank_total),
-                 "PASS" if bank_missing == FEEDBACK_SHORTFALL["question bank"]
-                 else "FAIL",
-                 "%d still missing it" % bank_missing))
+    lines = _right_answer_lines()
+    problems.extend(m for _, m in _generic_hits(lines))
 
-    for label, want in sorted(FEEDBACK_SHORTFALL.items()):
-        got = measured.get(label)
-        if got == want:
-            continue
-        if got is not None and got < want:
-            problems.append(
-                "H — %s: the missing-feedback count has FALLEN from %d to %d. "
-                "That is somebody authoring them, which is the point. Update "
-                "FEEDBACK_SHORTFALL, and when it reaches zero delete this "
-                "layer rather than setting it to 0 — a gate that asserts "
-                "nothing is missing is a gate with nothing to say."
-                % (label, want, got))
-        else:
-            problems.append(
-                "H — %s: %d question(s) lack the right answer's feedback line "
-                "and %d were registered. Design: 'A question without all four "
-                "is not shippable: the whole design rests on them.'"
-                % (label, got, want))
-
-    rows.append(("feedback strings",
-                 "H · the registered shortfall is exactly where it was",
+    by_src = Counter(src for src, _, _ in lines)
+    rows.append(("right-answer line",
+                 "H · %d authored right-answer line(s): %s"
+                 % (len(lines),
+                    ", ".join("%s %d" % (k, v) for k, v in sorted(by_src.items()))
+                    or "none yet, which is the ruled state"),
                  "PASS" if not problems else "FAIL",
-                 "%d rung(s) + %d bank question(s) still need the "
-                 "'why this' line — Mide's gate, it is science prose"
-                 % (lad_missing, bank_missing) if not problems
-                 else "the count moved"))
+                 "no generic fallback" if not problems
+                 else "%d generic" % len(problems)))
     return rows, problems
+
+
+def _generic_hits(lines):
+    """(kind, message) per finding. kind is 'reuse' or 'thin' and is what the
+    self-proof matches on, so rewording a message cannot blind the fixture."""
+    from collections import Counter
+    out = []
+    seen = Counter(t.strip() for _, _, t in lines)
+    for text, n in sorted(seen.items()):
+        if n > _REUSE_LIMIT:
+            where = [w for _, w, t in lines if t.strip() == text][:3]
+            out.append(("reuse",
+                "H — a right-answer line is reused across %d questions: %r "
+                "(e.g. %s). Design §15 forbids generic fallbacks, and one "
+                "string pasted into every question ships as teaching while "
+                "teaching nothing. RULED 21 Aug: the right answer may carry NO "
+                "line at all — that is fine and the slot closes. What it may "
+                "not carry is the same line as everything else."
+                % (n, text, ", ".join(where))))
+    for src, where, text in lines:
+        body = _substance(text)
+        if len(body) < _MIN_SUBSTANCE:
+            out.append(("thin",
+                "H — %s %s: the right answer's line is %r, which is an "
+                "affirmation with %d character(s) of teaching after it. Either "
+                "author a real reason or leave it out — an empty slot is ruled "
+                "and closes cleanly; a hollow one is a generic fallback wearing "
+                "a question's clothes." % (src, where, text, len(body))))
+    return out
 
 
 # ── E · no question count is ever a literal ───────────────────────────────

@@ -33,6 +33,17 @@
 <script>
 var DCLogic = window.MrBadmusStudentRuntime.MrbLogic;
 var StreamableLogic = DCLogic;
+
+/* One definition of "is this feedback line actually authored", used by both the
+   places a line surfaces: the option card while answering, and the review screen
+   at the end. See the ⊕ RULED 21 Aug note above `noteBlock` for why the right
+   answer's line is absent and why the slot must close rather than blank.
+   Returns '' — never undefined — so a missing line renders as the same closed
+   slot the idle and off states already produce, not as the string "undefined". */
+function _line(q, i) {
+  var s = q && q.f && q.f[i];
+  return (typeof s === 'string' && s.trim()) ? s : '';
+}
 class Component extends DCLogic {
   rootRef = MrbRef();
 
@@ -437,6 +448,40 @@ class Component extends DCLogic {
     const keys = ['A', 'B', 'C', 'D'];
     const cream = '#FFFDF8';
     const sel = st.sels[idx];
+    /* ⊕ RULED 21 Aug 2026 — the right answer's explanation line is DROPPED for v1,
+       and the slot must CLOSE rather than stand empty.
+
+       Design's §2 asks for four feedback strings per question so the pair reads
+       "why not that / why this". Measured across both content sources — 140 ladder
+       recall/apply rungs and 840 bank questions — the three that exist are always
+       the DISTRACTORS, and "why this" is authored nowhere. Authoring 980 pieces of
+       science prose is a term's work and it is Mide's gate, not the build's.
+
+       Ruled: v1 ships with three. The right answer is marked correct by the tick
+       and the word, with no line beneath it. The reasoning, recorded rather than
+       just obeyed: the teaching in a multiple-choice question lands on the MISTAKE.
+       A student who chose correctly does not need a paragraph confirming it, and
+       the lesson page is where the real explanation lives.
+
+       ⚠️ NOT a blanket suppression, and this is the one place the ruling is read
+       less than literally. `noteBlock` renders a line that IS authored and closes
+       the slot when one is not — because the same ruling says authored lines are
+       "content and welcome", and Design's own example data carries all four (its
+       right-answer lines open "Right. …"). Once the pages are wired to the real
+       content sources in phase 2, no correct option has a line anywhere, so both
+       readings ship exactly the same v1. This one just does not destroy the slot
+       on the way, and a fallback string appearing in 840 places is the thing
+       Design forbade — gated separately in student_parity.py.
+
+       Closing means dropping noteRule and noteColor too, not just blanking `note`.
+       Those carry the rule above the line and its padding; leaving them behind is
+       precisely the gap the ruling says must not appear. `idle` and `off` already
+       close it this way, which is the shape being matched. */
+    const noteBlock = (i, rule, color) => {
+      const s = _line(q, i);
+      return s ? { note: s, noteRule: rule, noteColor: color } : { note: '' };
+    };
+
     const options = q.o.map((t, i) => {
       const isPick = pick === i, isAns = q.a === i;
       const s = !locked ? (sel === i ? 'sel' : 'idle') : isPick && isAns ? 'right' : isPick ? 'wrong' : isAns ? 'answer' : 'off';
@@ -455,23 +500,20 @@ class Component extends DCLogic {
         bg: 'var(--ks3-ok-tint)', border: '2px solid var(--ks3-ok)', color: 'var(--st-ink)',
         keyBg: 'var(--ks3-ok-text)', keyBorder: '2px solid var(--ks3-ok-text)', keyColor: cream,
         keyAnim: 'mrbMark .3s ease-out both', tick: true, cross: false,
-        markColor: 'var(--ks3-ok-text)', status: 'RIGHT', statusColor: 'var(--ks3-ok-text)',
-        note: q.f[i], noteRule: 'var(--ok-border)', noteColor: 'var(--st-body)'
-      });
+        markColor: 'var(--ks3-ok-text)', status: 'RIGHT', statusColor: 'var(--ks3-ok-text)'
+      }, noteBlock(i, 'var(--ok-border)', 'var(--st-body)'));
       if (s === 'wrong') return Object.assign(o, {
         bg: 'var(--err-bg)', border: '2px solid var(--err)', color: 'var(--st-ink)',
         keyBg: 'var(--err)', keyBorder: '2px solid var(--err)', keyColor: cream,
         keyAnim: 'mrbMark .3s ease-out both', tick: false, cross: true,
-        markColor: 'var(--err)', status: 'NOT THIS ONE', statusColor: 'var(--err)',
-        note: q.f[i], noteRule: 'var(--err-border)', noteColor: 'var(--st-body)'
-      });
+        markColor: 'var(--err)', status: 'NOT THIS ONE', statusColor: 'var(--err)'
+      }, noteBlock(i, 'var(--err-border)', 'var(--st-body)'));
       if (s === 'answer') return Object.assign(o, {
         bg: 'var(--st-paper)', border: '2px solid var(--ks3-ok)', color: 'var(--st-ink)',
         keyBg: 'transparent', keyBorder: '2px solid var(--ks3-ok)', keyColor: 'var(--ks3-ok-text)',
         keyAnim: 'none', tick: true, cross: false,
-        markColor: 'var(--ks3-ok)', status: 'THE ANSWER', statusColor: 'var(--ks3-ok-text)',
-        note: q.f[i], noteRule: 'var(--st-rule-soft)', noteColor: 'var(--st-muted)'
-      });
+        markColor: 'var(--ks3-ok)', status: 'THE ANSWER', statusColor: 'var(--ks3-ok-text)'
+      }, noteBlock(i, 'var(--st-rule-soft)', 'var(--st-muted)'));
       return Object.assign(o, {
         bg: 'transparent', border: '1px solid var(--st-rule-fact)', color: 'var(--st-faint)',
         keyBg: 'transparent', keyBorder: '1px solid var(--st-rule-fact)', keyColor: 'var(--st-faint)',
@@ -537,8 +579,12 @@ class Component extends DCLogic {
       const qq = this.questions[i];
       wrongList.push({
         num: pad(i + 1), q: qq.q,
-        yourKey: keys[a], yourText: qq.o[a], yourNote: qq.f[a],
-        ansKey: keys[qq.a], ansText: qq.o[qq.a], ansNote: qq.f[qq.a],
+        yourKey: keys[a], yourText: qq.o[a], yourNote: _line(qq, a),
+        /* the correct option's line, closed when unauthored — see noteBlock above.
+           The review screen is the SECOND place it surfaces, and it was missed on
+           the first pass: closing it only on the question card would have left the
+           end-of-assignment review showing an empty rule under every right answer. */
+        ansKey: keys[qq.a], ansText: qq.o[qq.a], ansNote: _line(qq, qq.a),
         jumpLabel: 'LOOK AT QUESTION ' + pad(i + 1),
         onClick: () => this.go(i)
       });

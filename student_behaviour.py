@@ -246,6 +246,7 @@ def run(cdp):
         drives = DRIVES[name]
         d = run_one(cdp, REF, pair["design"], drives)
         g = run_one(cdp, SITE, pair["ported"], drives)
+        seen = set()
 
         for label, _steps in drives:
             ds, gs = d[label], g[label]
@@ -273,7 +274,11 @@ def run(cdp):
                              "%d step(s) found no control" % len(gs["missed"])))
                 continue
 
-            same_text = ds["text"] == gs["text"]
+            d_text, ruled = _apply_ruled(
+                name, ds["text"], gs["text"], problems, seen)
+            rows.extend(ruled)
+
+            same_text = d_text == gs["text"]
             same_ctl = ds["controls"] == gs["controls"]
             ok = same_text and same_ctl
             if ok:
@@ -292,7 +297,103 @@ def run(cdp):
                 problems.append("%s — %r diverges: %s"
                                 % (name, label, "; ".join(bits)))
                 rows.append((name, label, "FAIL", "; ".join(bits)[:110]))
+
+        rows.extend(_ruled_seen(name, seen, problems))
     return rows, problems
+
+
+# ── RULED DIVERGENCES — where the port must NOT match Design's file ───────
+#
+# This gate's whole premise is that the port and Design's own file produce the
+# same visible text. A ruling that changes the product breaks that premise, and
+# there are exactly two honest ways to handle it: change the ruling, or register
+# the divergence and keep asserting it. Deleting the drive is not one of them —
+# that is how a gate quietly stops covering the thing it was written for.
+#
+# So each entry is asserted BOTH WAYS, the same shape layer D uses for the
+# delivery's `--st-ok-room` violation:
+#
+#   · the pattern MUST match Design's own file — if Design redraws and it stops
+#     matching, this registration is stale and goes red so somebody re-reads it
+#   · the pattern MUST NOT match the port — if it comes back, the ruling has
+#     been reverted by accident and that goes red too
+#
+# Only then is the matched text removed from Design's side and the rest of the
+# drive compared exactly as before. Everything outside the ruled span is still
+# held to byte-for-byte parity.
+RULED_DIVERGENCE = {
+    "class view": [
+        ("the leader's ON TIME / SCORE / RECALL figures",
+         r"ON TIME \d+ SCORE \d+ RECALL \d+ "),
+        ("the static 40 / 40 / 20 split legend",
+         r"ON TIME · 40 SCORE · 40 RECALL · 20 "),
+    ],
+}
+#
+# ⊕ RULED 21 Aug 2026 (MRB-275). The bar shows the TOTAL and omits the split.
+# ON TIME and SCORE are computable; RECALL is not — nothing anywhere records a
+# recall round, `quiz_scores` carries neither a class nor a teaching week, and
+# `quiz_question_attempts` has no question_ref to resolve an answer back to a
+# rung. A bar showing two of three components is a different lie from one
+# showing three fabricated ones, and it is still one.
+#
+# The static legend goes with it for a second reason: "ON TIME · 40 / SCORE · 40
+# / RECALL · 20" is a HARD-CODED string stating an apportionment the platform
+# cannot compute, and it is platform self-explanation on a student page.
+# "RESETS EVERY MONDAY 00:00" is deliberately KEPT — that is a fact a student
+# needs in order to read the competition, not an explanation of the machinery.
+
+
+def _apply_ruled(page, d_text, g_text, problems, seen):
+    """Strip ruled divergences from Design's text, asserting each both ways.
+
+    ⚠️ THE TWO HALVES ARE ASSERTED AT DIFFERENT SCOPES, and the first draft got
+    this wrong by asserting both per drive. Not every drive has the leaderboard
+    on screen — the six recall drives navigate away from it entirely — so
+    "present in Design" is legitimately false there, and demanding it per drive
+    painted twelve healthy drives red for the crime of being on another screen.
+
+      · FORBIDDEN IN THE PORT — per drive, every drive. The ruling holds on
+        every screen, so there is no state in which it may reappear.
+      · PRESENT IN DESIGN — once per page, over all drives. That is what stops
+        the registration rotting: if Design redraws and the pattern stops
+        matching anywhere, the page-level assertion goes red.
+    """
+    import re
+    rows = []
+    for label, pat in RULED_DIVERGENCE.get(page, ()):
+        if re.search(pat, d_text):
+            seen.add(label)
+        if re.search(pat, g_text):
+            rows.append((page, "ruled · %s" % label, "FAIL", "back on the port"))
+            problems.append(
+                "%s — %r is BACK on the ported page. RULED 21 Aug 2026: the "
+                "bar shows the total and omits the split until recall has "
+                "somewhere to write (MRB-275). A bar apportioning points a "
+                "student did not earn that way is a lie told in a graph."
+                % (page, label))
+        d_text = re.sub(pat, "", d_text)
+    return d_text, rows
+
+
+def _ruled_seen(page, seen, problems):
+    """Once per page: every registered divergence was found in Design's file."""
+    rows = []
+    for label, _pat in RULED_DIVERGENCE.get(page, ()):
+        ok = label in seen
+        rows.append((page, "ruled · %s — still in the delivery" % label,
+                     "PASS" if ok else "FAIL",
+                     "found in Design's own file, removed from the port" if ok
+                     else "NOT found in Design's file on any drive"))
+        if not ok:
+            problems.append(
+                "%s — the ruled divergence %r was not found in DESIGN's own "
+                "file on any drive. Either Design has redrawn it or the "
+                "pattern has rotted; either way this registration is a claim "
+                "about the past, and the port is being credited with removing "
+                "something that is no longer there. Re-read the delivery."
+                % (page, label))
+    return rows
 
 
 def _first_diff(a, b):
