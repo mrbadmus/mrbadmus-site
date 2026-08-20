@@ -79,6 +79,23 @@ function initialiserEnd(text, eq) {
   return text.length;
 }
 
+// Top-level helper FUNCTIONS are hoisted into the context before any constant
+// is evaluated. A page may build a data constant through a local shaper — c3-01
+// builds every sample's particle strip with `dots()`, c4-05 builds every
+// formula with `t()` — and without the helper those constants fail with
+// "dots is not defined", which is exactly the science-bearing payload §3 of the
+// build contract forbids retyping. Only column-0 `function NAME(` declarations
+// are taken: the component function and the DC runtime's own helpers are
+// indented inside it, so this cannot pull in anything that needs a viewer.
+for (const fm of body.matchAll(/^function ([A-Za-z_$][\w$]*)\s*\(/gm)) {
+  const open = body.indexOf('{', fm.index);
+  if (open < 0) continue;
+  const chunk = body.slice(fm.index, initialiserEnd(body, open - 1));
+  try { vm.runInContext(chunk, ctx, { timeout: 5000 }); } catch (e) { /* a helper
+    the sandbox cannot run is not fatal — the constants that do not need it
+    still evaluate, and one that does reports its own error below. */ }
+}
+
 for (const name of declared) {
   const re = new RegExp('^const ' + name + '\\s*=', 'm');
   const mm = body.match(re);

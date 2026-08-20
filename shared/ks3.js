@@ -1043,15 +1043,44 @@
      only affordance and CSS removes it when the card opens, because
      there is no longer anything underneath.
      ═══════════════════════════════════════════════════════════════ */
+  /* ⊕ C3 (MRB-272) — A CARD GRID NOW TICKS ITS RAIL STOP.
+     On c3-01, c3-02 and c3-05 `#s-words` is a rail stop, and before this the
+     grid flipped cards and told the rail nothing: `doneByDom` finds no
+     `.ks3-rung`, no `[data-reveal]` and no `.ks3-option` in a card grid, so
+     the stop could never reach done. Design's own `DONE('s-words')` is "every
+     card turned", and that is what is implemented here.
+
+     ⚖️ TURNED, NOT LEFT OPEN. Credit is for having turned each card once, so
+     a student who folds them back up keeps it — `markStage` is a ratchet and
+     `seen` is never emptied. Reading a definition and then hiding it again is
+     how you test yourself, and it must not cost the stop.
+
+     ⚠️ Counted per GRID, not per page: a lesson may hold more than one, and
+     `data-cards-total` is the denominator the renderer wrote. */
   function wireCards(root) {
-    each(root.querySelectorAll(".ks3-card-btn"), function (btn) {
-      var back = btn.querySelector(".ks3-card-back");
-      btn.setAttribute("aria-expanded", "false");
-      btn.addEventListener("click", function () {
-        var open = btn.getAttribute("aria-expanded") === "true";
-        btn.setAttribute("aria-expanded", open ? "false" : "true");
-        btn.classList.toggle("is-flipped", !open);
-        setHidden(back, open);
+    each(root.querySelectorAll("[data-cards]"), function (grid) {
+      var sec = grid.closest(".ks3-keywords");
+      var btns = toArray(grid.querySelectorAll(".ks3-card-btn"));
+      var total = parseInt(grid.getAttribute("data-cards-total"), 10)
+        || btns.length;
+      var seen = {};
+
+      each(btns, function (btn, i) {
+        var back = btn.querySelector(".ks3-card-back");
+        btn.setAttribute("aria-expanded", "false");
+        btn.addEventListener("click", function () {
+          var open = btn.getAttribute("aria-expanded") === "true";
+          btn.setAttribute("aria-expanded", open ? "false" : "true");
+          btn.classList.toggle("is-flipped", !open);
+          setHidden(back, open);
+          // Only OPENING a card counts as having met the word.
+          if (!open) {
+            seen[i] = true;
+            var n = 0, k;
+            for (k in seen) { if (seen[k]) { n += 1; } }
+            if (n >= total) { markStage(sec, true); }
+          }
+        });
       });
     });
   }
@@ -17291,6 +17320,1263 @@
 
 
 
+/* ═══ BEGIN C3 wiring ═══════════════════════════════════════════════════
+   C3 · Mixtures and separation — NINE instrument families, all DOM, no
+   canvas, and one page (filtration) that places one family twice.
+
+   `ks3_art/c3.py` emits EMIT-BOTH-SHOW-ONE markup wherever a panel has a
+   small closed set of states, and a JSON `data-cfg` only for what genuinely
+   has to be recomputed — a number, a colour, a geometry. So almost nothing
+   below writes a sentence: it chooses a node that is already in the
+   document, and the three places that do compose (the dissolving bench's
+   readouts and verdict, the sequence report, the crystal dish's alt) compose
+   from a template the payload carries, with the SAME arithmetic the renderer
+   used for the resting DOM.
+
+   ⚖️ NOTHING GREEN AND NOTHING RED REACHES A CONTROL IN ANY OF THE NINE.
+   A verdict panel says in words what happened; a chosen option keeps the
+   ordinary chosen treatment and the rest dim. Only the mastery ladder marks
+   correctness (R3 / MRB-196 R10).
+
+   ⚖️ NOTHING ANIMATES AND NOTHING COUNTS DOWN in any of the nine — there is
+   no rAF loop, no timer and no JS-driven transition anywhere in this block —
+   so `prefers-reduced-motion` has nothing to degrade here. What motion the
+   unit has is arrival/transition CSS, which `shared/ks3.css` degrades itself
+   inside its own media query. If a later revision animates anything here it
+   must ask `motionReduced()` INSIDE the tick, not once at construction
+   (contract R4, the b2-03 slip).
+
+   ⚠️ A DIAL BUTTON IS FOUND BY `data-<fam>-for`, NOT BY `data-<fam>-opt`.
+   The renderer's `_seg()` composes a segmented button out of a CLASS plus
+   whatever named attributes it is handed, and for the five dial families
+   (dlab, cryst, still, chroma, mpb) it is handed `-for` and `-val` only. The
+   docstrings and the hooks list name a `data-dlab-opt` / `data-cryst-opt` /
+   `data-still-opt` / `data-chroma-opt` / `data-mpb-opt` that IS NOT IN THE
+   BUILT MARKUP — binding to it wires nothing and fails silently, which is
+   exactly how it presented the first time. The one-shot commit families
+   (psort, mchoice, critiq, seq chips, chroma pens, mpb verdict buttons) do
+   carry their own `-opt`-shaped hook, and those are used as named.
+
+   ⚠️ THE NO-OP PRESS. Every dial below returns early when the value pressed
+   is the value already pressed. Design's own handlers do not: on c3-04 and
+   c3-06 pressing the dial that is already lit resets the prediction and
+   withdraws the Run button, and on c3-05 it resets the run to stage 0. That
+   is a control claiming to be pressed and then changing what is on screen,
+   which the smoke gate asserts against. Corrected here rather than
+   reproduced. */
+
+  /* ── the six things all nine need ───────────────────────────────────── */
+
+  function c3Cfg(el, attr) {
+    try { return JSON.parse(el.getAttribute(attr || "data-cfg") || "{}"); }
+    catch (err) { return {}; }
+  }
+
+  /* Authored text, through the file's own mark drawer. NEVER textContent:
+     C3's copy uses → as chemistry notation and the shipped font subsets do
+     not carry the character (SPEC §9.3). */
+  function c3Say(el, text) {
+    if (!el) { return; }
+    while (el.firstChild) { el.removeChild(el.firstChild); }
+    appendAuthored(el, text === null || text === undefined ? "" : text);
+  }
+
+  /* `{placeholder}` substitution, and the only string composition in the
+     block. The templates are the payload's own — `_dlab_verdict`,
+     `dish_alt.template`, `report.wrong_text` — so Python and JS are reading
+     one authored sentence rather than keeping two. */
+  function c3Fill(tpl, map) {
+    var s = String(tpl === null || tpl === undefined ? "" : tpl), k;
+    for (k in map) {
+      if (Object.prototype.hasOwnProperty.call(map, k)) {
+        s = s.split("{" + k + "}").join(String(map[k]));
+      }
+    }
+    return s;
+  }
+
+  function c3By(list, id) {
+    var i;
+    for (i = 0; i < (list || []).length; i++) {
+      if (list[i] && list[i].id === id) { return list[i]; }
+    }
+    return null;
+  }
+
+  function c3Empty(el) {
+    if (!el) { return; }
+    while (el.firstChild) { el.removeChild(el.firstChild); }
+  }
+
+  function c3Enable(btn, on) {
+    if (!btn) { return; }
+    if (on) { btn.removeAttribute("disabled"); }
+    else { btn.setAttribute("disabled", ""); }
+  }
+
+  /* ── one commitment per card, and it is FINAL ────────────────────────
+     Three of the nine are the same instrument with three sets of hooks:
+     `purity-sorter` (c3-01, eight samples), `method-choice` (c3-04, three
+     jobs) and `plan-critique` (c3-07, four judgements on somebody else's
+     plan). All three are `wireVerdictCards`' contract — the reveal is on
+     screen the instant the card is decided, so a second press would be a
+     student choosing an answer they can already read, and every button on
+     that card disables.
+
+     They share this one body rather than three copies, because the thing
+     that must not drift between them is exactly the rule above. */
+  function c3CommitCards(sec, sel) {
+    var wrap = sec.querySelector(sel.wrap);
+    if (!wrap) { return; }
+    var cards = toArray(wrap.querySelectorAll(sel.card));
+    if (!cards.length) { return; }
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || cards.length;
+    var closer = sel.close ? wrap.querySelector(sel.close) : null;
+
+    function decided() {
+      var n = 0;
+      each(cards, function (c) {
+        if (c.getAttribute("data-open") === "1") { n += 1; }
+      });
+      return n;
+    }
+
+    each(cards, function (card) {
+      var opts = toArray(card.querySelectorAll(sel.opt));
+      each(opts, function (btn) {
+        btn.addEventListener("click", function () {
+          /* The guard is here as well as on the elements: `disabled` is the
+             drawn half, and this is the half a synthetic click cannot pass. */
+          if (card.getAttribute("data-open") === "1") { return; }
+          card.setAttribute("data-open", "1");
+          each(opts, function (b) {
+            b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+            c3Enable(b, false);
+          });
+          /* ⚠️ c3-01 only: the ingredients ARE the answer to the question
+             being asked, so they are not on the page until the card is
+             decided. No-ops where a family has none. */
+          if (sel.also) { setHidden(card.querySelector(sel.also), false); }
+          setHidden(card.querySelector(sel.reveal), false);
+          var n = decided();
+          if (sel.count) { setCount(sec, n); }
+          if (n >= total) {
+            setHidden(closer, false);
+            markStage(sec, true);
+          }
+        });
+      });
+    });
+    if (sel.count) { setCount(sec, 0); }
+  }
+
+  /* ── purity-sorter (c3-01 #s-sorter) ────────────────────────────────
+     Eight samples, one question asked eight times, and looking settles none
+     of them. The head counter is the shell's `[data-count]` — "0 of 8
+     decided" through to "8 of 8 decided", a sentence whose noun does not
+     inflect, which is why this counter carries no `data-format-one`. */
+  function wirePuritySorter(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-psort]", card: "[data-psort-card]",
+      opt: "[data-psort-opt]", reveal: "[data-psort-reveal]",
+      also: "[data-psort-ingredients]", close: "[data-psort-close]",
+      count: true
+    });
+  }
+
+  /* ── method-choice (c3-04 #s-jobs) ──────────────────────────────────
+     Three real jobs, and ONE OF THEM CANNOT BE DONE THIS WAY AT ALL. There
+     is no `correct` key in the payload and nothing here looks for one: the
+     reveal names the method and explains it, in the same tone whichever
+     button was pressed. */
+  function wireMethodChoice(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-mchoice]", card: "[data-mchoice-item]",
+      opt: "[data-mchoice-opt]", reveal: "[data-mchoice-reveal]"
+    });
+  }
+
+  /* ── plan-critique (c3-07 #s-critique) ──────────────────────────────
+     Four judgements on somebody else's plan, and it comes BEFORE the bench:
+     ruling on four steps that are all observations is what makes building a
+     measurement a decision instead of a recipe.
+
+     ⚠️ `data-critiq`, NOT `data-critique`. `wireCritique` above already
+     claims `[data-critique]` for a B-unit family; a shared selector would
+     hand this instrument to that one's handler and neither would work. */
+  function wirePlanCritique(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-critiq]", card: "[data-critiq-item]",
+      opt: "[data-critiq-opt]", reveal: "[data-critiq-reveal]",
+      close: "[data-critiq-close]"
+    });
+  }
+
+  /* ── dissolve-lab (c3-02 #s-lab, gated by #s-gate) ──────────────────
+     Four dials — solute × temperature × stirring × grinding — and 48
+     reachable states.
+
+     ⚖️ THE RATE/AMOUNT SPLIT IS THE WHOLE LESSON AND IT IS LOAD-BEARING
+     HERE. `grams` comes from `solutes[].grams[temp]` and from nowhere else;
+     `c3DlabSeconds` divides the TIME and CANNOT SEE THE GRAMS — they are not
+     a parameter of it and must never become one. If stirring ever moved the
+     grams this bench would teach MIX-04 ("stirring harder makes more
+     dissolve"), which is the misconception it exists to confront.
+
+     ⚖️ SALT IS ON THE BENCH BECAUSE ITS SOLUBILITY BARELY MOVES: 35.8 g cold
+     against 38.1 g hot, next to sugar's 190 against 360. Both come out of
+     the same lookup, so the counter-example cannot be lost by a repaint.
+
+     ⚠️ THE BENCH IS LOCKED BY AN ACTIVITY THAT IS NOT PART OF IT.
+     `data-dlab-lock` names the predict block ABOVE it on the page and Design
+     wraps the whole `<section>` in that gate rather than greying the
+     controls, so the section is hidden here and arrives in the space the
+     question was occupying. `data-dlab-demo` is the front-of-class dial: it
+     opens the bench without the gate, it is authored `0`, and it is read as
+     an explicit `"1"` so that a missing attribute can never open it.
+
+     ⚠️ AN INSOLUBLE SOLUTE IS A REACHABLE, HONEST STATE — two of the four
+     are — and it reads `none` / `never` / `cloudy` with undissolved solid
+     drawn on the bottom, not an error. */
+
+  function c3DlabSeconds(base, factor, stir, powder, timing) {
+    var s = Number(base || 0) * Number(factor || 0);
+    if (stir) { s = s / Number(timing.stirred_divisor || 1); }
+    if (powder) { s = s / Number(timing.powder_divisor || 1); }
+    return Math.round(s);
+  }
+
+  /* Design's interleave, and the renderer's: every `every`-th water particle
+     is followed by a solute particle, so the picture reads as *spread evenly
+     among them* rather than as a stripe of one colour beside a stripe of the
+     other. Reproduced exactly, because the resting render is this picture
+     and a repaint must not be an approximation of it. */
+  function c3DlabMix(waterN, waterC, waterS, solN, solC, solS) {
+    var out = [], wi = 0, si = 0, k;
+    var every = solN ? Math.max(2, Math.round(waterN / solN)) : Infinity;
+    while (wi < waterN || si < solN) {
+      k = 0;
+      while (k < every && wi < waterN) { out.push([waterC, waterS]); wi += 1; k += 1; }
+      if (si < solN) { out.push([solC, solS]); si += 1; }
+    }
+    return out;
+  }
+
+  function c3DlabDot(cls, colour, size) {
+    var d = document.createElement("span");
+    d.className = cls;
+    d.style.width = size + "px";
+    d.style.height = size + "px";
+    d.style.background = colour;
+    return d;
+  }
+
+  function wireDissolveLab(sec) {
+    var wrap = sec.querySelector("[data-dlab]");
+    if (!wrap) { return; }
+    var cfg = c3Cfg(wrap);
+    var solutes = cfg.solutes || [];
+    var temps = cfg.temps || [];
+    var timing = cfg.timing || {};
+    var factors = timing.temperature || {};
+    var beaker = cfg.beaker || {};
+    var readouts = cfg.readouts || [];
+    var verdict = cfg.verdict || {};
+    var start = cfg.start || {};
+    if (!solutes.length || !temps.length) { return; }
+
+    var DONE_AT = parseInt(wrap.getAttribute("data-dlab-done-at"), 10) || temps.length;
+    var dials = toArray(wrap.querySelectorAll("[data-dlab-for]"));
+    var beakerEl = wrap.querySelector("[data-dlab-beaker]");
+    var dotsEl = wrap.querySelector("[data-dlab-dots]");
+    var bottomEl = wrap.querySelector("[data-dlab-bottom]");
+    var bottomDots = wrap.querySelector("[data-dlab-bottomdots]");
+    var bottomNote = wrap.querySelector("[data-dlab-bottomnote]");
+    var verdictEl = wrap.querySelector("[data-dlab-verdict]");
+    var summaryEl = wrap.querySelector("[data-dlab-summary]");
+    var outs = {}, notes = {};
+    each(wrap.querySelectorAll("[data-dlab-out]"), function (el) {
+      outs[el.getAttribute("data-dlab-out")] = el;
+    });
+    each(wrap.querySelectorAll("[data-dlab-outnote]"), function (el) {
+      notes[el.getAttribute("data-dlab-outnote")] = el;
+    });
+
+    var pick = {
+      solute: start.solute || solutes[0].id,
+      temp: start.temp || temps[0],
+      stir: start.stir ? "1" : "0",
+      powder: start.powder ? "1" : "0"
+    };
+    var seen = {}, nSeen = 0;
+    each(start.seen || [], function (k) {
+      if (!seen[k]) { seen[k] = true; nSeen += 1; }
+    });
+
+    function paint() {
+      var sol = c3By(solutes, pick.solute) || solutes[0];
+      var soluble = !!sol.soluble;
+      var grams = (sol.grams || {})[pick.temp];
+      var secs = c3DlabSeconds(sol.base, factors[pick.temp],
+                               pick.stir === "1", pick.powder === "1", timing);
+
+      each(dials, function (b) {
+        b.setAttribute("aria-pressed",
+          pick[b.getAttribute("data-dlab-for")] === b.getAttribute("data-dlab-val")
+            ? "true" : "false");
+      });
+
+      each(readouts, function (r) {
+        var value, note;
+        if (!soluble) {
+          value = r.value_insoluble || "";
+          /* An authored `null` means "this readout's insoluble note is the
+             SOLUTE's note" — sand and chalk each say why. */
+          note = (r.note_insoluble === null || r.note_insoluble === undefined)
+            ? (sol.note || "") : r.note_insoluble;
+        } else if (r.id === "amount") {
+          /* ⚖️ THE GRAMS, AND THE ONLY PLACE THEY COME FROM. */
+          value = cfg.show_grams === false
+            ? (r.value_hidden || "")
+            : c3Fill(r.value_format || "{grams} g",
+                     { grams: (grams === null || grams === undefined) ? "" : grams });
+          note = r.note || "";
+        } else if (r.id === "time") {
+          value = c3Fill(r.value_format || "{seconds} s", { seconds: secs });
+          note = r.note || "";
+        } else {
+          value = (soluble ? r.value : r.value_insoluble) || "";
+          note = r.note || "";
+        }
+        c3Say(outs[r.id], value);
+        c3Say(notes[r.id], note);
+      });
+
+      if (beakerEl) {
+        beakerEl.setAttribute("aria-label", c3Fill(
+          beaker[soluble ? "alt_soluble" : "alt_insoluble"] || "",
+          { solute: String(sol.name || "").toLowerCase() }));
+      }
+      var diss = soluble ? Number((beaker.dissolved_dots || {})[sol.id] || 0) : 0;
+      c3Empty(dotsEl);
+      if (dotsEl) {
+        each(c3DlabMix(Number(beaker.water_dots || 0), beaker.water_colour || "",
+                       Number(beaker.water_dot_size || 11), diss,
+                       sol.colour || "", Number(beaker.solute_dot_size || 9)),
+             function (p) { dotsEl.appendChild(c3DlabDot("ks3-dlab-dot", p[0], p[1])); });
+      }
+      var bn = soluble ? 0 : Number(beaker.undissolved_dots || 0);
+      c3Empty(bottomDots);
+      if (bottomDots) {
+        for (var i = 0; i < bn; i++) {
+          bottomDots.appendChild(c3DlabDot("ks3-dlab-dot ks3-dlab-dot-solid",
+            sol.colour || "", Number(beaker.undissolved_dot_size || 13)));
+        }
+      }
+      setHidden(bottomEl, bn === 0);
+      c3Say(bottomNote, c3Fill(beaker.bottom_note || "", { Solute: sol.name || "" }));
+
+      /* The verdict's tail is chosen by whether the two RATE dials have been
+         touched, and both tails say the same thing about the grams — that
+         they did not move. It has to be true in the state where nothing has
+         been stirred as well as in the state where everything has. */
+      c3Say(verdictEl, soluble
+        ? c3Fill(verdict.soluble || "", {
+            Solute: sol.name || "", note: sol.note || "",
+            tail: (pick.stir === "1" || pick.powder === "1"
+                   ? verdict.tail_worked : verdict.tail_still) || "" })
+        : c3Fill(verdict.insoluble || "", {
+            Solute: sol.name || "", note: sol.note || "" }));
+
+      setHidden(summaryEl, nSeen < DONE_AT);
+      markStage(sec, nSeen >= DONE_AT);
+    }
+
+    each(dials, function (btn) {
+      btn.addEventListener("click", function () {
+        var g = btn.getAttribute("data-dlab-for");
+        var v = btn.getAttribute("data-dlab-val");
+        if (pick[g] === undefined || pick[g] === v) { return; }
+        pick[g] = v;
+        /* The rail stop is three DIFFERENT temperatures seen, which is the
+           only way the salt column and the sugar column can be compared. */
+        if (g === "temp" && !seen[v]) { seen[v] = true; nSeen += 1; }
+        paint();
+      });
+    });
+
+    /* Gating by ABSENCE, and the gate is a SIBLING BLOCK rather than a panel
+       inside the bench — so the whole section goes, and comes back when the
+       named activity is answered. */
+    function openBench() {
+      setHidden(sec, false);
+      setHidden(wrap, false);
+    }
+    var lock = wrap.getAttribute("data-dlab-lock") || "";
+    if (wrap.getAttribute("data-dlab-demo") === "1" || !lock) {
+      openBench();
+    } else {
+      var gate = null;
+      each(document.querySelectorAll("[data-activity]"), function (b) {
+        if (b.getAttribute("data-activity") === lock) { gate = b; }
+      });
+      if (!gate) {
+        /* A lock naming a block that is not on the page would hide the bench
+           for ever, which is worse than an ungated bench. */
+        openBench();
+      } else {
+        setHidden(sec, true);
+        var gopts = toArray(gate.querySelectorAll(".ks3-option"));
+        var answered = false;
+        each(gopts, function (b) {
+          if (b.getAttribute("aria-pressed") === "true") { answered = true; }
+        });
+        if (answered) { openBench(); }
+        else { each(gopts, function (b) { b.addEventListener("click", openBench); }); }
+      }
+    }
+    paint();
+  }
+
+  /* ── sequence-rebuild (c3-03 #s-steps watch · #s-build rebuild) ──────
+     ONE FAMILY, TWO PHASES, ONE WIRE FUNCTION. `data-phase` selects the
+     branch, and the five steps are literally the same five records — minting
+     a second family would give them two places to drift apart. */
+  function wireSequenceRebuild(sec) {
+    var wrap = sec.querySelector("[data-seq]");
+    if (!wrap) { return; }
+    if (wrap.getAttribute("data-phase") === "rebuild") { c3SeqRebuild(sec, wrap); }
+    else { c3SeqWatch(sec, wrap); }
+  }
+
+  /* phase `watch` — five steps revealed one at a time, with a PREDICTION
+     GATE taking the next-step slot before `pour` so that a student cannot
+     walk past the question by scrolling. */
+  function c3SeqWatch(sec, wrap) {
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || 0;
+    var gateAt = parseInt(wrap.getAttribute("data-seq-gate-at"), 10);
+    if (isNaN(gateAt)) { gateAt = -1; }
+    var gate = wrap.querySelector("[data-seq-gate]");
+    var closer = wrap.querySelector("[data-seq-close]");
+    var btns = [], bodies = [];
+    each(wrap.querySelectorAll("[data-seq-open]"), function (b) {
+      btns[parseInt(b.getAttribute("data-seq-open"), 10)] = b;
+    });
+    each(wrap.querySelectorAll("[data-seq-step]"), function (li) {
+      bodies[parseInt(li.getAttribute("data-seq-i"), 10)] =
+        li.querySelector("[data-seq-body]");
+    });
+    if (!total) { return; }
+    var opened = 0;
+    var gateDone = !(gate && gateAt >= 0);
+
+    /* The stepper offers exactly ONE control at a time: the next step's
+       button, or the gate standing in its place. */
+    function offer() {
+      var i;
+      for (i = 0; i < btns.length; i++) { if (btns[i]) { setHidden(btns[i], true); } }
+      setHidden(gate, true);
+      if (opened >= total) {
+        setHidden(closer, false);
+        markStage(sec, true);
+        return;
+      }
+      if (opened === gateAt && !gateDone) { setHidden(gate, false); return; }
+      if (btns[opened]) { setHidden(btns[opened], false); }
+    }
+
+    each(wrap.querySelectorAll("[data-seq-open]"), function (btn) {
+      btn.addEventListener("click", function () {
+        var i = parseInt(btn.getAttribute("data-seq-open"), 10);
+        /* Only the step the stepper is standing on opens, and only once. */
+        if (i !== opened) { return; }
+        if (opened === gateAt && !gateDone) { return; }
+        setHidden(bodies[i], false);
+        opened = i + 1;
+        offer();
+      });
+    });
+
+    if (gate) {
+      var gopts = toArray(gate.querySelectorAll(".ks3-option"));
+      each(gopts, function (b) {
+        b.addEventListener("click", function () {
+          each(gopts, function (x) {
+            x.setAttribute("aria-pressed", x === b ? "true" : "false");
+          });
+          if (gateDone) { return; }
+          gateDone = true;
+          offer();
+        });
+      });
+    }
+    offer();
+  }
+
+  /* phase `rebuild` — the same five steps as a shuffled bank, tapped into a
+     sequence.
+
+     ⚖️ WRONG ORDERS ARE ANSWERED WITH CONSEQUENCES, NEVER WITH MARKS. The
+     report names what happened ON THE BENCH, out of the offending step's own
+     `tooSoon` string — "you poured before the paper and funnel were ready,
+     so the sand went into the flask with the water". Nothing green, nothing
+     red, no score, and the order that works is given in the same breath.
+     R3 is not relaxed for a construct task.
+
+     ⚠️ THE NODES ARE MOVED, NOT REWRITTEN. Each `<li>` is emitted hidden in
+     authored order carrying its step's title as real markup, and this
+     appends it to the list; nothing round-trips through an attribute, so an
+     authored `<em>` survives. */
+  function c3SeqRebuild(sec, wrap) {
+    var cfg = c3Cfg(wrap, "data-seq-report");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || 0;
+    var chips = toArray(wrap.querySelectorAll("[data-seq-chip]"));
+    var listEl = wrap.querySelector("[data-seq-order]");
+    var clearBtn = wrap.querySelector("[data-seq-clear]");
+    var panel = wrap.querySelector("[data-seq-report-panel]");
+    var rightEl = wrap.querySelector("[data-seq-right]");
+    var wrongEl = wrap.querySelector("[data-seq-wrong]");
+    var wrongTitle = wrap.querySelector("[data-seq-wrong-title]");
+    var wrongText = wrap.querySelector("[data-seq-wrong-text]");
+    var slots = [];
+    each(wrap.querySelectorAll("[data-seq-slot]"), function (li) {
+      slots[parseInt(li.getAttribute("data-seq-slot"), 10)] = li;
+    });
+    if (!chips.length || !total) { return; }
+    var order = [];
+
+    function report() {
+      var firstWrong = -1, i;
+      for (i = 0; i < order.length; i++) {
+        if (order[i] !== i) { firstWrong = i; break; }
+      }
+      setHidden(panel, false);
+      if (firstWrong < 0) {
+        setHidden(wrongEl, true);
+        setHidden(rightEl, false);
+      } else {
+        /* The step the student put THERE, and whether it was done before the
+           steps that protect it or after the step it was protecting. */
+        var s = order[firstWrong];
+        setHidden(rightEl, true);
+        setHidden(wrongEl, false);
+        c3Say(wrongTitle, c3Fill(cfg.wrong_title, { n: firstWrong + 1 }));
+        c3Say(wrongText, c3Fill(cfg.wrong_text, {
+          short: (cfg.shorts || [])[s] || "",
+          when: (cfg.when || {})[s > firstWrong ? "early" : "late"] || "",
+          too_soon: (cfg.too_soon || [])[s] || ""
+        }));
+      }
+      focusReveal(panel);  // MRB-257 (5.43)
+      markStage(sec, true);
+    }
+
+    each(chips, function (chip) {
+      chip.addEventListener("click", function () {
+        if (chip.getAttribute("aria-pressed") === "true") { return; }
+        if (order.length >= total) { return; }
+        var i = parseInt(chip.getAttribute("data-seq-chip"), 10);
+        order.push(i);
+        chip.setAttribute("aria-pressed", "true");
+        c3Enable(chip, false);
+        setHidden(listEl, false);
+        if (slots[i] && listEl) {
+          listEl.appendChild(slots[i]);
+          setHidden(slots[i], false);
+        }
+        if (order.length >= total) { report(); }
+      });
+    });
+
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        /* Nothing placed, nothing to clear — and the rail credit already
+           earned stays, because `markStage` is a ratchet. */
+        if (!order.length) { return; }
+        order = [];
+        each(chips, function (c) {
+          c.setAttribute("aria-pressed", "false");
+          c3Enable(c, true);
+        });
+        var k;
+        for (k = 0; k < slots.length; k++) { if (slots[k]) { setHidden(slots[k], true); } }
+        setHidden(listEl, true);
+        setHidden(panel, true);
+        setHidden(rightEl, true);
+        setHidden(wrongEl, true);
+      });
+    }
+  }
+
+  /* ── crystal-bench (c3-04 #s-bench) ──────────────────────────────────
+     Three solutes × three methods = nine states, and ONE recovered mass.
+
+     ⚖️ THE MASS IS THE SAME IN ALL NINE AND THAT IS THE TEACHING. The
+     renderer prints it once from one authored string and gives it NO DATA
+     HOOK, so there is nothing here to write into and nine masses cannot be
+     computed even by accident. Nothing below looks for one. `MIX-09` is
+     "faster evaporation gives more product"; this bench refuses it by
+     changing the crystal and never the yield.
+
+     ⚠️ THE PREDICT GATE IS PER-RUN AND DOES NOT DISAPPEAR. Moving a dial
+     clears the prediction and withdraws the Run button, so the remaining
+     eight states are each predicted before they are run — which is the eight
+     times it actually matters.
+
+     ⚠️ WHICH SOLUTE LINE JOINS THE HAZARD IS COMPUTED FROM THE METHODS, not
+     keyed on a method id. `solutes[].hard` is what boiling hard does and
+     `slow` is what slow growth gives, so the fastest method (the smallest
+     drawn crystal) takes `hard`, the slowest (the largest) takes `slow`, and
+     anything between takes the method's hazard alone. A comparative is
+     computed from the values, never authored beside them. */
+
+  function c3CrystSizeWord(words, size) {
+    var i;
+    for (i = 0; i < (words || []).length; i++) {
+      if (Number(size) > Number(words[i][0])) { return words[i][1]; }
+    }
+    return "";
+  }
+
+  function wireCrystalBench(sec) {
+    var wrap = sec.querySelector("[data-cryst]");
+    if (!wrap) { return; }
+    var cfg = c3Cfg(wrap);
+    var solutes = cfg.solutes || [];
+    var methods = cfg.methods || [];
+    if (!solutes.length || !methods.length) { return; }
+    var dishAlt = cfg.dish_alt || {};
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || methods.length;
+    var dials = toArray(wrap.querySelectorAll("[data-cryst-for]"));
+    var gopts = toArray(wrap.querySelectorAll("[data-cryst-gate-opts] .ks3-option"));
+    var runBtn = wrap.querySelector("[data-cryst-run]");
+    var panel = wrap.querySelector("[data-cryst-panel]");
+    var dish = wrap.querySelector("[data-cryst-dish]");
+    var crystals = wrap.querySelector("[data-cryst-crystals]");
+    var verdictEl = wrap.querySelector("[data-cryst-verdict]");
+    var hazardEl = wrap.querySelector("[data-cryst-hazard]");
+    var summaryEl = wrap.querySelector("[data-cryst-summary]");
+    var runTpl = runBtn ? (runBtn.getAttribute("data-cryst-runlabel") || "") : "";
+    var outs = {};
+    each(wrap.querySelectorAll("[data-cryst-out]"), function (el) {
+      outs[el.getAttribute("data-cryst-out")] = el;
+    });
+
+    /* The two ends of the method dial, measured off the drawn crystal. */
+    var minSize = null, maxSize = null, fastest = null, slowest = null;
+    each(methods, function (m) {
+      var z = Number(m.size || 0);
+      if (minSize === null || z < minSize) { minSize = z; fastest = m.id; }
+      if (maxSize === null || z > maxSize) { maxSize = z; slowest = m.id; }
+    });
+    if (minSize === maxSize) { fastest = null; slowest = null; }
+
+    var pick = {
+      solute: (cfg.start || {}).solute || solutes[0].id,
+      method: (cfg.start || {}).method || methods[0].id
+    };
+    var predicted = false, ran = {}, methodsRun = {}, nMethods = 0;
+
+    function draw(sol, met) {
+      if (!crystals) { return; }
+      c3Empty(crystals);
+      var n = Number(met.count || 0), i, size, sp;
+      for (i = 0; i < n; i++) {
+        /* Design's jitter, so a dish reads as crystals rather than as a
+           row of identical squares. */
+        size = Math.round(Number(met.size || 0) * (1 + ((i % 3) - 1) * 0.12));
+        sp = document.createElement("span");
+        sp.className = "ks3-cryst-crystal";
+        sp.setAttribute("data-shape", sol.shape || "");
+        sp.style.width = size + "px";
+        sp.style.height = size + "px";
+        sp.style.background = sol.colour || "";
+        sp.style.border = (size > 8 ? 2 : 1) + "px solid var(--ks3-ink)";
+        sp.style.borderRadius = (size > 14 ? 3 : 1) + "px";
+        if (sol.shape === "diamond" && size > 10) { sp.style.transform = "rotate(45deg)"; }
+        crystals.appendChild(sp);
+      }
+    }
+
+    function paint() {
+      var sol = c3By(solutes, pick.solute) || solutes[0];
+      var met = c3By(methods, pick.method) || methods[0];
+      var isRan = !!ran[pick.solute + ":" + pick.method];
+
+      each(dials, function (b) {
+        b.setAttribute("aria-pressed",
+          pick[b.getAttribute("data-cryst-for")] === b.getAttribute("data-cryst-val")
+            ? "true" : "false");
+      });
+      each(gopts, function (b) {
+        if (!predicted) { b.setAttribute("aria-pressed", "false"); }
+      });
+      if (runBtn) {
+        c3Say(runBtn, c3Fill(runTpl, { method: String(met.label || "").toLowerCase() }));
+        setHidden(runBtn, !(predicted && !isRan));
+      }
+      setHidden(panel, !isRan);
+      if (isRan) {
+        c3Say(outs.time, cfg.show_timings === false
+          ? (cfg.timings_hidden || "") : (met.time || ""));
+        c3Say(outs.quality, met.quality || "");
+        draw(sol, met);
+        if (dish) {
+          /* The alt text is COMPOSED from the live count and a size word
+             chosen off the method's own size, so it is true in every one of
+             the nine states rather than in the one it was written for. */
+          dish.setAttribute("aria-label", c3Fill(dishAlt.template || "", {
+            count: met.count, product: sol.product || "",
+            size_words: c3CrystSizeWord(dishAlt.size_words, met.size)
+          }));
+        }
+        c3Say(verdictEl, met.note || "");
+        c3Say(hazardEl,
+          met.id === fastest ? (sol.hard || "") + " " + (met.hazard || "")
+            : met.id === slowest ? (sol.slow || "") + " " + (met.hazard || "")
+            : (met.hazard || ""));
+      }
+      setHidden(summaryEl, nMethods < total);
+      markStage(sec, nMethods >= total);
+    }
+
+    each(dials, function (btn) {
+      btn.addEventListener("click", function () {
+        var g = btn.getAttribute("data-cryst-for");
+        var v = btn.getAttribute("data-cryst-val");
+        if (pick[g] === undefined || pick[g] === v) { return; }
+        pick[g] = v;
+        predicted = false;
+        paint();
+      });
+    });
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (x) {
+          x.setAttribute("aria-pressed", x === b ? "true" : "false");
+        });
+        if (predicted) { return; }
+        predicted = true;
+        paint();
+      });
+    });
+    if (runBtn) {
+      runBtn.addEventListener("click", function () {
+        var key = pick.solute + ":" + pick.method;
+        if (!predicted || ran[key]) { return; }
+        ran[key] = true;
+        if (!methodsRun[pick.method]) { methodsRun[pick.method] = true; nMethods += 1; }
+        paint();
+        focusReveal(panel);  // MRB-257 (5.43)
+      });
+    }
+    paint();
+  }
+
+  /* ── still-run (c3-05 #s-still) ──────────────────────────────────────
+     Three mixtures × two condenser states, run a stage at a time.
+
+     ⚖️ BOIL TO SEPARATE, COOL TO COLLECT — AND DOING ONE OF THEM GETS YOU
+     NOTHING. The no-cooling branch is not an error and not a lesser state:
+     the boiling separates the mixture perfectly, the flask proves it, and
+     the beaker is empty because the vapour went out of the open end. It is
+     drawn with the same weight as a successful run, every stage of it has
+     something true to say, and per `completion.requires_cooling` it does NOT
+     tick the rail — the student has seen something true and has not yet
+     distilled anything.
+
+     ⚠️ THE LAST STAGE HAS ITS OWN WARM TEXT. Design overrides only stage 3
+     and leaves stage 4 saying "Clear drops run into the beaker" over a
+     result panel that says the beaker is empty. The payload authors a
+     per-mixture `warm_final` for that slot; the branch below is generic —
+     ANY stage carrying a `[data-still-warm]` body uses it when the cooling
+     is off — so both stages are honest and neither is special-cased.
+
+     ⚠️ WHICH DIAL VALUE MEANS "COOLED" IS READ OFF THE OPENING STATE. The
+     payload's `dials[].options[].cooling` flag does not survive into the
+     markup or the config (see the delivery report), so the cooling group's
+     value that is pressed at wire time — the authored `start`, and the state
+     the bench is documented to open in — is the cooled one, and any other
+     value in that group is the warm branch. */
+  function wireStillRun(sec) {
+    var wrap = sec.querySelector("[data-still]");
+    if (!wrap) { return; }
+    var cfg = c3Cfg(wrap);
+    var mixtures = cfg.mixtures || [];
+    var gauges = cfg.gauges || [];
+    var nStages = parseInt(cfg.stages, 10) || 0;
+    var comp = cfg.completion || {};
+    var need = parseInt(comp.runs, 10) || 1;
+    var requiresCooling = comp.requires_cooling !== false;
+    if (!mixtures.length || !nStages) { return; }
+
+    var dials = toArray(wrap.querySelectorAll("[data-still-for]"));
+    var body = wrap.querySelector("[data-still-body]");
+    var nextBtn = wrap.querySelector("[data-still-next]");
+    var resetBtn = wrap.querySelector("[data-still-reset]");
+    var predicts = toArray(wrap.querySelectorAll("[data-still-predict]"));
+    var stageLists = toArray(wrap.querySelectorAll("[data-still-stages]"));
+    var results = toArray(wrap.querySelectorAll("[data-still-result]"));
+    var startLabel = nextBtn ? (nextBtn.getAttribute("data-still-start-label") || "") : "";
+    var nextLabel = nextBtn ? (nextBtn.getAttribute("data-still-next-label") || "") : "";
+    var gvals = {};
+    each(wrap.querySelectorAll("[data-still-gval]"), function (el) {
+      gvals[el.getAttribute("data-still-gval")] = el;
+    });
+
+    var pick = {}, coldVal = null;
+    each(dials, function (b) {
+      var g = b.getAttribute("data-still-for");
+      if (pick[g] === undefined) { pick[g] = null; }
+      if (b.getAttribute("aria-pressed") === "true") {
+        pick[g] = b.getAttribute("data-still-val");
+        if (g === "cooling") { coldVal = pick[g]; }
+      }
+    });
+    if (pick.mixture === null || pick.mixture === undefined) {
+      pick.mixture = (cfg.start || {}).mixture || mixtures[0].id;
+    }
+    var stage = 0, predicted = false, runs = {}, nRuns = 0;
+
+    function cold() { return coldVal === null || pick.cooling === coldVal; }
+
+    function paint() {
+      var mix = c3By(mixtures, pick.mixture) || mixtures[0];
+      var isCold = cold();
+      var done = stage >= nStages;
+
+      each(dials, function (b) {
+        b.setAttribute("aria-pressed",
+          pick[b.getAttribute("data-still-for")] === b.getAttribute("data-still-val")
+            ? "true" : "false");
+      });
+      /* The predict panel is REPLACED by the bench, not greyed beside it. */
+      each(predicts, function (p) {
+        setHidden(p, predicted || p.getAttribute("data-still-predict") !== pick.mixture);
+      });
+      setHidden(body, !predicted);
+
+      /* Every gauge has a resting reading of its own, so no gauge ever reads
+         blank — including at stage 0, with the Bunsen not lit. */
+      each(gauges, function (g) {
+        var el = gvals[g.id];
+        if (!el) { return; }
+        var v;
+        if (g.show === false) { v = g.hidden_value || g.before || ""; }
+        else if (stage === 0) { v = g.before_from === "name" ? (mix.name || "") : (g.before || ""); }
+        else if (!isCold && g.warm_value) { v = g.warm_value; }
+        else { v = mix[g.reads] || ""; }
+        c3Say(el, v);
+      });
+
+      each(stageLists, function (ol) {
+        setHidden(ol, ol.getAttribute("data-still-stages") !== pick.mixture);
+        each(ol.querySelectorAll("[data-still-stage]"), function (li) {
+          var i = parseInt(li.getAttribute("data-still-stage"), 10);
+          var warmEl = li.querySelector("[data-still-warm]");
+          var useWarm = !isCold && !!warmEl;
+          setHidden(li.querySelector("[data-still-stagebody]"), !(i < stage));
+          setHidden(warmEl, !useWarm);
+          setHidden(li.querySelector("[data-still-text]"), useWarm);
+        });
+      });
+
+      if (nextBtn) {
+        c3Say(nextBtn, stage === 0 ? startLabel : nextLabel);
+        setHidden(nextBtn, done);
+      }
+      /* `warm` is a result of the same weight as the three mixtures'. */
+      var which = done ? (isCold ? pick.mixture : "warm") : null;
+      each(results, function (r) {
+        setHidden(r, r.getAttribute("data-still-result") !== which);
+      });
+      markStage(sec, nRuns >= need);
+    }
+
+    each(dials, function (btn) {
+      btn.addEventListener("click", function () {
+        var g = btn.getAttribute("data-still-for");
+        var v = btn.getAttribute("data-still-val");
+        if (pick[g] === undefined || pick[g] === v) { return; }
+        pick[g] = v;
+        stage = 0;
+        /* A different mixture is a different question, so the prediction
+           goes with it; the condenser switch is the same question. */
+        if (g === "mixture") { predicted = false; }
+        paint();
+      });
+    });
+    each(predicts, function (p) {
+      var pOpts = toArray(p.querySelectorAll(".ks3-option"));
+      each(pOpts, function (b) {
+        b.addEventListener("click", function () {
+          each(pOpts, function (x) {
+            x.setAttribute("aria-pressed", x === b ? "true" : "false");
+          });
+          if (predicted) { return; }
+          predicted = true;
+          paint();
+          focusReveal(body);  // MRB-257 (5.43)
+        });
+      });
+    });
+    if (nextBtn) {
+      nextBtn.addEventListener("click", function () {
+        if (stage >= nStages) { return; }
+        stage += 1;
+        if (stage >= nStages && (!requiresCooling || cold())) {
+          if (!runs[pick.mixture]) { runs[pick.mixture] = true; nRuns += 1; }
+        }
+        paint();
+        if (stage >= nStages) {
+          var open = null;
+          each(results, function (r) { if (!r.hasAttribute("hidden")) { open = r; } });
+          focusReveal(open);  // MRB-257 (5.43)
+        }
+      });
+    }
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        if (!stage && !predicted) { return; }
+        stage = 0;
+        predicted = false;
+        each(predicts, function (p) {
+          each(p.querySelectorAll(".ks3-option"), function (x) {
+            x.setAttribute("aria-pressed", "false");
+          });
+        });
+        paint();
+      });
+    }
+    paint();
+  }
+
+  /* ── chroma-run (c3-06 #s-lab) ───────────────────────────────────────
+     Three decisions, three distinct ways of ruining the run, and a forensic
+     verdict at the end of a readable one.
+
+     ⚖️ EACH FAULT NAMES WHICH DECISION CAUSED IT. Never "you got it wrong":
+     "You drew the baseline in pen. Pen ink is a mixture of dyes dissolved in
+     a solvent — exactly the thing this experiment separates." `fault_order`
+     gives precedence, so a run with two mistakes is diagnosed by the one
+     that ruined it first, and the precedence is the payload's rather than
+     the order the buttons happen to sit in.
+
+     ⚖️ SPOTS ARE PLACED BY `rf` AS A PERCENTAGE OF THE LANE, using
+     `lane_geometry`, and no pixel position is computed anywhere. A real
+     photographed chromatogram can replace the drawn lane without a payload
+     change so long as the geometry stays a ratio.
+
+     ⚠️ THE VERDICT ROW EXISTS ONLY ON A READABLE RUN, and the rail ticks on
+     the VERDICT, not on pressing Run — a ruined run is a thing that
+     happened, not the question answered. */
+
+  function c3Pct(v) {
+    var s = Number(v).toFixed(4);
+    if (s.indexOf(".") >= 0) { s = s.replace(/0+$/, "").replace(/\.$/, ""); }
+    return s;
+  }
+
+  function wireChromaRun(sec) {
+    var wrap = sec.querySelector("[data-chroma]");
+    if (!wrap) { return; }
+    var cfg = c3Cfg(wrap);
+    var geom = cfg.geometry || {};
+    var faults = cfg.faults || {};
+    var order = cfg.fault_order || [];
+    var lanes = cfg.lanes || [];
+    var dials = toArray(wrap.querySelectorAll("[data-chroma-for]"));
+    var runBtn = wrap.querySelector("[data-chroma-run]");
+    var paper = wrap.querySelector("[data-chroma-paper]");
+    var outcomes = wrap.querySelector("[data-chroma-outcomes]");
+    var outEls = toArray(wrap.querySelectorAll("[data-chroma-outcome]"));
+    var verdictEl = wrap.querySelector("[data-chroma-verdict]");
+    var pens = toArray(wrap.querySelectorAll("[data-chroma-pen]"));
+    var says = toArray(wrap.querySelectorAll("[data-chroma-say]"));
+    var laneEls = toArray(wrap.querySelectorAll("[data-chroma-lane]"));
+    var goodAlt = cfg.good_alt || (paper ? paper.getAttribute("aria-label") : "");
+    if (!dials.length || !runBtn) { return; }
+
+    var pick = {};
+    each(dials, function (b) {
+      if (b.getAttribute("aria-pressed") === "true") {
+        pick[b.getAttribute("data-chroma-for")] = b.getAttribute("data-chroma-val");
+      }
+    });
+    var ran = false, chosen = null;
+
+    function faultNow() {
+      var live = {}, i;
+      each(dials, function (b) {
+        if (pick[b.getAttribute("data-chroma-for")] !== b.getAttribute("data-chroma-val")) { return; }
+        var f = b.getAttribute("data-chroma-fault");
+        if (f) { live[f] = true; }
+      });
+      for (i = 0; i < order.length; i++) { if (live[order[i]]) { return order[i]; } }
+      return null;
+    }
+
+    function drawPaper(fault) {
+      var spec = fault ? (faults[fault] || {}) : {};
+      var base = Number(geom.baseline_pct || 0);
+      var span = Number(geom.span_pct || 0);
+      each(laneEls, function (laneEl) {
+        var line = laneEl.querySelector("[data-chroma-baseline]");
+        if (line) {
+          /* The baseline drawn in pen is a line of dissolved dyes, and it
+             is drawn as one: darker and heavier than a graphite line. */
+          if (spec.baseline === "ink") {
+            line.style.background = "var(--ks3-ink)";
+            line.style.height = "3px";
+          } else {
+            line.style.background = "";
+            line.style.height = "";
+          }
+        }
+        each(laneEl.querySelectorAll("[data-chroma-spot]"), function (sp, i) {
+          var rf = Number(sp.getAttribute("data-rf"));
+          var smear = false;
+          if (spec.spots === "none") { setHidden(sp, true); return; }
+          setHidden(sp, false);
+          if (spec.spots === "smeared") {
+            smear = true;
+            rf = Number(spec.smear_start_rf || 0) + i * Number(spec.smear_step_rf || 0);
+          } else if (spec.spots === "crushed") {
+            rf = Math.min(Number(spec.crush_cap_rf || 1),
+                          rf + (1 - rf) * Number(spec.crush_toward_front || 0));
+          }
+          sp.style.bottom = c3Pct(base + rf * span) + "%";
+          /* Smeared spots are drawn as a band across the lane rather than a
+             dot in it. Cleared rather than overwritten on a clean run, so
+             the stylesheet keeps the drawing. */
+          sp.style.width = smear ? "92%" : "";
+          sp.style.height = smear ? "10px" : "";
+          sp.style.borderRadius = smear ? "3px" : "";
+          sp.style.opacity = smear ? "0.5" : "";
+        });
+      });
+    }
+
+    function paint() {
+      var fault = faultNow();
+      each(dials, function (b) {
+        b.setAttribute("aria-pressed",
+          pick[b.getAttribute("data-chroma-for")] === b.getAttribute("data-chroma-val")
+            ? "true" : "false");
+      });
+      setHidden(paper, !ran);
+      setHidden(outcomes, !ran);
+      if (ran) {
+        drawPaper(fault);
+        if (paper) {
+          paper.setAttribute("aria-label",
+            fault ? ((faults[fault] || {}).alt || "") : goodAlt);
+        }
+        each(outEls, function (o) {
+          setHidden(o, o.getAttribute("data-chroma-outcome") !== (fault || "good"));
+        });
+      }
+      setHidden(verdictEl, !(ran && !fault));
+      each(pens, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-chroma-pen") === chosen ? "true" : "false");
+        c3Enable(b, chosen === null);
+      });
+      each(says, function (s) {
+        setHidden(s, s.getAttribute("data-chroma-say") !== chosen);
+      });
+      markStage(sec, chosen !== null);
+    }
+
+    each(dials, function (btn) {
+      btn.addEventListener("click", function () {
+        var g = btn.getAttribute("data-chroma-for");
+        var v = btn.getAttribute("data-chroma-val");
+        if (pick[g] === undefined || pick[g] === v) { return; }
+        pick[g] = v;
+        /* A different paper is a different run: it has not been run yet, and
+           the verdict is about a chromatogram that is no longer on screen. */
+        ran = false;
+        chosen = null;
+        paint();
+      });
+    });
+    runBtn.addEventListener("click", function () {
+      if (ran) { return; }
+      ran = true;
+      paint();
+      focusReveal(paper);  // MRB-257 (5.43)
+    });
+    each(pens, function (b) {
+      b.addEventListener("click", function () {
+        if (chosen !== null) { return; }
+        chosen = b.getAttribute("data-chroma-pen");
+        paint();
+        var open = null;
+        each(says, function (s) { if (!s.hasAttribute("hidden")) { open = s; } });
+        focusReveal(open);  // MRB-257 (5.43)
+      });
+    });
+    paint();
+  }
+
+  /* ── melting-point-bench (c3-07 #s-bench) ────────────────────────────
+     Three samples, three runs each, two decisions.
+
+     ⚖️ A PURE SAMPLE MELTS SHARPLY; AN IMPURE ONE MELTS LOWER AND OVER A
+     RANGE. Both halves are in the numbers, and every number in the table is
+     computed here from `samples[].runs` rather than read off a string.
+
+     ⚖️ FAST HEATING MAKES A MEASURED RANGE READ NARROWER, and it is the
+     right way round: the thermometer lags the block, so the start is
+     recorded late and the end drifts up. `collapse` eats the bottom of the
+     range and `end_shift` adds to the top. A student who heats fast gets
+     repeats that agree beautifully — because the same error happened three
+     times. THE BENCH IS THE MEASUREMENT: if a sentence ever disagrees with a
+     number this produces, the number is right.
+
+     ⚖️ THE ANOMALY IS REPORTED, NEVER DROPPED. Batch 3's second run melts
+     47.5–52.0 while its other two melt within a degree. Nothing here filters
+     `runs` and nothing may be added that does — the rows shown are the first
+     `repeats` of them, in order, and the odd one is inside that.
+
+     ⚠️ THE FAST BRANCH IS THE ONE THAT IS NOT `trusted_when.rate`. The
+     payload names the rate whose data can carry a claim; the other value of
+     a two-value dial is the one the lag model describes. Keyed on the
+     payload rather than on the string "fast". */
+  function wireMeltingPointBench(sec) {
+    var wrap = sec.querySelector("[data-mpb]");
+    if (!wrap) { return; }
+    var cfg = c3Cfg(wrap);
+    var samples = cfg.samples || [];
+    if (!samples.length) { return; }
+    var model = cfg.fast_model || {};
+    var decimals = parseInt(cfg.decimals, 10);
+    if (isNaN(decimals)) { decimals = 1; }
+    var unit = cfg.unit || "";
+    var wideAbove = Number(cfg.wide_above);
+    var trust = cfg.trusted_when || {};
+    var dials = toArray(wrap.querySelectorAll("[data-mpb-for]"));
+    var runBtn = wrap.querySelector("[data-mpb-run]");
+    var dataEl = wrap.querySelector("[data-mpb-data]");
+    var notes = toArray(wrap.querySelectorAll("[data-mpb-note]"));
+    var vBtns = toArray(wrap.querySelectorAll("[data-mpb-verdict-btn]"));
+    var says = toArray(wrap.querySelectorAll("[data-mpb-say]"));
+    var boxes = {};
+    each(wrap.querySelectorAll("[data-mpb-sample]"), function (el) {
+      boxes[el.getAttribute("data-mpb-sample")] = el;
+    });
+    var runLabel = runBtn ? (runBtn.getAttribute("data-mpb-runlabel") || "") : "";
+    var rerunLabel = runBtn ? (runBtn.getAttribute("data-mpb-rerunlabel") || "") : "";
+
+    var pick = {
+      rate: String((cfg.start || {}).rate || ""),
+      repeats: String((cfg.start || {}).repeats || "")
+    };
+    var ran = false, chosen = null;
+
+    function reading(run, fast) {
+      var s = Number(run.start), e = Number(run.end);
+      if (fast) {
+        s = s + (e - s) * Number(model.collapse || 0);
+        e = e + Number(model.end_shift || 0);
+      }
+      return [s, e, e - s];
+    }
+
+    function paint() {
+      var fast = !!trust.rate && pick.rate !== trust.rate;
+      var reps = parseInt(pick.repeats, 10) || 0;
+
+      each(dials, function (b) {
+        b.setAttribute("aria-pressed",
+          pick[b.getAttribute("data-mpb-for")] === b.getAttribute("data-mpb-val")
+            ? "true" : "false");
+      });
+      if (runBtn) { c3Say(runBtn, ran ? rerunLabel : runLabel); }
+      setHidden(dataEl, !ran);
+      if (!ran) { markStage(sec, chosen !== null); return; }
+
+      each(samples, function (sm) {
+        var box = boxes[sm.id];
+        if (!box) { return; }
+        each(box.querySelectorAll("[data-mpb-row]"), function (tr) {
+          var i = parseInt(tr.getAttribute("data-mpb-row"), 10);
+          var run = (sm.runs || [])[i];
+          setHidden(tr, i >= reps);
+          if (!run) { return; }
+          var r = reading(run, fast);
+          each(tr.querySelectorAll("[data-mpb-cell]"), function (td) {
+            var which = td.getAttribute("data-mpb-cell");
+            var v = which === "start" ? r[0] : which === "end" ? r[1] : r[2];
+            c3Say(td, v.toFixed(decimals) + " " + unit);
+            if (which === "range") {
+              td.setAttribute("data-mpb-wide", r[2] > wideAbove ? "1" : "0");
+            }
+          });
+        });
+      });
+
+      var key = pick.rate + ":" + pick.repeats;
+      each(notes, function (n) {
+        setHidden(n, n.getAttribute("data-mpb-note") !== key);
+      });
+
+      /* Naming the right batch off untrustworthy data is not the same
+         achievement as measuring it, and the say says so — one tail either
+         way, both of them in the document. */
+      var trusted = pick.rate === trust.rate
+        && reps > Number(trust.repeats_above || 0);
+      each(vBtns, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-mpb-verdict-btn") === chosen ? "true" : "false");
+        c3Enable(b, chosen === null);
+      });
+      each(says, function (s) {
+        var on = s.getAttribute("data-mpb-say") === chosen;
+        setHidden(s, !on);
+        setHidden(s.querySelector("[data-mpb-trusted]"), !(on && trusted));
+        setHidden(s.querySelector("[data-mpb-untrusted]"), !(on && !trusted));
+      });
+      markStage(sec, chosen !== null);
+    }
+
+    each(dials, function (btn) {
+      btn.addEventListener("click", function () {
+        var g = btn.getAttribute("data-mpb-for");
+        var v = btn.getAttribute("data-mpb-val");
+        if (pick[g] === undefined || pick[g] === v) { return; }
+        pick[g] = v;
+        /* New settings, so the table on screen is not the table these
+           settings produce, and the verdict was about the old one. */
+        ran = false;
+        chosen = null;
+        paint();
+      });
+    });
+    if (runBtn) {
+      runBtn.addEventListener("click", function () {
+        var first = !ran;
+        ran = true;
+        paint();
+        if (first) { focusReveal(dataEl); }  // MRB-257 (5.43)
+      });
+    }
+    each(vBtns, function (b) {
+      b.addEventListener("click", function () {
+        if (chosen !== null) { return; }
+        chosen = b.getAttribute("data-mpb-verdict-btn");
+        paint();
+        var open = null;
+        each(says, function (s) { if (!s.hasAttribute("hidden")) { open = s; } });
+        focusReveal(open);  // MRB-257 (5.43)
+      });
+    });
+    paint();
+  }
+
+/* ═══ END C3 wiring ═══ */
+
   function wireInstruments(root) {
     each(root.querySelectorAll("[data-board]"), wireBoard);
     each(root.querySelectorAll("[data-sort]"), wireSort);
@@ -17555,6 +18841,22 @@
     each(root.querySelectorAll("[data-pbblock]"), wirePressureBench);
     each(root.querySelectorAll("[data-bbblock]"), wireBlightBench);
     // ═══ END B11 wiring ═══
+    // ═══ BEGIN C3 wiring ═══
+    // Nine instruments, nine markers, nine functions. A kind that reaches the
+    // dispatch table and not this list ships as static markup that never
+    // responds — the contract §6.6 failure, and this list is the JS half of the
+    // gate that catches it. `sequence-rebuild` is ONE family placed twice on
+    // c3-03, so it is one line here and its `data-phase` picks the branch.
+    each(root.querySelectorAll("[data-psortblock]"), wirePuritySorter);
+    each(root.querySelectorAll("[data-dlabblock]"), wireDissolveLab);
+    each(root.querySelectorAll("[data-seqblock]"), wireSequenceRebuild);
+    each(root.querySelectorAll("[data-crystblock]"), wireCrystalBench);
+    each(root.querySelectorAll("[data-mchoiceblock]"), wireMethodChoice);
+    each(root.querySelectorAll("[data-stillblock]"), wireStillRun);
+    each(root.querySelectorAll("[data-chromablock]"), wireChromaRun);
+    each(root.querySelectorAll("[data-critiqueblock]"), wirePlanCritique);
+    each(root.querySelectorAll("[data-mpbblock]"), wireMeltingPointBench);
+    // ═══ END C3 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
   }

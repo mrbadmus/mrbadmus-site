@@ -43,6 +43,7 @@ rewrites §1 below. Run it when Design delivers a new unit; never hand-edit rows
 
 | slug | design page | stops | mirrors |
 |---|---|---|---|
+| `00-index` | `00-index` | — | — |
 | `life-processes` | `b1-01-life-processes` | s-hook s-board s-sort s-ladder | — |
 | `using-a-microscope` | `b1-02-using-a-microscope` | s-hook s-method s-worked s-yours s-lab s-ladder | — |
 | `animal-and-plant-cells` | `b1-03-animal-and-plant-cells` | s-hook s-bench s-wall s-fit s-ladder | — |
@@ -107,9 +108,65 @@ rewrites §1 below. Run it when Design delivers a new unit; never hand-edit rows
 | `gas-pressure` | `c1-04-gas-pressure` | s-hook s-bench s-predict s-think s-ladder | — |
 | `diffusion` | `c1-05-diffusion` | s-hook s-walk s-think s-scale s-ladder | s-scale=s-think |
 | `testing-the-model` | `c1-06-testing-the-model` | s-hook s-bench s-verdict s-history s-ladder | — |
+| `inside-the-earth` | `c10-01-inside-the-earth` | s-hook s-layers s-evidence s-think s-ladder | — |
+| `three-ways-to-make-a-rock` | `c10-02-three-ways-to-make-a-rock` | s-hook s-table s-bench s-think s-ladder | s-table=s-hook |
+| `the-rock-cycle` | `c10-03-the-rock-cycle` | s-hook s-journey s-processes s-think s-ladder | — |
+| `whats-in-the-air` | `c10-05-whats-in-the-air` | s-hook s-mix s-history s-think s-ladder | — |
+| `carbon-dioxide-humans-and-climate` | `c10-06-carbon-dioxide-humans-and-climate` | s-hook s-how s-evidence s-think s-ladder | — |
+| `the-carbon-cycle` | `c10-07-the-carbon-cycle` | s-hook s-flows s-store s-think s-ladder | — |
 | `the-atom-daltons-model` | `c2-01-the-atom-daltons-model` | s-hook s-model s-scale s-think s-ladder | — |
 | `elements` | `c2-02-elements` | s-hook s-bench s-think s-ladder | — |
 | `compounds` | `c2-03-compounds` | s-hook s-bench s-sort s-think s-ladder | — |
 | `chemical-symbols` | `c2-04-chemical-symbols` | s-hook s-sort s-read s-think s-ladder | — |
 | `formulae` | `c2-05-formulae` | s-hook s-builder s-limit s-think s-ladder | — |
 | `conservation-of-mass` | `c2-06-conservation-of-mass` | s-hook s-balance s-build s-think s-ladder | — |
+| `pure-or-mixture` | `c3-01-pure-or-mixture` | s-hook s-sorter s-words s-think s-ladder | — |
+| `dissolving-and-solutions` | `c3-02-dissolving-and-solutions` | s-hook s-gate s-lab s-words s-think s-ladder | — |
+| `filtration` | `c3-03-filtration` | s-hook s-steps s-build s-think s-ladder | — |
+| `evaporation-and-crystallisation` | `c3-04-evaporation-and-crystallisation` | s-hook s-bench s-jobs s-think s-ladder | — |
+| `distillation` | `c3-05-distillation` | s-hook s-still s-words s-think s-ladder | — |
+| `chromatography` | `c3-06-chromatography` | s-hook s-lab s-think s-ladder | — |
+| `proving-something-is-pure` | `c3-07-proving-something-is-pure` | s-hook s-critique s-bench s-think s-ladder | — |
+| `chemical-vs-physical-change` | `c4-01-chemical-vs-physical-change` | s-hook s-pairs s-chain s-think s-ladder | — |
+| `reactions-rearrange-atoms` | `c4-02-reactions-rearrange-atoms` | s-hook s-rearr s-impossible s-think s-ladder | — |
+| `word-equations` | `c4-03-word-equations` | s-hook s-builder s-read s-think s-ladder | — |
+| `mass-in-a-reaction` | `c4-04-mass-in-a-reaction` | s-hook s-bench s-cover s-worked s-check s-think s-ladder | — |
+| `symbol-equations-and-balancing` | `c4-05-symbol-equations-and-balancing` | s-hook s-balance s-forbidden s-think s-ladder | — |
+| `combustion` | `c5-01-combustion` | s-hook s-burner s-fuels s-think s-ladder | — |
+| `thermal-decomposition` | `c5-02-thermal-decomposition` | s-hook s-tube s-sort s-think s-ladder | — |
+| `oxidation` | `c5-03-oxidation` | s-hook s-rust s-stop s-think s-ladder | — |
+| `displacement` | `c5-04-displacement` | s-hook s-grid s-uses s-think s-ladder | — |
+| `which-reaction-is-this` | `c5-05-which-reaction-is-this` | s-hook s-sort s-rule s-think s-ladder | — |
+| `acids-and-alkalis` | `c6-01-acids-and-alkalis` | s-hook s-bench s-hazard s-think s-ladder | — |
+| `indicators-and-the-ph-scale` | `c6-02-indicators-and-the-ph-scale` | s-hook s-scale s-bench s-choose s-think s-ladder | s-scale=s-hook |
+| `neutralisation` | `c6-03-neutralisation` | s-hook s-titrate s-uses s-think s-ladder | — |
+| `acids-and-metals` | `c6-04-acids-and-metals` | s-hook s-bench s-test s-think s-ladder | — |
+| `acids-and-carbonates` | `c6-05-acids-and-carbonates` | s-hook s-rig s-bench s-world s-think s-ladder | — |
+| `making-a-salt` | `c6-06-making-a-salt` | s-hook s-name s-method s-think s-ladder | — |
+| `catalysts` | `c6-07-catalysts` | s-hook s-bench s-uses s-think s-ladder | — |
+| `energy-and-changes-of-state` | `c7-01-energy-and-changes-of-state` | s-hook s-curve s-uses s-think s-ladder | — |
+| `exothermic-reactions` | `c7-02-exothermic-reactions` | s-hook s-bench s-uses s-think s-ladder | — |
+| `endothermic-reactions` | `c7-03-endothermic-reactions` | s-hook s-compare s-uses s-think s-ladder | — |
+| `measuring-a-temperature-change` | `c7-04-measuring-a-temperature-change` | s-hook s-plan s-bench s-think s-ladder | — |
+| `metals-and-non-metals` | `c8-01-metals-and-non-metals` | s-hook s-table s-bench s-think s-ladder | s-table=s-hook |
+| `mendeleev-and-the-table-that-predicted` | `c8-02-mendeleev-and-the-table-that-predicted` | s-hook s-gap s-rules s-think s-ladder | — |
+| `groups-and-periods` | `c8-03-groups-and-periods` | s-hook s-table s-read s-think s-ladder | — |
+| `group-1-the-alkali-metals` | `c8-04-group-1-the-alkali-metals` | s-hook s-trough s-predict s-think s-ladder | — |
+| `group-7-the-halogens` | `c8-05-group-7-the-halogens` | s-hook s-family s-grid s-think s-ladder | s-family=s-hook |
+| `group-0-and-why-groups-exist` | `c8-06-group-0-and-why-groups-exist` | s-hook s-shells s-file s-uses s-think s-ladder | — |
+| `the-reactivity-series` | `c9-01-the-reactivity-series` | s-hook s-series s-bench s-think s-ladder | s-series=s-hook |
+| `predicting-displacement` | `c9-02-predicting-displacement` | s-hook s-rule s-deck s-think s-ladder | s-rule=s-hook |
+| `getting-metals-out-of-rocks` | `c9-03-getting-metals-out-of-rocks` | s-hook s-line s-bench s-think s-ladder | s-line=s-hook |
+| `ceramics-polymers-and-composites` | `c9-04-ceramics-polymers-and-composites` | s-hook s-classes s-bench s-think s-ladder | s-classes=s-hook |
+| `fig-01-b10-nested-scale` | `fig-01-b10-nested-scale` | — | — |
+| `fig-02-b5-reproductive-systems` | `fig-02-b5-reproductive-systems` | — | — |
+| `fig-03-b7-leaf-section` | `fig-03-b7-leaf-section` | — | — |
+| `fig-04-b3-villus-labelled` | `fig-04-b3-villus-labelled` | — | — |
+| `fig-05-b5-placenta-exchange` | `fig-05-b5-placenta-exchange` | — | — |
+| `fig-06-b3-gut-tube` | `fig-06-b3-gut-tube` | — | — |
+| `fig-07-b4-thorax-labelled` | `fig-07-b4-thorax-labelled` | — | — |
+| `fig-09-b5-flower-parts` | `fig-09-b5-flower-parts` | — | — |
+| `fig-10-b5-gametes-journey` | `fig-10-b5-gametes-journey` | — | — |
+| `fig-11-b4-guard-cells` | `fig-11-b4-guard-cells` | — | — |
+| `fig-13-b5-pollen-tube` | `fig-13-b5-pollen-tube` | — | — |
+| `fig-14-b5-dispersal-specimens` | `fig-14-b5-dispersal-specimens` | — | — |
