@@ -427,3 +427,37 @@ is the ruled state").
 under it.** That is the ruled behaviour and it is what has been built. It is also a visible
 difference from Design's mock, and it is Mide's call whether to leave it or ask authors to
 write a fourth string per rung. **Not a bug. A ruling with a consequence.**
+
+### ⚠️ And the seam unit found a defect worth more than the seam
+
+**The three MRB-275 rulings had been applied to generated files.** Commit `895f34766`
+(20 Aug) applied them correctly and carefully to four files — and all four are build output:
+
+```
+student/class-ported.html            mrbadmus_site/student/class-ported.html
+student/assignment-ported.html       mrbadmus_site/student/assignment-ported.html
+```
+
+`build_student_port.py` writes all four, and its own banner says *"GENERATED — do not edit"*.
+So the rulings held for exactly as long as nobody re-ran the build — and **this run re-ran
+it**, which silently reverted all three and turned the behaviour gate red in thirteen places
+naming a divergence that had been correct that morning.
+
+That is the same class of mistake `895f34766`'s own commit message diagnosed in its
+predecessor, made one layer down: `student/class-ported.html` sits in the repo root and reads
+like source. It is the mirror.
+
+**Fixed properly, not re-applied.** The rulings now live in `student_rulings.py` as
+transformations applied to Design's logic and template at build time. Every `new` string is
+byte-for-byte what `895f34766` wrote, *extracted from that commit rather than retyped*, and
+the build asserts each `old` appears **exactly once** in Design's delivery before touching it
+— so if Design redraws that span, the build stops rather than applying a ruling to a line
+that has moved. A rebuild now carries the rulings instead of destroying them.
+
+⊕ **And it clarifies the "980 feedback lines" blocker** recorded on 20 Aug in `64c3815d4`.
+980 = 140 ladder rungs + 840 bank questions, and the missing line is the **right answer's**
+explanation, in every one of them. It was never authored anywhere. Ruling 1a is what settles
+it: v1 ships with three feedback strings and the right-answer slot closes. So the blocker is
+not outstanding work — it is a ruling, already applied. The distractor feedback, by contrast,
+is complete: **2,520 wrong options, every one carrying its `why`; 924 correct options, not
+one of them carrying a line it should not have.**
