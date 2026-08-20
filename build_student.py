@@ -57,45 +57,56 @@ easiest thing in this repo to over-trust:
 Static output first is the brief's own order, and it is the right one: parity
 with Design is worth establishing while it is still cheap to check.
 
-── ⚑ THE 390px GAP, MEASURED — the one thing a snapshot cannot carry ──────
+── ⚑ THE 390px GAP — HALVED IN PHASE 2, AND THE OTHER HALF NAMED ─────────
 
 At DESKTOP the reproduction is exact. Measured against Design's own file at
 1460px: 563 nodes against 563, 1460×2400 against 1460×2400, identical tag
 census, identical text, identical resolved font, ground and ink, no horizontal
 overflow. The assignment likewise, 177 against 177.
 
-At 390px IT IS NOT, and the reason is structural rather than a bug to fix here.
+At 390px it was not, and phase 8a recorded the reason as Design's ten
+JavaScript-computed switches being frozen at their desktop values. That was
+right as far as it went and it was not the whole reason.
 
-Design builds responsiveness two ways, and says so in §6 of both handoff notes.
-Everything CONTINUOUS is a `clamp(min, Ncqw, max)` container query in the
-element's own inline style — and those survive the snapshot perfectly, which is
-why the type and the padding do shrink. Everything DISCRETE is one of TEN
-measured switches (eight on the assignment) computed in JavaScript from the
-root's width: `benchCols`, `docketOrder`, `statsBasis`, `railDisplay`,
-`spineCols`, `rowCols`, `chaseCols`, `boardCols`, `recallCols`, `optCols`,
-`ghostRight`. Design's own note is explicit that these "cannot be interpolated".
+MEASURED, by driving Design's own file at 360, 390, 820 and 1460 and diffing
+(`student_switches.py`), Design switches discretely in THREE ways:
 
-A photograph taken at 1460px therefore carries the DESKTOP value of all ten,
-baked into the inline styles, and no width can change them afterwards. Measured
-at 390px:
+  1. **By inline style** — 19 switched declarations across 16 elements. This is
+     the mechanism Design's §6 table describes, and `student_switches.json`
+     now carries every value at every band. `shared/student-breakpoints.js`
+     applies it at runtime, so this half is FIXED.
 
-    Design's file      scrollWidth 390 = clientWidth 390, 0 elements overflowing
-    this generated one scrollWidth 610 vs clientWidth 390, 101 overflowing
+     ⚑ AND THERE ARE MORE OF THEM THAN THE TABLE SAYS. Design's class-view note
+     lists ten and states "there are no others". Two more are in the file: the
+     docket's inner grid (`minmax(0,1fr)` → `repeat(auto-fit,minmax(148px,1fr))`)
+     and its four fact rows (`row`/`baseline` → `column`/`flex-start`). Neither
+     is interpolable, both are real, and a transcription of the ten would have
+     shipped a docket stuck in four rigid columns on a phone.
 
-The twelve-column term spine alone needs 662px and Design's phone rule is two
-rows of six; the work-row grid should drop from `46px 20px 1fr auto` to
-`18px 1fr auto`; the docket should move above the copy. None of that happens,
-because none of it is CSS.
+  2. **By PRESENCE** — and a snapshot cannot carry DOM it does not contain.
+     At 1460 the assignment renders a 320px `<aside>` rail with fifteen 52px
+     marker cells (69 nodes) and no marker strip; below 1024 it renders the
+     strip and the readout row (46 nodes) and no rail. The class view drops the
+     `PROD` chip, the name, the Settings and Sign out links and the work rows'
+     week column below 1024, and gains a mono meta line under each work-row
+     title. Measured: 26 nodes desktop-only and 6 phone-only on the class view;
+     69 and 46 on the assignment.
 
-NOT APPROXIMATED, deliberately. The brief's rule is that where Design's file
-cannot be reproduced faithfully it is recorded rather than guessed at, and
-guessing here would mean hand-writing media queries that Design did not draw
-and that would then disagree with the logic class the moment either changed.
+  3. **By TEXT** — the breadcrumb note reads `AUTUMN TERM · WEEK 04 / 12` at
+     desktop and `WK 04 / 12` below.
 
-The faithful fix is to reproduce the switch TABLE — Design published all ten
-values for all three bands — as a small runtime shim, which is behaviour and
-therefore phase 8c. Until then this preview is desktop-accurate and phone-wrong,
-and `student_parity.py` asserts both halves so neither can be forgotten.
+NOT APPROXIMATED, deliberately, and the reason has changed. Phase 8a's reason
+was that hand-writing media queries would drift from a logic class; that still
+holds for (1) and is why (1) is applied from a MEASURED table rather than a
+typed one. For (2) and (3) the reason is simpler: the nodes and the strings are
+not here to switch. Reconstructing them would mean re-implementing Design's
+renderer inside a shim, which is strictly more work and more fragile than
+porting the logic properly — which is the next phase's actual instruction.
+
+So this preview is now CORRECT IN LAYOUT at every band and still carries
+desktop CHROME at phone widths. `student_parity.py` asserts both halves
+separately, so neither can be forgotten and neither can be mistaken for the
+other.
 """
 
 import html
@@ -123,12 +134,14 @@ PAGES = [
         src="standalone/MrBadmusAI Class View.html",
         title="8r/Sc1 · My class · MrBadmusAI",
         note="the class view",
+        page="class view",
     ),
     dict(
         out="assignment-preview.html",
         src="standalone/MrBadmusAI Assignment.html",
         title="Assignment · 8r/Sc1 · MrBadmusAI",
         note="the assignment",
+        page="assignment",
     ),
 ]
 
@@ -155,11 +168,16 @@ _BANNER = """<!--
       marker sheet, no timer.
     * NO REAL DATA. Every name, score, date and question below is Design's
       authored example content. Nothing is read from Supabase.
-    * DESKTOP-ACCURATE, PHONE-WRONG. Design's ten discrete breakpoint
-      switches are computed in JavaScript from the measured root width, so a
-      snapshot taken at 1460px carries their DESKTOP values and no amount of
-      resizing changes them. At 390px this page scrolls sideways (610px
-      against 390px) where Design's own file does not. See build_student.py.
+    * LAYOUT IS RIGHT AT EVERY BAND, CHROME IS NOT. Design's discrete
+      switches are computed in JavaScript from the measured root width. The
+      19 that are inline-STYLE switches are measured out of Design's own file
+      into student_switches.json and reapplied at runtime by
+      /shared/student-breakpoints.js, so the grids, orders and columns are
+      correct at 360, 390, 820 and 1460. The ones Design implements by
+      PRESENCE (the assignment's rail vs its marker strip; the class view's
+      PROD chip, name, Settings/Sign out and week column) and by TEXT (the
+      breadcrumb note) cannot be: a snapshot has no DOM for the state it was
+      not taken in. See build_student.py.
 
   The live pages are student/class.html and student/assignment.html and this
   build never writes them.
@@ -261,6 +279,45 @@ def strip_inlined_fonts(css):
     return lean, faces, len(removed), sum(len(x) for x in removed)
 
 
+# ── the breakpoint shim, and the table it applies ─────────────────────────
+#
+# `student_switches.json` is MEASURED out of Design's own delivery by
+# `student_switches.py` — driven at 360, 390, 820 and 1460, inline styles
+# diffed. It is not transcribed from the handoff note, and it is not the same
+# as the note: the note lists ten switches and says "there are no others", and
+# the file has twelve.
+#
+# ⚠️ THE TABLE IS INLINED, NOT FETCHED. A `fetch()` for a JSON file would be a
+# second request, on the critical path, that can fail — and the failure mode is
+# a page that lays out at desktop on a phone with nothing on screen to say why.
+# It is a few hundred bytes against a 550 KB page.
+SWITCHES_JSON = "student_switches.json"
+SHIM_SRC = os.path.join("shared", "student-breakpoints.js")
+SHIM_URL = "/shared/student-breakpoints.js"
+
+
+def switch_table(page_name):
+    """The measured switch table for one page, as a JS literal."""
+    import json
+    if not os.path.exists(SWITCHES_JSON):
+        raise SystemExit(
+            "build_student.py: %s is missing. Run `python3 "
+            "student_switches.py` — the breakpoint table is measured out of "
+            "Design's delivery, not typed, and without it every generated page "
+            "lays out at desktop on a phone." % SWITCHES_JSON)
+    table = json.load(open(SWITCHES_JSON, encoding="utf-8"))
+    if page_name not in table:
+        raise SystemExit(
+            "build_student.py: %s has no entry for %r. A page whose switches "
+            "are not in the table is a page that silently keeps its desktop "
+            "layout at every width." % (SWITCHES_JSON, page_name))
+    blob = json.dumps(table[page_name], sort_keys=True, separators=(",", ":"))
+    # `</script>` inside a JSON string would close the tag. It cannot occur in
+    # a CSS value, but the escape costs nothing and the alternative is a page
+    # that breaks in a way nobody would look for here.
+    return blob.replace("<", "\\u003c")
+
+
 def page_html(spec, data):
     return (
         "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n"
@@ -270,12 +327,16 @@ def page_html(spec, data):
         "<title>%s</title>\n"
         "%s"
         "<style>\n%s\n%s\n</style>\n"
+        "<script>window.__MRB_SWITCHES__=%s;</script>\n"
+        "<script src=\"%s\" defer></script>\n"
         "</head>\n<body style=\"margin:0;background:#FBF3E6\">\n"
         "<div style=\"%s\">\n%s\n</div>\n</body>\n</html>\n"
         % (html.escape(spec["title"]),
            _BANNER % spec["note"],
            data["faces"],
            data["styles"],
+           switch_table(spec["page"]),
+           SHIM_URL,
            html.escape(data.get("shellStyle") or
                        "background:var(--st-ground);min-height:100vh",
                        quote=True),

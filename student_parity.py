@@ -74,6 +74,7 @@ import time
 
 REF = os.path.join("docs", "ks3", "design-reference", "student")
 SITE = "mrbadmus_site"
+SWITCHES = "student_switches.json"
 
 PAIRS = [
     dict(
@@ -154,23 +155,85 @@ SECTIONS = {
     ],
 }
 
-# ── C · the 390px gap, per page and not in general ────────────────────────
+# ── C · every band, asserted straight ─────────────────────────────────────
 #
-# ⚠️ MEASURED PER PAGE, because the first draft asserted it of BOTH and the
-# gate went red on the assignment — which is CLEAN at 390px. Phase 8a's commit
-# says "the previews" scroll sideways; that was over-broad and this is the
-# correction. The class view has the gap because its layout is grids the ten
-# switches reshape — the twelve-column term spine alone needs 662px. The
-# assignment is one question on a single column, so its eight switches frozen
-# at desktop values happen to produce nothing that overflows.
+# ⊕ PHASE 2, 20 Aug 2026. This used to be `EXPECTED_390_GAP`, a registry
+# recording that the class view scrolled sideways at 390px and asserting that
+# it still did, so that fixing it would turn this gate red and force somebody
+# to come here. That is exactly what happened, and this is the update it was
+# asking for.
 #
-# True/False here is an ASSERTION either way. If the class view becomes clean,
-# this goes red and somebody must come and delete it; if the assignment stops
-# being clean, that is a regression. A known defect that silently stops being
-# true is how a report starts lying.
-EXPECTED_390_GAP = {
-    "class view": True,
-    "assignment": False,
+# THE GAP IS CLOSED FOR LAYOUT. Both pages are now clean at 360, 390, 820 and
+# 1460 — no document overflow and no element crossing the root's edges. The
+# assertion is therefore no longer "a known defect still holds"; it is the
+# plain thing a student page has to do.
+#
+# ⚑ AND A DIFFERENT GAP IS REGISTERED IN ITS PLACE, because the first one was
+# not the whole story and a report that swapped a true note for a silence would
+# be worse than the note. Design switches discretely THREE ways: by inline
+# style (19 declarations — reapplied), by text (1 string — swapped), and by
+# PRESENCE. Presence has two halves. Nodes Design renders at desktop and not
+# below can be hidden, and are: 95 of them. Nodes Design renders BELOW desktop
+# and not at it cannot be conjured into a desktop snapshot, and there are 52:
+#
+#     class view   6   the work rows' mono meta line, `W04 · DUE THU 18:00`
+#     assignment  46   the marker strip (15 cells) and the readout row
+#
+# Those are asserted BY COUNT below. A number that moves means Design's
+# delivery moved or the extraction did, and either way somebody should look.
+UNCREATABLE = {
+    "class view": 6,
+    "assignment": 46,
+}
+
+# Every band the pages are asserted at. 360 and 390 are the primary targets;
+# 820 and 1460 are the tablet and desktop bands. Measured across the 19
+# switched declarations, 360 and 390 differ in none of them — which is Design's
+# "same layout as 390 throughout, no further breakpoint", confirmed rather than
+# taken on trust.
+ASSERT_BANDS = [360, 390, 820, 1460]
+
+# ── G · touch targets ─────────────────────────────────────────────────────
+#
+# Design's §6: "40px minimum, everywhere, at every width" — nav items, avatar,
+# bench tasks, week bars, work rows, work tabs, leaderboard week chips, the
+# top-5/10 toggle, recall options, every button — and "the account sheet's rows
+# are 44px".
+#
+# ⚠️ MEASURED ON THE HIT BOX, NOT ON THE FONT. A 21px marker inside a 44px row
+# is compliant and a naive per-element check would call it a failure; Design
+# says so explicitly ("the touch minimum is met by the row, not by the
+# marker"). So an element is compliant if IT or an ancestor that is itself a
+# control reaches the floor.
+TOUCH_FLOOR = 40
+TOUCH_EXEMPT_NOTE = ("a control inside a control — the outer one carries the "
+                     "hit box, which is Design's own rule for the marker strip")
+
+# ⚑ THE DELIVERY DOES NOT MEET ITS OWN STATED FLOOR, and this is the count.
+# Measured on Design's standalone files, not on ours, with the control-strip
+# rule above applied — so the marker row and the work tabs and the week chips
+# are already excused on Design's own reasoning, and what is left is what is
+# left. The ASSIGNMENT is clean at every band. The class view is not:
+#
+#   at 390px, four:
+#     MrBadmusAI    125x20   the brand
+#     8r/Sc1         48x12   the breadcrumb crumb
+#     Recall         38x40   a nav item  — Design's §6 list names "nav items"
+#     AY             30x40   the avatar  — Design's §6 list names "avatar"
+#
+#   at 1460px, three: the brand at 143x20, `Settings` at 57x15, the crumb.
+#
+# Two of the four at phone width are on Design's OWN list of what the 40px
+# floor covers, and the avatar at 30px is the one a student reaches for most —
+# it is the whole account menu below 720px. This is not a boundary case.
+#
+# The generated page reproduces all four exactly, which is the correct
+# behaviour for a reproduction and is why the assertion above is "no worse than
+# Design" rather than "meets the floor". Closing it means changing sizes Design
+# drew, and that is Design's call or Mide's, never a generator's.
+DELIVERY_TOUCH_SHORTFALL = {
+    "class view": {360: 4, 390: 4, 820: 4, 1460: 3},
+    "assignment": {360: 0, 390: 0, 820: 0, 1460: 0},
 }
 
 _PROBE = """(function () {
@@ -206,17 +269,150 @@ _PROBE = """(function () {
     // {loaded: 4, unloaded: 3} and a broken path reports {error: 4,
     // unloaded: 3}. `unloaded` is normal — it is a face the page has not
     // needed to paint yet.
+    // ── the shim's own report ───────────────────────────────────────
+    band: r.getAttribute('data-mrb-band'),
+    applied: r.getAttribute('data-mrb-applied'),
+    textSwaps: r.getAttribute('data-mrb-text'),
+    hidden: r.getAttribute('data-mrb-hidden'),
+    absent: r.getAttribute('data-mrb-absent'),
+    mismatch: r.getAttribute('data-mrb-mismatch'),
+
+    // ── every switched declaration, keyed the way the table keys them ──
+    //
+    // Read as the RESOLVED value on the element, not as the inline string, so
+    // Design's file and the generated page are compared on what the browser
+    // actually laid out with. An inline `grid-template-columns: 1fr` and a
+    // computed `minmax(0px, 1fr)` are the same layout and different strings.
+    switches: (function () {
+      var out = {}, seen = {}, want = window.__MRB_PARITY_SWITCHES__ || null;
+      var els = r.querySelectorAll('[data-dc-tpl]');
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i], d = el.getAttribute('data-dc-tpl');
+        seen[d] = (seen[d] || 0) + 1;
+        if (want && !want[d]) { continue; }
+        var props = want ? want[d] : null;
+        if (!props) { continue; }
+        var cs = getComputedStyle(el);
+        for (var q = 0; q < props.length; q++) {
+          out[d + '#' + seen[d] + '/' + props[q]] =
+            cs.getPropertyValue(props[q]).trim();
+        }
+      }
+      return out;
+    })(),
+
+    // ── touch targets ──────────────────────────────────────────────────
+    //
+    // Design's floor is 40px at every width. Measured on the HIT BOX: an
+    // element is compliant if it, or an ancestor that is itself a control,
+    // reaches the floor. Design's own rule for the marker strip is that "the
+    // touch minimum is met by the row, not by the marker", so a 21px marker
+    // inside a 44px row is compliant and a naive per-element check would call
+    // it a failure.
+    controls: 0, smallest: null, smallTargets: (function () {
+      var out = [], sm = null, n = 0;
+      var els = r.querySelectorAll('button, a[href], [role="button"], input, select');
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i], cs = getComputedStyle(el);
+        if (cs.display === 'none' || cs.visibility === 'hidden') { continue; }
+        var b = el.getBoundingClientRect();
+        if (b.width === 0 && b.height === 0) { continue; }
+        n += 1;
+        var hit = Math.min(b.width, b.height);
+
+        // (a) A CONTROL NESTED IN A CONTROL: the outer one carries the hit
+        //     box, so the inner one's size is not what a thumb aims at. This
+        //     one does walk up, because nesting can be several deep.
+        var e = el.parentElement;
+        while (hit < 40 && e && e !== r) {
+          if (e.matches('button, a[href], [role="button"], label')) {
+            var pb = e.getBoundingClientRect();
+            hit = Math.max(hit, Math.min(pb.width, pb.height));
+          }
+          e = e.parentElement;
+        }
+
+        // (b) A UNIFORM CONTROL STRIP. Design's §3, in as many words: the
+        //     marker row "is 15 buttons, but every one of them opens the same
+        //     thing: a grid sheet under the chrome. So the touch minimum is
+        //     met by the row, not by the marker — there is no 21px tap target
+        //     anywhere."
+        //
+        //     ⚠️ THE IMMEDIATE PARENT ONLY, AND EVERY CHILD A CONTROL. The
+        //     first draft of this walked all ancestors and asked only for two
+        //     controls somewhere inside — which exempted almost everything,
+        //     because somewhere up every chain there is a big container with
+        //     two buttons in it. It took the class view's under-floor count
+        //     from eleven to one and would have gone on reporting one however
+        //     small anything got. A gate that stops checking is worse than no
+        //     gate, because it also reports PASS.
+        //
+        //     So: the strip is the DIRECT parent, every element child of it is
+        //     a control, there are at least three of them, the strip itself
+        //     meets the floor, and the cell already spans the floor in one
+        //     direction (the markers are 21x44 — a thumb has 44px of travel).
+        //     Design's header, where Settings sits beside Sign out, fails the
+        //     "every child a control" test and stays counted.
+        if (hit < 40 && el.parentElement && el.parentElement !== r) {
+          var par = el.parentElement, kids = par.children;
+          var allCtl = kids.length >= 3;
+          for (var c = 0; c < kids.length && allCtl; c++) {
+            if (!kids[c].matches('button, a[href], [role="button"]')) {
+              allCtl = false;
+            }
+          }
+          var prb = par.getBoundingClientRect();
+          if (allCtl && Math.max(b.width, b.height) >= 40 &&
+              Math.min(prb.width, prb.height) >= 40) {
+            hit = Math.max(hit, Math.min(Math.max(b.width, b.height),
+                                         Math.min(prb.width, prb.height)));
+          }
+        }
+
+        if (sm === null || hit < sm) { sm = hit; }
+        if (hit < 40) {
+          out.push({tag: el.tagName.toLowerCase(),
+                    w: Math.round(b.width), h: Math.round(b.height),
+                    text: (el.innerText || el.getAttribute('aria-label') || '')
+                          .replace(/\\s+/g, ' ').trim().slice(0, 28)});
+        }
+      }
+      window.__MRB_CTL__ = {n: n, sm: sm};
+      return out;
+    })(),
     fontStatus: (function () {
       var o = {};
       if (!document.fonts) { return o; }
       document.fonts.forEach(function (f) { o[f.status] = (o[f.status] || 0) + 1; });
       return o;
     })()
-  });
+  }, function (k, v) {
+    return v;
+  }).replace('"controls":0', '"controls":' + (window.__MRB_CTL__ || {}).n)
+    .replace('"smallest":null',
+             '"smallest":' + JSON.stringify(
+               (window.__MRB_CTL__ || {}).sm === null ||
+               (window.__MRB_CTL__ || {}).sm === undefined
+                 ? null : Math.round((window.__MRB_CTL__ || {}).sm)));
 })()"""
 
 
-def grab(cdp, root, path, viewport):
+def switch_props(page_name):
+    """{tpl: [property, ...]} for one page, out of the MEASURED table.
+
+    The parity probe reads these off both files and compares. Taken from
+    `student_switches.json` rather than listed here, so the set this gate
+    checks is the set the shim applies — one list, and no way for a switch to
+    be applied and unchecked or checked and unapplied.
+    """
+    if not os.path.exists(SWITCHES):
+        return {}
+    table = json.load(open(SWITCHES, encoding="utf-8"))
+    styles = (table.get(page_name) or {}).get("styles") or {}
+    return {tpl: sorted(props) for tpl, props in styles.items()}
+
+
+def grab(cdp, root, path, viewport, want_switches=None):
     server, port = cdp.serve(root)
     try:
         with cdp.Browser() as b:
@@ -224,6 +420,8 @@ def grab(cdp, root, path, viewport):
             page.set_viewport(*viewport)
             page.goto("http://127.0.0.1:%d/%s" % (port, path.replace(" ", "%20")))
             time.sleep(2.5)
+            page.eval("window.__MRB_PARITY_SWITCHES__ = %s; 1"
+                      % json.dumps(want_switches or {}))
             got = json.loads(page.eval(_PROBE))
             if got.get("error"):
                 raise SystemExit("student_parity: %s — %s" % (path, got["error"]))
@@ -316,66 +514,189 @@ def run(cdp):
                 rows.append((name, "B · registry matches the delivery", "PASS",
                              "every registration is in Design's file too"))
 
-        # ── C · the 390px gap, asserted as a KNOWN gap ─────────────────
-        dp = grab(cdp, REF, pair["design"], PHONE)
-        gp = grab(cdp, SITE, pair["generated"], PHONE)
-        design_clean = dp["docScroll"] <= dp["docClient"]
-        gen_clean = gp["docScroll"] <= gp["docClient"]
+        # ── C · clean at every band, asserted straight ─────────────────
+        #
+        # Both directions. Design's own file is measured too, because a page
+        # that matches a broken reference is not a page that works, and
+        # "Design's file overflows" is a finding about the delivery rather than
+        # about the generator.
+        for band in ASSERT_BANDS:
+            vp = (band, 900)
+            sw = switch_props(name)
+            d_b = grab(cdp, REF, pair["design"], vp, sw)
+            g_b = grab(cdp, SITE, pair["generated"], vp, sw)
 
-        if not design_clean:
-            problems.append(
-                "%s — DESIGN's own file scrolls sideways at 390px "
-                "(scrollWidth %s vs clientWidth %s). That is a finding about "
-                "the delivery, not about the generator"
-                % (name, dp["docScroll"], dp["docClient"]))
-            rows.append((name, "C · Design is clean at 390px", "FAIL",
-                         "scrollWidth %s" % dp["docScroll"]))
-        else:
-            rows.append((name, "C · Design is clean at 390px", "PASS",
-                         "scrollWidth %s = clientWidth" % dp["docScroll"]))
+            d_ok = (d_b["docScroll"] <= d_b["docClient"]
+                    and d_b["overflowing"] == 0)
+            rows.append((name, "C · Design is clean at %dpx" % band,
+                         "PASS" if d_ok else "FAIL",
+                         "scrollWidth %s = clientWidth, 0 overflowing"
+                         % d_b["docScroll"] if d_ok else
+                         "scrollWidth %s vs %s, %d element(s) overflowing"
+                         % (d_b["docScroll"], d_b["docClient"],
+                            d_b["overflowing"])))
+            if not d_ok:
+                problems.append(
+                    "%s — DESIGN's own file is not clean at %dpx (scrollWidth "
+                    "%s vs clientWidth %s, %d overflowing). That is a finding "
+                    "about the delivery, not about the generator."
+                    % (name, band, d_b["docScroll"], d_b["docClient"],
+                       d_b["overflowing"]))
 
-        # ⚖️ THE KNOWN GAP IS ASSERTED, NOT TOLERATED. If the generated page
-        # becomes clean at 390px — because 8c reproduced Design's ten switches
-        # — this goes RED and somebody has to come here and delete it. That is
-        # deliberate. A known defect that silently stops being true is how a
-        # parity report starts lying.
-        expect_gap = EXPECTED_390_GAP.get(name)
-        if expect_gap is None:
-            problems.append("%s has no entry in EXPECTED_390_GAP" % name)
-            rows.append((name, "C · 390px behaviour registered", "FAIL",
-                         "absent"))
-        elif expect_gap and gen_clean:
-            problems.append(
-                "%s — the generated page NO LONGER scrolls sideways at 390px. "
-                "That is good news and it makes this assertion stale: phase 8a "
-                "recorded the ten JS-computed breakpoint switches as "
-                "unreproducible by a snapshot. If 8c has landed, set "
-                "EXPECTED_390_GAP[%r] = False and delete the ⚑ block in "
-                "build_student.py" % (name, name))
-            rows.append((name, "C · the KNOWN 390px gap still holds", "FAIL",
-                         "generated page is clean — the gap is fixed, update "
-                         "this gate"))
-        elif expect_gap:
-            rows.append((name, "C · the KNOWN 390px gap still holds", "PASS",
-                         "generated scrollWidth %s vs %s, %d element(s) "
-                         "overflowing — Design's ten JS switches are frozen at "
-                         "their desktop values (phase 8a)"
-                         % (gp["docScroll"], gp["docClient"],
-                            gp["overflowing"])))
-        elif gen_clean:
-            rows.append((name, "C · clean at 390px, as registered", "PASS",
-                         "generated scrollWidth %s = clientWidth; its eight "
-                         "switches frozen at desktop values happen to overflow "
-                         "nothing" % gp["docScroll"]))
+            g_ok = (g_b["docScroll"] <= g_b["docClient"]
+                    and g_b["overflowing"] == 0)
+            rows.append((name, "C · the generated page is clean at %dpx" % band,
+                         "PASS" if g_ok else "FAIL",
+                         "scrollWidth %s = clientWidth, 0 overflowing; band "
+                         "%s, %s styled, %s text, %s hidden"
+                         % (g_b["docScroll"], g_b.get("band"),
+                            g_b.get("applied"), g_b.get("textSwaps"),
+                            g_b.get("hidden")) if g_ok else
+                         "scrollWidth %s vs %s, %d element(s) overflowing"
+                         % (g_b["docScroll"], g_b["docClient"],
+                            g_b["overflowing"])))
+            if not g_ok:
+                problems.append(
+                    "%s — the generated page scrolls sideways at %dpx: "
+                    "scrollWidth %s against clientWidth %s, %d element(s) "
+                    "crossing the root's edges. 390px is the primary target "
+                    "and this is the first thing that has to work."
+                    % (name, band, g_b["docScroll"], g_b["docClient"],
+                       g_b["overflowing"]))
+
+            # The shim has to have RUN, and have aimed correctly. A page where
+            # it silently did nothing is clean at 1460 and wrong everywhere
+            # else, and "clean at 1460" is most of this gate's assertions.
+            if int(g_b.get("mismatch") or 0):
+                problems.append(
+                    "%s — at %dpx the breakpoint shim reports %s switch row(s) "
+                    "aimed at an element whose current value is not the "
+                    "desktop value the table recorded. The table is pointed at "
+                    "the wrong node and those rows were skipped rather than "
+                    "written." % (name, band, g_b["mismatch"]))
+                rows.append((name, "C · the shim aims true at %dpx" % band,
+                             "FAIL", "%s mismatched row(s)" % g_b["mismatch"]))
+
+            # ── C · the switch VALUES, against Design's own, per band ───
+            #
+            # Clean-and-not-overflowing is necessary and nowhere near
+            # sufficient: a page with every grid collapsed to one column
+            # overflows nothing and is not Design's design. This asserts the
+            # value itself, element by element, against the same element in
+            # Design's file at the same width.
+            diffs = []
+            for key, want in sorted((d_b.get("switches") or {}).items()):
+                got = (g_b.get("switches") or {}).get(key)
+                if got != want:
+                    diffs.append("%s: Design %r, generated %r"
+                                 % (key, want, got))
+            sw_ok = not diffs
+            rows.append((name, "C · %d switched value(s) match Design at %dpx"
+                         % (len(d_b.get("switches") or {}), band),
+                         "PASS" if sw_ok else "FAIL",
+                         "every one" if sw_ok else "; ".join(diffs[:3])))
+            if diffs:
+                problems.append(
+                    "%s — at %dpx %d switched declaration(s) do not match "
+                    "Design's own file: %s"
+                    % (name, band, len(diffs), "; ".join(diffs[:4])))
+
+            # ── G · touch targets, ASSERTED AGAINST DESIGN'S OWN ───────
+            #
+            # ⚖️ TWO-SIDED, for the same reason layer C is. Design's §6 states
+            # a 40px floor "everywhere, at every width", and Design's own file
+            # does not meet it — measured, 11 controls at 390px and 6 at 1460.
+            # The generated page has exactly the same 11 and the same 6, to the
+            # pixel, because it is Design's DOM.
+            #
+            # A one-sided gate here would report those as a defect in the
+            # generator, which is false and would invite somebody to "fix" it
+            # by inventing sizes Design did not draw — the one thing the brief
+            # forbids. So the assertion is: the generated page is NO WORSE than
+            # the delivery, and the delivery's own shortfall is registered by
+            # count so it cannot be quietly absorbed.
+            d_small = {(s["tag"], s["text"]) for s in (d_b.get("smallTargets")
+                                                       or [])}
+            g_small = {(s["tag"], s["text"]) for s in (g_b.get("smallTargets")
+                                                       or [])}
+            worse = sorted(g_small - d_small)
+            g_ok = not worse
+            rows.append((name, "G · no control smaller than Design's at %dpx"
+                         % band,
+                         "PASS" if g_ok else "FAIL",
+                         "%d control(s) measured; %d under %dpx in BOTH files, "
+                         "0 that Design does not also have"
+                         % (g_b.get("controls", 0), len(g_small), TOUCH_FLOOR)
+                         if g_ok else
+                         "%d control(s) under %dpx here and not in Design's "
+                         "file: %s" % (len(worse), TOUCH_FLOOR, worse[:3])))
+            if worse:
+                problems.append(
+                    "%s — at %dpx %d control(s) are under the %dpx touch floor "
+                    "HERE AND NOT in Design's own file: %s. That is a "
+                    "regression in the generator, not a property of the "
+                    "delivery. (%s)"
+                    % (name, band, len(worse), TOUCH_FLOOR, worse[:4],
+                       TOUCH_EXEMPT_NOTE))
+
+            want_d = DELIVERY_TOUCH_SHORTFALL.get(name, {}).get(band)
+            if want_d is None:
+                problems.append(
+                    "%s at %dpx has no entry in DELIVERY_TOUCH_SHORTFALL. A "
+                    "band this gate does not know the delivery's own shortfall "
+                    "at is a band where a real regression would hide inside "
+                    "it." % (name, band))
+                rows.append((name, "G · the delivery's shortfall is registered "
+                             "at %dpx" % band, "FAIL", "absent"))
+            elif len(d_small) == want_d:
+                rows.append((name, "G · Design's own %dpx shortfall is still "
+                             "%d control(s)" % (band, want_d), "PASS",
+                             "the delivery meets its own %dpx floor here"
+                             % TOUCH_FLOOR if not want_d else
+                             "Design's §6 asks for a %dpx floor everywhere and "
+                             "the delivery does not meet it in %d place(s) "
+                             "here; recorded, not approximated"
+                             % (TOUCH_FLOOR, want_d)))
+            else:
+                problems.append(
+                    "%s — DESIGN's own file has %d control(s) under %dpx at "
+                    "%dpx and this gate registers %d. The delivery moved. Read "
+                    "the diff and update DELIVERY_TOUCH_SHORTFALL "
+                    "deliberately." % (name, len(d_small), TOUCH_FLOOR, band,
+                                       want_d))
+                rows.append((name, "G · Design's own %dpx shortfall holds"
+                             % band, "FAIL",
+                             "%d measured against %d registered"
+                             % (len(d_small), want_d)))
+
+        # ── C · the UNCREATABLE half of the presence gap, by count ─────
+        #
+        # ASSERTED, in the shape the 390px gap was. Design renders nodes below
+        # desktop that a desktop snapshot does not contain; they cannot be
+        # conjured and they are not approximated. If the number moves, Design's
+        # delivery moved or the extraction did.
+        phone = grab(cdp, SITE, pair["generated"], (390, 900))
+        want = UNCREATABLE.get(name)
+        got = int(phone.get("absent") or 0)
+        if want is None:
+            problems.append("%s has no entry in UNCREATABLE" % name)
+            rows.append((name, "C · the uncreatable gap is registered",
+                         "FAIL", "absent"))
+        elif got == want:
+            rows.append((name, "C · the KNOWN uncreatable gap is exactly %d "
+                         "node(s)" % want, "PASS",
+                         "Design renders these below desktop and a desktop "
+                         "snapshot has no DOM for them; they close when the "
+                         "behaviour is ported"))
         else:
             problems.append(
-                "%s — registered as CLEAN at 390px and it is not: scrollWidth "
-                "%s against clientWidth %s, %d element(s) overflowing. That is "
-                "a regression, not a known gap"
-                % (name, gp["docScroll"], gp["docClient"], gp["overflowing"]))
-            rows.append((name, "C · clean at 390px, as registered", "FAIL",
-                         "scrollWidth %s, %d overflowing"
-                         % (gp["docScroll"], gp["overflowing"])))
+                "%s — the uncreatable presence gap is %d node(s) at 390px and "
+                "UNCREATABLE registers %d. Either Design's delivery changed or "
+                "student_switches.py extracted differently. Re-run "
+                "`python3 student_switches.py`, read the diff, and update the "
+                "number deliberately." % (name, got, want))
+            rows.append((name, "C · the KNOWN uncreatable gap holds", "FAIL",
+                         "%d measured against %d registered" % (got, want)))
 
     rows_d, problems_d = run_token_contract(cdp)
     rows.extend(rows_d)
@@ -438,6 +759,58 @@ _COUNT_FIXTURE = """
 """
 
 
+def _emitted_only(path, text):
+    """`text` with comments and docstrings removed.
+
+    ⚠️ THIS EXISTS BECAUSE THE GATE FIRED ON ITS OWN EXPLANATION. Phase 2 added
+    a paragraph to `build_student.py` describing the breadcrumb note — "reads
+    `AUTUMN TERM · WEEK 04 / 12` at desktop" — and layer E dutifully reported a
+    literal question count. It is not one; it is prose about one, in a
+    docstring, and a docstring cannot reach a student.
+
+    The distinction the rule actually draws is between what a file SAYS and
+    what it EMITS, so that is the distinction this draws. Python is tokenised
+    rather than regexed — a `#` inside a string literal is not a comment and a
+    regex would take it for one, which would silently blind the scan to
+    anything after it on that line.
+    """
+    if path.endswith(".py"):
+        import io
+        import tokenize
+        out, prev_type = [], None
+        try:
+            toks = list(tokenize.generate_tokens(io.StringIO(text).readline))
+        except (tokenize.TokenError, IndentationError):
+            return text                      # unparseable — scan it whole
+        for tok in toks:
+            if tok.type == tokenize.COMMENT:
+                continue
+            if (tok.type == tokenize.STRING and prev_type in
+                    (tokenize.INDENT, tokenize.NEWLINE, tokenize.NL, None)):
+                continue                     # a docstring, not a value
+            out.append(tok.string)
+            if tok.type not in (tokenize.NL, tokenize.NEWLINE):
+                prev_type = tok.type
+            else:
+                prev_type = tok.type
+        return "\n".join(out)
+    if path.endswith(".js"):
+        import re
+        # Block and line comments. A `//` inside a string is possible (a URL),
+        # so only strip a line comment that starts a line or follows whitespace
+        # and is not preceded by a quote on that line.
+        text = re.sub(r"/\*.*?\*/", "", text, flags=re.S)
+        keep = []
+        for line in text.split("\n"):
+            i = line.find("//")
+            if i > -1 and line.count('"', 0, i) % 2 == 0 \
+                      and line.count("'", 0, i) % 2 == 0:
+                line = line[:i]
+            keep.append(line)
+        return "\n".join(keep)
+    return text
+
+
 def _scan_counts(text):
     import re
     hits = []
@@ -473,7 +846,8 @@ def run_no_literal_count():
         if not os.path.exists(rel):
             continue                       # not built yet — E waits for it
         scanned += 1
-        hits = _scan_counts(open(rel, encoding="utf-8").read())
+        hits = _scan_counts(
+            _emitted_only(rel, open(rel, encoding="utf-8").read()))
         for _pat, got in hits:
             problems.append(
                 "E — %s carries the literal question count %r. RULED 20 Aug "
@@ -526,7 +900,8 @@ def run_no_fabricated_split():
         if not os.path.exists(rel):
             continue
         scanned += 1
-        for got in _scan_split(open(rel, encoding="utf-8").read()):
+        for got in _scan_split(
+                _emitted_only(rel, open(rel, encoding="utf-8").read())):
             problems.append(
                 "F — %s carries Design's drawn leaderboard approximation "
                 "(%r). RULED 20 Aug 2026: derive the real per-component "
@@ -714,11 +1089,13 @@ def main():
             print("    · %s" % p)
         return 1
     print("  PASS  both previews reproduce Design's file exactly at desktop; "
-          "every registered section is present; the known 390px gap is still "
-          "exactly where phase 8a left it; `--st-ok-room` is graphic-only on "
-          "both pages and the sweep proved it can see; and no built source "
-          "carries a literal question count or Design's drawn leaderboard "
-          "split.")
+          "every registered section is present; BOTH ARE CLEAN AT 360, 390, "
+          "820 AND 1460 with every switched value matching Design's own file "
+          "at each; no control is smaller than Design's; the uncreatable "
+          "presence gap is exactly where the measurement put it; "
+          "`--st-ok-room` is graphic-only and the sweep proved it can see; and "
+          "no built source carries a literal question count or Design's drawn "
+          "leaderboard split.")
     return 0
 
 
