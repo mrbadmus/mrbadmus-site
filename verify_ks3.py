@@ -1779,6 +1779,42 @@ def main():
         # name instead of leaving it checking nothing. A colour gate's real
         # failure mode is a blind parser, and a blind parser and a clean corpus
         # look identical from here.
+        # ⊕ MRB-270 phase 6 — THE 390px GATE. A KS3 page must never scroll
+        # sideways, and every element wider than the viewport must sit inside
+        # its own `overflow-x: auto` scroller.
+        #
+        # The second half is the half that earns its keep. Document scrollWidth
+        # describes the SYMPTOM and goes red only once the damage is on screen;
+        # the scroller rule describes the RULE and fails at the component, by
+        # name, the moment somebody adds a 900px figure without a
+        # `.ks3-figure-scroll` around it. It also stops the symptom being
+        # cured the wrong way: `overflow-x: hidden` on a wrapper stops the page
+        # scrolling while silently CLIPPING the right-hand end of a diagram,
+        # which the scrollWidth assertions cannot see at all. Demonstrated:
+        # turning one `.ks3-figure-scroll` into `hidden` leaves both
+        # scrollWidth checks GREEN and is caught only by this one.
+        #
+        # ⚑ The brief that asked for this gate said all 294 pages scroll
+        # sideways and that the header trail is what overflows. Measured over
+        # all 295: neither is true. MRB-229 fixed the trail below 700px, and
+        # every wide figure is already in a scroller. Nothing was broken; what
+        # was missing was the gate, so the fix could not regress silently.
+        import ks3_overflow
+        ov_problems, ov_checked = ks3_overflow.run(
+            ks3_overflow.sample(), ks3_browser)
+        ov_total = len(ks3_overflow.every())
+        check("⊕ MRB-270 · no page scrolls sideways at 390px, and wide "
+              "content is in its own scroller",
+              not ov_problems,
+              "%d of %d built pages driven at 390x844 — one lesson per unit, "
+              "every canvas-bearing C1 page, the hub and a unit index; %d not "
+              "driven (`python3 ks3_overflow.py --all` drives them, and did, "
+              "clean, on 20 Aug)"
+              % (ov_checked, ov_total, ov_total - ov_checked)
+              if not ov_problems
+              else "%d problem(s): %s"
+                   % (len(ov_problems), "; ".join(ov_problems[:2])))
+
         tok_problems, n_rules, n_tok_pages = PARITY.check_token_contract(
             KS3_OUT, ks3_browser)
         check("⊕ MRB-252 · tokens.css usage rules hold on every built page "
