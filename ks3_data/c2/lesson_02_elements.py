@@ -179,9 +179,6 @@ LESSON = {
              {"id": "s1", "tab": "Sample 1",
               "name": "Sample 1",
               "look": "A dull orange solid that can be bent without snapping.",
-              # Correctness data with no marker behind it (map N16). Design's
-              # intent, kept and flagged rather than deleted.
-              "element": True,
               "name2": "Copper — an element.",
               "results": {
                   "look": "Orange, metallic, bendable. Copper looks like this; so does brass, and so does bronze.",
@@ -193,9 +190,6 @@ LESSON = {
              {"id": "s2", "tab": "Sample 2",
               "name": "Sample 2",
               "look": "A colourless liquid with no smell.",
-              # Correctness data with no marker behind it (map N16). Design's
-              # intent, kept and flagged rather than deleted.
-              "element": False,
               "name2": "Water — not an element. It is a compound.",
               "results": {
                   "look": "Clear, colourless, runny. Indistinguishable by eye from a dozen other liquids.",
@@ -207,9 +201,6 @@ LESSON = {
              {"id": "s3", "tab": "Sample 3",
               "name": "Sample 3",
               "look": "A bright yellow powder that smells faintly of nothing much.",
-              # Correctness data with no marker behind it (map N16). Design's
-              # intent, kept and flagged rather than deleted.
-              "element": True,
               "name2": "Sulfur — an element.",
               "results": {
                   "look": "Yellow, powdery, does not look remotely like a metal.",
@@ -221,9 +212,6 @@ LESSON = {
              {"id": "s4", "tab": "Sample 4",
               "name": "Sample 4",
               "look": "A hard, shiny, gold-coloured metal that rings when tapped.",
-              # Correctness data with no marker behind it (map N16). Design's
-              # intent, kept and flagged rather than deleted.
-              "element": False,
               "name2": "Brass — not an element. It is a mixture of copper and zinc.",
               "results": {
                   "look": "Shiny, gold-coloured, hard. The most convincing-looking sample on the bench.",
@@ -235,9 +223,6 @@ LESSON = {
              {"id": "s5", "tab": "Sample 5",
               "name": "Sample 5",
               "look": "A colourless gas that does nothing obvious.",
-              # Correctness data with no marker behind it (map N16). Design's
-              # intent, kept and flagged rather than deleted.
-              "element": False,
               "name2": "Air — not an element. It is a mixture of several gases.",
               "results": {
                   "look": "Invisible. Looking at it tells you precisely nothing.",
@@ -249,9 +234,6 @@ LESSON = {
              {"id": "s6", "tab": "Sample 6",
               "name": "Sample 6",
               "look": "A soft, silvery metal that has to be kept under oil.",
-              # Correctness data with no marker behind it (map N16). Design's
-              # intent, kept and flagged rather than deleted.
-              "element": True,
               "name2": "Sodium — an element.",
               "results": {
                   "look": "Silvery when freshly cut, and it dulls over within seconds in air.",

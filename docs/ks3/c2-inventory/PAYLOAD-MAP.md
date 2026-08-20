@@ -1775,7 +1775,7 @@ And **one more**:
 | **N13** | **`Connects to` endmatter heading** | c2-06 457 | The second endmatter card is `Connects to` on the unit's last lesson, `Next in this unit` on the other five |
 | **N14** | **A stage needs both a `done_when` and a `progress` string, and they may disagree** | c2-05, c2-06 | F5. `'of 5'` with `done_at: 3`, `'of 4'` with `done_at: 3` |
 | **N15** | **The `testBudget` prop has nowhere to live** | c2-02 | A per-lesson teaching dial (4–24, default 8). §4.8 has no prop concept. Dropping it removes the lesson's pedagogy |
-| **N16** | **`ORIGINS` / `element` / `origin` are authored and unread** | c2-02 `SAMPLES[].element`, c2-04 `SYMBOLS[].origin` | Correctness data with no marker behind it. An orphan-key sweep will flag both; they are Design's intent, not slips — keep them and say so |
+| **N16** | ~~**`ORIGINS` / `element` / `origin` are authored and unread**~~ **RESOLVED 20 Aug 2026 (MRB-270 phase 7d) — `element` and `origin` REMOVED** | c2-02 `SAMPLES[].element`, c2-04 `SYMBOLS[].origin` | Both were correctness data with no marker behind it, and Design drew no marker either: in `c2-02-elements.dc.html` all six `element:` and in `c2-04-chemical-symbols.dc.html` all nine `origin:` occurrences are inside the data literal and **Design's own code never reads them**. `r_evidence_bench()` contains the word `element` zero times. The verdict a student needs is already on the page in words — `name2` reads "Copper — an element.", "Brass — not an element. It is a mixture of copper and zinc." — so nothing is lost by removing the boolean, and WIRING one in would mean inventing a component Design has not drawn. Proof it was dead: with both keys removed, both built pages are BYTE-IDENTICAL. `ORIGINS` itself is NOT removed — it is live, supplying the card's `options`, and its text is on the built page |
 
 ### 10.4 Not a gap, but must be carried
 
@@ -1801,7 +1801,7 @@ And **one more**:
 | **F5** | Two progress readouts promise more than their `done_when` requires (c2-05 5 vs 3, c2-06 4 vs 3) | **Mide** — is the readout or the gate the intent? |
 | **F6** | c2-05's builder never banks the substance it opens on | Code may fix inside the drawn component; state it |
 | **F7** | `magnesium:sealed` reuses the marble masses (152.00 → 152.00) with no note explaining it | **Mide** — science/content accuracy |
-| **N16** | `SAMPLES[].element` and `SYMBOLS[].origin` are authored and read by nothing | recorded; keep the data |
+| **N16** | `SAMPLES[].element` and `SYMBOLS[].origin` are authored and read by nothing | ⊕ SUPERSEDED 20 Aug 2026. Both removed — see the N16 row above. `ks3_key_audit.py` now exits 0 with the audit itself unchanged. ⚠️ Note for future sweeps: the audit only ever flagged `element`. It passed `origin` because the audit is a LINT — "does any source file mention this name?" — and the word `origin` appears 19 times in `build_ks3.py` in unrelated contexts (pan origin, time origin). A common word can pass this audit for the wrong reason |
 | §9.6 | NOTES says c2-06 "redraws on control changes only"; the code redraws on every render | recorded; harmless |
 
 ---

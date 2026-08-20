@@ -151,52 +151,25 @@ LESSON = {
          "options": ORIGINS,
          "items": [
              {"id": "H", "headline": "H", "sub": "Hydrogen",
-              # `origin` is authored and read by nothing (map N16): the card
-              # reveals `why` on any pick. Design's intent, kept and flagged.
-              "origin": 0,
               "why": "First letter of the English name, and it got there first — no other element beginning with H could have it."},
              {"id": "C", "headline": "C", "sub": "Carbon",
-              # `origin` is authored and read by nothing (map N16): the card
-              # reveals `why` on any pick. Design's intent, kept and flagged.
-              "origin": 0,
               "why": "First letter. Calcium arrived later and had to take two letters instead."},
              {"id": "Ca", "headline": "Ca", "sub": "Calcium",
-              # `origin` is authored and read by nothing (map N16): the card
-              # reveals `why` on any pick. Design's intent, kept and flagged.
-              "origin": 1,
               "why": "C was already taken by carbon, so calcium takes the first two letters of its name."},
              {"id": "Cl", "headline": "Cl", "sub": "Chlorine",
-              # `origin` is authored and read by nothing (map N16): the card
-              # reveals `why` on any pick. Design's intent, kept and flagged.
-              "origin": 1,
               "why": "Not the first two letters: Cl is the first and the "
                      "third, exactly like magnesium below. The rule is "
                      "looser than it looks."},
              {"id": "Mg", "headline": "Mg", "sub": "Magnesium",
-              # `origin` is authored and read by nothing (map N16): the card
-              # reveals `why` on any pick. Design's intent, kept and flagged.
-              "origin": 1,
               "why": "Two letters, and not the first two: Ma would have clashed, so it uses the first and third."},
              {"id": "Na", "headline": "Na", "sub": "Sodium",
-              # `origin` is authored and read by nothing (map N16): the card
-              # reveals `why` on any pick. Design's intent, kept and flagged.
-              "origin": 2,
               "why": "From natrium, the Latin name. It is why its compounds have been called soda for centuries."},
              {"id": "Fe", "headline": "Fe", "sub": "Iron",
-              # `origin` is authored and read by nothing (map N16): the card
-              # reveals `why` on any pick. Design's intent, kept and flagged.
-              "origin": 2,
               "why": "From ferrum, the Latin for iron — which is also where "
                      "farrier and ferrous come from."},
              {"id": "Pb", "headline": "Pb", "sub": "Lead",
-              # `origin` is authored and read by nothing (map N16): the card
-              # reveals `why` on any pick. Design's intent, kept and flagged.
-              "origin": 2,
               "why": "From plumbum, the Latin for lead, and the reason a person who fits water pipes is called a plumber."},
              {"id": "Au", "headline": "Au", "sub": "Gold",
-              # `origin` is authored and read by nothing (map N16): the card
-              # reveals `why` on any pick. Design's intent, kept and flagged.
-              "origin": 2,
               "why": "From aurum. Every element with a Latin symbol is one that people were already working with thousands of years ago."},
          ],
          "close": "The odd ones are not random. They are Latin, and they are "
