@@ -111,6 +111,13 @@ window.__MRB_DATA__ = {
           'Only dissolved gases cross into the blood, never bubbles.'] }
   ],
   "streak": 3,
+  "currentWeek": 4,
+  "shoutouts": [
+        { who: 'MB', text: 'Best score in the class on digestion this week.', meta: 'MR BADMUS \u00B7 2 DAYS AGO' },
+        { who: 'MB', text: 'Third week running you handed in first. Keep it.', meta: 'MR BADMUS \u00B7 1 WEEK AGO' }
+      ],
+  "weekNumber": "04",
+  "weekTotal": "12",
   "className": "8r/Sc1",
   "classNamePadded": "8r/Sc1\n        ",
   "classSize": "28 students",

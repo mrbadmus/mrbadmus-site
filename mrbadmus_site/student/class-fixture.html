@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>8r/Sc1 · My class · MrBadmusAI</title>
+<title>My class · MrBadmusAI</title>
 <!--
   ══════════════════════════════════════════════════════════════════════════
   GENERATED — do not edit. `python3 build_student_port.py`
@@ -139,7 +139,7 @@ class Component extends DCLogic {
       { label: 'Handed in', value: all.length ? handed.length + '/' + all.length : dash, caption: 'THIS TERM', pct: pc(handed.length, all.length) },
       { label: 'On time', value: handed.length ? onTime + '/' + handed.length : dash, caption: 'OF HANDED IN', pct: pc(onTime, handed.length), bar: 'var(--ks3-ok)' },
       { label: 'Avg score', value: avg == null ? dash : avg + '%', caption: marked.length ? marked.length + ' MARKED' : 'NOT MARKED YET', pct: avg == null ? '0%' : avg + '%' },
-      { label: 'Recall', value: fresh ? '0' : '46', caption: 'ANSWERED \u00B7 WK 04', pct: fresh ? '0%' : '77%' }
+      { label: 'Recall', value: fresh ? '0' : '46', caption: 'ANSWERED \u00B7 WK ' + MRB_DATA('weekNumber'), pct: fresh ? '0%' : '77%' }
     ]).map((r) => Object.assign({ bar: 'var(--st-accent)' }, r));
 
     const weeks = [];
@@ -197,7 +197,7 @@ class Component extends DCLogic {
           border: ok === 1 ? 'var(--st-rule)' : 'var(--err)',
           color: ok === 1 ? 'var(--st-body)' : 'var(--err)'
         })),
-        footNote: isMarked ? 'MARKS ARE FINAL UNLESS A RETAKE IS OPEN' : w.status === 'open' ? 'COUNTS TOWARDS WEEK 04' : '',
+        footNote: isMarked ? 'MARKS ARE FINAL UNLESS A RETAKE IS OPEN' : w.status === 'open' ? 'COUNTS TOWARDS WEEK ' + MRB_DATA('weekNumber') : '',
         primaryLabel: w.status === 'open' ? 'Open the assignment' : w.retake ? 'Retake it' : isMarked ? 'Open the lesson' : w.status === 'pending' ? 'See what you sent' : 'Ask for an extension',
         primary: w.status === 'open' || w.retake ? this.openAssignment : () => this.go('recall'),
         expanded: expanded, caret: expanded ? '225deg' : '45deg',
@@ -396,7 +396,7 @@ class Component extends DCLogic {
       nav: nav, menuOpen: st.menu, toggleMenu: this.toggleMenu,
       menuRing: st.menu ? 'var(--st-accent)' : 'var(--st-edge)',
       crumbLast: onClass ? 'Overview' : 'Recall',
-      crumbRight: onClass ? (wide ? 'AUTUMN TERM \u00B7 WEEK 04 / 12' : 'WK 04 / 12') : 'SIX A ROUND',
+      crumbRight: onClass ? (wide ? MRB_DATA('termLabel') + ' \u00B7 WEEK ' + MRB_DATA('weekNumber') + ' / ' + MRB_DATA('weekTotal') : 'WK ' + MRB_DATA('weekNumber') + ' / ' + MRB_DATA('weekTotal')) : 'SIX A ROUND',
       goClass: () => this.go('class'), goRecall: () => this.go('recall'),
       openAssignment: this.openAssignment,
 
@@ -416,10 +416,7 @@ class Component extends DCLogic {
       docketWorth: fresh ? '\u2014' : '40 POINTS AT STAKE',
       docketElapsed: fresh ? '0%' : '58%',
 
-      shoutouts: fresh ? [] : [
-        { who: 'MB', text: 'Best score in the class on digestion this week.', meta: 'MR BADMUS \u00B7 2 DAYS AGO' },
-        { who: 'MB', text: 'Third week running you handed in first. Keep it.', meta: 'MR BADMUS \u00B7 1 WEEK AGO' }
-      ],
+      shoutouts: fresh ? [] : MRB_DATA("shoutouts"),
       noShouts: fresh, shoutCount: fresh ? '00' : '02',
       retrievalCount: fresh ? '0' : '46',
 
@@ -446,7 +443,7 @@ class Component extends DCLogic {
       recallStats: [{ label: 'BEST STREAK', value: pad(Math.max(9, st.streak)) }, { label: 'ROUNDS', value: '08' }],
 
       hasBoard: !fresh, noBoard: fresh,
-      boardScopeNote: wk === 'term' ? 'WHOLE AUTUMN TERM' : wk === 4 ? 'CURRENT WEEK' : 'WEEK ' + pad(wk) + ' \u00B7 FINAL',
+      boardScopeNote: wk === 'term' ? 'WHOLE ' + MRB_DATA('termLabel') : wk === MRB_DATA('currentWeek') ? 'CURRENT WEEK' : 'WEEK ' + pad(wk) + ' \u00B7 FINAL',
       boardWeeks: boardWeeks, toggleSize: this.toggleSize,
       sizeLabel: size === 5 ? 'SHOW TOP 10' : 'SHOW TOP 5',
       leaderEyebrow: wk === 'term' ? 'Top of the term' : 'Top of week ' + pad(wk),
@@ -458,6 +455,10 @@ class Component extends DCLogic {
 </script>
 <script>
 window.__MRB_MOUNT__ = function () {
+  /* The <head> is not rendered by the runtime, so the class name
+     arrives here instead — after the data, through the same throw
+     as everything else. */
+  document.title = MRB_DATA('className') + ' \u00B7 My class \u00B7 MrBadmusAI';
   var R = window.MrBadmusStudentRuntime;
   var tpl = window.__MRB_TPL__;
   return R.mount({

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Assignment · 8r/Sc1 · MrBadmusAI</title>
+<title>Assignment · MrBadmusAI</title>
 <!--
   ══════════════════════════════════════════════════════════════════════════
   GENERATED — do not edit. `python3 build_student_port.py`
@@ -547,6 +547,10 @@ class Component extends DCLogic {
 </script>
 <script>
 window.__MRB_MOUNT__ = function () {
+  /* The <head> is not rendered by the runtime, so the class name
+     arrives here instead — after the data, through the same throw
+     as everything else. */
+  document.title = 'Assignment \u00B7 ' + MRB_DATA('className') + ' \u00B7 MrBadmusAI';
   var R = window.MrBadmusStudentRuntime;
   var tpl = window.__MRB_TPL__;
   return R.mount({

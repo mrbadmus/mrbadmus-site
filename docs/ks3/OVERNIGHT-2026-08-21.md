@@ -654,3 +654,113 @@ answering. `/api/health` returning 200 shows only that the service is up.
 The honest state: the guard is committed (`d0b65b5`) and pushed, Render auto-deploys from
 `main`, and its correctness is covered by the KS4 case being unreachable rather than by a
 measurement. **The first KS4 scheme rows to land should be treated as the test.**
+
+---
+
+## B2 — the pages, wired. The class page renders real data. The assignment page refuses.
+
+`shared/student-live.js` (630 lines) loads the SDK, `config.js`, `class-entry.js`,
+`student-guard.js` and `student-data.js` **in that order** (load-bearing, per CLAUDE.md),
+resolves the student's working-year class, and maps 21 keys for the class view and 8 for the
+assignment.
+
+**The class page works.** At 390px and at 1460px, against production:
+
+```
+✅ rendered — 358 node(s)          ✅ nothing renders as 'undefined'
+✅ no console errors               ✅ this week's real assignment title is on screen
+✅ the student's real identity is on screen — 8r/Sc1, AY
+```
+
+Screenshots: `docs/ks3/shots/wired-class-390.png`, `wired-class-1460.png`.
+
+**The assignment page refuses**, honestly: *"This week's work is not ready yet. Check again
+later today."* Because this week's real assignment has **four** questions and the page's own
+logic has a hardwired floor of six (`roundLive: st.qi < 6`, `Math.min(st.qi, 5)`, "/ 06"). The
+loader would rather say nothing is ready than mount a page that runs off the end of the array
+mid-assignment. That is the right refusal and it is content meeting a page limitation, not a
+wiring fault.
+
+### Three real defects found by driving, and fixed
+
+1. **The guard fail-closed with no explanation** — three runs bounced straight to `/auth.html`
+   and it looked like broken wiring. `shared/config.js` selects the **TEST** Supabase project
+   on `localhost` and `127.0.0.1`, deliberately, so local dev cannot touch real students. The
+   guard's client then looked for a session under the test project's storage key and found
+   none. `config.js` has an escape hatch built for exactly this — `?env=prod` — and the drive
+   now uses it. **Nothing was wrong with the page.**
+2. **CORS blocked every backend call from the drive.** The allowlist is the four real origins.
+   Fixed by serving the drive from `http://localhost:5500`, which the allowlist **already
+   contains** — the live allowlist was not widened to make a test possible.
+3. **⚠️ `Date` is not a CORS-safelisted response header**, so `res.headers.get('date')`
+   returned null cross-origin, silently, with no error anywhere. The pages decide whether work
+   is still open or **missed** and are required to decide it against the server's clock, never
+   the device's — a tablet a week fast would grey out this week's work as overdue. Without a
+   readable Date the loader refused to render rather than guess. One line on the backend
+   (`exposedHeaders: ['Date']`) makes the refusal unnecessary.
+
+   **This deploy WAS provable behaviourally**: `access-control-expose-headers: Date` was absent
+   at 23:20:24 and present at 23:21:10.
+
+### ⚠️ And the thing a screenshot caught that my own check could not
+
+With the class page finally rendering, the text check said **no fixture content on screen**.
+It was wrong, and I only found out by looking at the picture. The docket at the top of that
+page still read:
+
+> **QUESTIONS 8 · DRAWS ON Using a microscope · SET Mon 15 Sep · DUE Thu 18 Sep, 18:00 ·
+> 2 days left · 40 POINTS AT STAKE**
+
+over a real assignment of **four** questions due **Thursday 3 September**. Also hardcoded:
+"Eight questions, set from this week's lessons", "Answer the eight questions", the recall
+panel's "46 ANSWERED THIS WEEK", the term spine's twelve weeks with **week 04** marked as now,
+and "LEADERBOARD WEEK 04 · FINAL".
+
+**My `FIXTURE_TELLS` list held names and headlines and no numbers.** So the check went green
+on a page telling a student the wrong number of questions and the wrong due date. The list is
+now widened — counts, dates and week numbers included — and the drive fails as it should:
+
+```
+❌ NO fixture content on screen — leaked: Using a microscope, Mon 15 Sep, Thu 18 Sep, DUE THU 18:00
+```
+
+The general lesson, written down because it will recur: **a fixture tell is not only a name.**
+It is any authored constant that a real page must have replaced, and the numbers are the ones
+that read as plausible.
+
+---
+
+## B4 — THE SWAP: NO. Four independent conditions fail.
+
+The live pages are untouched. `student/class.html` and `student/assignment.html` are exactly as
+Mide left them.
+
+| # | condition | verdict |
+|---|---|---|
+| 1 | parity green at 360/390/820/1460 | ✅ green, all 8 layers |
+| 2 | behaviour green through the A2 seam | ✅ green, 28 drives, text identical |
+| 3 | **no fixture content reachable in production** | ❌ **the docket, the recall count, the term spine and the leaderboard week are hardcoded in Design's logic where the seam cannot reach** |
+| 4 | **B3 passed with every field correct** | ❌ **the assignment page will not render this week's real work (4 questions < its hardwired 6)** |
+| 5 | full gate set green | ✅ for the gates that exist |
+| 6 | Render proven behaviourally | ✅ twice; once honestly not-proven and said so |
+
+And the one that would block it on its own, independent of all six:
+
+⛔ **`handIn` submits nothing.** `assignment-ported.html:280`:
+
+```js
+handIn = () => {
+  const stamp = this.state.late ? '20 SEP, 19:07' : '17 SEP, 20:41';
+  ...
+};
+```
+
+It writes a **hardcoded timestamp** and posts to no endpoint. A student pressing "Hand it in"
+would see a false hand-in time — 17 September, whatever today is — and their work would never
+reach their teacher. `/api/assignment-submit` exists, works, and was driven and proved tonight;
+the page simply does not call it.
+
+**Swapping tonight would have replaced a working page with one that loses a child's work.**
+
+Per B5: since B4 did not swap, the demo assignment on `8r/Sc1` and the test student's
+enrolment are **left in place** — they remain the fixtures. Nothing was deleted.

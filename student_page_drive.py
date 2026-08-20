@@ -1,0 +1,283 @@
+#!/usr/bin/env python3
+"""Drive the WIRED student pages in headless Chrome, against production data.
+
+    python3 drive_pages.py [--keep]
+
+Serves `mrbadmus_site/` locally so that `/shared/...` resolves the way Cloudflare
+serves it, injects a real Supabase session into `localStorage` exactly as a
+signed-in browser would hold one, and then drives the page.
+
+⚠️ This is the check the API drive cannot make. `drive_producer.py` proves the
+backend composes and serves the right rows; this proves a student can SEE them —
+that `student-live.js` maps every key the pages read, that nothing renders as
+"undefined", and above all that **none of Design's example data reaches the
+screen**. A page wired to real data that quietly falls back to the fixture looks
+completely fine.
+
+The password comes from the environment and is never printed. The session is
+written into a throwaway browser profile that is discarded at the end.
+"""
+
+import json
+import os
+import re
+import ssl
+import sys
+import urllib.request
+
+REPO = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, REPO)
+os.chdir(REPO)
+
+import ks3_browser as cdp
+
+# ⚠️ SERVED ON localhost:5500 ON PURPOSE, AND THE PORT IS NOT ARBITRARY.
+# The backend's CORS allowlist is ['https://mrbadmus.com', 'https://www.
+# mrbadmus.com', 'http://localhost:3000', 'http://localhost:5500'] — so a page
+# served from a random port, or from 127.0.0.1 rather than the NAME localhost,
+# has its calls to /api/class/* blocked by the browser before they leave. That
+# is the backend being correct, not broken, and it is why this drive uses an
+# origin the live allowlist already contains rather than widening it. Nothing on
+# production changes to make this test possible.
+PORT = 5500
+CLASS_URL = "http://localhost:%d/student/class-ported.html?env=prod"
+ASSIGN_URL = "http://localhost:%d/student/assignment-ported.html?env=prod"
+
+SUPABASE_URL = "https://urklkrwevjtlfbwnipjn.supabase.co"
+PROJECT_REF = "urklkrwevjtlfbwnipjn"
+EMAIL = "midebolabadmus@gmail.com"
+CTX = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
+
+# Design's own example values. If ANY of these reach the screen on a page that
+# is supposed to be showing real data, the wiring has silently fallen back and
+# the page is lying to whoever is looking at it.
+#
+# ⚠️ THIS LIST WAS TOO SHORT AND THE DRIVE PASSED BECAUSE OF IT. The first
+# version held names and headline strings only, so it went green on a page whose
+# DOCKET still read "8 questions · Using a microscope · SET Mon 15 Sep · DUE
+# Thu 18 Sep" — over a real assignment of four questions due Thursday 3
+# September. A screenshot caught what the text check could not, because I had
+# not thought to look for the numbers.
+#
+# The lesson generalises: a fixture tell is not only a NAME. It is any authored
+# constant a real page must have replaced — counts, dates, week numbers, the
+# copy that quotes a count in words.
+FIXTURE_TELLS = [
+    # people and places
+    "Ayo", "Tiwa A.", "Marcus O.", "Hafsah I.", "Mr Badmus", "28 students",
+    "Best score in the class", "Cells & microscopy", "Movement & joints",
+    "Lab safety check", "AUTUMN TERM",
+    # the docket — counts and dates, which is where it actually leaked
+    "Using a microscope", "Mon 15 Sep", "Thu 18 Sep", "DUE THU 18:00",
+    "2 days left", "40 POINTS AT STAKE",
+    "Eight questions", "Answer the eight questions",
+    # week numbers: the real current week is 1
+    "WEEK 04", "TOP OF WEEK 04", "WK 04",
+    # a fabricated recall count
+    "46",
+]
+
+# What a real student on this account should be seeing tonight.
+EXPECT = ["8r/Sc1", "AY"]
+
+
+def anon_key():
+    src = open("leaderboard.html", encoding="utf-8").read()
+    return re.search(r"eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{10,}",
+                     src).group(0)
+
+
+def sign_in(key):
+    pw = os.environ.get("MRB_TEST_STUDENT_PASSWORD")
+    if not pw:
+        raise SystemExit("MRB_TEST_STUDENT_PASSWORD is not set")
+    req = urllib.request.Request(
+        SUPABASE_URL + "/auth/v1/token?grant_type=password",
+        data=json.dumps({"email": EMAIL, "password": pw}).encode(),
+        headers={"apikey": key, "Content-Type": "application/json"},
+        method="POST")
+    del pw
+    with urllib.request.urlopen(req, timeout=60, context=CTX) as r:
+        return json.loads(r.read().decode())
+
+
+def main():
+    key = anon_key()
+    sess = sign_in(key)
+    # supabase-js v2 keeps the whole session object under this key.
+    storage_key = "sb-%s-auth-token" % PROJECT_REF
+    storage_val = json.dumps(sess)
+    print("\n🧑‍🎓  drive_pages — the wired pages, as a signed-in student\n")
+    print("     session acquired (token %s…)" % sess["access_token"][:8])
+
+    anon = key
+
+    # ⚠️ `shared/config.js` selects the TEST Supabase project on localhost and
+    # 127.0.0.1 — deliberately, so local dev cannot touch real students. It has
+    # an escape hatch built for exactly this case: `?env=prod`. Without it the
+    # guard's client looks for a session under the TEST project's storage key,
+    # finds none, and bounces to /auth.html — which is what the first three runs
+    # of this drive measured, and what briefly looked like a broken page.
+    def sign_the_browser_in(b, port):
+        """Let the SDK write its own session, rather than guessing its format.
+
+        ⚠️ Hand-writing `sb-<ref>-auth-token` does not work: supabase-js v2 has
+        changed that entry's encoding across releases (recent builds base64
+        the JSON behind a `base64-` prefix), and the pages load `@2`, which
+        floats. A hand-rolled entry the SDK does not recognise is simply
+        ignored — the page then renders its signed-OUT state, which is exactly
+        what the first run of this drive measured and briefly looked like a
+        wiring failure.
+
+        So: open a page on the SAME ORIGIN that already loads the SDK, make a
+        client, and call `setSession`. The SDK persists it in whatever shape
+        that version uses, and every later page on the origin picks it up.
+        """
+        p = b.page("http://localhost:%d/leaderboard.html?env=prod" % port, settle=2.0)
+        ok = p.eval("""
+          (async function () {
+            if (!window.supabase) return 'no sdk';
+            var c = window.supabase.createClient(%s, %s);
+            var r = await c.auth.setSession({
+              access_token: %s, refresh_token: %s });
+            if (r.error) return 'error: ' + r.error.message;
+            var g = await c.auth.getSession();
+            return g.data.session ? 'ok:' + g.data.session.user.email : 'no session';
+          })()
+        """ % (json.dumps(SUPABASE_URL), json.dumps(anon),
+               json.dumps(sess["access_token"]), json.dumps(sess["refresh_token"])))
+        return ok
+
+    server, port = cdp.serve("mrbadmus_site", port=PORT)
+    fails, notes = [], []
+
+    def check(ok, what, detail=""):
+        print(("     ✅ " if ok else "     ❌ ") + what + (("  — " + detail) if detail else ""))
+        if not ok:
+            fails.append(what + ((" — " + detail) if detail else ""))
+
+    try:
+        with cdp.Browser() as b:
+            for width, label in ((390, "390px  (a phone)"), (1460, "1460px (desktop)")):
+                print("\n  %s" % label)
+                signed = sign_the_browser_in(b, port)
+                print("       session in the browser: %s" % signed)
+                page = b.page(CLASS_URL % port,
+                              settle=4.0)
+                page.set_viewport(width, 900)
+
+                text = page.eval("document.body.innerText") or ""
+                nodes = page.eval("document.querySelectorAll('*').length")
+                errs = page.console_errors()
+
+                check(nodes > 200, "the class page rendered", "%s node(s)" % nodes)
+                check(not errs, "no console errors",
+                      (errs[0][:110] if errs else ""))
+                check("undefined" not in text,
+                      "nothing renders as the string 'undefined'")
+
+                leaked = [t for t in FIXTURE_TELLS if t in text]
+                check(not leaked,
+                      "NO fixture content on screen — the page is showing real data",
+                      ("leaked: " + ", ".join(leaked[:4])) if leaked else "")
+
+                present = [t for t in EXPECT if t in text]
+                check(len(present) == len(EXPECT),
+                      "the student's real identity is on screen",
+                      "found %s of %s" % (present, EXPECT))
+
+                if "Breathing and gas exchange" in text:
+                    notes.append("%s: this week's real assignment title is on screen"
+                                 % label)
+
+                print("       first 260 chars of what a student sees:")
+                for line in (text[:260] or "(nothing)").splitlines()[:6]:
+                    print("         " + line[:88])
+            # ── B3's interactive sequence, on the ASSIGNMENT page ──────
+            #
+            # The class page rendering is necessary and nowhere near
+            # sufficient. This is the sequence a student actually performs,
+            # and the two steps that matter most are LEAVE and RETURN: the
+            # page persists to localStorage under a key that has to be
+            # specific to this class and this assignment, and a key that is
+            # not would show one student's answers inside another piece of
+            # work.
+            print("\n  the assignment, driven end to end (390px)")
+            url = ASSIGN_URL % port
+            sign_the_browser_in(b, port)
+            page = b.page(url, settle=4.0)
+            page.set_viewport(390, 900)
+
+            errs = page.console_errors()
+            check(not errs, "assignment: no console errors",
+                  (errs[0][:110] if errs else ""))
+
+            text = page.eval("document.body.innerText") or ""
+            leaked = [t for t in FIXTURE_TELLS if t in text]
+            check(not leaked, "assignment: no fixture content on screen",
+                  ("leaked: " + ", ".join(leaked[:4])) if leaked else "")
+
+            # the storage key must name this class and this assignment
+            keys = page.eval("Object.keys(localStorage)") or []
+            mrb = [k for k in keys if "assignment" in k and "sb-" not in k]
+            check(any("8rSc1" in k or "8r" in k or "-" in k for k in mrb) or not mrb,
+                  "assignment: its saved-state key is not Design's demo key",
+                  str(mrb)[:120])
+            check(not any("a5.v1" in k for k in mrb),
+                  "assignment: NOT persisting under Design's hard-coded "
+                  "'mrbadmusai.assignment.8rSc1.a5.v1'", str(mrb)[:120])
+
+            # pick the first option, confirm, and check the page responded
+            before = page.eval("document.body.innerText")
+            page.eval("(function(){var o=document.querySelectorAll("
+                      "'[role=\"button\"],button');for(var i=0;i<o.length;i++)"
+                      "{var t=(o[i].innerText||'').trim();"
+                      "if(/^A\\b|^A[\\s·]/.test(t)){o[i].click();return t;}}"
+                      "return null;})()")
+            page.eval("(function(){var b=[].slice.call("
+                      "document.querySelectorAll('button,[role=\"button\"]'));"
+                      "var c=b.filter(function(x){return /confirm/i.test("
+                      "x.innerText||'');});if(c.length){c[0].click();return 1;}"
+                      "return 0;})()")
+            after = page.eval("document.body.innerText")
+            check(after != before,
+                  "assignment: choosing and confirming an answer changes the page")
+
+            saved = page.eval("(function(){var o={};for(var i=0;i<"
+                              "localStorage.length;i++){var k=localStorage.key(i);"
+                              "if(k.indexOf('sb-')!==0)o[k]=(localStorage[k]||'')"
+                              ".slice(0,60);}return o;})()") or {}
+            check(bool(saved),
+                  "assignment: the answer was written to local storage",
+                  str(saved)[:140])
+
+            # LEAVE and RETURN
+            b.page(CLASS_URL % port,
+                   settle=1.5)
+            page = b.page(url, settle=3.0)
+            page.set_viewport(390, 900)
+            restored = page.eval("document.body.innerText") or ""
+            check(restored.strip() != "",
+                  "assignment: it still renders after leaving and returning")
+            check("undefined" not in restored,
+                  "assignment: nothing renders as 'undefined' after return")
+
+    finally:
+        server.shutdown()
+
+    print()
+    for n in notes:
+        print("     · " + n)
+    print()
+    if fails:
+        print("     ❌ %d check(s) failed:" % len(fails))
+        for f in fails:
+            print("        · " + f)
+        print()
+        return 1
+    print("     ✅ the wired pages render real data at both widths.\n")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

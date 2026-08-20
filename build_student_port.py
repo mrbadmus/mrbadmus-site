@@ -96,13 +96,17 @@ PAGES = [
     dict(page="class view", out="class-ported.html",
          fixture_out="class-fixture.html",
          fixture_js="student-fixture-class.js",
-         title="8r/Sc1 · My class · MrBadmusAI",
+         title="My class · MrBadmusAI",
+         title_expr="MRB_DATA('className') + "
+                    "' \\u00B7 My class \\u00B7 MrBadmusAI'",
          fields=["work", "roster", "weekPts", "lessonDefs", "questions"],
          state_fields=["streak"]),
     dict(page="assignment", out="assignment-ported.html",
          fixture_out="assignment-fixture.html",
          fixture_js="student-fixture-assignment.js",
-         title="Assignment · 8r/Sc1 · MrBadmusAI",
+         title="Assignment · MrBadmusAI",
+         title_expr="'Assignment \\u00B7 ' + MRB_DATA('className') + "
+                    "' \\u00B7 MrBadmusAI'",
          fields=["questions", "wrongPlan", "figCaptions", "KEY", "DUE"],
          state_fields=[]),
 ]
@@ -147,6 +151,116 @@ BINDINGS = {
         ("Cells & microscopy", "topicTitle"),
     ],
 }
+
+# ── Design's data welded into METHOD BODIES, not into initialisers ────────
+#
+# ⚑ THE HALF THE FIRST SEAM COULD NOT REACH, AND WHY IT NEEDED A SECOND ONE.
+#
+# `seam_logic` lifts class FIELDS (`work = […];`) because a field is a whole
+# statement: it can be found by its `^  name =` and cut at its terminating
+# `;`. Design's remaining example data is not shaped like that. It is welded
+# into `renderVals()` — one value inside a returned object literal, interleaved
+# with computation:
+#
+#     crumbRight: onClass ? (wide ? 'AUTUMN TERM · WEEK 04 / 12' : …) : …,
+#     shoutouts: fresh ? [] : [ { who: 'MB', text: 'Best score in the …' } ],
+#     boardScopeNote: wk === 'term' ? 'WHOLE AUTUMN TERM' : wk === 4 ? …,
+#
+# There is no statement to cut and no field to rename, so the previous unit
+# named them, counted them and left them — and they shipped in
+# `class-ported.html`, which is the one file that must contain no example data
+# at all. A production page that reads the work list from the database and
+# still tells the class that MB said "best score on digestion this week" is
+# the same failure as greeting every student as Ayo; it just took two more
+# lines of Design's file to find.
+#
+# TWO MECHANISMS, both the same discipline as `apply_rulings`: the anchor must
+# match EXACTLY ONCE or the build stops naming it. Neither retypes a value —
+# each carries Design's own bytes out to the fixture.
+#
+#   LIFTS     an array or object literal welded into a method body. Anchored on
+#             the text immediately before it; the literal itself is taken by
+#             BALANCED SCAN (`balanced_group`), so apostrophes, commas and
+#             nested braces inside it are just text. The literal becomes
+#             `MRB_DATA(key)` and the surrounding expression is untouched —
+#             `fresh ? [] : […]` stays a conditional, with only its second arm
+#             seamed.
+#
+#   REWRITES  a value SPLICED INTO a string, where there is no literal to lift
+#             because the datum is three characters in the middle of a
+#             sentence. The pattern captures Design's value into a named group
+#             and the replacement rebuilds the same string from `MRB_DATA`, so
+#             the rendered bytes are unchanged when the fixture supplies
+#             Design's own value. That equality is not a hope: the fixture IS
+#             what the pattern captured.
+#
+# ⚠️ A capture group whose name is already a BINDING key is not written to the
+# fixture — it is CHECKED against it. `termLabel` is bound from the markup
+# (`AUTUMN TERM` is a text node in Design's template as well as a substring of
+# two of these strings), and one key holding two different values is the bug
+# `bindings_for` already refuses. See `rewrite_seams`.
+
+LIFTS = {
+    "class view": [
+        # The shout-outs. `who`/`meta` name the teacher, `text` is one child's
+        # week — every byte of it is one real class's, which is precisely why
+        # it cannot ship. The `fresh ? [] : …` conditional stays: an empty
+        # class still shows no shout-outs, and that is behaviour, not data.
+        dict(key="shoutouts", anchor="      shoutouts: fresh ? [] : "),
+    ],
+}
+
+# (name, pattern, replacement, {capture: "str"|"num"}). `name` appears in the
+# failure message; the pattern is matched against Design's logic AFTER the
+# rulings and must match exactly once.
+REWRITES = {
+    "class view": [
+        # The crumb rail. Design writes the pair twice — once wide, once
+        # narrow — from the same three data: the term, this week, the last
+        # week of term. `SIX A ROUND` is the recall view's own label and is
+        # not data, so it is left exactly where Design put it.
+        dict(name="crumbRight",
+             pat=r"crumbRight: onClass \? \(wide \? "
+                 r"'(?P<termLabel>[A-Z][A-Z ]*) \\u00B7 WEEK "
+                 r"(?P<weekNumber>\d+) / (?P<weekTotal>\d+)' : "
+                 r"'WK (?P=weekNumber) / (?P=weekTotal)'\)",
+             new="crumbRight: onClass ? (wide ? MRB_DATA('termLabel')"
+                 " + ' \\u00B7 WEEK ' + MRB_DATA('weekNumber')"
+                 " + ' / ' + MRB_DATA('weekTotal') : "
+                 "'WK ' + MRB_DATA('weekNumber')"
+                 " + ' / ' + MRB_DATA('weekTotal'))",
+             keys=dict(weekNumber="str", weekTotal="str")),
+        # The leaderboard's scope note. `'WHOLE AUTUMN TERM'` embeds the term
+        # name; `wk === 4` embeds which week is the current one — a NUMBER,
+        # compared with `===`, so it is carried as a number and not as the
+        # padded string. `'WEEK ' + pad(wk)` is computed from the week the
+        # student picked and stays as Design wrote it.
+        dict(name="boardScopeNote",
+             pat=r"boardScopeNote: wk === 'term' \? "
+                 r"'WHOLE (?P<termLabel>[A-Z][A-Z ]*)' : "
+                 r"wk === (?P<currentWeek>\d+) \?",
+             new="boardScopeNote: wk === 'term' ? "
+                 "'WHOLE ' + MRB_DATA('termLabel') : "
+                 "wk === MRB_DATA('currentWeek') ?",
+             keys=dict(currentWeek="num")),
+        # ⚑ NOT ON THE BRIEF, AND NOT OPTIONAL. Two more copies of the current
+        # week number, both spliced mid-sentence, neither anywhere near the
+        # crumb rail: the readings strip's `ANSWERED · WK 04` and the work
+        # row's `COUNTS TOWARDS WEEK 04`. They were found by grepping the
+        # BUILT page for the week rather than by reading the brief, which is
+        # the only way either would have been found — a datum that appears in
+        # four places is a datum that looks closed after you fix three.
+        dict(name="readings — ANSWERED · WK nn",
+             pat=r"caption: 'ANSWERED \\u00B7 WK (?P<weekNumber>\d+)'",
+             new="caption: 'ANSWERED \\u00B7 WK ' + MRB_DATA('weekNumber')",
+             keys=dict(weekNumber="str")),
+        dict(name="work row — COUNTS TOWARDS WEEK nn",
+             pat=r"'COUNTS TOWARDS WEEK (?P<weekNumber>\d+)'",
+             new="'COUNTS TOWARDS WEEK ' + MRB_DATA('weekNumber')",
+             keys=dict(weekNumber="str")),
+    ],
+}
+
 
 _BANNER = """<!--
   ══════════════════════════════════════════════════════════════════════════
@@ -485,10 +599,138 @@ def find_field(logic, name):
     return lit, m.start(), semi + 1
 
 
-def seam_logic(spec, logic):
+def balanced_group(src, start, what):
+    """The bracket group that OPENS at `start`, as source text.
+
+    `balanced_literal` runs to a top-level `;`, which is right for a class
+    field and wrong for a literal welded into a method body: that one has no
+    `;` of its own — it is one value in an object literal, and the next `;`
+    is four hundred lines down at the end of the return statement.
+
+    Same scanner otherwise. Strings, escapes and comments are respected, so a
+    `]` inside `'…'` is text. Returns (group_source, index_just_past_it).
+    """
+    opens, closes = "[{(", "]})"
+    if start >= len(src) or src[start] not in opens:
+        raise SystemExit(
+            "build_student_port.py: the seam anchor for %r is not followed by "
+            "a literal — Design's logic reads %r there. The anchor matched, so "
+            "the line still exists; it has been rewritten around the value. "
+            "Re-anchor it rather than dropping the seam: a dropped seam ships "
+            "Design's example data on the production page."
+            % (what, src[start:start + 40]))
+    depth, i, n = 0, start, len(src)
+    while i < n:
+        ch = src[i]
+        if ch in "'\"`":
+            quote, i = ch, i + 1
+            while i < n:
+                if src[i] == "\\":
+                    i += 2
+                    continue
+                if src[i] == quote:
+                    i += 1
+                    break
+                i += 1
+            continue
+        if src.startswith("//", i) or src.startswith("/*", i):
+            i = _skip_ws(src, i)
+            continue
+        if ch in opens:
+            depth += 1
+        elif ch in closes:
+            depth -= 1
+            if depth == 0:
+                return src[start:i + 1], i + 1
+            if depth < 0:
+                raise SystemExit(
+                    "build_student_port.py: unbalanced %r at offset %d while "
+                    "lifting %r" % (ch, i, what))
+        i += 1
+    raise SystemExit(
+        "build_student_port.py: the literal for %r never closes — Design's "
+        "logic class does not parse the way this build assumes." % what)
+
+
+def lift_literals(page, logic, fixture):
+    """Lift each welded literal out to `MRB_DATA(key)`. Returns (logic, n)."""
+    lifts = LIFTS.get(page, ())
+    for spec in lifts:
+        anchor, key = spec["anchor"], spec["key"]
+        n = logic.count(anchor)
+        if n != 1:
+            raise SystemExit(
+                "build_student_port.py: %s — the seam anchor for %r occurs %d "
+                "times in Design's logic, not once:\n    %s\n"
+                "Design has redrawn that line. Re-anchor it in LIFTS; do NOT "
+                "drop it, because dropping it puts Design's example data back "
+                "into the production page."
+                % (page, key, n, anchor.strip()))
+        at = logic.index(anchor) + len(anchor)
+        lit, end = balanced_group(logic, at, key)
+        if key in fixture:
+            raise SystemExit(
+                "build_student_port.py: %s — %r is lifted twice, once as a "
+                "field and once from a method body. One key is one value."
+                % (page, key))
+        fixture[key] = lit
+        logic = logic[:at] + "MRB_DATA(%s)" % _q(key) + logic[end:]
+    return logic, len(lifts)
+
+
+def rewrite_seams(page, logic, fixture, bind_values):
+    """Rebuild each spliced-in string from `MRB_DATA`. Returns (logic, n).
+
+    The captured value goes to the fixture, so what the fixture supplies is
+    BY CONSTRUCTION what Design wrote — the rendered string is unchanged, not
+    approximately unchanged. A capture whose name is already a binding key is
+    checked against it instead of written, because the markup and the logic
+    naming the same thing differently is a bug that would otherwise render as
+    two different term names on one page.
+    """
+    import re as _re
+    seams = REWRITES.get(page, ())
+    for spec in seams:
+        hits = list(_re.finditer(spec["pat"], logic))
+        if len(hits) != 1:
+            raise SystemExit(
+                "build_student_port.py: %s — the data seam %r matches Design's "
+                "logic %d times, not once. Its pattern is:\n    %s\n"
+                "Design has redrawn that span. Re-anchor it in REWRITES; do "
+                "NOT drop it — the value it is closing is one real class's, "
+                "and the page it ships on is the production page."
+                % (page, spec["name"], len(hits), spec["pat"]))
+        m = hits[0]
+        for key, val in m.groupdict().items():
+            kind = spec["keys"].get(key)
+            if kind is None:
+                # Not ours to carry — it must already be bound from the markup.
+                if bind_values.get(key) != val:
+                    raise SystemExit(
+                        "build_student_port.py: %s — the seam %r reads %r as "
+                        "%r, but the markup binds that key to %r. The template "
+                        "and the logic disagree about the same datum; one key "
+                        "is one value."
+                        % (page, spec["name"], key, val,
+                           bind_values.get(key)))
+                continue
+            js = _q(val) if kind == "str" else val
+            if key in fixture and fixture[key] != js:
+                raise SystemExit(
+                    "build_student_port.py: %s — %r is captured as %s by the "
+                    "seam %r and as %s elsewhere. Design's logic disagrees "
+                    "with itself about the same datum; do not pick one."
+                    % (page, key, js, spec["name"], fixture[key]))
+            fixture[key] = js
+        logic = logic[:m.start()] + spec["new"] + logic[m.end():]
+    return logic, len(seams)
+
+
+def seam_logic(spec, logic, page, bind_values):
     """Design's logic with every data literal replaced by a `MRB_DATA` read.
 
-    Returns (seamed_logic, {key: js_literal_source}). The literal is carried to
+    Returns (seamed_logic, {key: js_literal_source}, n_method_body_seams).
+    The literal is carried to
     the fixture as SOURCE, not re-serialised through JSON — Design wrote
     `\\u00B7` and `\\u2019` by hand in a hundred places and a round trip
     through json would rewrite every one of them into a raw character. Same
@@ -525,7 +767,14 @@ def seam_logic(spec, logic):
 
     for start, end, text in sorted(edits, reverse=True):
         logic = logic[:start] + text + logic[end:]
-    return logic, fixture
+
+    # ── and then the half a field-scan cannot reach ───────────────────────
+    #
+    # These run AFTER the field edits, on the result, because both anchor on
+    # text inside `renderVals()` and the field edits change offsets above it.
+    logic, n_lift = lift_literals(page, logic, fixture)
+    logic, n_rew = rewrite_seams(page, logic, fixture, bind_values)
+    return logic, fixture, n_lift + n_rew
 
 
 def _q(s):
@@ -643,7 +892,10 @@ _MUST_NOT_LEAK = {"className", "classNamePadded", "studentFirstName",
 def fixture_js(spec, page, data_literals, bind_values):
     """`window.__MRB_DATA__ = {…}` — Design's own values, once, for the gates."""
     rows = []
-    for name in list(spec["fields"]) + list(spec["state_fields"]):
+    named = list(spec["fields"]) + list(spec["state_fields"])
+    # The fields, in Design's order, then whatever the method-body seams
+    # lifted — sorted, so the file is stable across runs.
+    for name in named + sorted(k for k in data_literals if k not in named):
         rows.append("  %s: %s" % (_q(name), data_literals[name]))
     for key in sorted(bind_values):
         rows.append("  %s: %s" % (_q(key), _q(bind_values[key])))
@@ -674,6 +926,19 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False):
         "<script src=\"%s\"></script>\n" % LIVE_JS_URL
     )
     return (
+        # ⚑ THE <title> CARRIES NO CLASS. It used to read
+        # `8r/Sc1 · My class · MrBadmusAI` on the production page — one real
+        # class's name shipped in a file whose own banner says it holds no
+        # data — and it survived the seam for a structural reason rather than
+        # an oversight: the runtime renders into `#mrb-student` and never
+        # touches `<head>`, so no binding can reach a `<title>`.
+        #
+        # So the static title says only what is true of every class, and the
+        # class's own name is written onto it AT MOUNT, through the same
+        # `MRB_DATA` as every other value. A page with no data source
+        # therefore gets no class in its title rather than somebody else's,
+        # and the fixture page still renders the exact title Design's file
+        # carries.
         "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n"
         "<meta charset=\"utf-8\">\n"
         "<meta name=\"viewport\" content=\"width=device-width, "
@@ -722,6 +987,10 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False):
            # what makes "the production page cannot mount without a data
            # source" a property of the file rather than a promise about it.
            "window.__MRB_MOUNT__ = function () {\n"
+           "  /* The <head> is not rendered by the runtime, so the class name\n"
+           "     arrives here instead — after the data, through the same throw\n"
+           "     as everything else. */\n"
+           "  document.title = " + spec["title_expr"] + ";\n"
            "  var R = window.MrBadmusStudentRuntime;\n"
            "  var tpl = window.__MRB_TPL__;\n"
            "  return R.mount({\n"
@@ -792,8 +1061,16 @@ def build():
             spec["page"], tpl["logic"], tpl["roots"])
         ruled_tpl = {"roots": ruled_roots, "imports": tpl["imports"]}
 
-        logic, data_literals = seam_logic(spec, logic)
+        # ⚠️ THE BINDINGS ARE READ BEFORE THE SEAM, not after. They used to
+        # run the other way round and the order did not matter, because the
+        # seam only cut fields out of the logic. It matters now: the method-
+        # body seams splice `termLabel` back into two of Design's strings, and
+        # they are checked against what the markup binds that key to rather
+        # than trusting that the two agree. `bindings_for` reads only the
+        # template, so moving it earlier changes nothing else.
         bind_table, bind_values = bindings_for(spec["page"], ruled_tpl)
+        logic, data_literals, n_welded = seam_logic(
+            spec, logic, spec["page"], bind_values)
         roots = scrub_roots(ruled_roots, bind_table)
 
         body = page_html(spec, tpl, roots, bind_table, logic, fixture=False)
@@ -819,13 +1096,17 @@ def build():
         # leak there is its bug and not a finding about somebody else's.
         #
         # REPORTED, not failed: Design's example data does not live only in
-        # the class fields. `renderVals()` on the class view builds the
-        # shout-outs inline (`{ who: 'MB', text: 'Best score in the class on
-        # digestion this week.' }`), and the docket strings, and the leader's
-        # figures. Lifting those is a different and larger job — they are
-        # interleaved with computation rather than sitting in an initialiser —
-        # and a build that REFUSED TO COMPLETE until it was done would simply
-        # mean nothing shipped. So each is named, counted, and left.
+        # the class fields, and not all of what is left in `renderVals()` is
+        # closed yet. The shout-outs, the crumb rail, the leaderboard scope
+        # note and the two stray copies of the week number ARE closed now, by
+        # LIFTS and REWRITES above. What is still welded is the docket's
+        # `'2 days left'` / `'40 POINTS AT STAKE'` / `'58%'`, the retrieval
+        # count `'46'` and its `'77%'`, `recallStats`' `'08'` and its
+        # `Math.max(9, …)`, and `roundNote`'s `Week 04` — every one a FIGURE
+        # rather than a name, and none of them reachable by the greps that
+        # gate this. Lifting them is the next unit's; a build that REFUSED TO
+        # COMPLETE until it was done would simply mean nothing shipped. So
+        # each is named, counted, and left.
         tpl_blob = json.dumps(roots, ensure_ascii=False)
         stuck = []
         for key, val in sorted(bind_values.items()):
@@ -848,9 +1129,9 @@ def build():
                   % (key, val, "renderVals"))
         if stuck:
             print("        ⚠️  those are Design's example data too, welded "
-                  "into method bodies rather than into initialisers. This "
-                  "unit lifted the initialisers; the method bodies are a "
-                  "separate seam and are NOT done.")
+                  "into method bodies rather than into initialisers, and "
+                  "still welded — LIFTS/REWRITES close the named ones, not "
+                  "every one.")
 
         if n_rep or n_pruned:
             print("        ⊕ MRB-275: %d ruled edit(s) to Design's logic, "
@@ -864,9 +1145,12 @@ def build():
               % (spec["fixture_out"], len(fix_body), len(bind_table)))
         print("        %-21s %7d bytes  (%d field(s) lifted from the logic, "
               "%d identity string(s) from the markup)"
-              % (spec["fixture_js"], len(js),
-                 len(spec["fields"]) + len(spec["state_fields"]),
+              % (spec["fixture_js"], len(js), len(data_literals),
                  len(bind_values)))
+        if n_welded:
+            print("        ⊕ %d data seam(s) closed inside METHOD BODIES "
+                  "rather than initialisers — see LIFTS and REWRITES"
+                  % n_welded)
 
     # ── the runtime is mirrored HERE, not left to the KS4 generator ──────
     #
