@@ -44,6 +44,67 @@ import os
 import re
 import sys
 
+# ══════════════════════════════════════════════════════════════════════════
+# ⛔ THIS SCRIPT REFUSES TO RUN — MRB-270 phase 7c, 20 Aug 2026
+# ══════════════════════════════════════════════════════════════════════════
+#
+# It is kept, in full, because it is the record of HOW the C1 and B2
+# instruments got into the engine. It is disarmed because running it now would
+# silently undo live work.
+#
+# The fragments under `docs/ks3/c1-inventory/instrument-fragments/` are a
+# SNAPSHOT of what was spliced in, taken at splice time. Everything since —
+# every fix, every ruling, every parity row added to the shipped engine — has
+# been made in `build_ks3.py`, `shared/ks3.css`, `shared/ks3.js` and
+# `ks3_parity.py`, which are the source of truth. The fragments were never
+# updated to match, and nothing tells them apart from live source by looking:
+# they are the same twelve instruments, in the same four-file shape, in a
+# directory that reads like a component library.
+#
+# So a splice is not "re-apply the fragments". It is REPLACE THE SHIPPED
+# RENDERERS, CSS, WIRING AND PARITY ROWS WITH A STALE COPY — between markers,
+# in one pass, deterministically, exactly as designed. The re-runnability that
+# makes it safe to splice in waves is what makes this so quiet: the second run
+# replaces the marked region rather than appending beside it, so there is no
+# duplicate to notice and no error to read. The damage would surface later, as
+# instruments that "mysteriously regressed".
+#
+# It exits non-zero and does nothing. To splice a NEW unit, take this file as
+# the starting point, write fresh fragments for that unit, and remove this
+# block DELIBERATELY, in a commit that says why — that is a decision somebody
+# should have to make on purpose.
+#
+# See `docs/ks3/c1-inventory/instrument-fragments/README.md`.
+
+_ARMED = False
+
+if not _ARMED and __name__ == "__main__":
+    sys.stderr.write(
+        "\n"
+        "splice_instruments.py REFUSES TO RUN.\n"
+        "\n"
+        "  The instrument fragments under docs/ks3/c1-inventory/ are a SNAPSHOT\n"
+        "  taken when C1 and B2 were spliced in. They are STALE. The live\n"
+        "  source of truth is build_ks3.py, shared/ks3.css, shared/ks3.js and\n"
+        "  ks3_parity.py, and every fix since the splice lives there and NOT in\n"
+        "  the fragments.\n"
+        "\n"
+        "  Running this would replace the shipped renderers, CSS, wiring and\n"
+        "  parity rows with that stale copy — between its BEGIN/END markers, in\n"
+        "  one pass, with no duplicate to notice and no error to read. The\n"
+        "  regression would surface days later, somewhere else.\n"
+        "\n"
+        "  Nothing was written. Nothing was read.\n"
+        "\n"
+        "  To splice a NEW unit: write that unit's own fragments and remove the\n"
+        "  `_ARMED = False` guard in this file deliberately, in a commit that\n"
+        "  says why.\n"
+        "\n"
+        "  See docs/ks3/c1-inventory/instrument-fragments/README.md\n"
+        "\n")
+    raise SystemExit(2)
+
+
 FRAG = sys.argv[1] if len(sys.argv) > 1 else "scratchpad/c1/frag"
 TAG = sys.argv[2] if len(sys.argv) > 2 else "C1 · Particles and their behaviour (MRB-228)"
 KEY = TAG.split(" ")[0]
