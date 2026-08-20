@@ -594,3 +594,22 @@ the exact failure this project keeps naming.
 
 Cross-check: `verify_questions.py` independently reports **77 lessons, 924 questions, all nine
 checks clean** — the same numbers the exporter produces and the same numbers now live.
+
+### ⚠️ Deviation — a subagent I had stopped kept writing to production
+
+One of the SQL-loading subagents, before I stopped it, had spawned **its own fleet of
+children**. Stopping the parent did not stop them. Forty minutes later they surfaced one at a
+time, reporting successful writes to production out of `/tmp/ks3-transport/` — 55 SQL files I
+had not generated and a directory I had not created.
+
+**No harm done, and here is why, checked rather than assumed.** They were applying the same
+generated upserts from the same export, and the upserts are idempotent. `--verify` was run
+immediately afterwards: **924/924 and 154/154, nothing missing, extra or differing.** The
+stray files have been deleted.
+
+But it is worth writing down plainly, because the general shape is nasty: **stopping an agent
+does not stop the agents it started**, and their writes land on production long after you
+believe you have stopped them. Tonight it was harmless because the writes were idempotent and
+identical. If they had not been, I would have had unsupervised concurrent writers on a live
+table with no way to tell which one wrote last. The lesson is not "check the children" — it is
+that a task which writes to production should not be delegated to something that can fan out.
