@@ -527,3 +527,47 @@ see them, and they still ship:
 
 The seam unit reported all four rather than hiding them, and the build names them on every
 run. **This alone is enough to hold the B4 swap**, and it is being closed next.
+
+### The submit route, driven and read back — F4 proved fixed
+
+Three answers posted as the real student: one right, one wrong, and one **self-marked** rung
+sending `is_correct: null` with `criteria_met: [1, 3]` of 3. That third row is the whole
+point — it is the shape that used to be coerced to `false` and counted against the student.
+
+```
+POST /api/assignment-submit → {"success":true,"score":1,"max_score":2}
+```
+
+**`max_score` is 2, not 3.** Only what the platform could mark is scored. Read back from
+`assignment_question_attempts`:
+
+| # | question_ref | sel / correct letter | is_correct | criteria |
+|---|---|---|---|---|
+| 0 | `b4-01-s01` | B / B | `true` | — |
+| 1 | `b4-01-s02` | **B / A** | `false` | — |
+| 2 | `b4-01-s03` | null / D | **`null`** | `[1,3]` of 3 |
+
+The letter is its own column and differs from the text; `is_correct` survives as null rather
+than becoming a false claim; the criteria the student claimed are recorded as what they are.
+Every one of the six columns the route used to discard is populated.
+
+### Identity scoping proved at the database, not just at the route
+
+The route returns 403 for a class the student is not in — but the page will also read Supabase
+directly, so RLS was probed with the student's own JWT:
+
+```
+✅ assignments for my class            2 rows      ✅ a class I am NOT in            0 rows
+✅ assignment_questions of mine        4 rows      ✅ another student's submissions   0 rows
+✅ my own submissions                  2 rows      ✅ INSERT into ks3_bank_questions  42501 refused
+✅ the reference pools readable        4 / 2 rows
+```
+
+RLS is enabled on all six tables including the two new pools. `submissions_teacher_read` and
+`attempts_teacher_read` exist and are scoped by `auth_user_teaches_class(...)` **and**
+school, so the submission is visible to this class's teacher and to nobody else's.
+
+⚠️ **Verified structurally, not driven.** I do not hold the teacher account's password, so
+"the submission shows on the teacher dashboard" is proved by the policy and the row, not by
+signing in as the teacher and looking. That is the one part of B3 I could not do end-to-end,
+and it is named here rather than glossed.
