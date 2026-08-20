@@ -624,11 +624,20 @@ def run(units: list[str], ks3_root: str) -> int:
                         results.append(r[0])
                         details.append(r[1])
 
-                if control is None and specs:
-                    spec0 = specs[0]
-                    prop0, want0 = sorted(spec0["props"].items())[0]
-                    if page.eval("!!document.querySelector(%r)" % spec0["sel"]):
-                        control = control_check(page, spec0, prop0, want0, rel)
+                # ⊕ MRB-270 phase 7 — THE CONTROL RUNS ON ITS OWN CLEAN
+                # PAGE, and it runs both halves. See `control_check`.
+                #
+                # It used to run HERE, on `specs[0]`, after every mutation in
+                # the group had already been applied and restored — and it
+                # reported FAIL on C1 for two reasons that were both about the
+                # control rather than about the harness. That is a control that
+                # proves less than it claims, which is worse than no control:
+                # a run whose control says "cannot be trusted" gets read as
+                # "the harness is broken" and the 281 LIVE verdicts beside it
+                # get thrown away with it.
+                if control is None and specs and not drive:
+                    control = control_check(
+                        ks3_browser, url, rel, specs, page)
             finally:
                 browser.close()
     finally:
@@ -638,45 +647,214 @@ def run(units: list[str], ks3_root: str) -> int:
     return report(results, details, parked, control)
 
 
-def control_check(page, spec, prop, want, rel):
-    """A mutation harness that reports "0 dead" is only worth reading if it is
-    capable of reporting a dead one. This is that proof, run once per session.
+# ⊕ MRB-270 phase 7 — sentinels that are guaranteed to MOVE a value, per
+# property family. The positive half of the control needs a mutation that
+# really bites; `rgb(1, 2, 3)` is no use against an assertion that wants a
+# length, and `12345px` is no use against a colour.
+# How many candidates have to survive a real mutation UNMOVED before the
+# verdict is about the mutator rather than about the rows.
+#
+# Three, and the number is measured rather than picked. One unmoved candidate
+# is ordinary and expected: C1's real run has exactly one — `page ground + body
+# type / background-color`, whose painted value comes from
+# `body.rd[data-mode="ks3"]` while `find` locates the lower-specificity
+# `body { background }` in styles.css. That is a fact about that row, and the
+# run reports it as DEAD, correctly. But three separate properties on three
+# separate declarations all refusing to move is not three coincidences — it is
+# `mutate` not applying its sentinel, or `find` returning declarations that
+# supply nothing. Demonstrated by making `mutate()` ignore its sentinel: four
+# candidates come back unmoved and the control reports FAIL.
+_UNMOVED_IS_THE_MUTATOR = 3
 
-    It performs the full cycle — locate, mutate, re-read, verdict, restore — but
-    with a sentinel equal to the value the element already computes. The
-    declaration really is rewritten, so `find` and `mutate` are exercised for
-    real; the computed value simply does not move, so a working harness MUST
-    call it DEAD. If it comes back LIVE, `find` is locating the wrong
-    declaration or the re-read is not seeing the mutation, and every other
+
+def _live_sentinel(prop, want):
+    if prop == "font-family":
+        return '"__ks3_control_sentinel__"'
+    if want.startswith("#"):
+        return "rgb(1, 2, 3)"
+    if want.endswith("px"):
+        return "12345px"
+    return "__ks3_control_sentinel__"
+
+
+def control_check(ks3_browser, url, rel, specs, _page=None):
+    """Prove the harness can report BOTH verdicts, on a page nothing has touched.
+
+    A mutation harness that reports "0 dead" is only worth reading if it is
+    capable of reporting a dead one — AND of reporting a live one. This runs
+    both halves against the same assertion:
+
+      NEGATIVE — rewrite the supplying declaration(s) to the value they already
+          resolve to. The declaration really is rewritten, so `find`, `mutate`
+          and `restore` are all exercised; the computed value simply does not
+          move, so a working harness MUST call it DEAD.
+
+      POSITIVE — rewrite the same declaration(s) to a sentinel that cannot be
+          the wanted value. The computed value MUST move and the assertion MUST
+          fail, so a working harness calls it LIVE.
+
+    Either half coming back the other way means `find` is locating the wrong
+    declaration, or the re-read is not seeing the mutation, and every other
     verdict in the run is worthless.
+
+    ── WHY THIS WAS REWRITTEN (it reported FAIL on C1, wrongly) ────────────
+
+    Two faults, and neither was in the mutation machinery it exists to police:
+
+    1. IT RAN ON A USED PAGE. The old call site fired after every spec in the
+       group had been mutated and restored, on that same document. A control
+       measured downstream of the thing it is controlling for is not a control.
+
+    2. IT TOOK `specs[0]` WITHOUT CHECKING THE ASSERTION WAS GREEN. On C1 that
+       drew "page ground + body type / background-color" — an assertion the
+       run itself reports DEAD, because `body`'s painted #FBF3E6 comes from
+       `body.rd[data-mode="ks3"]` while the declaration `find` locates is the
+       lower-specificity `body { background }` in styles.css. A no-op mutation
+       on an assertion that is ALREADY FAILING fails again, for a reason that
+       has nothing to do with the mutation, and the harness then indicts
+       itself: "a no-op mutation made the assertion FAIL (rgb(231, 225, 212)
+       -> rgb(231, 225, 212))" — the same value on both sides, which is the
+       tell that nothing moved and the verdict was about the baseline.
+
+    So the candidate is now CHOSEN rather than taken: the first assertion on a
+    clean page that is green at baseline AND that a real mutation can move. If
+    no assertion satisfies both, that is reported as SKIPPED with the reason —
+    never as a harness fault, because "this unit has no controllable row" and
+    "the harness is broken" are different sentences.
+
+    The restore is VERIFIED both times. A restore that silently did not put the
+    declaration back would poison every later measurement in the run, which is
+    exactly the class of fault a control is for.
     """
-    sel = spec["sel"]
-    before = (page.eval("window.__ks3.style(%r, %r)" % (sel, prop)) or "").strip()
-    found = page.eval("window.__ks3mut.find(%r, %r)" % (sel, prop))
-    hits = found.get("hits") or []
-    if not hits or not before:
-        return ("SKIPPED", "%s / %s had no locatable source to control against"
-                % (spec["name"], prop))
+    browser = ks3_browser.Browser()
+    tried = []
+    # Candidates rejected specifically because a REAL mutation did not move
+    # them. One of those is a fact about that row. All of them is a fact about
+    # the mutator — see the return at the bottom.
+    unmoved = []
+    try:
+        browser.start()
+        page = load_page(browser, url, rel)
 
-    res = page.eval("window.__ks3mut.mutate(%s, %r, %r)" % (_js(hits), prop, before))
-    if res.get("error"):
-        raise SystemExit("HARNESS FAULT: control mutation failed — %s" % res["error"])
-    page.eval(_JS_SETTLE)
-    after = (page.eval("window.__ks3.style(%r, %r)" % (sel, prop)) or "").strip()
-    rest = page.eval("window.__ks3mut.restore(%s, %s)" % (_js(hits), _js(res["saved"])))
-    if rest.get("error"):
-        raise SystemExit("HARNESS FAULT: control restore failed — %s" % rest["error"])
+        for spec in specs:
+            sel = spec["sel"]
+            if not page.eval("!!document.querySelector(%r)" % sel):
+                continue
+            for prop, want in sorted(spec["props"].items()):
+                label = "%s / %s" % (spec["name"], prop)
+                before = (page.eval("window.__ks3.style(%r, %r)"
+                                    % (sel, prop)) or "").strip()
+                if not before:
+                    continue
+                if not gate_ok(prop, want, before):
+                    tried.append("%s (red at baseline: wanted %s, got %s)"
+                                 % (label, want, before))
+                    continue
+                found = page.eval("window.__ks3mut.find(%r, %r)" % (sel, prop))
+                hits = found.get("hits") or []
+                if not hits:
+                    tried.append("%s (no locatable source)" % label)
+                    continue
 
-    would_report_dead = gate_ok(prop, want, after)
-    detail = ("%s / %s on /%s — rewrote %d declaration(s) to the value they "
-              "already resolved (%s); assertion still passed, so the harness "
-              "reports DEAD when a mutation does not bite"
-              % (spec["name"], prop, rel, len(hits), before))
-    if not would_report_dead:
-        return ("FAIL", "%s / %s — a no-op mutation made the assertion FAIL "
-                        "(%s -> %s). The harness cannot be trusted."
-                        % (spec["name"], prop, before, after))
-    return ("PASS", detail)
+                # ── NEGATIVE: a no-op mutation must leave the assertion green
+                res = page.eval("window.__ks3mut.mutate(%s, %r, %r)"
+                                % (_js(hits), prop, before))
+                if res.get("error"):
+                    raise SystemExit("HARNESS FAULT: control mutation failed "
+                                     "on /%s — %s" % (rel, res["error"]))
+                page.eval(_JS_SETTLE)
+                after_noop = (page.eval("window.__ks3.style(%r, %r)"
+                                        % (sel, prop)) or "").strip()
+                rest = page.eval("window.__ks3mut.restore(%s, %s)"
+                                 % (_js(hits), _js(res["saved"])))
+                if rest.get("error"):
+                    raise SystemExit("HARNESS FAULT: control restore failed "
+                                     "on /%s — %s" % (rel, rest["error"]))
+                page.eval(_JS_SETTLE)
+                back = (page.eval("window.__ks3.style(%r, %r)"
+                                  % (sel, prop)) or "").strip()
+                if back != before:
+                    return ("FAIL",
+                            "%s on /%s — the RESTORE did not put the "
+                            "declaration back (%s -> %s). Every measurement "
+                            "taken after a mutation would be polluted."
+                            % (label, rel, before, back))
+                if not gate_ok(prop, want, after_noop):
+                    return ("FAIL",
+                            "%s on /%s — a no-op mutation made the assertion "
+                            "FAIL (%s -> %s). The harness cannot be trusted."
+                            % (label, rel, before, after_noop))
+
+                # ── POSITIVE: a real mutation must make the assertion fail
+                sentinel = _live_sentinel(prop, want)
+                res2 = page.eval("window.__ks3mut.mutate(%s, %r, %r)"
+                                 % (_js(hits), prop, sentinel))
+                if res2.get("error"):
+                    raise SystemExit("HARNESS FAULT: control mutation failed "
+                                     "on /%s — %s" % (rel, res2["error"]))
+                page.eval(_JS_SETTLE)
+                after_real = (page.eval("window.__ks3.style(%r, %r)"
+                                        % (sel, prop)) or "").strip()
+                rest2 = page.eval("window.__ks3mut.restore(%s, %s)"
+                                  % (_js(hits), _js(res2["saved"])))
+                if rest2.get("error"):
+                    raise SystemExit("HARNESS FAULT: control restore failed "
+                                     "on /%s — %s" % (rel, rest2["error"]))
+                page.eval(_JS_SETTLE)
+                back2 = (page.eval("window.__ks3.style(%r, %r)"
+                                   % (sel, prop)) or "").strip()
+                if back2 != before:
+                    return ("FAIL",
+                            "%s on /%s — the RESTORE did not put the "
+                            "declaration back after the live half (%s -> %s)."
+                            % (label, rel, before, back2))
+                if gate_ok(prop, want, after_real):
+                    # This row's value does not come from the declaration
+                    # `find` located. Real, but it is a fact about THIS row,
+                    # not about the harness — so try the next candidate.
+                    unmoved.append(label)
+                    tried.append("%s (a real mutation to %s did not move it: "
+                                 "%s -> %s, so `find` is not on its supplying "
+                                 "declaration)" % (label, sentinel, before,
+                                                   after_real))
+                    continue
+
+                return ("PASS",
+                        "%s on /%s — rewrote %d declaration(s) twice. A NO-OP "
+                        "(to %s) left the assertion passing, so the harness "
+                        "reports DEAD when a mutation does not bite; a REAL "
+                        "mutation (to %s) moved it to %s and made the "
+                        "assertion fail, so it reports LIVE when one does. "
+                        "Both restores verified."
+                        % (label, rel, len(hits), before, sentinel, after_real))
+    finally:
+        browser.close()
+
+    # ⚖️ SKIPPED AND FAIL ARE DIFFERENT SENTENCES, and which one this is turns
+    # on WHY the candidates were rejected.
+    #
+    # Rejected because they were red at baseline, or had no locatable source →
+    # this unit simply offered nothing to control against. SKIPPED, honestly.
+    #
+    # Rejected because a real mutation MOVED NOTHING, every time → that is not
+    # a fact about the rows, it is a fact about the mutator: `mutate` is not
+    # applying the sentinel, or `find` is locating nothing that matters, and
+    # every LIVE verdict in the run is unearned. FAIL. Demonstrated by making
+    # `mutate()` ignore its sentinel: all four candidates come back unmoved and
+    # this reports FAIL rather than shrugging.
+    if len(unmoved) >= _UNMOVED_IS_THE_MUTATOR:
+        return ("FAIL",
+                "on /%s a real mutation moved NOTHING, on all %d candidate(s) "
+                "tried. That is the mutator, not the rows: either `mutate` is "
+                "not applying its sentinel or `find` is locating declarations "
+                "that supply nothing. Every LIVE verdict in this run is "
+                "unearned. Candidates: %s"
+                % (rel, len(unmoved), "; ".join(tried[:3])))
+    return ("SKIPPED",
+            "no assertion on /%s was both green at baseline and movable by a "
+            "real mutation, so there was nothing to control against. "
+            "Candidates rejected: %s"
+            % (rel, "; ".join(tried[:4]) or "none matched a selector"))
 
 
 def mutate_one(page, spec, sel, prop, want, rel, drive):
