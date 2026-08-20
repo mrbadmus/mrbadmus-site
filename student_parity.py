@@ -702,11 +702,145 @@ def run(cdp):
     rows.extend(rows_d)
     problems.extend(problems_d)
 
-    for fn in (run_no_literal_count, run_no_fabricated_split):
+    for fn in (run_no_literal_count, run_no_fabricated_split,
+               run_feedback_strings):
         r, pr = fn()
         rows.extend(r)
         problems.extend(pr)
 
+    return rows, problems
+
+
+# ── H · the four feedback strings Design's design rests on ────────────────
+#
+# ⚑ FOUND IN PHASE 4, AND IT IS THE LARGEST OPEN ITEM ON EITHER PAGE.
+#
+# Design's assignment note, §15 "Do not ship", item 1: *"The API needs to serve
+# rungs 1–2 from the class's scheme of work with the per-distractor feedback
+# strings — four per question, one per option, no generic fallbacks. A question
+# without all four is not shippable: the whole design rests on them."*
+#
+# And §2 says what the fourth one is FOR: *"Every wrong option has its own
+# line… The right answer's line is shown too, so the pair reads why not that /
+# why this."*
+#
+# MEASURED ACROSS THE WHOLE CORPUS, both places a question can come from:
+#
+#     lesson ladder, recall + apply    140 rungs, every one 4 options and
+#                                      exactly 3 feedback strings
+#     ks3_data question bank           840 questions, every one 4 options and
+#                                      exactly 3 `why` strings
+#
+# In all 980, the three are the DISTRACTORS and the missing one is the CORRECT
+# option. So "why not that" is authored everywhere and "why this" is authored
+# nowhere. It is not a gap in coverage — it is a field that was never part of
+# the authoring shape.
+#
+# ⚖️ NOT FILLABLE FROM HERE. A generated "why this" line is exactly the generic
+# fallback Design rules out, and it is science prose on a student page, which
+# is Mide's gate and nobody else's. So this REGISTERS the number and asserts it
+# both ways: it goes red if the shortfall grows, and it goes red when somebody
+# authors them, at which point this block is deleted rather than edited.
+FEEDBACK_SHORTFALL = {
+    "lesson ladder rungs (recall + apply)": 140,
+    "question bank": 840,
+}
+
+
+def _ladder_feedback_gap():
+    """Recall/apply rungs whose CORRECT option has no feedback line."""
+    import importlib
+    import pkgutil
+    import ks3_data
+    root = os.path.dirname(ks3_data.__file__)
+    units = sorted(d for d in os.listdir(root)
+                   if os.path.isdir(os.path.join(root, d))
+                   and not d.startswith("_"))
+    total = missing = 0
+    for unit in units:
+        here = os.path.join(root, unit)
+        for mod in sorted(m.name for m in pkgutil.iter_modules([here])):
+            if not mod.startswith("lesson_"):
+                continue
+            m = importlib.import_module("ks3_data.%s.%s" % (unit, mod))
+            lesson = getattr(m, "LESSON", None)
+            if not isinstance(lesson, dict):
+                continue
+            ladder = lesson.get("ladder") or {}
+            for rung in ("recall", "apply"):
+                r = ladder.get(rung)
+                if not isinstance(r, dict) or "options" not in r:
+                    continue
+                total += 1
+                fb = r.get("feedback") or {}
+                ans = r.get("answer")
+                if not str(fb.get(ans) or "").strip():
+                    missing += 1
+    return total, missing
+
+
+def _bank_feedback_gap():
+    """Bank questions whose CORRECT option has no `why`."""
+    from ks3_data import question_bank as qb
+    total = missing = 0
+    for rec in qb.load_bank():
+        for q in rec["questions"]:
+            total += 1
+            for opt in q.get("options") or []:
+                if opt.get("correct") and not str(opt.get("why") or "").strip():
+                    missing += 1
+                    break
+    return total, missing
+
+
+def run_feedback_strings():
+    rows, problems = [], []
+    measured = {}
+
+    lad_total, lad_missing = _ladder_feedback_gap()
+    measured["lesson ladder rungs (recall + apply)"] = lad_missing
+    rows.append(("feedback strings",
+                 "H · lesson ladder: %d of %d recall/apply rung(s) carry the "
+                 "right answer's line" % (lad_total - lad_missing, lad_total),
+                 "PASS" if lad_missing == FEEDBACK_SHORTFALL[
+                     "lesson ladder rungs (recall + apply)"] else "FAIL",
+                 "%d still missing it" % lad_missing))
+
+    bank_total, bank_missing = _bank_feedback_gap()
+    measured["question bank"] = bank_missing
+    rows.append(("feedback strings",
+                 "H · question bank: %d of %d question(s) carry the right "
+                 "answer's line" % (bank_total - bank_missing, bank_total),
+                 "PASS" if bank_missing == FEEDBACK_SHORTFALL["question bank"]
+                 else "FAIL",
+                 "%d still missing it" % bank_missing))
+
+    for label, want in sorted(FEEDBACK_SHORTFALL.items()):
+        got = measured.get(label)
+        if got == want:
+            continue
+        if got is not None and got < want:
+            problems.append(
+                "H — %s: the missing-feedback count has FALLEN from %d to %d. "
+                "That is somebody authoring them, which is the point. Update "
+                "FEEDBACK_SHORTFALL, and when it reaches zero delete this "
+                "layer rather than setting it to 0 — a gate that asserts "
+                "nothing is missing is a gate with nothing to say."
+                % (label, want, got))
+        else:
+            problems.append(
+                "H — %s: %d question(s) lack the right answer's feedback line "
+                "and %d were registered. Design: 'A question without all four "
+                "is not shippable: the whole design rests on them.'"
+                % (label, got, want))
+
+    rows.append(("feedback strings",
+                 "H · the registered shortfall is exactly where it was",
+                 "PASS" if not problems else "FAIL",
+                 "%d rung(s) + %d bank question(s) still need the "
+                 "'why this' line — Mide's gate, it is science prose"
+                 % (lad_missing, bank_missing) if not problems
+                 else "the count moved"))
     return rows, problems
 
 
