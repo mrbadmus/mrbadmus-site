@@ -24,8 +24,13 @@ is either valid or it is not.
    a picture a student can actually look at.
 6. A question whose ``text`` matches a ladder rung's question text.
 7. A question attached to a lesson slug not in ``structure.py``.
+8. The composition ruling itself, exercised against the real bank: a full week
+   fills from its own lessons, a thin week fills from earlier ones nearest
+   first, week one is allowed to be short, a thin week that is NOT week one
+   raises, and the same inputs always give the same fifteen.
 
-Checks 1–3 and 5–6 are per-lesson; 4 is global; 7 gates the file's own identity.
+Checks 1–3 and 5–6 are per-lesson; 4 is global; 7 gates the file's own identity;
+8 gates :func:`ks3_data.question_bank.compose_assignment`.
 A few structural preconditions (a band that is not one of the three, an id that
 does not match its own lesson and band) are folded into the checks they belong
 to, because a question that fails them cannot be selected correctly either.
@@ -180,7 +185,104 @@ def verify():
                 fail(6, at, "question text restates a ladder rung — the bank "
                             "is additional depth, not a copy")
 
+    findings.extend(_check_composition())
     return findings
+
+
+def _check_composition():
+    """Check 8 — Mide's final composition ruling, against the real bank.
+
+    ⊕ The ruling this gates (20 Aug 2026) SUPERSEDED the 13 + 2 retrieval
+    split: the current week supplies everything it can, the rest fills from
+    earlier lessons nearest first, and week one may legally be short.
+
+    Lesson keys are read out of the bank rather than typed, so the check
+    cannot rot when a lesson is renamed.
+    """
+    out = []
+
+    def fail(where, message):
+        out.append((8, where, message))
+
+    bank = qb.bank_by_lesson()
+    # Six real lessons from one unit, in lesson order — enough for a four-lesson
+    # week plus two earlier ones.
+    keys = [(r["unit"], r["lesson"]) for r in qb.load_bank()
+            if r["unit"] == "B1"]
+    if len(keys) < 6:
+        fail("compose_assignment", "expected >= 6 B1 lessons to exercise the "
+                                   "ruling, found %d" % len(keys))
+        return out
+
+    def ids(qs):
+        return [q["id"] for q in qs]
+
+    # (a) Four current-week lessons fill fifteen from the week alone.
+    got = qb.compose_assignment(keys[2:6], earlier_lessons=keys[:2],
+                                bank=bank)
+    if len(got) != qb.ASSIGNMENT_SIZE:
+        fail("compose_assignment/full-week",
+             "four current lessons gave %d questions, expected %d"
+             % (len(got), qb.ASSIGNMENT_SIZE))
+    from_week = {q["id"] for q in got} & {
+        q["id"] for k in keys[2:6] for q in bank.get(k, [])}
+    if len(from_week) != len(got):
+        fail("compose_assignment/full-week",
+             "four current lessons hold 16 standard questions, so all %d "
+             "should come from the week itself; %d did"
+             % (len(got), len(from_week)))
+
+    # (b) A one-lesson week fills the rest from earlier lessons, nearest first.
+    got = qb.compose_assignment([keys[5]], earlier_lessons=list(reversed(keys[:5])),
+                                bank=bank)
+    if len(got) != qb.ASSIGNMENT_SIZE:
+        fail("compose_assignment/thin-week",
+             "one current lesson plus five earlier gave %d, expected %d"
+             % (len(got), qb.ASSIGNMENT_SIZE))
+    own = [q["id"] for q in bank.get(keys[5], []) if q.get("band") == "standard"]
+    if ids(got)[:len(own)] != own:
+        fail("compose_assignment/thin-week",
+             "the current week's own questions must come first; got %s"
+             % ids(got)[:len(own)])
+    nearest = [q["id"] for q in bank.get(keys[4], []) if q.get("band") == "standard"]
+    if ids(got)[len(own):len(own) + len(nearest)] != nearest:
+        fail("compose_assignment/nearest-first",
+             "the fill must take the NEAREST earlier lesson next; expected %s, "
+             "got %s" % (nearest, ids(got)[len(own):len(own) + len(nearest)]))
+
+    # (c) Week one — nothing earlier — is allowed to be short.
+    try:
+        short = qb.compose_assignment([keys[0]], bank=bank)
+    except qb.ShortAssignment as exc:
+        fail("compose_assignment/week-one",
+             "week one must be allowed to ship short, but it raised: %s" % exc)
+    else:
+        if len(short) != qb.PER_BAND:
+            fail("compose_assignment/week-one",
+                 "one lesson holds %d standard questions; week one returned %d"
+                 % (qb.PER_BAND, len(short)))
+
+    # (d) The same thinness OUTSIDE week one must raise.
+    try:
+        qb.compose_assignment([keys[5]], earlier_lessons=[keys[4]], bank=bank)
+    except qb.ShortAssignment:
+        pass
+    else:
+        fail("compose_assignment/short-raises",
+             "two lessons hold 8 standard questions and this is not week one, "
+             "so it must raise ShortAssignment rather than ship short")
+
+    # (e) Deterministic — a teacher previewing sees what the class will get.
+    a = qb.compose_assignment(keys[2:6], earlier_lessons=keys[:2], bank=bank)
+    b = qb.compose_assignment(keys[2:6], earlier_lessons=keys[:2], bank=bank)
+    if ids(a) != ids(b):
+        fail("compose_assignment/deterministic",
+             "two identical calls gave different questions")
+    if len(set(ids(a))) != len(ids(a)):
+        fail("compose_assignment/duplicates",
+             "an assignment repeated a question: %s" % ids(a))
+
+    return out
 
 
 def main():
@@ -189,7 +291,7 @@ def main():
     n_questions = len(qb.all_questions())
 
     if not findings:
-        print("verify_questions: OK — %d lessons, %d questions, all seven "
+        print("verify_questions: OK — %d lessons, %d questions, all eight "
               "checks clean." % (n_lessons, n_questions))
         return 0
 
