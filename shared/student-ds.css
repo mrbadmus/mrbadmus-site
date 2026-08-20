@@ -1,0 +1,3608 @@
+/* ── tokens/src-styles-tokens.css ── */
+/* ═══════════════════════════════════════════════════════════════
+   3D Studio tokens — Design's palette from the frozen reference
+   (3d-studio/reference/shell-v1.html), RECONCILED against
+   shared/tokens.css (MRB-186, 10 Aug 2026). Seven values ship
+   differently from the reference: --st-ink, --st-muted, --st-rule
+   and --st-accent-text adopt the canonical values Design was
+   approximating by eye before /design-sync existed for this
+   surface; --st-caption, --st-faint and --st-ghost are darkened
+   because the reference's values fail WCAG 4.5:1 on the cream
+   ground at the sizes they carry text. One token is ADDED with no
+   reference counterpart — --st-accent-hover, the canonical link
+   hover; the reference hovers links to the raw accent, which the
+   accent-contrast ruling disallows at link sizes. The full old→new
+   list, with reasons and measured ratios, is in
+   reference/design-notes.md § "Divergences from the frozen
+   reference". Every other value is verbatim from the reference.
+
+   Scoped with an --st- prefix: this app never loads shared/
+   tokens.css (it is a self-contained Vite build served at /3d/),
+   so nothing here can collide with or drift the site-wide file.
+
+   Font-face rules live in fonts.css (split for MRB-186 design-
+   sync: the converter ships tokens; the app ships its own font
+   URLs).
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* type */
+  --st-display: 'Bricolage Grotesque', sans-serif;
+  --st-ui: 'Instrument Sans', system-ui, sans-serif;
+  --st-mono: 'DM Mono', ui-monospace, monospace;
+
+  /* cream world (explore) */
+  --st-ground: #FBF3E6;      /* page ground */
+  --st-paper: #FFFDF8;       /* cards, panel, buttons on cream */
+  --st-ink: #1A1714;         /* near-black ink — canonical --ink */
+  --st-body: #3D352C;        /* long-form body on paper */
+  --st-muted: #6E655D;       /* secondary text — canonical --ks3-ink-faint */
+  --st-caption: #7A6E5F;     /* captions, eyebrows, mono labels — 4.51:1 on ground */
+  --st-faint: #7B6E5C;       /* library captions — 4.51:1 on ground */
+  --st-ghost: #7D6D55;       /* counts, dimmest legible — 4.55:1 on ground */
+  --st-rule: #E0D2B9;        /* hairlines on cream — canonical --ks3-rule */
+  --st-rule-soft: #EBE0CC;   /* hairlines on paper */
+  --st-rule-fact: #F0E6D3;   /* key-fact row rules */
+  --st-rule-strong: #D6C6A8; /* section rules, kbd chips */
+  --st-edge: #D9C9AC;        /* frame borders */
+  --st-btn-border: #DECCAE;  /* outline buttons on paper */
+  --st-crumb-bg: #F7EDDC;    /* breadcrumb strip */
+  --st-crumb-sep: #CBBA9E;
+  --st-seg-bg: #EBDDC5;      /* segmented control trough */
+  --st-note-bg: #F5EAD6;     /* did-you-know / dashed notes */
+  --st-note-border: #D8C7A9;
+  --st-chip-tint: #FCEFE9;   /* accent-tinted chip fill */
+  --st-chip-tint-border: #F0C9B8;
+  --st-num-well: #F2E8D6;    /* numbered square wells */
+
+  /* accent — two tokens per hue (KS3 R1, shared/tokens.css).
+     --st-accent is a GRAPHIC value: fills, borders, rings, marks, and
+     text at 24px and up. It is never a contrast partner for text below
+     24px in either direction — not as the label, and not as the fill
+     behind one. Cream/paper on the raw accent measures 3.62:1, the same
+     3.62:1 it measures as text on paper, and both fail 4.5:1. Anything
+     small that must read as orange uses --st-accent-text (6.48:1 behind
+     paper, 5.98:1 on the cream ground); links hover to --st-accent-hover.
+     Hotspot numerals are the documented exception — marks, not text,
+     pinned by the no-hue-only gate at exact §07 values. */
+  --st-accent: #E4572E;      /* the orange — large/graphic use */
+  --st-accent-text: #A93411; /* the only orange for small text — canonical --ks3-accent-text */
+  --st-accent-hover: #7F2408;/* link hover — canonical --ks3-accent-hover; no reference counterpart */
+  --st-hatch-b: #B33E1C;     /* hatch strip second stripe */
+
+  /* dark room (retrieval + stage viewport) */
+  --st-room: #15110C;        /* retrieval page ground */
+  --st-room-panel: #1E1913;  /* question panel */
+  --st-room-well: #120F0B;   /* input trough */
+  --st-room-raise: #2A2119;  /* selected row in dark panel */
+  --st-room-border: #2E271F;
+  --st-room-line: #3E362C;   /* borders on dark */
+  --st-room-line-soft: #332C24;
+  --st-room-line-mid: #3A322A;
+  --st-room-line-strong: #4A4036;
+  --st-room-text: #B7AA98;   /* readable text on dark */
+  --st-room-muted: #8E8272;  /* captions on dark */
+  --st-room-faint: #7E7263;
+  --st-room-hint: #8A7E6E;   /* stage hint line */
+  --st-room-body: #A99B89;   /* callout detail text */
+  --st-room-note: #C9BDAC;   /* why-it-matters body */
+  --st-ember: #F2946E;       /* accent text on dark */
+  --st-ember-strong: #F0885F;
+  --st-cream: #FBF3E6;       /* cream as used ON dark surfaces */
+
+  /* stage dressing */
+  --st-viewport-edge: #C9B896;
+  --st-paper-grid: #F2E8D6;
+  --st-plate-line: #B6AC9C;
+
+  /* placeholder thumbs */
+  --st-thumb-a: #E3D7C1;
+  --st-thumb-b: #F2E8D6;
+  --st-thumb-active-a: #DFD1B7;
+  --st-thumb-active-b: #EFE3CC;
+  --st-thumb-border: #DCCDB2;
+
+  /* shape + shadow */
+  --st-r-frame: 14px;
+  --st-r-stage: 12px;
+  --st-r-card: 11px;
+  --st-r-control: 10px;
+  --st-r-chip: 9px;
+  --st-r-btn: 9px;
+  --st-shadow-frame: 0 26px 64px -32px rgba(40, 26, 10, 0.5);
+  --st-shadow-pop: 0 10px 24px -10px rgba(0, 0, 0, 0.8);
+  --st-shadow-callout: 0 22px 44px -18px rgba(0, 0, 0, 0.95);
+}
+
+
+/* ── tokens/shared-tokens.css ── */
+/* ═══════════════════════════════════════════════════════════════
+   MrBadmusAI — Design Tokens (single source of truth)
+   Light is the DEFAULT theme. Dark is opt-in via [data-theme="dark"]
+   on <html>. KS3 playful variant hooks via [data-mode="ks3"].
+
+   Every page on the site loads this file FIRST. Page stylesheets
+   consume these variables and must not re-declare palette values.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Self-hosted fonts (no Google CDN, no @import) ──
+   Fraunces: variable, wght 400–700, optical size 9–144 (display
+   quality at topic-title sizes, sturdy at card-title sizes).
+   Plus Jakarta Sans: variable, wght 200–800. Latin subsets. */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('../fonts/fraunces-var-latin.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('../fonts/plus-jakarta-sans-var-latin.woff2') format('woff2');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ── KS3's three families (MRB-183, ruled 8 Aug 2026) ──
+   KS3 is its own visual world; these carry it and nothing else. KS4's
+   Space Grotesk / IBM Plex pair is untouched and still arrives via the
+   Google Fonts link in generate_site_v5.py — that swap is MRB-130 and is
+   deliberately NOT done here, because it would change the rendered bytes
+   of all 23 .rd bonding pages and the KS4-unchanged gate forbids it.
+
+   ⚠️ These are Claude Design's OWN font bytes, lifted out of the
+   reference-set bundle rather than re-fetched, so the glyphs are exactly
+   the ones the reference was designed against.
+
+   ⚠️ These latin subsets do NOT contain U+2192 →, U+2713 ✓ or U+2715 ✕
+   (read from each file's cmap: 208–226 glyphs, all three absent — the
+   Google latin subset carries U+2191 and U+2193 but skips U+2192).
+   Design's system leans on all three, and R2 makes the tick and cross
+   load-bearing because colour may never be the only signal. So ks3.css
+   draws them as inline SVG instead of typing them. Do not "fix" this by
+   putting the characters back — they will silently fall back to a system
+   font mid-badge. Same defect class MRB-130 exists to fix. */
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  src: url('../fonts/bricolage-grotesque-var-latin.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('../fonts/instrument-sans-var-latin.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('../fonts/instrument-sans-var-italic-latin.woff2') format('woff2');
+  font-weight: 400 600;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Mono';
+  src: url('../fonts/dm-mono-400-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Mono';
+  src: url('../fonts/dm-mono-500-latin.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  /* ── Surfaces — cream page vs white card is a DELIBERATE pairing.
+     The warmth of the whole design comes from this relationship:
+     warm cream ground, pure-white cards lifted off it by border +
+     shadow (contrast ratio cream:white ≈ 1.13 — separation is done
+     by --border and --shadow-card, not by luminance alone). ── */
+  --bg:        #F7F1E5;   /* cream page ground */
+  --card:      #FFFFFF;   /* white card surface */
+  --sunken:    #EFE7D6;   /* sunken surface — wells, input troughs, code/formula strips */
+  --border:    #E4DAC6;   /* warm hairline on cream */
+  --border-strong: #D4C7AD;
+
+  /* ── Ink ── */
+  --text:      #241C14;   /* warm near-black — 15.6:1 on cream */
+  --muted:     #6B5F51;   /* warm grey-brown — 5.8:1 on cream */
+
+  /* ── THE ACCENT — burnt orange / rust. The signature.
+     Links, active & hover states, primary buttons, the challenge
+     chip, "+" controls, spec numbers. 5.95:1 on cream (AA text),
+     6.4:1 with white text when used as a button fill. ── */
+  --accent:        #A63C12;
+  --accent-hover:  #8A300C;   /* darken on hover (light theme) */
+  --accent-soft:   rgba(166, 60, 18, 0.09);   /* tinted fills, active chips */
+  --accent-border: rgba(166, 60, 18, 0.28);
+  --on-accent:     #FFFFFF;   /* text on accent-filled controls */
+
+  /* ── Brand gradient (logo chevron + brand wordmark effects).
+     Retoned from the dark-theme #FFD93D→#FF6B35 toward the burnt
+     direction: gold-ochre into rust. Same identity, sits on cream. ── */
+  --brand-grad-a: #C97C1B;
+  --brand-grad-b: #A63C12;
+
+  /* ── Subject identity — recoloured for light ground.
+     All pass AA (4.5:1+) as text on cream. ── */
+  --physics:   #1D6FB8;   /* physics blue   — 4.9:1 */
+  --chemistry: var(--subject-chemistry);   /* chemistry crimson — 6.2:1 (NOT orange; distinct from --accent rust and --danger) */
+  --biology:   #237A3B;   /* biology green  — 5.0:1 */
+  --physics-soft:   rgba(29, 111, 184, 0.10);
+  --chemistry-soft: var(--subject-chemistry-soft);
+  --biology-soft:   rgba(35, 122, 59, 0.10);
+
+  /* ── The chemistry crimson, under a name `.rd` does not overwrite.
+     `.rd` folds --chemistry into the accent for the KS4 redesign, which
+     is right there and wrong at KS3 (see the KS3 block). KS3 restores it
+     by pointing at these, so the hex lives in exactly one place and the
+     two blocks cannot drift apart. Nothing else consumes them. ── */
+  --subject-chemistry:      #B02342;
+  --subject-chemistry-soft: rgba(176, 35, 66, 0.09);
+
+  /* ── Pathway + tier ── */
+  --combined:  var(--physics);
+  --triple:    var(--chemistry);
+  --foundation: var(--biology);
+  --higher:    #7A5F00;   /* deep gold — readable heir to the yellow tier colour (5.4:1 on cream) */
+  --higher-soft: rgba(122, 95, 0, 0.12);
+
+  /* ── Semantics — red-as-warning stays its own token, never --chemistry ── */
+  --danger:       #B3261E;
+  --danger-soft:  rgba(179, 38, 30, 0.09);
+  --success:      #237A3B;
+  --success-soft: rgba(35, 122, 59, 0.10);
+
+  /* ── Type — serif for headlines and topic/section titles ONLY.
+     Body text and all UI stay sans (readability, dyslexic students). ── */
+  --font-serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --font-sans:  'Plus Jakarta Sans', -apple-system, 'Segoe UI', sans-serif;
+
+  --fs-body:       1rem;                                    /* 16px body floor */
+  --fs-small:      0.875rem;                                /* 14px secondary */
+  --fs-label:      0.75rem;                                 /* 12px uppercase labels */
+  --fs-card-title: 1.125rem;                                /* 18px — serif */
+  --fs-section:    1.375rem;                                /* 22px — serif */
+  --fs-page-title: clamp(1.875rem, 1.1rem + 2.6vw, 3.75rem);/* 30px → 60px — serif display */
+
+  --lh-body:  1.65;
+  --lh-title: 1.15;
+
+  /* ── Layout ── */
+  --content-max: 1080px;   /* main content column */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px;
+
+  --radius-sm: 8px;
+  --radius:    12px;
+  --radius-lg: 18px;
+
+  /* ── Shadows — warm-tinted, soft; cards lift off the cream ── */
+  --shadow-card: 0 1px 2px rgba(64, 45, 26, 0.05), 0 4px 14px rgba(64, 45, 26, 0.07);
+  --shadow-pop:  0 2px 6px rgba(64, 45, 26, 0.08), 0 12px 32px rgba(64, 45, 26, 0.14);
+
+  color-scheme: light;
+}
+
+/* ═══ DARK — opt-in via <html data-theme="dark">. Gold on near-black. ═══ */
+[data-theme="dark"] {
+  --bg:        #14110D;
+  --card:      #1D1915;
+  --sunken:    #0F0D0A;
+  --border:    #322B22;
+  --border-strong: #453B2E;
+
+  --text:      #EDE5D8;
+  --muted:     #A2957F;
+
+  --accent:        #E0AC4B;   /* gold — 9.1:1 on near-black */
+  --accent-hover:  #ECBE68;   /* lighten on hover (dark theme) */
+  --accent-soft:   rgba(224, 172, 75, 0.12);
+  --accent-border: rgba(224, 172, 75, 0.35);
+  --on-accent:     #14110D;
+
+  --brand-grad-a: #E8C15E;
+  --brand-grad-b: #C2551F;
+
+  --physics:   #5FA8E0;
+  --chemistry: #E06080;
+  --biology:   #55B36A;
+  --physics-soft:   rgba(95, 168, 224, 0.14);
+  --chemistry-soft: rgba(224, 96, 128, 0.13);
+  --biology-soft:   rgba(85, 179, 106, 0.14);
+
+  --higher:      #E0AC4B;
+  --higher-soft: rgba(224, 172, 75, 0.14);
+
+  --danger:       #E5655C;
+  --danger-soft:  rgba(229, 101, 92, 0.13);
+  --success:      #55B36A;
+  --success-soft: rgba(85, 179, 106, 0.14);
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 14px rgba(0, 0, 0, 0.45);
+  --shadow-pop:  0 2px 6px rgba(0, 0, 0, 0.5), 0 12px 32px rgba(0, 0, 0, 0.6);
+
+  color-scheme: dark;
+}
+
+/* ═══ KS3 — playful variant hook. Same bones, different energy.
+   Full KS3 styling lands in a later pass; these are the dials. ═══
+
+   ⚠️ THE SELECTOR IS LOAD-BEARING — MRB-179, 2026-08-07.
+
+   This block shipped as bare `[data-mode="ks3"]`, specificity (0,1,0).
+   The `.rd` block below is ALSO (0,1,0) and comes later in the file, so
+   on a KS3 page — which carries BOTH per §8.5 — `.rd` won every single
+   collision and every dial here was dead. Measured in a browser, not
+   read off the source: --accent resolved #C0392B, --radius 22px,
+   --chemistry #C0392B. The block was decorative for its whole life.
+
+   `.rd[data-mode="ks3"]` is (0,2,0), so it beats `.rd` on specificity
+   and the source order stops mattering. It is the minimal selector that
+   does that: no `body` qualifier (the tokens file should not care which
+   element opts in) and no `!important` (which would also override the
+   per-page inline `style="--subject: …"` KS3 lesson pages rely on).
+
+   The cost of the fix is that the dials no longer apply to an element
+   carrying `data-mode="ks3"` WITHOUT `.rd`. §8.5 makes carrying both
+   mandatory and `build_ks3.py` emits both on every page, so no such
+   element exists — and `verify_ks3.py` now gates it, so none can appear
+   without the build failing. ═══ */
+.rd[data-mode="ks3"] {
+  /* ═══════════════════════════════════════════════════════════════
+     KS3 IS ITS OWN VISUAL WORLD.  MRB-183, ruled by Mide 8 Aug 2026.
+
+     What used to be here was four dials nudging the KS4 palette. That
+     is gone: Claude Design's system is a full REPLACEMENT for KS3, not
+     a variant of KS4. KS4 keeps the cream / burnt-orange system
+     untouched, and the split is clean at the key-stage boundary.
+
+     Every ratio below is Claude Design's own measurement, carried
+     across verbatim so the number and the value can never drift apart.
+     Re-measured in a browser against the real rendered grounds during
+     integration — see docs/ks3/design-reference/SPEC.md §1.
+
+     Two tokens per hue, always (R1): a FILL token for borders, rules,
+     focus rings and text above 24px at 3:1, and a darker TEXT token for
+     anything at body size at 4.5:1. Body-size accent text ALWAYS takes
+     the darker one. R1 calls this "the single most common way an
+     accessible palette gets broken at integration" — so the fill
+     tokens are commented with what they may not do.
+     ═══════════════════════════════════════════════════════════════ */
+
+  /* ── grounds and surfaces ── */
+  --ks3-ground:        #FBF3E6;  /* page ground */
+  --ks3-card:          #FFFCF5;  /* panels, cards, block surfaces */
+  --ks3-band:          #F4E9D8;  /* header bands, secondary buttons, number chips */
+  --ks3-inset:         #F7EFE1;  /* inset panels, criteria ground, canvas fill */
+  --ks3-row-dim:       #FBF6EC;  /* a dimmed row: coming-soon, spent option */
+  --ks3-rule:          #E0D2B9;  /* hairline rules, row dividers */
+  --ks3-rule-strong:   #C3B191;  /* dashed placeholder frames */
+  --ks3-option-border: #DDCFB6;  /* resting answer-button border */
+  --ks3-option-spent:  #EBDFCB;  /* answer button, question already spent */
+
+  /* ── ink ── */
+  --ks3-ink:           #221E1B;  /* 14.2:1 on ground ✓ AAA — body text, every 2px outline */
+  --ks3-ink-body:      #3B342E;  /* softened body copy inside panels */
+  --ks3-ink-muted:     #5F564F;  /* 5.6:1 on ground ✓ AA — captions, meta, eyebrows */
+  --ks3-ink-faint:     #6E655D;  /* dimmed row text */
+  --ks3-ink-ghost:     #9A8F86;  /* spent option badge glyph */
+  --ks3-on-dark:       #FBF3E6;  /* text on an ink-dark block */
+  --ks3-on-dark-body:  #E7DECE;  /* body copy on an ink-dark block */
+  --ks3-on-dark-muted: #C6B9A7;  /* captions on an ink-dark block */
+  --ks3-dark-panel:    #3E3730;  /* a panel nested inside an ink-dark block */
+  --ks3-dark-rule:     #3E3730;
+
+  /* ── accent · orange · the platform's own voice, and Chemistry ── */
+  --ks3-accent:        #E4572E;  /* 3.4:1 — LARGE TEXT ONLY. Never body size. */
+  --ks3-accent-text:   #A93411;  /* 6.0:1 on ground ✓ AA — the only orange under 24px */
+  --ks3-accent-tint:   #FCE7DE;
+  --ks3-accent-hover:  #7F2408;  /* link hover */
+
+  /* ── success · green · ONLY the ladder marks correctness ── */
+  --ks3-ok:            #12A150;  /* 3.0:1 — NEVER body text */
+  --ks3-ok-text:       #0A6B36;  /* 5.9:1 on tint ✓ AA — the word "Correct." */
+  --ks3-ok-tint:       #E4F7EB;
+
+  /* ── alert · amber · a wrong IDEA being confronted ──
+     Misconception blocks only. Never "you got it wrong" — the student
+     is not the error. Ink on the amber measures 11.4:1 ✓. */
+  --ks3-alert:         #FFC53D;
+  --ks3-alert-text:    #5A430A;
+  --ks3-alert-tint:    #FFF3D4;
+  --ks3-alert-border:  #D9821A;
+
+  /* ── stretch · violet · a layer the STUDENT chose ──
+     "Going further" and "Need a hand?" only. Never a level they were
+     put in — KS3 has no tier and must not grow one. */
+  --ks3-stretch:       #6B3FD4;
+  --ks3-stretch-text:  #5A31C0;  /* 6.4:1 ✓ AA */
+  --ks3-stretch-tint:  #F0EAFC;
+  --ks3-stretch-rule:  #D8CBF5;
+  --ks3-stretch-dash:  #B9A6E8;
+  --ks3-stretch-wash:  #FAF7FF;
+
+  /* ── physics blue · subject tint, and the cross-reference row ── */
+  --ks3-blue:          #2F5CE0;
+  --ks3-blue-text:     #2545A8;
+  --ks3-blue-tint:     #E1E8FE;
+  --ks3-blue-light:    #8FB7FF;  /* on ink-dark only */
+
+  /* ── subject identity ──
+     Biology shares the success hue and Chemistry shares the accent hue;
+     that is Design's choice, not an accident, and it is why the browse
+     cards also carry a hue DOT and a name (R2). */
+  --ks3-biology:       #12A150;
+  --ks3-chemistry:     #E4572E;
+  --ks3-physics:       #2F5CE0;
+
+  /* ── type ── */
+  --ks3-font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --ks3-font-body:    'Instrument Sans', system-ui, sans-serif;
+  --ks3-font-mono:    'DM Mono', ui-monospace, monospace;
+
+  /* ── shape ──
+     Hard offset shadows, no blur, no gradient: Design's reason is that
+     it renders identically on a five-year-old Chromebook. */
+  --ks3-r-block:   28px;
+  --ks3-r-dark:    30px;
+  --ks3-r-card:    22px;
+  --ks3-r-panel:   20px;
+  --ks3-r-control: 14px;
+  --ks3-r-option:  16px;
+  --ks3-r-pill:    999px;
+  --ks3-r-focus:   6px;
+  --ks3-shadow-block: 5px 5px 0 var(--ks3-ink);
+  --ks3-shadow-card:  4px 4px 0 var(--ks3-rule);
+  --ks3-tap: 44px;
+
+  /* ── measure (R11) ──
+     46rem for prose, 60rem for anything that is not prose. The old
+     44rem cap was set at a 16px base; at 19px it produced a narrow,
+     tiring column. */
+  --ks3-measure: 46rem;
+  --ks3-wide:    60rem;
+  --ks3-page:    1320px;
+
+  /* ── the shared chrome KS3 still borrows ──
+     KS3 pages also load styles.css and nav.css for the nav brand, so
+     the inherited names have to land on Design's values or the header
+     arrives in KS4's palette. */
+  --accent:        #E4572E;
+  --accent-hover:  #A93411;
+  --accent-text:   #A93411;
+  --brand-grad-a:  #FFC53D;
+  --brand-grad-b:  #E4572E;
+  --radius-sm: 14px;
+  --radius:    20px;
+  --radius-lg: 28px;
+
+  /* Subject identity for the shared chrome. `.rd` folds --chemistry into
+     the accent ("one warm palette") because a KS4 redesign page shows one
+     subject at a time. KS3 shows all three side by side, so the three
+     stay distinct — and under Design's system Chemistry and the accent
+     are deliberately the SAME hue, which is why every browse card also
+     carries a hue dot and the subject's name (R2: colour is never the
+     only signal). */
+  --biology:   var(--ks3-biology);
+  --chemistry: var(--ks3-chemistry);
+  --physics:   var(--ks3-physics);
+
+  /* ⛔ The 2026-07-26 contrast table that used to sit here is DELETED,
+     not amended. It measured --accent #C4490F against the four KS4
+     redesign cream grounds, and both sides of that comparison are gone:
+     the accent is now #E4572E and the KS3 grounds are Design's
+     #FBF3E6 / #FFFCF5 / #F4E9D8 / #F7EFE1. Keeping a stale table beside
+     live values is how a "measured" number becomes a lie. The current
+     measurements live against each token above and in full in
+     docs/ks3/design-reference/SPEC.md §1. */
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   REDESIGN — Locked Tokens (MRB-113 Phase B, Design's canonical block)
+   Space Grotesk / IBM Plex Sans / IBM Plex Mono · warm cream + burnt
+   orange. This is the canonical design-system record going forward;
+   the Fraunces / Plus Jakarta values above are superseded.
+
+   ⚠️ PILOT SCOPING (deliberate — see the port report): this token
+   file is loaded by every one of the site's 300+ pages, and the
+   legacy names above (--bg, --card, --accent, --font-serif, …) are
+   consumed by shared/styles.css and inline page styles everywhere.
+   A literal wholesale replace would white-screen the whole site and
+   drop the (self-hosted) fonts. So during the pilot the Locked block
+   is applied by OPT-IN: pages that carry class `rd` on <body> get the
+   new system; every other page renders exactly as before. Promoting
+   this to a global cutover (migrate styles.css off the legacy names,
+   self-host the fonts, drop the .rd scope) is the post-sign-off step.
+
+   The three names that exist in BOTH systems (--accent, --border,
+   --shadow-card) are intentionally NOT redeclared in :root here — that
+   would clobber the live site. They are set inside the `.rd` scope
+   instead, so only redesigned pages pick up the new values.
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  /* Type */
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body:    "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono:    "IBM Plex Mono", monospace;
+
+  /* Surfaces */
+  --surface-page:  #E7E1D4;
+  --surface-card:  #F5F1E8;
+  --surface-panel: #FFFDF8;
+  --surface-inset: #F7F2E8;
+  --surface-dark:  #1A1714;
+  --rule:          #D8CFBD;
+
+  /* Ink */
+  --ink:       #1A1714;
+  --ink-body:  #2A241E;
+  --ink-muted: #6B635A;
+  --ink-faint: #8A8074;
+
+  /* Accent (burnt orange) — --accent itself is set in .rd (name clash) */
+  --accent-strong:      #C0392B;
+  --accent-deep:        #B5341A;
+  --accent-tint:        #FBE0D6;
+  --accent-tint-border: #F0BBA9;
+  --accent-wash:        #FBEEE9;
+
+  /* Contextual accents (no per-subject colour system) */
+  --context-blue: #2E7DD1;
+  --context-sage: #3E6B47;
+
+  /* Marking states */
+  --ok:  #2E6B3A;  --ok-bg:  #E7F3EA;  --ok-border:  #7FB98A;
+  --err: #A83824;  --err-bg: #FBE4DE;  --err-border: #E0897B;
+
+  /* Radii */
+  --r-card:    28px;
+  --r-panel:   22px;
+  --r-callout: 18px;
+  --r-control: 12px;
+  --r-pill:    999px;
+
+  /* Shadows — --shadow-card is set in .rd (name clash) */
+  --shadow-panel: 0 22px 50px -35px rgba(60,30,20,.5);
+  --shadow-cta:   0 8px 20px -8px rgba(192,57,43,.7);
+}
+
+/* ── Redesign opt-in: <body class="rd"> maps the legacy token names the
+   existing stylesheet consumes onto the Locked values, so the whole page
+   chrome (nav, cards, quiz, matching, callouts) adopts one warm system.
+   Scoped, additive, fully reversible: no other page is touched. ── */
+.rd {
+  /* the two colliding names, at their Locked values */
+  --accent: var(--accent-strong);
+  --border: #E4DCCB;
+
+  /* fonts */
+  --font-serif: var(--font-display);
+  --font-sans:  var(--font-body);
+
+  /* surfaces */
+  --bg:            var(--surface-page);
+  --card:          var(--surface-panel);
+  --sunken:        var(--surface-inset);
+  --border-strong: var(--rule);
+
+  /* ink */
+  --text:  var(--ink);
+  --muted: var(--ink-muted);
+
+  /* accent family → burnt-orange primary */
+  --accent-hover:  var(--accent-deep);
+  --accent-soft:   var(--accent-wash);
+  --accent-border: var(--accent-tint-border);
+  --on-accent:     #FFFFFF;
+
+  /* one warm palette — subject + triple identity fold into the accent */
+  --subject:        var(--accent-strong);
+  --chemistry:      var(--accent-strong);
+  --chemistry-soft: var(--accent-wash);
+
+  /* marking → Locked green / red */
+  --success:      var(--ok);
+  --success-soft: var(--ok-bg);
+  --danger:       var(--err);
+  --danger-soft:  var(--err-bg);
+
+  /* radii → Locked scale */
+  --radius:    var(--r-panel);
+  --radius-lg: var(--r-card);
+  --radius-sm: var(--r-control);
+
+  /* ── MRB-123 · redesign type scale ──
+     Base body 16→18px on redesigned pages. `--rd-fs-scale` is the single
+     lever: every redesign size is `calc(<orig> * var(--rd-fs-scale))`, so
+     one number moves the whole ramp proportionally. Relationships, weights
+     and (unitless) line-heights are unchanged — everything just larger.
+     .rd-gated: the global :root ramp (16px base) is untouched, so the 300+
+     non-redesigned pages are unaffected. To change the base again, edit only
+     this one value (e.g. 1.25 for a 20px base). */
+  --rd-fs-scale: 1.25;   /* 20px ÷ 16px */
+
+  /* the shared --fs-* ramp, scaled on redesigned pages only */
+  --fs-body:       calc(1rem     * var(--rd-fs-scale));
+  --fs-small:      calc(0.875rem * var(--rd-fs-scale));
+  --fs-label:      calc(0.75rem  * var(--rd-fs-scale));
+  --fs-card-title: calc(1.125rem * var(--rd-fs-scale));
+  --fs-section:    calc(1.375rem * var(--rd-fs-scale));
+  --fs-page-title: clamp(calc(1.875rem * var(--rd-fs-scale)), calc((1.1rem + 2.6vw) * var(--rd-fs-scale)), calc(3.75rem * var(--rd-fs-scale)));
+}
+
+
+/* ── tokens/shared-ks3.css ── */
+/* ═══════════════════════════════════════════════════════════════
+   KS3 — page styles.  MRB-183.
+
+   This file is a TRANSLATION of Claude Design's KS3 reference set,
+   frozen at docs/ks3/design-reference/ and specified in SPEC.md.
+   Design's artifacts are React prototypes carrying 507 inline style
+   attributes and zero CSS classes; inline styles cannot be shared
+   across 185 lessons, so every value below arrives here as a class
+   consuming a token.
+
+   RULES OF THE ROAD
+
+   1. No raw palette values in this file. Everything comes from the
+      `.rd[data-mode="ks3"]` block in tokens.css. If KS3 needs a new
+      colour, it is added THERE (architecture.md §8.5), not here.
+   2. R1 — two tokens per hue. --ks3-accent (3.4:1) is for borders,
+      rules, focus rings and text ABOVE 24px. --ks3-accent-text
+      (6.0:1) is the only orange allowed at body size. Same split for
+      green. Getting this wrong is, per R1, "the single most common way
+      an accessible palette gets broken at integration".
+   3. R2 — colour is never the only signal. Every state below also
+      carries a word or a drawn mark.
+   4. Hard offset shadows only. No blur, no gradient: it has to render
+      identically on a five-year-old Chromebook.
+   5. R15 — every control is a real control, and every one shows the
+      same 3px accent focus ring.
+
+   ⚠️ ✓ ✕ → ARE DRAWN, NOT TYPED.  See §9.3 of SPEC.md: Design's own
+   latin woff2 subsets contain none of U+2713, U+2715, U+2192, so typing
+   them drops to a system font mid-badge. `.ks3-mark` is the inline-SVG
+   carrier. Do not "simplify" it back to a character.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── page shell ─────────────────────────────────────────────────── */
+
+body.rd[data-mode="ks3"] {
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+  font-family: var(--ks3-font-body);
+  font-size: 19px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-wrap: pretty;
+}
+
+[data-mode="ks3"] h1,
+[data-mode="ks3"] h2,
+[data-mode="ks3"] h3 {
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+}
+
+/* R15 — one focus treatment, on everything, no exceptions. */
+[data-mode="ks3"] :focus-visible {
+  outline: 3px solid var(--ks3-accent);
+  outline-offset: 2px;
+  border-radius: var(--ks3-r-focus);
+}
+
+/* The drawn marks. currentColor so a mark inherits whatever the badge
+   or the link is already using, and stroke-based so it stays crisp at
+   any badge size. */
+.ks3-mark {
+  width: 1em;
+  height: 1em;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vertical-align: -.12em;
+}
+.ks3-mark-arrow { stroke-width: 2.2; }
+
+.ks3-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 14px 24px 12px;
+  border-bottom: 2px solid var(--ks3-ink);
+  background: var(--ks3-ground);
+}
+/* MRB-197: Design's mark — dimensions from the frozen reference's header
+   (30px chevron, 22px/800 Bricolage wordmark, 10px gap, ink on ground). */
+.ks3-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  color: var(--ks3-ink);
+  text-decoration: none;
+}
+.ks3-brand svg { flex: 0 0 auto; }
+.ks3-nav-link {
+  margin-left: auto;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--ks3-accent-text);
+  text-decoration: none;
+}
+.ks3-nav-link:hover { text-decoration: underline; }
+
+/* Index pages run to the full page width; lesson pages are capped by
+   .ks3-lesson (below) because prose has a measure and a browse grid
+   does not. */
+.ks3-main {
+  max-width: var(--ks3-page);
+  margin: 0 auto;
+  padding: 44px 24px 90px;
+}
+
+/* R11 — 60rem for the lesson, 46rem for prose inside it. */
+.ks3-lesson { max-width: var(--ks3-wide); margin: 0 auto; }
+.ks3-lesson > .ks3-explainer,
+.ks3-lesson > .ks3-prose { max-width: var(--ks3-measure); }
+
+.ks3-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .4rem;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  color: var(--ks3-ink-muted);
+  margin-bottom: 24px;
+}
+.ks3-crumbs a { color: var(--ks3-accent-text); text-decoration: none; font-weight: 500; }
+.ks3-crumbs a:hover { color: var(--ks3-accent-hover); text-decoration: underline; }
+.ks3-crumb-sep { color: var(--ks3-rule-strong); }
+
+/* ── type scale (SPEC.md §2, seven rows) ────────────────────────── */
+
+/* row 6 */
+.ks3-eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+  margin: 0 0 .35rem;
+}
+
+/* row 1 — a 5-character title and a 49-character one both have to work */
+.ks3-lesson-head h1 {
+  margin: 12px 0 0;
+  font-size: clamp(44px, 6vw, 74px);
+  line-height: .94;
+  letter-spacing: -.035em;
+}
+.ks3-unit-head h1,
+.ks3-hub-head h1,
+.ks3-landing-head h1 {
+  margin: 0;
+  font-size: clamp(40px, 5.4vw, 66px);
+  line-height: .96;
+  letter-spacing: -.035em;
+}
+
+/* row 2 */
+.ks3-bigq {
+  margin: 16px 0 0;
+  font-size: 25px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ks3-accent-text);
+  max-width: 24ch;
+}
+
+/* row 4 */
+.ks3-intro { margin: 18px 0 0; font-size: 22px; line-height: 1.55; color: var(--ks3-ink-body); max-width: 64ch; }
+.ks3-meta  { margin: 0; font-size: 18px; color: var(--ks3-ink-muted); }
+
+.ks3-lesson-head {
+  border-bottom: 3px solid var(--ks3-ink);
+  padding-bottom: 28px;
+}
+
+/* §5.10.1's draft marker. MRB-181 explicitly keeps this prominent: it
+   is the one note that outranks "no callouts", because it protects a
+   student from unreviewed science. */
+.ks3-review-flag {
+  margin: 22px 0 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 17px;
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-accent-tint);
+  border: 2px solid var(--ks3-accent);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ks3-accent-text);
+}
+.ks3-review-flag::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 99px;
+  background: var(--ks3-accent);
+  flex: 0 0 auto;
+}
+
+/* ── blocks ─────────────────────────────────────────────────────── */
+
+.ks3-block {
+  margin: 28px 0 0;
+  padding: 30px;
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+  border-radius: var(--ks3-r-block);
+  box-shadow: var(--ks3-shadow-block);
+}
+.ks3-block > h2:first-of-type,
+.ks3-block > h3:first-of-type { margin-top: 0; }
+
+/* row 3 */
+.ks3-block h2 { font-size: 30px; line-height: 1.2; letter-spacing: -.025em; }
+
+/* An explainer is prose, so it carries no card at all — the reference
+   sets it as bare text at the reading measure. */
+.ks3-explainer,
+.ks3-prose {
+  margin: 28px 0 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+.ks3-explainer p,
+.ks3-prose p { margin: 0; font-size: 20px; line-height: 1.75; }
+.ks3-explainer p + p,
+.ks3-prose p + p { margin-top: 18px; }
+
+/* ── the ink-dark blocks ──
+   Three blocks invert: the hook, the practical and the key note. Each
+   takes a different shadow colour, which is what tells them apart at a
+   glance while the ground stays constant. */
+.ks3-dark {
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+  border: 0;
+  border-radius: var(--ks3-r-dark);
+  padding: 32px;
+}
+.ks3-dark .ks3-eyebrow { color: var(--ks3-alert); }
+.ks3-dark p { color: var(--ks3-on-dark-body); }
+.ks3-dark h2 { color: var(--ks3-on-dark); }
+
+.ks3-hook      { box-shadow: 6px 6px 0 var(--ks3-accent); }
+.ks3-practical { box-shadow: 6px 6px 0 var(--ks3-blue); }
+.ks3-keynote   { box-shadow: 6px 6px 0 var(--ks3-alert); }
+
+.ks3-practical .ks3-eyebrow { color: var(--ks3-blue-light); }
+
+.ks3-hook h2 {
+  margin: 0;
+  font-size: 38px;
+  line-height: 1.05;
+  letter-spacing: -.03em;
+}
+.ks3-hook-prompt { margin: 16px 0 0; font-size: 19px; line-height: 1.65; }
+.ks3-commit {
+  margin: 16px 0 0;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ks3-alert);
+}
+.ks3-hook-commit {
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 2px solid var(--ks3-dark-rule);
+}
+
+/* row 3, at key-note weight — Design drops to 700 here because 800 at
+   30px over four lines is a wall. */
+.ks3-keynote p {
+  margin: 14px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.3;
+  letter-spacing: -.02em;
+  color: var(--ks3-on-dark);
+}
+
+/* ── misconception ──
+   Amber is a wrong IDEA being confronted. It is never "you got it
+   wrong" — the student is not the error. */
+.ks3-misconception {
+  background: var(--ks3-alert-tint);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-misconception .ks3-eyebrow { color: var(--ks3-alert-text); margin: 0; }
+.ks3-mis-head { display: flex; align-items: center; gap: 12px; }
+.ks3-mis-badge {
+  flex: 0 0 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--ks3-ink);
+  color: var(--ks3-alert);
+  display: grid;
+  place-items: center;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 19px;
+}
+.ks3-mis-quote {
+  margin: 15px 0 0;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.4;
+  font-style: italic;
+}
+.ks3-misconception > p { font-size: 19px; line-height: 1.6; }
+
+/* ── activity options (R3) ──
+   R3 is load-bearing and easy to lose: an activity button shows that it
+   was CHOSEN, never whether it was right. No green, no red, and it stays
+   enabled so the student can change their mind. Only the ladder marks
+   correctness. */
+.ks3-options {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.ks3-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  cursor: pointer;
+  padding: 16px 18px;
+  border-radius: var(--ks3-r-option);
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 600;
+  min-height: var(--ks3-tap);
+  text-align: left;
+  background: var(--ks3-ground);
+  border: 2px solid var(--ks3-option-border);
+  color: var(--ks3-ink);
+  transition: transform .14s, background-color .16s, border-color .16s;
+}
+.ks3-option:hover { transform: translateX(3px); border-color: var(--ks3-accent); }
+.ks3-option[aria-pressed="true"] {
+  background: var(--ks3-accent-tint);
+  border-color: var(--ks3-accent);
+}
+.ks3-opt-mark {
+  flex: 0 0 28px;
+  height: 28px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  font-weight: 800;
+  background: var(--ks3-band);
+  color: var(--ks3-ink-muted);
+}
+.ks3-option[aria-pressed="true"] .ks3-opt-mark {
+  background: var(--ks3-accent);
+  color: var(--ks3-on-dark);
+}
+.ks3-opt-label { flex: 1; }
+
+/* options on an ink-dark block */
+.ks3-dark .ks3-option {
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-on-dark-muted);
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-option[aria-pressed="true"] {
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-alert);
+}
+.ks3-dark .ks3-opt-mark { background: var(--ks3-on-dark-muted); color: var(--ks3-ink); }
+.ks3-dark .ks3-option[aria-pressed="true"] .ks3-opt-mark {
+  background: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+
+.ks3-reveal {
+  margin-top: 18px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: var(--ks3-accent-tint);
+  border: 2px solid var(--ks3-accent);
+  font-size: 19px;
+  line-height: 1.6;
+}
+.ks3-dark .ks3-reveal {
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-on-dark);
+}
+
+/* ── vocabulary (Law 7) ──
+   The keywords block is SURFACE-LESS, like the explainer. In the reference
+   it is a bare section holding a heading, a lead line and the card grid —
+   the cards are the surfaces. Giving the block its own card ground would
+   nest bordered cards inside a bordered card, which is the one thing this
+   layout must not do. */
+.ks3-keywords {
+  background: none;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+.ks3-keywords-lead {
+  margin: 0 0 18px;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-ink-body);
+  max-width: 52ch;
+}
+
+/* ── vocabulary cards (R4) ──
+   The dog-ear is the ONLY affordance. When the card opens the dog-ear
+   goes, because there is no longer anything underneath. */
+.ks3-cards {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(268px, 1fr));
+  gap: 16px;
+}
+.ks3-card-btn {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  min-height: 150px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-option-border);
+  border-radius: var(--ks3-r-card);
+  box-shadow: var(--ks3-shadow-card);
+  color: var(--ks3-ink);
+  transition: transform .15s, background-color .2s;
+}
+.ks3-card-btn:hover { transform: translate(-2px, -2px); }
+
+/* the dog-ear */
+.ks3-card-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-top: 26px solid var(--ks3-accent);
+  border-left: 26px solid transparent;
+  border-top-right-radius: var(--ks3-r-panel);
+}
+.ks3-card-btn.is-flipped::after { border-top-color: transparent; }
+.ks3-card-btn.is-flipped { background: var(--ks3-accent-tint); border-color: var(--ks3-accent); }
+
+.ks3-card-front {
+  display: block;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 27px;
+  letter-spacing: -.02em;
+  padding-right: 1.6rem;
+}
+.ks3-card-back { display: flex; flex-direction: column; gap: 8px; }
+.ks3-card-def  { font-size: 19px; line-height: 1.5; }
+.ks3-card-note { font-size: 16px; line-height: 1.45; color: var(--ks3-ink-muted); }
+/* ⚠️ Load-bearing and it looks redundant. `hidden` is on the element and
+   ks3.js toggles it, but an AUTHOR `display` beats the UA stylesheet's
+   [hidden] rule regardless of specificity, so without this line every
+   answer renders face-up. Previously caught in a screenshot, not by a
+   DOM probe. Any future `display` on a hidden element needs the same. */
+.ks3-card-back[hidden] { display: none; }
+
+/* R4 requires the block to ASK for the declaration in words. Once the
+   card is open the ask is spent, so the hint goes with the dog-ear. */
+.ks3-card-hint {
+  margin-top: auto;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ks3-accent-text);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.ks3-card-btn.is-flipped .ks3-card-hint { display: none; }
+
+/* ── check / worked example ─────────────────────────────────────── */
+
+.ks3-check h2,
+.ks3-worked h2 {
+  margin: 9px 0 14px;
+  font-size: 28px;
+  line-height: 1.25;
+  letter-spacing: -.02em;
+}
+.ks3-reveal-btn {
+  cursor: pointer;
+  padding: 14px 22px;
+  border-radius: var(--ks3-r-control);
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+  border: 2px solid var(--ks3-ink);
+  font: inherit;
+  font-weight: 700;
+  font-size: 17px;
+  min-height: var(--ks3-tap);
+  transition: transform .15s;
+}
+.ks3-reveal-btn:hover { transform: translateY(-2px); }
+
+/* criteria: a numbered list on an inset ground, green badges */
+.ks3-crit-wrap {
+  margin-top: 18px;
+  padding: 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-crit-lead {
+  margin: 0 0 13px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-crit-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.ks3-crit {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  font-size: 19px;
+  line-height: 1.55;
+}
+.ks3-crit-num {
+  flex: 0 0 25px;
+  height: 25px;
+  border-radius: 8px;
+  background: var(--ks3-ok-tint);
+  border: 2px solid var(--ks3-ok);
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ks3-ok-text);
+}
+
+.ks3-fifa {
+  display: grid;
+  gap: .3rem;
+  margin: 18px 0 0;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+  font-size: 19px;
+}
+.ks3-fifa p { margin: 0; }
+.ks3-fifa strong { font-family: var(--ks3-font-display); }
+
+/* ── figures (§4.10) ────────────────────────────────────────────── */
+
+.ks3-figure { margin: 28px 0 0; }
+.ks3-figure img { max-width: 100%; height: auto; border-radius: 24px; border: 2px solid var(--ks3-ink); }
+.ks3-figure figcaption {
+  margin-top: 12px;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+/* An honest placeholder, and it has to read as deliberate rather than
+   broken — hence a drawn dashed frame and a labelled pill. */
+.ks3-figure-slot {
+  display: grid;
+  place-items: center;
+  padding: 52px 24px;
+  border: 3px dashed var(--ks3-rule-strong);
+  border-radius: 24px;
+  background: var(--ks3-inset);
+}
+.ks3-figure-tag {
+  padding: 8px 16px;
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule-strong);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+
+/* ── the mastery ladder (R8 / MRB-184) ──────────────────────────── */
+
+.ks3-ladder {
+  margin: 28px 0 0;
+  max-width: var(--ks3-wide);
+  background: var(--ks3-card);
+  border: 3px solid var(--ks3-ink);
+  border-radius: var(--ks3-r-dark);
+  padding: 32px;
+  box-shadow: 6px 6px 0 var(--ks3-ok);
+}
+.ks3-ladder-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  border-bottom: 2px solid var(--ks3-rule);
+  padding-bottom: 20px;
+}
+.ks3-ladder-head h2 { margin: 0; font-size: 36px; letter-spacing: -.03em; }
+.ks3-ladder-sub { margin: 6px 0 0; font-size: 18px; color: var(--ks3-ink-muted); }
+.ks3-ladder-score { text-align: right; min-width: 220px; }
+.ks3-score { margin: 0; font-size: 22px; font-weight: 700; }
+.ks3-score-note { margin: 4px 0 0; font-size: 16px; color: var(--ks3-ink-muted); }
+
+.ks3-rungs { margin-top: 26px; display: flex; flex-direction: column; gap: 28px; }
+
+/* Two the page marks (accent), two the student marks (violet). The
+   colour split is the same one the layers use: violet always means
+   "this is yours". */
+.ks3-rung {
+  border-left: 4px solid var(--ks3-accent);
+  padding: 0 0 0 22px;
+}
+.ks3-rung h3 { margin: 0; font-size: 23px; color: var(--ks3-accent-text); }
+.ks3-rung-q { margin: 8px 0 16px; font-size: 21px; font-weight: 600; line-height: 1.4; }
+.ks3-rung-self { border-left-color: var(--ks3-stretch); }
+.ks3-rung-self h3 { color: var(--ks3-stretch-text); }
+
+.ks3-ladder .ks3-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 11px;
+}
+.ks3-ladder .ks3-option {
+  border-radius: 15px;
+  padding: 15px 17px;
+}
+.ks3-ladder .ks3-option:hover { transform: translateY(-2px); }
+.ks3-ladder .ks3-opt-mark { flex-basis: 27px; height: 27px; }
+
+/* Ladder option states. Every one carries a drawn mark as well as a
+   colour (R2), so the state survives greyscale. */
+.ks3-option.is-correct {
+  background: var(--ks3-ok-tint);
+  border-color: var(--ks3-ok);
+  animation: ks3-pop .35s both;
+}
+.ks3-option.is-correct .ks3-opt-mark { background: var(--ks3-ok); color: #FFFFFF; }
+.ks3-option.is-wrong {
+  background: var(--ks3-band);
+  border-color: var(--ks3-ink);
+}
+.ks3-option.is-wrong .ks3-opt-mark { background: var(--ks3-ink); color: var(--ks3-on-dark); }
+.ks3-option.is-spent {
+  background: var(--ks3-row-dim);
+  border-color: var(--ks3-option-spent);
+  color: var(--ks3-ink-faint);
+}
+.ks3-option.is-spent .ks3-opt-mark { background: var(--ks3-band); color: var(--ks3-ink-ghost); }
+.ks3-option:disabled { cursor: default; }
+.ks3-option:disabled:hover { transform: none; }
+
+.ks3-feedback {
+  margin: 15px 0 0;
+  font-size: 19px;
+  line-height: 1.6;
+  padding: 14px 18px;
+  border-radius: 15px;
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule);
+}
+.ks3-feedback.is-correct { background: var(--ks3-ok-tint); border-color: var(--ks3-ok); }
+.ks3-feedback.is-correct .ks3-mark { color: var(--ks3-ok-text); }
+.ks3-feedback.is-wrong   { background: var(--ks3-band);   border-color: var(--ks3-ink); }
+.ks3-feedback-word { font-weight: 700; display: inline-flex; align-items: center; gap: 8px; }
+
+/* R8 — write, then check, then mark.
+   The textarea is alone on the page until "Check my answer" is pressed,
+   because a visible checklist IS the answer. */
+.ks3-answer-label {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ks3-ink-muted);
+  margin: 0 0 8px;
+}
+.ks3-answer {
+  display: block;
+  width: 100%;
+  min-height: 8.5rem;
+  padding: 16px 18px;
+  font: inherit;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-option-border);
+  border-radius: var(--ks3-r-option);
+  resize: vertical;
+}
+.ks3-answer:hover { border-color: var(--ks3-accent); }
+.ks3-check-btn {
+  margin-top: 14px;
+  cursor: pointer;
+  padding: 13px 20px;
+  border-radius: var(--ks3-r-control);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+  font: inherit;
+  font-weight: 700;
+  font-size: 17px;
+  min-height: var(--ks3-tap);
+  color: var(--ks3-ink);
+  transition: transform .14s;
+}
+.ks3-check-btn:hover { transform: translateY(-2px); }
+
+.ks3-ticks {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+/* ⚠️ LOAD-BEARING, and it looks redundant — same trap as
+   `.ks3-card-back[hidden]` above. An AUTHOR `display` beats the UA
+   stylesheet's `[hidden] { display: none }` regardless of specificity, so
+   without these two lines the success criteria and the tally render VISIBLE
+   before "Check my answer" is pressed. That is not a cosmetic slip: R8's
+   entire point is that the criteria are not on the page until the student has
+   written an answer, because a visible checklist is the answer. It would break
+   for exactly the readers who can least afford it — anyone arriving before
+   ks3.js runs, and anyone with JS off. */
+.ks3-ticks[hidden],
+.ks3-tally[hidden] { display: none; }
+.ks3-tick {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  font-size: 19px;
+  line-height: 1.55;
+}
+/* A real checkbox (MRB-184: "the tick controls must be real
+   checkboxes"), sized up to a comfortable target and accent-coloured. */
+.ks3-tick input[type="checkbox"] {
+  flex: 0 0 auto;
+  width: 25px;
+  height: 25px;
+  margin: 0;
+  accent-color: var(--ks3-ok);
+  cursor: pointer;
+}
+.ks3-tick label { cursor: pointer; }
+.ks3-tick-num {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-ok-text);
+}
+/* Partial is honest, and it is NOT a failure — so it takes the neutral
+   band, never the amber or a red. */
+.ks3-tally {
+  margin: 14px 0 0;
+  font-size: 17px;
+  font-weight: 700;
+  padding: 11px 16px;
+  border-radius: 13px;
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-rule-strong);
+  color: var(--ks3-ink-body);
+  display: inline-block;
+}
+.ks3-tally.is-met {
+  background: var(--ks3-ok-tint);
+  border-color: var(--ks3-ok);
+  color: var(--ks3-ok-text);
+}
+
+.ks3-retry-wrap {
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 2px solid var(--ks3-rule);
+}
+.ks3-retry {
+  cursor: pointer;
+  padding: 14px 24px;
+  border-radius: var(--ks3-r-control);
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+  border: 2px solid var(--ks3-ink);
+  font: inherit;
+  font-weight: 700;
+  font-size: 18px;
+  min-height: var(--ks3-tap);
+  transition: transform .14s;
+}
+.ks3-retry:hover { transform: translateY(-2px); }
+.ks3-retry-note { margin: 10px 0 0; font-size: 16px; color: var(--ks3-ink-muted); }
+
+/* ── simulations (R5, R6, R18, R19) ─────────────────────────────── */
+
+.ks3-sim { position: relative; margin: 20px 0 0; max-width: var(--ks3-wide); }
+.ks3-sim-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+  border-radius: var(--ks3-r-panel);
+}
+.ks3-dark .ks3-sim-canvas { border-color: var(--ks3-on-dark-muted); }
+
+.ks3-sim-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 26px;
+  margin: 16px 0 0;
+}
+.ks3-sim-control {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ks3-ink-body);
+}
+.ks3-dark .ks3-sim-control { color: var(--ks3-on-dark-body); }
+.ks3-sim-control input[type="range"] {
+  accent-color: var(--ks3-accent);
+  min-width: 11rem;
+  max-width: 15rem;
+  height: var(--ks3-tap);
+  cursor: pointer;
+}
+.ks3-sim-control select {
+  font: inherit;
+  font-size: 17px;
+  padding: 10px 12px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-ink);
+  background: var(--ks3-card);
+  color: var(--ks3-ink);
+  cursor: pointer;
+}
+.ks3-sim-value {
+  font-family: var(--ks3-font-mono);
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--ks3-ink-muted);
+}
+.ks3-dark .ks3-sim-value { color: var(--ks3-on-dark-muted); }
+
+/* R19 — particle-states gets a band strip instead of a number, so the
+   solid/liquid/gas changes are findable by dragging. No temperature is
+   displayed, because naming one would imply a melting point for a model
+   that names no substance. */
+.ks3-sim-bands {
+  display: grid;
+  grid-template-columns: 33fr 33fr 34fr;
+  gap: 3px;
+  margin-top: 6px;
+  min-width: 11rem;
+  max-width: 15rem;
+}
+.ks3-sim-band {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 4px 2px;
+  border-radius: 7px;
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-rule-strong);
+  color: var(--ks3-ink-muted);
+}
+.ks3-sim-band.is-on {
+  background: var(--ks3-accent-tint);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-accent-text);
+}
+
+/* R18's two locked readings. DM Mono because they change. */
+.ks3-sim-readout {
+  margin: 16px 0 0;
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+.ks3-dark .ks3-sim-readout { color: var(--ks3-on-dark-body); }
+.ks3-sim-figure {
+  font-family: var(--ks3-font-mono);
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 1;
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-sim-figure { color: var(--ks3-alert); }
+.ks3-sim-units {
+  font: inherit;
+  font-size: 16px;
+  padding: 8px 12px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-ink);
+  background: var(--ks3-card);
+  color: var(--ks3-ink);
+  cursor: pointer;
+}
+.ks3-sim-caption {
+  margin: 12px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ks3-ink-muted);
+}
+.ks3-dark .ks3-sim-caption { color: var(--ks3-on-dark-muted); }
+
+/* R5 — the locked simulation is BLURRED, not hidden. The veil covers the
+   canvas only; the caption underneath stays fully readable because it
+   holds the instructions for the prediction. */
+.ks3-sim-cover {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  aspect-ratio: 560 / 220;
+  margin: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ks3-ink);
+  background: color-mix(in srgb, var(--ks3-card) 85%, transparent);
+  border-radius: var(--ks3-r-panel);
+}
+/* ⚠️ The veil is LIGHT on every block, so its text is DARK on every block —
+   including the ink-dark ones. `.ks3-dark p` is (0,1,1) and `.ks3-sim-cover`
+   is a <p>, so without this the cover inherited on-dark cream text and
+   rendered light-on-light at 1.06:1 inside the practical block: the "make
+   your prediction first" instruction was invisible on precisely the lab R5
+   exists to gate. Found in a screenshot, then measured. The parity gate now
+   carries this pair on both block grounds so it cannot come back. */
+.ks3-dark .ks3-sim-cover { color: var(--ks3-ink); }
+.ks3-sim[data-locked="1"] .ks3-sim-cover { display: flex; }
+.ks3-sim[data-locked="1"] .ks3-sim-canvas { filter: blur(2px) saturate(.65); }
+.ks3-sim[data-locked="1"] .ks3-sim-controls { display: none; }
+.ks3-sim[data-locked="1"] .ks3-sim-readout { display: none; }
+
+/* ── layers (§5.6) ──
+   Violet marks a layer the student CHOSE. Never a level they were put
+   in — KS3 has no tier and must not grow one.
+   R12: when the support layer is empty it renders NOTHING. The
+   generator omits the section entirely; there is no empty-state rule
+   here on purpose. */
+.ks3-layer { margin: 34px 0 0; }
+.ks3-layer-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.ks3-layer-head .ks3-eyebrow { margin: 0; color: var(--ks3-stretch-text); }
+.ks3-layer-rule { flex: 1; height: 2px; background: var(--ks3-stretch-rule); }
+.ks3-layer-body {
+  background: var(--ks3-stretch-tint);
+  border: 2px solid var(--ks3-stretch);
+  border-radius: 26px;
+  padding: 26px 28px;
+}
+.ks3-layer-body > *:first-child { margin-top: 0; }
+.ks3-layer-body p { margin: 0; font-size: 19px; line-height: 1.7; }
+.ks3-support .ks3-layer-body {
+  background: var(--ks3-stretch-wash);
+  border-style: dashed;
+  border-color: var(--ks3-stretch-dash);
+}
+
+/* ── end matter ─────────────────────────────────────────────────── */
+
+.ks3-endmatter {
+  margin: 34px 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+.ks3-endmatter section {
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+  border-radius: var(--ks3-r-card);
+  padding: 22px;
+  margin: 0;
+  box-shadow: none;
+}
+.ks3-endmatter h2 {
+  margin: 0 0 10px;
+  font-size: 21px;
+  line-height: 1.25;
+  letter-spacing: -.01em;
+}
+.ks3-endmatter ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.ks3-endmatter a {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ks3-accent-text);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.ks3-endmatter a:hover { color: var(--ks3-accent-hover); text-decoration: underline; }
+.ks3-endmatter p { margin: 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body); }
+/* ⚠️ `.ks3-endmatter .ks3-tutor`, not `.ks3-tutor` — it has to outrank
+   `.ks3-endmatter section` above, which is (0,1,1) and would otherwise keep
+   the tutor card on the ordinary card ground no matter what came later in the
+   file. Caught by the parity gate: the accent resolved to #FFFCF5. */
+.ks3-endmatter .ks3-tutor { background: var(--ks3-accent); color: var(--ks3-ink); }
+
+/* ⚠️ 19px/700 IS THE ACCESSIBILITY FIX, not a styling preference.
+   Measured: ink #221E1B on accent #E4572E is 4.491:1 — it misses AA for
+   body-size text by nine thousandths. Claude Design's reference ships this
+   card at 17px, so the flaw is in the reference and the gate caught it.
+   Nothing in Design's palette rescues it: on the accent ground, ink is the
+   BEST available at 4.49, --ks3-card gives 3.59 and --ks3-on-dark 3.34.
+   The two honest options were to abandon the accent ground — losing the one
+   card on the page that shouts, which is the whole point of it — or to make
+   the text genuinely large, where the WCAG threshold is 3:1 and 4.49 clears
+   it with room. 19px at weight 700 is over the 18.66px-bold line, so this is
+   a reclassification the text actually earns, not a waiver. Do not drop it
+   back to 17px without also changing the ground. */
+.ks3-endmatter .ks3-tutor p {
+  color: var(--ks3-ink);
+  font-size: 19px;
+  font-weight: 700;
+}
+.ks3-tutor-cta {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 10px 17px;
+  border-radius: 12px;
+  background: var(--ks3-card);
+  color: var(--ks3-accent-text);
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+/* R14 — anything legal sits small, at the bottom edge, never a callout. */
+.ks3-legal {
+  margin: 34px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ks3-ink-muted);
+  border-top: 1px solid var(--ks3-rule);
+  padding-top: 16px;
+}
+
+.ks3-pending { color: var(--ks3-ink-muted); }
+.ks3-pending em { font-style: normal; font-size: .9em; }
+
+/* ── coming soon (§11 decision 8) ───────────────────────────────── */
+
+.ks3-coming-soon { background: var(--ks3-inset); box-shadow: none; }
+.ks3-tag {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule-strong);
+  color: var(--ks3-ink-muted);
+  margin: 0 0 16px;
+}
+
+/* ── index rows and cards ───────────────────────────────────────── */
+
+.ks3-lesson-list {
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+  border: 2px solid var(--ks3-ink);
+  border-radius: var(--ks3-r-card);
+  overflow: hidden;
+  background: var(--ks3-card);
+}
+.ks3-lesson-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--ks3-rule);
+  flex-wrap: wrap;
+}
+.ks3-lesson-row:last-child { border-bottom: 0; }
+.ks3-lesson-row > a {
+  flex: 1 1 240px;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 21px;
+  letter-spacing: -.015em;
+  color: var(--ks3-ink);
+  text-decoration: none;
+}
+.ks3-lesson-row > a:hover { color: var(--ks3-accent-text); text-decoration: underline; }
+.ks3-num {
+  flex: 0 0 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-rule);
+  display: grid;
+  place-items: center;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 17px;
+  color: var(--ks3-ink);
+}
+.ks3-family {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  padding: 4px 9px;
+  border-radius: 7px;
+  background: var(--ks3-band);
+  color: var(--ks3-ink-muted);
+}
+.ks3-badge {
+  font-size: 14px;
+  font-weight: 700;
+  padding: 6px 13px;
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-rule-strong);
+  color: var(--ks3-ink-muted);
+}
+.ks3-badge.is-draft {
+  background: var(--ks3-accent-tint);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-accent-text);
+}
+.ks3-badge.is-soon {
+  background: var(--ks3-band);
+  border-color: var(--ks3-rule-strong);
+  color: var(--ks3-ink-muted);
+}
+
+/* A coming-soon row dims; a cross-reference row goes blue and wraps so
+   the pointer gets its own line. */
+.ks3-lesson-row.is-soon { background: var(--ks3-row-dim); }
+.ks3-lesson-row.is-soon > a { color: var(--ks3-ink-faint); cursor: default; }
+.ks3-lesson-row.is-ref .ks3-num { background: var(--ks3-blue-tint); border-color: var(--ks3-blue); }
+.ks3-lesson-row.is-ref .ks3-badge {
+  background: var(--ks3-blue-tint);
+  border-color: var(--ks3-blue);
+  color: var(--ks3-blue-text);
+}
+/* R13 — says WHERE, never WHEN. Naming a year here would be false for
+   any school teaching a different order, and would make lesson page
+   text a function of the sequence. */
+.ks3-ref-note {
+  flex-basis: 100%;
+  margin: 6px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+.ks3-ref-note em { font-style: italic; }
+
+.ks3-unit-grid, .ks3-disc-grid {
+  list-style: none;
+  margin: 26px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
+}
+.ks3-unit-card > a, .ks3-disc-card > a {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  height: 100%;
+  padding: 20px 22px;
+  border: 2px solid var(--ks3-ink);
+  border-radius: var(--ks3-r-card);
+  background: var(--ks3-card);
+  box-shadow: var(--ks3-shadow-block);
+  text-decoration: none;
+  color: var(--ks3-ink);
+  transition: transform .16s;
+}
+.ks3-unit-card > a:hover, .ks3-disc-card > a:hover { transform: translate(-3px, -3px); }
+.ks3-unit-card h2, .ks3-disc-card h2 {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.15;
+  letter-spacing: -.02em;
+}
+.ks3-code {
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+
+/* ── browse layer ───────────────────────────────────────────────── */
+
+/* Season tint, read off the half-term slug. Autumn / spring / summer
+   are well separated from each other by hue, and each card also names
+   its half term (R2). */
+[data-season="autumn"] { --ks3-season: var(--ks3-accent); }
+[data-season="spring"] { --ks3-season: var(--ks3-ok); }
+[data-season="summer"] { --ks3-season: var(--ks3-blue); }
+
+.ks3-browse-year > a { box-shadow: 5px 5px 0 var(--ks3-ink); }
+.ks3-browse-year h2 { font-size: 36px; line-height: 1; }
+.ks3-browse-cta {
+  margin-top: auto;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ks3-accent-text);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+/* the six-segment season strip — decoration, hidden from AT */
+.ks3-browse-strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; margin-top: 4px; }
+.ks3-browse-strip > span {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--ks3-season, var(--ks3-rule));
+  border: 1px solid var(--ks3-ink);
+}
+
+.ks3-browse-ht > a { box-shadow: 5px 5px 0 var(--ks3-ink); }
+.ks3-browse-ht .ks3-code {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--ks3-r-control);
+  background: var(--ks3-season, var(--ks3-band));
+  border: 2px solid var(--ks3-ink);
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 21px;
+  color: var(--ks3-ink);
+  letter-spacing: 0;
+}
+.ks3-browse-ht h2 { font-size: 24px; letter-spacing: -.02em; }
+.ks3-browse-split { margin: 0; font-size: 16px; color: var(--ks3-ink-muted); }
+
+.ks3-browse-subject[data-discipline="biology"]   { --ks3-hue: var(--ks3-biology); }
+.ks3-browse-subject[data-discipline="chemistry"] { --ks3-hue: var(--ks3-chemistry); }
+.ks3-browse-subject[data-discipline="physics"]   { --ks3-hue: var(--ks3-physics); }
+.ks3-browse-subject > a { box-shadow: 5px 5px 0 var(--ks3-hue, var(--ks3-ink)); }
+.ks3-browse-subject h2 { font-size: 28px; }
+.ks3-browse-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 99px;
+  background: var(--ks3-hue, var(--ks3-accent));
+  border: 2px solid var(--ks3-ink);
+  flex: 0 0 auto;
+}
+.ks3-browse-subject-head { display: flex; align-items: center; gap: 11px; }
+
+.ks3-browse-unit { margin: 34px 0 0; }
+.ks3-browse-unit h2 { margin: 10px 0 0; font-size: 30px; letter-spacing: -.03em; }
+.ks3-browse-unit h2 a { color: var(--ks3-ink); text-decoration: none; }
+.ks3-browse-unit h2 a:hover { color: var(--ks3-accent-text); text-decoration: underline; }
+
+.ks3-browse-alt { margin: 26px 0 0; display: flex; gap: 20px; flex-wrap: wrap; }
+.ks3-browse-alt a {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ks3-accent-text);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.ks3-browse-alt a:hover { text-decoration: underline; }
+
+/* R14 keeps this one: two routes are visible on the page and the reader
+   is genuinely holding the question of whether the other leads
+   somewhere different. */
+.ks3-browse-secondary { margin: 52px 0 0; }
+.ks3-browse-secondary h2 { margin: 0 0 6px; font-size: 32px; letter-spacing: -.025em; }
+
+.ks3-footer {
+  border-top: 2px solid var(--ks3-ink);
+  padding: 24px;
+  text-align: center;
+  font-size: 16px;
+  color: var(--ks3-ink-muted);
+  background: var(--ks3-card);
+}
+
+/* ── motion (R6, R7) ────────────────────────────────────────────── */
+
+@keyframes ks3-reveal {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes ks3-pop {
+  0%   { transform: scale(.9); }
+  60%  { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ks3-reveal[data-reveal],
+  .ks3-crit-wrap,
+  .ks3-ticks { animation: ks3-reveal .22s both; }
+}
+
+/* R6 — reduced motion is a COMPLETE experience, not a degraded one.
+   Nothing here removes information: the simulations stop animating and
+   their written readout carries the whole result instead. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+/* ── narrow screens ────────────────────────────────────────────────
+   A real 390px phone. The reference set is desktop-first, so these are
+   translation decisions rather than transcriptions: single-column
+   grids, tighter block padding, and a title that stops at its clamp
+   floor rather than overflowing. */
+@media (max-width: 34rem) {
+  .ks3-main { padding: 28px 16px 64px; }
+  .ks3-block, .ks3-dark, .ks3-ladder { padding: 22px 18px; }
+  .ks3-cards { grid-template-columns: 1fr; }
+  .ks3-card-btn { min-height: 0; }
+  .ks3-ladder .ks3-options { grid-template-columns: 1fr; }
+  .ks3-endmatter { grid-template-columns: 1fr; }
+  .ks3-ladder-head { flex-direction: column; align-items: flex-start; }
+  .ks3-ladder-score { text-align: left; min-width: 0; }
+  .ks3-sim-control input[type="range"] { max-width: none; width: 100%; }
+  .ks3-keynote p { font-size: 24px; }
+  .ks3-hook h2 { font-size: 30px; }
+  .ks3-rung { padding-left: 16px; }
+}
+
+
+/* ── fonts/fonts.css ── */
+@font-face{
+  font-family: 'Bricolage Grotesque';
+  src: url('/shared/fonts/bricolage-grotesque-var-latin.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face{
+  font-family: 'Instrument Sans';
+  src: url('/shared/fonts/instrument-sans-var-latin.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face{
+  font-family: 'Instrument Sans';
+  src: url('/shared/fonts/instrument-sans-var-italic-latin.woff2') format('woff2');
+  font-weight: 400 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face{
+  font-family: 'DM Mono';
+  src: url('/shared/fonts/dm-mono-400-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face{
+  font-family: 'DM Mono';
+  src: url('/shared/fonts/dm-mono-500-latin.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face{
+  font-family: 'Fraunces';
+  src: url('/shared/fonts/fraunces-var-latin.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face{
+  font-family: 'Plus Jakarta Sans';
+  src: url('/shared/fonts/plus-jakarta-sans-var-latin.woff2') format('woff2');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+/* ── _ds_bundle.css ── */
+/* ═══════════════════════════════════════════════════════════════
+   3D Studio shell — component styles, translated from the frozen
+   reference. Section markers below name the reference section each
+   block came from (§01–§07).
+
+   Breakpoints (reference §04 LANDSCAPE note: desktop returns above
+   1024pt): desktop ≥1024 · tablet 700–1023 · phone <700.
+   ═══════════════════════════════════════════════════════════════ */
+
+* { box-sizing: border-box; }
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--st-ground);
+  font-family: var(--st-ui);
+  color: var(--st-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: inherit;
+}
+
+/* Links deepen on hover rather than brightening to the raw accent: the
+   reference's a:hover is #E4572E, which is 3.34:1 on the cream ground at
+   the 13.5px the phone library CTA carries. */
+a { color: var(--st-accent-text); text-decoration: none; }
+a:hover { color: var(--st-accent-hover); }
+
+@keyframes st-ping {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.85; }
+  75%, 100% { transform: translate(-50%, -50%) scale(2.1); opacity: 0; }
+}
+@keyframes st-caret {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* mono eyebrow — DM Mono uppercase, letterspaced */
+.eyebrow {
+  font: 500 10.5px/1 var(--st-mono);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+}
+
+/* ── App frame ─────────────────────────────────────────────── */
+/* ONE VIEWPORT TALL ON DESKTOP, AND THE PANEL SCROLLS INSIDE ITSELF.
+ *
+ * `min-height` alone leaves this column's height INDEFINITE: it is a floor,
+ * not a ceiling, so the flex column still takes its height from its content.
+ * `.main` is a `flex: 1; min-height: 0` grid, but a flex item's max-content
+ * contribution is what an auto-height flex container measures itself against,
+ * and an `fr` row in an indefinite-height grid resolves to exactly that
+ * max-content — so the grid row grew to the tallest item and the whole page
+ * grew with it. The info panel is that tallest item, and its height is the
+ * specimen's structure count: heart.json going from 2 hotspots to 14 put the
+ * body at 1942px inside a 900px viewport, with `.panel { overflow: hidden }`
+ * and `.panel__scroll { overflow-y: auto }` correct, built, and never engaged
+ * because the row they sit in had no ceiling. Constraining the ROW cannot fix
+ * this — measured: `grid-template-rows: minmax(0, 1fr)` on `.main` leaves the
+ * row at the same 1765.78px, because the fr has nothing definite to be a
+ * fraction OF. The ceiling has to come from here.
+ *
+ * Desktop only. Tablet and phone deliberately scroll the whole column, so the
+ * ceiling is lifted again at 1023 below — the shell is desktop-first and the
+ * max-width blocks are the overrides. */
+.app {
+  min-height: 100dvh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--st-ground);
+}
+.app[data-mode='retrieve'] { background: var(--st-room); }
+
+/* ── §01 Header ────────────────────────────────────────────── */
+.topbar {
+  height: 64px;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  border-bottom: 1px solid var(--st-rule);
+  flex: none;
+}
+.app[data-mode='retrieve'] .topbar { border-bottom-color: #2A241C; }
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--st-ink);
+  font: 600 18px/1 var(--st-display);
+  letter-spacing: -0.025em;
+}
+.brand:hover { color: var(--st-ink); }
+.app[data-mode='retrieve'] .brand { color: var(--st-cream); }
+
+.topbar__nav {
+  display: flex;
+  gap: 24px;
+  font: 500 15px/1 var(--st-ui);
+}
+.topbar__nav span { color: var(--st-muted); }
+.topbar__nav .is-here {
+  position: relative;
+  color: var(--st-ink);
+}
+.topbar__nav .is-here::after {
+  content: '';
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  bottom: -23px;
+  height: 2.5px;
+  background: var(--st-accent);
+}
+
+.topbar__end {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.signin { font: 500 15px/1 var(--st-ui); color: var(--st-muted); }
+.signin:hover { color: var(--st-ink); }
+.cta {
+  font: 600 14px/1 var(--st-ui);
+  color: var(--st-paper);
+  background: var(--st-accent-text);
+  padding: 11px 16px;
+  border-radius: 8px;
+}
+.cta:hover { color: var(--st-paper); }
+
+.endround {
+  font: 500 14px/1 var(--st-ui);
+  color: var(--st-room-text);
+  border: 1px solid var(--st-room-line);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+/* drawer / menu trigger (tablet + phone) */
+.libtrigger {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font: 500 13.5px/1 var(--st-ui);
+  border: 1.5px solid var(--st-btn-border);
+  background: var(--st-paper);
+  border-radius: 9px;
+  padding: 10px 13px;
+  color: var(--st-ink);
+}
+.libtrigger--square {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  justify-content: center;
+  border-radius: 10px;
+}
+
+/* ── §01 Breadcrumb strip + mode control ───────────────────── */
+.crumbstrip {
+  height: 56px;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  background: var(--st-crumb-bg);
+  border-bottom: 1px solid var(--st-rule);
+  flex: none;
+}
+.crumb {
+  font: 400 12px/1 var(--st-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.crumb b { font-weight: 400; color: var(--st-ink); }
+.crumb i { font-style: normal; color: var(--st-crumb-sep); }
+
+.modewrap {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: none;
+}
+.modewrap .eyebrow { letter-spacing: 0.16em; font-size: 10.5px; color: var(--st-faint); }
+.app[data-mode='retrieve'] .modewrap .eyebrow { color: var(--st-room-faint); }
+
+.modeseg {
+  display: flex;
+  gap: 3px;
+  padding: 3px;
+  background: var(--st-seg-bg);
+  border-radius: 9px;
+}
+.app[data-mode='retrieve'] .modeseg { background: #241E17; }
+.modeseg button {
+  font: 500 13.5px/1 var(--st-ui);
+  color: var(--st-caption);
+  padding: 9px 15px;
+  border-radius: 7px;
+}
+.app[data-mode='retrieve'] .modeseg button { color: var(--st-room-muted); }
+.modeseg button.is-on {
+  font-weight: 600;
+  color: var(--st-ink);
+  background: var(--st-paper);
+  box-shadow: 0 1px 2px rgba(60, 40, 10, 0.16);
+}
+.app[data-mode='retrieve'] .modeseg button.is-on {
+  color: var(--st-paper);
+  background: var(--st-accent-text);
+  box-shadow: none;
+}
+
+/* §02: the hatch strip that marks the retrieval room */
+.hatch {
+  height: 7px;
+  flex: none;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--st-accent) 0 9px,
+    var(--st-hatch-b) 9px 18px
+  );
+}
+
+/* ── Main layouts ──────────────────────────────────────────── */
+.main {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  gap: 24px;
+  padding: 24px 32px 32px;
+  align-items: stretch;
+}
+.main--explore { grid-template-columns: 232px minmax(0, 1fr) 372px; }
+.main--retrieve { grid-template-columns: minmax(0, 1fr) 404px; }
+
+/* tablet: library becomes a drawer, panel flows under the stage */
+@media (max-width: 1023px) {
+  .topbar { height: 60px; padding: 0 20px; gap: 14px; }
+  .topbar__nav { display: none; }
+  .crumbstrip { display: none; }
+  /* the desktop viewport ceiling is lifted: below 1024 the whole column
+     scrolls with the document, which is what these two layouts are for */
+  .app { height: auto; }
+  .main { display: block; padding: 16px 20px 20px; overflow-y: auto; }
+  .main--explore .library { display: none; }
+}
+
+@media (max-width: 699px) {
+  .topbar { height: 52px; padding: 0 16px; gap: 12px; }
+  .main { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+}
+
+/* ── §01 Library (desktop column) ──────────────────────────── */
+.library { display: flex; flex-direction: column; min-height: 0; }
+.library__head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0 4px 12px;
+}
+.library__count { margin-left: auto; font: 400 11px/1 var(--st-mono); color: var(--st-ghost); }
+.library__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+  min-height: 0;
+}
+.library__divider { height: 1px; background: var(--st-rule); margin: 8px 6px; flex: none; }
+
+.libcard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px;
+  border: 1.5px solid transparent;
+  border-radius: 10px;
+  width: 100%;
+}
+.libcard.is-viewing {
+  background: var(--st-paper);
+  border-color: var(--st-accent);
+}
+.libcard.is-soon { opacity: 0.52; cursor: default; }
+.libcard__thumb {
+  width: 52px;
+  height: 44px;
+  border-radius: 6px;
+  background: repeating-linear-gradient(45deg, var(--st-thumb-a) 0 4px, var(--st-thumb-b) 4px 8px);
+  border: 1px solid var(--st-thumb-border);
+  flex: none;
+}
+.libcard.is-viewing .libcard__thumb {
+  background: repeating-linear-gradient(45deg, var(--st-thumb-active-a) 0 4px, var(--st-thumb-active-b) 4px 8px);
+  border-color: var(--st-rule-strong);
+}
+.libcard__text { min-width: 0; text-align: left; }
+.libcard__name { display: block; font: 500 14.5px/1.2 var(--st-ui); letter-spacing: -0.01em; }
+.libcard.is-viewing .libcard__name { font-weight: 600; }
+/* WRAPS TO A SECOND LINE; NEVER TRUNCATES, NEVER BREAKS A WORD.
+ *
+ * The text column here is ~145px. `white-space: nowrap` + ellipsis rendered
+ * the live specimen's caption as VIEWING · 14 STRUCTU… — the count is the one
+ * thing this line exists to tell the viewer, and it was the part cut off. So
+ * it wraps. The live card is one line taller than the coming-soon cards; that
+ * is accepted (parity allow-list 17) rather than abbreviated away.
+ *
+ * `normal`, NOT the `break-word` the rest of this file uses. MRB-186 ruled a
+ * label column may never break inside a word (SYSTEM as SYSTE / M), and this
+ * is a label column of two short tokens: there is no over-long token for
+ * `break-word` to rescue, so it would only license the break the ruling
+ * forbids. Both properties are set explicitly because both INHERIT — several
+ * blocks in this file set `overflow-wrap: break-word`, and stating it here
+ * means no future ancestor can hand this column a break it did not ask for.
+ *
+ * `overflow: hidden` and `text-overflow: ellipsis` are gone with the nowrap
+ * they served. Kept, `overflow: hidden` would silently clip an unbreakable
+ * token — the exact failure mode above, hidden from the eye and from review.
+ * Overflowing visibly is worse-looking and better: it can be seen, and the
+ * parity gate's meta row measures it. */
+.libcard__meta {
+  display: block;
+  margin-top: 3px;
+  font: 400 10.5px/1 var(--st-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--st-faint);
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.libcard.is-viewing .libcard__meta { color: var(--st-accent-text); letter-spacing: 0.08em; }
+
+/* drawer/full-screen variants get roomier rows (§04/§05) */
+.libcard--big { padding: 11px; gap: 12px; }
+.libcard--big .libcard__thumb { width: 62px; height: 50px; }
+.libcard--big .libcard__name { font-size: 16px; }
+
+/* ── Stage ─────────────────────────────────────────────────── */
+.stagewrap { position: relative; min-height: 0; display: flex; flex-direction: column; }
+
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 420px;
+  border-radius: var(--st-r-stage);
+  overflow: hidden;
+}
+.stage--viewport {
+  background: radial-gradient(90% 75% at 50% 38%, #2C261F 0%, #191510 55%, #100D0A 100%);
+  border: 1px solid var(--st-viewport-edge);
+}
+.app[data-mode='retrieve'] .stage--viewport { border-color: var(--st-room-line); }
+.stage--paper {
+  background: var(--st-paper);
+  border: 1px solid var(--st-edge);
+}
+
+@media (max-width: 1023px) {
+  .stage { min-height: 0; height: 520px; flex: none; }
+}
+@media (max-width: 699px) {
+  .stage { height: auto; flex: 1; border-radius: 0; border: none; }
+}
+
+/* Flat renderer (MRB-190), drawn by src/renderer/flat/. The grid and the
+   plate frame are the reference's §06 in-situ treatment — 36px paper grid,
+   2px rule around the plate — carried over from the Stage 1 placeholder's
+   .ph-grid/.ph-plate, which the real renderer replaces. The lobed shape does
+   NOT carry over: that was Design drawing a heart, and the app loads one. */
+.plate-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--st-paper-grid) 1px, rgba(0, 0, 0, 0) 1px),
+    linear-gradient(90deg, var(--st-paper-grid) 1px, rgba(0, 0, 0, 0) 1px);
+  background-size: 36px 36px;
+}
+.plate {
+  position: absolute;
+  background: #DED7CB;
+  border: 2px solid var(--st-plate-line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.plate__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* placeholder renderer visuals (drawn by src/renderer/placeholder.ts) */
+.ph-shadow {
+  position: absolute;
+  left: 50%;
+  top: 63%;
+  transform: translate(-50%, -50%);
+  width: 56%;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.62), rgba(0, 0, 0, 0));
+}
+.ph-form {
+  position: absolute;
+  left: 50%;
+  top: 47%;
+  transform: translate(-50%, -50%);
+  width: min(48%, 344px);
+  aspect-ratio: 344 / 302;
+  border-radius: 57% 43% 48% 52% / 46% 55% 45% 54%;
+}
+.ph-form--a {
+  background: radial-gradient(120% 105% at 33% 24%, #A9A198 0%, #857D73 40%, #565048 78%, #3D3830 100%);
+  box-shadow: inset -20px -24px 48px rgba(0, 0, 0, 0.5), inset 16px 18px 34px rgba(255, 255, 255, 0.09);
+}
+.ph-form--b {
+  background: radial-gradient(120% 105% at 33% 24%, #A9A198 0%, #857D73 45%, #565048 100%);
+  box-shadow: inset -14px -16px 30px rgba(0, 0, 0, 0.4);
+}
+.ph-form--c { background: #7D766C; }
+.ph-glint {
+  position: absolute;
+  left: 44%;
+  top: 38%;
+  transform: translate(-50%, -50%);
+  width: 18%;
+  aspect-ratio: 5 / 4;
+  border-radius: 52% 48% 44% 56% / 50% 50% 50% 50%;
+  background: radial-gradient(120% 100% at 35% 25%, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 70%);
+}
+
+/* paper plate (§06) */
+.ph-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--st-paper-grid) 1px, rgba(0, 0, 0, 0) 1px),
+    linear-gradient(90deg, var(--st-paper-grid) 1px, rgba(0, 0, 0, 0) 1px);
+  background-size: 36px 36px;
+}
+.ph-plate {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(44%, 330px);
+  aspect-ratio: 330 / 290;
+  border-radius: 57% 43% 48% 52% / 46% 55% 45% 54%;
+  background: #DED7CB;
+  border: 2px solid var(--st-plate-line);
+}
+.ph-lobe {
+  position: absolute;
+  border-radius: 50% 50% 46% 54% / 52% 48% 52% 48%;
+  border: 2px solid var(--st-plate-line);
+}
+.ph-lobe--a { left: 41%; top: 38%; transform: translate(-50%, -50%); width: 17%; aspect-ratio: 33 / 28; background: #CEC6B8; }
+.ph-lobe--b { left: 57%; top: 60%; transform: translate(-50%, -50%); width: 15%; aspect-ratio: 30 / 26; background: #C6BEAF; }
+
+/* stage hint line */
+.stagehint {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  font: 400 11.5px/1 var(--st-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--st-room-hint);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.stage--paper .stagehint { color: var(--st-faint); }
+@media (max-width: 699px) {
+  .stagehint { bottom: 64px; font-size: 10.5px; }
+}
+
+/* Cross-section position (MRB-189). Not in the frozen reference — see the
+   note on SectionSlider in components/Stage.tsx. Present only while the cut
+   is, and pitched at the quality chip's register so it never competes with
+   the specimen. Sits clear of the rail's 18px + 48px column. */
+.sectionbar {
+  position: absolute;
+  left: 84px;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  background: rgba(22, 18, 14, 0.9);
+  border: 1px solid var(--st-room-line);
+  border-radius: var(--st-r-chip);
+}
+.sectionbar__word {
+  font: 500 10px/1 var(--st-mono);
+  letter-spacing: 0.14em;
+  color: var(--st-room-muted);
+}
+.sectionbar__range {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 132px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--st-room-line-strong);
+  cursor: ew-resize;
+}
+.sectionbar__range::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--st-accent);
+  border: 2px solid var(--st-room-well);
+}
+.sectionbar__range::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--st-accent);
+  border: 2px solid var(--st-room-well);
+}
+.sectionbar__range:focus-visible { outline: 2px solid var(--st-accent); outline-offset: 3px; }
+@media (max-width: 699px) {
+  .sectionbar { left: 12px; right: 12px; bottom: 96px; justify-content: space-between; }
+  .sectionbar__range { flex: 1; }
+}
+
+/* FLAT DIAGRAM chip (§06) */
+.flatchip {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 11px;
+  background: var(--st-note-bg);
+  border: 1px solid var(--st-note-border);
+  border-radius: var(--st-r-chip);
+}
+.flatchip__mark { width: 8px; height: 8px; background: var(--st-ink); }
+.flatchip__word {
+  font: 500 10.5px/1 var(--st-mono);
+  letter-spacing: 0.12em;
+  color: #4A4136;
+}
+
+/* ── §01 Tool rail ─────────────────────────────────────────── */
+.rail {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  padding: 6px;
+  background: rgba(22, 18, 14, 0.9);
+  border: 1px solid var(--st-room-line);
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: 0 16px 36px -18px rgba(0, 0, 0, 0.9);
+}
+.stage--paper .rail {
+  background: var(--st-paper);
+  border-color: var(--st-btn-border);
+  box-shadow: 0 10px 26px -14px rgba(60, 40, 10, 0.5);
+}
+
+.railbtn {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #C4B8A7;
+}
+.stage--paper .railbtn { color: #4A4136; }
+.railbtn.is-active {
+  background: var(--st-accent);
+  color: var(--st-paper);
+}
+.railbtn:focus-visible { outline: 2px solid var(--st-accent); outline-offset: 2px; }
+
+.rail__rule { height: 1px; background: var(--st-room-line); margin: 5px 7px; }
+.stage--paper .rail__rule { background: var(--st-rule); }
+
+/* tooltip: label + pointer verb (§01: tooltips carry the verb) */
+.railtip {
+  position: absolute;
+  left: 46px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: none;
+  align-items: center;
+  gap: 8px;
+  background: var(--st-cream);
+  color: var(--st-ink);
+  padding: 7px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  box-shadow: var(--st-shadow-pop);
+  z-index: 4;
+  pointer-events: none;
+}
+.railbtn:hover .railtip, .railbtn:focus-visible .railtip { display: flex; }
+.railtip__label { font: 500 12.5px/1 var(--st-ui); }
+.railtip__verb {
+  font: 400 10px/1 var(--st-mono);
+  letter-spacing: 0.04em;
+  color: var(--st-caption);
+  border: 1px solid var(--st-rule-strong);
+  border-radius: 4px;
+  padding: 3px 5px;
+  text-transform: uppercase;
+}
+
+/* auto-rotate toggle at the rail foot */
+.autorot {
+  margin-top: 2px;
+  height: 36px;
+  border-radius: 10px;
+  background: #241E18;
+  border: 1px solid var(--st-room-line);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 36px;
+}
+.autorot__track {
+  width: 20px;
+  height: 11px;
+  border-radius: 6px;
+  background: var(--st-accent);
+  position: relative;
+  display: block;
+}
+.autorot__track::after {
+  content: '';
+  position: absolute;
+  right: 1.5px;
+  top: 1.5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--st-paper);
+}
+.autorot.is-off .autorot__track { background: var(--st-room-line-strong); }
+.autorot.is-off .autorot__track::after { right: auto; left: 1.5px; }
+.autorot__word {
+  font: 500 7.5px/1 var(--st-mono);
+  letter-spacing: 0.06em;
+  color: var(--st-room-muted);
+}
+
+/* phone: the rail goes horizontal (§05) */
+@media (max-width: 699px) {
+  .rail {
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: 0;
+    transform: none;
+    width: auto;
+    height: 54px;
+    padding: 0 12px;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(rgba(16, 13, 10, 0), rgba(16, 13, 10, 0.92) 40%);
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .rail::-webkit-scrollbar { display: none; }
+  /* right edge faded to signal more */
+  .rail::after {
+    content: '';
+    position: sticky;
+    right: 0;
+    flex: none;
+    width: 20px;
+    height: 40px;
+    margin-left: auto;
+    background: linear-gradient(90deg, rgba(16, 13, 10, 0), rgba(16, 13, 10, 0.9));
+    pointer-events: none;
+  }
+  .stage--paper .rail { background: linear-gradient(rgba(255, 253, 248, 0), rgba(255, 253, 248, 0.95) 40%); }
+  .stage--paper .rail::after { background: linear-gradient(90deg, rgba(255, 253, 248, 0), rgba(255, 253, 248, 0.95)); }
+  .railbtn {
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    background: rgba(58, 50, 42, 0.85);
+    flex: none;
+  }
+  .stage--paper .railbtn { background: var(--st-note-bg); }
+  .railbtn.is-active { background: var(--st-accent); }
+  .rail__rule { display: none; }
+  .autorot { margin-top: 0; flex: none; height: 40px; width: 40px; border-radius: 11px; }
+  .railtip { display: none !important; }
+}
+
+/* ── §01/§07 Quality chip ──────────────────────────────────── */
+.chip {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 11px;
+  background: rgba(22, 18, 14, 0.86);
+  border: 1px solid var(--st-room-line);
+  border-radius: var(--st-r-chip);
+}
+@media (max-width: 699px) {
+  .chip { bottom: auto; top: 12px; right: 12px; padding: 6px 9px; }
+}
+.meter { display: flex; align-items: flex-end; gap: 2px; }
+.meter i {
+  width: 3px;
+  background: var(--st-cream);
+  display: block;
+}
+.meter i:nth-child(1) { height: 5px; }
+.meter i:nth-child(2) { height: 8px; }
+.meter i:nth-child(3) { height: 11px; }
+.meter i:nth-child(4) { height: 14px; }
+.meter i.is-dim { background: #5C5347; }
+.meter--panel i.is-dim { background: var(--st-room-line-soft); }
+.meter--panel i { background: var(--st-room-muted); }
+.chip__word {
+  font: 400 10.5px/1 var(--st-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--st-room-text);
+}
+
+/* §07 quality override panel */
+.qpanel {
+  position: absolute;
+  right: 18px;
+  bottom: 56px;
+  width: 262px;
+  background: var(--st-room);
+  border: 1px solid var(--st-room-line);
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 18px 40px -20px rgba(20, 12, 4, 0.8);
+  z-index: 6;
+}
+@media (max-width: 699px) {
+  .qpanel { bottom: auto; top: 50px; right: 12px; }
+}
+.qpanel__head {
+  padding: 9px 10px 11px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.qpanel__title {
+  font: 500 10px/1 var(--st-mono);
+  letter-spacing: 0.18em;
+  color: var(--st-room-muted);
+}
+.qpanel__detected {
+  margin-left: auto;
+  font: 400 9.5px/1 var(--st-mono);
+  /* dark-room role token, NOT --st-muted: the light-world muted measures
+     2.87:1 on --st-room, under the 3.0 floor the contrast gate holds.
+     room-faint keeps the reference's dimmer-than-the-title hierarchy. */
+  color: var(--st-room-faint);
+}
+.qrow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 9px;
+}
+.qrow.is-on { background: var(--st-room-raise); }
+.qrow__box {
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+  border: 1.5px solid var(--st-room-line-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+.qrow.is-on .qrow__box { border-color: var(--st-accent); background: var(--st-accent); }
+.qrow.is-on .qrow__box::after { content: ''; width: 5px; height: 5px; background: var(--st-room); }
+.qrow__word { font: 400 13.5px/1 var(--st-ui); color: #C4B8A7; }
+.qrow.is-on .qrow__word { font-weight: 500; color: var(--st-cream); }
+.qrow__note {
+  margin-left: auto;
+  font: 400 10px/1 var(--st-mono);
+  letter-spacing: 0.04em;
+  color: var(--st-room-muted);
+}
+.qrow__meter { margin-left: auto; }
+.qpanel__rule { height: 1px; background: var(--st-room-line-soft); margin: 6px 10px; }
+
+/* ── §07 Hotspots — sizing/fill inline in the component; here only
+      chrome that carries no identity ─────────────────────────── */
+.hotspot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--st-mono);
+  font-weight: 500;
+  padding: 0;
+}
+/* §04: 28px visual, 48pt transparent touch area */
+.hotspot::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+.hotspot__ping {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid var(--st-accent);
+  animation: st-ping 1.9s ease-out infinite;
+  pointer-events: none;
+}
+
+/* leader line from open dot to callout */
+.leader {
+  position: absolute;
+  height: 1.5px;
+  background: linear-gradient(90deg, var(--st-accent), rgba(228, 87, 46, 0.35));
+  pointer-events: none;
+}
+.stage--paper .leader { background: var(--st-accent); }
+
+/* §01 callout */
+.callout {
+  position: absolute;
+  width: 216px;
+  background: rgba(16, 13, 10, 0.95);
+  border: 1px solid #4A4136;
+  border-radius: var(--st-r-card);
+  padding: 13px 15px 15px;
+  box-shadow: var(--st-shadow-callout);
+  z-index: 5;
+}
+.stage--paper .callout {
+  background: var(--st-ink);
+  border: none;
+  box-shadow: 0 22px 44px -18px rgba(40, 26, 10, 0.6);
+}
+.callout__head { display: flex; align-items: center; gap: 7px; }
+.callout__dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--st-accent);
+  border: 1.5px solid var(--st-cream);
+}
+.callout__eyebrow {
+  font: 500 10.5px/1 var(--st-mono);
+  letter-spacing: 0.16em;
+  color: var(--st-ember-strong);
+}
+.callout__title {
+  margin-top: 9px;
+  font: 600 18px/1.2 var(--st-display);
+  color: var(--st-cream);
+  letter-spacing: -0.02em;
+  overflow-wrap: break-word;
+}
+.callout__detail {
+  margin-top: 7px;
+  font: 400 13px/1.5 var(--st-ui);
+  color: var(--st-room-body);
+  overflow-wrap: break-word;
+}
+.callout__foot {
+  margin-top: 11px;
+  padding-top: 10px;
+  border-top: 1px solid var(--st-room-line-soft);
+  display: flex;
+  gap: 6px;
+  font: 500 11px/1 var(--st-mono);
+  letter-spacing: 0.1em;
+  color: var(--st-room-faint);
+}
+.callout__foot button {
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  text-transform: uppercase;
+}
+.callout__foot button:hover { color: var(--st-room-text); }
+.callout__foot i { font-style: normal; }
+
+/* ── §01 Info panel ────────────────────────────────────────── */
+.panel {
+  position: relative;
+  background: var(--st-paper);
+  border: 1px solid var(--st-rule);
+  border-radius: var(--st-r-stage);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.panel__scroll {
+  padding: 22px 22px 0;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+.panel__chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.kchip {
+  font: 500 10.5px/1 var(--st-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+  border: 1px solid var(--st-rule);
+  border-radius: 5px;
+  padding: 5px 7px;
+}
+.kchip--accent {
+  margin-left: auto;
+  color: var(--st-accent-text);
+  border-color: var(--st-chip-tint-border);
+  background: var(--st-chip-tint);
+}
+.panel__name {
+  margin: 16px 0 0;
+  font: 600 36px/1 var(--st-display);
+  letter-spacing: -0.035em;
+}
+.panel__epithet {
+  margin: 9px 0 0;
+  font: italic 400 16px/1.35 var(--st-ui);
+  color: var(--st-caption);
+  overflow-wrap: break-word;
+}
+.panel__desc {
+  margin: 14px 0 0;
+  font: 400 16.5px/1.6 var(--st-ui);
+  color: var(--st-body);
+  overflow-wrap: break-word;
+}
+
+.sectionrule {
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sectionrule__line { flex: 1; height: 1px; background: var(--st-rule-soft); }
+.sectionrule__count { font: 400 10.5px/1 var(--st-mono); color: var(--st-ghost); }
+
+.structures {
+  margin-top: 11px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.structchip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 9px;
+  border: 1px solid var(--st-rule-soft);
+  border-radius: 8px;
+  min-width: 0;
+}
+.structchip__num {
+  width: 19px;
+  height: 19px;
+  border-radius: 4px;
+  background: var(--st-num-well);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 500 10px/1 var(--st-mono);
+  color: var(--st-caption);
+  flex: none;
+}
+.structchip__label {
+  font: 400 13.5px/1.2 var(--st-ui);
+  color: var(--st-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.structchip.is-open { border: 1.5px solid var(--st-accent); background: var(--st-chip-tint); padding: 7.5px 8.5px; }
+.structchip.is-open .structchip__num { background: var(--st-accent-text); color: var(--st-paper); }
+.structchip.is-open .structchip__label { font-weight: 600; color: var(--st-ink); }
+
+.facts { margin-top: 4px; }
+.fact {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--st-rule-fact);
+}
+.fact:last-child { border-bottom: none; }
+/* BREAK-WORD, NOT ANYWHERE — and the difference is the whole defect (MRB-186).
+ *
+ * `overflow-wrap: anywhere` also collapses the element's MIN-CONTENT
+ * contribution to a single character. These two are flex items sharing a
+ * `space-between` row, so flexbox was free to squeeze the label to a few
+ * characters and break inside the word: SYSTEM rendered SYSTE / M, LICENCE
+ * LICE / NCE, SOURCE SOU / RCE — on desktop, at full width.
+ *
+ * `break-word` still breaks a genuinely over-long token as a last resort, so
+ * nothing can overflow the card, but it leaves min-content at the longest
+ * WORD. Flexbox therefore cannot shrink either column past that, and a break
+ * can only ever fall where a break belongs. Applied to every wrapping element
+ * in this file for the same reason, whether or not it is a flex item today.
+ *
+ * Watched by the parity gate's mid-word-break row, which walks the rendered
+ * line boxes on every screen — this was invisible to review because the block
+ * is furniture the frozen reference does not draw, so nothing asserted it. */
+.fact__label {
+  font: 400 11.5px/1.3 var(--st-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+  overflow-wrap: break-word;
+}
+.fact__value { font: 500 14.5px/1.3 var(--st-ui); text-align: right; overflow-wrap: break-word; }
+
+.matters {
+  margin-top: 14px;
+  background: var(--st-ink);
+  border-radius: var(--st-r-card);
+  padding: 14px 16px;
+}
+.matters__eyebrow {
+  font: 500 10px/1 var(--st-mono);
+  letter-spacing: 0.18em;
+  color: var(--st-ember);
+}
+.matters__body {
+  margin-top: 8px;
+  font: 400 13.5px/1.55 var(--st-ui);
+  color: var(--st-room-note);
+  overflow-wrap: break-word;
+}
+.didyouknow {
+  margin-top: 8px;
+  margin-bottom: 16px;
+  background: var(--st-note-bg);
+  border: 1px dashed var(--st-note-border);
+  border-radius: var(--st-r-card);
+  padding: 14px 16px;
+}
+.didyouknow__eyebrow {
+  font: 500 10px/1 var(--st-mono);
+  letter-spacing: 0.18em;
+  color: var(--st-caption);
+}
+.didyouknow__body {
+  margin-top: 8px;
+  font: 400 13.5px/1.55 var(--st-ui);
+  color: #4A4136;
+  overflow-wrap: break-word;
+}
+
+.panel__foot {
+  position: relative;
+  padding: 14px 22px 18px;
+  background: var(--st-paper);
+  border-top: 1px solid var(--st-rule-soft);
+  display: flex;
+  gap: 8px;
+  flex: none;
+}
+.panel__foot::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -40px;
+  height: 40px;
+  background: linear-gradient(rgba(255, 253, 248, 0), var(--st-paper));
+  pointer-events: none;
+}
+.btn {
+  text-align: center;
+  font: 600 14.5px/1 var(--st-ui);
+  border-radius: var(--st-r-btn);
+  padding: 14px 10px;
+}
+.btn--outline {
+  flex: 1;
+  color: var(--st-ink);
+  background: var(--st-paper);
+  border: 1.5px solid var(--st-btn-border);
+  padding: 13px 10px;
+}
+.btn--primary {
+  flex: 1.25;
+  color: var(--st-paper);
+  background: var(--st-accent-text);
+}
+.btn--primary:hover { color: var(--st-paper); }
+.btn--outline:hover { color: var(--st-ink); }
+
+/* tablet panel: two columns under the stage (§04) */
+.tpanel {
+  margin-top: 16px;
+  background: var(--st-paper);
+  border: 1px solid var(--st-rule);
+  border-radius: var(--st-r-stage);
+  padding: 22px 24px;
+}
+.tpanel__top { display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+.tpanel__title { flex: 1; min-width: 260px; }
+.tpanel__title .panel__name { font-size: 34px; margin-top: 14px; }
+.tpanel__actions { display: flex; gap: 8px; flex: none; }
+.tpanel__desc { margin: 16px 0 0; font: 400 17px/1.6 var(--st-ui); color: var(--st-body); max-width: 640px; overflow-wrap: break-word; }
+.tpanel__cols {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+@media (max-width: 830px) {
+  .tpanel__cols { grid-template-columns: 1fr; }
+}
+
+/* ── §04 tablet drawer + scrim ─────────────────────────────── */
+.scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 23, 20, 0.42);
+  z-index: 20;
+  border: none;
+  padding: 0;
+}
+.drawer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 372px;
+  max-width: 88vw;
+  background: var(--st-ground);
+  border-right: 1px solid var(--st-edge);
+  box-shadow: 26px 0 60px -20px rgba(26, 16, 4, 0.5);
+  padding: 20px;
+  z-index: 21;
+  overflow-y: auto;
+}
+.drawer__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--st-rule);
+}
+.drawer__title { font: 600 22px/1 var(--st-display); letter-spacing: -0.03em; }
+.drawer__count { font: 400 11px/1 var(--st-mono); color: var(--st-ghost); }
+.drawer__close {
+  margin-left: auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1px solid var(--st-btn-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.drawer__list { margin-top: 12px; display: flex; flex-direction: column; gap: 2px; }
+
+/* ── §05 phone: library full-screen ────────────────────────── */
+.phonelib {
+  position: fixed;
+  inset: 0;
+  background: var(--st-ground);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+}
+.phonelib__head {
+  height: 52px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--st-rule);
+  flex: none;
+}
+.phonelib__close {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--st-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.phonelib__title { font: 600 20px/1 var(--st-display); letter-spacing: -0.03em; }
+.phonelib__list { padding: 14px 16px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; flex: 1; }
+.phonelib__foot {
+  padding: 16px 18px 26px;
+  border-top: 1px solid var(--st-rule);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+}
+.phonelib__note { font: 400 13.5px/1 var(--st-ui); color: var(--st-muted); }
+.phonelib__cta { font: 600 13.5px/1 var(--st-ui); color: var(--st-accent-text); }
+
+/* ── §05 phone sheet — two detents, stage never fully leaves ── */
+.sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--st-paper);
+  border-top: 1px solid var(--st-rule);
+  border-radius: 18px 18px 0 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+  height: var(--sheet-rest, 55%);
+  transition: height 0.22s ease;
+}
+.sheet.is-raised {
+  height: calc(100% - 150px);
+  box-shadow: 0 -18px 40px -22px rgba(26, 16, 4, 0.55);
+}
+.sheet__grab {
+  display: flex;
+  justify-content: center;
+  padding: 9px 0 14px;
+  flex: none;
+  width: 100%;
+  touch-action: none;
+}
+.sheet__handle { width: 44px; height: 4px; border-radius: 2px; background: var(--st-btn-border); }
+.sheet.is-raised .sheet__handle { background: #C9B79A; }
+.sheet__body { padding: 0 18px; overflow-y: auto; flex: 1; min-height: 0; }
+.sheet__body .panel__name { font-size: 32px; margin-top: 12px; }
+.sheet__foot {
+  padding: 12px 18px 26px;
+  background: var(--st-paper);
+  border-top: 1px solid var(--st-rule-soft);
+  display: flex;
+  gap: 8px;
+  flex: none;
+}
+.lessonglyph {
+  width: 52px;
+  border: 1.5px solid var(--st-btn-border);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+/* related-lesson row (§05 sheet raised) */
+.lessonrow {
+  margin-top: 10px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px;
+  border: 1px solid var(--st-rule);
+  border-radius: var(--st-r-card);
+}
+.lessonrow__thumb {
+  width: 46px;
+  height: 38px;
+  border-radius: 6px;
+  background: repeating-linear-gradient(45deg, var(--st-thumb-a) 0 4px, var(--st-thumb-b) 4px 8px);
+  border: 1px solid var(--st-thumb-border);
+  flex: none;
+}
+.lessonrow__title { display: block; font: 600 14.5px/1.25 var(--st-ui); overflow-wrap: break-word; }
+.lessonrow__meta { display: block; margin-top: 3px; font: 400 10.5px/1 var(--st-mono); color: var(--st-faint); text-transform: uppercase; }
+.lessonrow__arrow { margin-left: auto; color: var(--st-accent-text); display: flex; flex: none; }
+
+/* ── §02 retrieval room ────────────────────────────────────── */
+.rpanel {
+  background: var(--st-room-panel);
+  border: 1px solid var(--st-room-line-mid);
+  border-radius: var(--st-r-stage);
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.rpanel__head { display: flex; align-items: center; gap: 8px; }
+.rpanel__round {
+  font: 500 10.5px/1 var(--st-mono);
+  letter-spacing: 0.18em;
+  color: var(--st-room-muted);
+}
+.rpanel__rule { flex: 1; height: 1px; background: var(--st-room-line-mid); }
+.rpanel__of {
+  font: 500 10.5px/1 var(--st-mono);
+  letter-spacing: 0.14em;
+  color: var(--st-cream);
+}
+.progress { margin-top: 16px; display: flex; gap: 7px; flex-wrap: wrap; }
+.psq {
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.psq--done { background: var(--st-cream); }
+.psq--current {
+  border: 2px solid var(--st-accent);
+  background: var(--st-room-raise);
+  font: 500 13px/1 var(--st-mono);
+  color: var(--st-cream);
+}
+.psq--ahead { border: 1.5px solid var(--st-room-line-strong); }
+
+.rpanel__ask {
+  margin-top: 34px;
+  font: 500 11px/1 var(--st-mono);
+  letter-spacing: 0.2em;
+  color: var(--st-ember);
+}
+.rinput {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  height: 64px;
+  padding: 0 18px;
+  background: var(--st-room-well);
+  border: 1.5px solid var(--st-room-line-strong);
+  border-radius: var(--st-r-card);
+}
+.rinput input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font: 400 21px/1 var(--st-ui);
+  color: var(--st-cream);
+  min-width: 0;
+}
+.rinput input::placeholder { color: #6B6055; }
+.rinput__caret {
+  width: 2px;
+  height: 26px;
+  background: var(--st-accent);
+  animation: st-caret 1.1s step-end infinite;
+}
+.rpanel__actions { margin-top: 12px; display: flex; gap: 8px; }
+.rbtn-check {
+  flex: 1;
+  text-align: center;
+  font: 600 15px/1 var(--st-ui);
+  color: var(--st-paper);
+  background: var(--st-accent-text);
+  border-radius: 10px;
+  padding: 15px 10px;
+}
+.rbtn-skip {
+  text-align: center;
+  font: 500 15px/1 var(--st-ui);
+  color: var(--st-room-text);
+  border: 1.5px solid var(--st-room-line-strong);
+  border-radius: 10px;
+  padding: 14px 22px;
+}
+.rreveal {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--st-room-line-soft);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.rreveal__q { font: 400 13.5px/1 var(--st-ui); color: var(--st-room-muted); }
+.rreveal__link {
+  font: 500 13.5px/1 var(--st-ui);
+  color: var(--st-ember);
+  border-bottom: 1px solid #6E4A38;
+  padding-bottom: 2px;
+}
+/* Named / missed / revealed — the round's own states (MRB-191). The frozen
+   reference draws the solid+tick square and the MISSED SO FAR chips; the
+   revealed card is the shell's answer to "correct identification reveals the
+   label and detail text" (spec §6), pitched at the callout's register. */
+.psq--done { color: var(--st-room-well); font: 600 15px/1 var(--st-ui); }
+.psq--missed { background: var(--st-room-raise); color: var(--st-room-muted); }
+
+.rreveal-card {
+  margin-top: 30px;
+  padding: 18px;
+  background: var(--st-room-panel);
+  border: 1px solid var(--st-room-line);
+  border-radius: 12px;
+}
+.rreveal-card__eyebrow {
+  font: 500 10.5px/1 var(--st-mono);
+  letter-spacing: 0.18em;
+  color: var(--st-ember);
+}
+.rreveal-card__title {
+  margin-top: 12px;
+  font: 600 24px/1.15 var(--st-display);
+  letter-spacing: -0.02em;
+  color: var(--st-cream);
+}
+.rreveal-card__detail {
+  margin-top: 10px;
+  font: 400 14px/1.55 var(--st-ui);
+  color: var(--st-room-body);
+}
+.rreveal-card .rbtn-check { margin-top: 18px; width: 100%; }
+
+.rmissed { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--st-room-line-soft); }
+.rmissed__chips { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 7px; }
+.rmissed__chip {
+  font: 500 12px/1 var(--st-ui);
+  color: var(--st-room-text);
+  background: var(--st-room-raise);
+  border: 1px solid var(--st-room-line);
+  border-radius: 7px;
+  padding: 7px 10px;
+}
+.rmissed__eyebrow {
+  font: 500 10.5px/1 var(--st-mono);
+  letter-spacing: 0.18em;
+  color: var(--st-room-muted);
+}
+.rmissed__note {
+  margin-top: 14px;
+  font: 400 13px/1.5 var(--st-ui);
+  color: var(--st-room-faint);
+}
+
+@media (max-width: 1023px) {
+  .main--retrieve { display: grid; grid-template-columns: 1fr; }
+  .main--retrieve .stage { height: 420px; }
+  .rpanel { min-height: 420px; }
+}
+@media (max-width: 699px) {
+  .main--retrieve { display: flex; flex-direction: column; gap: 0; padding: 0; overflow-y: auto; }
+  .main--retrieve .stage { flex: none; height: 300px; border-radius: 0; border: none; }
+  .rpanel { border-radius: 0; border: none; flex: 1; }
+}
+
+
+/* ── styles.css ── */
+@import "./tokens/src-styles-tokens.css";
+@import "./tokens/shared-tokens.css";
+@import "./tokens/shared-ks3.css";
+@import "./fonts/fonts.css";
+@import "./_ds_bundle.css";
+
+
+/* ── minted since Design's bundle, read out of shared/tokens.css ──
+   Design's `_ds` drop predates MRB-252, which minted the two
+   body-size greens. Values are COPIED FROM the site's token
+   file at build time rather than retyped, so they cannot
+   drift from it. */
+:root,
+.rd[data-mode="ks3"] {
+  --ks3-ok-dark: #40DD84;
+}
