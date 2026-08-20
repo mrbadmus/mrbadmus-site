@@ -118,6 +118,7 @@ gate owns is that nothing a student can see has moved.
 
 from __future__ import annotations
 
+import atexit
 import json
 import math
 import os
@@ -2147,7 +2148,7 @@ def serve_dist_as_3d(prefix, strip_glb=False):
 
     Returns (url, cleanup).
     """
-    root = tempfile.mkdtemp(prefix=prefix)
+    root = tempfile.mkdtemp(prefix=prefix, dir=cdp.gate_tmp())
     target = os.path.join(root, "3d")
     if strip_glb:
         shutil.copytree(DIST, target)
@@ -2252,7 +2253,13 @@ def main():
     print("  content/heart.json declares %d hotspot(s)\n" % len(every))
 
     report = Report()
-    shots = tempfile.mkdtemp(prefix="st-render-shots-")
+    # ⊕ MRB-270. `shots` is removed on the normal path below, but that line is
+    # reached only if every driven check returns. `atexit` covers the run that
+    # raises or exits early — which is exactly the run you least want quietly
+    # shrinking the volume. `rmtree(ignore_errors=True)` is idempotent, so the
+    # two together are safe.
+    shots = tempfile.mkdtemp(prefix="st-render-shots-", dir=cdp.gate_tmp())
+    atexit.register(shutil.rmtree, shots, ignore_errors=True)
     shot_a = os.path.join(shots, "tier-a.png")
     shot_c = os.path.join(shots, "tier-c.png")
 

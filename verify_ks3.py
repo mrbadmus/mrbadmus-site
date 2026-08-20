@@ -12,6 +12,7 @@ device) are printed as MANUAL so the list stays honest about what has actually
 been verified and what has not.
 """
 
+import contextlib
 import glob
 import os
 import re
@@ -43,6 +44,33 @@ from ks3_data import half_terms as HT
 
 FAILS = []
 MANUAL = []
+
+
+# ⊕ MRB-270. Every scratch tree this file makes is a FULL KS3 build, and there
+# are five of them in one run. They used to be `tempfile.mkdtemp()` with the
+# `rmtree` written after the work rather than in a `finally`, so any build that
+# raised — which is what a failing gate DOES — left the tree behind. That is a
+# leak proportional to how badly the run is going, on a volume that was already
+# the one the shell writes its own output to. `_scratch()` puts them under the
+# named gate root beside the Chrome profiles and hands back a context manager
+# that removes the tree pass, fail, or exception.
+
+def _gate_scratch_root():
+    try:
+        import ks3_browser
+        return ks3_browser.gate_tmp()
+    except Exception:
+        return None
+
+
+@contextlib.contextmanager
+def _scratch(prefix):
+    """A temp directory that is removed however the block exits."""
+    path = tempfile.mkdtemp(prefix=prefix, dir=_gate_scratch_root())
+    try:
+        yield path
+    finally:
+        shutil.rmtree(path, ignore_errors=True)
 
 
 def check(name, ok, detail=""):
@@ -619,12 +647,11 @@ def main():
     try:
         ds.DEFAULT_SEQUENCE_V1.clear()
         ds.DEFAULT_SEQUENCE_V1.update(school_schemes.effective_sequence(SCHOOL))
-        tmp = tempfile.mkdtemp()
-        B.build_ks3(output_dir=tmp, mirror_to_root=False, repo_root=".")
-        after = _lesson_tree(os.path.join(tmp, "ks3"))
-        same_paths = set(before) == set(after)
-        same_bytes = all(before[k] == after.get(k) for k in before)
-        shutil.rmtree(tmp)
+        with _scratch("ks3-reorder-") as tmp:
+            B.build_ks3(output_dir=tmp, mirror_to_root=False, repo_root=".")
+            after = _lesson_tree(os.path.join(tmp, "ks3"))
+            same_paths = set(before) == set(after)
+            same_bytes = all(before[k] == after.get(k) for k in before)
     finally:
         ds.DEFAULT_SEQUENCE_V1.clear()
         ds.DEFAULT_SEQUENCE_V1.update(original)
@@ -677,29 +704,26 @@ def main():
                 (browse if _is_browse(rel) else lessons)[rel] = body
         return lessons, browse
 
-    base_dir = tempfile.mkdtemp()
-    B.build_ks3(output_dir=base_dir, mirror_to_root=False, repo_root=".")
-    base_lessons, base_browse = _split(os.path.join(base_dir, "ks3"))
+    with _scratch("ks3-base-") as base_dir, _scratch("ks3-moved-") as moved_dir:
+        B.build_ks3(output_dir=base_dir, mirror_to_root=False, repo_root=".")
+        base_lessons, base_browse = _split(os.path.join(base_dir, "ks3"))
 
-    moved_dir = tempfile.mkdtemp()
-    try:
-        ds.DEFAULT_SEQUENCE_V1["C3"] = 8
-        HT.recompute()
-        B.build_ks3(output_dir=moved_dir, mirror_to_root=False, repo_root=".")
-        moved_lessons, moved_browse = _split(os.path.join(moved_dir, "ks3"))
-    finally:
-        ds.DEFAULT_SEQUENCE_V1.clear()
-        ds.DEFAULT_SEQUENCE_V1.update(original)
-        HT.recompute()
+        try:
+            ds.DEFAULT_SEQUENCE_V1["C3"] = 8
+            HT.recompute()
+            B.build_ks3(output_dir=moved_dir, mirror_to_root=False, repo_root=".")
+            moved_lessons, moved_browse = _split(os.path.join(moved_dir, "ks3"))
+        finally:
+            ds.DEFAULT_SEQUENCE_V1.clear()
+            ds.DEFAULT_SEQUENCE_V1.update(original)
+            HT.recompute()
 
-    lessons_same = (set(base_lessons) == set(moved_lessons)
-                    and all(base_lessons[k] == moved_lessons[k]
-                            for k in base_lessons))
-    browse_changed = base_browse != moved_browse
-    changed_n = sum(1 for k in base_browse
-                    if base_browse[k] != moved_browse.get(k))
-    shutil.rmtree(base_dir)
-    shutil.rmtree(moved_dir)
+        lessons_same = (set(base_lessons) == set(moved_lessons)
+                        and all(base_lessons[k] == moved_lessons[k]
+                                for k in base_lessons))
+        browse_changed = base_browse != moved_browse
+        changed_n = sum(1 for k in base_browse
+                        if base_browse[k] != moved_browse.get(k))
 
     check("moving a unit between years changes NO lesson page", lessons_same,
           "%d lesson-tree pages compared (§4.5.2)" % len(base_lessons))
@@ -718,14 +742,13 @@ def main():
     B.build_ks3()
 
     # 7. Determinism.
-    t1, t2 = tempfile.mkdtemp(), tempfile.mkdtemp()
-    B.build_ks3(output_dir=t1, mirror_to_root=False, repo_root=".")
-    B.build_ks3(output_dir=t2, mirror_to_root=False, repo_root=".")
-    diff = subprocess.run(["diff", "-r", os.path.join(t1, "ks3"),
-                           os.path.join(t2, "ks3")], capture_output=True)
-    check("determinism: two runs byte-identical", diff.returncode == 0,
-          diff.stdout.decode()[:200])
-    shutil.rmtree(t1); shutil.rmtree(t2)
+    with _scratch("ks3-det-a-") as t1, _scratch("ks3-det-b-") as t2:
+        B.build_ks3(output_dir=t1, mirror_to_root=False, repo_root=".")
+        B.build_ks3(output_dir=t2, mirror_to_root=False, repo_root=".")
+        diff = subprocess.run(["diff", "-r", os.path.join(t1, "ks3"),
+                               os.path.join(t2, "ks3")], capture_output=True)
+        check("determinism: two runs byte-identical", diff.returncode == 0,
+              diff.stdout.decode()[:200])
 
     # 8. Zero KS4 pages changed — except the four the entry-point ruling
     #    deliberately changes.

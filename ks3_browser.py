@@ -105,6 +105,85 @@ DEFAULT_SETTLE = 0.6
 MAX_CLIP_HEIGHT = 30000
 
 
+# --------------------------------------------------------------------------------------
+# gate scratch root
+# --------------------------------------------------------------------------------------
+#
+# ⊕ MRB-270. Chrome profiles used to land wherever `$TMPDIR` pointed, which on
+# this machine is the SAME VOLUME as `/private/tmp` — the directory the Bash
+# tool writes its own output files into. So when a leaked profile filled the
+# disk on 19 Aug 2026 it did not merely fail the gate: it took the shell down
+# with `ENOSPC` mid-run, and a session that cannot write cannot even report why.
+#
+# Two changes keep that from recurring.
+#
+# 1. Profiles go under a NAMED, dedicated root — `$KS3_GATE_TMP`, or
+#    `~/tmp/ks3-gates` — so debris is identifiable as ours, sweepable without
+#    guessing, and not sharing a directory with the harness's lifeline.
+#
+# 2. `close()` and the `atexit` hook both remove a profile, but neither runs on
+#    SIGKILL, and SIGKILL is EXACTLY what a full disk produces. So the root is
+#    swept on import: every `cdp-profile-*` records the PID that made it, and
+#    any whose maker is gone is removed before this run adds more. A crash now
+#    costs one run's profiles, not an unbounded pile.
+
+GATE_TMP = os.environ.get("KS3_GATE_TMP") or os.path.join(
+    os.path.expanduser("~"), "tmp", "ks3-gates")
+
+_PROFILE_PREFIX = "cdp-profile-"
+_OWNER_FILE = ".owner-pid"
+
+
+def gate_tmp() -> str:
+    """The scratch root for headless gates. Created on first use."""
+    os.makedirs(GATE_TMP, exist_ok=True)
+    return GATE_TMP
+
+
+def _pid_alive(pid: int) -> bool:
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
+
+
+def sweep_orphan_profiles(root: str | None = None) -> list[str]:
+    """Remove profile dirs whose creating process is gone. Returns what it removed.
+
+    Never raises: a sweep that fails must not fail the gate that called it.
+    """
+    removed: list[str] = []
+    try:
+        base = root or gate_tmp()
+        for name in sorted(os.listdir(base)):
+            if not name.startswith(_PROFILE_PREFIX):
+                continue
+            path = os.path.join(base, name)
+            if not os.path.isdir(path):
+                continue
+            owner = os.path.join(path, _OWNER_FILE)
+            try:
+                pid = int(open(owner, encoding="utf-8").read().strip())
+            except (OSError, ValueError):
+                # No owner stamp — written by a build before this change, or a
+                # profile that died between mkdtemp and the stamp. Either way
+                # nothing living claims it.
+                pid = -1
+            if pid == os.getpid() or (pid > 0 and _pid_alive(pid)):
+                continue
+            shutil.rmtree(path, ignore_errors=True)
+            removed.append(path)
+    except OSError:
+        pass
+    return removed
+
+
+_SWEPT_AT_IMPORT = sweep_orphan_profiles()
+
+
 class CDPError(RuntimeError):
     """Raised when Chrome returns an `error` for a CDP command, or the protocol misbehaves."""
 
@@ -603,7 +682,16 @@ class Browser:
         if not os.path.exists(self.chrome):
             raise CDPError("chrome not found at %s" % self.chrome)
         self.port = self._free_port()
-        self.user_data_dir = tempfile.mkdtemp(prefix="cdp-profile-")
+        self.user_data_dir = tempfile.mkdtemp(
+            prefix=_PROFILE_PREFIX, dir=gate_tmp())
+        # Stamp the owner so `sweep_orphan_profiles()` can tell a live
+        # profile from the wreckage of a killed run.
+        try:
+            with open(os.path.join(self.user_data_dir, _OWNER_FILE), "w",
+                      encoding="utf-8") as fh:
+                fh.write(str(os.getpid()))
+        except OSError:
+            pass
         args = [
             self.chrome,
             "--headless=new",
@@ -612,6 +700,13 @@ class Browser:
             "--no-default-browser-check",
             "--remote-debugging-port=%d" % self.port,
             "--user-data-dir=%s" % self.user_data_dir,
+            # ⊕ MRB-270. `--user-data-dir` does NOT move Chrome's HTTP cache.
+            # That goes to `~/Library/Caches/Google/Chrome-headless`, one
+            # `scoped_dir*` per launch, and it is never cleaned by anything —
+            # 129 of them were sitting there from the runs that preceded this
+            # fix. Pointing it INSIDE the profile means the existing teardown
+            # already removes it and no new path can accumulate behind us.
+            "--disk-cache-dir=%s" % os.path.join(self.user_data_dir, "hcache"),
             "--hide-scrollbars",
             "--force-device-scale-factor=1",
         ] + self.extra_args + ["about:blank"]

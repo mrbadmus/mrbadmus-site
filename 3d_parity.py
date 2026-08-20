@@ -203,6 +203,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import shutil
 import sys
 import tempfile
 
@@ -2120,8 +2121,16 @@ def main():
         print("  A: " + note)
 
     # serve dist under /3d/ so the app's absolute asset URLs resolve
-    root = tempfile.mkdtemp(prefix="st-parity-")
-    os.symlink(DIST, os.path.join(root, "3d"))
+    #
+    # ⊕ MRB-270. `root` was never removed — not on failure, not on success. One
+    # abandoned directory a run is small, but it is the same class of defect
+    # that filled the volume on 19 Aug, and the fix is the same: put it under
+    # the named gate root and remove it in a `finally`. The symlink is unlinked
+    # BY HAND first: the real dist/ is on the other end of it and must never be
+    # within reach of a recursive delete.
+    root = tempfile.mkdtemp(prefix="st-parity-", dir=cdp.gate_tmp())
+    link = os.path.join(root, "3d")
+    os.symlink(DIST, link)
     server, port = cdp.serve(root)
     try:
         url = "http://127.0.0.1:%d/3d/" % port
@@ -2129,6 +2138,9 @@ def main():
             url, tokens, counts)
     finally:
         server.shutdown()
+        if os.path.islink(link):
+            os.unlink(link)
+        shutil.rmtree(root, ignore_errors=True)
 
     ok_rows = sum(1 for r in style_rows if r[5])
     print("  B: screens driven: %s" % ", ".join(checked))
