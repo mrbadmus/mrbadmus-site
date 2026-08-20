@@ -253,3 +253,114 @@ C3 brought seven new `questions_*.py` modules, so the export is no longer 70 les
 
 The export is idempotent upserts, so re-running it after a content merge is the whole
 maintenance story. It has been re-run and re-applied.
+
+---
+
+## B1 — the assignment producer. Built, deployed, proved.
+
+The consumer shipped in MRB-238. The producer never did. It does now.
+
+### Where it lives, and why it took a schema change to get there
+
+`compose_assignment()` is Python and the bank is 77 Python modules; the Render backend is
+Node, in another repo. The bridge chosen was **mirror the pools into Postgres** (the
+reasoning is in the plan section above). That meant three migrations, all applied to
+production `urklkrwevjtlfbwnipjn` one at a time via `apply_migration`, BEGIN/COMMIT stripped:
+
+| version | what | why it was needed |
+|---|---|---|
+| `20260820212314` | `assignments_class_week_uniq` — partial unique index on `(class_id, academic_week)` | **the concurrency ruling.** Two students opening the class in the same second would each find nothing and each compose one |
+| `20260820212322` | `assignment_questions.band` added, `rung` made nullable, `rung XOR band` check | **`rung` was `NOT NULL` with a CHECK in (recall, apply, explain, produce).** A bank question has a *band*, not a rung — Mide's 20 Aug ruling made difficulty a property of the question. So a bank question could not physically be stored. This was the schema gap that would have stopped the build |
+| `20260820212341` | `ks3_bank_questions` + `ks3_ladder_questions`, RLS read-only to `authenticated` | the pools |
+
+⚠️ All three were written back as local files under `supabase/migrations/` with the exact
+versions Postgres recorded, because `apply_migration` writes no local file and records its
+own version — the known drift gotcha. Without that, the next `db push` re-applies them.
+
+**Of MRB-239's four schema gaps, three were already closed** by earlier runs
+(`assignments.academic_week`, `auto_generated`, `source_sow_entry_id` all existed). The
+fourth — the `rung` NOT NULL — is the one closed above. Nothing else was touched.
+
+### The rules it implements
+
+- **The week comes from the server clock against the year's dates.** Never `is_current`
+  (2025-26 still carries `is_current = true` tonight), never the device clock.
+- **Current week only. It never backfills.**
+- **Only classes in the current academic year with scheme-of-work rows.**
+- **Short outside week one is refused, not shipped.** If fewer than fifteen questions are
+  reachable and it is not week one, no assignment is created and the caller gets a `reason`.
+  A 200 with `"reason": "not_enough_banked_questions"` — "no work set this week" is a normal
+  state, not an error.
+- **The race is settled by the index, not by a lock.** The loser catches `23505`, re-reads,
+  serves the winner's row. Safe *because composition is deterministic* — both would have
+  written the same fifteen.
+- A scheduled trigger can later sit on top as "the first visitor" and call the same
+  function. Nothing would need reworking. Not built tonight.
+
+### The JS mirror is proved against the Python, not against my expectations
+
+`composeFromBank` in `assignment-compose.js` is a second implementation of one ruling, which
+is the exact arrangement that drifts. So `test_assignment_compose.js` does not check it
+against hand-written answers — it shells out to the real `compose_assignment()` in this repo,
+on real bank data, and compares the chosen question ids.
+
+**25 assertions, 0 failures**, including four cross-checks at three different bands:
+
+```
+✅ case 1: JS picks exactly what Python picks (4 questions, band standard)
+✅ case 2: JS picks exactly what Python picks (15 questions, band standard)
+✅ case 3: JS picks exactly what Python picks (15 questions, band harder)
+✅ case 4: JS picks exactly what Python picks (15 questions, band easier)
+```
+
+If the site repo is ever absent, that test SKIPS loudly rather than passing quietly.
+
+`dueAtFor` is tested on both sides of the October clock change — 18:00 school-local is 17:00Z
+in September and 18:00Z in November, and an implementation that is right for half the year
+looks right until half term.
+
+### F4 fixed — `/api/assignment-submit` was throwing away six columns
+
+Detailed in the findings above. It now carries `question_ref`, `rung`, both option letters
+and both self-marking columns, and `is_correct` survives as `null`.
+
+**And a second defect found while fixing the first:** `score` counted
+`answers.filter(a => a.is_correct)` and `max_score` was `answers.length`. A self-marked rung
+sends `is_correct: null`, so it was **scored as wrong** and counted against the student.
+Now only markable questions are scored — `max_score` is what the platform could mark, not
+what was asked.
+
+### Deployed, and proved BEHAVIOURALLY
+
+`/api/health` cannot prove which build Render is serving. So the proof is the new route
+itself: before the deploy `GET /api/class/current-assignment` returned **404**; forty-one
+seconds after the push it returned **401** (auth required). A route cannot demand
+authentication until it exists.
+
+```
+22:35:52  404  (old build)
+22:36:13  404  (old build)
+22:36:33  401  ← new build live
+```
+
+### B3 — driven against production as a real student
+
+`MRB_TEST_STUDENT_PASSWORD` was **set**, so the drive signs in as
+`midebolabadmus@gmail.com` and **no throwaway account was created** — the pre-authorised
+account-creation fallback was not needed and not exercised. No credential reaches a file, a
+log, a commit or a capture; the token is truncated to eight characters everywhere it is shown.
+
+Passing already:
+
+```
+✅ signed in                                             ✅ a class the student is NOT in → 403
+✅ producer returns 200                                  ✅ no bearer token → 401
+✅ current week is 1 (the year opens 1 Sep)              ✅ recall returns 200
+```
+
+**Deviation: the drive script hit `CERTIFICATE_VERIFY_FAILED` before it could do anything.**
+macOS system Python has no usable CA bundle and `certifi` is not installed, while `curl` —
+which uses the system trust store — was fine all along. Fixed by pointing `ssl` at
+`/etc/ssl/cert.pem`. ⚠️ Deliberately **not** fixed with an unverified SSL context: this
+script signs in with a real password, and a disabled-verification switch is not a thing to
+leave lying in a drive script where somebody later copies it.

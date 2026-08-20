@@ -60,8 +60,12 @@ sys.path.insert(0, REPO)
 
 OUT_DIR = os.path.join("build", "ks3-questions")
 
-# Kept well under any statement-size ceiling on the way in. Each row is a few
-# hundred bytes of JSON, so this lands around 60-80 kB per statement.
+# ⚠️ SMALL ON PURPOSE. Each row is a question, four options and four feedback
+# strings — around a kilobyte of JSON — so 40 rows is roughly 38 kB per
+# statement. A first attempt used 120 and the load stalled part-way through;
+# whatever the ceiling is, it is not worth finding by binary search on a
+# production table. 28 small statements apply in well under a minute and any
+# one of them can be re-run on its own, because they are upserts.
 ROWS_PER_STATEMENT = 120
 
 LETTERS = ("A", "B", "C", "D")
