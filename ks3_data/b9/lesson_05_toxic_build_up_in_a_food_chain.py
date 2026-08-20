@@ -78,16 +78,42 @@ Nothing else moved. The KEY FACT, the key note, the three condition cards, both
 `#s-think` bodies, the *Going further* paragraph and the legal line carry no
 figure that the bench contradicts, and all are byte-identical.
 
-⚑ **FOR MIDE, and it is the same flag NOTES-B9 13 raises.** At `harm = 1 ppm`
-the six-row persistent chain flags THREE rows as *above the level that causes
-harm* — minnows at 3.0, perch at 30, ospreys at 300 — and the KEY FACT says
-*the animals at the top are harmed first*. The two are reconcilable (the key
-fact is about the order harm APPEARS over years of exposure, not about which
-rows sit above a line on a finished chain) but they are not obviously so on
-screen. The threshold is Design's `HARM = 1.0` and it has not been touched:
-moving it is a science decision and this pass does not have that gate. Raising
-it to 10 would flag perch and ospreys only; raising it to 100 would flag the
-ospreys alone and make the bench say exactly what the key fact says.
+⊕ **RULED (Mide, 20 Aug 2026) — `harm` IS 100 ppm.** It was Design's
+`HARM = 1.0`, and at 1 ppm the six-row persistent chain flagged THREE rows as
+*above the level that causes harm* — minnows at 3.0, perch at 30, ospreys at
+300 — while the KEY FACT said *the animals at the top are harmed first, at
+concentrations that are harmless lower down*.
+
+Those two can be talked into agreement (the key fact is about the ORDER harm
+appears over years of exposure, the bench about which rows sit above a line on
+a finished chain) and that is exactly the problem: a bench that needs talking
+into agreement with the sentence beside it teaches the wrong thing. Three of
+six rows above the line reads as *harm is general*, when the whole point is
+that harm is CONCENTRATED AT THE TOP.
+
+The ruling: the key fact is correct and stays; the bench moves to agree with
+it. `harm` rises until the line is crossed by the top of the chain and by
+nothing the key fact calls unharmed.
+
+The window is arithmetic, not taste. Ospreys are at 300 and perch — the next
+row down — at 30, so any threshold in (30, 300] flags the ospreys alone. 100
+was the proposed value and it is verified against the actual six rows rather
+than assumed: it sits mid-window, knife-edge at neither end, and 10 would NOT
+do (it flags perch as well as ospreys, which the key fact denies).
+
+Checked at 100, all three settings:
+
+  * `persistent` ×10 — 0.0030 · 0.030 · 0.300 · 3.0 · 30 · **300** — one row
+    flagged, the ospreys, and the `harmful` verdict still fires. The renderer's
+    guard (top_conc >= harm) holds with room: 300 against 100.
+  * `partial` ×3 — tops out at 0.729 and still takes the `below` branch, as it
+    did at 1 ppm. Its verdict is unchanged and still true.
+  * `soluble` ×1 — the CONTROL, flat at 0.0030, nothing flagged. Untouched.
+
+Nothing else moved, and that is a finding rather than an omission. The KEY
+FACT is accurate at 100 and is left byte-identical; so is `b9-05-e03`, whose
+marked-correct option states the same claim in the same words. Both were wrong
+about the BENCH, not about the SCIENCE — so the bench is what changed.
 
 ── ⊕ RULING 2 — FAT-SOLUBILITY, NOT WATER-SOLUBILITY, IS THE MECHANISM ───
 
@@ -313,9 +339,11 @@ Three flags, three checked. One CORRECTED (13, by ruling 1 above), two left.
   * flag 13  **The bioaccumulation figures.** CORRECTED, and it is ruling 1.
              NOTES describes five levels and 0.003 → 25 ppm; the delivered
              bench has six rows and reaches 300 ppm at ×10. The bench won and
-             six prose figures moved to meet it. The harm threshold of 1 ppm
-             is untouched and is the open half of this flag — see the ⚑ under
-             ruling 1 for what moving it would buy.
+             six prose figures moved to meet it. The harm threshold — the
+             half of this flag that was left open — is now RULED and CLOSED
+             at 100 ppm, so the ospreys are the only row above the line and
+             the bench says what the key fact says. See the ⊕ RULED block
+             under ruling 1.
 
   * flag 14  **DDT, eggshell thinning, *Silent Spring* 1962, and continued
              indoor use for malaria control** (*Going further*). CHECKED AND
@@ -647,11 +675,14 @@ LESSON = {
          "chemicals": CHEMICALS,
          "levels": LEVELS,
 
-         # Design's `HARM = 1.0` (page line 329), untouched. Every row is
-         # measured against it. See the ⚑ in the docstring: at six rows this
-         # flags minnows, perch and ospreys, and whether that is the right
-         # threshold is Mide's call, not this pass's.
-         "harm": 1.0,
+         # ⊕ RULED (Mide, 20 Aug 2026) — 100 ppm, up from Design's
+         # `HARM = 1.0` (page line 329). At 1 ppm this flagged minnows, perch
+         # AND ospreys — three rows of six — which teaches that harm is
+         # general when the key fact beside it says harm is concentrated at
+         # the top. Ospreys are at 300 and perch at 30, so the window is
+         # (30, 300] and 100 flags the ospreys alone. See the ⊕ RULED block in
+         # the module docstring for the full arithmetic and why 10 will not do.
+         "harm": 100.0,
          "harm_verdict": "above the level that causes harm",
          "safe_verdict": "no measurable effect",
 
@@ -706,9 +737,11 @@ LESSON = {
     # var(--ks3-accent)`. Never amber. Lifted byte-identical from page line 171
     # and identical to payload schema §12's b9-05 entry.
     #
-    # ⚑ "The animals at the top are harmed first" against a six-row bench at
-    # harm = 1 ppm: see the flag under ruling 1 in the docstring. The sentence
-    # is Design's, is science-bearing, and is not this pass's to edit.
+    # ⊕ "The animals at the top are harmed first, at concentrations that are
+    # harmless lower down" — and since the 20 Aug ruling the bench AGREES with
+    # it: at harm = 100 ppm the ospreys are the only row flagged. The sentence
+    # is Design's, is science-bearing, and was never the thing that was wrong.
+    # It is left byte-identical deliberately; the threshold moved instead.
     "key_facts": [
         {"id": "it-concentrates-at-every-step",
          "text": "A toxic substance that cannot be broken down or excreted "
