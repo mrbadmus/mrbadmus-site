@@ -260,6 +260,32 @@ def main():
     bank = bank_rows()
     ladder = ladder_rows()
 
+    # ⚠️ THE LESSON SLUG MUST BE GLOBALLY UNIQUE, and this is where that is
+    # enforced rather than hoped for.
+    #
+    # Python keys the bank by (unit_code, lesson_slug). The producer in the Node
+    # backend cannot: it reads `ks3_bank_questions` filtered by `lesson_slug`
+    # alone, because the scheme of work stores a subtopic SLUG and no unit code.
+    # The two agree only while no slug appears in two units. If one ever does,
+    # the producer silently merges both lessons' questions into one pool and
+    # composes an assignment Python would never compose — and nothing about the
+    # page would look wrong.
+    #
+    # It is true today across all 77 lessons. It is not guaranteed by anything
+    # else, so it is asserted here, on the way out, where a new unit will trip
+    # it the first time it is exported.
+    by_slug = {}
+    for r in bank:
+        by_slug.setdefault(r["lesson_slug"], set()).add(r["unit_code"])
+    collisions = {s: sorted(u) for s, u in by_slug.items() if len(u) > 1}
+    if collisions:
+        raise SystemExit(
+            "export_ks3_questions: lesson slug(s) used by more than one unit — "
+            "%s. The backend's producer looks a lesson up by slug alone (the "
+            "scheme of work has no unit code), so it would merge them. Rename "
+            "one of them before exporting."
+            % "; ".join("%r in %s" % (s, u) for s, u in sorted(collisions.items())))
+
     lessons_banked = len({(r["unit_code"], r["lesson_slug"]) for r in bank})
     lessons_laddered = len({r["lesson_slug"] for r in ladder})
 
