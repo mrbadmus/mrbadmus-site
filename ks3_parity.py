@@ -5699,6 +5699,54 @@ COMPONENTS = [
          on=C4_SYMBOL, sel=".ks3-cbal-counter",
          props={"background-color": "#E1E8FE", "border-top-color": "#2F5CE0",
                 "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── the three panels that exist only AFTER a commitment ─────────────
+    #
+    # A row measured without its drive is measured against the resting DOM and
+    # reports green over a panel a student never sees in that state — the
+    # thing MRB-202 cost. These three carry drives that go through the CONTROL
+    # A STUDENT USES, never by stripping `hidden`, so a regression in the
+    # reveal path fails here instead of being measured around.
+
+    # ── impossible-ask (c4-02 #s-impossible) ──
+    # ⚖️ ONE TONE FOR A REFUSAL AND FOR A BUILD, AND THAT IS THE ASSERTION.
+    # Measured on all three asks: gold ("Refused, and not because the bench is
+    # not trying"), ammonia ("Refused. There is no nitrogen on this table.")
+    # and water ("Built.") all resolve #221E1B on #FBF3E6. If this row ever
+    # resolves two different grounds the panel has started MARKING, and R3
+    # reserves marking for the mastery ladder alone. The instrument's whole
+    # teaching is that the refusal is a fact about the atoms present, not a
+    # verdict on the student who asked.
+    #
+    # The selector takes the SHOWN panel: this family is emit-both-show-one,
+    # so every ask's verdict is in the document and a bare `.ks3-iask-verdict`
+    # would measure whichever came first regardless of what was pressed.
+    dict(name="C4 impossible-ask verdict is the ink panel, one tone for a "
+              "refusal and a build",
+         on=C4_REARR, drive="c4-iask-refused",
+         sel=".ks3-iask-verdict:not([hidden])",
+         props={"background-color": "#221E1B", "color": "#FBF3E6",
+                "border-top-left-radius": "20px"}),
+
+    # ── forbidden-move (c4-05 #s-forbidden) ──
+    # The forbidden move is offered as a BUTTON, not a warning: adding a small
+    # 2 to the water balances the equation and silently turns the product into
+    # hydrogen peroxide. The reveal that follows is an ordinary card — it is
+    # showing the student what they actually wrote, not scolding them for
+    # writing it — so it must NOT resolve the alert ground.
+    dict(name="C4 forbidden-move reveal is a card, never the alert",
+         on=C4_SYMBOL, drive="c4-forbid-small-2", sel=".ks3-forbid-reveal",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── chain-build (c4-01 #s-chain) ──
+    # NOTES-C4 §2: the one place in the unit where the model answer is shown
+    # in full. It is inset rather than card, which is what separates a worked
+    # model from the cards the student has been filling in above it.
+    dict(name="C4 chain reveal is inset on a 2px ink border",
+         on=C4_CHANGE, drive="c4-chain-built", sel=".ks3-chain-reveal",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
 ]
 
 
@@ -7005,6 +7053,41 @@ window.__ks3 = {
 # measuring a spent button and calling it resting.
 
 DRIVES = {
+    # ── C4 · Chemical reactions (⊕ MRB-246) ─────────────────────────────
+    #
+    # Each goes through the control a student uses. `ask-gold` is chosen over
+    # `ask-ammonia` deliberately: both are refused, and gold is the one
+    # `REACT-04` names ("new atoms can be made if the conditions are right").
+    "c4-iask-refused": r"""
+(function () {
+  var b = document.getElementById('ask-gold');
+  if (!b) { return "no ask-gold button on #s-impossible"; }
+  b.click();
+  return "";
+})()
+""",
+    # The forbidden small 2 — the move that balances the equation and turns
+    # the product into hydrogen peroxide. Pressing it is the lesson.
+    "c4-forbid-small-2": r"""
+(function () {
+  var b = document.getElementById('forbidden-small-2');
+  if (!b) { return "no forbidden-small-2 button on #s-forbidden"; }
+  b.click();
+  return "";
+})()
+""",
+    # Both halves of the linked comparison have to be chosen before the model
+    # answer opens — choosing one is not a comparison.
+    "c4-chain-built": r"""
+(function () {
+  var a = document.querySelector('[data-chain-slot="a"] button');
+  var b = document.querySelector('[data-chain-slot="b"] button');
+  if (!a || !b) { return "no option in chain slot a and b"; }
+  a.click();
+  b.click();
+  return "";
+})()
+""",
     # ── C3 · Mixtures and separation (⊕ MRB-272) ────────────────────────
     #
     # Nine instruments, and most of what they draw exists only AFTER a
