@@ -290,8 +290,12 @@ def run(cdp):
                 name, ds["text"], gs["text"], problems, seen)
             rows.extend(ruled)
 
+            d_ctl, ctl_rows = _apply_ruled_controls(
+                name, ds["controls"], gs["controls"], problems, seen)
+            rows.extend(ctl_rows)
+
             same_text = d_text == gs["text"]
-            same_ctl = ds["controls"] == gs["controls"]
+            same_ctl = d_ctl == gs["controls"]
             ok = same_text and same_ctl
             if ok:
                 rows.append((name, label, "PASS",
@@ -339,7 +343,47 @@ RULED_DIVERGENCE = {
          r"ON TIME \d+ SCORE \d+ RECALL \d+ "),
         ("the static 40 / 40 / 20 split legend",
          r"ON TIME · 40 SCORE · 40 RECALL · 20 "),
+        # ⊕ RULED 22 Aug 2026 — P7. Settings did nothing at all: an
+        # `<a href="#top">` with no handler, which scrolls to the top and is
+        # read by a student as the app ignoring them. Removed from the port
+        # until Design's theme picker gives it a job.
+        #
+        # ⚠️ THIS IS THE FIRST DIVERGENCE THAT REMOVES A WORD FROM THE HEADER
+        # rather than a figure from the leaderboard, so it shows on EVERY
+        # class-view drive rather than on the two that reach the board. That
+        # is why it is registered rather than argued about: the gate asserts
+        # it both ways — still in Design's delivery, and gone from ours — so
+        # if Design ever gives Settings a purpose, the first half fails and
+        # this ruling gets re-read instead of quietly outliving its reason.
+        #
+        # ⚠️ THE TRAILING SPACE IS PART OF THE PATTERN, exactly as it is in the
+        # two entries above. `_apply_ruled` deletes the match from Design's
+        # text; a pattern of `Settings` alone leaves the space that separated
+        # it behind, Design's side reads "Ayo  Sign out" with two spaces
+        # against the port's one, and all nineteen drives go red over
+        # whitespace while reporting a defect that is not there.
+        ("the dead Settings control", r"Settings "),
     ],
+}
+
+# ── the same ruling, on the CONTROL list ─────────────────────────────────
+#
+# ⚑ TEXT AND CONTROLS ARE COMPARED SEPARATELY, AND A RULING HAS TO REACH BOTH.
+#
+# `RULED_DIVERGENCE` strips the ruled span out of Design's TEXT. It does
+# nothing to `ds["controls"]`, which is compared as a plain list — so removing
+# a control from the port passes the text half and fails the control half, with
+# a message ("controls only in Design: ['Settings']") that reads like a bug.
+#
+# Every divergence registered until now removed FIGURES — the leader's three
+# columns, the static legend — and a figure is not a control, so the gap had
+# never been reached. P7 is the first ruling that removes something a student
+# can press.
+#
+# Asserted both ways, exactly as the text is: it must be one of Design's
+# controls, and it must not be one of ours.
+RULED_CONTROLS = {
+    "class view": ["Settings"],
 }
 #
 # ⊕ RULED 21 Aug 2026 (MRB-275). The bar shows the TOTAL and omits the split.
@@ -388,6 +432,33 @@ def _apply_ruled(page, d_text, g_text, problems, seen):
     return d_text, rows
 
 
+def _apply_ruled_controls(page, d_controls, g_controls, problems, seen):
+    """Design's control list with the ruled-away controls removed.
+
+    Same discipline as `_apply_ruled`, and the same split of scopes: forbidden
+    in the port on EVERY drive, present in Design's file ONCE PER PAGE (the
+    recall drives navigate away from the header, so demanding it per drive
+    would paint healthy drives red — the mistake `_apply_ruled` documents).
+    """
+    rows = []
+    ruled = RULED_CONTROLS.get(page, ())
+    if not ruled:
+        return d_controls, rows
+    for label in ruled:
+        if label in d_controls:
+            seen.add("control:" + label)
+        if label in g_controls:
+            rows.append((page, "ruled · the %s control" % label, "FAIL",
+                         "back on the port"))
+            problems.append(
+                "%s — the control %r is BACK on the ported page. RULED 22 Aug "
+                "2026 (P7): it did nothing at all, and a button that ignores a "
+                "student teaches them not to trust the others. It returns when "
+                "Design's theme picker gives it a job, not before."
+                % (page, label))
+    return [c for c in d_controls if c not in ruled], rows
+
+
 def _ruled_seen(page, seen, problems):
     """Once per page: every registered divergence was found in Design's file."""
     rows = []
@@ -404,6 +475,18 @@ def _ruled_seen(page, seen, problems):
                 "pattern has rotted; either way this registration is a claim "
                 "about the past, and the port is being credited with removing "
                 "something that is no longer there. Re-read the delivery."
+                % (page, label))
+    for label in RULED_CONTROLS.get(page, ()):
+        ok = ("control:" + label) in seen
+        rows.append((page, "ruled · the %s control — still in the delivery"
+                     % label, "PASS" if ok else "FAIL",
+                     "a control in Design's own file, gone from the port" if ok
+                     else "NOT a control in Design's file on any drive"))
+        if not ok:
+            problems.append(
+                "%s — %r is registered as a control this port removes, and it "
+                "is not a control in DESIGN's own file on any drive. The "
+                "registration is a claim about the past; re-read the delivery."
                 % (page, label))
     return rows
 

@@ -107,6 +107,7 @@ SERVED_FONTS = "/shared/fonts/"
 # are still hand-written source and this build has nothing to say about them.
 _REFUSED = {"classes.html", "settings.html", "claim-confirm.html"}
 
+LESSON_INDEX_NAME = "ks3-lesson-urls.js"
 RUNTIME_JS_NAME = "student-runtime.js"
 LIVE_JS_NAME = "student-live.js"
 LIVE_JS_URL = "/shared/" + LIVE_JS_NAME
@@ -128,7 +129,18 @@ PAGES = [
          # a welded string would have found it, because there is no welded
          # string. The fixture still carries 4, so Design's render is unchanged.
          state_fields=["streak", "boardWeek"],
-         constants={}),
+         # ── constants ────────────────────────────────────────────────────
+         # ⊕ RULED 22 Aug 2026 — P1 and P3. Two destinations Design's file has
+         # no opinion about, because Design's file has nowhere to go: it is one
+         # page, and its buttons move state rather than navigating.
+         #
+         # EMPTY IS DESIGN'S OWN BEHAVIOUR, not a placeholder. Both rulings
+         # below are written as "navigate if there is somewhere to navigate to,
+         # otherwise do exactly what Design did", so with these two empty the
+         # fixture ticks its checklist and opens its recall panel precisely as
+         # the delivery does — and the behaviour gate compares the two without
+         # a divergence to register. The live page supplies real URLs.
+         constants=dict(assignmentHref="''")),
     dict(page="assignment", out="assignment.html",
          fixture_out="assignment-fixture.html",
          fixture_js="student-fixture-assignment.js",
@@ -188,6 +200,48 @@ BINDINGS = {
         ("Biology", "subjectLabel"),
         ("Cells & microscopy", "topicTitle"),
         ("AUTUMN TERM", "termLabel"),
+        # ── ⊕ RULED 22 Aug 2026 — P6. THE PROD BADGE SHIPPED TO STUDENTS ──
+        #
+        # Design drew an environment chip in the header — a bordered `PROD`
+        # pill — and it rendered on mrbadmus.com, to children, at phone width
+        # where it sits directly under the class name. It is a developer's
+        # instrument that had wandered onto the product.
+        #
+        # RULED: the badge renders only when the environment is NOT
+        # production. On mrbadmus.com, nothing at all.
+        #
+        # ⚠️ IT IS NOT PRUNED, AND THAT IS THE POINT OF THE `drop` FLAG.
+        # Pruning would take the badge away from localhost and the test
+        # project too, where it is the thing that stops somebody driving the
+        # wrong database. So the chip's TEXT becomes data, and the element is
+        # dropped when that data is empty — because an empty chip is not
+        # nothing, it is a small bordered box with nothing in it, which is
+        # worse than either state. `student-live.js` supplies "" on
+        # production and the environment's name everywhere else.
+        #
+        # Design's fixture value is `PROD`, so the fixture and every gate that
+        # drives it render exactly what Design drew.
+        ("PROD", "envBadge", "drop"),
+        # ── ⊕ RULED 22 Aug 2026 — P2. THE ROUND IS min(6, POOL), AND THE
+        #    PAGE HAS TO SAY THE SIZE IT IS ACTUALLY GOING TO SHOW ──────────
+        #
+        # The header announced "SIX QUESTIONS · UNLIMITED ROUNDS" over a
+        # counter reading 01/02, because `8r/Sc1` has one covered lesson and
+        # therefore two recall rungs. The COUNTER was already right — it reads
+        # `this.questions.length` — so the page was not inconsistent by
+        # accident; it was consistent everywhere except the three places that
+        # spell the number out in a WORD, which is why no search for a digit
+        # found them.
+        #
+        # All three are text nodes Design typed, so they bind. The round size
+        # itself needs no change at all: `student-live.js` already stops
+        # filling the pool at six, so the round IS min(6, pool) and grows back
+        # to six by itself when the Physics and C4+ banks land — with no code
+        # change, which is the ruling's own test.
+        ("Questions from the lessons this class has covered. Six a round, unlimited rounds.",
+         "recallBlurb"),
+        ("SIX QUESTIONS · UNLIMITED ROUNDS", "recallEyebrow"),
+        ("OF SIX", "recallOutOf"),
         # ⊕ 22 Aug 2026 — TWO SENTENCES A SCREENSHOT CAUGHT AND NO GREP COULD.
         #
         # Both are text nodes in Design's markup, and both are written in
@@ -314,19 +368,29 @@ REWRITES = {
     "class view": [
         # The crumb rail. Design writes the pair twice — once wide, once
         # narrow — from the same three data: the term, this week, the last
-        # week of term. `SIX A ROUND` is the recall view's own label and is
-        # not data, so it is left exactly where Design put it.
+        # week of term. ⊕ 22 Aug 2026 — P2: `SIX A ROUND` USED TO BE LEFT
+        # HERE, as "the recall view's own label and not data". That was true
+        # while a round was always six. It stopped being true the moment the
+        # round became min(6, pool), and it is carried as data now.
         dict(name="crumbRight",
              pat=r"crumbRight: onClass \? \(wide \? "
                  r"'(?P<termLabel>[A-Z][A-Z ]*) \\u00B7 WEEK "
                  r"(?P<weekNumber>\d+) / (?P<weekTotal>\d+)' : "
-                 r"'WK (?P=weekNumber) / (?P=weekTotal)'\)",
+                 r"'WK (?P=weekNumber) / (?P=weekTotal)'\) : "
+                 r"'(?P<recallCrumb>SIX A ROUND)'",
              new="crumbRight: onClass ? (wide ? MRB_DATA('termLabel')"
                  " + ' \\u00B7 WEEK ' + MRB_DATA('weekNumber')"
                  " + ' / ' + MRB_DATA('weekTotal') : "
                  "'WK ' + MRB_DATA('weekNumber')"
-                 " + ' / ' + MRB_DATA('weekTotal'))",
-             keys=dict(weekNumber="str", weekTotal="str")),
+                 " + ' / ' + MRB_DATA('weekTotal')) : "
+                 "MRB_DATA('recallCrumb')",
+             # ⊕ RULED 22 Aug 2026 — P2. `SIX A ROUND` is the RECALL view's
+             # own crumb, and the previous seam deliberately left it alone as
+             # "the recall view's own label and not data". That was right when
+             # a round was six. It is data now, for the same reason the header
+             # eyebrow is.
+             keys=dict(weekNumber="str", weekTotal="str",
+                       recallCrumb="str")),
         # The leaderboard's scope note. `'WHOLE AUTUMN TERM'` embeds the term
         # name; `wk === 4` embeds which week is the current one — a NUMBER,
         # compared with `===`, so it is carried as a number and not as the
@@ -824,7 +888,7 @@ def top_up(css, wanted, tpls):
 def apply_rulings(page, logic, roots):
     """Design's logic and template with Mide's rulings applied.
 
-    Returns (logic, roots, replacements, pruned). Every `old` must appear
+    Returns (logic, roots, replacements, pruned, wired). Every `old` must appear
     EXACTLY ONCE — not zero times, and not twice. A ruling that silently
     matched nothing is the same failure as the hand-edit it replaces: the build
     goes green and the ruling is not in the page.
@@ -871,7 +935,45 @@ def apply_rulings(page, logic, roots):
             "node(s) %s, and they are not in Design's template. The ruling "
             "stands; re-read the delivery and re-anchor it."
             % (page, sorted(prune)))
-    return logic, roots, len(reps), removed[0]
+
+    # ── handlers Design never attached ───────────────────────────────────
+    #
+    # ⊕ RULED 22 Aug 2026 — P5. See `SET_ON` in student_rulings.py.
+    #
+    # Every node named must EXIST and must NOT already carry a handler. The
+    # second check is the load-bearing one: silently replacing an `onClick`
+    # Design drew would swap one working control's behaviour for another's,
+    # and the page would still look and gate exactly right.
+    want = dict(student_rulings.SET_ON.get(page, {}))
+    wired = [0]
+
+    def wire(node):
+        if not isinstance(node, dict):
+            return
+        idx = node.get("i")
+        if idx in want:
+            if node.get("on"):
+                raise SystemExit(
+                    "build_student_port.py: the P5 ruling for %r attaches "
+                    "%r to template node %s, but Design already gives that "
+                    "node the handler %r. Design has redrawn it; re-anchor "
+                    "the ruling rather than overwriting a live control."
+                    % (page, want[idx], idx, node.get("on")))
+            node["on"] = want.pop(idx)
+            wired[0] += 1
+        for kid in node.get("c") or []:
+            wire(kid)
+
+    for root in roots:
+        wire(root)
+    if want:
+        raise SystemExit(
+            "build_student_port.py: the P5 ruling for %r attaches a handler "
+            "to template node(s) %s, and they are not in Design's template "
+            "(or were pruned out from under it). The ruling stands; re-read "
+            "the delivery and re-anchor it." % (page, sorted(want)))
+
+    return logic, roots, len(reps), removed[0], wired[0]
 
 
 # ── lifting Design's data out of Design's logic ───────────────────────────
@@ -1179,7 +1281,9 @@ def text_paths(roots, literal):
 def bindings_for(page, tpl):
     """The binding table, and the values Design typed, for one page."""
     table, values = [], {}
-    for literal, key in BINDINGS.get(page, ()):
+    for entry in BINDINGS.get(page, ()):
+        literal, key = entry[0], entry[1]
+        drop = len(entry) > 2 and entry[2] == "drop"
         paths = text_paths(tpl["roots"], literal)
         if not paths:
             raise SystemExit(
@@ -1196,7 +1300,26 @@ def bindings_for(page, tpl):
                 "them separate keys." % (page, key, values[key], literal))
         values[key] = literal
         for path in paths:
-            table.append({"p": path, "k": key})
+            row = {"p": path, "k": key}
+            if drop:
+                # ⊕ RULED 22 Aug 2026 — P6. This literal CARRIES ITS OWN
+                # ELEMENT: when its value is empty the element goes with it,
+                # rather than leaving a bordered box with nothing in it. See
+                # `applyBindings` in student-runtime.js.
+                # THREE, not two: dropping the element means removing it
+                # from ITS OWN parent, so the path must reach a grandparent.
+                # At depth 2 the element carrying the text IS a root, and a
+                # root has no parent to be removed from — the runtime would
+                # silently do nothing and the badge would ship.
+                if len(path) < 3:
+                    raise SystemExit(
+                        "build_student_port.py: %s — %r is marked `drop`, but "
+                        "its path is only %d deep, so the element carrying it "
+                        "is a template root and has no parent to be removed "
+                        "from. Drop something further in, or prune the root."
+                        % (page, literal, len(path)))
+                row["d"] = 1
+            table.append(row)
     return table, values
 
 
@@ -1291,6 +1414,92 @@ def fixture_js(spec, page, data_literals, bind_values):
         "   ══════════════════════════════════════════════════════════════ */\n"
         "window.__MRB_DATA__ = {\n%s\n};\n"
         % (page, spec["fixture_out"], LIVE_JS_NAME, ",\n".join(rows)))
+
+
+# ── the KS3 lesson index: a slug, and where that lesson actually lives ────
+#
+# ⊕ RULED 22 Aug 2026 — P3. "Open the lesson" has to know where the lesson is,
+# and NOTHING THE CLIENT CAN READ KNOWS THAT.
+#
+# The chain a student can follow is `assignment_questions.source_ref` →
+# `ks3_bank_questions` / `ks3_ladder_questions` → `(unit_code, lesson_slug)`.
+# All three are readable under RLS (`aq_student_read`, and both question tables
+# are `SELECT true` to any authenticated user), so a student can learn that a
+# piece of work draws on `the-gas-exchange-system` in unit `B4`.
+#
+# What they CANNOT learn is that B4's pages are served from
+# `/ks3/biology/breathing-and-gas-exchange/`. The unit's discipline and
+# directory slug exist only in `ks3_data`, which is Python and build-time. So
+# the map is emitted here, once, as a file the page loads.
+#
+# ⚠️ IT IS BUILT FROM `ks3_data`, NOT FROM THE `ks3/` TREE, AND THEN CHECKED
+# AGAINST THE TREE. Reading the directory listing would produce a map that is
+# self-consistent and wrong the moment a lesson is renamed — it would simply
+# describe whatever files happened to be there, including stale ones. Reading
+# the data and then asserting the file exists catches the rename in the
+# direction that matters: the build stops rather than shipping a link to a
+# lesson that has moved.
+#
+# ⚑ WHY IT IS EMITTED HERE AND NOT BY `build_ks3.py`, WHICH OWNS THIS DATA.
+# Two reasons, and the first is the honest one: a parallel content session owns
+# `build_ks3.py` tonight and this run is not allowed to touch it. The second is
+# that it would still belong here afterwards — `build_ks3.py` is not run by a
+# KS4-only build, the student pages are, and a page that depends on a file its
+# own build does not publish is the hidden prerequisite that cost a red gate
+# over `student-runtime.js`. Same lesson, applied before it bites.
+
+def lesson_index():
+    """`{lesson_slug: "discipline/unit-slug"}` for every KS3 lesson.
+
+    Returns (js_source, n_lessons). Stops the build on a duplicate slug or on
+    a lesson whose page is not on disk.
+    """
+    import ks3_data
+
+    index, owners = {}, {}
+    for unit in ks3_data.KS3_UNITS:
+        for lesson in unit["lessons"]:
+            slug = lesson["slug"]
+            where = unit["discipline"] + "/" + unit["slug"]
+            if slug in index and index[slug] != where:
+                raise SystemExit(
+                    "build_student_port.py: the KS3 lesson slug %r is used by "
+                    "BOTH %s and %s. The index is keyed on the slug alone, "
+                    "which was safe while all 183 were distinct and is not "
+                    "any more. Key it on (unit_code, slug) and carry the unit "
+                    "code through from `assignment_questions`."
+                    % (slug, owners[slug], unit["code"]))
+            index[slug] = where
+            owners[slug] = unit["code"]
+
+    missing = [s for s, w in sorted(index.items())
+               if not os.path.exists(os.path.join("ks3", w, s + ".html"))]
+    if missing:
+        raise SystemExit(
+            "build_student_port.py: %d KS3 lesson page(s) named in ks3_data "
+            "are not built on disk, and the student pages are about to link "
+            "to them: %s%s\nRun `python3 build_ks3.py` (or build_all.py) "
+            "first — a link to a lesson that is not there is a 404 with a "
+            "student's name on it."
+            % (len(missing), ", ".join(missing[:5]),
+               " …" if len(missing) > 5 else ""))
+
+    rows = ",\n".join('  %s: %s' % (_q(s), _q(index[s]))
+                       for s in sorted(index))
+    return ("/* ══════════════════════════════════════════════════════════\n"
+            "   GENERATED — do not edit. `python3 build_student_port.py`\n"
+            "   ══════════════════════════════════════════════════════════\n"
+            "\n"
+            "   Where each KS3 lesson lives, as `slug: \"discipline/unit\"`,\n"
+            "   so a page can turn a lesson slug from the database into the\n"
+            "   URL of the lesson itself:\n"
+            "\n"
+            "       /ks3/ + MRB_KS3_LESSONS[slug] + / + slug + .html\n"
+            "\n"
+            "   Built from ks3_data and checked against the built tree: every\n"
+            "   one of these %d pages existed on disk when this was written.\n"
+            "   ══════════════════════════════════════════════════════════ */\n"
+            "window.MRB_KS3_LESSONS = {\n%s\n};\n" % (len(index), rows)), len(index)
 
 
 def page_html(spec, tpl, roots, bind_table, logic, fixture=False):
@@ -1432,7 +1641,7 @@ def build():
         # template and then pruning would leave every path after node 275
         # pointing one sibling to the left — the class name would appear where
         # the term label belongs, and it would look like a data bug.
-        logic, ruled_roots, n_rep, n_pruned = apply_rulings(
+        logic, ruled_roots, n_rep, n_pruned, n_wired = apply_rulings(
             spec["page"], tpl["logic"], tpl["roots"])
         ruled_tpl = {"roots": ruled_roots, "imports": tpl["imports"]}
 
@@ -1511,11 +1720,11 @@ def build():
                   "still welded — LIFTS/REWRITES close the named ones, not "
                   "every one.")
 
-        if n_rep or n_pruned:
-            print("        ⊕ MRB-275: %d ruled edit(s) to Design's logic, "
-                  "%d template subtree(s) pruned — from student_rulings.py, "
-                  "not from a hand edit to the built page"
-                  % (n_rep, n_pruned))
+        if n_rep or n_pruned or n_wired:
+            print("        ⊕ rulings: %d ruled edit(s) to Design's logic, "
+                  "%d template subtree(s) pruned, %d handler(s) attached — "
+                  "from student_rulings.py, not from a hand edit to the built "
+                  "page" % (n_rep, n_pruned, n_wired))
         print("     ✅ %-24s %7d bytes  (%d template node(s), "
               "%d chars of Design's logic, 0 bytes of data)"
               % (spec["out"], len(body), count_nodes(roots), len(logic)))
@@ -1542,6 +1751,14 @@ def build():
     #
     # A build that emits a page depending on a file it does not publish is a
     # build with a hidden prerequisite. This one publishes it.
+    idx_js, n_lessons = lesson_index()
+    for out in (os.path.join("shared", LESSON_INDEX_NAME),
+                os.path.join(SHARED_OUT, LESSON_INDEX_NAME)):
+        with open(out, "w", encoding="utf-8") as fh:
+            fh.write(idx_js)
+    print("     ✅ %-24s %7d bytes  (%d KS3 lesson(s), every page checked on "
+          "disk)" % (LESSON_INDEX_NAME, len(idx_js), n_lessons))
+
     for name in (RUNTIME_JS_NAME, LIVE_JS_NAME):
         src = os.path.join("shared", name)
         if not os.path.exists(src):
