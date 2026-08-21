@@ -148,12 +148,12 @@ class Component extends DCLogic {
       const sel = st.week === n;
       weeks.push({
         num: pad(n), onClick: () => this.pickWeek(n),
-        trough: n <= 4 ? 'var(--st-rule-fact)' : 'var(--st-crumb-bg)',
+        trough: n <= MRB_DATA('currentWeek') ? 'var(--st-rule-fact)' : 'var(--st-crumb-bg)',
         stackH: !items.length ? '0%' : items.length > 1 ? '100%' : '70%',
         segs: items.map((w) => ({ bg: w.status === 'open' ? 'var(--st-accent)' : w.status === 'missed' ? 'var(--err)' : 'var(--st-ink)' })),
         ring: sel ? '0 0 0 1.5px var(--st-ink)' : 'none',
-        numColor: sel ? 'var(--st-ink)' : n === 4 ? 'var(--ks3-accent-text)' : 'var(--st-ghost)',
-        nowDot: n === 4 ? 'var(--st-accent)' : 'transparent'
+        numColor: sel ? 'var(--st-ink)' : n === MRB_DATA('currentWeek') ? 'var(--ks3-accent-text)' : 'var(--st-ghost)',
+        nowDot: n === MRB_DATA('currentWeek') ? 'var(--st-accent)' : 'transparent'
       });
     }
 

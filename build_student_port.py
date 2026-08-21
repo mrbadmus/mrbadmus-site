@@ -361,6 +361,53 @@ REWRITES = {
         # BUILT page for the week rather than by reading the brief, which is
         # the only way either would have been found — a datum that appears in
         # four places is a datum that looks closed after you fix three.
+        # ⊕ RULED 22 Aug 2026 — P9. THE TERM SPINE'S "NOW" IS THREE FOURS,
+        # NOT ONE, AND NOT ONE OF THEM IS A STRING.
+        #
+        #     trough:   n <= 4 ? 'var(--st-rule-fact)' : 'var(--st-crumb-bg)'
+        #     numColor: … n === 4 ? 'var(--ks3-accent-text)' : …
+        #     nowDot:   n === 4 ? 'var(--st-accent)' : 'transparent'
+        #
+        # The same shape of defect as the leaderboard's WEEK 04 default, and it
+        # hid the same way: there is no "04" anywhere to grep for, only the
+        # numeral 4 in three comparisons. Every text search over the built page
+        # came back clean while the picture showed the marker four weeks into a
+        # term that is one week old. A screenshot caught it; no tell could.
+        #
+        # ⚑ THE FIRST OF THE THREE WAS NOT ON THE BRIEF. The brief names the
+        # dot. But `trough` shades weeks 1-4 as ALREADY ELAPSED, so a class in
+        # week 1 drew three weeks of school that have not happened yet in the
+        # "done" tone — a wrong statement about the past sitting directly under
+        # a wrong statement about the present. Found by reading the whole block
+        # rather than the line the brief pointed at.
+        #
+        # Two seams rather than one because the three are not contiguous:
+        # `stackH`, `segs` and `ring` sit between them, and `rewrite_seams`
+        # splices the replacement in literally — it does not run `re.sub`, so a
+        # pattern spanning the gap could not put back what it matched.
+        #
+        # `currentWeek` is already captured as 4 by `boardScopeNote` above, so
+        # both of these are CHECKED against it rather than written twice. If
+        # Design ever redraws the spine around a different week, the build
+        # stops instead of shipping two "now"s.
+        dict(name="spine — trough (weeks drawn as elapsed)",
+             pat=r"trough: n <= (?P<currentWeek>\d+) \? "
+                 r"'var\(--st-rule-fact\)' : 'var\(--st-crumb-bg\)'",
+             new="trough: n <= MRB_DATA('currentWeek') ? "
+                 "'var(--st-rule-fact)' : 'var(--st-crumb-bg)'",
+             keys=dict(currentWeek="num")),
+        dict(name="spine — numColor / nowDot (the NOW marker)",
+             pat=r"numColor: sel \? 'var\(--st-ink\)' : "
+                 r"n === (?P<currentWeek>\d+) \? "
+                 r"'var\(--ks3-accent-text\)' : 'var\(--st-ghost\)',\n"
+                 r"        nowDot: n === (?P=currentWeek) \? "
+                 r"'var\(--st-accent\)' : 'transparent'",
+             new="numColor: sel ? 'var(--st-ink)' : "
+                 "n === MRB_DATA('currentWeek') ? "
+                 "'var(--ks3-accent-text)' : 'var(--st-ghost)',\n"
+                 "        nowDot: n === MRB_DATA('currentWeek') ? "
+                 "'var(--st-accent)' : 'transparent'",
+             keys=dict(currentWeek="num")),
         dict(name="readings — ANSWERED · WK nn",
              pat=r"caption: 'ANSWERED \\u00B7 WK (?P<weekNumber>\d+)'",
              new="caption: 'ANSWERED \\u00B7 WK ' + MRB_DATA('weekNumber')",

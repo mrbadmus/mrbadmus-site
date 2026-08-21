@@ -204,11 +204,65 @@
     return weeks === 1 ? "1 WEEK AGO" : weeks + " WEEKS AGO";
   }
 
-  /* Autumn / Spring / Summer, from the SERVER's clock (the `Date` header of
-     the backend response), read in school-local time. The database records no
-     term boundaries; the months are how the English school year actually runs
-     and are the same for every school on the platform. */
-  function termLabelFrom(serverNow) {
+  /* The school-local calendar date of an instant, as `YYYY-MM-DD`, so it can
+     be compared against an academic year's own `start_date` / `end_date` —
+     which are plain dates and carry no timezone at all. */
+  function londonYmd(when) {
+    var parts = new Intl.DateTimeFormat("en-CA", {
+      timeZone: LONDON, year: "numeric", month: "2-digit", day: "2-digit"
+    }).format(new Date(when));
+    return parts;
+  }
+
+  /* AUTUMN / SPRING / SUMMER TERM, from the SERVER's clock (the `Date` header
+     of the backend response) read in school-local time, AGAINST THE CLASS'S
+     OWN ACADEMIC YEAR.
+
+     ⊕ RULED 22 Aug 2026 — P8. THE YEAR IS THE POINT, AND LEAVING IT OUT IS
+     WHAT PUT "SUMMER TERM" OVER WEEK 1.
+
+     This used to read the calendar MONTH and nothing else: 9-12 Autumn, 1-3
+     Spring, everything else Summer. That is right for eleven months of the
+     year and wrong for the one that matters most — the run-up to September.
+     On 21 August 2026 the month is 8, so it said SUMMER TERM, while the class
+     it was labelling belongs to 2026-27, a year that has not started, whose
+     first week is AUTUMN WEEK 1. A student opening the page in the holidays
+     was told they were in a term that finished in July.
+
+     The fix is not a fourth month range. It is to ask the academic year, which
+     is the thing that actually knows:
+
+       before the year starts   AUTUMN  — the pre-year window, per the standing
+                                ruling that it reads as Autumn Week 1. It is
+                                the term the student is about to be in, and it
+                                is the term their week 1 belongs to.
+       start_date .. 31 Dec     AUTUMN
+       1 Jan .. 31 Mar          SPRING
+       1 Apr .. end_date        SUMMER
+
+     Anchored on the year's OWN start rather than on a hardcoded September, so
+     a school whose year opens in August is labelled from its own dates. The
+     Spring/Summer boundary is the English school convention; the database
+     records no half-term or Easter dates for anything finer to read, and
+     Easter moves, so a fixed 31 March is the honest approximation and is named
+     as one rather than being presented as a lookup.
+
+     With no academic year to read — the query failed, or a class has none —
+     it falls back to the month rule it replaced. A wrong-but-plausible term
+     name is a poor answer, but a page that will not draw its own breadcrumb
+     is a worse one, and the year is only ever missing when something else has
+     already gone wrong. */
+  function termLabelFrom(serverNow, year) {
+    var today = londonYmd(serverNow);
+
+    if (year && year.start_date) {
+      if (today < year.start_date) { return "AUTUMN TERM"; }
+      var startYear = Number(String(year.start_date).slice(0, 4));
+      if (today <= startYear + "-12-31")     { return "AUTUMN TERM"; }
+      if (today <= (startYear + 1) + "-03-31") { return "SPRING TERM"; }
+      return "SUMMER TERM";
+    }
+
     var month = Number(new Intl.DateTimeFormat("en-GB", {
       timeZone: LONDON, month: "numeric"
     }).format(new Date(serverNow)));
@@ -846,7 +900,7 @@
       dueWordShort: "DUE",
 
       subjectLabel: klass.pill_label || "",
-      termLabel: termLabelFrom(serverNow),
+      termLabel: termLabelFrom(serverNow, year),
       topicTitle: current && current.assignment
         ? (current.assignment.topic || current.assignment.title || "")
         : ""

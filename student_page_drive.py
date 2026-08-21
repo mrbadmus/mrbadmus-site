@@ -71,7 +71,7 @@ FIXTURE_TELLS = [
     # people and places
     "Ayo", "Tiwa A.", "Marcus O.", "Hafsah I.", "Mr Badmus", "28 students",
     "Best score in the class", "Cells & microscopy", "Movement & joints",
-    "Lab safety check", "AUTUMN TERM",
+    "Lab safety check",
     # the docket — counts and dates, which is where it actually leaked
     "Using a microscope", "Mon 15 Sep", "Thu 18 Sep", "DUE THU 18:00",
     "2 days left", "40 POINTS AT STAKE",
@@ -95,7 +95,51 @@ FIXTURE_TELLS = [
     # ⊕ 22 Aug 2026 — W5. "Complete" replaces "Hand it in" everywhere, so any
     # surviving "hand in" wording is itself a tell that a surface was missed.
     "Hand it in", "Handed in", "HANDED IN", "handed in",
+    # ⊕ RULED 22 Aug 2026 — P2. The recall round is min(6, pool) long, so a
+    # page that still ANNOUNCES six is announcing a number it is not going to
+    # show. Design's blurb is the tell; the counter beneath it was already
+    # real.
+    "SIX QUESTIONS", "Six a round", "SIX A ROUND",
+    # ⊕ RULED 22 Aug 2026 — P8. "SUMMER TERM" over week 1 of 2026-27. Autumn
+    # is the correct answer today, so AUTUMN TERM cannot be a tell — it is
+    # above, from when it was Design's fixture value, and it has to come OUT
+    # of the list or the correct page fails. The wrong ones are the tells now.
+    "SUMMER TERM", "SPRING TERM",
 ]
+
+# ── the defaults that are NOT text, and so can never be a tell ────────────
+#
+# ⚠️ EVERY TELL ABOVE IS A STRING, AND THAT IS THE LIST'S ONE STRUCTURAL BLIND
+# SPOT. Design's "now" marker on the term spine is not the characters "04"
+# anywhere — it is `n === 4` deciding a COLOUR. `innerText` cannot see a
+# colour, so the tell list went green twice over a page whose picture showed
+# the marker sitting four weeks into a one-week-old term. A screenshot caught
+# it both times, which is not a check.
+#
+# So the marker is probed STRUCTURALLY instead: read the dots out of the DOM,
+# ask which ones are painted, and assert that the painted set is exactly the
+# real current week. That is the assertion a tell was standing in for.
+MARKER_PROBE = r"""(function () {
+  /* the spine's dots: 5px round spans, one per week, each preceded by its
+     week number. Design draws them at `background: var(--st-accent)` for the
+     current week and `transparent` for every other. */
+  var out = { lit: [], total: 0 };
+  var all = document.querySelectorAll('span');
+  for (var i = 0; i < all.length; i++) {
+    var el = all[i], cs = getComputedStyle(el);
+    if (cs.borderTopLeftRadius !== '50%') { continue; }
+    if (Math.round(el.getBoundingClientRect().width) !== 5) { continue; }
+    var bg = cs.backgroundColor || '';
+    var transparent = (bg === 'transparent' ||
+                       /rgba\(0,\s*0,\s*0,\s*0\)/.test(bg));
+    var num = el.previousElementSibling
+      ? (el.previousElementSibling.innerText || '').trim() : '';
+    if (!/^\d+$/.test(num)) { continue; }
+    out.total++;
+    if (!transparent) { out.lit.push(num); }
+  }
+  return JSON.stringify(out);
+})()"""
 
 # What a real student on this account should be seeing tonight. The initials
 # belong to the drive account, so they travel with it.
@@ -249,6 +293,33 @@ def main():
                 check(len(present) == len(EXPECT),
                       "the student's real identity is on screen",
                       "found %s of %s" % (present, EXPECT))
+
+                # ⊕ RULED 22 Aug 2026 — P9. The "now" dot, probed rather
+                # than grepped. `currentWeek` is what the page itself computed
+                # from the server's teaching week, so this asserts the drawing
+                # agrees with the data instead of asserting a hardcoded 1 —
+                # which would go red in September for the right reason and be
+                # "fixed" by someone bumping the constant.
+                want = page.eval(
+                    "(window.__MRB_DATA__ && window.__MRB_DATA__.currentWeek)"
+                    " != null ? String(window.__MRB_DATA__.currentWeek) : ''")
+                probe = page.eval(MARKER_PROBE)
+                try:
+                    spine = json.loads(probe) if probe else {"lit": [], "total": 0}
+                except Exception:
+                    spine = {"lit": [], "total": 0}
+                if not spine["total"]:
+                    notes.append("%s: the term spine drew no dots to probe "
+                                 "(it is hidden at this width)" % label)
+                elif not want:
+                    check(False, "the spine's NOW dot can be checked",
+                          "the page exposes no currentWeek to check it against")
+                else:
+                    lit = [n.lstrip("0") or "0" for n in spine["lit"]]
+                    check(lit == [want.lstrip("0") or "0"],
+                          "the term spine's NOW dot is on the REAL current week",
+                          "lit=%s want=week %s of %s"
+                          % (spine["lit"], want, spine["total"]))
 
                 if "Breathing and gas exchange" in text:
                     notes.append("%s: this week's real assignment title is on screen"
