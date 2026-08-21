@@ -565,14 +565,14 @@ LESSON = {
             "title": "Rung 1 · Which three",
             "q": "Which nutrients release energy when the body respires them?",
             "options": [
-                "Carbohydrate, lipid and protein",
                 "Carbohydrate, lipid and vitamins",
+                "Carbohydrate, lipid and protein",
                 "Carbohydrate and lipid only",
                 "All seven, in different amounts",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "Vitamins have an energy content of zero. They make "
+                0: "Vitamins have an energy content of zero. They make "
                    "energy-releasing reactions possible without supplying any "
                    "energy themselves.",
                 2: "Close — but protein can be respired too. The body prefers "
@@ -589,14 +589,14 @@ LESSON = {
                  "A doctor finds their blood cannot carry oxygen properly. "
                  "What is missing?",
             "options": [
-                "Carbohydrate — they need more fuel",
                 "Iron — a mineral, needed in milligrams",
+                "Carbohydrate — they need more fuel",
                 "Water — they are dehydrated",
                 "Vitamin C — they are getting no fruit",
             ],
-            "answer": 1,
+            "answer": 0,
             "feedback": {
-                0: "They are eating plenty of carbohydrate. Reaching for ‘more "
+                1: "They are eating plenty of carbohydrate. Reaching for ‘more "
                    "fuel’ is the trap: the fuel is there and cannot be used "
                    "properly.",
                 2: "Dehydration does cause tiredness, but it would not stop "

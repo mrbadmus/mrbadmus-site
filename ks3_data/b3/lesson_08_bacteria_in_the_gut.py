@@ -444,17 +444,17 @@ LESSON = {
             # it is the science.
             "options": [
                 "Absorb glucose from the gut into the blood",
-                "Break down cellulose and make vitamin K",
                 "Produce the hydrochloric acid that kills arriving bacteria",
                 "Digest protein into the amino acids you absorb",
+                "Break down cellulose and make vitamin K",
             ],
-            "answer": 1,
+            "answer": 3,
             "feedback": {
                 0: "Absorption is done by your own villus cells, in the small "
                    "intestine, and it happens perfectly well without bacteria.",
-                2: "That is your stomach lining, and the acid actually kills "
+                1: "That is your stomach lining, and the acid actually kills "
                    "most bacteria that arrive with a meal.",
-                3: "Your own protease does this, in the stomach and small "
+                2: "Your own protease does this, in the stomach and small "
                    "intestine. Bacteria are not needed for it.",
             }},
         "apply": {

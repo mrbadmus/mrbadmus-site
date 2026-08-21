@@ -575,16 +575,16 @@ LESSON = {
             # reading exercise for no gain.
             "options": [
                 "length",
-                "surface area",
                 "volume",
+                "surface area",
                 "muscle strength",
             ],
-            "answer": 1,
+            "answer": 2,
             "feedback": {
                 0: "The length is unchanged — six metres before and after. "
                    "That is exactly the comparison the hose in the hook was "
                    "for.",
-                2: "Villi project into the space, so if anything they slightly "
+                1: "Villi project into the space, so if anything they slightly "
                    "reduce the volume available to food. Volume is not what "
                    "limits absorption.",
                 3: "Villi contain no muscle. Peristalsis is done by muscle in "
@@ -601,20 +601,20 @@ LESSON = {
             "options": [
                 "It continues normally — the surface and the thin wall are "
                 "intact",
-                "It stops within minutes, because the concentration difference "
-                "disappears",
                 "It reverses, pushing glucose back into the gut",
                 "It speeds up, because nothing is carrying molecules away",
+                "It stops within minutes, because the concentration difference "
+                "disappears",
             ],
-            "answer": 1,
+            "answer": 3,
             "feedback": {
                 0: "Two of the four features are intact and it still fails. "
                    "Diffusion needs a concentration difference, and only "
                    "flowing blood maintains one.",
-                2: "Once the two sides equalise, movement is equal in both "
+                1: "Once the two sides equalise, movement is equal in both "
                    "directions and there is no net transfer. It stops rather "
                    "than reverses.",
-                3: "Carrying molecules away is what keeps absorption going. "
+                2: "Carrying molecules away is what keeps absorption going. "
                    "Removing it removes the gradient.",
             }},
         "explain": {

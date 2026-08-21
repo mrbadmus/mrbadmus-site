@@ -517,17 +517,17 @@ LESSON = {
                  "the ethanol into water and gets a thick white cloud. What "
                  "may they write down?",
             "options": [
-                "The peanut contains lipid",
                 "The peanut is high in fat",
                 "The peanut contains lipid and no protein",
+                "The peanut contains lipid",
                 "The peanut is unhealthy",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "Almost right, and ‘high’ is the word that fails. The "
+                0: "Almost right, and ‘high’ is the word that fails. The "
                    "emulsion test detects lipid; it does not measure how much, "
                    "so ‘high’ is not supported by this result.",
-                2: "This test says nothing at all about protein. One test "
+                1: "This test says nothing at all about protein. One test "
                    "answers one question — you would need Biuret to make any "
                    "claim about protein.",
                 3: "No food test is a judgement about health. Lipid is one of "
@@ -541,17 +541,17 @@ LESSON = {
                  "happened?",
             "options": [
                 "The iodine was too dilute the second time",
-                "Saliva broke the starch down into sugar",
                 "Chewing squashed the starch into smaller pieces so the "
                 "iodine could not find it",
+                "Saliva broke the starch down into sugar",
                 "The starch dissolved in the saliva",
             ],
-            "answer": 1,
+            "answer": 2,
             "feedback": {
                 0: "Same iodine, same drops. Something changed in the bread, "
                    "not in the reagent — and the Benedict’s result tells you "
                    "what.",
-                2: "Crushing a sample makes a test more likely to work, not "
+                1: "Crushing a sample makes a test more likely to work, not "
                    "less. And crushing cannot create the reducing sugar that "
                    "Benedict’s just found.",
                 3: "Dissolving starch does not stop iodine detecting it — the "

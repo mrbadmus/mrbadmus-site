@@ -605,25 +605,25 @@ LESSON = {
             # thresholds, and a class works out early that the long one is
             # usually right. AFTER: 14 / 13 / 13 / 13.
             "options": [
-                "All of it — an enzyme is not used up by the reaction it "
-                "catalyses",
-                # was "None — it is consumed as the starch is broken down"
                 "None — it is consumed by the reaction as the starch is "
                 "broken down",
-                # was "About half — some is always lost"
+                # was "None — it is consumed as the starch is broken down"
                 "About half — some enzyme is always lost each time it does "
                 "its job",
-                # was "It depends how much starch there was"
+                # was "About half — some is always lost"
                 "It depends how much starch there was — more starch uses up "
                 "more enzyme",
+                # was "It depends how much starch there was"
+                "All of it — an enzyme is not used up by the reaction it "
+                "catalyses",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
-                1: "Then a teaspoon could not digest a kilogram. Substrate "
+                0: "Then a teaspoon could not digest a kilogram. Substrate "
                    "falls and product rises; the enzyme count does not change.",
-                2: "None is lost to the reaction. A catalyst finishes each "
+                1: "None is lost to the reaction. A catalyst finishes each "
                    "cycle in the same state it started.",
-                3: "It does not. That is precisely what makes a catalyst "
+                2: "It does not. That is precisely what makes a catalyst "
                    "useful — the amount needed does not scale with the amount "
                    "of substrate.",
             }},
@@ -636,24 +636,24 @@ LESSON = {
             "options": [
                 # was "It needs to be warmed up again to become active"
                 "It needs to be warmed up again before it will become active",
-                "Its shape was permanently destroyed by the heat, so it no "
-                "longer fits starch",
-                # was "The enzyme was killed and dead enzymes cannot work"
                 "The enzyme was killed by the heat, and dead enzymes cannot "
                 "work",
-                # was "The starch was denatured instead"
+                # was "The enzyme was killed and dead enzymes cannot work"
                 "The starch was denatured instead, so amylase has nothing left "
                 "to work on",
+                # was "The starch was denatured instead"
+                "Its shape was permanently destroyed by the heat, so it no "
+                "longer fits starch",
             ],
-            "answer": 1,
+            "answer": 3,
             "feedback": {
                 0: "It is at 37 °C, which is its optimum. Temperature is no "
                    "longer the problem — something about the molecule has "
                    "changed.",
-                2: "The idea is close but the word is wrong, and the wrong "
+                1: "The idea is close but the word is wrong, and the wrong "
                    "word carries a wrong picture. An enzyme is a molecule and "
                    "was never alive; it is denatured, not dead.",
-                3: "Starch has no folded shape to lose. Heating starch in "
+                2: "Starch has no folded shape to lose. Heating starch in "
                    "water does not stop amylase digesting it — it usually "
                    "helps.",
             }},

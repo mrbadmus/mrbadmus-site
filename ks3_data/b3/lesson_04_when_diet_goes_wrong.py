@@ -570,15 +570,15 @@ LESSON = {
                  "diagnosed with iron-deficiency anaemia. What does this tell "
                  "you?",
             "options": [
-                "Child B must have been misdiagnosed",
                 "Iron deficiency does not depend on how much energy a diet "
                 "supplies",
+                "Child B must have been misdiagnosed",
                 "Child A’s anaemia is more serious because they eat less",
                 "Both children need to eat more food",
             ],
-            "answer": 1,
+            "answer": 0,
             "feedback": {
-                0: "There is no contradiction to resolve. A deficiency is a "
+                1: "There is no contradiction to resolve. A deficiency is a "
                    "statement about one nutrient, and it is independent of the "
                    "total energy intake.",
                 2: "Severity depends on how low the iron is, which the case "

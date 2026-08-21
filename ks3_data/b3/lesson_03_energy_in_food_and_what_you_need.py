@@ -597,17 +597,17 @@ LESSON = {
                  "(2400 kJ) and two chocolate bars (1050 kJ each). What is "
                  "their intake, and how does it compare?",
             "options": [
-                "7670 kJ — about 1800 kJ short of the requirement",
                 "6620 kJ — they forgot to count the second chocolate bar",
                 "7670 kJ — about 1800 kJ more than the requirement",
+                "7670 kJ — about 1800 kJ short of the requirement",
                 "9500 kJ — the intake always matches the requirement",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "That is the total with only one bar. Read the portion "
+                0: "That is the total with only one bar. Read the portion "
                    "counts before adding — this is the single most common slip "
                    "in this kind of question.",
-                2: "The arithmetic is right and the comparison is the wrong way "
+                1: "The arithmetic is right and the comparison is the wrong way "
                    "round. 7670 is less than 9500, so it is a shortfall.",
                 3: "Nothing makes intake match requirement automatically. The "
                    "whole point of the sum is that it usually does not.",
@@ -618,15 +618,15 @@ LESSON = {
                  "needs”. A 4-year-old eats one. What share of their day is "
                  "it?",
             "options": [
-                "11% — the label states it",
                 "About 18%, because their requirement is much lower",
+                "11% — the label states it",
                 "About 6%, because a smaller person gets more from the same "
                 "food",
                 "You cannot say without knowing their mass exactly",
             ],
-            "answer": 1,
+            "answer": 0,
             "feedback": {
-                0: "The label states a percentage of a standard adult figure. "
+                1: "The label states a percentage of a standard adult figure. "
                    "It cannot know who is holding the bar, and the "
                    "4-year-old’s requirement is far lower.",
                 2: "A smaller body does not extract more energy from a bar. "
