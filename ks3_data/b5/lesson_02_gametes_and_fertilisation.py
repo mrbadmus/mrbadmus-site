@@ -763,14 +763,14 @@ LESSON = {
             "title": "Rung 1 · Define it precisely",
             "q": "Which of these is fertilisation?",
             "options": [
-                "A sperm cell reaching the outside of the egg cell",
                 "The nucleus of a sperm fusing with the nucleus of an egg",
+                "A sperm cell reaching the outside of the egg cell",
                 "The fertilised egg embedding in the lining of the uterus",
                 "The egg cell being released from the ovary",
             ],
-            "answer": 1,
+            "answer": 0,
             "feedback": {
-                0: "Many sperm reach the egg. Reaching describes a crowd "
+                1: "Many sperm reach the egg. Reaching describes a crowd "
                    "arriving; fertilisation is one specific event.",
                 2: "That is implantation, several days later and in a "
                    "different organ. Two different events with two different "
@@ -785,19 +785,19 @@ LESSON = {
                  "for?",
             "options": [
                 "Extra copies of the chromosomes, in case some are damaged",
-                "Cytoplasm, mitochondria and a food store for the first few "
-                "days of dividing",
                 "It makes the egg easier for the sperm to find",
                 "Nothing in particular — egg cells are simply bigger",
+                "Cytoplasm, mitochondria and a food store for the first few "
+                "days of dividing",
             ],
-            "answer": 1,
+            "answer": 3,
             "feedback": {
                 0: "There are no spare copies. Exactly 23 in each, and the "
                    "fertilised cell has exactly 46.",
-                2: "Size does help the sperm locate it, but that is a side "
+                1: "Size does help the sperm locate it, but that is a side "
                    "effect. The material is there for what happens after "
                    "fusion, not before.",
-                3: "Every feature of both gametes has a reason. That is the "
+                2: "Every feature of both gametes has a reason. That is the "
                    "point of the comparison table.",
             }},
         "explain": {

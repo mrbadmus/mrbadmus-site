@@ -957,14 +957,14 @@ LESSON = {
             "options": [
                 "The mother's heart pumps blood hard enough to push oxygen "
                 "across into the foetus",
-                "There is more oxygen in her blood than in the foetal blood, "
-                "so it diffuses across",
                 "The placenta works out what the foetus needs and sends "
                 "exactly that across to it",
+                "There is more oxygen in her blood than in the foetal blood, "
+                "so it diffuses across",
                 "The two blood supplies mix in the placenta, so whatever she "
                 "has the foetus has too",
             ],
-            "answer": 1,
+            "answer": 2,
             "feedback": {
                 0: "Nothing is pumped across. The two circulations are "
                    "separate, and her heart moves her blood only.",
@@ -973,7 +973,7 @@ LESSON = {
                 # ("does actively carry a few things") rather than refuting the
                 # belief, which is exactly why no third id is minted here. See
                 # the docstring.
-                2: "The placenta does actively carry a few things, such as "
+                1: "The placenta does actively carry a few things, such as "
                    "antibodies. Oxygen is not one of them — it simply "
                    "diffuses.",
                 3: "They never mix. If they did, differing blood groups and "
@@ -988,18 +988,18 @@ LESSON = {
             "options": [
                 "The cord carries the mother’s blood into the baby, which is "
                 "exactly what it is for",
-                "The cord carries the foetus’s own blood out to the placenta "
-                "and back",
                 "The cord carries food rather than blood, because the baby is "
                 "being fed through it",
+                "The cord carries the foetus’s own blood out to the placenta "
+                "and back",
                 "The cord carries air to the baby’s lungs, because it has to "
                 "breathe somehow",
             ],
-            "answer": 1,
+            "answer": 2,
             "feedback": {
                 0: "Then a mother and baby with different blood groups could "
                    "not survive a pregnancy together, and they routinely do.",
-                2: "It carries blood. What it does not carry is anybody else’s "
+                1: "It carries blood. What it does not carry is anybody else’s "
                    "blood, and nothing in it is food in any recognisable "
                    "sense.",
                 3: "The foetal lungs are full of fluid and are not used. "

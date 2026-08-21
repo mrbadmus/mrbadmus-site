@@ -745,33 +745,33 @@ LESSON = {
             "q": "Where does fertilisation take place?",
             "options": [
                 "In the uterus",
-                "In the oviduct",
                 "In the ovary",
                 "In the cervix",
+                "In the oviduct",
             ],
-            "answer": 1,
+            "answer": 3,
             "feedback": {
                 0: "A very common answer and it is wrong. The uterus is where "
                    "the already-fertilised egg implants and develops — "
                    "fertilisation happens further up.",
-                2: "The egg is released from the ovary before it can meet a "
+                1: "The egg is released from the ovary before it can meet a "
                    "sperm. Fertilisation in the ovary would be a serious "
                    "medical emergency.",
-                3: "The cervix is a muscular ring the sperm pass through. "
+                2: "The cervix is a muscular ring the sperm pass through. "
                    "Nothing meets there.",
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
             "q": "Which statement about egg cells is correct?",
             "options": [
-                "They are made continuously from puberty, like sperm",
                 "All the immature egg cells are already present at birth",
+                "They are made continuously from puberty, like sperm",
                 "A new egg cell is made each month by the ovary",
                 "They are made in the oviduct and stored in the ovary",
             ],
-            "answer": 1,
+            "answer": 0,
             "feedback": {
-                0: "This is the sperm pattern applied to eggs. The two systems "
+                1: "This is the sperm pattern applied to eggs. The two systems "
                    "differ here more sharply than anywhere else.",
                 # ⚑ Design's asterisks, printed literally on her own page. See
                 # the docstring's rendering flag.

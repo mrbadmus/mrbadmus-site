@@ -790,19 +790,19 @@ LESSON = {
             "q": "Which of these is pollination?",
             "options": [
                 "A pollen nucleus fusing with an ovule nucleus",
-                "The transfer of pollen from an anther to a stigma",
                 "An insect drinking nectar from a flower",
                 "An ovary swelling to become a fruit",
+                "The transfer of pollen from an anther to a stigma",
             ],
-            "answer": 1,
+            "answer": 3,
             "feedback": {
                 0: "That is fertilisation, and it happens later, inside the "
                    "ovary. Pollination gets the pollen to the right place; it "
                    "does not join anything.",
-                2: "That is the insect’s reason for being there. "
+                1: "That is the insect’s reason for being there. "
                    "Pollination is what happens to the plant as a side "
                    "effect.",
-                3: "That happens after fertilisation, which is itself after "
+                2: "That happens after fertilisation, which is itself after "
                    "pollination. Three events, three names.",
             }},
         "apply": {
@@ -813,14 +813,14 @@ LESSON = {
             "options": [
                 "A flower with no petals has lost them, so this one is "
                 "damaged or dying",
-                "It is wind-pollinated — it has nothing to attract with "
-                "because it attracts nothing",
                 "Every flower is pollinated by insects, so this one must "
                 "attract them in some other way",
+                "It is wind-pollinated — it has nothing to attract with "
+                "because it attracts nothing",
                 "A flower that attracts nothing is pollinated at night, when "
                 "colour and scent would be wasted",
             ],
-            "answer": 1,
+            "answer": 2,
             "feedback": {
                 0: "It is a perfectly healthy flower. Every grass in the "
                    "country looks like this.",
@@ -828,7 +828,7 @@ LESSON = {
                 # it: the old correction said "It is pollinated like any other
                 # flowering plant", which the new option already concedes —
                 # what it now denies is that every flower needs an insect.
-                2: "Most of the plant material around you is wind-pollinated "
+                1: "Most of the plant material around you is wind-pollinated "
                    "— every grass, and most large trees. There is nobody to "
                    "attract, so nothing advertises.",
                 3: "Night-pollinated flowers do exist — and they are "

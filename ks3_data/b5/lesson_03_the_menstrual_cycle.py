@@ -746,17 +746,17 @@ LESSON = {
             "q": "Someone’s cycles are 24 days long. Roughly which day is the "
                  "egg released?",
             "options": [
+                "About day 10 — roughly a fortnight before the next period",
                 "Day 12 — exactly halfway through the cycle, because release "
                 "is always in the middle",
-                "About day 10 — roughly a fortnight before the next period",
                 "Day 14 — the same day for everybody, whatever the length of "
                 "the cycle",
                 "It cannot be worked out at all, because release happens at "
                 "random",
             ],
-            "answer": 1,
+            "answer": 0,
             "feedback": {
-                0: "Halfway is a guess that only works by accident. The steady "
+                1: "Halfway is a guess that only works by accident. The steady "
                    "interval is the one after release, not the one before it.",
                 2: "Day 14 is release in a 28-day cycle only. In a 24-day "
                    "cycle it would leave just ten days before the next "
@@ -771,21 +771,21 @@ LESSON = {
             "options": [
                 "The unfertilised egg cell, leaving the body because it was "
                 "never used",
-                "The lining of the uterus, built up during the previous few "
-                "weeks",
                 "Blood the body has stored up and has no further use for",
                 "Part of the ovary, shed once the egg has gone",
+                "The lining of the uterus, built up during the previous few "
+                "weeks",
             ],
-            "answer": 1,
+            "answer": 3,
             "feedback": {
                 0: "An egg is 0.1 mm across — far too small to see, and it "
                    "breaks down where it is. What you can see is not the egg.",
                 # ⚑ This correction is REPRO-19's, and it is the only place the
                 # belief is answered outside the confrontation paragraph.
-                2: "Nothing is being disposed of. A lining was built for a "
+                1: "Nothing is being disposed of. A lining was built for a "
                    "job, held ready, and cleared when no fertilised egg "
                    "arrived — then built again.",
-                3: "The ovary is not shed. It releases one egg cell and stays "
+                2: "The ovary is not shed. It releases one egg cell and stays "
                    "where it is.",
             }},
         "explain": {

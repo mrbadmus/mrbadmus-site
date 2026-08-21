@@ -740,14 +740,14 @@ LESSON = {
             "title": "Rung 2 · The one that catches people",
             "q": "Which of these is wind-dispersed?",
             "options": [
-                "A blackberry",
                 "A poppy capsule",
+                "A blackberry",
                 "A coconut",
                 "A gorse pod",
             ],
-            "answer": 1,
+            "answer": 0,
             "feedback": {
-                0: "Sweet flesh around a hard pip — dispersed inside an "
+                1: "Sweet flesh around a hard pip — dispersed inside an "
                    "animal that eats it.",
                 2: "Far too heavy for wind. The buoyant fibrous husk is the "
                    "clue: this one floats.",
