@@ -650,25 +650,26 @@ LESSON = {
         # ⚑ MRB-177, measured and FIXED AT THE DISTRACTORS. Design's set is
         # 15 / 11 / 5 / 8 words: the correct option is strictly longest by
         # FOUR, which is the gate exactly. Nothing about the correct option
-        # moved and the answer stayed at index 0; the three distractors were
+        # moved and the answer sat at index 0 when this was written — MRB-278
+        # moved it to index 1 on 21 Aug 2026 without retyping a word; the three distractors were
         # lengthened into the correct option's own shape and each still states
         # the same wrong rule, so its correction still lands. The set now
         # measures 15 / 15 / 12 / 13.
         "recall": {
             "q": "What happens in a displacement reaction?",
             "options": [
-                "A more reactive metal takes the place of a less reactive "
-                "metal in its compound",
                 "A less reactive metal takes the place of a more reactive "
+                "metal in its compound",
+                "A more reactive metal takes the place of a less reactive "
                 "metal in its compound",
                 "Two compounds swap the metals in them, so both reactants "
                 "are compounds",
                 "A metal is broken down into the simpler substances it is "
                 "made of",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "It only runs one way. A less reactive metal cannot push "
+                0: "It only runs one way. A less reactive metal cannot push "
                    "out a more reactive one — that is what makes the grid "
                    "half empty.",
                 2: "One of the reactants is a metal on its own. It is the "
@@ -686,21 +687,21 @@ LESSON = {
             "q": "A copper wire is left in zinc sulfate solution for a week "
                  "and nothing happens. What does that tell you?",
             "options": [
-                "Copper is less reactive than zinc, so it cannot displace it",
                 "A dilute solution reacts slowly, so a stronger one would "
                 "show the reaction",
                 "Copper takes no part in displacement, so it never reacts "
                 "with a salt solution",
                 "Heating speeds up any reaction, so warming the tube would "
                 "make the copper displace the zinc",
+                "Copper is less reactive than zinc, so it cannot displace it",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
-                1: "Concentration changes the speed of a reaction that can "
+                0: "Concentration changes the speed of a reaction that can "
                    "happen. This one cannot happen at all.",
-                2: "Copper is displaced by zinc, iron and magnesium. It takes "
+                1: "Copper is displaced by zinc, iron and magnesium. It takes "
                    "part constantly — always on the losing side.",
-                3: "Heat speeds reactions up; it does not reverse the "
+                2: "Heat speeds reactions up; it does not reverse the "
                    "reactivity order. Zinc stays above copper at every "
                    "temperature.",
             }},

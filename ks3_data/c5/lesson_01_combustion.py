@@ -849,37 +849,37 @@ LESSON = {
             "q": "What are the products of the complete combustion of a fuel "
                  "containing carbon and hydrogen?",
             "options": [
-                "Carbon dioxide and water",
                 "Carbon monoxide and water",
                 "Carbon dioxide only",
                 "Soot and water vapour",
+                "Carbon dioxide and water",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
-                1: "Carbon monoxide is a product of incomplete combustion, "
+                0: "Carbon monoxide is a product of incomplete combustion, "
                    "when the oxygen supply is short.",
-                2: "The hydrogen in the fuel has to go somewhere, and it goes "
+                1: "The hydrogen in the fuel has to go somewhere, and it goes "
                    "into water.",
-                3: "Soot means carbon that never finished reacting. With "
+                2: "Soot means carbon that never finished reacting. With "
                    "enough oxygen there is none.",
             }},
         "apply": {
             "q": "A Bunsen burner is giving a tall yellow flame. What does "
                  "that tell you?",
             "options": [
-                "Not enough air is getting in, so combustion is incomplete",
                 "Turning the gas up makes the flame taller, so the colour "
                 "follows the amount of fuel",
                 "A bigger, brighter flame is a hotter flame, so the yellow one "
                 "is burning more fiercely",
+                "Not enough air is getting in, so combustion is incomplete",
                 "Yellow means the gas supply is contaminated, so the colour "
                 "comes from the impurity",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "The gas tap changes the size of the flame. The colour is "
+                0: "The gas tap changes the size of the flame. The colour is "
                    "about air, and yellow means too little of it.",
-                2: "The blue flame is hotter, at around 1500 °C. The "
+                1: "The blue flame is hotter, at around 1500 °C. The "
                    "yellow glow is soot, and soot is wasted fuel.",
                 3: "Same gas, both flames. Open the air hole and the yellow "
                    "flame becomes blue immediately.",

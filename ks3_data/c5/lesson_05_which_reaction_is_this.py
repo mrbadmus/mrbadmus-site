@@ -577,14 +577,14 @@ LESSON = {
             "q": "A reaction has exactly one reactant and two products, and "
                  "stops when the flame is removed. Which type is it?",
             "options": [
-                "Thermal decomposition",
                 "Complete combustion",
+                "Thermal decomposition",
                 "Metal displacement",
                 "Slow oxidation",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "Combustion needs two reactants, one of which is oxygen, "
+                0: "Combustion needs two reactants, one of which is oxygen, "
                    "and once started it supplies its own heat.",
                 2: "Displacement needs a metal and a compound of another "
                    "metal — two reactants.",
@@ -607,20 +607,20 @@ LESSON = {
                  "student writes \"oxidation\" and another writes "
                  "\"combustion\". Who is right?",
             "options": [
-                "Both — combustion is a kind of oxidation, and combustion is "
-                "the more specific answer",
                 "Only the one who wrote combustion; oxidation is the wrong "
                 "name for burning",
                 "Only the one who wrote oxidation; combustion applies to "
                 "fuels and not to metals",
+                "Both — combustion is a kind of oxidation, and combustion is "
+                "the more specific answer",
                 "Neither — burning a metal in air is a displacement, not "
                 "either of those",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "Magnesium gains oxygen, so it is unquestionably an "
+                0: "Magnesium gains oxygen, so it is unquestionably an "
                    "oxidation. Combustion is more specific, not more correct.",
-                2: "Magnesium is behaving as a fuel: it burns with a flame "
+                1: "Magnesium is behaving as a fuel: it burns with a flame "
                    "and gives out energy. Combustion fits.",
                 3: "There is no second metal for it to displace. Displacement "
                    "needs a metal compound as a reactant.",

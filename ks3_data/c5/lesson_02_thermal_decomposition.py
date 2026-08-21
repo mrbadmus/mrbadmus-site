@@ -513,20 +513,20 @@ LESSON = {
         "recall": {
             "q": "What is thermal decomposition?",
             "options": [
-                "One compound broken down into two or more substances by heat",
                 "Two or more substances joined together into one compound by "
                 "heat",
                 "One substance turned from a solid into a liquid by heat",
                 "One substance joined with the oxygen in the air by heat",
+                "One compound broken down into two or more substances by heat",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
-                1: "That is the shape of combustion and oxidation. "
+                0: "That is the shape of combustion and oxidation. "
                    "Decomposition goes the other way: one reactant, several "
                    "products.",
-                2: "Melting is a physical change — same substance, different "
+                1: "Melting is a physical change — same substance, different "
                    "state, and it reverses on cooling.",
-                3: "That is oxidation. Decomposition needs no other reactant "
+                2: "That is oxidation. Decomposition needs no other reactant "
                    "at all, and works in a tube with no air in it.",
             }},
         # The one that catches people, and it is the mass claim at the ladder:
@@ -538,14 +538,14 @@ LESSON = {
                  "colour change is complete, and weighed again. What has "
                  "happened to the mass, and why?",
             "options": [
-                "It has fallen, because the carbon dioxide left the tube",
                 "It has risen, because oxygen joined the copper",
+                "It has fallen, because the carbon dioxide left the tube",
                 "It is unchanged, because mass is always conserved",
                 "It has fallen, because some of the solid was destroyed",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "Nothing joined. No oxygen was needed — the reaction works "
+                0: "Nothing joined. No oxygen was needed — the reaction works "
                    "in a tube with no air, and the oxygen in the copper oxide "
                    "came from the carbonate itself.",
                 2: "Mass is conserved, and one of the products left the tube. "
