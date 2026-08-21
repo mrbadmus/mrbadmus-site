@@ -279,14 +279,33 @@ LESSON = {
     # ⚑ `ENER-03` overlaps C8's `PTAB-07` ("sodium melted because the water was
     # hot"): both are heat coming OUT of a reaction being read as heat that
     # went in. NOTES-C8 §5 asks for the cross-reference to be recorded rather
-    # than merged, and it is recorded in `docs/ks3/misconception-register.md`.
-    # They are elicited by different phenomena and stay separate.
+    # than merged. They are elicited by different phenomena and stay separate.
+    #
+    # ⊕ CORRECTED 21 Aug 2026 (MRB-281). This used to be recorded as PROSE in
+    # `docs/ks3/misconception-register.md` instead of as a `reappears_in`
+    # value, on the stated ground that "C8 is drawn but not yet authored" and
+    # that `group-1-the-alkali-metals` "is not in ks3_data/structure.py".
+    #
+    # BOTH HALVES WERE FALSE. C8 was authored and delivered on 21 Aug — six
+    # lessons, notes and support — and had been sitting in the main worktree's
+    # working directory the whole time. A worktree shares `.git` but NOT its
+    # working directory, so an UNTRACKED delivery dropped into one tree is
+    # invisible from every other tree, and looking from this lane and finding
+    # nothing was read as the unit not existing. The slug was then absent from
+    # `structure.py` only because §7's five-slot plan had never been updated to
+    # C8's real lesson list.
+    #
+    # The slug exists now, so the cross-reference is what it always should have
+    # been: an edge, checkable by the gate that checks every `reappears_in`
+    # names a real slug. A note in prose is exactly the un-checkable form this
+    # file was repaired away from under `MIX`.
     "misconceptions": [
         {"id": "ENER-03",
          "statement": "A reaction that needs heating to start cannot be "
                       "exothermic.",
          "elicited_by": "think-commit-spark",
-         "confronted_by": "think-commit-spark"},
+         "confronted_by": "think-commit-spark",
+         "reappears_in": ["group-1-the-alkali-metals"]},
         {"id": "ENER-04",
          "statement": "Chemical reactions create energy.",
          "elicited_by": "use-fireworks",

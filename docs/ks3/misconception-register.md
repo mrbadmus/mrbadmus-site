@@ -1328,14 +1328,31 @@ thermometer as an energy meter. `ENER-01` is the observation and `ENER-02` is th
 mistake underneath it, so the page confronts them in that order: the flat step first, at
 `#s-think`, and then the closing panel on the curve itself.
 
-⚑ **`ENER-03` overlaps C8's proposed `PTAB-07`** ("sodium melted because the water was hot"). Both
+⚑ **`ENER-03` overlaps C8's `PTAB-07`** ("sodium melted because the water was hot"). Both
 are heat coming OUT of a reaction being read as heat that went IN. NOTES-C8 §5 asks for the
 cross-reference to be recorded rather than the two merged, and that is the right call: they are
 elicited by different phenomena — a Bunsen you had to light against a metal that melted itself —
-and a student can hold either without the other. Recorded here rather than as a `reappears_in`
-value, because C8 is drawn but **not yet authored**, and the slug NOTES-C8 names
-(`group-1-the-alkali-metals`) is not in `ks3_data/structure.py`. A `reappears_in` pointing at a
-slug that does not exist is precisely the defect this file was repaired for under `MIX`.
+and a student can hold either without the other.
+
+⊕ **Corrected 21 Aug 2026 (MRB-281). It is now a `reappears_in` edge on `ENER-03`, pointing at
+`group-1-the-alkali-metals`, and this paragraph is no longer where the cross-reference lives.**
+This entry previously read *"Recorded here rather than as a `reappears_in` value, because C8 is
+drawn but **not yet authored**, and the slug NOTES-C8 names (`group-1-the-alkali-metals`) is not in
+`ks3_data/structure.py`."* Both halves of that were false, and the superseded sentence is kept
+because the way it was reached is the point.
+
+C8 **was** authored — six lessons, author's notes and support, delivered 21 Aug — and had been
+sitting in the main checkout's working directory the whole time. A git worktree shares `.git` but
+**not** its working directory, so an untracked delivery dropped into one tree is invisible from
+every other tree. Searching from this lane and finding nothing was read as the unit not existing,
+and that reading was then written into this file as a reason. The slug was missing from
+`structure.py` only because §7's five-slot plan had never been reconciled with C8's real lesson
+list; reconciling it (MRB-281) added the three group slugs and the seventh slot.
+
+The rule the original note invoked is the right rule — a `reappears_in` pointing at a slug that
+does not exist is precisely the defect this file was repaired for under `MIX`. The error was in the
+premise, not the rule. **Prose is the un-checkable form: no gate reads it, so nothing could
+contradict it.** An edge is checked on every build, which is why the correction is an edge.
 
 ⚑ **`ENER-07` and `ENER-08` are both `NOS`-shaped and both sit here by accident of build order.**
 Neither is a factual error about energy: one is a wrong idea about what averaging does and the

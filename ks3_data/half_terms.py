@@ -22,7 +22,7 @@ page bytes are untouched, which is the only proof that matters.
 ---
 
 **What this module is for, in one line:** it turns the default sequence's
-33 units into 183 (year, half term) placements, derived rather than authored,
+33 units into 185 (year, half term) placements, derived rather than authored,
 so that the placement cannot drift from the sequence it came from.
 
 **Derived, not transcribed.** A hand-written half-term table would be a third
@@ -75,13 +75,19 @@ feels like — so it has to be decided at the year level.
 
 **Slot identity is `(unit_code, lesson_slug)`, not the slug alone.**
 
-There are **183 lesson slots and 182 distinct slugs.** ``energy-in-food`` is
-declared twice: once in B3 as a §4.6 reference slot owned by P2, and once in
-P2 as the lesson itself. Those are two slots in two different years — B3 is
-Year 7 biology, P2 is Year 9 physics — and a teacher teaches both of them, per
+There are **185 lesson slots and, today, 185 distinct slugs** — but the pair
+key is the §4.6 reference slot's requirement, not an optimisation for a
+duplicate that happens to exist. ``energy-in-food`` was the worked example:
+declared once in B3 as a reference slot owned by P2 and once in P2 as the
+lesson itself, two slots in two different years — B3 is Year 7 biology, P2 is
+Year 9 physics — and a teacher teaches both of them, per
 ``ks3_seed_sow.py``'s row rule. A dict keyed on the slug alone would silently
-lose one of the 183 and quietly place the Year 7 biology slot in Year 9. So the
-placement is keyed on the pair, and ``half_term_of(slug)`` resolves to the
+lose one of them and quietly place the Year 7 biology slot in Year 9. B3's slot
+has since been renamed ``energy-in-food-and-what-you-need`` and no reference
+slot is declared at present, so no slug currently collides. **Do not relax the
+key on that basis** — the next reference slot reintroduces the collision, and
+it would be reintroduced silently. So the placement is keyed on the pair, and
+``half_term_of(slug)`` resolves to the
 **owning** slot unless a unit code is given.
 
 ---
