@@ -405,3 +405,50 @@ console       : none
 
 Shots: `docs/ks3/shots/leaderboard-thisweek-390-2026-08-22.png` and `leaderboard-pastweek-390-…`.
 
+---
+
+## Runway 1 — the teacher can see who has started. WIRED.
+
+`GET /api/class/progress?class_id=<uuid>` was built and deployed with the rest of the backend
+earlier tonight; this wires it into the page that already exists, without redesigning it.
+
+`shared/teacher-data.js` gains `loadClassProgress(classId)` — the **first call on that page that
+leaves Supabase**, so it is also the only function in the file that returns `null` on every
+failure path rather than throwing. The roster, the assignments table and the leaderboard all
+worked before this route existed, and a cold dyno must cost one line of detail, never the page.
+
+`teacher/class-detail.html` adds one line inside the existing "This week" cell. The bar, the
+"X/N done" label and the all-time line are untouched:
+
+| state | what a teacher reads |
+|---|---|
+| `not_started` | `not started` |
+| `in_progress` | `3 of 4 answered · 75%` |
+| `complete` | `complete · 3/4`, and `· late` in `--danger` when it was |
+
+Score is omitted when the row is ungraded — "complete · 0/0" would be an invention. `is_late` is
+treated as tri-state; only an explicit `true` earns the flag.
+
+### ⚠️ The riskiest assumption, checked from both sides rather than assumed
+
+The wiring joins `progress.students[].student_id` to `roster[].id`. If those were different
+columns every student would silently get no line — which looks exactly like a quiet week and
+would raise no error anywhere. So it was verified at both ends:
+
+- `shared/teacher-data.js:435` builds a roster row as `id: student.id`, where `student` is the
+  embedded `student:student_id ( id, … )` — i.e. `profiles.id`.
+- the route returns `student_id` straight from `class_members.student_id`, the FK to that same
+  column.
+
+They are the same value. **Verified, not assumed** — this is precisely the class of defect that
+ships looking fine.
+
+### What is NOT proved, and is said rather than dressed up
+
+**This was never driven as a real teacher, because this run has no teacher credential.** The
+function and the page were driven in a real headless browser against stubbed payloads — seven
+failure paths all returning `null` without throwing, four render states, an absent student
+producing no element, and zero console errors across three payload shapes. But the live route's
+actual JSON has not been seen by this page. `403`-for-a-student is proved; teacher acceptance is
+not.
+

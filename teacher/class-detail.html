@@ -299,6 +299,20 @@
       font-style: italic;
       font-size: 0.88rem;
     }
+    /* One further line, under the microcopy, when the backend has live
+       per-QUESTION progress for this week's assignment. Sits at the same
+       weight and size as the microcopy above it so it reads as the same
+       voice, not a new kind of thing. Absent entirely when there is nothing
+       to say — see buildLiveProgressHtml. */
+    .thisweek-live {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+    /* Lateness is the only red-as-warning here, so it takes --danger, not
+       --chemistry (which is chemistry-subject identity — see CLAUDE.md). */
+    .thisweek-live .late { color: var(--danger); }
 
     .roster-empty {
       background: var(--card);
@@ -1110,7 +1124,7 @@
 <script src="/shared/config.js?v=06f24811"></script>
 <script src="/shared/class-entry.js?v=8be18391" defer></script>
 <script src="/shared/teacher-guard.js?v=bbc08e89"></script>
-<script src="/shared/teacher-data.js?v=7dfc801b"></script>
+<script src="/shared/teacher-data.js?v=de124234"></script>
 <script src="/shared/shoutouts.js?v=23393220"></script>
 <script>
 (function () {
@@ -1329,6 +1343,60 @@
   //     === 0 (ALL-TIME is empty). Otherwise: "X/N on time" line.
   // A holiday-week class with all-time history therefore shows: neutral
   // bar, "—" label, AND a normal all-time microcopy line.
+  // ── The live line (GET /api/class/progress) ────────────────────
+  // A THIRD window on the same student, finer than either half above:
+  // this one counts QUESTIONS answered inside this week's assignment,
+  // where the bar counts whole assignments submitted. That is exactly
+  // why it is its own line rather than a richer label on the bar — the
+  // two denominators are different things and must not be read as one.
+  //
+  // "Complete" is the word, never "handed in" (ruled 22 Aug 2026; the
+  // student pages already say it this way).
+  //
+  // Returns '' — nothing at all, no element — whenever the progress
+  // call returned null, this student has no entry in it, or the
+  // specific numbers a phrase needs are missing. Where the product
+  // does not record something the cell shows nothing rather than a
+  // plausible value: an absent line is honest, "0 of 0 answered" is a
+  // number we made up.
+  function buildLiveProgressHtml(s) {
+    const p = s.week_progress;
+    if (!p) return '';
+
+    if (p.state === 'not_started') {
+      return '<div class="thisweek-live">not started</div>';
+    }
+
+    if (p.state === 'in_progress') {
+      if (p.answered == null || p.total == null) return '';
+      let text = p.answered + ' of ' + p.total + ' answered';
+      // The percent is a convenience restatement of the same fraction, so
+      // it is dropped rather than computed when the backend omits it.
+      if (p.percent != null) text += ' · ' + p.percent + '%';
+      return '<div class="thisweek-live">' + escapeHtml(text) + '</div>';
+    }
+
+    if (p.state === 'complete') {
+      let text = 'complete';
+      // Score only when the backend actually has one — a submitted-but-
+      // ungraded row carries score: null, and "complete · 0/0" would be
+      // an invention. "complete" on its own is the whole truth there.
+      if (p.score != null && p.max_score != null) {
+        text += ' · ' + p.score + '/' + p.max_score;
+      }
+      // is_late is a TRI-state: true, false, or null (nothing to compare
+      // against — no due date). Only an explicit true earns the flag.
+      const lateHtml = p.is_late === true
+        ? '<span class="late"> · late</span>'
+        : '';
+      return '<div class="thisweek-live">' + escapeHtml(text) + lateHtml + '</div>';
+    }
+
+    // An unrecognised state is a backend we do not understand yet. Say
+    // nothing rather than guess at what it meant.
+    return '';
+  }
+
   function buildThisWeekCellHtml(s) {
     // ── Bar fill + "X/N done" label (keys off THIS-WEEK) ─────────
     let barFillHtml = '';
@@ -1366,7 +1434,29 @@
         '<span class="thisweek-pct">' + escapeHtml(doneLabel) + '</span>' +
       '</div>' +
       microcopyHtml +
+      buildLiveProgressHtml(s) +
     '</td>';
+  }
+
+  // Hang each live-progress entry on the roster row it belongs to, joining
+  // student_id → roster id. Mutates the roster rows in place: they are the
+  // objects renderRoster already closes over and re-renders on every sort
+  // click, so a copy here would go stale the first time a header is clicked.
+  //
+  // Everything is optional on purpose. A null progress (the call failed, or
+  // there is no assignment this week) leaves every row untouched, and a
+  // student the backend did not mention keeps no week_progress at all —
+  // which is precisely what buildLiveProgressHtml reads as "say nothing".
+  function mergeWeekProgress(students, progress) {
+    if (!progress || !Array.isArray(progress.students)) return;
+    const byStudentId = new Map();
+    progress.students.forEach(function (p) {
+      if (p && p.student_id) byStudentId.set(p.student_id, p);
+    });
+    (students || []).forEach(function (s) {
+      const p = byStudentId.get(s.id);
+      if (p) s.week_progress = p;
+    });
   }
 
   function sortStudents(students, key, dir) {
@@ -2347,7 +2437,15 @@
       }
 
       try {
-        const detail = await MrBadmusTeacherData.loadClassDetail(classId);
+        // Both at once: the Supabase read the page has always done, and the
+        // backend's live per-question progress for this week's assignment.
+        // In parallel because the second is a cold-start-prone Render call
+        // and there is no reason for the roster to wait behind it — and it
+        // can only resolve, never reject, so it cannot fail this await.
+        const [detail, progress] = await Promise.all([
+          MrBadmusTeacherData.loadClassDetail(classId),
+          MrBadmusTeacherData.loadClassProgress(classId),
+        ]);
         // Capture the canonical class id (post-auth) for roster-row
         // student-detail links. Using detail.class.id (what the DB
         // returned) rather than the raw URL param means we never emit
@@ -2359,6 +2457,10 @@
         // longer runs is not a mistake worth leaving available.
         isPastYear = !!detail.class.is_past_year;
         renderClassHeader(detail.class);
+        // Before the roster renders, not after: the rows are the render's
+        // own input, and a second pass would repaint a table the teacher
+        // had already started reading.
+        mergeWeekProgress(detail.students, progress);
         renderRoster(detail.students);
         renderAssignments(detail.assignments);
         renderStarsLeaderboard(detail.leaderboard);
