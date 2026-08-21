@@ -148,7 +148,7 @@ QUESTIONS = [
     # ── standard ────────────────────────────────────────────────────────
     {
         "id": "c4-01-s01",
-        "band": "s",
+        "band": "standard",
         "text": "Marble chips fizz in acid and slowly disappear. Salt "
                 "stirred into water also disappears. Why is only one of them "
                 "a chemical change?",
@@ -174,7 +174,7 @@ QUESTIONS = [
     },
     {
         "id": "c4-01-s02",
-        "band": "s",
+        "band": "standard",
         "text": "A student says \"if a change cannot be undone, it must be "
                 "chemical\". Which example shows that the rule is wrong?",
         "options": [
@@ -200,7 +200,7 @@ QUESTIONS = [
     },
     {
         "id": "c4-01-s03",
-        "band": "s",
+        "band": "standard",
         "text": "A candle burns down and the balance underneath it reads "
                 "less than it did before. What has happened to the mass?",
         "options": [
@@ -225,7 +225,7 @@ QUESTIONS = [
     },
     {
         "id": "c4-01-s04",
-        "band": "s",
+        "band": "standard",
         "text": "Sugar in a pan first melts to a clear syrup, then turns "
                 "brown and smells of caramel. How many changes are there?",
         "options": [
@@ -252,7 +252,7 @@ QUESTIONS = [
     # ── harder ──────────────────────────────────────────────────────────
     {
         "id": "c4-01-h01",
-        "band": "h",
+        "band": "harder",
         "text": "Rust can be turned back into iron in a steelworks, using a "
                 "furnace and carbon. What does that tell you about rusting?",
         "options": [
@@ -278,7 +278,7 @@ QUESTIONS = [
     },
     {
         "id": "c4-01-h02",
-        "band": "h",
+        "band": "harder",
         "text": "Marble chips and acid fizz in an open flask on a balance "
                 "and the reading falls. The same reaction is run in a sealed "
                 "flask. What does the balance read?",
@@ -303,7 +303,7 @@ QUESTIONS = [
     },
     {
         "id": "c4-01-h03",
-        "band": "h",
+        "band": "harder",
         "text": "Cream is whipped until it separates and butter forms. No "
                 "new substance is made. What kind of change is it?",
         "options": [
@@ -328,7 +328,7 @@ QUESTIONS = [
     },
     {
         "id": "c4-01-h04",
-        "band": "h",
+        "band": "harder",
         "text": "You want to find out whether a change inside a sealed jar "
                 "was chemical. Which test gives you the best evidence?",
         "options": [

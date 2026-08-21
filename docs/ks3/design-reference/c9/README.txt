@@ -26,3 +26,11 @@ Standing conventions, same as the rest of the build:
   - Only the mastery ladder marks correctness; benches give a verdict in words.
   - No slot code, unit code, year or half-term appears anywhere in a lesson.
   - Prev/next is generated from unit order, not hand-written.
+
+Packaged 21 Aug 2026 — this folder is the current build.
+Every .dc.html here is byte-identical to the working copy it was authored from,
+and the _ds/ assets are the same files those working copies load.
+
+Checked before packaging: no U+2192, U+2713, U+2715 or U+2126 anywhere in a
+lesson, and no Unicode subscript or superscript digits — formulae use real
+<sub> elements in markup and plain digits inside instrument payloads.

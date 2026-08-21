@@ -145,7 +145,7 @@ QUESTIONS = [
     # ── standard ────────────────────────────────────────────────────────
     {
         "id": "c5-05-s01",
-        "band": "s",
+        "band": "standard",
         "text": "One student writes \"combustion\" for burning magnesium and "
                 "another writes \"oxidation\". Which is right?",
         "options": [
@@ -171,7 +171,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-05-s02",
-        "band": "s",
+        "band": "standard",
         "text": "Marble chips fizz in hydrochloric acid, giving off carbon "
                 "dioxide. Which of the four types is it?",
         "options": [
@@ -196,7 +196,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-05-s03",
-        "band": "s",
+        "band": "standard",
         "text": "Two test tubes are weighed before and after heating. One "
                 "gains mass and one loses mass. What does that tell you?",
         "options": [
@@ -222,7 +222,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-05-s04",
-        "band": "s",
+        "band": "standard",
         "text": "Glucose reacts with oxygen inside a cell, giving carbon "
                 "dioxide, water and energy. Which type is it?",
         "options": [
@@ -250,7 +250,7 @@ QUESTIONS = [
     # ── harder ──────────────────────────────────────────────────────────
     {
         "id": "c5-05-h01",
-        "band": "h",
+        "band": "harder",
         "text": "Thermite reaches 2500 °C and pours out molten iron. A "
                 "student calls it combustion. Where does that go wrong?",
         "options": [
@@ -276,7 +276,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-05-h02",
-        "band": "h",
+        "band": "harder",
         "text": "Why is it worth knowing that a reaction is a displacement?",
         "options": [
             {"text": "It tells you how fast the reaction will go once it has "
@@ -301,7 +301,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-05-h03",
-        "band": "h",
+        "band": "harder",
         "text": "A student meets a reaction that fits none of the four types. "
                 "What is the best thing to do?",
         "options": [
@@ -327,7 +327,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-05-h04",
-        "band": "h",
+        "band": "harder",
         "text": "Iron wool burns in oxygen with orange sparks; an iron nail "
                 "rusts over a year. How are the two related?",
         "options": [

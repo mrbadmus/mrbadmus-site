@@ -20682,6 +20682,995 @@
 
 /* ═══ END C5 wiring ═══ */
 
+/* ═══ BEGIN C7 wiring ═══════════════════════════════════════════════════
+   C7's instrument families — *Energy changes in reactions*. Added as ONE
+   marked block so that a lane merging into this file resolves mechanically:
+   nothing above this marker moves.
+
+   Six families, and three of them are `c3CommitCards` with three sets of
+   hooks. That is deliberate: what must not drift between a plan critique, an
+   eight-item sorter and a three-card judgement block is exactly the rule
+   `c3CommitCards` owns — one final commitment per card, both buttons
+   disabling, the reveal on screen the instant the card is decided, and
+   `markStage` at the point the last card closes.
+
+   ⚖️ NOTHING IS COMPUTED IN THIS BLOCK. Not one number, not one sentence.
+   Every state of every panel is already in the document (EMIT-BOTH-SHOW-ONE)
+   and these handlers do exactly one thing: choose which node is `hidden`. So
+   an authored `<strong>`, an em dash and a degree sign survive as the author
+   wrote them, no sentence exists twice, and the resting render cannot
+   disagree with the runtime one. C7 leans on this harder than any unit so
+   far — the heating curve alone carries eighteen readout states.
+
+   ⚖️ NOTHING GREEN AND NOTHING RED REACHES A CONTROL. A pressed dial, a
+   pressed prediction and a pressed card option all take the platform's
+   ordinary `aria-pressed` treatment; every verdict in this unit is a PANEL OF
+   WORDS. Only the mastery ladder marks (R3 / MRB-196 R10). There is no
+   `data-correct` anywhere in any of the six.
+
+   ⚖️ NOTHING ANIMATES AND NOTHING COUNTS DOWN — no rAF, no timer, no
+   JS-driven transition — so `prefers-reduced-motion` has nothing to degrade
+   here. There is no range control either, so MRB-210's `input`-and-`change`
+   pair has nothing to bind to; every control below is a real `<button>` and
+   there is no `onclick=` attribute anywhere in the markup.
+
+   ⚠️ THE NO-OP PRESS. Every dial and every tab below returns early when the
+   value pressed is the value already pressed. Design's own handlers do not,
+   and pressing a lit dial there re-runs the whole paint — which on these two
+   benches would re-fire `focusReveal` and drag the page back to a readout the
+   student is already looking at. Corrected here rather than reproduced, which
+   is the same correction C3 made across five dials, C4 across two and C5
+   across the burner bench.
+   ═══ */
+
+  /* ── heating-curve (c7-01 #s-curve) ──────────────────────────────────
+     One control, one thing it does, and eighteen taps. The eight consecutive
+     readings at 100 °C are not a defect: NOTES-C7 §2 says the two flat steps
+     "have to be experienced as *waiting*, which a static graph cannot do".
+
+     ⚖️ THE STOP TICKS AT THE END OF THE RUN. Design's `DONE('s-curve')` is
+     `s.minute >= 11` on a thirteen-point curve — one short of the end, which
+     is an off-by-one in her own code rather than a rule: her closing panel
+     opens on `seenEnd`, which is `minute >= CURVE.length - 1`. Both are the
+     same moment here, at the last point, so the panel and the tick arrive
+     together and the rail records what the student actually finished.
+
+     ⚖️ AND CREDIT IS A RATCHET (MRB-208). `Start again` resets the readout to
+     minute zero so the run can be watched again; it does NOT untick the stop
+     and it does not re-hide the closing panel. A run already carried to the
+     end has been carried to the end.
+
+     ⚠️ THE BUTTON'S TWO LABELS ARE BOTH IN THE DOCUMENT. Swapping "Heat for
+     one more minute" for "Run complete" is a choice between two authored
+     spans, never a string built here. */
+  function wireHeatingCurve(sec) {
+    var wrap = sec.querySelector("[data-hcurve]");
+    if (!wrap) { return; }
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || 0;
+    var points = toArray(wrap.querySelectorAll("[data-hcurve-point]"));
+    var bars = toArray(wrap.querySelectorAll("[data-hcurve-bar]"));
+    var step = wrap.querySelector("[data-hcurve-step]");
+    var reset = wrap.querySelector("[data-hcurve-reset]");
+    var stepLabel = wrap.querySelector("[data-hcurve-steplabel]");
+    var endLabel = wrap.querySelector("[data-hcurve-endlabel]");
+    var closer = wrap.querySelector("[data-hcurve-close]");
+    if (!total || !points.length || !step) { return; }
+
+    var minute = 0;
+    var last = total - 1;
+    var reachedEnd = false;
+
+    function paint() {
+      each(points, function (p) {
+        setHidden(p, parseInt(p.getAttribute("data-hcurve-point"), 10)
+                     !== minute);
+      });
+      each(bars, function (b) {
+        var i = parseInt(b.getAttribute("data-hcurve-bar"), 10);
+        if (i <= minute) { b.className = "ks3-hcurve-bar is-lit"; }
+        else { b.className = "ks3-hcurve-bar"; }
+      });
+      var done = minute >= last;
+      setHidden(stepLabel, done);
+      setHidden(endLabel, !done);
+      c3Enable(step, !done);
+    }
+
+    step.addEventListener("click", function () {
+      if (minute >= last) { return; }
+      minute += 1;
+      paint();
+      if (minute >= last && !reachedEnd) {
+        reachedEnd = true;
+        setHidden(closer, false);
+        markStage(sec, true);
+        focusReveal(closer);
+      }
+    });
+
+    if (reset) {
+      reset.addEventListener("click", function () {
+        if (minute === 0) { return; }
+        minute = 0;
+        /* `reachedEnd`, the closing panel and the tick all survive. See the
+           block comment: credit is a ratchet. */
+        paint();
+      });
+    }
+
+    paint();
+  }
+
+  /* ── temp-bench (c7-02 #s-bench) ─────────────────────────────────────
+     Five beakers, one thermometer, and a prediction in front of every
+     reading.
+
+     ⚖️ THE GATE STAYS ON SCREEN AFTER IT IS ANSWERED. Design's `needPredict`
+     removes it, which takes the student's own commitment off the page at the
+     exact moment the reading arrives to be compared against it — the
+     comparison Law 4 exists to create. Every gate in C3, C4 and C5 stays put
+     and so does this one; the buttons disable instead, so the commitment is
+     still readable and no longer changeable.
+
+     ⚖️ EACH BEAKER IS RUN INDEPENDENTLY AND THE DOM IS THE STATE. All five
+     cards are in the document; switching tabs shows a card exactly as it was
+     left, so nothing has to be remembered here.
+
+     ⚖️ THE STOP TICKS ON THE FIFTH RUN, which is Design's own
+     `DONE('s-bench')`. The closing panel says "Four went up. One went down."
+     — a claim no four of these beakers can support — so it opens at the same
+     moment. */
+  function wireTempBench(sec) {
+    var wrap = sec.querySelector("[data-tempb]");
+    if (!wrap) { return; }
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || 0;
+    var tabs = toArray(wrap.querySelectorAll("[data-tempb-tab]"));
+    var cards = toArray(wrap.querySelectorAll("[data-tempb-card]"));
+    var closer = wrap.querySelector("[data-tempb-close]");
+    if (!total || !cards.length) { return; }
+
+    var pick = cards[0].getAttribute("data-tempb-card");
+    var ran = 0;
+
+    function show(id) {
+      each(tabs, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-tempb-tab") === id ? "true" : "false");
+      });
+      each(cards, function (c) {
+        setHidden(c, c.getAttribute("data-tempb-card") !== id);
+      });
+    }
+
+    each(tabs, function (btn) {
+      btn.addEventListener("click", function () {
+        var id = btn.getAttribute("data-tempb-tab");
+        if (id === pick) { return; }          /* the no-op press */
+        pick = id;
+        show(id);
+      });
+    });
+
+    each(cards, function (card) {
+      var opts = toArray(card.querySelectorAll("[data-tempb-predict]"));
+      var run = card.querySelector("[data-tempb-run]");
+      each(opts, function (btn) {
+        btn.addEventListener("click", function () {
+          if (card.getAttribute("data-open") === "1") { return; }
+          card.setAttribute("data-open", "1");
+          each(opts, function (b) {
+            b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+            c3Enable(b, false);
+          });
+          setHidden(run, false);
+          focusReveal(run);
+          ran += 1;
+          setCount(sec, ran);
+          if (ran >= total) {
+            setHidden(closer, false);
+            markStage(sec, true);
+          }
+        });
+      });
+    });
+
+    show(pick);
+    setCount(sec, 0);
+  }
+
+  /* ── energy-sorter (c7-03 #s-compare) ────────────────────────────────
+     Eight changes, one question asked eight times, and three reversal pairs
+     separated on purpose so a student commits to melting before freezing
+     arrives to contradict them.
+
+     `c3CommitCards` is the contract and this family shares that body rather
+     than keeping another copy of it. The `close` slot is the argument, not a
+     convenience: "run a change backwards and the energy runs backwards with
+     it" is a rule no seven of these cards can support, so the panel that
+     states it is not on screen until the eighth is decided — and the rail
+     stop ticks at the same moment, which is Design's own
+     `DONE('s-compare')`. */
+  function wireEnergySorter(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-esort]",
+      card: "[data-esort-item]",
+      opt: "[data-esort-opt]",
+      reveal: "[data-esort-reveal]",
+      close: "[data-esort-close]",
+      count: true
+    });
+  }
+
+  /* ── energy-uses (c7-01, c7-02, c7-03 #s-uses) ───────────────────────
+     ONE FAMILY, PLACED THREE TIMES. Design draws the same three-card
+     judgement block on the first three pages of the unit, so it is one
+     instrument used three times rather than three that look alike.
+
+     ⊖ NO `close`. Design draws no closing panel on any of the three: the
+     three cards are independent judgements and there is no reading of them
+     together to gate. The rail stop still ticks on the third, which is her
+     `DONE('s-uses')`.
+
+     ⚠️ There is no answer key in this markup and none is needed. The
+     paragraph that opens is the same paragraph whichever button was pressed,
+     and it argues rather than adjudicating. */
+  function wireEnergyUses(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-euse]",
+      card: "[data-euse-card]",
+      opt: "[data-euse-opt]",
+      reveal: "[data-euse-reveal]",
+      count: true
+    });
+  }
+
+  /* ── rig-plan-critique (c7-04 #s-plan) ───────────────────────────────
+     Five judgements on somebody else's method, and it comes BEFORE the rig:
+     ruling on a plan that is not yours is what makes building one a decision
+     instead of a recipe.
+
+     ⚠️ `data-rplan`, NOT `data-critiq` or `data-critique`. Both are taken —
+     `wirePlanCritique` above claims the first for c3-07 and `wireCritique`
+     claims the second for a B-unit family — and a shared selector would hand
+     this instrument to another one's handler, after which neither works. */
+  function wireRigPlanCritique(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-rplan]",
+      card: "[data-rplan-step]",
+      opt: "[data-rplan-opt]",
+      reveal: "[data-rplan-reveal]",
+      count: true
+    });
+  }
+
+  /* ── rig-builder (c7-04 #s-bench) ────────────────────────────────────
+     Three dials, eight rigs, and a true value the student never reaches.
+
+     ⚖️ THE RUN BUTTON IS A GATE, NOT A DIAL. Changing a dial hides the
+     reading and puts the button back, because a reading left on screen under
+     a changed label is the last rig's number wearing this rig's title. That
+     is the same defect `r_rig_builder` refuses at build time for a MISSING
+     combination, and it is reachable at run time for an unrun one.
+
+     ⚖️ THE STOP TICKS AT THREE RIGS, which is Design's own
+     `DONE('s-bench')` (`Object.keys(s.ran).length >= 3`). Three is enough to
+     have compared arrangements; requiring all eight would make the stop a
+     completionist errand rather than a record of the comparison.
+
+     ⚖️ AND THE PAYOFF PANEL OPENS ONLY ON THE BEST RIG, whichever order it is
+     found in. It says "you found the best rig — and it still reads low",
+     which is a sentence that is only true standing on that rig. `data-best`
+     carries the key from the payload, so the panel and the arithmetic in it
+     cannot point at different rigs.
+
+     ⚖️ RUNS ARE COUNTED ONCE EACH. A rig re-run is not a second run: the
+     panel records it, and the tick is about how many arrangements were
+     compared. */
+  function wireRigBuilder(sec) {
+    var wrap = sec.querySelector("[data-rigb]");
+    if (!wrap) { return; }
+    var dials = toArray(wrap.querySelectorAll("[data-rigb-for]"));
+    var titles = toArray(wrap.querySelectorAll("[data-rigb-title]"));
+    var panels = toArray(wrap.querySelectorAll("[data-rigb-panel]"));
+    var runRow = wrap.querySelector("[data-rigb-runrow]");
+    var run = wrap.querySelector("[data-rigb-run]");
+    var closer = wrap.querySelector("[data-rigb-close]");
+    var best = wrap.getAttribute("data-best");
+    var needed = parseInt(wrap.getAttribute("data-done-after"), 10) || 0;
+    if (!dials.length || !panels.length || !run) { return; }
+
+    /* The chosen value of each dial and the dial ORDER are read off the
+       resting DOM rather than assumed. The renderer lights each dial's first
+       option and emits the dials in the payload's own order, and the rig key
+       is those values joined — so which dial comes first and which value each
+       opens on stay the payload's business rather than being written down a
+       second time here. */
+    var chosen = {}, order = [];
+    each(dials, function (b) {
+      var name = b.getAttribute("data-rigb-for");
+      if (order.indexOf(name) < 0) {
+        order.push(name);
+        chosen[name] = b.getAttribute("data-rigb-val");
+      }
+      if (b.getAttribute("aria-pressed") === "true") {
+        chosen[name] = b.getAttribute("data-rigb-val");
+      }
+    });
+
+    var seen = {}, seenN = 0;
+
+    function key() {
+      var parts = [], i;
+      for (i = 0; i < order.length; i++) { parts.push(chosen[order[i]]); }
+      return parts.join("|");
+    }
+
+    function paint() {
+      var k = key();
+      var isRun = !!seen[k];
+      each(titles, function (p) {
+        setHidden(p, p.getAttribute("data-rigb-title") !== k);
+      });
+      each(panels, function (p) {
+        setHidden(p, p.getAttribute("data-rigb-panel") !== k || !isRun);
+      });
+      setHidden(runRow, isRun);
+    }
+
+    each(dials, function (btn) {
+      btn.addEventListener("click", function () {
+        var name = btn.getAttribute("data-rigb-for");
+        var val = btn.getAttribute("data-rigb-val");
+        if (chosen[name] === val) { return; }     /* the no-op press */
+        chosen[name] = val;
+        each(dials, function (b) {
+          if (b.getAttribute("data-rigb-for") !== name) { return; }
+          b.setAttribute("aria-pressed",
+                         b.getAttribute("data-rigb-val") === val
+                           ? "true" : "false");
+        });
+        paint();
+      });
+    });
+
+    run.addEventListener("click", function () {
+      var k = key();
+      if (seen[k]) { return; }
+      seen[k] = true;
+      seenN += 1;
+      paint();
+      var panel = null;
+      each(panels, function (p) {
+        if (p.getAttribute("data-rigb-panel") === k) { panel = p; }
+      });
+      focusReveal(panel);
+      if (seenN >= needed) { markStage(sec, true); }
+      if (best && k === best) { setHidden(closer, false); }
+    });
+
+    paint();
+  }
+
+/* ═══ END C7 wiring ═══ */
+
+/* ═══ BEGIN C6 wiring ═══════════════════════════════════════════════════
+   C6's instrument families. Added as ONE marked block so that a lane merging
+   into this file resolves mechanically: nothing above this marker moves.
+   ═══ */
+
+  /* ── bottle-sorter (c6-01 #s-bench) ──────────────────────────────────
+     Eight bottles, one question asked eight times, and looking settles none
+     of them.
+
+     `c3CommitCards` is the contract — one commitment per bottle, final, with
+     every button on that bottle disabling and the answer on screen the
+     instant it is decided — and this family shares that body rather than
+     keeping a sixth copy of it. There is no answer key in the markup and
+     none is needed: the verdict names what the bottle IS, in the same voice
+     whichever button was pressed, and `r_bottle_sorter` checks the flag
+     against that sentence at BUILD time.
+
+     The head counter is the shell's `[data-count]` — "0 of 8 decided" through
+     to "8 of 8 decided", a sentence whose noun does not inflect, so no
+     `data-format-one`. The closing panel opens on the eighth, because seven
+     bottles cannot show a distribution. */
+  function wireBottleSorter(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-bottle]", card: "[data-bottle-card]",
+      opt: "[data-bottle-opt]", reveal: "[data-bottle-reveal]",
+      close: "[data-bottle-close]", count: true
+    });
+  }
+
+  /* ── acid-judgements (five placements across five lessons) ───────────
+     One family, five pages: c6-01 `#s-hazard`, c6-02 `#s-choose`, c6-03
+     `#s-uses`, c6-04 `#s-test` and c6-07 `#s-uses`. Design draws the
+     identical component on all five — a question, a small set of options, one
+     commitment, one answer — and C3's `sequence-rebuild` is the precedent for
+     one family placed more than once.
+
+     Two of the five ask yes/no and three ask a three-way choice; the number
+     of options is a property of the ITEM and `c3CommitCards` never counts
+     them, so one function covers both shapes without a branch.
+
+     No `close`: none of the five draws a closing panel. The head counter is
+     the shell's and the rail stop ticks when the last item is decided. */
+  function wireAcidJudgements(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-ajudge]", card: "[data-ajudge-card]",
+      opt: "[data-ajudge-opt]", reveal: "[data-ajudge-reveal]",
+      count: true
+    });
+  }
+
+  /* ── ph-bench (c6-02 #s-bench) ───────────────────────────────────────
+     Six samples, five bands, and the guess comes first.
+
+     ⚖️ THE GATE STAYS ON SCREEN. Design's `sc-if needGuess` removes the band
+     buttons the moment one is pressed, which takes the student's own
+     commitment away at the exact moment the reading arrives to be compared
+     against it — and that comparison is what Law 4 exists to create. Every
+     gate in C3, C4 and C5 stays put. This one stays put, the pressed band
+     stays pressed, and its siblings dim.
+
+     ⚠️ THE COMMITMENT IS PER SAMPLE AND IS FINAL. A sample already tested
+     shows its reading with its own guess still lit; switching to an untested
+     sample re-enables the row. Nothing is ever re-committed, because the
+     answer is on screen by then.
+
+     ⚠️ THE NO-OP PRESS. The tab returns early when the sample pressed is the
+     sample already loaded. Design's handler does not, and pressing the loaded
+     tab there re-runs the whole paint for no change.
+
+     ⚖️ CREDIT IS FOR TESTING `data-done-at` OF THEM, which is Design's own
+     `DONE` (`>= 4`). The number is read off the markup rather than written
+     here, so the claim lives in the lesson record in one place. */
+  function wirePhBench(sec) {
+    var wrap = sec.querySelector("[data-phbench]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-phbench-tab]"));
+    if (!tabs.length) { return; }
+    var names = toArray(wrap.querySelectorAll("[data-phbench-name]"));
+    var setups = toArray(wrap.querySelectorAll("[data-phbench-setup]"));
+    var bands = toArray(wrap.querySelectorAll("[data-phbench-guess]"));
+    var results = toArray(wrap.querySelectorAll("[data-phbench-result]"));
+    var doneAt = parseInt(wrap.getAttribute("data-done-at"), 10) || tabs.length;
+
+    /* The opening sample is whichever tab the renderer built pressed. */
+    var sample = tabs[0].getAttribute("data-phbench-tab");
+    each(tabs, function (b) {
+      if (b.getAttribute("aria-pressed") === "true") {
+        sample = b.getAttribute("data-phbench-tab");
+      }
+    });
+    var tested = {}, nTested = 0;
+
+    function paint() {
+      var guess = tested[sample];
+      each(tabs, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-phbench-tab") === sample ? "true" : "false");
+      });
+      each(names, function (p) {
+        setHidden(p, p.getAttribute("data-phbench-name") !== sample);
+      });
+      each(setups, function (p) {
+        setHidden(p, p.getAttribute("data-phbench-setup") !== sample);
+      });
+      each(bands, function (b) {
+        var on = guess !== undefined &&
+                 b.getAttribute("data-phbench-guess") === guess;
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+        c3Enable(b, guess === undefined);
+      });
+      each(results, function (d) {
+        setHidden(d, !(guess !== undefined &&
+                       d.getAttribute("data-phbench-result") === sample));
+      });
+      markStage(sec, nTested >= doneAt);
+    }
+
+    each(tabs, function (btn) {
+      btn.addEventListener("click", function () {
+        var v = btn.getAttribute("data-phbench-tab");
+        if (v === sample) { return; }        /* the no-op press */
+        sample = v;
+        paint();
+      });
+    });
+
+    each(bands, function (btn) {
+      btn.addEventListener("click", function () {
+        if (tested[sample] !== undefined) { return; }
+        tested[sample] = btn.getAttribute("data-phbench-guess");
+        nTested += 1;
+        paint();
+        var open = null;
+        each(results, function (d) {
+          if (d.getAttribute("data-phbench-result") === sample) { open = d; }
+        });
+        focusReveal(open);                   /* MRB-257 (5.43) */
+      });
+    });
+
+    paint();
+  }
+
+  /* ── titration-dial (c6-03 #s-titrate) ───────────────────────────────
+     Twenty drops, and one of them is a cliff.
+
+     ⚖️ NOT ONE NUMBER HERE IS WRITTEN DOWN. The curve, the fifteen chart
+     colours and the state each drop belongs to all arrive in `data-cfg`,
+     computed and CHECKED by `r_titration_dial` at build time — which is where
+     the assertions live that the curve only rises, that exactly one reading
+     is 7, and that the step across it is a cliff rather than a climb.
+     Design's own page hard-codes "the first nine drops", "the tenth" and
+     `seenJump: next >= 11` in three separate places; none of those appear
+     anywhere in this function.
+
+     ⚖️ `seenJump` IS A RATCHET AND "START AGAIN" DOES NOT CLEAR IT. Design's
+     `onReset` sets `drops: 0` and leaves `seenJump` alone, and that is right:
+     a student who has seen the cliff has seen it, and running the titration
+     again to look at the shape is not undoing that. `markStage` is a ratchet
+     for the same reason (MRB-208).
+
+     ⚠️ THE COUNT IS THE ONE STRING THIS BLOCK COMPOSES, and it composes a
+     NUMBER into a slot rather than a sentence out of parts — the same
+     mechanism `setCount` uses for every head counter in the key stage. */
+  function wireTitrationDial(sec) {
+    var wrap = sec.querySelector("[data-titr]");
+    if (!wrap) { return; }
+    var cfg;
+    try { cfg = JSON.parse(wrap.getAttribute("data-cfg") || "{}"); }
+    catch (err) { return; }
+    var curve = cfg.curve || [];
+    var colours = cfg.colours || [];
+    var where = cfg.where || [];
+    if (!curve.length) { return; }
+
+    var beaker = wrap.querySelector("[data-titr-beaker]");
+    var phs = toArray(wrap.querySelectorAll("[data-titr-ph]"));
+    var count = wrap.querySelector("[data-titr-count]");
+    var states = toArray(wrap.querySelectorAll("[data-titr-state]"));
+    var notes = toArray(wrap.querySelectorAll("[data-titr-note]"));
+    var bars = toArray(wrap.querySelectorAll("[data-titr-bar]"));
+    var adds = toArray(wrap.querySelectorAll("[data-titr-add]"));
+    var reset = wrap.querySelector("[data-titr-reset]");
+    var closer = wrap.querySelector("[data-titr-close]");
+    var doneAt = parseInt(wrap.getAttribute("data-done-at"), 10) || curve.length;
+    var fmt = count ? (count.getAttribute("data-format") || "") : "";
+
+    var drops = 0, seenJump = false;
+
+    function paint() {
+      var ph = curve[drops];
+      var here = where[drops];
+      if (beaker && colours[ph]) { beaker.style.background = colours[ph]; }
+      each(phs, function (s) {
+        setHidden(s, parseInt(s.getAttribute("data-titr-ph"), 10) !== ph);
+      });
+      if (count && fmt) {
+        count.textContent = fmt.split("{n}").join(String(drops));
+      }
+      each(states, function (p) {
+        setHidden(p, p.getAttribute("data-titr-state") !== here);
+      });
+      each(notes, function (p) {
+        setHidden(p, p.getAttribute("data-titr-note") !== here);
+      });
+      each(bars, function (b) {
+        b.setAttribute("data-on",
+          parseInt(b.getAttribute("data-titr-bar"), 10) <= drops ? "1" : "0");
+      });
+      setHidden(closer, !seenJump);
+      markStage(sec, drops >= doneAt);
+    }
+
+    each(adds, function (btn) {
+      btn.addEventListener("click", function () {
+        var n = parseInt(btn.getAttribute("data-titr-add"), 10) || 1;
+        if (drops >= curve.length - 1) { return; }
+        var before = seenJump;
+        drops = Math.min(curve.length - 1, drops + n);
+        /* The payoff panel opens the first time the reading goes past
+           neutral. Derived from the curve, never from a drop number. */
+        if (curve[drops] > 7) { seenJump = true; }
+        paint();
+        if (!before && seenJump) { focusReveal(closer); }
+      });
+    });
+
+    if (reset) {
+      reset.addEventListener("click", function () {
+        if (drops === 0) { return; }
+        drops = 0;
+        paint();                             /* `seenJump` survives */
+      });
+    }
+
+    paint();
+  }
+
+  /* ── acid-metal-grid (c6-04 #s-bench) ────────────────────────────────
+     Four metals crossed with two acids, and the prediction comes first.
+
+     ⚠️ NOT `reactivity-grid`. `ks3_art/c5.py` owns that family and the shell
+     class `ks3-rgrid-block`; this is C6's own, with its own `amgrid` prefix.
+     Two families wearing one class is MRB-279's gate and it fails silently.
+
+     ⚖️ THE CELL'S MARK IS TWO SPANS, NOT AN ATTRIBUTE READ BACK. "?" and
+     "fizzes" are both in the document and one is unhidden, so a cell can
+     never show a value this file composed.
+
+     ⚖️ CREDIT IS FOR RUNNING `data-done-at` OF THE EIGHT, which is Design's
+     own threshold of six — enough to have met the copper row, which is the
+     row that proves the rule. */
+  function wireAcidMetalGrid(sec) {
+    var wrap = sec.querySelector("[data-amgrid]");
+    if (!wrap) { return; }
+    var cells = toArray(wrap.querySelectorAll("[data-amgrid-cell]"));
+    if (!cells.length) { return; }
+    var titles = toArray(wrap.querySelectorAll("[data-amgrid-title]"));
+    var setups = toArray(wrap.querySelectorAll("[data-amgrid-setup]"));
+    var predicts = toArray(wrap.querySelectorAll("[data-amgrid-predict]"));
+    var results = toArray(wrap.querySelectorAll("[data-amgrid-result]"));
+    var closer = wrap.querySelector("[data-amgrid-close]");
+    var doneAt = parseInt(wrap.getAttribute("data-done-at"), 10) || cells.length;
+
+    var here = cells[0].getAttribute("data-amgrid-cell");
+    each(cells, function (b) {
+      if (b.getAttribute("aria-pressed") === "true") {
+        here = b.getAttribute("data-amgrid-cell");
+      }
+    });
+    var ran = {}, nRan = 0;
+
+    function paint() {
+      var done = ran[here] !== undefined;
+      each(cells, function (b) {
+        var k = b.getAttribute("data-amgrid-cell");
+        b.setAttribute("aria-pressed", k === here ? "true" : "false");
+        b.setAttribute("data-run", ran[k] !== undefined ? "1" : "0");
+        setHidden(b.querySelector("[data-amgrid-unrun]"), ran[k] !== undefined);
+        setHidden(b.querySelector("[data-amgrid-mark]"), ran[k] === undefined);
+      });
+      each(titles, function (p) {
+        setHidden(p, p.getAttribute("data-amgrid-title") !== here);
+      });
+      each(setups, function (p) {
+        setHidden(p, p.getAttribute("data-amgrid-setup") !== here);
+      });
+      each(predicts, function (b) {
+        var on = done && b.getAttribute("data-amgrid-predict") === ran[here];
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+        c3Enable(b, !done);
+      });
+      each(results, function (d) {
+        setHidden(d, !(done && d.getAttribute("data-amgrid-result") === here));
+      });
+      setCount(sec, nRan);
+      if (nRan >= doneAt) {
+        setHidden(closer, false);
+        markStage(sec, true);
+      }
+    }
+
+    each(cells, function (btn) {
+      btn.addEventListener("click", function () {
+        var k = btn.getAttribute("data-amgrid-cell");
+        if (k === here) { return; }          /* the no-op press */
+        here = k;
+        paint();
+      });
+    });
+
+    each(predicts, function (btn) {
+      btn.addEventListener("click", function () {
+        if (ran[here] !== undefined) { return; }
+        ran[here] = btn.getAttribute("data-amgrid-predict");
+        nRan += 1;
+        var opened = here;
+        paint();
+        var open = null;
+        each(results, function (d) {
+          if (d.getAttribute("data-amgrid-result") === opened) { open = d; }
+        });
+        focusReveal(nRan >= doneAt && closer ? closer : open);
+      });
+    });
+
+    setCount(sec, 0);
+    paint();
+  }
+
+  /* ── salt-namer (c6-06 #s-name) ──────────────────────────────────────
+     Three acids crossed with four bases, and the name is committed before it
+     is checked.
+
+     ⚖️ THE ASK STAYS ON SCREEN. Design's `sc-if needName` removes the three
+     buttons the moment one is pressed. Same ruling as every other gate in
+     C3–C6: the commitment stays visible beside the answer it is being
+     compared with.
+
+     ⚖️ CREDIT IS FOR NAMING `data-done-at` COMBINATIONS — Design's own three,
+     and her own sentence: "Twelve are possible — three is enough to see the
+     rule." Twelve would make the stop a completion bar.
+
+     ⚠️ NOTHING HERE KNOWS WHICH NAME IS RIGHT, and nothing needs to. The
+     answer panel names the salt and draws the equation in the same voice
+     whichever button was pressed; the rule that generates the name is run and
+     asserted at BUILD time by `r_salt_namer`. */
+  function wireSaltNamer(sec) {
+    var wrap = sec.querySelector("[data-namer]");
+    if (!wrap) { return; }
+    var acids = toArray(wrap.querySelectorAll("[data-namer-acid]"));
+    var bases = toArray(wrap.querySelectorAll("[data-namer-base]"));
+    if (!acids.length || !bases.length) { return; }
+    var titles = toArray(wrap.querySelectorAll("[data-namer-title]"));
+    var rows = toArray(wrap.querySelectorAll("[data-namer-optrow]"));
+    var opts = toArray(wrap.querySelectorAll("[data-namer-opt]"));
+    var results = toArray(wrap.querySelectorAll("[data-namer-result]"));
+    var doneAt = parseInt(wrap.getAttribute("data-done-at"), 10) || 3;
+
+    function pressedOf(list, attr) {
+      var v = list[0].getAttribute(attr);
+      each(list, function (b) {
+        if (b.getAttribute("aria-pressed") === "true") {
+          v = b.getAttribute(attr);
+        }
+      });
+      return v;
+    }
+    var acid = pressedOf(acids, "data-namer-acid");
+    var base = pressedOf(bases, "data-namer-base");
+    var named = {}, nNamed = 0;
+
+    function key() { return acid + ":" + base; }
+
+    function paint() {
+      var k = key();
+      var done = named[k] !== undefined;
+      each(acids, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-namer-acid") === acid ? "true" : "false");
+      });
+      each(bases, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-namer-base") === base ? "true" : "false");
+      });
+      each(titles, function (p) {
+        setHidden(p, p.getAttribute("data-namer-title") !== k);
+      });
+      each(rows, function (r) {
+        setHidden(r, r.getAttribute("data-namer-optrow") !== k);
+      });
+      each(opts, function (b) {
+        var parts = b.getAttribute("data-namer-opt").split("|");
+        var mine = parts[0] === k;
+        var chosen = named[parts[0]];
+        b.setAttribute("aria-pressed",
+          chosen !== undefined && chosen === parts[1] ? "true" : "false");
+        c3Enable(b, !(mine && chosen !== undefined));
+      });
+      each(results, function (d) {
+        setHidden(d, !(done && d.getAttribute("data-namer-result") === k));
+      });
+      markStage(sec, nNamed >= doneAt);
+    }
+
+    function dial(list, attr, set) {
+      each(list, function (btn) {
+        btn.addEventListener("click", function () {
+          var v = btn.getAttribute(attr);
+          if (!set(v)) { return; }           /* the no-op press */
+          paint();
+        });
+      });
+    }
+    dial(acids, "data-namer-acid", function (v) {
+      if (v === acid) { return false; }
+      acid = v; return true;
+    });
+    dial(bases, "data-namer-base", function (v) {
+      if (v === base) { return false; }
+      base = v; return true;
+    });
+
+    each(opts, function (btn) {
+      btn.addEventListener("click", function () {
+        var parts = btn.getAttribute("data-namer-opt").split("|");
+        if (parts[0] !== key() || named[parts[0]] !== undefined) { return; }
+        named[parts[0]] = parts[1];
+        nNamed += 1;
+        var opened = parts[0];
+        paint();
+        var open = null;
+        each(results, function (d) {
+          if (d.getAttribute("data-namer-result") === opened) { open = d; }
+        });
+        focusReveal(open);                   /* MRB-257 (5.43) */
+      });
+    });
+
+    paint();
+  }
+
+  /* ── method-order (c6-06 #s-method) ──────────────────────────────────
+     Six steps, shuffled, tapped into order.
+
+     ⚖️ NOTHING IS MARKED, INCLUDING THE ORDER. Design draws two closing
+     lines — "That is the order, and every step earns its place" against "Not
+     the order that works. Here is the sequence and what each step is for" —
+     followed by the SAME six explanations either way, and that is reproduced
+     exactly. No green, no red, no per-step tick: the six reasons are the
+     point of the block whether the order came out right or not, and only the
+     mastery ladder marks.
+
+     ⚠️ THE ONLY THING THIS FUNCTION COMPUTES IS A POSITION NUMBER, and it
+     writes it into a badge. `data-correct` is a list of ids and is compared
+     as a list; the verdict is chosen between two paragraphs that are already
+     in the document.
+
+     ⚖️ "START THE ORDER AGAIN" CLEARS THE ORDER AND NOT THE CREDIT.
+     `markStage` is a ratchet (MRB-208): a student who has placed all six has
+     placed all six, and rearranging them to look at the reasons again does
+     not take that back. There is no chemistry anywhere in this function —
+     NOTES-C6 §4 declares the family generic and C10-03 is already named as
+     its second placement. */
+  function wireMethodOrder(sec) {
+    var wrap = sec.querySelector("[data-morder]");
+    if (!wrap) { return; }
+    var steps = toArray(wrap.querySelectorAll("[data-morder-step]"));
+    if (!steps.length) { return; }
+    var correct;
+    try { correct = JSON.parse(wrap.getAttribute("data-morder-key") || "[]"); }
+    catch (err) { correct = []; }
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || steps.length;
+    var clear = wrap.querySelector("[data-morder-clear]");
+    var panel = wrap.querySelector("[data-morder-answer]");
+    var verdicts = toArray(wrap.querySelectorAll("[data-morder-verdict]"));
+
+    var order = [];
+
+    function paint() {
+      var full = order.length >= total;
+      var right = full;
+      var i;
+      for (i = 0; i < order.length && right; i++) {
+        if (order[i] !== correct[i]) { right = false; }
+      }
+      each(steps, function (b) {
+        var id = b.getAttribute("data-morder-step");
+        var at = order.indexOf(id);
+        b.setAttribute("data-placed", at >= 0 ? "1" : "0");
+        c3Enable(b, at < 0);
+        var badge = b.querySelector("[data-morder-badge]");
+        if (badge) { badge.textContent = at >= 0 ? String(at + 1) : ""; }
+      });
+      setHidden(panel, !full);
+      each(verdicts, function (p) {
+        var want = right ? "right" : "wrong";
+        setHidden(p, !full || p.getAttribute("data-morder-verdict") !== want);
+      });
+      markStage(sec, full);
+    }
+
+    each(steps, function (btn) {
+      btn.addEventListener("click", function () {
+        var id = btn.getAttribute("data-morder-step");
+        if (order.indexOf(id) >= 0) { return; }
+        order.push(id);
+        var full = order.length >= total;
+        paint();
+        if (full) { focusReveal(panel); }    /* MRB-257 (5.43) */
+      });
+    });
+
+    if (clear) {
+      clear.addEventListener("click", function () {
+        if (!order.length) { return; }
+        order = [];
+        paint();                             /* the tick is a ratchet */
+      });
+    }
+
+    paint();
+  }
+
+  /* ── catalyst-bench (c6-07 #s-bench) ─────────────────────────────────
+     Five flasks, two controls, and one that is faster and still not a
+     catalyst.
+
+     ⚖️ CREDIT IS FOR RUNNING ALL FIVE, and here that is right rather than
+     demanding: the argument is a comparison ACROSS the set and four flasks
+     cannot make it — whichever four you leave out, one of the three claims
+     the closing panel makes has no evidence. `data-total` is the number, read
+     off the markup.
+
+     ⚠️ WHICH TRIALS WERE FASTER, AND WHICH QUALIFY, ARE DECIDED AT BUILD
+     TIME. `r_catalyst_bench` parses every volume, derives "faster" against
+     the control's reading, and asserts that every declared catalyst is faster
+     AND recovered, that at least one trial is faster and is NOT a catalyst,
+     and that at least two change nothing. Nothing in this function knows any
+     of that, and nothing in it should. */
+  function wireCatalystBench(sec) {
+    var wrap = sec.querySelector("[data-catb]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-catb-tab]"));
+    if (!tabs.length) { return; }
+    var titles = toArray(wrap.querySelectorAll("[data-catb-title]"));
+    var setups = toArray(wrap.querySelectorAll("[data-catb-setup]"));
+    var predicts = toArray(wrap.querySelectorAll("[data-catb-predict]"));
+    var results = toArray(wrap.querySelectorAll("[data-catb-result]"));
+    var closer = wrap.querySelector("[data-catb-close]");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || tabs.length;
+
+    var pick = tabs[0].getAttribute("data-catb-tab");
+    each(tabs, function (b) {
+      if (b.getAttribute("aria-pressed") === "true") {
+        pick = b.getAttribute("data-catb-tab");
+      }
+    });
+    var ran = {}, nRan = 0;
+
+    function paint() {
+      var done = ran[pick] !== undefined;
+      each(tabs, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-catb-tab") === pick ? "true" : "false");
+      });
+      each(titles, function (p) {
+        setHidden(p, p.getAttribute("data-catb-title") !== pick);
+      });
+      each(setups, function (p) {
+        setHidden(p, p.getAttribute("data-catb-setup") !== pick);
+      });
+      each(predicts, function (b) {
+        var on = done && b.getAttribute("data-catb-predict") === ran[pick];
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+        c3Enable(b, !done);
+      });
+      each(results, function (d) {
+        setHidden(d, !(done && d.getAttribute("data-catb-result") === pick));
+      });
+      setCount(sec, nRan);
+      if (nRan >= total) {
+        setHidden(closer, false);
+        markStage(sec, true);
+      }
+    }
+
+    each(tabs, function (btn) {
+      btn.addEventListener("click", function () {
+        var v = btn.getAttribute("data-catb-tab");
+        if (v === pick) { return; }          /* the no-op press */
+        pick = v;
+        paint();
+      });
+    });
+
+    each(predicts, function (btn) {
+      btn.addEventListener("click", function () {
+        if (ran[pick] !== undefined) { return; }
+        ran[pick] = btn.getAttribute("data-catb-predict");
+        nRan += 1;
+        var opened = pick;
+        paint();
+        var open = null;
+        each(results, function (d) {
+          if (d.getAttribute("data-catb-result") === opened) { open = d; }
+        });
+        focusReveal(nRan >= total && closer ? closer : open);
+      });
+    });
+
+    setCount(sec, 0);
+    paint();
+  }
+
+/* ═══ END C6 wiring ═══ */
+
+
 
 
   function wireInstruments(root) {
@@ -20990,6 +21979,24 @@
     each(root.querySelectorAll("[data-tsortblock]"), wireTypeSorter);
     each(root.querySelectorAll("[data-rwriteblock]"), wireRuleWrite);
     // ═══ END C5 wiring ═══
+    // ═══ BEGIN C7 wiring ═══
+    each(root.querySelectorAll("[data-hcurveblock]"), wireHeatingCurve);
+    each(root.querySelectorAll("[data-tempbblock]"), wireTempBench);
+    each(root.querySelectorAll("[data-esortblock]"), wireEnergySorter);
+    each(root.querySelectorAll("[data-euseblock]"), wireEnergyUses);
+    each(root.querySelectorAll("[data-rplanblock]"), wireRigPlanCritique);
+    each(root.querySelectorAll("[data-rigbblock]"), wireRigBuilder);
+    // ═══ END C7 wiring ═══
+    // ═══ BEGIN C6 wiring ═══
+    each(root.querySelectorAll("[data-bottleblock]"), wireBottleSorter);
+    each(root.querySelectorAll("[data-ajudgeblock]"), wireAcidJudgements);
+    each(root.querySelectorAll("[data-phbenchblock]"), wirePhBench);
+    each(root.querySelectorAll("[data-titrblock]"), wireTitrationDial);
+    each(root.querySelectorAll("[data-amgridblock]"), wireAcidMetalGrid);
+    each(root.querySelectorAll("[data-namerblock]"), wireSaltNamer);
+    each(root.querySelectorAll("[data-morderblock]"), wireMethodOrder);
+    each(root.querySelectorAll("[data-catbblock]"), wireCatalystBench);
+    // ═══ END C6 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
   }

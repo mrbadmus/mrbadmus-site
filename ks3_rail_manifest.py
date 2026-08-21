@@ -36,6 +36,36 @@ MANIFEST = os.path.join("docs", "ks3", "rail-manifest.md")
 HEADING = "## 1. Drawn rails"
 
 
+# ⊕ MRB-272 / C6 — WHERE THE SKELETON AND THE DELIVERY DISAGREE ON A SLUG.
+#
+# `_slug` derives the built filename by stripping Design's `c6-02-` prefix,
+# which assumes the rest of her filename IS the built slug. That held for
+# every delivery until C6, where three of `structure.py`'s permanent slugs are
+# not the words Design titled her pages with:
+#
+#     c6-02-indicators-and-the-ph-scale → the-ph-scale-and-indicators
+#     c6-04-acids-and-metals            → acid-plus-metal
+#     c6-06-making-a-salt               → making-a-pure-dry-salt
+#
+# The skeleton wins — §8.4 makes the slug permanent — so the DERIVATION is
+# what has to know, and it is recorded here rather than by hand-editing the
+# manifest, because `--write` regenerates that file whole and would undo it.
+#
+# ⚠️ KEYED BY THE FULL DELIVERY STEM, not by the tail. A rename map keyed on
+# "making-a-salt" would also catch a future `c9-04-making-a-salt`, which is
+# a different lesson in a different unit; the stem is unique per delivery.
+#
+# ⚠️ AND IT IS NOT A LICENCE. A row here says "these two names are the same
+# lesson". It may never be used to point a manifest row at a DIFFERENT
+# lesson's rail, which would make the gate compare a page against somebody
+# else's drawing and pass.
+_RENAMED = {
+    "c6-02-indicators-and-the-ph-scale": "the-ph-scale-and-indicators",
+    "c6-04-acids-and-metals":            "acid-plus-metal",
+    "c6-06-making-a-salt":               "making-a-pure-dry-salt",
+}
+
+
 def _slug(stem):
     """`b8-01-aerobic-respiration` → `aerobic-respiration`, the built filename.
 
@@ -43,9 +73,15 @@ def _slug(stem):
     and `p2-03-`, and a biology-only pattern silently left every C1 and C2
     lesson without a row — which the gate then reported as twelve unrecorded
     pages rather than as a bug in here. Caught by exactly that message.
-    """
-    return re.sub(r"^[a-z]\d+-\d+-", "", stem)
 
+    ⊕ And where Design's title and `structure.py`'s permanent slug disagree,
+    `_RENAMED` above is the record of it. Without that the gate reports three
+    C6 pages as unrecorded — the same shape of message, and the same kind of
+    bug in here rather than in the content.
+    """
+    if stem in _RENAMED:
+        return _RENAMED[stem]
+    return re.sub(r"^[a-z]\d+-\d+-", "", stem)
 
 def drawn_rails(repo_root="."):
     """{slug: (design_stem, [anchors] | None, {mirror: target})} from Design."""

@@ -170,3 +170,21 @@ content family. The `NOS` call was already overdue before C8 per the C5 notes.
   not tokens. This is deliberate — they are scientific data, not brand colour —
   but it is the only place in C1–C8 where non-token colour is hard-coded, and
   every cell carries its number so identity is not hue-only. **Confirm.**
+
+---
+
+## Change log — 21 Aug 2026 (packaging pass)
+
+Font-law sweep before the unit zip was cut. Teaching sequence untouched.
+
+- The three standalone word equations — `acid + alkali`, `acid + metal`,
+  `acid + carbonate` — now draw the arrow as inline SVG (the 44×24 path
+  already used in `c4-05`), inside a flex line with a span each side.
+- Key facts, key notes and rung questions in `c6-03`, `c6-04` and `c6-05`
+  read **makes** rather than a typed arrow. Prose says the word; only a
+  formula line draws the mark.
+- Ion notation: `H⁺`/`OH⁻` in `c6-01` and `c6-03` are `<sup>+</sup>` and
+  `<sup>−</sup>` (U+2212, which the subsets do carry), and `H₂O` is
+  `H<sub>2</sub>O`.
+- Why: U+2192 and the super/subscript digits are absent from the shipped
+  subsets and were falling back to a system font.

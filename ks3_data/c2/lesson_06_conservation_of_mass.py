@@ -374,6 +374,17 @@ LESSON = {
 
         {"type": "key-fact", "ref": "rearranged-never-made"},
 
+        # ⊕ #s-words. Design draws no words section here, so the RAIL IS NOT
+        # TOUCHED — five stops in, five stops out. `terms` matches
+        # `vocabulary[].term` byte for byte.
+        {"type": "keyword", "anchor": "s-words",
+         "eyebrow": "Five words",
+         "lead": "Say your answer out loud before you turn each "
+                 "card over. If you cannot say it, you do not "
+                 "know it yet.",
+         "terms": ["Conservation of mass", "Chemical reaction", "Product",
+                   "Closed system", "Mass"]},
+
         {"type": "misconception", "id": "think-commit-burning",
          "anchor": "s-think", "targets": "ATOM-11"},
         {"type": "quiz", "ref": "ladder", "anchor": "s-ladder"},
@@ -389,6 +400,38 @@ LESSON = {
          "placement": "top-level",
          "ground": "card",
          "eyebrow": "Key fact"},
+    ],
+
+    # ── vocabulary (Law 7) ──────────────────────────────────────────────────
+    # `Closed system` is on the list because rung 2's correction uses it — "the
+    # nail was simply never a closed system" — and it is the only place in the
+    # lesson the phrase appears. A correction that turns on an undefined term
+    # corrects nothing.
+    "vocabulary": [
+        {"term": "Conservation of mass",
+         "definition": "The total mass of everything before a reaction is "
+                       "equal to the total mass of everything after it.",
+         "note": "It holds because atoms are only rearranged. Everything "
+                 "means the gases too."},
+        {"term": "Chemical reaction",
+         "definition": "A change in which atoms are rearranged into "
+                       "different substances.",
+         "note": "No atom is created, destroyed or turned into another "
+                 "kind."},
+        {"term": "Product",
+         "definition": "A substance a reaction makes.",
+         "note": "Burning wax makes carbon dioxide and water vapour. Both "
+                 "are products, and both have mass."},
+        {"term": "Closed system",
+         "definition": "A container nothing can get into or out of, so "
+                       "everything that takes part is on the balance.",
+         "note": "A sealed flask is one. An open flask is not, and that is "
+                 "the whole difference between the two readings."},
+        {"term": "Mass",
+         "definition": "How much substance there is, measured on a balance "
+                       "in grams.",
+         "note": "Gases have mass. Heat and light do not — they are not "
+                 "made of atoms."},
     ],
 
     # ── activities (§5.5) ───────────────────────────────────────────────────

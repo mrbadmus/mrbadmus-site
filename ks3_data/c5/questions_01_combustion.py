@@ -143,7 +143,7 @@ QUESTIONS = [
     # ── standard ────────────────────────────────────────────────────────
     {
         "id": "c5-01-s01",
-        "band": "s",
+        "band": "standard",
         "text": "Hydrogen is burned as a fuel with plenty of air. What comes "
                 "out?",
         "options": [
@@ -164,7 +164,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-01-s02",
-        "band": "s",
+        "band": "standard",
         "text": "Charcoal is almost pure carbon. It is burned on a barbecue in "
                 "the open air. What are the products?",
         "options": [
@@ -184,7 +184,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-01-s03",
-        "band": "s",
+        "band": "standard",
         "text": "Why is carbon monoxide more dangerous in a house than most "
                 "other poisonous substances?",
         "options": [
@@ -210,7 +210,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-01-s04",
-        "band": "s",
+        "band": "standard",
         "text": "Two identical beakers of water are heated on identical "
                 "burners, one on a blue flame and one on a yellow flame. "
                 "Which boils first, and why?",
@@ -239,7 +239,7 @@ QUESTIONS = [
     # ── harder ──────────────────────────────────────────────────────────
     {
         "id": "c5-01-h01",
-        "band": "h",
+        "band": "harder",
         "text": "A family brings a barbecue that is still glowing into a tent "
                 "to keep warm overnight. Why is this so dangerous?",
         "options": [
@@ -265,7 +265,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-01-h02",
-        "band": "h",
+        "band": "harder",
         "text": "A gas fire is burning with a yellow flame and there is black "
                 "marking on the wall above it. Which is the strongest reason "
                 "to have it checked at once?",
@@ -292,7 +292,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-01-h03",
-        "band": "h",
+        "band": "harder",
         "text": "A rocket has to burn its fuel hundreds of kilometres up, "
                 "where there is effectively no air. What must it carry as "
                 "well as fuel?",
@@ -320,7 +320,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-01-h04",
-        "band": "h",
+        "band": "harder",
         "text": "An advert says a hydrogen car is completely clean, because "
                 "its exhaust is only water. What is wrong with the claim?",
         "options": [

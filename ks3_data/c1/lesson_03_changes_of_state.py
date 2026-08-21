@@ -363,7 +363,17 @@ LESSON = {
                    "grid": [-20, 0, 50, 100, 120],
                    "ticks": [-20, 0, 100, 120],
                    "y_label": "TEMPERATURE / °C",
-                   "x_label": "ENERGY IN →"},
+                   # ⊕ FONT LAW. `x_label` is a PAYLOAD string: it reaches the
+                   # page inside the graph config and is drawn by
+                   # `ctx.fillText` on a canvas (shared/ks3.js), where markup
+                   # does not exist and a `<sub>`-style tag would be drawn as
+                   # its own characters. The shipped latin subsets carry no
+                   # U+2192, so the arrow was dropping to a system font in the
+                   # middle of the label. Design's convention for a payload
+                   # arrow is a WORD — her own c1-06 fix replaced "1913 → now"
+                   # with "1913 onwards" — and this is the same move: the axis
+                   # says which way it runs in words.
+                   "x_label": "ENERGY IN, INCREASING"},
 
          # The sealed flask, right of the graph. The caption carries the mass
          # again because the drawing has to say it too — a student watching

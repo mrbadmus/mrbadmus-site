@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Formulae · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes c2-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: c2-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Atoms, elements and compounds</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Formulae</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Atoms, elements and compounds · Model</p>
+        <h1>Formulae</h1>
+        <p class="ks3-bigq">One of these bottles is drinking water. The other bleaches hair and has been used as rocket fuel. The difference is one atom.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>H<sub>2</sub>O and H<sub>2</sub>O<sub>2</sub>. One extra oxygen atom.</h2>
+        <p class="ks3-hook-prompt">Both are clear, colourless liquids made of nothing but hydrogen and oxygen. One falls out of the sky and you drink it. The other burns skin, bleaches hair, and in concentrated form has been used to launch rockets.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What is actually different about them?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Nothing is dissolved in anything. Each particle of one has two hydrogen atoms and one oxygen; each particle of the other has two hydrogens and two oxygens. That single extra atom, in every particle, makes a different substance — and the formula is how you say so.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>A formula lists which elements are in a substance and counts the atoms of each. The small number written low, after a symbol, counts the atoms of that element in one particle.</p>
+      </section>
+
+      <section id="s-builder" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">The model · change one number</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Build a formula and see what you have made</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ builderProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Two elements, and a count for each. Most combinations are not substances at all — which is the first thing worth knowing about formulae.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 22px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. If you change the 2 in H<sub>2</sub>O to a 3, what have you got?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ builderOpen }}">
+          <div data-arrive="1" style="margin-top: 24px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div>
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Two elements</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ pairTabs }}" as="t" hint-placeholder-count="3">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">{{ firstLabel }}</p>
+                <div style="display: flex; gap: 9px; align-items: center;">
+                  <sc-for list="{{ countA }}" as="t" hint-placeholder-count="3">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">{{ secondLabel }}</p>
+                <div style="display: flex; gap: 9px; align-items: center;">
+                  <sc-for list="{{ countB }}" as="t" hint-placeholder-count="3">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 20px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-on-dark-muted); overflow: hidden;">
+              <canvas width="1700" height="520" ref="{{ molRef }}" role="img" aria-label="{{ molAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+              <div style="padding: 16px 18px 18px; border-top: 2px solid var(--ks3-on-dark-muted); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 30px; line-height: 1.1; letter-spacing: -.02em; color: var(--ks3-on-dark);">{{ builtName }}</p>
+                <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ builtNote }}</p>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">A formula says which elements are present and how many atoms of each. Change one of those numbers and you have not changed the amount — you have changed the substance.</p>
+      </div>
+
+      <section id="s-limit" class="ks3-block" style="scroll-margin-top: 92px; background: var(--ks3-inset);">
+        <p class="ks3-eyebrow">Where the model runs out</p>
+        <h2 style="margin: 6px 0 0;">NaCl is not a particle with one of each in it</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Everything so far has treated a formula as a recipe for one particle. For salt that is not what is happening, and the model has to bend.</p>
+
+        <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 16px;">
+          <div style="padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">A molecule · CO<sub>2</sub></p>
+            <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.55;">Separate particles float about, each one made of exactly one carbon and two oxygens. You could, in principle, pick one out. The formula counts the atoms in that particle.</p>
+          </div>
+          <div style="padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-ink); color: var(--ks3-on-dark);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-alert);">A giant structure · NaCl</p>
+            <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">A single grain of salt is billions of sodium and chlorine atoms locked in one repeating stack, with no separate particles at all. NaCl is a <strong>ratio</strong> — one sodium for every chlorine — not a count of what is in one particle.</p>
+          </div>
+        </div>
+
+        <div style="margin-top: 18px;">
+          <p style="margin: 0 0 12px; font-size: 19px; font-weight: 700;">So what does the formula for salt tell you?</p>
+          <ul class="ks3-options" style="max-width: 34rem;">
+            <sc-for list="{{ limitOptions }}" as="opt" hint-placeholder-count="3">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ limitOpen }}">
+            <p data-arrive="1" style="margin: 16px 0 0; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink); font-size: 19px; line-height: 1.6;">The formula still tells you the proportion, and that is what it was always doing. For a molecule the proportion happens to be the contents of one particle as well; for a giant structure it is only the proportion. A model that has to be told where it stops applying is more useful than one that pretends it never does.</p>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“2H<sub>2</sub>O and H<sub>2</sub>O<sub>2</sub> both have four atoms written down, so they must be the same thing.”</p>
+        <p style="max-width: 54ch;">One of those is a big number at the front, and one is a small number at the back. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;"><strong>2H<sub>2</sub>O</strong> is two particles of water. Two of the same thing you drink. <strong>H<sub>2</sub>O<sub>2</sub></strong> is one particle of hydrogen peroxide, which is a different substance entirely.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">A big number in front multiplies whole particles and changes <em>how much</em> you have. A small number after a symbol counts atoms inside one particle and changes <em>what</em> you have. It is the difference between two glasses of water and a bottle of bleach.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>A formula gives the elements in a substance and the number of atoms of each. A small number after a symbol counts atoms inside one particle; a big number in front counts particles. For a giant structure like NaCl the formula gives the ratio, because there is no single particle to count.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Glucose is C<sub>6</sub>H<sub>12</sub>O<sub>6</sub> and ethanoic acid — vinegar — is C<sub>2</sub>H<sub>4</sub>O<sub>2</sub>. Divide both down and they reach the same ratio: one carbon, two hydrogens, one oxygen. Same proportions, wildly different substances, because what differs is how many atoms are in each particle and how they are joined. It is the first hint that a formula is not the whole story, and the reason chemists eventually needed structures as well as formulae.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c2-04-chemical-symbols.html">Chemical symbols<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c2-06-conservation-of-mass.html">Conservation of mass<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Balancing equations, and working out a formula from the masses that react.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Confused by big numbers and small numbers?</p>
+          <a class="ks3-tutor-cta" href="#s-think">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'One atom apart', short: 'HOOK' },
+  { id: 's-builder', label: 'Build a formula', short: 'BUILD' },
+  { id: 's-limit', label: 'Where it runs out', short: 'LIMIT' },
+  { id: 's-think', label: 'Big and small numbers', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const PAIRS = [
+  { id: 'ho', a: 'H', b: 'O', aName: 'Hydrogen atoms', bName: 'Oxygen atoms' },
+  { id: 'co', a: 'C', b: 'O', aName: 'Carbon atoms', bName: 'Oxygen atoms' },
+  { id: 'nacl', a: 'Na', b: 'Cl', aName: 'Sodium atoms', bName: 'Chlorine atoms' }
+];
+
+// Known substances, keyed pair:countA:countB
+const KNOWN = {
+  'ho:2:1': { name: 'H2O — water', note: 'Two hydrogen atoms and one oxygen atom in every particle. You are about 60% of this.',
+    atoms: [{ s: 'O', x: 0, y: 0, r: 26 }, { s: 'H', x: -46, y: 30, r: 18 }, { s: 'H', x: 46, y: 30, r: 18 }], bonds: [[0, 1], [0, 2]] },
+  'ho:2:2': { name: 'H2O2 — hydrogen peroxide', note: 'One more oxygen in each particle than water, and a completely different substance: it bleaches, it burns skin, and it breaks down into water and oxygen.',
+    atoms: [{ s: 'H', x: -78, y: 26, r: 18 }, { s: 'O', x: -30, y: 0, r: 26 }, { s: 'O', x: 30, y: 0, r: 26 }, { s: 'H', x: 78, y: 26, r: 18 }], bonds: [[0, 1], [1, 2], [2, 3]] },
+  'co:1:1': { name: 'CO — carbon monoxide', note: 'One carbon, one oxygen. Colourless, odourless, and it kills by taking the place of oxygen in your blood.',
+    atoms: [{ s: 'C', x: -28, y: 0, r: 26 }, { s: 'O', x: 28, y: 0, r: 28 }], bonds: [[0, 1]] },
+  'co:1:2': { name: 'CO2 — carbon dioxide', note: 'One carbon and two oxygens. Breathed out by every living thing, and the gas that puts out fires.',
+    atoms: [{ s: 'O', x: -62, y: 0, r: 28 }, { s: 'C', x: 0, y: 0, r: 26 }, { s: 'O', x: 62, y: 0, r: 28 }], bonds: [[0, 1], [1, 2]] },
+  'nacl:1:1': { name: 'NaCl — sodium chloride, or salt', note: 'One sodium for every chlorine — but not as separate particles. This one is a giant repeating stack, and the formula gives the ratio.', giant: true }
+};
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Read it',
+    question: 'How many atoms are there altogether in one particle of H2SO4?',
+    options: [
+      { text: 'Seven', correct: true },
+      { text: 'Three', correction: 'Three is the number of elements — H, S and O. The question asks for atoms, so the small numbers have to be counted too.' },
+      { text: 'Four', correction: 'Four is the number of oxygen atoms alone. Add the two hydrogens and the sulfur.' },
+      { text: 'Eight', correction: 'Close: 2 hydrogens + 1 sulfur + 4 oxygens. The sulfur has no small number, which means one, not two.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'What is the difference between 2CO2 and C2O4?',
+    options: [
+      { text: '2CO2 is two particles of carbon dioxide; C2O4 would be a single particle with twice as much in it', correct: true },
+      { text: 'Nothing — they contain the same atoms, so they are the same', correction: 'The same atoms, arranged completely differently. One is two ordinary particles; the other would be one particle twice the size.' },
+      { text: '2CO2 has more atoms in total', correction: 'Both come to two carbons and four oxygens. Totalling the atoms does not distinguish them, and that is exactly the trap.' },
+      { text: '2CO2 is a mixture and C2O4 is a compound', correction: 'Both describe one substance. The 2 in front is an amount, not a second ingredient.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Explain why H2O and H2O2 are different substances rather than different amounts of the same one, and say what would happen if you tried to make water by removing an oxygen atom.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Each particle of hydrogen peroxide…',
+    criteria: [
+      'Says each particle of hydrogen peroxide has one more oxygen atom than a particle of water.',
+      'Says a change inside the particle makes a different substance, not more or less of the same one.',
+      'Names at least one way the two behave differently.',
+      'Says removing an oxygen atom would be a chemical reaction, not a separation.',
+      'Does not describe hydrogen peroxide as water with something dissolved in it.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A student writes the formula for salt as Na1Cl1 and says it means one particle containing one sodium and one chlorine atom. Two things are wrong. Say what they are, and give the version a chemist would write.',
+    fieldLabel: 'Your answer',
+    placeholder: 'The first problem is…',
+    criteria: [
+      'Says a 1 is never written — a symbol with no number after it already means one.',
+      'Says salt is not made of separate particles containing one of each.',
+      'Says it is a giant structure of atoms in a repeating stack.',
+      'Says the formula gives the ratio of sodium to chlorine, which is one to one.',
+      'Gives NaCl as the correct version.'
+    ] }
+];
+
+const COLOURS = { H: '#F4E9D8', O: '#8FB7FF', C: '#C6B9A7', Na: '#FFC53D', Cl: '#7FB3A8' };
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    pair: 'ho',
+    a: 2,
+    b: 1,
+    seen: {},
+    limitChoice: null,
+    thinkChoice: null,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+    this.draw();
+  }
+
+  componentDidUpdate() { this.draw(); }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  key() { return this.state.pair + ':' + this.state.a + ':' + this.state.b; }
+
+  draw() {
+    const c = this.canvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 850, H = 260;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#100D0A';
+    ctx.fillRect(0, 0, W, H);
+
+    const found = KNOWN[this.key()];
+    const cx = W / 2, cy = H / 2 + 6;
+    ctx.textAlign = 'center';
+
+    if (!found) {
+      ctx.fillStyle = '#6E655D';
+      ctx.font = '500 17px "DM Mono", ui-monospace, monospace';
+      ctx.fillText('no substance with this formula', cx, cy - 6);
+      ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+      ctx.fillText('not every combination of atoms is a substance', cx, cy + 24);
+      return;
+    }
+
+    if (found.giant) {
+      const step = 58;
+      for (let row = 0; row < 4; row++) {
+        for (let col = 0; col < 12; col++) {
+          const x = cx - 320 + col * step, y = cy - 82 + row * step;
+          const isNa = (row + col) % 2 === 0;
+          ctx.beginPath();
+          ctx.arc(x, y, isNa ? 19 : 23, 0, Math.PI * 2);
+          ctx.fillStyle = isNa ? COLOURS.Na : COLOURS.Cl;
+          ctx.fill();
+          ctx.strokeStyle = '#100D0A';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.fillStyle = '#100D0A';
+          ctx.font = '800 13px "Bricolage Grotesque", system-ui, sans-serif';
+          ctx.fillText(isNa ? 'Na' : 'Cl', x, y + 5);
+        }
+      }
+      ctx.fillStyle = '#C6B9A7';
+      ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+      ctx.fillText('a repeating stack, going on in every direction', cx, H - 18);
+      return;
+    }
+
+    ctx.strokeStyle = '#5C5249';
+    ctx.lineWidth = 7;
+    (found.bonds || []).forEach((bd) => {
+      const p = found.atoms[bd[0]], q = found.atoms[bd[1]];
+      ctx.beginPath();
+      ctx.moveTo(cx + p.x, cy + p.y);
+      ctx.lineTo(cx + q.x, cy + q.y);
+      ctx.stroke();
+    });
+    found.atoms.forEach((at) => {
+      ctx.beginPath();
+      ctx.arc(cx + at.x, cy + at.y, at.r, 0, Math.PI * 2);
+      ctx.fillStyle = COLOURS[at.s] || '#C6B9A7';
+      ctx.fill();
+      ctx.strokeStyle = '#100D0A';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+      ctx.fillStyle = '#100D0A';
+      ctx.font = '800 16px "Bricolage Grotesque", system-ui, sans-serif';
+      ctx.fillText(at.s, cx + at.x, cy + at.y + 6);
+    });
+    ctx.fillStyle = '#C6B9A7';
+    ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+    ctx.fillText('one particle', cx, H - 18);
+  }
+
+  seg(on) {
+    return 'cursor:pointer;font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+      (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const pair = PAIRS.find((p) => p.id === s.pair) || PAIRS[0];
+    const found = KNOWN[this.key()];
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    const mark = () => {
+      const k = this.key();
+      if (KNOWN[k] && !this.state.seen[k]) {
+        this.setState((st) => ({ seen: Object.assign({}, st.seen, { [k]: true }) }));
+      }
+    };
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-builder') return Object.keys(s.seen).length >= 3;
+          if (id === 's-limit') return s.limitChoice !== null;
+          if (id === 's-think') return s.thinkChoice !== null;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'One is more concentrated than the other' },
+        { letter: 'B', text: 'Each particle of one has an extra oxygen atom' },
+        { letter: 'C', text: 'One has something dissolved in it' },
+        { letter: 'D', text: 'They are the same substance at different temperatures' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'More water' },
+        { letter: 'B', text: 'A different substance' },
+        { letter: 'C', text: 'Thicker water' },
+        { letter: 'D', text: 'The same thing written differently' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      builderOpen: s.gate !== null,
+      builderProgress: Object.keys(s.seen).length + ' of 5 real substances found',
+      pairTabs: PAIRS.map((p) => ({
+        label: p.a + ' and ' + p.b, pressed: p.id === s.pair, style: this.seg(p.id === s.pair),
+        onClick: () => this.setState({ pair: p.id }, mark)
+      })),
+      firstLabel: pair.aName,
+      secondLabel: pair.bName,
+      countA: [1, 2, 3].map((n) => ({
+        label: String(n), pressed: s.a === n, style: this.seg(s.a === n),
+        onClick: () => this.setState({ a: n }, mark)
+      })),
+      countB: [1, 2, 3].map((n) => ({
+        label: String(n), pressed: s.b === n, style: this.seg(s.b === n),
+        onClick: () => this.setState({ b: n }, mark)
+      })),
+      molRef: (el) => { this.canvas = el; if (el) this.draw(); },
+      molAlt: found
+        ? 'A particle diagram of ' + found.name + (found.giant ? ', drawn as a repeating stack of alternating atoms.' : ', drawn as joined circles labelled with their symbols.')
+        : 'An empty particle view: no substance has this formula.',
+      builtName: found ? found.name : (pair.a + (s.a > 1 ? s.a : '') + pair.b + (s.b > 1 ? s.b : '') + ' — not a substance'),
+      builtNote: found ? found.note : 'Atoms do not join in any combination you like. How many of each can bond is fixed by the elements themselves, which is why most of the formulae you could invent do not exist.',
+
+      limitOptions: [
+        { letter: 'A', text: 'How many atoms are in one particle of salt' },
+        { letter: 'B', text: 'The ratio of sodium atoms to chlorine atoms in the stack' },
+        { letter: 'C', text: 'How many grains are in a spoonful' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.limitChoice === i,
+        onClick: () => this.setState({ limitChoice: i })
+      })),
+      limitOpen: s.limitChoice !== null,
+
+      thinkOptions: [
+        { letter: 'A', text: 'They are the same — four atoms either way' },
+        { letter: 'B', text: '2H2O is two particles of water; H2O2 is one particle of a different substance' },
+        { letter: 'C', text: '2H2O is a bigger particle than H2O2' },
+        { letter: 'D', text: 'Only one of them is a real substance' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.thinkChoice === i,
+        onClick: () => this.setState({ thinkChoice: i })
+      })),
+      thinkOpen: s.thinkChoice !== null,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

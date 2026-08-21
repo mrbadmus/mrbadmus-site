@@ -902,6 +902,17 @@ C5_DECOMP = "chemistry/types-of-reaction/thermal-decomposition.html"
 C5_OXID = "chemistry/types-of-reaction/oxidation.html"
 C5_DISP = "chemistry/types-of-reaction/displacement.html"
 C5_WHICH = "chemistry/types-of-reaction/which-reaction-is-this.html"
+C6_ACIDS = "chemistry/acids-and-alkalis/acids-and-alkalis.html"
+C6_PH = "chemistry/acids-and-alkalis/the-ph-scale-and-indicators.html"
+C6_NEUT = "chemistry/acids-and-alkalis/neutralisation.html"
+C6_METAL = "chemistry/acids-and-alkalis/acid-plus-metal.html"
+C6_SALT = "chemistry/acids-and-alkalis/making-a-pure-dry-salt.html"
+C6_CAT = "chemistry/acids-and-alkalis/catalysts.html"
+C7_STATE = "chemistry/energy-changes-in-reactions/energy-and-changes-of-state.html"
+C7_EXO = "chemistry/energy-changes-in-reactions/exothermic-reactions.html"
+C7_ENDO = "chemistry/energy-changes-in-reactions/endothermic-reactions.html"
+C7_MEASURE = ("chemistry/energy-changes-in-reactions/"
+              "measuring-a-temperature-change.html")
 # ═══ END C3 ═══
 
 COMPONENTS = [
@@ -5900,6 +5911,134 @@ COMPONENTS = [
          on=C5_WHICH, sel=".ks3-rwrite-reveal",
          props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
                 "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── C7 · Energy changes in reactions (⊕ MRB-272) ────────────────────
+    #
+    # Six families across four lessons, and the same assertion C4's and C5's
+    # rows make: each is anchored on the GROUND its instrument sits on,
+    # because that is what goes wrong. Every C7 instrument is mapped to a
+    # light `check` segment — measured off Design's markup, all eight anchored
+    # sections carry `class="ks3-block"` and nothing else — and a family
+    # re-mapped to `practical` would flip to a `ks3-dark` ground, resolve every
+    # text token inside it wrong, and still render, still interact, still pass
+    # smoke, and be unreadable.
+    #
+    # ⚠️ TWO GROUNDS ON ONE PAGE, AND THE SECOND ROW IS WHY. c7-01 draws the
+    # readout on `--ks3-inset` and the bar trace beside it on `--ks3-card`, so
+    # the bars sit on a lighter ground than the panel they are compared with.
+    # A later tidy-up that gave the two panels one ground would lose that, and
+    # would lose it silently: both still render and both still read.
+    #
+    # ⊖ NO ROW FOR THE TWO INK READOUTS on c7-02 and c7-04. They are emitted
+    # `hidden` until a prediction is committed or a rig is run, and the rows
+    # here are resting-state assertions; the ground that matters at rest is the
+    # LIGHT card each one is nested inside, which is what the rows below pin.
+    #
+    # Grounds: #FFFCF5 `--ks3-card`, #F7EFE1 `--ks3-inset`.
+
+    dict(name="C7 heating-curve readout is inset on a 2px ink border",
+         on=C7_STATE, sel=".ks3-hcurve-readout",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+    dict(name="C7 heating-curve trace is a card, not an inset tile",
+         on=C7_STATE, sel=".ks3-hcurve-trace",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+    dict(name="C7 energy-uses card is inset on a 2px ink border",
+         on=C7_STATE, sel=".ks3-euse-card",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    dict(name="C7 temperature bench card is inset on a 2px ink border",
+         on=C7_EXO, sel=".ks3-tempb-card",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    dict(name="C7 energy sorter item is inset on a 2px ink border",
+         on=C7_ENDO, sel=".ks3-esort-item",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    dict(name="C7 plan-critique step is inset on a 2px ink border",
+         on=C7_MEASURE, sel=".ks3-rplan-step",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+    dict(name="C7 rig-builder bench is inset on a 2px ink border",
+         on=C7_MEASURE, sel=".ks3-rigb-bench",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+    dict(name="C6 bottle card is inset on a 2px ink border", on=C6_ACIDS,
+         sel=".ks3-bottle-card",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+    dict(name="C6 judgement card is inset on a 2px ink border", on=C6_ACIDS,
+         sel=".ks3-ajudge-card",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ⚑ THE CHIP'S GROUND IS NOT PINNED AND MUST NOT BE. It is one of fifteen
+    # chart colours and arrives inline from `PH_COLOURS`; asserting a
+    # background here would assert whichever sample the page opens on. Its INK
+    # and its border ARE pinned, because they are fixed exactly so that they
+    # clear all fifteen — which is the condition NOTES-C6 §7's non-token
+    # ruling is conditional on.
+    dict(name="C6 pH chip is near-white on a 2px near-white border",
+         on=C6_PH, sel=".ks3-phbench-chip",
+         props={"color": "#FFFDF8", "border-top-color": "#FFFDF8",
+                "border-top-width": "2px", "border-top-left-radius": "14px"}),
+    dict(name="C6 pH bench readout is the ink panel", on=C6_PH,
+         sel=".ks3-phbench-result",
+         props={"background-color": "#221E1B",
+                "border-top-left-radius": "20px"}),
+
+    # The trace is the lesson, and these two rows are what make it a SHAPE: a
+    # reached drop is the accent fill and an unreached one is the band, so the
+    # whole run is visible at rest and the student watches it fill rather than
+    # watching bars appear out of nothing.
+    dict(name="C6 titration bar rests on the band fill", on=C6_NEUT,
+         sel='.ks3-titr-bar[data-on="0"]',
+         props={"background-color": "#F4E9D8"}),
+    dict(name="C6 titration bar reached is the accent fill", on=C6_NEUT,
+         sel='.ks3-titr-bar[data-on="1"]',
+         props={"background-color": "#E4572E", "border-top-color": "#221E1B"}),
+
+    # ⊕ MRB-281 — THE FIRST CELL IS SELECTED ON LOAD, BY DESIGN.
+    # c6-04's store opens at `{metal: 'mg', acid: 'hcl'}`, so `mg:hcl` ships
+    # `aria-pressed="true"` and wears the ACCENT border. A bare
+    # `.ks3-amgrid-cell` selector therefore measured the one cell in the grid
+    # that is not resting, and read the accent as a drift. The row says "is a
+    # card", so it selects a card; the selected cell gets a row of its own
+    # rather than being excluded and left unmeasured.
+    dict(name="C6 grid cell is a card at the tighter grid radius",
+         on=C6_METAL, sel='.ks3-amgrid-cell[aria-pressed="false"]',
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "12px"}),
+    dict(name="C6 grid cell chosen on load takes the accent border",
+         on=C6_METAL, sel='.ks3-amgrid-cell[aria-pressed="true"]',
+         props={"border-top-color": "#E4572E", "border-top-width": "2px"}),
+    dict(name="C6 grid readout is the ink panel", on=C6_METAL,
+         sel=".ks3-amgrid-result",
+         props={"background-color": "#221E1B",
+                "border-top-left-radius": "20px"}),
+
+    dict(name="C6 naming answer is the ink panel", on=C6_SALT,
+         sel=".ks3-namer-result",
+         props={"background-color": "#221E1B",
+                "border-top-left-radius": "20px"}),
+    # ⚖️ A PLACED STEP TAKES THE ACCENT BORDER AND NOTHING ELSE. It is a
+    # POSITION, not a verdict — the same treatment c5-02's staged run takes for
+    # the step the page is on — and there is deliberately no rule anywhere that
+    # distinguishes a correctly placed step from a wrongly placed one. Only the
+    # mastery ladder marks.
+    dict(name="C6 placed method step takes the accent border, never a mark",
+         on=C6_SALT, drive="c6-morder-placed", sel='.ks3-morder-step[data-placed="1"]',
+         props={"border-top-color": "#E4572E", "border-top-width": "2px",
+                "border-top-left-radius": "20px"}),
+
+    dict(name="C6 catalyst trial readout is the ink panel", on=C6_CAT,
+         sel=".ks3-catb-result",
+         props={"background-color": "#221E1B",
+                "border-top-left-radius": "20px"}),
 ]
 
 
@@ -7575,6 +7714,21 @@ window.__ks3 = {
 # measuring a spent button and calling it resting.
 
 DRIVES = {
+    # ⊕ MRB-281 — a PLACED step does not exist until a step is placed.
+    # `data-placed="1"` is written by `wireMethodOrder` on click, so the
+    # resting page has none and the row was measuring a selector that is
+    # absent by construction rather than by drift.
+    "c6-morder-placed": r"""
+(function () {
+  var b = document.querySelector('[data-morder] [data-morder-step]');
+  if (!b) { return "no method step on #s-method"; }
+  b.click();
+  if (b.getAttribute('data-placed') !== '1') {
+    return "clicking a method step did not mark it placed";
+  }
+  return "";
+})()
+""",
     # ── C4 · Chemical reactions (⊕ MRB-246) ─────────────────────────────
     #
     # Each goes through the control a student uses. `ask-gold` is chosen over

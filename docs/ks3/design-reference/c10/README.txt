@@ -34,3 +34,13 @@ Standing conventions, same as the rest of the build:
   - One KEY FACT box per lesson. Amber is reserved for misconceptions.
   - Only the mastery ladder marks correctness; benches give a verdict in words.
   - No year or half-term appears anywhere in a lesson page.
+
+Packaged 21 Aug 2026 — this folder is the current build.
+Every .dc.html here is byte-identical to the working copy it was authored from,
+and the _ds/ assets are the same files those working copies load.
+
+Checked before packaging: no U+2192, U+2713, U+2715 or U+2126 anywhere in a
+lesson, and no Unicode subscript or superscript digits — formulae use real
+<sub> elements in markup and plain digits inside instrument payloads.
+Changed in this pass: CO2 labels in the c10-05, c10-06 and c10-07 payloads
+are plain digits. This unit has no NOTES file — see above.

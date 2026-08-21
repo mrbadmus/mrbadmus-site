@@ -237,6 +237,21 @@ LESSON = {
 
         {"type": "key-fact", "ref": "smallest-particle"},
 
+        # ⊕ #s-words — the five words this lesson USES and never stops to
+        # define. Design draws no words section on this page and the rail is
+        # NOT touched: the block gets an anchor because that is what a section
+        # carries, and the drawn rail stays exactly as she drew it.
+        # `terms` must match `vocabulary[].term` byte for byte — `r_keyword`
+        # drops a term it cannot resolve and renders nothing at all if it
+        # drops them all.
+        {"type": "keyword", "anchor": "s-words",
+         "eyebrow": "Five words",
+         "lead": "Say your answer out loud before you turn each "
+                 "card over. If you cannot say it, you do not "
+                 "know it yet.",
+         "terms": ["Atom", "Element", "Model", "Chemical reaction",
+                   "Property"]},
+
         # #s-scale — ink-dark practical. Five drawings, two buttons.
         {"type": "scale-zoom", "id": "how-small", "anchor": "s-scale",
          "eyebrow": "How small · zoom until you find one",
@@ -330,6 +345,36 @@ LESSON = {
          "placement": "top-level",
          "ground": "card",
          "eyebrow": "Key fact"},
+    ],
+
+    # ── vocabulary (Law 7) ──────────────────────────────────────────────────
+    # Every definition is a KEY FACT (MRB-225): the version that is TRUE, not
+    # the famous one. "An atom is the smallest particle of a substance" is the
+    # famous one, and rung 1 marks it wrong — so the card says `element`, which
+    # is what the key fact says too.
+    "vocabulary": [
+        {"term": "Atom",
+         "definition": "The smallest particle of an element.",
+         "note": "About a hundred kinds, one kind for each element."},
+        {"term": "Element",
+         "definition": "A substance made of one kind of atom and nothing "
+                       "else.",
+         "note": "Copper is copper atoms. Lead is lead atoms. Nothing turns "
+                 "one into the other."},
+        {"term": "Model",
+         "definition": "A simplified account of how something works, kept for "
+                       "as long as it explains what it was built to explain.",
+         "note": "A model can be wrong about one thing and still be the right "
+                 "tool for another."},
+        {"term": "Chemical reaction",
+         "definition": "A change in which atoms are rearranged into different "
+                       "substances.",
+         "note": "No atom is made, destroyed, or turned into another kind."},
+        {"term": "Property",
+         "definition": "Something a substance is like or does — its colour, "
+                       "whether it bends, whether it conducts.",
+         "note": "Properties belong to a crowd of atoms. A single atom has "
+                 "almost none of them."},
     ],
 
     # ── activities (§5.5) ───────────────────────────────────────────────────

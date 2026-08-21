@@ -251,6 +251,17 @@ LESSON = {
 
         {"type": "key-fact", "ref": "one-kind-of-atom"},
 
+        # ⊕ #s-words. Design draws no words section here, so the RAIL IS NOT
+        # TOUCHED — the block carries an anchor and the drawn four stops stay
+        # four. `terms` matches `vocabulary[].term` byte for byte.
+        {"type": "keyword", "anchor": "s-words",
+         "eyebrow": "Five words",
+         "lead": "Say your answer out loud before you turn each "
+                 "card over. If you cannot say it, you do not "
+                 "know it yet.",
+         "terms": ["Element", "Periodic table", "Compound", "Mixture",
+                   "Metal"]},
+
         {"type": "misconception", "id": "think-commit-brass", "anchor": "s-think",
          "targets": "ATOM-03"},
         {"type": "quiz", "ref": "ladder", "anchor": "s-ladder"},
@@ -266,6 +277,38 @@ LESSON = {
          "placement": "top-level",
          "ground": "card",
          "eyebrow": "Key fact"},
+    ],
+
+    # ── vocabulary (Law 7) ──────────────────────────────────────────────────
+    # `Metal` is on the list because the whole lesson turns on it: the page
+    # says metal describes how a substance BEHAVES and element describes what
+    # it is MADE OF, and a student who has never had the first one defined
+    # cannot hold the two apart.
+    "vocabulary": [
+        {"term": "Element",
+         "definition": "A substance made of one kind of atom and nothing "
+                       "else.",
+         "note": "The test is always the same: can anything simpler be got "
+                 "out of it?"},
+        {"term": "Periodic table",
+         "definition": "The list of all the known elements, each with its own "
+                       "entry.",
+         "note": "Water, air and brass have no entry, because none of them is "
+                 "an element."},
+        {"term": "Compound",
+         "definition": "Two or more elements chemically joined together.",
+         "note": "Pass electricity through water and two different gases come "
+                 "out of it, so it was never one kind of atom."},
+        {"term": "Mixture",
+         "definition": "Two or more substances in the same place, not "
+                       "chemically joined.",
+         "note": "The proportions can be varied — brass is 70% copper, or "
+                 "60%, or something else again."},
+        {"term": "Metal",
+         "definition": "A substance that is shiny when freshly cut, conducts "
+                       "electricity, and can be bent or hammered into shape.",
+         "note": "Metal is how a substance behaves; element is what it is "
+                 "made of. Brass is one and not the other."},
     ],
 
     # ── activities (§5.5) ───────────────────────────────────────────────────
