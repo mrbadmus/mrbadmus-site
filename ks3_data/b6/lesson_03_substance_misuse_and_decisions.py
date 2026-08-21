@@ -712,27 +712,27 @@ LESSON = {
                  "customers who reviewed it on the company’s website "
                  "slept better. What is the main fault?",
             "options": [
-                "There is no comparison group, and the company chose which "
-                "reviews appeared",
                 "A result only counts when the sample is large, and this one "
                 "was far too small",
                 "A natural supplement cannot change the body, so any effect "
                 "people report must be imagined",
                 "Sleep is a feeling rather than a measurement, so no claim "
                 "about it can ever be tested",
+                "There is no comparison group, and the company chose which "
+                "reviews appeared",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
                 # ⚖️ The random/systematic distinction, and the reason
                 # `KS3.WS.ANA.05` is the anchor: more people does not fix a
                 # sample that chose itself.
-                1: "It might be large — and that would not help. "
+                0: "It might be large — and that would not help. "
                    "Thousands of self-selected reviews with nothing to "
                    "compare them against are still not evidence.",
-                2: "Plenty of natural substances have real effects; that is "
+                1: "Plenty of natural substances have real effects; that is "
                    "why the pharmacy is full of them. The problem here is the "
                    "shape of the evidence, not the origin of the pill.",
-                3: "It can, in a sleep laboratory or with a simple diary. The "
+                2: "It can, in a sleep laboratory or with a simple diary. The "
                    "study did not fail for lack of a measurement — it "
                    "failed for lack of a control.",
             }},
@@ -742,18 +742,18 @@ LESSON = {
                  "“my grandad drank every day and lived to 90”. Why "
                  "does that not weaken the warning?",
             "options": [
-                "A person who beats a risk has usually understated the habit, "
-                "so the story is unreliable",
                 "Because a risk is about rates across many people, and one "
                 "case cannot contradict a rate",
+                "A person who beats a risk has usually understated the habit, "
+                "so the story is unreliable",
                 "Alcohol affects every body in exactly the same way, so what "
                 "happened to him happens to everyone",
                 "One person who came to no harm shows the risk was never "
                 "real, whatever the figures say",
             ],
-            "answer": 1,
+            "answer": 0,
             "feedback": {
-                0: "Do not attack the story — assume it is completely "
+                1: "Do not attack the story — assume it is completely "
                    "true. It still does not touch the claim, and that is the "
                    "point worth understanding.",
                 2: "It does not — people differ. That is exactly why the "

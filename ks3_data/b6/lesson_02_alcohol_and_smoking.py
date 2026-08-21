@@ -637,16 +637,16 @@ LESSON = {
             "q": "Someone drinks six units, finishing at midnight. Roughly "
                  "when is the alcohol cleared from their blood?",
             "options": [
-                "About six in the morning",
                 "Within an hour or two, since alcohol is absorbed quickly",
                 "As soon as they fall asleep",
+                "About six in the morning",
                 "It depends whether they drink water and coffee",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "Absorbed quickly, cleared slowly. Getting in is fast; "
+                0: "Absorbed quickly, cleared slowly. Getting in is fast; "
                    "getting out runs at one unit an hour.",
-                2: "Sleep passes time and nothing more. The liver works at the "
+                1: "Sleep passes time and nothing more. The liver works at the "
                    "same rate whether they are asleep or awake.",
                 3: "Neither changes the rate. Water helps the headache, coffee "
                    "helps them feel awake, and the clock is unmoved by both.",

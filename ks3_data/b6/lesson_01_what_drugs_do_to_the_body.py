@@ -837,24 +837,24 @@ LESSON = {
                                             "blood to the part that hurts, "
                                             "because that is the part sending "
                                             "the pain signal",
-                                            "Everywhere the blood goes — it "
-                                            "acts on your head because that "
-                                            "is where there is something for "
-                                            "it to act on",
                                             "A tablet works where it "
                                             "dissolves, so a swallowed "
                                             "painkiller acts on the stomach "
                                             "and nowhere else",
+                                            "Everywhere the blood goes — it "
+                                            "acts on your head because that "
+                                            "is where there is something for "
+                                            "it to act on",
                                             "The body sends a drug only to "
                                             "the organs that need it, and "
                                             "keeps it away from the rest"],
-                                "answer": 1,
+                                "answer": 2,
                                 "feedback": {0: "Nothing in the tablet knows "
                                                 "where your head is. Follow "
                                                 "the dose on the bench above: "
                                                 "it is in the blood, and the "
                                                 "blood goes everywhere.",
-                                             2: "Dissolving is not the end of "
+                                             1: "Dissolving is not the end of "
                                                 "the journey. It crosses the "
                                                 "gut wall into the blood, "
                                                 "exactly as digested food "
