@@ -118,6 +118,8 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `NOS` | Nature of science — how models, evidence and theories actually work | 2026-08-17, by MRB-248 (commander's ruling), populated by re-homing from `PART` and `DRUG` |
 | `GENE` | Variation, inheritance, and what a gene actually is | 2026-08-18, by B10 |
 | `EVOL` | Natural selection, extinction and biodiversity | 2026-08-18, by B11 |
+| `MIX` | Purity, mixtures, dissolving and what a separation technique can and cannot do | 2026-08-20, by C3 |
+| `REACT` | Chemical reactions — what counts as one, what happens to the atoms, and how one is written down | 2026-08-20, by C4 |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
 — **not yet opened, listed so numbering starts consistently**: `FORCE` (forces and motion),
@@ -1085,3 +1087,150 @@ committed to; the confrontation is `#s-think` as everywhere else in this unit.
 ⚑ **NOTES-B11 §4 states these eight were already written into this file "with a new prefix row".**
 They were not. See the standing note under `GENE` above — B11 is the fourth delivery to say so, and
 the rows above are written from the approved pages rather than from NOTES.
+
+---
+
+### `MIX` — purity, mixtures, and what a separation technique can actually do
+
+Opened by **C3 *Mixtures and separation*** (2026-08-20, authored by Claude Design, MRB-272).
+All thirteen are `review_state: draft`.
+
+⚑ **THESE ROWS WERE MISSING UNTIL 2026-08-20 (MRB-246), AND C3 HAD ALREADY SHIPPED.** C3 authored
+thirteen `MIX` ids across seven lessons, referenced them in every lesson record, and passed every
+gate — because **nothing in the build reads this file.** The `elicited_by` / `confronted_by` joins
+are gated (MRB-244/248) against the built page; the register itself is not gated against anything.
+So a unit can ship a whole family that exists only in its own lesson records, which is exactly what
+happened, and it is the fifth time a delivery's own notes claimed register work that was never
+done — see the standing note under `GENE`.
+
+The rows below are written from the AUTHORED LESSON RECORDS, not from NOTES-C3, and were generated
+by reading `ks3_data/c3/` rather than retyped. That is the only source that cannot be wrong about
+what the pages actually say.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `MIX-01` | It says 100% pure on the carton, and there is nothing bad in it, so it is pure. | `s-hook` | `think-again-juice` | `pure-or-mixture` |
+| `MIX-02` | If it looks the same all the way through, it is pure. | `eight-samples` | `eight-samples` | `pure-or-mixture` |
+| `MIX-03` | Dissolving destroys the solute, or turns it into liquid. | `s-hook` | `think-again-melting` | `dissolving-and-solutions` |
+| `MIX-04` | Stirring harder makes more dissolve. | `gate-which-dial` | `dissolve-lab` | `dissolving-and-solutions` |
+| `MIX-05` | Dissolving is melting. | `s-think` | `think-again-melting` | `dissolving-and-solutions` |
+| `MIX-06` | I filtered the pond water and it came out clear, so it is clean water now. | `think-commit-pond` | `think-commit-pond` | `filtration` |
+| `MIX-07` | A fine enough filter would separate salt from water. | `s-ladder` | `s-particles` | `filtration` |
+| `MIX-08` | The water has gone. It evaporated, so it is not anywhere any more. | `think-commit-water` | `think-commit-water` | `evaporation-and-crystallisation` |
+| `MIX-09` | Faster evaporation gives more product. | `crystallising-bench` | `crystallising-bench` | `evaporation-and-crystallisation` |
+| `MIX-10` | Steam off boiling sea water tastes salty, so some salt must come over with it. | `think-commit-spray` | `think-commit-spray` | `distillation` |
+| `MIX-11` | The dye or colour is made by the paper or the solvent. | `s-hook` | `chroma-run` | `chromatography` |
+| `MIX-12` | The spot that travels furthest is the one there is most of. | `think-commit-furthest` | `think-commit-furthest` | `chromatography` |
+| `MIX-13` | One measurement is enough if it is the right answer. | `think-commit-one-run` | `melting-points` | `proving-something-is-pure` |
+
+**`MIX-02` is claimed by TWO lessons and that is correct, not a duplicate row.** `pure-or-mixture`
+elicits it at the eight-sample sorter, where a uniform-looking mixture is the trap; and
+`proving-something-is-pure` confronts it again four lessons later against a melting point, where
+looking the same all the way through is finally beaten by a measurement. The id is one belief; the
+two lessons are two different arguments against it, and the second is the one that settles it.
+
+**Where these are expected to resurface:**
+
+- `MIX-01` (the food-label meaning of *pure*) → C6 acids and alkalis, wherever a concentration is
+  described, and every KS4 lesson that says *pure* about a reagent.
+- `MIX-07` (a fine enough filter stops anything) is the size argument, and it is the one that
+  travels furthest → KS4 separation techniques, and reverse osmosis wherever desalination appears.
+- `MIX-13` (one measurement is enough) is `NOS`-shaped and is flagged as such: it is a belief about
+  evidence, not about chemistry. It sits here rather than in `NOS` only because the `NOS` re-homing
+  pass has not run since C3 landed. An author opening `NOS` next should take it.
+
+---
+
+### `REACT` — chemical reactions: what counts as one, what happens underneath, and how one is written
+
+Opened by **C4 *Chemical reactions*** (2026-08-20, authored by Claude Design, MRB-246).
+`REACT-01` to `REACT-09` are C4's; `REACT-10` to `REACT-18` are C5 *Types of reaction*, added
+with that unit on 2026-08-21. All are `review_state: draft`.
+
+⚠️ **THE ROWS BELOW ARE GENERATED FROM `ks3_data/c4/`, NOT FROM NOTES-C4 §6, AND THEY DIFFER FROM
+IT IN FIVE PLACES.** NOTES proposed the ids a delivery *expects* to emit; these are the ids the
+pages *do* emit, checked against the built HTML. Writing NOTES' names here would have reproduced
+exactly the defect this file was just repaired for under `MIX` — a register recording intent
+rather than fact.
+
+Four of the five differences have ONE structural cause, and it is worth stating because the next
+chemistry unit will hit it too. `build_ks3.py` emits a confrontation's reveal as
+`<div class="ks3-reveal ks3-reveal-panel" hidden data-reveal>` with **no `id`**. MRB-244/248 gate
+these joins against `id="…"` and `data-activity="…"` on the built page, so a name like
+`think-reveal-glass`, `think-reveal-no-such-atom` or `think-reveal-peroxide` **cannot be made to
+resolve from inside a content lane** — the reveal has no name to point at. Those three joins name
+the ACTIVITY that owns both the commitment and the reveal instead, which is c3-03's `MIX-06` form
+and is also what satisfies Law 3 (the gate wants a `confronted_by` that is a real activity id).
+
+The fifth, `REACT-04`, is different and better: **two** asks are refused, and an id must be unique,
+so the join names gold's refusal specifically — and that suffix is DERIVED from the atoms on the
+table, so a payload edit that put gold within reach would rename the element and turn the MRB-244
+gate red. The register is a guard on the chemistry there, not just a record of it.
+
+⚑ **Open engine item, logged not fixed:** giving the generic reveal panel an `id` would let all
+three joins name the thing that actually does the confronting. It is a one-line change in a SHARED
+file that moves bytes on every KS3 page in the key stage, so it belongs to an engine run on main,
+not to a content lane.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `REACT-01` | If you can undo it, it is physical. If you cannot undo it, it is chemical. | `think-commit-reverse` | `think-commit-reverse` | `chemical-vs-physical-change` |
+| `REACT-02` | Something disappearing into a liquid is always the same kind of change. | `pair-2-commit` | `pair-2-reveal-marble` | `chemical-vs-physical-change` |
+| `REACT-03` | When magnesium burns, the magnesium atoms turn into magnesium oxide atoms. | `think-commit-mgo-atom` | `think-commit-mgo-atom` | `reactions-rearrange-atoms` |
+| `REACT-04` | New atoms can be made if the conditions are right. | `ask-gold` | `ask-gold-refusal` | `reactions-rearrange-atoms` |
+| `REACT-05` | The arrow is like an equals sign, so you could write the equation the other way round. | `s-think` | `think-reveal-direction` | `word-equations` |
+| `REACT-06` | Heat, energy or a flame can be written into an equation as a reactant. | `builder-distractor` | `builder-check` | `word-equations` |
+| `REACT-07` | Gases do not weigh anything, so the missing 2.20 g cannot be the carbon dioxide. | `think-commit-gas` | `sealed-flask-run` | `mass-in-a-reaction` |
+| `REACT-08` | An equation can be balanced by changing the small numbers in a formula. | `forbidden-small-2` | `forbidden-reveal` | `symbol-equations-and-balancing` |
+| `REACT-09` | Balancing is just a maths puzzle — as long as the numbers add up, the equation is right. | `think-commit-maths` | `think-commit-maths` | `symbol-equations-and-balancing` |
+| `REACT-10` | The big yellow flame is hotter — you can see more fire. | `think-commit-yellow` | `think-commit-yellow` | `combustion` |
+| `REACT-11` | Shutting the air off makes a flame burn hotter or more fiercely. | `gate-air-shut` | `shut-hole-run` | `combustion` |
+| `REACT-12` | It went black, so the copper carbonate burnt. | `think-commit-black` | `think-commit-black` | `thermal-decomposition` |
+| `REACT-13` | A decomposition reverses when it cools. | `cool-gate` | `stage-4-reveal` | `thermal-decomposition` |
+| `REACT-14` | Aluminium does not corrode — that is why drinks cans and window frames are made of it. | `s-think` | `think-reveal-oxide-layer` | `oxidation` |
+| `REACT-15` | Rusting needs water only, or air only. | `tube-predictions` | `four-tube-summary` | `oxidation` |
+| `REACT-16` | The copper on the nail came out of the nail — the iron turned into copper on the outside. | `think-commit-nail` | `think-commit-nail` | `displacement` |
+| `REACT-17` | A less reactive metal will displace a more reactive one if you heat it or wait longer. | `grid-predict` | `grid-reveal` | `displacement` |
+| `REACT-18` | A reaction can only be one of the four types, so if it is oxidation it cannot be combustion. | `think-commit-one-box` | `think-commit-one-box` | `which-reaction-is-this` |
+
+**Three of these are `ATOM` ids grown up, and they are cross-referenced rather than re-minted.**
+
+- `REACT-03` is `ATOM-01` at the next level. An atom that carries the properties of its substance
+  becomes an atom that *becomes* another substance when the substance does. Same belief, one year
+  older, and a student who still holds `ATOM-01` will reach `REACT-03` on their own.
+- `REACT-08` is `ATOM-09` in its balancing costume — the small number in a formula read as a
+  quantity you may adjust. The confrontation is **deliberately the same substance**, H₂O₂, as
+  `ATOM-10`'s, so C2 and C4 reinforce each other instead of each teaching it once.
+- `REACT-07` cross-references `ATOM-11` (burning destroys matter) and `PART-05`. That chain is now
+  four ids long across three units, and it is the strongest argument yet that this register needs a
+  **cross-family "same belief" link type** rather than a prose paragraph under each family. Design
+  raised it in NOTES-C4 §6 as a request rather than a decision, and it is recorded here as still
+  open — the prose above is doing a job a field should do.
+
+⚖️ **`REACT-18` STAYS IN `REACT`, RULED 2026-08-21 (MRB-246).** Design flagged it (NOTES-C5 §5)
+as the register's fifth `NOS`-shaped entry living in a content family — it is not a factual error at
+all, it is a wrong idea about how CLASSIFICATION works — and asked for the `NOS` call before C8,
+which is the next chemistry unit in the queue.
+
+The ruling is to leave it here, and the reason is not that Design is wrong. She is right that it is
+`NOS`-shaped. But whether `NOS` ABSORBS entries out of content families is a decision about the
+register's taxonomy that changes PERMANENT IDS across several units at once, and taking it one
+entry at a time in the middle of authoring a content unit is how a taxonomy fragments — you end up
+with two entries re-homed, three not, and no principle recorded anywhere.
+
+So it is recorded instead. **There are now TWO `NOS`-shaped entries parked in content families:**
+
+  · `REACT-18` — each reaction has exactly one type, so two names cannot both be right
+  · `MIX-13` — one measurement is enough if it is the right answer
+
+**The next `NOS` pass takes BOTH, together, with the principle written down.** That pass is a
+register job, not a lesson job, and nothing in C5 changes either way: `c5-05` authors `REACT-18`
+and confronts it whatever family it eventually sits in.
+
+**`REACT-01` is the unit's load-bearing entry.** Irreversibility as the test for a chemical change
+is the single most common wrong rule at this age, and it survives most teaching because most
+teaching accidentally confirms it: the examples chosen are usually irreversible. C4's answer is to
+choose the examples the other way — melting glass, dissolving, and a rust that a steelworks
+reverses every day — so the rule fails in front of the student rather than being contradicted at
+them. Nothing in `c4-01` may be justified by "you cannot get it back", including the hook, or the
+lesson confirms on one line what it breaks on the next.

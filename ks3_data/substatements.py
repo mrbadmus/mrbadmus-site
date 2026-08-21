@@ -318,6 +318,37 @@ SUBSTATEMENTS = {
         ("b", "How that difference in competitive success, repeated over "
               "generations, drives natural selection.", "B11"),
     ],
+    # Minted for C4 (2026-08-20, MRB-246). The bullet reads:
+    #   "conservation of mass changes of state and chemical reactions"
+    # ⚖️ RULED (MRB-246), answering NOTES-C4 §1's referencing question. Design
+    # asked whether `c4-04 mass-in-a-reaction` may REFERENCE a statement C2
+    # already owns, without double-counting. It may not — validate() rule 3
+    # requires non-empty `covers` on every authored lesson, so "reference and
+    # own nothing" is not a shape this build has. The alternative Design
+    # offered was folding the lesson into C2 and losing the four-part
+    # quantitative treatment, which is the worse trade: MRB-204's treatment is
+    # the point of a QUANTITATIVE lesson, and mass in a REACTION belongs in the
+    # reactions unit.
+    #
+    # So the bullet is split instead, and it splits cleanly, because it names
+    # its two contexts out loud: changes of state, and chemical reactions.
+    # `c2-06 conservation-of-mass` establishes the principle where nothing new
+    # is made — clause `a`. `c4-04 mass-in-a-reaction` carries it into the case
+    # where something is — clause `b` — and weighs it.
+    #
+    # ⚠️ c2-06's `covers` NARROWED from the parent to clause `a` as part of this
+    # ruling. It is the only edit this unit makes to another unit's lesson, and
+    # it changes no student-facing byte: c2-06 still teaches both contexts, as
+    # it always did. `covers` records which lesson is ANSWERABLE for a clause,
+    # never which lesson is allowed to mention it.
+    "KS3.C.AEC.04": [
+        ("a", "Conservation of mass in changes of state: melting, boiling, "
+              "freezing and condensing rearrange particles without changing "
+              "how much matter there is.", "C2"),
+        ("b", "Conservation of mass in chemical reactions: the total mass of "
+              "the products equals the total mass of the reactants, including "
+              "when a gas escapes or joins from the air.", "C4"),
+    ],
     # Minted for C3 (2026-08-20, MRB-272). The bullet reads:
     #   "mixtures, including dissolving"
     # The bullet's own "including" is the seam, and it is the same seam
@@ -359,6 +390,77 @@ SUBSTATEMENTS = {
               "by boiling point.", "C3"),
         ("d", "Chromatography: separating substances dissolved in the same "
               "solvent from each other.", "C3"),
+    ],
+    # Minted for C4 (2026-08-20, MRB-246). The bullet reads:
+    #   "chemical reactions as the rearrangement of atoms"
+    # Two teachable ideas, and NOTES-C4 §1 splits on the seam between them:
+    # deciding whether a change is a reaction AT ALL, and then what a reaction
+    # turns out to be underneath. A student who meets both in one sitting
+    # learns "chemical change = irreversible", which is the misconception
+    # `REACT-01` exists to break — the recognition half has to be taught, and
+    # taught wrong-first, before the rearrangement half can land.
+    "KS3.C.CR.01": [
+        ("a", "What counts as a chemical reaction: a change that makes one or "
+              "more new substances, as distinct from a physical change, which "
+              "does not.", "C4"),
+        ("b", "Chemical reactions as the rearrangement of atoms: the atoms "
+              "present afterwards are the same atoms, regrouped — none is "
+              "made, destroyed or turned into another kind.", "C4"),
+    ],
+    # Minted for C4 (2026-08-20, MRB-246). The bullet reads:
+    #   "representing chemical reactions using formulae and using equations"
+    # The bullet's own "and" is the seam. NOTES-C4 §1 splits it the way AEC.03
+    # was split and for the same reason: a word equation is a SENTENCE, and a
+    # symbol equation is a MODEL WITH NUMBERS IN IT. The students who meet them
+    # together learn that a formula is a longer name.
+    #
+    # ⚠️ The formula-writing half of "using formulae" is C2's `KS3.C.AEC.03b`
+    # and is NOT re-owned here. What clause `b` owns is representing a
+    # REACTION with them — the equation, and the balancing that makes it one.
+    "KS3.C.CR.02": [
+        ("a", "Representing a chemical reaction as a word equation: reactants, "
+              "an arrow that means 'becomes', and products.", "C4"),
+        ("b", "Representing a chemical reaction with formulae, as a balanced "
+              "symbol equation.", "C4"),
+    ],
+    # Minted for C5 (2026-08-20, MRB-246). The bullet reads:
+    #   "combustion, thermal decomposition, oxidation and displacement
+    #    reactions"
+    # ⚠️ THIS BULLET NAMES ITS OWN CLAUSES, IN ORDER, exactly as PIS.04 does,
+    # and C5 gives each one a lesson. Clauses a–d are allocated in the order
+    # the bullet prints them.
+    #
+    # ⚖️ CLAUSE `e` IS A COMMANDER'S RULING (MRB-246) AND IT IS THE ONE ENTRY
+    # IN THIS FILE THAT IS NOT A PHRASE OF ITS BULLET. It is minted because
+    # `c5-05 which-reaction-is-this` teaches the bullet as a SET rather than
+    # any member of it, and the three legal alternatives were all worse:
+    #
+    #   · Own the parent alongside a–d — forbidden by validate() rule 5, and
+    #     rightly: a parent and its clause both owned double-counts.
+    #   · Own one of a–d jointly with that type's own lesson — forbidden by
+    #     rule 4, and it would make one of the four answerable twice while the
+    #     discrimination lesson is answerable for nothing.
+    #   · Declare it `beyond_statutory` — FALSE. §7.6 means off-spec content,
+    #     and telling the four apart is not off-spec; it is what the bullet
+    #     actually demands and what an exam actually asks.
+    #
+    # NOTES-C5 §1 makes the argument and it is ratified here: naming four types
+    # is not the same as telling them apart, and four lessons that each never
+    # meet the other three do not add up to the bullet. The clause is worded as
+    # the bullet's integrative demand, not as a fifth reaction type — there is
+    # no fifth type, and clause `e` must never be read as claiming one.
+    "KS3.C.CR.03": [
+        ("a", "Combustion: a substance reacting with oxygen, releasing energy, "
+              "and what changes when the oxygen supply is limited.", "C5"),
+        ("b", "Thermal decomposition: one substance broken down by heating "
+              "into two or more, and not reassembling on cooling.", "C5"),
+        ("c", "Oxidation: a substance gaining oxygen, including corrosion, and "
+              "the conditions it needs.", "C5"),
+        ("d", "Displacement: a more reactive metal taking the place of a less "
+              "reactive one in its compound.", "C5"),
+        ("e", "Telling the four named types apart: deciding, for a given "
+              "reaction, which of them it is — including where more than one "
+              "name is right, and where none of the four applies.", "C5"),
     ],
 }
 

@@ -821,6 +821,16 @@ C3_CRYST = "chemistry/mixtures-and-separation/evaporation-and-crystallisation.ht
 C3_STILL = "chemistry/mixtures-and-separation/distillation.html"
 C3_CHROM = "chemistry/mixtures-and-separation/chromatography.html"
 C3_PURITY = "chemistry/mixtures-and-separation/proving-something-is-pure.html"
+C4_CHANGE = "chemistry/chemical-reactions/chemical-vs-physical-change.html"
+C4_REARR = "chemistry/chemical-reactions/reactions-rearrange-atoms.html"
+C4_WORDS = "chemistry/chemical-reactions/word-equations.html"
+C4_MASS = "chemistry/chemical-reactions/mass-in-a-reaction.html"
+C4_SYMBOL = "chemistry/chemical-reactions/symbol-equations-and-balancing.html"
+C5_BURN = "chemistry/types-of-reaction/combustion.html"
+C5_DECOMP = "chemistry/types-of-reaction/thermal-decomposition.html"
+C5_OXID = "chemistry/types-of-reaction/oxidation.html"
+C5_DISP = "chemistry/types-of-reaction/displacement.html"
+C5_WHICH = "chemistry/types-of-reaction/which-reaction-is-this.html"
 # ═══ END C3 ═══
 
 COMPONENTS = [
@@ -5606,6 +5616,219 @@ COMPONENTS = [
     dict(name="C3 melting-point table is mono, so the columns line up",
          on=C3_PURITY, drive="c3-mpb-run", sel=".ks3-mpb-table",
          props={"font-family": "DM Mono", "font-size": "17px"}),
+
+    # ── C4 · Chemical reactions (⊕ MRB-246) ─────────────────────────────
+    #
+    # ⚠️ WHAT THESE ROWS ARE ACTUALLY ASSERTING, because a row that merely
+    # restates what the CSS happens to do is a green light bolted to its own
+    # wiring. Every row below is anchored on the GROUND its instrument sits
+    # on, and the ground is the thing that goes wrong.
+    #
+    # C4's twelve families are ALL mapped to a light segment — eleven to
+    # `check`, one to `misconception` — because that is what Design drew.
+    # There is no ink-dark practical block anywhere in the unit. If a future
+    # pass re-maps any of them to `practical`, the block flips to a
+    # `ks3-dark` ground and EVERY text token inside it resolves wrong: the
+    # instrument would still render, still be interactive, still pass smoke,
+    # and be unreadable. That is the failure `ks3_data/c4/__init__.py`'s
+    # segment table exists to prevent and this is the assertion that catches
+    # it — a cream ground resolving #221E1B fires here and nowhere else.
+    #
+    # Values MEASURED in headless Chrome against the built pages, not read
+    # off the stylesheet. Grounds: #FFFCF5 `--ks3-card`, #F7EFE1
+    # `--ks3-inset`, #E1E8FE `--ks3-blue-tint`.
+
+    # ── change-pairs (c4-01 #s-pairs) ──
+    dict(name="C4 pair side is a card on a 2px ink border", on=C4_CHANGE,
+         sel=".ks3-cpair-side",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── atom-rearranger (c4-02 #s-rearr) ──
+    dict(name="C4 rearranger panel is a card on a 2px ink border", on=C4_REARR,
+         sel=".ks3-arr-panel",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── equation-builder (c4-03 #s-builder) ──
+    dict(name="C4 equation bench is inset on a 2px ink border", on=C4_WORDS,
+         sel=".ks3-eqb-bench",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── equation-read (c4-03 #s-read) ──
+    dict(name="C4 reading card is inset on a 2px ink border", on=C4_WORDS,
+         sel=".ks3-eqr-card",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── mass-bench (c4-04 #s-bench) ──
+    dict(name="C4 balance tile is inset on a 2px ink border", on=C4_MASS,
+         sel=".ks3-bbench-tile",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── mass-cover (c4-04 #s-cover) ──
+    # ⚖️ THE COVERED CELL IS BLUE-TINT, NOT AMBER, AND THAT IS A RULING.
+    # MRB-252 reserves amber for warning and confrontation; covering a cell is
+    # SELECTION — this is the one you want to find — and neither a caution nor
+    # a loss. A row here resolving the alert tint means the plate has started
+    # warning a student about an ordinary choice.
+    dict(name="C4 covered cell is the blue tint, never the alert", on=C4_MASS,
+         sel=".ks3-mcov-cell",
+         props={"background-color": "#E1E8FE", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "14px"}),
+
+    # ── mass-worked (c4-04 #s-worked) ──
+    # The accent border is what separates a WORKED step from an ordinary card:
+    # it is the one the page is walking the student through.
+    dict(name="C4 worked step is a card on a 2px accent border", on=C4_MASS,
+         sel=".ks3-mwork-step",
+         props={"background-color": "#FFFCF5", "border-top-color": "#E4572E",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── mass-check (c4-04 #s-check) ──
+    dict(name="C4 check step takes the worked step's treatment", on=C4_MASS,
+         sel=".ks3-mchk-step",
+         props={"background-color": "#FFFCF5", "border-top-color": "#E4572E",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── coefficient-balancer (c4-05 #s-balance) ──
+    # ⚖️ A MATCHED COUNTER IS BLUE AND MUST NEVER BE GREEN. R3 reserves green
+    # for the ladder — and more than that, `REACT-09` is "a balanced equation
+    # is a correct equation". A counter going green the instant the counts
+    # agree IS that misconception, rendered in CSS, forty lines above the
+    # block that refutes it. If this row ever resolves #12A150 the instrument
+    # has begun teaching the thing the lesson exists to break.
+    dict(name="C4 element counter is blue-tint on blue, never the mark green",
+         on=C4_SYMBOL, sel=".ks3-cbal-counter",
+         props={"background-color": "#E1E8FE", "border-top-color": "#2F5CE0",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── the three panels that exist only AFTER a commitment ─────────────
+    #
+    # A row measured without its drive is measured against the resting DOM and
+    # reports green over a panel a student never sees in that state — the
+    # thing MRB-202 cost. These three carry drives that go through the CONTROL
+    # A STUDENT USES, never by stripping `hidden`, so a regression in the
+    # reveal path fails here instead of being measured around.
+
+    # ── impossible-ask (c4-02 #s-impossible) ──
+    # ⚖️ ONE TONE FOR A REFUSAL AND FOR A BUILD, AND THAT IS THE ASSERTION.
+    # Measured on all three asks: gold ("Refused, and not because the bench is
+    # not trying"), ammonia ("Refused. There is no nitrogen on this table.")
+    # and water ("Built.") all resolve #221E1B on #FBF3E6. If this row ever
+    # resolves two different grounds the panel has started MARKING, and R3
+    # reserves marking for the mastery ladder alone. The instrument's whole
+    # teaching is that the refusal is a fact about the atoms present, not a
+    # verdict on the student who asked.
+    #
+    # The selector takes the SHOWN panel: this family is emit-both-show-one,
+    # so every ask's verdict is in the document and a bare `.ks3-iask-verdict`
+    # would measure whichever came first regardless of what was pressed.
+    dict(name="C4 impossible-ask verdict is the ink panel, one tone for a "
+              "refusal and a build",
+         on=C4_REARR, drive="c4-iask-refused",
+         sel=".ks3-iask-verdict:not([hidden])",
+         props={"background-color": "#221E1B", "color": "#FBF3E6",
+                "border-top-left-radius": "20px"}),
+
+    # ── forbidden-move (c4-05 #s-forbidden) ──
+    # The forbidden move is offered as a BUTTON, not a warning: adding a small
+    # 2 to the water balances the equation and silently turns the product into
+    # hydrogen peroxide. The reveal that follows is an ordinary card — it is
+    # showing the student what they actually wrote, not scolding them for
+    # writing it — so it must NOT resolve the alert ground.
+    dict(name="C4 forbidden-move reveal is a card, never the alert",
+         on=C4_SYMBOL, drive="c4-forbid-small-2", sel=".ks3-forbid-reveal",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── chain-build (c4-01 #s-chain) ──
+    # NOTES-C4 §2: the one place in the unit where the model answer is shown
+    # in full. It is inset rather than card, which is what separates a worked
+    # model from the cards the student has been filling in above it.
+    dict(name="C4 chain reveal is inset on a 2px ink border",
+         on=C4_CHANGE, drive="c4-chain-built", sel=".ks3-chain-reveal",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── C5 · Types of reaction (⊕ MRB-246) ──────────────────────────────
+    #
+    # Ten families, and the same assertion C4's rows make: each is anchored on
+    # the GROUND its instrument sits on, because that is what goes wrong.
+    # Every C5 instrument is mapped to a light `check` segment — measured off
+    # Design's markup, there is no ink-dark practical block anywhere in the
+    # unit — and a family re-mapped to `practical` would flip to a `ks3-dark`
+    # ground, resolve every text token inside it wrong, and still render,
+    # still interact, still pass smoke, and be unreadable.
+    #
+    # ⚠️ FOUR CONSECUTIVE `PROCESS` LESSONS IS THE RISK THESE ROWS ALSO WATCH.
+    # §6 warns that identical block lineups should be a coincidence of need
+    # and never a default; Design's answer was to give each flagship a
+    # different shape. The two rows carrying a DIFFERENT treatment below —
+    # the accent-bordered staged run, and the tighter-cornered grid cell —
+    # are that difference, pinned. A later pass that "harmonises" C5's four
+    # benches into one repeated instrument has to change these to do it.
+    #
+    # Values MEASURED in headless Chrome against the built pages.
+    # Grounds: #FFFCF5 `--ks3-card`, #F7EFE1 `--ks3-inset`.
+
+    dict(name="C5 burner tile is inset on a 2px ink border", on=C5_BURN,
+         sel=".ks3-burner-tile",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+    dict(name="C5 fuel card is inset on a 2px ink border", on=C5_BURN,
+         sel=".ks3-fcard-card",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ⚖️ THE STAGED RUN IS THE ONE THAT TAKES THE ACCENT BORDER, and it is not
+    # decoration. c5-02's stages are walked one at a time — the accent marks
+    # the step the page is on, the same job it does on c4-04's worked example.
+    # It is also what stops this bench being visually identical to the other
+    # three PROCESS lessons' benches.
+    dict(name="C5 decomposition stage is a card on a 2px accent border",
+         on=C5_DECOMP, sel=".ks3-tuber-stage",
+         props={"background-color": "#FFFCF5", "border-top-color": "#E4572E",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+    dict(name="C5 decomposition sort item is inset on a 2px ink border",
+         on=C5_DECOMP, sel=".ks3-dcomp-item",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    dict(name="C5 control tube card is inset on a 2px ink border", on=C5_OXID,
+         sel=".ks3-ctube-card",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+    dict(name="C5 rust-stop card is inset on a 2px ink border", on=C5_OXID,
+         sel=".ks3-rstop-card",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ⚖️ A GRID CELL IS A CELL, NOT A CARD — 12px corners against everything
+    # else's 20px, because sixteen of them sit edge to edge and card corners
+    # at that density read as sixteen separate panels rather than one table.
+    # It is also the row that would catch the cell being repainted to mark:
+    # nothing green and nothing red may reach a control, and a displacement
+    # grid is the most tempting place in the course to put a tick.
+    dict(name="C5 grid cell is a card at the tighter grid radius", on=C5_DISP,
+         sel=".ks3-rgrid-cell",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "12px"}),
+    dict(name="C5 reactivity-use card is inset on a 2px ink border",
+         on=C5_DISP, sel=".ks3-ruse-card",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    dict(name="C5 type-sorter card is inset on a 2px ink border", on=C5_WHICH,
+         sel=".ks3-tsort-card",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+    dict(name="C5 rule-write model panel is inset on a 2px ink border",
+         on=C5_WHICH, sel=".ks3-rwrite-reveal",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
 ]
 
 
@@ -6912,6 +7135,41 @@ window.__ks3 = {
 # measuring a spent button and calling it resting.
 
 DRIVES = {
+    # ── C4 · Chemical reactions (⊕ MRB-246) ─────────────────────────────
+    #
+    # Each goes through the control a student uses. `ask-gold` is chosen over
+    # `ask-ammonia` deliberately: both are refused, and gold is the one
+    # `REACT-04` names ("new atoms can be made if the conditions are right").
+    "c4-iask-refused": r"""
+(function () {
+  var b = document.getElementById('ask-gold');
+  if (!b) { return "no ask-gold button on #s-impossible"; }
+  b.click();
+  return "";
+})()
+""",
+    # The forbidden small 2 — the move that balances the equation and turns
+    # the product into hydrogen peroxide. Pressing it is the lesson.
+    "c4-forbid-small-2": r"""
+(function () {
+  var b = document.getElementById('forbidden-small-2');
+  if (!b) { return "no forbidden-small-2 button on #s-forbidden"; }
+  b.click();
+  return "";
+})()
+""",
+    # Both halves of the linked comparison have to be chosen before the model
+    # answer opens — choosing one is not a comparison.
+    "c4-chain-built": r"""
+(function () {
+  var a = document.querySelector('[data-chain-slot="a"] button');
+  var b = document.querySelector('[data-chain-slot="b"] button');
+  if (!a || !b) { return "no option in chain slot a and b"; }
+  a.click();
+  b.click();
+  return "";
+})()
+""",
     # ── C3 · Mixtures and separation (⊕ MRB-272) ────────────────────────
     #
     # Nine instruments, and most of what they draw exists only AFTER a

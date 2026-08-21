@@ -68,7 +68,18 @@ LESSON = {
     # AEC.04's wording covers changes of state AND chemical reactions; C1's
     # `changes-of-state` owns the first half, which is why the sideways link
     # below is load-bearing rather than decorative.
-    "covers":      ["KS3.C.AEC.04"],
+    #
+    # ⊕ NARROWED to clause `a` on 2026-08-20 (MRB-246), when C4's
+    # `mass-in-a-reaction` arrived and needed the reactions half. The bullet
+    # names its two contexts out loud and is now split at that seam; the
+    # reasoning is written out in full against `KS3.C.AEC.04` in
+    # `ks3_data/substatements.py`.
+    #
+    # ⚠️ NOT A CONTENT CHANGE. This lesson still teaches both contexts and not
+    # one student-facing byte of it moved. `covers` records which lesson is
+    # ANSWERABLE for a clause, never which lesson may mention it — the same
+    # distinction PIS.04's four clauses are minted on.
+    "covers":      ["KS3.C.AEC.04a"],
     "touches":     [],
     "beyond_statutory": False,
     "threads":     [{"id": "substances-and-reactions", "level": 3},
