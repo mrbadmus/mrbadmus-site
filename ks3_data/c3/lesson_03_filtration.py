@@ -418,11 +418,14 @@ LESSON = {
          "prompt": "It went in murky and came out clear. Commit before you "
                    "read on.",
          "options": [
-             "Right — clear water is clean water",
+             "Right — once water is clear, whatever was harmful in it "
+             "has been removed",
              "Wrong — everything dissolved is still in it, including "
              "things that could harm you",
-             "Right, as long as you filter it twice",
-             "Wrong — filtering adds something to the water",
+             "Right, if you filter it twice, because a second pass "
+             "catches what the first missed",
+             "Wrong — the paper sheds fibres as the water passes, so "
+             "it comes out dirtier",
          ],
          "reveal": [
              "Clear means the bits you could see are gone. Everything "

@@ -526,20 +526,20 @@ LESSON = {
         "apply": {
             "q": "Why must the baseline be drawn in pencil rather than pen?",
             "options": [
-                "Pen ink is itself a mixture of dyes and would separate and "
-                "smear across the paper",
                 "Pencil is easier to see against the coloured spots once the "
                      "solvent has moved",
                 "Pen ink would react chemically with the solvent and change "
                      "the colours it carries",
+                "Pen ink is itself a mixture of dyes and would separate and "
+                "smear across the paper",
                 "Pencil grips the spots and holds them on the baseline while "
                      "the solvent moves past",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "Visibility is not the reason — and pencil is fainter, not "
+                0: "Visibility is not the reason — and pencil is fainter, not "
                    "clearer.",
-                2: "No reaction is involved. The ink simply dissolves and "
+                1: "No reaction is involved. The ink simply dissolves and "
                    "travels, like every other dye on the paper.",
                 3: "The pencil line does nothing to the spots. It stays put "
                    "because graphite is insoluble, and that is all that is "

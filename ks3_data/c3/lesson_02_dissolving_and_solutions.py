@@ -532,20 +532,20 @@ LESSON = {
             "q": "A saturated sugar solution has undissolved sugar on the "
                  "bottom. A student stirs harder to get it in. What happens?",
             "options": [
-                "Nothing more dissolves — stirring changes the speed, not "
-                "the limit",
                 "It all dissolves, because stirring makes more dissolve",
                 "It all dissolves, but only if you stir for a long time",
                 "The sugar on the bottom melts",
+                "Nothing more dissolves — stirring changes the speed, not "
+                "the limit",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
-                1: "Stirring only moves solvent past the solid faster. At "
+                0: "Stirring only moves solvent past the solid faster. At "
                    "saturation there is nowhere for more to go, however hard "
                    "you stir.",
-                2: "Time is not the barrier at saturation. The solution is "
+                1: "Time is not the barrier at saturation. The solution is "
                    "already holding as much as it can at that temperature.",
-                3: "Melting needs about 186 °C. Nothing in a cup of tea melts "
+                2: "Melting needs about 186 °C. Nothing in a cup of tea melts "
                    "sugar.",
             }},
         "explain": {

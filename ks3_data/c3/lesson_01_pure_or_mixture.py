@@ -470,28 +470,28 @@ LESSON = {
         "recall": {
             "q": "What does a chemist mean by a pure substance?",
             "options": [
-                "It contains only one substance",
                 "It has had nothing added to it",
+                "It contains only one substance",
                 "It is clean and safe to drink or eat",
                 "It is natural rather than made in a factory",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "That is the food-label meaning. Orange juice has had nothing added and contains dozens of substances.",
+                0: "That is the food-label meaning. Orange juice has had nothing added and contains dozens of substances.",
                 2: "Pure sodium will set fire to your hand and pure carbon monoxide will kill you. Purity is a count, not a safety rating.",
                 3: "Sea water is natural and is a mixture; factory-refined sugar is pure. Where it came from is not the test.",
             }},
         "apply": {
             "q": "Which one of these is a pure substance?",
             "options": [
-                "Nitrogen from a gas cylinder",
                 "Sea water that has been filtered until it is completely clear",
+                "Nitrogen from a gas cylinder",
                 "Rainwater collected in a clean jar",
                 "Milk labelled \"no additives\"",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "Filtering removed the bits you could see. Everything dissolved in it is still there — clear is not pure.",
+                0: "Filtering removed the bits you could see. Everything dissolved in it is still there — clear is not pure.",
                 2: "Rain falls through the atmosphere and arrives with dissolved gases and dust in it. Clean, and still a mixture.",
                 3: "\"No additives\" is a promise about what was put in. Milk is water, fats, proteins and sugars before anyone adds anything.",
             }},

@@ -543,20 +543,20 @@ LESSON = {
             "q": "How does the melting behaviour of a pure substance differ "
                  "from that of a mixture?",
             "options": [
-                "A pure substance melts sharply at one temperature; a mixture "
-                "melts over a range, starting lower",
                 "A pure substance melts over a range, starting lower; a "
                      "mixture melts sharply at one temperature",
                 "A pure substance melts higher than a mixture does, but "
                 "both of them melt sharply",
+                "A pure substance melts sharply at one temperature; a mixture "
+                "melts over a range, starting lower",
                 "They melt in exactly the same way, so a melting point cannot "
                      "show purity",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "The other way round. The regular arrangement in a pure "
+                0: "The other way round. The regular arrangement in a pure "
                    "solid gives way all at once.",
-                2: "Half right. The pure substance does melt higher — but the "
+                1: "Half right. The pure substance does melt higher — but the "
                    "mixture melts over a range, and that range is the more "
                    "useful clue.",
                 3: "Melting point is the standard test for purity, in schools "
@@ -567,17 +567,17 @@ LESSON = {
                  "61 °C, when the pure substance should melt at 53 °C. What "
                  "can you conclude?",
             "options": [
-                "It is pure, but it is not the substance you were expecting",
                 "It is impure, because the temperature is wrong",
                 "The thermometer must be broken",
+                "It is pure, but it is not the substance you were expecting",
                 "Nothing — a melting point cannot identify a substance",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "An impurity would give a range and a lower start. A sharp "
+                0: "An impurity would give a range and a lower start. A sharp "
                    "melt is the signature of purity — this is a pure "
                    "something else.",
-                2: "Possible, and checkable — but the reading is sharp and "
+                1: "Possible, and checkable — but the reading is sharp and "
                    "repeatable, which is not how a broken thermometer usually "
                    "behaves. Read the data before blaming the kit.",
                 3: "It cannot identify it on its own, but a sharp melt at the "

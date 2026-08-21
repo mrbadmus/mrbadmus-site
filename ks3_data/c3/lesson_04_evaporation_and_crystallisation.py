@@ -401,10 +401,13 @@ LESSON = {
          "prompt": "The dish is dry and you can see it is dry. Commit before "
                    "you read on.",
          "options": [
-             "Right — the water is gone",
+             "Right — evaporating uses the water up, so it is not "
+             "anywhere any more",
              "Wrong — it is in the air as a gas, and could be collected",
-             "Wrong — it turned into the salt",
-             "Right, unless you put a lid on the dish",
+             "Wrong — heating turns the water into salt, so the "
+             "crystals are the water itself",
+             "Right, unless a lid traps it, because only water kept "
+             "in the dish still exists",
          ],
          "reveal": [
              "The water is in the room. Its particles left the surface one at "
@@ -432,16 +435,16 @@ LESSON = {
             "q": "A salt solution is left in an open dish until the dish is "
                  "dry. What is left, and what happened to the rest?",
             "options": [
-                "The salt is left; the water evaporated into the air",
                 "The salt is left; the water was destroyed",
                 "The water is left; the salt evaporated",
+                "The salt is left; the water evaporated into the air",
                 "Nothing is left; both go into the air",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "Nothing is destroyed by evaporation. The water is in the "
+                0: "Nothing is destroyed by evaporation. The water is in the "
                    "air as a gas, and could be collected on a cold surface.",
-                2: "The solute stays. Salt does not evaporate at anything "
+                1: "The solute stays. Salt does not evaporate at anything "
                    "like these temperatures.",
                 3: "Only the solvent leaves. Weigh the dish afterwards and "
                    "the salt is there to the gram.",
@@ -451,18 +454,18 @@ LESSON = {
                  "hers dry in four minutes; the other leaves his for a week. "
                  "What is the difference in what they get?",
             "options": [
-                "The same mass of solid, but hers is a crust of tiny crystals "
-                "and his is a few large ones",
                 "A smaller mass of solid for her, because boiling drives some "
                      "of it off with the steam",
+                "The same mass of solid, but hers is a crust of tiny crystals "
+                "and his is a few large ones",
                 "A larger mass of solid for him, because evaporating "
                 "slowly wastes less of it than boiling does",
                 "The same mass of solid, and the same crystals too, "
                 "because the method changes only the waiting",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "The mass is the same. The solute cannot leave the dish "
+                0: "The mass is the same. The solute cannot leave the dish "
                    "and cannot be destroyed by a Bunsen.",
                 2: "Efficiency is not the variable. Every gram of solute "
                    "stays in the dish either way; only the crystal size "

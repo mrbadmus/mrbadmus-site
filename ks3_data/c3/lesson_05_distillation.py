@@ -479,11 +479,14 @@ LESSON = {
              "really does give a salty distillate. Commit before you read on.",
          ],
          "options": [
-             "Right — salt travels in the steam",
+             "Right — dissolved salt boils off with the water, so the "
+             "steam is salty",
              "Wrong — the salty taste comes from droplets of liquid, not from "
              "vapour",
-             "Right, but only if the water is boiling hard",
-             "Wrong — sea spray is not salty",
+             "Right, but only when boiling hard, since fast boiling "
+             "carries salt up as gas",
+             "Wrong — the salt stays in the sea, so sea spray is not "
+             "really salty",
          ],
          "reveal": [
              "There are two different things coming off a boiling pan and "
@@ -511,18 +514,18 @@ LESSON = {
             "q": "Sea water is distilled. What is collected in the beaker, "
                  "and what stays in the flask?",
             "options": [
-                "Pure water is collected; the salt stays in the flask",
                 "Salt is collected; the water stays in the flask",
                 "A weaker salt solution is collected",
                 "Nothing is collected — the water is destroyed by boiling",
+                "Pure water is collected; the salt stays in the flask",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
-                1: "Salt does not boil at 100 °C, so it cannot travel as a "
+                0: "Salt does not boil at 100 °C, so it cannot travel as a "
                    "gas. Only the water comes over.",
-                2: "Only if droplets are thrown over by boiling too hard. "
+                1: "Only if droplets are thrown over by boiling too hard. "
                    "Done properly, the distillate has no salt in it at all.",
-                3: "The water becomes a gas, and the condenser turns it "
+                2: "The water becomes a gas, and the condenser turns it "
                    "straight back into a liquid.",
             }},
         "apply": {
@@ -530,22 +533,22 @@ LESSON = {
             "q": "A student distils sea water and their distillate tastes "
                  "slightly salty. What is the most likely reason?",
             "options": [
-                "They boiled it too hard, so droplets of salt water were "
-                "thrown over into the condenser",
                 "Salt dissolves in water, so it travels wherever the water "
                 "goes, including as a gas",
                 "The condenser was not cold enough, so some of the salt "
                 "condensed along with the water",
                 "Distillation separates liquids only, so a dissolved solid "
                 "always comes over with them",
+                "They boiled it too hard, so droplets of salt water were "
+                "thrown over into the condenser",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
-                1: "Salt cannot evaporate at these temperatures. If salt "
+                0: "Salt cannot evaporate at these temperatures. If salt "
                    "arrived, it arrived as liquid droplets, not as a gas.",
-                2: "A warm condenser means less distillate collected, not "
+                1: "A warm condenser means less distillate collected, not "
                    "salty distillate.",
-                3: "It can, and it is the standard method. The fault here is "
+                2: "It can, and it is the standard method. The fault here is "
                    "in how it was run.",
             }},
         "explain": {
