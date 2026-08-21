@@ -1,7 +1,7 @@
 # C8 — The periodic table · author's notes
 
-**Six lessons. The unit is complete but diverges from §7 — see §2.**
-Everything is draft and unreviewed.
+**Seven lessons. Statutory coverage is complete; the unit diverges from §7's
+lesson count by design — see §2.** Everything is draft and unreviewed.
 
 ---
 
@@ -15,13 +15,12 @@ Everything is draft and unreviewed.
 | `group-1-the-alkali-metals` | `KS3.C.PT.04` |
 | `group-7-the-halogens` | `KS3.C.PT.04` |
 | `group-0-and-why-groups-exist` | `KS3.C.PT.04` |
-| — | **`KS3.C.PT.06` is NOT covered** |
+| `metal-and-non-metal-oxides` | `KS3.C.PT.06` |
 
-**`PT.06` — the chemical properties of metal and non-metal oxides with respect
-to acidity — has no lesson.** §7 assigns it to a seventh lesson,
-*Metal and non-metal oxides (CONTRAST)*, which is not in this build. It is the
-only uncovered statutory statement in C1–C8. It needs writing before the unit
-can be called complete against the register.
+**Every statutory statement in C1–C8 is now covered.** `PT.06` — the chemical
+properties of metal and non-metal oxides with respect to acidity — was the last
+gap and was closed by `c8-07`, authored 21 Aug 2026 as the seventh lesson §7
+names.
 
 ---
 
@@ -30,9 +29,8 @@ can be called complete against the register.
 §7 lists five lessons and folds the group work into one:
 *Patterns you can predict: Groups 1, 7 and 0 (MODEL)*.
 
-This build has **three separate group lessons** instead (04, 05, 06), and is
-missing the oxides lesson. Net: six built where five were specified, and the
-wrong five.
+This build has **three separate group lessons** instead (04, 05, 06), plus the
+oxides lesson. Net: seven built where five were specified.
 
 The case for unbundling: the three groups are three different instruments and
 one of them exists to contradict another. Group 1 is a sequential water-trough
@@ -42,14 +40,20 @@ reversed trend becomes a paragraph rather than a grid the student fills in and
 is surprised by — and that surprise is the single most valuable moment in the
 unit.
 
-The case against: it is 50% over the specified lesson count for one statutory
-statement, and it starves `PT.06`.
+The case against: it is 40% over the specified lesson count for one statutory
+statement.
 
-**Ruling wanted, three options.** (a) Keep all three and add the oxides lesson,
-giving a seven-lesson unit. (b) Merge 04–06 into one and add oxides, matching
-§7 exactly at five. (c) Keep three and move oxides to C9, where the reactivity
-series lives. My recommendation is (a); the compression that (b) requires falls
-almost entirely on group 7.
+**RULED (a), 21 Aug 2026 — keep all three group lessons and add the oxides
+lesson, giving a seven-lesson unit.** The alternatives were (b) merge 04–06 into
+one and match §7 exactly at five, and (c) move oxides to C9 where the
+reactivity series lives. (b) was rejected because the compression falls almost
+entirely on group 7, and group 7's reversed trend is the single most valuable
+surprise in the unit — it needs the grid the student fills in, not a paragraph.
+(c) was rejected because `PT.06` is a periodic-table statement: the whole point
+is that position in the table predicts whether the oxide is acidic or basic, and
+that argument does not survive being moved next to the reactivity series.
+
+The cost of (a) is a seven-lesson unit, which is accepted.
 
 Also flagged: `c8-02`'s archetype was authored as MODEL and has been corrected
 to INVESTIGATION per §7. The lesson body was written to the MODEL shape and
@@ -185,17 +189,15 @@ worth keeping separate, but the cross-reference should be recorded.
 
 ## 7. For Code
 
-- Six instruments, all DOM, no canvas, no animation loops.
-- Rail stops: five in every lesson except `c8-06`, which has six.
+- Seven instruments, all DOM, no canvas, no animation loops.
+- Rail stops: five in every lesson except `c8-06` and `c8-07`, which have six.
 - SVG arrows for every equation, per the C4 convention.
-- `c8-06` links forward to **`c8-07-metal-and-non-metal-oxides.html`, which does
-  not exist**. Per §11 decision 8 the generator should render that as a
-  coming-soon row rather than a dead link — but unlike C5's forward link, this
-  one points inside its own unit, which is a different and worse case. It
-  should be treated as a build blocker rather than a soft link.
+- `c8-06`'s forward link to `c8-07-metal-and-non-metal-oxides.html` **now
+  resolves**. The intra-unit dead link recorded here as a build blocker is
+  closed; no coming-soon row is needed.
 - `c8-01` links back to `c7-04-measuring-a-temperature-change.html`, which
   exists.
-- No props beyond `showDraft`.
+- No props beyond `showDraft`, except `c8-07`, which adds two bench props.
 - `c8-03`'s LAYOUT array uses `null` for empty cells and renders them as dashed
   transparent boxes; the period-1 row is deliberately mostly empty rather than
   collapsed, because the shape of the gap is part of what the table teaches.
@@ -214,3 +216,76 @@ sequence.
 - `c8-04`: the `metal + water` word equation draws its arrow as inline SVG
   instead of typing U+2192.
 - Why: the shipped latin subsets carry neither U+2192 nor subscript digits.
+
+---
+
+## 8. c8-07 · Metal and non-metal oxides — CONTRAST · `KS3.C.PT.06`
+
+Authored 21 Aug 2026, closing the last statutory gap in C1–C8 under ruling (a).
+
+### The teaching, and where the famous version is wrong
+
+The pattern is that **metal oxides are basic and non-metal oxides are acidic**,
+and position in the periodic table predicts which — which is why this is a
+`PT` statement and not a `CR` one. The famous version of that sentence is wrong
+twice, and **both counter-cases are on the bench rather than in a footnote**:
+
+1. **Copper oxide is basic and the water stays at pH 7.** It is a metal oxide
+   and it is a base, but it is insoluble, so nothing registers on the pH. A
+   student who has been told "metal oxide means alkaline water" reads the
+   reading as a refutation of the rule. It is not — it is the difference between
+   *base* and *alkali*, and that distinction is why the KEY FACT block defines
+   all three of oxide, base and alkali rather than just the pattern.
+2. **Water is a non-metal oxide and it is neutral.** Hydrogen oxide sits in the
+   tray and reads pH 7. The rule is about oxides of *most* non-metals, and the
+   exception is the most common substance in the lesson.
+
+### The bench — `oxide-bench`
+
+Six oxides, two beakers of water, drag-free tray chips. **37 reachable states**,
+all enumerated: one empty, six one-oxide, and 30 ordered pairs (order matters
+because the comparison sentence names the left reading first).
+
+| Oxide | pH | Solid |
+|---|---|---|
+| Calcium oxide | 12 | clear residue |
+| Magnesium oxide | 10 | thin residue |
+| Copper oxide | 7 | heap, insoluble |
+| Water | 7 | — |
+| Carbon dioxide | 5 | gas |
+| Sulfur dioxide | 3 | gas |
+
+**The pH values pair equal on purpose.** Copper oxide and water both read 7, so
+the equal branch of the comparison is exercised naturally by two chips a student
+would reach for anyway — and the sentence that comes back has to explain why two
+identical readings mean two completely different things.
+
+Z-order inside each beaker is fixed: body → water fill → undissolved solid → pH
+numeral outside the glass. Water fill uses the fifteen-step pH colour scale from
+`c6-02`, so a student who met the scale there reads this bench without being
+retaught it.
+
+The comparison sentence is **derived at render from the two readings in six
+branches**, never stored per pair.
+
+### Misconceptions
+
+Four tracked, `PTAB-11` to `PTAB-14`. `PTAB-14` is a **named spare reserved for
+C9** — registered here so the id cannot be reused, per §5.3.
+
+### Structure
+
+One KEY FACT block carrying all three definitions (oxide, base, alkali) plus the
+pattern. Four self-marked answer rungs at B, B, C, D. Amber appears only on
+misconceptions. Equations use inline SVG arrows with `aria-label="gives"` and no
+Unicode symbols.
+
+### Open
+
+- The forward link in `c8-06` was left pointing at `c8-07` rather than reversed;
+  flagged as a deviation at the time and still open if the direction bothers you.
+- `c8-07` does not yet carry a Law 7 vocabulary block. Gate E was added the same
+  day and covers all 103 lessons with no named escapes, so **this lesson will
+  fail gate E until a five-card block is added** — its three definitions live in
+  the KEY FACT block, which satisfies gate D but not gate E. One pass, listed
+  here rather than assumed done.
