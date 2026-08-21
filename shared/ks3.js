@@ -21670,6 +21670,287 @@
 
 /* ═══ END C6 wiring ═══ */
 
+/* ═══ BEGIN C8 wiring ═══════════════════════════════════════════════════
+   C8's instrument families — *The periodic table*. Added as ONE marked block
+   so that a lane merging into this file resolves mechanically: nothing above
+   this marker moves.
+
+   Seven families. THREE of them are `c3CommitCards` with three sets of hooks,
+   for the reason C7's block gives: what must not drift between a six-sample
+   property sorter, a fifteen-card commit block and a gap-filler's three
+   predictions is exactly the rule `c3CommitCards` owns — one final commitment
+   per card, every button disabling, the reveal on screen the instant the card
+   is decided, and `markStage` at the point the last card closes.
+
+   ⚖️ NOTHING IS COMPUTED IN THIS BLOCK. Not one number, not one sentence.
+   Every state of every panel is already in the document (EMIT-BOTH-SHOW-ONE)
+   and these handlers do exactly one thing: choose which node is `hidden`. The
+   halogen grid alone carries nine authored readouts and the periodic table
+   twenty, and not one of them is assembled here — so an authored `<strong>`,
+   an em dash and a degree sign survive as the author wrote them, no sentence
+   exists twice, and the resting render cannot disagree with the runtime one.
+
+   ⚖️ NOTHING GREEN AND NOTHING RED REACHES A CONTROL. A pressed cell, a
+   pressed prediction and a pressed card option all take the platform's
+   ordinary `aria-pressed` treatment; every verdict in this unit is a PANEL OF
+   WORDS. Only the mastery ladder marks. There is no `data-correct` anywhere in
+   any of the seven, and `ks3_art/c8.py` refuses a payload that carries one.
+
+   ⚖️ NOTHING ANIMATES AND NOTHING COUNTS DOWN — no rAF, no timer, no
+   JS-driven transition — so `prefers-reduced-motion` has nothing to degrade
+   here. There is no range control either. Every control below is a real
+   `<button>` and there is no `onclick=` attribute anywhere in the markup.
+
+   ⚠️ THE NO-OP PRESS. Every selector below returns early when the value
+   pressed is the value already showing. Design's own handlers do not, and
+   pressing a lit cell there re-runs the whole paint — which on the table and
+   the grid would re-fire `focusReveal` and drag the page back to a readout the
+   student is already reading. Corrected here rather than reproduced, which is
+   the same correction C3 made across five dials, C5 across the burner bench
+   and C7 across two.
+   ═══ */
+
+  /* ── property-sorter (c8-01 #s-bench) ────────────────────────────────
+     Six samples, one question asked six times, and one property settles none
+     of them. The head counter is the shell's `[data-count]`. */
+  function wirePropertySorter(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-prop]", card: "[data-prop-item]",
+      opt: "[data-prop-opt]", reveal: "[data-prop-reveal]",
+      close: "[data-prop-close]", count: true
+    });
+  }
+
+  /* ── predict-cards (c8-02 #s-rules, c8-03 #s-read, c8-04 #s-predict,
+        c8-06 #s-file and #s-uses) ───────────────────────────────────────
+     ONE family, FIVE placements, one wiring. See `ks3_art/c8.py`'s header for
+     why these are not five families: the payloads are identical apart from an
+     optional `tag`, and five copies of this handler would be five chances for
+     the commit rule to drift. */
+  function wirePredictCards(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-pcard]", card: "[data-pcard-card]",
+      opt: "[data-pcard-opt]", reveal: "[data-pcard-reveal]",
+      close: "[data-pcard-close]", count: true
+    });
+  }
+
+  /* ── gap-filler (c8-02 #s-gap) ───────────────────────────────────────
+     Three parts, one rail stop. The neighbour grid and the 1871-against-1886
+     table are STATIC — they are there to be read while the predictions are
+     worked, which is the whole shape of the instrument — so the only wiring
+     the block needs is the three commitments. */
+  function wireGapFiller(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-gapf]", card: "[data-gapf-card]",
+      opt: "[data-gapf-opt]", reveal: "[data-gapf-reveal]",
+      close: "[data-gapf-close]", count: true
+    });
+  }
+
+  /* ── shell-strip (c8-06 #s-shells) ───────────────────────────────────
+     Four rows, each a real <button>, each opening one authored detail. No
+     commitment is taken — the strip is a reference the student opens, and the
+     rail stop ticks when all four have been opened.
+
+     ⚠️ A ROW ONCE OPENED STAYS OPEN. MRB-208: rail credit is a ratchet, and a
+     toggle that closed again could take the count back down. Pressing an open
+     row is a no-op. */
+  function wireShellStrip(sec) {
+    var wrap = sec.querySelector("[data-shel]");
+    if (!wrap) { return; }
+    var rows = toArray(wrap.querySelectorAll("[data-shel-row]"));
+    if (!rows.length) { return; }
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || rows.length;
+    var closer = wrap.querySelector("[data-shel-close]");
+
+    function opened() {
+      var n = 0;
+      each(rows, function (r) {
+        if (r.getAttribute("data-open") === "1") { n += 1; }
+      });
+      return n;
+    }
+
+    each(rows, function (row) {
+      var btn = row.querySelector("[data-shel-toggle]");
+      if (!btn) { return; }
+      btn.addEventListener("click", function () {
+        if (row.getAttribute("data-open") === "1") { return; }
+        row.setAttribute("data-open", "1");
+        btn.setAttribute("aria-expanded", "true");
+        setHidden(row.querySelector("[data-shel-detail]"), false);
+        var n = opened();
+        setCount(sec, n);
+        if (n >= total) {
+          setHidden(closer, false);
+          markStage(sec, true);
+        }
+      });
+    });
+    setCount(sec, 0);
+  }
+
+  /* ── table-reader (c8-03 #s-table) ───────────────────────────────────
+     Twenty squares, twenty authored readouts, one shown at a time. The
+     readouts are ALL in the document already — this handler unhides one and
+     hides the rest, and composes nothing.
+
+     ⚠️ `[data-tread-readout]` is not a rail stop of its own and the table's
+     stop is ticked by the hook, per MRB-249: the reference exists to be read
+     while `#s-read` is worked beside it. So there is no counter and no
+     `markStage` here. */
+  function wireTableReader(sec) {
+    var wrap = sec.querySelector("[data-tread]");
+    if (!wrap) { return; }
+    var cells = toArray(wrap.querySelectorAll("[data-tread-cell]"));
+    var outs = toArray(wrap.querySelectorAll("[data-tread-out]"));
+    var rest = wrap.querySelector(".ks3-tread-rest");
+    if (!cells.length || !outs.length) { return; }
+    var current = null;
+
+    each(cells, function (btn) {
+      btn.addEventListener("click", function () {
+        var key = btn.getAttribute("data-tread-cell");
+        if (key === current) { return; }          /* the no-op press */
+        current = key;
+        each(cells, function (b) {
+          b.setAttribute("aria-pressed",
+                         b.getAttribute("data-tread-cell") === key
+                           ? "true" : "false");
+        });
+        setHidden(rest, true);
+        var shown = null;
+        each(outs, function (o) {
+          var on = o.getAttribute("data-tread-out") === key;
+          setHidden(o, !on);
+          if (on) { shown = o; }
+        });
+        if (shown) { focusReveal(shown); }
+      });
+    });
+  }
+
+  /* ── water-trough (c8-04 #s-trough) ──────────────────────────────────
+     Three metals, one at a time, each run once. A metal already run is a
+     no-op press; the rail stop ticks when all three have been run.
+
+     ⚠️ THE PREDICTION IS NOT GATED AND IS NOT MARKED. Design asks the student
+     to predict before dropping the metal in, and the prediction buttons take
+     the ordinary pressed treatment and nothing else — pressing one does not
+     unlock the run and not pressing one does not block it. A gate here would
+     make the prediction a password; the point of it is that the student has
+     committed before they read, which is between them and the page. */
+  function wireWaterTrough(sec) {
+    var wrap = sec.querySelector("[data-trough]");
+    if (!wrap) { return; }
+    var picks = toArray(wrap.querySelectorAll("[data-trough-metal]"));
+    var runs = toArray(wrap.querySelectorAll("[data-trough-run]"));
+    var preds = toArray(wrap.querySelectorAll("[data-trough-opt]"));
+    var rest = wrap.querySelector(".ks3-trough-rest");
+    var closer = wrap.querySelector("[data-trough-close]");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || runs.length;
+    if (!picks.length || !runs.length) { return; }
+    var seen = {}, seenN = 0, current = null;
+
+    each(preds, function (btn) {
+      btn.addEventListener("click", function () {
+        each(preds, function (b) {
+          b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+        });
+      });
+    });
+
+    each(picks, function (btn) {
+      btn.addEventListener("click", function () {
+        var id = btn.getAttribute("data-trough-metal");
+        if (id === current) { return; }           /* the no-op press */
+        current = id;
+        each(picks, function (b) {
+          b.setAttribute("aria-pressed",
+                         b.getAttribute("data-trough-metal") === id
+                           ? "true" : "false");
+        });
+        setHidden(rest, true);
+        var shown = null;
+        each(runs, function (r) {
+          var on = r.getAttribute("data-trough-run") === id;
+          setHidden(r, !on);
+          if (on) { shown = r; }
+        });
+        /* The prediction resets for the next metal — a press left standing
+           from the previous run would read as a prediction about this one. */
+        each(preds, function (b) { b.setAttribute("aria-pressed", "false"); });
+        if (!seen[id]) { seen[id] = 1; seenN += 1; setCount(sec, seenN); }
+        if (shown) { focusReveal(shown); }
+        if (seenN >= total) {
+          setHidden(closer, false);
+          markStage(sec, true);
+        }
+      });
+    });
+    setCount(sec, 0);
+  }
+
+  /* ── halogen-grid (c8-05 #s-grid) ────────────────────────────────────
+     Nine tubes, nine authored readouts, one shown at a time. The rail stop
+     ticks when every cell has been opened, so no band of the argument can be
+     missing when the closing panel appears — the panel reads the whole grid
+     as an ORDER, and it cannot do that from six cells.
+
+     ⚠️ `halogen-grid`, not `reactivity-grid`: C5 owns that name and its shell
+     class. Same shape, own family. See `ks3_art/c8.py`'s header. */
+  function wireHalogenGrid(sec) {
+    var wrap = sec.querySelector("[data-hgrid]");
+    if (!wrap) { return; }
+    var cells = toArray(wrap.querySelectorAll("[data-hgrid-cell]"));
+    var outs = toArray(wrap.querySelectorAll("[data-hgrid-out]"));
+    var preds = toArray(wrap.querySelectorAll("[data-hgrid-opt]"));
+    var rest = wrap.querySelector(".ks3-hgrid-rest");
+    var closer = wrap.querySelector("[data-hgrid-close]");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || cells.length;
+    if (!cells.length || !outs.length) { return; }
+    var seen = {}, seenN = 0, current = null;
+
+    each(preds, function (btn) {
+      btn.addEventListener("click", function () {
+        each(preds, function (b) {
+          b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+        });
+      });
+    });
+
+    each(cells, function (btn) {
+      btn.addEventListener("click", function () {
+        var key = btn.getAttribute("data-hgrid-cell");
+        if (key === current) { return; }          /* the no-op press */
+        current = key;
+        each(cells, function (b) {
+          b.setAttribute("aria-pressed",
+                         b.getAttribute("data-hgrid-cell") === key
+                           ? "true" : "false");
+        });
+        setHidden(rest, true);
+        var shown = null;
+        each(outs, function (o) {
+          var on = o.getAttribute("data-hgrid-out") === key;
+          setHidden(o, !on);
+          if (on) { shown = o; }
+        });
+        each(preds, function (b) { b.setAttribute("aria-pressed", "false"); });
+        if (!seen[key]) { seen[key] = 1; seenN += 1; setCount(sec, seenN); }
+        if (shown) { focusReveal(shown); }
+        if (seenN >= total) {
+          setHidden(closer, false);
+          markStage(sec, true);
+        }
+      });
+    });
+    setCount(sec, 0);
+  }
+/* ═══ END C8 wiring ═══ */
+
+
 
 
 
@@ -21997,6 +22278,15 @@
     each(root.querySelectorAll("[data-morderblock]"), wireMethodOrder);
     each(root.querySelectorAll("[data-catbblock]"), wireCatalystBench);
     // ═══ END C6 wiring ═══
+    // ═══ BEGIN C8 wiring ═══
+    each(root.querySelectorAll("[data-propblock]"), wirePropertySorter);
+    each(root.querySelectorAll("[data-gapfblock]"), wireGapFiller);
+    each(root.querySelectorAll("[data-pcardblock]"), wirePredictCards);
+    each(root.querySelectorAll("[data-treadblock]"), wireTableReader);
+    each(root.querySelectorAll("[data-troughblock]"), wireWaterTrough);
+    each(root.querySelectorAll("[data-hgridblock]"), wireHalogenGrid);
+    each(root.querySelectorAll("[data-shelblock]"), wireShellStrip);
+    // ═══ END C8 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
   }

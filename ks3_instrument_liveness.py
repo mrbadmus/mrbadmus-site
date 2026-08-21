@@ -43,10 +43,24 @@ INSTRUMENTS = [
     ("C3", "data-chromablock",   "chroma-run"),
     ("C3", "data-critiqueblock", "plan-critique"),
     ("C3", "data-mpbblock",      "melting-point-bench"),
+
+    # ── C8 · The periodic table (MRB-281) ──
+    # Seven families, eleven placements. `predict-cards` is ONE family placed
+    # five times, so one row here covers all five — the marker is the same
+    # attribute on every one of them, and the sweep below finds every page
+    # that carries it rather than a page named in this table.
+    ("C8", "data-propblock",     "property-sorter"),
+    ("C8", "data-gapfblock",     "gap-filler"),
+    ("C8", "data-pcardblock",    "predict-cards"),
+    ("C8", "data-treadblock",    "table-reader"),
+    ("C8", "data-troughblock",   "water-trough"),
+    ("C8", "data-hgridblock",    "halogen-grid"),
+    ("C8", "data-shelblock",     "shell-strip"),
 ]
 
 UNIT_DIRS = {
     "C3": "ks3/chemistry/mixtures-and-separation",
+    "C8": "ks3/chemistry/the-periodic-table",
 }
 
 # Press the first thing inside the block that a student could press. Buttons

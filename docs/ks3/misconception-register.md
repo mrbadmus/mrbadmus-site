@@ -1334,8 +1334,8 @@ cross-reference to be recorded rather than the two merged, and that is the right
 elicited by different phenomena — a Bunsen you had to light against a metal that melted itself —
 and a student can hold either without the other.
 
-⊕ **Corrected 21 Aug 2026 (MRB-281). It is now a `reappears_in` edge on `ENER-03`, pointing at
-`group-1-the-alkali-metals`, and this paragraph is no longer where the cross-reference lives.**
+⊕ **Corrected 21 Aug 2026 (MRB-281). The edge is now recorded, below, in this section's
+"Where these are expected to resurface" list — the form this file keeps `reappears_in` in.**
 This entry previously read *"Recorded here rather than as a `reappears_in` value, because C8 is
 drawn but **not yet authored**, and the slug NOTES-C8 names (`group-1-the-alkali-metals`) is not in
 `ks3_data/structure.py`."* Both halves of that were false, and the superseded sentence is kept
@@ -1353,6 +1353,20 @@ The rule the original note invoked is the right rule — a `reappears_in` pointi
 does not exist is precisely the defect this file was repaired for under `MIX`. The error was in the
 premise, not the rule. **Prose is the un-checkable form: no gate reads it, so nothing could
 contradict it.** An edge is checked on every build, which is why the correction is an edge.
+
+**Where these are expected to resurface** (`reappears_in`, filled as the units are authored):
+
+- `ENER-03` (a reaction that needs heating to start cannot be exothermic) → C8
+  `group-1-the-alkali-metals`, where the same belief arrives wearing different clothes as
+  `PTAB-07`: a lump of sodium melts in cold water and the heat is read as having come from the
+  trough. Both are heat coming OUT of a reaction being read as heat that went IN. They stay two
+  entries, because they are elicited by different phenomena — a Bunsen you had to light against a
+  metal that melted itself — and a student can hold either without the other.
+
+⚠️ **`reappears_in` is a column of THIS FILE and not a key of a lesson record.** `build_ks3.py`
+reads nothing by that name, so authoring one in `ks3_data/` is a dead key — `ks3_key_audit.py`
+reports it as "read by nothing", which is how the first attempt at this correction was caught.
+`ks3_data/b11/lesson_01_variation_and_competitive_success.py` had already ruled it.
 
 ⚑ **`ENER-07` and `ENER-08` are both `NOS`-shaped and both sit here by accident of build order.**
 Neither is a factual error about energy: one is a wrong idea about what averaging does and the
@@ -1376,6 +1390,79 @@ and confronts both whatever family they eventually sit in.
 
 
 ---
+
+### `PTAB` — the periodic table: what a column means, what a gap means, and why groups behave alike
+
+Opened by **C8 *The periodic table*** (2026-08-21, drawn by Claude Design, MRB-281).
+`PTAB-01` to `PTAB-10` are C8's, six lessons, one or two entries each. All are
+`review_state: draft`.
+
+⚠️ **THE ROWS BELOW ARE GENERATED FROM `ks3_data/c8/`, NOT FROM NOTES-C8 §6, AND THEY DIFFER FROM
+IT IN SIX PLACES.** NOTES proposed the ids a delivery *expects* to emit; these are the names the
+pages *do* emit, checked against the renderers in `ks3_art/c8.py`. Writing NOTES' names here would
+reproduce exactly the defect this file was repaired for under `MIX` — a register recording intent
+rather than fact.
+
+The six differences fall into the two causes C7's section predicted would recur, and both did.
+
+**Cause one, four rows: no `think-reveal-*` id can be emitted from a content lane.**
+NOTES-C8 §6 proposes `think-reveal-graphite`, `think-reveal-predictions`,
+`think-reveal-sodium-chlorine`, `think-reveal-exothermic` and `think-reveal-full-shell`.
+`build_ks3.py`'s shared `r_activity` draws a confrontation's reveal with **no `id`**, and
+`build_ks3.py` is not a file a lane may touch, so none of them can be made to resolve. Each join
+names the ACTIVITY that owns both the commitment and the reveal instead — the `MIX-06` form, and
+the one that satisfies Law 3.
+
+**Cause two, and it is NEW: `rung-2` and `rung-2-feedback` are not emitted either.** NOTES-C8 §6
+anchors `PTAB-02` and `PTAB-06` on the mastery ladder. The ladder draws no per-rung `id` and no
+`data-activity`, so both values name a real place in the author's head and no element in the
+document — the MRB-244 defect exactly. Both joins are moved to instruments that DO render and DO
+confront the belief:
+
+* `PTAB-02` — the bench on c8-01 elicits it (sample C is a liquid the student must judge) and the
+  bench's own closing panel confronts it by name: *"Mercury is a metal that is liquid."* The panel
+  id `bench-close` is authored on the payload, so the register and the markup have one source.
+* `PTAB-06` — the periodic table on c8-03 elicits it (every square prints an atomic number beside
+  a group number) and its closing panel `table-close` confronts it: *"The group number is not how
+  many electrons the atom has."*
+
+⚠️ **`PTAB-10` is anchored on the whole `uses-three` block rather than on a card.**
+`r_predict_cards` gives each card a `data-pcard-card` value, which is neither an `id` nor a
+`data-activity`, so a card-level join would not resolve. The block is the right grain anyway: all
+three cards are somebody paying money for a gas BECAUSE it does nothing.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `PTAB-01` | If it conducts electricity it must be a metal. | `think-commit-conduct` | `think-commit-conduct` | `metals-and-non-metals` |
+| `PTAB-02` | A liquid element cannot be a metal. | `bench-six` | `bench-close` | `metals-and-non-metals` |
+| `PTAB-03` | Mendeleev's table was accepted because it was tidy. | `think-commit-tidy` | `think-commit-tidy` | `mendeleev` |
+| `PTAB-04` | A gap in a table is a weakness in it. | `rules-three` | `rules-three` | `mendeleev` |
+| `PTAB-05` | Elements next to each other in the table are similar. | `think-commit-neighbours` | `think-commit-neighbours` | `groups-and-periods` |
+| `PTAB-06` | The group number tells you how many electrons the atom has altogether. | `table-twenty` | `table-close` | `groups-and-periods` |
+| `PTAB-07` | Sodium melted because the water was hot. | `think-commit-melt` | `think-commit-melt` | `group-1-the-alkali-metals` |
+| `PTAB-08` | Reactivity always increases going down a group. | `grid-nine` | `grid-close` | `group-7-the-halogens` |
+| `PTAB-09` | The noble gases are unreactive because they are gases. | `think-commit-gas` | `think-commit-gas` | `group-0-and-why-groups-exist` |
+| `PTAB-10` | Unreactive means useless. | `uses-three` | `uses-three` | `group-0-and-why-groups-exist` |
+
+**`PTAB-08` is the unit's load-bearing entry, and it is the only one in the register that is
+created by the PREVIOUS lesson.** c8-04 establishes "reactivity increases going down a group" on a
+water trough the student runs three times, and c8-05 hands them a grid where it runs the other way.
+The belief is not a mistake the student brings — it is one the course teaches them and then breaks,
+on purpose, one lesson apart. §7's plan merged those two lessons into one; the merge was rejected
+for this row (MRB-281, R1), because a trend and its reversal in a single lesson is a paragraph
+rather than a surprise.
+
+⚑ **`PTAB-07` reappears from `ENER-03`** (C7, *exothermic reactions*): both are heat coming OUT of
+a reaction being read as heat that went IN. They are elicited by different phenomena — a Bunsen you
+had to light against a metal that melted itself — and a student can hold either without the other,
+so they stay separate. The cross-reference is recorded as a `reappears_in` edge on `ENER-03`'s own
+record, pointing at `group-1-the-alkali-metals`; see the ⊕ note in the `ENER` section above for why
+it is an edge and not this paragraph.
+
+⚑ **`PTAB-02` and `PTAB-06` are cousins and are worth keeping separate.** One reads a state of
+matter as settling a classification, the other reads one of two printed numbers as if it were the
+other. Both are "a single fact is being asked to do more work than it can", which is the spine of
+this whole unit — the same shape as `PTAB-01`, which is why c8-01 carries two of the three.
 
 ### `ACID` — acids, alkalis and the pH scale: what the words mean, what the scale measures, and what a catalyst does
 

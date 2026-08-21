@@ -295,17 +295,27 @@ LESSON = {
     # `structure.py` only because §7's five-slot plan had never been updated to
     # C8's real lesson list.
     #
-    # The slug exists now, so the cross-reference is what it always should have
-    # been: an edge, checkable by the gate that checks every `reappears_in`
-    # names a real slug. A note in prose is exactly the un-checkable form this
-    # file was repaired away from under `MIX`.
+    # ⊖ CORRECTED AGAIN, SAME DAY, AND THE SECOND CORRECTION IS THE ONE THAT
+    # STUCK. The first attempt authored `reappears_in` as a LESSON KEY here.
+    # It is not one: `reappears_in` is a REGISTER COLUMN and the register is
+    # the only place it exists. `grep -rn reappears_in build_ks3.py ks3_data/`
+    # returns docstring mentions and NO READ SITE, so a key authored here is
+    # dead under contract R5 — `ks3_key_audit.py` reported it as "read by
+    # nothing", which is exactly what it was. `ks3_data/b11/lesson_01` had
+    # already ruled this and said so in as many words.
+    #
+    # So the edge lives in `docs/ks3/misconception-register.md`, in the ENER
+    # section's "Where these are expected to resurface" list, which is the
+    # established form and the one the register's own §52 schema describes.
+    # That is still a correction of the original defect: the original recorded
+    # the overlap as a REASON NOT TO record an edge, on a false premise. The
+    # edge is now recorded, in the form this project keeps edges in.
     "misconceptions": [
         {"id": "ENER-03",
          "statement": "A reaction that needs heating to start cannot be "
                       "exothermic.",
          "elicited_by": "think-commit-spark",
-         "confronted_by": "think-commit-spark",
-         "reappears_in": ["group-1-the-alkali-metals"]},
+         "confronted_by": "think-commit-spark"},
         {"id": "ENER-04",
          "statement": "Chemical reactions create energy.",
          "elicited_by": "use-fireworks",

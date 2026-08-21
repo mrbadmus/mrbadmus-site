@@ -512,6 +512,52 @@ SUBSTATEMENTS = {
     # ⚠️ Clause `c` must never be read as a THIRD kind of energy change. There
     # are two. It is the bullet's evidential demand: how the decision between
     # a and b is actually made, and how badly a leaking beaker can make it.
+    # ── C8, minted 21 Aug 2026 (MRB-281) ────────────────────────────────
+    #
+    # `KS3.C.PT.03` prints TWO ideas separated by a semicolon and every scheme
+    # teaches them as two lessons: where a square IS, and what KIND of thing
+    # sits in it. Clause order is the bullet's own printed order.
+    "KS3.C.PT.03": [
+        ("a", "The table's address system: periods run across and groups run "
+              "down, an element's position is read off both, and elements in "
+              "one group are a family that behaves alike.", "C8"),
+        ("b", "The metal / non-metal divide as the table's other partition, "
+              "and where the line between them falls.", "C8"),
+    ],
+
+    # `KS3.C.PT.04` is ONE sentence and is split anyway, which needs saying.
+    #
+    # It is not split by EXAMPLE — "group 1, group 7, group 0" would be three
+    # instances of one idea, and rule 1 would not license that. It is split by
+    # the PREDICTIVE MOVE, and the three are genuinely different skills that a
+    # student can hold any one of without the others:
+    #
+    #   a  read a trend off a group and extend it to a member you have not met
+    #   b  recognise that the DIRECTION of a group's trend is a property of the
+    #      group, not of the table, and that it can run the other way
+    #   c  predict from structure rather than from a trend at all — a full
+    #      outer shell explains behaviour with no series to extrapolate along
+    #
+    # ⚖️ The arithmetic forced the question and the reading answered it. Three
+    # lessons each need non-empty `covers` (§10.2) and PT.04 is the only
+    # statement any of them teaches, so ownership had to reach clause grain.
+    # But a split that could only be justified by the arithmetic would be a
+    # split by example wearing clause clothes, and it would be `touches` —
+    # the ungated field — that was really wanted. These three survive without
+    # the arithmetic, which is why they are minted rather than fudged.
+    "KS3.C.PT.04": [
+        ("a", "Reading a trend off a group and extending it to a member of "
+              "that group you have not met, using the position of the outer "
+              "electron to say why the trend runs the way it does.", "C8"),
+        ("b", "That the DIRECTION of a group's trend belongs to the group and "
+              "not to the table: a second group whose reactivity runs the "
+              "opposite way, and the same mechanism explaining both.", "C8"),
+        ("c", "Predicting from structure rather than from a trend: a full "
+              "outer shell accounting for behaviour where there is no series "
+              "to extrapolate along, and placing an unknown element from its "
+              "address alone.", "C8"),
+    ],
+
     "KS3.C.ENER.02": [
         ("a", "Exothermic changes: energy transferred out to the "
               "surroundings, so the temperature of the mixture rises, and the "

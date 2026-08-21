@@ -913,6 +913,12 @@ C7_EXO = "chemistry/energy-changes-in-reactions/exothermic-reactions.html"
 C7_ENDO = "chemistry/energy-changes-in-reactions/endothermic-reactions.html"
 C7_MEASURE = ("chemistry/energy-changes-in-reactions/"
               "measuring-a-temperature-change.html")
+C8_MNM = "chemistry/the-periodic-table/metals-and-non-metals.html"
+C8_MEND = "chemistry/the-periodic-table/mendeleev.html"
+C8_GP = "chemistry/the-periodic-table/groups-and-periods.html"
+C8_G1 = "chemistry/the-periodic-table/group-1-the-alkali-metals.html"
+C8_G7 = "chemistry/the-periodic-table/group-7-the-halogens.html"
+C8_G0 = "chemistry/the-periodic-table/group-0-and-why-groups-exist.html"
 # ═══ END C3 ═══
 
 COMPONENTS = [
@@ -5965,6 +5971,84 @@ COMPONENTS = [
                 "border-top-width": "2px", "border-top-left-radius": "20px"}),
     dict(name="C7 rig-builder bench is inset on a 2px ink border",
          on=C7_MEASURE, sel=".ks3-rigb-bench",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── C8 · The periodic table (⊕ MRB-281) ──────────────────────────────
+    #
+    # Seven families across six lessons, and the same assertion C4's, C5's and
+    # C7's rows make: each is anchored on the GROUND its instrument sits on,
+    # because that is what goes wrong. Every C8 instrument is mapped to a light
+    # `check` segment — measured off Design's markup, all eleven anchored
+    # sections carry `class="ks3-block"` and nothing else — and a family
+    # re-mapped to `practical` would flip to a `ks3-dark` ground, resolve every
+    # text token inside it wrong, and still render, still interact, still pass
+    # smoke, and be unreadable.
+    #
+    # ⚠️ TWO GROUNDS ON TWO PAGES, AND FOUR OF THE ROWS ARE WHY. The periodic
+    # table and the halogen grid both draw their CELLS on `--ks3-card` and
+    # their READOUT beside them on `--ks3-inset`, so a tapped square sits on a
+    # lighter ground than the panel that explains it. A later tidy-up giving
+    # the two one ground would lose the distinction, and would lose it
+    # silently: both still render and both still read.
+    #
+    # ⊖ NO ROW FOR ANY REVEAL PANEL. Every one of them — nine on the halogen
+    # grid, twenty on the table, one per card everywhere else — is emitted
+    # `hidden` until something is pressed, and these rows are resting-state
+    # assertions. The ground that matters at rest is the card or cell the
+    # reveal is nested behind, which is what the rows below pin.
+    #
+    # ⊖ AND NO ROW FOR THE `empty` SPACERS on c8-02's neighbour grid: they are
+    # drawn as nothing at all, so there is no ground to assert. The `blank`
+    # GAP is a different thing and IS pinned, because a dashed transparent
+    # square is the whole subject of that lesson and a tidy-up that gave it a
+    # solid ground would make it look like an ordinary element.
+    #
+    # Grounds: #FFFCF5 `--ks3-card`, #F7EFE1 `--ks3-inset`.
+
+    dict(name="C8 property-sorter sample is inset on a 2px ink border",
+         on=C8_MNM, sel=".ks3-prop-item",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    dict(name="C8 gap-filler neighbour is a card, not an inset tile",
+         on=C8_MEND, sel=".ks3-gapf-cell",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "14px"}),
+    dict(name="C8 gap-filler gap is transparent and dashed, not a square",
+         on=C8_MEND, sel=".ks3-gapf-blank",
+         props={"background-color": "rgba(0, 0, 0, 0)",
+                "border-top-style": "dashed", "border-top-width": "2px"}),
+    dict(name="C8 predict-cards card is inset on a 2px ink border",
+         on=C8_MEND, sel=".ks3-pcards-card",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    dict(name="C8 periodic-table square is a card, not an inset tile",
+         on=C8_GP, sel=".ks3-tread-cell",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "10px"}),
+    dict(name="C8 periodic-table readout is inset on a 2px ink border",
+         on=C8_GP, sel=".ks3-tread-readout",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    dict(name="C8 water-trough stage is inset on a 2px ink border",
+         on=C8_G1, sel=".ks3-trough-stage",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    dict(name="C8 halogen-grid cell is a card, not an inset tile",
+         on=C8_G7, sel=".ks3-hgrid-cell",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "12px"}),
+    dict(name="C8 halogen-grid readout is inset on a 2px ink border",
+         on=C8_G7, sel=".ks3-hgrid-readout",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    dict(name="C8 shell-strip row is inset on a 2px ink border",
+         on=C8_G0, sel=".ks3-shel-row",
          props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
                 "border-top-width": "2px", "border-top-left-radius": "20px"}),
     dict(name="C6 bottle card is inset on a 2px ink border", on=C6_ACIDS,
