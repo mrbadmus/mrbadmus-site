@@ -56,11 +56,18 @@ INSTRUMENTS = [
     ("C8", "data-troughblock",   "water-trough"),
     ("C8", "data-hgridblock",    "halogen-grid"),
     ("C8", "data-shelblock",     "shell-strip"),
+
+    # ── C9 · Metals and materials (MRB-281) ──
+    ("C9", "data-raudblock",     "reaction-audit"),
+    ("C9", "data-pdeckblock",    "prediction-deck"),
+    ("C9", "data-xrouteblock",   "extraction-route"),
+    ("C9", "data-specbblock",    "spec-bench"),
 ]
 
 UNIT_DIRS = {
     "C3": "ks3/chemistry/mixtures-and-separation",
     "C8": "ks3/chemistry/the-periodic-table",
+    "C9": "ks3/chemistry/metals-and-materials",
 }
 
 # Press the first thing inside the block that a student could press. Buttons

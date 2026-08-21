@@ -1391,6 +1391,61 @@ and confronts both whatever family they eventually sit in.
 
 ---
 
+### `MATL` — metals and materials: what an order of reactivity is, what it predicts, and the words a material is judged by
+
+Opened by **C9 *Metals and materials*** (2026-08-21, drawn by Claude Design, MRB-281).
+`MATL-01` to `MATL-13` are C9's, four lessons, two or three entries each. All are
+`review_state: draft`.
+
+⚠️ **THE ROWS BELOW ARE GENERATED FROM `ks3_data/c9/`, NOT FROM NOTES-C9 §6**, for the reason the
+`ENER` and `PTAB` sections both give. Four rows differ, and all four are the `rung-2` cause that
+`PTAB` met first: NOTES anchors `MATL-02`, `MATL-06` and `MATL-13` on `rung-2` /
+`rung-2-feedback`, and the mastery ladder emits neither an `id` nor a `data-activity` per rung, so
+none of them resolves. Each is moved to the instrument that actually elicits and confronts the
+belief, and every value below is emitted on the page that declares it.
+
+⊖ **`MATL-04`, `MATL-07`, `MATL-10` and `MATL-14` are NOT MINTED.** NOTES-C9 §6 pre-allocates one
+spare per lesson under audit law 15. A spare that is never used is an id reserved against nothing,
+and ids are permanent once referenced — so they are left unallocated rather than written into this
+file, and the numbering below runs 01–03, 05–06, 08–09, 11–13 with the gaps intact. **The gaps are
+deliberate and must not be closed up**: renumbering would move `MATL-11` onto a lesson it does not
+belong to.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `MATL-01` | A metal that does nothing in cold water is unreactive. | `think-commit-water` | `think-commit-water` | `the-reactivity-series` |
+| `MATL-02` | Reactivity is the same thing as strength or hardness. | `bench-twelve` | `bench-close` | `the-reactivity-series` |
+| `MATL-03` | Carbon cannot belong in an order of metals. | — | `s-series` | `the-reactivity-series` |
+| `MATL-05` | Any metal will displace any other if it is left long enough. | `think-commit-time` | `think-commit-time` | `predicting-displacement` |
+| `MATL-06` | A less reactive metal can push a more reactive one out of its compound. | `deck-eight` | `deck-close` | `predicting-displacement` |
+| `MATL-08` | Metals are in the ground as metal, and extraction is digging and melting. | `hook` | `hook` | `getting-metals-out-of-rocks` |
+| `MATL-09` | Any oxide gives up its oxygen to carbon if the furnace is hot enough. | `think-commit-hotter` | `think-commit-hotter` | `getting-metals-out-of-rocks` |
+| `MATL-11` | If a material shatters, it must be weak. | `hook` | `hook` | `ceramics-polymers-and-composites` |
+| `MATL-12` | Plastic is one material. | `think-commit-plastic` | `think-commit-plastic` | `ceramics-polymers-and-composites` |
+| `MATL-13` | Strong and tough are the same property. | `bench-four` | `bench-close` | `ceramics-polymers-and-composites` |
+
+**`MATL-03` has no `elicited_by`, deliberately, and that is audit law 15 working rather than a
+hole.** Nothing on `c9-01` asks the student to commit to the belief that carbon does not belong in
+an order of metals — the reference list simply presents it, marked "not a metal", with the reason
+attached. Inventing an anchor to fill the column would be the dishonest version, and MRB-248 makes
+absence legal precisely so that it need not be invented.
+
+**`MATL-02` and `MATL-13` are the unit's spine, and they are the same mistake twice.** One says
+reactivity is strength; the other says strength is toughness. Both are *a word from everyday life
+doing service as a technical term*, and the unit is arranged so that the student meets the first on
+metals and the second on materials — far enough apart that the second is not merely the first
+again, close enough that a teacher can name the pattern.
+
+⚑ **`MATL-05` overlaps `PTAB-08`'s neighbourhood in SHAPE ONLY and no cross-reference is
+recorded.** Both are wrong beliefs about what a trend permits. But `PTAB-08` is about the DIRECTION
+of a trend and `MATL-05` is about whether TIME can defeat one, and a `reappears_in` edge between
+them would assert a relationship that does not survive being looked at. The register records
+reappearances, not resemblances.
+
+⚑ **`MATL-08` is the one a Year 9 class is most likely to arrive holding**, and it is the only
+entry in this family confronted by the HOOK rather than by an instrument — because it is answered
+the moment the student is told that half of the green stone is copper and none of it is copper yet.
+
 ### `PTAB` — the periodic table: what a column means, what a gap means, and why groups behave alike
 
 Opened by **C8 *The periodic table*** (2026-08-21, drawn by Claude Design, MRB-281).

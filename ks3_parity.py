@@ -919,6 +919,11 @@ C8_GP = "chemistry/the-periodic-table/groups-and-periods.html"
 C8_G1 = "chemistry/the-periodic-table/group-1-the-alkali-metals.html"
 C8_G7 = "chemistry/the-periodic-table/group-7-the-halogens.html"
 C8_G0 = "chemistry/the-periodic-table/group-0-and-why-groups-exist.html"
+C9_SERIES = "chemistry/metals-and-materials/the-reactivity-series.html"
+C9_DISP = "chemistry/metals-and-materials/predicting-displacement.html"
+C9_ROCKS = "chemistry/metals-and-materials/getting-metals-out-of-rocks.html"
+C9_MATS = ("chemistry/metals-and-materials/"
+           "ceramics-polymers-and-composites.html")
 # ═══ END C3 ═══
 
 COMPONENTS = [
@@ -6051,6 +6056,65 @@ COMPONENTS = [
          on=C8_G0, sel=".ks3-shel-row",
          props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
                 "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── C9 · Metals and materials (⊕ MRB-281) ────────────────────────────
+    #
+    # Four families across four lessons, anchored on the GROUND each
+    # instrument sits on, for the reason C4's, C5's, C7's and C8's rows give.
+    # Every C9 instrument is mapped to a light `check` segment — all four
+    # anchored sections carry `class="ks3-block"` and nothing else — and a
+    # family re-mapped to `practical` would flip to a `ks3-dark` ground,
+    # resolve every text token inside it wrong, and still render, still
+    # interact, still pass smoke, and be unreadable.
+    #
+    # ⚠️ THE AUDIT MATRIX IS THE SAME TWO-GROUND PAIR AS C8's TABLE AND GRID:
+    # cells on `--ks3-card`, readout beside them on `--ks3-inset`. Pinned as
+    # two rows so a tidy-up cannot quietly give them one ground.
+    #
+    # ⚠️ AND THE APPARATUS LINE IS PINNED ON THE ALERT TINT. It is the only
+    # place in C9 that spends `--ks3-alert`, and audit law 9 reserves that
+    # token for warning and confrontation — so a later pass that repainted it
+    # as an ordinary card would remove the one visual signal on the page that
+    # says "this cell is different", on the potassium cell, which is the cell
+    # where it matters. It carries a WORD as well; the row pins the tint.
+    #
+    # ⊖ NO ROW FOR ANY REVEAL PANEL — twenty-four on the route bench,
+    # twenty-four on the spec bench, twelve on the audit. All are emitted
+    # `hidden` and these rows are resting-state assertions.
+    #
+    # Grounds: #FFFCF5 `--ks3-card`, #F7EFE1 `--ks3-inset`.
+
+    dict(name="C9 reaction-audit cell is a card, not an inset tile",
+         on=C9_SERIES, sel=".ks3-raud-cell",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "12px"}),
+    dict(name="C9 reaction-audit readout is inset on a 2px ink border",
+         on=C9_SERIES, sel=".ks3-raud-readout",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    dict(name="C9 prediction-deck strip is a card, not an inset tile",
+         on=C9_DISP, sel=".ks3-pdeck-strip",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+    dict(name="C9 prediction-deck card is inset on a 2px ink border",
+         on=C9_DISP, sel=".ks3-pdeck-card",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    dict(name="C9 extraction-route readout is inset on a 2px ink border",
+         on=C9_ROCKS, sel=".ks3-xroute-readout",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    dict(name="C9 spec-bench job is inset on a 2px ink border",
+         on=C9_MATS, sel=".ks3-specb-job",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+    dict(name="C9 spec-bench requirement is a pill on the card ground",
+         on=C9_MATS, sel=".ks3-specb-req",
+         props={"background-color": "#FFFCF5", "border-top-width": "2px",
+                "border-top-left-radius": "999px"}),
     dict(name="C6 bottle card is inset on a 2px ink border", on=C6_ACIDS,
          sel=".ks3-bottle-card",
          props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",

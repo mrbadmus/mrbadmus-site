@@ -21950,6 +21950,246 @@
   }
 /* ═══ END C8 wiring ═══ */
 
+/* ═══ BEGIN C9 wiring ═══════════════════════════════════════════════════
+   C9's instrument families — *Metals and materials*. Added as ONE marked
+   block so that a lane merging into this file resolves mechanically: nothing
+   above this marker moves.
+
+   Four families. One of them is `c3CommitCards` with its own hooks, for the
+   reason C7's and C8's blocks give.
+
+   ⚖️ NOTHING IS COMPUTED IN THIS BLOCK. Not one number, not one sentence, and
+   not one VERDICT. The route bench alone carries twenty-four authored
+   verdicts and the spec bench twenty-four computed ones, and every single one
+   of them is already in the document (EMIT-BOTH-SHOW-ONE) with its own
+   `data-works` / `data-fit` flag. These handlers choose which node is
+   `hidden` and read a flag. They never decide whether a method works or a
+   material fits — that judgement is made once, in `ks3_art/c9.py`, where it
+   is authored and asserted.
+
+   ⚖️ NOTHING GREEN AND NOTHING RED REACHES A CONTROL. Only the ladder marks,
+   and `ks3_art/c9.py` refuses a payload carrying a `correct` key.
+
+   ⚖️ NOTHING ANIMATES AND NOTHING COUNTS DOWN. Every control is a real
+   `<button>` and there is no `onclick=` attribute anywhere in the markup.
+
+   ⚠️ THE NO-OP PRESS, and on two of these it matters more than usual: the
+   route bench and the spec bench each have TWO pickers, so a press that
+   re-selects the value already selected would re-fire `focusReveal` and drag
+   the page back to a readout the student is reading. Both return early.
+   ═══ */
+
+  /* ── reaction-audit (c9-01 #s-bench) ─────────────────────────────────
+     Twelve tubes, twelve authored readouts, one shown at a time. The bands
+     panel opens when every cell has been read, so no band can be empty when
+     the panel that names its members appears. */
+  function wireReactionAudit(sec) {
+    var wrap = sec.querySelector("[data-raud]");
+    if (!wrap) { return; }
+    var cells = toArray(wrap.querySelectorAll("[data-raud-cell]"));
+    var outs = toArray(wrap.querySelectorAll("[data-raud-out]"));
+    var preds = toArray(wrap.querySelectorAll("[data-raud-opt]"));
+    var rest = wrap.querySelector(".ks3-raud-rest");
+    var bands = wrap.querySelector("[data-raud-bands]");
+    var closer = wrap.querySelector("[data-raud-close]");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || cells.length;
+    if (!cells.length || !outs.length) { return; }
+    var seen = {}, seenN = 0, current = null;
+
+    each(preds, function (btn) {
+      btn.addEventListener("click", function () {
+        each(preds, function (b) {
+          b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+        });
+      });
+    });
+
+    each(cells, function (btn) {
+      btn.addEventListener("click", function () {
+        var key = btn.getAttribute("data-raud-cell");
+        if (key === current) { return; }           /* the no-op press */
+        current = key;
+        each(cells, function (b) {
+          b.setAttribute("aria-pressed",
+                         b.getAttribute("data-raud-cell") === key
+                           ? "true" : "false");
+        });
+        setHidden(rest, true);
+        var shown = null;
+        each(outs, function (o) {
+          var on = o.getAttribute("data-raud-out") === key;
+          setHidden(o, !on);
+          if (on) { shown = o; }
+        });
+        each(preds, function (b) { b.setAttribute("aria-pressed", "false"); });
+        if (!seen[key]) { seen[key] = 1; seenN += 1; setCount(sec, seenN); }
+        if (shown) { focusReveal(shown); }
+        if (seenN >= total) {
+          setHidden(bands, false);
+          setHidden(closer, false);
+          markStage(sec, true);
+        }
+      });
+    });
+    setCount(sec, 0);
+  }
+
+  /* ── prediction-deck (c9-02 #s-deck) ─────────────────────────────────
+     Eight proposals, one commitment each. `c3CommitCards` owns the rule that
+     must not drift: one final commitment per card, both buttons disabling,
+     the reveal on screen the instant the card is decided, and `markStage` at
+     the point the last card closes. */
+  function wirePredictionDeck(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-pdeck]", card: "[data-pdeck-card]",
+      opt: "[data-pdeck-opt]", reveal: "[data-pdeck-reveal]",
+      close: "[data-pdeck-close]", count: true
+    });
+  }
+
+  /* ── extraction-route (c9-03 #s-bench) ───────────────────────────────
+     Two pickers — a delivery and a method — and twenty-four authored
+     verdicts. An ore counts as FOUND when the student opens a verdict that
+     works for it, which the markup states as `data-works="1"`. The rail stop
+     ticks on ores found, not on pairs opened: opening all twenty-four without
+     ever finding a route would tick a stop the student has not finished. */
+  function wireExtractionRoute(sec) {
+    var wrap = sec.querySelector("[data-xroute]");
+    if (!wrap) { return; }
+    var ores = toArray(wrap.querySelectorAll("[data-xroute-ore]"));
+    var meths = toArray(wrap.querySelectorAll("[data-xroute-method]"));
+    var outs = toArray(wrap.querySelectorAll("[data-xroute-out]"));
+    var rest = wrap.querySelector(".ks3-xroute-rest");
+    var groups = wrap.querySelector("[data-xroute-groups]");
+    var closer = wrap.querySelector("[data-xroute-close]");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || ores.length;
+    if (!ores.length || !meths.length) { return; }
+    var ore = null, meth = null, found = {}, foundN = 0;
+
+    function paint() {
+      if (!ore || !meth) { return; }
+      var key = ore + ":" + meth;
+      setHidden(rest, true);
+      var shown = null;
+      each(outs, function (o) {
+        var on = o.getAttribute("data-xroute-out") === key;
+        setHidden(o, !on);
+        if (on) { shown = o; }
+      });
+      if (!shown) { return; }
+      focusReveal(shown);
+      if (shown.getAttribute("data-works") === "1" && !found[ore]) {
+        found[ore] = 1; foundN += 1; setCount(sec, foundN);
+        if (foundN >= total) {
+          setHidden(groups, false);
+          setHidden(closer, false);
+          markStage(sec, true);
+        }
+      }
+    }
+
+    each(ores, function (btn) {
+      btn.addEventListener("click", function () {
+        var v = btn.getAttribute("data-xroute-ore");
+        if (v === ore) { return; }                 /* the no-op press */
+        ore = v;
+        each(ores, function (b) {
+          b.setAttribute("aria-pressed",
+                         b.getAttribute("data-xroute-ore") === v
+                           ? "true" : "false");
+        });
+        paint();
+      });
+    });
+    each(meths, function (btn) {
+      btn.addEventListener("click", function () {
+        var v = btn.getAttribute("data-xroute-method");
+        if (v === meth) { return; }                /* the no-op press */
+        meth = v;
+        each(meths, function (b) {
+          b.setAttribute("aria-pressed",
+                         b.getAttribute("data-xroute-method") === v
+                           ? "true" : "false");
+        });
+        paint();
+      });
+    });
+    setCount(sec, 0);
+  }
+
+  /* ── spec-bench (c9-04 #s-bench) ─────────────────────────────────────
+     Same two-picker shape as the route bench, and the same rule about where
+     the judgement lives: `data-fit="1"` is computed in `ks3_art/c9.py` from
+     the requirement tag sets and read here. A job counts as MATCHED when the
+     student opens the material that fits it. */
+  function wireSpecBench(sec) {
+    var wrap = sec.querySelector("[data-specb]");
+    if (!wrap) { return; }
+    var jobs = toArray(wrap.querySelectorAll("[data-specb-job]"));
+    var mats = toArray(wrap.querySelectorAll("[data-specb-mat]"));
+    var outs = toArray(wrap.querySelectorAll("[data-specb-out]"));
+    var rest = wrap.querySelector(".ks3-specb-rest");
+    var closer = wrap.querySelector("[data-specb-close]");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || jobs.length;
+    if (!jobs.length || !mats.length) { return; }
+    var job = null, mat = null, done = {}, doneN = 0;
+
+    function paint() {
+      if (!job || !mat) { return; }
+      var key = job + ":" + mat;
+      setHidden(rest, true);
+      var shown = null;
+      each(outs, function (o) {
+        var on = o.getAttribute("data-specb-out") === key;
+        setHidden(o, !on);
+        if (on) { shown = o; }
+      });
+      if (!shown) { return; }
+      focusReveal(shown);
+      if (shown.getAttribute("data-fit") === "1" && !done[job]) {
+        done[job] = 1; doneN += 1; setCount(sec, doneN);
+        if (doneN >= total) {
+          setHidden(closer, false);
+          markStage(sec, true);
+        }
+      }
+    }
+
+    /* The job cards are the first picker. They are real buttons wrapped
+       around the card, so the whole card is the target. */
+    each(jobs, function (card) {
+      var btn = card.querySelector("[data-specb-jbtn]") || card;
+      btn.addEventListener("click", function () {
+        var v = card.getAttribute("data-specb-job");
+        if (v === job) { return; }                 /* the no-op press */
+        job = v;
+        each(jobs, function (c) {
+          var on = c.getAttribute("data-specb-job") === v;
+          c.setAttribute("data-open", on ? "1" : "0");
+          var b = c.querySelector("[data-specb-jbtn]");
+          if (b) { b.setAttribute("aria-pressed", on ? "true" : "false"); }
+        });
+        paint();
+      });
+    });
+    each(mats, function (btn) {
+      btn.addEventListener("click", function () {
+        var v = btn.getAttribute("data-specb-mat");
+        if (v === mat) { return; }                 /* the no-op press */
+        mat = v;
+        each(mats, function (b) {
+          b.setAttribute("aria-pressed",
+                         b.getAttribute("data-specb-mat") === v
+                           ? "true" : "false");
+        });
+        paint();
+      });
+    });
+    setCount(sec, 0);
+  }
+/* ═══ END C9 wiring ═══ */
+
+
 
 
 
@@ -22287,6 +22527,12 @@
     each(root.querySelectorAll("[data-hgridblock]"), wireHalogenGrid);
     each(root.querySelectorAll("[data-shelblock]"), wireShellStrip);
     // ═══ END C8 wiring ═══
+    // ═══ BEGIN C9 wiring ═══
+    each(root.querySelectorAll("[data-raudblock]"), wireReactionAudit);
+    each(root.querySelectorAll("[data-pdeckblock]"), wirePredictionDeck);
+    each(root.querySelectorAll("[data-xrouteblock]"), wireExtractionRoute);
+    each(root.querySelectorAll("[data-specbblock]"), wireSpecBench);
+    // ═══ END C9 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
   }

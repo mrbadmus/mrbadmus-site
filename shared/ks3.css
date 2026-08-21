@@ -22127,3 +22127,318 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 .ks3-shel [hidden] { display: none; }
 
 /* ═══ END C8 ═══ */
+
+/* ═══ BEGIN C9 ═══════════════════════════════════════════════════════════
+   C9's instrument styling — *Metals and materials*. A PURE APPEND at EOF —
+   every byte above this marker is unchanged, which is the one conflict shape
+   that resolves mechanically when another lane merges.
+
+   ALL FOUR INSTRUMENT SECTIONS ARE LIGHT — `#s-bench` on c9-01, `#s-deck` on
+   c9-02, `#s-bench` on c9-03 and `#s-bench` on c9-04 are each
+   `class="ks3-block"` with no second class. There is no ink-dark practical
+   block anywhere in C9, exactly as there is none in C3, C4, C5, C7 or C8.
+
+   ⚠️ EVERY TEXT RULE IS SELF-SCOPED AT (0,2,0) — `.ks3-raud .ks3-raud-obs`,
+   never a bare `.ks3-raud-obs`. A bare component class is (0,1,0) and loses
+   to `.ks3-dark p` at (0,1,1) the day anything moves one of these onto ink,
+   and it loses SILENTLY.
+
+   ⚠️ `--ks3-data` IS NOT SPENT HERE EITHER. It is an ON-INK token (the C3
+   ruling) and every C9 instrument sits on a light ground. `NOTES-C9.md` §9.2
+   reports the token as missing entirely and asks for it to be added or for
+   audit law 9 to be amended: it EXISTS, in `shared/tokens.css`, and is
+   on-ink-only, so a light-ground unit never spends it and law 9 needs no
+   amendment. Selection and category state uses `--ks3-accent` /
+   `--ks3-accent-tint` with an `--ks3-ink` outline, and EVERY selectable cell
+   also carries a WORD, so colour is never the only channel.
+
+   ⚠️ CONTAINMENT, NOT CLIPPING. The twelve-cell audit matrix is the unit's
+   one horizontal scroller and carries `position: relative`.
+   ═══ */
+
+.ks3-raudit-block,
+.ks3-pdeck-block,
+.ks3-xroute-block,
+.ks3-specb-block { --c9-gap: 12px; }
+
+/* ── c9-01 · reaction-audit ────────────────────────────────────────────── */
+.ks3-raud .ks3-raud-scroll {
+  position: relative; overflow-x: auto; padding-bottom: 4px;
+}
+.ks3-raud .ks3-raud-table {
+  border-collapse: separate; border-spacing: 6px; min-width: 32rem;
+}
+.ks3-raud .ks3-raud-table th {
+  font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500;
+  letter-spacing: .05em; color: var(--ks3-ink-muted);
+  padding: 6px 8px; text-align: left;
+}
+.ks3-raud .ks3-raud-corner { width: 1px; }
+.ks3-raud .ks3-raud-mname {
+  display: block; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 17px; text-transform: none; letter-spacing: 0;
+  color: var(--ks3-ink);
+}
+.ks3-raud .ks3-raud-mform {
+  display: block; margin-top: 2px; font-size: 11px; text-transform: none;
+  letter-spacing: 0; color: var(--ks3-ink-muted);
+}
+.ks3-raud .ks3-raud-cell {
+  font: inherit; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; min-width: 5.2rem; min-height: 44px; padding: 8px 10px;
+  border-radius: 12px; cursor: pointer;
+  background: var(--ks3-card); border: 2px solid var(--ks3-ink);
+  color: var(--ks3-ink-ghost);
+}
+.ks3-raud .ks3-raud-cell[aria-pressed="true"] {
+  background: var(--ks3-accent-tint); border-color: var(--ks3-accent);
+  color: var(--ks3-ink); box-shadow: 0 0 0 4px var(--ks3-accent-tint);
+}
+.ks3-raud .ks3-raud-predict {
+  margin-top: 16px; display: flex; flex-direction: column;
+  align-items: flex-start; gap: 9px;
+}
+.ks3-raud .ks3-raud-prompt,
+.ks3-xroute .ks3-xroute-rest,
+.ks3-specb .ks3-specb-rest {
+  margin: 0; font-size: 18px; color: var(--ks3-ink-body);
+}
+.ks3-raud .ks3-raud-readout,
+.ks3-xroute .ks3-xroute-readout,
+.ks3-specb .ks3-specb-readout {
+  margin-top: 18px; padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-raud .ks3-raud-rest {
+  margin: 0; font-size: 17px; color: var(--ks3-ink-muted);
+}
+.ks3-raud .ks3-raud-title {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 20px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-raud .ks3-raud-verdict {
+  margin: 10px 0 0; font-family: var(--ks3-font-display); font-weight: 700;
+  font-size: 18px; color: var(--ks3-accent-text);
+}
+.ks3-raud .ks3-raud-obs {
+  margin: 7px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+.ks3-raud .ks3-raud-eq,
+.ks3-xroute .ks3-xroute-eq {
+  margin: 12px 0 0; padding: 10px 14px; border-radius: 12px;
+  background: var(--ks3-card); border: 2px solid var(--ks3-rule);
+  font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink);
+}
+/* The apparatus line is the one place in C9 that carries the alert tone, and
+   it carries a WORD too — it is a sentence, not a colour. */
+.ks3-raud .ks3-raud-care {
+  margin: 12px 0 0; padding: 10px 14px; border-radius: 12px;
+  background: var(--ks3-alert-tint); border: 2px solid var(--ks3-alert-border);
+  font-size: 16px; line-height: 1.5; color: var(--ks3-alert-text);
+}
+.ks3-raud .ks3-raud-bands,
+.ks3-xroute .ks3-xroute-groups {
+  margin-top: 18px; display: flex; flex-direction: column; gap: var(--c9-gap);
+}
+.ks3-raud .ks3-raud-band,
+.ks3-xroute .ks3-xroute-group {
+  padding: 18px 20px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card); border: 2px solid var(--ks3-ink);
+}
+.ks3-raud .ks3-raud-blabel,
+.ks3-xroute .ks3-xroute-glabel {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 19px; color: var(--ks3-ink);
+}
+.ks3-raud .ks3-raud-bmembers,
+.ks3-xroute .ks3-xroute-gmembers {
+  margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  color: var(--ks3-accent-text);
+}
+.ks3-raud .ks3-raud-bnote,
+.ks3-xroute .ks3-xroute-gnote {
+  margin: 8px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+
+/* ── c9-02 · prediction-deck ───────────────────────────────────────────── */
+.ks3-pdeck .ks3-pdeck-strip {
+  margin: 0 0 20px; padding: 16px 18px; list-style: none;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card); border: 2px solid var(--ks3-ink);
+  counter-reset: pdeck;
+}
+.ks3-pdeck .ks3-pdeck-strip-item {
+  counter-increment: pdeck; display: flex; gap: 10px; align-items: baseline;
+  padding: 5px 0; font-size: 17px; color: var(--ks3-ink-body);
+}
+.ks3-pdeck .ks3-pdeck-strip-item::before {
+  content: counter(pdeck); font-family: var(--ks3-font-mono); font-size: 12px;
+  color: var(--ks3-ink-muted); min-width: 1.2rem;
+}
+.ks3-pdeck .ks3-pdeck-sname {
+  font-family: var(--ks3-font-display); font-weight: 700; font-size: 17px;
+  color: var(--ks3-ink);
+}
+.ks3-pdeck .ks3-pdeck-stag {
+  font-family: var(--ks3-font-mono); font-size: 12px;
+  color: var(--ks3-accent-text);
+}
+.ks3-pdeck .ks3-pdeck-cards {
+  display: flex; flex-direction: column; gap: 14px;
+}
+.ks3-pdeck .ks3-pdeck-card {
+  padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-pdeck .ks3-pdeck-label {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 19px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-pdeck .ks3-pdeck-setup {
+  margin: 7px 0 0; font-size: 17px; line-height: 1.5;
+  color: var(--ks3-ink-muted);
+}
+.ks3-pdeck .ks3-pdeck-opts {
+  margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-pdeck .ks3-pdeck-reveal {
+  margin-top: 12px; padding: 14px 16px; border-radius: 14px;
+  background: var(--ks3-card); border: 2px solid var(--ks3-rule);
+}
+.ks3-pdeck .ks3-pdeck-verdict {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 700;
+  font-size: 18px; color: var(--ks3-ink);
+}
+.ks3-pdeck .ks3-pdeck-obs {
+  margin: 7px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+.ks3-pdeck .ks3-pdeck-eq {
+  margin: 10px 0 0; font-family: var(--ks3-font-mono); font-size: 14px;
+  color: var(--ks3-accent-text);
+}
+
+/* ── c9-03 · extraction-route ──────────────────────────────────────────── */
+.ks3-xroute .ks3-xroute-pickers {
+  display: flex; flex-direction: column; gap: 12px;
+}
+.ks3-xroute .ks3-xroute-ores,
+.ks3-xroute .ks3-xroute-methods,
+.ks3-specb .ks3-specb-shelf {
+  display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-xroute .ks3-xroute-setup {
+  margin: 0; font-size: 16px; line-height: 1.5; color: var(--ks3-ink-muted);
+}
+.ks3-xroute .ks3-xroute-title {
+  margin: 10px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 20px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-xroute .ks3-xroute-why {
+  margin: 7px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+
+/* ── c9-04 · spec-bench ────────────────────────────────────────────────── */
+.ks3-specb .ks3-specb-jobs {
+  display: flex; flex-direction: column; gap: var(--c9-gap);
+  margin-bottom: 16px;
+}
+.ks3-specb .ks3-specb-job {
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-specb .ks3-specb-jbtn {
+  font: inherit; display: block; width: 100%; text-align: left;
+  padding: 18px 20px; min-height: 44px; cursor: pointer;
+  background: none; border: 0; border-radius: var(--ks3-r-panel);
+  color: var(--ks3-ink);
+}
+.ks3-specb .ks3-specb-job[data-open="1"] {
+  border-color: var(--ks3-accent); box-shadow: 0 0 0 4px var(--ks3-accent-tint);
+}
+.ks3-specb .ks3-specb-jname {
+  display: block; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 19px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-specb .ks3-specb-setup {
+  display: block; margin-top: 6px; font-size: 17px; line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+.ks3-specb .ks3-specb-reqs {
+  display: flex; gap: 7px; flex-wrap: wrap; margin-top: 10px;
+}
+.ks3-specb .ks3-specb-req {
+  padding: 4px 10px; border-radius: 999px;
+  background: var(--ks3-card); border: 2px solid var(--ks3-rule);
+  font-family: var(--ks3-font-mono); font-size: 12px;
+  color: var(--ks3-ink-body);
+}
+.ks3-specb .ks3-specb-head {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 20px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-specb .ks3-specb-verdict {
+  margin: 10px 0 0; font-family: var(--ks3-font-display); font-weight: 700;
+  font-size: 18px; color: var(--ks3-accent-text);
+}
+.ks3-specb .ks3-specb-praise {
+  margin: 7px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+/* A rejection is a LIST OF NAMED REQUIREMENTS, never a count. The renderer
+   refuses a material that fails a requirement without a reason, so every row
+   below is guaranteed to have one. */
+.ks3-specb .ks3-specb-fails {
+  margin: 10px 0 0; padding: 0; list-style: none;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.ks3-specb .ks3-specb-rname {
+  display: block; font-family: var(--ks3-font-mono); font-size: 12px;
+  letter-spacing: .04em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-specb .ks3-specb-rwhy {
+  display: block; margin-top: 3px; font-size: 17px; line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+
+/* ── closing panels, shared shape ──────────────────────────────────────── */
+.ks3-raud-close,
+.ks3-pdeck-close,
+.ks3-xroute-close,
+.ks3-specb-close {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band); border: 2px solid var(--ks3-ink);
+}
+.ks3-raud .ks3-raud-closetitle,
+.ks3-pdeck .ks3-pdeck-closetitle,
+.ks3-xroute .ks3-xroute-closetitle,
+.ks3-specb .ks3-specb-closetitle {
+  margin: 0 0 10px; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-raud-close p,
+.ks3-pdeck-close p,
+.ks3-xroute-close p,
+.ks3-specb-close p {
+  margin: 0 0 10px; font-size: 19px; line-height: 1.6; color: var(--ks3-ink);
+}
+.ks3-raud-close p:last-child,
+.ks3-pdeck-close p:last-child,
+.ks3-xroute-close p:last-child,
+.ks3-specb-close p:last-child { margin-bottom: 0; }
+
+/* ⚠️ `[hidden]` LAST, AND SELF-SCOPED — several rules above set `display` on
+   elements that are also `hidden` at rest, and `display: flex` on a bare
+   class beats the UA's `[hidden] { display: none }`. Without this the route
+   bench would show all twenty-four verdicts at once and still read as
+   correct CSS. */
+.ks3-raud [hidden],
+.ks3-pdeck [hidden],
+.ks3-xroute [hidden],
+.ks3-specb [hidden] { display: none; }
+
+/* ═══ END C9 ═══ */
