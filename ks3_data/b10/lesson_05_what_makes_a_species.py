@@ -361,7 +361,7 @@ anchors resolve against the BUILT page (MRB-244).
 Named explicitly rather than left to be discovered. Every one is measured off
 Design's `renderVals()` and follows schema §6's shape and §1's spellings:
 
-    progress_suffix  "settled" → `_b10_suffix`, composed into the head row's
+    progress_suffix  "settled" → `_progress_suffix`, composed into the head row's
                      "{n} of {total} settled" the same way `variation-plotter`
                      composes "{n} of {total} plotted"
     options_label    the mono label over the seven case tabs
@@ -957,14 +957,14 @@ LESSON = {
             #      classification, so infertility is not evidence
             "options": [
                 # 15w — Design's, unchanged.
-                "No — the offspring must be fertile for the parents to count "
-                "as one species",
+                "Yes — they produced offspring, which is the test, so the "
+                "parents count as one species",
                 # 16w. Was "Yes — they produced offspring, which is the test"
                 # (9w). The added clause is GENE-10 stated as a rule with its
                 # classification consequence, which is what the correction's
                 # "Half the test" answers.
-                "Yes — they produced offspring, which is the test, so the "
-                "parents count as one species",
+                "No — the offspring must be fertile for the parents to count "
+                "as one species",
                 # 15w. Was "Yes, if the chicks look like both parents" (8w).
                 # Now states resemblance as the deciding rule, which
                 # "Appearance is not part of the definition at all"
@@ -977,12 +977,12 @@ LESSON = {
                 "It cannot be decided without seeing more pairs, so one "
                 "infertile brood proves nothing either way",
             ],
-            "answer": 0,
+            "answer": 1,
             # All three unchanged from Design, and each still answers exactly
             # the belief its rewritten distractor states — which is the test of
             # whether the rewrite changed what the question measures.
             "feedback": {
-                1: "Half the test. The offspring must be able to reproduce, or "
+                0: "Half the test. The offspring must be able to reproduce, or "
                    "the two lines are still going nowhere together.",
                 2: "Appearance is not part of the definition at all. A mule "
                    "looks like both its parents and settles nothing.",

@@ -1079,34 +1079,34 @@ LESSON = {
             #      the parts of the molecule
             "options": [
                 # 10w — Design's, unchanged.
-                "That A pairs with T and C pairs with G",
+                "That DNA is a helix, because its base amounts repeat "
+                "regularly",
                 # 11w. Was "That DNA is a helix" (5w). The added clause is the
                 # amounts-give-shape inference, which the correction's
                 # "Chargaff worked with chemical amounts, not images" denies in
                 # its own terms.
-                "That DNA is a helix, because its base amounts repeat "
-                "regularly",
+                "That there are two strands, because there are two pairs of "
+                "bases",
                 # 12w. Was "That there are two strands" (5w). Two pairs of
                 # bases therefore two strands is the non sequitur; the
                 # correction hands the strand count back to the measured width.
-                "That there are two strands, because there are two pairs of "
-                "bases",
+                "That the phosphates are on the outside, because he measured "
+                "whole molecules",
                 # 12w. Was "That the phosphates are on the outside" (7w). The
                 # consequence the belief licenses: that measuring the whole
                 # molecule chemically tells you where its parts sit.
-                "That the phosphates are on the outside, because he measured "
-                "whole molecules",
+                "That A pairs with T and C pairs with G",
             ],
-            "answer": 0,
+            "answer": 3,
             # All three unchanged from Design, and each still answers exactly
             # the belief its rewritten distractor states — which is the test of
             # whether the rewrite changed what the question measures.
             "feedback": {
-                1: "That came from the X-ray diffraction pattern. Chargaff "
+                0: "That came from the X-ray diffraction pattern. Chargaff "
                    "worked with chemical amounts, not images.",
-                2: "The number of strands came from the measured width in the "
+                1: "The number of strands came from the measured width in the "
                    "diffraction pattern.",
-                3: "That came from Franklin’s work on how much water DNA takes "
+                2: "That came from Franklin’s work on how much water DNA takes "
                    "up.",
             }},
         # ⚖️ Design's, untouched, and the rung that carries `GENE-05`: option A
@@ -1118,16 +1118,16 @@ LESSON = {
             "title": "Rung 2 · The one that catches people",
             "q": "What did Watson and Crick actually do in 1953?",
             "options": [
-                "They discovered DNA",
                 "They worked out its structure, by building models that fitted "
                 "other people’s measurements",
+                "They discovered DNA",
                 "They proved DNA carries genetic information",
                 "They took the X-ray photographs that revealed the double "
                 "helix",
             ],
-            "answer": 1,
+            "answer": 0,
             "feedback": {
-                0: "DNA was discovered in 1869 by Miescher. It had been known "
+                1: "DNA was discovered in 1869 by Miescher. It had been known "
                    "for over eighty years.",
                 2: "Avery, MacLeod and McCarty had shown that in 1944 — which "
                    "is why the structure was worth chasing.",

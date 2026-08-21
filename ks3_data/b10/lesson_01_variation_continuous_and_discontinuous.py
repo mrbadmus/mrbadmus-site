@@ -897,17 +897,17 @@ LESSON = {
             #   D  authored belief: leaves are countable objects, so counting
             #      them is the same as measuring one
             "options": [
-                "Number of brothers and sisters",
                 "Arm length",
                 "Body mass",
+                "Number of brothers and sisters",
                 "Length of the leaves on a tree",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "Any value between the shortest and longest arm is "
+                0: "Any value between the shortest and longest arm is "
                    "possible, so it is continuous — even though it is "
                    "measured in whole centimetres for convenience.",
-                2: "Continuous. The scale reads to a decimal place because "
+                1: "Continuous. The scale reads to a decimal place because "
                    "every value in between genuinely exists.",
                 3: "Continuous, and a good one to survey — leaf length grades "
                    "smoothly from the smallest to the largest on a single "
@@ -929,12 +929,12 @@ LESSON = {
             #      so a smooth range rules genes out altogether
             "options": [
                 "That it is caused by the environment rather than by genes",
-                "Nothing on its own — shape and cause are separate questions",
                 "That it is caused by genes alone",
+                "Nothing on its own — shape and cause are separate questions",
                 "That no genes are involved, since genes give discrete "
                 "categories",
             ],
-            "answer": 1,
+            "answer": 2,
             # All three corrections are Design's, byte-identical. Each answers
             # exactly the belief its own option states, and C's is the one
             # that does the lesson's real work: it concedes the genetics and
@@ -943,7 +943,7 @@ LESSON = {
                 0: "Height is one of the most strongly inherited "
                    "characteristics there is. Continuous does not mean "
                    "environmental.",
-                2: "Also no. Nutrition in childhood affects adult height, "
+                1: "Also no. Nutrition in childhood affects adult height, "
                    "which is why average height has risen so much in a "
                    "century.",
                 3: "One gene tends to give categories. Hundreds of genes each "

@@ -1059,24 +1059,24 @@ LESSON = {
             #   D  authored belief: the doubling happens before fertilisation
             #      rather than the halving happening before it
             "options": [
-                "23 — one from each pair, so the fertilised egg has 46 again",
                 "46 — every cell in the body has the same number",
                 "23 — because half the chromosomes are lost when the sperm is "
                 "made",
                 "92 — the chromosomes double before fertilisation",
+                "23 — one from each pair, so the fertilised egg has 46 again",
             ],
-            "answer": 0,
+            "answer": 3,
             # Design's three, byte-identical. B's is the strongest correction on
             # the page because it runs the belief forward two generations and
             # lets the arithmetic refute it — 92, then 184 — rather than simply
             # naming it wrong.
             "feedback": {
-                1: "Then fertilisation would give 92, and 184 in the "
+                0: "Then fertilisation would give 92, and 184 in the "
                    "generation after that. Gametes must carry half.",
-                2: "Right number, wrong reason. Nothing is lost — the "
+                1: "Right number, wrong reason. Nothing is lost — the "
                    "chromosomes are shared out between four gametes, each "
                    "getting a complete single set.",
-                3: "The opposite. The number is halved to make a gamete, so "
+                2: "The opposite. The number is halved to make a gamete, so "
                    "that fusing two of them restores it.",
             }},
         "apply": {
@@ -1096,14 +1096,14 @@ LESSON = {
             #   D  authored belief: an environmental cause for a proportion that
             #      is far too clean to be environmental
             "options": [
-                "Both parents were carrying the white version without showing "
-                "it",
                 "A new white version appeared by mutation in the offspring",
                 "The white parents’ characteristics blended and separated "
                 "again",
                 "Something in the soil turned those flowers white",
+                "Both parents were carrying the white version without showing "
+                "it",
             ],
-            "answer": 0,
+            "answer": 3,
             # Design's three, byte-identical. Each answers the belief its option
             # states rather than restating the correct answer: B is refuted on
             # FREQUENCY (a quarter is far too many for mutation), C on the
@@ -1111,12 +1111,12 @@ LESSON = {
             # the giveaway — the ratio itself is the evidence that this is
             # inheritance, which is the bench's whole argument.
             "feedback": {
-                1: "A quarter of the offspring is far too many for that. "
+                0: "A quarter of the offspring is far too many for that. "
                    "Mutation is rare; this ratio is what "
                    "carrying-without-showing predicts.",
-                2: "Nothing blended. The white version was passed on "
+                1: "Nothing blended. The white version was passed on "
                    "unchanged — that is exactly the point Mendel established.",
-                3: "Flower colour here is set by the versions of the gene the "
+                2: "Flower colour here is set by the versions of the gene the "
                    "plant received. The proportion — close to a quarter — is "
                    "the giveaway that this is inheritance and not "
                    "environment.",

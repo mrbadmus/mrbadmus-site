@@ -937,14 +937,14 @@ LESSON = {
             #      than inside it
             #   D  the ladder read upside down
             "options": [
-                "Nucleus, chromosome, gene, base",
                 "Chromosome, nucleus, gene, base",
+                "Nucleus, chromosome, gene, base",
                 "Nucleus, gene, chromosome, base",
                 "Gene, chromosome, nucleus, base",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "The nucleus is the container — all 46 chromosomes sit "
+                0: "The nucleus is the container — all 46 chromosomes sit "
                    "inside it.",
                 2: "A gene is a section of a chromosome, so it must be smaller "
                    "than the whole chromosome.",
@@ -970,11 +970,11 @@ LESSON = {
                 # (12w). The added clause is the sorting-by-destination rule
                 # head-on, which is what the correction's second sentence
                 # denies in the same words.
-                "No — that gene is only in the cells of the eye, so each cell "
-                "carries only the genes its organ uses",
-                # 21w — Design's, unchanged.
                 "Yes — every cell with a nucleus has the complete set, but "
                 "only some genes are switched on in each cell",
+                # 21w — Design's, unchanged.
+                "No — that gene is only in the cells of the eye, so each cell "
+                "carries only the genes its organ uses",
                 # 21w. Was "Only if you have brown eyes" (6w). Now states the
                 # presence-follows-appearance reading as a rule, which "the
                 # gene is present in everyone" contradicts precisely.
@@ -986,12 +986,12 @@ LESSON = {
                 "No — genes move to the organs that need them, so a gene ends "
                 "up in whichever cells are using it",
             ],
-            "answer": 1,
+            "answer": 0,
             # All three unchanged from Design, and each still answers exactly
             # the belief its rewritten distractor states — which is the test of
             # whether the rewrite changed what the question measures.
             "feedback": {
-                0: "Every cell with a nucleus carries the complete set of "
+                1: "Every cell with a nucleus carries the complete set of "
                    "instructions. Nothing sorts them out by destination.",
                 2: "The gene is present in everyone; what differs between "
                    "people is the version of it they carry.",
