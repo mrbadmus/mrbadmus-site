@@ -691,10 +691,10 @@ LESSON = {
             "options": [
                 "Only at night",
                 "Only in the day, using the glucose it has just made",
-                "All the time, day and night",
                 "Only when it is growing",
+                "All the time, day and night",
             ],
-            "answer": 2,
+            "answer": 3,
             "feedback": {
                 0: "Night is only when respiration becomes visible, because "
                    "nothing is masking it. The rate itself does not change — "
@@ -702,7 +702,7 @@ LESSON = {
                 1: "Backwards. Respiration continues in the dark, using "
                    "glucose stored earlier — which is exactly why the carbon "
                    "dioxide in a sealed jar rises overnight.",
-                3: "Every living cell respires continuously, growing or not. "
+                2: "Every living cell respires continuously, growing or not. "
                    "Even a dormant seed respires, slowly.",
             }},
         "apply": {
@@ -711,16 +711,16 @@ LESSON = {
                  "dioxide for ten minutes in dim light. What is happening?",
             "options": [
                 "Nothing — the plant is dormant",
-                "Photosynthesis and respiration are happening at equal rates",
                 "Photosynthesis has stopped and respiration has not started",
+                "Photosynthesis and respiration are happening at equal rates",
                 "The stomata have closed, so no gas can move",
             ],
-            "answer": 1,
+            "answer": 2,
             "feedback": {
                 0: "A flat reading is not an idle plant. Two processes are "
                    "running and cancelling, which is a very different "
                    "situation from neither running.",
-                2: "Respiration never stops, so it cannot be waiting to start. "
+                1: "Respiration never stops, so it cannot be waiting to start. "
                    "And if only respiration were running, the carbon dioxide "
                    "would be rising.",
                 3: "Closed stomata would also stop water loss and would show "

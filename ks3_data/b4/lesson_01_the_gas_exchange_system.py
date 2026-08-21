@@ -607,17 +607,17 @@ LESSON = {
             "q": "Which gas makes up the largest part of the air you breathe "
                  "OUT?",
             "options": [
+                "Nitrogen",
                 "Carbon dioxide",
                 "Oxygen",
-                "Nitrogen",
                 "Water vapour",
             ],
-            "answer": 2,
+            "answer": 0,
             "feedback": {
-                0: "Only about 4%. It rises a hundredfold and is still the "
+                1: "Only about 4%. It rises a hundredfold and is still the "
                    "fourth thing in the bag — this is the most common wrong "
                    "answer in the topic.",
-                1: "Second, at about 16%. Closer than most people think, but "
+                2: "Second, at about 16%. Closer than most people think, but "
                    "not the largest.",
                 3: "Exhaled air is saturated with water vapour, but saturated "
                    "still means only a few per cent.",

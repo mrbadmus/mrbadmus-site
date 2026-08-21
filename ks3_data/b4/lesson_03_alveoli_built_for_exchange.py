@@ -602,17 +602,17 @@ LESSON = {
                  "large cavity of the same total volume?",
             "options": [
                 "To hold more air",
-                "To give a far greater surface area for diffusion",
                 "To make the lungs lighter",
                 "So air can be stored for longer",
+                "To give a far greater surface area for diffusion",
             ],
-            "answer": 1,
+            "answer": 3,
             "feedback": {
                 0: "The volume is the same in the question — that is what "
                    "makes it a fair comparison. What differs is surface.",
-                2: "Mass is not the constraint. Gas exchange is limited by how "
+                1: "Mass is not the constraint. Gas exchange is limited by how "
                    "much surface the blood and air can meet across.",
-                3: "Alveolar air is partly replaced about twelve times a "
+                2: "Alveolar air is partly replaced about twelve times a "
                    "minute. Storing it would close the gradient rather than "
                    "help.",
             }},
