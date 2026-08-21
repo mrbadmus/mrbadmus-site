@@ -901,22 +901,22 @@ LESSON = {
             "q": "What is the word summary for anaerobic respiration in "
                  "humans?",
             "options": [
-                "glucose gives lactic acid",
                 "glucose + oxygen gives lactic acid",
                 "glucose gives carbon dioxide + alcohol",
                 "glucose gives carbon dioxide + water",
+                "glucose gives lactic acid",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
-                1: "Anaerobic means without oxygen. If oxygen were available "
+                0: "Anaerobic means without oxygen. If oxygen were available "
                    "the cell would use it — it gets far more energy that way.",
                 # ⚠️ "b8-04’s subject" resolved to the lesson TITLE — "What
                 # could not be lifted" 1. Every science word is unchanged and
                 # the destination is a `references` edge.
-                2: "That is what yeast does, and it is the subject of "
+                1: "That is what yeast does, and it is the subject of "
                    "Fermentation and what we use it for. Human muscle produces "
                    "lactic acid, not alcohol.",
-                3: "Those are the products of the complete, aerobic breakdown. "
+                2: "Those are the products of the complete, aerobic breakdown. "
                    "Without oxygen the job is left half done.",
             }},
         "apply": {
@@ -930,11 +930,11 @@ LESSON = {
                 # 20w — mechanical momentum, given its consequence. Was "Your
                 # lungs take time to slow down after being worked hard" (11w).
                 # Design's clause is kept verbatim at the front.
-                "Your lungs take time to slow down after being worked hard, so "
-                "the breathing runs on under its own momentum",
-                # 23w — Design's, unchanged.
                 "You are taking in the oxygen you could not get during the "
                 "sprint, to deal with the lactic acid — the oxygen debt",
+                # 23w — Design's, unchanged.
+                "Your lungs take time to slow down after being worked hard, so "
+                "the breathing runs on under its own momentum",
                 # 22w — the muscles-still-consuming belief, now stated as a
                 # rule that survives the stopping. Was "Your muscles are still
                 # working, so they still need oxygen" (10w).
@@ -945,13 +945,13 @@ LESSON = {
                 "You are cooling down, and breathing out is how the extra heat "
                 "leaves, so the rate stays up until you have cooled",
             ],
-            "answer": 1,
+            "answer": 0,
             # All three unchanged from Design, and each still answers exactly
             # the belief its rewritten distractor states — which is the test of
             # whether the rewrite changed what the question measures. Two of the
             # three now land harder; see the docstring.
             "feedback": {
-                0: "Breathing rate is controlled by what is in your blood, not "
+                1: "Breathing rate is controlled by what is in your blood, not "
                    "by momentum. Something is still being demanded.",
                 2: "You are standing still. The muscles are not contracting, "
                    "and the breathing is not for them.",

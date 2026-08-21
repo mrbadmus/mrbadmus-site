@@ -877,14 +877,14 @@ LESSON = {
             "q": "What does yeast produce when it respires anaerobically?",
             # UNTOUCHED — 4w correct against 2 / 4 / 3, no tell.
             "options": [
-                "Ethanol and carbon dioxide",
                 "Lactic acid",
+                "Ethanol and carbon dioxide",
                 "Carbon dioxide and water",
                 "Oxygen and glucose",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "That is human muscle, and the bacteria in yoghurt. Yeast "
+                0: "That is human muscle, and the bacteria in yoghurt. Yeast "
                    "takes the other anaerobic route.",
                 2: "Those are the products of aerobic respiration — the "
                    "complete breakdown. Anaerobically the job is left "
@@ -904,11 +904,11 @@ LESSON = {
                 # 14w — was "The yeast reabsorbs it before baking" (6w). The
                 # belief it already carried, given the rule that licenses it:
                 # a living thing does not waste anything it has made.
-                "The yeast reabsorbs it before baking, because nothing a cell "
-                "makes is ever wasted",
-                # 14w — Design's, unchanged.
                 "It evaporates in the oven — ethanol boils well below the "
                 "temperature of baking",
+                # 14w — Design's, unchanged.
+                "The yeast reabsorbs it before baking, because nothing a cell "
+                "makes is ever wasted",
                 # 13w — was "Bread yeast is a different species that makes no
                 # alcohol" (10w). The consequence names what the student thinks
                 # is left: the gas and nothing else.
@@ -920,9 +920,9 @@ LESSON = {
                 "The flour neutralises it, the way an alkali cancels an acid "
                 "in a beaker",
             ],
-            "answer": 1,
+            "answer": 0,
             "feedback": {
-                0: "It does not. The ethanol is a waste product being got rid "
+                1: "It does not. The ethanol is a waste product being got rid "
                    "of, not a store being kept.",
                 2: "It is essentially the same organism doing the same "
                    "reaction. What differs is what happens to the products "

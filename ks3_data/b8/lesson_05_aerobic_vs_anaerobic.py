@@ -866,18 +866,18 @@ LESSON = {
                  "but not of aerobic respiration?",
             "options": [
                 # 16w — Design's, unchanged.
-                "The glucose is only partly broken down, so a product is left "
-                "that still holds energy",
-                # 16w — `RESP-09` wearing a rule: energy release is what marks
-                # this route out. Was "It releases energy" (3w).
                 "It releases energy from glucose, so a cell that needs energy "
                 "has to use this route",
+                # 16w — `RESP-09` wearing a rule: energy release is what marks
+                # this route out. Was "It releases energy" (3w).
+                "It happens in the mitochondria, so a cell with few "
+                "mitochondria cannot use this route",
                 # 15w — the inverted location, given its consequence. Was "It
                 # happens in the mitochondria" (5w). The consequence is the
                 # exact claim the comparison's *Where in the cell* row denies,
                 # which is where a student can go and check it.
-                "It happens in the mitochondria, so a cell with few "
-                "mitochondria cannot use this route",
+                "The glucose is only partly broken down, so a product is left "
+                "that still holds energy",
                 # 13w — human anaerobic respiration makes carbon dioxide. Was
                 # "It produces carbon dioxide" (4w). The new clause supplies the
                 # reason a student actually has for believing it — you do breathe
@@ -886,11 +886,11 @@ LESSON = {
                 "It produces carbon dioxide, which is why you breathe harder "
                 "after a sprint",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "Both do — that is the point of respiring. What differs is "
+                0: "Both do — that is the point of respiring. What differs is "
                    "how much, and how fast.",
-                2: "The other way round. Aerobic respiration is the one that "
+                1: "The other way round. Aerobic respiration is the one that "
                    "happens in the mitochondria.",
                 3: "In humans it produces lactic acid and no carbon dioxide. In "
                    "yeast it does produce carbon dioxide, which is a good "
@@ -901,38 +901,38 @@ LESSON = {
             "q": "Which describes the difference correctly?",
             "options": [
                 # 14w — Design's, unchanged.
-                "Aerobic gets more energy from each glucose; anaerobic supplies "
-                "energy at a faster rate",
+                "Aerobic supplies energy at a faster rate; anaerobic is slower "
+                "but gets more from each glucose",
                 # 16w — `RESP-09`, and the cleanest instance of the MRB-177
                 # construct in the key stage: the correct answer's own two
                 # clauses with the labels swapped. Was "Aerobic is faster;
                 # anaerobic is slower but more efficient" (9w), and Design's
                 # correction already reads "Both halves are the wrong way
                 # round", which is now literally true of the option.
-                "Aerobic supplies energy at a faster rate; anaerobic is slower "
-                "but gets more from each glucose",
+                "Anaerobic releases more energy from each glucose, so a "
+                "sprinter uses it to get more out",
                 # 16w — `RESP-09` again, from the yield side. Was "Anaerobic
                 # releases more energy overall, which is why sprinters use it"
                 # (11w). The sprinter stays in the option because the
                 # correction answers the sprinter.
-                "Anaerobic releases more energy from each glucose, so a "
-                "sprinter uses it to get more out",
+                "They release the same energy per glucose, and anaerobic "
+                "differs only by leaving a harmful waste product",
                 # 17w — was "They release the same energy, but anaerobic makes a
                 # harmful waste product" (12w). The rewritten clause makes the
                 # claim a RULE about what the difference IS, which is what the
                 # rung asks, and it names the second belief the correction
                 # kills: that lactic acid is waste.
-                "They release the same energy per glucose, and anaerobic "
-                "differs only by leaving a harmful waste product",
+                "Aerobic gets more energy from each glucose; anaerobic supplies "
+                "energy at a faster rate",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
-                1: "Both halves are the wrong way round. Aerobic is the "
+                0: "Both halves are the wrong way round. Aerobic is the "
                    "efficient one; anaerobic is the quick one.",
-                2: "It releases much less per glucose. Sprinters use it because "
+                1: "It releases much less per glucose. Sprinters use it because "
                    "it arrives quickly, not because there is more of it.",
                 # ⚑ NOTES-B8 flag 19, site 5 of nine.
-                3: "The yields are about twentyfold apart. And the lactic acid "
+                2: "The yields are about twentyfold apart. And the lactic acid "
                    "is not waste — the liver deals with it and recovers the "
                    "energy left in it.",
             }},

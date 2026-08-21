@@ -871,31 +871,31 @@ LESSON = {
                 # 9w — Design's, unchanged. The only one of the four that has to
                 # be paid for; the other three are all diffusion wearing
                 # different clothes, which is the rung's whole construct.
-                "Active transport of minerals into a root hair cell",
+                "Water moving into a root from the soil",
                 # 8w — was "Water moving into a root by osmosis" (7w). The
                 # LABEL goes under MRB-245's ruling; the belief the distractor
                 # carries (water uptake must cost energy too) is untouched, and
                 # the count moves away from the correct answer, not toward it.
-                "Water moving into a root from the soil",
                 "Oxygen diffusing from the alveoli into the blood",
                 "Carbon dioxide leaving a cell",
+                "Active transport of minerals into a root hair cell",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
                 # First sentence loses the label only — "Osmosis is diffusion of
                 # water down its own gradient" → "Water moves into a root by
                 # diffusion, down its own gradient". The second sentence, which
                 # carries the teaching point, is byte-identical.
-                1: "Water moves into a root by diffusion, down its own "
+                0: "Water moves into a root by diffusion, down its own "
                    "gradient, and needs no energy supply. That is exactly why "
                    "a plant short of energy goes short of minerals before it "
                    "goes short of water.",
                 # ⊕ "as you established in b4-03" → the lesson TITLE, with the
                 # matching `references` edge. "What could not be lifted" 3.
-                2: "Diffusion is passive — particles move down a gradient "
+                1: "Diffusion is passive — particles move down a gradient "
                    "without anything pushing them, as you established in "
                    "Alveoli: built for exchange.",
-                3: "Also diffusion. There is more carbon dioxide inside the "
+                2: "Also diffusion. There is more carbon dioxide inside the "
                    "cell than outside it, so it leaves without being pushed.",
             }},
         "apply": {
@@ -908,18 +908,18 @@ LESSON = {
             # form and is the longest option on the rung.
             "options": [
                 "Nothing — without light a plant shuts down until morning",
-                "Respiration continues in every cell, using oxygen and "
-                "releasing carbon dioxide",
                 "The plant respires instead of photosynthesising, which is the "
                 "swap plants make at night",
+                "Respiration continues in every cell, using oxygen and "
+                "releasing carbon dioxide",
                 "Only the root cells respire, because the leaves "
                 "photosynthesise",
             ],
-            "answer": 1,
+            "answer": 2,
             "feedback": {
                 0: "A cell that shuts down is dead. Photosynthesis stops in "
                    "the dark; respiration does not, and cannot.",
-                2: "Close, and the word instead is the problem. Respiration "
+                1: "Close, and the word instead is the problem. Respiration "
                    "never stopped — it was running all day too, underneath the "
                    "photosynthesis.",
                 3: "Every living cell respires, leaves included. A leaf cell "
