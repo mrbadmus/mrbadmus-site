@@ -458,8 +458,8 @@ class Component extends DCLogic {
           style: 'padding:20px 22px;border-radius:var(--ks3-r-panel);border:2px solid var(--ks3-ink);background:' +
             (decided ? 'var(--ks3-card)' : 'var(--ks3-inset)') + ';',
           options: [
-            { id: 'in', label: 'Adds CO₂ to the air' },
-            { id: 'out', label: 'Takes CO₂ out' }
+            { id: 'in', label: 'Adds CO2 to the air' },
+            { id: 'out', label: 'Takes CO2 out' }
           ].map((o) => ({
             label: o.label, pressed: chosen === o.id, disabled: decided,
             style: this.seg(chosen === o.id, decided),

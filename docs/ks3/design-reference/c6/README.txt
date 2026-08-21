@@ -25,3 +25,14 @@ Standing conventions, same as B1, P3, B2 and C1-C5:
   - One KEY FACT box per lesson. Amber is reserved for misconceptions.
   - Only the mastery ladder marks correctness.
   - No year or half-term appears anywhere in a lesson page.
+
+Packaged 21 Aug 2026 — this folder is the current build.
+Every .dc.html here is byte-identical to the working copy it was authored from,
+and the _ds/ assets are the same files those working copies load.
+
+Checked before packaging: no U+2192, U+2713, U+2715 or U+2126 anywhere in a
+lesson, and no Unicode subscript or superscript digits — formulae use real
+<sub> elements in markup and plain digits inside instrument payloads.
+Changed in this pass: the word equations in c6-03, c6-04 and c6-05 now draw
+their arrow as inline SVG, and ion notation in c6-01 and c6-03 uses <sup>.
+See the change log in NOTES-C6.md.

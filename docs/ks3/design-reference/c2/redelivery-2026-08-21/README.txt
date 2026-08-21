@@ -1,23 +1,23 @@
 MrBadmusAI — KS3 Chemistry
-C7: Energy changes in reactions — four lessons, complete unit
+C2: Atoms, elements and compounds — six lessons, complete unit
 
 Open any .dc.html file directly in a browser. No connection needed.
 
-  c7-01-energy-and-changes-of-state.dc.html      Energy and changes of state     MODEL
-  c7-02-exothermic-reactions.dc.html             Exothermic reactions            PROCESS
-  c7-03-endothermic-reactions.dc.html            Endothermic reactions           CONTRAST
-  c7-04-measuring-a-temperature-change.dc.html   Measuring a temperature change  INVESTIGATION
+  c2-01-the-atom-daltons-model.dc.html    The atom: Dalton's model   MODEL
+  c2-02-elements.dc.html                  Elements                   CLASSIFY
+  c2-03-compounds.dc.html                 Compounds                  CONTRAST
+  c2-04-chemical-symbols.dc.html          Chemical symbols           CLASSIFY
+  c2-05-formulae.dc.html                  Formulae                   MODEL
+  c2-06-conservation-of-mass.dc.html      Conservation of mass       QUANTITATIVE
 
 Keep the folder structure intact: each lesson loads support.js and the
 design-system stylesheets and fonts from _ds/ alongside it.
 
-Read NOTES-C7.md before reviewing. One real defect is flagged there (§4 flag 2):
-the heating curve draws the melting and boiling plateaus the same length while
-the text says boiling is much longer. Either the data or the sentence has to go.
+Read NOTES-C2.md before reviewing. Flag 14 is the one that needs a ruling
+before c2-06 can freeze: conservation of mass is a SUM, and the four-part
+formula ruling is written for a formula you can draw as a triangle.
 
-Covers KS3.C.ENER.01 and ENER.02. 01 requires C1; 03 cross-links to B7 and B8.
-
-Standing conventions, same as B1, P3, B2 and C1-C6:
+Standing conventions, same as B1, P3 and B2:
   - Progress rail ticks only on completed activities, right or wrong.
   - One KEY FACT box per lesson. Amber is reserved for misconceptions.
   - Only the mastery ladder marks correctness.
@@ -30,3 +30,5 @@ and the _ds/ assets are the same files those working copies load.
 Checked before packaging: no U+2192, U+2713, U+2715 or U+2126 anywhere in a
 lesson, and no Unicode subscript or superscript digits — formulae use real
 <sub> elements in markup and plain digits inside instrument payloads.
+Changed in this pass: c2-04 and c2-05 subscripts. See the change log in
+NOTES-C2.md.

@@ -230,7 +230,7 @@ manifest verbatim; nothing below is described anywhere else in the delivery.
 | `spec-bench` | `c9-04` | Requirement tags × candidates. A candidate meets a set of requirement ids and carries a reason for each one it fails. Rejection is reported by the identity of the failing requirements, never by how many. Exactly one candidate satisfies each job. | `REQS: {id: label}`, `MATERIALS: [{id, name, cls, meets: [reqId], fails: {reqId: reason}}]`, `JOBS: [{id, name, setup, reqs: [reqId], praise}]` |
 | `unit-nav` | all four | Endmatter prev/next generated from unit order instead of hand-written links. Emits nothing when there is no neighbour, rather than linking outside the unit. | `UNIT: [{slug, file, title}]` + page-level `SLUG` |
 
-Reused unchanged, no new registration: the five-stop rail, the four-rung mastery
+Reused unchanged, no new registration: the four-stop rail, the four-rung mastery
 ladder (two marked, two self-marked), the hook commit, the misconception block,
 the key-fact block, the ink-dark key note, the optional layer.
 
@@ -285,10 +285,28 @@ only figure.
 
 ## 10. For Code
 
-- Five rail stops per lesson: hook, reference, instrument, misconception, ladder.
+- **Four rail stops per lesson: hook, reference, instrument, ladder.**
   The **reference stop carries no control** — it is ticked by the hook's
   commitment, because the reference exists to be read while the instrument beside
-  it is worked (MRB-249). Five stops, not three.
+  it is worked (MRB-249). The misconception block sits between the instrument and
+  the ladder and **carries no stop of its own**.
+
+  **Correction, this run.** An earlier draft of this section recorded FIVE stops,
+  citing MRB-249 for the count. MRB-249 governs whether the reference stop may be
+  controlless; it does not set the number of stops. The count is four, matching
+  B9–B11, P4/P5, P6/P7 and P8/P9. C9 is not yet built, so the correction lands
+  before the build rather than as a retrofit. One line per lesson:
+
+  - `c9-01 the-reactivity-series` — four stops: hook, the series itself, the
+    twelve-cell instrument, ladder. The misconception block loses its stop.
+  - `c9-02 predicting-displacement` — four stops: hook, the rule card, the
+    eight-pair instrument, ladder. The misconception block loses its stop.
+  - `c9-03 getting-metals-out-of-rocks` — four stops: hook, the extraction
+    routes reference, the six-route instrument, ladder. The misconception block
+    loses its stop.
+  - `c9-04 ceramics-polymers-and-composites` — four stops: hook, the material
+    families reference, the property instrument, ladder. The misconception block
+    loses its stop.
 - One `[data-key-fact]` block and one `.ks3-keynote` block per lesson, so gate D
   bites on all four and none of them needs the exemption list.
 - Every arrow is inline SVG. No `→`, `✓` or `✕` characters anywhere — the latin

@@ -1,23 +1,23 @@
 MrBadmusAI — KS3 Chemistry
-C7: Energy changes in reactions — four lessons, complete unit
+C1: Particles and their behaviour — six lessons, complete unit
 
 Open any .dc.html file directly in a browser. No connection needed.
 
-  c7-01-energy-and-changes-of-state.dc.html      Energy and changes of state     MODEL
-  c7-02-exothermic-reactions.dc.html             Exothermic reactions            PROCESS
-  c7-03-endothermic-reactions.dc.html            Endothermic reactions           CONTRAST
-  c7-04-measuring-a-temperature-change.dc.html   Measuring a temperature change  INVESTIGATION
+  c1-01-particle-model.dc.html            The particle model         MODEL
+  c1-02-solids-liquids-and-gases.dc.html  Solids, liquids and gases  CONTRAST
+  c1-03-changes-of-state.dc.html          Changes of state           PROCESS
+  c1-04-gas-pressure.dc.html              Gas pressure               MODEL
+  c1-05-diffusion.dc.html                 Diffusion                  MODEL
+  c1-06-testing-the-model.dc.html         Testing the model          INVESTIGATION
 
 Keep the folder structure intact: each lesson loads support.js and the
 design-system stylesheets and fonts from _ds/ alongside it.
 
-Read NOTES-C7.md before reviewing. One real defect is flagged there (§4 flag 2):
-the heating curve draws the melting and boiling plateaus the same length while
-the text says boiling is much longer. Either the data or the sentence has to go.
+Read NOTES-C1.md before reviewing. No flag in this unit blocks a freeze —
+C1's misconceptions were already minted as PART-01 to PART-13 when the
+register was opened, so nothing here waited on a ruling.
 
-Covers KS3.C.ENER.01 and ENER.02. 01 requires C1; 03 cross-links to B7 and B8.
-
-Standing conventions, same as B1, P3, B2 and C1-C6:
+Standing conventions, same as B1, P3, B2 and C2:
   - Progress rail ticks only on completed activities, right or wrong.
   - One KEY FACT box per lesson. Amber is reserved for misconceptions.
   - Only the mastery ladder marks correctness.

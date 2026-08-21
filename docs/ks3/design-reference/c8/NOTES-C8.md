@@ -199,3 +199,18 @@ worth keeping separate, but the cross-reference should be recorded.
 - `c8-03`'s LAYOUT array uses `null` for empty cells and renders them as dashed
   transparent boxes; the period-1 row is deliberately mostly empty rather than
   collapsed, because the shape of the gap is part of what the table teaches.
+
+---
+
+## Change log — 21 Aug 2026 (packaging pass)
+
+Font-law sweep before the unit zip was cut. No change to the science or the
+sequence.
+
+- `c8-02`, `c8-03`: oxide formulae inside the prediction and decision
+  payloads are plain digits (`XO2`, `GeO2`, `SiO2`, `CO2`, `C2O`, `CO3`,
+  `X2O3`). They are strings rendered through holes, so markup is not
+  available there — plain digits are the convention.
+- `c8-04`: the `metal + water` word equation draws its arrow as inline SVG
+  instead of typing U+2192.
+- Why: the shipped latin subsets carry neither U+2192 nor subscript digits.
