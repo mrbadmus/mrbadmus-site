@@ -519,6 +519,21 @@ LESSON = {
                   "is reported as a mean. A single pull tells you almost "
                   "nothing."},
 
+        # ⊕ #s-words — the seven words this lesson USES and never stops to
+        # define. Design draws no words section on this page and the RAIL IS
+        # NOT TOUCHED: the block carries an `anchor` because that is what a
+        # section carries, and `check_rail_matches_design` compares the built
+        # rail against the one Design drew.
+        # `terms` must match `vocabulary[].term` byte for byte — `r_keyword`
+        # drops a term it cannot resolve, silently, and renders nothing at all
+        # if it drops them all.
+        {"type": "keyword", "anchor": "s-words",
+         "eyebrow": "Seven words",
+         "lead": "Say your answer out loud before you turn each card over. "
+                 "If you cannot say it, you do not know it yet.",
+         "terms": ["Biomechanics", "Force", "Newton", "Weight",
+                   "Turning effect", "Lever", "Mean"]},
+
         {"type": "misconception", "id": "think-commit-lever",
          "anchor": "s-think", "targets": "BODY-11"},
         {"type": "quiz", "ref": "ladder", "anchor": "s-ladder"},
@@ -746,6 +761,68 @@ LESSON = {
     ],
 
     "support": [],
+
+    # ── vocabulary (§10.2, §12) ─────────────────────────────────────────────
+    # ⚠️ `definition` + `note`, not `gloss`. The build contract's §12 names the
+    # key `gloss`; the SHIPPED schema is `{"term", "definition", "note"}` — that
+    # is what `r_keyword` reads (build_ks3.py:908) and what every live lesson
+    # authors. Authored to the shipped spelling so the terms reach the unit
+    # page's "Words this unit gives you" chips and the reading-age gate's
+    # exclusion list.
+    #
+    # Every definition is a KEY FACT (MRB-225): the version that is TRUE, not
+    # the famous one. Where this lesson's own `key_facts` entry says the same
+    # thing, the card agrees with it rather than restating it loosely.
+    #
+    # ⚖️ SEVEN, and the count is the lesson rather than a slip. This page
+    # assumes ZERO prior teaching of forces (see the module docstring), so
+    # `Force`, `Newton` and `Weight` are all genuinely first met here; `Mean`
+    # is the statutory measurement clause `#s-meters` exists to discharge.
+    #
+    # ⚠️ NO CARD IS CALLED "MOMENT". The word is barred from this unit's
+    # teaching and its one permitted occurrence is the endmatter's forward
+    # reference. `Turning effect` is the vocabulary this lesson teaches in.
+    #
+    # ⚠️ `Lever` says nothing about lever CLASSES. This lesson never
+    # teaches them, and a card that classified the forearm would be teaching
+    # off the page. What the card does say is the thing `BODY-11` gets wrong:
+    # a lever does not make a job easier by itself.
+    "vocabulary": [
+        {"term": "Biomechanics",
+         "definition": "The study of the forces at work inside a moving body, "
+                       "and what the skeleton and the muscles do with them.",
+         "note": "It is why a biology lesson ends in a calculation."},
+        {"term": "Force",
+         "definition": "A push or a pull acting on something.",
+         "note": "Every force acting on a bone is trying to turn it about a "
+                 "joint. How much it turns it depends on where it acts, not "
+                 "only on how big it is."},
+        {"term": "Newton",
+         "definition": "The unit force is measured in, written N.",
+         "note": "A mass of 1 kg weighs about 10 N on Earth — which is the bag "
+                 "of sugar at the top of this lesson."},
+        {"term": "Weight",
+         "definition": "The force pulling something down towards the Earth, "
+                       "measured in newtons.",
+         "note": "Weight is not mass. Mass is in kilograms; weight in newtons "
+                 "is taken as mass × 10 N/kg throughout this lesson."},
+        {"term": "Turning effect",
+         "definition": "How much a force turns a bone about a joint. It is "
+                       "the force multiplied by the distance from the joint.",
+         "note": "Measured in N m. The same force does far more turning when "
+                 "it acts further out, which is the whole of this lesson."},
+        {"term": "Lever",
+         "definition": "A rigid bar that turns about a fixed point. Your "
+                       "forearm is one and your elbow is the fixed point.",
+         "note": "A lever does not make a job easier by itself. This one "
+                 "costs force and buys speed and distance."},
+        {"term": "Mean",
+         "definition": "The average of a set of readings: add them up and "
+                       "divide by how many there are.",
+         "note": "Three pulls from the same muscle are never identical, so "
+                 "each group is reported as a mean. A single pull tells you "
+                 "almost nothing."},
+    ],
 
     "tutor": {"prompt": "Ask Mr Badmus AI",
               "body": "Stuck on which distance goes where?",

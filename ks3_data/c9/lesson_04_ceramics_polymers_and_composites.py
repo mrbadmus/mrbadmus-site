@@ -494,16 +494,35 @@ LESSON = {
     "ladder": {
         # index 3 — moved from Design's 0.
         "recall": {
+            # ⊕ MRB-279, 21 Aug 2026 — FIXED AT THE DISTRACTOR, per MRB-177's
+            # standing ruling. The correct answer was the only two-word option
+            # against three one-word distractors, so a student could score it
+            # by picking the longest without reading a word — and this rung
+            # shipped that way in PR #9.
+            #
+            # MRB-177 rules that a length tell is fixed at the DISTRACTOR and
+            # never by shortening the correct answer, and that reaching for
+            # `KNOWN_TELLS` is the regression. So `Reinforced concrete` stays:
+            # it is the flagship KS3 composite and the one this unit's own
+            # bench runs. Each distractor takes the form the unit already uses
+            # for it — the tile and the sheet are c9-04's own load test, the
+            # wire is c9-02's — which makes all four options two words and the
+            # parity a property of how the question is built.
+            #
+            # Each distractor still names one material from one of the three
+            # families the lesson contrasts (ceramic, polymer, metal), so the
+            # taxonomy the rung tests is unchanged. Answer stays at index 3:
+            # MRB-278 measured the fourth option correct 0 times in 174 rungs.
             "q": "Which of these is a composite?",
-            "options": ["Porcelain", "Polythene", "Copper",
+            "options": ["Porcelain tile", "Polythene sheet", "Copper wire",
                         "Reinforced concrete"],
             "answer": 3,
             "feedback": {
-                0: "Porcelain is a ceramic — one material, fired hard.",
-                1: "Polythene is a polymer — long chains, and nothing else "
-                   "built into it.",
-                2: "Copper is a metal and an element. There is only one kind "
-                   "of atom in it.",
+                0: "A porcelain tile is a ceramic — one material, fired hard.",
+                1: "A polythene sheet is a polymer — long chains, and nothing "
+                   "else built into it.",
+                2: "Copper wire is a metal and an element. There is only one "
+                   "kind of atom in it.",
             }},
 
         # index 2 — moved from Design's 0. `MATL-13` at the ladder.

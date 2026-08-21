@@ -29,7 +29,7 @@
 -- reorder to cost: rows in this table, and nothing else. No page
 -- path and no page byte depends on any of it.
 --
--- 1 school, 183 rows.
+-- 1 school, 185 rows.
 --
 -- ═══════════════════════════════════════════════════════════════════════
 
@@ -53,9 +53,9 @@ end $$;
 -- Row counts, generated:
 --
 --   Y7  Biology 26 · Chemistry 31 · Physics 33
---   Y8  Biology 29 · Chemistry 24 · Physics 37
+--   Y8  Biology 29 · Chemistry 26 · Physics 37
 --   Y9  Biology 3
---   183 rows total, max academic_week 37 (ceiling 39)
+--   185 rows total, max academic_week 37 (ceiling 39)
 --
 -- ═══════════════════════════════════════════════════════════════════════
 
@@ -91,7 +91,7 @@ values
   -- B3 Nutrition and digestion
   ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 11, 'Nutrition and digestion', 'a-balanced-diet', null),
   ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 12, 'Nutrition and digestion', 'food-tests', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 13, 'Nutrition and digestion', 'energy-in-food', 'Cross-reference (architecture.md §4.6): this lesson is owned by P2 Energy at home (Physics) and is taught from there. Listed here because Nutrition and digestion teaches the slot, not because the content is duplicated.'),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 13, 'Nutrition and digestion', 'energy-in-food-and-what-you-need', null),
   ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 14, 'Nutrition and digestion', 'when-diet-goes-wrong', null),
   ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 15, 'Nutrition and digestion', 'the-digestive-system', null),
   ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 16, 'Nutrition and digestion', 'enzymes-in-digestion', null),
@@ -233,7 +233,7 @@ values
   ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Biology'), 28, 'Evolution, extinction and biodiversity', 'when-the-environment-changes-extinction', null),
   ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Biology'), 29, 'Evolution, extinction and biodiversity', 'biodiversity-and-gene-banks', null);
 
--- ── Year 8 · Chemistry — 24 lessons ─────────────────────────
+-- ── Year 8 · Chemistry — 26 lessons ─────────────────────────
 insert into public.scheme_of_work_overrides
   (school_id, key_stage, year_group, tier, pathway, subject_id, academic_week, topic, subtopic, notes)
 values
@@ -256,15 +256,17 @@ values
   ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 14, 'The periodic table', 'metals-and-non-metals', null),
   ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 15, 'The periodic table', 'mendeleev', null),
   ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 16, 'The periodic table', 'groups-and-periods', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 17, 'The periodic table', 'patterns-you-can-predict', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 18, 'The periodic table', 'metal-and-non-metal-oxides', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 17, 'The periodic table', 'group-1-the-alkali-metals', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 18, 'The periodic table', 'group-7-the-halogens', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 19, 'The periodic table', 'group-0-and-why-groups-exist', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 20, 'The periodic table', 'metal-and-non-metal-oxides', null),
   -- C10 The Earth and its atmosphere
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 19, 'The Earth and its atmosphere', 'inside-the-earth', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 20, 'The Earth and its atmosphere', 'three-ways-to-make-a-rock', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 21, 'The Earth and its atmosphere', 'the-rock-cycle', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 22, 'The Earth and its atmosphere', 'a-planet-with-limits', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 23, 'The Earth and its atmosphere', 'whats-in-the-air', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 24, 'The Earth and its atmosphere', 'carbon-dioxide-humans-and-climate', null);
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 21, 'The Earth and its atmosphere', 'inside-the-earth', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 22, 'The Earth and its atmosphere', 'three-ways-to-make-a-rock', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 23, 'The Earth and its atmosphere', 'the-rock-cycle', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 24, 'The Earth and its atmosphere', 'a-planet-with-limits', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 25, 'The Earth and its atmosphere', 'whats-in-the-air', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), 26, 'The Earth and its atmosphere', 'carbon-dioxide-humans-and-climate', null);
 
 -- ── Year 8 · Physics — 37 lessons ─────────────────────────
 insert into public.scheme_of_work_overrides

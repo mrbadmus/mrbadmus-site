@@ -9,7 +9,7 @@
        /ks3/ + MRB_KS3_LESSONS[slug] + / + slug + .html
 
    Built from ks3_data and checked against the built tree: every
-   one of these 183 pages existed on disk when this was written.
+   one of these 185 pages existed on disk when this was written.
    ══════════════════════════════════════════════════════════ */
 window.MRB_KS3_LESSONS = {
   "a-balanced-diet": "biology/nutrition-and-digestion",
@@ -91,6 +91,9 @@ window.MRB_KS3_LESSONS = {
   "getting-metals-out-of-rocks": "chemistry/metals-and-materials",
   "gravity-and-weight": "physics/space",
   "gravity-earth-moon-and-sun": "physics/space",
+  "group-0-and-why-groups-exist": "chemistry/the-periodic-table",
+  "group-1-the-alkali-metals": "chemistry/the-periodic-table",
+  "group-7-the-halogens": "chemistry/the-periodic-table",
   "groups-and-periods": "chemistry/the-periodic-table",
   "hearing-and-auditory-range": "physics/waves-and-sound",
   "heating-and-thermal-equilibrium": "physics/energy-transfers",
@@ -125,7 +128,6 @@ window.MRB_KS3_LESSONS = {
   "oxidation": "chemistry/types-of-reaction",
   "particle-model": "chemistry/particles-and-their-behaviour",
   "passing-it-on-heredity": "biology/inheritance-and-dna",
-  "patterns-you-can-predict": "chemistry/the-periodic-table",
   "pollinators-and-food-security": "biology/ecosystems-and-interdependence",
   "potential-difference": "physics/electric-circuits",
   "power-ratings-in-watts": "physics/energy-at-home",

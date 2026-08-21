@@ -278,6 +278,21 @@ LESSON = {
                       "skeleton and then hand you a short list of joints worth "
                       "looking at properly."},
 
+        # ⊕ #s-words — the five words this lesson USES and never stops to
+        # define. Design draws no words section on this page and the RAIL IS
+        # NOT TOUCHED: the block carries an `anchor` because that is what a
+        # section carries, and `check_rail_matches_design` compares the built
+        # rail against the one Design drew.
+        # `terms` must match `vocabulary[].term` byte for byte — `r_keyword`
+        # drops a term it cannot resolve, silently, and renders nothing at all
+        # if it drops them all.
+        {"type": "keyword", "anchor": "s-words",
+         "eyebrow": "Five words",
+         "lead": "Say your answer out loud before you turn each card over. "
+                 "If you cannot say it, you do not know it yet.",
+         "terms": ["Joint", "Ligament", "Tendon", "Cartilage",
+                   "Dislocation"]},
+
         {"type": "misconception", "id": "tendon-or-ligament", "anchor": "s-think",
          "targets": "BODY-04"},
         {"type": "quiz", "ref": "ladder", "anchor": "s-ladder"},
@@ -435,6 +450,51 @@ LESSON = {
     ],
 
     "support": [],
+
+    # ── vocabulary (§10.2, §12) ─────────────────────────────────────────────
+    # ⚠️ `definition` + `note`, not `gloss`. The build contract's §12 names the
+    # key `gloss`; the SHIPPED schema is `{"term", "definition", "note"}` — that
+    # is what `r_keyword` reads (build_ks3.py:908) and what every live lesson
+    # authors. Authored to the shipped spelling so the terms reach the unit
+    # page's "Words this unit gives you" chips and the reading-age gate's
+    # exclusion list.
+    #
+    # Every definition is a KEY FACT (MRB-225): the version that is TRUE, not
+    # the famous one. Where this lesson's own `key_facts` entry says the same
+    # thing, the card agrees with it rather than restating it loosely.
+    #
+    # `Cartilage` and `ligament` are named in the opening explainer and neither
+    # is defined there; `tendon` is defined only inside the `#s-think` reveal,
+    # which a student reaches after the confusion the card exists to fix.
+    "vocabulary": [
+        {"term": "Joint",
+         "definition": "A place where two or more bones meet.",
+         "note": "Meeting is what makes it a joint, not bending. Some joints "
+                 "swing in every direction, some only turn, and some do not "
+                 "move at all."},
+        {"term": "Ligament",
+         "definition": "A tough strap joining one bone to another, holding a "
+                       "joint together.",
+         "note": "Tear one and the joint still moves — it moves too far, in a "
+                 "direction it was never meant to."},
+        {"term": "Tendon",
+         "definition": "A tough cord joining a muscle to a bone, so that the "
+                       "muscle's pull reaches the skeleton.",
+         "note": "Bone to bone is a ligament; muscle to bone is a tendon. The "
+                 "Achilles, at the back of your ankle, is the biggest tendon "
+                 "you have."},
+        {"term": "Cartilage",
+         "definition": "The smooth, slippery layer facing the ends of the "
+                       "bones inside a joint, which stops them grinding on "
+                       "each other.",
+         "note": "It has no blood supply of its own. It is fed by being used, "
+                 "and it heals slowly and often not at all."},
+        {"term": "Dislocation",
+         "definition": "A joint pushed out of place, so that the two bone "
+                       "ends no longer sit together properly.",
+         "note": "The shoulder is the most dislocated joint you own, because "
+                 "it is the one that refuses the fewest directions."},
+    ],
 
     "tutor": {"prompt": "Ask Mr Badmus AI",
               "body": "Mixing up tendons and ligaments?",

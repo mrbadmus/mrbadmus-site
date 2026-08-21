@@ -290,6 +290,21 @@ LESSON = {
               "why": "This is the one most people get wrong. Gravity is doing the moving; the biceps is holding on and letting the box down a little at a time, getting longer while it pulls. Let go and the box drops. The triceps has nothing to do here at all."},
          ]},
 
+        # ⊕ #s-words — the six words this lesson USES and never stops to
+        # define. Design draws no words section on this page and the RAIL IS
+        # NOT TOUCHED: the block carries an `anchor` because that is what a
+        # section carries, and `check_rail_matches_design` compares the built
+        # rail against the one Design drew.
+        # `terms` must match `vocabulary[].term` byte for byte — `r_keyword`
+        # drops a term it cannot resolve, silently, and renders nothing at all
+        # if it drops them all.
+        {"type": "keyword", "anchor": "s-words",
+         "eyebrow": "Six words",
+         "lead": "Say your answer out loud before you turn each card over. "
+                 "If you cannot say it, you do not know it yet.",
+         "terms": ["Antagonistic pair", "Contract", "Relax", "Tendon",
+                   "Biceps", "Triceps"]},
+
         {"type": "misconception", "id": "relax-or-stretch", "anchor": "s-think",
          "targets": "BODY-08"},
         {"type": "quiz", "ref": "ladder", "anchor": "s-ladder"},
@@ -422,6 +437,60 @@ LESSON = {
     ],
 
     "support": [],
+
+    # ── vocabulary (§10.2, §12) ─────────────────────────────────────────────
+    # ⚠️ `definition` + `note`, not `gloss`. The build contract's §12 names the
+    # key `gloss`; the SHIPPED schema is `{"term", "definition", "note"}` — that
+    # is what `r_keyword` reads (build_ks3.py:908) and what every live lesson
+    # authors. Authored to the shipped spelling so the terms reach the unit
+    # page's "Words this unit gives you" chips and the reading-age gate's
+    # exclusion list.
+    #
+    # Every definition is a KEY FACT (MRB-225): the version that is TRUE, not
+    # the famous one. Where this lesson's own `key_facts` entry says the same
+    # thing, the card agrees with it rather than restating it loosely.
+    #
+    # ⚠️ `Contract` is authored as PULL rather than as SHORTEN, and the
+    # difference is this lesson's own item `m4`: lowering a heavy box, the
+    # biceps is still contracting while it is drawn out LONGER. "A muscle
+    # contracts means a muscle shortens" is the famous version, and the page
+    # marks it wrong on the one item most people get wrong.
+    "vocabulary": [
+        {"term": "Antagonistic pair",
+         "definition": "Two muscles on either side of a joint that pull in "
+                       "opposite directions. As one contracts, the other "
+                       "relaxes.",
+         "note": "The pair exists because a muscle can only pull. One muscle "
+                 "for each direction, and neither can do the other one's "
+                 "job."},
+        {"term": "Contract",
+         "definition": "What a muscle does when it works: it pulls on the "
+                       "bone it is attached to. It can never push.",
+         "note": "Usually it shortens as it pulls. Lowering a heavy box, it "
+                 "is still pulling while the weight draws it out longer."},
+        {"term": "Relax",
+         "definition": "What a muscle does when it stops pulling and lets go, "
+                       "so that something else can lengthen it.",
+         "note": "Relaxing is not stretching. A muscle has no way of making "
+                 "itself longer — its partner, or a weight, has to pull it "
+                 "out."},
+        {"term": "Tendon",
+         "definition": "A tough cord joining a muscle to a bone, so that the "
+                       "muscle's pull reaches the skeleton.",
+         "note": "The Achilles is a tendon, not a muscle: it is how the calf "
+                 "muscle reaches the heel bone."},
+        {"term": "Biceps",
+         "definition": "The muscle at the front of the upper arm. When it "
+                       "contracts, the elbow bends.",
+         "note": "It cannot push the forearm back out. Straightening the arm "
+                 "is the triceps' job, or gravity's."},
+        {"term": "Triceps",
+         "definition": "The muscle at the back of the upper arm. When it "
+                       "contracts, the elbow straightens.",
+         "note": "It is the only thing that can straighten the arm against a "
+                 "resistance. A hanging arm straightens under its own weight "
+                 "for free."},
+    ],
 
     "tutor": {"prompt": "Ask Mr Badmus AI",
               "body": "Not sure why a muscle cannot push?",

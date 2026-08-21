@@ -81,3 +81,6 @@ build/
 # MRB-277 — the coming-soon parity fixture, written and removed by ks3_parity.py
 mrbadmus_site/ks3/__fixture__/
 ks3/__fixture__/
+
+# MRB-277 — gate receipts: evidence about one working copy, never committed
+.gate-receipts/

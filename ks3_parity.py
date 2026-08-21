@@ -6401,6 +6401,37 @@ CONTRAST = [
          fg=".ks3-badge.is-soon", bg=".ks3-badge.is-soon", need=4.5),
     dict(name="coming-soon row title on dimmed row", on=FIXTURE_SOON,
          fg=".ks3-lesson-row.is-soon > a", bg=".ks3-lesson-row.is-soon", need=4.5),
+    # ⊕ MRB-277 — THE BARS, AGAINST THEIR OWN TRACK, AT THE 3:1 THAT APPLIES
+    # TO A GRAPHICAL OBJECT (WCAG 1.4.11).
+    #
+    # These four bars measured 2.72:1 and nothing was watching: the FILLS were
+    # registered as components — "the oxygen bar is the ok green" pins
+    # `#12A150` — but a colour assertion says the fill is the right colour, not
+    # that it can be SEEN against what it is drawn on. The TRACK was never
+    # pinned at all, so the pair could drift while every existing row stayed
+    # green. A fill and a ground each measured alone is not a contrast check.
+    #
+    # ⚖️ These bars are not decoration. On b7-01 and b7-02 the bar IS the
+    # measurement the lesson teaches, and on b8-03 it is the oxygen debt
+    # itself, so a student who cannot separate bar from track cannot read the
+    # lesson at all.
+    #
+    # The `ok` fill is measured rather than all three because it is the one
+    # that was failing: `--ks3-alert` on the same track reaches 7.9:1 and
+    # `--ks3-on-dark-muted` is the deliberate low-emphasis state.
+    dict(name="b7-01 oxygen bar on its track (graphical, 3:1)", on=B7_BENCH,
+         fg='.ks3-rr-readout[data-tone="ok"] .ks3-rr-fill',
+         bg=".ks3-rr-track", need=3.0, prop="background-color"),
+    dict(name="b7-02 rate bar on its track (graphical, 3:1)", on=B7_TUNER,
+         fg='.ks3-lt-readout[data-tone="ok"] .ks3-lt-fill',
+         bg=".ks3-lt-track", need=3.0, prop="background-color"),
+    dict(name="b8-03 oxygen-debt bar on its track (graphical, 3:1)", on=B8_DEBT,
+         fg='.ks3-od-bar[data-tone="ok"] .ks3-od-fill',
+         bg=".ks3-od-track", need=3.0, prop="background-color"),
+    dict(name="b8-04 fermenter bar on its track (graphical, 3:1)", on=B8_FERM,
+         fg='.ks3-fm-product[data-tone="ok"] .ks3-fm-fill',
+         bg=".ks3-fm-track", need=3.0, prop="background-color"),
+
     dict(name="family chip on its ground", on=UNIT,
          fg=".ks3-family", bg=".ks3-family", need=4.5),
     dict(name="cross-reference pointer on card", on=UNIT_REF,
@@ -14183,6 +14214,116 @@ def check_r3_runtime(page):
     return (["R3: " + p for p in info["problems"]], info)
 
 
+_JS_RAIL_FORCE_DONE = r"""
+(function () {
+  var rail = document.querySelector('.ks3-rail');
+  if (!rail) { return { skip: "no rail on this page" }; }
+  var lis = rail.querySelectorAll('li');
+  if (!lis.length) { return { skip: "the rail has no stops" }; }
+  // `doneByDom` reads `data-stage-done` FIRST and treats it as authoritative
+  // in both directions, so this is the section's own declaration and not a
+  // class forced onto the chip. `paint()` then runs exactly as it does for a
+  // student who finished the section — the swap under test is on that path.
+  var forced = 0;
+  for (var i = 0; i < lis.length; i++) {
+    var a = lis[i].querySelector('a[href^="#"]');
+    if (!a) { continue; }
+    var sec = document.getElementById(a.getAttribute('href').slice(1));
+    if (!sec) { continue; }
+    sec.setAttribute('data-stage-done', '1');
+    forced++;
+  }
+  // The rail repaints on any click, change or input, in the capture phase.
+  document.body.click();
+  return { forced: forced, stops: lis.length };
+})()
+"""
+
+_JS_RAIL_DONE_CHIP = r"""
+(function () {
+  var out = { done: 0, textual: [], unmarked: [], bg: null, fg: null };
+  var lis = document.querySelectorAll('.ks3-rail li.is-done');
+  for (var i = 0; i < lis.length; i++) {
+    var chip = lis[i].querySelector('.ks3-rail-chip');
+    if (!chip) { continue; }
+    out.done++;
+    var txt = (chip.textContent || '').replace(/\s+/g, '');
+    if (txt) { out.textual.push(txt); }
+    if (!chip.querySelector('svg')) { out.unmarked.push(i + 1); }
+    if (out.bg === null) {
+      var cs = getComputedStyle(chip);
+      out.bg = cs.backgroundColor;
+      out.fg = cs.color;
+    }
+  }
+  return out;
+})()
+"""
+
+
+def check_done_chip_is_drawn(page):
+    """⊕ MRB-277, 21 Aug 2026 — THE SAFETY CATCH, AS A GATE RATHER THAN A COMMENT.
+
+    Returns (problems, info). Mutates the page — call it on a fresh load.
+
+    ── WHAT IS BEING GUARDED ────────────────────────────────────────────
+
+    `.ks3-rail li.is-done .ks3-rail-chip` paints `--ks3-on-dark` on
+    `--ks3-accent`, which measures **3.34:1**. That PASSES as a non-text
+    graphical object (WCAG 1.4.11, 3:1) and FAILS as text (1.4.3, 4.5:1) —
+    and the chip's resting content is the lesson NUMBER, which is text.
+
+    It is safe only because `paint()` in `shared/ks3.js` swaps the numeral
+    for `TICK_SVG` whenever it sets `is-done`, so the pairing never carries a
+    glyph. Until now the only thing recording that was a comment above the
+    CSS rule saying so. A safety catch that depends on a human reading a
+    comment is the same failure class as a gate watching nothing — which is
+    the class MRB-279 spent this run closing — so it is asserted here, on the
+    painted DOM, in the state that is actually at risk.
+
+    ── WHY IT DRIVES RATHER THAN READS ──────────────────────────────────
+
+    No rail stop is done on load (MRB-208 forbids it), so a check that merely
+    read the resting page would assert nothing and report green forever. The
+    drive sets each rail-targeted section's own `data-stage-done="1"` — the
+    declaration `doneByDom` reads before any heuristic — and then lets the
+    real `paint()` do the work. A vacuous run is therefore itself a finding:
+    if no chip reaches the done state, that is reported rather than passed.
+
+    The assertion is unconditional and does not consult the measured ratio.
+    Design's rule is "the drawn mark, never a typed ✓", the same rule the
+    ladder obeys; a chip carrying text would be a defect at 3.34:1 and still
+    a defect if the palette moved. The measured pairing is reported so that a
+    future palette change is visible in the run log rather than silent.
+    """
+    page.eval(_JS_SETTLE)
+    started = page.eval(_JS_RAIL_FORCE_DONE)
+    if isinstance(started, dict) and started.get("skip"):
+        return ([], {"skipped": started["skip"], "done": 0})
+    # A second round trip: `paint()` is scheduled with setTimeout(..., 0), so
+    # it has run by the time this evaluates.
+    page.eval("1")
+    info = page.eval(_JS_RAIL_DONE_CHIP)
+    problems = []
+    if not info.get("done"):
+        problems.append(
+            "the rail never reached a done state, so this assertion measured "
+            "NOTHING. %d stop(s) were declared done and none painted — either "
+            "the drive no longer reaches `paint()` or `is-done` moved."
+            % (started.get("forced", 0)))
+    for txt in info.get("textual", []):
+        problems.append(
+            "a DONE rail chip renders the text %r on --ks3-on-dark over "
+            "--ks3-accent (%s on %s), which measures 3.34:1 — under the 4.5:1 "
+            "text bar. The numeral must be swapped for the drawn mark."
+            % (txt, info.get("fg"), info.get("bg")))
+    for n in info.get("unmarked", []):
+        problems.append(
+            "done rail stop %d carries no drawn mark. The tick is an SVG, "
+            "never a typed glyph." % n)
+    return problems, info
+
+
 # The runtime half of the drawn-mark rule. Layer B can only see the HTML as
 # written; this sees the DOM as painted, INCLUDING the ladder feedback, which
 # does not exist until a wrong option has been clicked. That feedback is where
@@ -17616,6 +17757,24 @@ def run_browser_layers(ks3_root, browser_mod):
                              "%d problem(s) across %d block(s)"
                              % (len(r3info["problems"]), r3info["blocks"]),
                              not r3))
+
+                    page = fresh(b, url, rel)
+                    if page is not None:
+                        dc, dcinfo = check_done_chip_is_drawn(page)
+                        problems.extend("RAIL: " + d for d in dc)
+                        drain_console(page, rel,
+                                      " during the done-chip audit")
+                        style_rows.append(
+                            ("done rail chip is the drawn mark, never text",
+                             "no glyph on --ks3-on-dark over --ks3-accent",
+                             "0 textual chips",
+                             ("skipped — %s" % dcinfo["skipped"])
+                             if dcinfo.get("skipped") else
+                             "%d done chip(s), %d textual, %d unmarked"
+                             % (dcinfo.get("done", 0),
+                                len(dcinfo.get("textual", [])),
+                                len(dcinfo.get("unmarked", []))),
+                             not dc))
 
                     page = fresh(b, url, rel)
                     if page is not None:

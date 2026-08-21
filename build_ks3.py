@@ -1925,11 +1925,34 @@ def _head_counter(spec):
         # Opt-in, so every shipped counter with no singular is byte-identical.
         one = (' data-format-one="%s"' % e(spec["format_one"])
                if spec.get("format_one") else "")
+        # ⊕ MRB-277 — `format_narrow`, the COMPACT form, opt-in and the mirror
+        # of `zero` / `full` / `format_one`. c2-02's readout is the only one in
+        # the key stage long enough to overflow a 320px phone (33 characters of
+        # 15px mono at `flex: 0 0 auto`, measured at 342px); every other counter
+        # tops out at 29 and is byte-identical across this change.
+        #
+        # ⚖️ Mide ruled the format shortens rather than wraps: a wrapped mono
+        # readout changes height as its numbers change and the block jumps
+        # under the student's finger. The RESTING render stays the full form —
+        # the build cannot know the viewport, and it is the string a crawler
+        # and a no-JS reader get — so ks3.js swaps it on its first paint.
+        # ⚠️ THE CONSTANTS ARE BAKED INTO THE NARROW FORM TOO. `fmt` above had
+        # them substituted; reading `spec["format_narrow"]` raw shipped
+        # "{left}/{budget} left" to the page, and ks3.js substitutes only the
+        # LIVE placeholders — so a 320px phone would have read a literal
+        # "{budget}" where the number goes. Caught in the built bytes rather
+        # than on a phone, which is the only reason it is not a defect.
+        narrow_fmt = spec.get("format_narrow")
+        if narrow_fmt:
+            for k, v in sorted((spec.get("constants") or {}).items()):
+                narrow_fmt = narrow_fmt.replace("{%s}" % k, str(v))
+        narrow = (' data-format-narrow="%s"' % e(narrow_fmt)
+                  if narrow_fmt else "")
         if spec.get("zero"):
             return ('<p class="ks3-blockhead-count" data-count data-format="%s" '
-                    'data-zero="%s" data-total="%d"%s%s%s>%s</p>'
+                    'data-zero="%s" data-total="%d"%s%s%s%s>%s</p>'
                     % (e(spec["format"]), e(spec["zero"]), total, full, one,
-                       tone, t(spec["zero"])))
+                       narrow, tone, t(spec["zero"])))
         # ⚠️ The RESTING render takes the singular too, or a bench that opens on
         # one combination ships "1 combinations tried" in the bytes and is
         # corrected by JS a frame later — a wrong number on screen for an
@@ -1938,8 +1961,9 @@ def _head_counter(spec):
             first = (spec["format_one"].replace("{n}", "1")
                      .replace("{total}", str(total)))
         return ('<p class="ks3-blockhead-count" data-count data-format="%s" '
-                'data-total="%d"%s%s%s>%s</p>'
-                % (e(spec["format"]), total, full, one, tone, t(first)))
+                'data-total="%d"%s%s%s%s>%s</p>'
+                % (e(spec["format"]), total, full, one, narrow, tone,
+                   t(first)))
     if not (spec.get("off") and spec.get("on")):
         raise ValueError(
             "head_counter needs either `format` (+ `total`) or both `off` and "
