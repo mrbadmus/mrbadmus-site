@@ -12,6 +12,7 @@ device) are printed as MANUAL so the list stays honest about what has actually
 been verified and what has not.
 """
 
+import collections as _collections
 import contextlib
 import glob
 import os
@@ -1676,6 +1677,222 @@ def main():
                   % (len(stale), ", ".join("%s · %s" % s for s in stale))]
                  if stale else [])))
 
+    # ── MRB-278 · ANSWER POSITION ────────────────────────────────────────
+    #
+    # ⊕ ADDED 21 Aug 2026. Read this before changing a threshold below.
+    #
+    # THE PROPERTY: a student must not be able to score by pressing the same
+    # button every time. MRB-177 above gates option LENGTH, which is
+    # position-independent BY CONSTRUCTION, so it has never been able to see
+    # this and never will be.
+    #
+    # WHAT WAS MEASURED, on the BUILT pages, on 21 Aug 2026:
+    #
+    #     ladder rungs, whole key stage   174 rungs   [103, 63, 8, 0]
+    #     ladder rungs, Chemistry only     58 rungs   [ 58,  0, 0, 0]
+    #
+    # Every one of the 58 marked rungs on every Chemistry page had its
+    # correct answer as the FIRST option — 100%. A student pressing button
+    # one on all four rungs of any chemistry lesson scored full marks without
+    # reading a word. Across the whole key stage the FOURTH option was
+    # correct 0 times out of 174: no student ever needed to consider it.
+    #
+    # The 1,044-question bank was measured at the same time and was already
+    # healthy (worst bank 42%, no index unused), so this gate covers BOTH
+    # corpora and is expected to bind on neither. It exists because nothing
+    # was watching when the ladder drifted, not because the bank is suspect.
+    #
+    # ── THE THRESHOLDS, AND WHY EACH IS WHAT IT IS ───────────────────────
+    #
+    # Gated on PROPERTIES, not on exact balance, because exact balance is not
+    # achievable and not the point: a unit with 6 rungs cannot split 4 ways
+    # evenly, and a gate that demanded it would be failing arithmetic rather
+    # than measuring a defect.
+    #
+    #   (1) NO INDEX HOLDS MORE THAN HALF a corpus. Half is the point at
+    #       which "always press this one" beats reading, which is the actual
+    #       harm. Set at > 50% rather than at some tighter figure so that the
+    #       gate fires on the DEFECT and not on ordinary unevenness — the
+    #       real failure above sat at 100%, and every healthy unit measured
+    #       between 25% and 33%. There is a wide, empty gap between those two
+    #       populations and the threshold sits in it.
+    #
+    #   (2) NO INDEX HOLDS ZERO, where the corpus is big enough to fill every
+    #       index (n >= number of options). "The last one is never right" is
+    #       learnable in an afternoon and it silently converts a 4-option
+    #       question into a 3-option one. This is the assertion that would
+    #       have caught the live defect earliest: index 3 was unused across
+    #       all 174 rungs long before anyone noticed index 0 was over half.
+    #
+    #   (3) BOTH ADAPT TO THE SET'S OWN OPTION COUNT. Every KS3 set is
+    #       4-option today. A 3-option bank cannot hold a 4-way distribution
+    #       and must not be failed for it, so the divisor is the set's own
+    #       length, never a hardcoded 4.
+    #
+    # Measured PER UNIT as well as globally. A per-corpus aggregate averages
+    # an all-one-index unit against fifteen healthy ones and shows nothing
+    # wrong — which is precisely how the Chemistry ladder stayed invisible.
+    def _pos_report(label, sets):
+        """(problems, line) for one corpus. `sets` is (unit, where, n, idx)."""
+        probs = []
+        glob = _collections.Counter()
+        per = _collections.defaultdict(_collections.Counter)
+        sizes = _collections.defaultdict(set)
+        for unit, _where, n, idx in sets:
+            glob[idx] += 1
+            per[unit][idx] += 1
+            sizes[unit].add(n)
+        if not sets:
+            return probs, "%s: nothing to measure" % label
+        alln = sorted({n for _u, _w, n, _i in sets})
+        for scope, c in ([("the whole key stage", glob)]
+                         + [(u, per[u]) for u in sorted(per)]):
+            tot = sum(c.values())
+            nopt = max(alln) if scope == "the whole key stage" else max(sizes[scope])
+            row = [c.get(i, 0) for i in range(nopt)]
+            top = max(row)
+            if top * 2 > tot:
+                probs.append(
+                    "%s · %s: index %d holds %d of %d (%.0f%%) — more than "
+                    "half, so pressing that button beats reading the question"
+                    % (label, scope, row.index(top), top, tot,
+                       100.0 * top / tot))
+            if tot >= nopt:
+                zero = [i for i, v in enumerate(row) if v == 0]
+                if zero:
+                    probs.append(
+                        "%s · %s: index %s is NEVER the answer across %d set(s) "
+                        "— a %d-option question a student can answer as a "
+                        "%d-option one"
+                        % (label, scope, zero, tot, nopt, nopt - len(zero)))
+        tot = sum(glob.values())
+        nopt = max(alln)
+        row = [glob.get(i, 0) for i in range(nopt)]
+        return probs, ("%s: %d set(s) across %d unit(s), %s, worst index "
+                       "%.0f%%" % (label, tot, len(per), row,
+                                   100.0 * max(row) / tot))
+
+    lad_sets, bank_sets = [], []
+    for u in _B.ks3_data.build_units():
+        for l in u.get("lessons", []):
+            if not l.get("authored"):
+                continue
+            for rung, r in (l.get("ladder") or {}).items():
+                if isinstance(r, dict) and r.get("options"):
+                    a = r.get("answer")
+                    if isinstance(a, int) and 0 <= a < len(r["options"]):
+                        lad_sets.append((u.get("code"), "%s %s" % (l["slug"], rung),
+                                         len(r["options"]), a))
+    try:
+        import ks3_data.question_bank as _qb
+        for rec in _qb.load_bank():
+            for q in rec["questions"]:
+                ci = [i for i, o in enumerate(q["options"]) if o.get("correct")]
+                if len(ci) == 1:
+                    bank_sets.append((rec["unit"], q.get("id"),
+                                      len(q["options"]), ci[0]))
+    except Exception as exc:                       # pragma: no cover
+        bank_sets = []
+        print("  (bank not measured: %s)" % exc)
+
+    lad_p, lad_line = _pos_report("ladder rungs", lad_sets)
+    bnk_p, bnk_line = _pos_report("question bank", bank_sets)
+    check("MRB-278 · the correct answer is not always in the same place",
+          not lad_p and not bnk_p,
+          "%s; %s" % (lad_line, bnk_line) if not (lad_p or bnk_p)
+          else "; ".join(lad_p + bnk_p))
+
+    # ── MRB-278 · A PREDICT'S OPTIONS MUST NOT HAVE A LENGTH OUTLIER ─────
+    #
+    # ⊕ ADDED 21 Aug 2026, together with the position gate above.
+    #
+    # MRB-177 skips every `predict` in the key stage — all 33 of them — and
+    # does so silently. Its `length_tell()` needs the index of the correct
+    # option, and a predict authors no answer key at all: the verdict is the
+    # `reveal` prose underneath. So the gate returns None and moves on, and
+    # 33 activities have never been measured on the axis it exists to measure.
+    #
+    # ⚖️ RULED 21 Aug 2026. The gate CANNOT be built on the answer key the
+    # brief imagined, because there is no key to read and some predicts have
+    # no single correct option at all ("All three of these are true"). What
+    # IS well defined, and is the thing that actually does the harm, is
+    # whether ANY one option is a conspicuous outlier: a student who spots
+    # the elaborate one picks it without holding the belief, whichever option
+    # it happens to be. So this measures the SET, not the answer.
+    #
+    # On a predict that matters more than on a marked rung, and this is the
+    # reason the gate exists rather than a nicety: a predict's whole purpose
+    # is to make the student COMMIT to a misconception so the reveal beneath
+    # can confront it. A student who spots the answer never commits, and a
+    # misconception nobody commits to cannot be confronted. The activity then
+    # measures nothing and teaches nothing, while looking exactly like it
+    # worked.
+    #
+    # THRESHOLD: deliberately MRB-177's own — strictly longest, and clear of
+    # the next longest by >= 4 words OR by >= 1.4x. Reused rather than
+    # reinvented so that one defect has one definition across the key stage;
+    # a set that would fail as a marked rung must not pass as a predict.
+    #
+    # ⚖️ RULED 21 Aug 2026: THIS GATE IS ONE-SIDED, AND THAT IS DELIBERATE.
+    # A two-sided rule — also failing a conspicuously SHORT option — was
+    # written, run over all 33 predicts, and REJECTED on its results. It
+    # flagged six sets, and only two of them were defects:
+    #
+    #   HARMFUL   the correct answer was itself the odd one out, so a student
+    #             picking the short one landed on it with no science at all
+    #             (b2 `tendon-or-ligament`, c2 `think-commit-copper`). Both
+    #             were fixed by hand.
+    #   BENIGN    the short option was a DISTRACTOR stating the naive belief
+    #             plainly (c3 `think-commit-furthest`, c4 `think-commit-gas`,
+    #             c4 `think-commit-maths`), which is what a predict's
+    #             distractor is FOR — it has to be recognisable enough that a
+    #             student who holds it will commit to it. c3 `gate-which-dial`
+    #             is shorter still and is not prose at all: its options are
+    #             one-word variable labels ("Stirring").
+    #
+    # Four false alarms out of six, and the false alarms would have been
+    # "fixed" by padding out exactly the distractors that most need to stay
+    # plain. Without an answer key nothing mechanical can tell the two apart,
+    # so the gate measures only the case that is unambiguous. The short-side
+    # finding is REPORTED to Mide rather than gated, which is the honest place
+    # for a defect a gate cannot define.
+    #
+    # Found on 21 Aug 2026: 9 of 33 predicts, every one of them with the
+    # correct option as the outlier, several at exactly double the next
+    # longest. All nine were fixed AT THE DISTRACTOR under MRB-177's ruling —
+    # the correct option was not shortened and not touched.
+    pred_bad = []
+    for u in _B.ks3_data.build_units():
+        for l in u.get("lessons", []):
+            if not l.get("authored"):
+                continue
+            for a in l.get("activities", []):
+                if a.get("kind") != "predict" or not a.get("options"):
+                    continue
+                texts = [_opt_text(o) for o in a["options"]]
+                if len(texts) < 3:
+                    continue
+                w = [len(re.findall(r"[^\s]+", re.sub(r"<[^>]+>", " ", str(t))))
+                     for t in texts]
+                mx = max(w)
+                top = sorted(w)[-2]
+                if w.count(mx) == 1 and (mx - top >= 4 or mx >= 1.4 * top):
+                    pred_bad.append(
+                        "%s · #%s: one option is %dw against a next-longest of "
+                        "%dw" % (l["slug"], a.get("id"), mx, top))
+    check("MRB-278 · no predict gives its answer away by length",
+          not pred_bad,
+          "measured all %d predicts in the key stage — none has a conspicuous "
+          "outlier, so every one still requires a commitment"
+          % sum(1 for u in _B.ks3_data.build_units()
+                for l in u.get("lessons", []) if l.get("authored")
+                for a in l.get("activities", [])
+                if a.get("kind") == "predict" and a.get("options"))
+          if not pred_bad else
+          "%d predict(s) a student can answer on shape alone, so the "
+          "misconception is never committed to and never confronted: %s"
+          % (len(pred_bad), "; ".join(pred_bad)))
+
     # §8.10 — the platform does not explain itself on the page.
     #
     # §8.10 is deliberately a discernment test and NOT a banned-phrase list,
@@ -1689,6 +1906,18 @@ def main():
     # Found live: the `references[].why` field renders into the "Connects to"
     # card, and C1's read "P11 owns it (§7.4); this lesson points at it and must
     # render gracefully before P11 exists" on the published draft.
+    # ⊕ MRB-277 — one rule for arrows and for ordering: an arrow is a
+    # DRAWING, never a word. See `check_arrows_are_spoken`'s docstring, which
+    # is where the rule itself is written down.
+    arr_problems, arr_pages = PARITY.check_arrows_are_spoken(KS3_OUT)
+    check("MRB-277 · no arrow glyph reaches page text or an accessible name",
+          not arr_problems,
+          "%d pages scanned — every relation a student must read is a word, "
+          "and the only arrow in the key stage is painted on a canvas"
+          % arr_pages
+          if not arr_problems
+          else "%d page(s): %s" % (len(arr_problems), arr_problems[0][:170]))
+
     sec_problems, sec_pages = PARITY.check_no_section_refs(KS3_OUT)
     check("§8.10 · no architecture §-reference reaches student prose",
           not sec_problems,
@@ -1700,6 +1929,34 @@ def main():
     # registered. Absence-of-selector already failed; absence-of-
     # REGISTRATION passed silently, which is how B1 shipped with no
     # progress rail under a green gate.
+    # ⊕ MRB-279, 21 Aug 2026 — PROVE THE MANIFEST PARSER REFUSES A BAD ROW.
+    #
+    # This runs BEFORE the coverage gate below, deliberately. The coverage
+    # gate reads §10.2 through `_manifest_rows()`, and a stray `|` in a row
+    # used to push everything after it into a column no check reads: thirteen
+    # C3 components registered, invisible, and reporting green for seven
+    # lessons. The parser now raises on a row whose width disagrees with its
+    # header — and this reinjects that exact defect into a COPY of the
+    # manifest to show the refusal is real, because a gate that has never
+    # been seen to fail is not a gate.
+    mut_problems, mut_n = PARITY.mutation_test_manifest_parser(".")
+    check("MRB-279 · the §10 manifest parser REFUSES a row it cannot read",
+          not mut_problems,
+          "%d deliberate mutations — a stray `|`, a missing cell, and an "
+          "untouched control — the first two raise and the control still "
+          "parses" % mut_n
+          if not mut_problems else "; ".join(mut_problems))
+
+    # ⊕ MRB-279 — the misconception register, asserted in BOTH directions.
+    mis_problems, mis_rows = PARITY.check_misconception_register(".", units)
+    check("MRB-279 · every misconception id is registered, and every "
+          "registered id resolves",
+          not mis_problems,
+          "; ".join("%s %s" % (a, b) for a, b, _ in mis_rows[:2])
+          if not mis_problems else "; ".join(mis_problems))
+    for label, detail, ok in mis_rows:
+        print("       %s %-40s %s" % ("PASS" if ok else "FAIL", label, detail))
+
     cov_problems, cov_rows = PARITY.check_design_coverage(".")
     check("MRB-203 · every authored family has a drawn reference screen, "
           "every rendered block type has a registered component",
