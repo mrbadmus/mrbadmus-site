@@ -533,14 +533,14 @@ LESSON = {
             "q": "In a symbol equation, which numbers are you allowed to "
                  "change when balancing?",
             "options": [
-                "The big numbers written in front of a formula",
                 "The small numbers inside a formula",
+                "The big numbers written in front of a formula",
                 "Either, as long as the counts end up matching",
                 "Neither — you change the substances instead",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "Those are part of the substance. Changing H2O to H2O2 "
+                0: "Those are part of the substance. Changing H2O to H2O2 "
                    "changes water into hydrogen peroxide.",
                 2: "Matching counts around the wrong substance is a false "
                    "equation. Only the numbers in front may change.",
@@ -556,14 +556,14 @@ LESSON = {
                  "points out that both sides now have two hydrogens and two "
                  "oxygens. What is wrong?",
             "options": [
-                "It balances, but the product is hydrogen peroxide, not water",
                 "Nothing — it is balanced, so it is correct",
+                "It balances, but the product is hydrogen peroxide, not water",
                 "The hydrogen is wrong — there should be four",
                 "You cannot have a number 2 in a formula",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "Balanced is not the same as true. This equation describes "
+                0: "Balanced is not the same as true. This equation describes "
                    "a different reaction, making a substance that bleaches "
                    "hair.",
                 2: "The counts really do match. The fault is in what was "

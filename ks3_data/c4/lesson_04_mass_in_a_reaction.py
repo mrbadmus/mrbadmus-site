@@ -666,19 +666,19 @@ LESSON = {
             "q": "2.40 g of magnesium is burned in an open dish and 4.00 g of "
                  "white powder is left. What has happened?",
             "options": [
-                "1.60 g of oxygen from the air has joined the magnesium",
                 "1.60 g of mass has been created by the reaction",
                 "The balance has drifted and needs re-zeroing",
                 "The magnesium has absorbed heat, which has mass",
+                "1.60 g of oxygen from the air has joined the magnesium",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
-                1: "Mass is never created. Every gram of the extra 1.60 g can "
+                0: "Mass is never created. Every gram of the extra 1.60 g can "
                    "be traced to oxygen that was in the air before the "
                    "reaction.",
-                2: "A gain of 1.60 g on 2.40 g is far too large to be drift, "
+                1: "A gain of 1.60 g on 2.40 g is far too large to be drift, "
                    "and it is repeatable — the same gain every time.",
-                3: "Heat carries no measurable mass. What was absorbed was "
+                2: "Heat carries no measurable mass. What was absorbed was "
                    "oxygen, and it is now part of the powder.",
             }},
         # ⚑ Science flag 11's third figure pair. 8.00 g CaCO₃ → 4.48 g CaO is

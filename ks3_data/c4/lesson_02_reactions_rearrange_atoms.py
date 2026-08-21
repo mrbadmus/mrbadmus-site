@@ -593,20 +593,20 @@ LESSON = {
         "recall": {
             "q": "What happens to the atoms during a chemical reaction?",
             "options": [
-                "The joins between them are broken and new joins are made",
                 "Some atoms are destroyed and new ones are made",
                 "The atoms themselves change into different kinds of atom",
                 "The atoms stay exactly as they were, joined to the same "
                 "partners",
+                "The joins between them are broken and new joins are made",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
-                1: "Atoms are not created or destroyed in a chemical "
+                0: "Atoms are not created or destroyed in a chemical "
                    "reaction. Count them on each side and the numbers match.",
                 # ⚑ Science flag 7, second of two. Same hedge, same reason.
-                2: "That takes a nuclear reaction, not chemistry. A magnesium "
+                1: "That takes a nuclear reaction, not chemistry. A magnesium "
                    "atom is still a magnesium atom after it burns.",
-                3: "Then nothing would have happened. New partners are "
+                2: "Then nothing would have happened. New partners are "
                    "precisely what makes it a reaction.",
             }},
 
@@ -622,14 +622,14 @@ LESSON = {
             "q": "Methane burns in oxygen. There are four hydrogen atoms in "
                  "the methane. How many hydrogen atoms are in the products?",
             "options": [
-                "Four — the same four, now in two water particles",
                 "Two, because water only has two hydrogens",
+                "Four — the same four, now in two water particles",
                 "None — they are burnt up",
                 "It depends on how much oxygen there is",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "Water has two hydrogens each, and two waters are made. "
+                0: "Water has two hydrogens each, and two waters are made. "
                    "Four atoms in, four atoms out.",
                 2: "Burning is not disappearing. The hydrogen atoms end up in "
                    "the water that condenses on a cold window above a hob.",

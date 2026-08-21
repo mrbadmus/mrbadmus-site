@@ -644,16 +644,16 @@ LESSON = {
             "q": "What single thing tells you that a change is a chemical "
                  "change?",
             "options": [
-                "At least one new substance has been made",
                 "The change cannot be reversed by any means",
                 "The colour of the substance has changed",
+                "At least one new substance has been made",
                 "Heat was needed to make it happen",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "Smashing a glass cannot be reversed and is physical; "
+                0: "Smashing a glass cannot be reversed and is physical; "
                    "rusting can be reversed in a furnace and is chemical.",
-                2: "Ice going cloudy and a nail going orange both change "
+                1: "Ice going cloudy and a nail going orange both change "
                    "colour, and only one of them is a reaction.",
                 3: "Melting needs heat and makes nothing new. Rusting needs "
                    "no heat at all.",
@@ -668,18 +668,18 @@ LESSON = {
                  "both described as \"it dissolved\". Which pair of verdicts "
                  "is right?",
             "options": [
-                "Salt: physical. Marble: chemical.",
                 "Both physical — in both cases the solid disappears into the "
                 "liquid",
                 "Both chemical — the solid is destroyed in both",
+                "Salt: physical. Marble: chemical.",
                 "Salt: chemical. Marble: physical.",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "The marble has become a gas, a salt and water, and the "
+                0: "The marble has become a gas, a salt and water, and the "
                    "gas can be tested. Something disappearing is not "
                    "evidence of anything.",
-                2: "The salt is not destroyed. Evaporate the water and every "
+                1: "The salt is not destroyed. Evaporate the water and every "
                    "gram of it comes back unchanged.",
                 3: "Exactly the wrong way round. Test the gas from the "
                    "marble: it turns limewater cloudy, so it is a new "

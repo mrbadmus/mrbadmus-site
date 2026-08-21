@@ -467,17 +467,17 @@ LESSON = {
         "recall": {
             "q": "In a word equation, what does the arrow mean?",
             "options": [
-                "Makes, or turns into",
                 "Equals",
                 "And",
+                "Makes, or turns into",
                 "Is heated to give",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "An equals sign works both ways. The arrow says which way "
+                0: "An equals sign works both ways. The arrow says which way "
                    "the reaction went, and reversing it usually describes "
                    "something that does not happen.",
-                2: "That is the plus sign. The arrow separates the reactants "
+                1: "That is the plus sign. The arrow separates the reactants "
                    "from the products.",
                 3: "Heating may or may not be involved. Many reactions need "
                    "no heat, and the arrow means the same thing in all of "
