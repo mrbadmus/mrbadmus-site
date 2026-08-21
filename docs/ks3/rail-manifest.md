@@ -138,11 +138,11 @@ rewrites §1 below. Run it when Design delivers a new unit; never hand-edit rows
 | `displacement` | `c5-04-displacement` | s-hook s-grid s-uses s-think s-ladder | — |
 | `which-reaction-is-this` | `c5-05-which-reaction-is-this` | s-hook s-sort s-rule s-think s-ladder | — |
 | `acids-and-alkalis` | `c6-01-acids-and-alkalis` | s-hook s-bench s-hazard s-think s-ladder | — |
-| `indicators-and-the-ph-scale` | `c6-02-indicators-and-the-ph-scale` | s-hook s-scale s-bench s-choose s-think s-ladder | s-scale=s-hook |
+| `the-ph-scale-and-indicators` | `c6-02-indicators-and-the-ph-scale` | s-hook s-scale s-bench s-choose s-think s-ladder | s-scale=s-hook |
 | `neutralisation` | `c6-03-neutralisation` | s-hook s-titrate s-uses s-think s-ladder | — |
-| `acids-and-metals` | `c6-04-acids-and-metals` | s-hook s-bench s-test s-think s-ladder | — |
+| `acid-plus-metal` | `c6-04-acids-and-metals` | s-hook s-bench s-test s-think s-ladder | — |
 | `acids-and-carbonates` | `c6-05-acids-and-carbonates` | s-hook s-rig s-bench s-world s-think s-ladder | — |
-| `making-a-salt` | `c6-06-making-a-salt` | s-hook s-name s-method s-think s-ladder | — |
+| `making-a-pure-dry-salt` | `c6-06-making-a-salt` | s-hook s-name s-method s-think s-ladder | — |
 | `catalysts` | `c6-07-catalysts` | s-hook s-bench s-uses s-think s-ladder | — |
 | `energy-and-changes-of-state` | `c7-01-energy-and-changes-of-state` | s-hook s-curve s-uses s-think s-ladder | — |
 | `exothermic-reactions` | `c7-02-exothermic-reactions` | s-hook s-bench s-uses s-think s-ladder | — |

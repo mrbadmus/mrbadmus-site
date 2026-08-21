@@ -433,6 +433,20 @@ LESSON = {
 
         {"type": "key-fact", "ref": "melts-sharply"},
 
+        # ⊕ #s-words. Design drew no words section on this page — c3-01,
+        # c3-02 and c3-05 have one because she drew those, and each of those
+        # carries a rail stop for it. This one gets the cards and NOT a stop:
+        # `check_rail_matches_design` compares the built rail against
+        # `docs/ks3/rail-manifest.md`, so an added stop fails the build.
+        # `terms` matches `vocabulary[].term` byte for byte.
+        {"type": "keyword", "anchor": "s-words",
+         "eyebrow": "Five words",
+         "lead": "Say your answer out loud before you turn each "
+                 "card over. If you cannot say it, you do not "
+                 "know it yet.",
+         "terms": ["Melting point", "Melting range", "Expected value",
+                   "Anomalous result", "Impurity"]},
+
         # ── Evaluate · the three limits of the method ──────────────────────
         # Light `.ks3-block` (page line 211), a headed list of three. Authored
         # as a `rule` panel: §5.1.1's vocabulary is closed, `explainer` carries
@@ -476,6 +490,38 @@ LESSON = {
          "placement": "top-level",
          "ground": "card",
          "eyebrow": "Key fact"},
+    ],
+
+    # ── vocabulary (Law 7) ──────────────────────────────────────────────────
+    # ⚖️ Three of these five are the WORKING-SCIENTIFICALLY words the lesson
+    # is really about — expected value, melting range, anomalous result — and
+    # the page uses all three without stopping for any of them. `Impurity`
+    # keeps c3-01's definition unchanged and takes this lesson's note.
+    "vocabulary": [
+        {"term": "Melting point",
+         "definition": "The temperature at which a solid turns to liquid.",
+         "note": "A pure substance has one, and it is the same every time "
+                 "you measure it."},
+        {"term": "Melting range",
+         "definition": "The spread between the temperature melting starts "
+                       "at and the temperature it finishes at.",
+         "note": "Within a degree for a pure substance. Several degrees for "
+                 "a mixture, starting lower."},
+        {"term": "Expected value",
+         "definition": "The result you already know a pure sample should "
+                       "give.",
+         "note": "Without one, the measurement means nothing. You have to "
+                 "know that 53 °C was what it was supposed to be."},
+        {"term": "Anomalous result",
+         "definition": "A reading that disagrees with the others taken the "
+                       "same way.",
+         "note": "Reported and set aside with a reason written down. Never "
+                 "deleted, and never averaged in."},
+        {"term": "Impurity",
+         "definition": "Anything present that is not the substance you "
+                       "wanted.",
+         "note": "The melting range tells you THAT one is there. It never "
+                 "tells you what it is."},
     ],
 
     # ── activities (§5.5) ───────────────────────────────────────────────────

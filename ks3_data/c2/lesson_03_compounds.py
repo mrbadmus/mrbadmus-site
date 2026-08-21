@@ -202,6 +202,16 @@ LESSON = {
 
         {"type": "key-fact", "ref": "fixed-proportion"},
 
+        # ⊕ #s-words. Design draws no words section here, so the RAIL IS NOT
+        # TOUCHED. `terms` matches `vocabulary[].term` byte for byte.
+        {"type": "keyword", "anchor": "s-words",
+         "eyebrow": "Five words",
+         "lead": "Say your answer out loud before you turn each "
+                 "card over. If you cannot say it, you do not "
+                 "know it yet.",
+         "terms": ["Compound", "Mixture", "Chemical reaction", "Bonded",
+                   "Property"]},
+
         # #s-sort — verdict-cards, column layout, prose headline, on inset.
         {"type": "verdict-cards", "id": "mixture-or-compound", "anchor": "s-sort",
          "ground": "inset",
@@ -248,6 +258,39 @@ LESSON = {
          "placement": "top-level",
          "ground": "card",
          "eyebrow": "Key fact"},
+    ],
+
+    # ── vocabulary (Law 7) ──────────────────────────────────────────────────
+    # `Bonded` is the one word the page uses twice — "each iron atom is bonded
+    # to a sulfur atom", "whether the atoms are bonded" — and never defines. It
+    # is defined here as a JOIN and no further: what the join is made of is not
+    # this lesson's claim, and a card that guessed at it would be a claim the
+    # page never makes.
+    "vocabulary": [
+        {"term": "Compound",
+         "definition": "Two or more elements chemically joined, in one fixed "
+                       "proportion.",
+         "note": "It has properties of its own, belonging to neither element "
+                 "that made it."},
+        {"term": "Mixture",
+         "definition": "Two or more substances in the same place, not "
+                       "chemically joined.",
+         "note": "Any proportion you like, and each substance still behaves "
+                 "as itself."},
+        {"term": "Chemical reaction",
+         "definition": "A change that joins or separates atoms and makes new "
+                       "substances.",
+         "note": "Heating iron with sulfur is one. Stirring them together is "
+                 "not."},
+        {"term": "Bonded",
+         "definition": "Held to another atom by a chemical join.",
+         "note": "A magnet lifts iron out of a mixture. It lifts nothing out "
+                 "of iron sulfide, because there is no iron left to lift."},
+        {"term": "Property",
+         "definition": "Something a substance is like or does — magnetic, "
+                       "shiny, or the gas it gives with acid.",
+         "note": "Properties belong to the substance, not to the list of "
+                 "atoms in it."},
     ],
 
     # ── activities (§5.5) ───────────────────────────────────────────────────

@@ -318,6 +318,18 @@ LESSON = {
 
         {"type": "key-fact", "ref": "slow-grows-large"},
 
+        # ⊕ #s-words. Design drew no words section on this page — c3-01,
+        # c3-02 and c3-05 have one because she drew those — so the block goes
+        # in and the RAIL IS NOT TOUCHED. `terms` matches `vocabulary[].term`
+        # byte for byte; a term that does not resolve is dropped silently.
+        {"type": "keyword", "anchor": "s-words",
+         "eyebrow": "Five words",
+         "lead": "Say your answer out loud before you turn each "
+                 "card over. If you cannot say it, you do not "
+                 "know it yet.",
+         "terms": ["Evaporation", "Crystallisation", "Crystal", "Solute",
+                   "Solvent"]},
+
         # #s-jobs — `class="ks3-block"` alone: LIGHT, shell `check`.
         # Three decisions, each revealed on commitment. NOTHING IS MARKED
         # here — §5 of the brief: only the mastery ladder marks correctness.
@@ -382,6 +394,35 @@ LESSON = {
          "placement": "top-level",
          "ground": "card",
          "eyebrow": "Key fact"},
+    ],
+
+    # ── vocabulary (Law 7) ──────────────────────────────────────────────────
+    # `Solute` and `Solvent` keep c3-02's definitions unchanged and take this
+    # lesson's notes: one definition per word across the unit, and the note is
+    # where the lesson does its own work. The pair is on the list because this
+    # lesson's whole point is which of the two you keep.
+    "vocabulary": [
+        {"term": "Evaporation",
+         "definition": "Removing the solvent by letting it leave as a gas, "
+                       "so the solute is left behind.",
+         "note": "It keeps the solid and loses the liquid."},
+        {"term": "Crystallisation",
+         "definition": "Solute particles joining a growing, regular "
+                       "arrangement as the solution loses its solvent.",
+         "note": "Evaporation is what you do; crystallisation is what the "
+                 "solute does while you do it."},
+        {"term": "Crystal",
+         "definition": "A solid whose particles sit in a regular repeating "
+                       "arrangement, giving it flat faces and sharp edges.",
+         "note": "The slower it grows, the larger and more regular it is."},
+        {"term": "Solute",
+         "definition": "The substance that dissolves.",
+         "note": "This is the one evaporation keeps, and you get all of it "
+                 "back however fast you work."},
+        {"term": "Solvent",
+         "definition": "The liquid the solute dissolves in.",
+         "note": "This is the one evaporation throws away — into the air, "
+                 "with no way of getting it back."},
     ],
 
     # ── activities (§5.5) ───────────────────────────────────────────────────

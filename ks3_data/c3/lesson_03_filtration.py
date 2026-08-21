@@ -326,6 +326,19 @@ LESSON = {
 
         {"type": "key-fact", "ref": "no-filter-for-dissolved"},
 
+        # ⊕ #s-words. c3-01, c3-02 and c3-05 carry a words section BECAUSE
+        # DESIGN DREW ONE and put a stop on the rail for it. She drew none
+        # here, so the block goes in and the RAIL IS NOT TOUCHED — five stops
+        # in, five stops out. `terms` matches `vocabulary[].term` byte for
+        # byte; `r_keyword` drops a term it cannot resolve, silently.
+        {"type": "keyword", "anchor": "s-words",
+         "eyebrow": "Five words",
+         "lead": "Say your answer out loud before you turn each "
+                 "card over. If you cannot say it, you do not "
+                 "know it yet.",
+         "terms": ["Filtration", "Residue", "Filtrate", "Insoluble",
+                   "Dissolved"]},
+
         {"type": "misconception", "id": "think-commit-pond", "anchor": "s-think",
          "targets": "MIX-06"},
         {"type": "quiz", "ref": "ladder", "anchor": "s-ladder"},
@@ -405,6 +418,35 @@ LESSON = {
          "placement": "top-level",
          "ground": "card",
          "eyebrow": "Key fact"},
+    ],
+
+    # ── vocabulary (Law 7) ──────────────────────────────────────────────────
+    # `Insoluble` takes c3-02's definition unchanged — one definition, two
+    # lessons, no second copy free to drift — and only the note is this
+    # lesson's. `Dissolved` is the word the whole size argument turns on and
+    # the page never stops for it.
+    "vocabulary": [
+        {"term": "Filtration",
+         "definition": "Separating an insoluble solid from a liquid by "
+                       "pouring the mixture through filter paper.",
+         "note": "It never separates anything dissolved, however fine the "
+                 "paper is."},
+        {"term": "Residue",
+         "definition": "The solid left behind in the filter paper.",
+         "note": "In sand and water, that is the sand."},
+        {"term": "Filtrate",
+         "definition": "The liquid that passes through the filter paper.",
+         "note": "Clear is not the same as pure. Everything dissolved is "
+                 "still in it."},
+        {"term": "Insoluble",
+         "definition": "Will not dissolve in that solvent.",
+         "note": "An insoluble solid stays in lumps, and lumps are what a "
+                 "filter can catch."},
+        {"term": "Dissolved",
+         "definition": "Broken up into single particles, spread evenly "
+                       "through the liquid.",
+         "note": "Far smaller than any gap in the paper, so it goes wherever "
+                 "the water goes."},
     ],
 
     # ── activities (§5.5) ───────────────────────────────────────────────────

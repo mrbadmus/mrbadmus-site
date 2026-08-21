@@ -435,6 +435,20 @@ LESSON = {
 
         {"type": "key-fact", "ref": "tug-of-war"},
 
+        # ⊕ #s-words. ⚠️ FOUR STOPS IS CORRECT ON THIS PAGE — NOTES §6 records
+        # four for c3-06 and MRB-249 fails the build on three, and the docstring
+        # above says not to add a fifth to make the unit tidy. This block adds
+        # cards and NOT a stop: Design drew no words section here, and
+        # `check_rail_matches_design` compares the built rail against the one
+        # she drew. `terms` matches `vocabulary[].term` byte for byte.
+        {"type": "keyword", "anchor": "s-words",
+         "eyebrow": "Five words",
+         "lead": "Say your answer out loud before you turn each "
+                 "card over. If you cannot say it, you do not "
+                 "know it yet.",
+         "terms": ["Chromatography", "Chromatogram", "Baseline",
+                   "Solvent front", "Dye"]},
+
         {"type": "misconception", "id": "think-commit-furthest",
          "anchor": "s-think", "targets": "MIX-12"},
 
@@ -454,6 +468,38 @@ LESSON = {
                  "substance travels, the more it favoured the solvent.",
          "ground": "card",
          "eyebrow": "Key fact"},
+    ],
+
+    # ── vocabulary (Law 7) ──────────────────────────────────────────────────
+    # ⚠️ `Solvent front` is defined WITHOUT the ratio it is used to calculate.
+    # The Rf value lives in the stretch layer and is opt-in; a core card that
+    # reached for it would put the stretch layer's content in the core.
+    "vocabulary": [
+        {"term": "Chromatography",
+         "definition": "Separating substances that are all dissolved in the "
+                       "same solvent, by how far each one travels up a piece "
+                       "of paper.",
+         "note": "Nothing is boiled and nothing is filtered. Everything has "
+                 "to be dissolved and moving."},
+        {"term": "Chromatogram",
+         "definition": "The finished paper, with each substance separated "
+                       "into a spot of its own.",
+         "note": "Heights can only be compared between lanes run on the same "
+                 "paper, in the same solvent, for the same time."},
+        {"term": "Baseline",
+         "definition": "The line near the foot of the paper that the spots "
+                       "are placed on.",
+         "note": "Pencil, never pen. Graphite is insoluble, so the line stays "
+                 "where you drew it."},
+        {"term": "Solvent front",
+         "definition": "The highest point the solvent has climbed to up the "
+                       "paper.",
+         "note": "Take the paper out before it runs off the top, or the fast "
+                 "spots pile up against the edge."},
+        {"term": "Dye",
+         "definition": "A coloured substance dissolved in something else.",
+         "note": "Black ink is three or four dyes, and each manufacturer "
+                 "mixes its black from a different set."},
     ],
 
     # ── activities (§5.5) ───────────────────────────────────────────────────

@@ -462,6 +462,67 @@ SUBSTATEMENTS = {
               "reaction, which of them it is — including where more than one "
               "name is right, and where none of the four applies.", "C5"),
     ],
+    # Minted for C6 (2026-08-21, MRB-272). The bullet reads:
+    #   "reactions of acids with alkalis to produce a salt plus water"
+    # ONE bullet with two demands in it, and the seam is the word "produce".
+    # Design's NOTES-C6 §1 splits on exactly that seam: `neutralisation`
+    # establishes the reaction and the point at which it is complete;
+    # `making-a-pure-dry-salt` turns it into a preparation with an excess, a
+    # filtration and a crystallisation.
+    #
+    # ⚖️ Clause `b` is minted on the same reasoning that minted `KS3.C.CR.03e`
+    # and `KS3.C.ENER.02c`: the lesson teaches a demand of the bullet that is
+    # not the reaction itself, and all three legal alternatives are worse.
+    # Owning the parent alongside `a` is forbidden by `validate()` rule 5;
+    # sharing `a` with `c6-03` is forbidden by rule 4; and `beyond_statutory`
+    # is simply false — "to produce" is a word in the bullet, and getting a
+    # pure dry sample out of the beaker is what it asks for.
+    #
+    # ⚠️ Clause `b` must never be read as a second reaction. There is one
+    # reaction and clause `a` owns it. `b` is the preparation, and `c6-06`'s
+    # six-step method is the bullet's "produce" made into something a student
+    # can be assessed on.
+    "KS3.C.CR.07": [
+        ("a", "Neutralisation as the reaction of an acid with a base: the "
+              "word equation, the salt and water it always makes, and the "
+              "single point at which the acid is exactly used up.", "C6"),
+        ("b", "PRODUCING a named salt as a pure, dry solid: reacting the acid "
+              "with an excess of an insoluble base, filtering off what is "
+              "left, and crystallising rather than drying.", "C6"),
+    ],
+    # Minted for C7 (2026-08-21, MRB-272). The bullet reads:
+    #   "exothermic and endothermic chemical reactions (qualitative)"
+    # ONE bullet naming TWO opposite behaviours, claimed by THREE lessons.
+    # Design's NOTES-C7 §1 gives the split and the reason: "the split into a
+    # PROCESS lesson and a CONTRAST lesson is the only way to give the
+    # endothermic case a hook of its own — otherwise it arrives as a footnote
+    # to exothermic and stays one."
+    #
+    # ⚖️ Clauses `a` and `b` are the bullet's own two phrases. Clause `c` is
+    # NOT, and it is minted on exactly the reasoning that minted `KS3.C.CR.03e`
+    # above: `c7-04` teaches the bullet as a MEASUREMENT rather than as either
+    # member of it, and all three legal alternatives are worse. Owning the
+    # parent alongside a and b is forbidden by `validate()` rule 5; sharing a
+    # clause with `c7-02` or `c7-03` is forbidden by rule 4; and
+    # `beyond_statutory` is simply false — "(qualitative)" is the word in the
+    # bullet that MAKES the measurement lesson statutory rather than off-spec.
+    # A temperature change is how a KS3 student decides which of the two a
+    # reaction is, and a lesson on reading it is the bullet's own demand.
+    #
+    # ⚠️ Clause `c` must never be read as a THIRD kind of energy change. There
+    # are two. It is the bullet's evidential demand: how the decision between
+    # a and b is actually made, and how badly a leaking beaker can make it.
+    "KS3.C.ENER.02": [
+        ("a", "Exothermic changes: energy transferred out to the "
+              "surroundings, so the temperature of the mixture rises, and the "
+              "energy was stored in the chemicals beforehand.", "C7"),
+        ("b", "Endothermic changes: energy taken in from the surroundings, so "
+              "the temperature falls — and reversing a change reverses the "
+              "direction of the transfer.", "C7"),
+        ("c", "Deciding which of the two a reaction is by MEASURING the "
+              "temperature change: what to record, what to keep the same, and "
+              "what heat loss does to the number you end up with.", "C7"),
+    ],
 }
 
 

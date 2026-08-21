@@ -120,10 +120,20 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `EVOL` | Natural selection, extinction and biodiversity | 2026-08-18, by B11 |
 | `MIX` | Purity, mixtures, dissolving and what a separation technique can and cannot do | 2026-08-20, by C3 |
 | `REACT` | Chemical reactions — what counts as one, what happens to the atoms, and how one is written down | 2026-08-20, by C4 |
+| `ACID` | Acids, alkalis and the pH scale — what the words mean, what the scale measures, and what a catalyst does | 2026-08-21, by C6 |
+| `ENER` | Energy in a change: which way it travels, where it is stored, and what a thermometer is and is not measuring | 2026-08-21, by C7 |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
-— **not yet opened, listed so numbering starts consistently**: `FORCE` (forces and motion),
-`ENERGY` (energy and temperature), `CIRC` (current and circuits).
+— **not yet opened, listed so numbering starts consistently**: `FORCE` (forces and motion)
+and `CIRC` (current and circuits).
+
+⊕ **`ENERGY` IS GONE FROM THAT LIST, AND THE FAMILY IT RESERVED IS OPEN UNDER A SHORTER
+NAME.** The reserved prefix was `ENERGY` (energy and temperature); Design's C7 delivery
+proposed `ENER` and drew eight entries against it, and `ENER` is what C7 authored on
+21 Aug 2026. It is the same family — a wrong idea about which way energy travels is the
+same wrong idea whether it is met in a beaker or on a ramp — so the reservation is
+DISCHARGED rather than left standing beside it. A physics lane meeting an energy
+misconception adds to `ENER`; it does not open `ENERGY`.
 
 ⊕ **`PLANT` opened 17 Aug 2026 by B7** (MRB-245), and `PART` was opened earlier by C1 — both have
 been removed from the not-yet-opened list above rather than left there to contradict the entries
@@ -1252,3 +1262,186 @@ choose the examples the other way — melting glass, dissolving, and a rust that
 reverses every day — so the rule fails in front of the student rather than being contradicted at
 them. Nothing in `c4-01` may be justified by "you cannot get it back", including the hook, or the
 lesson confirms on one line what it breaks on the next.
+
+---
+
+### `ENER` — energy in a change: which way it travels, where it is stored, and what a thermometer measures
+
+Opened by **C7 *Energy changes in reactions*** (2026-08-21, drawn by Claude Design, MRB-272).
+`ENER-01` to `ENER-08` are C7's, four lessons, two entries each. All are `review_state: draft`.
+
+⚠️ **THE ROWS BELOW ARE GENERATED FROM `ks3_data/c7/`, NOT FROM NOTES-C7 §5, AND THEY DIFFER FROM
+IT IN SIX PLACES.** NOTES proposed the ids a delivery *expects* to emit; these are the names the
+pages *do* emit, checked against the renderers in `ks3_art/c7.py`. Writing NOTES' names here would
+reproduce exactly the defect this file was repaired for under `MIX` — a register recording intent
+rather than fact.
+
+The six differences fall into two causes, and both will recur in the next chemistry unit.
+
+**Cause one, four rows: no `think-reveal-*` id can be emitted from a content lane.**
+`build_ks3.py`'s shared `r_activity` draws a confrontation's reveal as
+`<div class="ks3-reveal ks3-reveal-panel" hidden data-reveal>` with **no `id`**, and `build_ks3.py`
+is not a file a lane may touch. So `think-reveal-latent`, `think-reveal-balance`,
+`think-reveal-absence` and `think-reveal-systematic` **cannot be made to resolve**. All four joins
+name the ACTIVITY that owns both the commitment and the reveal instead — c3-03's `MIX-06` form,
+C4's and C5's too — which is also what satisfies Law 3, since the gate wants a `confronted_by`
+that is a real activity id. This is the same open engine item C4 and C5 both logged: giving the
+generic reveal panel an `id` is a one-line change in a SHARED file that moves bytes on every KS3
+page, so it belongs to an engine run on `main`, not to a content lane.
+
+**Cause two, two rows: a ladder rung is not a name any page carries.** NOTES proposes
+`rung-2` / `rung-2-feedback` for `ENER-06` and `ENER-08`. The ladder emits no per-rung `id` at all,
+so those joins could never have resolved — and unlike cause one, the fix is not a workaround but a
+better site. Both beliefs are taken apart by an INSTRUMENT on their own page, and both instruments
+already had to emit a named panel:
+
+  · `ENER-06` — the eight-item sorter puts melting and freezing three rows apart and then names
+    the pair in its closing panel. `sort-eight` elicits, `sort-close` confronts.
+  · `ENER-08` — the rig builder produces eight readings that agree in being too low, and its
+    payoff panel says the error runs one way. `rig-build` elicits, `rig-close` confronts.
+
+`curve-close`, `sort-close`, `rig-close` and `use-fireworks-reveal` are all authored in the lesson
+record and emitted by C7's renderers from that value, rather than composed inside a renderer — so
+the register's join and the markup have one source, and a payload edit that renamed a panel would
+turn the MRB-244 gate red rather than quietly breaking the pointer.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `ENER-01` | While ice is melting it has stopped absorbing heat. | `think-commit-plateau` | `think-commit-plateau` | `energy-and-changes-of-state` |
+| `ENER-02` | A thermometer measures how much energy something has. | `curve-run` | `curve-close` | `energy-and-changes-of-state` |
+| `ENER-03` | A reaction that needs heating to start cannot be exothermic. | `think-commit-spark` | `think-commit-spark` | `exothermic-reactions` |
+| `ENER-04` | Chemical reactions create energy. | `use-fireworks` | `use-fireworks-reveal` | `exothermic-reactions` |
+| `ENER-05` | An endothermic reaction produces cold. | `think-commit-cold` | `think-commit-cold` | `endothermic-reactions` |
+| `ENER-06` | Melting and freezing both take energy in, because both involve ice. | `sort-eight` | `sort-close` | `endothermic-reactions` |
+| `ENER-07` | Repeating an experiment and averaging makes the result accurate. | `think-commit-average` | `think-commit-average` | `measuring-a-temperature-change` |
+| `ENER-08` | Results that agree closely with each other must be correct. | `rig-build` | `rig-close` | `measuring-a-temperature-change` |
+
+**`ENER-05` is the unit's load-bearing entry, and it is the one that reaches furthest.** "Cold is
+not a substance" is not a chemistry fact — it is the sentence that makes a fridge, a cold pack, a
+sweating body and a heat pump all one idea instead of four. `c7-03` states it flatly rather than
+hedging it (Design's NOTES-C7 §4 flag 9 asked whether the bluntness was wanted; it is), because a
+hedged version leaves the student holding exactly the belief.
+
+**`ENER-02` is `ENER-01` one level up, and the pair is why `c7-01` needs two entries.** A student
+who believes the ice has stopped absorbing heat believes it *because* they are reading the
+thermometer as an energy meter. `ENER-01` is the observation and `ENER-02` is the instrument
+mistake underneath it, so the page confronts them in that order: the flat step first, at
+`#s-think`, and then the closing panel on the curve itself.
+
+⚑ **`ENER-03` overlaps C8's proposed `PTAB-07`** ("sodium melted because the water was hot"). Both
+are heat coming OUT of a reaction being read as heat that went IN. NOTES-C8 §5 asks for the
+cross-reference to be recorded rather than the two merged, and that is the right call: they are
+elicited by different phenomena — a Bunsen you had to light against a metal that melted itself —
+and a student can hold either without the other. Recorded here rather than as a `reappears_in`
+value, because C8 is drawn but **not yet authored**, and the slug NOTES-C8 names
+(`group-1-the-alkali-metals`) is not in `ks3_data/structure.py`. A `reappears_in` pointing at a
+slug that does not exist is precisely the defect this file was repaired for under `MIX`.
+
+⚑ **`ENER-07` and `ENER-08` are both `NOS`-shaped and both sit here by accident of build order.**
+Neither is a factual error about energy: one is a wrong idea about what averaging does and the
+other about what agreement proves. Design flagged this in NOTES-C7 §5 and put it plainly —
+*"that is now eight nature-of-science entries across five content families. **The `NOS` call is
+past due** — C5's notes said the last comfortable moment was before C8, and C8 is now built."*
+
+The ruling is the same one MRB-246 made for `REACT-18`, and for the same reason: whether `NOS`
+ABSORBS entries out of content families changes PERMANENT IDS across several units at once, and
+taking it one entry at a time in the middle of authoring a content unit is how a taxonomy
+fragments. So they stay, and the parked list grows to **four**:
+
+  · `REACT-18` — each reaction has exactly one type, so two names cannot both be right
+  · `MIX-13` — one measurement is enough if it is the right answer
+  · `ENER-07` — repeating and averaging makes a result accurate
+  · `ENER-08` — results that agree closely must be correct
+
+**The next `NOS` pass takes all four, together, with the principle written down.** That pass is a
+register job, not a lesson job, and nothing in C7 changes either way: `c7-04` authors both entries
+and confronts both whatever family they eventually sit in.
+
+
+---
+
+### `ACID` — acids, alkalis and the pH scale: what the words mean, what the scale measures, and what a catalyst does
+
+Opened 21 August 2026 by C6, on Design's own proposal in NOTES-C6 §6 and on her own reasoning:
+*"`REACT` is reaction types. These are about acids, alkalis and rates, and they need their own
+family."* That is right, and the family is opened rather than the entries pushed into `REACT`,
+because `REACT-01`…`REACT-18` are about what a reaction IS and these are about what two words on
+a bottle mean.
+
+⚠️ **THE FAMILY IS OPENED BEFORE C9, WHICH IS WHAT DESIGN ASKED FOR.** NOTES-C6 §6: *"Rule on
+the prefix before C9, which will want to cross-reference `ACID-07`."* C9's `the-reactivity-series`
+and `predicting-displacement` both argue from where a metal sits relative to hydrogen, and
+`ACID-07` is the entry that owns the belief they have to defeat. It now has a permanent id to be
+cross-referenced by.
+
+⚠️ **`ACID-08` IS DELIBERATELY UNUSED AND MUST STAY UNUSED.** Design's §6 assigns it to
+*"A gas that puts out a splint is carbon dioxide"*, on `acids-and-carbonates` — the lesson she drew
+into `structure.py`'s `acid-plus-alkali` slot and flagged herself for a ruling. The commander ruled
+that slot stays unauthored, so the belief has no page that elicits it and no page that confronts
+it, and an entry naming neither would fail MRB-244/248 the moment anything checked it. The number
+is left as a gap rather than the nine that follow being renumbered: **IDs are permanent, including
+the ones that never shipped.** If `acid-plus-alkali` is ever authored with the limewater test in
+it, `ACID-08` is waiting and means what Design said it means.
+
+⚑ **`ACID-08` WOULD ALSO HAVE BEEN THE NINTH `NOS`-SHAPED ENTRY**, and Design says so: *"`ACID-08`
+is `NOS`-shaped — it is about what counts as a specific test, not about carbonates."* Nothing here
+opens `NOS` or moves anything into it. The ruling stands from MRB-246 and from C7's notes: whether
+`NOS` absorbs entries out of content families changes permanent ids across several units at once,
+and the next pass takes the parked list together with the principle written down. C6 adds nothing
+to that list, because the one entry that would have joined it was never authored.
+
+⚠️ **TWO JOINS ARE NOT DESIGN'S PROPOSED NAMES, AND BOTH CHANGES ARE FORCED.** MRB-244/248 resolve
+`elicited_by` and `confronted_by` against the BUILT page, where the only legal names are `id="…"`
+and `data-activity="…"`.
+
+  · Every `think-reveal-*` name in §6 is unreachable. The `#s-think` reveal panel is drawn by
+    `build_ks3.py`'s shared `r_activity`, which emits no `id`, and `build_ks3.py` is not a file a
+    content lane may touch. Six entries therefore name the ACTIVITY that holds both the commitment
+    and the two confronting paragraphs — the `c4-01` / `c5-02` reconciliation, and what satisfies
+    Law 3's requirement for a real activity id.
+  · `ACID-04`'s `rung-2` / `rung-2-feedback` are unreachable for the same reason: `r_ladder`
+    numbers its rungs and gives them no id. It names `s-ladder`, the section that holds rung 2 and
+    its correction — which is exactly the repair MRB-244 made for `b2-02`'s `BODY-06`.
+  · `ACID-06`'s `titration-dial` is a FAMILY name rather than a DOM id. It names `s-titrate`, the
+    section the dial is in, where the student commits by adding drops and watching the reading
+    crawl. Its `confronted_by`, `curve-reveal`, is Design's own and IS emitted — authored on the
+    instrument's payload rather than composed in the renderer, so the register and the markup have
+    one source.
+  · `ACID-02`'s `judgement-1` / `judgement-1-reveal` are renamed to `judgement-dilute` /
+    `judgement-dilute-reveal` and both ARE emitted. A positional name is wrong the moment a
+    judgement is inserted above it.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `ACID-01` | Acids are the dangerous ones. Alkalis are what you use to make things safe. | `think-commit-danger` | `think-commit-danger` | `acids-and-alkalis` |
+| `ACID-02` | A dilute acid is no longer really an acid. | `judgement-dilute` | `judgement-dilute-reveal` | `acids-and-alkalis` |
+| `ACID-03` | pH 2 is twice as acidic as pH 4 — it is half the number, so it is double the strength. | `think-commit-scale` | `think-commit-scale` | `the-ph-scale-and-indicators` |
+| `ACID-04` | More indicator gives a different pH reading. | `s-ladder` | `s-ladder` | `the-ph-scale-and-indicators` |
+| `ACID-05` | Neutralising an acid destroys it; only water is left. | `think-commit-gone` | `think-commit-gone` | `neutralisation` |
+| `ACID-06` | The pH climbs steadily as alkali is added. | `s-titrate` | `curve-reveal` | `neutralisation` |
+| `ACID-07` | The bubbles are the metal turning into gas. | `think-commit-fizz` | `think-commit-fizz` | `acid-plus-metal` |
+| `ACID-09` | Boiling a solution dry gives the best crystals. | `think-commit-boil` | `think-commit-boil` | `making-a-pure-dry-salt` |
+| `ACID-10` | A catalyst is used up slowly, which is why it wears out. | `think-commit-consumed` | `think-commit-consumed` | `catalysts` |
+
+**`ACID-01` is the unit's load-bearing entry.** "Acidic" and "dangerous" are the same word to most
+twelve-year-olds, and every hazard film they have seen confirms it. C6's answer is not to
+contradict it but to build the evidence first: `c6-01`'s eight-bottle bench puts four things a
+student eats or drinks on one side and the cleaning cupboard on the other, tags each with where it
+lives, and only opens its closing panel on the eighth bottle. By the time `#s-think` quotes the
+belief, the student has already produced the distribution that refutes it. Nothing on that page may
+be justified by "acids are the safe ones either", including the stretch layer, or the lesson
+confirms the mirror image of what it breaks.
+
+**`ACID-03` is the most-repeated misconception in the topic**, and it is the reason `c6-02` states
+the factor of ten explicitly at KS3 rather than deferring it (NOTES-C6 §5 flag 4, ruled and kept).
+The scale looks like an ordinary number line and nothing about the printed chart says otherwise, so
+the page says it: the strip's own note reads "Every step of one is a factor of ten", the `#s-think`
+reveal works it through to ten thousand, and the question bank's e04, s02, h01 and h04 each offer a
+different wrong arithmetic on the same two readings — subtract them, divide them, rank them.
+
+**`ACID-10` is the one whose real-world counter-example is TRUE.** Catalytic converters do stop
+working, and a student who has noticed that is reasoning correctly from a real observation. The
+confrontation cannot deny the observation and does not: it separates POISONED from CONSUMED, weighs
+the platinum in a dead converter and finds it all there, and lands on "blocked is not the same as
+consumed". MRB-225 applies squarely — the version that is true is more interesting than the version
+that is famous, and nothing in `c6-07` retracts the definition it opened with.

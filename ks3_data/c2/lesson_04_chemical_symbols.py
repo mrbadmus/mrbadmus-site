@@ -97,10 +97,16 @@ LESSON = {
         "kind": "narrative",
         "title": "You can read part of a chemistry book in a language you do "
                  "not speak.",
+        # ⊕ FONT LAW (Design's 21 Aug re-delivery). The shipped latin subsets
+        # carry no Unicode subscript digits, so `H₂O` and `CO₂` were dropping to
+        # a system font mid-formula. `phenomenon.prompt` renders through
+        # `rich()`, which is markup-aware, so this takes the MARKUP form —
+        # byte-identical to the re-delivered page, line 84.
         "prompt": "Open a Japanese chemistry textbook and almost none of it is "
                   "available to you. Then you reach an equation, and there it "
-                  "is: NaCl, H\u2082O, CO\u2082 — exactly as you would write "
-                  "it. The words changed and the chemistry did not.",
+                  "is: NaCl, H<sub>2</sub>O, CO<sub>2</sub> — exactly as you "
+                  "would write it. The words changed and the chemistry did "
+                  "not.",
         "commit": "Why do chemists write in symbols instead of names?",
         "options": [
             "To save time writing",
@@ -180,6 +186,17 @@ LESSON = {
 
         {"type": "key-fact", "ref": "one-capital"},
 
+        # ⊕ #s-words. Design draws no words section here, so the RAIL IS NOT
+        # TOUCHED — five stops in, five stops out. `terms` matches
+        # `vocabulary[].term` byte for byte.
+        {"type": "keyword", "anchor": "s-words",
+         "eyebrow": "Four words",
+         "lead": "Say your answer out loud before you turn each "
+                 "card over. If you cannot say it, you do not "
+                 "know it yet.",
+         "terms": ["Chemical symbol", "Formula", "Element",
+                   "Periodic table"]},
+
         # #s-read — the same component, COLUMN layout, mono formula headline,
         # four options authored per item, on inset ground.
         {"type": "verdict-cards", "id": "read-four-labels", "anchor": "s-read",
@@ -206,7 +223,14 @@ LESSON = {
               "answer": "One element.",
               "options": ["One", "Two", "Three", "Four"],
               "why": "One capital, one lower-case letter. Cobalt. The same two letters as the line above, and a completely different substance."},
-             {"id": "f4", "headline": "CaCO₃", "sub": "Chalk, limestone and marble",
+             # ⊕ FONT LAW. `verdict-cards` renders `headline` through `rich()`,
+             # so this is a MARKUP context and takes a real `<sub>` — Design's
+             # own convention for markup. Her re-delivered page writes `CaCO3`
+             # HERE because on her page the same string is a JS payload; ours is
+             # not. The card's own `why` says "The small 3 is a count", which a
+             # full-height 3 would contradict two lines later.
+             {"id": "f4", "headline": "CaCO<sub>3</sub>",
+              "sub": "Chalk, limestone and marble",
               "answer": "Three elements.",
               "options": ["One", "Two", "Three", "Four"],
               "why": "Three capitals: Ca, C and O. Calcium, carbon and oxygen. The small 3 is a count, not an element."},
@@ -227,6 +251,31 @@ LESSON = {
          "placement": "top-level",
          "ground": "card",
          "eyebrow": "Key fact"},
+    ],
+
+    # ── vocabulary (Law 7) ──────────────────────────────────────────────────
+    # FOUR, not five. There is no fifth word this page uses and leaves
+    # undefined, and padding the set with one it does not use would make the
+    # cards a vocabulary list rather than this lesson's vocabulary list.
+    "vocabulary": [
+        {"term": "Chemical symbol",
+         "definition": "The one or two letters that stand for an element.",
+         "note": "Capital first, lower case second. CO is two elements; Co is "
+                 "one."},
+        {"term": "Formula",
+         "definition": "Symbols written together, saying which elements are "
+                       "in a substance and how many atoms of each.",
+         "note": "A capital always starts a new element, so counting the "
+                 "capitals counts the elements."},
+        {"term": "Element",
+         "definition": "A substance made of one kind of atom and nothing "
+                       "else.",
+         "note": "Every element has exactly one symbol, and no two elements "
+                 "share one."},
+        {"term": "Periodic table",
+         "definition": "The list of all the known elements, each with its "
+                       "name and its symbol.",
+         "note": "It is where you check whether a symbol is already taken."},
     ],
 
     # ── activities (§5.5) ───────────────────────────────────────────────────

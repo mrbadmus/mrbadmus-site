@@ -104,7 +104,7 @@ LESSON = {
     # ── the hook (Law 1) ────────────────────────────────────────────────────
     "phenomenon": {
         "kind": "narrative",
-        "title": "H₂O and H₂O₂. One extra oxygen atom.",
+        "title": "H2O and H2O2. One extra oxygen atom.",
         "prompt": "Both are clear, colourless liquids made of nothing but "
                   "hydrogen and oxygen. One falls out of the sky and you drink "
                   "it. The other burns skin, bleaches hair, and in "
@@ -131,7 +131,7 @@ LESSON = {
          "elicited_by": "build-a-formula",
          "confronted_by": "build-a-formula"},
         {"id": "ATOM-10",
-         "statement": "2H₂O and H₂O₂ both have four atoms "
+         "statement": "2H2O and H2O2 both have four atoms "
                       "written down, so they must be the same thing.",
          "elicited_by": "think-commit-big-small",
          "confronted_by": "think-commit-big-small"},
@@ -176,7 +176,7 @@ LESSON = {
          "prompt": "Two elements, and a count for each. Most combinations are "
                    "not substances at all — which is the first thing worth "
                    "knowing about formulae.",
-         "gate": {"prompt": "Commit first. If you change the 2 in H₂O "
+         "gate": {"prompt": "Commit first. If you change the 2 in H2O "
                             "to a 3, what have you got?",
                   "options": ["More water", "A different substance",
                               "Thicker water",
@@ -206,11 +206,11 @@ LESSON = {
                               "not every combination of atoms is a substance"]},
          # The five reachable substances, keyed pair:countA:countB.
          "known": {
-             "ho:2:1": {"name": "H₂O — water",
+             "ho:2:1": {"name": "H2O — water",
                           "note": "Two hydrogen atoms and one oxygen atom in every particle. You are about 60% of this.",
                           "atoms": [{"s": "O", "x": 0, "y": 0, "r": 26}, {"s": "H", "x": -46, "y": 30, "r": 18}, {"s": "H", "x": 46, "y": 30, "r": 18}],
                           "bonds": [[0, 1], [0, 2]]},
-             "ho:2:2": {"name": "H₂O₂ — hydrogen peroxide",
+             "ho:2:2": {"name": "H2O2 — hydrogen peroxide",
                           "note": "One more oxygen in each particle than water, and a completely different substance: it bleaches, it burns skin, and it breaks down into water and oxygen.",
                           "atoms": [{"s": "H", "x": -78, "y": 26, "r": 18}, {"s": "O", "x": -30, "y": 0, "r": 26}, {"s": "O", "x": 30, "y": 0, "r": 26}, {"s": "H", "x": 78, "y": 26, "r": 18}],
                           "bonds": [[0, 1], [1, 2], [2, 3]]},
@@ -218,7 +218,7 @@ LESSON = {
                           "note": "One carbon, one oxygen. Colourless, odourless, and it kills by taking the place of oxygen in your blood.",
                           "atoms": [{"s": "C", "x": -28, "y": 0, "r": 26}, {"s": "O", "x": 28, "y": 0, "r": 28}],
                           "bonds": [[0, 1]]},
-             "co:1:2": {"name": "CO₂ — carbon dioxide",
+             "co:1:2": {"name": "CO2 — carbon dioxide",
                           "note": "One carbon and two oxygens. Breathed out by every living thing, and the gas that puts out fires.",
                           "atoms": [{"s": "O", "x": -62, "y": 0, "r": 28}, {"s": "C", "x": 0, "y": 0, "r": 26}, {"s": "O", "x": 62, "y": 0, "r": 28}],
                           "bonds": [[0, 1], [1, 2]]},
@@ -228,6 +228,17 @@ LESSON = {
          }},
 
         {"type": "key-fact", "ref": "which-and-how-many"},
+
+        # ⊕ #s-words. Design draws no words section here, so the RAIL IS NOT
+        # TOUCHED — five stops in, five stops out. `terms` matches
+        # `vocabulary[].term` byte for byte.
+        {"type": "keyword", "anchor": "s-words",
+         "eyebrow": "Five words",
+         "lead": "Say your answer out loud before you turn each "
+                 "card over. If you cannot say it, you do not "
+                 "know it yet.",
+         "terms": ["Formula", "Particle", "Molecule", "Giant structure",
+                   "Ratio"]},
 
         # #s-limit — the MODEL family's *where it breaks* step, on inset.
         # ⚠️ THREE options, not four. The only three-option commit in KS3,
@@ -242,7 +253,7 @@ LESSON = {
                    "the model has to bend.",
          "cards": [
              {"ground": "card",
-              "caption": "A molecule · CO₂",
+              "caption": "A molecule · CO2",
               "text": "Separate particles float about, each one made of "
                       "exactly one carbon and two oxygens. You could, in "
                       "principle, pick one out. The formula counts the atoms "
@@ -291,6 +302,40 @@ LESSON = {
          "eyebrow": "Key fact"},
     ],
 
+    # ── vocabulary (Law 7) ──────────────────────────────────────────────────
+    # ⚠️ `Particle` is defined so that #s-limit does not retract it eight
+    # lines later. The card says what a particle is AND that not every
+    # substance has them, because the giant-structure card says exactly that
+    # and a lesson may not contradict itself.
+    "vocabulary": [
+        {"term": "Formula",
+         "definition": "The symbols and numbers that say which elements are "
+                       "in a substance and how many atoms of each.",
+         "note": "Change one of the numbers and you have changed the "
+                 "substance, not the amount."},
+        {"term": "Particle",
+         "definition": "The smallest separate piece of a substance — for "
+                       "water, two hydrogen atoms and one oxygen joined "
+                       "together.",
+         "note": "Not every substance has them. Salt is one repeating stack "
+                 "with nothing separate in it."},
+        {"term": "Molecule",
+         "definition": "A small group of atoms joined together, existing as "
+                       "a separate particle.",
+         "note": "Carbon dioxide is a molecule; you could in principle pick "
+                 "one out. Salt is not."},
+        {"term": "Giant structure",
+         "definition": "Billions of atoms locked into one repeating stack, "
+                       "with no separate particles in it.",
+         "note": "Its formula gives the ratio of the atoms, because there is "
+                 "no single particle to count."},
+        {"term": "Ratio",
+         "definition": "How many of one thing there are for every one of "
+                       "another.",
+         "note": "NaCl is one sodium for every chlorine, all the way through "
+                 "the stack."},
+    ],
+
     # ── activities (§5.5) ───────────────────────────────────────────────────
     "activities": [
         {"id": "think-commit-big-small",
@@ -300,18 +345,18 @@ LESSON = {
          "prompt": "One of those is a big number at the front, and one is a "
                    "small number at the back. Commit before you read on.",
          "options": [
-             "Both have four atoms written down, so 2H₂O and H₂O₂ "
+             "Both have four atoms written down, so 2H2O and H2O2 "
              "are the same thing",
-             "2H₂O is two particles of water; H₂O₂ is one "
+             "2H2O is two particles of water; H2O2 is one "
              "particle of a different substance",
-             "A number in front makes the particle bigger, so 2H₂O is "
+             "A number in front makes the particle bigger, so 2H2O is "
              "one large particle",
-             "Water is the only real substance here, so H₂O₂ must be "
+             "Water is the only real substance here, so H2O2 must be "
              "a mistake",
          ],
          "reveal": [
-             "<strong>2H₂O</strong> is two particles of water. Two of "
-             "the same thing you drink. <strong>H₂O₂</strong> is "
+             "<strong>2H<sub>2</sub>O</strong> is two particles of water. Two of "
+             "the same thing you drink. <strong>H<sub>2</sub>O<sub>2</sub></strong> is "
              "one particle of hydrogen peroxide, which is a different "
              "substance entirely.",
              "A big number in front multiplies whole particles and changes "
@@ -325,7 +370,7 @@ LESSON = {
     # ── the mastery ladder (Law 8, §5.8) ────────────────────────────────────
     "ladder": {
         "recall": {
-            "q": "How many atoms are there altogether in one particle of H₂SO₄?",
+            "q": "How many atoms are there altogether in one particle of H2SO4?",
             "options": [
                 "Three",
                 "Four",
@@ -339,14 +384,14 @@ LESSON = {
                 2: "Close: 2 hydrogens + 1 sulfur + 4 oxygens. The sulfur has no small number, which means one, not two.",
             }},
         "apply": {
-            "q": "What is the difference between 2CO₂ and C₂O₄?",
+            "q": "What is the difference between 2CO2 and C2O4?",
             # ⊕ MRB-177, ruled 17 Aug 2026 — the three distractors now state
             # wrong RULES, in the same shape as the correct option. The
             # correct option and its index are unchanged.
             "options": [
                 "The same atoms in the same numbers make the same substance, however the formula is written",
-                "The big number counts particles and the small number counts atoms, so 2CO₂ holds more atoms altogether",
-                "2CO₂ is two particles of carbon dioxide; C₂O₄ would be a single particle with twice as much in it",
+                "The big number counts particles and the small number counts atoms, so 2CO2 holds more atoms altogether",
+                "2CO2 is two particles of carbon dioxide; C2O4 would be a single particle with twice as much in it",
                 "A number written in front makes a mixture, and a number written below makes a compound",
             ],
             "answer": 2,
@@ -356,7 +401,7 @@ LESSON = {
                 3: "Both describe one substance. The 2 in front is an amount, not a second ingredient.",
             }},
         "explain": {
-            "q": "Explain why H₂O and H₂O₂ are different substances rather than different amounts of the same one, and say what would happen if you tried to make water by removing an oxygen atom.",
+            "q": "Explain why H2O and H2O2 are different substances rather than different amounts of the same one, and say what would happen if you tried to make water by removing an oxygen atom.",
             "field_label": "Your explanation",
             "placeholder": "Each particle of hydrogen peroxide…",
             "success": [
@@ -367,7 +412,7 @@ LESSON = {
                 "Does not describe hydrogen peroxide as water with something dissolved in it.",
             ]},
         "produce": {
-            "q": "A student writes the formula for salt as Na₁Cl₁ and says it means one particle containing one sodium and one chlorine atom. Two things are wrong. Say what they are, and give the version a chemist would write.",
+            "q": "A student writes the formula for salt as Na1Cl1 and says it means one particle containing one sodium and one chlorine atom. Two things are wrong. Say what they are, and give the version a chemist would write.",
             "field_label": "Your answer",
             "placeholder": "The first problem is…",
             "success": [
@@ -389,8 +434,8 @@ LESSON = {
     # ── the stretch layer (§5.6) — visible and opt-in to all ────────────────
     "stretch": [
         {"type": "explainer", "id": "empirical-hint",
-         "text": "Glucose is C₆H₁₂O₆ and ethanoic acid "
-                 "— vinegar — is C₂H₄O₂. Divide both down "
+         "text": "Glucose is C<sub>6</sub>H<sub>12</sub>O<sub>6</sub> and ethanoic acid "
+                 "— vinegar — is C<sub>2</sub>H<sub>4</sub>O<sub>2</sub>. Divide both down "
                  "and they reach the same ratio: one carbon, two hydrogens, "
                  "one oxygen. Same proportions, wildly different substances, "
                  "because what differs is how many atoms are in each particle "

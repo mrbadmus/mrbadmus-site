@@ -19,11 +19,11 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | Status | Figures |
 |---|---|
 | `drafted` | 1 |
-| `drawn` | 20 |
+| `drawn` | 21 |
 | `final` | 1 |
 | `needed` | 3 |
 | `retired` | 6 |
-| **Total** | **31** |
+| **Total** | **32** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -62,3 +62,4 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | C3 | `distillation` | `c3-distillation-apparatus` | diagram | `needed` | Distillation apparatus: round-bottomed flask over a Bunsen with anti-bumping granules, thermometer bulb level with the side arm, Liebig condenser with cold water entering at the bottom and leaving at the top, and a beaker collecting the distillate. The apparatus is open to the air at the collecting end. |
 | C3 | `filtration` | `particle-panels` | diagram | `drawn` | A grain of sand is a lump of many millions of particles stuck together, thousands of times wider than the gaps between the paper's fibres. A dissolved salt particle is on its own, and it is smaller than the gap by more than the gap is smaller than the grain. There is no filter paper that stops one and passes the other. |
 | C5 | `displacement` | `reactivity-series` | diagram | `drawn` | Nobody was told this order. It was assembled by doing what you are about to do — putting metals into each other's solutions and recording which way the swap went. The bench below covers four of these twelve; the same method extended down the list produces the rest of it. |
+| C6 | `the-ph-scale-and-indicators` | `ph-scale` | diagram | `drawn` | Fifteen whole numbers, one colour each. The reds and oranges are acid, green is neutral, and the blues and purples are alkali. The numbers matter more than the colours: colour-blind chemists use a pH meter and get the same answer. |
