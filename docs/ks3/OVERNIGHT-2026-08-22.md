@@ -138,3 +138,109 @@ is 1/1 = 100%, and it must not beat a finished 3/4.
 /api/assignment/progress, unknown id  → 404 assignment_not_found
 ```
 
+---
+
+## The welded numbers, the six-question floor, and the words. BOTH GATES GREEN.
+
+### The class view — 22 seams closed inside method bodies
+
+Every figure the last run listed as "still welded, and left deliberately" is now data:
+the docket's question count, `Using a microscope`, `Mon 15 Sep`, `Thu 18 Sep, 18:00`,
+`2 days left`, `40 POINTS AT STAKE`, `58%`; the recall panel's `46` and the readings strip's
+paired `46` / `77%`; `ROUNDS` `08`; `roundNote`; and `DUE THU 18:00`.
+
+`grep -c -F` on `student/class-ported.html`, every one: **0**.
+
+⛔ **`pad(Math.max(9, st.streak))` — the floor of nine.** A child whose best streak is three
+was shown nine. It is now `Math.max(MRB_DATA('bestStreakFloor'), st.streak)`; the fixture
+carries `9` as a NUMBER so Design's render is byte-identical, and the live source supplies
+`0`, which makes the `Math.max` a no-op and lets the real streak through.
+
+⛔ **Where the product does not record something, the key is EMPTY.** `docketWorth` is empty
+because no column anywhere assigns an assignment a points value — `40 POINTS AT STAKE` was a
+number chosen for a drawing. `recallAnswered`, `recallPct` and `recallRounds` are empty because
+the recall round writes nowhere: `/api/class/recall` only reads, and no table carries a class,
+a teaching week and a rung together. `roundNote` is empty because Design's sentence states an
+apportionment ("Recall is worth 20 of the 100 points") the platform cannot compute — the same
+fault the 21 Aug ruling took out of the split bar, and platform self-explanation besides.
+
+`docketElapsed` is the one that COULD be made real, and the ruling requires it to be: it now
+carries the student's answered percentage, which is exactly ruling 2's "the same as a percentage".
+
+⚑ **`dueWordLong` is deliberately less specific than Design's.** Design wrote `'DUE THU 18:00'`
+— one class's one deadline, printed on every open row of every class. It is now just `DUE`.
+The precise deadline is already on the line directly below (`detail` reads
+`DUE THU 18 SEP, 18:00`), so nothing is lost, and a class with two things open at once no
+longer shows one row's time on the other's.
+
+### The six-question floor — it was FIVE places, not three
+
+The prompt named `roundLive: st.qi < 6`, `Math.min(st.qi, 5)` and `/ 06` and attributed them to
+the assignment page. ⚠️ **They are the CLASS page's recall round.** The assignment page's floor
+is a different line — `Math.max(6, …)` in `count()` — and `shared/student-live.js` had a third,
+refusing to build an assignment of fewer than six at all. All were real; all are fixed. Two more
+turned up that were on nobody's list: the recall room's own `qCounter`, and the index clamp
+`const qi = Math.min(st.qi, 5)` two hundred lines earlier, which picks the question object
+itself and would have read past the end of a short round.
+
+Every count now derives from the array's actual length, guarded so an empty round renders `0%`
+rather than `NaN%`.
+
+⚠️ **AND THE CAP OF FIFTEEN IS NOT THE SAME BUG — the first draft removed it and went red.**
+`count()` reads `Math.round(this.props.questionCount ?? 15)`, which looks inert: nothing passes
+`questionCount` and the mount emits `props: {}`. But Design's own fixture array is **sixteen**
+questions long and Design renders fifteen, so the 15 is a working cap that `Math.min` applies.
+Removing it made the port render `16 QUESTIONS` against Design's `15` and diverged nine
+behaviour drives at the same character. It is also the RIGHT cap independently:
+`ASSIGNMENT_SIZE` in `assignment-compose.js` is 15, so a longer assignment cannot be composed.
+Only the floor was ever wrong.
+
+### The words — W5
+
+"Complete" replaces "Hand it in" on the button, the chip, the end-screen heading and eyebrow,
+the marked-work kicker, and the class page's work rows (`COMPLETED …`, `NOT COMPLETED`).
+
+⚑ **Two mechanisms, and not by preference — by which one can reach the word.** The button, the
+chip and one heading are TEXT NODES in Design's markup, so they go through BINDINGS, which is
+the mechanism built for a template literal that differs on the real page. Their siblings
+(`screenLabel`, `doneEyebrow`, `doneKicker`) are computed in `renderVals()`, where BINDINGS
+cannot see them, so they go through `student_rulings`. Design's typography and placement are
+untouched throughout.
+
+### The wiring
+
+`shared/student-live.js` gained a **sink** — `window.__MRB_SINK__`, set immediately before
+mount and read lazily by the page. It is a WRITER and a resume source; everything the page
+RENDERS still comes through `MRB_DATA`, so the rule that the production page has no code path
+to Design's example data is intact.
+
+- `confirm()` posts the answer **the moment it is given**.
+- `loadLive()` takes the server's state outright when a sink is present; localStorage is a
+  cache and an offline queue, never the truth.
+- `handIn()` calls `/api/assignment/complete` and takes its stamp and its lateness from the
+  reply — or shows no stamp at all. It never manufactures one.
+
+⚑ **The sink is read lazily on every call and never captured at script-evaluation time.** The
+logic script runs before `student-live.js` has loaded, so a captured reference would be null
+for ever and every answer would be silently dropped — which is precisely the failure this
+whole unit exists to remove, and it would have been invisible.
+
+⊕ **Design's demo scenarios are now unreachable in production.** The page routed off the URL
+hash and fell back to `Mid-way`, which pre-fills six answers with three deliberately wrong;
+`#handedin` would have shown a child a completion that never happened. With a sink present
+there is exactly one scenario and it is the student's own saved state. This replaces the
+`#live` history rewrite `student-live.js` was doing from outside, which the last run recorded
+as a workaround belonging in the page. It now is in the page.
+
+### Both gates, green, nothing weakened
+
+```
+student_behaviour.py   30 drives, every one "text identical", RULED_DIVERGENCE UNTOUCHED
+student_parity.py      layers A–H green at 360 / 390 / 820 / 1460
+```
+
+⚑ Worth saying plainly: **no divergence had to be registered for any of this.** The word
+changes go through bindings (the fixture keeps Design's words), and the two ruling-introduced
+constants carry Design's own values, so the fixture still renders byte-for-byte what Design
+drew. `RULED_DIVERGENCE` still holds exactly the two 21 Aug entries and no more.
+

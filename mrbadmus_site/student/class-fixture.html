@@ -139,7 +139,7 @@ class Component extends DCLogic {
       { label: 'Handed in', value: all.length ? handed.length + '/' + all.length : dash, caption: 'THIS TERM', pct: pc(handed.length, all.length) },
       { label: 'On time', value: handed.length ? onTime + '/' + handed.length : dash, caption: 'OF HANDED IN', pct: pc(onTime, handed.length), bar: 'var(--ks3-ok)' },
       { label: 'Avg score', value: avg == null ? dash : avg + '%', caption: marked.length ? marked.length + ' MARKED' : 'NOT MARKED YET', pct: avg == null ? '0%' : avg + '%' },
-      { label: 'Recall', value: fresh ? '0' : '46', caption: 'ANSWERED \u00B7 WK ' + MRB_DATA('weekNumber'), pct: fresh ? '0%' : '77%' }
+      { label: 'Recall', value: fresh ? '0' : MRB_DATA('recallAnswered'), caption: 'ANSWERED \u00B7 WK ' + MRB_DATA('weekNumber'), pct: fresh ? '0%' : MRB_DATA('recallPct') }
     ]).map((r) => Object.assign({ bar: 'var(--st-accent)' }, r));
 
     const weeks = [];
@@ -177,8 +177,8 @@ class Component extends DCLogic {
       const isMarked = w.status === 'marked';
       const showScore = isMarked && !hideScores;
       const expanded = st.open === w.id;
-      const longWord = w.status === 'open' ? 'DUE THU 18:00' : w.status === 'pending' ? 'WITH ' + MRB_DATA('teacherName').toUpperCase() : w.status === 'missed' ? 'MISSED' : 'MARKED';
-      const shortWord = w.status === 'open' ? 'DUE THU' : w.status === 'pending' ? 'SENT' : w.status === 'missed' ? 'MISSED' : 'MARKED';
+      const longWord = w.status === 'open' ? MRB_DATA('dueWordLong') : w.status === 'pending' ? 'WITH ' + MRB_DATA('teacherName').toUpperCase() : w.status === 'missed' ? 'MISSED' : 'MARKED';
+      const shortWord = w.status === 'open' ? MRB_DATA('dueWordShort') : w.status === 'pending' ? 'SENT' : w.status === 'missed' ? 'MISSED' : 'MARKED';
       return {
         wk: 'W' + pad(w.week), title: w.title, brief: w.brief,
         metaLine: 'W' + pad(w.week) + ' \u00B7 ' + longWord,
@@ -228,10 +228,10 @@ class Component extends DCLogic {
       { label: 'SET', value: dash, font: '500 ' + bigVal + '/1.3 var(--st-ui)' },
       { label: 'DUE', value: dash, font: '500 ' + bigVal + '/1.3 var(--st-ui)' }
     ] : [
-      { label: 'QUESTIONS', value: '8', font: '600 clamp(19px,1.7cqw,23px)/1 var(--st-display)' },
-      { label: 'DRAWS ON', value: 'Using a microscope', font: '500 ' + bigVal + '/1.3 var(--st-ui)' },
-      { label: 'SET', value: 'Mon 15 Sep', font: '500 ' + bigVal + '/1.3 var(--st-ui)' },
-      { label: 'DUE', value: 'Thu 18 Sep, 18:00', font: '500 ' + bigVal + '/1.3 var(--st-ui)' }
+      { label: 'QUESTIONS', value: MRB_DATA('docketQuestions'), font: '600 clamp(19px,1.7cqw,23px)/1 var(--st-display)' },
+      { label: 'DRAWS ON', value: MRB_DATA('docketDrawsOn'), font: '500 ' + bigVal + '/1.3 var(--st-ui)' },
+      { label: 'SET', value: MRB_DATA('docketSet'), font: '500 ' + bigVal + '/1.3 var(--st-ui)' },
+      { label: 'DUE', value: MRB_DATA('docketDue'), font: '500 ' + bigVal + '/1.3 var(--st-ui)' }
     ];
 
     const lessons = this.lessonDefs.map((l) => ({
@@ -244,7 +244,7 @@ class Component extends DCLogic {
       metaColor: l.on ? 'var(--ks3-accent-text)' : 'var(--st-faint)'
     }));
 
-    const qi = Math.min(st.qi, 5);
+    const qi = Math.min(st.qi, Math.max(0, this.questions.length - 1));
     const q = this.questions[qi];
     const keys = ['A', 'B', 'C', 'D'];
     const options = q.o.map((t, i) => {
@@ -412,18 +412,18 @@ class Component extends DCLogic {
       docket: docket,
       docketKicker: fresh ? 'Nothing set' : 'This week\u2019s assignment',
       docketFlag: fresh ? 'BENCH CLEAR' : 'OPEN',
-      docketLeft: fresh ? 'No deadline' : '2 days left',
-      docketWorth: fresh ? '\u2014' : '40 POINTS AT STAKE',
-      docketElapsed: fresh ? '0%' : '58%',
+      docketLeft: fresh ? 'No deadline' : MRB_DATA('docketLeft'),
+      docketWorth: fresh ? '\u2014' : MRB_DATA('docketWorth'),
+      docketElapsed: fresh ? '0%' : MRB_DATA('docketElapsed'),
 
       shoutouts: fresh ? [] : MRB_DATA("shoutouts"),
       noShouts: fresh, shoutCount: fresh ? '00' : '02',
-      retrievalCount: fresh ? '0' : '46',
+      retrievalCount: fresh ? '0' : MRB_DATA('recallAnswered'),
 
-      recallMeter: 'QUESTION ' + pad(Math.min(st.qi + 1, 6)) + ' / 06',
-      recallMeterPct: Math.round((Math.min(st.qi, 6) / 6) * 100) + '%',
-      roundLive: st.qi < 6, roundDone: st.qi >= 6,
-      qCounter: 'QUESTION ' + pad(Math.min(st.qi + 1, 6)) + ' / 06 \u00B7 ' + q.topic,
+      recallMeter: 'QUESTION ' + pad(Math.min(st.qi + 1, this.questions.length)) + ' / ' + pad(this.questions.length),
+      recallMeterPct: (this.questions.length ? Math.round((Math.min(st.qi, this.questions.length) / this.questions.length) * 100) : 0) + '%',
+      roundLive: st.qi < this.questions.length, roundDone: st.qi >= this.questions.length,
+      qCounter: 'QUESTION ' + pad(Math.min(st.qi + 1, this.questions.length)) + ' / ' + pad(this.questions.length) + ' \u00B7 ' + q.topic,
       question: q.q, options: options, pips: pips,
       showFeedback: st.checked && pickIdx > -1,
       fbLabel: rightPick ? 'CORRECT' : 'NOT THIS ONE',
@@ -439,8 +439,8 @@ class Component extends DCLogic {
       recallBtnBorder: st.pick || st.checked ? 'var(--ks3-accent-text)' : 'var(--st-room-line)',
       streakText: st.streak > 0 ? 'STREAK ' + pad(st.streak) : 'STREAK BROKEN',
       roundScore: pad(st.right),
-      roundNote: 'Six answers logged against Week 04. Recall is worth 20 of the 100 points on the leaderboard.',
-      recallStats: [{ label: 'BEST STREAK', value: pad(Math.max(9, st.streak)) }, { label: 'ROUNDS', value: '08' }],
+      roundNote: MRB_DATA('roundNote'),
+      recallStats: [{ label: 'BEST STREAK', value: pad(Math.max(MRB_DATA('bestStreakFloor'), st.streak)) }, { label: 'ROUNDS', value: MRB_DATA('recallRounds') }],
 
       hasBoard: !fresh, noBoard: fresh,
       boardScopeNote: wk === 'term' ? 'WHOLE ' + MRB_DATA('termLabel') : wk === MRB_DATA('currentWeek') ? 'CURRENT WEEK' : 'WEEK ' + pad(wk) + ' \u00B7 FINAL',

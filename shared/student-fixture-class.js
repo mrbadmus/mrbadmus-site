@@ -111,7 +111,21 @@ window.__MRB_DATA__ = {
           'Only dissolved gases cross into the blood, never bubbles.'] }
   ],
   "streak": 3,
+  "bestStreakFloor": 9,
   "currentWeek": 4,
+  "docketDrawsOn": "Using a microscope",
+  "docketDue": "Thu 18 Sep, 18:00",
+  "docketElapsed": "58%",
+  "docketLeft": "2 days left",
+  "docketQuestions": "8",
+  "docketSet": "Mon 15 Sep",
+  "docketWorth": "40 POINTS AT STAKE",
+  "dueWordLong": "DUE THU 18:00",
+  "dueWordShort": "DUE THU",
+  "recallAnswered": "46",
+  "recallPct": "77%",
+  "recallRounds": "08",
+  "roundNote": "Six answers logged against Week 04. Recall is worth 20 of the 100 points on the leaderboard.",
   "shoutouts": [
         { who: 'MB', text: 'Best score in the class on digestion this week.', meta: 'MR BADMUS \u00B7 2 DAYS AGO' },
         { who: 'MB', text: 'Third week running you handed in first. Keep it.', meta: 'MR BADMUS \u00B7 1 WEEK AGO' }

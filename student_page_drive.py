@@ -45,7 +45,12 @@ ASSIGN_URL = "http://localhost:%d/student/assignment-ported.html?env=prod"
 
 SUPABASE_URL = "https://urklkrwevjtlfbwnipjn.supabase.co"
 PROJECT_REF = "urklkrwevjtlfbwnipjn"
-EMAIL = "midebolabadmus@gmail.com"
+# ⊕ 22 Aug 2026 — the drive account is now a PARAMETER, not a constant.
+# A run that must not touch Mide's own account (an overnight run with no
+# credential supplied) drives a throwaway student instead, and a gate that
+# hard-codes one person's email cannot be pointed at one. The default is
+# unchanged, so an interactive run behaves exactly as it did.
+EMAIL = os.environ.get("MRB_DRIVE_EMAIL", "midebolabadmus@gmail.com")
 CTX = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
 
 # Design's own example values. If ANY of these reach the screen on a page that
@@ -72,13 +77,23 @@ FIXTURE_TELLS = [
     "2 days left", "40 POINTS AT STAKE",
     "Eight questions", "Answer the eight questions",
     # week numbers: the real current week is 1
-    "WEEK 04", "TOP OF WEEK 04", "WK 04",
-    # a fabricated recall count
-    "46",
+    "WEEK 04", "TOP OF WEEK 04", "WK 04", "week 04",
+    # fabricated recall figures — the count, the percentage and the round total
+    "46", "77%", "58%",
+    "Six answers logged", "BEST STREAK 09",
+    # ⊕ 22 Aug 2026 — the assignment page's own welded values. The two
+    # timestamps are the worst of them: `handIn` manufactured them, so a
+    # student saw a confirmation for a date that had nothing to do with today.
+    "17 SEP", "20 SEP", "2 DAYS LATE", "2 days late",
+    "CELLS & MICROSCOPY",
+    # ⊕ 22 Aug 2026 — W5. "Complete" replaces "Hand it in" everywhere, so any
+    # surviving "hand in" wording is itself a tell that a surface was missed.
+    "Hand it in", "Handed in", "HANDED IN", "handed in",
 ]
 
-# What a real student on this account should be seeing tonight.
-EXPECT = ["8r/Sc1", "AY"]
+# What a real student on this account should be seeing tonight. The initials
+# belong to the drive account, so they travel with it.
+EXPECT = ["8r/Sc1", os.environ.get("MRB_DRIVE_INITIALS", "AY")]
 
 
 def anon_key():
@@ -88,9 +103,13 @@ def anon_key():
 
 
 def sign_in(key):
-    pw = os.environ.get("MRB_TEST_STUDENT_PASSWORD")
+    # MRB_DRIVE_PASSWORD goes with MRB_DRIVE_EMAIL; the older name is kept so
+    # nothing that already sets it has to change.
+    pw = (os.environ.get("MRB_DRIVE_PASSWORD")
+          or os.environ.get("MRB_TEST_STUDENT_PASSWORD"))
     if not pw:
-        raise SystemExit("MRB_TEST_STUDENT_PASSWORD is not set")
+        raise SystemExit("neither MRB_DRIVE_PASSWORD nor "
+                         "MRB_TEST_STUDENT_PASSWORD is set")
     req = urllib.request.Request(
         SUPABASE_URL + "/auth/v1/token?grant_type=password",
         data=json.dumps({"email": EMAIL, "password": pw}).encode(),

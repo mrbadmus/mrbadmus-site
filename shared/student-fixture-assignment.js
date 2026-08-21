@@ -166,7 +166,12 @@ window.__MRB_DATA__ = {
   },
   "KEY": 'mrbadmusai.assignment.8rSc1.a5.v1',
   "DUE": 'DUE THU 18 SEP, 18:00',
+  "lateText": '2 days late',
+  "weekLabel": 'WEEK 04',
   "backToClass": "Back to 8r/Sc1",
   "className": "8r/Sc1",
+  "completeChip": "HANDED IN\n          ",
+  "completeHeading": "Handed in",
+  "completeLabel": "Hand it in\n          ",
   "topicTitle": "Cells & microscopy"
 };

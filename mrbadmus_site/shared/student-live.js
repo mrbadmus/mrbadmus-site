@@ -131,6 +131,37 @@
     }).format(new Date(iso));
   }
 
+  /* 'Mon 15 Sep' and 'Thu 18 Sep, 18:00' — the docket's own two shapes, mixed
+     case, which is why they cannot reuse fmtDay's upper-cased one. */
+  function fmtSet(iso) {
+    if (!iso) { return ""; }
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) { return ""; }
+    var D = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    var M = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return D[d.getDay()] + " " + d.getDate() + " " + M[d.getMonth()];
+  }
+
+  function fmtDueMixed(iso) {
+    if (!iso) { return ""; }
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) { return ""; }
+    return fmtSet(iso) + ", " + pad2(d.getHours()) + ":" + pad2(d.getMinutes());
+  }
+
+  /* '13 days left', 'Due today', 'Overdue'. Against the SERVER's clock, and
+     rounded the way a student counts: tomorrow is one day left, not 0.7. */
+  function daysLeft(dueIso, now) {
+    if (!dueIso || !now) { return ""; }
+    var ms = Date.parse(dueIso) - now;
+    if (isNaN(ms)) { return ""; }
+    if (ms <= 0) { return "Overdue"; }
+    var days = Math.ceil(ms / 86400000);
+    if (days <= 1) { return "Due today"; }
+    return days + " days left";
+  }
+
   function fmtDue(iso) {
     if (!iso) { return "NO DEADLINE SET"; }
     return "DUE " + fmtDay(iso) + ", " + fmtTime(iso);
@@ -182,6 +213,13 @@
      is due — never `new Date()`, which is the device's opinion. The device
      clock is used for nothing but choosing how to print a timestamp. */
   var serverNow = null;
+
+  /* The sink for the page about to mount. Module-level rather than threaded
+     through the return value, because `__MRB_DATA__` is a DATA object and the
+     sink is not data — putting a live object with a network connection inside
+     the thing the page renders from would blur exactly the line this file
+     exists to keep sharp. */
+  var pendingSink = null;
 
   async function api(path, token) {
     var cfg = window.MrBadmusConfig || {};
@@ -246,6 +284,187 @@
       if (match) { return match; }
     }
     return classes[0];
+  }
+
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     THE SINK — where a student's answers actually go
+     ═══════════════════════════════════════════════════════════════════════
+
+     Ruled 22 Aug 2026. `window.__MRB_SINK__` is set immediately before mount
+     and read lazily by the ported page. It is a WRITER and a RESUME SOURCE;
+     everything the page RENDERS still comes through `MRB_DATA`.
+
+     ⛔ THE OLD PAGE POSTED NOWHERE. `handIn` wrote '17 SEP, 20:41' into local
+     state and stopped. This is the other end of that wire.
+
+     ⚠️ `resume()` IS SYNCHRONOUS BY CONSTRUCTION. The page calls it from
+     `loadLive()`, which cannot await. So the progress is fetched BEFORE the
+     mount and handed over already resolved — an empty first paint followed by
+     a late repaint is how a student sees their own answers appear and then
+     jump, and it is avoidable by ordering rather than by cleverness.
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  var LETTERS = "ABCD";
+
+  /* '17 SEP, 20:41' — Design's own shape, from the SERVER's timestamp. The
+     device clock chooses nothing here but how to print what the server said. */
+  function fmtStamp(iso) {
+    if (!iso) { return ""; }
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) { return ""; }
+    var M = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN",
+             "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    return d.getDate() + " " + M[d.getMonth()] + ", " +
+           pad2(d.getHours()) + ":" + pad2(d.getMinutes());
+  }
+
+  /* "2 days late" — the real number of days, or nothing. Design welded a
+     fixed "2 DAYS LATE" over whatever the true overdue period happened to be.
+     Rounded UP, because four hours past the deadline is a day late to a
+     teacher and "0 days late" is not a sentence anybody says. */
+  function lateTextFor(dueIso, doneIso) {
+    if (!dueIso || !doneIso) { return "late"; }
+    var ms = Date.parse(doneIso) - Date.parse(dueIso);
+    if (isNaN(ms) || ms <= 0) { return "late"; }
+    var days = Math.ceil(ms / 86400000);
+    return days + (days === 1 ? " day late" : " days late");
+  }
+
+  function makeSink(assignment, questions, progress, token) {
+    /* The page speaks in (question index, option index). The route speaks in
+       question_ref and option letters. This is the whole of the translation,
+       kept in one place so neither side has to know the other's vocabulary. */
+    function payloadFor(index, option, secs) {
+      var q = questions[index];
+      if (!q) { return null; }
+      var src = q.__src || {};
+      var opts = src.options || [];
+      var chosen = opts[option] || {};
+      var right = null;
+      for (var i = 0; i < opts.length; i += 1) { if (opts[i].correct) { right = opts[i]; } }
+      return {
+        question_index: index,
+        question_ref: src.question_ref || null,
+        question_text: src.text || q.q || null,
+        rung: src.rung || null,
+        selected_answer: chosen.text == null ? null : String(chosen.text),
+        correct_answer: right && right.text != null ? String(right.text) : null,
+        selected_option_letter: chosen.letter || LETTERS[option] || null,
+        correct_option_letter: right ? right.letter : null,
+        is_correct: right ? (chosen.letter === right.letter) : null,
+        time_spent_seconds: secs == null ? null : secs
+      };
+    }
+
+    /* Answers given while the browser is offline. The page shows them as held
+       — that is Design's `held` map and its reconnect animation, untouched —
+       and this re-sends them in order when the browser says it is back. */
+    var queue = [];
+    var flushing = false;
+
+    async function post(path, body) {
+      var cfg = window.MrBadmusConfig || {};
+      var base = cfg.BACKEND_URL || "https://mrbadmus-backend.onrender.com";
+      var res = await fetch(base + path, {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+      var stamp = res.headers.get("date");
+      if (stamp) {
+        var t = Date.parse(stamp);
+        if (!isNaN(t)) { serverNow = t; }
+      }
+      if (!res.ok) { throw new Error("backend " + res.status + " on " + path); }
+      return res.json();
+    }
+
+    async function flush() {
+      if (flushing) { return; }
+      flushing = true;
+      try {
+        while (queue.length) {
+          var next = queue[0];
+          await post("/api/assignment/answer",
+                     { assignment_id: assignment.id, answer: next });
+          queue.shift();          // ← only on success, so a failure retries
+        }
+      } catch (err) {
+        console.error("[student-live] answer not saved yet", err);
+      } finally {
+        flushing = false;
+      }
+    }
+
+    if (typeof window.addEventListener === "function") {
+      window.addEventListener("online", function () { flush(); });
+    }
+
+    return {
+      /* Called from `loadLive()`. Already resolved — see the note above. */
+      resume: function () {
+        var p = progress || {};
+        var sub = p.submission;
+        var answers = {};
+        var count = 0;
+        (p.answers || []).forEach(function (a) {
+          var li = LETTERS.indexOf(a.selected_option_letter || "");
+          if (li < 0) { return; }        // self-marked, or a rung with no letter
+          answers[a.question_index] = li;
+          count += 1;
+        });
+        /* Where to put them: the first question they have NOT answered, so
+           returning on Thursday opens where they stopped rather than at the
+           beginning. If everything is answered, at the start of the review. */
+        var idx = 0;
+        for (var i = 0; i < questions.length; i += 1) {
+          if (answers[i] == null) { idx = i; break; }
+          idx = 0;
+        }
+        var done = !!(sub && sub.status === "complete");
+        return {
+          answers: answers,
+          sels: {},
+          held: {},
+          idx: done ? 0 : idx,
+          elapsed: (sub && sub.total_time_seconds) || 0,
+          view: done ? "done" : "q",
+          handedAt: done ? fmtStamp(sub.completed_at) : null,
+          late: !!(sub && sub.is_late),
+          resumed: count > 0 && !done,
+          live: true
+        };
+      },
+
+      saveAnswer: function (ev) {
+        var body = payloadFor(ev.index, ev.option, null);
+        if (!body) { return null; }
+        queue.push(body);
+        flush();
+        return null;
+      },
+
+      complete: function (elapsed) {
+        /* Answers first. A completion that overtook the last answer would mark
+           the work finished without the answer that finished it. */
+        return flush().then(function () {
+          return post("/api/assignment/complete", {
+            assignment_id: assignment.id,
+            total_time_seconds: elapsed == null ? null : elapsed
+          });
+        }).then(function (r) {
+          var sub = (r && r.submission) || {};
+          return {
+            stamp: fmtStamp(sub.completed_at),
+            late: !!(r && r.is_late)
+          };
+        });
+      }
+    };
   }
 
   // ── the class view ────────────────────────────────────────────────────
@@ -316,12 +535,15 @@
 
       var detailLine;
       if (status === "marked") {
-        detailLine = "HANDED IN " + fmtDay(c.submitted_at) +
+        /* ⊕ RULED 22 Aug 2026 — W5. "Complete" replaces "Hand it in"
+           everywhere it appears, and the work rows are one of the places it
+           appears. The words change; nothing else does. */
+        detailLine = "COMPLETED " + fmtDay(c.submitted_at) +
                      " · " + c.score + " OF " + c.max_score + " MARKS";
       } else if (status === "pending") {
-        detailLine = "HANDED IN " + fmtDay(c.submitted_at) + " · NOT MARKED YET";
+        detailLine = "COMPLETED " + fmtDay(c.submitted_at) + " · NOT MARKED YET";
       } else if (status === "missed") {
-        detailLine = fmtDue(c.due_at) + " · NOT HANDED IN";
+        detailLine = fmtDue(c.due_at) + " · NOT COMPLETED";
       } else {
         detailLine = fmtDue(c.due_at);
       }
@@ -493,6 +715,71 @@
          counted from the client. Empty, rather than a guess. */
       classSize: "",
 
+      /* ── the docket, and the rest of Design's welded figures ───────────
+         ⊕ 22 Aug 2026. Every one of these was a constant in Design's logic —
+         "8 questions", "Using a microscope", "Mon 15 Sep", "Thu 18 Sep,
+         18:00", "2 days left", "40 POINTS AT STAKE", "58%" — sitting above a
+         real assignment of a different length, on a different topic, due on a
+         different day. A screenshot caught them; a text check had not,
+         because the check held names and no numbers.
+
+         ⛔ WHERE THE PRODUCT DOES NOT RECORD SOMETHING, THE KEY IS EMPTY.
+         An empty docket row is honest. "40 POINTS AT STAKE" over an
+         assignment with no points is not. */
+      docketQuestions: currentCount ? String(currentCount) : "",
+      docketDrawsOn: lessonDefs.map(function (l) { return l.name; }).join(" · "),
+      docketSet: current && current.assignment
+        ? fmtSet(current.assignment.created_at) : "",
+      docketDue: current && current.assignment
+        ? fmtDueMixed(current.assignment.due_at) : "",
+      docketLeft: current && current.assignment
+        ? daysLeft(current.assignment.due_at, serverNow) : "",
+
+      /* COULD NOT SOURCE — nothing anywhere assigns a points value to an
+         assignment. `40 POINTS AT STAKE` was a number Design chose for a
+         drawing, and there is no column it could be read from. */
+      docketWorth: "",
+
+      /* ⊕ This one CAN be real, and the 22 Aug ruling requires it to be:
+         "progress is visible all week, to the student and to the teacher —
+         '5 of 15 answered' and the same as a percentage". That is exactly
+         what the new `progress` block on the payload carries. */
+      docketElapsed: current && current.progress
+        ? current.progress.percent + "%" : "",
+
+      /* COULD NOT SOURCE — the recall round writes nowhere. `/api/class/recall`
+         only reads, and no table carries a class, a teaching week and a rung
+         together, so how many a student has answered this week and what
+         fraction they got right are both genuinely unrecorded. Design's '46'
+         and '77%' were a drawing. Empty until the round has somewhere to
+         write; see the handover. */
+      recallAnswered: "",
+      recallPct: "",
+      recallRounds: "",
+
+      /* ⛔ THE FLOOR OF NINE. Design wrote `pad(Math.max(9, st.streak))`, so a
+         child whose best streak is three was shown nine. Zero makes the
+         Math.max a no-op and the real streak shows through — which today is
+         0, because nothing records a streak either. */
+      bestStreakFloor: 0,
+
+      /* COULD NOT SOURCE, and deliberately not approximated. Design's sentence
+         states an apportionment — "Recall is worth 20 of the 100 points on the
+         leaderboard" — that the platform cannot compute, which is the same
+         fault the 21 Aug ruling took out of the split bar and its static
+         40/40/20 legend. It is also platform self-explanation on a student
+         page. Empty rather than restated. */
+      roundNote: "",
+
+      /* The status word on an OPEN piece of work. Design wrote 'DUE THU 18:00'
+         — one class's one deadline, printed on every open row of every class.
+         The precise deadline is already on the line directly below (`detail`
+         reads "DUE THU 18 SEP, 18:00"), so the word carries only what is true
+         of every open row rather than borrowing one row's time for all of
+         them. That matters when a class has two things open at once. */
+      dueWordLong: "DUE",
+      dueWordShort: "DUE",
+
       subjectLabel: klass.pill_label || "",
       termLabel: termLabelFrom(serverNow),
       topicTitle: current && current.assignment
@@ -504,6 +791,7 @@
   // ── the assignment ────────────────────────────────────────────────────
   async function buildAssignment(klass, token) {
     var current = await api("/api/class/current-assignment?class_id=" + klass.id, token);
+    var progress = null;
 
     /* `assignment: null` with a reason is a NORMAL state — no current week, no
        scheme row, nothing banked yet. It means no work is set, not an error. */
@@ -514,12 +802,30 @@
     }
 
     var a = current.assignment;
+
+    /* ⊕ 22 Aug 2026 — W2. What this student has already answered, FROM THE
+       SERVER, read BEFORE the mount so `resume()` can answer synchronously.
+       A failure here is not fatal: an unresumed page shows an empty assignment
+       whose answers still save, which is a bad morning rather than a lost
+       week. It is logged rather than swallowed. */
+    try {
+      progress = await api("/api/assignment/progress?assignment_id=" + a.id, token);
+    } catch (err) {
+      console.error("[student-live] could not read progress", err);
+    }
+
     var questions = [];
     (current.questions || []).forEach(function (q) {
       if (q.retired) { return; }        // the bank no longer has it; do not draw a blank
       var n = normalise(q.options, null);
       if (!n) { return; }
       questions.push({
+        /* The row this was built from, kept alongside rather than re-derived:
+           the sink needs `question_ref`, the option letters and which one is
+           right, and reconstructing those from what the page renders would be
+           guessing at data we already have in our hand. Not read by the page —
+           `MRB_DATA` never sees it — only by the sink. */
+        __src: q,
         t: deslug(q.lesson_slug).toUpperCase(),
         /* ⚠️ ALWAYS null. The page can draw seven figures and seven only, all
            of them Design's own examples keyed `micro` / `bubbles` / `fov` /
@@ -534,16 +840,21 @@
       });
     });
 
-    /* The page's own floor is six (`count()` returns at least 6 and then
-       indexes that far), so a shorter set would run off the end of the array
-       mid-assignment. */
-    if (questions.length < 6) {
-      var short = new Error("assignment has " + questions.length + " usable questions");
+    /* ⊕ 22 Aug 2026 — THE FLOOR OF SIX IS GONE, at both ends.
+       Design's `count()` returned `Math.max(6, …)` and then indexed that far,
+       so a four-question assignment ran off the end of the array and this
+       refused to open rather than let it. The refusal was honest and the floor
+       was wrong; `count()` now reads the assignment's actual length (see
+       student_rulings.py) and this only has to refuse an EMPTY one. */
+    if (!questions.length) {
+      var short = new Error("assignment has no usable questions");
       short.mrbSay = SAY.workNotSet;
       throw short;
     }
 
     var name = klass.name || "";
+    pendingSink = makeSink(a, questions, progress, token);
+
     return {
       questions: questions,
 
@@ -563,9 +874,26 @@
            name.replace(/[^A-Za-z0-9]/g, "") + "." + a.id + ".v1",
       DUE: fmtDue(a.due_at),
 
+      /* ⊕ 22 Aug 2026 — two values Design welded into one line of `renderVals`.
+         `WEEK 04` was every class in every week of every year; a real week is
+         the assignment's own `academic_week`, and where there isn't one the
+         key is EMPTY and the header simply drops the clause. An empty label is
+         honest; "WEEK 04" over week 1 is not. */
+      weekLabel: a.academic_week ? "WEEK " + pad2(a.academic_week) : "",
+      lateText: lateTextFor(a.due_at, progress && progress.submission
+                                      ? progress.submission.completed_at : null),
+
       className: name,
       backToClass: "Back to " + name,
-      topicTitle: a.topic || a.title || ""
+      topicTitle: a.topic || a.title || "",
+
+      /* ⊕ RULED 22 Aug 2026 — W5. The three words that live in Design's
+         MARKUP rather than in its logic, bound by path like every other
+         template literal. The padding is Design's own indentation and travels
+         with the word; see the note in build_student_port.py's BINDINGS. */
+      completeLabel: "Complete\n          ",
+      completeChip: "COMPLETE\n          ",
+      completeHeading: "Complete"
     };
   }
 
@@ -593,16 +921,18 @@
 
           window.__MRB_DATA__ = data;
 
-          /* The assignment page routes off the URL hash and falls back to
-             'Mid-way' — a DEMO scenario that pre-fills six answers, three of
-             them deliberately wrong. On a real student's assignment that is
-             not a default, it is a lie. '#live' is the page's own name for
-             "this student's saved answers and nothing else", so that is what
-             it gets. Replaced, not pushed, so Back still leaves the page.
-             ⚠️ This is a workaround for a default in the page; see handover. */
-          if (page === "assignment" && window.location.hash !== "#live") {
-            window.history.replaceState(null, "", "#live");
-          }
+          /* ⊕ 22 Aug 2026 — the `#live` history rewrite that used to sit here
+             is GONE. It was a workaround, from outside, for the page falling
+             back to a demo scenario; the page now refuses every scenario but
+             the student's own whenever a sink is present, which is a property
+             rather than a nudge. A student typing `#handedin` gets their own
+             work, not a fabricated completion.
+
+             The sink goes on the window BEFORE the mount and never after: the
+             page reads it lazily but `loadLive()` runs during the very first
+             render, and a sink that arrived a tick later would resume nothing
+             on the one paint that matters. */
+          if (pendingSink) { window.__MRB_SINK__ = pendingSink; }
 
           window.__MRB_MOUNT__();
         } catch (err) {

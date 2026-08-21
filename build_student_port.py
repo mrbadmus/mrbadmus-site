@@ -100,7 +100,8 @@ PAGES = [
          title_expr="MRB_DATA('className') + "
                     "' \\u00B7 My class \\u00B7 MrBadmusAI'",
          fields=["work", "roster", "weekPts", "lessonDefs", "questions"],
-         state_fields=["streak"]),
+         state_fields=["streak"],
+         constants={}),
     dict(page="assignment", out="assignment-ported.html",
          fixture_out="assignment-fixture.html",
          fixture_js="student-fixture-assignment.js",
@@ -108,7 +109,23 @@ PAGES = [
          title_expr="'Assignment \\u00B7 ' + MRB_DATA('className') + "
                     "' \\u00B7 MrBadmusAI'",
          fields=["questions", "wrongPlan", "figCaptions", "KEY", "DUE"],
-         state_fields=[]),
+         state_fields=[],
+         # ── constants ────────────────────────────────────────────────────
+         # ⊕ 22 Aug 2026. Two values a RULING introduced rather than lifted.
+         #
+         # `lift_literals` and `rewrite_seams` both carry Design's own bytes
+         # out of Design's own logic, which is what makes the fixture's render
+         # provably identical. These two have no such source: `student_rulings`
+         # REPLACED the expressions that held them, so there is nothing left in
+         # Design's file to lift from. They are therefore written here, beside
+         # the ruling that needs them, with EXACTLY the value Design's line
+         # produced — `'WEEK 04 \u00B7 '` and `' \u00B7 2 days late'` — so the
+         # fixture still renders byte-for-byte what Design drew.
+         #
+         # ⚠️ This is the one place in the build a value is typed rather than
+         # extracted, and it is deliberately small and deliberately named. If
+         # it ever grows past a handful, the seam has stopped being a seam.
+         constants=dict(weekLabel="'WEEK 04'", lateText="'2 days late'")),
 ]
 
 # ── the identity strings, which are NOT in the logic ──────────────────────
@@ -149,6 +166,29 @@ BINDINGS = {
         ("8r/Sc1", "className"),
         ("Back to 8r/Sc1", "backToClass"),
         ("Cells & microscopy", "topicTitle"),
+        # ── W5, RULED 22 Aug 2026 — "Complete" replaces "Hand it in" ───────
+        #
+        # The button marks the work FINISHED. It does not transfer it: every
+        # answer was already saved the moment it was given, so "hand it in" now
+        # describes something that does not happen. Design's typography and
+        # placement are untouched; only the words change.
+        #
+        # ⚑ WHY THESE THREE GO THROUGH BINDINGS AND THE OTHERS THROUGH RULINGS.
+        # It is not a preference — it is which mechanism can reach them. These
+        # are TEXT NODES in Design's markup, and `student_rulings.LOGIC` only
+        # transforms the logic class. Their siblings (`screenLabel`,
+        # `doneEyebrow`, `doneKicker`) are computed in `renderVals()`, where
+        # BINDINGS cannot reach. Each word is changed by the one mechanism that
+        # can see it.
+        #
+        # ⚠️ THE TRAILING WHITESPACE IS PART OF THE MATCH. Design's compiler
+        # keeps the markup's indentation inside the text node, and binding
+        # "Hand it in" without it would find nothing and stop the build. That
+        # is why the padding is carried through to the replacement too — the
+        # same reason `classNamePadded` exists.
+        ("Hand it in\n          ", "completeLabel"),
+        ("HANDED IN\n          ", "completeChip"),
+        ("Handed in", "completeHeading"),
     ],
 }
 
@@ -271,6 +311,181 @@ REWRITES = {
              new="w.status === 'pending' ? "
                  "'WITH ' + MRB_DATA('teacherName').toUpperCase()",
              keys={}, check=dict(teacherName="upper")),
+
+        # ── THE FIGURES ──────────────────────────────────────────────────
+        #
+        # Everything below this line is a NUMBER rather than a name, which is
+        # why none of it was caught by the greps that gate the identity
+        # strings and why the previous unit could name it, count it and leave
+        # it. It is example data all the same: `46` is one child's answered
+        # count, `2 days left` is one Thursday, `Using a microscope` is one
+        # week's lesson. On the production page every one of them is not
+        # merely stale but WRONG, and wrong in the direction a student would
+        # believe — a page that says the deadline is two days away is not
+        # obviously broken the way a page greeting them as Ayo is.
+        #
+        # ⚠️ ORDER MATTERS FOR ONE OF THEM. The readings strip's `caption` is
+        # already rewritten by `readings — ANSWERED · WK nn` above, so the two
+        # seams below are written against the line AS IT IS BY THEN: they
+        # anchor on `value:` and on `pct:` and never on the caption between
+        # them. A pattern spanning all three would match Design's delivery and
+        # not the logic these run on.
+        dict(name="readings — recall answered",
+             pat=r"\{ label: 'Recall', value: fresh \? '0' : "
+                 r"'(?P<recallAnswered>\d+)'",
+             new="{ label: 'Recall', value: fresh ? '0' : "
+                 "MRB_DATA('recallAnswered')",
+             keys=dict(recallAnswered="str")),
+        dict(name="readings — recall percentage",
+             pat=r"pct: fresh \? '0%' : '(?P<recallPct>\d+%)' \}",
+             new="pct: fresh ? '0%' : MRB_DATA('recallPct') }",
+             keys=dict(recallPct="str")),
+        # The same 46, spliced a second time 280 lines further down as the
+        # retrieval room's own count. ONE KEY, TWO USES — deliberately: if the
+        # strip and the room ever disagreed about how many questions a student
+        # has answered, one of them would be lying, and `rewrite_seams`
+        # refuses a key captured as two different values.
+        dict(name="retrievalCount",
+             pat=r"retrievalCount: fresh \? '0' : '(?P<recallAnswered>\d+)'",
+             new="retrievalCount: fresh ? '0' : MRB_DATA('recallAnswered')",
+             keys=dict(recallAnswered="str")),
+
+        # The docket — this week's assignment, four facts about it. ⚠️ ONLY
+        # THE `value:` IS TAKEN. `font:` on three of these four reads
+        # `'500 ' + bigVal + '/1.3 …'`, and `bigVal` is a LOCAL CONST of
+        # `renderVals()`. Lifting the objects whole would carry that
+        # expression into the fixture, where `bigVal` is not in scope, and the
+        # page would throw on mount. The typography is Design's and stays
+        # exactly where Design put it; only the four data go.
+        dict(name="docket — QUESTIONS",
+             pat=r"\{ label: 'QUESTIONS', value: '(?P<docketQuestions>\d+)'",
+             new="{ label: 'QUESTIONS', value: MRB_DATA('docketQuestions')",
+             keys=dict(docketQuestions="str")),
+        dict(name="docket — DRAWS ON",
+             pat=r"\{ label: 'DRAWS ON', value: '(?P<docketDrawsOn>[^']*)'",
+             new="{ label: 'DRAWS ON', value: MRB_DATA('docketDrawsOn')",
+             keys=dict(docketDrawsOn="str")),
+        dict(name="docket — SET",
+             pat=r"\{ label: 'SET', value: '(?P<docketSet>[^']*)'",
+             new="{ label: 'SET', value: MRB_DATA('docketSet')",
+             keys=dict(docketSet="str")),
+        dict(name="docket — DUE",
+             pat=r"\{ label: 'DUE', value: '(?P<docketDue>[^']*)'",
+             new="{ label: 'DUE', value: MRB_DATA('docketDue')",
+             keys=dict(docketDue="str")),
+        # The docket's countdown strip. `fresh ?` keeps its empty-class arm —
+        # `No deadline` and `—` are what a class with nothing set says, which
+        # is behaviour rather than data.
+        dict(name="docketLeft",
+             pat=r"docketLeft: fresh \? 'No deadline' : "
+                 r"'(?P<docketLeft>[^']*)'",
+             new="docketLeft: fresh ? 'No deadline' : MRB_DATA('docketLeft')",
+             keys=dict(docketLeft="str")),
+        dict(name="docketWorth",
+             pat=r"docketWorth: fresh \? '\\u2014' : "
+                 r"'(?P<docketWorth>[^']*)'",
+             new="docketWorth: fresh ? '\\u2014' : MRB_DATA('docketWorth')",
+             keys=dict(docketWorth="str")),
+        dict(name="docketElapsed",
+             pat=r"docketElapsed: fresh \? '0%' : "
+                 r"'(?P<docketElapsed>\d+%)'",
+             new="docketElapsed: fresh ? '0%' : MRB_DATA('docketElapsed')",
+             keys=dict(docketElapsed="str")),
+
+        # The work row's status words for a piece of work still open. `DUE THU
+        # 18:00` is one assignment's deadline written into a status vocabulary
+        # — every open assignment in the class reads it, whatever its own due
+        # date. The wide and narrow forms are two different strings and so two
+        # different keys; the `pending` / `missed` / `marked` arms are status
+        # words rather than data and stay.
+        dict(name="work row — DUE (wide)",
+             pat=r"const longWord = w\.status === 'open' \? "
+                 r"'(?P<dueWordLong>DUE [A-Z]{3} \d{2}:\d{2})' :",
+             new="const longWord = w.status === 'open' ? "
+                 "MRB_DATA('dueWordLong') :",
+             keys=dict(dueWordLong="str")),
+        dict(name="work row — DUE (narrow)",
+             pat=r"const shortWord = w\.status === 'open' \? "
+                 r"'(?P<dueWordShort>DUE [A-Z]{3})' :",
+             new="const shortWord = w.status === 'open' ? "
+                 "MRB_DATA('dueWordShort') :",
+             keys=dict(dueWordShort="str")),
+
+        # The round's closing line. LIFTED WHOLE, not spliced: `Six` and
+        # `Week 04` are the two figures in it, and rebuilding the sentence
+        # around them would fix the sentence in place — on real data it is a
+        # different sentence ("One answer logged…", and nothing says the
+        # weighting stays 20 of 100). One string, one key.
+        dict(name="roundNote",
+             pat=r"roundNote: '(?P<roundNote>[A-Z][a-z]+ answers? logged "
+                 r"against Week \d+\. Recall is worth \d+ of the \d+ points "
+                 r"on the leaderboard\.)'",
+             new="roundNote: MRB_DATA('roundNote')",
+             keys=dict(roundNote="str")),
+
+        # ⚑ `Math.max(9, st.streak)` IS NOT A DEFAULT — IT IS A FLOOR ON A
+        # REAL CHILD'S RECORD. Design needed the example streak to read `09`
+        # and wrote the nine into the max. Shipped, it tells a student whose
+        # best run is three that their best run is nine, and it does it in the
+        # one place on the page that is purely their own achievement. The
+        # floor now comes from data: the fixture carries Design's 9 as a
+        # NUMBER so Design's own render is byte-identical, and the live source
+        # supplies 0, which makes the `Math.max` a no-op and lets the real
+        # streak — however small — through.
+        dict(name="recallStats",
+             pat=r"recallStats: \[\{ label: 'BEST STREAK', value: "
+                 r"pad\(Math\.max\((?P<bestStreakFloor>\d+), st\.streak\)\) "
+                 r"\}, \{ label: 'ROUNDS', value: '(?P<recallRounds>\d+)' \}\]",
+             new="recallStats: [{ label: 'BEST STREAK', value: "
+                 "pad(Math.max(MRB_DATA('bestStreakFloor'), st.streak)) "
+                 "}, { label: 'ROUNDS', value: MRB_DATA('recallRounds') }]",
+             keys=dict(bestStreakFloor="num", recallRounds="str")),
+
+        # ── THE SIX-QUESTION ROUND, WHICH IS NOT DATA AND NOT A KEY ───────
+        #
+        # These two carry NOTHING to the fixture. Design's recall round is six
+        # questions long and the six is written into the meter, the counter,
+        # the percentage, the live/done test and the index clamp — five places,
+        # none of which reads the array it is counting. A seven-question round
+        # would stop at six with `QUESTION 06 / 06` on the screen and a
+        # question still unanswered; a five-question round would run off the
+        # end of the array. So the length comes from `this.questions.length`,
+        # which is the round itself, and there is no key because there is
+        # nothing here a data source should get to decide.
+        #
+        # The division is guarded: an empty round is `0%` and not `NaN%`.
+        # Design's own round has six questions, so every string below renders
+        # the same bytes it did — that equality is the check on this one.
+        dict(name="recall round — length from this.questions",
+             pat=r"      recallMeter: 'QUESTION ' \+ "
+                 r"pad\(Math\.min\(st\.qi \+ 1, 6\)\) \+ ' / 06',\n"
+                 r"      recallMeterPct: Math\.round\(\("
+                 r"Math\.min\(st\.qi, 6\) / 6\) \* 100\) \+ '%',\n"
+                 r"      roundLive: st\.qi < 6, roundDone: st\.qi >= 6,\n"
+                 r"      qCounter: 'QUESTION ' \+ "
+                 r"pad\(Math\.min\(st\.qi \+ 1, 6\)\) \+ "
+                 r"' / 06 \\u00B7 ' \+ q\.topic,",
+             new="      recallMeter: 'QUESTION ' + "
+                 "pad(Math.min(st.qi + 1, this.questions.length)) + ' / ' + "
+                 "pad(this.questions.length),\n"
+                 "      recallMeterPct: (this.questions.length ? "
+                 "Math.round((Math.min(st.qi, this.questions.length) / "
+                 "this.questions.length) * 100) : 0) + '%',\n"
+                 "      roundLive: st.qi < this.questions.length, "
+                 "roundDone: st.qi >= this.questions.length,\n"
+                 "      qCounter: 'QUESTION ' + "
+                 "pad(Math.min(st.qi + 1, this.questions.length)) + ' / ' + "
+                 "pad(this.questions.length) + "
+                 "' \\u00B7 ' + q.topic,",
+             keys={}),
+        # The same six, 200 lines earlier, as the index clamp that picks the
+        # question. `Math.max(0, …)` keeps it a valid index rather than -1 on
+        # an empty round.
+        dict(name="recall round — index clamp",
+             pat=r"const qi = Math\.min\(st\.qi, 5\);",
+             new="const qi = Math.min(st.qi, "
+                 "Math.max(0, this.questions.length - 1));",
+             keys={}),
     ],
 }
 
@@ -915,6 +1130,8 @@ def fixture_js(spec, page, data_literals, bind_values):
     # lifted — sorted, so the file is stable across runs.
     for name in named + sorted(k for k in data_literals if k not in named):
         rows.append("  %s: %s" % (_q(name), data_literals[name]))
+    for key in sorted(spec.get("constants") or {}):
+        rows.append("  %s: %s" % (_q(key), spec["constants"][key]))
     for key in sorted(bind_values):
         rows.append("  %s: %s" % (_q(key), _q(bind_values[key])))
     return (
@@ -1114,17 +1331,20 @@ def build():
         # leak there is its bug and not a finding about somebody else's.
         #
         # REPORTED, not failed: Design's example data does not live only in
-        # the class fields, and not all of what is left in `renderVals()` is
-        # closed yet. The shout-outs, the crumb rail, the leaderboard scope
-        # note and the two stray copies of the week number ARE closed now, by
-        # LIFTS and REWRITES above. What is still welded is the docket's
-        # `'2 days left'` / `'40 POINTS AT STAKE'` / `'58%'`, the retrieval
-        # count `'46'` and its `'77%'`, `recallStats`' `'08'` and its
-        # `Math.max(9, …)`, and `roundNote`'s `Week 04` — every one a FIGURE
-        # rather than a name, and none of them reachable by the greps that
-        # gate this. Lifting them is the next unit's; a build that REFUSED TO
-        # COMPLETE until it was done would simply mean nothing shipped. So
-        # each is named, counted, and left.
+        # the class fields, and this loop is what finds the rest of it. The
+        # shout-outs, the crumb rail, the leaderboard scope note, the two
+        # stray copies of the week number, the docket's four facts and its
+        # countdown, the retrieval count and its percentage, the round note,
+        # the rounds tally and the streak floor are ALL closed now, by LIFTS
+        # and REWRITES above.
+        #
+        # ⊕ 22 Aug 2026 — this comment used to end by naming those figures as
+        # "still welded … lifting them is the next unit's". They are lifted.
+        # What is left, and is reported rather than failed, is named in the
+        # findings on that unit: `shoutCount`'s `'02'`, the bench task's
+        # "Answer the eight questions", and the leaderboard's 0.4 / 0.19 /
+        # 160 / 80 weightings, which are the ruled-and-costed MRB-275 split
+        # rather than this build's to close.
         tpl_blob = json.dumps(roots, ensure_ascii=False)
         stuck = []
         for key, val in sorted(bind_values.items()):
