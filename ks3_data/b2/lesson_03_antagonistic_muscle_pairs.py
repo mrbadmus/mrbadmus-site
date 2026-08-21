@@ -335,18 +335,18 @@ LESSON = {
         "recall": {
             "q": "Which pair of muscles works the knee?",
             "options": [
-                "Quadriceps and hamstrings",
                 "Biceps and triceps",
                 "The calf and the Achilles",
                 "Quadriceps and the calf muscle",
+                "Quadriceps and hamstrings",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
-                1: "That pair works the elbow. The same arrangement, a "
+                0: "That pair works the elbow. The same arrangement, a "
                    "different joint and different muscles.",
-                2: "The Achilles is a tendon, not a muscle — it is how the "
+                1: "The Achilles is a tendon, not a muscle — it is how the "
                    "calf muscle reaches the heel bone.",
-                3: "Both real muscles, but they act on different joints, so "
+                2: "Both real muscles, but they act on different joints, so "
                    "neither can undo the other.",
             }},
         "apply": {

@@ -585,12 +585,17 @@ LESSON = {
          "targets": "BODY-11",
          "prompt": "You have just calculated the opposite. Commit to what the "
                    "body is getting out of the deal before you read on.",
+         # ⊕ MRB-177, ruled 17 Aug 2026 — the three distractors now state
+         # wrong RULES, in the same shape as the correct option. The correct
+         # option and its index are unchanged.
          "options": [
-             "Nothing — it is simply a bad design",
+             "Nothing — it is simply a bad design we are stuck with",
              "Speed and distance: the hand moves much further and faster than "
              "the muscle shortens",
-             "It saves energy",
-             "It protects the joint from damage",
+             "Energy: a muscle attached close in uses less energy to hold "
+             "the load",
+             "Protection: attaching the muscle close in keeps the joint from "
+             "being damaged",
          ],
          "reveal": [
              "<strong>Speed and distance.</strong> The biceps shortens by "
@@ -623,16 +628,16 @@ LESSON = {
             # length tell, and shortening or padding a numeric answer to make
             # a set "look" balanced would be tampering with a calculation.
             "options": [
-                "180 N",
                 "30 N",
                 "6 N",
+                "180 N",
                 "900 N",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "That would only be true if both distances were the same. "
+                0: "That would only be true if both distances were the same. "
                    "The load acts six times further out than the muscle.",
-                2: "That is 30 ÷ 5. Dividing the force by a distance does not "
+                1: "That is 30 ÷ 5. Dividing the force by a distance does not "
                    "give a force.",
                 3: "That is 30 × 30 — the turning effect of the load in N cm, "
                    "not the muscle force. It still has to be divided by the "
@@ -656,18 +661,18 @@ LESSON = {
             # so all four now read as full claims at 15–17 words. The correct
             # option is unchanged, because it is the science.
             "options": [
-                "It attaches very close to the joint, so it has a much "
-                "smaller distance to work with",
                 "Muscles are inefficient and waste most of their force, so a "
                 "lot of the pull is lost",
+                "It attaches very close to the joint, so it has a much "
+                "smaller distance to work with",
                 "Because the forearm itself is heavy, and the muscle has to "
                 "lift the arm as well",
                 "Because muscles can only pull and never push, so pulling is "
                 "the only option left",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "Nothing is being wasted. Every newton is doing exactly "
+                0: "Nothing is being wasted. Every newton is doing exactly "
                    "what the arithmetic says it must.",
                 # The forearm's own weight is ignored throughout this lesson,
                 # and this is the one place the page says so out loud.

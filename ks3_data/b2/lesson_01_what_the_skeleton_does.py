@@ -398,14 +398,14 @@ LESSON = {
             # the same SHAPE as the correct option (place, then where it
             # sits). The correct option and its index are unchanged.
             "options": [
-                "In the marrow inside the bones",
                 "In the chambers of the heart",
+                "In the marrow inside the bones",
                 "In the air sacs of the lungs",
                 "In the liver, beside the gut",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "The heart pumps blood; it does not make any of it. Nothing "
+                0: "The heart pumps blood; it does not make any of it. Nothing "
                    "about a pump implies a factory.",
                 2: "The lungs load oxygen onto red blood cells that already "
                    "exist. They do not build them.",
@@ -417,20 +417,20 @@ LESSON = {
             "q": "Why would damage to the ribcage stop oxygen reaching the "
                  "cells in your toes?",
             "options": [
-                "Because the chest cannot be made bigger, so air stops "
-                "entering the lungs",
                 "Because the ribs carry oxygen to the rest of the body",
                 "Because the ribs protect the heart, and the heart would stop",
                 "Because the ribs contain marrow, so blood cells would stop "
                 "being made",
+                "Because the chest cannot be made bigger, so air stops "
+                "entering the lungs",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
-                1: "Bone carries loads, not oxygen. Blood carries oxygen, and "
+                0: "Bone carries loads, not oxygen. Blood carries oxygen, and "
                    "blood needs the lungs to be filled first.",
-                2: "That is a different job of the same bones. The chain here "
+                1: "That is a different job of the same bones. The chain here "
                    "starts with air, not with the heart.",
-                3: "Ribs do contain marrow, which makes this tempting. But "
+                2: "Ribs do contain marrow, which makes this tempting. But "
                    "that failure takes months; the breathing one takes "
                    "minutes.",
             }},

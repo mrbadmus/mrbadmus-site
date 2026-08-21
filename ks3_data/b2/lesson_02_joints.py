@@ -301,11 +301,21 @@ LESSON = {
          "targets": "BODY-04",
          "prompt": "The Achilles tendon is the thick cord you can feel at the "
                    "back of your ankle. Commit before you read on.",
+         # ⊕ MRB-177, ruled 17 Aug 2026 — all four options now state a full
+         # rule in the same three-part shape, so no option is a length
+         # outlier in EITHER direction. ⚠️ There is no answer key on a
+         # `predict`: the correct option is index 1, and it is correct
+         # because the reveal below says a tendon joins muscle to bone. It
+         # was EXPANDED to sit in the band, never shortened — shortening it
+         # is what MRB-177 forbids. The three distractors carry the same
+         # wrong beliefs they always did: the tendon/ligament swap, muscle-
+         # to-muscle, and the ligament's job described as the tendon's.
          "options": [
-             "It joins one bone to another bone",
-             "It joins a muscle to a bone",
-             "It joins two muscles together",
-             "It is a strap that holds the ankle joint closed",
+             "It joins one bone to another, so the whole skeleton stays "
+             "connected",
+             "It joins a muscle to a bone, so the pull reaches the skeleton",
+             "It joins two muscles together, so they can pull as one unit",
+             "It is a strap that holds the ankle joint closed and steady",
          ],
          "reveal": [
              "A <strong>tendon</strong> joins muscle to bone. It is how the "
@@ -346,20 +356,20 @@ LESSON = {
             # wrong RULES, in the same shape as the correct option. The
             # correct option and its index are unchanged.
             "options": [
-                "The shape of the bone ends: a round ball in a socket turns, a "
-                "groove does not",
                 "A joint turns when the muscles around it are strong enough, "
                 "and the elbow's are not",
                 "Cartilage is what lets a joint turn, so a joint with less of "
                 "it turns less",
+                "The shape of the bone ends: a round ball in a socket turns, a "
+                "groove does not",
                 "Ligaments stretch with use, so a joint you have never "
                 "trained to rotate will not rotate",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "Strength is not the limit. Nothing you could train would "
+                0: "Strength is not the limit. Nothing you could train would "
                    "make a groove turn.",
-                2: "Cartilage is the smooth facing that stops grinding. It "
+                1: "Cartilage is the smooth facing that stops grinding. It "
                    "does not decide the directions.",
                 3: "Stretching ligaments does not add a direction; it just "
                    "makes an unstable joint. The shape is what decides.",
