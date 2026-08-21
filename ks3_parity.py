@@ -604,6 +604,77 @@ UNIT = "chemistry/particles-and-their-behaviour/index.html"
 #
 # The rows are NOT weakened and NOT deleted. They assert the same two pairs on
 # a page that really renders them; what changed is which page has the thing.
+# ⊕ MRB-277, 21 Aug 2026 — THE COMING-SOON PAIRS NOW ASSERT AGAINST A
+# FIXTURE, AND THE PIN ABOVE IS RETIRED.
+#
+# Everything above this line is the history of one page reference being moved
+# because content kept arriving underneath it: B1 → B2 → C3 → P12. Each move
+# was correct and each was made only AFTER the rows had already stopped
+# measuring anything — twice they reported green while asserting nothing, and
+# the C3 move was written down with the words "expect to move it again".
+#
+# A pin to a real unit cannot be made durable, because the thing it depends on
+# is a unit STAYING unauthored, and every unauthored unit in the key stage is
+# now in an active lane's queue. So the dependency is inverted: the two pairs
+# are measured on a FIXTURE page that this gate writes itself, carrying
+# exactly one coming-soon row and one authored row. A fixture cannot be
+# delivered out from under an assertion.
+#
+# ⚠️ THE FIXTURE IS BUILT BY `build_ks3.lesson_row()` — the generator's OWN
+# emitter — and never by markup retyped here. That is the whole safety of it:
+# a fixture whose markup is a copy drifts from the real page the moment the
+# emitter changes a class name, and then it measures its own copy forever
+# while reporting on the product. Calling the emitter means the fixture is
+# wrong only if the real rows are wrong too.
+FIXTURE_SOON = "__fixture__/coming-soon.html"
+
+
+def write_soon_fixture(dest_root):
+    """Write the coming-soon fixture page under `dest_root`. Returns its rel path.
+
+    One unauthored lesson (which renders `.ks3-lesson-row.is-soon` and
+    `.ks3-badge.is-soon`) and one authored lesson beside it, so the dimmed
+    row is measured against a live sibling exactly as on a real unit index.
+    """
+    import build_ks3 as _bk
+
+    unit = {"discipline": "physics", "slug": "__fixture__",
+            "code": "FIX", "title": "Fixture"}
+    soon = {"slug": "not-written-yet", "title": "A slot nobody has authored",
+            "family": "PROCESS", "authored": False}
+    done = {"slug": "written", "title": "A slot somebody has authored",
+            "family": "PROCESS", "authored": True}
+    rows = (_bk.lesson_row(unit, soon, 1, {})
+            + _bk.lesson_row(unit, done, 2, {}))
+
+    out = os.path.join(dest_root, FIXTURE_SOON)
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    with open(out, "w", encoding="utf-8") as fh:
+        # ⚠️ `class="rd"` AND `data-mode="ks3"` ARE BOTH LOAD-BEARING. The KS3
+        # token block is `.rd[data-mode="ks3"]` in tokens.css, so a fixture
+        # carrying only one of the two hooks resolves NO tokens, renders in
+        # Times on a transparent ground, and the parity gate correctly refuses
+        # to report numbers measured against an unstyled document. The body
+        # tag below is the one `build_ks3.py` emits on every lesson page,
+        # `--subject` included, so the fixture is styled the way the pages it
+        # imitates are styled.
+        fh.write(
+            '<!doctype html><html lang="en"><head>'
+            '<meta charset="utf-8">'
+            '<meta name="viewport" content="width=device-width, '
+            'initial-scale=1">'
+            '<title>MRB-277 coming-soon fixture</title>'
+            '<link rel="stylesheet" href="/shared/tokens.css">'
+            '<link rel="stylesheet" href="/shared/styles.css">'
+            '<link rel="stylesheet" href="/shared/nav.css">'
+            '<link rel="stylesheet" href="/shared/ks3.css">'
+            '</head><body class="rd" data-mode="ks3" '
+            'style="--subject: var(--physics);"><main class="ks3-wrap">'
+            '<ol class="ks3-lesson-list">%s</ol>'
+            '</main></body></html>' % rows)
+    return FIXTURE_SOON
+
+
 UNIT_SOON = "physics/space/index.html"
 UNIT_REF = "biology/nutrition-and-digestion/index.html"
 # ⊖ PARKED 16 Aug 2026 (MRB-228). B3's `energy-in-food` slot was the LAST §4.6
@@ -6035,9 +6106,13 @@ CONTRAST = [
          fg=".ks3-endmatter .ks3-tutor h2", bg=".ks3-endmatter .ks3-tutor",
          need=3.0),
     # ⊕ MRB-221 — the draft-badge contrast pair is deleted with the badge.
-    dict(name="coming-soon badge text on its tint", on=UNIT_SOON,
+    # ⊕ MRB-277, 21 Aug 2026 — measured on the FIXTURE, not on whichever unit
+    # happens to be undelivered this week. See `write_soon_fixture()`: the
+    # pin these two carried moved B1 → B2 → C3 → P12 and twice reported green
+    # while asserting nothing, because the unit it named had been authored.
+    dict(name="coming-soon badge text on its tint", on=FIXTURE_SOON,
          fg=".ks3-badge.is-soon", bg=".ks3-badge.is-soon", need=4.5),
-    dict(name="coming-soon row title on dimmed row", on=UNIT_SOON,
+    dict(name="coming-soon row title on dimmed row", on=FIXTURE_SOON,
          fg=".ks3-lesson-row.is-soon > a", bg=".ks3-lesson-row.is-soon", need=4.5),
     dict(name="family chip on its ground", on=UNIT,
          fg=".ks3-family", bg=".ks3-family", need=4.5),
@@ -6820,22 +6895,387 @@ def _manifest_rows(repo_root, heading):
             "authoritative registry the build reads; if it has been renamed "
             "or removed, fix the manifest rather than this parser." % heading)
     body = text.split(heading, 1)[1]
-    rows = []
+    rows, width, lineno = [], None, 0
     for line in body.splitlines():
+        lineno += 1
         line = line.strip()
         if not line.startswith("|"):
-            if rows:
+            if rows or width is not None:
                 break          # table ended
             continue
         cells = [c.strip() for c in line.strip("|").split("|")]
         if not cells or set("".join(cells)) <= set("-: "):
             continue           # separator row
         if cells[0].lower() in ("family", "block type"):
-            continue           # header row
+            width = len(cells)   # the HEADER defines this table's arity
+            continue
+        # ⊕ MRB-279, 21 Aug 2026 — A ROW THIS PARSER CANNOT READ IS A HARD
+        # ERROR, NOT A ROW TO SKIP.
+        #
+        # This is the defect that produced the ticket. C3's author appended
+        # thirteen components to the `check` row PAST its closing pipe:
+        #
+        #     ... `model line is mono, so it reads as working` |, `C3 sorter
+        #     card is inset on a 2px ink border`, `C3 sorter reveal ...
+        #
+        # The row then split into THREE cells instead of two, and
+        # `check_design_coverage()` reads `cells[1]` only — so all thirteen
+        # C3 components sat in `cells[2]` and were invisible to the gate that
+        # exists to measure them. Seven lessons' worth of registered
+        # components, reporting green because nothing was looking.
+        #
+        # One character, and the parser's own tolerance is what turned it
+        # into thirteen silent omissions. `ks3_art.load()` was built this
+        # week to REFUSE a duplicate family rather than last-one-wins,
+        # because a registry that silently drops what it cannot parse is the
+        # same failure shape as one that silently accepts a collision. Same
+        # treatment here: the header row fixes the arity and any data row
+        # that disagrees stops the build and names itself.
+        if width is not None and len(cells) != width:
+            raise ValueError(
+                "%s §%s: a row has %d cells where the header declares %d. "
+                "The commonest cause is a stray `|` INSIDE a cell — a row "
+                "that is appended to past its closing pipe. Everything after "
+                "the extra pipe lands in a column no check reads, so it is "
+                "registered, invisible, and reports green.\n"
+                "  row: %s\n"
+                "  Fix the row; do not relax this parser."
+                % (MANIFEST, heading.strip("# "), len(cells), width,
+                   line[:220] + ("…" if len(line) > 220 else "")))
         rows.append(cells)
     if not rows:
         raise ValueError("no rows parsed under %r in %s" % (heading, MANIFEST))
     return rows
+
+
+MIS_REGISTER = os.path.join("docs", "ks3", "misconception-register.md")
+
+
+def check_misconception_register(repo_root=".", units=None):
+    """⊕ MRB-279, 21 Aug 2026 — THE REGISTER IS ASSERTED IN BOTH DIRECTIONS.
+
+    Returns (problems, rows).
+
+    WHY. C3's entire `MIX` family — thirteen ids across seven lessons — was
+    authored, built and SHIPPED without ever being written down here. The
+    pages were correct throughout, because `elicited_by` and `confronted_by`
+    resolve against the DOM and the DOM had what they named. But nothing
+    could check that the ids existed, that they were unique, or that they
+    were still referenced by anything. A register nobody checks is a second
+    copy, and a second copy that disagrees is worse than none.
+
+    The same sweep found `CELL-14` and `CELL-15` in exactly that state, live
+    on `specialised-cells`. So MIX was not a one-off; it was the first one
+    anybody noticed.
+
+    ── THE TWO DIRECTIONS ───────────────────────────────────────────────
+
+      FORWARD   every id an AUTHORED lesson references must have a row here.
+                A missing row is a NEVER ARRIVED: content shipped ahead of
+                its registration.
+
+      REVERSE   every row whose `lesson` is AUTHORED must actually be
+                referenced by that lesson. A row nothing references is a
+                broken join — usually a renumbering that only half happened.
+
+    ── RETIRED IS NOT MISSING, AND THE DIFFERENCE IS LOAD-BEARING ───────
+
+    An id that has been vacated — re-homed to another family, or ruled never
+    to be minted — is a PERMANENT GAP by this register's own law: the number
+    is never reissued, because a number that meant one thing and is later
+    given to another is precisely the silent broken join §5.3 exists to
+    prevent. A permanent gap must therefore NEVER be reported as missing;
+    reporting it would push somebody to "fix" it by refilling it, which is
+    the one thing the law forbids. Gaps are read from this file's own prose
+    ("... is a permanent gap", "Never reissue ...") so that the declaration
+    and the exemption are the same sentence and cannot drift apart.
+
+    Registering AHEAD of authoring is also legal and is not a failure: an id
+    whose lesson is not yet authored is pending, not orphaned. `CELL-09`
+    through `CELL-12` are the live example.
+    """
+    problems, rows = [], []
+    if units is None:
+        import ks3_data as _kd
+        units = _kd.build_units()
+
+    path = os.path.join(repo_root, MIS_REGISTER)
+    with open(path, encoding="utf-8") as fh:
+        text = fh.read()
+
+    registered, statements, dup = {}, {}, []
+    for line in text.splitlines():
+        m = re.match(r"^\|\s*`([A-Z]+-\d+)`\s*\|", line)
+        if not m:
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        # ⚠️ THE REGISTER IS NOT THE ONLY TABLE IN THIS FILE. §5.3's re-homing
+        # table also opens each row with a backticked id (`PART-12` | `NOS-01`
+        # | why), and counting those as registrations would report four
+        # RETIRED ids as live rows — the exact confusion the permanent-gap law
+        # exists to prevent. The register proper is the FIVE-column table
+        # (id | statement | elicited_by | confronted_by | lesson); nothing
+        # narrower is one.
+        if len(cells) < 5:
+            continue
+        mid = m.group(1)
+        stmt = cells[1] if len(cells) > 1 else ""
+        # An id may legitimately carry MORE THAN ONE ROW: the same belief
+        # reappears in a later lesson and is elicited and confronted there by
+        # different activities (`CELL-08` is the only live case — it reappears
+        # in `bacteria-in-the-gut`). What the register's law actually forbids
+        # is one id meaning two DIFFERENT things, so that is what is tested:
+        # a repeated id is legal when its statement is identical and a defect
+        # when it is not. Testing mere repetition would fail a real and
+        # useful reappearance.
+        if mid in registered and statements.get(mid) != stmt:
+            dup.append(mid)
+        registered.setdefault(mid, cells[4].strip("` ") if len(cells) > 4 else "")
+        statements.setdefault(mid, stmt)
+
+    # PERMANENT GAPS. Read from the register's own prose, then narrowed by
+    # the register's own law: a retired id is GONE FROM THE TABLE ("`PART-12`
+    # and `PART-13` are gone from this table and are PERMANENT GAPS"). So an
+    # id that still has a row is not a gap, whatever a nearby sentence says —
+    # which keeps a prose scan from silently exempting a live id just for
+    # being mentioned in the same sentence as a retired one.
+    gaps = set()
+    for m in re.finditer(r"[^.]*?permanent gaps?[^.]*\.", text, re.I):
+        gaps.update(re.findall(r"`([A-Z]+-\d+)`", m.group(0)))
+    for m in re.finditer(r"[Nn]ever (?:reissue|minted|issued)[^.]*\.", text):
+        gaps.update(re.findall(r"`([A-Z]+-\d+)`", m.group(0)))
+    gaps -= set(registered)
+
+    used, authored_slugs = {}, set()
+    for u in units:
+        for l in u.get("lessons", []):
+            if not l.get("authored"):
+                continue
+            authored_slugs.add(l["slug"])
+            for mis in l.get("misconceptions") or []:
+                if mis.get("id"):
+                    used.setdefault(mis["id"], []).append(l["slug"])
+
+    if dup:
+        problems.append(
+            "MRB-279: %s carries two rows with DIFFERENT statements. One id is "
+            "one belief; two beliefs wearing one name is the silent broken "
+            "join the register exists to prevent."
+            % ", ".join(sorted(set(dup))))
+
+    # A lesson still pointing at a VACATED id is worse than one pointing at an
+    # unregistered one: the number has been deliberately retired and must
+    # never be reissued, so the reference can never be made good.
+    retired_used = sorted(set(used) & gaps)
+    if retired_used:
+        problems.append(
+            "MRB-279: %d authored lesson reference(s) name a RETIRED id, which "
+            "is a permanent gap and is never reissued: %s"
+            % (len(retired_used),
+               ", ".join("%s (%s)" % (i, ", ".join(used[i]))
+                         for i in retired_used)))
+
+    # FORWARD
+    never = sorted(set(used) - set(registered) - gaps)
+    if never:
+        problems.append(
+            "MRB-279: %d misconception id(s) are referenced by an authored "
+            "lesson but have NO ROW in %s — shipped, live, and unwatched: %s"
+            % (len(never), MIS_REGISTER,
+               ", ".join("%s (%s)" % (i, ", ".join(used[i])) for i in never)))
+
+    # REVERSE — only where the row's lesson is actually authored
+    orphan = sorted(i for i, lesson in registered.items()
+                    if i not in used and i not in gaps
+                    and lesson in authored_slugs)
+    if orphan:
+        problems.append(
+            "MRB-279: %d registered id(s) name an AUTHORED lesson that does "
+            "not reference them — a broken join, not a pending one: %s"
+            % (len(orphan),
+               ", ".join("%s -> %s" % (i, registered[i]) for i in orphan)))
+
+    pending = sorted(i for i, lesson in registered.items()
+                     if i not in used and i not in gaps
+                     and lesson not in authored_slugs)
+    rows.append(("registered ids", "%d" % len(registered), True))
+    rows.append(("referenced by an authored lesson", "%d" % len(used), True))
+    rows.append(("permanent gaps (retired, never reissued)",
+                 "%d: %s" % (len(gaps), ", ".join(sorted(gaps))), True))
+    rows.append(("registered ahead of authoring (legal)",
+                 "%d: %s" % (len(pending), ", ".join(pending)), True))
+    return problems, rows
+
+
+_ARROWS = "\u2192\u2190\u27f6\u27f5\u21d2\u21d0\u279c\u2799\u2b95"
+
+
+def check_arrows_are_spoken(ks3_root):
+    """⊕ MRB-277, 21 Aug 2026 — ONE RULE FOR ARROWS AND FOR ORDERING.
+
+    Returns (problems, pages_checked).
+
+    ── THE RULE ─────────────────────────────────────────────────────────
+
+        An arrow is a DRAWING, never a word. Anything a student must be able
+        to READ says the relationship in words: an ordering says "then", a
+        chemical or causal change says "gives". A bare arrow glyph may appear
+        only where it is painted — on a canvas, or inside `aria-hidden`
+        markup — and never in page text, an `aria-label`, an `alt` or a
+        `title`.
+
+    ── WHY IT IS ONE RULE AND NOT TWO ───────────────────────────────────
+
+    MRB-249 settled the runtime half: an arrow that announces as word salad
+    is a defect. "Magnesium right-arrow magnesium oxide" is not a sentence,
+    and "step one right-arrow step two" is not an order — a screen-reader
+    student gets a glyph name where the meaning was. The build-time half is
+    the same defect one layer earlier, and writing it as a second rule would
+    invite a third for the next surface. So it is written once, here, and
+    covers ordering questions and change arrows together: both are asking a
+    reader to understand a RELATION, and a relation has a word.
+
+    `r_equation` is the pattern that already obeys it: the design system's
+    five latin woff2 subsets carry no U+2192 at all, so the arrow there is
+    DRAWN and the field holds the word it means, "gives", which then serves
+    as the accessible name. Nothing was retro-fitted; the constraint and the
+    accessibility answer turned out to be the same answer.
+
+    ── WHAT THIS MEASURED WHEN IT WAS WRITTEN ───────────────────────────
+
+    Exactly ONE arrow glyph reached the built key stage — `x_label` on
+    c1-03's heating curve, "ENERGY IN →" — and it is `fillText` on a canvas,
+    i.e. pixels. That canvas's accessible name is composed prose ("A heating
+    curve for 50 g of water with the marker at -20 degrees Celsius...") and
+    carries no arrow. So the key stage already obeyed the rule; the 337 other
+    arrows in `ks3_data/` are all in Python comments and reach nothing.
+
+    This gate exists so that stays true. The finding was not "arrows are
+    broken today", it was "nothing was stopping the next one", which is the
+    same shape as every other gate added under MRB-277/279.
+    """
+    problems, checked = [], 0
+    for root, _dirs, files in os.walk(ks3_root):
+        for fn in sorted(files):
+            if not fn.endswith(".html"):
+                continue
+            rel = os.path.relpath(os.path.join(root, fn), ks3_root)
+            with open(os.path.join(root, fn), encoding="utf-8") as fh:
+                html = fh.read()
+            checked += 1
+
+            # accessible names — always spoken, never decorative
+            for attr in ("aria-label", "alt", "title"):
+                for m in re.finditer(r'%s="([^"]*)"' % attr, html):
+                    if any(a in m.group(1) for a in _ARROWS):
+                        problems.append(
+                            "/%s — an arrow glyph is inside %s=%r. An "
+                            "accessible name is READ ALOUD: say the relation "
+                            "in words ('then' for an order, 'gives' for a "
+                            "change)." % (rel, attr, m.group(1)[:90]))
+
+            # visible page text, with script/style and canvas payloads removed
+            text = re.sub(r"(?is)<(script|style)[^>]*>.*?</\1>", " ", html)
+            text = re.sub(r"(?is)<canvas[^>]*>.*?</canvas>", " ", text)
+            text = re.sub(r'(?is)<([a-z0-9]+)[^>]*aria-hidden="true"[^>]*>'
+                          r'.*?</\1>', " ", text)
+            text = re.sub(r"(?s)<[^>]+>", " ", text)
+            if any(a in text for a in _ARROWS):
+                bad = [a for a in _ARROWS if a in text]
+                problems.append(
+                    "/%s — an arrow glyph (%s) is in VISIBLE PAGE TEXT and "
+                    "not inside `aria-hidden`. It announces as its glyph "
+                    "name, which is not the relation it draws. Draw it, or "
+                    "write the word." % (rel, " ".join(bad)))
+    return problems, checked
+
+
+def mutation_test_manifest_parser(repo_root="."):
+    """⊕ MRB-279, 21 Aug 2026 — PROVE THE PARSER ACTUALLY REFUSES.
+
+    A gate that has never been shown to fail is not a gate, it is a hope.
+    §10.2's stray pipe went thirteen components deep precisely because
+    everything downstream reported green, so the fix is not trusted here on
+    the strength of a code read: the exact defect is reinjected into a COPY of
+    the manifest and the parser must raise on it.
+
+    Three mutations, one per way a row can lie about its own width:
+      1. a stray `|` inside a cell — the real defect, an append past the
+         closing pipe;
+      2. a row with a cell REMOVED — the same arity break the other way;
+      3. an untouched control, which must still parse, so that a parser
+         which simply raised on everything could not pass this test.
+
+    Returns (problems, checks_run). Nothing is written to the real manifest.
+    """
+    import shutil as _shutil
+    import tempfile as _tempfile
+
+    problems, run = [], 0
+    src = os.path.join(repo_root, MANIFEST)
+    with open(src, encoding="utf-8") as fh:
+        original = fh.read()
+
+    def _with(text):
+        """Run the parser against `text` in a throwaway tree."""
+        d = _tempfile.mkdtemp(prefix="mrb279-")
+        try:
+            dst = os.path.join(d, MANIFEST)
+            os.makedirs(os.path.dirname(dst), exist_ok=True)
+            with open(dst, "w", encoding="utf-8") as fh:
+                fh.write(text)
+            return _manifest_rows(d, "### 10.2"), None
+        except ValueError as exc:
+            return None, exc
+        finally:
+            _shutil.rmtree(d, ignore_errors=True)
+
+    # the row the real defect landed on
+    target = None
+    for line in original.split("### 10.2", 1)[1].splitlines():
+        if line.strip().startswith("| check |"):
+            target = line
+            break
+    if target is None:
+        return (["MRB-279 mutation test: no `check` row under §10.2 to "
+                 "mutate — the manifest's shape has changed and this test "
+                 "is no longer measuring what it claims to."], 0)
+
+    # 1. THE REAL DEFECT: a stray pipe before an appended component
+    run += 1
+    hurt = target.rstrip()
+    hurt = hurt[:-1].rstrip() + " |, `MRB-279 DELIBERATE STRAY PIPE`" \
+        if hurt.endswith("|") else hurt + " |, `MRB-279 DELIBERATE STRAY PIPE`"
+    rows, exc = _with(original.replace(target, hurt, 1))
+    if exc is None:
+        problems.append(
+            "MRB-279: a DELIBERATE stray `|` in §10.2's `check` row did NOT "
+            "raise — the parser still drops what it cannot read, which is the "
+            "defect this test exists to prove closed. %d rows came back."
+            % (len(rows) if rows else 0))
+
+    # 2. the same arity break, a cell short
+    run += 1
+    short = "| " + target.strip().strip("|").split("|")[0].strip() + " |"
+    rows, exc = _with(original.replace(target, short, 1))
+    if exc is None:
+        problems.append(
+            "MRB-279: a §10.2 row with a MISSING cell did NOT raise. A row "
+            "narrower than its header registers nothing and says nothing.")
+
+    # 3. the control — an untouched manifest must still parse
+    run += 1
+    rows, exc = _with(original)
+    if exc is not None:
+        problems.append(
+            "MRB-279: the UNMUTATED manifest now fails to parse (%s). The "
+            "mutation test above proves nothing if the parser refuses "
+            "everything." % exc)
+    elif not rows:
+        problems.append(
+            "MRB-279: the unmutated manifest parsed to zero rows.")
+
+    return problems, run
 
 
 def check_design_coverage(repo_root=".", units=None):
@@ -13791,6 +14231,26 @@ def _awaiting_pages(ks3_root):
     """
     out = []
     for rel in _registered_pages():
+        # ⊕ MRB-277, 21 Aug 2026 — THE FIXTURE IS A THIRD CATEGORY, and it is
+        # named here explicitly rather than pattern-matched.
+        #
+        # `FIXTURE_SOON` is not an authored lesson and it is not a slot this
+        # run is waiting on: it is written by `write_soon_fixture()` at the
+        # top of the browser layer and deleted in the same `finally`, so at
+        # structure-check time it is legitimately absent from the tree. Left
+        # alone it reads as "registered and never measured" and fails the
+        # typo check above — which is that check working correctly, not a
+        # false alarm to widen away.
+        #
+        # ⚠️ ONE CONSTANT, NOT A PATTERN. The exemption is `== FIXTURE_SOON`
+        # and nothing else, because the property this check defends is that a
+        # page constant naming nothing buys its rows permanent silence. A
+        # glob here (`__fixture__/*`, say) would hand that silence to anyone
+        # who put a page under that directory. The fixture's rows are not
+        # silent: they run every build, on a page the gate builds itself out
+        # of the generator's own emitter.
+        if rel == FIXTURE_SOON:
+            continue
         path = os.path.join(ks3_root, rel)
         if not os.path.isfile(path):
             out.append(rel)
@@ -16742,6 +17202,14 @@ def run_browser_layers(ks3_root, browser_mod):
     hidden_problems = []
     n_dark_checked = 0
     dark_problems = []
+    # ⊕ MRB-277 — the coming-soon fixture exists only while the gate runs.
+    # It is written into the served tree because the pages it imitates link
+    # `/shared/ks3.css` absolutely, and removed in the `finally` below so it
+    # can never be committed or deployed. `.gitignore` carries it too, for
+    # the run that dies between the two.
+    _fixture_path = os.path.join(os.path.abspath(ks3_root), FIXTURE_SOON)
+    write_soon_fixture(os.path.abspath(ks3_root))
+
     server, port = browser_mod.serve(served_root)
     try:
         # ⊕ MRB-242 — a FRESH Chrome PER PAGE, which is what the build contract
@@ -16964,6 +17432,11 @@ def run_browser_layers(ks3_root, browser_mod):
              not vol_problems))
     finally:
         server.shutdown()
+        try:
+            os.remove(_fixture_path)
+            os.rmdir(os.path.dirname(_fixture_path))
+        except OSError:
+            pass
 
     # ⊕ MRB-267 — the demotion, made visible. This is a NOTE, never a problem
     # and never a style row: it does not enter the pass/fail set. It is printed
