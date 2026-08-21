@@ -278,11 +278,25 @@ body.rd[data-mode="ks3"] {
 }
 
 /* row 1 — a 5-character title and a 49-character one both have to work */
+/* ⊕ MRB-277, 21 Aug 2026 — `overflow-wrap` ON EVERY DISPLAY HEADING.
+   At 320px the clamp floors at 44px, and a single long word then measures
+   wider than the phone: `Chromatography` is fourteen characters and pushed
+   chromatography.html sideways with the instrument CLOSED, so it was the
+   heading and nothing on the page below it. It is not one page — the key
+   stage also titles lessons `Photosynthesis`, `Evaporation and
+   crystallisation`, `Variation: continuous and discontinuous` and `Gametes
+   and fertilisation`, and every future unit is free to do the same.
+   `break-word` rather than `anywhere`: it breaks a word ONLY when the word
+   cannot fit on a line of its own, so every heading that already fits is
+   laid out to the last pixel exactly as it was.
+   320px is not a hypothetical — an iPhone SE and a budget Android are both
+   320, and Rainford students are on what they have. */
 .ks3-lesson-head h1 {
   margin: 12px 0 0;
   font-size: clamp(44px, 6vw, 74px);
   line-height: .94;
   letter-spacing: -.035em;
+  overflow-wrap: break-word;
 }
 .ks3-unit-head h1,
 .ks3-hub-head h1,
@@ -291,6 +305,7 @@ body.rd[data-mode="ks3"] {
   font-size: clamp(40px, 5.4vw, 66px);
   line-height: .96;
   letter-spacing: -.035em;
+  overflow-wrap: break-word;
 }
 
 /* row 2 */
@@ -373,6 +388,7 @@ body.rd[data-mode="ks3"] {
   font-size: 38px;
   line-height: 1.05;
   letter-spacing: -.03em;
+  overflow-wrap: break-word;
 }
 .ks3-hook-prompt { margin: 16px 0 0; font-size: 19px; line-height: 1.65; }
 .ks3-commit {
@@ -906,6 +922,17 @@ body.rd[data-mode="ks3"] {
    come back through this comment. */
 .ks3-figure-scroll {
   overflow-x: auto;
+  /* ⊕ MRB-280, 21 Aug 2026 — CONTAINMENT, not clipping. A scroller whose
+     `position` is static is NOT the containing block for an absolutely
+     positioned descendant, so `overflow-x: auto` cannot clip one: the
+     descendant resolves against an ancestor OUTSIDE the scroller and
+     extends the DOCUMENT instead. That is what pushed c5-04 sideways by
+     140px at 390px (see `.ks3-rgrid-scroll` below), and it was the
+     invisible `.ks3-sr-only` labels doing it. Every horizontal scroller
+     in the key stage now declares itself a containing block, so the
+     shape cannot come back one figure at a time. `overflow: hidden` is
+     NOT the fix — measured — because the problem is not clipping. */
+  position: relative;
   border-radius: 24px;
   /* The focus ring belongs on the scroll box, because the scroll box is the
      thing that takes focus. Inset so it is not clipped by the rounding. */
@@ -1026,7 +1053,8 @@ body.rd[data-mode="ks3"] {
   border-bottom: 2px solid var(--ks3-rule);
   padding-bottom: 20px;
 }
-.ks3-ladder-head h2 { margin: 0; font-size: 36px; letter-spacing: -.03em; }
+.ks3-ladder-head h2 { margin: 0; font-size: 36px; letter-spacing: -.03em;
+                      overflow-wrap: break-word; }
 .ks3-ladder-sub { margin: 6px 0 0; font-size: 18px; color: var(--ks3-ink-muted); }
 .ks3-ladder-score { text-align: right; min-width: 220px; }
 .ks3-score { margin: 0; font-size: 22px; font-weight: 700; }
@@ -1914,6 +1942,7 @@ body.rd[data-mode="ks3"] {
   margin: 0;
   font-size: 40px;
   letter-spacing: -.03em;
+  overflow-wrap: break-word;
 }
 .ks3-sec-head p { margin: 0; font-size: 18px; color: var(--ks3-ink-muted); max-width: 44ch; }
 
@@ -2610,6 +2639,21 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 }
 .ks3-rail li.is-current .ks3-rail-label { color: var(--ks3-ink); }
 /* DONE is completion — the accent fill and the drawn mark. Never on load. */
+/* ⚠️ ⊕ MRB-277, 21 Aug 2026 — `color` HERE IS A LOADED GUN WITH THE SAFETY ON,
+   AND THE SAFETY IS IN ks3.js. `--ks3-on-dark` on `--ks3-accent` measures
+   3.34:1. That PASSES as a non-text graphical object (WCAG 1.4.11, 3:1) and
+   would FAIL as text (1.4.3, 4.5:1) — and this chip normally holds the lesson
+   NUMBER, which is text.
+   It is safe today for one reason only: `shared/ks3.js` swaps the numeral for
+   `TICK_SVG` in this state, so the accent ground carries a drawn mark and
+   never a numeral. The `color` declaration is what the numeral WOULD use.
+   So this rule's accessibility depends on a substitution in a different file.
+   If that swap is ever removed, or a rail reaches `is-done` before the runtime
+   paints, a number ships at 3.34:1 on all 87 rails. Either keep the swap, or
+   raise this colour before you let a glyph back onto this ground.
+   Found by the MRB-277 chip sweep, which measured all 45 chip states across
+   295 pages: every one passes, and this is the only one that passes for a
+   reason that is not written down. Now it is. */
 .ks3-rail li.is-done .ks3-rail-chip {
   background: var(--ks3-accent);
   border-color: var(--ks3-ink);
@@ -7412,6 +7456,17 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    scroller, so the rounded outline survives the overflow. */
 .ks3-smatrix-scroll {
   overflow-x: auto;
+  /* ⊕ MRB-280, 21 Aug 2026 — CONTAINMENT, not clipping. A scroller whose
+     `position` is static is NOT the containing block for an absolutely
+     positioned descendant, so `overflow-x: auto` cannot clip one: the
+     descendant resolves against an ancestor OUTSIDE the scroller and
+     extends the DOCUMENT instead. That is what pushed c5-04 sideways by
+     140px at 390px (see `.ks3-rgrid-scroll` below), and it was the
+     invisible `.ks3-sr-only` labels doing it. Every horizontal scroller
+     in the key stage now declares itself a containing block, so the
+     shape cannot come back one figure at a time. `overflow: hidden` is
+     NOT the fix — measured — because the problem is not clipping. */
+  position: relative;
   border-radius: var(--ks3-r-panel);
   border: 2px solid var(--ks3-ink);
 }
@@ -16454,6 +16509,17 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   gap: 14px;
   align-items: flex-end;
   overflow-x: auto;
+  /* ⊕ MRB-280, 21 Aug 2026 — CONTAINMENT, not clipping. A scroller whose
+     `position` is static is NOT the containing block for an absolutely
+     positioned descendant, so `overflow-x: auto` cannot clip one: the
+     descendant resolves against an ancestor OUTSIDE the scroller and
+     extends the DOCUMENT instead. That is what pushed c5-04 sideways by
+     140px at 390px (see `.ks3-rgrid-scroll` below), and it was the
+     invisible `.ks3-sr-only` labels doing it. Every horizontal scroller
+     in the key stage now declares itself a containing block, so the
+     shape cannot come back one figure at a time. `overflow: hidden` is
+     NOT the fix — measured — because the problem is not clipping. */
+  position: relative;
   padding-bottom: 4px;
 }
 .ks3-chroma-lane {
@@ -16692,6 +16758,10 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
     width: max-content;
     max-width: 100%;
     overflow-x: auto;
+    /* ⊕ MRB-280, 21 Aug 2026 — see the note on `.ks3-figure-scroll`: a
+       static scroller cannot clip an absolutely positioned descendant,
+       because it is not that descendant's containing block. */
+    position: relative;
   }
   /* A 44px tap target that has been squeezed to fit is not a tap target, so
      the control rows keep their gap and wrap instead. */
