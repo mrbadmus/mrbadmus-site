@@ -145,6 +145,54 @@ def load():
             "the other, with nothing said."
             % (len(clashes), "\n".join(
                 "   %-16s %-24s registered by %s AND %s" % c for c in clashes)))
+
+    # ── ⊕ MRB-279, 21 Aug 2026 · TWO FAMILIES MAY NOT WEAR ONE SHELL CLASS ──
+    #
+    # The check above compares family NAMES — the dict keys. This one compares
+    # the CSS class each family renders into, which is a VALUE, and which
+    # nothing was looking at.
+    #
+    # THE NEAR MISS. c5-02's decomposition sorter was assigned the family
+    # `decomp-sort` and reached for the shell class `ks3-dsort-block` — which
+    # `ks3_art/b5.py` had already registered for `disperse-sort`. Two families
+    # wearing one class means one unit's stylesheet block lands on the other
+    # unit's instrument, and it lands SILENTLY: both pages render, and only a
+    # browser open on the biology page would ever show it.
+    #
+    # It was caught by a human reading b5.py, not by a gate. The documented
+    # pre-check is a grep across `ks3_art/*.py`, `shared/ks3.js` and
+    # `shared/ks3.css` — and it structurally CANNOT see this case, because a
+    # shell-only family has no CSS rule and no JS wiring to grep for. It
+    # exists in KIND_SHELL and nowhere else.
+    #
+    # So the pre-check is replaced by an assertion over KIND_SHELL itself,
+    # which is the only place the truth lives. Cheap now; cheaper than the
+    # next collision, which would be found in a browser or not at all.
+    shells = {}
+    shell_clashes = []
+    for fam, value in getattr(reg, _ATTR["KIND_SHELL"]).items():
+        cls = value[0] if isinstance(value, (tuple, list)) and value else value
+        if not isinstance(cls, str):
+            continue
+        first = cls.split()[0] if cls.split() else cls
+        if first in shells:
+            other = shells[first]
+            shell_clashes.append(
+                (first, other, reg.source.get(("KIND_SHELL", other), "?"),
+                 fam, reg.source.get(("KIND_SHELL", fam), "?")))
+        else:
+            shells[first] = fam
+
+    if shell_clashes:
+        raise SystemExit(
+            "ks3_art: %d shell class(es) registered by two FAMILIES:\n%s\n"
+            "One shell class, one family. A shared class puts one unit's "
+            "stylesheet block on another unit's instrument, and does it "
+            "silently — both pages still render, and only a browser open on "
+            "the other page would show it. Rename one family's class."
+            % (len(shell_clashes), "\n".join(
+                "   %-22s %s (ks3_art/%s.py) AND %s (ks3_art/%s.py)" % c
+                for c in shell_clashes)))
     return reg
 
 

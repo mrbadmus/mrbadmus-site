@@ -241,6 +241,24 @@ Opened by **B1 *Cells and organisation*** (2026-08-09, authored by Claude Design
 | `CELL-11` | The enzymes were killed by the heat. | `what-did-boiling-do` | `not-killed-changed` | `enzymes-and-rate` |
 | `CELL-12` | The hotter it is the faster any reaction goes, so an enzyme works best as hot as possible. | `predict-the-curve` | `two-halves-of-the-curve` | `enzymes-and-rate` |
 | `CELL-13` | No nucleus means no instructions — so a bacterium cannot divide. | — (see below) | `s-think` | `unicellular-organisms` |
+| `CELL-14` | Specialised cells are made of different parts from ordinary cells. | `s-tuned` | `same-seven-tuned` | `specialised-cells` |
+| `CELL-15` | A red blood cell is not really a cell, then. | `s-hook` | `same-seven-tuned` | `specialised-cells` |
+
+⊕ **`CELL-14` and `CELL-15` registered 21 Aug 2026 (MRB-279), closing the same
+silent gap MIX was closed for.** Both were authored in `specialised-cells`, both
+have shipped to students, and neither had a row here. The pages were correct the
+whole time — the joins resolve against the DOM, so `elicited_by` and
+`confronted_by` both landed — but nothing could check that the ids existed, were
+unique, or were still referenced. An unregistered id is not a broken page; it is
+a page nothing is watching, which is how it stays broken once it breaks.
+
+They were found by the bidirectional assertion added under MRB-279, which is now
+the thing that stops this recurring: **every id an authored lesson references
+must have a row here, and every row whose lesson is authored must be referenced
+by it.** `CELL-09`–`CELL-12` are deliberately NOT failures of the second half —
+they are registered against `stem-cells-and-meristems` and `enzymes-and-rate`,
+which are not authored yet. Registering ahead of authoring is legal and useful;
+the gate distinguishes it from an id registered against nothing at all.
 
 ⊕ **`CELL-13` registered 2026-08-16 (MRB-220), closing a dead join.** The ID was authored and
 referenced in `ks3_data/b1/lesson_06_unicellular_organisms.py` — with a full `statement` and a
