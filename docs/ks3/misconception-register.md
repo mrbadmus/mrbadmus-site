@@ -1144,8 +1144,8 @@ two lessons are two different arguments against it, and the second is the one th
 ### `REACT` — chemical reactions: what counts as one, what happens underneath, and how one is written
 
 Opened by **C4 *Chemical reactions*** (2026-08-20, authored by Claude Design, MRB-246).
-`REACT-01` to `REACT-09` are C4's; `REACT-10` to `REACT-18` are C5 *Types of reaction* and are
-added with that unit. All are `review_state: draft`.
+`REACT-01` to `REACT-09` are C4's; `REACT-10` to `REACT-18` are C5 *Types of reaction*, added
+with that unit on 2026-08-21. All are `review_state: draft`.
 
 ⚠️ **THE ROWS BELOW ARE GENERATED FROM `ks3_data/c4/`, NOT FROM NOTES-C4 §6, AND THEY DIFFER FROM
 IT IN FIVE PLACES.** NOTES proposed the ids a delivery *expects* to emit; these are the ids the
@@ -1183,6 +1183,15 @@ not to a content lane.
 | `REACT-07` | Gases do not weigh anything, so the missing 2.20 g cannot be the carbon dioxide. | `think-commit-gas` | `sealed-flask-run` | `mass-in-a-reaction` |
 | `REACT-08` | An equation can be balanced by changing the small numbers in a formula. | `forbidden-small-2` | `forbidden-reveal` | `symbol-equations-and-balancing` |
 | `REACT-09` | Balancing is just a maths puzzle — as long as the numbers add up, the equation is right. | `think-commit-maths` | `think-commit-maths` | `symbol-equations-and-balancing` |
+| `REACT-10` | The big yellow flame is hotter — you can see more fire. | `think-commit-yellow` | `think-commit-yellow` | `combustion` |
+| `REACT-11` | Shutting the air off makes a flame burn hotter or more fiercely. | `gate-air-shut` | `shut-hole-run` | `combustion` |
+| `REACT-12` | It went black, so the copper carbonate burnt. | `think-commit-black` | `think-commit-black` | `thermal-decomposition` |
+| `REACT-13` | A decomposition reverses when it cools. | `cool-gate` | `stage-4-reveal` | `thermal-decomposition` |
+| `REACT-14` | Aluminium does not corrode — that is why drinks cans and window frames are made of it. | `s-think` | `think-reveal-oxide-layer` | `oxidation` |
+| `REACT-15` | Rusting needs water only, or air only. | `tube-predictions` | `four-tube-summary` | `oxidation` |
+| `REACT-16` | The copper on the nail came out of the nail — the iron turned into copper on the outside. | `think-commit-nail` | `think-commit-nail` | `displacement` |
+| `REACT-17` | A less reactive metal will displace a more reactive one if you heat it or wait longer. | `grid-predict` | `grid-reveal` | `displacement` |
+| `REACT-18` | A reaction can only be one of the four types, so if it is oxidation it cannot be combustion. | `think-commit-one-box` | `think-commit-one-box` | `which-reaction-is-this` |
 
 **Three of these are `ATOM` ids grown up, and they are cross-referenced rather than re-minted.**
 
@@ -1197,6 +1206,26 @@ not to a content lane.
   **cross-family "same belief" link type** rather than a prose paragraph under each family. Design
   raised it in NOTES-C4 §6 as a request rather than a decision, and it is recorded here as still
   open — the prose above is doing a job a field should do.
+
+⚖️ **`REACT-18` STAYS IN `REACT`, RULED 2026-08-21 (MRB-246).** Design flagged it (NOTES-C5 §5)
+as the register's fifth `NOS`-shaped entry living in a content family — it is not a factual error at
+all, it is a wrong idea about how CLASSIFICATION works — and asked for the `NOS` call before C8,
+which is the next chemistry unit in the queue.
+
+The ruling is to leave it here, and the reason is not that Design is wrong. She is right that it is
+`NOS`-shaped. But whether `NOS` ABSORBS entries out of content families is a decision about the
+register's taxonomy that changes PERMANENT IDS across several units at once, and taking it one
+entry at a time in the middle of authoring a content unit is how a taxonomy fragments — you end up
+with two entries re-homed, three not, and no principle recorded anywhere.
+
+So it is recorded instead. **There are now TWO `NOS`-shaped entries parked in content families:**
+
+  · `REACT-18` — each reaction has exactly one type, so two names cannot both be right
+  · `MIX-13` — one measurement is enough if it is the right answer
+
+**The next `NOS` pass takes BOTH, together, with the principle written down.** That pass is a
+register job, not a lesson job, and nothing in C5 changes either way: `c5-05` authors `REACT-18`
+and confronts it whatever family it eventually sits in.
 
 **`REACT-01` is the unit's load-bearing entry.** Irreversibility as the test for a chemical change
 is the single most common wrong rule at this age, and it survives most teaching because most

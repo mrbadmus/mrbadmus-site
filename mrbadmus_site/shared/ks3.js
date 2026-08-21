@@ -19874,6 +19874,815 @@
 
 /* ═══ END C4 wiring ═══ */
 
+/* ═══ BEGIN C5 wiring ═══════════════════════════════════════════════════
+   C5's instrument families. Added as ONE marked block so that a lane merging
+   into this file resolves mechanically: nothing above this marker moves.
+   ═══ */
+
+/* ── from js_01.js ── */
+  /* ═══ c5-01 · combustion ═══════════════════════════════════════════════
+     Two instruments: `burner-bench` and `fuel-cards`. Both tick a rail stop
+     and NOTHING ticks on load (MRB-208) — `markStage` is already a ratchet
+     and neither of these writes `data-stage-done` itself.
+
+     ⚖️ NOTHING IS COMPUTED IN THIS BLOCK. Not one number, not one sentence.
+     Every state of every panel is already in the document (EMIT-BOTH-SHOW-ONE)
+     and these two handlers do exactly one thing: choose which node is
+     `hidden`. So an authored `<strong>`, an em dash and a degree sign survive
+     as the author wrote them, no sentence exists twice, and the resting render
+     cannot disagree with the runtime one.
+
+     ⚖️ NOTHING GREEN AND NOTHING RED REACHES A CONTROL. A pressed dial, a
+     pressed prediction and a pressed card option all take the platform's
+     ordinary `aria-pressed` treatment; every verdict on this page is a PANEL
+     OF WORDS. Only the mastery ladder marks (R3 / MRB-196 R10). There is no
+     `data-correct` anywhere in either instrument.
+
+     ⚖️ NOTHING ANIMATES AND NOTHING COUNTS DOWN — no rAF, no timer, no
+     JS-driven transition — so `prefers-reduced-motion` has nothing to degrade
+     here and no tick has to re-test it. There is no range control in either
+     instrument either, so MRB-210's `input`-and-`change` pair has nothing to
+     bind to; every control below is a real `<button>` and there is no
+     `onclick=` attribute anywhere in the markup.
+
+     ⚠️ THE NO-OP PRESS. Every dial and every prediction option below returns
+     early when the value pressed is the value already pressed. Design's own
+     handler does not, and pressing a lit dial there re-runs the whole paint —
+     which on this bench would re-fire `focusReveal` and drag the page back up
+     to a readout the student is already looking at. Corrected here rather than
+     reproduced, which is the same correction C3 made across five dials and C4
+     across two. */
+
+  /* ── burner-bench (c5-01 #s-burner) ─────────────────────────────────
+     Four fuels, two air settings, eight runs — and the stop ticks on the AIR
+     dial, because the collar is what the lesson is about. Design's
+     `DONE('s-burner')` is `Object.keys(s.seen).length >= 2` and her `seen`
+     records air settings only.
+
+     ⚠️ WHICH DIAL THE STOP WATCHES IS READ OFF THE DOM, NOT WRITTEN DOWN
+     HERE. The renderer marks that dial's buttons `data-burner-track` and puts
+     the number of settings on the wrapper as `data-seen-total`, both from the
+     payload. So the claim lives in the lesson record, in one place, and this
+     file cannot drift from it.
+
+     ⚠️ TWO DEPARTURES FROM DESIGN'S OWN HANDLER, BOTH DELIBERATE:
+
+     1. THE GATE STAYS ON SCREEN. Her `needPredict` removes it the moment it
+        is answered, which takes the student's commitment away at the exact
+        moment the readout arrives to be compared against it. Law 4 exists to
+        create that comparison. Every gate in C3 and C4 stays put; so does
+        this one, and nothing here hides it.
+
+     2. THE CLOSING SUMMARY AND THE TICK WAIT FOR THE PREDICTION TOO. Her
+        `sawBoth` is `Object.keys(s.seen).length >= 2` and is independent of
+        the gate, so a student who presses both air buttons without ever
+        committing gets the summary — "Same fuel, both air settings…" — having
+        read no readout at all, and ticks the stop for it. The summary is a
+        sentence about what you have just READ, so it waits until there has
+        been something to read. That makes the stop's completion signal honest
+        rather than a count of presses, which is what MRB-208 is for. */
+  function wireBurnerBench(sec) {
+    var wrap = sec.querySelector("[data-burner]");
+    if (!wrap) { return; }
+    var seenTotal = parseInt(wrap.getAttribute("data-seen-total"), 10) || 0;
+    var closer = wrap.querySelector("[data-burner-close]");
+    var dials = toArray(wrap.querySelectorAll("[data-burner-for]"));
+    var predicts = toArray(wrap.querySelectorAll(
+      "[data-burner-predict] .ks3-option"));
+    var panels = {};
+    each(wrap.querySelectorAll("[data-burner-panel]"), function (p) {
+      panels[p.getAttribute("data-burner-panel")] = p;
+    });
+    if (!seenTotal || !dials.length) { return; }
+
+    /* The chosen value of each dial, the dial ORDER, and which dial the stop
+       watches — all three read off the resting DOM rather than assumed. The
+       renderer lights each dial's first option and emits the dials in the
+       payload's own order, and the run key is those values joined, so which
+       dial comes first and which value each opens on stay the payload's
+       business rather than being written down a second time here. */
+    var chosen = {}, order = [], tracked = null;
+    each(dials, function (b) {
+      var name = b.getAttribute("data-burner-for");
+      if (order.indexOf(name) < 0) {
+        order.push(name);
+        /* Falls back to the dial's first button, so a resting DOM with nothing
+           pressed still produces a real key rather than "null:null". */
+        chosen[name] = b.getAttribute("data-burner-val");
+      }
+      if (b.getAttribute("aria-pressed") === "true") {
+        chosen[name] = b.getAttribute("data-burner-val");
+      }
+      if (b.getAttribute("data-burner-track") === "1") { tracked = name; }
+    });
+
+    var predicted = false;
+    /* Seeded with the setting the bench OPENS on, because that setting has
+       genuinely been shown — it is the run the readout gives first. One of two
+       is not two, so nothing ticks on load. */
+    var seen = {};
+    if (tracked && chosen[tracked]) { seen[chosen[tracked]] = true; }
+
+    function key() {
+      var parts = [], i;
+      for (i = 0; i < order.length; i++) { parts.push(chosen[order[i]]); }
+      return parts.join(":");
+    }
+
+    function countSeen() {
+      var n = 0, x;
+      for (x in seen) {
+        if (Object.prototype.hasOwnProperty.call(seen, x)) { n += 1; }
+      }
+      return n;
+    }
+
+    function paint() {
+      var k = key();
+      var name;
+      /* One panel visible, and it is this combination's — or none, until the
+         student has said what they expect. */
+      for (name in panels) {
+        if (Object.prototype.hasOwnProperty.call(panels, name)) {
+          setHidden(panels[name], name !== k || !predicted);
+        }
+      }
+      if (predicted && countSeen() >= seenTotal) {
+        setHidden(closer, false);
+        markStage(sec, true);
+      }
+    }
+
+    each(dials, function (btn) {
+      btn.addEventListener("click", function () {
+        var name = btn.getAttribute("data-burner-for");
+        var val = btn.getAttribute("data-burner-val");
+        /* The no-op press. See the block header. */
+        if (chosen[name] === val) { return; }
+        chosen[name] = val;
+        each(dials, function (b) {
+          if (b.getAttribute("data-burner-for") !== name) { return; }
+          b.setAttribute("aria-pressed",
+                         b.getAttribute("data-burner-val") === val
+                           ? "true" : "false");
+        });
+        if (name === tracked) { seen[val] = true; }
+        paint();
+      });
+    });
+
+    each(predicts, function (btn) {
+      btn.addEventListener("click", function () {
+        if (btn.getAttribute("aria-pressed") === "true") { return; }
+        each(predicts, function (p) {
+          p.setAttribute("aria-pressed", p === btn ? "true" : "false");
+        });
+        var first = !predicted;
+        predicted = true;
+        paint();
+        /* MRB-257 (5.43) — only on the press that OPENS the readout. Moving
+           focus on every later dial press would drag the page around while the
+           student is deliberately comparing two runs. */
+        if (first) { focusReveal(panels[key()]); }
+      });
+    });
+
+    paint();
+  }
+
+  /* ── fuel-cards (c5-01 #s-fuels) ────────────────────────────────────
+     One commitment per card and it is FINAL — `c3CommitCards`' contract, the
+     same one the purity sorter, the jobs list and c4-03's equation cards take.
+     The reply is on screen the instant the card is decided, so a second press
+     would be a student choosing an answer they can already read; the siblings
+     disable and the ones not pressed dim.
+
+     ⚠️ There is no answer key in this markup and none is needed. The reply
+     names the products and says why, and it is the same paragraph whichever
+     button was pressed; only the ladder marks. There is no head counter here
+     either — Design draws none on this section — so no `count`. */
+  function wireFuelCards(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-fcard]",
+      card: "[data-fcard-card]",
+      opt: "[data-fcard-opt]",
+      reveal: "[data-fcard-reveal]"
+    });
+  }
+
+
+/* ── from js_02.js ── */
+  /* ═══ c5-02 · tube-run + decomp-sort ═══════════════════════════════════
+
+     ⚖️ NEITHER OF THESE COMPOSES A SENTENCE, A NUMBER OR A COLOUR. Every
+     stage sentence, every mass reading, every finished panel and every sort
+     verdict is in the document already, rendered by `ks3_art/c5.py`; all the
+     code below does is decide which one is on screen. There is no `data-cfg`
+     on either family and there is nothing here to parse, so nothing can drift
+     between the Python that drew the page and the JavaScript that drives it.
+
+     ⚖️ ONLY THE LADDER MARKS. Nothing green and nothing red reaches any
+     control in either instrument. The cooling gate's three options are
+     COMMITMENTS: they take the ordinary pressed treatment, they carry no
+     correctness flag, and the answer arrives as the next STAGE OF THE RUN.
+     The sort's verdict is a panel of WORDS, in the same voice whichever
+     button was pressed.
+
+     ⊖ NOTHING ANIMATES, NOTHING COUNTS DOWN and there is no canvas — no rAF,
+     no timer, no JS-driven transition — so `prefers-reduced-motion` has
+     nothing to degrade here and neither function asks about it. If a later
+     revision animates anything it must ask `motionReduced()` INSIDE the tick
+     (contract R4). MRB-210's input+change rule has nothing to bind either:
+     neither instrument draws a range. */
+
+  /* ── tube-run (c5-02 #s-tube) ────────────────────────────────────────
+     Three substances × five stage positions (0 = nothing lit, through 4 =
+     the flame is off), plus a commitment between stage 3 and stage 4.
+
+     ⭐ THE COOLING GATE IS THE LESSON, AND IT BLOCKS. `gateNeeded()` is
+     Design's own `stage === 3 && gate === null`, and while it is true the
+     advance button is HIDDEN. That is the whole difference between a
+     prediction and a caption: a student who can press "Let it cool" first has
+     watched the answer and been asked about it afterwards. The gate is what
+     elicits REACT-13 ("a decomposition reverses when it cools") and stage 4 is
+     what confronts it, in the substance's own words.
+
+     ⚖️ CREDIT IS FOR CARRYING ALL THREE SUBSTANCES TO THE END, which is
+     Design's own `DONE()` (`Object.keys(s.done).length >= 3`). `done` is never
+     emptied — not by "Fresh tube", not by switching substance — so a student
+     can run a finished tube again to look at it without losing the stop.
+     `markStage` is the ratchet and this file does not write its own.
+
+     ⚠️ THE RUN RESETS WHEN THE SUBSTANCE CHANGES, and the commitment goes with
+     it. A different substance is a different run — the limestone one takes far
+     more heat than the copper one and says so — so carrying a stage across
+     would leave the tiles reading one substance's mass over another's stages.
+     Design's own tab handler does exactly this (`{ sub: k, stage: 0, gate:
+     null }`).
+
+     ⚠️ THE NO-OP PRESS. The dial returns early when the substance pressed is
+     the substance already loaded. Design's handler does not: pressing the
+     loaded tab again resets the run to stage 0 and discards the commitment,
+     which is a control claiming to be pressed and then undoing the student's
+     work. Corrected here rather than reproduced.
+
+     ⚠️ THE WHOLE STATE SPACE, enumerated rather than sampled: 3 substances ×
+     5 stage positions = 15 views, each with its own open stages, its own mass
+     reading and its own heat reading; the gate is open in exactly three of
+     those fifteen (stage 3, before an option is pressed); the advance button
+     is hidden in six of them (stage 4 for each substance, and stage 3 with the
+     gate open); the finished panel is on screen in three; the all-three panel
+     depends on `done` rather than on the view and so crosses all fifteen; and
+     the resting state — first substance, stage 0, nothing committed, nothing
+     done, `data-stage-done="0"` — is the sixteenth thing that has to be right
+     and is the one a page is in before anybody touches it. */
+  function wireTubeRun(sec) {
+    var wrap = sec.querySelector("[data-tuber]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-tuber-tab]"));
+    if (!tabs.length) { return; }
+
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || tabs.length;
+    var marks = toArray(wrap.querySelectorAll("[data-tuber-tabdone]"));
+    var intros = toArray(wrap.querySelectorAll("[data-tuber-intro]"));
+    var rows = toArray(wrap.querySelectorAll("[data-tuber-stage]"));
+    var says = toArray(wrap.querySelectorAll("[data-tuber-text]"));
+    var gate = wrap.querySelector("[data-tuber-gate]");
+    var gateOpts = toArray(wrap.querySelectorAll("[data-tuber-gateopt]"));
+    var masses = toArray(wrap.querySelectorAll("[data-tuber-mass]"));
+    var limes = toArray(wrap.querySelectorAll("[data-tuber-lime]"));
+    var heats = toArray(wrap.querySelectorAll("[data-tuber-heat]"));
+    var next = wrap.querySelector("[data-tuber-next]");
+    var nextLabels = toArray(wrap.querySelectorAll("[data-tuber-nextlabel]"));
+    var reset = wrap.querySelector("[data-tuber-reset]");
+    var panels = toArray(wrap.querySelectorAll("[data-tuber-done]"));
+    var all = wrap.querySelector("[data-tuber-all]");
+
+    /* The last stage index, and the number of moves, are read off the MARKUP
+       rather than assumed to be four. The renderer decides how many stages
+       there are and two places deciding that is two places to change it. */
+    var moves = rows.length;
+    var lastLabel = nextLabels.length ? nextLabels.length - 1 : 0;
+
+    /* And so is the opening substance: the renderer decides which tab is
+       pressed at rest. */
+    var sub = tabs[0].getAttribute("data-tuber-tab");
+    each(tabs, function (b) {
+      if (b.getAttribute("aria-pressed") === "true") {
+        sub = b.getAttribute("data-tuber-tab");
+      }
+    });
+    var stage = 0, commit = null, done = {}, nDone = 0;
+
+    function gateNeeded() { return stage === moves - 1 && commit === null; }
+
+    function clearGate() {
+      each(gateOpts, function (b) { b.setAttribute("aria-pressed", "false"); });
+    }
+
+    function paint() {
+      var needed = gateNeeded();
+      var over = stage >= moves;
+
+      each(tabs, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-tuber-tab") === sub ? "true" : "false");
+      });
+      each(marks, function (s) {
+        setHidden(s, !done[s.getAttribute("data-tuber-tabdone")]);
+      });
+      each(intros, function (p) {
+        setHidden(p, p.getAttribute("data-tuber-intro") !== sub);
+      });
+      /* `data-open` is the stage the student has watched; `data-current` is
+         the one the next press will open. Both are attributes the stylesheet
+         reads, so no ground and no border is decided here. */
+      each(rows, function (li) {
+        var i = parseInt(li.getAttribute("data-tuber-stage"), 10);
+        li.setAttribute("data-open", i < stage ? "1" : "0");
+        li.setAttribute("data-current", i === stage ? "1" : "0");
+      });
+      each(says, function (p) {
+        var k = p.getAttribute("data-tuber-text").split("|");
+        setHidden(p, !(k[0] === sub && parseInt(k[1], 10) < stage));
+      });
+      setHidden(gate, !needed);
+      /* The mass tile flips on the LAST press and not before: the gas has not
+         left until the run is over, so a tube that is still being heated still
+         reads its opening mass. */
+      each(masses, function (s) {
+        var k = s.getAttribute("data-tuber-mass").split("|");
+        setHidden(s, !(k[0] === sub && k[1] === (over ? "1" : "0")));
+      });
+      each(limes, function (s) {
+        setHidden(s, s.getAttribute("data-tuber-lime") !==
+          (stage >= moves - 1 ? "1" : "0"));
+      });
+      /* Three heat states, keyed to WHICH part of the run is live rather than
+         to how many presses have happened: nothing lit, the flame on, the
+         flame off. */
+      each(heats, function (s) {
+        var want = stage === 0 ? "0" : (over ? "2" : "1");
+        setHidden(s, s.getAttribute("data-tuber-heat") !== want);
+      });
+      if (next) {
+        setHidden(next, over || needed);
+        var lab = String(stage < lastLabel ? stage : lastLabel);
+        each(nextLabels, function (s) {
+          setHidden(s, s.getAttribute("data-tuber-nextlabel") !== lab);
+        });
+      }
+      each(panels, function (d) {
+        setHidden(d, !(over && d.getAttribute("data-tuber-done") === sub));
+      });
+      setHidden(all, nDone < total);
+      markStage(sec, nDone >= total);
+    }
+
+    each(tabs, function (btn) {
+      btn.addEventListener("click", function () {
+        var v = btn.getAttribute("data-tuber-tab");
+        if (v === sub) { return; }       /* the no-op press */
+        sub = v;
+        stage = 0;
+        commit = null;
+        clearGate();
+        paint();
+      });
+    });
+
+    each(gateOpts, function (btn) {
+      btn.addEventListener("click", function () {
+        each(gateOpts, function (x) {
+          x.setAttribute("aria-pressed", x === btn ? "true" : "false");
+        });
+        if (commit !== null) { return; }
+        commit = parseInt(btn.getAttribute("data-tuber-gateopt"), 10);
+        paint();
+        focusReveal(next);               /* MRB-257 (5.43) */
+      });
+    });
+
+    if (next) {
+      next.addEventListener("click", function () {
+        if (stage >= moves || gateNeeded()) { return; }
+        stage += 1;
+        if (stage >= moves && !done[sub]) { done[sub] = true; nDone += 1; }
+        paint();
+        if (stage >= moves) {
+          var open = null;
+          each(panels, function (d) {
+            if (!d.hasAttribute("hidden")) { open = d; }
+          });
+          focusReveal(nDone >= total && all ? all : open);
+        }
+      });
+    }
+
+    if (reset) {
+      reset.addEventListener("click", function () {
+        if (stage === 0 && commit === null) { return; }
+        stage = 0;
+        commit = null;
+        clearGate();
+        /* `done` survives, deliberately: a substance already carried to the
+           end has been carried to the end, and running it again to watch it
+           is not undoing that. */
+        paint();
+      });
+    }
+
+    paint();
+  }
+
+  /* ── decomp-sort (c5-02 #s-sort) ─────────────────────────────────────
+     Five changes, one question asked five times, and heat is in all five so
+     looking for a flame settles none of them.
+
+     `c3CommitCards` is the contract — one commitment per item, final, with
+     both buttons disabling and the answer on screen the instant it is decided
+     — and this family shares that body rather than keeping a fourth copy of
+     it. There is no `correct` key in the payload and nothing here looks for
+     one: the reveal names the reaction type and explains it, in the same tone
+     whichever button was pressed.
+
+     No `close` and no `count`: Design draws neither a closing panel nor a head
+     counter on this block. The rail stop ticks when the fifth item is decided,
+     which `c3CommitCards` does against `data-total`. */
+  function wireDecompSort(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-dcomp]", card: "[data-dcomp-item]",
+      opt: "[data-dcomp-opt]", reveal: "[data-dcomp-reveal]"
+    });
+  }
+
+
+//
+// Order between the two does not matter — neither reads the other's DOM and
+// neither broadcasts. Both belong in a new "═══ BEGIN C5 wiring ═══" group.
+//
+// ⚠️ `data-dcompblock`, NOT `data-dsortblock`. `ks3_art/b5.py` already
+// registers `disperse-sort` with the shell class `ks3-dsort-block`; the marker
+// attribute was free, but keeping a `dsort` prefix on one half of the pair and
+// a `dcomp` class on the other is exactly the `data-critique` /
+// `data-critiq` trap read backwards. One prefix, used everywhere. See the
+// registration note at the foot of `art_02.py`.
+
+
+/* ── from js_03.js ── */
+  /* ── control-tubes (c5-03 #s-rust) ──────────────────────────────────
+     Four tubes, four commitments, and ONE summary that opens only when all
+     four are decided.
+
+     ⚖️ THE GATE IS THE LESSON, AND IT IS `c3CommitCards`' `close` SLOT.
+     Every other instrument that uses this helper opens a closer when the
+     last card is decided as a convenience; here it is the argument. "Both
+     oxygen and water are needed" is a conclusion no three of these tubes
+     can support, so the panel that states it is not on screen until the
+     fourth is opened — and the rail stop ticks at the same moment, which
+     is Design's own `DONE('s-rust')` (`Object.keys(s.preds).length >=
+     TUBES.length`).
+
+     ⚖️ AND IT IS THE HELPER, NOT A COPY OF IT. Everything this family
+     needs — one final commitment per card, both buttons disabled, the
+     unpressed one dimmed, a reveal shown, a closer at the end and
+     `markStage` at the same point — is already `c3CommitCards`' contract,
+     the same one the purity sorter, the jobs list, the plan critique and
+     c4-03's equation-read all take. A second implementation of it here
+     would be four more places for the ratchet to be got wrong.
+
+     ⚠️ NOTHING IS RECOMPUTED AND NO SENTENCE IS COMPOSED HERE. Every
+     tube's result and reason, the whole summary and its drawn arrow are
+     authored markup emitted by `ks3_art.c5` and shown — emit-both-show-one
+     at the card level. There is no `data-cfg` on this family because there
+     is nothing to recompute: no number, no colour, no geometry.
+
+     ⚠️ AND NOTHING HERE MARKS (R3). A tube predicted wrong looks exactly
+     like a tube predicted right: same pressed treatment, same ink panel,
+     same two sentences. The correction, where there is one, is the result
+     itself.
+
+     ⊖ NO COUNTER. Design draws no readout on this block's head row, so
+     `count` is deliberately absent — `setCount` would look for a
+     `[data-count]` the shell was never asked to emit. */
+  function wireControlTubes(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-ctube]",
+      card: "[data-ctube-card]",
+      opt: "[data-ctube-opt]",
+      reveal: "[data-ctube-open]",
+      close: "[data-ctube-summary]"
+    });
+  }
+
+  /* ── rust-stop (c5-03 #s-stop) ──────────────────────────────────────
+     Five real objects, one classification each, and the fifth does not fit
+     the rule the student has just been given. The commitment is FINAL and
+     the answer is on screen the instant the card is decided, so a second
+     press would be a student choosing an answer they can already read.
+
+     ⊖ NO `close` HERE, and that is the difference from the tubes above:
+     these five are independent findings and there is no reading of them
+     together to gate. The rail stop still ticks on the fifth, which is
+     Design's `DONE('s-stop')`.
+
+     ⚠️ There is no answer key in this markup and none is needed. The
+     paragraph that opens is the same paragraph whichever button was
+     pressed, and it names the kind rather than the press. */
+  function wireRustStop(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-rstop]",
+      card: "[data-rstop-card]",
+      opt: "[data-rstop-opt]",
+      reveal: "[data-rstop-answer]"
+    });
+  }
+
+
+/* ── from js_04.js ── */
+  /* ═══ c5-04 · displacement ═════════════════════════════════════════════
+     Two instruments: `reactivity-grid` and `reactivity-use`. Both tick a rail
+     stop and NOTHING ticks on load (MRB-208) — the build emits
+     `data-stage-done="0"` and `markStage` is already a ratchet, so neither
+     handler writes the attribute itself and neither can take back a stop that
+     has been earned.
+
+     ⚖️ NOT ONE SENTENCE IS COMPOSED IN THIS BLOCK. All sixteen cell panels,
+     all sixteen verdicts, the six equations and the four paragraphs of the
+     payoff are authored markup, already in the document, and these handlers do
+     exactly one thing: choose which node is `hidden`. So `<strong>`, the em
+     dashes and the degree of every observation survive as the author wrote
+     them, no sentence exists twice in two languages, and the resting render
+     cannot disagree with the runtime one.
+
+     ⚖️ NOTHING GREEN AND NOTHING RED REACHES A CONTROL. A pressed cell and a
+     pressed prediction take the platform's ordinary `aria-pressed` treatment.
+     A run cell is painted by what the TUBE did, not by whether the student
+     guessed it: `data-rgrid-state` becomes `reacts` or `none`, which are
+     Design's two grounds, and nothing here ever compares the prediction with
+     the outcome. Only the mastery ladder marks. */
+
+  /* ── reactivity-grid (c5-04 #s-grid) ─────────────────────────────────
+     Sixteen cells, one panel, one predict row.
+
+     ⚖️ THE DOM IS THE STATE, at the panel level: every cell's setup line and
+     every cell's result are in the document and one of each is shown, so a
+     cell that has been run is still run when the student comes back to it and
+     there is nothing to re-render. What this closure keeps is the one thing
+     that cannot be read off the markup — WHICH PREDICTION was pressed on each
+     cell, so that returning to it shows the choice still made.
+
+     ⊖ Design's prototype HIDES the predict row on a cell that has been run
+     (`needPredict: !ran`) and hard-codes `pressed: false` on both buttons, so
+     a commitment leaves no trace at all. On a grid whose whole shape is
+     "come back to a cell" that throws away the one thing the student put in.
+     The row stays instead, both buttons disabled and the chosen one still
+     pressed — which is what `c3CommitCards` does on every other commit-once
+     control in the key stage, and what MRB-257 3.21 ruled `--ks3-dim-spent`
+     for. Reported to the commander. */
+
+  function wireReactivityGrid(sec) {
+    var wrap = sec.querySelector("[data-rgrid]");
+    if (!wrap) { return; }
+
+    var cells = toArray(wrap.querySelectorAll("[data-rgrid-cell]"));
+    if (!cells.length) { return; }
+    var opts = toArray(wrap.querySelectorAll("[data-rgrid-opt]"));
+    var pattern = wrap.querySelector("[data-rgrid-pattern]");
+    var cfg = c3Cfg(wrap);
+    var doneAt = parseInt(cfg.doneAt, 10);
+    if (isNaN(doneAt) || doneAt < 1) { doneAt = cells.length; }
+
+    /* key -> the option id pressed on that cell. Runtime state, never text. */
+    var ran = {};
+    var current = null;
+
+    function only(root, attr, key) {
+      each(root.querySelectorAll("[" + attr + "]"), function (el) {
+        setHidden(el, el.getAttribute(attr) !== key);
+      });
+    }
+
+    function tally() {
+      var n = 0, k;
+      for (k in ran) {
+        if (Object.prototype.hasOwnProperty.call(ran, k)) { n += 1; }
+      }
+      return n;
+    }
+
+    function byKey(key) {
+      var found = null;
+      each(cells, function (b) {
+        if (b.getAttribute("data-rgrid-cell") === key) { found = b; }
+      });
+      return found;
+    }
+
+    /* Show one cell: its setup line, its result if it has been run, and the
+       predict row in the state that cell left it in. */
+    function select(key) {
+      current = key;
+      each(cells, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-rgrid-cell") === key ? "true" : "false");
+      });
+      only(wrap, "data-rgrid-setup", key);
+      /* A key no result carries hides all sixteen, which is exactly what an
+         un-run cell wants. */
+      only(wrap, "data-rgrid-result", ran[key] ? key : null);
+      var chosen = ran[key] || null;
+      each(opts, function (b) {
+        b.setAttribute("aria-pressed",
+          chosen && b.getAttribute("data-rgrid-opt") === chosen
+            ? "true" : "false");
+        c3Enable(b, !chosen);
+      });
+    }
+
+    /* Run the selected cell. The prediction gates the reveal (Law 4) and is
+       compared with nothing: both buttons open the same panel. */
+    function run(key, choice) {
+      if (!key || ran[key]) { return; }
+      ran[key] = choice;
+      var cell = byKey(key);
+      if (cell) {
+        var outcome = cell.getAttribute("data-rgrid-outcome");
+        cell.setAttribute("data-rgrid-state", outcome);
+        only(cell, "data-rgrid-mark", outcome);
+        only(cell, "data-rgrid-say", outcome);
+      }
+      select(key);
+      var n = tally();
+      setCount(sec, n);
+      if (n >= doneAt) {
+        setHidden(pattern, false);
+        markStage(sec, true);
+      }
+    }
+
+    each(cells, function (b) {
+      b.addEventListener("click", function () {
+        var key = b.getAttribute("data-rgrid-cell");
+        /* THE NO-OP PRESS. Pressing the cell that is already open changes
+           nothing on screen, so it does nothing here either — a control that
+           claims to be pressed and then repaints the same panel is what the
+           smoke gate asserts against. */
+        if (key === current) { return; }
+        select(key);
+      });
+    });
+
+    each(opts, function (b) {
+      b.addEventListener("click", function () {
+        /* The guard is here as well as on the element: `disabled` is the drawn
+           half, and this is the half a synthetic click cannot pass. */
+        if (!current || ran[current]) { return; }
+        run(current, b.getAttribute("data-rgrid-opt"));
+      });
+    });
+
+    /* Open on the cell the BUILD opened on, read off the markup rather than
+       named again here — the resting DOM is the single statement of it. */
+    each(cells, function (b) {
+      if (b.getAttribute("aria-pressed") === "true") {
+        current = b.getAttribute("data-rgrid-cell");
+      }
+    });
+    if (!current) { current = cells[0].getAttribute("data-rgrid-cell"); }
+    select(current);
+    setCount(sec, 0);
+  }
+
+  /* ── reactivity-use (c5-04 #s-uses) ──────────────────────────────────
+     Three consequence cards, one commitment each and it is FINAL: the answer
+     is on screen the instant the card is decided, so a second press would be a
+     student choosing something they can already read.
+
+     ⚠️ There is no answer key in this markup and none is needed. The answer
+     paragraph names the verdict itself, in the same box and the same voice
+     whichever button was pressed — only the ladder marks. */
+  function wireReactivityUse(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-ruse]",
+      card: "[data-ruse-card]",
+      opt: "[data-ruse-opt]",
+      reveal: "[data-ruse-answer]"
+    });
+  }
+
+
+/* ── from js_05.js ── */
+  /* ═══ c5-05 · type-sorter + rule-write ═══════════════════════════════
+     The unit's assessment in disguise. Eight reactions with the same five
+     buttons under every one, then the student writing the rule themselves.
+     Nothing here marks: no option takes green, red, a tick or a cross, and
+     the answer panel opens in the same voice whichever button was pressed. */
+
+  /* ── type-sorter (c5-05 #s-sort) ─────────────────────────────────────
+     Eight independent commitments, one shared five-way list. This is
+     `c3CommitCards`' contract exactly — one commitment per card, final,
+     with the answer on screen the instant the card is decided, so a second
+     press would be a student choosing something they can already read — so
+     it shares that body rather than growing yet another copy of the same
+     rule.
+
+     ⚠️ `count: true`. Design DOES draw a head tally on this block ("0 of 8
+     named", right-aligned and mono in the head row), unlike c4-01's pairs,
+     so the counter is wired as well as drawn. The denominator is asserted
+     against the number of reactions at build time — see `r_type_sorter` —
+     because `setCount` clamps to `data-total` and a wrong denominator would
+     freeze the readout while a card was still undecided.
+
+     ⚠️ NOTHING HERE LOOKS FOR AN ANSWER. There is no `correct` key in the
+     payload and no `data-correct` in the markup: the reaction's type is
+     read at BUILD time, to guard the chemistry, and reaches the document
+     only as the sentence in the reveal. The close panel opens on the eighth
+     commitment and `c3CommitCards` calls `markStage` with it. */
+  function wireTypeSorter(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-tsort]", card: "[data-tsort-card]",
+      opt: "[data-tsort-opt]", reveal: "[data-tsort-reveal]",
+      close: "[data-tsort-close]",
+      count: true
+    });
+  }
+
+  /* ── rule-write (c5-05 #s-rule) ──────────────────────────────────────
+     Write the four rules, then read four to compare with. The one activity
+     on the page that nothing marks, which is the point of it: a CLASSIFY
+     lesson ends with the rule in the student's own words.
+
+     ⚖️ THE SIXTY-CHARACTER UNLOCK, AND IT IS THE ENGINE'S OWN NUMBER.
+     `wireSelf` gates the mastery ladder's self-marked rungs at 60 characters
+     (Mide's ruling, 19 Aug 2026 — R8's missing half), and this block is the
+     same bargain in a different place: a model answer that arrives before a
+     word has been written IS the answer. Sixty is about a dozen words —
+     enough to be an attempt at a sentence, low enough that a terse but
+     genuine answer gets through. NOTHING HERE READS WHAT WAS WRITTEN: no
+     keywords, no parsing, no judgement of any kind. It is the commitment
+     that is required, not the correctness.
+
+     ⚠️ §8.10 — NO COPY, deliberately. No "write at least 60 characters", no
+     character counter, no nag. The control is simply not active yet and
+     looks the way an inactive control looks; the empty box directly above it
+     is the explanation.
+
+     ⚠️ THE BUTTON SHIPS `disabled` IN THE HTML, so it is never briefly live
+     in the window while this 800 KB deferred file is still arriving. The
+     first thing below re-runs the gate anyway, because a browser that
+     restored a prefilled textarea on a back-navigation would otherwise leave
+     a real answer sitting behind a dead control.
+
+     ⚖️ THE GATE IS SPENT ONCE THE PANEL HAS OPENED, and the control goes
+     with it. Design's own handler sets `ruleShown: true` and offers no way
+     back — the comparison stays on screen — so a button that stayed live
+     would be a control that does nothing, and one that re-armed on an edit
+     would be a control that reopens what is already open. It dims to the
+     measured spent treatment instead, under the panel it produced.
+
+     ⚠️ FOCUS MOVES BEFORE THE BUTTON DIES. Disabling the control a keyboard
+     user just pressed drops them to `<body>`; `focusReveal` takes them to
+     the panel first, which is what it exists for (MRB-257 5.43). The order
+     of the three lines below is load-bearing. */
+  function wireRuleWrite(sec) {
+    var wrap = sec.querySelector("[data-rwrite]");
+    if (!wrap) { return; }
+    var field = wrap.querySelector("[data-rwrite-field]");
+    var btn = wrap.querySelector("[data-rwrite-show]");
+    var reveal = wrap.querySelector("[data-rwrite-reveal]");
+    if (!field || !btn || !reveal) { return; }
+
+    var MIN_COMMIT = 60;
+    var shown = false;
+
+    function gate() {
+      if (shown) { return; }
+      c3Enable(btn, (field.value || "").trim().length >= MIN_COMMIT);
+    }
+
+    /* MRB-210 — both events. `input` is what fires while a student types;
+       `change` is what fires when a value arrives without typing, which is
+       how a restored form and a paste from the context menu both land. */
+    field.addEventListener("input", gate);
+    field.addEventListener("change", gate);
+
+    btn.addEventListener("click", function () {
+      if (shown) { return; }
+      shown = true;
+      setHidden(reveal, false);
+      btn.setAttribute("aria-expanded", "true");
+      focusReveal(reveal);
+      c3Enable(btn, false);
+      markStage(sec, true);
+    });
+
+    gate();
+  }
+
+/* ═══ END C5 wiring ═══ */
+
+
 
   function wireInstruments(root) {
     each(root.querySelectorAll("[data-board]"), wireBoard);
@@ -20169,6 +20978,18 @@
     each(root.querySelectorAll("[data-cbalblock]"), wireCoefficientBalancer);
     each(root.querySelectorAll("[data-forbidblock]"), wireForbiddenMove);
     // ═══ END C4 wiring ═══
+    // ═══ BEGIN C5 wiring ═══
+    each(root.querySelectorAll("[data-burnerblock]"), wireBurnerBench);
+    each(root.querySelectorAll("[data-fcardblock]"), wireFuelCards);
+    each(root.querySelectorAll("[data-tuberblock]"), wireTubeRun);
+    each(root.querySelectorAll("[data-dcompblock]"), wireDecompSort);
+    each(root.querySelectorAll("[data-ctubeblock]"), wireControlTubes);
+    each(root.querySelectorAll("[data-rstopblock]"), wireRustStop);
+    each(root.querySelectorAll("[data-rgridblock]"), wireReactivityGrid);
+    each(root.querySelectorAll("[data-ruseblock]"), wireReactivityUse);
+    each(root.querySelectorAll("[data-tsortblock]"), wireTypeSorter);
+    each(root.querySelectorAll("[data-rwriteblock]"), wireRuleWrite);
+    // ═══ END C5 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
   }

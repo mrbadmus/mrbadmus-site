@@ -18505,3 +18505,1474 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    that can drift away from it. */
 
 /* ═══ END C4 ═══ */
+
+/* ═══ BEGIN C5 ═══════════════════════════════════════════════════════════
+   C5's instrument styling. A PURE APPEND at EOF — every byte above this
+   marker is unchanged, which is the one conflict shape that resolves
+   mechanically when another lane merges.
+   ═══ */
+
+/* ── from css_01.css ── */
+/* ═══ c5-01 · burner-bench + fuel-cards ════════════════════════════════════
+   Fragment for `shared/ks3.css`. Every value below is measured off Design's
+   approved page `docs/ks3/design-reference/c5/c5-01-combustion.dc.html`, which
+   carries its real design in inline `style` attributes and in the style
+   strings `lessonVals()` composes. Where the page and the engine disagreed,
+   the page won, except where a disagreement is written out below as a ruling.
+
+   BOTH SECTIONS ARE LIGHT. `#s-burner` (page line 106) and `#s-fuels` (page
+   line 178) are each `class="ks3-block"` with no second class. There is no
+   ink-dark practical block anywhere in C5, exactly as there is none in C3 or
+   C4. A later pass that "restores" a practical shell here would paint an
+   instrument on a ground Design did not draw it on and resolve every text
+   token inside it wrong.
+
+   ⚠️ EVERY TEXT RULE IS SELF-SCOPED AT (0,2,0) — `.ks3-burner
+   .ks3-burner-tilenote`, never a bare `.ks3-burner-tilenote`. A bare component
+   class is (0,1,0) and loses to `.ks3-dark p` at (0,1,1) the day anything
+   moves one of these instruments onto ink, and it loses SILENTLY: the CSS
+   reads correctly and the sentence ships at about 1.2:1. C1's, C3's and C4's
+   blocks all say the same thing for the same reason and two builds have been
+   bitten by it.
+
+   ⚑ AMBER, ON TWO THINGS, AND BOTH CARRY A MEANING RATHER THAN A CATEGORY.
+
+     1. THE PREDICTION GATE. `--ks3-alert-tint` grounds it exactly as it
+        grounds c3-03's, c3-04's, c3-05's and c4-04's: a gate that exists to
+        ELICIT a named misconception a section before the page confronts it.
+        Here that is `REACT-11` — shutting the air off makes a flame burn
+        hotter — and both of the gate's distractors are that belief, from its
+        two sides.
+
+     2. THE "In the air around it" CELL, ON THE RUNS THAT MAKE CARBON
+        MONOXIDE. This is a HAZARD READING, and it is enforced as one: the
+        renderer raises unless every amber cell sits on a run whose products
+        name carbon monoxide and every run that names it carries one. So the
+        tint tracks the poison, not the dial — hydrogen with the hole shut is
+        an incomplete run and stays plain, because nothing in its products can
+        hurt anyone. That is the same spend as `.ks3-readout-where[data-where=
+        "absent"]` and `.ks3-fit-badge[data-state="fails"]`, both live. It is
+        never a selection, never a mark, and never a category hue.
+
+   ⚠️ EVERY LIVE VALUE ON A CREAM GROUND IS `--ks3-ink` HERE, AND THAT IS
+   DESIGN'S OWN CALL RATHER THAN AN OMISSION. `.ks3-burner-value` is a SENTENCE
+   that changes with the dials — "Blue, roaring, around 1500 °C", "Black
+   deposit on the beaker within seconds" — not a number in a slot, so she sets
+   it in 21px display ink and not in the accent. `--ks3-accent-text` is for the
+   figures a bench reports (c4-04's balance readings); a paragraph of it at
+   21px is a wall. `--ks3-data` is `#8FB7FF`, an ON-INK token, and every ground
+   in this lesson except the fuel cards' reveal is cream, so there is nothing
+   here to spend it on — which is the same reading C3 made across nine
+   instruments. `--ks3-accent` appears in this block on exactly one thing and
+   it is not text: the 6px offset shadow on the bench's closing summary.
+
+   ⚠️ NOTHING BELOW IS A MARK (R3, MRB-196 R10). Only the mastery ladder marks
+   correctness. `--ks3-ok` and `--ks3-danger` do not appear in this block at
+   all: a chosen dial and a chosen card option keep the platform's ordinary
+   pressed treatment, a spent sibling dims to `--ks3-dim-spent`, and every
+   verdict is a PANEL OF WORDS.
+
+   ⊖ NO REDUCED-MOTION BLOCK, DELIBERATELY. No canvas, no rAF, no timer, and
+   this block declares no transition and no animation of its own, so there is
+   nothing here for `prefers-reduced-motion` to degrade. What motion the page
+   has is the shell's arrive treatment, which `shared/ks3.css` degrades inside
+   its own media query.
+
+   ⚠️ NO `display` ON ANYTHING THAT ALSO TAKES `[hidden]` — except through the
+   guard at the very bottom of this block. An author `display` beats the UA
+   stylesheet's `[hidden] { display: none }` at ANY specificity, and eleven
+   things on this page are emitted hidden: all eight run panels, the closing
+   summary and all three card reveals. Nothing below currently sets `display`
+   on one of them, so the guard is not load-bearing TODAY — it is here because
+   the day someone gives `.ks3-burner-panel` a `display: grid` to tidy the
+   layout, eight panels appear at once and the CSS still reads correctly. */
+
+
+/* ═══ #s-burner · burner-bench ════════════════════════════════════════════
+   Two dials, a prediction gate, a four-tile readout, a word equation and a
+   verdict. Design's own measurements throughout; the segmented buttons
+   themselves are `.ks3-seg-btn`, the system's ONE segmented control (the
+   Drift-4 ruling), and nothing here restyles it. */
+
+.ks3-burner .ks3-burner-dials {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ks3-burner .ks3-burner-diallabel {
+  margin: 0 0 8px;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-burner .ks3-burner-dialrow {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+/* The gate. Amber, and see the block header for why that is the ruled meaning
+   and not a drift into category. It stays on screen after it is answered —
+   see `wireBurnerBench` — so it needs no "spent" treatment: a prediction the
+   student can still see beside the readout is the comparison Law 4 is for. */
+.ks3-burner .ks3-burner-gate {
+  margin-top: 20px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-alert-tint);
+  border: 2px solid var(--ks3-ink);
+}
+/* ⚠️ `.ks3-commit` is 22px in `--ks3-alert`, which is right on the ink grounds
+   where nearly every gate in the key stage sits and about 1.1:1 here. Design
+   draws this prompt as plain 19px/700 ink inside the amber panel — 13:1 — so
+   that is what it gets, at (0,2,0), which beats `.ks3-commit` at (0,1,0).
+   Scoped to this gate so the shared component stays shared. The three C3 gates
+   and c4-04's are the standing precedent. */
+.ks3-burner .ks3-commit {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--ks3-ink);
+}
+/* Design caps the lettered list rather than letting three options run the full
+   width of the rail (page line 133). */
+.ks3-burner .ks3-options { max-width: 32rem; }
+
+/* The readout. `auto-fit` at 210px so the four tiles reflow to two columns and
+   then one on a phone rather than squeezing "Black deposit on the beaker
+   within seconds" into 90px. `min()` guards the case where the container is
+   itself narrower than 210px (MRB-210). */
+.ks3-burner .ks3-burner-panel { margin-top: 22px; }
+.ks3-burner .ks3-burner-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+  gap: 14px;
+}
+.ks3-burner .ks3-burner-tile {
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+/* ⚑ THE ONE AMBER CELL. See the block header: this is a hazard READING and the
+   renderer refuses to build a run where the tint and the products disagree.
+   The border does not change with it — a solid ink border on every tile is
+   what keeps this one a reading in the same row rather than a badge stuck to
+   the side of it. */
+.ks3-burner .ks3-burner-tile.is-alert { background: var(--ks3-alert-tint); }
+.ks3-burner .ks3-burner-tilelabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+/* ⚠️ DISPLAY 21px INK, NOT MONO IN THE ACCENT. These readings are sentences,
+   not figures — see the block header. */
+.ks3-burner .ks3-burner-value {
+  margin: 8px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 21px;
+  line-height: 1.25;
+  color: var(--ks3-ink);
+}
+.ks3-burner .ks3-burner-tilenote {
+  margin: 7px 0 0;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--ks3-ink-body);
+}
+
+/* The word equation for the run. Card ground, so it reads as the page's own
+   statement about what just happened rather than as another instrument
+   reading. */
+.ks3-burner .ks3-burner-eq {
+  margin-top: 18px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-burner .ks3-burner-eqlabel {
+  margin: 0 0 12px;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+/* `flex-wrap` so a long left-hand side ("candle wax + oxygen") and a long
+   right-hand side ("carbon monoxide + carbon + water") stack on a phone with
+   the drawn arrow between them rather than overflowing the panel. */
+.ks3-burner .ks3-burner-eqline {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 21px;
+  line-height: 1.3;
+  color: var(--ks3-ink);
+}
+.ks3-burner .ks3-burner-arrow { flex: 0 0 auto; }
+/* The charcoal hedge (science flag 4). Body size and muted, because it is a
+   footnote on the equation above it and not a second claim: the equation is
+   written for the carbon, and this says why that is a simplification. */
+.ks3-burner .ks3-burner-eqnote {
+  margin: 10px 0 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+
+.ks3-burner .ks3-burner-note {
+  margin-top: 16px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+/* The "you have run it both ways" summary. `--ks3-accent` as a 6px offset
+   shadow is not text and is legal at any size. */
+.ks3-burner .ks3-burner-close {
+  margin-top: 16px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+  box-shadow: 6px 6px 0 var(--ks3-accent);
+}
+.ks3-burner .ks3-burner-note p,
+.ks3-burner .ks3-burner-close p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+
+
+/* ═══ #s-fuels · fuel-cards ═══════════════════════════════════════════════
+   Three cards stacked, each a fuel, three buttons and a reply. The buttons are
+   `.ks3-seg-btn` and take nothing from here (Drift 4: one segmented control
+   for the system). */
+
+.ks3-fcard {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ks3-fcard .ks3-fcard-card {
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-fcard .ks3-fcard-name {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--ks3-ink);
+}
+.ks3-fcard .ks3-fcard-made {
+  margin: 6px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+.ks3-fcard .ks3-fcard-opts {
+  margin-top: 14px;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+/* ⚠️ THE SPENT TREATMENT IS AN OPACITY, NOT A COLOUR, AND IT IS NOT A MARK.
+   Once a card is decided every button disables; the one that was pressed keeps
+   the ordinary `aria-pressed` accent treatment and the ones that were not dim
+   to `--ks3-dim-spent`. That says WHICH WAS CHOSEN and says nothing whatever
+   about whether it was right — the reply below says what the products are, in
+   the same voice either way. c4-03's `.ks3-eqr-opt` is the same pair. */
+.ks3-fcard .ks3-fcard-opt[disabled] { cursor: default; }
+.ks3-fcard .ks3-fcard-opt[disabled][aria-pressed="false"] {
+  opacity: var(--ks3-dim-spent);
+}
+
+/* The reply. INK-DARK, and it is the only dark surface in either instrument —
+   Design draws it that way (page line 197) so the answer reads as the page
+   speaking rather than as a fourth card. 16px radius, not `--ks3-r-panel`:
+   hers is a smaller inner corner than the card it sits inside. */
+.ks3-fcard .ks3-fcard-reveal {
+  margin-top: 14px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+}
+.ks3-fcard .ks3-fcard-eq {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 19px;
+  color: var(--ks3-on-dark);
+}
+.ks3-fcard .ks3-fcard-why {
+  margin: 10px 0 0;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+/* The drawn arrow inherits `currentColor`, so it is ink inside the bench's
+   card panel and on-dark inside this one without either being named twice. */
+.ks3-fcard .ks3-burner-arrow { flex: 0 0 auto; }
+
+
+/* ── the guard, and it is LAST on purpose ────────────────────────────────
+   An author `display` beats the UA stylesheet's `[hidden] { display: none }`
+   at ANY specificity, and eleven things on this page are emitted hidden. See
+   the block header: nothing above sets `display` on one of them today, so this
+   is a guard against the next edit rather than a repair of this one. Both are
+   (0,2,0), the same as the component rules they would have to beat, so they
+   win on source order and must stay at the bottom of the block.
+   `setHidden()` also writes an inline `display:none`, but only once JS has
+   run: this is what holds between first paint and then, which is the window a
+   slow phone makes long. */
+.ks3-burner [hidden],
+.ks3-fcard [hidden] { display: none; }
+
+/* ── from css_02.css ── */
+/* ═══ c5-02 · tube-run + decomp-sort ═════════════════════════════════════
+   Two DOM instruments, no canvas. Every value below is measured off Design's
+   approved page, `docs/ks3/design-reference/c5/c5-02-thermal-decomposition
+   .dc.html`, which carries its real design in inline `style` attributes and
+   in the style strings `seg()` composes. Where the page and the engine
+   disagreed, the page won.
+
+   ⚠️ BOTH INSTRUMENTS SIT ON A LIGHT `ks3-block`. Measured, not inferred from
+   the kind names: `#s-tube` and `#s-sort` both carry `class="ks3-block"` and
+   nothing else. So this whole block is written for cream, and the ONLY ink
+   ground in it is the tube run's finished panel, which Design paints
+   `--ks3-ink` herself (page line 173). That panel takes `--ks3-on-dark` and
+   `--ks3-on-dark-body` and NEVER `--ks3-accent-text`.
+
+   ⚠️ EVERY TEXT RULE IS SELF-SCOPED AT (0,2,0) — `.ks3-tuber .ks3-tuber-title`,
+   never a bare `.ks3-tuber-title`. A bare component class is (0,1,0) and loses
+   to `.ks3-dark p` at (0,1,1) the day anything moves one of these onto ink,
+   and it loses SILENTLY: the CSS reads correctly and the sentence ships at
+   about 1.2:1. C1's, C3's and C4's blocks say the same thing for the same
+   reason.
+
+   ⭐ AMBER, AND WHY IT IS ON THE COOLING GATE. `--ks3-alert-tint` grounds the
+   commitment panel inside stage 4, which is what Design draws (page line 136).
+   That is amber carrying its ruled meaning exactly: the wrong option in that
+   gate is REACT-13 — "it changes back as it cools" — offered one press before
+   the run takes it apart. It is never a category and never a selection.
+
+   ⚠️ `.ks3-commit` IS 22px IN `--ks3-alert`, which is right on the hook's ink
+   ground and would be 1.4:1 on this amber tint. Design paints the gate's
+   question as plain ink at 19px/700, and that is what it gets, at (0,3,0),
+   which beats `.ks3-commit` at (0,1,0). Same correction C4 makes on its own
+   two amber gates.
+
+   ⚠️ `--ks3-data` DOES NOT APPEAR IN THIS BLOCK. It is an ON-INK token and
+   both instruments live on cream, so there is nothing to route to it here.
+   Every live value in this block — the three tile readouts, which are the
+   masses, the limewater and the heat — is `--ks3-accent-text` at 6.0:1, which
+   is what Design paints them (page line 160).
+
+   ⚠️ NOTHING BELOW IS A MARK (R3). Only the mastery ladder marks. No option in
+   either instrument takes green or red at any size: a committed gate option
+   keeps the platform's ordinary pressed treatment, a decided sort card keeps
+   its pressed button and dims its spent sibling, and the verdict is a PANEL OF
+   WORDS. `--ks3-ok` does not appear in this block and neither does
+   `--ks3-danger`.
+
+   ⚠️ `--ks3-accent` IS 3.4:1 — LARGE TEXT ONLY, and it appears below on
+   exactly two things and neither is text: the 2px border round the stage the
+   next press will open, and the fill of that stage's number badge, where the
+   digit on it is `--ks3-on-dark`.
+
+   ⊖ AND THERE IS NO C5 REDUCED-MOTION BLOCK, deliberately, on B10's, B11's,
+   C3's and C4's reasoning: no canvas, no rAF, no timer, and this block
+   declares no transition and no animation of its own, so there is nothing here
+   for the gate that freezes transitions to freeze. What motion these sections
+   have is the shell's arrive treatment.
+
+   ⚠️ NO `display` ON ANYTHING THAT ALSO TAKES `[hidden]`. An author `display`
+   beats the UA stylesheet's `[hidden] { display: none }` at ANY specificity,
+   and a great deal in these two instruments ships hidden: two of the three
+   intros, all twelve stage sentences, the three completed-tab marks, the
+   cooling gate, five of the six mass readings, one of the two limewater
+   readings, two of the three heat readings, three of the four advance labels,
+   all three finished panels, the all-three panel and all five sort reveals.
+   Everything that needs a `display` is therefore an element that is NEVER
+   hidden — the dial row, the stage list and each stage row, the number badge,
+   the tile grid, the control row, the equation line, the sort column and each
+   sort's button row — and the guard is the LAST rule in this block so source
+   order settles the (0,2,0) ties in its favour.
+
+   ⊖ AND ONE THING THIS BLOCK DELIBERATELY DOES NOT DO. The dial label / dial
+   row pair below is the same three declarations C3 groups across five families
+   and C4 writes out twice more. It is written out again here rather than added
+   to that grouped selector, because C3's and C4's blocks belong to other lanes
+   and a lane that edits another lane's file stops being a lane. Reported to
+   the commander: when C5 is in, that grouped selector wants all of C4's and
+   C5's new families adding to it in one pass. */
+
+/* ── the substance dial ────────────────────────────────────────────────
+   The BUTTONS are `.ks3-seg-btn` and take nothing from here — Drift 4 ruled
+   the platform's segmented control the key stage's only one, and Design's own
+   `seg()` (16px / 11px 16px on `--ks3-option-border`) is reported rather than
+   re-declared. */
+.ks3-tuber-dial { margin-top: 20px; }
+.ks3-tuber .ks3-tuber-diallabel {
+  margin: 0 0 8px;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-tuber-tabs {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+/* The completed mark. A middot, and it is NOT a tick: a run that has been
+   carried to the end is a run that has been carried to the end, not an answer
+   that was right. R3 keeps `.ks3-mark` off every control in this block. */
+.ks3-tuber .ks3-tuber-tabdone { color: var(--ks3-accent-text); }
+
+/* ── what is in the tube ───────────────────────────────────────────────
+   56ch, which is Design's own measure and roughly two lines shorter than the
+   lesson's body text — this paragraph is read once per substance and switching
+   between three of them wants a shape that does not reflow. */
+.ks3-tuber .ks3-tuber-intro {
+  margin: 18px 0 0;
+  font-size: 19px;
+  line-height: 1.65;
+  max-width: 56ch;
+}
+
+/* ── the four stages ───────────────────────────────────────────────────
+   `data-open` is a stage the student has watched; `data-current` is the one
+   the next press will open. Both are attributes rather than classes because
+   both are STATE, and the wiring sets them on every paint. */
+.ks3-tuber-stages {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ks3-tuber-stage {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule);
+}
+.ks3-tuber-stage[data-open="1"] { background: var(--ks3-inset); }
+/* The only two uses of `--ks3-accent` in this block, and neither is text. */
+.ks3-tuber-stage[data-current="1"] { border-color: var(--ks3-accent); }
+.ks3-tuber-num {
+  flex: 0 0 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 16px;
+  background: var(--ks3-band);
+  color: var(--ks3-ink-muted);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-tuber-stage[data-open="1"] .ks3-tuber-num {
+  background: var(--ks3-accent);
+  color: var(--ks3-on-dark);
+}
+.ks3-tuber-body { flex: 1; }
+.ks3-tuber .ks3-tuber-title {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.45;
+  font-weight: 700;
+}
+.ks3-tuber .ks3-tuber-text {
+  margin: 8px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+
+/* ── ⭐ the cooling gate ───────────────────────────────────────────────
+   The lesson. Amber, at Design's own geometry, inside the last stage and
+   above nothing — the run cannot go on while it is open. See the block note
+   for why `.ks3-commit`'s amber is overridden here. */
+.ks3-tuber-gate {
+  margin-top: 14px;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-alert-tint);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-tuber .ks3-tuber-gate .ks3-commit {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ks3-ink);
+}
+.ks3-tuber-gate .ks3-options { max-width: 30rem; }
+
+/* ── the three readouts ────────────────────────────────────────────────
+   `auto-fit` at a 200px floor, so the three sit in a row on a desk and stack
+   on a phone without a second breakpoint. The VALUE is mono and
+   `--ks3-accent-text`, which is how this key stage draws a live reading. */
+.ks3-tuber-tiles {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+.ks3-tuber-tile {
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-tuber .ks3-tuber-tilelabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-tuber .ks3-tuber-tileval {
+  margin: 8px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 1.2;
+  color: var(--ks3-accent-text);
+}
+
+/* ── the two controls ──────────────────────────────────────────────────
+   `.ks3-reveal-btn` and `.ks3-retry` are the platform's, and neither takes
+   anything from here beyond the row that holds them. */
+.ks3-tuber-controls {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ── the finished run ──────────────────────────────────────────────────
+   The one ink ground in this block, and the word equation is the reason: a
+   display equation on cream would be one more panel, and Design gives the
+   result of the run its own weight. `currentColor` on the drawn arrow inks it
+   from this rule and not from a second copy of the token. */
+.ks3-tuber-done {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+}
+.ks3-tuber .ks3-tuber-eq {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 21px;
+  color: var(--ks3-on-dark);
+}
+.ks3-tuber .ks3-tuber-arrow { flex: 0 0 auto; }
+.ks3-tuber .ks3-tuber-finish {
+  margin: 12px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ks3-on-dark-body);
+}
+
+/* ── all three, and the shape they share ───────────────────────────────
+   The offset accent shadow is Design's card treatment for a conclusion, the
+   same one the key fact takes. It arrives only when every substance has been
+   carried to the end, which is also when the rail stop ticks. */
+.ks3-tuber-all {
+  margin-top: 16px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+  box-shadow: 6px 6px 0 var(--ks3-accent);
+}
+.ks3-tuber .ks3-tuber-all p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+}
+
+/* ── the five changes ──────────────────────────────────────────────────
+   One column of equals, deliberately: sorting them into two named bins would
+   put the answer on screen before the question, and the whole construction is
+   that heat is in all five. */
+.ks3-dcomp {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ks3-dcomp-item {
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-dcomp .ks3-dcomp-text {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.5;
+}
+.ks3-dcomp-opts {
+  margin-top: 12px;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+/* The reveal. A card inset inside the item's own inset, on `--ks3-rule` rather
+   than ink, so it reads as a reply to the item rather than a second item. No
+   `display` here — it ships `hidden`. */
+.ks3-dcomp-reveal {
+  margin: 12px 0 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule);
+}
+.ks3-dcomp .ks3-dcomp-reveal p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+/* ── the hidden guard, LAST ────────────────────────────────────────────
+   Everything in these two instruments that ships `hidden` is covered here, so
+   that a later rule giving one of them a `display` is undone by source order
+   rather than shipping a stage list with all twelve sentences on it at once.
+
+   Written the way C3's and C4's guards are written — (0,2,0), no
+   `!important`, last in its own block — so it ties with every component rule
+   above it and wins on source order, which is the same mechanism and not a
+   second one. */
+.ks3-tuber [hidden],
+.ks3-dcomp [hidden] { display: none; }
+
+/* ── from css_03.css ── */
+/* ═══ c5-03 · control-tubes (#s-rust) and rust-stop (#s-stop) ═══════════
+   Two families, one page, every value measured off Design's approved page
+   `docs/ks3/design-reference/c5/c5-03-oxidation.dc.html` — a React
+   prototype carrying its real design in inline `style` attributes and in
+   the style strings its component script composes. Where the page and the
+   engine disagreed, the page won.
+
+   ⚠️ BOTH SIT ON A LIGHT `ks3-block`. Measured, not inferred: `#s-rust`
+   and `#s-stop` both carry `class="ks3-block"` and nothing else. There is
+   no ink-dark practical block on this page — or anywhere in C4 or C5 — so
+   everything below is written for cream, and the ONLY ink ground is the
+   result panel inside a tube card, which Design paints `--ks3-ink`
+   herself. It takes `--ks3-on-dark` / `--ks3-on-dark-body` and never
+   `--ks3-accent-text`.
+
+   ⚠️ EVERY TEXT RULE IS SELF-SCOPED AT (0,2,0) — `.ks3-ctube
+   .ks3-ctube-setup`, not a bare `.ks3-ctube-setup`. A bare component class
+   is (0,1,0) and loses to `.ks3-dark p` at (0,1,1) the day anything moves
+   one of these onto ink, and it loses SILENTLY: the CSS reads correctly
+   and the sentence ships at ~1.2:1. C1's block, C3's and C4's say the same
+   thing for the same reason.
+
+   ⚠️ NOTHING BELOW IS A MARK (R3). Only the mastery ladder marks. A tube
+   predicted wrong is drawn exactly like a tube predicted right — the
+   pressed button keeps the platform's ordinary pressed treatment, its
+   spent sibling dims, and the ink panel underneath is the same panel in
+   both cases. `--ks3-ok` and `--ks3-danger` do not appear in this block at
+   all, and neither does amber: the confrontation on this page is the
+   four-tube summary, which is a READING of evidence rather than a wrong
+   idea being warned about, so it takes Design's `--ks3-band` and not
+   `--ks3-alert-tint`.
+
+   ⚖️ THE CHIPS ARE A SETUP, NOT A VERDICT. `--ks3-accent-tint` for a
+   factor that is present and `--ks3-band` for one that has been removed is
+   Design's own pair, and it is a category (what is in the tube), never
+   correctness. R2 is satisfied without the colour: every chip carries the
+   WORD — "Oxygen present", "Water removed" — so a reader who sees no
+   difference between the two grounds has still been told which is which.
+
+   ⊖ NO `--ks3-data` HERE, and no reading to route to it. It is an on-ink
+   token and the one ink panel on this page carries sentences ("Rusted —
+   orange and flaking at the water line"), not values. Nothing in this
+   lesson names a quantity.
+
+   ⊖ AND NO REDUCED-MOTION BLOCK, deliberately: no canvas, no rAF, no
+   timer, and this block declares no transition and no animation of its
+   own. The arrive treatment on a revealed panel is the shell's.
+
+   ⚠️ NO `display` ON ANYTHING THAT ALSO TAKES `[hidden]` — and a good deal
+   here is emitted hidden, because both instruments are built on
+   emit-both-show-one: four result panels, five answer paragraphs and the
+   whole summary. An author `display` beats the UA stylesheet's
+   `[hidden] { display: none }` at ANY specificity, so the guard is the
+   LAST rule in this block and source order settles the (0,2,0) ties in its
+   favour. */
+
+/* ── #s-rust · the four tubes ─────────────────────────────────────────
+   `auto-fit` / `minmax(250px, 1fr)` is Design's own, and it is what makes
+   the shape readable at every width: four across on a laptop, two across
+   on a tablet, one column on a phone — and in every case the chips of two
+   adjacent tubes line up, which is the whole reason the controlled
+   variables are chipped rather than written into the sentence. */
+.ks3-ctube-grid {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+/* `--ks3-inset` on the block's own card: the block is the bench, and each
+   tube is a thing standing on it. `flex-direction: column` is Design's and
+   is load-bearing — it is what keeps the four buttons and the four chip
+   rows on the same baselines across a row of cards whose setup sentences
+   are different lengths. */
+.ks3-ctube-card {
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+  display: flex;
+  flex-direction: column;
+}
+.ks3-ctube .ks3-ctube-num {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-ctube .ks3-ctube-name {
+  margin: 6px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.3;
+}
+.ks3-ctube .ks3-ctube-setup {
+  margin: 8px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+
+/* The controlled variables, at a glance. See the block header for why the
+   ground is not a mark and why the word carries the state. */
+.ks3-ctube-chips {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.ks3-ctube .ks3-ctube-chip {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: var(--ks3-r-pill);
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  border: 2px solid var(--ks3-ink);
+  background: var(--ks3-band);
+  color: var(--ks3-ink);
+}
+.ks3-ctube .ks3-ctube-chip[data-on="1"] { background: var(--ks3-accent-tint); }
+
+.ks3-ctube-opts {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+/* ⚖️ `--ks3-dim-spent` (.65), not Design's .45 — MRB-257 audit 3.21 ruled
+   that value for exactly this state, and C3 and C4 carry the same
+   divergence for the same reason: "you may not press this any more" and
+   "you may not read this" are two different sentences, and .45 says the
+   second. The card still has to say what the student predicted. */
+.ks3-ctube-opt[disabled],
+.ks3-rstop-opt[disabled] { cursor: default; }
+.ks3-ctube-opt[disabled][aria-pressed="false"],
+.ks3-rstop-opt[disabled][aria-pressed="false"] { opacity: var(--ks3-dim-spent); }
+
+/* The one ink ground on the page. It is a panel of WORDS whichever way the
+   prediction went, and it is the same panel in all four cards. */
+.ks3-ctube-open {
+  margin-top: 14px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+}
+.ks3-ctube .ks3-ctube-result {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 19px;
+  line-height: 1.3;
+  color: var(--ks3-on-dark);
+}
+.ks3-ctube .ks3-ctube-why {
+  margin: 8px 0 0;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+
+/* ── the four-tube summary ────────────────────────────────────────────
+   `--ks3-band` on a 2px ink border, wider than the cards and sitting under
+   all of them: it is the reading of the four, and it is drawn as one thing
+   spanning the row rather than as a fifth card in it. This panel carries
+   `id="four-tube-summary"` — it is REACT-15's `confronted_by`, and the
+   only place on the page that reads tubes 2 and 3 together. */
+.ks3-ctube-summary {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-ctube .ks3-ctube-sumtitle {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1.25;
+}
+.ks3-ctube .ks3-ctube-sumtext {
+  margin: 10px 0 0;
+  font-size: 19px;
+  line-height: 1.6;
+}
+/* The one equation on this page. `currentColor` on the drawn arrow is what
+   lets the path ink itself against whatever ground the panel carries, and
+   `flex: 0 0 auto` stops the flex row squeezing it out of shape. */
+.ks3-ctube .ks3-ctube-eq {
+  margin: 14px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 20px;
+}
+.ks3-ctube-arrow { flex: 0 0 auto; }
+
+/* ═══ #s-stop · rust-stop ═══════════════════════════════════════════════
+   Five methods stacked, not gridded: each is a sentence about a real
+   object and they are read down the page in Design's order, ending on the
+   galvanised gate that is both kinds at once. */
+.ks3-rstop {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ks3-rstop-card {
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-rstop .ks3-rstop-name {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.5;
+  font-weight: 700;
+}
+.ks3-rstop .ks3-rstop-what {
+  margin: 6px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+.ks3-rstop-opts {
+  margin-top: 12px;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+/* `--ks3-card` on `--ks3-rule`, deliberately NOT ink: this is the card
+   answering itself, not a verdict arriving from somewhere else. The same
+   two-tone stack c4-03's readings take. */
+.ks3-rstop .ks3-rstop-answer {
+  margin: 12px 0 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+/* ── narrow ───────────────────────────────────────────────────────────
+   A 44px tap target that has been squeezed to fit is not a tap target, so
+   the control rows keep their gap and wrap instead. At 390px a
+   `ks3-block`'s content box is about 330px and the grid is already one
+   column, so the only thing that has to give is the space between two
+   buttons whose labels are five words long. */
+@media (max-width: 480px) {
+  .ks3-ctube-opts,
+  .ks3-rstop-opts,
+  .ks3-ctube-chips { gap: 10px; }
+  .ks3-ctube-card { padding: 18px 18px; }
+  .ks3-ctube-summary { padding: 20px 20px; }
+}
+
+/* ── the `[hidden]` guard, and it is LAST on purpose ───────────────────
+   An author `display` beats the UA stylesheet's `[hidden] { display: none }`
+   at ANY specificity, and this block sets `display` in seven places. None
+   of those seven is currently an element that ships hidden — the result
+   panels, the answer paragraphs and the summary all carry padding and a
+   ground and no `display` — so today this rule changes nothing. It is here
+   because the next person to give `.ks3-ctube-open` a `display: flex` for
+   an icon row would break four reveals on a live page and the CSS would
+   still read correctly. Last in the block so source order settles the
+   (0,2,0) ties in its favour. */
+.ks3-ctube [hidden],
+.ks3-rstop [hidden] { display: none; }
+
+/* ── from css_04.css ── */
+/* ═══ c5-04 · displacement ═════════════════════════════════════════════════
+   Two instruments — `reactivity-grid` and `reactivity-use` — and both of them
+   sit in a LIGHT `ks3-block`. Measured off Design's own markup (page lines 145
+   and 216: `class="ks3-block"` and nothing else). There is no ink-dark
+   practical block anywhere in C5, exactly as there is none in C3 or C4, so
+   nothing here paints one.
+
+   ⚠️ ONLY THE LADDER MARKS. Every value below is a GROUND or a BORDER, and not
+   one of them is keyed to whether the student was right. A run cell is painted
+   by what the tube did — `--ks3-accent-tint` where a reaction happened,
+   `--ks3-band` where none did, which are Design's own two grounds — and
+   nothing in this file selects on a prediction. There is no green and no red
+   in it, and no `--ks3-ok` at all.
+
+   ⊖ NO `--ks3-data` HERE. It is an on-ink token and everything in these two
+   instruments except the result panel sits on the light ground. The one ink
+   surface is the result panel, and what it carries is prose and a word
+   equation rather than a reading, so there is no live value to route to it.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── #s-grid · reactivity-grid ─────────────────────────────────────────── */
+
+.ks3-rgrid { margin-top: 20px; }
+
+/* THE SCROLL REGION IS NOT A NICETY. Five columns do not fit a 390px phone,
+   and most of these students are on a phone. `tabindex="0"` in the markup is
+   what makes the region reachable without a finger (WCAG 2.1.1); the table's
+   sr-only caption is what gives that focus stop something to announce. */
+/* ⚠️ `position: relative` IS LOAD-BEARING AND IT IS NOT A TIDY-UP.
+   Without it this page scrolls SIDEWAYS BY 140px at 390px, and the cause is
+   the last thing you would look at: the grid's sixty-five `.ks3-sr-only`
+   labels — the screen-reader text naming each cell's metal and solution —
+   are `position: absolute`. A static scroller is not their containing block,
+   so their containing block is an ancestor OUTSIDE it, and `overflow-x: auto`
+   does not clip a descendant it does not contain. The labels in the far-right
+   columns therefore sat past the viewport and extended the document.
+
+   So the accessibility text, invisible to a sighted student, was dragging the
+   page sideways for every student. `overflow: hidden` does NOT fix it —
+   measured — because the problem is containment, not clipping; `contain:
+   paint` does, and so does this, which is the honest one-word version.
+
+   MRB-229: a figure scrolling inside its own box is the treatment, the page
+   scrolling is the defect it exists to prevent. The table still scrolls. */
+.ks3-rgrid-scroll { overflow-x: auto; position: relative; }
+
+.ks3-rgrid-table {
+  border-collapse: collapse;
+  min-width: 34rem;
+}
+.ks3-rgrid-table th[scope="col"] {
+  padding: 10px 12px;
+  text-align: left;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-rgrid-table th[scope="row"] {
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 18px;
+  font-weight: 700;
+  border-top: 2px solid var(--ks3-rule);
+}
+.ks3-rgrid-table td {
+  padding: 6px;
+  border-top: 2px solid var(--ks3-rule);
+}
+
+/* One cell. The three marks inside it are all in the document and one is
+   shown, so the button never has a sentence written into it. */
+.ks3-rgrid-cell {
+  font: inherit;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  min-width: 5.6rem;
+  min-height: var(--ks3-tap);
+  padding: 8px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  border: 2px solid var(--ks3-ink);
+  background: var(--ks3-card);
+  color: var(--ks3-ink-ghost);
+}
+/* The two RESULT grounds. A tube that reacted and a tube that did not are two
+   readings, not two verdicts on the student — which is why they are the accent
+   tint and the band rather than anything that reads as a mark. */
+.ks3-rgrid-cell[data-rgrid-state="reacts"] {
+  background: var(--ks3-accent-tint);
+  color: var(--ks3-ink);
+}
+.ks3-rgrid-cell[data-rgrid-state="none"] {
+  background: var(--ks3-band);
+  color: var(--ks3-ink);
+}
+/* R2 — the open cell carries a WORD (`aria-pressed`) as well as the ring, so
+   the selection is never colour alone. */
+.ks3-rgrid-cell[aria-pressed="true"] {
+  border-color: var(--ks3-accent);
+  box-shadow: 0 0 0 4px var(--ks3-accent-tint);
+}
+
+/* ── the panel under the table ─────────────────────────────────────────── */
+
+.ks3-rgrid-panel {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-rgrid .ks3-rgrid-title {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 21px;
+  line-height: 1.3;
+}
+.ks3-rgrid .ks3-rgrid-line {
+  margin: 8px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+
+.ks3-rgrid-predict { margin-top: 14px; }
+.ks3-rgrid .ks3-rgrid-ask {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+}
+.ks3-rgrid-opts {
+  margin-top: 12px;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+/* ⚖️ `--ks3-dim-spent` (.65), not Design's .45 — MRB-257 audit 3.21 ruled that
+   value for exactly this state. "You may not press this any more" and "you may
+   not read this" are two different sentences, and .45 says the second; the row
+   still has to say what the student predicted about this cell. */
+.ks3-rgrid-opt[disabled] { cursor: default; }
+.ks3-rgrid-opt[disabled][aria-pressed="false"] { opacity: var(--ks3-dim-spent); }
+
+/* ── the result: the one ink ground in the instrument ──────────────────── */
+
+.ks3-rgrid-result {
+  margin-top: 16px;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+}
+.ks3-rgrid .ks3-rgrid-verdict {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 1.3;
+  color: var(--ks3-on-dark);
+}
+.ks3-rgrid .ks3-rgrid-why {
+  margin: 10px 0 0;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ks3-on-dark-body);
+}
+.ks3-rgrid .ks3-rgrid-eq {
+  margin: 12px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 19px;
+  color: var(--ks3-on-dark);
+}
+/* The drawn arrow. `currentColor` is what lets one path serve the ink panel
+   without a second copy, and `flex: 0 0 auto` stops the row squeezing it out
+   of shape. */
+.ks3-rgrid-arrow { flex: 0 0 auto; }
+
+/* ── the payoff, on the band ───────────────────────────────────────────── */
+
+.ks3-rgrid-pattern {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-rgrid .ks3-rgrid-pattern-title {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1.25;
+}
+.ks3-rgrid .ks3-rgrid-pattern-body {
+  margin: 10px 0 0;
+  font-size: 19px;
+  line-height: 1.6;
+}
+.ks3-rgrid .ks3-rgrid-pattern-order {
+  margin: 14px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 21px;
+}
+
+/* ── #s-uses · reactivity-use ──────────────────────────────────────────── */
+
+.ks3-ruse {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ks3-ruse-card {
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-ruse .ks3-ruse-q {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.55;
+}
+.ks3-ruse-opts {
+  margin-top: 12px;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+/* Deliberately NOT ink: this is the card answering itself, not a verdict
+   arriving from somewhere else. Same two-tone stack c4-03's readings use. */
+.ks3-ruse .ks3-ruse-answer {
+  margin: 12px 0 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule);
+  font-size: 17px;
+  line-height: 1.55;
+}
+.ks3-ruse-opt[disabled] { cursor: default; }
+.ks3-ruse-opt[disabled][aria-pressed="false"] { opacity: var(--ks3-dim-spent); }
+
+/* ── narrow ────────────────────────────────────────────────────────────
+   A 44px tap target squeezed to fit is not a tap target, so the control rows
+   keep their gap and wrap. The grid does not wrap — it scrolls — because a
+   table whose columns reflow is no longer the shape the lesson is about. */
+@media (max-width: 480px) {
+  .ks3-rgrid-opts,
+  .ks3-ruse-opts { gap: 10px; }
+  .ks3-rgrid-panel,
+  .ks3-rgrid-pattern,
+  .ks3-ruse-card { padding-left: 18px; padding-right: 18px; }
+}
+
+/* ── the `[hidden]` guard, and it is LAST on purpose ───────────────────
+   An author `display` beats `[hidden]` at any specificity, and several rules
+   above set `display` on elements that are emitted hidden — every result
+   panel's equation row and the payoff among them. */
+.ks3-rgrid [hidden],
+.ks3-ruse [hidden] { display: none; }
+
+/* ── from css_05.css ── */
+/* ═══ c5-05 · type-sorter (#s-sort) and rule-write (#s-rule) ═════════════
+   The unit's assessment in disguise. Every value below is measured off
+   Design's approved page, `docs/ks3/design-reference/c5/
+   c5-05-which-reaction-is-this.dc.html`, which carries its real design in
+   inline `style` attributes and in the style strings its component script
+   composes (`seg()`, `it.boxStyle`, the two reveal panels).
+
+   ⚠️ BOTH BLOCKS SIT ON A LIGHT `ks3-block ks3-check`. There is no ink-dark
+   practical block anywhere in C4 or C5 — measured, not inferred from the kind
+   names — so everything here is written for cream, and the ONLY ink ground
+   below is the ANSWER PANEL a decided reaction opens, which Design paints
+   `--ks3-ink` herself. That panel takes `--ks3-on-dark` / `--ks3-on-dark-body`
+   and never `--ks3-accent-text`.
+
+   ⚠️ EVERY TEXT RULE IS SELF-SCOPED AT (0,2,0) — `.ks3-tsort .ks3-tsort-why`,
+   not a bare `.ks3-tsort-why`. A bare component class is (0,1,0) and loses to
+   `.ks3-dark p` at (0,1,1) the day anything moves one of these instruments
+   onto ink, and it loses SILENTLY: the CSS reads correctly and the sentence
+   ships at ~1.2:1. C1's and C3's blocks say the same thing for the same
+   reason, and two builds have been bitten by it.
+
+   ⚠️ NOTHING BELOW IS A MARK (R3, MRB-196 R10). Only the mastery ladder marks
+   correctness. No type button takes green or red at any size: a committed
+   button keeps the platform's ordinary accent-tint pressed treatment, its four
+   spent siblings dim to `--ks3-dim-spent`, and the answer is a PANEL OF WORDS.
+   `--ks3-ok` does not appear in this block at all, and neither does
+   `--ks3-danger`.
+
+   ⊖ NO AMBER ANYWHERE. Amber warns a wrong IDEA being confronted, and the
+   confrontation on this page is `#s-think`, which is the shell's own
+   `.ks3-misconception` block and is not styled here. A reaction a student
+   named wrongly is not a wrong idea being confronted; it is a commitment,
+   and it takes the ordinary treatment.
+
+   ⊖ AND `--ks3-data` IS UNUSABLE HERE, deliberately. It is `#8FB7FF`, an
+   on-ink token, and the two grounds these instruments live on are cream and
+   the block's own card. The one live value on the page — the "n of 8 named"
+   tally — is the SHELL's `[data-count]`, drawn in `--ks3-accent-text` (6.0:1)
+   by `data-tone="accent"`, which is what Design paints it.
+
+   ⊖ AND THERE IS NO REDUCED-MOTION BLOCK, for C3's reason and B10's: no
+   canvas, no rAF, no timer, so there is no tick that would have to re-test
+   the query inside itself. This block declares NO transition and NO animation
+   of its own; the arrive treatment on an opened panel is the shell's.
+
+   ⚠️ NO `display` ON ANYTHING THAT ALSO TAKES `[hidden]`. An author `display`
+   beats the UA stylesheet's `[hidden] { display: none }` at ANY specificity,
+   and ten things in these two instruments are emitted hidden — the eight
+   answer panels, the close panel and the comparison panel. The guard is the
+   LAST rule in this block so source order settles the ties in its favour. */
+
+/* ── #s-sort · the eight reactions ────────────────────────────────────── */
+/* A COLUMN, not a grid. Design stacks the eight full-width
+   (`flex-direction: column`, gap 16px) rather than tiling them, and that is
+   the instrument's argument as much as the shared option list is: the eight
+   are read IN ORDER, four straightforward then three harder then one that is
+   none of the four, and a reflowing two-up grid would put reaction 8 beside
+   reaction 7 on a wide screen and lose the rising stakes entirely. */
+.ks3-tsort-list {
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+/* Two grounds stacked, which is Design's drawing: the block is the page and
+   the reaction is an inset card on it. The third ground — ink — arrives only
+   when the card is decided. */
+.ks3-tsort-card {
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+/* `align-items: baseline`, so the 13px position and the 12px difficulty tag
+   sit on one line rather than on two centres. */
+.ks3-tsort-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.ks3-tsort .ks3-tsort-num {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+/* The difficulty tag — "Straightforward", "Harder", "Awkward on purpose".
+   `--ks3-accent-text` (6.0:1), never `--ks3-accent` (3.4:1), because it is
+   12px and §11's rule for accent under 24px is the text token. It labels the
+   card, and it is emphatically NOT a mark: it says how hard the author thinks
+   the reaction is, before the student has answered it. */
+.ks3-tsort .ks3-tsort-level {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+.ks3-tsort .ks3-tsort-text {
+  margin: 8px 0 0;
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--ks3-ink);
+}
+.ks3-tsort-opts {
+  margin-top: 14px;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+/* ── the one-shot commit bank ──────────────────────────────────────────
+   All five buttons on a reaction disable the moment any one is pressed.
+   Design dims a disabled button that was NOT the one pressed and leaves the
+   pressed one at full strength, so the card still says what the student
+   chose.
+
+   ⚖️ `--ks3-dim-spent` (.65), not Design's .45. MRB-257 audit 3.21 ruled that
+   value for exactly this state: "you may not press this any more" and "you
+   may not read this" are two different sentences, and .45 says the second.
+   C3's nine instruments made the same divergence for the same reason. */
+.ks3-tsort-opt[disabled] { cursor: default; }
+.ks3-tsort-opt[disabled][aria-pressed="false"] { opacity: var(--ks3-dim-spent); }
+/* ── the answer a decided reaction opens ───────────────────────────────
+   THE ONLY INK GROUND IN EITHER INSTRUMENT, and it is Design's. It arrives on
+   top of the inset card, which is why it is the darkest thing in the block:
+   the block is the page, the card is a reaction, and this is the answer
+   landing on it. */
+.ks3-tsort-reveal {
+  margin-top: 14px;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+}
+.ks3-tsort .ks3-tsort-answer {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 1.3;
+  color: var(--ks3-on-dark);
+}
+.ks3-tsort .ks3-tsort-why {
+  margin: 10px 0 0;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ks3-on-dark-body);
+}
+/* The all-eight close. A BAND panel — the key stage's "here is what you just
+   did" treatment, and not a verdict on the student. Same values as C3's
+   `.ks3-psort-close` and C4's close panels; a separate rule rather than a
+   name added to that selector list, because a lane appends and does not edit
+   what is above it. */
+.ks3-tsort-close {
+  margin-top: 20px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-tsort .ks3-tsort-close p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+
+/* ── #s-rule · write it yourself, then compare ─────────────────────────
+   The written-answer control itself is the key stage's shared one —
+   `.ks3-answer-label`, `.ks3-answer`, `.ks3-check-btn`, all already in this
+   stylesheet — so nothing is redeclared for it here, including the inactive
+   treatment on the gated button (`.ks3-check-btn[disabled]`, measured
+   `--ks3-dim-spent` with the hover lift cancelled). There is no copy anywhere
+   about the sixty-character unlock and there must not be: §8.10, and Mide's
+   ruling of 19 Aug 2026 takes it knowingly. */
+.ks3-rwrite-reveal {
+  margin-top: 18px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+/* Design's own list, bullets kept: this is a comparison a student reads
+   against four rules of their own, and four bulleted lines are four items to
+   check off. `padding-left` rather than `list-style: none`, so the markers
+   sit inside the panel. */
+.ks3-rwrite-list {
+  margin: 0;
+  padding: 0 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ks3-rwrite .ks3-rwrite-item {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+/* "If yours says the same things in worse English, yours is the more useful
+   one" — quieter than the four rules above it, which is Design's own
+   hierarchy: the model is the reference and this is the remark about it. */
+.ks3-rwrite .ks3-rwrite-close {
+  margin: 14px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+
+/* ── narrow readers ───────────────────────────────────────────────────
+   Nothing needs a media query. The reaction column is already full-width at
+   every size, and the five type buttons are a wrapping flex row: at 390px a
+   `ks3-block`'s content box is about 330px and the card's own padding takes
+   it to roughly 286px, which fits the longest label ("Thermal decomposition"
+   at 17px/700 plus the control's 34px of padding) on a line of its own. A
+   media query that only restated the wrap would be a rule that can drift
+   away from it. */
+
+/* ── the hidden guard, and it is LAST on purpose ─────────────────────── */
+.ks3-tsort [hidden],
+.ks3-rwrite [hidden] { display: none; }
+
+/* ═══ END C5 ═══ */

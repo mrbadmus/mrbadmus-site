@@ -826,6 +826,11 @@ C4_REARR = "chemistry/chemical-reactions/reactions-rearrange-atoms.html"
 C4_WORDS = "chemistry/chemical-reactions/word-equations.html"
 C4_MASS = "chemistry/chemical-reactions/mass-in-a-reaction.html"
 C4_SYMBOL = "chemistry/chemical-reactions/symbol-equations-and-balancing.html"
+C5_BURN = "chemistry/types-of-reaction/combustion.html"
+C5_DECOMP = "chemistry/types-of-reaction/thermal-decomposition.html"
+C5_OXID = "chemistry/types-of-reaction/oxidation.html"
+C5_DISP = "chemistry/types-of-reaction/displacement.html"
+C5_WHICH = "chemistry/types-of-reaction/which-reaction-is-this.html"
 # ═══ END C3 ═══
 
 COMPONENTS = [
@@ -5745,6 +5750,83 @@ COMPONENTS = [
     # model from the cards the student has been filling in above it.
     dict(name="C4 chain reveal is inset on a 2px ink border",
          on=C4_CHANGE, drive="c4-chain-built", sel=".ks3-chain-reveal",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ── C5 · Types of reaction (⊕ MRB-246) ──────────────────────────────
+    #
+    # Ten families, and the same assertion C4's rows make: each is anchored on
+    # the GROUND its instrument sits on, because that is what goes wrong.
+    # Every C5 instrument is mapped to a light `check` segment — measured off
+    # Design's markup, there is no ink-dark practical block anywhere in the
+    # unit — and a family re-mapped to `practical` would flip to a `ks3-dark`
+    # ground, resolve every text token inside it wrong, and still render,
+    # still interact, still pass smoke, and be unreadable.
+    #
+    # ⚠️ FOUR CONSECUTIVE `PROCESS` LESSONS IS THE RISK THESE ROWS ALSO WATCH.
+    # §6 warns that identical block lineups should be a coincidence of need
+    # and never a default; Design's answer was to give each flagship a
+    # different shape. The two rows carrying a DIFFERENT treatment below —
+    # the accent-bordered staged run, and the tighter-cornered grid cell —
+    # are that difference, pinned. A later pass that "harmonises" C5's four
+    # benches into one repeated instrument has to change these to do it.
+    #
+    # Values MEASURED in headless Chrome against the built pages.
+    # Grounds: #FFFCF5 `--ks3-card`, #F7EFE1 `--ks3-inset`.
+
+    dict(name="C5 burner tile is inset on a 2px ink border", on=C5_BURN,
+         sel=".ks3-burner-tile",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+    dict(name="C5 fuel card is inset on a 2px ink border", on=C5_BURN,
+         sel=".ks3-fcard-card",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ⚖️ THE STAGED RUN IS THE ONE THAT TAKES THE ACCENT BORDER, and it is not
+    # decoration. c5-02's stages are walked one at a time — the accent marks
+    # the step the page is on, the same job it does on c4-04's worked example.
+    # It is also what stops this bench being visually identical to the other
+    # three PROCESS lessons' benches.
+    dict(name="C5 decomposition stage is a card on a 2px accent border",
+         on=C5_DECOMP, sel=".ks3-tuber-stage",
+         props={"background-color": "#FFFCF5", "border-top-color": "#E4572E",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+    dict(name="C5 decomposition sort item is inset on a 2px ink border",
+         on=C5_DECOMP, sel=".ks3-dcomp-item",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    dict(name="C5 control tube card is inset on a 2px ink border", on=C5_OXID,
+         sel=".ks3-ctube-card",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+    dict(name="C5 rust-stop card is inset on a 2px ink border", on=C5_OXID,
+         sel=".ks3-rstop-card",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ⚖️ A GRID CELL IS A CELL, NOT A CARD — 12px corners against everything
+    # else's 20px, because sixteen of them sit edge to edge and card corners
+    # at that density read as sixteen separate panels rather than one table.
+    # It is also the row that would catch the cell being repainted to mark:
+    # nothing green and nothing red may reach a control, and a displacement
+    # grid is the most tempting place in the course to put a tick.
+    dict(name="C5 grid cell is a card at the tighter grid radius", on=C5_DISP,
+         sel=".ks3-rgrid-cell",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "12px"}),
+    dict(name="C5 reactivity-use card is inset on a 2px ink border",
+         on=C5_DISP, sel=".ks3-ruse-card",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    dict(name="C5 type-sorter card is inset on a 2px ink border", on=C5_WHICH,
+         sel=".ks3-tsort-card",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+    dict(name="C5 rule-write model panel is inset on a 2px ink border",
+         on=C5_WHICH, sel=".ks3-rwrite-reveal",
          props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
                 "border-top-width": "2px", "border-top-left-radius": "20px"}),
 ]
