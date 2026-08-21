@@ -331,3 +331,77 @@ measured, so it photographed a page that had not finished loading and called it 
 seconds. Five consecutive clean runs since. **The page was right and the check was wrong** —
 the second time in two runs that has been the answer.
 
+---
+
+## Runway 2 — the public leaderboard can look back. BUILT, DEPLOYED, DRIVEN.
+
+⚑ **The premise to check first was whether the history exists, and it does.**
+The brief allowed for it not to: *"If `weekly_scores` does not hold per-week history, do not
+design a schema — log what it has and what it would need."* It holds it. `weekly_scores` has no
+`week_start` of its own, which is what makes it look absent, but it carries `challenge_id` and
+`weekly_challenges` carries `week_start`. One join and the whole history is there:
+
+| week | attempts | students |
+|---|---|---|
+| 2026-08-14 | 30 | 10 |
+| 2026-08-07 | 30 | 10 |
+| 2026-07-31 | 30 | 10 |
+| 2026-07-24 | 32 | 12 |
+| … back to 2026-04-24 | | |
+
+**Ten weeks, 156 attempts, and nothing on the site could reach any of it.**
+
+And it is worse than dormant. `getWeekStart()` returns the Friday-10:15 week, so today —
+Friday 21 August, after 10:15 — the current week is `2026-08-21`, for which **no challenge has
+been generated yet**. The live leaderboard is showing an empty board on top of four months of
+real results.
+
+### What was built
+
+`week_start=YYYY-MM-DD` is now an optional parameter on `/api/weekly-leaderboard` and
+`/api/weekly-leaderboard/champion`; omitted, both behave exactly as before.
+`GET /api/weekly-leaderboard/weeks` lists the weeks there is anything to see.
+
+Proved against the deployed backend — and `/weeks` did not exist before this commit, so this is
+the deploy proven behaviourally too:
+
+```
+/weeks                                  → 11 weeks, current first, attempts:0 on it
+?week_start=2026-08-14 … tier=higher    → 10 entries, real scores [44, 40, 39, 38, 29]
+?subject=chemistry&pathway=triple&tier=foundation&week_start=2026-08-07
+                                        → {"leaderboard": []}   ← empty, not an error
+?week_start=2027-01-01                  → 400 week_start is in the future
+?week_start=2026-02-31                  → 400 week_start is not a real date
+```
+
+⚑ **`2026-02-31` is why the date is parsed and not just pattern-matched.** It passes
+`\d{4}-\d{2}-\d{2}` and is not a day; Postgres would have answered it with an error rather than
+an empty board.
+
+⚠️ **`single()` → `maybeSingle()` on the per-subject arm.** `single()` ERRORS when it matches no
+row. That was tolerable when the only question was "this week", and it is not now: "nobody sat
+Chemistry Triple Higher that week" is an ordinary request the moment any week can be asked for.
+
+⚠️ **`active` is skipped for a past week.** It gates whether a challenge is the one being handed
+out NOW, which says nothing about whether last month's results happened. Every challenge on
+production is active today so this changes nothing yet — but the day one is retired, its week
+would have silently vanished from the history.
+
+### The page
+
+A `<select>` above the existing chips, not another chip row: the list grows by one every Friday,
+and a chip row that is fine at four weeks is unusable at forty. It hides itself when there are
+fewer than two weeks to choose between — a picker offering one choice is furniture.
+
+The week COMPOSES with the tier and subject filters rather than replacing them. Driven in the
+browser:
+
+```
+weeks offered : ['This week', '14 Aug 2026', '7 Aug 2026', … '24 Apr 2026']
+This week     : 0 rows          ← honest; no challenge generated yet
+14 Aug 2026   : 6 rows, 🥇 WolfSummit53 100% 15/15, filters still Overall · Foundation
+console       : none
+```
+
+Shots: `docs/ks3/shots/leaderboard-thisweek-390-2026-08-22.png` and `leaderboard-pastweek-390-…`.
+

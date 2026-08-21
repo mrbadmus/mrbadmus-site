@@ -27,6 +27,13 @@
     .week-info { text-align: center; font-size: 0.82rem; color: var(--muted); margin-bottom: 20px; font-weight: 700; }
 
     /* ── CHIP ROWS ─────────────────────────────────────── */
+    .week-row { display: flex; gap: 8px; justify-content: center; align-items: center; margin-bottom: 12px; }
+    .week-label { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+    #week-pick {
+      padding: 7px 14px; border-radius: 999px; border: 2px solid var(--border-strong);
+      background: transparent; color: var(--text); font-family: var(--font-sans);
+      font-weight: 700; font-size: 0.82rem; cursor: pointer;
+    }
     .chip-row { display: flex; gap: 6px; justify-content: center; margin-bottom: 10px; flex-wrap: wrap; }
     .chip {
       padding: 7px 16px; border-radius: 999px; border: 2px solid var(--border-strong);
@@ -152,6 +159,21 @@
     <div class="header"><h1>🏆 Leaderboard</h1></div>
     <div class="week-info" id="week-info"></div>
 
+    <!-- WEEK SELECTOR ─────────────────────────────────────────────────
+         ⊕ 22 Aug 2026. The board could only ever show the current week, and
+         ten weeks of real results going back to April had no way to be
+         reached. A <select> rather than another chip row on purpose: the list
+         GROWS by one every Friday, and a chip row that is fine at four weeks
+         is unusable at forty.
+
+         Hidden until it has something to offer — see `renderWeeks()`. On a
+         brand-new deployment with one week of data, a picker offering one
+         choice is furniture. -->
+    <div class="week-row" id="week-row" style="display:none;">
+      <label class="week-label" for="week-pick">Week</label>
+      <select id="week-pick" onchange="switchWeek(this.value)"></select>
+    </div>
+
     <!-- TIER CHIPS -->
     <div class="chip-row" id="tier-chips" role="group" aria-label="Tier">
       <button class="chip foundation active" id="chip-foundation" aria-pressed="true" onclick="switchTier('foundation', this)">🌱 Foundation</button>
@@ -201,6 +223,10 @@
   var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
   var RENDER_URL = 'https://mrbadmus-backend.onrender.com';
   var medals = ['🥇', '🥈', '🥉'];
+  /* null means "whatever the backend calls now" — the behaviour this page had
+     before there was a picker, and what it falls back to if the week list
+     cannot be read. */
+  var currentWeek = null;
   var currentSubject = 'overall';
   var currentTier = 'foundation';
 
@@ -232,11 +258,48 @@
     loadLeaderboard();
   }
 
+  /* The week composes with the filters rather than replacing them: pick a week
+     and the Foundation/Higher and subject choices carry straight over. A
+     combination nobody sat that week comes back as an empty board, which is a
+     normal answer and reads as one. */
+  function weekParam() { return currentWeek ? '&week_start=' + encodeURIComponent(currentWeek) : ''; }
+
   function urlFor(pathway) {
     if (currentSubject === 'overall') {
-      return RENDER_URL + '/api/weekly-leaderboard?overall=true&pathway=' + pathway + '&tier=' + currentTier;
+      return RENDER_URL + '/api/weekly-leaderboard?overall=true&pathway=' + pathway + '&tier=' + currentTier + weekParam();
     }
-    return RENDER_URL + '/api/weekly-leaderboard?subject=' + currentSubject + '&pathway=' + pathway + '&tier=' + currentTier;
+    return RENDER_URL + '/api/weekly-leaderboard?subject=' + currentSubject + '&pathway=' + pathway + '&tier=' + currentTier + weekParam();
+  }
+
+  function switchWeek(week) {
+    currentWeek = week || null;
+    loadLeaderboard();
+  }
+
+  /* The picker is built from the weeks the backend says HAVE something in them,
+     never from a date range this page invents. A week nobody sat is not a week
+     of the competition, and offering it is a click that leads nowhere. */
+  async function loadWeeks() {
+    try {
+      var r = await fetch(RENDER_URL + '/api/weekly-leaderboard/weeks');
+      if (!r.ok) return;
+      var data = await r.json();
+      var weeks = (data && data.weeks) || [];
+      if (weeks.length < 2) return;          // one choice is not a choice
+      var sel = document.getElementById('week-pick');
+      sel.innerHTML = weeks.map(function (w) {
+        return '<option value="' + esc(w.week_start) + '">' +
+               (w.is_current ? 'This week' : esc(formatDate(w.week_start))) +
+               '</option>';
+      }).join('');
+      currentWeek = weeks[0].week_start;
+      sel.value = currentWeek;
+      document.getElementById('week-row').style.display = 'flex';
+    } catch (e) {
+      /* No picker, and the board behaves exactly as it did before there was
+         one. A leaderboard that will not load because its week list would not
+         is a worse page than one showing this week. */
+    }
   }
   function fetchPathway(pathway) {
     return fetch(urlFor(pathway)).then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; });
@@ -335,6 +398,9 @@
     } catch(e) { /* logged-out visitors use defaults — fine */ }
 
     try {
+      /* Before the first board, so the first board is already the right week.
+         Loading it after would paint this week, then repaint. */
+      await loadWeeks();
       await loadLeaderboard();
       document.getElementById('loading').style.display = 'none';
       document.getElementById('content').style.display = 'block';

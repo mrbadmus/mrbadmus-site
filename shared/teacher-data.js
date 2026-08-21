@@ -1007,6 +1007,84 @@ window.MrBadmusTeacherData = (function () {
   }
 
   /**
+   * loadClassProgress(classId) — how far into THIS week's assignment each
+   * student actually is, live, from the backend.
+   *
+   * Single arg: classId (uuid string). Returns the parsed payload, or null.
+   *
+   *   {
+   *     assignment: { id, class_id, title, topic, due_at, academic_week } | null,
+   *     total,                                        // students in the class
+   *     students: [
+   *       {
+   *         student_id, first_name, last_name,
+   *         state,                                    // 'not_started' | 'in_progress' | 'complete'
+   *         answered, total, percent,                 // QUESTIONS, not assignments
+   *         attempts, completed_at, is_late,
+   *         score, max_score
+   *       }
+   *     ],
+   *     not_started, in_progress, complete
+   *   }
+   *
+   * A week with no assignment set is a NORMAL, QUIET state, not a failure:
+   * the route answers `{ assignment: null, total: 0, students: [],
+   *                      reason: 'no_assignment_this_week' }`
+   * with a 200, and it is returned as-is. The caller renders nothing extra.
+   *
+   * ⚠️ THIS IS THE FIRST CALL ON THIS PAGE THAT LEAVES SUPABASE. Everything
+   * else in this file goes to PostgREST through the guard's client, where RLS
+   * is the boundary; this one goes to the Render backend, so the session's
+   * raw JWT has to be lifted out and sent as a Bearer token by hand. The route
+   * is teacher-only and answers 403 to a student — the backend re-checks, this
+   * is not a client-side gate.
+   *
+   * ⚠️ AND IT RETURNS null ON EVERY FAILURE PATH, DELIBERATELY — no throw, no
+   * error code, unlike every other function here. The roster, the assignments
+   * table and the leaderboard all render from Supabase and all worked before
+   * this route existed; a cold Render dyno, an expired token or a 500 must
+   * cost the teacher one extra line of detail, never the page. The console
+   * carries the reason for whoever is debugging it.
+   */
+  async function loadClassProgress(classId) {
+    if (!isUuid(classId)) {
+      console.error('[teacher-data] loadClassProgress: invalid class id', classId);
+      return null;
+    }
+
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      console.error('[teacher-data] loadClassProgress: Supabase client unavailable — getClient() returned null');
+      return null;
+    }
+
+    try {
+      // getSession() reads the persisted session and refreshes it if it is
+      // about to expire, so the token handed over is one the backend will
+      // still accept. requireTeacherRole has normally already validated it.
+      const { data, error } = await sb.auth.getSession();
+      if (error) throw error;
+      const token = data && data.session && data.session.access_token;
+      if (!token) throw new Error('no access token on the current session');
+
+      const cfg = window.MrBadmusConfig || {};
+      const base = cfg.BACKEND_URL || 'https://mrbadmus-backend.onrender.com';
+      const res = await fetch(
+        base + '/api/class/progress?class_id=' + encodeURIComponent(classId),
+        { headers: { Authorization: 'Bearer ' + token } }
+      );
+      if (!res.ok) {
+        throw new Error('backend ' + res.status + ' on /api/class/progress');
+      }
+      return await res.json();
+    } catch (e) {
+      console.error('[teacher-data] loadClassProgress failed for class', classId, e);
+      return null;
+    }
+  }
+
+  /**
    * loadStudentDetail(studentId, classId) — data for the MRB-34 Stage 2B
    * per-student detail page. Scoped to the (student, class) pair the URL
    * provides; reuses pickFirstAttempts + derivePill so first-attempt and
@@ -1470,6 +1548,7 @@ window.MrBadmusTeacherData = (function () {
     loadAcademicYears,
     loadTeacherClasses,
     loadClassDetail,
+    loadClassProgress,
     loadStudentDetail,
     loadClassShoutouts,
     insertClassShoutout,
