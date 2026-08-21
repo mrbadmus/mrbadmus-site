@@ -90,7 +90,7 @@ BROWSE_PAGES = (
 )
 
 
-_PROBE = """(function () {
+_PROBE_TMPL = """(function () {
   var vw = %d, eps = 0.5;
   var d = document.documentElement;
   var wide = [];
@@ -120,7 +120,20 @@ _PROBE = """(function () {
     bodyScroll: document.body.scrollWidth,
     unscrolled: wide.length, examples: wide.slice(0, 8)
   });
-})()""" % VIEWPORT[0]
+})()"""
+
+
+# ⊕ MRB-280, 21 Aug 2026 — the probe is width-parameterised so the SAME
+# measurement can run at more than one phone width. It was pinned to 390.
+def _probe(vw):
+    return _PROBE_TMPL % (vw,)
+
+
+# 390 is a modern phone. 320 is an iPhone SE and a budget Android, and
+# Rainford students are on what they have. 390 GATES; 320 REPORTS, because
+# what fails only at 320 is a decision for Mide and not a thing to fix
+# quietly inside a run that was not asked to.
+NARROW = (320, 568)
 
 
 def sample(root=KS3_OUT):
@@ -160,8 +173,8 @@ def every(root=KS3_OUT):
     return sorted(out)
 
 
-def run(pages, cdp, root=KS3_OUT):
-    """Drive `pages` at 390px. Returns (problems, checked).
+def run(pages, cdp, root=KS3_OUT, viewport=VIEWPORT):
+    """Drive `pages` at `viewport`. Returns (problems, checked).
 
     One browser for the whole run rather than the harness's usual fresh browser
     per page: nothing here mutates state that survives a navigation, and 295
@@ -174,21 +187,21 @@ def run(pages, cdp, root=KS3_OUT):
     try:
         with cdp.Browser() as b:
             page = b.attach()
-            page.set_viewport(*VIEWPORT)
+            page.set_viewport(*viewport)
             for rel in pages:
                 url = "http://127.0.0.1:%d%s/%s" % (port, prefix, rel)
                 page.goto(url)
-                d = json.loads(page.eval(_PROBE))
+                d = json.loads(page.eval(_probe(viewport[0])))
                 if d["docScroll"] > d["docClient"]:
                     problems.append(
                         "%s — the DOCUMENT scrolls sideways at %dpx: "
                         "scrollWidth %s against clientWidth %s"
-                        % (rel, VIEWPORT[0], d["docScroll"], d["docClient"]))
+                        % (rel, viewport[0], d["docScroll"], d["docClient"]))
                 if d["bodyScroll"] > d["docClient"]:
                     problems.append(
                         "%s — the BODY scrolls sideways at %dpx: "
                         "scrollWidth %s against clientWidth %s"
-                        % (rel, VIEWPORT[0], d["bodyScroll"], d["docClient"]))
+                        % (rel, viewport[0], d["bodyScroll"], d["docClient"]))
                 if d["unscrolled"]:
                     problems.append(
                         "%s — %d element(s) wider than the %dpx viewport with "
@@ -196,7 +209,7 @@ def run(pages, cdp, root=KS3_OUT):
                         "in its own scroller (.ks3-figure-scroll, "
                         ".ks3-smatrix-scroll); without one it pushes the page "
                         "sideways: %s"
-                        % (rel, d["unscrolled"], VIEWPORT[0],
+                        % (rel, d["unscrolled"], viewport[0],
                            "; ".join(d["examples"])))
     finally:
         server.shutdown()
