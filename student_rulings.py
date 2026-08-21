@@ -428,3 +428,75 @@ LOGIC = {
         ),
     ],
 }
+
+
+# ── attributes the ruling SETS on a template node, by `data-dc-tpl` ───────
+#
+# ⊕ 22 Aug 2026 — THE FOURTH MECHANISM, and it exists for the bench themes.
+#
+# Design's six themes are driven by one attribute on the page root and a token
+# block scoped under it. The tokens they override — `--b-ground`, `--b-ink`,
+# `--b-muted` — are Design's own namespace, and the live page does not use it:
+# the live bench's ground is `--st-room-panel`, its title `--st-cream`, its
+# accent `--st-ember`.
+#
+# ⚠️ REMAPPING THE `--st-*` FAMILY AT THE ROOT IS NOT SAFE, and the reason is
+# one line of the live markup. `--st-cream` is declared "cream as used ON dark
+# surfaces" and is a text colour eleven times — but it is also a BACKGROUND
+# once, on the leaderboard's leader avatar, a cream disc carrying `--st-ink`
+# text. Remap it globally and CHALK — the light theme, where `--b-ink` is
+# #221E1B — turns that disc near-black under its near-black initials. The five
+# dark themes would have looked perfect.
+#
+# So the theme override is scoped to the three surfaces that take it, and those
+# surfaces are bare inline-styled `<section>`s with nothing to scope to. This
+# gives them something. `SET_ON` attaches handlers; this attaches attributes,
+# and refuses to overwrite one Design already wrote.
+SET_ATTR = {
+    "class view": {},
+    "assignment": {},
+}
+
+
+# ── subtrees GRAFTED from Design's amended delivery ───────────────────────
+#
+# ⊕ 22 Aug 2026 — THE FIFTH MECHANISM, and the keystone of the amendments port.
+#
+# Every mechanism above this one REMOVES or REBINDS something Design already
+# drew, because until now every ruling did. None of them can ADD MARKUP.
+#
+# Design's class-view amendments need markup added: a theme picker of six
+# swatches, a flashcard overlay, a recall round and a done bench, none of which
+# exist on the live page. And they must NOT be added by replacing the live
+# template with Design's file — see PORT2-2026-08-22.md. Design's delivery is a
+# self-contained SAMPLE: 18 conditional branches against the live page's 45, 7
+# loops against 14. Adopting it wholesale would delete every empty state, every
+# work-row status, the entire `wide`/`narrow` responsive treatment, the
+# leaderboard movement arrows, and would flatten the lessons list to Design's
+# four literal cards.
+#
+# So the port MERGES BY REGION. Design's README declares which regions changed
+# and marks them `data-port-change`; the four that carry only `data-port-region`
+# — crumbs, hero, work-list, lessons-panel — are left exactly as they are.
+#
+# Each entry:
+#     at     `data-dc-tpl` of the LIVE node to anchor on
+#     mode   "replace" | "append" | "prepend" | "after"
+#     donor  `data-dc-tpl` of the node in `class view amendments` whose
+#            SUBTREE is copied
+#     why    a sentence. Required — a graft with no stated reason is a
+#            redesign nobody signed off.
+#
+# ⚠️ GRAFTED NODES ARE RENUMBERED into a reserved range (`GRAFT_BASE` +
+# Design's own index) rather than keeping Design's numbers. `data-dc-tpl` has
+# to stay unique — PRUNE, SET_ON, SET_ATTR, the parity gate and the binding
+# index paths are all keyed on it, and the donor's 0..449 overlap the live
+# page's 0..403 almost exactly. Adding a fixed base keeps them unique AND
+# keeps them readable: node 10312 on the built page is Design's node 312, and
+# subtracting is how you find it in the delivery.
+GRAFT_BASE = 10000
+
+GRAFT = {
+    "class view": [],
+    "assignment": [],
+}

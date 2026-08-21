@@ -81,6 +81,11 @@ MIRROR_OUT = "student"
 SHARED_OUT = os.path.join("mrbadmus_site", "shared")
 
 TEMPLATES = "student_templates.json"
+
+# ⊕ 22 Aug 2026. Design's class-view amendments, compiled by
+# `student_template.py` as a page that is never emitted. `apply_rulings` grafts
+# regions out of its tree; nothing else reads it, and nothing renders it.
+DONOR_PAGE = "class view amendments"
 DS_CSS_NAME = "student-ds.css"
 DS_CSS_URL = "/shared/" + DS_CSS_NAME
 SERVED_FONTS = "/shared/fonts/"
@@ -878,7 +883,15 @@ def top_up(css, wanted, tpls):
     """Define, from shared/tokens.css, any token the bundle is missing."""
     import re as _re
     have = defined_tokens(css)
-    for t in tpls.values():
+    for name, t in tpls.items():
+        # ⚠️ THE DONOR DOES NOT COUNT. Its tree defines Design's `--b-*` and
+        # `--pg-*` families, and it is not on the page — only the subtrees
+        # GRAFTED out of it are. Counting them here would let a token that is
+        # referenced by the live page and defined only in the delivery pass as
+        # resolved, and an undefined custom property does not error: it falls
+        # back to the inherited value and the page looks almost right.
+        if name == DONOR_PAGE:
+            continue
         have |= defined_tokens("", t)
     missing = sorted(wanted - have)
     if not missing:
@@ -924,7 +937,7 @@ def top_up(css, wanted, tpls):
 # the full account of the recovery. Nothing about their content changed.
 
 
-def apply_rulings(page, logic, roots):
+def apply_rulings(page, logic, roots, donor=None):
     """Design's logic and template with Mide's rulings applied.
 
     Returns (logic, roots, replacements, pruned, wired). Every `old` must appear
@@ -975,6 +988,150 @@ def apply_rulings(page, logic, roots):
             "stands; re-read the delivery and re-anchor it."
             % (page, sorted(prune)))
 
+    # ── subtrees grafted from Design's amended delivery ──────────────────
+    #
+    # ⊕ 22 Aug 2026. See `GRAFT` in student_rulings.py for why the amendments
+    # are merged by region instead of replacing the live template.
+    #
+    # Runs BEFORE the handler pass on purpose: a grafted subtree carries
+    # Design's own `onClick` expressions, and `SET_ON` must be able to see and
+    # refuse to overwrite them like any other.
+    grafts = list(student_rulings.GRAFT.get(page, ()))
+    grafted = [0]
+    if grafts and donor is None:
+        raise SystemExit(
+            "build_student_port.py: %r has %d graft(s) but no donor tree was "
+            "passed. The donor is the compiled 'class view amendments' entry "
+            "in %s; without it there is nothing to graft FROM."
+            % (page, len(grafts), TEMPLATES))
+
+    def _index(tree):
+        found = {}
+
+        def walk(n):
+            if isinstance(n, dict):
+                if n.get("i") is not None:
+                    found[n["i"]] = n
+                for kid in n.get("c") or []:
+                    walk(kid)
+
+        for r in (tree or []):
+            walk(r)
+        return found
+
+    def _renumber(node):
+        """Design's subtree, deep-copied, with every index moved clear of the
+        live page's. Text nodes have no index and keep none."""
+        out = json.loads(json.dumps(node))
+
+        def walk(n):
+            if isinstance(n, dict):
+                if n.get("i") is not None:
+                    n["i"] = student_rulings.GRAFT_BASE + n["i"]
+                for kid in n.get("c") or []:
+                    walk(kid)
+
+        walk(out)
+        return out
+
+    if grafts:
+        donor_by_i = _index(donor)
+        live_by_i = _index(roots)
+        parent_of = {}
+
+        def note_parents(n):
+            if isinstance(n, dict):
+                for kid in n.get("c") or []:
+                    if isinstance(kid, dict):
+                        parent_of[id(kid)] = n
+                    note_parents(kid)
+
+        for r in roots:
+            note_parents(r)
+
+        for g in grafts:
+            if not g.get("why"):
+                raise SystemExit(
+                    "build_student_port.py: a graft on %r states no reason. "
+                    "`why` is required — a graft with no stated reason is a "
+                    "redesign nobody signed off." % page)
+            at, mode, src = g["at"], g["mode"], g["donor"]
+            if at not in live_by_i:
+                raise SystemExit(
+                    "build_student_port.py: the graft %r anchors on live "
+                    "template node %s, which is not in Design's live "
+                    "template. Design has redrawn it; re-anchor the graft "
+                    "rather than dropping it." % (g["why"][:60], at))
+            if src not in donor_by_i:
+                raise SystemExit(
+                    "build_student_port.py: the graft %r copies donor node "
+                    "%s, which is not in the amended delivery. The delivery "
+                    "moved; re-anchor the graft." % (g["why"][:60], src))
+            sub = _renumber(donor_by_i[src])
+            target = live_by_i[at]
+            if mode in ("append", "prepend"):
+                kids = target.setdefault("c", [])
+                kids.insert(len(kids) if mode == "append" else 0, sub)
+            elif mode in ("replace", "after"):
+                parent = parent_of.get(id(target))
+                if parent is None:
+                    raise SystemExit(
+                        "build_student_port.py: the graft %r asks to %s live "
+                        "node %s, which is a template ROOT and has no parent "
+                        "to hold the result." % (g["why"][:60], mode, at))
+                kids = parent["c"]
+                pos = kids.index(target)
+                if mode == "replace":
+                    kids[pos] = sub
+                else:
+                    kids.insert(pos + 1, sub)
+            else:
+                raise SystemExit(
+                    "build_student_port.py: the graft %r has mode %r. It must "
+                    "be replace, append, prepend or after."
+                    % (g["why"][:60], mode))
+            grafted[0] += 1
+
+    # ── attributes Design never wrote ────────────────────────────────────
+    #
+    # ⊕ 22 Aug 2026. See `SET_ATTR` in student_rulings.py — the bench themes
+    # need three surfaces to be nameable in CSS, and they carry no class.
+    #
+    # Refuses to overwrite an attribute Design already wrote, for the same
+    # reason `SET_ON` refuses to overwrite a handler: the page would still look
+    # and gate exactly right while one of Design's own values had been
+    # silently replaced.
+    attrs = dict(student_rulings.SET_ATTR.get(page, {}))
+    attred = [0]
+
+    def paint(node):
+        if not isinstance(node, dict):
+            return
+        idx = node.get("i")
+        if idx in attrs:
+            bag = node.setdefault("a", {})
+            for k, v in attrs[idx].items():
+                if k in bag:
+                    raise SystemExit(
+                        "build_student_port.py: the theme ruling for %r sets "
+                        "%s=%r on template node %s, and Design already gives "
+                        "that node %s=%r. Re-anchor rather than overwriting "
+                        "one of Design's own values."
+                        % (page, k, v, idx, k, bag[k]))
+                bag[k] = v
+            attrs.pop(idx)
+            attred[0] += 1
+        for kid in node.get("c") or []:
+            paint(kid)
+
+    for root in roots:
+        paint(root)
+    if attrs:
+        raise SystemExit(
+            "build_student_port.py: the theme ruling for %r sets attributes "
+            "on template node(s) %s, and they are not in the template. "
+            "Re-anchor them." % (page, sorted(attrs)))
+
     # ── handlers Design never attached ───────────────────────────────────
     #
     # ⊕ RULED 22 Aug 2026 — P5. See `SET_ON` in student_rulings.py.
@@ -1012,7 +1169,8 @@ def apply_rulings(page, logic, roots):
             "(or were pruned out from under it). The ruling stands; re-read "
             "the delivery and re-anchor it." % (page, sorted(want)))
 
-    return logic, roots, len(reps), removed[0], wired[0]
+    return (logic, roots, len(reps), removed[0], wired[0],
+            grafted[0], attred[0])
 
 
 # ── lifting Design's data out of Design's logic ───────────────────────────
@@ -1680,8 +1838,11 @@ def build():
         # template and then pruning would leave every path after node 275
         # pointing one sibling to the left — the class name would appear where
         # the term label belongs, and it would look like a data bug.
-        logic, ruled_roots, n_rep, n_pruned, n_wired = apply_rulings(
-            spec["page"], tpl["logic"], tpl["roots"])
+        donor_tpl = tpls.get(DONOR_PAGE)
+        (logic, ruled_roots, n_rep, n_pruned, n_wired,
+         n_grafted, n_attred) = apply_rulings(
+            spec["page"], tpl["logic"], tpl["roots"],
+            donor=(donor_tpl or {}).get("roots"))
         ruled_tpl = {"roots": ruled_roots, "imports": tpl["imports"]}
 
         # ⚠️ THE BINDINGS ARE READ BEFORE THE SEAM, not after. They used to
@@ -1761,9 +1922,11 @@ def build():
 
         if n_rep or n_pruned or n_wired:
             print("        ⊕ rulings: %d ruled edit(s) to Design's logic, "
-                  "%d template subtree(s) pruned, %d handler(s) attached — "
-                  "from student_rulings.py, not from a hand edit to the built "
-                  "page" % (n_rep, n_pruned, n_wired))
+                  "%d template subtree(s) pruned, %d handler(s) attached, "
+                  "%d subtree(s) grafted from the amendments, %d node(s) "
+                  "named for the themes — from student_rulings.py, not from "
+                  "a hand edit to the built page"
+                  % (n_rep, n_pruned, n_wired, n_grafted, n_attred))
         print("     ✅ %-24s %7d bytes  (%d template node(s), "
               "%d chars of Design's logic, 0 bytes of data)"
               % (spec["out"], len(body), count_nodes(roots), len(logic)))
