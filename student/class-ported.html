@@ -220,11 +220,7 @@ class Component extends DCLogic {
     });
 
     const doneCount = ['t1', 't2', 't3'].filter((k) => st.bench[k]).length;
-    const benchTasks = [
-      { key: 't1', label: 'Open it' },
-      { key: 't2', label: 'Answer the eight questions' },
-      { key: 't3', label: 'Hand it in' }
-    ].map((t) => {
+    const benchTasks = MRB_DATA("benchTasks").map((t) => {
       const done = !!st.bench[t.key];
       return {
         label: t.label, done: done,
@@ -431,7 +427,7 @@ class Component extends DCLogic {
       docketElapsed: fresh ? '0%' : MRB_DATA('docketElapsed'),
 
       shoutouts: fresh ? [] : MRB_DATA("shoutouts"),
-      noShouts: fresh, shoutCount: fresh ? '00' : '02',
+      noShouts: fresh, shoutCount: pad(fresh ? 0 : MRB_DATA('shoutouts').length),
       retrievalCount: fresh ? '0' : MRB_DATA('recallAnswered'),
 
       recallMeter: 'QUESTION ' + pad(Math.min(st.qi + 1, this.questions.length)) + ' / ' + pad(this.questions.length),

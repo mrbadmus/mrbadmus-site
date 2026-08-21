@@ -111,6 +111,11 @@ window.__MRB_DATA__ = {
           'Only dissolved gases cross into the blood, never bubbles.'] }
   ],
   "streak": 3,
+  "benchTasks": [
+      { key: 't1', label: 'Open it' },
+      { key: 't2', label: 'Answer the eight questions' },
+      { key: 't3', label: 'Hand it in' }
+    ],
   "bestStreakFloor": 9,
   "currentWeek": 4,
   "docketDrawsOn": "Using a microscope",

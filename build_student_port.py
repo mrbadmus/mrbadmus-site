@@ -247,6 +247,21 @@ LIFTS = {
         # it cannot ship. The `fresh ? [] : …` conditional stays: an empty
         # class still shows no shout-outs, and that is behaviour, not data.
         dict(key="shoutouts", anchor="      shoutouts: fresh ? [] : "),
+        # ⊕ 22 Aug 2026 — THE BENCH CHECKLIST, and it carries two faults at once.
+        #
+        #     { key: 't2', label: 'Answer the eight questions' },
+        #     { key: 't3', label: 'Hand it in' }
+        #
+        # The first hard-codes the assignment's length IN WORDS, which is why
+        # no grep for a digit ever found it, and it sits on the same screen as
+        # the docket — so once the docket became data the two contradicted each
+        # other in front of the student. The second is W5: the button no longer
+        # says that, and neither should the checklist item that names it.
+        #
+        # Lifted whole rather than patched in place: a three-item checklist
+        # about THIS assignment is data about this assignment, and there is no
+        # local variable inside it for `balanced_group` to strand.
+        dict(key="benchTasks", anchor="    const benchTasks = "),
     ],
 }
 
@@ -283,6 +298,20 @@ REWRITES = {
                  "'WHOLE ' + MRB_DATA('termLabel') : "
                  "wk === MRB_DATA('currentWeek') ?",
              keys=dict(currentWeek="num")),
+        # ⊕ 22 Aug 2026 — the shout-out BADGE, which the array beside it
+        # outgrew. `shoutouts` has been data since the first method-body seam,
+        # so a class with three shout-outs rendered three cards under a badge
+        # reading `02`. It needs no key of its own: the count is the length of
+        # the list it is counting, which is the only definition that cannot
+        # drift. Design's fixture has two, so `pad(2)` is `02` and the render
+        # is unchanged.
+        dict(name="shoutCount",
+             # No capture group at all: nothing here becomes data, so there is
+             # nothing to carry to the fixture and nothing to check against a
+             # binding. A named group would be read as one or the other.
+             pat=r"shoutCount: fresh \? '00' : '\d+'",
+             new="shoutCount: pad(fresh ? 0 : MRB_DATA('shoutouts').length)",
+             keys={}),
         # ⚑ NOT ON THE BRIEF, AND NOT OPTIONAL. Two more copies of the current
         # week number, both spliced mid-sentence, neither anywhere near the
         # crumb rail: the readings strip's `ANSWERED · WK 04` and the work

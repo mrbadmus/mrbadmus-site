@@ -735,6 +735,20 @@
       docketLeft: current && current.assignment
         ? daysLeft(current.assignment.due_at, serverNow) : "",
 
+      /* ⊕ 22 Aug 2026 — the bench checklist. Design's middle item spelled the
+         assignment's length out IN WORDS — "Answer the eight questions" — which
+         is why no grep for a digit ever found it, and it sits on the same
+         screen as the docket, so once the docket became real the two
+         contradicted each other in front of the student. Its last item said
+         "Hand it in", which W5 retires along with the button it names. */
+      benchTasks: [
+        { key: "t1", label: "Open it" },
+        { key: "t2", label: currentCount
+            ? "Answer the " + currentCount + " questions"
+            : "Answer the questions" },
+        { key: "t3", label: "Complete it" }
+      ],
+
       /* COULD NOT SOURCE — nothing anywhere assigns a points value to an
          assignment. `40 POINTS AT STAKE` was a number Design chose for a
          drawing, and there is no column it could be read from. */

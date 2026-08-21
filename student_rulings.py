@@ -108,7 +108,7 @@ LOGIC = {
         ),
         (
             "      screenLabel: onDone ? (st.late ? 'Handed in late' : 'Handed in') : handed ? 'Review' : 'Question ' + pad(idx + 1),",
-            '      /* ⊕ RULED 22 Aug 2026 — W5. "Complete" replaces "Hand it in" everywhere.\n         The button marks the work finished; it does not transfer it, because\n         the transfer happened one answer at a time all week. Design\'s\n         typography and placement are untouched — only the words change. */\n      screenLabel: onDone ? (st.late ? \'Completed late\' : \'Complete\') : handed ? \'Review\' : \'Question \' + pad(idx + 1),',
+            "      /* ⊕ RULED 22 Aug 2026 — W5. “Complete” replaces the old wording everywhere.\n         The button marks the work finished; it does not transfer it, because\n         the transfer happened one answer at a time all week. Design's\n         typography and placement are untouched — only the words change. */\n      screenLabel: onDone ? (st.late ? 'Completed late' : 'Complete') : handed ? 'Review' : 'Question ' + pad(idx + 1),",
         ),
         (
             "      doneEyebrow: 'Handed in ' + (st.handedAt || '') + (st.late ? ' \\u00B7 2 days late' : ''),",
