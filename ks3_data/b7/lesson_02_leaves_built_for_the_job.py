@@ -814,15 +814,15 @@ LESSON = {
             "q": "Why are the palisade cells at the top of the leaf rather "
                  "than the bottom?",
             "options": [
+                "They keep the leaf rigid, and the top needs the most support",
                 "They hold the chloroplasts, and the light is strongest "
                 "nearest the upper surface",
-                "They keep the leaf rigid, and the top needs the most support",
                 "They are where the stomata are",
                 "Water arrives at the top first",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "That is the veins’ job. Palisade cells are working cells, "
+                0: "That is the veins’ job. Palisade cells are working cells, "
                    "not structural ones.",
                 2: "Stomata are mostly on the underside, in the shade, where "
                    "less water evaporates from an open hole.",

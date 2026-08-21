@@ -893,22 +893,22 @@ LESSON = {
                 "compost it grows in is making its own, so it needs no "
                 "producer",
                 # 22w — Design's, unchanged.
-                "Yes — it feeds on dead material that a photosynthetic "
-                "organism built, so it sits at the end of the same chain",
-                # 19w — was "No — fungi get their energy from the soil
-                # minerals" (10w).
                 "No — a fungus takes its energy from the minerals in the soil, "
                 "so sunlight never enters its chain",
+                # 19w — was "No — fungi get their energy from the soil
+                # minerals" (10w).
+                "Yes — it feeds on dead material that a photosynthetic "
+                "organism built, so it sits at the end of the same chain",
                 # 20w — was "Only if it is growing on a living plant" (8w).
                 "Only if it is growing on a living plant — what is dead has "
                 "stopped being part of any chain",
             ],
-            "answer": 1,
+            "answer": 2,
             "feedback": {
                 0: "Feeding on something is not making your own food. The "
                    "compost is dead plant material, and a fungus is digesting "
                    "what a plant built.",
-                2: "Minerals supply no energy, to a fungus or to anything "
+                1: "Minerals supply no energy, to a fungus or to anything "
                    "else. That is the same mistake as thinking plants feed on "
                    "soil.",
                 3: "Dead or alive makes no difference to where the molecules "

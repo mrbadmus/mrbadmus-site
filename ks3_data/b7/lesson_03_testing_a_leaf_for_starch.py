@@ -768,16 +768,16 @@ LESSON = {
             "title": "Rung 1 · Why that step",
             "q": "What is the purpose of boiling the leaf in ethanol?",
             "options": [
-                "To remove the chlorophyll so a colour change can be seen",
                 "To kill the leaf so no more starch is made",
                 "To dissolve the starch out of the cells",
+                "To remove the chlorophyll so a colour change can be seen",
                 "To sterilise the leaf so bacteria do not affect the result",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "The boiling water in step 2 has already done that. Ethanol "
+                0: "The boiling water in step 2 has already done that. Ethanol "
                    "is there for the colour.",
-                2: "That would destroy the thing you are testing for. Starch "
+                1: "That would destroy the thing you are testing for. Starch "
                    "is insoluble and stays exactly where it was.",
                 3: "Nothing in this practical depends on sterility. The "
                    "problem being solved is that green leaves hide colour "
@@ -793,14 +793,14 @@ LESSON = {
             "options": [
                 "That the plant photosynthesised today, because a leaf makes "
                 "its starch and uses it within a day",
-                "Almost nothing — without destarching first, there is no way "
-                "to know when the starch was made",
                 "That the leaf contains chlorophyll, since iodine turns "
                 "blue-black when it reaches the green pigment in a leaf",
                 "That light is needed for photosynthesis, because this leaf "
                 "had light and it made starch",
+                "Almost nothing — without destarching first, there is no way "
+                "to know when the starch was made",
             ],
-            "answer": 1,
+            "answer": 3,
             # All three are Design's own corrections, byte-identical. Each
             # already denies the rule its rewritten distractor now states,
             # which is why the rewrite needed no new feedback: 0's "Starch
@@ -811,9 +811,9 @@ LESSON = {
                 0: "Or last week. Starch accumulates and stays put, so a "
                    "positive result on a plant that was never destarched "
                    "cannot be dated.",
-                2: "Iodine says nothing about chlorophyll, which had been "
+                1: "Iodine says nothing about chlorophyll, which had been "
                    "dissolved away before the iodine was added.",
-                3: "Nothing was covered up and nothing was compared. One leaf "
+                2: "Nothing was covered up and nothing was compared. One leaf "
                    "under one condition cannot show that anything was needed.",
             }},
         # ⚠️ SAFETY, string #4 of five. The question REQUIRES the safety point

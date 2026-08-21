@@ -847,20 +847,20 @@ LESSON = {
             "title": "Rung 1 · The summary",
             "q": "Which line is the word summary for photosynthesis?",
             "options": [
-                "carbon dioxide + water gives glucose + oxygen",
                 "glucose + oxygen gives carbon dioxide + water",
                 "carbon dioxide + water + sunlight gives glucose + oxygen",
                 "minerals + water gives glucose + oxygen",
+                "carbon dioxide + water gives glucose + oxygen",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
-                1: "That is respiration — the same four substances, the other "
+                0: "That is respiration — the same four substances, the other "
                    "way round. Getting the direction wrong is the most common "
                    "error in this topic.",
-                2: "Very nearly. Light is needed but is not a reactant — no "
+                1: "Very nearly. Light is needed but is not a reactant — no "
                    "part of it ends up in the glucose — so it belongs above "
                    "the arrow, not on the left of it.",
-                3: "Minerals are taken from the soil in tiny amounts to build "
+                2: "Minerals are taken from the soil in tiny amounts to build "
                    "particular molecules. They are not a raw material for "
                    "this reaction, and there are nowhere near enough of them "
                    "to be.",
@@ -873,21 +873,21 @@ LESSON = {
             # RULES in the correct answer's shape. Option 1 and `answer` are
             # Design's, unchanged.
             "options": [
-                "The soil, drawn up through the roots and built into the wood "
-                "and the leaves",
                 "Carbon dioxide from the air, built into glucose and then "
                 "into the plant’s structures",
+                "The soil, drawn up through the roots and built into the wood "
+                "and the leaves",
                 "The water it was given, taken up by the roots and turned "
                 "into new plant tissue",
                 "The sunlight falling on the leaves, converted into plant "
                 "material as it is absorbed",
             ],
-            "answer": 1,
+            "answer": 0,
             # All three unchanged from Design, and each still answers exactly
             # the belief its rewritten distractor states — which is the test of
             # whether the rewrite changed what the question measures.
             "feedback": {
-                0: "Weigh the soil before and after, as van Helmont did. It "
+                1: "Weigh the soil before and after, as van Helmont did. It "
                    "barely changes — nowhere near three kilograms leaves the "
                    "pot.",
                 2: "Water is most of the plant’s wet mass and it does supply "
