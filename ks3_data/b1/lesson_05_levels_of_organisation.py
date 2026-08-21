@@ -666,18 +666,18 @@ LESSON = {
                  "is it?",
             "options": [
                 "A cell",
-                "A tissue",
                 "An organ",
                 "Not on the ladder at all",
+                "A tissue",
             ],
-            "answer": 1,
+            "answer": 3,
             "feedback": {
                 0: "It contains cells — several kinds of them — so it must be "
                    "at least one rung above a cell.",
-                2: "An organ is several different tissues arranged together. "
+                1: "An organ is several different tissues arranged together. "
                    "Blood is one tissue, which travels through organs rather "
                    "than being one.",
-                3: "It is on the ladder. Being a liquid is not the "
+                2: "It is on the ladder. Being a liquid is not the "
                    "disqualifier — the ladder measures organisation, not "
                    "solidity.",
             }},
@@ -690,18 +690,18 @@ LESSON = {
             # wrong RULES, in the same shape as the correct option. The
             # correct option and its index are unchanged.
             "options": [
-                "Digestion needs a big enough mass of cells, so a small dish "
-                "can never manage it",
                 "They are not organised into tissues and layers that work on "
                 "the food together",
+                "Digestion needs a big enough mass of cells, so a small dish "
+                "can never manage it",
                 "Stomach cells only line the stomach, so digesting food is a "
                 "job for a different kind of cell",
                 "Enzymes only work inside a living body, so cells in a dish "
                 "cannot digest anything at all",
             ],
-            "answer": 1,
+            "answer": 0,
             "feedback": {
-                0: "Add a thousand times more and it still will not digest "
+                1: "Add a thousand times more and it still will not digest "
                    "anything. The problem is not quantity.",
                 2: "They are exactly the right cells — the same ones that are "
                    "doing it in you right now.",

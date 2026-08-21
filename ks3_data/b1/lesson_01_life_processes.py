@@ -544,16 +544,16 @@ LESSON = {
             "options": [
                 "It is alive — it does three of the seven",
                 "It is not alive — nothing built by people is alive",
-                "It is not alive — it is not made of cells",
                 "You would have to watch it for longer to say",
+                "It is not alive — it is not made of cells",
             ],
-            "answer": 2,
+            "answer": 3,
             "feedback": {
                 0: "A flame does six and is not alive. Counting processes "
                    "never settles it.",
                 1: "True of this one, but not for that reason. Bread dough is "
                    "put together by people and the yeast in it is alive.",
-                3: "You would not. Open it up: parts, wiring and a battery. "
+                2: "You would not. Open it up: parts, wiring and a battery. "
                    "No cells, so no.",
             }},
         "explain": {

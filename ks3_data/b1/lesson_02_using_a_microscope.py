@@ -611,13 +611,13 @@ LESSON = {
                          "equation if what you want is not on the left."},
                 {"letter": "A", "text": "answer, written as “times”."},
             ],
-            "options": ["×55", "×600", "×40", "×6000"],
-            "answer": 1,
+            "options": ["×55", "×40", "×600", "×6000"],
+            "answer": 2,
             "feedback": {
                 0: "That is 15 + 40. The two magnifications multiply — the "
                    "objective makes an image and the eyepiece magnifies that "
                    "image again.",
-                2: "That is the objective on its own. The eyepiece magnifies "
+                1: "That is the objective on its own. The eyepiece magnifies "
                    "again on top of it, so it must go into the sum.",
                 3: "One zero too many: 15 × 40 = 600. Worth checking the size "
                    "of the answer against the ×400 you already know.",

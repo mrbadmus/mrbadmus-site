@@ -1055,16 +1055,16 @@ LESSON = {
                                "built for?",
                           "options": [
                               "Carrying oxygen round the body",
-                              "Absorbing water and minerals from soil",
                               "Trapping light to make food",
+                              "Absorbing water and minerals from soil",
                               "Carrying a signal from your spine to your toe",
                           ],
-                          "answer": 1,
+                          "answer": 2,
                           "feedback": {0: "That cell has no wall and no "
                                           "vacuole — and no mitochondria at "
                                           "all, so that it does not use the "
                                           "oxygen it carries.",
-                                       2: "Then it would be full of "
+                                       1: "Then it would be full of "
                                           "chloroplasts. This one has none, "
                                           "which is the clue that no light "
                                           "reaches it.",

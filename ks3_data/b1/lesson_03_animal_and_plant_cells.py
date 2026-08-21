@@ -772,21 +772,21 @@ LADDER = {"recall": {"title": "Rung 1 · Read the list",
                     "options": ["Root cells build chloroplasts like every "
                                 "other plant cell, but leave the green "
                                 "pigment out of them",
-                                "Chloroplasts are only built where light "
-                                "reaches, so a plant cell without them is "
-                                "still a plant cell",
                                 "Roots are green under the soil, so a root "
                                 "cell is green wherever you dig it up",
                                 "The green is stored in the vacuole, so a "
                                 "cell with a clear vacuole is not a plant "
-                                "cell"],
-                    "answer": 1,
+                                "cell",
+                                "Chloroplasts are only built where light "
+                                "reaches, so a plant cell without them is "
+                                "still a plant cell"],
+                    "answer": 3,
                     "feedback": {0: "Close to something true about other "
                                     "structures in a root, but not this. A "
                                     "root hair cell does not build "
                                     "chloroplasts at all.",
-                                 2: "They are not. Dig one up and look.",
-                                 3: "The vacuole is mostly water with "
+                                 1: "They are not. Dig one up and look.",
+                                 2: "The vacuole is mostly water with "
                                     "sugars and salts dissolved in it. The "
                                     "green is chlorophyll, and it is inside "
                                     "the chloroplasts."}},

@@ -816,20 +816,20 @@ LESSON = {
             # correct option and its index are unchanged, and the option-1
             # correction still carries the CELL-08 pair verbatim.
             "options": [
+                "The bacterium still has its DNA, loose in the cytoplasm; the "
+                "red blood cell lost its DNA with its nucleus",
                 "A smaller cell divides more easily, so the smallest cells "
                 "are the ones that divide fastest",
                 "A cell that loses its nucleus later in life can still "
                 "divide, because it had one to begin with",
-                "The bacterium still has its DNA, loose in the cytoplasm; the "
-                "red blood cell lost its DNA with its nucleus",
                 "Dividing needs no instructions at all, so any cell without "
                 "a nucleus can still copy itself freely",
             ],
-            "answer": 2,
+            "answer": 0,
             "feedback": {
-                0: "Size has nothing to do with it. The difference is about "
+                1: "Size has nothing to do with it. The difference is about "
                    "the instructions, not the effort.",
-                1: "Having had one does not help: the red blood cell "
+                2: "Having had one does not help: the red blood cell "
                    "destroyed its nucleus and lost the DNA with it. The "
                    "bacterium never had a nucleus at any point.",
                 3: "Nothing copies itself without instructions. Every new "
