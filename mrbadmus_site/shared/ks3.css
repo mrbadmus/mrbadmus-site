@@ -21682,3 +21682,763 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 .ks3-catb [hidden] { display: none !important; }
 
 /* ═══ END C6 ═══ */
+
+/* ═══ BEGIN C8 ═══════════════════════════════════════════════════════════
+   C8's instrument styling — *The periodic table*. A PURE APPEND at EOF —
+   every byte above this marker is unchanged, which is the one conflict shape
+   that resolves mechanically when another lane merges.
+
+   Every value below is measured off Claude Design's approved pages in
+   `docs/ks3/design-reference/c8/`, which carry their real design in inline
+   `style` attributes and in the style strings `lessonVals()` composes. Where
+   the page and the engine disagreed, the page won, except where a
+   disagreement is written out below as a ruling.
+
+   ALL ELEVEN INSTRUMENT SECTIONS ARE LIGHT. `#s-bench` on c8-01, `#s-gap` and
+   `#s-rules` on c8-02, `#s-table` and `#s-read` on c8-03, `#s-trough` and
+   `#s-predict` on c8-04, `#s-grid` on c8-05, `#s-shells`, `#s-file` and
+   `#s-uses` on c8-06 are each `class="ks3-block"` with no second class. There
+   is no ink-dark practical block anywhere in C8, exactly as there is none in
+   C3, C4, C5 or C7. A later pass that "restores" a practical shell here would
+   paint an instrument on a ground Design did not draw it on and resolve every
+   text token inside it wrong.
+
+   ⚠️ EVERY TEXT RULE IS SELF-SCOPED AT (0,2,0) — `.ks3-prop .ks3-prop-why`,
+   never a bare `.ks3-prop-why`. A bare component class is (0,1,0) and loses to
+   `.ks3-dark p` at (0,1,1) the day anything moves one of these instruments
+   onto ink, and it loses SILENTLY: the CSS reads correctly and the sentence
+   ships at about 1.2:1. C1's, C3's, C4's, C5's and C7's blocks all say this
+   and it is said again because it is the rule most easily lost in a merge.
+
+   ⚠️ `--ks3-data` IS NOT SPENT ANYWHERE IN THIS UNIT. It is an ON-INK token
+   (the C3 ruling), and every C8 instrument sits on a light ground, so there is
+   nothing here for it to colour. Selection and category state is carried by
+   `--ks3-accent` / `--ks3-accent-tint` with an `--ks3-ink` outline, and EVERY
+   selectable cell also carries a WORD — "reacts", "none", "?" — so colour is
+   never the only channel (audit law 9 / R2).
+
+   ⚠️ CONTAINMENT, NOT CLIPPING. Two horizontal scrollers exist in this unit:
+   the twenty-element periodic table on c8-03 and the nine-cell halogen grid on
+   c8-05. Both carry `position: relative` so that anything absolutely
+   positioned inside them is contained rather than escaping and widening the
+   document — the C5 trap. Neither is `overflow: hidden`: a table a student
+   cannot scroll to the end of is a table with elements they cannot reach.
+   ═══ */
+
+/* ── shared shells ─────────────────────────────────────────────────────
+   Seven families, seven shell classes, all light. Every one is checked free
+   against every KIND_SHELL value in `ks3_art` before minting (MRB-279). */
+.ks3-prop-block,
+.ks3-gapfill-block,
+.ks3-pcards-block,
+.ks3-tread-block,
+.ks3-trough-block,
+.ks3-hgrid-block,
+.ks3-shell-block { --c8-gap: 12px; }
+
+/* ── c8-01 · property-sorter ───────────────────────────────────────────── */
+.ks3-prop { display: flex; flex-direction: column; gap: var(--c8-gap); }
+.ks3-prop .ks3-prop-item {
+  padding: 18px 20px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-prop .ks3-prop-head {
+  display: flex; gap: 16px; align-items: baseline;
+  flex-wrap: wrap; justify-content: space-between;
+}
+.ks3-prop .ks3-prop-code {
+  margin: 0; font-family: var(--ks3-font-display);
+  font-weight: 800; font-size: 21px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-prop .ks3-prop-state {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-prop .ks3-prop-facts {
+  margin: 10px 0 0; padding-left: 20px; display: flex;
+  flex-direction: column; gap: 4px;
+  font-size: 17px; line-height: 1.5; color: var(--ks3-ink-body);
+}
+.ks3-prop .ks3-prop-opts,
+.ks3-gapf .ks3-gapf-opts,
+.ks3-pcards .ks3-pcards-opts {
+  margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-prop .ks3-prop-reveal,
+.ks3-pcards .ks3-pcards-answer,
+.ks3-gapf .ks3-gapf-answer {
+  margin-top: 12px; padding: 14px 16px; border-radius: 14px;
+  background: var(--ks3-card); border: 2px solid var(--ks3-rule);
+}
+.ks3-prop .ks3-prop-verdict {
+  margin: 0; font-family: var(--ks3-font-display);
+  font-weight: 700; font-size: 18px; color: var(--ks3-ink);
+}
+.ks3-prop .ks3-prop-why {
+  margin: 7px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+
+/* ── c8-02 · gap-filler ────────────────────────────────────────────────
+   ⚠️ THE PERIOD-1-STYLE HOLES ARE DRAWN, NOT COLLAPSED. Four corners of the
+   3 x 3 are `empty` spacers and the centre is the `blank` gap; they are
+   different things and are styled differently on purpose. The gap is a dashed
+   square with a question mark in it — the subject of the lesson — and a
+   spacer is nothing at all. Collapsing either would destroy the plus-shape
+   that makes the prediction a READING off four neighbours. */
+.ks3-gapf .ks3-gapf-grid {
+  display: grid; grid-template-columns: repeat(var(--gapf-cols, 3), 1fr);
+  gap: 10px; margin-bottom: 20px;
+}
+.ks3-gapf .ks3-gapf-cell {
+  padding: 14px 12px; border-radius: 14px; text-align: center;
+  background: var(--ks3-card); border: 2px solid var(--ks3-ink);
+}
+.ks3-gapf .ks3-gapf-spacer { border: 0; background: none; }
+.ks3-gapf .ks3-gapf-blank {
+  background: transparent; border: 2px dashed var(--ks3-ink-muted);
+  display: flex; align-items: center; justify-content: center;
+  min-height: 88px;
+}
+.ks3-gapf .ks3-gapf-qm {
+  font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 30px; color: var(--ks3-accent-text);
+}
+.ks3-gapf .ks3-gapf-sym {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; color: var(--ks3-ink);
+}
+.ks3-gapf .ks3-gapf-name {
+  margin: 2px 0 0; font-size: 15px; color: var(--ks3-ink-body);
+}
+.ks3-gapf .ks3-gapf-data {
+  margin: 4px 0 0; font-family: var(--ks3-font-mono);
+  font-size: 12px; color: var(--ks3-ink-muted);
+}
+.ks3-gapf .ks3-gapf-cards,
+.ks3-pcards { display: flex; flex-direction: column; gap: 14px; }
+.ks3-gapf .ks3-gapf-tablewrap { margin-top: 20px; overflow-x: auto; }
+.ks3-gapf .ks3-gapf-table { border-collapse: collapse; width: 100%; }
+.ks3-gapf .ks3-gapf-table caption {
+  text-align: left; font-family: var(--ks3-font-display); font-weight: 700;
+  font-size: 19px; padding-bottom: 10px; color: var(--ks3-ink);
+}
+.ks3-gapf .ks3-gapf-table th,
+.ks3-gapf .ks3-gapf-table td {
+  padding: 10px 14px; text-align: left; font-size: 16px;
+  border-top: 2px solid var(--ks3-rule); color: var(--ks3-ink-body);
+}
+.ks3-gapf .ks3-gapf-table thead th {
+  font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500;
+  letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ks3-ink-muted); border-top: 0;
+}
+.ks3-gapf .ks3-gapf-table tbody th { color: var(--ks3-ink); font-weight: 700; }
+
+/* ── c8-02/03/04/06 · predict-cards (five placements, one family) ─────── */
+.ks3-pcards .ks3-pcards-lead {
+  margin: 0 0 4px; font-size: 19px; line-height: 1.6;
+  max-width: var(--ks3-measure); color: var(--ks3-ink-body);
+}
+.ks3-pcards .ks3-pcards-card,
+.ks3-gapf .ks3-gapf-card {
+  padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-pcards .ks3-pcards-tag {
+  margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 12px;
+  font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+.ks3-pcards .ks3-pcards-q,
+.ks3-gapf .ks3-gapf-q {
+  margin: 0; font-size: 19px; line-height: 1.55; color: var(--ks3-ink);
+}
+.ks3-pcards .ks3-pcards-answer,
+.ks3-gapf .ks3-gapf-answer {
+  font-size: 17px; line-height: 1.55; color: var(--ks3-ink-body);
+}
+
+/* ── c8-03 · table-reader ──────────────────────────────────────────────
+   ⚠️ `position: relative` on the scroller is CONTAINMENT, NOT CLIPPING —
+   the C5 trap, where 65 absolutely positioned screen-reader labels escaped a
+   scroller and widened the document. Nothing here is absolutely positioned
+   today; the rule is here so that the next thing added inside it cannot
+   escape. `overflow-x: auto`, never `hidden`: a table a student cannot scroll
+   to the end of is a table with elements they cannot reach. */
+.ks3-tread .ks3-tread-scroll {
+  position: relative; overflow-x: auto; padding-bottom: 4px;
+}
+.ks3-tread .ks3-tread-table {
+  border-collapse: separate; border-spacing: 5px; min-width: 40rem;
+}
+.ks3-tread .ks3-tread-gh,
+.ks3-tread .ks3-tread-ph {
+  font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500;
+  letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ks3-ink-muted); padding: 4px 6px; text-align: center;
+}
+.ks3-tread .ks3-tread-ph { text-align: right; white-space: nowrap; }
+.ks3-tread .ks3-tread-corner { width: 1px; }
+/* ⚠️ A null cell is DRAWN as a dashed transparent box, never collapsed.
+   NOTES-C8 §7: the SHAPE OF THE GAP is part of what the table teaches —
+   hydrogen and helium sit at opposite ends of period 1 with six holes between
+   them, and a tidied row would teach that they are neighbours. */
+.ks3-tread .ks3-tread-empty {
+  border: 2px dashed var(--ks3-rule); border-radius: 10px;
+  min-width: 4.2rem; height: 62px; background: transparent;
+}
+.ks3-tread .ks3-tread-cell {
+  font: inherit; display: flex; flex-direction: column; gap: 1px;
+  align-items: center; justify-content: center;
+  min-width: 4.2rem; min-height: 62px; padding: 6px 8px;
+  border-radius: 10px; cursor: pointer;
+  background: var(--ks3-card); border: 2px solid var(--ks3-ink);
+  color: var(--ks3-ink);
+}
+.ks3-tread .ks3-tread-cell[aria-pressed="true"] {
+  background: var(--ks3-accent-tint); border-color: var(--ks3-accent);
+  box-shadow: 0 0 0 4px var(--ks3-accent-tint);
+}
+.ks3-tread .ks3-tread-num {
+  font-family: var(--ks3-font-mono); font-size: 10px;
+  color: var(--ks3-ink-muted);
+}
+.ks3-tread .ks3-tread-sym {
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 18px;
+}
+.ks3-tread .ks3-tread-nm { font-size: 10px; color: var(--ks3-ink-body); }
+.ks3-tread .ks3-tread-readout {
+  margin-top: 18px; padding: 18px 20px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-tread .ks3-tread-rest {
+  margin: 0; font-size: 17px; color: var(--ks3-ink-muted);
+}
+.ks3-tread .ks3-tread-addr {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  letter-spacing: .04em; color: var(--ks3-accent-text);
+}
+.ks3-tread .ks3-tread-fam {
+  margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 700;
+  font-size: 18px; line-height: 1.3; color: var(--ks3-ink);
+}
+.ks3-tread .ks3-tread-note {
+  margin: 7px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+
+/* ── c8-04 · water-trough ─────────────────────────────────────────────── */
+.ks3-trough .ks3-trough-picker,
+.ks3-trough .ks3-trough-predict { display: flex; gap: 9px; flex-wrap: wrap; }
+.ks3-trough .ks3-trough-predict {
+  margin-top: 14px; flex-direction: column; align-items: flex-start;
+}
+.ks3-trough .ks3-trough-prompt {
+  margin: 0 0 8px; font-size: 18px; color: var(--ks3-ink-body);
+}
+.ks3-trough .ks3-trough-stage {
+  margin-top: 18px; padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-trough .ks3-trough-rest {
+  margin: 0; font-size: 17px; color: var(--ks3-ink-muted);
+}
+.ks3-trough .ks3-trough-headline {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 21px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-trough .ks3-trough-data {
+  margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  color: var(--ks3-ink-muted);
+}
+.ks3-trough .ks3-trough-obs {
+  margin: 12px 0 0; padding-left: 20px; display: flex;
+  flex-direction: column; gap: 5px;
+  font-size: 17px; line-height: 1.5; color: var(--ks3-ink-body);
+}
+.ks3-trough .ks3-trough-eq {
+  margin: 12px 0 0; padding: 10px 14px; border-radius: 12px;
+  background: var(--ks3-card); border: 2px solid var(--ks3-rule);
+  font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink);
+}
+
+/* ── c8-05 · halogen-grid ──────────────────────────────────────────────
+   ⚠️ Same containment rule as the periodic table above, and for the same
+   reason. Every cell carries a WORD as well as a colour. */
+.ks3-hgrid .ks3-hgrid-scroll {
+  position: relative; overflow-x: auto; padding-bottom: 4px;
+}
+.ks3-hgrid .ks3-hgrid-table {
+  border-collapse: separate; border-spacing: 6px; min-width: 30rem;
+}
+.ks3-hgrid .ks3-hgrid-table th {
+  font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500;
+  letter-spacing: .05em; color: var(--ks3-ink-muted);
+  padding: 6px 8px; text-align: left;
+}
+.ks3-hgrid .ks3-hgrid-corner { width: 1px; }
+.ks3-hgrid .ks3-hgrid-cell {
+  font: inherit; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; min-width: 5.6rem; min-height: 44px; padding: 8px 10px;
+  border-radius: 12px; cursor: pointer;
+  background: var(--ks3-card); border: 2px solid var(--ks3-ink);
+  color: var(--ks3-ink-ghost);
+}
+.ks3-hgrid .ks3-hgrid-cell[aria-pressed="true"] {
+  background: var(--ks3-accent-tint); border-color: var(--ks3-accent);
+  color: var(--ks3-ink); box-shadow: 0 0 0 4px var(--ks3-accent-tint);
+}
+.ks3-hgrid .ks3-hgrid-predict {
+  margin-top: 16px; display: flex; flex-direction: column;
+  align-items: flex-start; gap: 9px;
+}
+.ks3-hgrid .ks3-hgrid-prompt {
+  margin: 0; font-size: 18px; color: var(--ks3-ink-body);
+}
+.ks3-hgrid .ks3-hgrid-readout {
+  margin-top: 18px; padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-hgrid .ks3-hgrid-rest {
+  margin: 0; font-size: 17px; color: var(--ks3-ink-muted);
+}
+.ks3-hgrid .ks3-hgrid-title {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 20px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-hgrid .ks3-hgrid-setup {
+  margin: 7px 0 0; font-size: 16px; line-height: 1.5;
+  color: var(--ks3-ink-muted);
+}
+.ks3-hgrid .ks3-hgrid-verdict {
+  margin: 12px 0 0; font-family: var(--ks3-font-display); font-weight: 700;
+  font-size: 18px; color: var(--ks3-accent-text);
+}
+.ks3-hgrid .ks3-hgrid-obs {
+  margin: 7px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+.ks3-hgrid .ks3-hgrid-eq {
+  margin: 12px 0 0; padding: 10px 14px; border-radius: 12px;
+  background: var(--ks3-card); border: 2px solid var(--ks3-rule);
+  font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink);
+}
+
+/* ── c8-06 · shell-strip ───────────────────────────────────────────────
+   ⚠️ ONE ROW IS ONE OUTER SHELL. The strip stops short of shells-within-
+   shells deliberately (NOTES-C8 §4) and is to be left there: drawing inner
+   shells would make the picture right and the lesson unreadable, and "group
+   number = outer electrons" is the whole of what c8-03 and c8-06 claim. */
+.ks3-shel { display: flex; flex-direction: column; gap: var(--c8-gap); }
+.ks3-shel .ks3-shel-row {
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-shel .ks3-shel-toggle {
+  font: inherit; display: block; width: 100%; text-align: left;
+  padding: 18px 20px; min-height: 44px; cursor: pointer;
+  background: none; border: 0; border-radius: var(--ks3-r-panel);
+  color: var(--ks3-ink);
+}
+.ks3-shel .ks3-shel-head {
+  display: flex; gap: 14px; align-items: baseline;
+  flex-wrap: wrap; justify-content: space-between;
+}
+.ks3-shel .ks3-shel-title {
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;
+  line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-shel .ks3-shel-tag {
+  font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500;
+  letter-spacing: .05em; text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+.ks3-shel .ks3-shel-dots {
+  display: flex; gap: 7px; margin: 12px 0 0;
+}
+.ks3-shel .ks3-shel-dot {
+  width: 15px; height: 15px; border-radius: 50%;
+  border: 2px solid var(--ks3-ink); background: transparent;
+}
+/* The filled state is a FILL, and the row's own summary says the number in
+   words as well — colour is never the only channel (R2 / audit law 9). */
+.ks3-shel .ks3-shel-dot[data-on="1"] { background: var(--ks3-accent); }
+.ks3-shel .ks3-shel-summary {
+  display: block; margin: 12px 0 0; font-size: 17px; line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+.ks3-shel .ks3-shel-detail {
+  margin: 0; padding: 0 20px 18px; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+
+/* ── closing panels, shared shape ──────────────────────────────────────── */
+.ks3-prop-close,
+.ks3-gapf-close,
+.ks3-pcards-close,
+.ks3-tread-close,
+.ks3-trough-close,
+.ks3-hgrid-close,
+.ks3-shel-close {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band); border: 2px solid var(--ks3-ink);
+}
+.ks3-prop .ks3-prop-closetitle,
+.ks3-gapf .ks3-gapf-closetitle,
+.ks3-pcards .ks3-pcards-closetitle,
+.ks3-tread .ks3-tread-closetitle,
+.ks3-trough .ks3-trough-closetitle,
+.ks3-hgrid .ks3-hgrid-closetitle,
+.ks3-shel .ks3-shel-closetitle {
+  margin: 0 0 10px; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-prop-close p,
+.ks3-gapf-close p,
+.ks3-pcards-close p,
+.ks3-tread-close p,
+.ks3-trough-close p,
+.ks3-hgrid-close p,
+.ks3-shel-close p {
+  margin: 0 0 10px; font-size: 19px; line-height: 1.6;
+  color: var(--ks3-ink);
+}
+.ks3-prop-close p:last-child,
+.ks3-gapf-close p:last-child,
+.ks3-pcards-close p:last-child,
+.ks3-tread-close p:last-child,
+.ks3-trough-close p:last-child,
+.ks3-hgrid-close p:last-child,
+.ks3-shel-close p:last-child { margin-bottom: 0; }
+
+/* ⚠️ `[hidden]` LAST, AND SELF-SCOPED. Several rules above set `display` on
+   elements that are also `hidden` at rest, and `display: flex` on a bare class
+   beats the UA's `[hidden] { display: none }` on specificity — so without
+   this the halogen grid would show all nine readouts at once, the periodic
+   table all twenty, and both would still read as correct CSS. */
+.ks3-prop [hidden],
+.ks3-gapf [hidden],
+.ks3-pcards [hidden],
+.ks3-tread [hidden],
+.ks3-trough [hidden],
+.ks3-hgrid [hidden],
+.ks3-shel [hidden] { display: none; }
+
+/* ═══ END C8 ═══ */
+
+/* ═══ BEGIN C9 ═══════════════════════════════════════════════════════════
+   C9's instrument styling — *Metals and materials*. A PURE APPEND at EOF —
+   every byte above this marker is unchanged, which is the one conflict shape
+   that resolves mechanically when another lane merges.
+
+   ALL FOUR INSTRUMENT SECTIONS ARE LIGHT — `#s-bench` on c9-01, `#s-deck` on
+   c9-02, `#s-bench` on c9-03 and `#s-bench` on c9-04 are each
+   `class="ks3-block"` with no second class. There is no ink-dark practical
+   block anywhere in C9, exactly as there is none in C3, C4, C5, C7 or C8.
+
+   ⚠️ EVERY TEXT RULE IS SELF-SCOPED AT (0,2,0) — `.ks3-raud .ks3-raud-obs`,
+   never a bare `.ks3-raud-obs`. A bare component class is (0,1,0) and loses
+   to `.ks3-dark p` at (0,1,1) the day anything moves one of these onto ink,
+   and it loses SILENTLY.
+
+   ⚠️ `--ks3-data` IS NOT SPENT HERE EITHER. It is an ON-INK token (the C3
+   ruling) and every C9 instrument sits on a light ground. `NOTES-C9.md` §9.2
+   reports the token as missing entirely and asks for it to be added or for
+   audit law 9 to be amended: it EXISTS, in `shared/tokens.css`, and is
+   on-ink-only, so a light-ground unit never spends it and law 9 needs no
+   amendment. Selection and category state uses `--ks3-accent` /
+   `--ks3-accent-tint` with an `--ks3-ink` outline, and EVERY selectable cell
+   also carries a WORD, so colour is never the only channel.
+
+   ⚠️ CONTAINMENT, NOT CLIPPING. The twelve-cell audit matrix is the unit's
+   one horizontal scroller and carries `position: relative`.
+   ═══ */
+
+.ks3-raudit-block,
+.ks3-pdeck-block,
+.ks3-xroute-block,
+.ks3-specb-block { --c9-gap: 12px; }
+
+/* ── c9-01 · reaction-audit ────────────────────────────────────────────── */
+.ks3-raud .ks3-raud-scroll {
+  position: relative; overflow-x: auto; padding-bottom: 4px;
+}
+.ks3-raud .ks3-raud-table {
+  border-collapse: separate; border-spacing: 6px; min-width: 32rem;
+}
+.ks3-raud .ks3-raud-table th {
+  font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500;
+  letter-spacing: .05em; color: var(--ks3-ink-muted);
+  padding: 6px 8px; text-align: left;
+}
+.ks3-raud .ks3-raud-corner { width: 1px; }
+.ks3-raud .ks3-raud-mname {
+  display: block; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 17px; text-transform: none; letter-spacing: 0;
+  color: var(--ks3-ink);
+}
+.ks3-raud .ks3-raud-mform {
+  display: block; margin-top: 2px; font-size: 11px; text-transform: none;
+  letter-spacing: 0; color: var(--ks3-ink-muted);
+}
+.ks3-raud .ks3-raud-cell {
+  font: inherit; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; min-width: 5.2rem; min-height: 44px; padding: 8px 10px;
+  border-radius: 12px; cursor: pointer;
+  background: var(--ks3-card); border: 2px solid var(--ks3-ink);
+  color: var(--ks3-ink-ghost);
+}
+.ks3-raud .ks3-raud-cell[aria-pressed="true"] {
+  background: var(--ks3-accent-tint); border-color: var(--ks3-accent);
+  color: var(--ks3-ink); box-shadow: 0 0 0 4px var(--ks3-accent-tint);
+}
+.ks3-raud .ks3-raud-predict {
+  margin-top: 16px; display: flex; flex-direction: column;
+  align-items: flex-start; gap: 9px;
+}
+.ks3-raud .ks3-raud-prompt,
+.ks3-xroute .ks3-xroute-rest,
+.ks3-specb .ks3-specb-rest {
+  margin: 0; font-size: 18px; color: var(--ks3-ink-body);
+}
+.ks3-raud .ks3-raud-readout,
+.ks3-xroute .ks3-xroute-readout,
+.ks3-specb .ks3-specb-readout {
+  margin-top: 18px; padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-raud .ks3-raud-rest {
+  margin: 0; font-size: 17px; color: var(--ks3-ink-muted);
+}
+.ks3-raud .ks3-raud-title {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 20px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-raud .ks3-raud-verdict {
+  margin: 10px 0 0; font-family: var(--ks3-font-display); font-weight: 700;
+  font-size: 18px; color: var(--ks3-accent-text);
+}
+.ks3-raud .ks3-raud-obs {
+  margin: 7px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+.ks3-raud .ks3-raud-eq,
+.ks3-xroute .ks3-xroute-eq {
+  margin: 12px 0 0; padding: 10px 14px; border-radius: 12px;
+  background: var(--ks3-card); border: 2px solid var(--ks3-rule);
+  font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink);
+}
+/* The apparatus line is the one place in C9 that carries the alert tone, and
+   it carries a WORD too — it is a sentence, not a colour. */
+.ks3-raud .ks3-raud-care {
+  margin: 12px 0 0; padding: 10px 14px; border-radius: 12px;
+  background: var(--ks3-alert-tint); border: 2px solid var(--ks3-alert-border);
+  font-size: 16px; line-height: 1.5; color: var(--ks3-alert-text);
+}
+.ks3-raud .ks3-raud-bands,
+.ks3-xroute .ks3-xroute-groups {
+  margin-top: 18px; display: flex; flex-direction: column; gap: var(--c9-gap);
+}
+.ks3-raud .ks3-raud-band,
+.ks3-xroute .ks3-xroute-group {
+  padding: 18px 20px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card); border: 2px solid var(--ks3-ink);
+}
+.ks3-raud .ks3-raud-blabel,
+.ks3-xroute .ks3-xroute-glabel {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 19px; color: var(--ks3-ink);
+}
+.ks3-raud .ks3-raud-bmembers,
+.ks3-xroute .ks3-xroute-gmembers {
+  margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  color: var(--ks3-accent-text);
+}
+.ks3-raud .ks3-raud-bnote,
+.ks3-xroute .ks3-xroute-gnote {
+  margin: 8px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+
+/* ── c9-02 · prediction-deck ───────────────────────────────────────────── */
+.ks3-pdeck .ks3-pdeck-strip {
+  margin: 0 0 20px; padding: 16px 18px; list-style: none;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card); border: 2px solid var(--ks3-ink);
+  counter-reset: pdeck;
+}
+.ks3-pdeck .ks3-pdeck-strip-item {
+  counter-increment: pdeck; display: flex; gap: 10px; align-items: baseline;
+  padding: 5px 0; font-size: 17px; color: var(--ks3-ink-body);
+}
+.ks3-pdeck .ks3-pdeck-strip-item::before {
+  content: counter(pdeck); font-family: var(--ks3-font-mono); font-size: 12px;
+  color: var(--ks3-ink-muted); min-width: 1.2rem;
+}
+.ks3-pdeck .ks3-pdeck-sname {
+  font-family: var(--ks3-font-display); font-weight: 700; font-size: 17px;
+  color: var(--ks3-ink);
+}
+.ks3-pdeck .ks3-pdeck-stag {
+  font-family: var(--ks3-font-mono); font-size: 12px;
+  color: var(--ks3-accent-text);
+}
+.ks3-pdeck .ks3-pdeck-cards {
+  display: flex; flex-direction: column; gap: 14px;
+}
+.ks3-pdeck .ks3-pdeck-card {
+  padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-pdeck .ks3-pdeck-label {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 19px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-pdeck .ks3-pdeck-setup {
+  margin: 7px 0 0; font-size: 17px; line-height: 1.5;
+  color: var(--ks3-ink-muted);
+}
+.ks3-pdeck .ks3-pdeck-opts {
+  margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-pdeck .ks3-pdeck-reveal {
+  margin-top: 12px; padding: 14px 16px; border-radius: 14px;
+  background: var(--ks3-card); border: 2px solid var(--ks3-rule);
+}
+.ks3-pdeck .ks3-pdeck-verdict {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 700;
+  font-size: 18px; color: var(--ks3-ink);
+}
+.ks3-pdeck .ks3-pdeck-obs {
+  margin: 7px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+.ks3-pdeck .ks3-pdeck-eq {
+  margin: 10px 0 0; font-family: var(--ks3-font-mono); font-size: 14px;
+  color: var(--ks3-accent-text);
+}
+
+/* ── c9-03 · extraction-route ──────────────────────────────────────────── */
+.ks3-xroute .ks3-xroute-pickers {
+  display: flex; flex-direction: column; gap: 12px;
+}
+.ks3-xroute .ks3-xroute-ores,
+.ks3-xroute .ks3-xroute-methods,
+.ks3-specb .ks3-specb-shelf {
+  display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-xroute .ks3-xroute-setup {
+  margin: 0; font-size: 16px; line-height: 1.5; color: var(--ks3-ink-muted);
+}
+.ks3-xroute .ks3-xroute-title {
+  margin: 10px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 20px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-xroute .ks3-xroute-why {
+  margin: 7px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+
+/* ── c9-04 · spec-bench ────────────────────────────────────────────────── */
+.ks3-specb .ks3-specb-jobs {
+  display: flex; flex-direction: column; gap: var(--c9-gap);
+  margin-bottom: 16px;
+}
+.ks3-specb .ks3-specb-job {
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-specb .ks3-specb-jbtn {
+  font: inherit; display: block; width: 100%; text-align: left;
+  padding: 18px 20px; min-height: 44px; cursor: pointer;
+  background: none; border: 0; border-radius: var(--ks3-r-panel);
+  color: var(--ks3-ink);
+}
+.ks3-specb .ks3-specb-job[data-open="1"] {
+  border-color: var(--ks3-accent); box-shadow: 0 0 0 4px var(--ks3-accent-tint);
+}
+.ks3-specb .ks3-specb-jname {
+  display: block; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 19px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-specb .ks3-specb-setup {
+  display: block; margin-top: 6px; font-size: 17px; line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+.ks3-specb .ks3-specb-reqs {
+  display: flex; gap: 7px; flex-wrap: wrap; margin-top: 10px;
+}
+.ks3-specb .ks3-specb-req {
+  padding: 4px 10px; border-radius: 999px;
+  background: var(--ks3-card); border: 2px solid var(--ks3-rule);
+  font-family: var(--ks3-font-mono); font-size: 12px;
+  color: var(--ks3-ink-body);
+}
+.ks3-specb .ks3-specb-head {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 20px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-specb .ks3-specb-verdict {
+  margin: 10px 0 0; font-family: var(--ks3-font-display); font-weight: 700;
+  font-size: 18px; color: var(--ks3-accent-text);
+}
+.ks3-specb .ks3-specb-praise {
+  margin: 7px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+/* A rejection is a LIST OF NAMED REQUIREMENTS, never a count. The renderer
+   refuses a material that fails a requirement without a reason, so every row
+   below is guaranteed to have one. */
+.ks3-specb .ks3-specb-fails {
+  margin: 10px 0 0; padding: 0; list-style: none;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.ks3-specb .ks3-specb-rname {
+  display: block; font-family: var(--ks3-font-mono); font-size: 12px;
+  letter-spacing: .04em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-specb .ks3-specb-rwhy {
+  display: block; margin-top: 3px; font-size: 17px; line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+
+/* ── closing panels, shared shape ──────────────────────────────────────── */
+.ks3-raud-close,
+.ks3-pdeck-close,
+.ks3-xroute-close,
+.ks3-specb-close {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band); border: 2px solid var(--ks3-ink);
+}
+.ks3-raud .ks3-raud-closetitle,
+.ks3-pdeck .ks3-pdeck-closetitle,
+.ks3-xroute .ks3-xroute-closetitle,
+.ks3-specb .ks3-specb-closetitle {
+  margin: 0 0 10px; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-raud-close p,
+.ks3-pdeck-close p,
+.ks3-xroute-close p,
+.ks3-specb-close p {
+  margin: 0 0 10px; font-size: 19px; line-height: 1.6; color: var(--ks3-ink);
+}
+.ks3-raud-close p:last-child,
+.ks3-pdeck-close p:last-child,
+.ks3-xroute-close p:last-child,
+.ks3-specb-close p:last-child { margin-bottom: 0; }
+
+/* ⚠️ `[hidden]` LAST, AND SELF-SCOPED — several rules above set `display` on
+   elements that are also `hidden` at rest, and `display: flex` on a bare
+   class beats the UA's `[hidden] { display: none }`. Without this the route
+   bench would show all twenty-four verdicts at once and still read as
+   correct CSS. */
+.ks3-raud [hidden],
+.ks3-pdeck [hidden],
+.ks3-xroute [hidden],
+.ks3-specb [hidden] { display: none; }
+
+/* ═══ END C9 ═══ */

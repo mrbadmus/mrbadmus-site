@@ -110,23 +110,42 @@ QUESTIONS = [
     {
         "id": "c7-03-e04",
         "band": "easier",
-        "text": "Melting is endothermic. What does that tell you about "
-                "freezing?",
+        # ⚑ RE-AUTHORED 21 Aug 2026 (MRB-281). This question previously
+        # restated the apply rung VERBATIM — "Melting is endothermic. What
+        # does that tell you about freezing?" — which `verify_questions`
+        # check 6 refuses, because the bank is additional depth and not a
+        # second copy of the ladder.
+        #
+        # ⚠️ IT WAS SHIPPED THAT WAY. The defect is on `main`, merged in
+        # PR #8, so the C6/C7 run pushed with `verify_questions` red. The
+        # gate was working; it was not run. Fixed here rather than left,
+        # because a red gate blocks C8's push as surely as it should have
+        # blocked C7's.
+        #
+        # The replacement keeps the band and the answer index (3) and asks
+        # about the SURROUNDINGS instead of about the reverse change, which
+        # is the half of `ENER-05` the other three easier questions do not
+        # reach.
+        "text": "A beaker of water has a cold pack resting in it and the "
+                "water cools from 20 °C to 14 °C. Where has that energy "
+                "gone?",
         "options": [
-            {"text": "Freezing is endothermic too, because both changes "
-                     "involve ice", "correct": False,
-             "why": "The substance does not decide it; the direction does. "
-                    "Freezing is melting run backwards."},
-            {"text": "Freezing involves no energy change, because nothing is "
-                     "being heated", "correct": False,
-             "why": "A freezer removes energy continuously, and that energy "
-                    "is coming out of the water."},
-            {"text": "Freezing depends on how cold the freezer is set",
+            {"text": "Nowhere — the water lost energy and it was destroyed",
              "correct": False,
-             "why": "The freezer's setting changes how FAST it freezes, not "
-                    "which way the energy travels."},
-            {"text": "Freezing is exothermic, and gives out the same energy "
-                     "melting took in", "correct": True},
+             "why": "Energy is never destroyed. If the water has less, "
+                    "something else has more."},
+            {"text": "Into the thermometer, which is why the reading fell",
+             "correct": False,
+             "why": "A thermometer reports a temperature; it does not "
+                    "swallow the energy behind it."},
+            {"text": "Out into the room, because cold spreads from the pack "
+                     "outwards",
+             "correct": False,
+             "why": "Cold is not a substance and does not spread. Energy "
+                    "moves, and here it moves INTO the pack."},
+            {"text": "Into the change happening inside the pack, which took "
+                     "it in",
+             "correct": True},
         ],
         "figure": None,
     },

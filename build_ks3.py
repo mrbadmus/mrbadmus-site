@@ -4553,9 +4553,12 @@ def browse_slots(units):
     """``(year, half_term, discipline) → [(unit, lesson, position_in_unit), …]``.
 
     **Keyed on (unit_code, lesson_slug), never on the slug alone.** There are
-    183 lesson slots and 182 distinct slugs: `energy-in-food` is declared twice
-    — once in B3 as a §4.6 reference slot, once in P2 as the lesson itself — and
-    a slug-keyed lookup silently drops one of them into the wrong year.
+    185 lesson slots and, today, 185 distinct slugs — but the tuple key is not
+    an optimisation, it is the §4.6 reference slot's requirement: a referenced
+    lesson appears in two units under one slug, and a slug-keyed lookup
+    silently drops one of them into the wrong year. `energy-in-food` was the
+    worked example when B3 carried it as a reference slot; no reference slot is
+    declared at present, and the keying must not be relaxed on that basis.
 
     `position_in_unit` is the lesson's number within its whole unit, not within
     the half term, so a unit sliced across a half-term boundary shows as

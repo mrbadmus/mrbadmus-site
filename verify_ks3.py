@@ -1048,7 +1048,33 @@ def main():
     print("        balance beats unit coherence — see RULED TRADE-OFF in "
           "ks3_data/half_terms.py")
 
-    print("\n§10.2 — per-lesson done-list (automatable subset, C1 + B1)\n"
+    # ⚠️ READ THE SCOPE BEFORE READING THE RESULT (MRB-281).
+    #
+    # This list walks `all_authored`, which is **C1 + B1 only — 12 of the key
+    # stage's 103 authored lessons**. It was the whole key stage when it was
+    # written and it has not grown since. Twelve green rows here are twelve
+    # lessons checked, NOT a key-stage-wide pass, and reading them as one is
+    # how the vocabulary hole below went unnoticed: ten chemistry lessons
+    # shipped with no vocabulary cards at all and nothing in this section
+    # could have said so, because none of the ten is in it.
+    #
+    # WHICH CHECKS ARE GATED, per row: `covers` (or §7.6's declared
+    # exemption), `misconceptions`, `vocabulary`, all four ladder rungs,
+    # `support`, `figures`, `phenomenon`, Law 3's confronted-by-an-activity,
+    # Law 1's hook-first, §5.1.1's closed block vocabulary, and §5.2's
+    # 450-word prose budget. All eleven must hold for the row to pass.
+    #
+    # WHICH IS ADVISORY: **reading age, and only reading age.** It is printed
+    # on every row and flagged above 11.0, and it is in no pass/fail
+    # condition anywhere. §11 decision 7 sets a 9–10 target; the formula
+    # penalises exactly the polysyllabic technical terms a science lesson
+    # cannot avoid, and it has never been pass/fail anywhere in this build.
+    # It is a reported figure for Mide, revisited after September.
+    #
+    # ⊕ The one check that DID need key-stage-wide reach is `vocabulary`, and
+    # it has it now — as its own gate, below this section, over all 103.
+    print("\n§10.2 — per-lesson done-list (automatable subset: C1 + B1 only,\n"
+          "        12 of 103 authored lessons · reading age is ADVISORY)\n"
           + "=" * 60)
 
     for _u, l in all_authored:
@@ -1089,6 +1115,66 @@ def main():
               % (words, ("%.1f" % ra) if ra else "n/a"))
         if ra and ra > 11.0:
             print("        ⚑ reading age above target — flag for review")
+
+    # ── ⊕ MRB-281 · VOCABULARY, KEY-STAGE-WIDE AND PASS/FAIL ────────────
+    #
+    # §5.4 requires every lesson to name the words it introduces and define
+    # them, and the done-list above has checked exactly that since C1 — over
+    # twelve lessons. Ten chemistry lessons (C2 x6, C3 x4) shipped LIVE with
+    # no vocabulary key, no figures key and no keyword block: a student met
+    # undefined technical terms with nothing to click. They were authored in
+    # the C6/C7 run; this gate is what stops the eleventh.
+    #
+    # It is deliberately its OWN check rather than a widening of
+    # `all_authored`. Widening that list would turn eleven checks on at once
+    # across ninety-one lessons nobody has reviewed for them, and a gate that
+    # arrives red on other people's work gets switched off. One property, all
+    # 103 lessons, pass/fail.
+    #
+    # ⚠️ THE EXEMPTION LIST IS NAMED, COUNTED, AND IS NOT A LICENCE.
+    # B2's four lessons carry no vocabulary. They are `main`'s to fix — B2 is
+    # a shipped Biology unit and Biology is nobody's active lane
+    # (`docs/ks3/worktrees.md` §1), so a chemistry lane authoring cards into
+    # them would be reaching into a unit it does not own. They are exempted
+    # BY NAME so that the gate is red for anyone else and green for them, and
+    # the LENGTH of the list is asserted so a fifth cannot be appended
+    # quietly. An exemption that can grow is not an exemption, it is an
+    # off switch.
+    VOCAB_EXEMPT = {
+        ("B2", "what-the-skeleton-does"),
+        ("B2", "joints"),
+        ("B2", "antagonistic-muscle-pairs"),
+        ("B2", "biomechanics-forces-in-the-body"),
+    }
+    vocab_missing, vocab_seen, n_vocab_lessons = [], set(), 0
+    for u in units:
+        for l in u["lessons"]:
+            if not l.get("authored"):
+                continue
+            n_vocab_lessons += 1
+            key = (u["code"], l["slug"])
+            if l.get("vocabulary"):
+                continue
+            if key in VOCAB_EXEMPT:
+                vocab_seen.add(key)
+                continue
+            vocab_missing.append("%s/%s" % key)
+    stale = sorted("%s/%s" % k for k in (VOCAB_EXEMPT - vocab_seen))
+    check("⊕ MRB-281 · every authored lesson names and defines its words",
+          not vocab_missing and not stale and len(VOCAB_EXEMPT) == 4,
+          "%d authored lesson(s) carry vocabulary; %d exempted BY NAME and "
+          "still owed by `main` (B2)"
+          % (n_vocab_lessons - len(VOCAB_EXEMPT), len(VOCAB_EXEMPT))
+          if not (vocab_missing or stale) else
+          "; ".join(filter(None, [
+              ("%d with NO vocabulary: %s"
+               % (len(vocab_missing), ", ".join(vocab_missing[:6])))
+              if vocab_missing else "",
+              ("%d exemption(s) no longer needed — delete the row rather "
+               "than leaving it: %s" % (len(stale), ", ".join(stale)))
+              if stale else "",
+              ("the exemption list has %d rows, not 4 — it may not grow"
+               % len(VOCAB_EXEMPT)) if len(VOCAB_EXEMPT) != 4 else ""])))
 
     print("\nAccessibility and device\n" + "=" * 60)
 

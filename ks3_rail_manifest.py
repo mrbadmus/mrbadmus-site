@@ -63,6 +63,12 @@ _RENAMED = {
     "c6-02-indicators-and-the-ph-scale": "the-ph-scale-and-indicators",
     "c6-04-acids-and-metals":            "acid-plus-metal",
     "c6-06-making-a-salt":               "making-a-pure-dry-salt",
+    # ⊕ MRB-281 / C8. `structure.py` names this slot `mendeleev`; Design
+    # titled the page "Mendeleev and the table that predicted", which is the
+    # TITLE the built page carries. The slug is permanent (§8.4) and the title
+    # is not the slug, so the delivery stem and the built filename diverge
+    # exactly as C6's three did.
+    "c8-02-mendeleev-and-the-table-that-predicted": "mendeleev",
 }
 
 

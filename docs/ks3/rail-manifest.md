@@ -149,7 +149,7 @@ rewrites §1 below. Run it when Design delivers a new unit; never hand-edit rows
 | `endothermic-reactions` | `c7-03-endothermic-reactions` | s-hook s-compare s-uses s-think s-ladder | — |
 | `measuring-a-temperature-change` | `c7-04-measuring-a-temperature-change` | s-hook s-plan s-bench s-think s-ladder | — |
 | `metals-and-non-metals` | `c8-01-metals-and-non-metals` | s-hook s-table s-bench s-think s-ladder | s-table=s-hook |
-| `mendeleev-and-the-table-that-predicted` | `c8-02-mendeleev-and-the-table-that-predicted` | s-hook s-gap s-rules s-think s-ladder | — |
+| `mendeleev` | `c8-02-mendeleev-and-the-table-that-predicted` | s-hook s-gap s-rules s-think s-ladder | — |
 | `groups-and-periods` | `c8-03-groups-and-periods` | s-hook s-table s-read s-think s-ladder | — |
 | `group-1-the-alkali-metals` | `c8-04-group-1-the-alkali-metals` | s-hook s-trough s-predict s-think s-ladder | — |
 | `group-7-the-halogens` | `c8-05-group-7-the-halogens` | s-hook s-family s-grid s-think s-ladder | s-family=s-hook |

@@ -1,4 +1,4 @@
-"""KS3 structure — all 33 units, all 183 lesson slots.
+"""KS3 structure — all 33 units, all 185 lesson slots.
 
 **Structure-first** (architecture.md §11 decision 8, ruled FULL BUILD 2026-07-26):
 
@@ -239,9 +239,11 @@ UNITS = [
     ("C8", "the-periodic-table", "The periodic table", "chemistry",
      "The periodic table", 8, [
         ("metals-and-non-metals", "Metals and non-metals", "CONTRAST"),
-        ("mendeleev", "Mendeleev and the table that predicted", "INVESTIGATION"),
+        ("mendeleev", "Mendeleev and the table that predicted", "MODEL"),
         ("groups-and-periods", "Groups and periods", "MODEL"),
-        ("patterns-you-can-predict", "Patterns you can predict: Groups 1, 7 and 0", "MODEL"),
+        ("group-1-the-alkali-metals", "Group 1 \u2014 the alkali metals", "MODEL"),
+        ("group-7-the-halogens", "Group 7 \u2014 the halogens", "CONTRAST"),
+        ("group-0-and-why-groups-exist", "Group 0 and why groups exist", "MODEL"),
         ("metal-and-non-metal-oxides", "Metal and non-metal oxides", "CONTRAST"),
      ]),
     ("C9", "metals-and-materials", "Metals and materials", "chemistry",
