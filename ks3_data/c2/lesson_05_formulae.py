@@ -300,11 +300,14 @@ LESSON = {
          "prompt": "One of those is a big number at the front, and one is a "
                    "small number at the back. Commit before you read on.",
          "options": [
-             "They are the same — four atoms either way",
+             "Both have four atoms written down, so 2H₂O and H₂O₂ "
+             "are the same thing",
              "2H₂O is two particles of water; H₂O₂ is one "
              "particle of a different substance",
-             "2H₂O is a bigger particle than H₂O₂",
-             "Only one of them is a real substance",
+             "A number in front makes the particle bigger, so 2H₂O is "
+             "one large particle",
+             "Water is the only real substance here, so H₂O₂ must be "
+             "a mistake",
          ],
          "reveal": [
              "<strong>2H₂O</strong> is two particles of water. Two of "
@@ -324,16 +327,16 @@ LESSON = {
         "recall": {
             "q": "How many atoms are there altogether in one particle of H₂SO₄?",
             "options": [
-                "Seven",
                 "Three",
                 "Four",
                 "Eight",
+                "Seven",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
-                1: "Three is the number of elements — H, S and O. The question asks for atoms, so the small numbers have to be counted too.",
-                2: "Four is the number of oxygen atoms alone. Add the two hydrogens and the sulfur.",
-                3: "Close: 2 hydrogens + 1 sulfur + 4 oxygens. The sulfur has no small number, which means one, not two.",
+                0: "Three is the number of elements — H, S and O. The question asks for atoms, so the small numbers have to be counted too.",
+                1: "Four is the number of oxygen atoms alone. Add the two hydrogens and the sulfur.",
+                2: "Close: 2 hydrogens + 1 sulfur + 4 oxygens. The sulfur has no small number, which means one, not two.",
             }},
         "apply": {
             "q": "What is the difference between 2CO₂ and C₂O₄?",
@@ -341,15 +344,15 @@ LESSON = {
             # wrong RULES, in the same shape as the correct option. The
             # correct option and its index are unchanged.
             "options": [
-                "2CO₂ is two particles of carbon dioxide; C₂O₄ would be a single particle with twice as much in it",
                 "The same atoms in the same numbers make the same substance, however the formula is written",
                 "The big number counts particles and the small number counts atoms, so 2CO₂ holds more atoms altogether",
+                "2CO₂ is two particles of carbon dioxide; C₂O₄ would be a single particle with twice as much in it",
                 "A number written in front makes a mixture, and a number written below makes a compound",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "The same atoms, arranged completely differently. One is two ordinary particles; the other would be one particle twice the size.",
-                2: "Both come to two carbons and four oxygens. Totalling the atoms does not distinguish them, and that is exactly the trap.",
+                0: "The same atoms, arranged completely differently. One is two ordinary particles; the other would be one particle twice the size.",
+                1: "Both come to two carbons and four oxygens. Totalling the atoms does not distinguish them, and that is exactly the trap.",
                 3: "Both describe one substance. The 2 in front is an amount, not a second ingredient.",
             }},
         "explain": {

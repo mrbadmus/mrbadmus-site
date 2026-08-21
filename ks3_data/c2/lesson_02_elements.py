@@ -302,15 +302,15 @@ LESSON = {
         "recall": {
             "q": "What makes a substance an element?",
             "options": [
-                "It is made of only one kind of atom",
                 "It is a pure metal",
                 "It cannot be melted or boiled",
+                "It is made of only one kind of atom",
                 "It is found naturally rather than made in a factory",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "Sulfur, oxygen and carbon are all elements and none of them is a metal.",
-                2: "Every element can be melted and boiled at some temperature. That is a physical change, and it takes nothing apart.",
+                0: "Sulfur, oxygen and carbon are all elements and none of them is a metal.",
+                1: "Every element can be melted and boiled at some temperature. That is a physical change, and it takes nothing apart.",
                 3: "Several elements are made artificially and are still elements. Where it came from is not the test.",
             }},
         "apply": {

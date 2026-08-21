@@ -433,11 +433,14 @@ LESSON = {
          "prompt": "This is the same wrong idea you met when a puddle dried "
                    "up, wearing different clothes. Commit before you read on.",
          "options": [
-             "The mass really is destroyed when something burns",
+             "Burning uses a fuel up, so the mass really is destroyed "
+             "and gone",
              "The mass leaves as gases, and the products weigh more than the "
              "fuel did",
-             "The mass turns into heat, which has weight",
-             "The mass stays behind in the ash",
+             "Heat has weight of its own, so the mass turns into heat "
+             "and escapes",
+             "Gases weigh nothing, so all of the mass stays behind in "
+             "the ash",
          ],
          "reveal": [
              "Heat and light are not made of atoms, so nothing that leaves as "
@@ -458,28 +461,28 @@ LESSON = {
         "recall": {
             "q": "18 g of a metal reacts completely with 32 g of sulfur in a sealed tube. What mass of metal sulfide is made?",
             "options": [
-                "50 g",
                 "14 g",
                 "32 g",
+                "50 g",
                 "It cannot be worked out without knowing the metal",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "That is 32 − 18. Nothing has been taken away here; the two substances joined.",
-                2: "That is the sulfur alone. The metal is still in the tube and still has mass.",
+                0: "That is 32 − 18. Nothing has been taken away here; the two substances joined.",
+                1: "That is the sulfur alone. The metal is still in the tube and still has mass.",
                 3: "Conservation of mass does not care which metal it is. Everything that went in is still in the sealed tube.",
             }},
         "apply": {
             "q": "An iron nail is weighed, left to rust for a month, and weighed again. It is heavier. Why?",
             "options": [
-                "Oxygen from the air has joined the iron, and it has mass",
                 "Rust is denser than iron",
+                "Oxygen from the air has joined the iron, and it has mass",
                 "Water has been absorbed into the metal",
                 "Mass is not conserved when something is left for a long time",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "Density is mass in a given space. The balance measures mass, and mass does not increase by rearranging what is already there.",
+                0: "Density is mass in a given space. The balance measures mass, and mass does not increase by rearranging what is already there.",
                 2: "Water speeds rusting up, but the extra mass is oxygen that has chemically joined the iron.",
                 3: "Time changes nothing. The nail was simply never a closed system — the air was part of the reaction all along.",
             }},

@@ -344,9 +344,9 @@ LESSON = {
                    "on.",
          "options": [
              "All of it — it is copper, just smaller",
-             "The colour, but not the conducting",
-             "None of it",
-             "The conducting, but not the colour",
+             "The colour, but not the conducting or the bending",
+             "None of it — those need many atoms together",
+             "The conducting, but not the colour or the shine",
          ],
          "reveal": [
              "None of it. Colour is what happens when light meets a huge "
@@ -368,18 +368,18 @@ LESSON = {
         "recall": {
             "q": "What is an atom?",
             "options": [
-                "The smallest particle of an element",
                 "The smallest particle of any substance",
                 "A very small piece of a solid",
                 "Anything too small to see with a microscope",
+                "The smallest particle of an element",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
-                1: "Close, and it is the word \"element\" that does the work. "
+                0: "Close, and it is the word \"element\" that does the work. "
                    "A particle of water is made of more than one atom.",
-                2: "Gases and liquids are made of atoms too. The state has "
+                1: "Gases and liquids are made of atoms too. The state has "
                    "nothing to do with it.",
-                3: "A bacterium is too small for the naked eye and is not an "
+                2: "A bacterium is too small for the naked eye and is not an "
                    "atom. Size is not the definition.",
             }},
         "apply": {
@@ -389,18 +389,18 @@ LESSON = {
             # wrong RULES, in the same shape as the correct option. The
             # correct option and its index are unchanged.
             "options": [
-                "It still explains everything it was built to explain, and "
-                "the parts that are wrong are outside chemistry",
                 "A model is kept while it is simple enough to teach, and "
                 "swapped for the truth later on",
+                "It still explains everything it was built to explain, and "
+                "the parts that are wrong are outside chemistry",
                 "A model stays in use until someone replaces it, so a wrong "
                 "model survives while no better one exists",
                 "A model is only disproved by a perfect experiment, so "
                 "faulty results leave it standing",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "It is not a simplified lie. Chemists use it, because for "
+                0: "It is not a simplified lie. Chemists use it, because for "
                    "chemical reactions it gives the right answer.",
                 2: "It has been replaced, several times over, for the "
                    "questions it cannot answer. It is still the right tool "

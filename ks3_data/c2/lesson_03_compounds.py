@@ -284,30 +284,30 @@ LESSON = {
         "recall": {
             "q": "What is a compound?",
             "options": [
-                "Two or more elements chemically joined together",
                 "Two or more elements mixed together thoroughly",
+                "Two or more elements chemically joined together",
                 "Any substance made of more than one atom",
                 "A substance that cannot be broken down at all",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "Mixing puts them in the same place. Nothing has joined, and a magnet or a filter can still take them apart.",
+                0: "Mixing puts them in the same place. Nothing has joined, and a magnet or a filter can still take them apart.",
                 2: "Close, and it needs the atoms to be of different elements. Oxygen gas is two atoms joined and is still an element.",
                 3: "That is nearer to an element. A compound can be broken down — it just takes a chemical reaction rather than a magnet.",
             }},
         "apply": {
             "q": "Iron and sulfur react in a fixed ratio of 7 g to 4 g. A student heats 7 g of iron with 8 g of sulfur. What do they get?",
             "options": [
-                "Iron sulfide, with 4 g of sulfur left over unreacted",
                 "A compound with twice as much sulfur in it",
                 "Twice as much iron sulfide",
                 "A mixture, because the amounts were wrong",
+                "Iron sulfide, with 4 g of sulfur left over unreacted",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
-                1: "The proportion in a compound is not adjustable. Extra sulfur cannot join if there is no iron left for it to join to.",
-                2: "The iron ran out. Doubling one ingredient does not double a product that needs both.",
-                3: "The 7 g and 4 g that can react still do. What is left over is unreacted sulfur sitting in with the compound.",
+                0: "The proportion in a compound is not adjustable. Extra sulfur cannot join if there is no iron left for it to join to.",
+                1: "The iron ran out. Doubling one ingredient does not double a product that needs both.",
+                2: "The 7 g and 4 g that can react still do. What is left over is unreacted sulfur sitting in with the compound.",
             }},
         "explain": {
             "q": "Explain how you could tell, using two different tests, whether a grey-black powder is a mixture of iron and sulfur or the compound iron sulfide. Say what each test would show in each case.",
