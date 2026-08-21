@@ -85,24 +85,51 @@ DS_CSS_NAME = "student-ds.css"
 DS_CSS_URL = "/shared/" + DS_CSS_NAME
 SERVED_FONTS = "/shared/fonts/"
 
-_REFUSED = {"class.html", "assignment.html", "classes.html", "settings.html",
-            "claim-confirm.html"}
+# ⊕ THE SWAP, 22 Aug 2026. `class.html` and `assignment.html` are OFF this
+# list, and this build now writes them directly.
+#
+# ⚠️ THE ALTERNATIVE WAS A TRAP, AND IT IS THE TRAP THAT COST THE LAST RUN A
+# RED GATE. Copying the built `-ported.html` over `student/class.html` would
+# have put GENERATED OUTPUT AT A SOURCE PATH — which is exactly what happened
+# to the MRB-275 rulings, hand-edited into `-ported.html`, silently eaten by
+# the next build, and recovered only by inventing `student_rulings.py`. Doing
+# it that way would have set the same trap one file along: the live page would
+# look hand-editable, somebody would hand-edit it, and the next rebuild would
+# revert a student-facing fix without a word.
+#
+# So the build owns the live path outright. A rebuild now KEEPS the live page
+# correct instead of reverting it, and nothing about these two pages is ever
+# edited by hand again. The hand-written originals are retired to
+# `docs/ks3/retired/` with tonight's date — out of `student/`, so the
+# generator does not publish them, and git holds them regardless.
+#
+# `classes.html`, `settings.html` and `claim-confirm.html` STAY refused. They
+# are still hand-written source and this build has nothing to say about them.
+_REFUSED = {"classes.html", "settings.html", "claim-confirm.html"}
 
 RUNTIME_JS_NAME = "student-runtime.js"
 LIVE_JS_NAME = "student-live.js"
 LIVE_JS_URL = "/shared/" + LIVE_JS_NAME
 
 PAGES = [
-    dict(page="class view", out="class-ported.html",
+    dict(page="class view", out="class.html",
          fixture_out="class-fixture.html",
          fixture_js="student-fixture-class.js",
          title="My class · MrBadmusAI",
          title_expr="MRB_DATA('className') + "
                     "' \\u00B7 My class \\u00B7 MrBadmusAI'",
          fields=["work", "roster", "weekPts", "lessonDefs", "questions"],
-         state_fields=["streak"],
+         # ⊕ 22 Aug 2026 — `boardWeek` joins `streak`. Design opens the
+         # leaderboard on WEEK 04 because that is the week Design drew, and a
+         # DEFAULT is student-visible data just as surely as a string is: on a
+         # real class in week 1 the board headed itself "TOP OF WEEK 04" and
+         # its scope note read "WEEK 04 · FINAL" — a final result for a week
+         # that has not happened. Found by photographing the page; no grep for
+         # a welded string would have found it, because there is no welded
+         # string. The fixture still carries 4, so Design's render is unchanged.
+         state_fields=["streak", "boardWeek"],
          constants={}),
-    dict(page="assignment", out="assignment-ported.html",
+    dict(page="assignment", out="assignment.html",
          fixture_out="assignment-fixture.html",
          fixture_js="student-fixture-assignment.js",
          title="Assignment · MrBadmusAI",
@@ -161,6 +188,21 @@ BINDINGS = {
         ("Biology", "subjectLabel"),
         ("Cells & microscopy", "topicTitle"),
         ("AUTUMN TERM", "termLabel"),
+        # ⊕ 22 Aug 2026 — TWO SENTENCES A SCREENSHOT CAUGHT AND NO GREP COULD.
+        #
+        # Both are text nodes in Design's markup, and both are written in
+        # SENTENCE CASE and upper-cased by CSS. So the rendered page read
+        # "ON THE BENCH NOW · DUE THU 18:00" while the source said
+        # "due Thu 18:00" — and every grep for the rendered form, in the page
+        # and in the fixture and in the live source, came back empty. The tell
+        # list has to be matched against `innerText`, and the seam has to be
+        # written against the source; they are not the same bytes.
+        #
+        # The blurb is worse than a wrong time: it states the question count in
+        # WORDS, tells the student to "hand it in" (which W5 retires), and
+        # names Thursday as the deadline for every class in every week.
+        ('On the bench now · due Thu 18:00', "benchLead"),
+        ("Eight questions, set from this week's lessons. Open it, answer them, hand it in before Thursday.", "benchBlurb"),
     ],
     "assignment": [
         ("8r/Sc1", "className"),
@@ -334,6 +376,20 @@ REWRITES = {
         # the markup, so nothing new is carried: the capture is CHECKED
         # against that binding through the same `upper` transform the label
         # applies, which is why the two cannot drift apart.
+        # ⊕ 22 Aug 2026 — W5, in the readings strip. `label: 'Handed in'` and
+        # `caption: 'OF HANDED IN'` are computed in a method, so BINDINGS
+        # cannot see them and the words have to travel as data. The fixture
+        # carries Design's own two strings, so Design's render is unchanged and
+        # nothing has to be registered as a divergence; the live source supplies
+        # "Completed" and "OF COMPLETED".
+        dict(name="readings — Handed in",
+             pat=r"\{ label: '(?P<handedLabel>Handed in)', value: all\.length",
+             new="{ label: MRB_DATA('handedLabel'), value: all.length",
+             keys=dict(handedLabel="str")),
+        dict(name="readings — OF HANDED IN",
+             pat=r"caption: '(?P<handedCaption>OF HANDED IN)'",
+             new="caption: MRB_DATA('handedCaption')",
+             keys=dict(handedCaption="str")),
         dict(name="work row — WITH <teacher>",
              pat=r"w\.status === 'pending' \? "
                  r"'WITH (?P<teacherName>[A-Z][A-Z ]*)'",
@@ -532,8 +588,16 @@ _BANNER = """<!--
   from docs/ks3/design-reference/student/ by student_template.py, so the only
   way this can differ from Design's file is if Design's file changed.
 
-  STILL NOT THE LIVE PAGE: the live pages are student/class.html and
-  student/assignment.html and this build never writes them.
+  ⊕ THIS IS THE LIVE PAGE, as of 22 Aug 2026. It used to say the opposite —
+  "the live pages are student/class.html and student/assignment.html and this
+  build never writes them" — and that was true until the swap. The hand-written
+  originals are retired in docs/ks3/retired/ under that date.
+
+  It follows that this file is NOT hand-editable, and the warning at the top is
+  not a formality: a fix typed in here survives exactly until the next build.
+  Changes to Design's logic belong in student_rulings.py, changes to what the
+  page renders belong in shared/student-live.js, and changes to the markup
+  belong to Design.
 
   THERE IS NO DATA IN THIS FILE. Design's example values — the work list, the
   roster, the week points, the questions, and the identity strings that were

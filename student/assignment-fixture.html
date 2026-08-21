@@ -9,7 +9,7 @@
   GENERATED — do not edit. `python3 build_student_port.py`
   ══════════════════════════════════════════════════════════════════════════
 
-  Assignment, PORTED — THE FIXTURE PAGE. The same file as assignment-ported.html but for this comment and
+  Assignment, PORTED — THE FIXTURE PAGE. The same file as assignment.html but for this comment and
   the script tags at the end: this one loads Design's own extracted example
   data and mounts, that one loads the live data source and does not.
 
@@ -344,7 +344,27 @@ class Component extends DCLogic {
   reviewAll = () => this.go(0);
   goClass = () => {
     if (window.history.length > 1) window.history.back();
-    else window.location.href = 'Class View.dc.html';
+    else {
+      /* ⊕ RULED 22 Aug 2026 — THE FALLBACK WAS A DEAD LINK.
+         `Class View.dc.html` is DESIGN'S OWN FILENAME inside Design's own
+         delivery, and it has never existed on this site. `history.back()`
+         above covers the ordinary path — a student who came from their class
+         page goes back to it — so this only bites the student who opened the
+         assignment directly, from a bookmark or a link in a message, and they
+         are exactly the student with no history to go back to. For them "Back
+         to 8r/Sc1" was a 404.
+
+         Nothing caught it because nothing drives navigation ACROSS pages: the
+         behaviour gate drives one page's states, and a href is not a state.
+
+         `?class=` is carried over when it is there. A student has one class
+         and does not need it; a teacher previewing does, and dropping a
+         parameter on the way back is how a preview quietly becomes somebody
+         else's page. */
+      var cls = new URLSearchParams(window.location.search).get('class');
+      window.location.href = '/student/class.html'
+        + (cls ? '?class=' + encodeURIComponent(cls) : '');
+    }
   };
 
   /* ⊕ RULED 22 Aug 2026 — W3. THIS BUTTON MARKS THE WORK FINISHED.

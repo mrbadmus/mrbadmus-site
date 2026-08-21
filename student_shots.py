@@ -37,8 +37,8 @@ import student_page_drive as drive
 
 SHOTS = os.path.join("docs", "ks3", "shots")
 PAGES = [
-    ("class", "/student/class-ported.html"),
-    ("assignment", "/student/assignment-ported.html"),
+    ("class", "/student/class.html"),
+    ("assignment", "/student/assignment.html"),
 ]
 # The two widths Mide is asked to look at: a phone, and the desktop the
 # parity gate already measures at.
@@ -55,7 +55,16 @@ def main():
     print("     signed in as %s (token %s…)"
           % (drive.EMAIL, sess["access_token"][:8]))
 
-    server, port = cdp.serve("mrbadmus_site", port=drive.PORT + 1)
+    # ⚠️ PORT 5500 IS NOT ARBITRARY. The backend's CORS allowlist names exactly
+    # four origins and `http://localhost:5500` is the only local one. Serving
+    # on any other port gets every fetch refused by the browser before it
+    # leaves, and the page renders "we could not load your class" — which
+    # photographs as a broken build when the build is fine.
+    #
+    # It does mean this cannot run at the same time as student_page_drive.py.
+    # Widening a production allowlist so two local scripts can share a machine
+    # would be the wrong trade.
+    server, port = cdp.serve("mrbadmus_site", port=drive.PORT)
     written = []
     try:
         with cdp.Browser() as b:
@@ -88,6 +97,11 @@ def main():
                     # and the page reads its own width on mount.
                     page = b.page(url, settle=4.0)
                     page.set_viewport(w, 900)
+                    # Wait for the render, not for a stopwatch — a cold Render
+                    # instance takes the better part of a minute on the first
+                    # request of the day, and a fixed settle photographs the
+                    # page before it has finished loading.
+                    drive.wait_for_mount(page)
                     out = os.path.join(SHOTS, "%s-%d-%s.png" % (name, w, stamp))
                     page.screenshot(out, width=w)
                     text = (page.eval("document.body.innerText") or "")
@@ -105,7 +119,16 @@ def main():
                     print("     %-11s %4dpx  %-28s %s%s"
                           % (name, w, verdict,
                              "%d chars" % len(text),
-                             ("  ⚠️ leaked: " + ", ".join(leaked[:4])) if leaked else ""))
+                             ("  ⚠️ %d LEAK(S)" % len(leaked)) if leaked else ""))
+                    # Name each leak WITH ITS CONTEXT. "leaked: WEEK 04" sends
+                    # somebody hunting for a welded string; the surrounding
+                    # words say whether it is one, or a default, or a
+                    # coincidence inside a longer word.
+                    for t in leaked:
+                        at = text.find(t)
+                        print("                 · %-22r in …%s…"
+                              % (t, text[max(0, at - 45):at + len(t) + 25]
+                                 .replace("\n", " ⏎ ")))
                     if errs:
                         print("                 console: %s" % errs[0][:100])
                     written.append(out)

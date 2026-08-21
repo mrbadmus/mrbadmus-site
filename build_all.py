@@ -51,6 +51,20 @@ STEPS = [
     # mrbadmus_site/student/ and mirrors to student/, exactly as build_ks3.py
     # does for ks3/, so it has to run after the tree exists.
     ("student preview pages — student/*-preview.html",     "build_student.py"),
+    # ⊕ 22 Aug 2026 — ADDED WITH THE SWAP, and it is now load-bearing.
+    #
+    # This build used to write only previews, so leaving it out of the entry
+    # point cost nothing. Since tonight it writes student/class.html and
+    # student/assignment.html — the pages a signed-in student actually reaches.
+    # Out of this list, editing student_rulings.py and running build_all.py
+    # would print a successful build and change nothing, which is precisely
+    # the silent-green failure this file's own docstring warns about for KS3.
+    #
+    # AFTER generate_site_v5.py, for the same reason build_student.py is:
+    # the KS4 generator rmtree's mrbadmus_site/ on the way in and student/ is
+    # not on its skip list, so anything written before it is deleted by it.
+    ("student pages — student/class.html, student/assignment.html",
+     "build_student_port.py"),
 ]
 
 

@@ -143,6 +143,16 @@
     return D[d.getDay()] + " " + d.getDate() + " " + M[d.getMonth()];
   }
 
+  /* 'Thursday' — the day a deadline falls on, spelled out, for the bench
+     blurb's closing clause. Design named Thursday for every class. */
+  function weekdayName(iso) {
+    if (!iso) { return ""; }
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) { return ""; }
+    return ["Sunday", "Monday", "Tuesday", "Wednesday",
+            "Thursday", "Friday", "Saturday"][d.getDay()];
+  }
+
   function fmtDueMixed(iso) {
     if (!iso) { return ""; }
     var d = new Date(iso);
@@ -372,7 +382,22 @@
           Authorization: "Bearer " + token,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
+        /* ⚠️ `keepalive` IS LOAD-BEARING, AND ITS ABSENCE COST AN ANSWER.
+           Found by driving: the page answered a question, navigated away a
+           moment later, and the row never reached the database — the browser
+           CANCELS in-flight requests when the document unloads, silently, with
+           no error anywhere. The page had already shown the tick.
+
+           That is the exact shape of the defect this whole unit exists to
+           remove. It is not a test artefact: a student who taps Confirm and
+           then immediately taps "Back to 8r/Sc1", or closes the tab, or locks
+           their phone, is doing the same thing on a slower connection.
+
+           `keepalive` lets the request outlive the document. The 64 KB body
+           limit it comes with is not a constraint here — one answer is a few
+           hundred bytes. */
+        keepalive: true
       });
       var stamp = res.headers.get("date");
       if (stamp) {
@@ -688,6 +713,11 @@
          a number that would be made up. */
       streak: 0,
 
+      /* The leaderboard opens on THIS week, not on the week Design drew.
+         A number, matching the `wk === MRB_DATA('currentWeek')` comparison the
+         scope note makes with `===`. */
+      boardWeek: weekNo == null ? 1 : weekNo,
+
       shoutouts: shoutouts,
       currentWeek: weekNo == null ? 0 : weekNo,
       weekNumber: weekNo == null ? "—" : pad2(weekNo),
@@ -741,6 +771,27 @@
          screen as the docket, so once the docket became real the two
          contradicted each other in front of the student. Its last item said
          "Hand it in", which W5 retires along with the button it names. */
+      /* ⊕ 22 Aug 2026 — the bench panel's two sentences. Design's read
+         "On the bench now · due Thu 18:00" and "Eight questions, set from this
+         week's lessons. Open it, answer them, hand it in before Thursday." —
+         a fixed day, a fixed time, a count spelled out in words, and a verb
+         W5 retires. Both are sentence-case in the markup and upper-cased by
+         CSS, which is why every grep for the rendered form found nothing. */
+      benchLead: current && current.assignment && current.assignment.due_at
+        ? "On the bench now · due " + fmtDueMixed(current.assignment.due_at)
+        : "On the bench now",
+      benchBlurb: (currentCount && current && current.assignment
+                   && current.assignment.due_at)
+        ? (currentCount + " questions, set from this week's lessons. " +
+           "Open it, answer them, and complete it before " +
+           weekdayName(current.assignment.due_at) + ".")
+        : "Set from this week's lessons. Open it, answer the questions, "
+          + "and complete it.",
+
+      /* W5, in the readings strip. */
+      handedLabel: "Completed",
+      handedCaption: "OF COMPLETED",
+
       benchTasks: [
         { key: "t1", label: "Open it" },
         { key: "t2", label: currentCount

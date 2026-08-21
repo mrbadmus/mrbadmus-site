@@ -17,7 +17,10 @@ import urllib.request
 
 SUPABASE_URL = "https://urklkrwevjtlfbwnipjn.supabase.co"
 API = "https://mrbadmus-backend.onrender.com"
-EMAIL = "midebolabadmus@gmail.com"
+# ⊕ 22 Aug 2026 — the drive account is a PARAMETER, not a constant, so a run
+# that must not touch Mide's own account can point it at a throwaway.
+# The default is unchanged.
+EMAIL = os.environ.get("MRB_DRIVE_EMAIL", "midebolabadmus@gmail.com")
 CLASS_8R_SC1 = "d9740ab8-c4e3-4c22-bce9-629b650782c5"
 REPO = os.path.dirname(os.path.abspath(__file__))
 
@@ -47,7 +50,8 @@ def call(url, headers, body=None):
 
 
 def main():
-    pw = os.environ.get("MRB_TEST_STUDENT_PASSWORD")
+    pw = (os.environ.get("MRB_DRIVE_PASSWORD")
+          or os.environ.get("MRB_TEST_STUDENT_PASSWORD"))
     if not pw:
         raise SystemExit("MRB_TEST_STUDENT_PASSWORD is not set")
     key = anon_key()
@@ -102,12 +106,37 @@ def main():
             row["criteria_total"] = 3
         answers.append(row)
 
-    st, res = call(API + "/api/assignment-submit", auth,
-                   {"assignment_id": a["id"], "answers": answers,
-                    "total_time_seconds": 63})
+    body = {"assignment_id": a["id"], "answers": answers,
+            "total_time_seconds": 63}
+
+    st, res = call(API + "/api/assignment-submit", auth, body)
     print("     submit → HTTP %s  %s" % (st, json.dumps(res)))
 
     fails = []
+
+    # ⊕ 22 Aug 2026 — W4 CHANGED WHAT A SECOND SUBMIT MEANS, so this gate now
+    # asserts the new contract as well as the old one.
+    #
+    # Until tonight this route INSERTED a fresh submission row on every call,
+    # with no unique constraint behind it, so a student who pressed the button
+    # twice got two submissions and nothing merged them. Ruled: both attempts
+    # are kept and the best counts — which means a bare re-submit against a go
+    # that is already finished is refused rather than silently duplicated.
+    #
+    # So a 409 here is the hole being CLOSED, not the route being broken, and
+    # it only shows up when the account has already completed this assignment.
+    # The retake is then the supported way to have another go, and the
+    # scoring assertions below run against it. Strictly more is checked than
+    # before, not less.
+    retook = False
+    if st == 409 and (res or {}).get("error") == "attempt_already_complete":
+        check_ok = True
+        print("     ✅ a second submit does NOT duplicate the submission  — 409 "
+              "attempt_already_complete, attempt %s" % res.get("attempt_no"))
+        body["retake"] = True
+        st, res = call(API + "/api/assignment-submit", auth, body)
+        retook = True
+        print("     retake  → HTTP %s  %s" % (st, json.dumps(res)))
 
     def check(ok, what, detail=""):
         print(("     ✅ " if ok else "     ❌ ") + what + (("  — " + detail) if detail else ""))

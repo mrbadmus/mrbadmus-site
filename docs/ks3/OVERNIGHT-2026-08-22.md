@@ -244,3 +244,90 @@ changes go through bindings (the fixture keeps Design's words), and the two ruli
 constants carry Design's own values, so the fixture still renders byte-for-byte what Design
 drew. `RULED_DIVERGENCE` still holds exactly the two 21 Aug entries and no more.
 
+---
+
+## THE SWAP: YES. All six conditions hold, and each was proved rather than assumed.
+
+| # | condition | verdict |
+|---|---|---|
+| 1 | parity green at 360 / 390 / 820 / 1460 on both pages | ✅ layers A–H |
+| 2 | behaviour green through the fixture seam | ✅ 30 drives, text identical, `RULED_DIVERGENCE` untouched |
+| 3 | NO fixture content reachable in production, widened tells | ✅ see below |
+| 4 | a full drive: answer, leave, return, resumed, answer more, complete, recorded | ✅ every row read back |
+| 5 | the full gate set green | ✅ parity, behaviour, page drive ×5, api drive, submit drive, switches, template |
+| 6 | Render proven behaviourally | ✅ twice |
+
+### Condition 3 was proved by DRIVING, not by grepping
+
+The source still contains Design's demo scenario seeds — `'17 SEP, 20:41'`, `'20 SEP, 19:07'`
+and the scenario names — as dead code, because deleting them would take the behaviour gate's 30
+drives with them. "Unreachable" is a claim, so it was tested: every scenario hash was loaded
+against the production page, signed in as a real student.
+
+```
+  (no hash)          clean     8r/Sc1 ⏎ COMPLETE ⏎ TOTAL ⏎ 01:03
+  #handedin          clean     …same
+  #midway            clean     …same
+  #returning         clean     …same
+  #latenothandedin   clean     …same
+  #handedinlate      clean     …same
+  #allanswered       clean     …same
+```
+
+Every one renders the student's own real state. And on all four photographed screens the
+widened tells — names, numbers, dates AND week numbers — report **zero**.
+
+### What the swap actually did
+
+`class.html` and `assignment.html` came **off `_REFUSED`** and `build_student_port.py` now writes
+them directly. The hand-written originals are retired to `docs/ks3/retired/` under tonight's
+date, out of `student/` so the KS4 generator does not publish them; git holds them regardless.
+`class-ported.html` and `assignment-ported.html` are gone — one page, one path, no duplicate to
+drift.
+
+⚠️ **`build_student_port.py` was NOT in `build_all.py`, and that became dangerous the moment it
+owned a live page.** Editing `student_rulings.py` and running `build_all.py` would have printed
+a successful build and changed nothing — the silent-green failure that file's own docstring
+warns about for KS3. It is now step 4, after `generate_site_v5.py` for the same reason
+`build_student.py` is: the KS4 generator wipes `mrbadmus_site/` on the way in.
+
+### Three defects the swap itself turned up
+
+⛔ **1. AN ANSWER COULD BE LOST ON THE WAY OUT — and this is the important one.**
+The page answered a question, navigated away a moment later, and the row never reached the
+database. No error, anywhere; the tick had already appeared on screen. Browsers **cancel
+in-flight requests when the document unloads**.
+
+That is the same shape as the defect this whole run exists to remove, and it is not a test
+artefact: a student who taps Confirm and then immediately taps "Back to 8r/Sc1", or closes the
+tab, or locks their phone, is doing exactly that on a slower connection. Fixed with
+`keepalive: true`, which lets the request outlive the document; proved by re-running the drive
+that lost it and reading the row back.
+
+It was found because the DATABASE was checked after a green drive. The drive was green — the
+UI did change, and local storage did have the answer. Only the row was missing.
+
+⛔ **2. "Back to 8r/Sc1" was a dead link.** `location.href = 'Class View.dc.html'` — Design's own
+filename, which has never existed here. `history.back()` covers the ordinary path, so it only
+bit the student who opened the assignment from a bookmark or a message — who is exactly the
+student with no history to go back to. Nothing caught it because nothing drives navigation
+ACROSS pages: the behaviour gate drives one page's states, and a href is not a state.
+
+⚑ **3. The leaderboard opened on WEEK 04.** Not a welded string — a state DEFAULT, which is
+student-visible data just as surely. On a real class in week 1 the board headed itself
+"TOP OF WEEK 01"… after the fix. Before it, "TOP OF WEEK 04" and a scope note reading
+"WEEK 04 · FINAL" — a final result for a week that has not happened. Found by photographing
+the page; no grep would have found it, because there is no string to grep for.
+
+### And a flake that turned out to be the instrument
+
+The 21 August run saw one drive in five render the error state at 390px, wrote it down rather
+than dismissing it, and guessed at a cold Render instance. It **is** a cold Render instance —
+and the page was never broken. Render's free tier spins the backend down and the first request
+of the day takes the better part of a minute; the drive settled for FOUR SECONDS and then
+measured, so it photographed a page that had not finished loading and called it a failure.
+
+`wait_for_mount()` now waits for the host element to have children and stop growing, up to 75
+seconds. Five consecutive clean runs since. **The page was right and the check was wrong** —
+the second time in two runs that has been the answer.
+

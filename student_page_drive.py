@@ -40,8 +40,8 @@ import ks3_browser as cdp
 # origin the live allowlist already contains rather than widening it. Nothing on
 # production changes to make this test possible.
 PORT = 5500
-CLASS_URL = "http://localhost:%d/student/class-ported.html?env=prod"
-ASSIGN_URL = "http://localhost:%d/student/assignment-ported.html?env=prod"
+CLASS_URL = "http://localhost:%d/student/class.html?env=prod"
+ASSIGN_URL = "http://localhost:%d/student/assignment.html?env=prod"
 
 SUPABASE_URL = "https://urklkrwevjtlfbwnipjn.supabase.co"
 PROJECT_REF = "urklkrwevjtlfbwnipjn"
@@ -79,7 +79,13 @@ FIXTURE_TELLS = [
     # week numbers: the real current week is 1
     "WEEK 04", "TOP OF WEEK 04", "WK 04", "week 04",
     # fabricated recall figures — the count, the percentage and the round total
-    "46", "77%", "58%",
+    # ⚠️ "46" IS LINE-ANCHORED, and the first version was not. A bare two-digit
+    # tell matches any clock on the page: it fired on `COMPLETED 21 AUG, 13:46`,
+    # a REAL server timestamp, and reported the page dirty when it was clean.
+    # The fabricated recall count renders as a value on its own line, so that
+    # is the shape to look for. A tell that cries wolf gets ignored, which is
+    # the failure mode that let the docket ship in the first place.
+    "\n46\n", "77%", "58%",
     "Six answers logged", "BEST STREAK 09",
     # ⊕ 22 Aug 2026 — the assignment page's own welded values. The two
     # timestamps are the worst of them: `handIn` manufactured them, so a
@@ -94,6 +100,44 @@ FIXTURE_TELLS = [
 # What a real student on this account should be seeing tonight. The initials
 # belong to the drive account, so they travel with it.
 EXPECT = ["8r/Sc1", os.environ.get("MRB_DRIVE_INITIALS", "AY")]
+
+
+def wait_for_mount(page, seconds=75.0):
+    """Wait until the page has actually rendered, rather than for a fixed time.
+
+    ⚠️ THIS IS THE FIX FOR A FLAKE THAT LOOKED LIKE A BROKEN PAGE, TWICE.
+
+    The 21 August run saw one drive in five render the error state at 390px
+    while desktop was fine, wrote it down rather than dismissing it, and
+    guessed at a cold Render instance. It is a cold Render instance — and the
+    page was never broken. Render's free tier spins the backend down, and the
+    first request of the day takes the better part of a minute to come back.
+    The drive settled for FOUR SECONDS and then measured, so it photographed a
+    page that had not finished loading and called it a failure.
+
+    So the drive stops guessing how long the backend will take and waits for
+    the thing it actually cares about: the host element having children. A
+    page that genuinely cannot load renders its message into the same host, so
+    this returns for that too and the checks below still see it.
+
+    A fixed settle can only be wrong in two directions — too short and it lies,
+    too long and every run pays for the worst case. This pays for what it uses.
+    """
+    import time
+    end = time.time() + seconds
+    last = 0
+    while time.time() < end:
+        n = page.eval(
+            "(function(){var h=document.getElementById('mrb-student');"
+            "return h ? h.getElementsByTagName('*').length : -1;})()")
+        n = n if isinstance(n, int) else 0
+        # Settled means rendered AND no longer growing: the mount paints in one
+        # go, but webfonts and the recall panel can add a frame after it.
+        if n > 20 and n == last:
+            return n
+        last = n
+        time.sleep(0.6)
+    return last
 
 
 def anon_key():
@@ -183,6 +227,7 @@ def main():
                 print("       session in the browser: %s" % signed)
                 page = b.page(CLASS_URL % port,
                               settle=4.0)
+                wait_for_mount(page)
                 page.set_viewport(width, 900)
 
                 text = page.eval("document.body.innerText") or ""
@@ -225,6 +270,7 @@ def main():
             url = ASSIGN_URL % port
             sign_the_browser_in(b, port)
             page = b.page(url, settle=4.0)
+            wait_for_mount(page)
             page.set_viewport(390, 900)
 
             errs = page.console_errors()
@@ -259,8 +305,31 @@ def main():
                       "x.innerText||'');});if(c.length){c[0].click();return 1;}"
                       "return 0;})()")
             after = page.eval("document.body.innerText")
-            check(after != before,
-                  "assignment: choosing and confirming an answer changes the page")
+
+            # ⊕ 22 Aug 2026 — A COMPLETED ASSIGNMENT IS NOT A FAILED CHECK.
+            #
+            # Since the per-answer model landed, this account's state persists
+            # on the SERVER between runs. Once the drive has answered
+            # everything and pressed Complete, the page opens on the end screen
+            # for ever after — there are no options to click, so "the page did
+            # not change" is true and means nothing. Reporting it as a failure
+            # sent me hunting a bug that was a previous run's success.
+            #
+            # A check that cannot run must say so. A check that reports FAIL
+            # when it means SKIPPED is worse than no check, because the next
+            # person learns to ignore it.
+            done_screen = ("COMPLETED" in (before or "").upper()
+                           and "CONFIRM" not in (before or "").upper())
+            if done_screen:
+                notes.append("assignment: already complete for this account, so "
+                             "the answer-and-confirm step had nothing to click "
+                             "— SKIPPED, not failed. Clear this student's "
+                             "submissions to exercise it.")
+                print("     ⏭  assignment: choosing and confirming an answer "
+                      "— SKIPPED (already complete for this account)")
+            else:
+                check(after != before,
+                      "assignment: choosing and confirming an answer changes the page")
 
             saved = page.eval("(function(){var o={};for(var i=0;i<"
                               "localStorage.length;i++){var k=localStorage.key(i);"
@@ -274,6 +343,7 @@ def main():
             b.page(CLASS_URL % port,
                    settle=1.5)
             page = b.page(url, settle=3.0)
+            wait_for_mount(page)
             page.set_viewport(390, 900)
             restored = page.eval("document.body.innerText") or ""
             check(restored.strip() != "",

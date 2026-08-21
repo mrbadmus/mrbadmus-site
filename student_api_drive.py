@@ -38,7 +38,10 @@ CTX = _ssl_context()
 
 SUPABASE_URL = "https://urklkrwevjtlfbwnipjn.supabase.co"
 API = "https://mrbadmus-backend.onrender.com"
-EMAIL = "midebolabadmus@gmail.com"
+# ⊕ 22 Aug 2026 — the drive account is a PARAMETER, not a constant, so a run
+# that must not touch Mide's own account can point it at a throwaway.
+# The default is unchanged.
+EMAIL = os.environ.get("MRB_DRIVE_EMAIL", "midebolabadmus@gmail.com")
 CLASS_8R_SC1 = "d9740ab8-c4e3-4c22-bce9-629b650782c5"
 
 REPO = os.path.dirname(os.path.abspath(__file__))
@@ -81,7 +84,8 @@ def get(url, headers):
 
 
 def main():
-    pw = os.environ.get("MRB_TEST_STUDENT_PASSWORD")
+    pw = (os.environ.get("MRB_DRIVE_PASSWORD")
+          or os.environ.get("MRB_TEST_STUDENT_PASSWORD"))
     if not pw:
         raise SystemExit("MRB_TEST_STUDENT_PASSWORD is not set")
 

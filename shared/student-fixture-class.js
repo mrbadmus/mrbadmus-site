@@ -111,6 +111,7 @@ window.__MRB_DATA__ = {
           'Only dissolved gases cross into the blood, never bubbles.'] }
   ],
   "streak": 3,
+  "boardWeek": 4,
   "benchTasks": [
       { key: 't1', label: 'Open it' },
       { key: 't2', label: 'Answer the eight questions' },
@@ -127,6 +128,8 @@ window.__MRB_DATA__ = {
   "docketWorth": "40 POINTS AT STAKE",
   "dueWordLong": "DUE THU 18:00",
   "dueWordShort": "DUE THU",
+  "handedCaption": "OF HANDED IN",
+  "handedLabel": "Handed in",
   "recallAnswered": "46",
   "recallPct": "77%",
   "recallRounds": "08",
@@ -137,6 +140,8 @@ window.__MRB_DATA__ = {
       ],
   "weekNumber": "04",
   "weekTotal": "12",
+  "benchBlurb": "Eight questions, set from this week's lessons. Open it, answer them, hand it in before Thursday.",
+  "benchLead": "On the bench now \u00b7 due Thu 18:00",
   "className": "8r/Sc1",
   "classNamePadded": "8r/Sc1\n        ",
   "classSize": "28 students",
