@@ -1086,21 +1086,21 @@ LESSON = {
             #   C  the environment applied the colour
             #   D  the individual learned, and taught its offspring
             "options": [
-                "The proportions in the population — more of the moths born "
-                "were dark, because dark parents survived to breed",
                 "The moths themselves gradually darkened, because an "
                 "individual living on sooty bark changes colour to match it",
+                "The proportions in the population — more of the moths born "
+                "were dark, because dark parents survived to breed",
                 "The soot stained the moths dark, because anything resting on "
                 "a blackened trunk is blackened too",
                 "The pale moths learned to hide better, and passed what they "
                 "had learned on to their offspring",
             ],
-            "answer": 0,
+            "answer": 1,
             # All three corrections are Design's, byte-identical. Each answers
             # exactly the belief its own option states, and each still lands on
             # the rebuilt option — which is the test the repair had to pass.
             "feedback": {
-                1: "No moth changed colour at any point. A moth is the colour "
+                0: "No moth changed colour at any point. A moth is the colour "
                    "it hatched, and it stays that colour.",
                 2: "Then washing one would turn it pale, and its offspring "
                    "would be pale anyway. The colour is inherited, not "
@@ -1130,14 +1130,14 @@ LESSON = {
             "options": [
                 "Because giraffes cannot stretch their necks at all, so there "
                 "is nothing to pass on",
-                "Because changes made during an animal’s life do not "
-                "alter the genetic information it passes on",
                 "Because giraffes do not eat from tall trees, so no stretching "
                 "ever happened",
                 "Because necks got shorter, not longer, so the direction in "
                 "the story is wrong",
+                "Because changes made during an animal’s life do not "
+                "alter the genetic information it passes on",
             ],
-            "answer": 1,
+            "answer": 3,
             # All three corrections are Design's, byte-identical. D's is the one
             # that does the lesson's real work: it concedes the observation and
             # then re-asks the only question that matters — by animals changing,
@@ -1145,9 +1145,9 @@ LESSON = {
             "feedback": {
                 0: "They can stretch, and it makes no difference — stretching "
                    "does not change the DNA in the gametes.",
-                2: "They do. The feeding is real; the mechanism of inheritance "
+                1: "They do. The feeding is real; the mechanism of inheritance "
                    "in the story is what fails.",
-                3: "They got longer. The question is how — by animals "
+                2: "They got longer. The question is how — by animals "
                    "changing, or by which animals bred.",
             }},
         "explain": {

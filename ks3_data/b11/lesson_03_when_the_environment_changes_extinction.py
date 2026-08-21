@@ -1066,7 +1066,8 @@ LESSON = {
             "title": "Rung 2 · The one that catches people",
             "q": "Is extinction a natural process?",
             # ⚠️ THE THREE DISTRACTORS ARE REBUILT — MRB-177. The correct option
-            # is Design's, byte-identical, at index 0. Each distractor keeps its
+            # is Design's, byte-identical, and now sits at index 1 (MRB-278,
+            # 21 Aug 2026 — position moved, not one word of it). Each distractor keeps its
             # belief and gains the reason clause the correct option already had,
             # which is what takes the set to a four-way tie at 17 words. Full
             # before-and-after in the docstring.
@@ -1077,22 +1078,22 @@ LESSON = {
             #      about
             #   D  only badly adapted species go extinct
             "options": [
-                "Yes — over 99% of all species that ever lived are extinct, "
-                "mostly long before humans existed",
                 "No — species only die out when people damage the "
                 "environment, by hunting or by clearing habitat",
+                "Yes — over 99% of all species that ever lived are extinct, "
+                "mostly long before humans existed",
                 "Yes, and that means current extinctions are nothing to worry "
                 "about, since the process would happen anyway",
                 "Only for species that were badly adapted in the first place, "
                 "since a well adapted one survives",
             ],
-            "answer": 0,
+            "answer": 1,
             # All three corrections are Design's, byte-identical. C's is the one
             # that does the lesson's real work: it CONCEDES the first half and
             # then refuses the inference, which is the same move the think-again
             # makes at greater length.
             "feedback": {
-                1: "There have been five mass extinctions in the fossil "
+                0: "There have been five mass extinctions in the fossil "
                    "record, and the most famous of them predates humans by "
                    "sixty-six million years.",
                 2: "The first half is right and the conclusion does not "

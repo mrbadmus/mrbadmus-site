@@ -955,22 +955,22 @@ LESSON = {
             "options": [
                 "Seeds do not survive freezing, so a stored sample is already "
                 "dead by the time anyone needs it",
-                "The seed can be regrown, but the ecosystem it depended on — "
-                "pollinators, soil fungi, seed dispersers — is not in the bank",
                 "Gene banks are too expensive to be worth building, so the "
                 "money would always be better spent somewhere else",
                 "Nobody knows how to plant a seed from a gene bank, so a "
                 "species stored in one could never be brought back at all",
+                "The seed can be regrown, but the ecosystem it depended on — "
+                "pollinators, soil fungi, seed dispersers — is not in the bank",
             ],
-            "answer": 1,
+            "answer": 3,
             "feedback": {
                 0: "Many do, which is what makes seed banks work. Some species "
                    "have seeds that cannot be dried or frozen, and those are a "
                    "real and separate problem.",
-                2: "They are cheap relative to what they protect, and the "
+                1: "They are cheap relative to what they protect, and the "
                    "Svalbard example shows they get used. Cost is not the "
                    "objection that matters.",
-                3: "It has been done, repeatedly and successfully. The "
+                2: "It has been done, repeatedly and successfully. The "
                    "difficulty is what the seedling comes back to, not the "
                    "planting.",
             }},

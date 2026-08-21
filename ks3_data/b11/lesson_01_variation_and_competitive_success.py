@@ -297,7 +297,7 @@ file and the register arrived at the same split independently:
 ── Keys this pass authors that the RENDERER reads (contract R5) ────────
 
 Named explicitly rather than left to be discovered. Every one is measured off
-`r_advantage_bench` (`build_ks3.py`, `_b7_need` at the top of it) and the
+`r_advantage_bench` (`build_ks3.py`, `_need` at the top of it) and the
 generic activity shell:
 
     tabs_label        the mono label over the five environment tabs
@@ -1039,18 +1039,18 @@ LESSON = {
             #      the Lamarckian error b11-02 owns, met here first
             #   D  authored belief: one variation outranks the rest everywhere
             "options": [
-                "Whether a variation is an advantage depends on the "
-                "environment",
                 "That pale fur is generally a poor variation to have",
                 "That the mouse can change its fur colour to suit the ground",
+                "Whether a variation is an advantage depends on the "
+                "environment",
                 "That camouflage matters more than anything else",
             ],
-            "answer": 0,
+            "answer": 2,
             # All three corrections are Design's, byte-identical.
             "feedback": {
-                1: "It is excellent in one of the two environments described. "
+                0: "It is excellent in one of the two environments described. "
                    "General is the word that does not apply.",
-                2: "It cannot. The fur an animal has is the fur it has — the "
+                1: "It cannot. The fur an animal has is the fur it has — the "
                    "environment does the choosing, not the mouse.",
                 3: "It mattered against the owl and was irrelevant to the "
                    "disease. That is the same point again.",
@@ -1078,14 +1078,14 @@ LESSON = {
             "options": [
                 "The strongest and healthiest individuals, and the ones that "
                 "win a direct fight",
-                "Best fitted to the current conditions, and leaving the most "
-                "surviving offspring",
                 "The individuals that live the longest, and the ones that "
                 "avoid dying young",
+                "Best fitted to the current conditions, and leaving the most "
+                "surviving offspring",
                 "The most advanced or highly evolved, and the ones highest up "
                 "the tree of life",
             ],
-            "answer": 1,
+            "answer": 2,
             # ⛔ ALL THREE CORRECTIONS ARE DESIGN'S, BYTE-IDENTICAL AND
             # UNEDITED — MRB-177 forbids touching a correction, and none needed
             # touching: each still answers the belief its own option states,
@@ -1094,7 +1094,7 @@ LESSON = {
                 0: "Strength is one variation among many, and it is often the "
                    "wrong one. In a drought the animal that needs least water "
                    "wins.",
-                2: "Length of life counts for nothing on its own. An organism "
+                1: "Length of life counts for nothing on its own. An organism "
                    "that lives fifty years and never breeds leaves nothing "
                    "behind.",
                 3: "There is no ranking of advancement in biology. A bacterium "
