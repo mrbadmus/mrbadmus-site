@@ -95,7 +95,7 @@ The name "MrBadmus" refers to Mide Badmus, the teacher who built this site for h
 | **AI model** | Claude (Anthropic) — accessed via a custom backend |
 | **Backend API** | Separate Node/Express server at `https://mrbadmus-backend.onrender.com` — lives in a separate repo |
 | **Auth & database** | Supabase — handles user sign-in, session tokens, profiles, and leaderboard data (project ID `urklkrwevjtlfbwnipjn`) |
-| **Site generation** | **`build_all.py`** — the entry point. It runs THREE generators in a load-bearing order: `generate_site_v5.py` (KS4), then `build_ks3.py` (KS3), then `build_student.py`. ⚠️ `generate_site_v5.py` alone does NOT build KS3 — see "How the Site is Generated" below |
+| **Site generation** | **`build_all.py`** — the entry point. It runs FOUR generators in a load-bearing order: `generate_site_v5.py` (KS4), `build_ks3.py` (KS3), `build_student.py` (previews), then `build_student_port.py` (**the live student pages**). ⚠️ `generate_site_v5.py` alone does NOT build KS3 — see "How the Site is Generated" below |
 | **Hosting** | Cloudflare Pages at mrbadmus.com (auto-deploys from GitHub) |
 | **Email** | Resend.com from noreply@mrbadmus.com |
 
@@ -271,6 +271,34 @@ It runs, in this order:
 | 1 | `generate_site_v5.py` | the KS4 site — `combined/`, `triple/`, root pages, `shared/` |
 | 2 | `build_ks3.py` | the KS3 site — everything under `ks3/` |
 | 3 | `build_student.py` | the student preview pages |
+| 4 | `build_student_port.py` | **the LIVE student pages** — `student/class.html`, `student/assignment.html` |
+
+### ⊕ 22 Aug 2026 — the student pages are GENERATED, and are not hand-editable
+
+`student/class.html` and `student/assignment.html` went live in commit
+`e0ad28a95`. They are written by `build_student_port.py` from Design's template
+and logic; the hand-written originals are retired in `docs/ks3/retired/`.
+
+**Never hand-edit either file.** A fix typed into one survives exactly until the
+next build — that is how the MRB-275 rulings were destroyed once already, and
+`student_rulings.py` exists to recover from it. Instead:
+
+| what you want to change | where it lives |
+|---|---|
+| Design's behaviour (a computed string, a default, a method body) | `student_rulings.py` |
+| what the page renders (real data, empty states, wording from data) | `shared/student-live.js` |
+| the markup itself | Design's delivery in `docs/ks3/design-reference/student/` |
+
+⚠️ **Step 4 must run after step 1**, for the same reason step 3 does:
+`generate_site_v5.build_site()` wipes `mrbadmus_site/` and `student/` is not on
+its skip list.
+
+The gates are `student_parity.py` (Design-fidelity, layers A–H at 360/390/820/
+1460) and `student_behaviour.py` (30 drives, visible text identical to Design's
+own file). Both drive `*-fixture.html`, never the live page — which is why the
+fixture must keep Design's own values even when the live page shows different
+words. A ruling that changes what Design DREW belongs in `RULED_DIVERGENCE`;
+a value that merely DIFFERS on real data belongs in the data seam.
 
 **The order is load-bearing.** `generate_site_v5.build_site()` opens by wiping
 `mrbadmus_site/` — everything except the foreign output trees it is told to skip
