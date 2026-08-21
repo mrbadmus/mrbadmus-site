@@ -807,6 +807,19 @@
       return row;
     });
 
+    /* ── ⊕ RULED 22 Aug 2026 — P4. IS THIS WEEK'S WORK DONE? ─────────────
+       The bench shows THIS WEEK'S assignment, so its state is that one card's
+       state — and the work list below the bench was already reading it
+       correctly, which is precisely why the two contradicted each other.
+       Same field, same card, one answer now. */
+    var benchCard = null;
+    cards.forEach(function (c) { if (c.id === currentId) { benchCard = c; } });
+    var benchDone = !!(benchCard && benchCard.is_submitted);
+    var benchMarked = !!(benchDone && benchCard.score != null
+                         && benchCard.max_score != null);
+    var benchLessons = (currentId && lessonsFor[currentId]) || [];
+    var benchLate = !!(benchDone && benchCard.due_at && !benchCard.on_time);
+
     /* ── the leaderboard: roster[] and weekPts{} ──────────────────────────
        ⛔ BOTH ARE EMPTY, AND THAT IS THE HONEST ANSWER TODAY.
 
@@ -850,7 +863,16 @@
         num: pad2(lessonDefs.length + 1),
         name: deslug(q.lesson_slug),
         meta: "SET IN THIS WEEK’S ASSIGNMENT",
-        on: true
+        on: true,
+        /* ⊕ RULED 22 Aug 2026 — found by the control sweep, not by the brief.
+           Each card in "Lessons in this topic" is an `<a href="#top">`, so
+           tapping the lesson a student was just told to revise SCROLLED THE
+           PAGE TO THE TOP. Same defect as P1/P3/P5/P7 and the fifth of its
+           family tonight; it is only here rather than on the punch list
+           because nobody had pressed it either. Empty when this build has no
+           page for the slug, and the card then keeps Design's inert anchor
+           rather than pointing at a 404. */
+        href: lessonHref(q.lesson_slug)
       });
     });
 
@@ -939,12 +961,6 @@
 
       shoutouts: shoutouts,
 
-      /* ⊕ RULED 22 Aug 2026 — P1. Where "Open the assignment" goes. Empty
-         when this class has no current assignment, and the ruling falls back
-         to Design's own behaviour rather than navigating to a page that would
-         only tell the student there is no work. */
-      assignmentHref: (current && current.assignment) ? assignmentHref() : "",
-
       currentWeek: weekNo == null ? 0 : weekNo,
       weekNumber: weekNo == null ? "—" : pad2(weekNo),
       weekTotal: "39",
@@ -988,8 +1004,27 @@
         ? fmtSet(current.assignment.created_at) : "",
       docketDue: current && current.assignment
         ? fmtDueMixed(current.assignment.due_at) : "",
-      docketLeft: current && current.assignment
-        ? daysLeft(current.assignment.due_at, serverNow) : "",
+      /* ⊕ RULED 22 Aug 2026 — P4. The docket agrees with the bench.
+         `OPEN` was welded, so a finished piece of work still wore it — and
+         the countdown beside it went on counting down to a deadline the
+         student had already beaten. Once it is done the deadline is not the
+         story, so that slot is empty rather than technically-true. */
+      docketFlag: benchDone
+        ? (benchMarked ? "MARKED" : "COMPLETE")
+        : ((benchCard && benchCard.due_at
+            && Date.parse(benchCard.due_at) < serverNow) ? "MISSED" : "OPEN"),
+      /* Once the work is done the deadline is not the story, and the slot is
+         directly above the answered-progress bar — so it LABELS that bar
+         instead, which is the other half of the 22 Aug progress ruling
+         ("'5 of 15 answered' and the same as a percentage"). An unlabelled
+         full bar was what emptying it left behind, and a graphic with no
+         words is not an honest blank. */
+      docketLeft: benchDone
+        ? ((current && current.progress)
+            ? current.progress.answered + " of " + current.progress.total
+              + " answered" : "")
+        : (current && current.assignment
+            ? daysLeft(current.assignment.due_at, serverNow) : ""),
 
       /* ⊕ 22 Aug 2026 — the bench checklist. Design's middle item spelled the
          assignment's length out IN WORDS — "Answer the eight questions" — which
@@ -1003,28 +1038,72 @@
          a fixed day, a fixed time, a count spelled out in words, and a verb
          W5 retires. Both are sentence-case in the markup and upper-cased by
          CSS, which is why every grep for the rendered form found nothing. */
-      benchLead: current && current.assignment && current.assignment.due_at
-        ? "On the bench now · due " + fmtDueMixed(current.assignment.due_at)
-        : "On the bench now",
-      benchBlurb: (currentCount && current && current.assignment
-                   && current.assignment.due_at)
-        ? (currentCount + " questions, set from this week's lessons. " +
-           "Open it, answer them, and complete it before " +
-           weekdayName(current.assignment.due_at) + ".")
-        : "Set from this week's lessons. Open it, answer the questions, "
-          + "and complete it.",
+      /* ⊕ RULED 22 Aug 2026 — P4. The eyebrow carries the congratulation,
+         because it is the one line of the three that shows at EVERY width —
+         Design puts the paragraph below it inside `sc-if wide`, so a phone
+         would otherwise get the score and no acknowledgement at all. */
+      benchLead: benchDone
+        ? ((first ? "Good week, " + first : "Good week")
+           + " · completed " + fmtDay(benchCard.submitted_at)
+           + (benchLate ? " · late" : ""))
+        : (current && current.assignment && current.assignment.due_at
+            ? "On the bench now · due " + fmtDueMixed(current.assignment.due_at)
+            : "On the bench now"),
+      benchBlurb: benchDone
+        ? ((benchMarked
+             ? "You scored " + benchCard.score + " out of "
+               + benchCard.max_score + ". "
+             : "It is with your teacher to mark. ")
+           + (benchLessons.length
+               ? "Go back over the lesson whenever you want, or practise your "
+                 + "recall."
+               : "Practise your recall whenever you want."))
+        : ((currentCount && current && current.assignment
+            && current.assignment.due_at)
+            ? (currentCount + " questions, set from this week's lessons. " +
+               "Open it, answer them, and complete it before " +
+               weekdayName(current.assignment.due_at) + ".")
+            : "Set from this week's lessons. Open it, answer the questions, "
+              + "and complete it."),
 
       /* W5, in the readings strip. */
       handedLabel: "Completed",
       handedCaption: "OF COMPLETED",
 
-      benchTasks: [
+      /* ⊕ RULED 22 Aug 2026 — P4. THE CHECKLIST DOES NOT RENDER when the
+         week is done. It is an `sc-for`, and the runtime returns without
+         drawing anything for an empty list, so an empty array IS the ruling —
+         there is no state flag and nothing to keep in step. */
+      benchTasks: benchDone ? [] : [
         { key: "t1", label: "Open it" },
         { key: "t2", label: currentCount
             ? "Answer the " + currentCount + " questions"
             : "Answer the questions" },
         { key: "t3", label: "Complete it" }
       ],
+
+      /* ── ⊕ RULED 22 Aug 2026 — P4, the rest of the done state ──────────
+         Two actions: the primary revisits the lesson, and "Practise recall"
+         is Design's own second button, already sitting beside it.
+
+         The meter stops counting a three-item checklist that is no longer on
+         screen and shows the MARK instead — which is the only percentage a
+         finished piece of work has. Unmarked, it is full and says so in
+         words: the student's part is complete even though the score is not
+         in yet. */
+      benchDone: benchDone,
+      benchPrimaryLabel: benchDone
+        ? (benchLessons.length ? "Revisit the lesson" : "Practise recall")
+        : "Open the assignment",
+      benchPrimaryHref: benchDone
+        ? (benchLessons.length ? benchLessons[0].href : "")
+        : ((current && current.assignment) ? assignmentHref() : ""),
+      benchPct: benchMarked && benchCard.max_score > 0
+        ? Math.round((benchCard.score / benchCard.max_score) * 100) + "%"
+        : "100%",
+      benchDoneText: benchMarked
+        ? (benchCard.score + " / " + benchCard.max_score + " MARKS")
+        : "NOT MARKED YET",
 
       /* COULD NOT SOURCE — nothing anywhere assigns a points value to an
          assignment. `40 POINTS AT STAKE` was a number Design chose for a
@@ -1096,6 +1175,9 @@
            + (questions.length === 1 ? "" : "S") + " \u00B7 UNLIMITED ROUNDS")
         : "",
       recallOutOf: "OF " + numWord(questions.length).toUpperCase(),
+      /* ⊕ RULED 22 Aug 2026. The count is the length of the list it counts. */
+      lessonCount: pad2(lessonDefs.length),
+
       recallCrumb: questions.length
         ? (numWord(questions.length).toUpperCase() + " A ROUND") : "RECALL",
       topicTitle: current && current.assignment

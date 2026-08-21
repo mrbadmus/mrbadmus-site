@@ -140,7 +140,11 @@ PAGES = [
          # fixture ticks its checklist and opens its recall panel precisely as
          # the delivery does — and the behaviour gate compares the two without
          # a divergence to register. The live page supplies real URLs.
-         constants=dict(assignmentHref="''")),
+         # `benchDone` false is Design's own state — the delivery draws the
+         # bench with work still on it — so every ruling below falls back to
+         # exactly what Design computed and the fixture is untouched.
+         constants=dict(benchPrimaryHref="''", benchDone="false",
+                        benchPct="''", benchDoneText="''")),
     dict(page="assignment", out="assignment.html",
          fixture_out="assignment-fixture.html",
          fixture_js="student-fixture-assignment.js",
@@ -242,6 +246,25 @@ BINDINGS = {
          "recallBlurb"),
         ("SIX QUESTIONS · UNLIMITED ROUNDS", "recallEyebrow"),
         ("OF SIX", "recallOutOf"),
+        # ── ⊕ RULED 22 Aug 2026 — P4. THE BENCH'S PRIMARY BUTTON ──────────
+        # In the OPEN state it opens the assignment. In the DONE state the
+        # assignment is finished, and the two actions the ruling asks for are
+        # "Revisit the lessons" and "Practise recall" — the second of which
+        # Design already drew, sitting right beside this one. So only this
+        # label changes, and the bench needs no new markup at all.
+        ("Open the assignment", "benchPrimaryLabel"),
+        # ⊕ RULED 22 Aug 2026 — ANOTHER "04", AND ANOTHER ONE THE SCREENSHOT
+        # FOUND. The "Lessons in this topic" badge is the literal text `04`,
+        # sitting above an `sc-for` over the real list. This class's current
+        # assignment draws on ONE lesson, so the page counted four and then
+        # listed one, directly underneath itself.
+        #
+        # It is the same shape as the leaderboard's WEEK 04 and the spine's
+        # now-dot: a number Design chose to draw four of something, left
+        # standing over real data. Three of them tonight. The count is now the
+        # length of the list it counts, which is the only definition that
+        # cannot drift — the same fix `shoutCount` already got.
+        ("04", "lessonCount"),
         # ⊕ 22 Aug 2026 — TWO SENTENCES A SCREENSHOT CAUGHT AND NO GREP COULD.
         #
         # Both are text nodes in Design's markup, and both are written in
@@ -572,6 +595,22 @@ REWRITES = {
         # The docket's countdown strip. `fresh ?` keeps its empty-class arm —
         # `No deadline` and `—` are what a class with nothing set says, which
         # is behaviour rather than data.
+        # ⊕ RULED 22 Aug 2026 — P4, FOUND IN THE SCREENSHOT AND NOT IN ANY
+        # CHECK. The docket sits directly above the bench, and while the bench
+        # was being taught a done state the docket went on saying `OPEN` and
+        # `14 days left` over a piece of work the student had finished. Two
+        # statements about the same assignment, contradicting each other, two
+        # inches apart — the exact fault P4 exists to remove, in the panel
+        # above the one the brief names.
+        #
+        # No text check could have caught it: `OPEN` is a correct word for an
+        # open assignment, and every drive that had a docket had an open one.
+        # A picture caught it, on the first look, which is the second time
+        # tonight that has happened.
+        dict(name="docketFlag",
+             pat=r"docketFlag: fresh \? 'BENCH CLEAR' : '(?P<docketFlag>OPEN)'",
+             new="docketFlag: fresh ? 'BENCH CLEAR' : MRB_DATA('docketFlag')",
+             keys=dict(docketFlag="str")),
         dict(name="docketLeft",
              pat=r"docketLeft: fresh \? 'No deadline' : "
                  r"'(?P<docketLeft>[^']*)'",

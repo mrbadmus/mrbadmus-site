@@ -113,7 +113,12 @@ PRUNE = {
 SET_ON = {
     # Class view only — see the note on PRUNE above. The assignment page has
     # no account menu, so there is no Sign out on it to wire.
-    "class view": {27: "signOut", 31: "signOut"},
+    #
+    # 231 is the lesson card inside "Lessons in this topic" — Design's
+    # `<a href="#top">`, which scrolled instead of opening the lesson. Its
+    # handler is `l.open`, resolved out of the `sc-for`'s own loop scope, so
+    # each card opens ITS lesson rather than a shared one.
+    "class view": {27: "signOut", 31: "signOut", 231: "l.open"},
 }
 
 # ── the logic, transformed ───────────────────────────────────────────────
@@ -123,6 +128,66 @@ SET_ON = {
 # only in that each is applied to the result of the last.
 LOGIC = {
     'class view': [
+        # ── ⊕ RULED 22 Aug 2026 — THE LESSON CARDS SCROLLED ───────────────
+        #
+        # Found by `student_controls_drive.py` on its first run, on the first
+        # screen, and not by the brief: every card in "Lessons in this topic"
+        # is an `<a href="#top">`, so tapping the lesson a student had just
+        # been told they were being tested on scrolled them to the top of the
+        # page. The fifth control tonight whose only effect was a scroll.
+        #
+        # `open` is a function per card, so the `sc-for`'s loop scope gives
+        # each one its own lesson — see `SET_ON` above. A card with no known
+        # page keeps Design's inert anchor rather than pointing at a 404,
+        # which is the same rule the work row's primary button follows.
+        (
+            "    const lessons = this.lessonDefs.map((l) => ({\n      num: l.num, name: l.name, meta: l.meta,",
+            "    const lessons = this.lessonDefs.map((l) => ({\n"
+            "      /* ⊕ RULED 22 Aug 2026 — the card opens its lesson. */\n"
+            "      open: (e) => {\n"
+            "        if (!l.href) { return; }\n"
+            "        if (e && e.preventDefault) { e.preventDefault(); }\n"
+            "        window.location.href = l.href;\n"
+            "      },\n"
+            "      num: l.num, name: l.name, meta: l.meta,",
+        ),
+        # ── ⊕ RULED 22 Aug 2026 — P4. THE BENCH HAD NO DONE STATE ─────────
+        #
+        # A student who had finished the week was still shown the open-work
+        # bench, checklist and all, telling them to open it and answer the
+        # questions — while the work list six inches below correctly said
+        # COMPLETED. The page contradicted itself on one screen.
+        #
+        # ⚑ THE WHOLE DONE STATE IS DATA. NOT ONE NEW TEMPLATE NODE.
+        #
+        # That is not restraint for its own sake — it is what "arranging, not
+        # designing" turns out to mean here, because Design had already drawn
+        # every part of it:
+        #
+        #     the eyebrow      carries the congratulation and the date
+        #     the heading      is already the assignment's title
+        #     the paragraph    already exists (wide only, Design's choice)
+        #     the checklist    is an sc-for, so an EMPTY LIST renders nothing
+        #     "Practise recall" IS ALREADY THERE, beside the primary button
+        #     the meter        is already a percentage and a caption
+        #
+        # So the interim needs exactly two edits to Design's logic — this one,
+        # and the button label binding — and the rest is `student-live.js`
+        # putting different words in slots that already exist. When Design's
+        # redraw is ported (it landed mid-run; see the run log) it replaces
+        # markup, not logic, which is what the ruling asked for.
+        #
+        # `benchDone` is false in the fixture, so both branches below evaluate
+        # to Design's own expression and the behaviour gate sees no change.
+        (
+            "      benchTasks: benchTasks, benchPct: Math.round((doneCount / 3) * 100) + '%', benchDoneText: doneCount + ' / 3 DONE',",
+            "      benchTasks: benchTasks,\n"
+            "      /* ⊕ RULED 22 Aug 2026 — P4. */\n"
+            "      benchPct: MRB_DATA('benchDone') ? MRB_DATA('benchPct')\n"
+            "        : Math.round((doneCount / 3) * 100) + '%',\n"
+            "      benchDoneText: MRB_DATA('benchDone') ? MRB_DATA('benchDoneText')\n"
+            "        : doneCount + ' / 3 DONE',",
+        ),
         # ── ⊕ RULED 22 Aug 2026 — P2. "STREAK BROKEN" BEFORE A STREAK ─────
         #
         #     streakText: st.streak > 0 ? 'STREAK ' + pad(st.streak)
@@ -232,8 +297,11 @@ LOGIC = {
         (
             "  openAssignment = () => this.setState((s) => ({ bench: Object.assign({}, s.bench, { t1: true }) }));",
             "  openAssignment = () => {\n"
-            "    /* ⊕ RULED 22 Aug 2026 — P1. Open the assignment. */\n"
-            "    const href = MRB_DATA('assignmentHref');\n"
+            "    /* ⊕ RULED 22 Aug 2026 — P1, extended by P4. The bench's\n"
+            "       primary button. It opens the assignment while there is one\n"
+            "       open, and revisits the lessons once the week is done — one\n"
+            "       button, one destination, both named by the data. */\n"
+            "    const href = MRB_DATA('benchPrimaryHref');\n"
             "    if (href) { window.location.href = href; return; }\n"
             "    this.setState((s) => ({ bench: Object.assign({}, s.bench, { t1: true }) }));\n"
             "  };",
