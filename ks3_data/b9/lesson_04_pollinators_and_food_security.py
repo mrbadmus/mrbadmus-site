@@ -65,7 +65,7 @@ lesson deleted rather than a number changed.
 and `{vit}` and `shared/ks3.js` fills them from the same arithmetic the bars are
 drawn from. A note quoting `77%` as a literal would be a note that is wrong on
 the *half* setting and wrong again the moment a food's share is corrected;
-`_b9_placeholders()` fails the build if either brace is missing.
+`_placeholders()` fails the build if either brace is missing.
 
 ⚖️ **AND THE DIAL DOUBLES AS THE TEACHING LABEL.** At full pollination each tile
 prints the food's `how` — *wind-pollinated*, *grown from tubers*, *pollinated by
@@ -670,7 +670,7 @@ LESSON = {
 
          # ⛔ `{cal}` AND `{vit}` ARE NOT OPTIONAL IN `none`. They are computed
          # from the same arithmetic the bars are drawn from, and the whole point
-         # of the sentence is that it reads the gap aloud. `_b9_placeholders()`
+         # of the sentence is that it reads the gap aloud. `_placeholders()`
          # fails the build if either is missing.
          "notes": {
              "all": "The shelf as it is. Four of these twelve foods need no "
@@ -807,14 +807,14 @@ LESSON = {
             # construct the MRB-177 ruling names and it needs no rebuilding.
             # Design's option order and all three corrections are byte-identical.
             "options": [
-                "Wheat",
                 "Apples",
+                "Wheat",
                 "Almonds",
                 "Strawberries",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "Apple trees need insects to carry pollen between flowers, "
+                0: "Apple trees need insects to carry pollen between flowers, "
                    "and orchards are often stocked with hives at blossom time "
                    "for exactly that reason.",
                 2: "Almonds are the extreme case — entirely dependent, and the "

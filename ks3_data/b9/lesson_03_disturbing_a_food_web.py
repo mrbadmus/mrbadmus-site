@@ -903,16 +903,16 @@ LESSON = {
             # all-insects-are-pests rule, D says a species' only connections
             # are the things that eat it.
             "options": [
-                "Aphid numbers rise, because their main predator has gone",
                 "Aphid numbers fall, because ladybirds were controlling them",
                 "The oak grows better, with fewer insects in the wood",
+                "Aphid numbers rise, because their main predator has gone",
                 "Nothing, because ladybirds are not eaten by anything",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "Read that one again — controlling means keeping numbers "
+                0: "Read that one again — controlling means keeping numbers "
                    "down. Remove the control and the numbers go up.",
-                2: "One fewer insect species, and it was the one eating "
+                1: "One fewer insect species, and it was the one eating "
                    "another insect. The oak gets worse, not better.",
                 3: "What eats a species is only half of its connections. What "
                    "it eats matters just as much.",
@@ -931,19 +931,19 @@ LESSON = {
             # the student has already been able to reach.
             "options": [
                 "The mice, whose numbers rise",
-                "The bees, because more mice eat more wildflower seeds and "
-                "the flowers thin out",
                 "The sparrowhawks, because owls were their competitors",
                 "None — owls are at the top, so nothing depends on them",
+                "The bees, because more mice eat more wildflower seeds and "
+                "the flowers thin out",
             ],
-            "answer": 1,
+            "answer": 3,
             "feedback": {
                 0: "True, and everyone predicts it. The question is asking "
                    "what happens after that.",
-                2: "A reasonable thought, but in this web sparrowhawks eat "
+                1: "A reasonable thought, but in this web sparrowhawks eat "
                    "blue tits mainly and take mice only when they must — more "
                    "mice is if anything a small gain.",
-                3: "That is exactly the assumption the bench is built to "
+                2: "That is exactly the assumption the bench is built to "
                    "break. Removing the top of a web changes the bottom of it.",
             }},
         "explain": {

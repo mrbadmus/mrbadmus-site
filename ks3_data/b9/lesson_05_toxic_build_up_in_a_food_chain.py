@@ -836,17 +836,17 @@ LESSON = {
             # distractor the whole body copy is kept consistent with; D is the
             # belief that the amount sprayed decides the figure at the top.
             "options": [
-                "It cannot be broken down or excreted, so organisms keep it",
                 "It is extremely poisonous, so it does more damage at every "
                 "level",
+                "It cannot be broken down or excreted, so organisms keep it",
                 "It dissolves easily in water, so every organism in the lake "
                 "takes it in",
                 "It is used in large quantities, so more of it reaches every "
                 "organism",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "How poisonous it is decides the damage once it arrives. "
+                0: "How poisonous it is decides the damage once it arrives. "
                    "Whether it builds up is a separate question about "
                    "persistence.",
                 2: "That makes it easier to excrete, so it is the property "
@@ -868,18 +868,18 @@ LESSON = {
             "options": [
                 "The perch's body converts the chemical into a stronger form, "
                 "so the same dose measures higher once it is inside a predator",
-                "The perch eats many minnows and keeps the toxin from all of "
-                "them, while most of the food's mass is respired away",
                 "The perch drinks more lake water, so it takes in more of the "
                 "chemical than the minnows do",
+                "The perch eats many minnows and keeps the toxin from all of "
+                "them, while most of the food's mass is respired away",
                 "Larger animals absorb chemicals faster, so the biggest animal "
                 "in a chain always carries the most",
             ],
-            "answer": 1,
+            "answer": 2,
             "feedback": {
                 0: "Nothing is converted. The molecule leaving the minnow and "
                    "the molecule in the perch are the same molecule.",
-                2: "Almost all of the intake comes through food, not water. "
+                1: "Almost all of the intake comes through food, not water. "
                    "That is what makes it a food chain problem.",
                 3: "Size is not the mechanism. A large animal at the bottom "
                    "of a chain — a basking shark eating plankton — accumulates "

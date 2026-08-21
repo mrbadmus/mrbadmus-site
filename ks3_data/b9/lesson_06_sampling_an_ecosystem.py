@@ -374,7 +374,7 @@ RULE_CARDS = [
 # ⚖️ COMPOSED, NEVER AUTHORED AS FOUR FIXED SENTENCES. `{err}` is the signed
 # percentage error the bench has just produced and `{n}` is how many squares
 # were counted; a verdict that quoted a fixed figure would be wrong on every
-# setting but one, and `_b9_placeholders` fails the build for a branch that
+# setting but one, and `_placeholders` fails the build for a branch that
 # names the wrong braces. `{dir}` is the corner branch's over/under fork —
 # see `DIRECTION` below.
 #
@@ -852,14 +852,14 @@ LESSON = {
             # option are the same claim, and this is the only place on the page
             # a student can commit to it.
             "options": [
-                "Nothing — 30 quadrats is a large sample",
                 "It is biased, and taking more quadrats would not fix it",
+                "Nothing — 30 quadrats is a large sample",
                 "The quadrats were too small",
                 "They should have counted the whole field to check",
             ],
-            "answer": 1,
+            "answer": 0,
             "feedback": {
-                0: "Sample size is not the issue. Thirty samples taken the "
+                1: "Sample size is not the issue. Thirty samples taken the "
                    "same crooked way give a stable wrong answer.",
                 2: "Possibly, but that is not what has gone wrong here. The "
                    "problem is where they were placed.",

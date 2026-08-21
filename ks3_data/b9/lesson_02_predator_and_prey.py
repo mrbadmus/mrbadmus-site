@@ -842,26 +842,26 @@ LESSON = {
             # which is `ECO-03`'s cousin one step further out. None is a
             # register entry — see the docstring.
             "options": [
-                "Fall, because there is not enough prey to support the current "
-                "number of foxes",
                 "Keep rising, because foxes go on breeding while there are "
                 "still rabbits to catch",
                 "Stay the same, since foxes eat other prey when rabbits become "
                 "scarce",
                 "Rise, then fall, then rise again within the same year, "
                 "because numbers respond at once",
+                "Fall, because there is not enough prey to support the current "
+                "number of foxes",
             ],
-            "answer": 0,
+            "answer": 3,
             # All three corrections are Design's, byte-identical, except the
             # slot code in the second — "What could not be lifted" 1.
             "feedback": {
-                1: "They rise for a while after the rabbits turn — that is the "
+                0: "They rise for a while after the rabbits turn — that is the "
                    "lag — but they cannot keep rising once the food runs "
                    "short.",
-                2: "In this model rabbits are the only food. In a real web "
+                1: "In this model rabbits are the only food. In a real web "
                    "there are other routes, which is the subject of Disturbing "
                    "a food web, but the population still tracks its main prey.",
-                3: "A cycle takes several years, because it is limited by how "
+                2: "A cycle takes several years, because it is limited by how "
                    "fast animals can breed.",
             }},
         "apply": {
@@ -877,16 +877,16 @@ LESSON = {
             # it sound more considered than their own version. Do not "fix" it.
             "options": [
                 "They coincide — both populations peak in the same year",
-                "The predator peak comes shortly after the prey peak",
                 "The prey peak comes shortly after the predator peak",
+                "The predator peak comes shortly after the prey peak",
                 "There is no consistent pattern",
             ],
-            "answer": 1,
+            "answer": 2,
             "feedback": {
                 0: "Then the graph would show two lines moving together and no "
                    "cycle. Look at the bench: the green peak is always to the "
                    "right.",
-                2: "That has the cause and the effect the wrong way round. "
+                1: "That has the cause and the effect the wrong way round. "
                    "Predators can only increase after there has been plenty to "
                    "eat.",
                 3: "There is, and it comes from one fact: breeding takes time, "

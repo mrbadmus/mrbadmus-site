@@ -908,21 +908,21 @@ LESSON = {
                 "It was destroyed as it passed up the chain, so there is less "
                 "energy in the world than there was",
                 # 19w — Design's, unchanged.
-                "Most was released by respiration and warmed the surroundings; "
-                "the rest went to decomposers in droppings and dead material",
+                "It stayed in the parts of the plant the animal could not "
+                "reach, so the loss is leftovers on the ground",
                 # 21w. Was "It stayed in the parts of the plant the animal
                 # could not reach" (13w). Now states the leftovers reading as a
                 # rule, which "most of the loss is respiration, not leftovers"
                 # contradicts precisely.
-                "It stayed in the parts of the plant the animal could not "
-                "reach, so the loss is leftovers on the ground",
+                "It was used up in movement and no longer exists, so an active "
+                "animal passes on less than a still one",
                 # 21w. Was "It was used up in movement and no longer exists"
                 # (10w). The consequence the belief licenses: activity as the
                 # thing that destroys energy.
-                "It was used up in movement and no longer exists, so an active "
-                "animal passes on less than a still one",
+                "Most was released by respiration and warmed the surroundings; "
+                "the rest went to decomposers in droppings and dead material",
             ],
-            "answer": 1,
+            "answer": 3,
             # All three unchanged from Design, and each still answers exactly
             # the belief its rewritten distractor states — which is the test of
             # whether the rewrite changed what the question measures.
@@ -930,9 +930,9 @@ LESSON = {
                 0: "Energy is never destroyed — that rule has no exceptions, "
                    "including in biology. It went somewhere; the question is "
                    "where.",
-                2: "Some did, and that is a real part of the answer — but most "
+                1: "Some did, and that is a real part of the answer — but most "
                    "of the loss is respiration, not leftovers.",
-                3: "Movement transfers energy to the surroundings by friction "
+                2: "Movement transfers energy to the surroundings by friction "
                    "and warming. Used up is not a thing energy can be.",
             }},
         # ⚖️ Criterion 5 is the rung's whole point and it is why the question
