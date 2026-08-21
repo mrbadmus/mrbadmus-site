@@ -675,14 +675,14 @@ def _pctnum(v):
 # gate that fires is not the same as a defect that never happened.
 
 
-def _b7_need(a, act_id, keys, why=""):
+def _need(a, act_id, keys, why=""):
     """Every one of `keys` is authored, or the build stops here."""
     for k in keys:
         if not a.get(k):
             raise ValueError(
                 "%s %r declares no %r.%s"
                 % (a.get("kind") or "?", act_id, k, (" " + why) if why else ""))
-def _b7_dials(a, act_id, factors):
+def _dials(a, act_id, factors):
     """`dials[]`, validated. `factors` are the numeric keys every option carries.
 
     A dial with one setting is a label, and a factor missing from one option is
@@ -729,7 +729,7 @@ def _b7_dials(a, act_id, factors):
                         "computes a readout out of nothing."
                         % (a.get("kind") or "?", act_id, d["id"], o["id"], f))
     return dials
-def _b7_verdict_ids(a, act_id, expected, what):
+def _verdict_ids(a, act_id, expected, what):
     """`verdicts` names exactly `expected`, both ways.
 
     Both directions fail differently and are reported differently. A MISSING
@@ -751,7 +751,7 @@ def _b7_verdict_ids(a, act_id, expected, what):
             "is a paragraph of hers that no student will read."
             % (a.get("kind") or "?", act_id, ", ".join(map(repr, spare))))
     return verdicts
-def _b7_dial_block(ns, act_id, dials, chosen, extra):
+def _dial_block(ns, act_id, dials, chosen, extra):
     """The dials, as static server-rendered options. See the section note.
 
     `extra` is called per (dial, option) and returns the numeric data
@@ -777,7 +777,7 @@ def _b7_dial_block(ns, act_id, dials, chosen, extra):
                           t(o["label"]))
                        for o in d["options"]))
                 for d in dials)))
-def _b7_suffix(value, suffix):
+def _with_suffix(value, suffix):
     """A number and its unit, joined the way the unit is written.
 
     Design writes `100% of maximum` and `40 per minute` from the same code
@@ -806,7 +806,7 @@ def _b7_suffix(value, suffix):
 # never happening.
 
 
-def _b8_round(x):
+def _js_round(x):
     """`Math.round` — half away from zero at .5, which Python's `round` is not.
 
     Design's benches are ported arithmetic and the port has to agree with the
@@ -815,7 +815,7 @@ def _b8_round(x):
     runtime can be guaranteed to print the same number.
     """
     return int(math.floor(float(x) + 0.5))
-def _b8_group(n, on):
+def _group_digits(n, on):
     """`1404` → `1,404`, when the payload asked for it.
 
     ⚠️ `toLocaleString()` IS NOT A FORMATTING RULE, and Design writes exactly
@@ -826,7 +826,7 @@ def _b8_group(n, on):
     different countries.
     """
     return ("{:,}".format(int(n)) if on else str(int(n)))
-def _b8_plain(value, act_id, where):
+def _attr_safe(value, act_id, where):
     """A string bound for a `data-` attribute the RUNTIME writes as text.
 
     ⚠️ THE DRAWN MARKS SURVIVE `t()` AND DIE IN AN ATTRIBUTE, and the difference
@@ -861,7 +861,7 @@ def _b8_plain(value, act_id, where):
             % (act_id, where,
                " and ".join("U+%04X" % ord(ch) for ch in bad)))
     return s
-def _b9_placeholders(value, act_id, where, required, forbidden=()):
+def _placeholders(value, act_id, where, required, forbidden=()):
     """A composed string, checked for the braces it must and must not carry.
 
     ⚠️ AN UNFILLED `{ppm}` IS INVISIBLE TO EVERY OTHER GATE. The build renders
@@ -886,7 +886,7 @@ def _b9_placeholders(value, act_id, where, required, forbidden=()):
                 "whole point is that there is no figure to report."
                 % (act_id, where, token))
     return s
-def _b9_json(obj):
+def _json_attr(obj):
     """A payload map for a `data-` attribute, stable across builds."""
     return e(json.dumps(obj, separators=(",", ":"), sort_keys=True))
 # renderers: ═══ END B9 ═══
@@ -935,7 +935,7 @@ def _b9_json(obj):
 # the five renderers below refuses a payload that cannot reach its own.
 
 
-def _b10_suffix(a, kind):
+def _progress_suffix(a, kind):
     """`progress_suffix`, validated where the head row is composed from it.
 
     ⚠️ THE HEAD ROW IS BUILT BEFORE THE INSTRUMENT RUNS, so a missing suffix
@@ -951,7 +951,7 @@ def _b10_suffix(a, kind):
             "'{n} of {total} <word>' and the word is the only authored part "
             "of it; without one the block ships a counter with its sentence "
             "cut off mid-air." % kind)
-    return _b8_plain(sfx, a.get("id") or "?", "`progress_suffix`")
+    return _attr_safe(sfx, a.get("id") or "?", "`progress_suffix`")
 # Runs to twelve because the browse layer counts lessons in a card, not just
 # ladder rungs (which never exceed four), and because the sorter says "All eight
 # sorted" (Design's own string). `_count_word` already falls back to digits above

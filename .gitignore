@@ -77,3 +77,7 @@ docs/ks3/design-reference/*/_ds/
 
 # generated question-pool upserts (export_ks3_questions.py)
 build/
+
+# MRB-277 — the coming-soon parity fixture, written and removed by ks3_parity.py
+mrbadmus_site/ks3/__fixture__/
+ks3/__fixture__/

@@ -104,22 +104,17 @@ from ks3_art.kit import (
     _SVG_RULE,
     _SVG_RULE_STRONG,
     _activity,
-    _b10_suffix,
-    _b7_dial_block,
-    _b7_dials,
-    _b7_need,
-    _b7_suffix,
-    _b7_verdict_ids,
-    _b8_group,
-    _b8_plain,
-    _b8_round,
-    _b9_json,
-    _b9_placeholders,
+    _attr_safe,
     _canvas_frame,
     _circle,
     _count_word,
     _data_attrs,
+    _dial_block,
+    _dials,
     _ellipse,
+    _group_digits,
+    _js_round,
+    _json_attr,
     _label,
     _lever_decimals,
     _lever_num,
@@ -127,15 +122,20 @@ from ks3_art.kit import (
     _line,
     _mono,
     _n,
+    _need,
     _num,
     _option_li,
     _path,
     _pctnum,
+    _placeholders,
+    _progress_suffix,
     _rect,
     _self_check,
     _svg_attrs,
     _svg_open,
     _svg_text,
+    _verdict_ids,
+    _with_suffix,
     e,
     option_letter,
     r_activity_options,
@@ -2846,12 +2846,13 @@ def r_activity(lesson, block_type, act_id, block=None):
         # pages Mide has already approved to match four he has not seen.
         rev = a["reveal"]
         if isinstance(rev, (list, tuple)):
-            parts.append('<div class="ks3-reveal ks3-reveal-panel" hidden '
+            parts.append('<div class="ks3-reveal ks3-reveal-panel"%s hidden '
                          'data-reveal>%s</div>'
-                         % "".join("<p>%s</p>" % rich(p) for p in rev))
+                         % (_reveal_id_attr(a),
+                            "".join("<p>%s</p>" % rich(p) for p in rev)))
         else:
-            parts.append('<div class="ks3-reveal" hidden data-reveal>%s</div>'
-                         % t(rev))
+            parts.append('<div class="ks3-reveal"%s hidden data-reveal>%s</div>'
+                         % (_reveal_id_attr(a), t(rev)))
     if a.get("success"):
         parts.append(r_criteria(a["success"]))
 
@@ -3745,6 +3746,30 @@ def _id_attr(block):
     """
     anchor = block.get("anchor")
     return (' id="%s"' % e(anchor)) if anchor else ""
+
+
+def _reveal_id_attr(a):
+    """⊕ MRB-277, 21 Aug 2026 — the generic reveal panel's OWN anchor, if it has one.
+
+    THE DEFECT. The generic reveal panel carries no id, so a `confronted_by`
+    that means "the panel where this belief is answered" has nothing to name
+    and names its SURROUNDING ACTIVITY instead — four times in C4, three in
+    C3. The join still resolves, so no gate complained; what is lost is
+    precision. `confronted_by` is the record of WHERE a misconception is
+    killed, and pointing it at the activity says "somewhere in here".
+
+    THE PATTERN, AND THE GUARANTEE. This is exactly what `r_figure` gained in
+    `_id_attr(block)`: the attribute is emitted ONLY when the author writes
+    one, so every existing activity renders byte-for-byte as before and no
+    page moves until somebody opts in. `reveal_anchor` rather than `anchor`
+    because an activity's `anchor` already names the SECTION the rail points
+    at, and one activity can own both.
+
+    The 92px `scroll-margin-top` that keeps an anchor clear of the sticky bar
+    is a rule on `.ks3-lesson [id]`, so it follows from emitting the id.
+    """
+    ra = a.get("reveal_anchor")
+    return (' id="%s"' % e(ra)) if ra else ""
 
 
 def _require_slug(entry):

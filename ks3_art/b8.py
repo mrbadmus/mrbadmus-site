@@ -9,16 +9,16 @@ units at once without editing the same file.
 import json
 import re
 from ks3_art.kit import (
-    _b7_dial_block,
-    _b7_dials,
-    _b7_need,
-    _b7_suffix,
-    _b7_verdict_ids,
-    _b8_group,
-    _b8_plain,
-    _b8_round,
+    _attr_safe,
+    _dial_block,
+    _dials,
+    _group_digits,
+    _js_round,
+    _need,
     _pctnum,
     _self_check,
+    _verdict_ids,
+    _with_suffix,
     e,
     rich,
     t,
@@ -34,7 +34,7 @@ def _b8_mass(x, unit, dp_below):
     asked to compare, which is the one thing on this bench that must not move.
     """
     x = float(x)
-    return ("%d" % _b8_round(x) if x >= float(dp_below) else "%.1f" % x) + unit
+    return ("%d" % _js_round(x) if x >= float(dp_below) else "%.1f" % x) + unit
 # ── b8-01 `#s-bench` · mass-ledger ───────────────────────────────────────
 
 def r_mass_ledger(a, act_id):
@@ -65,7 +65,7 @@ def r_mass_ledger(a, act_id):
     be the first row of the `in` column, because a second unfactored row would
     silently weigh one gram per gram and balance nothing.
     """
-    _b7_need(a, act_id, ("options_label", "amounts", "start", "per_gram",
+    _need(a, act_id, ("options_label", "amounts", "start", "per_gram",
                          "columns", "rows_in", "rows_out", "totals", "units",
                          "run_label", "ran_label", "exits_label", "exits",
                          "close"))
@@ -203,8 +203,8 @@ def r_mass_ledger(a, act_id):
         'aria-pressed="%s"><span class="ks3-opt-label">%s</span>'
         '</button></li>'
         % (e(m["id"]), e(_pctnum(m["grams"])),
-           e(_b8_plain(m["name"], act_id, "amount %r `name`" % m["id"])),
-           e(_b8_plain(m["note"], act_id, "amount %r `note`" % m["id"])),
+           e(_attr_safe(m["name"], act_id, "amount %r `name`" % m["id"])),
+           e(_attr_safe(m["note"], act_id, "amount %r `note`" % m["id"])),
            "true" if m["id"] == a["start"] else "false", t(m["label"]))
         for m in amounts)
 
@@ -250,8 +250,8 @@ def r_mass_ledger(a, act_id):
             % (e(json.dumps(factors, separators=(",", ":"), sort_keys=True)),
                e(_pctnum(energy_per_g)), e(mass_u), e(units["energy"]),
                e(_pctnum(dp)), "1" if group else "",
-               e(_b8_plain(a["run_label"], act_id, "`run_label`")),
-               e(_b8_plain(a["ran_label"], act_id, "`ran_label`")),
+               e(_attr_safe(a["run_label"], act_id, "`run_label`")),
+               e(_attr_safe(a["ran_label"], act_id, "`ran_label`")),
                e(act_id), t(a["options_label"]), e(act_id), tabs,
                t(start["name"]), t(start["note"]),
                column("rows_in", "in"), column("rows_out", "out"),
@@ -260,7 +260,7 @@ def r_mass_ledger(a, act_id):
                t(a["totals"]["out"]),
                t(_b8_mass(grams * total_out, mass_u, dp)),
                t(a["totals"]["energy"]),
-               t(_b8_group(_b8_round(grams * energy_per_g), group)
+               t(_group_digits(_js_round(grams * energy_per_g), group)
                  + units["energy"]),
                t(a["run_label"]), t(a["exits_label"]),
                "".join(
@@ -301,7 +301,7 @@ def r_cell_demand(a, act_id):
     that is Mide's to rule on and the shape survives either way, since ranked
     words would still need an order.
     """
-    _b7_need(a, act_id, ("options_label", "spend_label", "mito_label", "cells",
+    _need(a, act_id, ("options_label", "spend_label", "mito_label", "cells",
                          "start", "run_label", "ran_label", "done_after"))
 
     cells = a["cells"]
@@ -404,8 +404,8 @@ def r_cell_demand(a, act_id):
             'aria-labelledby="%s-cells">%s</ul></div>'
             '<div class="ks3-cd-panel">%s</div></div>'
             % (len(cells), after,
-               e(_b8_plain(a["run_label"], act_id, "`run_label`")),
-               e(_b8_plain(a["ran_label"], act_id, "`ran_label`")),
+               e(_attr_safe(a["run_label"], act_id, "`run_label`")),
+               e(_attr_safe(a["ran_label"], act_id, "`ran_label`")),
                e(act_id), t(a["options_label"]), e(act_id),
                "".join(tabs), "".join(panels)))
 # ── b8-03 `#s-bench` · oxygen-debt ───────────────────────────────────────
@@ -468,9 +468,9 @@ def _od_read(model, paces, pace_id, st):
     return {
         "demand": demand,
         "aerobic": min(st["supply"], demand),
-        "lactate": _b8_round(st["lactate"]),
+        "lactate": _js_round(st["lactate"]),
         "breathing": min(b["max"],
-                         _b8_round(b["base"] + st["supply"] * b["per_supply"]
+                         _js_round(b["base"] + st["supply"] * b["per_supply"]
                                    + st["lactate"] * b["per_lactate"])),
         "shortfall": max(0, demand - st["supply"]),
     }
@@ -501,7 +501,7 @@ def r_oxygen_debt(a, act_id):
     are computed from `phase`, so the stop button ships `disabled` at rest and
     the runtime clears it.
     """
-    _b7_need(a, act_id, ("options_label", "paces", "start", "model", "bars",
+    _need(a, act_id, ("options_label", "paces", "start", "model", "bars",
                          "clock", "phases", "shortfall", "notes", "run_label",
                          "running_label", "stop_label", "recovering_label",
                          "reset_label"))
@@ -681,19 +681,19 @@ def r_oxygen_debt(a, act_id):
     # ⚠️ EVERY ONE OF THESE REACHES THE PAGE AS `textContent`, NOT AS MARKUP.
     # The phase label, the shortfall line, the five notes and the four button
     # labels are all written in by the runtime, so `t()` never sees them and a
-    # drawn mark typed into one would ship as tofu. See `_b8_plain`.
+    # drawn mark typed into one would ship as tofu. See `_attr_safe`.
     for f, v in sorted(a["phases"].items()):
-        _b8_plain(v, act_id, "phases.%s" % f)
+        _attr_safe(v, act_id, "phases.%s" % f)
     for f, v in sorted(a["shortfall"].items()):
-        _b8_plain(v, act_id, "shortfall.%s" % f)
+        _attr_safe(v, act_id, "shortfall.%s" % f)
     for f, v in sorted(a["notes"].items()):
-        _b8_plain(v, act_id, "notes.%s" % f)
+        _attr_safe(v, act_id, "notes.%s" % f)
     for f in ("run_label", "running_label", "stop_label", "recovering_label"):
-        _b8_plain(a[f], act_id, "`%s`" % f)
+        _attr_safe(a[f], act_id, "`%s`" % f)
     for p in paces:
-        _b8_plain(p["label"], act_id, "pace %r `label`" % p["id"])
+        _attr_safe(p["label"], act_id, "pace %r `label`" % p["id"])
     for x in bars:
-        _b8_plain(x["suffix"], act_id, "bar %r `suffix`" % x["id"])
+        _attr_safe(x["suffix"], act_id, "bar %r `suffix`" % x["id"])
 
     div = float(model["bar_divisor"])
     lact_max = float(model["lactate_max"])
@@ -728,7 +728,7 @@ def r_oxygen_debt(a, act_id):
         '<span class="ks3-od-track"><span class="ks3-od-fill" '
         'data-od-fill="%s" style="width:%s%%"></span></span></li>'
         % (e(x["tone"]), t(x["name"]), e(x["id"]), e(x["suffix"]),
-           t(_b7_suffix(open_read[x["id"]], x["suffix"])), e(x["id"]),
+           t(_with_suffix(open_read[x["id"]], x["suffix"])), e(x["id"]),
            _pctnum(width(x["id"], open_read[x["id"]])))
         for x in bars)
 
@@ -831,7 +831,7 @@ def r_fermenter(a, act_id):
     subset contains the codepoint. A line routed through a data attribute and
     assigned to `textContent` would ship the raw codepoint and render as tofu in
     the middle of an equation. Static markup keeps `t()` in the path. See
-    `_b8_plain`, which fences the attribute routes this deliberately avoids.
+    `_attr_safe`, which fences the attribute routes this deliberately avoids.
 
     ⚠️ EXHAUSTIVE AND REACHABLE, BOTH ASSERTED. Every combination of the dials
     must match some branch — an unmatched one is a bench that goes blank in a
@@ -839,8 +839,8 @@ def r_fermenter(a, act_id):
     combination, because Design's copy is lifted byte-identical and an
     unreachable branch is a paragraph of hers that no student will ever read.
     """
-    dials = _b7_dials(a, act_id, ())
-    _b7_need(a, act_id, ("start", "presets", "rate_label", "outcome_label",
+    dials = _dials(a, act_id, ())
+    _need(a, act_id, ("start", "presets", "rate_label", "outcome_label",
                          "branches", "done_after"))
 
     dial_ids = [d["id"] for d in dials]
@@ -988,7 +988,7 @@ def r_fermenter(a, act_id):
     # ⚠️ Attribute paths only. The reaction lines, titles and bodies are drawn
     # into static markup below, where `t()` can draw the arrow.
     for p in a["presets"]:
-        _b8_plain(p["label"], act_id, "preset %r `label`" % p["id"])
+        _attr_safe(p["label"], act_id, "preset %r `label`" % p["id"])
 
     def branch_block(br, shown):
         rate = float(br["rate"])
@@ -1029,7 +1029,7 @@ def r_fermenter(a, act_id):
                             separators=(",", ":"), sort_keys=True)),
                e(json.dumps(a["start"], separators=(",", ":"), sort_keys=True)),
                after,
-               _b7_dial_block("fm", act_id, dials, a["start"],
+               _dial_block("fm", act_id, dials, a["start"],
                               lambda d, o: ""),
                "".join(branch_block(br, br["id"] == opening["id"])
                        for br in branches),
@@ -1058,7 +1058,7 @@ def r_fermenter(a, act_id):
 # to reach for later.
 def r_route_decider(a, act_id):
     """b8-05's five-case bench: commit to a route, check it, read a verdict."""
-    _b7_need(a, act_id,
+    _need(a, act_id,
              ("cases_label", "options_label", "routes", "cases", "progress",
               "tally", "run_label", "ran_label", "done_after"),
              "Payload schema §6 names it; the block cannot render without it.")
@@ -1120,7 +1120,7 @@ def r_route_decider(a, act_id):
         raise ValueError("route-decider %r's tally.remaining names no {n}."
                          % act_id)
 
-    verdicts = _b7_verdict_ids(
+    verdicts = _verdict_ids(
         a, act_id, ("right", "wrong"),
         "The verdict panel is the only place a case's route is named, and it "
         "has to be able to say both things in words.")

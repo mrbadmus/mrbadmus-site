@@ -14,20 +14,20 @@ from ks3_art.kit import (
     _SVG_GROUND,
     _SVG_INK,
     _SVG_INK_BODY,
-    _b7_dial_block,
-    _b7_dials,
-    _b7_need,
-    _b7_suffix,
-    _b7_verdict_ids,
     _circle,
+    _dial_block,
+    _dials,
     _ellipse,
     _label,
     _line,
     _mono,
+    _need,
     _path,
     _pctnum,
     _rect,
     _svg_open,
+    _verdict_ids,
+    _with_suffix,
     e,
     rich,
     t,
@@ -410,8 +410,8 @@ def r_reactant_remover(a, act_id):
     already broken puts the bench in a verdict before the student has touched
     it.
     """
-    dials = _b7_dials(a, act_id, ("f",))
-    _b7_need(a, act_id, ("test_label", "tested_label", "reset_label",
+    dials = _dials(a, act_id, ("f",))
+    _need(a, act_id, ("test_label", "tested_label", "reset_label",
                          "setup", "rate", "readouts"))
 
     start = {d["id"]: d["options"][0]["id"] for d in dials}
@@ -439,7 +439,7 @@ def r_reactant_remover(a, act_id):
             "verdict — the only non-binary reading on the page — can never be "
             "reached." % act_id)
 
-    verdicts = _b7_verdict_ids(
+    verdicts = _verdict_ids(
         a, act_id, [d["id"] for d in dials] + ["multiple", "low", "none"],
         "One branch per dial, plus `multiple` (more than one thing removed), "
         "`low` (nothing removed and the light dim) and `none`.")
@@ -502,7 +502,7 @@ def r_reactant_remover(a, act_id):
             'data-rr-bar style="width:100%%"></span></span></li>'
             % (e(r["tone"]), t(r["label"]), e(_pctnum(r["scale"])),
                e(r["suffix"]), e(r["zero"]),
-               t(_b7_suffix(int(round(float(r["scale"]))), r["suffix"]))))
+               t(_with_suffix(int(round(float(r["scale"]))), r["suffix"]))))
 
     panels = "".join(
         '<div class="ks3-rr-verdict" data-rr-verdict="%s" hidden>'
@@ -536,13 +536,13 @@ def r_reactant_remover(a, act_id):
                # leaf", so the bench printed "Missing: the leaf tested" with
                # the leaf plainly present. `missingName()` falls back to the
                # lower-cased dial name when an option does not author one.
-               _b7_dial_block("rr", act_id, dials, start,
+               _dial_block("rr", act_id, dials, start,
                               lambda d, o: ' data-f="%s"%s'
                               % (e(_pctnum(o["f"])),
                                  (' data-missing="%s"' % e(o["missing"]))
                                  if o.get("missing") else "")),
                t(setup["all_present"]), t(rate["label"]),
-               t(_b7_suffix(100, rate["suffix"])),
+               t(_with_suffix(100, rate["suffix"])),
                "".join(rows), t(a["test_label"]), t(a["reset_label"]),
                panels))
 # ── b7-02 `#s-tuner` · leaf-tuner ────────────────────────────────────────
@@ -614,8 +614,8 @@ def r_leaf_tuner(a, act_id):
     rather than per-branch data and the ENGINE emits it. Authoring it six times
     would pretend it varies.
     """
-    dials = _b7_dials(a, act_id, ("r", "w"))
-    _b7_need(a, act_id, ("start", "oak", "oak_label", "reset_label",
+    dials = _dials(a, act_id, ("r", "w"))
+    _need(a, act_id, ("start", "oak", "oak_label", "reset_label",
                          "readouts"))
 
     dial_ids = [d["id"] for d in dials]
@@ -655,7 +655,7 @@ def r_leaf_tuner(a, act_id):
             "oak button is the reveal; if the two agree, pressing it reveals "
             "nothing." % act_id)
 
-    verdicts = _b7_verdict_ids(
+    verdicts = _verdict_ids(
         a, act_id, [r["id"] for r in _LEAF_RULES],
         "One branch per habitat in the cascade, in the renderer's own order.")
     for key, v in sorted(verdicts.items()):
@@ -691,7 +691,7 @@ def r_leaf_tuner(a, act_id):
             '<span class="ks3-lt-track"><span class="ks3-lt-fill" '
             'data-lt-bar="%s" style="width:%s%%"></span></span></li>'
             % (e(tone_for[r["id"]]), t(r["label"]), e(r["id"]), e(r["suffix"]),
-               t(_b7_suffix(pct, r["suffix"])), e(r["id"]),
+               t(_with_suffix(pct, r["suffix"])), e(r["id"]),
                _pctnum(min(100, pct / 2.0))))
 
     opening = _leaf_verdict(start_rate, start_water)
@@ -718,7 +718,7 @@ def r_leaf_tuner(a, act_id):
                             sort_keys=True)),
                e(json.dumps(a["start"], separators=(",", ":"), sort_keys=True)),
                e(json.dumps(a["oak"], separators=(",", ":"), sort_keys=True)),
-               _b7_dial_block(
+               _dial_block(
                    "lt", act_id, dials, a["start"],
                    lambda d, o: ' data-r="%s" data-w="%s"'
                    % (e(_pctnum(o["r"])), e(_pctnum(o["w"])))),
@@ -770,7 +770,7 @@ def r_method_breaker(a, act_id):
             "method-breaker %r declares %d step(s). The bench is a method, and "
             "a method with one step cannot be broken in more than one way."
             % (act_id, len(steps)))
-    _b7_need(a, act_id, ("full", "precedence", "run_label", "run_done_label",
+    _need(a, act_id, ("full", "precedence", "run_label", "run_done_label",
                          "reset_label", "conclude_label"))
 
     step_ids, opts_of, num_of = [], {}, {}
@@ -856,7 +856,7 @@ def r_method_breaker(a, act_id):
             cond.append({"step": parents[0], "is": full[parents[0]]})
         conditions[branch] = cond
 
-    verdicts = _b7_verdict_ids(
+    verdicts = _verdict_ids(
         a, act_id, precedence + ["full"],
         "One branch per entry in `precedence`, plus `full` — the fallback when "
         "nothing is broken.")
@@ -957,7 +957,7 @@ def r_trace_it_back(a, act_id):
             "trace-it-back %r declares %d food(s). The block's argument is that "
             "the number of steps changes and the destination does not, which "
             "needs more than one chain." % (act_id, len(foods)))
-    _b7_need(a, act_id, ("options_label", "step_label", "done_label",
+    _need(a, act_id, ("options_label", "step_label", "done_label",
                          "reset_label", "steps_label"))
 
     steps_label = a["steps_label"]

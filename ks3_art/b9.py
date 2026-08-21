@@ -20,18 +20,18 @@ from ks3_art.kit import (
     _SVG_MONO,
     _SVG_RULE,
     _SVG_RULE_STRONG,
-    _b7_need,
-    _b8_group,
-    _b8_plain,
-    _b8_round,
-    _b9_json,
-    _b9_placeholders,
+    _attr_safe,
     _circle,
+    _group_digits,
+    _js_round,
+    _json_attr,
     _label,
     _line,
     _mono,
+    _need,
     _path,
     _pctnum,
+    _placeholders,
     _rect,
     _svg_open,
     _svg_text,
@@ -782,12 +782,12 @@ def r_chain_ledger(a, act_id):
     their own progress — one count is held by the runtime and the panels are
     redrawn from it, which is what makes switching chains restart the climb.
     """
-    # ⚠️ `start_kj` AND `factor` ARE NOT IN THIS LIST. `_b7_need` tests
+    # ⚠️ `start_kj` AND `factor` ARE NOT IN THIS LIST. `_need` tests
     # truthiness, so a numeric key whose wrong value is ZERO is reported as
     # ABSENT and the explicit check below — the one with the teaching message —
     # never runs. Found by mutation: `harm: 0` on b9-05 said "declares no
     # `harm`", which is false and sends the author looking for a missing line.
-    _b7_need(a, act_id, ("tabs_label", "chains", "step_label",
+    _need(a, act_id, ("tabs_label", "chains", "step_label",
                          "step_spent_label", "reset_label", "verdict"))
     for f in ("start_kj", "factor"):
         if a.get(f) is None:
@@ -916,16 +916,16 @@ def r_chain_ledger(a, act_id):
             '<p class="ks3-cl-verdict" data-cl-verdict hidden>%s</p>'
             '</div></div>'
             % (e(_pctnum(start_kj)), e(_pctnum(factor)),
-               e(_b8_plain(a.get("energy_unit") or " kJ", act_id,
+               e(_attr_safe(a.get("energy_unit") or " kJ", act_id,
                            "`energy_unit`")),
-               e(_b8_plain(a.get("pct_suffix") or "% of the original", act_id,
+               e(_attr_safe(a.get("pct_suffix") or "% of the original", act_id,
                            "`pct_suffix`")),
-               e(_b8_plain(a["step_label"], act_id, "`step_label`")),
-               e(_b8_plain(a["step_spent_label"], act_id,
+               e(_attr_safe(a["step_label"], act_id, "`step_label`")),
+               e(_attr_safe(a["step_spent_label"], act_id,
                            "`step_spent_label`")),
-               e(_b8_plain(verdict["lead"], act_id, "verdict `lead`")),
-               e(_b8_plain(verdict["mid"], act_id, "verdict `mid`")),
-               e(_b8_plain(verdict["tail"], act_id, "verdict `tail`")),
+               e(_attr_safe(verdict["lead"], act_id, "verdict `lead`")),
+               e(_attr_safe(verdict["mid"], act_id, "verdict `mid`")),
+               e(_attr_safe(verdict["tail"], act_id, "verdict `tail`")),
                e(act_id), t(a["tabs_label"]), e(act_id), "".join(tabs),
                "".join(panels), t(a["step_label"]), t(a["reset_label"]),
                t(_b9_chain_verdict(a, chains[0], factor, start_kj))))
@@ -940,7 +940,7 @@ def _b9_energy(kj, a):
     """
     unit = a.get("energy_unit") or " kJ"
     if kj >= 1 and float(kj) == int(kj):
-        return _b8_group(int(kj), True) + unit
+        return _group_digits(int(kj), True) + unit
     return _b9_num(kj) + unit
 def _b9_pct(pct, a):
     return _b9_num(pct) + (a.get("pct_suffix") or "% of the original")
@@ -951,7 +951,7 @@ def _b9_chain_verdict(a, chain, factor, start_kj):
     v = a["verdict"]
     return ("%s%s%s%s%s"
             % (v["lead"],
-               _b8_group(int(top), True) if (top >= 1 and top == int(top))
+               _group_digits(int(top), True) if (top >= 1 and top == int(top))
                else _b9_num(top),
                v["mid"], _b9_strip2(100.0 / (factor ** (n - 1))), v["tail"]))
 # ── b9-02 `#s-bench` · cycle-runner ──────────────────────────────────────
@@ -1009,7 +1009,7 @@ def r_cycle_runner(a, act_id):
     ⚑ `culled` is dead in DESIGN'S OWN CODE: `onCull` sets it, `onReset`
     clears it, and `renderVals()` never reads it. Not carried across.
     """
-    _b7_need(a, act_id, ("model", "series", "chart_caption", "year_label",
+    _need(a, act_id, ("model", "series", "chart_caption", "year_label",
                          "ten_label", "cull_label", "restore_label",
                          "reset_label", "notes"))
     _b9_progress(a.get("progress"), act_id, "cycle-runner", ("prefix",))
@@ -1088,9 +1088,9 @@ def r_cycle_runner(a, act_id):
                 "the field can be left in, and a blank one reads as the bench "
                 "having stopped responding." % (act_id, n["id"]))
 
-    prey_name = _b8_plain(series["prey"]["name"], act_id, "series prey `name`")
-    pred_name = _b8_plain(series["pred"]["name"], act_id, "series pred `name`")
-    note_map = dict((n["id"], _b8_plain(n["text"], act_id,
+    prey_name = _attr_safe(series["prey"]["name"], act_id, "series prey `name`")
+    pred_name = _attr_safe(series["pred"]["name"], act_id, "series pred `name`")
+    note_map = dict((n["id"], _attr_safe(n["text"], act_id,
                                         "note %r" % n["id"])) for n in notes)
     mdl = dict((f, float(model[f])) for f in _B9_CYCLE_MODEL)
 
@@ -1126,14 +1126,14 @@ def r_cycle_runner(a, act_id):
             'data-cy-cull>%s</button>'
             '<button type="button" class="ks3-reveal-btn ks3-cy-btn" '
             'data-cy-reset>%s</button></div></div></div>'
-            % (_b9_json(mdl), _b9_json(note_map), e(prey_name), e(pred_name),
+            % (_json_attr(mdl), _json_attr(note_map), e(prey_name), e(pred_name),
                e(series["prey"]["colour_token"]),
                e(series["pred"]["colour_token"]),
-               e(_b8_plain(a["cull_label"], act_id, "`cull_label`")),
-               e(_b8_plain(a["restore_label"], act_id, "`restore_label`")),
-               t(series["prey"]["name"]), _b8_round(p0),
-               t(series["pred"]["name"]), _b8_round(q0),
-               e(_b8_plain(a["chart_caption"], act_id, "`chart_caption`")),
+               e(_attr_safe(a["cull_label"], act_id, "`cull_label`")),
+               e(_attr_safe(a["restore_label"], act_id, "`restore_label`")),
+               t(series["prey"]["name"]), _js_round(p0),
+               t(series["pred"]["name"]), _js_round(q0),
+               e(_attr_safe(a["chart_caption"], act_id, "`chart_caption`")),
                _b9_cycle_bars(series, p0, q0, max_prey, max_pred),
                t(a["chart_caption"]), t(note_map["year_zero"]),
                t(a["year_label"]), t(a["ten_label"]), t(a["cull_label"]),
@@ -1179,7 +1179,7 @@ def r_remove_a_species(a, act_id):
     resets `shown` to 0 on every tab press, so the panels do not each keep
     their own progress — the runtime holds one count and redraws.
     """
-    _b7_need(a, act_id, ("web_label", "web_lines", "tabs_label", "species",
+    _need(a, act_id, ("web_label", "web_lines", "tabs_label", "species",
                          "step_first_label", "step_label",
                          "step_spent_label", "reset_label",
                          "still_here_label", "removed_label"))
@@ -1262,7 +1262,7 @@ def r_remove_a_species(a, act_id):
             '<ol class="ks3-rs-rounds" role="list">%s</ol>'
             '<p class="ks3-rs-verdict" data-rs-verdict hidden>%s</p></div>'
             % (e(sp["id"]), len(rounds),
-               e(_b8_plain(sp["label"], act_id, "species %r `label`" % sp["id"])),
+               e(_attr_safe(sp["label"], act_id, "species %r `label`" % sp["id"])),
                "" if first else " hidden",
                t(str(a["still_here_label"]).replace("{name}", sp["label"])),
                t(sp["why"]), rows, rich(sp["verdict"])))
@@ -1283,13 +1283,13 @@ def r_remove_a_species(a, act_id):
             'data-rs-next>%s</button>'
             '<button type="button" class="ks3-reveal-btn ks3-rs-reset" '
             'data-rs-reset>%s</button></div></div></div>'
-            % (e(_b8_plain(a["still_here_label"], act_id,
+            % (e(_attr_safe(a["still_here_label"], act_id,
                            "`still_here_label`")),
-               e(_b8_plain(a["removed_label"], act_id, "`removed_label`")),
-               e(_b8_plain(a["step_first_label"], act_id,
+               e(_attr_safe(a["removed_label"], act_id, "`removed_label`")),
+               e(_attr_safe(a["step_first_label"], act_id,
                            "`step_first_label`")),
-               e(_b8_plain(a["step_label"], act_id, "`step_label`")),
-               e(_b8_plain(a["step_spent_label"], act_id,
+               e(_attr_safe(a["step_label"], act_id, "`step_label`")),
+               e(_attr_safe(a["step_spent_label"], act_id,
                            "`step_spent_label`")),
                t(a["web_label"]),
                "".join('<li class="ks3-rs-webline">%s</li>' % t(w)
@@ -1323,7 +1323,7 @@ def r_supermarket_shelf(a, act_id):
     pollinator* toggles `none ↔ all`, *Lose half of them* sets `half`
     unconditionally. Inventing a third button would be inventing a control.
     """
-    _b7_need(a, act_id, ("foods", "bars", "remove_label", "restore_label",
+    _need(a, act_id, ("foods", "bars", "remove_label", "restore_label",
                          "half_label", "notes"))
     # ⚠️ THREE NAMED STATES WITH NO NUMBER IN ANY OF THEM, so this one alone
     # among the six needs no derivation — `_progress_readout` draws it as
@@ -1412,8 +1412,8 @@ def r_supermarket_shelf(a, act_id):
             "a food GO, and 'gone' is the tile state the lesson turns on."
             % act_id)
 
-    cal_pct = _b8_round(cal_gone / cal_max * 100.0)
-    vit_pct = _b8_round(vit_gone / vit_max * 100.0)
+    cal_pct = _js_round(cal_gone / cal_max * 100.0)
+    vit_pct = _js_round(vit_gone / vit_max * 100.0)
     if cal_pct == vit_pct:
         raise ValueError(
             "supermarket-shelf %r lands both bars on %d%% with the pollinators "
@@ -1434,7 +1434,7 @@ def r_supermarket_shelf(a, act_id):
         if not notes.get(f):
             raise ValueError("supermarket-shelf %r notes declares no %r."
                              % (act_id, f))
-    _b9_placeholders(notes["none"], act_id, "note `none`", ("{cal}", "{vit}"))
+    _placeholders(notes["none"], act_id, "note `none`", ("{cal}", "{vit}"))
 
     tiles = "".join(
         '<li class="ks3-ss-food" data-ss-food="%d" data-dep="%s" '
@@ -1442,7 +1442,7 @@ def r_supermarket_shelf(a, act_id):
         '<p class="ks3-ss-foodname">%s</p>'
         '<p class="ks3-ss-foodstatus" data-ss-status>%s</p></li>'
         % (i, e(_pctnum(f.get("dep") or 0)),
-           e(_b8_plain(f["how"], act_id, "food %r `how`" % f["name"])),
+           e(_attr_safe(f["how"], act_id, "food %r `how`" % f["name"])),
            t(f["name"]), t(f["how"]))
         for i, f in enumerate(foods))
 
@@ -1468,17 +1468,17 @@ def r_supermarket_shelf(a, act_id):
             'data-ss-toggle>%s</button>'
             '<button type="button" class="ks3-reveal-btn ks3-ss-half" '
             'data-ss-half>%s</button></div></div>'
-            % (_b9_json([[float(f["cal"]), float(f["vit"]),
+            % (_json_attr([[float(f["cal"]), float(f["vit"]),
                           float(f.get("dep") or 0)] for f in foods]),
-               _b9_json(dict((k, _b8_plain(notes[k], act_id, "note %r" % k))
+               _json_attr(dict((k, _attr_safe(notes[k], act_id, "note %r" % k))
                              for k in ("all", "none", "half"))),
-               e(_b8_plain(a["remove_label"], act_id, "`remove_label`")),
-               e(_b8_plain(a["restore_label"], act_id, "`restore_label`")),
-               e(_b8_plain(a.get("gone_label") or "gone", act_id,
+               e(_attr_safe(a["remove_label"], act_id, "`remove_label`")),
+               e(_attr_safe(a["restore_label"], act_id, "`restore_label`")),
+               e(_attr_safe(a.get("gone_label") or "gone", act_id,
                            "`gone_label`")),
-               e(_b8_plain(a.get("unaffected_label") or "unaffected", act_id,
+               e(_attr_safe(a.get("unaffected_label") or "unaffected", act_id,
                            "`unaffected_label`")),
-               e(_b8_plain(a.get("part_label") or "{n}% of the crop", act_id,
+               e(_attr_safe(a.get("part_label") or "{n}% of the crop", act_id,
                            "`part_label`")),
                tiles, barhtml, t(notes["all"]),
                t(a["remove_label"]), t(a["half_label"])))
@@ -1514,7 +1514,7 @@ def r_bioaccumulation(a, act_id):
     render share one implementation of it in each language.
     """
     # ⚠️ `harm` IS NOT IN THIS LIST — see the same note on `r_chain_ledger`.
-    _b7_need(a, act_id, ("tabs_label", "chemicals", "levels",
+    _need(a, act_id, ("tabs_label", "chemicals", "levels",
                          "harm_verdict", "safe_verdict", "step_label",
                          "step_spent_label", "reset_label", "verdicts"))
     if a.get("harm") is None:
@@ -1608,11 +1608,11 @@ def r_bioaccumulation(a, act_id):
         if not verdicts.get(f):
             raise ValueError("bioaccumulation %r verdicts declares no %r."
                              % (act_id, f))
-    _b9_placeholders(verdicts["flat"], act_id, "verdict `flat`", (),
+    _placeholders(verdicts["flat"], act_id, "verdict `flat`", (),
                      ("{ppm}", "{times}"))
-    _b9_placeholders(verdicts["harmful"], act_id, "verdict `harmful`",
+    _placeholders(verdicts["harmful"], act_id, "verdict `harmful`",
                      ("{ppm}", "{times}"))
-    _b9_placeholders(verdicts["below"], act_id, "verdict `below`", ("{ppm}",))
+    _placeholders(verdicts["below"], act_id, "verdict `below`", ("{ppm}",))
 
     tabs = "".join(
         '<li><button type="button" class="ks3-option ks3-ba-tab" '
@@ -1620,7 +1620,7 @@ def r_bioaccumulation(a, act_id):
         'aria-pressed="%s"><span class="ks3-opt-label">%s</span>'
         '</button></li>'
         % (e(c["id"]), e(_pctnum(c["factor"])), e(_pctnum(c["start"])),
-           e(_b8_plain(c["tab_note"], act_id,
+           e(_attr_safe(c["tab_note"], act_id,
                        "chemical %r `tab_note`" % c["id"])),
            "true" if c is chems[0] else "false", t(c["label"]))
         for c in chems)
@@ -1669,16 +1669,16 @@ def r_bioaccumulation(a, act_id):
             '<p class="ks3-ba-verdict" data-ba-verdict hidden>%s</p>'
             '</div></div>'
             % (e(_pctnum(harm)), len(levels),
-               e(_b8_plain(a.get("ppm_suffix") or " ppm", act_id,
+               e(_attr_safe(a.get("ppm_suffix") or " ppm", act_id,
                            "`ppm_suffix`")),
-               e(_b8_plain(a["harm_verdict"], act_id, "`harm_verdict`")),
-               e(_b8_plain(a["safe_verdict"], act_id, "`safe_verdict`")),
-               e(_b8_plain(a["step_label"], act_id, "`step_label`")),
-               e(_b8_plain(a["step_spent_label"], act_id,
+               e(_attr_safe(a["harm_verdict"], act_id, "`harm_verdict`")),
+               e(_attr_safe(a["safe_verdict"], act_id, "`safe_verdict`")),
+               e(_attr_safe(a["step_label"], act_id, "`step_label`")),
+               e(_attr_safe(a["step_spent_label"], act_id,
                            "`step_spent_label`")),
-               e(_b8_plain(verdicts["flat"], act_id, "verdict `flat`")),
-               e(_b8_plain(verdicts["harmful"], act_id, "verdict `harmful`")),
-               e(_b8_plain(verdicts["below"], act_id, "verdict `below`")),
+               e(_attr_safe(verdicts["flat"], act_id, "verdict `flat`")),
+               e(_attr_safe(verdicts["harmful"], act_id, "verdict `harmful`")),
+               e(_attr_safe(verdicts["below"], act_id, "verdict `below`")),
                e(act_id), t(a["tabs_label"]), e(act_id), tabs,
                t(opener["tab_note"]), "".join(rows),
                t(a["step_label"]), t(a["reset_label"]),
@@ -1712,7 +1712,7 @@ def _b9_ba_verdict(a, chem, levels, harm):
         return v["flat"]
     if top >= harm:
         return (v["harmful"].replace("{ppm}", _b9_ppm(top))
-                .replace("{times}", _b8_group(_b8_round(top / start), True)))
+                .replace("{times}", _group_digits(_js_round(top / start), True)))
     return v["below"].replace("{ppm}", _b9_ppm(top))
 # ── b9-06 `#s-bench` · quadrat-bench ─────────────────────────────────────
 
@@ -1749,7 +1749,7 @@ def r_quadrat_bench(a, act_id):
     # ⚠️ `side` IS NOT IN THIS LIST — see the note on `r_chain_ledger`.
     if a.get("side") is None:
         raise ValueError("quadrat-bench %r declares no `side`." % act_id)
-    _b7_need(a, act_id, ("field", "methods_label", "methods",
+    _need(a, act_id, ("field", "methods_label", "methods",
                          "counts_label", "counts", "figures", "sample_label",
                          "resample_label", "truth_label", "captions",
                          "verdicts", "direction"))
@@ -1875,11 +1875,11 @@ def r_quadrat_bench(a, act_id):
         if not verdicts.get(f):
             raise ValueError("quadrat-bench %r verdicts declares no %r."
                              % (act_id, f))
-    _b9_placeholders(verdicts["corner"], act_id, "verdict `corner`",
+    _placeholders(verdicts["corner"], act_id, "verdict `corner`",
                      ("{err}", "{dir}"))
-    _b9_placeholders(verdicts["path"], act_id, "verdict `path`", ("{err}",))
-    _b9_placeholders(verdicts["chance"], act_id, "verdict `chance`", ("{err}",))
-    _b9_placeholders(verdicts["good"], act_id, "verdict `good`",
+    _placeholders(verdicts["path"], act_id, "verdict `path`", ("{err}",))
+    _placeholders(verdicts["chance"], act_id, "verdict `chance`", ("{err}",))
+    _placeholders(verdicts["good"], act_id, "verdict `good`",
                      ("{err}", "{n}"))
     direction = a["direction"]
     for f in ("over", "under"):
@@ -1943,21 +1943,21 @@ def r_quadrat_bench(a, act_id):
             '<p class="ks3-qb-verdict" data-qb-verdict hidden></p>'
             '</div></div>'
             % (side,
-               _b9_json(dict((k, float(fld[k]))
+               _json_attr(dict((k, float(fld[k]))
                              for k in ("centre_row", "centre_col", "reach",
                                        "base", "peak", "noise", "shade_max"))),
                default,
-               e(_b8_plain(a["sample_label"], act_id, "`sample_label`")),
-               e(_b8_plain(a["resample_label"], act_id, "`resample_label`")),
-               e(_b8_plain(caps["unsampled"], act_id, "caption `unsampled`")),
-               e(_b8_plain(caps["sampled"], act_id, "caption `sampled`")),
-               e(_b8_plain(caps["revealed"], act_id, "caption `revealed`")),
-               e(_b8_plain(figures[2]["hidden_value"], act_id,
+               e(_attr_safe(a["sample_label"], act_id, "`sample_label`")),
+               e(_attr_safe(a["resample_label"], act_id, "`resample_label`")),
+               e(_attr_safe(caps["unsampled"], act_id, "caption `unsampled`")),
+               e(_attr_safe(caps["sampled"], act_id, "caption `sampled`")),
+               e(_attr_safe(caps["revealed"], act_id, "caption `revealed`")),
+               e(_attr_safe(figures[2]["hidden_value"], act_id,
                            "`hidden_value`")),
-               _b9_json(dict((k, _b8_plain(verdicts[k], act_id,
+               _json_attr(dict((k, _attr_safe(verdicts[k], act_id,
                                            "verdict %r" % k))
                              for k in ("corner", "path", "chance", "good"))),
-               _b9_json(dict((k, _b8_plain(direction[k], act_id,
+               _json_attr(dict((k, _attr_safe(direction[k], act_id,
                                            "direction %r" % k))
                              for k in ("over", "under"))),
                e(act_id), t(a["methods_label"]), e(act_id), method_tabs,

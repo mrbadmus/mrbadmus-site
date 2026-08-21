@@ -26,18 +26,18 @@ from ks3_art.kit import (
     _SVG_MONO,
     _SVG_RULE,
     _SVG_RULE_STRONG,
-    _b10_suffix,
-    _b7_need,
-    _b8_plain,
-    _b9_placeholders,
+    _attr_safe,
     _circle,
     _ellipse,
     _label,
     _line,
     _mono,
     _n,
+    _need,
     _path,
     _pctnum,
+    _placeholders,
+    _progress_suffix,
     _rect,
     _svg_open,
     _svg_text,
@@ -1299,7 +1299,7 @@ def r_variation_plotter(a, act_id):
     badge. The prediction is a wrong IDEA being corrected, not a student being
     marked.
     """
-    _b7_need(a, act_id, ("options_label", "characteristics", "predict_label",
+    _need(a, act_id, ("options_label", "characteristics", "predict_label",
                          "predict_options", "kind_lines", "run_label",
                          "run_done_label", "verdicts", "progress_suffix"))
 
@@ -1485,8 +1485,8 @@ def r_variation_plotter(a, act_id):
             '<button type="button" class="ks3-reveal-btn ks3-vp-plot" '
             'data-vp-plot disabled>%s</button></div>'
             '</div></div>'
-            % (e(_b8_plain(a["run_label"], act_id, "`run_label`")),
-               e(_b8_plain(a["run_done_label"], act_id, "`run_done_label`")),
+            % (e(_attr_safe(a["run_label"], act_id, "`run_label`")),
+               e(_attr_safe(a["run_done_label"], act_id, "`run_done_label`")),
                _B10_VP_THRESHOLD,
                e(act_id), t(a["options_label"]), e(act_id), "".join(tabs),
                "".join(panels), t(a["run_label"])))
@@ -1527,7 +1527,7 @@ def r_zoom_bench(a, act_id):
     so the count is read by two rail entries and a bench of five levels would
     ship two stops that can never tick.
     """
-    _b7_need(a, act_id, ("levels", "in_label", "in_done_label", "reset_label",
+    _need(a, act_id, ("levels", "in_label", "in_done_label", "reset_label",
                          "close", "progress", "say_it_back"))
     _b10_zoom_progress(a.get("progress"), act_id)
 
@@ -1632,8 +1632,8 @@ def r_zoom_bench(a, act_id):
             '<p class="ks3-zb-saylabel" id="%s-say">%s</p>'
             '<ul class="ks3-options ks3-zb-qtabs" role="list" '
             'aria-labelledby="%s-say">%s</ul>%s</div></div>'
-            % (e(_b8_plain(a["in_label"], act_id, "`in_label`")),
-               e(_b8_plain(a["in_done_label"], act_id, "`in_done_label`")),
+            % (e(_attr_safe(a["in_label"], act_id, "`in_label`")),
+               e(_attr_safe(a["in_done_label"], act_id, "`in_done_label`")),
                len(levels), "".join(rows), t(a["in_label"]),
                t(a["reset_label"]), t(a["close"]),
                e(act_id), t(say["options_label"]), e(act_id),
@@ -1712,7 +1712,7 @@ def r_model_builder(a, act_id):
     the model on purpose keeps the stop — and the `s-who` band stop mirrors it
     (MRB-249), so an unticking predicate would move two.
     """
-    _b7_need(a, act_id, ("dials", "start", "correct", "evidence",
+    _need(a, act_id, ("dials", "start", "correct", "evidence",
                          "verdict_tags", "verdicts", "progress_suffix"))
     for f in ("run_label", "reset_label"):
         if a.get(f):
@@ -1896,7 +1896,7 @@ def r_model_builder(a, act_id):
             'aria-pressed="%s"><span class="ks3-opt-label">%s</span>'
             '</button></li>'
             % (e(d["id"]), e(o["id"]),
-               e(_b8_plain(o["phrase"], act_id, "option `phrase`")),
+               e(_attr_safe(o["phrase"], act_id, "option `phrase`")),
                "true" if a["start"][d["id"]] == o["id"] else "false",
                t(o["label"])) for o in d["options"])
         groups.append(
@@ -1945,12 +1945,12 @@ def r_model_builder(a, act_id):
             '<p class="ks3-dh-verdicttag" data-dh-verdicttag>%s</p>'
             '<p class="ks3-dh-verdictbody" data-dh-verdictbody>%s</p>'
             '</div></div></div>'
-            % (e(_b8_plain(tags["pass"], act_id, "verdict_tags `pass`")),
-               e(_b8_plain(tags["fail_one"], act_id, "verdict_tags `fail_one`")),
-               e(_b8_plain(tags["fail_many"], act_id,
+            % (e(_attr_safe(tags["pass"], act_id, "verdict_tags `pass`")),
+               e(_attr_safe(tags["fail_one"], act_id, "verdict_tags `fail_one`")),
+               e(_attr_safe(tags["fail_many"], act_id,
                            "verdict_tags `fail_many`")),
-               e(_b8_plain(verdicts["pass"], act_id, "verdicts `pass`")),
-               e(_b8_plain(verdicts["fail"], act_id, "verdicts `fail`")),
+               e(_attr_safe(verdicts["pass"], act_id, "verdicts `pass`")),
+               e(_attr_safe(verdicts["fail"], act_id, "verdicts `fail`")),
                e(json.dumps(a["correct"], separators=(",", ":"),
                             sort_keys=True)),
                len(evidence), "".join(groups),
@@ -2022,7 +2022,7 @@ def r_pea_cross(a, act_id):
     is as far as the vocabulary goes. The keys `dominant`/`recessive` are
     internal ids and reach no student.
     """
-    _b7_need(a, act_id, ("genotypes", "parents", "start", "phenotypes",
+    _need(a, act_id, ("genotypes", "parents", "start", "phenotypes",
                          "one_label", "many_label", "reset_label",
                          "cross_join", "last_label", "last_template",
                          "tally_rows", "ratio_template",
@@ -2135,9 +2135,9 @@ def r_pea_cross(a, act_id):
             raise ValueError("pea-cross %r tally row %r declares no `name`."
                              % (act_id, r.get("id")))
 
-    _b9_placeholders(a["ratio_template"], act_id, "`ratio_template`",
+    _placeholders(a["ratio_template"], act_id, "`ratio_template`",
                      ("{ratio}",))
-    _b9_placeholders(a["no_recessive_template"], act_id,
+    _placeholders(a["no_recessive_template"], act_id,
                      "`no_recessive_template`", ("{total}",), ("{ratio}",))
     # MRB-257 (5.45 / 5.44) — the other three count lines. `no_dominant_*` is
     # the branch that was missing entirely, so `pp × pp` printed a ratio with
@@ -2151,9 +2151,9 @@ def r_pea_cross(a, act_id):
                 "of the two counts at zero every time, so all four of these "
                 "lines are states the bench reaches on its first press."
                 % (act_id, key))
-        _b9_placeholders(a[key], act_id, "`%s`" % key, ("{total}",),
+        _placeholders(a[key], act_id, "`%s`" % key, ("{total}",),
                          ("{ratio}",))
-    _b9_placeholders(a["last_template"], act_id, "`last_template`",
+    _placeholders(a["last_template"], act_id, "`last_template`",
                      ("{g1}", "{g2}", "{genotype}", "{phenotype}"))
 
     notes = a["notes"]
@@ -2240,22 +2240,22 @@ def r_pea_cross(a, act_id):
             '</div></div>'
             % (many_n, e(dom), e(rec),
                e(json.dumps(genos, separators=(",", ":"), sort_keys=True)),
-               e(_b8_plain(a["cross_join"], act_id, "`cross_join`")),
-               e(_b8_plain(a["last_template"], act_id, "`last_template`")),
-               e(_b8_plain(pheno["dominant"], act_id, "phenotypes `dominant`")),
-               e(_b8_plain(pheno["recessive"], act_id,
+               e(_attr_safe(a["cross_join"], act_id, "`cross_join`")),
+               e(_attr_safe(a["last_template"], act_id, "`last_template`")),
+               e(_attr_safe(pheno["dominant"], act_id, "phenotypes `dominant`")),
+               e(_attr_safe(pheno["recessive"], act_id,
                            "phenotypes `recessive`")),
-               e(_b8_plain(a["ratio_template"], act_id, "`ratio_template`")),
-               e(_b8_plain(a["no_recessive_template"], act_id,
+               e(_attr_safe(a["ratio_template"], act_id, "`ratio_template`")),
+               e(_attr_safe(a["no_recessive_template"], act_id,
                            "`no_recessive_template`")),
-               e(_b8_plain(a["no_recessive_template_one"], act_id,
+               e(_attr_safe(a["no_recessive_template_one"], act_id,
                            "`no_recessive_template_one`")),
-               e(_b8_plain(a["no_dominant_template"], act_id,
+               e(_attr_safe(a["no_dominant_template"], act_id,
                            "`no_dominant_template`")),
-               e(_b8_plain(a["no_dominant_template_one"], act_id,
+               e(_attr_safe(a["no_dominant_template_one"], act_id,
                            "`no_dominant_template_one`")),
-               e(_b8_plain(pg["suffix_one"], act_id, "progress `suffix_one`")),
-               e(_b8_plain(pg["suffix_many"], act_id, "progress `suffix_many`")),
+               e(_attr_safe(pg["suffix_one"], act_id, "progress `suffix_one`")),
+               e(_attr_safe(pg["suffix_many"], act_id, "progress `suffix_many`")),
                "".join(groups),
                t("%s %s %s" % (a["start"][parents[0]["id"]],
                                a["cross_join"],
@@ -2319,7 +2319,7 @@ def r_species_cases(a, act_id):
     why the verdict list is ordered and why re-ordering it re-letters the
     buttons without anything else having to change.
     """
-    _b7_need(a, act_id, ("verdicts", "options_label", "commit_label", "cases",
+    _need(a, act_id, ("verdicts", "options_label", "commit_label", "cases",
                          "run_label", "run_done_label", "verdict_tags",
                          "progress_suffix", "tally"))
     verdicts = a["verdicts"]
@@ -2443,10 +2443,10 @@ def r_species_cases(a, act_id):
             'data-sc-check disabled>%s</button>'
             '<span class="ks3-sc-tally" data-sc-tally>%s</span></div>'
             '</div></div>'
-            % (e(_b8_plain(a["run_label"], act_id, "`run_label`")),
-               e(_b8_plain(a["run_done_label"], act_id, "`run_done_label`")),
-               e(_b8_plain(tal["all"], act_id, "tally `all`")),
-               e(_b8_plain(tal["remaining_suffix"], act_id,
+            % (e(_attr_safe(a["run_label"], act_id, "`run_label`")),
+               e(_attr_safe(a["run_done_label"], act_id, "`run_done_label`")),
+               e(_attr_safe(tal["all"], act_id, "tally `all`")),
+               e(_attr_safe(tal["remaining_suffix"], act_id,
                            "tally `remaining_suffix`")),
                len(cases), _B10_SC_THRESHOLD,
                e(act_id), t(a["options_label"]), e(act_id), "".join(tabs),
@@ -2491,14 +2491,14 @@ KIND_HEAD_TOTAL = {
 
 KIND_HEAD_FROM = {
     'variation-plotter': lambda a: {
-        "format": "{n} of {total} %s" % _b10_suffix(a, "variation-plotter"),
+        "format": "{n} of {total} %s" % _progress_suffix(a, "variation-plotter"),
         "start": 0},
     'zoom-bench': lambda a: (lambda pg: {
         "format": "%s{n}%s{total}" % (pg["step_prefix"], pg["step_join"]),
         "full": pg["all"], "start": 1})(
             _b10_zoom_progress(a.get("progress"), a.get("id") or "?")),
     'model-builder': lambda a: {
-        "format": "{n} of {total} %s" % _b10_suffix(a, "model-builder"),
+        "format": "{n} of {total} %s" % _progress_suffix(a, "model-builder"),
         "start": sum(1 for ev in (a.get("evidence") or [])
                      if _b10_mb_pass(a.get("start") or {}, ev))},
     'pea-cross': lambda a: (lambda pg: {
@@ -2506,6 +2506,6 @@ KIND_HEAD_FROM = {
         "start": 0})(_b10_pea_progress(a.get("progress"),
                                        a.get("id") or "?")),
     'species-cases': lambda a: {
-        "format": "{n} of {total} %s" % _b10_suffix(a, "species-cases"),
+        "format": "{n} of {total} %s" % _progress_suffix(a, "species-cases"),
         "start": 0},
 }

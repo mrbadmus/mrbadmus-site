@@ -15,11 +15,11 @@ from ks3_art.kit import (
     _SVG_INSET,
     _SVG_MONO,
     _SVG_RULE_STRONG,
-    _b10_suffix,
-    _b7_need,
-    _b8_plain,
-    _b9_json,
+    _attr_safe,
+    _json_attr,
+    _need,
     _pctnum,
+    _progress_suffix,
     _svg_open,
     _svg_text,
     e,
@@ -354,7 +354,7 @@ def r_advantage_bench(a, act_id):
     prediction here to be right or wrong about. No option button takes a
     verdict class.
     """
-    _b7_need(a, act_id, ("tabs_label", "progress_suffix", "best_suffix",
+    _need(a, act_id, ("tabs_label", "progress_suffix", "best_suffix",
                          "worst_suffix", "subjects", "envs"))
 
     subjects = a["subjects"]
@@ -611,7 +611,7 @@ def r_selection_runner(a, act_id):
     descriptions of a population, not judgements; there is no prediction on
     this bench to be right or wrong about, and no button takes a verdict class.
     """
-    _b7_need(a, act_id, ("tabs_label", "barks", "start_pale", "reset_pale",
+    _need(a, act_id, ("tabs_label", "barks", "start_pale", "reset_pale",
                          "history_len", "pale_label", "dark_label",
                          "axis_note", "one_label", "ten_label", "reset_label",
                          "notes", "gen_label", "gen_zero_label"))
@@ -799,13 +799,13 @@ def r_selection_runner(a, act_id):
             'data-nr-run="%d">%s</button>'
             '<button type="button" class="ks3-reveal-btn ks3-nr-reset" '
             'data-nr-reset>%s</button></div></div></div>'
-            % (_b9_json(model), _B11_NR_THRESHOLD,
+            % (_json_attr(model), _B11_NR_THRESHOLD,
                e(act_id), t(a["tabs_label"]), e(act_id), "".join(tabs),
                bark_notes, "".join(cols),
                e(_b11_sr_axis_format(a, act_id)), t(a["axis_note"]),
-               e(_b8_plain(a["pale_label"], act_id, "`pale_label`")),
+               e(_attr_safe(a["pale_label"], act_id, "`pale_label`")),
                t("%s %d%%" % (a["pale_label"], pale_pct)),
-               e(_b8_plain(a["dark_label"], act_id, "`dark_label`")),
+               e(_attr_safe(a["dark_label"], act_id, "`dark_label`")),
                t("%s %d%%" % (a["dark_label"], 100 - pale_pct)),
                note_ps,
                t(a["one_label"]), _B11_NR_THRESHOLD, t(a["ten_label"]),
@@ -849,7 +849,7 @@ def _b11_plural(suffix, act_id, kind):
     `head_counter`'s `format_one` is that solution generalised, and this is the
     other half of it.
     """
-    s = _b8_plain(suffix, act_id, "`progress_suffix`")
+    s = _attr_safe(suffix, act_id, "`progress_suffix`")
     if "(s)" not in s:
         raise ValueError(
             "%s %r declares progress_suffix %r, which carries no `(s)`. This "
@@ -908,7 +908,7 @@ def r_pressure_bench(a, act_id):
     population fifty years on; the student has predicted nothing. No option
     button takes a verdict class.
     """
-    _b7_need(a, act_id, ("species_label", "pressure_label", "progress_suffix",
+    _need(a, act_id, ("species_label", "pressure_label", "progress_suffix",
                          "trait_labels", "species", "pressures", "outcomes",
                          "outcome_label", "outcome_suffix", "bands"))
 
@@ -1162,7 +1162,7 @@ def r_blight_bench(a, act_id):
     bar means "nothing came through", not "you were wrong"; the student has
     predicted nothing here. No option button takes a verdict class.
     """
-    _b7_need(a, act_id, ("tabs_label", "progress_suffix", "progress_zero",
+    _need(a, act_id, ("tabs_label", "progress_suffix", "progress_zero",
                          "total", "fields", "bar_labels", "bar_label_before",
                          "run_label",
                          "ran_label", "reset_label", "verdicts"))
@@ -1371,8 +1371,8 @@ def r_blight_bench(a, act_id):
             '<button type="button" class="ks3-reveal-btn ks3-bb-clear" '
             'data-bb-clear>%s</button></div></div></div>'
             % (_B11_BB_THRESHOLD,
-               e(_b8_plain(a["run_label"], act_id, "`run_label`")),
-               e(_b8_plain(a["ran_label"], act_id, "`ran_label`")),
+               e(_attr_safe(a["run_label"], act_id, "`run_label`")),
+               e(_attr_safe(a["ran_label"], act_id, "`ran_label`")),
                e(act_id), t(a["tabs_label"]), e(act_id), "".join(tabs),
                "".join(panels), t(a["run_label"]), t(a["reset_label"])))
 
@@ -1410,9 +1410,9 @@ KIND_HEAD_TOTAL = {
 
 KIND_HEAD_FROM = {
     'advantage-bench': lambda a: {
-        "format": "{n} of {total} %s" % _b10_suffix(a, "advantage-bench")},
+        "format": "{n} of {total} %s" % _progress_suffix(a, "advantage-bench")},
     'selection-runner': lambda a: {
-        "format": "%s{n}" % _b8_plain(a.get("gen_label") or "", a.get("id")
+        "format": "%s{n}" % _attr_safe(a.get("gen_label") or "", a.get("id")
                                       or "?", "`gen_label`"),
         "zero": a.get("gen_zero_label") or "", "start": 0},
     'pressure-bench': lambda a: (lambda one, many: {
