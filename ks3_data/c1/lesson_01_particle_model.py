@@ -486,16 +486,16 @@ LESSON = {
                  "leaving a piece half as wide, and reaches one particle. "
                  "Why can they not make the twenty-fifth cut?",
             "options": [
-                "They can cut it, but what comes out is no longer sugar",
                 "No knife is thin enough to fit",
                 "Particles are too hard to cut",
+                "They can cut it, but what comes out is no longer sugar",
                 "The piece is too small to see, so the cut cannot be aimed",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "A sharp enough tool can split a particle. The limit is not "
+                0: "A sharp enough tool can split a particle. The limit is not "
                    "mechanical.",
-                2: "Hardness is a property of a large lump of a substance, not "
+                1: "Hardness is a property of a large lump of a substance, not "
                    "of one particle.",
                 3: "Difficulty in aiming is a practical problem. The model "
                    "makes a stronger claim than that.",

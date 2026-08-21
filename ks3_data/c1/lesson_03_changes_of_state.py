@@ -520,15 +520,15 @@ LESSON = {
             "title": "Rung 1 · Recall",
             "q": "What is the name of the change from a gas to a liquid?",
             "options": [
-                "Condensing",
                 "Evaporating",
                 "Freezing",
+                "Condensing",
                 "Sublimating",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "That is the other direction — liquid to gas.",
-                2: "Freezing is liquid to solid.",
+                0: "That is the other direction — liquid to gas.",
+                1: "Freezing is liquid to solid.",
                 3: "Sublimation is solid straight to gas, skipping the liquid "
                    "— what dry ice does.",
             }},

@@ -536,18 +536,18 @@ LESSON = {
             "q": "Which state has particles that are close together but not in "
                  "a regular pattern?",
             "options": [
-                "Liquid",
                 "Solid",
                 "Gas",
                 "All three are equally spaced",
+                "Liquid",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
-                1: "A solid is close together and regular. It is the pattern "
+                0: "A solid is close together and regular. It is the pattern "
                    "that makes it a solid.",
-                2: "A gas is not close together at all — the particles "
+                1: "A gas is not close together at all — the particles "
                    "are mostly far apart.",
-                3: "The whole point of the three states is that spacing "
+                2: "The whole point of the three states is that spacing "
                    "differs.",
             }},
         "apply": {
@@ -568,22 +568,22 @@ LESSON = {
             # read as full claims at 13–14 words. The correct option is
             # unchanged, because it is the science.
             "options": [
-                "A liquid’s particles are already touching, so there is "
-                "no space to squash out",
                 "Liquid particles are much harder than gas particles, so "
                 "they resist being pressed together",
                 "Liquid particles are bigger, so they take up all the room "
                 "in the container",
                 "Liquids are heavier than gases, so they push back harder "
                 "against the squash",
+                "A liquid’s particles are already touching, so there is "
+                "no space to squash out",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
-                1: "They are the same particles. Water vapour and water are "
+                0: "They are the same particles. Water vapour and water are "
                    "made of identical things.",
-                2: "Size does not change with state — that is the "
+                1: "Size does not change with state — that is the "
                    "misconception this lesson exists to kill.",
-                3: "Weight is not what resists the squash. Space is.",
+                2: "Weight is not what resists the squash. Space is.",
             }},
         "explain": {
             "title": "Rung 3 · Explain",

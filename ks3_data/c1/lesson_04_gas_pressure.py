@@ -618,14 +618,14 @@ LESSON = {
             "q": "What causes the pressure of a gas on the walls of its "
                  "container?",
             "options": [
-                "Particles colliding with the walls",
                 "Particles pushing against each other",
+                "Particles colliding with the walls",
                 "The weight of the gas pressing down",
                 "The gas trying to escape",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "Particles do bump into each other, but those bumps are "
+                0: "Particles do bump into each other, but those bumps are "
                    "nowhere near the wall and do nothing to it.",
                 2: "Pressure acts on the top and sides of a container as much "
                    "as the bottom. Weight cannot explain that.",
@@ -637,14 +637,14 @@ LESSON = {
             "q": "A sealed metal can of gas is heated. The can does not change "
                  "size. Which of these has NOT changed?",
             "options": [
-                "The size of the particles",
                 "The average speed of the particles",
+                "The size of the particles",
                 "The number of wall collisions each second",
                 "The pressure inside the can",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "Speed is exactly what heating changes.",
+                0: "Speed is exactly what heating changes.",
                 2: "Faster particles reach the wall more often, so this rises.",
                 3: "This is what rises, and it is why the warning is on the "
                    "can.",

@@ -391,12 +391,16 @@ LESSON = {
          "prompt": "Every word of that sentence is doing damage, and it is the "
                    "sentence almost everyone writes. Commit to what is wrong "
                    "with it.",
+         # ⊕ MRB-177, ruled 17 Aug 2026 — the three distractors now state
+         # wrong RULES, in the same shape as the correct option. The correct
+         # option and its index are unchanged.
          "options": [
-             "Nothing — that is a fair description",
+             "Nothing — that is a fair description of what happens",
              "Particles cannot want anything; the evenness is what random "
              "movement produces",
-             "They spread because they repel each other",
-             "Only gases do this, not liquids",
+             "They repel each other, so they push apart until evenly spread",
+             "Only gases spread like this; liquid particles are too packed "
+             "to move",
          ],
          "reveal": [
              "A particle has no goal, no information about the rest of the "
@@ -421,17 +425,17 @@ LESSON = {
         "recall": {
             "q": "Diffusion is the movement of particles from where they are…",
             "options": [
-                "More crowded to where they are less crowded",
                 "Colder to where they are warmer",
                 "Lower to where they are higher",
                 "Heavier to where they are lighter",
+                "More crowded to where they are less crowded",
             ],
-            "answer": 0,
+            "answer": 3,
             "feedback": {
-                1: "Temperature changes how fast diffusion happens, but the "
+                0: "Temperature changes how fast diffusion happens, but the "
                    "direction is set by crowding.",
-                2: "Diffusion works in every direction, including downwards.",
-                3: "Mass affects speed, not the direction of the spread.",
+                1: "Diffusion works in every direction, including downwards.",
+                2: "Mass affects speed, not the direction of the spread.",
             }},
         "apply": {
             "q": "A tank of dye has completely evened out. What is happening "

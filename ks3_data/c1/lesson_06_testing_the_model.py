@@ -614,15 +614,15 @@ LESSON = {
         "recall": {
             "q": "Name one thing the simple particle model cannot explain.",
             "options": [
-                "Why ice floats on water",
                 "Why a gas can be squashed",
                 "Why a smell spreads across a room",
+                "Why ice floats on water",
                 "Why mass stays the same when ice melts",
             ],
-            "answer": 0,
+            "answer": 2,
             "feedback": {
-                1: "It explains this well — a gas is mostly empty space.",
-                2: "It explains this well — random movement and collisions.",
+                0: "It explains this well — a gas is mostly empty space.",
+                1: "It explains this well — random movement and collisions.",
                 3: "It explains this well — particles are rearranged, not "
                    "destroyed.",
             }},
@@ -630,14 +630,14 @@ LESSON = {
             "q": "The particle model makes a wrong prediction about ice. What "
                  "is the right response?",
             "options": [
-                "Keep using it where it works, and note the limit",
                 "Throw it out — a model that gets something wrong is worthless",
+                "Keep using it where it works, and note the limit",
                 "Ignore the exception, since it is only water",
                 "Call it a theory instead of a model, which allows exceptions",
             ],
-            "answer": 0,
+            "answer": 1,
             "feedback": {
-                1: "Then chemistry would have no models at all. Every one of "
+                0: "Then chemistry would have no models at all. Every one of "
                    "them has limits, including the current ones.",
                 2: "Ignoring the failure is how you miss the discovery. The "
                    "exceptions are where the next model comes from.",
