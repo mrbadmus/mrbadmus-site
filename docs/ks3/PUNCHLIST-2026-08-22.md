@@ -199,3 +199,52 @@ nineteen drives go red over whitespace.
 
 Gates: parity PASS, behaviour PASS (2 new ruled assertions).
 
+### Rebase log
+
+**Rebase 1 — before the Unit 2/3 push.** `origin/main` had moved from my parent
+`510f8e7c6` to `dccb1918b`: the parallel content lane merged PR #8
+(`feat/content-chem`) — MRB-281, C6 and C7, ten lessons and forty questions,
+671 files. `git pull --rebase` replayed my commit cleanly on top; no conflict,
+never force-pushed.
+
+**No overlap, and it was checked rather than assumed.** They touched
+`shared/ks3.css`, `shared/ks3.js`, `ks3_data/` and the `ks3/` output tree — none
+of which this run edits, and three of which it is forbidden to. The one place
+the two lanes could have collided is the new `shared/ks3-lesson-urls.js`, which
+is generated from `ks3_data`: regenerated after the rebase and **byte-identical**
+(183 lessons). C6 and C7 added content to existing lesson slots, not new slots.
+
+---
+
+### ⚠️ Design delivered the bench redraw MID-RUN — this is Mide's, not mine
+
+At **16:44 tonight**, while this run was in progress, an untracked folder
+appeared in the repo root: **`Student class view fixes/`**, with
+`ks3-class-view-bench-done.html` and `ks3-class-view-bench-open.html`. It is
+Design's answer to the very thing P4 says is coming.
+
+**I have not ported it, and I have not committed it.** P4's ruling is explicit —
+build an interim from existing tokens, "structure yours so their delivery
+replaces it cleanly" — and the delivery is far larger than a done-state: six
+themes with a new Harbour default, a flashcard deck, the nav "Recall" item
+REMOVED, the recall round rebuilt as a standalone surface, and a reward slot.
+That is a redesign, and adopting it is a product decision.
+
+**It independently confirms three of tonight's rulings**, which is worth Mide
+knowing:
+
+| Design's note | tonight's ruling |
+|---|---|
+| §8 — "SIX A ROUND / SIX QUESTIONS removed from the recall header … only the live counter states a number" | P2, reached from the other direction |
+| §6 — the done bench, one line: "Good week, AY." | P4 |
+| "THEME PERSISTENCE … write the student pref to `data-bench-theme`" | P7 — this is the job Settings gets back |
+| "REWARD SURFACE … `bench-reward-slot` is a real, empty 64px region" | the prompt's noted-and-NOT-built reward surface |
+
+Design's §"CODE'S JOB" also asks for a recall bank of hundreds with six drawn
+per round, weighted to what the student got wrong, "and never repeat inside a
+round". That does not conflict with P2 — for a large bank both say six — and the
+never-repeat property already holds.
+
+I have used one thing from it: the done-state COPY, so the interim reads like
+the real one and the swap is a component change rather than a rewrite.
+
