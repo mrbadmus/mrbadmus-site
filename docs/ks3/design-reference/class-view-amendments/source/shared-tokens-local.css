@@ -1,0 +1,529 @@
+/* ═══════════════════════════════════════════════════════════════
+   MrBadmusAI — Design Tokens (single source of truth)
+   Light is the DEFAULT theme. Dark is opt-in via [data-theme="dark"]
+   on <html>. KS3 playful variant hooks via [data-mode="ks3"].
+
+   Every page on the site loads this file FIRST. Page stylesheets
+   consume these variables and must not re-declare palette values.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Self-hosted fonts (no Google CDN, no @import) ──
+   Fraunces: variable, wght 400–700, optical size 9–144 (display
+   quality at topic-title sizes, sturdy at card-title sizes).
+   Plus Jakarta Sans: variable, wght 200–800. Latin subsets. */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fraunces-var-latin.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/plus-jakarta-sans-var-latin.woff2') format('woff2');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ── KS3's three families (MRB-183, ruled 8 Aug 2026) ──
+   KS3 is its own visual world; these carry it and nothing else. KS4's
+   Space Grotesk / IBM Plex pair is untouched and still arrives via the
+   Google Fonts link in generate_site_v5.py — that swap is MRB-130 and is
+   deliberately NOT done here, because it would change the rendered bytes
+   of all 23 .rd bonding pages and the KS4-unchanged gate forbids it.
+
+   ⚠️ These are Claude Design's OWN font bytes, lifted out of the
+   reference-set bundle rather than re-fetched, so the glyphs are exactly
+   the ones the reference was designed against.
+
+   ⚠️ These latin subsets do NOT contain U+2192 →, U+2713 ✓ or U+2715 ✕
+   (read from each file's cmap: 208–226 glyphs, all three absent — the
+   Google latin subset carries U+2191 and U+2193 but skips U+2192).
+   Design's system leans on all three, and R2 makes the tick and cross
+   load-bearing because colour may never be the only signal. So ks3.css
+   draws them as inline SVG instead of typing them. Do not "fix" this by
+   putting the characters back — they will silently fall back to a system
+   font mid-badge. Same defect class MRB-130 exists to fix. */
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  src: url('_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/bricolage-grotesque-var-latin.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/instrument-sans-var-latin.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/instrument-sans-var-italic-latin.woff2') format('woff2');
+  font-weight: 400 600;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Mono';
+  src: url('_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/dm-mono-400-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Mono';
+  src: url('_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/dm-mono-500-latin.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  /* ── Surfaces — cream page vs white card is a DELIBERATE pairing.
+     The warmth of the whole design comes from this relationship:
+     warm cream ground, pure-white cards lifted off it by border +
+     shadow (contrast ratio cream:white ≈ 1.13 — separation is done
+     by --border and --shadow-card, not by luminance alone). ── */
+  --bg:        #F7F1E5;   /* cream page ground */
+  --card:      #FFFFFF;   /* white card surface */
+  --sunken:    #EFE7D6;   /* sunken surface — wells, input troughs, code/formula strips */
+  --border:    #E4DAC6;   /* warm hairline on cream */
+  --border-strong: #D4C7AD;
+
+  /* ── Ink ── */
+  --text:      #241C14;   /* warm near-black — 15.6:1 on cream */
+  --muted:     #6B5F51;   /* warm grey-brown — 5.8:1 on cream */
+
+  /* ── THE ACCENT — burnt orange / rust. The signature.
+     Links, active & hover states, primary buttons, the challenge
+     chip, "+" controls, spec numbers. 5.95:1 on cream (AA text),
+     6.4:1 with white text when used as a button fill. ── */
+  --accent:        #A63C12;
+  --accent-hover:  #8A300C;   /* darken on hover (light theme) */
+  --accent-soft:   rgba(166, 60, 18, 0.09);   /* tinted fills, active chips */
+  --accent-border: rgba(166, 60, 18, 0.28);
+  --on-accent:     #FFFFFF;   /* text on accent-filled controls */
+
+  /* ── Brand gradient (logo chevron + brand wordmark effects).
+     Retoned from the dark-theme #FFD93D→#FF6B35 toward the burnt
+     direction: gold-ochre into rust. Same identity, sits on cream. ── */
+  --brand-grad-a: #C97C1B;
+  --brand-grad-b: #A63C12;
+
+  /* ── Subject identity — recoloured for light ground.
+     All pass AA (4.5:1+) as text on cream. ── */
+  --physics:   #1D6FB8;   /* physics blue   — 4.9:1 */
+  --chemistry: var(--subject-chemistry);   /* chemistry crimson — 6.2:1 (NOT orange; distinct from --accent rust and --danger) */
+  --biology:   #237A3B;   /* biology green  — 5.0:1 */
+  --physics-soft:   rgba(29, 111, 184, 0.10);
+  --chemistry-soft: var(--subject-chemistry-soft);
+  --biology-soft:   rgba(35, 122, 59, 0.10);
+
+  /* ── The chemistry crimson, under a name `.rd` does not overwrite.
+     `.rd` folds --chemistry into the accent for the KS4 redesign, which
+     is right there and wrong at KS3 (see the KS3 block). KS3 restores it
+     by pointing at these, so the hex lives in exactly one place and the
+     two blocks cannot drift apart. Nothing else consumes them. ── */
+  --subject-chemistry:      #B02342;
+  --subject-chemistry-soft: rgba(176, 35, 66, 0.09);
+
+  /* ── Pathway + tier ── */
+  --combined:  var(--physics);
+  --triple:    var(--chemistry);
+  --foundation: var(--biology);
+  --higher:    #7A5F00;   /* deep gold — readable heir to the yellow tier colour (5.4:1 on cream) */
+  --higher-soft: rgba(122, 95, 0, 0.12);
+
+  /* ── Semantics — red-as-warning stays its own token, never --chemistry ── */
+  --danger:       #B3261E;
+  --danger-soft:  rgba(179, 38, 30, 0.09);
+  --success:      #237A3B;
+  --success-soft: rgba(35, 122, 59, 0.10);
+
+  /* ── Type — serif for headlines and topic/section titles ONLY.
+     Body text and all UI stay sans (readability, dyslexic students). ── */
+  --font-serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --font-sans:  'Plus Jakarta Sans', -apple-system, 'Segoe UI', sans-serif;
+
+  --fs-body:       1rem;                                    /* 16px body floor */
+  --fs-small:      0.875rem;                                /* 14px secondary */
+  --fs-label:      0.75rem;                                 /* 12px uppercase labels */
+  --fs-card-title: 1.125rem;                                /* 18px — serif */
+  --fs-section:    1.375rem;                                /* 22px — serif */
+  --fs-page-title: clamp(1.875rem, 1.1rem + 2.6vw, 3.75rem);/* 30px → 60px — serif display */
+
+  --lh-body:  1.65;
+  --lh-title: 1.15;
+
+  /* ── Layout ── */
+  --content-max: 1080px;   /* main content column */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px;
+
+  --radius-sm: 8px;
+  --radius:    12px;
+  --radius-lg: 18px;
+
+  /* ── Shadows — warm-tinted, soft; cards lift off the cream ── */
+  --shadow-card: 0 1px 2px rgba(64, 45, 26, 0.05), 0 4px 14px rgba(64, 45, 26, 0.07);
+  --shadow-pop:  0 2px 6px rgba(64, 45, 26, 0.08), 0 12px 32px rgba(64, 45, 26, 0.14);
+
+  color-scheme: light;
+}
+
+/* ═══ DARK — opt-in via <html data-theme="dark">. Gold on near-black. ═══ */
+[data-theme="dark"] {
+  --bg:        #14110D;
+  --card:      #1D1915;
+  --sunken:    #0F0D0A;
+  --border:    #322B22;
+  --border-strong: #453B2E;
+
+  --text:      #EDE5D8;
+  --muted:     #A2957F;
+
+  --accent:        #E0AC4B;   /* gold — 9.1:1 on near-black */
+  --accent-hover:  #ECBE68;   /* lighten on hover (dark theme) */
+  --accent-soft:   rgba(224, 172, 75, 0.12);
+  --accent-border: rgba(224, 172, 75, 0.35);
+  --on-accent:     #14110D;
+
+  --brand-grad-a: #E8C15E;
+  --brand-grad-b: #C2551F;
+
+  --physics:   #5FA8E0;
+  --chemistry: #E06080;
+  --biology:   #55B36A;
+  --physics-soft:   rgba(95, 168, 224, 0.14);
+  --chemistry-soft: rgba(224, 96, 128, 0.13);
+  --biology-soft:   rgba(85, 179, 106, 0.14);
+
+  --higher:      #E0AC4B;
+  --higher-soft: rgba(224, 172, 75, 0.14);
+
+  --danger:       #E5655C;
+  --danger-soft:  rgba(229, 101, 92, 0.13);
+  --success:      #55B36A;
+  --success-soft: rgba(85, 179, 106, 0.14);
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 14px rgba(0, 0, 0, 0.45);
+  --shadow-pop:  0 2px 6px rgba(0, 0, 0, 0.5), 0 12px 32px rgba(0, 0, 0, 0.6);
+
+  color-scheme: dark;
+}
+
+/* ═══ KS3 — playful variant hook. Same bones, different energy.
+   Full KS3 styling lands in a later pass; these are the dials. ═══
+
+   ⚠️ THE SELECTOR IS LOAD-BEARING — MRB-179, 2026-08-07.
+
+   This block shipped as bare `[data-mode="ks3"]`, specificity (0,1,0).
+   The `.rd` block below is ALSO (0,1,0) and comes later in the file, so
+   on a KS3 page — which carries BOTH per §8.5 — `.rd` won every single
+   collision and every dial here was dead. Measured in a browser, not
+   read off the source: --accent resolved #C0392B, --radius 22px,
+   --chemistry #C0392B. The block was decorative for its whole life.
+
+   `.rd[data-mode="ks3"]` is (0,2,0), so it beats `.rd` on specificity
+   and the source order stops mattering. It is the minimal selector that
+   does that: no `body` qualifier (the tokens file should not care which
+   element opts in) and no `!important` (which would also override the
+   per-page inline `style="--subject: …"` KS3 lesson pages rely on).
+
+   The cost of the fix is that the dials no longer apply to an element
+   carrying `data-mode="ks3"` WITHOUT `.rd`. §8.5 makes carrying both
+   mandatory and `build_ks3.py` emits both on every page, so no such
+   element exists — and `verify_ks3.py` now gates it, so none can appear
+   without the build failing. ═══ */
+.rd[data-mode="ks3"] {
+  /* ═══════════════════════════════════════════════════════════════
+     KS3 IS ITS OWN VISUAL WORLD.  MRB-183, ruled by Mide 8 Aug 2026.
+
+     What used to be here was four dials nudging the KS4 palette. That
+     is gone: Claude Design's system is a full REPLACEMENT for KS3, not
+     a variant of KS4. KS4 keeps the cream / burnt-orange system
+     untouched, and the split is clean at the key-stage boundary.
+
+     Every ratio below is Claude Design's own measurement, carried
+     across verbatim so the number and the value can never drift apart.
+     Re-measured in a browser against the real rendered grounds during
+     integration — see docs/ks3/design-reference/SPEC.md §1.
+
+     Two tokens per hue, always (R1): a FILL token for borders, rules,
+     focus rings and text above 24px at 3:1, and a darker TEXT token for
+     anything at body size at 4.5:1. Body-size accent text ALWAYS takes
+     the darker one. R1 calls this "the single most common way an
+     accessible palette gets broken at integration" — so the fill
+     tokens are commented with what they may not do.
+     ═══════════════════════════════════════════════════════════════ */
+
+  /* ── grounds and surfaces ── */
+  --ks3-ground:        #FBF3E6;  /* page ground */
+  --ks3-card:          #FFFCF5;  /* panels, cards, block surfaces */
+  --ks3-band:          #F4E9D8;  /* header bands, secondary buttons, number chips */
+  --ks3-inset:         #F7EFE1;  /* inset panels, criteria ground, canvas fill */
+  --ks3-row-dim:       #FBF6EC;  /* a dimmed row: coming-soon, spent option */
+  --ks3-rule:          #E0D2B9;  /* hairline rules, row dividers */
+  --ks3-rule-strong:   #C3B191;  /* dashed placeholder frames */
+  --ks3-option-border: #DDCFB6;  /* resting answer-button border */
+  --ks3-option-spent:  #EBDFCB;  /* answer button, question already spent */
+
+  /* ── ink ── */
+  --ks3-ink:           #221E1B;  /* 14.2:1 on ground ✓ AAA — body text, every 2px outline */
+  --ks3-ink-body:      #3B342E;  /* softened body copy inside panels */
+  --ks3-ink-muted:     #5F564F;  /* 5.6:1 on ground ✓ AA — captions, meta, eyebrows */
+  --ks3-ink-faint:     #6E655D;  /* dimmed row text */
+  --ks3-ink-ghost:     #9A8F86;  /* spent option badge glyph */
+  --ks3-on-dark:       #FBF3E6;  /* text on an ink-dark block */
+  --ks3-on-dark-body:  #E7DECE;  /* body copy on an ink-dark block */
+  --ks3-on-dark-muted: #C6B9A7;  /* captions on an ink-dark block */
+  --ks3-dark-panel:    #3E3730;  /* a panel nested inside an ink-dark block */
+  --ks3-dark-rule:     #3E3730;
+
+  /* ── accent · orange · the platform's own voice, and Chemistry ── */
+  --ks3-accent:        #E4572E;  /* 3.4:1 — LARGE TEXT ONLY. Never body size. */
+  --ks3-accent-text:   #A93411;  /* 6.0:1 on ground ✓ AA — the only orange under 24px */
+  --ks3-accent-tint:   #FCE7DE;
+  --ks3-accent-hover:  #7F2408;  /* link hover */
+
+  /* ── success · green · ONLY the ladder marks correctness ── */
+  --ks3-ok:            #12A150;  /* 3.0:1 — NEVER body text */
+  --ks3-ok-text:       #0A6B36;  /* 5.9:1 on tint ✓ AA — the word "Correct." */
+  --ks3-ok-tint:       #E4F7EB;
+
+  /* ── alert · amber · a wrong IDEA being confronted ──
+     Misconception blocks only. Never "you got it wrong" — the student
+     is not the error. Ink on the amber measures 11.4:1 ✓. */
+  --ks3-alert:         #FFC53D;
+  --ks3-alert-text:    #5A430A;
+  --ks3-alert-tint:    #FFF3D4;
+  --ks3-alert-border:  #D9821A;
+
+  /* ── stretch · violet · a layer the STUDENT chose ──
+     "Going further" and "Need a hand?" only. Never a level they were
+     put in — KS3 has no tier and must not grow one. */
+  --ks3-stretch:       #6B3FD4;
+  --ks3-stretch-text:  #5A31C0;  /* 6.4:1 ✓ AA */
+  --ks3-stretch-tint:  #F0EAFC;
+  --ks3-stretch-rule:  #D8CBF5;
+  --ks3-stretch-dash:  #B9A6E8;
+  --ks3-stretch-wash:  #FAF7FF;
+
+  /* ── physics blue · subject tint, and the cross-reference row ── */
+  --ks3-blue:          #2F5CE0;
+  --ks3-blue-text:     #2545A8;
+  --ks3-blue-tint:     #E1E8FE;
+  --ks3-blue-light:    #8FB7FF;  /* on ink-dark only */
+
+  /* ── subject identity ──
+     Biology shares the success hue and Chemistry shares the accent hue;
+     that is Design's choice, not an accident, and it is why the browse
+     cards also carry a hue DOT and a name (R2). */
+  --ks3-biology:       #12A150;
+  --ks3-chemistry:     #E4572E;
+  --ks3-physics:       #2F5CE0;
+
+  /* ── type ── */
+  --ks3-font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --ks3-font-body:    'Instrument Sans', system-ui, sans-serif;
+  --ks3-font-mono:    'DM Mono', ui-monospace, monospace;
+
+  /* ── shape ──
+     Hard offset shadows, no blur, no gradient: Design's reason is that
+     it renders identically on a five-year-old Chromebook. */
+  --ks3-r-block:   28px;
+  --ks3-r-dark:    30px;
+  --ks3-r-card:    22px;
+  --ks3-r-panel:   20px;
+  --ks3-r-control: 14px;
+  --ks3-r-option:  16px;
+  --ks3-r-pill:    999px;
+  --ks3-r-focus:   6px;
+  --ks3-shadow-block: 5px 5px 0 var(--ks3-ink);
+  --ks3-shadow-card:  4px 4px 0 var(--ks3-rule);
+  --ks3-tap: 44px;
+
+  /* ── measure (R11) ──
+     46rem for prose, 60rem for anything that is not prose. The old
+     44rem cap was set at a 16px base; at 19px it produced a narrow,
+     tiring column. */
+  --ks3-measure: 46rem;
+  --ks3-wide:    60rem;
+  --ks3-page:    1320px;
+
+  /* ── the shared chrome KS3 still borrows ──
+     KS3 pages also load styles.css and nav.css for the nav brand, so
+     the inherited names have to land on Design's values or the header
+     arrives in KS4's palette. */
+  --accent:        #E4572E;
+  --accent-hover:  #A93411;
+  --accent-text:   #A93411;
+  --brand-grad-a:  #FFC53D;
+  --brand-grad-b:  #E4572E;
+  --radius-sm: 14px;
+  --radius:    20px;
+  --radius-lg: 28px;
+
+  /* Subject identity for the shared chrome. `.rd` folds --chemistry into
+     the accent ("one warm palette") because a KS4 redesign page shows one
+     subject at a time. KS3 shows all three side by side, so the three
+     stay distinct — and under Design's system Chemistry and the accent
+     are deliberately the SAME hue, which is why every browse card also
+     carries a hue dot and the subject's name (R2: colour is never the
+     only signal). */
+  --biology:   var(--ks3-biology);
+  --chemistry: var(--ks3-chemistry);
+  --physics:   var(--ks3-physics);
+
+  /* ⛔ The 2026-07-26 contrast table that used to sit here is DELETED,
+     not amended. It measured --accent #C4490F against the four KS4
+     redesign cream grounds, and both sides of that comparison are gone:
+     the accent is now #E4572E and the KS3 grounds are Design's
+     #FBF3E6 / #FFFCF5 / #F4E9D8 / #F7EFE1. Keeping a stale table beside
+     live values is how a "measured" number becomes a lie. The current
+     measurements live against each token above and in full in
+     docs/ks3/design-reference/SPEC.md §1. */
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   REDESIGN — Locked Tokens (MRB-113 Phase B, Design's canonical block)
+   Space Grotesk / IBM Plex Sans / IBM Plex Mono · warm cream + burnt
+   orange. This is the canonical design-system record going forward;
+   the Fraunces / Plus Jakarta values above are superseded.
+
+   ⚠️ PILOT SCOPING (deliberate — see the port report): this token
+   file is loaded by every one of the site's 300+ pages, and the
+   legacy names above (--bg, --card, --accent, --font-serif, …) are
+   consumed by shared/styles.css and inline page styles everywhere.
+   A literal wholesale replace would white-screen the whole site and
+   drop the (self-hosted) fonts. So during the pilot the Locked block
+   is applied by OPT-IN: pages that carry class `rd` on <body> get the
+   new system; every other page renders exactly as before. Promoting
+   this to a global cutover (migrate styles.css off the legacy names,
+   self-host the fonts, drop the .rd scope) is the post-sign-off step.
+
+   The three names that exist in BOTH systems (--accent, --border,
+   --shadow-card) are intentionally NOT redeclared in :root here — that
+   would clobber the live site. They are set inside the `.rd` scope
+   instead, so only redesigned pages pick up the new values.
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  /* Type */
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body:    "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono:    "IBM Plex Mono", monospace;
+
+  /* Surfaces */
+  --surface-page:  #E7E1D4;
+  --surface-card:  #F5F1E8;
+  --surface-panel: #FFFDF8;
+  --surface-inset: #F7F2E8;
+  --surface-dark:  #1A1714;
+  --rule:          #D8CFBD;
+
+  /* Ink */
+  --ink:       #1A1714;
+  --ink-body:  #2A241E;
+  --ink-muted: #6B635A;
+  --ink-faint: #8A8074;
+
+  /* Accent (burnt orange) — --accent itself is set in .rd (name clash) */
+  --accent-strong:      #C0392B;
+  --accent-deep:        #B5341A;
+  --accent-tint:        #FBE0D6;
+  --accent-tint-border: #F0BBA9;
+  --accent-wash:        #FBEEE9;
+
+  /* Contextual accents (no per-subject colour system) */
+  --context-blue: #2E7DD1;
+  --context-sage: #3E6B47;
+
+  /* Marking states */
+  --ok:  #2E6B3A;  --ok-bg:  #E7F3EA;  --ok-border:  #7FB98A;
+  --err: #A83824;  --err-bg: #FBE4DE;  --err-border: #E0897B;
+
+  /* Radii */
+  --r-card:    28px;
+  --r-panel:   22px;
+  --r-callout: 18px;
+  --r-control: 12px;
+  --r-pill:    999px;
+
+  /* Shadows — --shadow-card is set in .rd (name clash) */
+  --shadow-panel: 0 22px 50px -35px rgba(60,30,20,.5);
+  --shadow-cta:   0 8px 20px -8px rgba(192,57,43,.7);
+}
+
+/* ── Redesign opt-in: <body class="rd"> maps the legacy token names the
+   existing stylesheet consumes onto the Locked values, so the whole page
+   chrome (nav, cards, quiz, matching, callouts) adopts one warm system.
+   Scoped, additive, fully reversible: no other page is touched. ── */
+.rd {
+  /* the two colliding names, at their Locked values */
+  --accent: var(--accent-strong);
+  --border: #E4DCCB;
+
+  /* fonts */
+  --font-serif: var(--font-display);
+  --font-sans:  var(--font-body);
+
+  /* surfaces */
+  --bg:            var(--surface-page);
+  --card:          var(--surface-panel);
+  --sunken:        var(--surface-inset);
+  --border-strong: var(--rule);
+
+  /* ink */
+  --text:  var(--ink);
+  --muted: var(--ink-muted);
+
+  /* accent family → burnt-orange primary */
+  --accent-hover:  var(--accent-deep);
+  --accent-soft:   var(--accent-wash);
+  --accent-border: var(--accent-tint-border);
+  --on-accent:     #FFFFFF;
+
+  /* one warm palette — subject + triple identity fold into the accent */
+  --subject:        var(--accent-strong);
+  --chemistry:      var(--accent-strong);
+  --chemistry-soft: var(--accent-wash);
+
+  /* marking → Locked green / red */
+  --success:      var(--ok);
+  --success-soft: var(--ok-bg);
+  --danger:       var(--err);
+  --danger-soft:  var(--err-bg);
+
+  /* radii → Locked scale */
+  --radius:    var(--r-panel);
+  --radius-lg: var(--r-card);
+  --radius-sm: var(--r-control);
+
+  /* ── MRB-123 · redesign type scale ──
+     Base body 16→18px on redesigned pages. `--rd-fs-scale` is the single
+     lever: every redesign size is `calc(<orig> * var(--rd-fs-scale))`, so
+     one number moves the whole ramp proportionally. Relationships, weights
+     and (unitless) line-heights are unchanged — everything just larger.
+     .rd-gated: the global :root ramp (16px base) is untouched, so the 300+
+     non-redesigned pages are unaffected. To change the base again, edit only
+     this one value (e.g. 1.25 for a 20px base). */
+  --rd-fs-scale: 1.25;   /* 20px ÷ 16px */
+
+  /* the shared --fs-* ramp, scaled on redesigned pages only */
+  --fs-body:       calc(1rem     * var(--rd-fs-scale));
+  --fs-small:      calc(0.875rem * var(--rd-fs-scale));
+  --fs-label:      calc(0.75rem  * var(--rd-fs-scale));
+  --fs-card-title: calc(1.125rem * var(--rd-fs-scale));
+  --fs-section:    calc(1.375rem * var(--rd-fs-scale));
+  --fs-page-title: clamp(calc(1.875rem * var(--rd-fs-scale)), calc((1.1rem + 2.6vw) * var(--rd-fs-scale)), calc(3.75rem * var(--rd-fs-scale)));
+}
