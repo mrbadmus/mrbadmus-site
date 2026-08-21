@@ -155,7 +155,7 @@ QUESTIONS = [
     # ── standard ────────────────────────────────────────────────────────
     {
         "id": "c5-02-s01",
-        "band": "s",
+        "band": "standard",
         "text": "Magnesium ribbon is heated in air and leaves a white powder "
                 "that weighs more than the ribbon did. Is this a thermal "
                 "decomposition?",
@@ -182,7 +182,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-02-s02",
-        "band": "s",
+        "band": "standard",
         "text": "4.00 g of copper carbonate is heated until the colour change "
                 "is complete. The tube now holds 2.58 g. Where has the "
                 "missing 1.42 g gone?",
@@ -209,7 +209,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-02-s03",
-        "band": "s",
+        "band": "standard",
         "text": "Ice in a beaker is heated until it melts. Copper carbonate "
                 "in a tube is heated until it goes black. What is the real "
                 "difference between the two changes?",
@@ -236,7 +236,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-02-s04",
-        "band": "s",
+        "band": "standard",
         "text": "Baking powder in a cake mixture is heated in an oven and the "
                 "cake rises. Why is this a thermal decomposition?",
         "options": [
@@ -264,7 +264,7 @@ QUESTIONS = [
     # ── harder ──────────────────────────────────────────────────────────
     {
         "id": "c5-02-h01",
-        "band": "h",
+        "band": "harder",
         "text": "A teacher heats copper carbonate in a tube that has had all "
                 "the air pumped out of it. It still turns black and a gas "
                 "still comes off. What does that show?",
@@ -291,7 +291,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-02-h02",
-        "band": "h",
+        "band": "harder",
         "text": "A substance is heated and something changes. Which of these "
                 "is the best evidence that a chemical change happened rather "
                 "than a physical one?",
@@ -318,7 +318,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-02-h03",
-        "band": "h",
+        "band": "harder",
         "text": "A student catches the gas from a decomposing carbonate in a "
                 "balloon fitted over the tube, and weighs the whole apparatus "
                 "before and after. What does the balance read afterwards?",
@@ -345,7 +345,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-02-h04",
-        "band": "h",
+        "band": "harder",
         "text": "A cement works plans to heat its limestone kilns with "
                 "electricity from wind turbines instead of by burning fuel. "
                 "Why will it still release carbon dioxide?",

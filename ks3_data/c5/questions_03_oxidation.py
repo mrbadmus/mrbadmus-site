@@ -154,7 +154,7 @@ QUESTIONS = [
     # ── standard ────────────────────────────────────────────────────────
     {
         "id": "c5-03-s01",
-        "band": "s",
+        "band": "standard",
         "text": "In the tube of boiled water under oil, the nail shows the "
                 "faintest trace of rust where the oil did not quite seal. "
                 "What should the conclusion say about it?",
@@ -185,7 +185,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-03-s02",
-        "band": "s",
+        "band": "standard",
         "text": "Stainless steel cutlery is mostly iron, and it does not "
                 "rust. Why not?",
         "options": [
@@ -211,7 +211,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-03-s03",
-        "band": "s",
+        "band": "standard",
         "text": "A student sets up only two tubes: a nail in tap water open "
                 "to the air, and a nail in boiled water under a layer of oil. "
                 "After four weeks only the first has rusted. What can they "
@@ -240,7 +240,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-03-s04",
-        "band": "s",
+        "band": "standard",
         "text": "Magnesium burning and iron rusting are both oxidations, "
                 "even though one takes two seconds and the other takes twenty "
                 "years. Why does the difference in speed not change the name?",
@@ -270,7 +270,7 @@ QUESTIONS = [
     # ── harder ──────────────────────────────────────────────────────────
     {
         "id": "c5-03-h01",
-        "band": "h",
+        "band": "harder",
         "text": "A galvanised gate and a painted gate are both scratched down "
                 "to the steel underneath. Only the painted one starts to "
                 "rust. Why?",
@@ -298,7 +298,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-03-h02",
-        "band": "h",
+        "band": "harder",
         "text": "Aluminium is more reactive than iron, yet an aluminium "
                 "window frame lasts decades outdoors while an iron one rusts "
                 "through. What explains it?",
@@ -325,7 +325,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-03-h03",
-        "band": "h",
+        "band": "harder",
         "text": "A student says the salt-water tube proves that rusting needs "
                 "salt, because that tube rusted the most of the four. What is "
                 "wrong with the claim?",
@@ -353,7 +353,7 @@ QUESTIONS = [
     },
     {
         "id": "c5-03-h04",
-        "band": "h",
+        "band": "harder",
         "text": "Lemon juice squeezed onto a cut apple stops the surface "
                 "going brown. What is happening?",
         "options": [
