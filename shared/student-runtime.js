@@ -301,6 +301,31 @@
       }
       var v = read(b.k);
       node.v = (v === null || v === undefined) ? "" : String(v);
+
+      /* ⊕ RULED 22 Aug 2026 — P6. A BOUND LITERAL THAT CARRIES ITS OWN
+         ELEMENT. Marked `d` in the binding table: when the value is empty the
+         element the text sits in is removed too.
+
+         Emptying the text alone is not enough for anything Design drew as a
+         CHIP. The environment badge is a bordered, padded pill; blanking its
+         text leaves a small empty box in the header — visible, meaningless,
+         and worse than either showing the badge or not having one. The parent
+         is removed from its own parent's children, so the whole pill goes.
+
+         Only ever removes; it can never add or reorder, so a binding table
+         built against a different template still fails loudly at the path
+         check above rather than quietly reshaping the page. */
+      if (b.d && !node.v) {
+        var owner = out[b.p[0]], gp = null, k;
+        for (k = 1; k < b.p.length - 1; k++) {
+          gp = owner;
+          owner = owner && owner.c && owner.c[b.p[k]];
+        }
+        if (gp && gp.c) {
+          var at = gp.c.indexOf(owner);
+          if (at >= 0) { gp.c.splice(at, 1); }
+        }
+      }
     }
     return out;
   }

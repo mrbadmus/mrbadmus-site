@@ -54,7 +54,66 @@ absent from the port. Those gates are what catch this file rotting.
 #   297, 298   the leader's hero split bar
 #   322 … 330  the static "ON TIME · 40 / SCORE · 40 / RECALL · 20" legend
 PRUNE = {
-    "class view": [275, 279, 297, 298, 322, 325, 328],
+    # ⊕ RULED 22 Aug 2026 — P7. SETTINGS IS A DEAD CONTROL, SO IT GOES.
+    #
+    #   26   the wide header's "Settings" link
+    #   30   the same item inside the narrow account sheet
+    #
+    # It did nothing. Not "did something small" — nothing: an `<a href="#top">`
+    # with no handler, which scrolls the page to the top and is read by a
+    # student as the app ignoring them. There is nothing to set yet, and a
+    # button that lies about being a button teaches a child not to trust the
+    # other ones.
+    #
+    # It comes back when Design's theme picker gives it a job. Removing it now
+    # and restoring it with a purpose is a smaller lie than leaving it.
+    #
+    # ⚠️ REGISTERED IN `student_behaviour.RULED_DIVERGENCE`, because this one
+    # is VISIBLE. The seven MRB-275 prunes below remove figures Design draws
+    # from data we do not have; this removes a word from the header, so every
+    # class-view drive's text now differs from Design's by that word and the
+    # gate has to be told why. It is asserted from both sides: present in
+    # Design's own file, absent from the port.
+    #
+    # ⚠️ CLASS VIEW ONLY, AND THAT WAS CHECKED RATHER THAN ASSUMED. The first
+    # draft of this ruling pruned 26 and 30 on BOTH pages, because both pages
+    # obviously have a header. They do not have the same one: node indices are
+    # per-page, and on the assignment page 26/27/30/31 are the `sc-if` around
+    # the deadline chip, the LATE chip, the HANDED IN chip and a chevron.
+    # Pruning them would have silently deleted a student's "LATE" and
+    # "HANDED IN" badges — a far worse defect than the one being fixed, shipped
+    # in the same commit that claimed to fix it. The assignment page has no
+    # account menu at all: no Settings, no Sign out, no environment badge.
+    "class view": [26, 30, 275, 279, 297, 298, 322, 325, 328],
+}
+
+# ── template nodes that need a CLICK HANDLER Design never gave them ───────
+#
+# ⊕ RULED 22 Aug 2026 — P5. SIGN OUT DID NOT SIGN OUT — IT SCROLLED.
+#
+#   27   the wide header's "Sign out" button
+#   31   the same item inside the narrow account sheet
+#
+# Both are `<a href="#top">Sign out</a>` with no handler at all, in Design's
+# delivery and therefore in the port. Pressing it scrolled the page to the top
+# and left the student signed in — on a shared school machine, that is the
+# next child seeing this one's marks.
+#
+# ⚑ WHY A THIRD MECHANISM. `LOGIC` rewrites Design's logic and `PRUNE` removes
+# template subtrees; neither can put a handler on a node that has none.
+# `BINDINGS` can only change a node's TEXT. Adding one more mechanism was the
+# alternative to hand-editing the built page, which is the mistake this whole
+# file exists to recover from.
+#
+# `{node index: handler name}`. The name is resolved out of the same scope
+# every `onClick="{{ … }}"` in Design's template resolves from, so a handler
+# added here is reached exactly as one Design drew — see `node.on` in
+# `shared/student-runtime.js`. The build asserts each node exists and does not
+# already carry a handler, so this can never silently replace one of Design's.
+SET_ON = {
+    # Class view only — see the note on PRUNE above. The assignment page has
+    # no account menu, so there is no Sign out on it to wire.
+    "class view": {27: "signOut", 31: "signOut"},
 }
 
 # ── the logic, transformed ───────────────────────────────────────────────
@@ -64,6 +123,155 @@ PRUNE = {
 # only in that each is applied to the result of the last.
 LOGIC = {
     'class view': [
+        # ── ⊕ RULED 22 Aug 2026 — P2. "STREAK BROKEN" BEFORE A STREAK ─────
+        #
+        #     streakText: st.streak > 0 ? 'STREAK ' + pad(st.streak)
+        #                                : 'STREAK BROKEN',
+        #
+        # The streak opens at 0 — correctly, since nothing records a recall
+        # streak between sessions — and 0 rendered as STREAK BROKEN. So the
+        # first thing the round said to a student who had not yet answered a
+        # single question was that they had broken something.
+        #
+        # RULED: the label appears only after a streak ACTUALLY BREAKS. Zero
+        # is now two different states and the page has to tell them apart:
+        #
+        #     no streak yet      nothing is said
+        #     a streak, running  STREAK 03
+        #     a streak, broken   STREAK BROKEN
+        #
+        # ⚠️ A FIRST WRONG ANSWER IS NOT A BROKEN STREAK EITHER, and that is
+        # the case the obvious fix ("say nothing until they have answered
+        # one") gets wrong. Nothing was built, so nothing broke. `broke` is
+        # therefore set only on the transition FROM a streak TO none —
+        # `s.streak > 0` at the moment it is zeroed — and not on reaching
+        # zero, which is where it starts.
+        #
+        # It rides with `streak` rather than with the round: `newRound` does
+        # not reset either, because a student's best run is theirs across the
+        # sitting and Design already kept the streak across rounds.
+        (
+            "  state = {",
+            "  /* ⊕ RULED 22 Aug 2026 — P2. `broke` — see streakText below. */\n"
+            "  state = {\n    broke: false,",
+        ),
+        (
+            "  skipQuestion = () => this.setState((s) => ({ qi: s.qi + 1, pick: null, checked: false, streak: 0 }));",
+            "  skipQuestion = () => this.setState((s) => ({ qi: s.qi + 1, pick: null, checked: false, streak: 0, broke: s.broke || s.streak > 0 }));",
+        ),
+        (
+            "      return { checked: true, right: s.right + (ok ? 1 : 0), streak: ok ? s.streak + 1 : 0 };",
+            "      /* ⊕ RULED 22 Aug 2026 — P2. A streak BREAKS only when there\n"
+            "         was one: wrong on the first question of a round zeroes a\n"
+            "         streak that was already zero, and nothing was broken. */\n"
+            "      return { checked: true, right: s.right + (ok ? 1 : 0), streak: ok ? s.streak + 1 : 0, broke: s.broke || (!ok && s.streak > 0) };",
+        ),
+        (
+            "      streakText: st.streak > 0 ? 'STREAK ' + pad(st.streak) : 'STREAK BROKEN',",
+            "      /* ⊕ RULED 22 Aug 2026 — P2. Silent until a streak breaks. */\n"
+            "      streakText: st.streak > 0 ? 'STREAK ' + pad(st.streak) : (st.broke ? 'STREAK BROKEN' : ''),",
+        ),
+        # ── ⊕ RULED 22 Aug 2026 — P5. SIGN OUT NOW SIGNS OUT ──────────────
+        #
+        # The handler `SET_ON` attaches to the two "Sign out" nodes. It is
+        # exposed here, in `renderVals()`, beside `goClass` and `goRecall`,
+        # because that is the scope `node.on` resolves against.
+        #
+        # It does three things, in this order, and the order matters:
+        #
+        #   1  CLEAR THIS DEVICE'S CACHES FIRST. The assignment page keeps a
+        #      draft under `mrbadmusai.assignment.<class>.<id>.v1`. On a shared
+        #      school machine — which is most of them — leaving that behind
+        #      hands the next child this child's answers, already filled in.
+        #      Done before the session ends, so it happens even if the network
+        #      call is slow or fails.
+        #   2  END THE SUPABASE SESSION, through the guard the rest of the
+        #      student pages already use, so there is one sign-out and not two.
+        #      It redirects to /auth.html and carries ?env=test when the page
+        #      is on the test project.
+        #   3  FALL BACK TO /auth.html. Reached when the guard is not loaded —
+        #      which is exactly the fixture page. Design's file navigates
+        #      nowhere and the behaviour gate does not press this control, so
+        #      the fallback is never taken in anger; it is here so that a
+        #      signed-in student on a page with a broken script still LEAVES
+        #      rather than silently staying signed in.
+        (
+            "      goClass: () => this.go('class'), goRecall: () => this.go('recall'),",
+            "      goClass: () => this.go('class'), goRecall: () => this.go('recall'),\n"
+            "      /* ⊕ RULED 22 Aug 2026 — P5. */\n"
+            "      signOut: (e) => {\n"
+            "        if (e && e.preventDefault) { e.preventDefault(); }\n"
+            "        try {\n"
+            "          Object.keys(window.localStorage)\n"
+            "            .filter((k) => k.indexOf('mrbadmusai.') === 0)\n"
+            "            .forEach((k) => window.localStorage.removeItem(k));\n"
+            "        } catch (err) { /* a private window has no storage to clear */ }\n"
+            "        const g = window.MrBadmusStudentGuard;\n"
+            "        if (g && g.signOut) { g.signOut(); return; }\n"
+            "        window.location.href = '/auth.html';\n"
+            "      },",
+        ),
+        # ── ⊕ RULED 22 Aug 2026 — P1. THE PRIMARY BUTTON ON THE BENCH ─────
+        #
+        # "Open the assignment" — the single most important control on the
+        # page — did not open the assignment. It ticked a checklist item:
+        #
+        #     openAssignment = () => this.setState((s) =>
+        #       ({ bench: Object.assign({}, s.bench, { t1: true }) }));
+        #
+        # That is not a bug in Design's file. Design drew ONE page, and in one
+        # page "open it" is a state change — the checklist's first item going
+        # green. It became a defect at the moment there was a second page to
+        # open, and nothing in the port had told it so.
+        #
+        # It now navigates when it has somewhere to navigate to, and ticks
+        # otherwise. The tick is kept rather than replaced: with an empty
+        # `assignmentHref` this is Design's own line, byte for byte in effect,
+        # so the fixture still ticks and the behaviour gate needs no
+        # divergence registered.
+        (
+            "  openAssignment = () => this.setState((s) => ({ bench: Object.assign({}, s.bench, { t1: true }) }));",
+            "  openAssignment = () => {\n"
+            "    /* ⊕ RULED 22 Aug 2026 — P1. Open the assignment. */\n"
+            "    const href = MRB_DATA('assignmentHref');\n"
+            "    if (href) { window.location.href = href; return; }\n"
+            "    this.setState((s) => ({ bench: Object.assign({}, s.bench, { t1: true }) }));\n"
+            "  };",
+        ),
+        # ── ⊕ RULED 22 Aug 2026 — P3. "OPEN THE LESSON" OPENED RECALL ──────
+        #
+        #     primary: w.status === 'open' || w.retake
+        #       ? this.openAssignment : () => this.go('recall'),
+        #
+        # One expression serves five labels, and only two of them are the
+        # assignment. Everything else fell into `go('recall')` — so a student
+        # whose marked work said "Open the lesson" got the recall round, and a
+        # student asking for an extension got the recall round too.
+        #
+        # The row now routes by what its button SAYS:
+        #
+        #   open / retake   the assignment      (P1's destination)
+        #   marked          the lesson it drew on, when the build knows where
+        #                   that lesson lives
+        #   anything else   Design's own fallback, unchanged
+        #
+        # ⚠️ THE FALLBACK IS DELIBERATE AND IS NOT A SHRUG. `r.lessonHref` is
+        # empty when the work draws on a lesson this build has no page for —
+        # a retired slug, or a question bank that has moved on. Sending that
+        # student to a 404 with their name on it is worse than sending them
+        # somewhere that exists, and the recall round is at least about the
+        # same class. The button that is genuinely wrong here is "Ask for an
+        # extension", which does not do that either; it is out of tonight's
+        # scope and is on the report as such rather than being quietly
+        # rewired.
+        (
+            "        primary: w.status === 'open' || w.retake ? this.openAssignment : () => this.go('recall'),",
+            "        primary: (w.status === 'open' || w.retake)\n"
+            "          ? this.openAssignment\n"
+            "          : (isMarked && w.lessonHref)\n"
+            "            ? () => { window.location.href = w.lessonHref; }\n"
+            "            : () => this.go('recall'),",
+        ),
         (
             "        monoBorder: r.me ? 'var(--st-accent)' : 'var(--st-edge)',\n        barWidth: Math.round((r.pts / maxPts) * 100) + '%',",
             '        monoBorder: r.me ? \'var(--st-accent)\' : \'var(--st-edge)\',\n        /* ⊕ RULED 21 Aug 2026 — the bar shows the TOTAL, and the ON TIME /\n           SCORE / RECALL split is omitted entirely. `barWidth` is the total:\n           this student\'s points against the class maximum, which is a real\n           comparison and stays. The three sub-widths that used to fill it are\n           gone, along with the leader\'s hero bar, the leader\'s three-column\n           figures and the static "ON TIME · 40 / SCORE · 40 / RECALL · 20"\n           legend (template nodes 275-283, 295-298, 322-330).\n\n           ON TIME and SCORE are both computable — due_at against the submission\n           timestamp, and score against max_score. RECALL is not: nothing\n           anywhere records a recall round, `quiz_scores` carries neither a\n           class nor a teaching week, and `quiz_question_attempts` has no\n           question_ref to resolve an answer back to a rung. A bar showing two\n           of three components is a different lie from one showing three\n           fabricated ones, and it is still one.\n\n           What it would take to make the split honest is measured and costed on\n           MRB-275. Do not restore any of this until that lands — student_parity\n           layer F already fails the build if Design\'s 0.4 / 0.19 drawing\n           constants reappear. */\n        barWidth: Math.round((r.pts / maxPts) * 100) + \'%\',',

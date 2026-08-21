@@ -33,7 +33,13 @@
     "/shared/config.js",
     "/shared/class-entry.js",
     "/shared/student-guard.js",
-    "/shared/student-data.js"
+    "/shared/student-data.js",
+    /* ⊕ RULED 22 Aug 2026 — P3. Where each KS3 lesson lives, so a lesson slug
+       out of the database can become the URL of the lesson itself. Generated
+       by `build_student_port.py`; see `lesson_index()` there for why the map
+       has to be shipped rather than derived. Last in the list because nothing
+       above it needs it and it is the only one a page can survive without. */
+    "/shared/ks3-lesson-urls.js"
   ];
 
   /* ── plain words, for when the page cannot render ───────────────────────
@@ -186,6 +192,51 @@
     return words.charAt(0).toUpperCase() + words.slice(1);
   }
 
+  /* ── where things are, as URLs ─────────────────────────────────────────
+     ⊕ RULED 22 Aug 2026 — P1 and P3. Both buttons went nowhere, and neither
+     could have gone anywhere: the page had no URL for either destination.
+
+     `?class=` and `?env=` travel with every internal link. Dropping `class`
+     would land a student in whichever class `pickClass` chooses by default,
+     which for a student in two classes is a coin toss; dropping `env` would
+     move a tester from the test project to production mid-journey. */
+  function carryParams(path) {
+    var q = new URLSearchParams(window.location.search);
+    var keep = new URLSearchParams();
+    ["class", "env"].forEach(function (k) {
+      if (q.get(k)) { keep.set(k, q.get(k)); }
+    });
+    var qs = keep.toString();
+    return qs ? path + "?" + qs : path;
+  }
+
+  function assignmentHref() { return carryParams("/student/assignment.html"); }
+
+  /* A KS3 lesson slug → the lesson's own page, or "" if this build does not
+     know that slug. Empty rather than a guessed path: a link that 404s is
+     worse than a button that is not offered, and the caller checks. */
+  function lessonHref(slug) {
+    if (!slug) { return ""; }
+    var where = window.MRB_KS3_LESSONS && window.MRB_KS3_LESSONS[slug];
+    return where ? "/ks3/" + where + "/" + slug + ".html" : "";
+  }
+
+  /* `source_ref` comes in TWO shapes and both are real.
+
+       b4-01-s01                                        a bank/ladder id
+       chemistry/particles-and-their-behaviour/particle-model   a path
+
+     The second is how the hand-seeded May demo assignment was written, and it
+     is still the only marked work on the platform — so the shape that looks
+     like a legacy accident is the one a student actually has feedback on.
+     Its last segment is the lesson slug, which is checked against the index
+     like any other rather than trusted as a path. */
+  function slugFromRef(ref) {
+    if (!ref) { return ""; }
+    var str = String(ref);
+    return str.indexOf("/") >= 0 ? str.split("/").pop() : "";
+  }
+
   function initials(first, last) {
     var f = (first || "").trim(), l = (last || "").trim();
     if (f && l) { return (f[0] + l[0]).toUpperCase(); }
@@ -252,6 +303,55 @@
      name is a poor answer, but a page that will not draw its own breadcrumb
      is a worse one, and the year is only ever missing when something else has
      already gone wrong. */
+  /* ── the environment badge ─────────────────────────────────────────────
+     ⊕ RULED 22 Aug 2026 — P6. The badge renders only when this is NOT the
+     product. On mrbadmus.com, nothing at all.
+
+     "Production" is BOTH halves — the real domain AND the real project — and
+     it has to be, because the dangerous case is the one where only one of
+     them is true. A developer on localhost pointed at the production database
+     with `?env=prod` is looking at 135 real children's homework, and that is
+     exactly when a badge earns its place. So:
+
+       mrbadmus.com + prod project     ""       the product. Nothing.
+       localhost    + prod project     "PROD"   ⚠️ real data, off the real site
+       anywhere     + test project     "TEST"
+       anything else                   the environment's name, or LOCAL
+
+     ⚠️ THIS CANNOT BE PROVED ON localhost, and that is the design rather than
+     a gap. Every local drive runs on `localhost?env=prod`, which is the second
+     row: the badge SHOWS, and showing is correct there. The empty case is only
+     reachable from the real domain, so it is verified on mrbadmus.com after
+     the push and nowhere else. */
+  /* ── how many, in words ────────────────────────────────────────────────
+     ⊕ RULED 22 Aug 2026 — P2. Design writes the round size as a WORD — "Six a
+     round", "SIX QUESTIONS", "OF SIX" — which is exactly why no grep for a
+     digit ever found any of the three, and why the header announced six over
+     a counter reading 01/02. Keeping the word keeps Design's voice; the
+     number inside it is now the real one.
+
+     Beyond twelve it falls back to digits rather than growing a dictionary. A
+     round is capped at six, so the tail is unreachable today and exists so
+     that raising the cap cannot produce "undefined a round". */
+  var NUM_WORDS = ["no", "one", "two", "three", "four", "five", "six",
+                   "seven", "eight", "nine", "ten", "eleven", "twelve"];
+
+  function numWord(n) {
+    n = Number(n) || 0;
+    return (n >= 0 && n < NUM_WORDS.length) ? NUM_WORDS[n] : String(n);
+  }
+
+  function capitalise(w) { return w.charAt(0).toUpperCase() + w.slice(1); }
+
+  function envBadgeText() {
+    var cfg = window.MrBadmusConfig || {};
+    var env = String(cfg.environment || "");
+    var host = String(window.location.hostname || "");
+    var live = (host === "mrbadmus.com" || host === "www.mrbadmus.com");
+    if (live && env === "prod") { return ""; }
+    return env ? env.toUpperCase() : "LOCAL";
+  }
+
   function termLabelFrom(serverNow, year) {
     var today = londonYmd(serverNow);
 
@@ -568,6 +668,60 @@
       .select("id, academic_week").eq("class_id", klass.id).is("deleted_at", null);
     (aw.data || []).forEach(function (r) { weeks[r.id] = r.academic_week; });
 
+    /* ── which lesson each piece of work draws on ───────────────────────
+       ⊕ RULED 22 Aug 2026 — P3. "Open the lesson" needs a lesson, and the
+       work rows carried none: `lessonDefs` is built from the CURRENT
+       assignment's questions and says nothing about the marked work from
+       three weeks ago, which is the only work that button appears on.
+
+       The chain is `assignment_questions.source_ref` → the bank or the
+       ladder → `lesson_slug`, and a student is allowed to walk all of it
+       (`aq_student_read`; both question tables are readable by any
+       authenticated user). A failure anywhere in it costs the button and
+       nothing else — the work list still renders, so this is caught and
+       logged rather than thrown. */
+    var lessonsFor = {};
+    try {
+      var ids = (aw.data || []).map(function (r) { return r.id; });
+      if (ids.length) {
+        var aq = await sb.from("assignment_questions")
+          .select("assignment_id, position, source_ref")
+          .in("assignment_id", ids).order("position");
+
+        var refs = [], bySlug = {};
+        (aq.data || []).forEach(function (r) {
+          if (r.source_ref && String(r.source_ref).indexOf("/") < 0) {
+            refs.push(r.source_ref);
+          }
+        });
+        if (refs.length) {
+          var bank = await sb.from("ks3_bank_questions")
+            .select("id, lesson_slug").in("id", refs);
+          (bank.data || []).forEach(function (r) { bySlug[r.id] = r.lesson_slug; });
+          var lad = await sb.from("ks3_ladder_questions")
+            .select("question_ref, lesson_slug").in("question_ref", refs);
+          (lad.data || []).forEach(function (r) {
+            bySlug[r.question_ref] = r.lesson_slug;
+          });
+        }
+
+        (aq.data || []).forEach(function (r) {
+          var slug = bySlug[r.source_ref] || slugFromRef(r.source_ref);
+          var href = lessonHref(slug);
+          if (!href) { return; }              // not a lesson this build knows
+          var list = lessonsFor[r.assignment_id] ||
+                     (lessonsFor[r.assignment_id] = []);
+          for (var i = 0; i < list.length; i++) {
+            if (list[i].slug === slug) { return; }   // distinct, in position order
+          }
+          list.push({ slug: slug, href: href, name: deslug(slug) });
+        });
+      }
+    } catch (err) {
+      console.error("[student-live] could not resolve the lessons behind "
+                    + "this class's work", err);
+    }
+
     var year = null;
     var yrs = await sb.from("academic_years")
       .select("id, name, start_date, end_date").is("deleted_at", null);
@@ -627,13 +781,24 @@
         detailLine = fmtDue(c.due_at);
       }
 
+      /* ⊕ RULED 22 Aug 2026 — P3. Where this row's primary button goes.
+         Design's label is singular — "Open the lesson" — and every real
+         assignment on the platform draws on exactly one lesson, so the first
+         IS the lesson. `lessons` carries the whole distinct list anyway, in
+         the order the questions ask them, so a future multi-lesson row has
+         somewhere honest to grow into rather than needing this re-derived. */
+      var rowLessons = lessonsFor[c.id] || [];
+
       var row = {
         id: c.id,
         week: weekOf(c),
         title: c.title || "",
         brief: brief,
         status: status,
-        detail: detailLine
+        detail: detailLine,
+        lessons: rowLessons,
+        lessonHref: rowLessons.length ? rowLessons[0].href : "",
+        assignmentHref: c.id === currentId ? assignmentHref() : ""
       };
       if (status === "marked" && c.max_score > 0) {
         row.score = Math.round((c.score / c.max_score) * 100);
@@ -773,6 +938,13 @@
       boardWeek: weekNo == null ? 1 : weekNo,
 
       shoutouts: shoutouts,
+
+      /* ⊕ RULED 22 Aug 2026 — P1. Where "Open the assignment" goes. Empty
+         when this class has no current assignment, and the ruling falls back
+         to Design's own behaviour rather than navigating to a page that would
+         only tell the student there is no work. */
+      assignmentHref: (current && current.assignment) ? assignmentHref() : "",
+
       currentWeek: weekNo == null ? 0 : weekNo,
       weekNumber: weekNo == null ? "—" : pad2(weekNo),
       weekTotal: "39",
@@ -901,6 +1073,31 @@
 
       subjectLabel: klass.pill_label || "",
       termLabel: termLabelFrom(serverNow, year),
+
+      /* ⊕ RULED 22 Aug 2026 — P6. Empty on the live site, and the binding is
+         marked `drop`, so the chip's element goes with its text rather than
+         leaving an empty bordered box in the header. */
+      envBadge: envBadgeText(),
+
+      /* ── ⊕ RULED 22 Aug 2026 — P2. The round is min(6, pool), and every
+         count on the page says the size it is going to show ──────────────
+         `questions` is already capped at six where it is built, so this IS
+         min(6, pool) and needs no arithmetic of its own. When the Physics and
+         C4+ banks land the pool passes six, the cap does its job, and all
+         four of these say six again with nothing changed. */
+      recallBlurb: questions.length
+        ? "Questions from the lessons this class has covered. "
+          + capitalise(numWord(questions.length))
+          + (questions.length === 1 ? " question a round" : " a round")
+          + ", unlimited rounds."
+        : SAY.noRecall,
+      recallEyebrow: questions.length
+        ? (numWord(questions.length).toUpperCase() + " QUESTION"
+           + (questions.length === 1 ? "" : "S") + " \u00B7 UNLIMITED ROUNDS")
+        : "",
+      recallOutOf: "OF " + numWord(questions.length).toUpperCase(),
+      recallCrumb: questions.length
+        ? (numWord(questions.length).toUpperCase() + " A ROUND") : "RECALL",
       topicTitle: current && current.assignment
         ? (current.assignment.topic || current.assignment.title || "")
         : ""

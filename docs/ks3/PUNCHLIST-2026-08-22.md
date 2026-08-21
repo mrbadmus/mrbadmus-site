@@ -97,3 +97,105 @@ the right reason and get "fixed" by bumping the constant.
 
 Gates: `student_parity.py` PASS, `student_behaviour.py` PASS. Seam count 26 → 28.
 
+### Unit 2 — P1 and P3, the two buttons that went nowhere
+
+**P1.** `openAssignment` ticked a checklist item and navigated nowhere. That is
+not a bug in Design's file — Design drew ONE page, and in one page "open it" IS
+a state change. It became a defect the moment there were two pages, and nothing
+had told it so. It now navigates, and falls back to Design's tick when there is
+nowhere to go, so the fixture is unchanged and no divergence was needed.
+
+**P3.** One expression served five labels:
+
+    primary: w.status === 'open' || w.retake ? this.openAssignment
+                                             : () => this.go('recall')
+
+Everything that was not the assignment fell into the recall round — so "Open the
+lesson" opened recall, and so did "Ask for an extension".
+
+⚠️ **THE BRIEF'S LESSON URL IS WRONG.** It says `/ks3/<subject>/<slug>.html`.
+The real shape is `/ks3/<subject>/<unit>/<slug>.html` —
+`/ks3/biology/breathing-and-gas-exchange/the-gas-exchange-system.html`. Building
+what the brief said would have shipped 183 dead links.
+
+And the unit directory is not derivable client-side. A student CAN walk
+`assignment_questions.source_ref` → the bank/ladder tables → `(unit_code,
+lesson_slug)` — all three readable under RLS, checked in `pg_policies`. What
+they cannot learn is that `B4` lives at `biology/breathing-and-gas-exchange`;
+that mapping is in `ks3_data`, which is Python. So `build_student_port.py` now
+emits **`shared/ks3-lesson-urls.js`** — 183 lessons, 11 KB — built from
+`ks3_data` and then CHECKED against the built tree. Reading the directory
+listing instead would have produced a map that is self-consistent and wrong the
+moment a lesson is renamed.
+
+`source_ref` has **two shapes**, and both are real: `b4-01-s01` (a bank id) and
+`chemistry/particles-and-their-behaviour/particle-model` (a path — how the
+hand-seeded May demo was written). The demo is still the only MARKED work on the
+platform, so the shape that looks like a legacy accident is the one a student
+actually has feedback on. Both resolve through the same index.
+
+Every real assignment draws on exactly ONE lesson (checked against production),
+so "the first lesson" IS the lesson. The whole distinct list is carried anyway.
+
+---
+
+### Unit 3 — P2, P5, P6, P7
+
+**P2. The counter was already right; the brief's premise is half wrong.**
+`recallMeter` and `qCounter` read `this.questions.length`, and `student-live.js`
+already stops filling the pool at six — so the round IS `min(6, pool)` and 01/02
+was CORRECT for a class with one covered lesson. Nothing about round size or
+composition needed changing, and it returns to six on its own when the banks
+land, which is the ruling's own test.
+
+What was wrong was the page ANNOUNCING six in four places, all of which spell
+the number as a WORD, which is why no search for a digit found any of them:
+
+| where | was | now |
+|---|---|---|
+| recall panel blurb | "Six a round, unlimited rounds." | "Two a round, unlimited rounds." |
+| recall header eyebrow | "SIX QUESTIONS · UNLIMITED ROUNDS" | "TWO QUESTIONS · UNLIMITED ROUNDS" |
+| round card | "RIGHT OUT / OF SIX" | "OF TWO" |
+| the crumb rail | "SIX A ROUND" | "TWO A ROUND" |
+
+The last had been *deliberately* left by a previous seam as "the recall view's
+own label and not data". True while a round was six.
+
+**"STREAK BROKEN" before anything was answered.** Zero meant two different
+things and the page could not tell them apart. Now three states: silent, running,
+broken. ⚠️ A first wrong answer is NOT a broken streak either — nothing was
+built — so `broke` is set only on the transition FROM a streak, never on
+reaching zero, which is where it starts. Invisible to the behaviour gate because
+Design's fixture opens at streak 3; proved by driving.
+
+**P5. Sign out** was `<a href="#top">` with no handler, on a shared school
+machine. Needed a THIRD ruling mechanism — `SET_ON` — because `LOGIC` rewrites
+logic, `PRUNE` removes nodes and `BINDINGS` only changes text; none can attach a
+handler. It clears this device's `mrbadmusai.*` caches FIRST (the assignment
+draft included — otherwise the next child gets this child's answers already
+filled in), then ends the session through the guard the other student pages use.
+
+**P6. The PROD badge** is now data with a new `drop` flag: when the value is
+empty the ELEMENT goes with the text, because blanking a bordered chip leaves a
+small empty box, which is worse than either state. Not pruned — pruning would
+take the badge from localhost and the test project too, which is where it stops
+someone driving the wrong database. ⚠️ Provable only on mrbadmus.com: every
+local drive runs `localhost?env=prod`, where showing the badge is correct.
+
+**P7. Settings removed** (nodes 26 and 30). ⚠️ The first draft pruned 26 and 30
+on BOTH pages because both obviously have a header. **They do not have the same
+one** — node indices are per-page, and on the assignment page 26/27/30/31 are the
+deadline `sc-if`, the LATE chip, the HANDED IN chip and a chevron. That would
+have silently deleted a student's LATE and HANDED IN badges, in the commit that
+claimed to fix a dead button. Caught by checking rather than assuming.
+
+**The behaviour gate needed a second half.** `RULED_DIVERGENCE` strips ruled text
+from Design's side but does nothing to the CONTROL list, which is compared as a
+plain list. Every divergence until now removed FIGURES; P7 is the first that
+removes something a student can press, so the gap had never been reached. Added
+`RULED_CONTROLS`, asserted both ways on the same split of scopes. Also: the
+pattern needs its trailing space, or Design's side reads "Ayo␣␣Sign out" and all
+nineteen drives go red over whitespace.
+
+Gates: parity PASS, behaviour PASS (2 new ruled assertions).
+
