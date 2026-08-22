@@ -63,9 +63,21 @@ import sys
 REF = os.path.join("docs", "ks3", "design-reference", "student")
 OUT = "student_templates.json"
 
+AMEND = os.path.join("docs", "ks3", "design-reference", "class-view-amendments")
+
+# ⊕ 22 Aug 2026 — THE DONOR. Design's class-view amendments compile as a THIRD
+# page that is never emitted. Nothing renders it; `build_student_port.py` reads
+# its tree and grafts the changed regions onto the live class view.
+#
+# It is compiled rather than hand-copied for the same reason the brand SVG is
+# captured rather than retyped: the amended regions are 70 KB of Design's
+# markup, and a merge that retyped any of it would drift the first time
+# somebody tidied a style string.
 PAGES = [
     dict(page="class view", src="source/Class View.dc.html"),
     dict(page="assignment", src="source/Assignment.dc.html"),
+    dict(page="class view amendments", src="source/KS3 Class View.dc.html",
+         ref=AMEND, standalone="standalone/ks3-class-view-bench-open.html"),
 ]
 
 # The three constructs, plus interpolation, plus the one imported component.
@@ -355,13 +367,14 @@ def capture_imports(cdp, spec, roots):
     if not wanted:
         return {}
 
-    server, port = cdp.serve(REF)
+    server, port = cdp.serve(spec.get("ref", REF))
     try:
         with cdp.Browser() as b:
             page = b.attach()
             page.set_viewport(1460, 1200)
+            standalone = spec.get("standalone") or STANDALONE[spec["page"]]
             page.goto("http://127.0.0.1:%d/%s"
-                      % (port, STANDALONE[spec["page"]].replace(" ", "%20")))
+                      % (port, standalone.replace(" ", "%20")))
             import time
             time.sleep(2.5)
             got = json.loads(page.eval(_IMPORT_JS))
@@ -370,13 +383,45 @@ def capture_imports(cdp, spec, roots):
     if got.get("error"):
         raise SystemExit("student_template.py: %s" % got["error"])
 
+    hosts = got.get("hosts") or {}
+
     out, missing = {}, []
     for tpl_i, name in sorted(wanted.items()):
-        html = (got.get("hosts") or {}).get(tpl_i)
+        html = hosts.get(tpl_i)
         if not html:
             missing.append("%s (data-dc-tpl=%s)" % (name, tpl_i))
         else:
             out[name] = html
+
+    # ⊕ 22 Aug 2026 — THE STANDALONE DOES NOT ALWAYS NUMBER LIKE THE SOURCE.
+    #
+    # Design's class-view amendments compiled cleanly and then failed here:
+    # the template puts the brand's `x-import` at 13, the delivered standalone
+    # renders it at 12. Neither is wrong. The standalone is a BUNDLE — it
+    # inlines the design system, so its helmet no longer carries the
+    # `<script src="_ds_bundle.js">` node that the source's does, and every
+    # index after the helmet shifts down by one.
+    #
+    # Index equality was never the property being relied on. This function
+    # wants ONE THING from the standalone: the rendered innerHTML of an
+    # `x-import`, because hand-copying an SVG is the kind of transcription
+    # that goes wrong quietly. The index is a convenience for finding it.
+    #
+    # So when every index misses and the two sides carry the SAME NUMBER of
+    # hosts, they are matched in document order instead — and the fallback
+    # says so on stdout every time it fires. A silent positional match is
+    # precisely the thing that would map the wrong SVG into the brand slot on
+    # some future page with two imports and never mention it.
+    if missing and not out and len(wanted) == len(hosts):
+        by_order = [hosts[k] for k in sorted(hosts, key=int)]
+        names = [wanted[k] for k in sorted(wanted, key=int)]
+        print("                 ⚠️  standalone numbering is offset from the "
+              "source (template %s vs standalone %s); matched the %d "
+              "x-import(s) in document order instead"
+              % (sorted(wanted, key=int), sorted(hosts, key=int), len(names)))
+        out = dict(zip(names, by_order))
+        missing = [n for n, h in zip(names, by_order) if not h]
+
     if missing:
         raise SystemExit(
             "student_template.py: %s — could not capture the rendered markup "
@@ -388,14 +433,15 @@ def capture_imports(cdp, spec, roots):
 
 
 def compile_page(cdp, spec):
-    path = os.path.join(REF, spec["src"])
+    ref = spec.get("ref", REF)
+    path = os.path.join(ref, spec["src"])
     if not os.path.exists(path):
         raise SystemExit("student_template.py: missing %s" % path)
     tpl, logic = template_and_logic(path)
     tpl, kebabbed = kebab_svg_attrs(tpl, spec["src"])
     tpl, logic, fb_split = split_feedback_edge(tpl, logic, spec["page"])
 
-    server, port = cdp.serve(REF)
+    server, port = cdp.serve(ref)
     try:
         with cdp.Browser() as b:
             page = b.attach()

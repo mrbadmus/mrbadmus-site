@@ -2,7 +2,7 @@
 """export_ks3_questions.py — mirror the KS3 question pools into Postgres.
 
     python3 export_ks3_questions.py            # write SQL under build/ks3-questions/
-    python3 export_ks3_questions.py --json     # write bank.json / ladder.json for the RPC
+    python3 export_ks3_questions.py --json     # write bank/ladder/cards.json for the RPC
     python3 export_ks3_questions.py --stdout   # one statement per line, to stdout
     python3 export_ks3_questions.py --check    # counts only, write nothing
     python3 export_ks3_questions.py --verify   # ⭐ THE GATE: does the database still
@@ -32,7 +32,7 @@ HTML page and scraping `.ks3-option[data-correct]` out of the DOM, which is what
 `student/assignment.html:96` has had to do, and which breaks the moment the
 lesson template changes a class name.
 
-── The two pools are not the same shape ─────────────────────────────────
+── The three pools are not the same shape ───────────────────────────────
 
 **The bank** (`ks3_data/<unit>/questions_*.py`) is twelve questions per lesson,
 four per band, each option carrying a `why` for every wrong answer. It is what a
@@ -43,6 +43,21 @@ page. Only `recall` and `apply` are exported: they are multiple choice and have
 a right answer. `explain` and `produce` are marked BY THE STUDENT against
 success criteria — nothing can score them, so nothing can put them in a recall
 round.
+
+**The cards** (`LESSON["vocabulary"]`, and the `equation` records nested in
+`LESSON["core"]`) are the flashcard deck. Two kinds ship, and both are pairs
+somebody already AUTHORED as a question and its answer:
+
+  * `definition` — one per vocabulary entry. 573 of them, in all 107 lessons.
+  * `equation`   — one per authored word equation. 9 of them, in 7 lessons.
+
+`key_fact` is a KIND THE SCHEMA ACCEPTS AND THIS EXPORTER NEVER EMITS. A key
+fact is a STATEMENT, not a pair: `key_facts[].text` would be the back and
+nothing in the record is the front. `big_question` is the obvious candidate and
+is unusable — a median of 148 characters, 87 of the 107 over 120 — so a front
+would have to be WRITTEN, and writing a science prompt for 107 lessons is
+Mide's gate, not an export. The slot is in the schema so that the day those
+fronts are authored, the migration does not move.
 
 ⚠️ **The right-answer feedback slot is left CLOSED.** A ladder authors three
 feedback strings, one for each wrong option. The correct option has none, and
@@ -210,6 +225,304 @@ def ladder_rows():
     return rows
 
 
+# ── the cards ────────────────────────────────────────────────────────────
+
+# `key_fact` is accepted by the table and emitted by nothing. See the module
+# docstring: a key fact is a statement, and deriving a front for one would mean
+# authoring science prompts, which is Mide's gate.
+CARD_KINDS = ("definition", "equation", "key_fact")
+
+# The one place a KS3 unit's human title is written down.
+def unit_titles():
+    from ks3_data.structure import unit_index
+    return {code: u["title"] for code, u in unit_index().items()}
+
+
+# ⚠️ NO MARKUP MAY REACH A CARD FACE, and this asserts it rather than cleaning
+# it up. Lesson content DOES carry `<strong>` and `<em>` — `close`, `gloss` and
+# `key_facts[].text` are full of it — but the five fields a card is built from
+# (`term`, `definition`, `note`, and an equation's two sides) carry none today,
+# measured across all 107 lessons.
+#
+# Both ways of "handling" markup here are defects. Escaping it ships a literal
+# `<em>` to a child. Stripping it silently discards emphasis an author chose to
+# put there, and the author never learns. So neither: the export FAILS, and
+# whoever typed the tag decides — either it comes out, or the card surface
+# grows a way to render it and this guard is widened deliberately.
+_MARKUP = ("<", "&lt;", "&amp;", "&#")
+
+
+def _no_markup(where, value):
+    for probe in _MARKUP:
+        if probe in value:
+            raise SystemExit(
+                "export_ks3_questions: %s contains markup (%r) — a card face is "
+                "plain text and there is nothing on the card that renders a "
+                "tag. Take the tag out of the source, or widen the card surface "
+                "first and this guard with it: %r"
+                % (where, probe, value[:90]))
+    return value
+
+
+def _anchor(text):
+    """The id fragment for a card, taken from the words its FRONT asks about.
+
+    ⚠️ THIS IS THE WHOLE POINT OF THE ID SCHEME, so it is worth saying plainly.
+    A card's id is `<lesson_slug>#<def|eq>#<anchor>`, and the anchor comes from
+    the TERM (a definition) or the LEFT-HAND SIDE (an equation) — never from the
+    card's position in the file.
+
+    A positional id survives re-authoring in the sense that nothing is orphaned,
+    and fails in the sense that matters: insert one new term at the top of a
+    lesson's vocabulary and every id below it now names a DIFFERENT card, so any
+    per-card state a student has built up — seen, starred, got-it-wrong —
+    silently slides onto the wrong questions. Anchoring on the front means
+    reordering moves nothing, rewriting a DEFINITION moves nothing, and the id
+    changes only when the question itself changes, which is when it should.
+    """
+    out = []
+    for ch in text.lower():
+        if ch.isascii() and (ch.isalnum()):
+            out.append(ch)
+        elif out and out[-1] != "-":
+            out.append("-")
+    slug = "".join(out).strip("-")
+    if not slug:
+        raise SystemExit(
+            "export_ks3_questions: %r has no id-able characters in it" % text)
+    return slug
+
+
+def _equations(node, path):
+    """Every authored `equation`, wherever it nests, in document order.
+
+    They do not all live in one place and they are not all one shape. Measured
+    across the 107 lessons there are three, all of them under `core`:
+
+      * `{reactants, arrow, products}` + either `condition` or the
+        `condition_over` / `condition_under` pair — 5 lessons, on a `rule`
+        block (b7-01, b8-01, b8-03, c6-03, c6-04);
+      * `{left, right}` — 1, nested two deep inside `control-tubes.summary`
+        (c5-03, the rusting equation);
+      * a bare STRING, `"starch → glucose"` — 3, one per enzyme inside the
+        `enzyme-run` bench (b3-06).
+
+    So this walks rather than reaching, and raises on a fourth shape instead of
+    skipping it: an equation a new lesson nests somewhere new should stop the
+    export, not quietly fail to become a card.
+    """
+    if isinstance(node, dict):
+        for k, v in node.items():
+            if k == "equation":
+                yield path + "." + k, v
+            else:
+                yield from _equations(v, path + "." + str(k))
+    elif isinstance(node, list):
+        for i, v in enumerate(node):
+            yield from _equations(v, "%s[%d]" % (path, i))
+
+
+def _equation_parts(where, eq):
+    """One authored equation, normalised to (left, arrow_word, right, conds).
+
+    ⚠️ THE ARROW IS NEVER A CHARACTER — that is the standing ruling in b7-01,
+    b8-01 and b8-03, whose comments say there is deliberately no field a U+2192
+    could be typed into, because the shipped font subsets carry no glyph for it
+    and Design draws the arrow as an SVG. `arrow` holds the WORD the drawn arrow
+    means ("gives", "makes"), which is also the component's accessible name.
+
+    b3-06 is the exception that proves it: its three equations ARE strings with
+    a literal `→` in them, because they sit in an instrument's config rather
+    than in the equation component. Split here, so the arrow character stops at
+    the edge of the mirror and no card face ever carries one.
+    """
+    if isinstance(eq, str):
+        if eq.count("→") != 1:
+            raise SystemExit(
+                "export_ks3_questions: %s is a string equation with %d arrow(s) "
+                "— expected exactly one to split on: %r"
+                % (where, eq.count("→"), eq))
+        left, right = (p.strip() for p in eq.split("→"))
+        return left, None, right, {}
+
+    if not isinstance(eq, dict):
+        raise SystemExit("export_ks3_questions: %s is a %s, not an equation"
+                         % (where, type(eq).__name__))
+
+    if "reactants" in eq:
+        left, arrow, right = eq["reactants"], eq.get("arrow"), eq["products"]
+    elif "left" in eq:
+        # c5-03's rusting equation. Drawn, never spoken: `control-tubes`
+        # authors no arrow WORD, so this card has none and the surface has to
+        # draw the arrow. Inventing "gives" here to fill the column would be
+        # putting a word in the author's mouth on a science page.
+        left, arrow, right = eq["left"], None, eq["right"]
+    else:
+        raise SystemExit(
+            "export_ks3_questions: %s is an equation shape this exporter does "
+            "not know: keys %s. Teach `_equation_parts` about it rather than "
+            "letting it fall out of the deck silently."
+            % (where, sorted(eq)))
+
+    conds = {k: eq[k] for k in ("condition", "condition_over", "condition_under")
+             if eq.get(k)}
+    for k in eq:
+        if k not in ("reactants", "arrow", "products", "left", "right",
+                     "condition", "condition_over", "condition_under"):
+            raise SystemExit(
+                "export_ks3_questions: %s has an unexported equation field %r"
+                % (where, k))
+    return left, arrow, right, conds
+
+
+def card_rows():
+    """The flashcard deck, one lesson at a time.
+
+    ── The front wording, because it is read by children ─────────────────
+
+    A definition's front is `Define: <term>`, and the term ships EXACTLY as it
+    was authored.
+
+    Design's sample deck writes `Define diffusion.` — the term as the object of
+    a sentence. That works for Design's six sample cards and breaks on the real
+    corpus in two ways. 212 of the 573 terms are authored with a capital first
+    letter, and it is a per-unit house style rather than a property of the word:
+    the whole of B2, C2, C3, C6, C7, C8 and C9 capitalise, and the whole of B1,
+    B3, B4, B5 and B11 do not. Design's frame would print `Define Skeleton.`
+    next to `Define cell.` in one deck. And 143 of them are PHRASES, not nouns
+    — `concentration difference`, `sacrificial protection` — which read as a
+    sentence fragment when a verb is put in front of them.
+
+    Down-casing the first letter to fix it was the obvious alternative and is
+    rejected: `DNA` and `X-ray diffraction` are both real terms in this corpus,
+    both would be damaged by the rule, and a heuristic that mangles two terms in
+    573 is worse than a frame that needs no heuristic. This exporter normalises
+    NOTHING; the authored bytes are the shipped bytes, as everywhere else here.
+
+    The colon does that work. It makes the term a LABEL rather than a
+    grammatical object, so an authored capital is not an error and a phrase is
+    not a fragment — which is exactly how the term already appears in the
+    lesson's own vocabulary list. There is no full stop, because a label is not
+    a sentence.
+
+    An equation's front is `Complete the word equation: <left-hand side>`, and
+    its back is the right-hand side. The alternative was Design's own framing,
+    `Write the word equation for <X>`, and there is no honest `<X>` in the data:
+    the lesson title fits two of the seven, prints `Write the word equation for
+    Acid + metal.` on a third, and on c5-03 would say `for oxidation` over an
+    equation that is specifically RUSTING — a science-accuracy error, which is
+    the one thing this is not allowed to invent. Giving the left-hand side asks
+    for the products, which is what all seven lessons actually teach, and it
+    composes no words at all.
+
+    ── `note` ───────────────────────────────────────────────────────────
+
+    502 of the 573 entries carry a `note` (421 non-empty, median 64 characters).
+    It is extra teaching detail, and it is NOT part of the definition: `Lower it
+    slowly, at an angle.` is a method warning; `The seven are movement,
+    respiration, …` is a list the definition deliberately does not give.
+
+    It is neither dropped nor glued onto the back. It ships in its own column,
+    `back_note`, for one reason: the back of this card is the ANSWER to
+    `Define: X`, and a student self-marks by comparing what they said to what is
+    there. Append three more sentences and they cannot tell which part they were
+    supposed to produce, so a card they knew reads as a card they half-knew. In
+    its own column the surface can reveal it under the definition as an aside,
+    and can do that later without a re-export.
+
+    ⚑ For whoever builds that surface: four of the 421 notes lean on the lesson
+    page around them — `Sam's method`, `the dials on the bench` — and will read
+    as a dangling reference on a card. Small, and worth a pass before they are
+    shown.
+    """
+    titles = unit_titles()
+    rows = []
+    for unit_code, mod in lesson_modules():
+        lesson = mod.LESSON
+        slug = lesson.get("slug")
+        if not slug:
+            raise SystemExit(
+                "export_ks3_questions: %s has no slug" % mod.__name__)
+        if unit_code not in titles:
+            raise SystemExit(
+                "export_ks3_questions: unit %s is not in ks3_data.structure — "
+                "there is no topic to put on its cards" % unit_code)
+        topic = titles[unit_code]
+        seen = set()
+        pos = 0
+
+        def add(kind, anchor, front, back, back_note=None, eq=None):
+            nonlocal pos
+            key = (kind, anchor)
+            if key in seen:
+                raise SystemExit(
+                    "export_ks3_questions: %s has two %s cards anchored on %r "
+                    "— the id would collide and one would overwrite the other"
+                    % (slug, kind, anchor))
+            seen.add(key)
+            eq = eq or {}
+            rows.append(dict(
+                id="%s#%s#%s" % (slug, "def" if kind == "definition" else "eq",
+                                 anchor),
+                unit_code=unit_code,
+                lesson_slug=slug,
+                kind=kind,
+                card_position=pos,
+                # ⚠️ THE UNIT'S TITLE, not the lesson's, and VERBATIM.
+                #
+                # Design shows a topic on both faces of every card, and her
+                # sample values — GAS EXCHANGE, PRESSURE, CHEMICAL REACTIONS,
+                # PARTICLE MODEL — are KS3 UNIT titles, uppercased. That is the
+                # only real grouping the data has: a deck spans every lesson a
+                # class has covered, so the label's job is to say which unit a
+                # card came from. The lesson title would be near-redundant with
+                # the front (`DIFFUSION` over `Define: diffusion`).
+                #
+                # Stored in the case `ks3_data/structure.py` writes it.
+                # Uppercasing is presentation and is reversible; doing it here
+                # is not, and the day a unit title carries `pH` or `DNA` the
+                # mirror would be the thing that broke it.
+                topic=topic,
+                front=_no_markup("%s front" % slug, front),
+                back=_no_markup("%s back" % slug, back),
+                back_note=(None if not back_note
+                           else _no_markup("%s note" % slug, back_note)),
+                equation_left=eq.get("left"),
+                equation_arrow=eq.get("arrow"),
+                equation_right=eq.get("right"),
+                equation_condition=eq.get("condition"),
+                equation_condition_over=eq.get("condition_over"),
+                equation_condition_under=eq.get("condition_under"),
+            ))
+            pos += 1
+
+        for entry in lesson.get("vocabulary") or []:
+            term = (entry.get("term") or "").strip()
+            definition = (entry.get("definition") or "").strip()
+            if not term or not definition:
+                raise SystemExit(
+                    "export_ks3_questions: %s has a vocabulary entry with no "
+                    "term or no definition: %r" % (slug, entry))
+            add("definition", _anchor(term),
+                "Define: " + term, definition,
+                back_note=(entry.get("note") or "").strip() or None)
+
+        for where, eq in _equations(lesson, slug):
+            left, arrow, right, conds = _equation_parts(where, eq)
+            for part in (left, right, arrow) + tuple(conds.values()):
+                if part is not None:
+                    _no_markup("%s equation" % slug, part)
+                if part is not None and "→" in part:
+                    raise SystemExit(
+                        "export_ks3_questions: %s carries a typed arrow — the "
+                        "parts are stored, never the glyph: %r" % (where, part))
+            add("equation", _anchor(left),
+                "Complete the word equation: " + left, right,
+                eq=dict(left=left, arrow=arrow, right=right, **conds))
+
+    return rows
+
+
 # ── emitting ─────────────────────────────────────────────────────────────
 
 def upsert_statements(table, columns, rows, conflict_key):
@@ -243,6 +556,10 @@ BANK_COLUMNS = ["id", "unit_code", "lesson_slug", "band", "bank_position",
                 "text", "figure", "options"]
 LADDER_COLUMNS = ["question_ref", "unit_code", "lesson_slug", "rung", "text",
                   "answer_letter", "options"]
+CARD_COLUMNS = ["id", "unit_code", "lesson_slug", "kind", "card_position",
+                "topic", "front", "back", "back_note", "equation_left",
+                "equation_arrow", "equation_right", "equation_condition",
+                "equation_condition_over", "equation_condition_under"]
 
 
 def main():
@@ -252,13 +569,14 @@ def main():
     ap.add_argument("--check", action="store_true",
                     help="validate and count; write nothing")
     ap.add_argument("--json", action="store_true",
-                    help="write bank.json / ladder.json for ks3_pools_ingest")
+                    help="write bank.json / ladder.json / cards.json for ks3_pools_ingest")
     ap.add_argument("--verify", action="store_true",
                     help="compare the live tables against Python, row for row")
     args = ap.parse_args()
 
     bank = bank_rows()
     ladder = ladder_rows()
+    cards = card_rows()
 
     # ⚠️ THE LESSON SLUG MUST BE GLOBALLY UNIQUE, and this is where that is
     # enforced rather than hoped for.
@@ -274,8 +592,13 @@ def main():
     # It is true today across all 77 lessons. It is not guaranteed by anything
     # else, so it is asserted here, on the way out, where a new unit will trip
     # it the first time it is exported.
+    #
+    # ⊕ WIDENED to the cards, which are read the same way — the deck is built
+    # for the lessons a class has covered, and the scheme of work names them by
+    # slug alone. The cards also reach 107 lessons where the bank reaches 77, so
+    # this now sees 30 lessons it could not see before.
     by_slug = {}
-    for r in bank:
+    for r in bank + cards:
         by_slug.setdefault(r["lesson_slug"], set()).add(r["unit_code"])
     collisions = {s: sorted(u) for s, u in by_slug.items() if len(u) > 1}
     if collisions:
@@ -288,23 +611,29 @@ def main():
 
     lessons_banked = len({(r["unit_code"], r["lesson_slug"]) for r in bank})
     lessons_laddered = len({r["lesson_slug"] for r in ladder})
+    lessons_carded = len({r["lesson_slug"] for r in cards})
+    by_kind = {k: sum(1 for r in cards if r["kind"] == k) for k in CARD_KINDS}
 
     print("\n📚  export_ks3_questions — the pools, out of Python\n")
     print("     bank    %4d question(s) across %d lesson(s)"
           % (len(bank), lessons_banked))
     print("     ladder  %4d question(s) across %d lesson(s)  (recall + apply "
           "only)" % (len(ladder), lessons_laddered))
+    print("     cards   %4d card(s) across %d lesson(s)  (%s)"
+          % (len(cards), lessons_carded,
+             ", ".join("%d %s" % (by_kind[k], k) for k in CARD_KINDS)))
 
     if args.check:
         print("\n     --check: nothing written.\n")
         return
 
     if args.verify:
-        sys.exit(verify(bank, ladder))
+        sys.exit(verify(bank, ladder, cards))
 
     if args.json:
         os.makedirs(OUT_DIR, exist_ok=True)
-        for name, rows in (("bank", bank), ("ladder", ladder)):
+        for name, rows in (("bank", bank), ("ladder", ladder),
+                           ("cards", cards)):
             path = os.path.join(OUT_DIR, name + ".json")
             with open(path, "w", encoding="utf-8") as fh:
                 json.dump(rows, fh, ensure_ascii=False)
@@ -316,7 +645,8 @@ def main():
 
     stmts = (upsert_statements("ks3_bank_questions", BANK_COLUMNS, bank, "id")
              + upsert_statements("ks3_ladder_questions", LADDER_COLUMNS,
-                                 ladder, "question_ref"))
+                                 ladder, "question_ref")
+             + upsert_statements("ks3_cards", CARD_COLUMNS, cards, "id"))
 
     if args.stdout:
         for s in stmts:
@@ -338,7 +668,7 @@ def main():
 
 # ── the gate ─────────────────────────────────────────────────────────────
 
-def verify(bank, ladder):
+def verify(bank, ladder, cards):
     """Does the database still match Python, row for row?
 
     The tables are a mirror. A mirror nobody checks is just a second copy, and
@@ -439,6 +769,11 @@ def verify(bank, ladder):
             "question_ref",
             ["unit_code", "lesson_slug", "rung", "text", "answer_letter",
              "options"])
+    compare("cards",
+            cards,
+            fetch("ks3_cards", ",".join(CARD_COLUMNS)),
+            "id",
+            [c for c in CARD_COLUMNS if c != "id"])
 
     print()
     if problems:

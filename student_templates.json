@@ -9960,5 +9960,5262 @@
    "_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css"
   ],
   "tplChars": 58154
+ },
+ "class view amendments": {
+  "fbSplit": false,
+  "imports": {
+   "MrBadmusDS.BrandMark": "<svg width=\"26\" height=\"26\" viewBox=\"0 0 22 22\" aria-hidden=\"true\"><path d=\"M3.5 3.5 L11 11 L3.5 18.5\" stroke=\"#E4572E\" stroke-width=\"3.4\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M12 3.5 L19.5 11 L12 18.5\" stroke=\"#E4572E\" stroke-opacity=\"0.34\" stroke-width=\"3.4\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg>"
+  },
+  "kebabbed": [],
+  "logic": "class Component extends DCLogic {\n  state = {\n    theme: this.props.benchTheme || 'harbour',\n    bench: this.props.benchState || 'open',\n    week: 1, filter: 'ALL', lbweek: 'W01',\n    account: false, cards: false, idx: 0, flipped: false, openRow: null,\n    recall: false, qi: 0, picked: null, checked: false, roundNo: 1,\n    answered: 0, streak: 0, best: 0, rounds: 0, roundScore: 0, roundDone: false,\n  };\n\n  // Sample of the recall bank. The live bank is generated from every lesson the\n  // class has covered \u2014 hundreds of questions; six are drawn per round.\n  bank() {\n    return [\n      { topic: 'BREATHING AND GAS EXCHANGE', q: 'A plant in a dark cupboard is releasing carbon dioxide. Which of the three processes is it carrying out?', options: ['Breathing', 'Respiration', 'Gas exchange only', 'All three'], answer: 1, note: 'Plants respire day and night; they do not breathe.' },\n      { topic: 'PRESSURE', q: 'A fixed amount of gas is squeezed into half the space. What happens to its pressure?', options: ['It halves', 'It doubles', 'It stays the same', 'It drops to zero'], answer: 1, note: 'Same particles, smaller space, more collisions.' },\n      { topic: 'GAS EXCHANGE', q: 'Which feature would make a gas exchange surface worse?', options: ['Thick walls', 'A large surface area', 'A good blood supply', 'A moist surface'], answer: 0, note: 'Thick walls make the diffusion distance longer \u2014 thin walls keep it short.' },\n      { topic: 'CHEMICAL REACTIONS', q: 'Magnesium burns in oxygen. What is the product?', options: ['Magnesium oxide', 'Magnesium hydroxide', 'Magnesium carbonate', 'Magnesium chloride'], answer: 0, note: 'Metal + oxygen gives a metal oxide.' },\n      { topic: 'PARTICLE MODEL', q: 'Which state has particles close together that can still move past each other?', options: ['Solid', 'Liquid', 'Gas', 'None of them'], answer: 1, note: 'Close packed, but not fixed in place.' },\n      { topic: 'PRESSURE', q: 'A force of 20 N presses on 4 m2. What is the pressure?', options: ['5 Pa', '80 Pa', '24 Pa', '0.2 Pa'], answer: 0, note: 'p = F / A, so 20 / 4.' },\n      { topic: 'GAS EXCHANGE', q: 'Where in the lungs does gas exchange happen?', options: ['The trachea', 'The bronchi', 'The alveoli', 'The diaphragm'], answer: 2, note: 'Millions of tiny air sacs, each with a thin wall.' },\n      { topic: 'CHEMICAL REACTIONS', q: 'What is always conserved in a chemical reaction?', options: ['Mass', 'Colour', 'Volume', 'Temperature'], answer: 0, note: 'No atoms are made or lost, only rearranged.' },\n    ];\n  }\n\n  round() {\n    const bank = this.bank();\n    const start = ((this.state.roundNo - 1) * 6) % bank.length;\n    return Array.from({ length: 6 }, (_, i) => bank[(start + i) % bank.length]);\n  }\n\n  componentDidUpdate(prev) {\n    if (prev.benchTheme !== this.props.benchTheme && this.props.benchTheme) this.setState({ theme: this.props.benchTheme });\n    if (prev.benchState !== this.props.benchState && this.props.benchState) this.setState({ bench: this.props.benchState });\n  }\n\n  reduced() {\n    return typeof window !== 'undefined' && window.matchMedia\n      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;\n  }\n\n  deck() {\n    return [\n      { tag: 'DEFINITION', topic: 'GAS EXCHANGE', front: 'Define diffusion.', back: 'The net movement of particles from where they are more concentrated to where they are less concentrated.', mine: false },\n      { tag: 'KEY FACT', topic: 'GAS EXCHANGE', front: 'Three things that make a gas exchange surface efficient.', back: 'A large surface area. Thin walls. A good blood supply.', mine: true },\n      { tag: 'EQUATION', topic: 'PRESSURE', front: 'Pressure, force, area \u2014 which one sits on top?', back: 'Force sits on top: p = F / A.', mine: false, triangle: true },\n      { tag: 'EQUATION', topic: 'CHEMICAL REACTIONS', front: 'Write the word equation for magnesium burning in oxygen.', back: '', mine: true, arrow: true, eqLeft: 'magnesium + oxygen', eqRight: 'magnesium oxide' },\n      { tag: 'DEFINITION', topic: 'GAS EXCHANGE', front: 'Define ventilation.', back: 'Moving air into and out of the lungs.', mine: false },\n      { tag: 'KEY FACT', topic: 'PRESSURE', front: 'A fixed amount of gas is squeezed into a smaller space. What happens to the pressure?', back: 'It goes up. The same particles hit a smaller area more often.', mine: false },\n    ];\n  }\n\n  set(k, v) { this.setState({ [k]: v }); }\n\n  renderVals() {\n    const s = this.state;\n    const deck = this.deck();\n    const idx = ((s.idx % deck.length) + deck.length) % deck.length;\n    const card = deck[idx];\n    const pad = (n) => (n < 10 ? '0' + n : '' + n);\n\n    const weeks = Array.from({ length: 12 }, (_, i) => {\n      const n = i + 1;\n      return {\n        label: pad(n), sel: s.week === n ? '1' : '0', now: n === 4, later: n !== 4,\n        title: 'Week ' + pad(n),\n        pick: () => this.set('week', n),\n      };\n    });\n\n    const tabLabels = [['ALL', 'ALL  2'], ['TODO', 'TO DO  0'], ['MARKED', 'MARKED  2']];\n    const tabs = tabLabels.map(([id, label]) => ({\n      label, on: s.filter === id ? '1' : '0', pick: () => this.set('filter', id),\n    }));\n\n    const rowData = [\n      { week: 'W01', title: 'Breathing and gas exchange \u00b7 Pressure \u00b7 Chemical reactions', meta: '4 questions', score: '50%', feedback: 'Two of four. Your diffusion answer needs the words \"high to low concentration\" to earn the mark \u2014 the rest was solid.' },\n      { week: 'W01', title: 'Particle model \u2014 recall and apply', meta: '2 marks', score: '50%', feedback: 'One of two. Say what happens to the spacing between particles, not just that they \"move more\".' },\n    ];\n    const rows = rowData.map((r, i) => ({\n      ...r, open: s.openRow === i,\n      toggle: () => this.set('openRow', s.openRow === i ? null : i),\n    }));\n\n    const lbchips = ['W01', 'W02', 'W03', 'W04', 'TERM'].map((label) => ({\n      label, on: s.lbweek === label ? '1' : '0', pick: () => this.set('lbweek', label),\n    }));\n\n    const pips = deck.map((_, i) => ({ on: i <= idx ? '1' : '0' }));\n\n    const themes = ['clay', 'chalk', 'moss', 'harbour', 'damson', 'graphite'];\n    const pick = (t) => () => this.setState({ theme: t });\n\n    const round = this.round();\n    const q = round[Math.min(s.qi, 5)];\n    const optState = (i) => {\n      if (!s.checked) return s.picked === i ? 'picked' : 'idle';\n      if (i === q.answer) return 'correct';\n      return s.picked === i ? 'wrong' : 'idle';\n    };\n    const opts = q.options.map((label, i) => ({\n      label, letter: 'ABCD'[i], st: optState(i),\n      right: s.checked && i === q.answer,\n      pick: () => { if (!s.checked) this.setState({ picked: i }); },\n    }));\n    const gotIt = s.checked && s.picked === q.answer;\n    const advance = (scored) => {\n      const last = s.qi >= 5;\n      const streak = scored ? s.streak + 1 : 0;\n      this.setState({\n        answered: s.answered + 1,\n        streak, best: Math.max(s.best, streak),\n        roundScore: s.roundScore + (scored ? 1 : 0),\n        picked: null, checked: false,\n        qi: last ? 5 : s.qi + 1,\n        roundDone: last,\n        rounds: last ? s.rounds + 1 : s.rounds,\n      });\n    };\n\n    return {\n      theme: s.theme,\n      recallOpen: s.recall,\n      inRound: s.recall && !s.roundDone,\n      roundDone: s.roundDone,\n      roundLabel: 'ROUND ' + pad(s.roundNo),\n      roundScore: s.roundScore + ' / 6',\n      qPos: pad(Math.min(s.qi + 1, 6)) + ' / 06',\n      qStep: String(s.qi),\n      qpips: round.map((_, i) => ({ on: i <= s.qi ? '1' : '0' })),\n      q, opts,\n      checked: s.checked,\n      canCheck: !s.checked,\n      verdict: gotIt ? 'Correct.' : 'Not this time.',\n      nextLabel: s.qi >= 5 ? 'Finish the round' : 'Next question',\n      streakLabel: s.streak > 0 ? 'STREAK ' + pad(s.streak) : 'STREAK 00',\n      answered: pad(s.answered),\n      best: pad(s.best),\n      rounds: pad(s.rounds),\n      check: () => { if (s.picked !== null) this.setState({ checked: true }); },\n      nextQ: () => advance(s.picked === q.answer),\n      skipQ: () => advance(false),\n      anotherRound: () => this.setState({ roundNo: s.roundNo + 1, qi: 0, picked: null, checked: false, roundScore: 0, roundDone: false, streak: 0 }),\n      openRecall: () => this.setState({ recall: true, cards: false, account: false }),\n      closeRecall: () => this.setState({ recall: false }),\n      themeLabel: s.theme.toUpperCase(),\n      benchOpen: s.bench === 'open',\n      benchDone: s.bench === 'done',\n      benchOpenOn: s.bench === 'open' ? '1' : '0',\n      benchDoneOn: s.bench === 'done' ? '1' : '0',\n      showBar: this.props.showStateBar !== false,\n      weeks, tabs, rows, lbchips, pips,\n      cardCount: pad(deck.length),\n      stackPos: pad(idx + 1) + ' / ' + pad(deck.length),\n      topFront: card.front,\n      topMine: card.mine,\n      card,\n      flipOn: s.flipped ? '1' : '0',\n      flipLabel: s.flipped ? 'Hide' : 'Reveal',\n      flip: () => this.setState({ flipped: !s.flipped }),\n      next: () => this.setState({ idx: idx + 1, flipped: false }),\n      openCards: () => this.setState({ cards: true, account: false, flipped: false }),\n      openAccount: () => this.setState({ account: true, cards: false }),\n      closeAll: () => this.setState({ account: false, cards: false }),\n      accountOpen: s.account,\n      cardsOpen: s.cards,\n      setOpen: () => this.set('bench', 'open'),\n      setDone: () => this.set('bench', 'done'),\n      cycleTheme: () => this.setState({ theme: themes[(themes.indexOf(s.theme) + 1) % themes.length] }),\n      pickClay: pick('clay'), pickChalk: pick('chalk'), pickMoss: pick('moss'),\n      pickHarbour: pick('harbour'), pickDamson: pick('damson'), pickGraphite: pick('graphite'),\n      isClay: s.theme === 'clay' ? '1' : '0',\n      isChalk: s.theme === 'chalk' ? '1' : '0',\n      isMoss: s.theme === 'moss' ? '1' : '0',\n      isHarbour: s.theme === 'harbour' ? '1' : '0',\n      isDamson: s.theme === 'damson' ? '1' : '0',\n      isGraphite: s.theme === 'graphite' ? '1' : '0',\n    };\n  }\n}",
+  "logicChars": 9966,
+  "nodes": 450,
+  "refs": 0,
+  "roots": [
+   {
+    "c": [
+     {
+      "a": {
+       "href": "_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css",
+       "rel": "stylesheet"
+      },
+      "i": 1,
+      "t": "link"
+     },
+     {
+      "a": {
+       "href": "_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css",
+       "rel": "stylesheet"
+      },
+      "i": 2,
+      "t": "link"
+     },
+     {
+      "a": {
+       "href": "_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css",
+       "rel": "stylesheet"
+      },
+      "i": 3,
+      "t": "link"
+     },
+     {
+      "a": {
+       "href": "_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css",
+       "rel": "stylesheet"
+      },
+      "i": 4,
+      "t": "link"
+     },
+     {
+      "a": {
+       "href": "_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css",
+       "rel": "stylesheet"
+      },
+      "i": 5,
+      "t": "link"
+     },
+     {
+      "a": {
+       "src": "_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js"
+      },
+      "i": 6,
+      "t": "script"
+     },
+     {
+      "c": [
+       {
+        "t": "#",
+        "v": "\n:root{\n  --pg-ground:#FBF3E6; --pg-card:#FFFCF5; --pg-band:#F4E9D8; --pg-inset:#F7EFE1;\n  --pg-rule:#E0D2B9; --pg-rule-strong:#C3B191; --pg-ink:#221E1B; --pg-body:#3B342E;\n  --pg-muted:#5F564F; --pg-strong:#4A3728; --pg-accent:#E4572E; --pg-accent-text:#A93411;\n  --pg-accent-hover:#7F2408; --pg-tint:#FCE7DE; --pg-ok:#12A150; --pg-ok-text:#0A6B36; --pg-ok-tint:#E4F7EB;\n  --t-clay:#6B4A33; --t-chalk:#EFE2CB; --t-moss:#294036; --t-harbour:#20363F; --t-damson:#38243A; --t-graphite:#1A1512;\n  /* CHANGE 1 \u2014 bench theme tokens. Default = HARBOUR. */\n  --b-ground:#20363F; --b-ink:#FBF3E6; --b-muted:#A9BFC6; --b-rule:#37545F; --b-inset:#182B33;\n  --b-accent:#E4572E; --b-ember:#F79E76; --b-cta:#C0431C; --b-cta-ink:#FFF7EC; --b-edge:rgba(169,191,198,.28);\n}\n[data-bench-theme=\"clay\"]{--b-ground:#6B4A33;--b-ink:#FBF3E6;--b-muted:#E0CDB4;--b-rule:#8A6849;--b-inset:#5B3D28;--b-ember:#FFC4A6;--b-cta:#C0431C;--b-edge:rgba(255,196,166,.30);}\n[data-bench-theme=\"chalk\"]{--b-ground:#EFE2CB;--b-ink:#221E1B;--b-muted:#6A5C4C;--b-rule:#D3BF9F;--b-inset:#E5D4B6;--b-accent:#E4572E;--b-ember:#A93411;--b-cta:#A93411;--b-cta-ink:#FBF3E6;--b-edge:rgba(34,30,27,.18);}\n[data-bench-theme=\"moss\"]{--b-ground:#294036;--b-ink:#FBF3E6;--b-muted:#B4C6B6;--b-rule:#42604F;--b-inset:#1F332B;--b-ember:#F79E76;--b-cta:#C0431C;--b-edge:rgba(180,198,182,.28);}\n[data-bench-theme=\"harbour\"]{--b-ground:#20363F;--b-ink:#FBF3E6;--b-muted:#A9BFC6;--b-rule:#37545F;--b-inset:#182B33;--b-ember:#F79E76;--b-cta:#C0431C;--b-edge:rgba(169,191,198,.28);}\n[data-bench-theme=\"damson\"]{--b-ground:#38243A;--b-ink:#FBF3E6;--b-muted:#C6AFC4;--b-rule:#553855;--b-inset:#2C1B2E;--b-ember:#F79E76;--b-cta:#C0431C;--b-edge:rgba(198,175,196,.28);}\n[data-bench-theme=\"graphite\"]{--b-ground:#1A1512;--b-ink:#FBF3E6;--b-muted:#A99C8C;--b-rule:#2F2823;--b-inset:#120E0C;--b-ember:#F0855C;--b-cta:#C0431C;--b-edge:rgba(169,156,140,.24);}\nbody{margin:0;background:var(--pg-ground);-webkit-font-smoothing:antialiased;text-wrap:pretty;}\na{color:var(--pg-accent-text);text-decoration:none;}\na:hover{color:var(--pg-accent-hover);text-decoration:underline;}\n.wk[data-sel=\"1\"]{--wk-fill:var(--b-ground);--wk-edge:var(--b-ground);}\n.wk[data-sel=\"1\"] .wkline{--wk-line:var(--b-ink);}\n.tab[data-on=\"1\"]{--tab-bg:var(--pg-card);--tab-ink:var(--pg-ink);--tab-shadow:0 1px 2px rgba(34,30,27,.12);}\n.lbchip[data-on=\"1\"]{--lb-bg:var(--b-ground);--lb-edge:var(--b-ground);--lb-ink:var(--b-ink);}\n.sw[data-on=\"1\"]{outline:2px solid var(--pg-ink);outline-offset:3px;}\n.sw[data-on=\"1\"] .swtick{--tick-o:1;}\n.stbtn[data-on=\"1\"]{--st-bg:var(--pg-ink);--st-ink:var(--pg-ground);--st-edge:var(--pg-ink);}\n.pip[data-on=\"1\"]{--pip-bg:var(--pg-accent);}\n.opt[data-st=\"picked\"]{--opt-bg:var(--b-inset);--opt-edge:var(--b-ember);--opt-mark-bg:var(--b-ember);--opt-mark-ink:var(--b-inset);}\n.opt[data-st=\"correct\"]{--opt-bg:rgba(18,161,80,.18);--opt-edge:#12A150;--opt-mark-bg:#12A150;--opt-mark-ink:#08240F;}\n.opt[data-st=\"wrong\"]{--opt-bg:var(--b-inset);--opt-edge:var(--b-muted);--opt-mark-bg:var(--b-muted);--opt-mark-ink:var(--b-inset);}\n.rprog[data-w=\"0\"]{--rp-w:0%;}.rprog[data-w=\"1\"]{--rp-w:17%;}.rprog[data-w=\"2\"]{--rp-w:33%;}\n.rprog[data-w=\"3\"]{--rp-w:50%;}.rprog[data-w=\"4\"]{--rp-w:67%;}.rprog[data-w=\"5\"]{--rp-w:83%;}.rprog[data-w=\"6\"]{--rp-w:100%;}\n.fcflip{transition:transform 460ms cubic-bezier(.2,.7,.2,1);}\n.fcflip[data-flip=\"1\"]{transform:rotateY(180deg);}\n@media (prefers-reduced-motion: reduce){.fcflip{transition-duration:1ms;}}\n@keyframes fcIn{from{opacity:0}to{opacity:1}}\n@keyframes fcUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}\n"
+       }
+      ],
+      "i": 7,
+      "t": "style"
+     }
+    ],
+    "i": 0,
+    "t": "helmet"
+   },
+   {
+    "a": {
+     "class": "rd",
+     "data-bench-theme": {
+      "parts": [
+       {
+        "e": "theme"
+       }
+      ]
+     },
+     "data-mode": "ks3",
+     "data-screen-label": "Class page \u00b7 8r/Sc1",
+     "style": "min-height:100vh;background:var(--pg-ground);color:var(--pg-ink);font-family:'Instrument Sans',system-ui,sans-serif;font-size:17px;line-height:1.6;"
+    },
+    "c": [
+     {
+      "a": {
+       "id": "__bundler_thumbnail"
+      },
+      "i": 9,
+      "t": "template"
+     },
+     {
+      "a": {
+       "style": "height:5px;background:var(--pg-strong)"
+      },
+      "i": 10,
+      "t": "div"
+     },
+     {
+      "a": {
+       "data-port-region": "topbar",
+       "style": "display:flex;align-items:center;gap:28px;padding:14px 32px;background:var(--pg-card);border-bottom:1px solid var(--pg-rule);flex-wrap:wrap;"
+      },
+      "c": [
+       {
+        "a": {
+         "href": "#top",
+         "style": "display:flex;align-items:center;gap:10px;color:var(--pg-ink);text-decoration:none;"
+        },
+        "c": [
+         {
+          "from": "MrBadmusDS.BrandMark",
+          "i": 13,
+          "size": "26",
+          "t": "import"
+         },
+         {
+          "a": {
+           "style": "font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:21px;letter-spacing:-.02em;"
+          },
+          "c": [
+           {
+            "t": "#",
+            "v": "MrBadmusAI"
+           }
+          ],
+          "i": 14,
+          "t": "span"
+         }
+        ],
+        "i": 12,
+        "t": "a"
+       },
+       {
+        "a": {
+         "style": "display:flex;align-items:center;gap:22px;"
+        },
+        "c": [
+         {
+          "a": {
+           "href": "#top",
+           "style": "font-weight:600;font-size:16px;color:var(--pg-ink);padding-bottom:4px;border-bottom:2px solid var(--pg-accent);text-decoration:none;"
+          },
+          "c": [
+           {
+            "t": "#",
+            "v": "My class"
+           }
+          ],
+          "i": 16,
+          "t": "a"
+         }
+        ],
+        "i": 15,
+        "t": "nav"
+       },
+       {
+        "a": {
+         "style": "margin-left:auto;display:flex;align-items:center;gap:16px;"
+        },
+        "c": [
+         {
+          "a": {
+           "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;padding:5px 10px;border:1px solid var(--pg-rule-strong);border-radius:999px;color:var(--pg-muted);"
+          },
+          "c": [
+           {
+            "t": "#",
+            "v": "PROD"
+           }
+          ],
+          "i": 18,
+          "t": "span"
+         },
+         {
+          "a": {
+           "style": "display:flex;align-items:center;gap:9px;background:none;border:0;padding:6px;cursor:pointer;font:inherit;color:var(--pg-ink);border-radius:999px;",
+           "title": "Account",
+           "type": "button"
+          },
+          "c": [
+           {
+            "a": {
+             "style": "width:34px;height:34px;border-radius:999px;border:1px solid var(--pg-rule-strong);background:var(--pg-band);display:grid;place-items:center;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.04em;"
+            },
+            "c": [
+             {
+              "t": "#",
+              "v": "AY"
+             }
+            ],
+            "i": 20,
+            "t": "span"
+           },
+           {
+            "a": {
+             "style": "font-weight:600;font-size:15px;"
+            },
+            "c": [
+             {
+              "t": "#",
+              "v": "AY"
+             }
+            ],
+            "i": 21,
+            "t": "span"
+           }
+          ],
+          "hov": "background:var(--pg-band)",
+          "i": 19,
+          "on": "openAccount",
+          "t": "button"
+         },
+         {
+          "a": {
+           "style": "background:none;border:0;font:inherit;font-size:15px;font-weight:600;color:var(--pg-muted);cursor:pointer;",
+           "type": "button"
+          },
+          "c": [
+           {
+            "t": "#",
+            "v": "Settings"
+           }
+          ],
+          "hov": "color:var(--pg-accent-text)",
+          "i": 22,
+          "on": "openAccount",
+          "t": "button"
+         },
+         {
+          "a": {
+           "style": "font:inherit;font-size:15px;font-weight:700;padding:9px 18px;border-radius:12px;border:1.5px solid var(--pg-ink);background:var(--pg-card);color:var(--pg-ink);cursor:pointer;min-height:44px;",
+           "type": "button"
+          },
+          "c": [
+           {
+            "t": "#",
+            "v": "Sign out"
+           }
+          ],
+          "hov": "background:var(--pg-band)",
+          "i": 23,
+          "t": "button"
+         }
+        ],
+        "i": 17,
+        "t": "div"
+       }
+      ],
+      "i": 11,
+      "t": "header"
+     },
+     {
+      "a": {
+       "data-port-region": "crumbs",
+       "id": "top",
+       "style": "display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;padding:13px 32px;background:var(--pg-band);border-bottom:1px solid var(--pg-rule);font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.13em;color:var(--pg-muted);"
+      },
+      "c": [
+       {
+        "c": [
+         {
+          "t": "#",
+          "v": "8r/Sc1 \u00a0\u00b7\u00a0 OVERVIEW"
+         }
+        ],
+        "i": 25,
+        "t": "span"
+       },
+       {
+        "c": [
+         {
+          "t": "#",
+          "v": "SUMMER TERM \u00a0\u00b7\u00a0 WEEK 01 / 39"
+         }
+        ],
+        "i": 26,
+        "t": "span"
+       }
+      ],
+      "i": 24,
+      "t": "div"
+     },
+     {
+      "a": {
+       "style": "max-width:1320px;margin:0 auto;padding:48px 32px 96px;"
+      },
+      "c": [
+       {
+        "a": {
+         "data-port-region": "hero",
+         "style": "display:flex;flex-wrap:wrap;gap:40px;align-items:flex-end;justify-content:space-between;"
+        },
+        "c": [
+         {
+          "a": {
+           "style": "flex:1 1 420px;"
+          },
+          "c": [
+           {
+            "a": {
+             "style": "margin:0;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.15em;color:var(--pg-muted);"
+            },
+            "c": [
+             {
+              "t": "#",
+              "v": "WELCOME BACK, AY \u00a0\u00b7\u00a0 YOUR CLASS"
+             }
+            ],
+            "i": 30,
+            "t": "p"
+           },
+           {
+            "a": {
+             "style": "margin:10px 0 0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:clamp(56px,7vw,96px);line-height:.9;letter-spacing:-.045em;"
+            },
+            "c": [
+             {
+              "t": "#",
+              "v": "8r/Sc1"
+             }
+            ],
+            "i": 31,
+            "t": "h1"
+           },
+           {
+            "a": {
+             "style": "display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.13em;padding:8px 14px;border-radius:999px;background:var(--pg-tint);border:1px solid var(--pg-accent);color:var(--pg-accent-text);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "SCIENCE"
+               }
+              ],
+              "i": 33,
+              "t": "span"
+             },
+             {
+              "a": {
+               "style": "font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.13em;padding:8px 14px;border-radius:999px;border:1px solid var(--pg-rule-strong);color:var(--pg-muted);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "YOUR TEACHER"
+               }
+              ],
+              "i": 34,
+              "t": "span"
+             }
+            ],
+            "i": 32,
+            "t": "div"
+           }
+          ],
+          "i": 29,
+          "t": "div"
+         },
+         {
+          "a": {
+           "style": "flex:0 1 620px;display:flex;flex-wrap:wrap;gap:28px 0;"
+          },
+          "c": [
+           {
+            "a": {
+             "style": "flex:1 1 130px;padding:0 22px;border-left:1px solid var(--pg-rule);"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--pg-muted);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "COMPLETED"
+               }
+              ],
+              "i": 37,
+              "t": "p"
+             },
+             {
+              "a": {
+               "style": "margin:8px 0 0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:34px;letter-spacing:-.03em;line-height:1;"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "2/2"
+               }
+              ],
+              "i": 38,
+              "t": "p"
+             },
+             {
+              "a": {
+               "style": "height:3px;background:var(--pg-accent);width:72px;margin-top:12px;"
+              },
+              "i": 39,
+              "t": "div"
+             },
+             {
+              "a": {
+               "style": "margin:12px 0 0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-muted);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "THIS TERM"
+               }
+              ],
+              "i": 40,
+              "t": "p"
+             }
+            ],
+            "i": 36,
+            "t": "div"
+           },
+           {
+            "a": {
+             "style": "flex:1 1 130px;padding:0 22px;border-left:1px solid var(--pg-rule);"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--pg-muted);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "ON TIME"
+               }
+              ],
+              "i": 42,
+              "t": "p"
+             },
+             {
+              "a": {
+               "style": "margin:8px 0 0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:34px;letter-spacing:-.03em;line-height:1;"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "2/2"
+               }
+              ],
+              "i": 43,
+              "t": "p"
+             },
+             {
+              "a": {
+               "style": "height:3px;background:var(--pg-ok);width:72px;margin-top:12px;"
+              },
+              "i": 44,
+              "t": "div"
+             },
+             {
+              "a": {
+               "style": "margin:12px 0 0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-muted);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "OF COMPLETED"
+               }
+              ],
+              "i": 45,
+              "t": "p"
+             }
+            ],
+            "i": 41,
+            "t": "div"
+           },
+           {
+            "a": {
+             "style": "flex:1 1 130px;padding:0 22px;border-left:1px solid var(--pg-rule);"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--pg-muted);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "AVG SCORE"
+               }
+              ],
+              "i": 47,
+              "t": "p"
+             },
+             {
+              "a": {
+               "style": "margin:8px 0 0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:34px;letter-spacing:-.03em;line-height:1;"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "50%"
+               }
+              ],
+              "i": 48,
+              "t": "p"
+             },
+             {
+              "a": {
+               "style": "height:3px;background:var(--pg-rule);width:72px;margin-top:12px;"
+              },
+              "c": [
+               {
+                "a": {
+                 "style": "height:3px;width:36px;background:var(--pg-accent);"
+                },
+                "i": 50,
+                "t": "div"
+               }
+              ],
+              "i": 49,
+              "t": "div"
+             },
+             {
+              "a": {
+               "style": "margin:12px 0 0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-muted);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "2 MARKED"
+               }
+              ],
+              "i": 51,
+              "t": "p"
+             }
+            ],
+            "i": 46,
+            "t": "div"
+           },
+           {
+            "a": {
+             "style": "flex:1 1 130px;padding:0 22px;border-left:1px solid var(--pg-rule);"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--pg-muted);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "RECALL"
+               }
+              ],
+              "i": 53,
+              "t": "p"
+             },
+             {
+              "a": {
+               "style": "height:3px;background:var(--pg-accent);width:72px;margin-top:20px;"
+              },
+              "i": 54,
+              "t": "div"
+             },
+             {
+              "a": {
+               "style": "margin:12px 0 0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-muted);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "ANSWERED \u00b7 WK 01"
+               }
+              ],
+              "i": 55,
+              "t": "p"
+             }
+            ],
+            "i": 52,
+            "t": "div"
+           }
+          ],
+          "i": 35,
+          "t": "div"
+         }
+        ],
+        "i": 28,
+        "t": "section"
+       },
+       {
+        "a": {
+         "style": "height:1px;background:var(--pg-rule);margin:44px 0 0;"
+        },
+        "i": 56,
+        "t": "div"
+       },
+       {
+        "a": {
+         "data-port-change": "C1 bench theme \u00b7 C3 done state",
+         "data-port-region": "bench",
+         "data-screen-label": "Bench",
+         "style": "margin-top:40px;border-radius:24px;overflow:hidden;background:var(--b-ground);"
+        },
+        "c": [
+         {
+          "a": {
+           "style": "height:10px;background:repeating-linear-gradient(115deg,var(--b-accent) 0 13px,#A93411 13px 26px);"
+          },
+          "i": 58,
+          "t": "div"
+         },
+         {
+          "c": [
+           {
+            "a": {
+             "style": "padding:34px 36px 38px;display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start;"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "flex:1 1 440px;min-width:290px;"
+              },
+              "c": [
+               {
+                "a": {
+                 "style": "margin:0;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--b-ember);"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "ON THE BENCH NOW \u00a0\u00b7\u00a0 DUE THU 3 SEP, 18:00"
+                 }
+                ],
+                "i": 62,
+                "t": "p"
+               },
+               {
+                "a": {
+                 "style": "margin:14px 0 0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:clamp(38px,4.4vw,60px);line-height:1;letter-spacing:-.04em;color:var(--b-ink);"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "Breathing and gas exchange"
+                 }
+                ],
+                "i": 63,
+                "t": "h2"
+               },
+               {
+                "a": {
+                 "style": "margin:20px 0 0;max-width:38ch;font-size:18px;line-height:1.6;color:var(--b-muted);"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "4 questions, set from this week's lessons. Open it, answer them, and complete it before Thursday."
+                 }
+                ],
+                "i": 64,
+                "t": "p"
+               },
+               {
+                "a": {
+                 "style": "list-style:none;margin:30px 0 0;padding:0;display:flex;flex-direction:column;gap:16px;"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "display:flex;align-items:center;gap:16px;font-size:18px;font-weight:600;color:var(--b-ink);"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "width:24px;height:24px;border-radius:7px;border:2px solid var(--b-muted);flex:0 0 auto;"
+                    },
+                    "i": 67,
+                    "t": "span"
+                   },
+                   {
+                    "t": "#",
+                    "v": "Open it"
+                   }
+                  ],
+                  "i": 66,
+                  "t": "li"
+                 },
+                 {
+                  "a": {
+                   "style": "display:flex;align-items:center;gap:16px;font-size:18px;font-weight:600;color:var(--b-ink);"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "width:24px;height:24px;border-radius:7px;border:2px solid var(--b-muted);flex:0 0 auto;"
+                    },
+                    "i": 69,
+                    "t": "span"
+                   },
+                   {
+                    "t": "#",
+                    "v": "Answer the 4 questions"
+                   }
+                  ],
+                  "i": 68,
+                  "t": "li"
+                 },
+                 {
+                  "a": {
+                   "style": "display:flex;align-items:center;gap:16px;font-size:18px;font-weight:600;color:var(--b-ink);"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "width:24px;height:24px;border-radius:7px;border:2px solid var(--b-muted);flex:0 0 auto;"
+                    },
+                    "i": 71,
+                    "t": "span"
+                   },
+                   {
+                    "t": "#",
+                    "v": "Complete it"
+                   }
+                  ],
+                  "i": 70,
+                  "t": "li"
+                 }
+                ],
+                "i": 65,
+                "t": "ul"
+               },
+               {
+                "a": {
+                 "style": "display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:34px;"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "display:inline-flex;align-items:center;gap:10px;font:inherit;font-size:17px;font-weight:700;padding:15px 24px;min-height:44px;border-radius:14px;border:1px solid var(--b-edge);background:var(--b-cta);color:var(--b-cta-ink);cursor:pointer;",
+                   "type": "button"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "Open the assignment"
+                   },
+                   {
+                    "a": {
+                     "aria-hidden": "true",
+                     "fill": "none",
+                     "height": "16",
+                     "stroke": "currentColor",
+                     "stroke-linecap": "round",
+                     "stroke-linejoin": "round",
+                     "stroke-width": "2.6",
+                     "viewBox": "0 0 24 24",
+                     "width": "16"
+                    },
+                    "c": [
+                     {
+                      "a": {
+                       "d": "M9 5l7 7-7 7"
+                      },
+                      "i": 75,
+                      "t": "path"
+                     }
+                    ],
+                    "i": 74,
+                    "t": "svg"
+                   }
+                  ],
+                  "hov": "background:#A93411",
+                  "i": 73,
+                  "t": "button"
+                 },
+                 {
+                  "a": {
+                   "data-port-action": "recall-round",
+                   "style": "font:inherit;font-size:17px;font-weight:700;padding:15px 22px;min-height:44px;border-radius:14px;border:1.5px solid var(--b-muted);background:transparent;color:var(--b-ink);cursor:pointer;",
+                   "type": "button"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "Practise recall"
+                   }
+                  ],
+                  "hov": "border-color:var(--b-ink)",
+                  "i": 76,
+                  "on": "openRecall",
+                  "t": "button"
+                 },
+                 {
+                  "a": {
+                   "style": "display:flex;align-items:center;gap:14px;margin-left:auto;"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.13em;color:var(--b-muted);"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "0 / 3 DONE"
+                     }
+                    ],
+                    "i": 78,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "style": "display:block;width:120px;height:2px;background:var(--b-rule);"
+                    },
+                    "i": 79,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 77,
+                  "t": "div"
+                 }
+                ],
+                "i": 72,
+                "t": "div"
+               }
+              ],
+              "i": 61,
+              "t": "div"
+             },
+             {
+              "a": {
+               "style": "flex:0 1 420px;min-width:280px;width:100%;max-width:440px;background:var(--pg-card);border-radius:20px;overflow:hidden;"
+              },
+              "c": [
+               {
+                "a": {
+                 "style": "display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;background:var(--pg-band);border-bottom:1px solid var(--pg-rule);"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--pg-muted);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "THIS WEEK'S ASSIGNMENT"
+                   }
+                  ],
+                  "i": 82,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;padding:5px 11px;border-radius:999px;background:var(--pg-tint);border:1px solid var(--pg-accent);color:var(--pg-accent-text);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "OPEN"
+                   }
+                  ],
+                  "i": 83,
+                  "t": "span"
+                 }
+                ],
+                "i": 81,
+                "t": "div"
+               },
+               {
+                "a": {
+                 "style": "padding:6px 20px 20px;"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--pg-rule);"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "QUESTIONS"
+                     }
+                    ],
+                    "i": 86,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "style": "font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:24px;"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "4"
+                     }
+                    ],
+                    "i": 87,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 85,
+                  "t": "div"
+                 },
+                 {
+                  "a": {
+                   "style": "display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--pg-rule);"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "DRAWS ON"
+                     }
+                    ],
+                    "i": 89,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "style": "font-weight:600;font-size:17px;text-align:right;"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "The gas exchange system"
+                     }
+                    ],
+                    "i": 90,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 88,
+                  "t": "div"
+                 },
+                 {
+                  "a": {
+                   "style": "display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--pg-rule);"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "SET"
+                     }
+                    ],
+                    "i": 92,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "style": "font-weight:600;font-size:17px;"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "Thu 20 Aug"
+                     }
+                    ],
+                    "i": 93,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 91,
+                  "t": "div"
+                 },
+                 {
+                  "a": {
+                   "style": "display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 0;"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "DUE"
+                     }
+                    ],
+                    "i": 95,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "style": "font-weight:600;font-size:17px;"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "Thu 3 Sep, 18:00"
+                     }
+                    ],
+                    "i": 96,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 94,
+                  "t": "div"
+                 },
+                 {
+                  "a": {
+                   "style": "margin:14px 0 0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:28px;letter-spacing:-.03em;color:var(--pg-accent);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "14 days left"
+                   }
+                  ],
+                  "i": 97,
+                  "t": "p"
+                 },
+                 {
+                  "a": {
+                   "style": "height:4px;border-radius:2px;background:var(--pg-rule);margin-top:10px;overflow:hidden;"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "height:4px;width:62%;background:var(--pg-accent);"
+                    },
+                    "i": 99,
+                    "t": "div"
+                   }
+                  ],
+                  "i": 98,
+                  "t": "div"
+                 }
+                ],
+                "i": 84,
+                "t": "div"
+               }
+              ],
+              "i": 80,
+              "t": "div"
+             }
+            ],
+            "i": 60,
+            "t": "div"
+           }
+          ],
+          "e": "benchOpen",
+          "i": 59,
+          "t": "if"
+         },
+         {
+          "c": [
+           {
+            "a": {
+             "data-port-region": "bench-done",
+             "style": "padding:34px 36px 38px;display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start;"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "flex:1 1 440px;min-width:290px;"
+              },
+              "c": [
+               {
+                "a": {
+                 "style": "margin:0;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--b-ember);"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "THE WEEK'S WORK"
+                 }
+                ],
+                "i": 103,
+                "t": "p"
+               },
+               {
+                "a": {
+                 "style": "margin:14px 0 0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:clamp(38px,4.4vw,60px);line-height:1;letter-spacing:-.04em;color:var(--b-ink);"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "Breathing and gas exchange"
+                 }
+                ],
+                "i": 104,
+                "t": "h2"
+               },
+               {
+                "a": {
+                 "style": "margin:20px 0 0;max-width:34ch;font-size:20px;line-height:1.5;font-weight:600;color:var(--b-ink);"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "Good week, AY."
+                 }
+                ],
+                "i": 105,
+                "t": "p"
+               },
+               {
+                "a": {
+                 "style": "display:flex;align-items:center;gap:14px;margin-top:28px;padding:14px 18px;border-radius:14px;background:var(--b-inset);"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "width:26px;height:26px;border-radius:999px;background:var(--b-ember);display:grid;place-items:center;flex:0 0 auto;color:var(--b-inset);"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "aria-hidden": "true",
+                     "fill": "none",
+                     "height": "15",
+                     "stroke": "currentColor",
+                     "stroke-linecap": "round",
+                     "stroke-linejoin": "round",
+                     "stroke-width": "3",
+                     "viewBox": "0 0 24 24",
+                     "width": "15"
+                    },
+                    "c": [
+                     {
+                      "a": {
+                       "d": "M4 12.5l5 5L20 6.5"
+                      },
+                      "i": 109,
+                      "t": "path"
+                     }
+                    ],
+                    "i": 108,
+                    "t": "svg"
+                   }
+                  ],
+                  "i": 107,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.13em;color:var(--b-muted);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "OPENED \u00a0\u00b7\u00a0 ANSWERED \u00a0\u00b7\u00a0 COMPLETED"
+                   }
+                  ],
+                  "i": 110,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "margin-left:auto;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.13em;color:var(--b-muted);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "3 / 3"
+                   }
+                  ],
+                  "i": 111,
+                  "t": "span"
+                 }
+                ],
+                "i": 106,
+                "t": "div"
+               },
+               {
+                "a": {
+                 "style": "display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:28px;"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "href": "#lessons",
+                   "style": "display:inline-flex;align-items:center;gap:10px;font-size:17px;font-weight:700;padding:15px 24px;min-height:44px;border-radius:14px;border:1px solid var(--b-edge);background:var(--b-cta);color:var(--b-cta-ink);text-decoration:none;"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "Revisit this week's lessons"
+                   },
+                   {
+                    "a": {
+                     "aria-hidden": "true",
+                     "fill": "none",
+                     "height": "16",
+                     "stroke": "currentColor",
+                     "stroke-linecap": "round",
+                     "stroke-linejoin": "round",
+                     "stroke-width": "2.6",
+                     "viewBox": "0 0 24 24",
+                     "width": "16"
+                    },
+                    "c": [
+                     {
+                      "a": {
+                       "d": "M9 5l7 7-7 7"
+                      },
+                      "i": 115,
+                      "t": "path"
+                     }
+                    ],
+                    "i": 114,
+                    "t": "svg"
+                   }
+                  ],
+                  "hov": "background:#A93411;color:var(--b-cta-ink);text-decoration:none",
+                  "i": 113,
+                  "t": "a"
+                 },
+                 {
+                  "a": {
+                   "data-port-action": "recall-round",
+                   "style": "font:inherit;font-size:17px;font-weight:700;padding:15px 22px;min-height:44px;border-radius:14px;border:1.5px solid var(--b-muted);background:transparent;color:var(--b-ink);cursor:pointer;",
+                   "type": "button"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "Practise recall"
+                   }
+                  ],
+                  "hov": "border-color:var(--b-ink)",
+                  "i": 116,
+                  "on": "openRecall",
+                  "t": "button"
+                 }
+                ],
+                "i": 112,
+                "t": "div"
+               },
+               {
+                "a": {
+                 "data-port-note": "reserved for the score-gated reward surface \u2014 nothing drawn",
+                 "data-port-region": "bench-reward-slot",
+                 "style": "min-height:64px;"
+                },
+                "i": 117,
+                "t": "div"
+               }
+              ],
+              "i": 102,
+              "t": "div"
+             },
+             {
+              "a": {
+               "style": "flex:0 1 420px;min-width:280px;width:100%;max-width:440px;background:var(--pg-card);border-radius:20px;overflow:hidden;"
+              },
+              "c": [
+               {
+                "a": {
+                 "style": "display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;background:var(--pg-band);border-bottom:1px solid var(--pg-rule);"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--pg-muted);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "THIS WEEK'S ASSIGNMENT"
+                   }
+                  ],
+                  "i": 120,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;padding:5px 11px;border-radius:999px;background:var(--pg-ok-tint);border:1px solid var(--pg-ok);color:var(--pg-ok-text);"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "aria-hidden": "true",
+                     "fill": "none",
+                     "height": "12",
+                     "stroke": "currentColor",
+                     "stroke-linecap": "round",
+                     "stroke-linejoin": "round",
+                     "stroke-width": "3",
+                     "viewBox": "0 0 24 24",
+                     "width": "12"
+                    },
+                    "c": [
+                     {
+                      "a": {
+                       "d": "M4 12.5l5 5L20 6.5"
+                      },
+                      "i": 123,
+                      "t": "path"
+                     }
+                    ],
+                    "i": 122,
+                    "t": "svg"
+                   },
+                   {
+                    "t": "#",
+                    "v": "MARKED"
+                   }
+                  ],
+                  "i": 121,
+                  "t": "span"
+                 }
+                ],
+                "i": 119,
+                "t": "div"
+               },
+               {
+                "a": {
+                 "style": "padding:6px 20px 20px;"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--pg-rule);"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "SCORE"
+                     }
+                    ],
+                    "i": 126,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "style": "font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:34px;letter-spacing:-.03em;"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "50%"
+                     }
+                    ],
+                    "i": 127,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 125,
+                  "t": "div"
+                 },
+                 {
+                  "a": {
+                   "style": "display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--pg-rule);"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "RIGHT"
+                     }
+                    ],
+                    "i": 129,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "style": "font-weight:600;font-size:17px;"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "2 of 4"
+                     }
+                    ],
+                    "i": 130,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 128,
+                  "t": "div"
+                 },
+                 {
+                  "a": {
+                   "style": "display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 0;"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "COMPLETED"
+                     }
+                    ],
+                    "i": 132,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "style": "font-weight:600;font-size:17px;"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "Wed 20 Aug, 19:42"
+                     }
+                    ],
+                    "i": 133,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 131,
+                  "t": "div"
+                 },
+                 {
+                  "a": {
+                   "href": "#work",
+                   "style": "display:inline-flex;align-items:center;gap:8px;margin-top:8px;font-size:16px;font-weight:700;"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "Read the feedback"
+                   },
+                   {
+                    "a": {
+                     "aria-hidden": "true",
+                     "fill": "none",
+                     "height": "15",
+                     "stroke": "currentColor",
+                     "stroke-linecap": "round",
+                     "stroke-linejoin": "round",
+                     "stroke-width": "2.4",
+                     "viewBox": "0 0 24 24",
+                     "width": "15"
+                    },
+                    "c": [
+                     {
+                      "a": {
+                       "d": "M4 12h15M13 6l6 6-6 6"
+                      },
+                      "i": 136,
+                      "t": "path"
+                     }
+                    ],
+                    "i": 135,
+                    "t": "svg"
+                   }
+                  ],
+                  "i": 134,
+                  "t": "a"
+                 }
+                ],
+                "i": 124,
+                "t": "div"
+               }
+              ],
+              "i": 118,
+              "t": "div"
+             }
+            ],
+            "i": 101,
+            "t": "div"
+           }
+          ],
+          "e": "benchDone",
+          "i": 100,
+          "t": "if"
+         }
+        ],
+        "i": 57,
+        "t": "section"
+       },
+       {
+        "a": {
+         "data-port-change": "C1 selected week takes the bench theme",
+         "data-port-region": "term-spine",
+         "style": "margin-top:56px;"
+        },
+        "c": [
+         {
+          "a": {
+           "style": "display:flex;flex-wrap:wrap;gap:16px;align-items:baseline;justify-content:space-between;"
+          },
+          "c": [
+           {
+            "a": {
+             "style": "margin:0;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--pg-muted);"
+            },
+            "c": [
+             {
+              "t": "#",
+              "v": "TERM SPINE \u00a0\u00a0 TAP A WEEK TO FILTER"
+             }
+            ],
+            "i": 139,
+            "t": "p"
+           },
+           {
+            "a": {
+             "style": "display:flex;gap:20px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "display:inline-flex;align-items:center;gap:7px;"
+              },
+              "c": [
+               {
+                "a": {
+                 "style": "width:9px;height:9px;border-radius:999px;background:var(--pg-strong);"
+                },
+                "i": 142,
+                "t": "span"
+               },
+               {
+                "t": "#",
+                "v": "DONE"
+               }
+              ],
+              "i": 141,
+              "t": "span"
+             },
+             {
+              "a": {
+               "style": "display:inline-flex;align-items:center;gap:7px;"
+              },
+              "c": [
+               {
+                "a": {
+                 "style": "width:9px;height:9px;border-radius:999px;background:var(--pg-accent);"
+                },
+                "i": 144,
+                "t": "span"
+               },
+               {
+                "t": "#",
+                "v": "OPEN"
+               }
+              ],
+              "i": 143,
+              "t": "span"
+             },
+             {
+              "a": {
+               "style": "display:inline-flex;align-items:center;gap:7px;"
+              },
+              "c": [
+               {
+                "a": {
+                 "style": "width:9px;height:9px;border:1.5px solid var(--pg-rule-strong);transform:rotate(45deg);"
+                },
+                "i": 146,
+                "t": "span"
+               },
+               {
+                "t": "#",
+                "v": "MISSED"
+               }
+              ],
+              "i": 145,
+              "t": "span"
+             }
+            ],
+            "i": 140,
+            "t": "div"
+           }
+          ],
+          "i": 138,
+          "t": "div"
+         },
+         {
+          "a": {
+           "style": "height:1px;background:var(--pg-rule);margin:14px 0 22px;"
+          },
+          "i": 147,
+          "t": "div"
+         },
+         {
+          "a": {
+           "style": "display:flex;flex-wrap:wrap;gap:14px;"
+          },
+          "c": [
+           {
+            "as": "w",
+            "c": [
+             {
+              "a": {
+               "style": "display:flex;flex-direction:column;align-items:center;gap:8px;"
+              },
+              "c": [
+               {
+                "a": {
+                 "class": "wk",
+                 "data-sel": {
+                  "parts": [
+                   {
+                    "e": "w.sel"
+                   }
+                  ]
+                 },
+                 "style": "width:56px;height:56px;border-radius:12px;border:1px solid var(--wk-edge,var(--pg-rule));background:var(--wk-fill,var(--pg-band));cursor:pointer;padding:0;display:grid;place-items:center;",
+                 "title": {
+                  "parts": [
+                   {
+                    "e": "w.title"
+                   }
+                  ]
+                 },
+                 "type": "button"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "class": "wkline",
+                   "style": "display:block;width:56px;height:2px;background:var(--wk-line,transparent);opacity:.9;"
+                  },
+                  "i": 152,
+                  "t": "span"
+                 }
+                ],
+                "hov": "border-color:var(--pg-rule-strong)",
+                "i": 151,
+                "on": "w.pick",
+                "t": "button"
+               },
+               {
+                "c": [
+                 {
+                  "a": {
+                   "style": "display:flex;flex-direction:column;align-items:center;gap:5px;"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--pg-accent-text);"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": {
+                       "parts": [
+                        {
+                         "e": "w.label"
+                        }
+                       ]
+                      }
+                     }
+                    ],
+                    "i": 155,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "style": "width:5px;height:5px;border-radius:999px;background:var(--pg-accent);"
+                    },
+                    "i": 156,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 154,
+                  "t": "span"
+                 }
+                ],
+                "e": "w.now",
+                "i": 153,
+                "t": "if"
+               },
+               {
+                "c": [
+                 {
+                  "a": {
+                   "style": "font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--pg-muted);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": {
+                     "parts": [
+                      {
+                       "e": "w.label"
+                      }
+                     ]
+                    }
+                   }
+                  ],
+                  "i": 158,
+                  "t": "span"
+                 }
+                ],
+                "e": "w.later",
+                "i": 157,
+                "t": "if"
+               }
+              ],
+              "i": 150,
+              "t": "div"
+             }
+            ],
+            "e": "weeks",
+            "i": 149,
+            "t": "for"
+           }
+          ],
+          "i": 148,
+          "t": "div"
+         }
+        ],
+        "i": 137,
+        "t": "section"
+       },
+       {
+        "a": {
+         "id": "work",
+         "style": "display:flex;flex-wrap:wrap;gap:40px;margin-top:60px;align-items:flex-start;"
+        },
+        "c": [
+         {
+          "a": {
+           "data-port-region": "work-list",
+           "style": "flex:1 1 560px;min-width:300px;"
+          },
+          "c": [
+           {
+            "a": {
+             "style": "display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "margin:0;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--pg-muted);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "WORK \u00a0\u00a0 SUMMER TERM"
+               }
+              ],
+              "i": 162,
+              "t": "p"
+             },
+             {
+              "a": {
+               "style": "display:flex;gap:4px;padding:4px;border-radius:12px;background:var(--pg-band);"
+              },
+              "c": [
+               {
+                "as": "t",
+                "c": [
+                 {
+                  "a": {
+                   "class": "tab",
+                   "data-on": {
+                    "parts": [
+                     {
+                      "e": "t.on"
+                     }
+                    ]
+                   },
+                   "style": "font:inherit;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.12em;padding:9px 14px;min-height:38px;border:0;border-radius:9px;background:var(--tab-bg,transparent);color:var(--tab-ink,var(--pg-muted));box-shadow:var(--tab-shadow,none);cursor:pointer;",
+                   "type": "button"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": {
+                     "parts": [
+                      {
+                       "e": "t.label"
+                      }
+                     ]
+                    }
+                   }
+                  ],
+                  "i": 165,
+                  "on": "t.pick",
+                  "t": "button"
+                 }
+                ],
+                "e": "tabs",
+                "i": 164,
+                "t": "for"
+               }
+              ],
+              "i": 163,
+              "t": "div"
+             }
+            ],
+            "i": 161,
+            "t": "div"
+           },
+           {
+            "a": {
+             "style": "height:1px;background:var(--pg-rule);margin:14px 0 0;"
+            },
+            "i": 166,
+            "t": "div"
+           },
+           {
+            "as": "r",
+            "c": [
+             {
+              "a": {
+               "style": "border-bottom:1px solid var(--pg-rule);padding:22px 0;"
+              },
+              "c": [
+               {
+                "a": {
+                 "style": "display:flex;flex-wrap:wrap;gap:18px;align-items:center;"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.1em;color:var(--pg-muted);width:34px;flex:0 0 auto;"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": {
+                     "parts": [
+                      {
+                       "e": "r.week"
+                      }
+                     ]
+                    }
+                   }
+                  ],
+                  "i": 170,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "width:10px;height:10px;border-radius:999px;background:var(--pg-strong);flex:0 0 auto;"
+                  },
+                  "i": 171,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "flex:1 1 260px;min-width:200px;"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "margin:0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:21px;letter-spacing:-.02em;line-height:1.25;"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": {
+                       "parts": [
+                        {
+                         "e": "r.title"
+                        }
+                       ]
+                      }
+                     }
+                    ],
+                    "i": 173,
+                    "t": "p"
+                   },
+                   {
+                    "a": {
+                     "style": "margin:4px 0 0;font-size:16px;color:var(--pg-muted);"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": {
+                       "parts": [
+                        {
+                         "e": "r.meta"
+                        }
+                       ]
+                      }
+                     }
+                    ],
+                    "i": 174,
+                    "t": "p"
+                   }
+                  ],
+                  "i": 172,
+                  "t": "div"
+                 },
+                 {
+                  "a": {
+                   "style": "font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:28px;letter-spacing:-.03em;"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": {
+                     "parts": [
+                      {
+                       "e": "r.score"
+                      }
+                     ]
+                    }
+                   }
+                  ],
+                  "i": 175,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "display:inline-flex;align-items:center;gap:8px;font:inherit;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;background:none;border:0;color:var(--pg-muted);cursor:pointer;min-height:44px;",
+                   "type": "button"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "READ FEEDBACK"
+                   },
+                   {
+                    "a": {
+                     "aria-hidden": "true",
+                     "fill": "none",
+                     "height": "14",
+                     "stroke": "currentColor",
+                     "stroke-linecap": "round",
+                     "stroke-linejoin": "round",
+                     "stroke-width": "2.4",
+                     "viewBox": "0 0 24 24",
+                     "width": "14"
+                    },
+                    "c": [
+                     {
+                      "a": {
+                       "d": "M6 9l6 6 6-6"
+                      },
+                      "i": 178,
+                      "t": "path"
+                     }
+                    ],
+                    "i": 177,
+                    "t": "svg"
+                   }
+                  ],
+                  "hov": "color:var(--pg-accent-text)",
+                  "i": 176,
+                  "on": "r.toggle",
+                  "t": "button"
+                 }
+                ],
+                "i": 169,
+                "t": "div"
+               },
+               {
+                "c": [
+                 {
+                  "a": {
+                   "style": "margin:16px 0 0;padding:16px 18px;border-radius:14px;background:var(--pg-inset);border:1px solid var(--pg-rule);font-size:17px;line-height:1.55;color:var(--pg-body);max-width:60ch;"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": {
+                     "parts": [
+                      {
+                       "e": "r.feedback"
+                      }
+                     ]
+                    }
+                   }
+                  ],
+                  "i": 180,
+                  "t": "p"
+                 }
+                ],
+                "e": "r.open",
+                "i": 179,
+                "t": "if"
+               }
+              ],
+              "i": 168,
+              "t": "div"
+             }
+            ],
+            "e": "rows",
+            "i": 167,
+            "t": "for"
+           },
+           {
+            "a": {
+             "style": "margin-top:40px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 22px;border-radius:16px;background:var(--pg-band);"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--pg-muted);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "SHOUTOUTS"
+               }
+              ],
+              "i": 182,
+              "t": "span"
+             },
+             {
+              "a": {
+               "style": "font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.1em;color:var(--pg-muted);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "00"
+               }
+              ],
+              "i": 183,
+              "t": "span"
+             }
+            ],
+            "i": 181,
+            "t": "div"
+           }
+          ],
+          "i": 160,
+          "t": "section"
+         },
+         {
+          "a": {
+           "style": "flex:0 1 380px;min-width:280px;width:100%;display:flex;flex-direction:column;gap:24px;"
+          },
+          "c": [
+           {
+            "a": {
+             "data-port-region": "lessons-panel",
+             "id": "lessons",
+             "style": "background:var(--pg-card);border:1px solid var(--pg-rule);border-radius:20px;padding:20px;"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "display:flex;align-items:baseline;justify-content:space-between;gap:12px;"
+              },
+              "c": [
+               {
+                "a": {
+                 "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--pg-muted);"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "LESSONS IN THIS TOPIC"
+                 }
+                ],
+                "i": 187,
+                "t": "span"
+               },
+               {
+                "a": {
+                 "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--pg-muted);"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "04"
+                 }
+                ],
+                "i": 188,
+                "t": "span"
+               }
+              ],
+              "i": 186,
+              "t": "div"
+             },
+             {
+              "a": {
+               "style": "display:flex;flex-direction:column;gap:8px;margin-top:16px;"
+              },
+              "c": [
+               {
+                "a": {
+                 "href": "#top",
+                 "style": "display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-radius:14px;background:var(--pg-tint);border:1px solid var(--pg-accent);text-decoration:none;"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--pg-accent-text);padding-top:2px;"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "01"
+                   }
+                  ],
+                  "i": 191,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "display:block;"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "display:block;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:18px;letter-spacing:-.02em;color:var(--pg-ink);"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "The gas exchange system"
+                     }
+                    ],
+                    "i": 193,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "style": "display:block;margin-top:3px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-accent-text);"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "SET IN THIS WEEK'S ASSIGNMENT"
+                     }
+                    ],
+                    "i": 194,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 192,
+                  "t": "span"
+                 }
+                ],
+                "i": 190,
+                "t": "a"
+               },
+               {
+                "a": {
+                 "href": "#top",
+                 "style": "display:flex;gap:14px;align-items:center;padding:14px 16px;border-radius:14px;border:1px solid var(--pg-rule);text-decoration:none;"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--pg-muted);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "02"
+                   }
+                  ],
+                  "i": 196,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:18px;letter-spacing:-.02em;color:var(--pg-ink);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "Pressure in gases"
+                   }
+                  ],
+                  "i": 197,
+                  "t": "span"
+                 }
+                ],
+                "hov": "border-color:var(--pg-rule-strong);text-decoration:none",
+                "i": 195,
+                "t": "a"
+               },
+               {
+                "a": {
+                 "href": "#top",
+                 "style": "display:flex;gap:14px;align-items:center;padding:14px 16px;border-radius:14px;border:1px solid var(--pg-rule);text-decoration:none;"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--pg-muted);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "03"
+                   }
+                  ],
+                  "i": 199,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:18px;letter-spacing:-.02em;color:var(--pg-ink);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "Chemical reactions"
+                   }
+                  ],
+                  "i": 200,
+                  "t": "span"
+                 }
+                ],
+                "hov": "border-color:var(--pg-rule-strong);text-decoration:none",
+                "i": 198,
+                "t": "a"
+               },
+               {
+                "a": {
+                 "href": "#top",
+                 "style": "display:flex;gap:14px;align-items:center;padding:14px 16px;border-radius:14px;border:1px solid var(--pg-rule);text-decoration:none;"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--pg-muted);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "04"
+                   }
+                  ],
+                  "i": 202,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:18px;letter-spacing:-.02em;color:var(--pg-ink);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "The particle model"
+                   }
+                  ],
+                  "i": 203,
+                  "t": "span"
+                 }
+                ],
+                "hov": "border-color:var(--pg-rule-strong);text-decoration:none",
+                "i": 201,
+                "t": "a"
+               }
+              ],
+              "i": 189,
+              "t": "div"
+             }
+            ],
+            "i": 185,
+            "t": "section"
+           },
+           {
+            "a": {
+             "data-port-change": "C2 replaces the dark RECALL card",
+             "data-port-region": "sidebar-flashcards",
+             "id": "recall",
+             "style": "position:relative;"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "position:absolute;left:14px;right:14px;top:12px;height:40px;border-radius:18px;background:var(--b-ground);opacity:.34;"
+              },
+              "i": 205,
+              "t": "div"
+             },
+             {
+              "a": {
+               "style": "position:absolute;left:7px;right:7px;top:6px;height:40px;border-radius:19px;background:var(--b-ground);opacity:.62;"
+              },
+              "i": 206,
+              "t": "div"
+             },
+             {
+              "a": {
+               "style": "position:relative;display:block;width:100%;text-align:left;font:inherit;cursor:pointer;border:0;padding:22px;border-radius:20px;background:var(--b-ground);color:var(--b-ink);transition:transform .16s;",
+               "type": "button"
+              },
+              "c": [
+               {
+                "a": {
+                 "style": "display:flex;align-items:baseline;justify-content:space-between;gap:12px;"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--b-ember);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "FLASHCARDS"
+                   }
+                  ],
+                  "i": 209,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--b-muted);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": {
+                     "parts": [
+                      {
+                       "e": "cardCount"
+                      }
+                     ]
+                    }
+                   }
+                  ],
+                  "i": 210,
+                  "t": "span"
+                 }
+                ],
+                "i": 208,
+                "t": "span"
+               },
+               {
+                "a": {
+                 "style": "display:block;margin-top:18px;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:23px;line-height:1.2;letter-spacing:-.025em;"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": {
+                   "parts": [
+                    {
+                     "e": "topFront"
+                    }
+                   ]
+                  }
+                 }
+                ],
+                "i": 211,
+                "t": "span"
+               },
+               {
+                "c": [
+                 {
+                  "a": {
+                   "style": "display:inline-flex;align-items:center;gap:7px;margin-top:14px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.13em;padding:5px 10px;border-radius:999px;border:1px solid var(--b-rule);color:var(--b-muted);"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "width:5px;height:5px;border-radius:999px;background:var(--b-ember);"
+                    },
+                    "i": 214,
+                    "t": "span"
+                   },
+                   {
+                    "t": "#",
+                    "v": "FROM YOUR WORK"
+                   }
+                  ],
+                  "i": 213,
+                  "t": "span"
+                 }
+                ],
+                "e": "topMine",
+                "i": 212,
+                "t": "if"
+               },
+               {
+                "a": {
+                 "style": "display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px;padding-top:16px;border-top:1px solid var(--b-rule);"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--b-muted);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": {
+                     "parts": [
+                      {
+                       "e": "stackPos"
+                      }
+                     ]
+                    }
+                   }
+                  ],
+                  "i": 216,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "width:34px;height:34px;border-radius:999px;background:var(--b-inset);display:grid;place-items:center;color:var(--b-ember);"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "aria-hidden": "true",
+                     "fill": "none",
+                     "height": "15",
+                     "stroke": "currentColor",
+                     "stroke-linecap": "round",
+                     "stroke-linejoin": "round",
+                     "stroke-width": "2.6",
+                     "viewBox": "0 0 24 24",
+                     "width": "15"
+                    },
+                    "c": [
+                     {
+                      "a": {
+                       "d": "M9 5l7 7-7 7"
+                      },
+                      "i": 219,
+                      "t": "path"
+                     }
+                    ],
+                    "i": 218,
+                    "t": "svg"
+                   }
+                  ],
+                  "i": 217,
+                  "t": "span"
+                 }
+                ],
+                "i": 215,
+                "t": "span"
+               }
+              ],
+              "hov": "transform:translateY(-2px)",
+              "i": 207,
+              "on": "openCards",
+              "t": "button"
+             }
+            ],
+            "i": 204,
+            "t": "section"
+           }
+          ],
+          "i": 184,
+          "t": "div"
+         }
+        ],
+        "i": 159,
+        "t": "div"
+       },
+       {
+        "a": {
+         "data-port-change": "C1 card + week chips take the bench theme",
+         "data-port-region": "leaderboard",
+         "style": "margin-top:72px;"
+        },
+        "c": [
+         {
+          "a": {
+           "style": "display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;"
+          },
+          "c": [
+           {
+            "a": {
+             "style": "margin:0;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--pg-muted);"
+            },
+            "c": [
+             {
+              "t": "#",
+              "v": "LEADERBOARD \u00a0\u00a0 CURRENT WEEK"
+             }
+            ],
+            "i": 222,
+            "t": "p"
+           },
+           {
+            "a": {
+             "style": "display:flex;flex-wrap:wrap;gap:8px;"
+            },
+            "c": [
+             {
+              "as": "c",
+              "c": [
+               {
+                "a": {
+                 "class": "lbchip",
+                 "data-on": {
+                  "parts": [
+                   {
+                    "e": "c.on"
+                   }
+                  ]
+                 },
+                 "style": "font:inherit;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;padding:10px 14px;min-height:40px;border-radius:11px;border:1px solid var(--lb-edge,var(--pg-rule));background:var(--lb-bg,var(--pg-card));color:var(--lb-ink,var(--pg-muted));cursor:pointer;",
+                 "type": "button"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": {
+                   "parts": [
+                    {
+                     "e": "c.label"
+                    }
+                   ]
+                  }
+                 }
+                ],
+                "i": 225,
+                "on": "c.pick",
+                "t": "button"
+               }
+              ],
+              "e": "lbchips",
+              "i": 224,
+              "t": "for"
+             },
+             {
+              "a": {
+               "style": "font:inherit;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;padding:10px 16px;min-height:40px;border-radius:11px;border:1px solid var(--pg-rule-strong);background:var(--pg-band);color:var(--pg-muted);cursor:pointer;",
+               "type": "button"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "SHOW TOP 10"
+               }
+              ],
+              "i": 226,
+              "t": "button"
+             }
+            ],
+            "i": 223,
+            "t": "div"
+           }
+          ],
+          "i": 221,
+          "t": "div"
+         },
+         {
+          "a": {
+           "style": "height:1px;background:var(--pg-rule);margin:14px 0 24px;"
+          },
+          "i": 227,
+          "t": "div"
+         },
+         {
+          "a": {
+           "style": "display:flex;flex-wrap:wrap;gap:32px;align-items:stretch;"
+          },
+          "c": [
+           {
+            "a": {
+             "style": "flex:0 1 460px;min-width:280px;border-radius:22px;overflow:hidden;background:var(--b-ground);position:relative;"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "height:9px;background:repeating-linear-gradient(115deg,var(--b-accent) 0 13px,#A93411 13px 26px);"
+              },
+              "i": 230,
+              "t": "div"
+             },
+             {
+              "a": {
+               "style": "padding:22px 24px 26px;position:relative;"
+              },
+              "c": [
+               {
+                "a": {
+                 "style": "position:absolute;right:-6px;bottom:-34px;pointer-events:none;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:150px;line-height:1;letter-spacing:-.05em;color:var(--b-ink);opacity:.05;"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "01"
+                 }
+                ],
+                "i": 232,
+                "t": "span"
+               },
+               {
+                "a": {
+                 "style": "margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--b-ember);"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "TOP OF WEEK 01"
+                 }
+                ],
+                "i": 233,
+                "t": "p"
+               },
+               {
+                "a": {
+                 "style": "display:flex;align-items:center;gap:16px;margin-top:20px;position:relative;"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "width:72px;height:72px;border-radius:999px;border:3px solid var(--b-accent);background:var(--b-inset);display:grid;place-items:center;font-family:'DM Mono',monospace;font-size:16px;letter-spacing:.06em;color:var(--b-ink);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "RA"
+                   }
+                  ],
+                  "i": 235,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "display:block;"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "display:block;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:24px;letter-spacing:-.02em;color:var(--b-ink);"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "Rae A."
+                     }
+                    ],
+                    "i": 237,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "style": "display:block;margin-top:2px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--b-muted);"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "8r/Sc1"
+                     }
+                    ],
+                    "i": 238,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 236,
+                  "t": "span"
+                 }
+                ],
+                "i": 234,
+                "t": "div"
+               },
+               {
+                "a": {
+                 "style": "margin:22px 0 0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--b-muted);"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "POINTS \u00a0 240"
+                 }
+                ],
+                "i": 239,
+                "t": "p"
+               }
+              ],
+              "i": 231,
+              "t": "div"
+             }
+            ],
+            "i": 229,
+            "t": "div"
+           },
+           {
+            "a": {
+             "style": "flex:1 1 320px;min-width:240px;display:flex;flex-direction:column;justify-content:space-between;gap:20px;padding-top:6px;"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "height:1px;background:var(--pg-rule);"
+              },
+              "i": 241,
+              "t": "div"
+             },
+             {
+              "a": {
+               "style": "margin:0;text-align:right;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "RESETS EVERY MONDAY 00:00"
+               }
+              ],
+              "i": 242,
+              "t": "p"
+             }
+            ],
+            "i": 240,
+            "t": "div"
+           }
+          ],
+          "i": 228,
+          "t": "div"
+         }
+        ],
+        "i": 220,
+        "t": "section"
+       }
+      ],
+      "i": 27,
+      "t": "main"
+     },
+     {
+      "c": [
+       {
+        "a": {
+         "data-port-change": "C1 bench theme control lives here",
+         "data-port-region": "account-sheet",
+         "data-screen-label": "Account sheet",
+         "style": "position:fixed;inset:0;z-index:40;background:rgba(59,42,32,.55);display:flex;justify-content:flex-end;animation:fcIn .18s both;"
+        },
+        "c": [
+         {
+          "a": {
+           "style": "width:min(460px,100%);height:100%;overflow:auto;background:var(--pg-ground);border-left:1px solid var(--pg-rule-strong);padding:26px 28px 48px;animation:fcUp .22s both;"
+          },
+          "c": [
+           {
+            "a": {
+             "style": "display:flex;align-items:center;justify-content:space-between;gap:16px;"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--pg-muted);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "ACCOUNT"
+               }
+              ],
+              "i": 247,
+              "t": "span"
+             },
+             {
+              "a": {
+               "style": "width:44px;height:44px;border-radius:12px;border:1px solid var(--pg-rule);background:var(--pg-card);color:var(--pg-ink);display:grid;place-items:center;cursor:pointer;",
+               "title": "Close",
+               "type": "button"
+              },
+              "c": [
+               {
+                "a": {
+                 "aria-hidden": "true",
+                 "fill": "none",
+                 "height": "16",
+                 "stroke": "currentColor",
+                 "stroke-linecap": "round",
+                 "stroke-linejoin": "round",
+                 "stroke-width": "2.4",
+                 "viewBox": "0 0 24 24",
+                 "width": "16"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "d": "M6 6l12 12M18 6L6 18"
+                  },
+                  "i": 250,
+                  "t": "path"
+                 }
+                ],
+                "i": 249,
+                "t": "svg"
+               }
+              ],
+              "hov": "background:var(--pg-band)",
+              "i": 248,
+              "on": "closeAll",
+              "t": "button"
+             }
+            ],
+            "i": 246,
+            "t": "div"
+           },
+           {
+            "a": {
+             "style": "display:flex;align-items:center;gap:14px;margin-top:24px;"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "width:52px;height:52px;border-radius:999px;border:1px solid var(--pg-rule-strong);background:var(--pg-band);display:grid;place-items:center;font-family:'DM Mono',monospace;font-size:14px;letter-spacing:.06em;"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "AY"
+               }
+              ],
+              "i": 252,
+              "t": "span"
+             },
+             {
+              "a": {
+               "style": "display:block;"
+              },
+              "c": [
+               {
+                "a": {
+                 "style": "display:block;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:26px;letter-spacing:-.03em;"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "AY"
+                 }
+                ],
+                "i": 254,
+                "t": "span"
+               },
+               {
+                "a": {
+                 "style": "display:block;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-muted);"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "8r/Sc1 \u00a0\u00b7\u00a0 SCIENCE"
+                 }
+                ],
+                "i": 255,
+                "t": "span"
+               }
+              ],
+              "i": 253,
+              "t": "span"
+             }
+            ],
+            "i": 251,
+            "t": "div"
+           },
+           {
+            "a": {
+             "style": "margin-top:28px;border-top:1px solid var(--pg-rule);"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "display:flex;justify-content:space-between;gap:16px;padding:15px 0;border-bottom:1px solid var(--pg-rule);"
+              },
+              "c": [
+               {
+                "a": {
+                 "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "TEACHER"
+                 }
+                ],
+                "i": 258,
+                "t": "span"
+               },
+               {
+                "a": {
+                 "style": "font-weight:600;"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "Mr Badmus"
+                 }
+                ],
+                "i": 259,
+                "t": "span"
+               }
+              ],
+              "i": 257,
+              "t": "div"
+             },
+             {
+              "a": {
+               "style": "display:flex;justify-content:space-between;gap:16px;padding:15px 0;border-bottom:1px solid var(--pg-rule);"
+              },
+              "c": [
+               {
+                "a": {
+                 "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "TERM"
+                 }
+                ],
+                "i": 261,
+                "t": "span"
+               },
+               {
+                "a": {
+                 "style": "font-weight:600;"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "Summer \u00a0\u00b7\u00a0 Week 01 / 39"
+                 }
+                ],
+                "i": 262,
+                "t": "span"
+               }
+              ],
+              "i": 260,
+              "t": "div"
+             },
+             {
+              "a": {
+               "style": "display:flex;justify-content:space-between;gap:16px;padding:15px 0;border-bottom:1px solid var(--pg-rule);"
+              },
+              "c": [
+               {
+                "a": {
+                 "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "EMAIL"
+                 }
+                ],
+                "i": 264,
+                "t": "span"
+               },
+               {
+                "a": {
+                 "style": "font-weight:600;"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "ay@school.uk"
+                 }
+                ],
+                "i": 265,
+                "t": "span"
+               }
+              ],
+              "i": 263,
+              "t": "div"
+             }
+            ],
+            "i": 256,
+            "t": "div"
+           },
+           {
+            "a": {
+             "style": "margin-top:32px;"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--pg-muted);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "BENCH THEME"
+               }
+              ],
+              "i": 267,
+              "t": "p"
+             },
+             {
+              "a": {
+               "style": "margin:8px 0 0;font-size:16px;color:var(--pg-body);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "Sets the bench, the week spine and the leaderboard card."
+               }
+              ],
+              "i": 268,
+              "t": "p"
+             },
+             {
+              "a": {
+               "style": "display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:16px;"
+              },
+              "c": [
+               {
+                "a": {
+                 "class": "sw",
+                 "data-on": {
+                  "parts": [
+                   {
+                    "e": "isClay"
+                   }
+                  ]
+                 },
+                 "style": "font:inherit;text-align:left;padding:0;border:1px solid var(--pg-rule);border-radius:14px;overflow:hidden;background:var(--pg-card);cursor:pointer;",
+                 "type": "button"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "display:block;height:58px;background:var(--t-clay);position:relative;"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "position:absolute;left:12px;top:16px;width:52px;height:4px;border-radius:2px;background:#FBF3E6;opacity:.9;"
+                    },
+                    "i": 272,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "style": "position:absolute;left:12px;top:28px;width:30px;height:4px;border-radius:2px;background:#E4572E;"
+                    },
+                    "i": 273,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "class": "swtick",
+                     "style": "position:absolute;right:8px;top:8px;width:20px;height:20px;border-radius:999px;background:#FBF3E6;color:#6B4A33;display:grid;place-items:center;opacity:var(--tick-o,0);"
+                    },
+                    "c": [
+                     {
+                      "a": {
+                       "aria-hidden": "true",
+                       "fill": "none",
+                       "height": "12",
+                       "stroke": "currentColor",
+                       "stroke-linecap": "round",
+                       "stroke-linejoin": "round",
+                       "stroke-width": "3.2",
+                       "viewBox": "0 0 24 24",
+                       "width": "12"
+                      },
+                      "c": [
+                       {
+                        "a": {
+                         "d": "M4 12.5l5 5L20 6.5"
+                        },
+                        "i": 276,
+                        "t": "path"
+                       }
+                      ],
+                      "i": 275,
+                      "t": "svg"
+                     }
+                    ],
+                    "i": 274,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 271,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "display:block;padding:10px 12px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-ink);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "CLAY"
+                   }
+                  ],
+                  "i": 277,
+                  "t": "span"
+                 }
+                ],
+                "i": 270,
+                "on": "pickClay",
+                "t": "button"
+               },
+               {
+                "a": {
+                 "class": "sw",
+                 "data-on": {
+                  "parts": [
+                   {
+                    "e": "isChalk"
+                   }
+                  ]
+                 },
+                 "style": "font:inherit;text-align:left;padding:0;border:1px solid var(--pg-rule);border-radius:14px;overflow:hidden;background:var(--pg-card);cursor:pointer;",
+                 "type": "button"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "display:block;height:58px;background:var(--t-chalk);position:relative;"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "position:absolute;left:12px;top:16px;width:52px;height:4px;border-radius:2px;background:#221E1B;opacity:.85;"
+                    },
+                    "i": 280,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "style": "position:absolute;left:12px;top:28px;width:30px;height:4px;border-radius:2px;background:#E4572E;"
+                    },
+                    "i": 281,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "class": "swtick",
+                     "style": "position:absolute;right:8px;top:8px;width:20px;height:20px;border-radius:999px;background:#221E1B;color:#EFE2CB;display:grid;place-items:center;opacity:var(--tick-o,0);"
+                    },
+                    "c": [
+                     {
+                      "a": {
+                       "aria-hidden": "true",
+                       "fill": "none",
+                       "height": "12",
+                       "stroke": "currentColor",
+                       "stroke-linecap": "round",
+                       "stroke-linejoin": "round",
+                       "stroke-width": "3.2",
+                       "viewBox": "0 0 24 24",
+                       "width": "12"
+                      },
+                      "c": [
+                       {
+                        "a": {
+                         "d": "M4 12.5l5 5L20 6.5"
+                        },
+                        "i": 284,
+                        "t": "path"
+                       }
+                      ],
+                      "i": 283,
+                      "t": "svg"
+                     }
+                    ],
+                    "i": 282,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 279,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "display:block;padding:10px 12px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-ink);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "CHALK"
+                   }
+                  ],
+                  "i": 285,
+                  "t": "span"
+                 }
+                ],
+                "i": 278,
+                "on": "pickChalk",
+                "t": "button"
+               },
+               {
+                "a": {
+                 "class": "sw",
+                 "data-on": {
+                  "parts": [
+                   {
+                    "e": "isMoss"
+                   }
+                  ]
+                 },
+                 "style": "font:inherit;text-align:left;padding:0;border:1px solid var(--pg-rule);border-radius:14px;overflow:hidden;background:var(--pg-card);cursor:pointer;",
+                 "type": "button"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "display:block;height:58px;background:var(--t-moss);position:relative;"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "position:absolute;left:12px;top:16px;width:52px;height:4px;border-radius:2px;background:#FBF3E6;opacity:.9;"
+                    },
+                    "i": 288,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "style": "position:absolute;left:12px;top:28px;width:30px;height:4px;border-radius:2px;background:#E4572E;"
+                    },
+                    "i": 289,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "class": "swtick",
+                     "style": "position:absolute;right:8px;top:8px;width:20px;height:20px;border-radius:999px;background:#FBF3E6;color:#294036;display:grid;place-items:center;opacity:var(--tick-o,0);"
+                    },
+                    "c": [
+                     {
+                      "a": {
+                       "aria-hidden": "true",
+                       "fill": "none",
+                       "height": "12",
+                       "stroke": "currentColor",
+                       "stroke-linecap": "round",
+                       "stroke-linejoin": "round",
+                       "stroke-width": "3.2",
+                       "viewBox": "0 0 24 24",
+                       "width": "12"
+                      },
+                      "c": [
+                       {
+                        "a": {
+                         "d": "M4 12.5l5 5L20 6.5"
+                        },
+                        "i": 292,
+                        "t": "path"
+                       }
+                      ],
+                      "i": 291,
+                      "t": "svg"
+                     }
+                    ],
+                    "i": 290,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 287,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "display:block;padding:10px 12px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-ink);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "MOSS"
+                   }
+                  ],
+                  "i": 293,
+                  "t": "span"
+                 }
+                ],
+                "i": 286,
+                "on": "pickMoss",
+                "t": "button"
+               },
+               {
+                "a": {
+                 "class": "sw",
+                 "data-on": {
+                  "parts": [
+                   {
+                    "e": "isHarbour"
+                   }
+                  ]
+                 },
+                 "style": "font:inherit;text-align:left;padding:0;border:1px solid var(--pg-rule);border-radius:14px;overflow:hidden;background:var(--pg-card);cursor:pointer;",
+                 "type": "button"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "display:block;height:58px;background:var(--t-harbour);position:relative;"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "position:absolute;left:12px;top:16px;width:52px;height:4px;border-radius:2px;background:#FBF3E6;opacity:.9;"
+                    },
+                    "i": 296,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "style": "position:absolute;left:12px;top:28px;width:30px;height:4px;border-radius:2px;background:#E4572E;"
+                    },
+                    "i": 297,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "class": "swtick",
+                     "style": "position:absolute;right:8px;top:8px;width:20px;height:20px;border-radius:999px;background:#FBF3E6;color:#20363F;display:grid;place-items:center;opacity:var(--tick-o,0);"
+                    },
+                    "c": [
+                     {
+                      "a": {
+                       "aria-hidden": "true",
+                       "fill": "none",
+                       "height": "12",
+                       "stroke": "currentColor",
+                       "stroke-linecap": "round",
+                       "stroke-linejoin": "round",
+                       "stroke-width": "3.2",
+                       "viewBox": "0 0 24 24",
+                       "width": "12"
+                      },
+                      "c": [
+                       {
+                        "a": {
+                         "d": "M4 12.5l5 5L20 6.5"
+                        },
+                        "i": 300,
+                        "t": "path"
+                       }
+                      ],
+                      "i": 299,
+                      "t": "svg"
+                     }
+                    ],
+                    "i": 298,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 295,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "display:block;padding:10px 12px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-ink);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "HARBOUR"
+                   }
+                  ],
+                  "i": 301,
+                  "t": "span"
+                 }
+                ],
+                "i": 294,
+                "on": "pickHarbour",
+                "t": "button"
+               },
+               {
+                "a": {
+                 "class": "sw",
+                 "data-on": {
+                  "parts": [
+                   {
+                    "e": "isDamson"
+                   }
+                  ]
+                 },
+                 "style": "font:inherit;text-align:left;padding:0;border:1px solid var(--pg-rule);border-radius:14px;overflow:hidden;background:var(--pg-card);cursor:pointer;",
+                 "type": "button"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "display:block;height:58px;background:var(--t-damson);position:relative;"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "position:absolute;left:12px;top:16px;width:52px;height:4px;border-radius:2px;background:#FBF3E6;opacity:.9;"
+                    },
+                    "i": 304,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "style": "position:absolute;left:12px;top:28px;width:30px;height:4px;border-radius:2px;background:#E4572E;"
+                    },
+                    "i": 305,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "class": "swtick",
+                     "style": "position:absolute;right:8px;top:8px;width:20px;height:20px;border-radius:999px;background:#FBF3E6;color:#38243A;display:grid;place-items:center;opacity:var(--tick-o,0);"
+                    },
+                    "c": [
+                     {
+                      "a": {
+                       "aria-hidden": "true",
+                       "fill": "none",
+                       "height": "12",
+                       "stroke": "currentColor",
+                       "stroke-linecap": "round",
+                       "stroke-linejoin": "round",
+                       "stroke-width": "3.2",
+                       "viewBox": "0 0 24 24",
+                       "width": "12"
+                      },
+                      "c": [
+                       {
+                        "a": {
+                         "d": "M4 12.5l5 5L20 6.5"
+                        },
+                        "i": 308,
+                        "t": "path"
+                       }
+                      ],
+                      "i": 307,
+                      "t": "svg"
+                     }
+                    ],
+                    "i": 306,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 303,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "display:block;padding:10px 12px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-ink);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "DAMSON"
+                   }
+                  ],
+                  "i": 309,
+                  "t": "span"
+                 }
+                ],
+                "i": 302,
+                "on": "pickDamson",
+                "t": "button"
+               },
+               {
+                "a": {
+                 "class": "sw",
+                 "data-on": {
+                  "parts": [
+                   {
+                    "e": "isGraphite"
+                   }
+                  ]
+                 },
+                 "style": "font:inherit;text-align:left;padding:0;border:1px solid var(--pg-rule);border-radius:14px;overflow:hidden;background:var(--pg-card);cursor:pointer;",
+                 "type": "button"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "display:block;height:58px;background:var(--t-graphite);position:relative;"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "position:absolute;left:12px;top:16px;width:52px;height:4px;border-radius:2px;background:#FBF3E6;opacity:.9;"
+                    },
+                    "i": 312,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "style": "position:absolute;left:12px;top:28px;width:30px;height:4px;border-radius:2px;background:#E4572E;"
+                    },
+                    "i": 313,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "class": "swtick",
+                     "style": "position:absolute;right:8px;top:8px;width:20px;height:20px;border-radius:999px;background:#FBF3E6;color:#1A1512;display:grid;place-items:center;opacity:var(--tick-o,0);"
+                    },
+                    "c": [
+                     {
+                      "a": {
+                       "aria-hidden": "true",
+                       "fill": "none",
+                       "height": "12",
+                       "stroke": "currentColor",
+                       "stroke-linecap": "round",
+                       "stroke-linejoin": "round",
+                       "stroke-width": "3.2",
+                       "viewBox": "0 0 24 24",
+                       "width": "12"
+                      },
+                      "c": [
+                       {
+                        "a": {
+                         "d": "M4 12.5l5 5L20 6.5"
+                        },
+                        "i": 316,
+                        "t": "path"
+                       }
+                      ],
+                      "i": 315,
+                      "t": "svg"
+                     }
+                    ],
+                    "i": 314,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 311,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "display:block;padding:10px 12px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-ink);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "GRAPHITE"
+                   }
+                  ],
+                  "i": 317,
+                  "t": "span"
+                 }
+                ],
+                "i": 310,
+                "on": "pickGraphite",
+                "t": "button"
+               }
+              ],
+              "i": 269,
+              "t": "div"
+             }
+            ],
+            "i": 266,
+            "t": "div"
+           }
+          ],
+          "i": 245,
+          "t": "div"
+         }
+        ],
+        "i": 244,
+        "t": "div"
+       }
+      ],
+      "e": "accountOpen",
+      "i": 243,
+      "t": "if"
+     },
+     {
+      "c": [
+       {
+        "a": {
+         "data-port-change": "C2 new surface",
+         "data-port-region": "flashcards-overlay",
+         "data-screen-label": "Flashcards",
+         "style": "position:fixed;inset:0;z-index:50;background:rgba(59,42,32,.62);display:flex;align-items:center;justify-content:center;padding:0;animation:fcIn .18s both;"
+        },
+        "c": [
+         {
+          "a": {
+           "style": "width:390px;max-width:100%;height:min(100%,760px);background:var(--pg-ground);display:flex;flex-direction:column;border-radius:0;overflow:hidden;animation:fcUp .24s both;"
+          },
+          "c": [
+           {
+            "a": {
+             "style": "display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--pg-rule);background:var(--pg-card);"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--pg-muted);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "FLASHCARDS \u00a0\u00b7\u00a0 8r/Sc1"
+               }
+              ],
+              "i": 322,
+              "t": "span"
+             },
+             {
+              "a": {
+               "style": "display:flex;align-items:center;gap:10px;"
+              },
+              "c": [
+               {
+                "a": {
+                 "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-muted);"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": {
+                   "parts": [
+                    {
+                     "e": "stackPos"
+                    }
+                   ]
+                  }
+                 }
+                ],
+                "i": 324,
+                "t": "span"
+               },
+               {
+                "a": {
+                 "style": "width:44px;height:44px;border-radius:12px;border:1px solid var(--pg-rule);background:var(--pg-ground);color:var(--pg-ink);display:grid;place-items:center;cursor:pointer;",
+                 "title": "Close",
+                 "type": "button"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "aria-hidden": "true",
+                   "fill": "none",
+                   "height": "16",
+                   "stroke": "currentColor",
+                   "stroke-linecap": "round",
+                   "stroke-linejoin": "round",
+                   "stroke-width": "2.4",
+                   "viewBox": "0 0 24 24",
+                   "width": "16"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "d": "M6 6l12 12M18 6L6 18"
+                    },
+                    "i": 327,
+                    "t": "path"
+                   }
+                  ],
+                  "i": 326,
+                  "t": "svg"
+                 }
+                ],
+                "hov": "background:var(--pg-band)",
+                "i": 325,
+                "on": "closeAll",
+                "t": "button"
+               }
+              ],
+              "i": 323,
+              "t": "span"
+             }
+            ],
+            "i": 321,
+            "t": "div"
+           },
+           {
+            "a": {
+             "style": "flex:1 1 auto;padding:18px;display:flex;flex-direction:column;gap:16px;min-height:0;"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "display:flex;gap:6px;"
+              },
+              "c": [
+               {
+                "as": "p",
+                "c": [
+                 {
+                  "a": {
+                   "class": "pip",
+                   "data-on": {
+                    "parts": [
+                     {
+                      "e": "p.on"
+                     }
+                    ]
+                   },
+                   "style": "flex:1 1 auto;height:3px;border-radius:2px;background:var(--pip-bg,var(--pg-rule));"
+                  },
+                  "i": 331,
+                  "t": "span"
+                 }
+                ],
+                "e": "pips",
+                "i": 330,
+                "t": "for"
+               }
+              ],
+              "i": 329,
+              "t": "div"
+             },
+             {
+              "a": {
+               "style": "flex:1 1 auto;perspective:1400px;min-height:300px;"
+              },
+              "c": [
+               {
+                "a": {
+                 "class": "fcflip",
+                 "data-flip": {
+                  "parts": [
+                   {
+                    "e": "flipOn"
+                   }
+                  ]
+                 },
+                 "style": "position:relative;width:100%;height:100%;transform-style:preserve-3d;"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;font:inherit;text-align:left;cursor:pointer;border:0;border-radius:22px;padding:24px;background:var(--b-ground);color:var(--b-ink);display:flex;flex-direction:column;gap:14px;",
+                   "type": "button"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "display:flex;align-items:center;justify-content:space-between;gap:10px;"
+                    },
+                    "c": [
+                     {
+                      "a": {
+                       "style": "font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--b-ember);"
+                      },
+                      "c": [
+                       {
+                        "t": "#",
+                        "v": {
+                         "parts": [
+                          {
+                           "e": "card.tag"
+                          }
+                         ]
+                        }
+                       }
+                      ],
+                      "i": 336,
+                      "t": "span"
+                     },
+                     {
+                      "c": [
+                       {
+                        "a": {
+                         "style": "display:inline-flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;padding:5px 10px;border-radius:999px;border:1px solid var(--b-rule);color:var(--b-muted);"
+                        },
+                        "c": [
+                         {
+                          "a": {
+                           "style": "width:5px;height:5px;border-radius:999px;background:var(--b-ember);"
+                          },
+                          "i": 339,
+                          "t": "span"
+                         },
+                         {
+                          "t": "#",
+                          "v": "FROM YOUR WORK"
+                         }
+                        ],
+                        "i": 338,
+                        "t": "span"
+                       }
+                      ],
+                      "e": "card.mine",
+                      "i": 337,
+                      "t": "if"
+                     }
+                    ],
+                    "i": 335,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "style": "display:block;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:29px;line-height:1.15;letter-spacing:-.03em;"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": {
+                       "parts": [
+                        {
+                         "e": "card.front"
+                        }
+                       ]
+                      }
+                     }
+                    ],
+                    "i": 340,
+                    "t": "span"
+                   },
+                   {
+                    "c": [
+                     {
+                      "a": {
+                       "style": "display:block;color:var(--b-muted);"
+                      },
+                      "c": [
+                       {
+                        "a": {
+                         "aria-hidden": "true",
+                         "height": "102",
+                         "viewBox": "0 0 120 104",
+                         "width": "118"
+                        },
+                        "c": [
+                         {
+                          "a": {
+                           "d": "M60 7 L110 95 L10 95 Z",
+                           "fill": "none",
+                           "stroke": "currentColor",
+                           "stroke-linejoin": "round",
+                           "stroke-width": "2.4"
+                          },
+                          "i": 344,
+                          "t": "path"
+                         },
+                         {
+                          "a": {
+                           "d": "M32 60 H88",
+                           "stroke": "currentColor",
+                           "stroke-width": "2.4"
+                          },
+                          "i": 345,
+                          "t": "path"
+                         },
+                         {
+                          "a": {
+                           "d": "M60 60 V95",
+                           "stroke": "currentColor",
+                           "stroke-width": "2.4"
+                          },
+                          "i": 346,
+                          "t": "path"
+                         },
+                         {
+                          "a": {
+                           "fill": "currentColor",
+                           "font-family": "DM Mono, monospace",
+                           "font-size": "23",
+                           "text-anchor": "middle",
+                           "x": "60",
+                           "y": "48"
+                          },
+                          "c": [
+                           {
+                            "t": "#",
+                            "v": "F"
+                           }
+                          ],
+                          "i": 347,
+                          "t": "text"
+                         },
+                         {
+                          "a": {
+                           "fill": "currentColor",
+                           "font-family": "DM Mono, monospace",
+                           "font-size": "21",
+                           "text-anchor": "middle",
+                           "x": "40",
+                           "y": "85"
+                          },
+                          "c": [
+                           {
+                            "t": "#",
+                            "v": "p"
+                           }
+                          ],
+                          "i": 348,
+                          "t": "text"
+                         },
+                         {
+                          "a": {
+                           "fill": "currentColor",
+                           "font-family": "DM Mono, monospace",
+                           "font-size": "21",
+                           "text-anchor": "middle",
+                           "x": "82",
+                           "y": "85"
+                          },
+                          "c": [
+                           {
+                            "t": "#",
+                            "v": "A"
+                           }
+                          ],
+                          "i": 349,
+                          "t": "text"
+                         }
+                        ],
+                        "i": 343,
+                        "t": "svg"
+                       }
+                      ],
+                      "i": 342,
+                      "t": "span"
+                     }
+                    ],
+                    "e": "card.triangle",
+                    "i": 341,
+                    "t": "if"
+                   },
+                   {
+                    "a": {
+                     "style": "display:flex;align-items:center;gap:8px;margin-top:auto;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--b-muted);"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": {
+                       "parts": [
+                        {
+                         "e": "card.topic"
+                        }
+                       ]
+                      }
+                     }
+                    ],
+                    "i": 350,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 334,
+                  "on": "flip",
+                  "t": "button"
+                 },
+                 {
+                  "a": {
+                   "style": "position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);border-radius:22px;padding:24px;background:var(--b-inset);color:var(--b-ink);display:flex;flex-direction:column;gap:14px;"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--b-ember);"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "ANSWER"
+                     }
+                    ],
+                    "i": 352,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "style": "display:block;font-size:21px;line-height:1.45;font-weight:600;"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": {
+                       "parts": [
+                        {
+                         "e": "card.back"
+                        }
+                       ]
+                      }
+                     }
+                    ],
+                    "i": 353,
+                    "t": "span"
+                   },
+                   {
+                    "c": [
+                     {
+                      "a": {
+                       "style": "display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-family:'DM Mono',monospace;font-size:15px;letter-spacing:.02em;color:var(--b-ink);"
+                      },
+                      "c": [
+                       {
+                        "c": [
+                         {
+                          "t": "#",
+                          "v": {
+                           "parts": [
+                            {
+                             "e": "card.eqLeft"
+                            }
+                           ]
+                          }
+                         }
+                        ],
+                        "i": 356,
+                        "t": "span"
+                       },
+                       {
+                        "a": {
+                         "aria-hidden": "true",
+                         "fill": "none",
+                         "height": "20",
+                         "stroke": "var(--b-ember)",
+                         "stroke-linecap": "round",
+                         "stroke-linejoin": "round",
+                         "stroke-width": "2.2",
+                         "viewBox": "0 0 24 24",
+                         "width": "20"
+                        },
+                        "c": [
+                         {
+                          "a": {
+                           "d": "M3 12h16M13 6l6 6-6 6"
+                          },
+                          "i": 358,
+                          "t": "path"
+                         }
+                        ],
+                        "i": 357,
+                        "t": "svg"
+                       },
+                       {
+                        "c": [
+                         {
+                          "t": "#",
+                          "v": {
+                           "parts": [
+                            {
+                             "e": "card.eqRight"
+                            }
+                           ]
+                          }
+                         }
+                        ],
+                        "i": 359,
+                        "t": "span"
+                       }
+                      ],
+                      "i": 355,
+                      "t": "span"
+                     }
+                    ],
+                    "e": "card.arrow",
+                    "i": 354,
+                    "t": "if"
+                   },
+                   {
+                    "a": {
+                     "style": "margin-top:auto;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--b-muted);"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": {
+                       "parts": [
+                        {
+                         "e": "card.topic"
+                        }
+                       ]
+                      }
+                     }
+                    ],
+                    "i": 360,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 351,
+                  "t": "div"
+                 }
+                ],
+                "i": 333,
+                "t": "div"
+               }
+              ],
+              "i": 332,
+              "t": "div"
+             },
+             {
+              "a": {
+               "style": "display:flex;gap:12px;"
+              },
+              "c": [
+               {
+                "a": {
+                 "style": "flex:1 1 auto;font:inherit;font-size:17px;font-weight:700;min-height:52px;border-radius:14px;border:1.5px solid var(--pg-ink);background:var(--pg-card);color:var(--pg-ink);cursor:pointer;",
+                 "type": "button"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": {
+                   "parts": [
+                    {
+                     "e": "flipLabel"
+                    }
+                   ]
+                  }
+                 }
+                ],
+                "hov": "background:var(--pg-band)",
+                "i": 362,
+                "on": "flip",
+                "t": "button"
+               },
+               {
+                "a": {
+                 "style": "flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:10px;font:inherit;font-size:17px;font-weight:700;min-height:52px;border-radius:14px;border:0;background:var(--pg-accent-text);color:#FFF7EC;cursor:pointer;",
+                 "type": "button"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "Next"
+                 },
+                 {
+                  "a": {
+                   "aria-hidden": "true",
+                   "fill": "none",
+                   "height": "16",
+                   "stroke": "currentColor",
+                   "stroke-linecap": "round",
+                   "stroke-linejoin": "round",
+                   "stroke-width": "2.6",
+                   "viewBox": "0 0 24 24",
+                   "width": "16"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "d": "M9 5l7 7-7 7"
+                    },
+                    "i": 365,
+                    "t": "path"
+                   }
+                  ],
+                  "i": 364,
+                  "t": "svg"
+                 }
+                ],
+                "hov": "background:var(--pg-accent-hover)",
+                "i": 363,
+                "on": "next",
+                "t": "button"
+               }
+              ],
+              "i": 361,
+              "t": "div"
+             }
+            ],
+            "i": 328,
+            "t": "div"
+           }
+          ],
+          "i": 320,
+          "t": "div"
+         }
+        ],
+        "i": 319,
+        "t": "div"
+       }
+      ],
+      "e": "cardsOpen",
+      "i": 318,
+      "t": "if"
+     },
+     {
+      "c": [
+       {
+        "a": {
+         "data-port-change": "C2b bench 'Practise recall' lands here",
+         "data-port-region": "recall-round",
+         "data-screen-label": "Recall round",
+         "style": "position:fixed;inset:0;z-index:45;overflow:auto;background:var(--pg-ground);color:var(--pg-ink);font-family:'Instrument Sans',system-ui,sans-serif;"
+        },
+        "c": [
+         {
+          "a": {
+           "style": "height:5px;background:var(--pg-strong)"
+          },
+          "i": 368,
+          "t": "div"
+         },
+         {
+          "a": {
+           "style": "display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;padding:13px 32px;background:var(--pg-band);border-bottom:1px solid var(--pg-rule);font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.13em;color:var(--pg-muted);"
+          },
+          "c": [
+           {
+            "c": [
+             {
+              "t": "#",
+              "v": "8r/Sc1 \u00a0\u00b7\u00a0 RECALL"
+             }
+            ],
+            "i": 370,
+            "t": "span"
+           },
+           {
+            "c": [
+             {
+              "t": "#",
+              "v": "UNLIMITED ROUNDS"
+             }
+            ],
+            "i": 371,
+            "t": "span"
+           }
+          ],
+          "i": 369,
+          "t": "div"
+         },
+         {
+          "a": {
+           "style": "display:flex;flex-wrap:wrap;gap:20px;align-items:center;padding:18px 32px;border-bottom:1px solid var(--pg-rule);background:var(--pg-card);"
+          },
+          "c": [
+           {
+            "a": {
+             "style": "display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:15px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:12px;border:1px solid var(--pg-rule-strong);background:var(--pg-ground);color:var(--pg-ink);cursor:pointer;",
+             "type": "button"
+            },
+            "c": [
+             {
+              "a": {
+               "aria-hidden": "true",
+               "fill": "none",
+               "height": "15",
+               "stroke": "currentColor",
+               "stroke-linecap": "round",
+               "stroke-linejoin": "round",
+               "stroke-width": "2.6",
+               "viewBox": "0 0 24 24",
+               "width": "15"
+              },
+              "c": [
+               {
+                "a": {
+                 "d": "M15 5l-7 7 7 7"
+                },
+                "i": 375,
+                "t": "path"
+               }
+              ],
+              "i": 374,
+              "t": "svg"
+             },
+             {
+              "t": "#",
+              "v": "8r/Sc1"
+             }
+            ],
+            "hov": "background:var(--pg-band)",
+            "i": 373,
+            "on": "closeRecall",
+            "t": "button"
+           },
+           {
+            "c": [
+             {
+              "a": {
+               "style": "margin:0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:26px;letter-spacing:-.03em;line-height:1;"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "Recall"
+               }
+              ],
+              "i": 377,
+              "t": "p"
+             },
+             {
+              "a": {
+               "style": "margin:6px 0 0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": {
+                 "parts": [
+                  {
+                   "e": "roundLabel"
+                  },
+                  " \u00a0\u00b7\u00a0 UNLIMITED ROUNDS"
+                 ]
+                }
+               }
+              ],
+              "i": 378,
+              "t": "p"
+             }
+            ],
+            "i": 376,
+            "t": "div"
+           },
+           {
+            "a": {
+             "style": "margin-left:auto;display:flex;align-items:center;gap:14px;"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": {
+                 "parts": [
+                  "QUESTION ",
+                  {
+                   "e": "qPos"
+                  }
+                 ]
+                }
+               }
+              ],
+              "i": 380,
+              "t": "span"
+             },
+             {
+              "a": {
+               "style": "display:block;width:150px;height:3px;background:var(--pg-rule);border-radius:2px;overflow:hidden;"
+              },
+              "c": [
+               {
+                "a": {
+                 "class": "rprog",
+                 "data-w": {
+                  "parts": [
+                   {
+                    "e": "qStep"
+                   }
+                  ]
+                 },
+                 "style": "display:block;height:3px;width:var(--rp-w,0%);background:var(--pg-accent);"
+                },
+                "i": 382,
+                "t": "span"
+               }
+              ],
+              "i": 381,
+              "t": "span"
+             }
+            ],
+            "i": 379,
+            "t": "div"
+           }
+          ],
+          "i": 372,
+          "t": "div"
+         },
+         {
+          "a": {
+           "style": "max-width:1320px;margin:0 auto;padding:32px;display:flex;flex-wrap:wrap;gap:28px;align-items:stretch;"
+          },
+          "c": [
+           {
+            "a": {
+             "style": "flex:1 1 560px;min-width:290px;border-radius:24px;background:var(--b-ground);color:var(--b-ink);padding:30px 32px 32px;display:flex;flex-direction:column;gap:26px;"
+            },
+            "c": [
+             {
+              "c": [
+               {
+                "a": {
+                 "style": "display:flex;flex-direction:column;gap:26px;"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--b-ember);"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": {
+                       "parts": [
+                        "QUESTION ",
+                        {
+                         "e": "qPos"
+                        },
+                        " \u00a0\u00b7\u00a0 ",
+                        {
+                         "e": "q.topic"
+                        }
+                       ]
+                      }
+                     }
+                    ],
+                    "i": 388,
+                    "t": "span"
+                   },
+                   {
+                    "a": {
+                     "style": "display:flex;gap:5px;"
+                    },
+                    "c": [
+                     {
+                      "as": "p",
+                      "c": [
+                       {
+                        "a": {
+                         "class": "pip",
+                         "data-on": {
+                          "parts": [
+                           {
+                            "e": "p.on"
+                           }
+                          ]
+                         },
+                         "style": "width:22px;height:4px;border-radius:2px;background:var(--pip-bg,var(--b-rule));"
+                        },
+                        "i": 391,
+                        "t": "span"
+                       }
+                      ],
+                      "e": "qpips",
+                      "i": 390,
+                      "t": "for"
+                     }
+                    ],
+                    "i": 389,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 387,
+                  "t": "div"
+                 },
+                 {
+                  "a": {
+                   "style": "margin:0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:clamp(30px,3.4vw,44px);line-height:1.1;letter-spacing:-.035em;max-width:26ch;"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": {
+                     "parts": [
+                      {
+                       "e": "q.q"
+                      }
+                     ]
+                    }
+                   }
+                  ],
+                  "i": 392,
+                  "t": "h2"
+                 },
+                 {
+                  "a": {
+                   "style": "display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:auto;"
+                  },
+                  "c": [
+                   {
+                    "as": "o",
+                    "c": [
+                     {
+                      "a": {
+                       "class": "opt",
+                       "data-st": {
+                        "parts": [
+                         {
+                          "e": "o.st"
+                         }
+                        ]
+                       },
+                       "style": "display:flex;align-items:center;gap:14px;font:inherit;font-size:18px;font-weight:600;text-align:left;padding:16px 18px;min-height:60px;border-radius:16px;border:1.5px solid var(--opt-edge,var(--b-rule));background:var(--opt-bg,transparent);color:var(--b-ink);cursor:pointer;",
+                       "type": "button"
+                      },
+                      "c": [
+                       {
+                        "a": {
+                         "style": "width:30px;height:30px;flex:0 0 auto;border-radius:9px;display:grid;place-items:center;background:var(--opt-mark-bg,var(--b-inset));color:var(--opt-mark-ink,var(--b-muted));font-family:'DM Mono',monospace;font-size:12px;"
+                        },
+                        "c": [
+                         {
+                          "t": "#",
+                          "v": {
+                           "parts": [
+                            {
+                             "e": "o.letter"
+                            }
+                           ]
+                          }
+                         }
+                        ],
+                        "i": 396,
+                        "t": "span"
+                       },
+                       {
+                        "a": {
+                         "style": "flex:1 1 auto;"
+                        },
+                        "c": [
+                         {
+                          "t": "#",
+                          "v": {
+                           "parts": [
+                            {
+                             "e": "o.label"
+                            }
+                           ]
+                          }
+                         }
+                        ],
+                        "i": 397,
+                        "t": "span"
+                       },
+                       {
+                        "c": [
+                         {
+                          "a": {
+                           "aria-hidden": "true",
+                           "fill": "none",
+                           "height": "17",
+                           "stroke": "#12A150",
+                           "stroke-linecap": "round",
+                           "stroke-linejoin": "round",
+                           "stroke-width": "3",
+                           "viewBox": "0 0 24 24",
+                           "width": "17"
+                          },
+                          "c": [
+                           {
+                            "a": {
+                             "d": "M4 12.5l5 5L20 6.5"
+                            },
+                            "i": 400,
+                            "t": "path"
+                           }
+                          ],
+                          "i": 399,
+                          "t": "svg"
+                         }
+                        ],
+                        "e": "o.right",
+                        "i": 398,
+                        "t": "if"
+                       }
+                      ],
+                      "i": 395,
+                      "on": "o.pick",
+                      "t": "button"
+                     }
+                    ],
+                    "e": "opts",
+                    "i": 394,
+                    "t": "for"
+                   }
+                  ],
+                  "i": 393,
+                  "t": "div"
+                 },
+                 {
+                  "c": [
+                   {
+                    "a": {
+                     "style": "margin:0;padding:16px 18px;border-radius:14px;background:var(--b-inset);font-size:17px;line-height:1.55;color:var(--b-ink);"
+                    },
+                    "c": [
+                     {
+                      "a": {
+                       "style": "font-weight:700;"
+                      },
+                      "c": [
+                       {
+                        "t": "#",
+                        "v": {
+                         "parts": [
+                          {
+                           "e": "verdict"
+                          }
+                         ]
+                        }
+                       }
+                      ],
+                      "i": 403,
+                      "t": "span"
+                     },
+                     {
+                      "t": "#",
+                      "v": {
+                       "parts": [
+                        " ",
+                        {
+                         "e": "q.note"
+                        }
+                       ]
+                      }
+                     }
+                    ],
+                    "i": 402,
+                    "t": "p"
+                   }
+                  ],
+                  "e": "checked",
+                  "i": 401,
+                  "t": "if"
+                 },
+                 {
+                  "a": {
+                   "style": "display:flex;flex-wrap:wrap;gap:12px;align-items:center;"
+                  },
+                  "c": [
+                   {
+                    "c": [
+                     {
+                      "a": {
+                       "style": "display:inline-flex;align-items:center;gap:10px;font:inherit;font-size:17px;font-weight:700;padding:15px 24px;min-height:44px;border-radius:14px;border:1px solid var(--b-edge);background:var(--b-cta);color:var(--b-cta-ink);cursor:pointer;",
+                       "type": "button"
+                      },
+                      "c": [
+                       {
+                        "t": "#",
+                        "v": "Check"
+                       },
+                       {
+                        "a": {
+                         "aria-hidden": "true",
+                         "fill": "none",
+                         "height": "16",
+                         "stroke": "currentColor",
+                         "stroke-linecap": "round",
+                         "stroke-linejoin": "round",
+                         "stroke-width": "2.6",
+                         "viewBox": "0 0 24 24",
+                         "width": "16"
+                        },
+                        "c": [
+                         {
+                          "a": {
+                           "d": "M9 5l7 7-7 7"
+                          },
+                          "i": 408,
+                          "t": "path"
+                         }
+                        ],
+                        "i": 407,
+                        "t": "svg"
+                       }
+                      ],
+                      "hov": "background:#A93411",
+                      "i": 406,
+                      "on": "check",
+                      "t": "button"
+                     }
+                    ],
+                    "e": "canCheck",
+                    "i": 405,
+                    "t": "if"
+                   },
+                   {
+                    "c": [
+                     {
+                      "a": {
+                       "style": "display:inline-flex;align-items:center;gap:10px;font:inherit;font-size:17px;font-weight:700;padding:15px 24px;min-height:44px;border-radius:14px;border:1px solid var(--b-edge);background:var(--b-cta);color:var(--b-cta-ink);cursor:pointer;",
+                       "type": "button"
+                      },
+                      "c": [
+                       {
+                        "t": "#",
+                        "v": {
+                         "parts": [
+                          {
+                           "e": "nextLabel"
+                          }
+                         ]
+                        }
+                       },
+                       {
+                        "a": {
+                         "aria-hidden": "true",
+                         "fill": "none",
+                         "height": "16",
+                         "stroke": "currentColor",
+                         "stroke-linecap": "round",
+                         "stroke-linejoin": "round",
+                         "stroke-width": "2.6",
+                         "viewBox": "0 0 24 24",
+                         "width": "16"
+                        },
+                        "c": [
+                         {
+                          "a": {
+                           "d": "M9 5l7 7-7 7"
+                          },
+                          "i": 412,
+                          "t": "path"
+                         }
+                        ],
+                        "i": 411,
+                        "t": "svg"
+                       }
+                      ],
+                      "hov": "background:#A93411",
+                      "i": 410,
+                      "on": "nextQ",
+                      "t": "button"
+                     }
+                    ],
+                    "e": "checked",
+                    "i": 409,
+                    "t": "if"
+                   },
+                   {
+                    "a": {
+                     "style": "font:inherit;font-size:17px;font-weight:700;padding:15px 22px;min-height:44px;border-radius:14px;border:1.5px solid var(--b-muted);background:transparent;color:var(--b-ink);cursor:pointer;",
+                     "type": "button"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "Skip"
+                     }
+                    ],
+                    "hov": "border-color:var(--b-ink)",
+                    "i": 413,
+                    "on": "skipQ",
+                    "t": "button"
+                   },
+                   {
+                    "a": {
+                     "style": "margin-left:auto;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--b-muted);"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": {
+                       "parts": [
+                        {
+                         "e": "streakLabel"
+                        }
+                       ]
+                      }
+                     }
+                    ],
+                    "i": 414,
+                    "t": "span"
+                   }
+                  ],
+                  "i": 404,
+                  "t": "div"
+                 }
+                ],
+                "i": 386,
+                "t": "div"
+               }
+              ],
+              "e": "inRound",
+              "i": 385,
+              "t": "if"
+             },
+             {
+              "c": [
+               {
+                "a": {
+                 "style": "display:flex;flex-direction:column;gap:24px;"
+                },
+                "c": [
+                 {
+                  "a": {
+                   "style": "font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--b-ember);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": {
+                     "parts": [
+                      {
+                       "e": "roundLabel"
+                      },
+                      " DONE"
+                     ]
+                    }
+                   }
+                  ],
+                  "i": 417,
+                  "t": "span"
+                 },
+                 {
+                  "a": {
+                   "style": "margin:0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:clamp(34px,4vw,54px);line-height:1;letter-spacing:-.04em;"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": {
+                     "parts": [
+                      {
+                       "e": "roundScore"
+                      },
+                      " right"
+                     ]
+                    }
+                   }
+                  ],
+                  "i": 418,
+                  "t": "p"
+                 },
+                 {
+                  "a": {
+                   "style": "margin:0;font-size:18px;line-height:1.55;color:var(--b-muted);max-width:34ch;"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "Go again as many times as you like. Nothing here is handed in."
+                   }
+                  ],
+                  "i": 419,
+                  "t": "p"
+                 },
+                 {
+                  "a": {
+                   "style": "display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;"
+                  },
+                  "c": [
+                   {
+                    "a": {
+                     "style": "display:inline-flex;align-items:center;gap:10px;font:inherit;font-size:17px;font-weight:700;padding:15px 24px;min-height:44px;border-radius:14px;border:1px solid var(--b-edge);background:var(--b-cta);color:var(--b-cta-ink);cursor:pointer;",
+                     "type": "button"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "Another round"
+                     },
+                     {
+                      "a": {
+                       "aria-hidden": "true",
+                       "fill": "none",
+                       "height": "16",
+                       "stroke": "currentColor",
+                       "stroke-linecap": "round",
+                       "stroke-linejoin": "round",
+                       "stroke-width": "2.6",
+                       "viewBox": "0 0 24 24",
+                       "width": "16"
+                      },
+                      "c": [
+                       {
+                        "a": {
+                         "d": "M9 5l7 7-7 7"
+                        },
+                        "i": 423,
+                        "t": "path"
+                       }
+                      ],
+                      "i": 422,
+                      "t": "svg"
+                     }
+                    ],
+                    "hov": "background:#A93411",
+                    "i": 421,
+                    "on": "anotherRound",
+                    "t": "button"
+                   },
+                   {
+                    "a": {
+                     "style": "font:inherit;font-size:17px;font-weight:700;padding:15px 22px;min-height:44px;border-radius:14px;border:1.5px solid var(--b-muted);background:transparent;color:var(--b-ink);cursor:pointer;",
+                     "type": "button"
+                    },
+                    "c": [
+                     {
+                      "t": "#",
+                      "v": "Back to my class"
+                     }
+                    ],
+                    "hov": "border-color:var(--b-ink)",
+                    "i": 424,
+                    "on": "closeRecall",
+                    "t": "button"
+                   }
+                  ],
+                  "i": 420,
+                  "t": "div"
+                 }
+                ],
+                "i": 416,
+                "t": "div"
+               }
+              ],
+              "e": "roundDone",
+              "i": 415,
+              "t": "if"
+             }
+            ],
+            "i": 384,
+            "t": "div"
+           },
+           {
+            "a": {
+             "style": "flex:0 1 340px;min-width:270px;border-radius:24px;background:var(--b-ground);color:var(--b-ink);padding:26px;display:flex;flex-direction:column;gap:22px;"
+            },
+            "c": [
+             {
+              "a": {
+               "style": "font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--b-ember);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "THIS WEEK"
+               }
+              ],
+              "i": 426,
+              "t": "span"
+             },
+             {
+              "c": [
+               {
+                "a": {
+                 "style": "margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--b-muted);"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": "ANSWERED"
+                 }
+                ],
+                "i": 428,
+                "t": "p"
+               },
+               {
+                "a": {
+                 "style": "margin:6px 0 0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:38px;letter-spacing:-.04em;line-height:1;"
+                },
+                "c": [
+                 {
+                  "t": "#",
+                  "v": {
+                   "parts": [
+                    {
+                     "e": "answered"
+                    }
+                   ]
+                  }
+                 }
+                ],
+                "i": 429,
+                "t": "p"
+               }
+              ],
+              "i": 427,
+              "t": "div"
+             },
+             {
+              "a": {
+               "style": "height:1px;background:var(--b-rule);"
+              },
+              "i": 430,
+              "t": "div"
+             },
+             {
+              "a": {
+               "style": "display:flex;gap:26px;"
+              },
+              "c": [
+               {
+                "c": [
+                 {
+                  "a": {
+                   "style": "margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--b-muted);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "BEST STREAK"
+                   }
+                  ],
+                  "i": 433,
+                  "t": "p"
+                 },
+                 {
+                  "a": {
+                   "style": "margin:6px 0 0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:30px;letter-spacing:-.03em;line-height:1;"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": {
+                     "parts": [
+                      {
+                       "e": "best"
+                      }
+                     ]
+                    }
+                   }
+                  ],
+                  "i": 434,
+                  "t": "p"
+                 }
+                ],
+                "i": 432,
+                "t": "div"
+               },
+               {
+                "c": [
+                 {
+                  "a": {
+                   "style": "margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--b-muted);"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": "ROUNDS"
+                   }
+                  ],
+                  "i": 436,
+                  "t": "p"
+                 },
+                 {
+                  "a": {
+                   "style": "margin:6px 0 0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:30px;letter-spacing:-.03em;line-height:1;"
+                  },
+                  "c": [
+                   {
+                    "t": "#",
+                    "v": {
+                     "parts": [
+                      {
+                       "e": "rounds"
+                      }
+                     ]
+                    }
+                   }
+                  ],
+                  "i": 437,
+                  "t": "p"
+                 }
+                ],
+                "i": 435,
+                "t": "div"
+               }
+              ],
+              "i": 431,
+              "t": "div"
+             },
+             {
+              "a": {
+               "style": "height:1px;background:var(--b-rule);"
+              },
+              "i": 438,
+              "t": "div"
+             },
+             {
+              "a": {
+               "style": "margin:0;font-size:16px;line-height:1.6;color:var(--b-muted);"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "Recall counts for 20 of the 100 points on the leaderboard. Rounds are unlimited and do not need handing in."
+               }
+              ],
+              "i": 439,
+              "t": "p"
+             },
+             {
+              "a": {
+               "style": "margin-top:auto;font:inherit;font-size:16px;font-weight:700;padding:14px 18px;min-height:44px;border-radius:14px;border:1.5px solid var(--b-muted);background:transparent;color:var(--b-ink);cursor:pointer;",
+               "type": "button"
+              },
+              "c": [
+               {
+                "t": "#",
+                "v": "Open the assignment instead"
+               }
+              ],
+              "hov": "border-color:var(--b-ink)",
+              "i": 440,
+              "on": "closeRecall",
+              "t": "button"
+             }
+            ],
+            "i": 425,
+            "t": "div"
+           }
+          ],
+          "i": 383,
+          "t": "div"
+         }
+        ],
+        "i": 367,
+        "t": "div"
+       }
+      ],
+      "e": "recallOpen",
+      "i": 366,
+      "t": "if"
+     },
+     {
+      "c": [
+       {
+        "a": {
+         "data-port-ignore": "1",
+         "style": "position:fixed;right:16px;bottom:16px;z-index:60;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;background:var(--pg-card);border:1px solid var(--pg-rule-strong);box-shadow:0 6px 18px rgba(34,30,27,.14);"
+        },
+        "c": [
+         {
+          "a": {
+           "style": "font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--pg-muted);"
+          },
+          "c": [
+           {
+            "t": "#",
+            "v": "STATES"
+           }
+          ],
+          "i": 443,
+          "t": "span"
+         },
+         {
+          "a": {
+           "class": "stbtn",
+           "data-on": {
+            "parts": [
+             {
+              "e": "benchOpenOn"
+             }
+            ]
+           },
+           "style": "font:inherit;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;padding:8px 10px;border-radius:9px;border:1px solid var(--st-edge,var(--pg-rule));background:var(--st-bg,var(--pg-ground));color:var(--st-ink,var(--pg-muted));cursor:pointer;",
+           "type": "button"
+          },
+          "c": [
+           {
+            "t": "#",
+            "v": "BENCH OPEN"
+           }
+          ],
+          "i": 444,
+          "on": "setOpen",
+          "t": "button"
+         },
+         {
+          "a": {
+           "class": "stbtn",
+           "data-on": {
+            "parts": [
+             {
+              "e": "benchDoneOn"
+             }
+            ]
+           },
+           "style": "font:inherit;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;padding:8px 10px;border-radius:9px;border:1px solid var(--st-edge,var(--pg-rule));background:var(--st-bg,var(--pg-ground));color:var(--st-ink,var(--pg-muted));cursor:pointer;",
+           "type": "button"
+          },
+          "c": [
+           {
+            "t": "#",
+            "v": "BENCH DONE"
+           }
+          ],
+          "i": 445,
+          "on": "setDone",
+          "t": "button"
+         },
+         {
+          "a": {
+           "style": "font:inherit;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;padding:8px 10px;border-radius:9px;border:1px solid var(--pg-rule);background:var(--pg-ground);color:var(--pg-muted);cursor:pointer;",
+           "type": "button"
+          },
+          "c": [
+           {
+            "t": "#",
+            "v": "FLASHCARDS"
+           }
+          ],
+          "i": 446,
+          "on": "openCards",
+          "t": "button"
+         },
+         {
+          "a": {
+           "style": "font:inherit;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;padding:8px 10px;border-radius:9px;border:1px solid var(--pg-rule);background:var(--pg-ground);color:var(--pg-muted);cursor:pointer;",
+           "type": "button"
+          },
+          "c": [
+           {
+            "t": "#",
+            "v": "RECALL ROUND"
+           }
+          ],
+          "i": 447,
+          "on": "openRecall",
+          "t": "button"
+         },
+         {
+          "a": {
+           "style": "font:inherit;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;padding:8px 10px;border-radius:9px;border:1px solid var(--pg-rule);background:var(--pg-ground);color:var(--pg-muted);cursor:pointer;",
+           "type": "button"
+          },
+          "c": [
+           {
+            "t": "#",
+            "v": "THEME"
+           }
+          ],
+          "i": 448,
+          "on": "openAccount",
+          "t": "button"
+         },
+         {
+          "a": {
+           "style": "font:inherit;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;padding:8px 10px;border-radius:9px;border:1px solid var(--pg-ink);background:var(--pg-ink);color:var(--pg-ground);cursor:pointer;",
+           "type": "button"
+          },
+          "c": [
+           {
+            "t": "#",
+            "v": {
+             "parts": [
+              {
+               "e": "themeLabel"
+              }
+             ]
+            }
+           }
+          ],
+          "i": 449,
+          "on": "cycleTheme",
+          "t": "button"
+         }
+        ],
+        "i": 442,
+        "t": "div"
+       }
+      ],
+      "e": "showBar",
+      "i": 441,
+      "t": "if"
+     }
+    ],
+    "i": 8,
+    "t": "div"
+   }
+  ],
+  "sheets": [
+   "_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css",
+   "_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css",
+   "_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css",
+   "_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css",
+   "_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css"
+  ],
+  "tplChars": 70521
  }
 }

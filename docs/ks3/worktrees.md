@@ -163,6 +163,64 @@ and holds identically inside a worktree. `generate_site_v5.build_site()` wipes
 Before merging, re-check `main`: another session has merged to `main` mid-run
 before (12 Aug 2026), so check immediately before merging, not just at recon.
 
+### A LANE MERGES `origin/main` BEFORE ITS FIRST COMMIT OF A RUN, NEVER AFTER
+
+⊕ MRB-281, 23 Aug 2026. This is the rule, and it is not a preference.
+
+The content-chem lane was eight commits behind `main` when it opened its C10
+run. It DECLINED the merge — at 1am, deliberately, to avoid dragging another
+lane's in-flight work through a conflict it would have had to resolve before
+it had written a line of its own. That reasoning is wrong, and it is wrong in
+a way that is only visible at the end.
+
+Here is the mechanism. Every KS3 page carries a cache-bust stamp derived from
+`shared/ks3.css` and `shared/ks3.js`. So **any** change to either shared file
+rebuilds **all 297 pages** — not the unit that changed, all of them. `main`'s
+fix run touched both. This lane's own C10 build touched both. Two sides then
+regenerated the same 297 files independently, and every single one differed.
+
+The bill:
+
+| merged at the START | merged at the END (what happened) |
+|---|---|
+| 8 commits of SOURCE | 19 commits, and **595 conflicted files** |
+| ~1 real source conflict | the same ~1 real source conflict, buried under 594 generated ones |
+| minutes | a whole run |
+
+The conflict count grew by two orders of magnitude and the amount of genuine
+disagreement did not change AT ALL. It was one lesson file, both times. The
+594 others were two machines producing different bytes for the same inputs at
+different moments — nothing anybody decided, nothing anybody could resolve.
+
+So: **merge first.** A merge at the start is a source merge, and a source
+merge is the only kind that has anything in it. Costing yourself a conflict at
+the start is how you buy a small one; declining it is how you buy a large one.
+The risk you avoid by declining is real and it is tiny; the risk you take on
+is certain and it scales with the number of pages in the key stage.
+
+Corollary, and it is the half that saves the run:
+
+> **GENERATED OUTPUT IS NEVER THE THING BEING MERGED.** If a conflict list is
+> all under `ks3/` or `mrbadmus_site/`, the answer is always REBUILD, never
+> RESOLVE. Take either side to clear the index — the choice is arbitrary and
+> it does not matter which — resolve the SOURCE properly, then run
+> `build_all.py`. **The build is the authority, not the merge.** Reading 594
+> generated diffs is not thoroughness; it is 594 chances to hand-edit a file
+> the next build overwrites.
+
+The tell that you are in this situation, and it is unmistakable: the conflicts
+are in output trees, they number in the hundreds, and they all landed at once.
+Real disagreement does not look like that. Real disagreement is a handful of
+source files where two people changed the same lines on purpose.
+
+⚠️ And the merge is not finished when it compiles. **A merge that compiles is
+not a merge that kept both sides.** After rebuilding, name each thing the
+OTHER side added and check it is still there, by measurement — a shared file
+where one side edited the middle and the other appended at EOF auto-merges
+silently and looks fine either way round. On this run that meant proving
+`main`'s narrow-viewport compact readout and its bar-track contrast fix
+survived a lane that had appended 837 lines of CSS and 708 of JS.
+
 ---
 
 ## 7. Adding a new unit — the whole procedure

@@ -199,3 +199,194 @@ nineteen drives go red over whitespace.
 
 Gates: parity PASS, behaviour PASS (2 new ruled assertions).
 
+### Rebase log
+
+**Rebase 1 — before the Unit 2/3 push.** `origin/main` had moved from my parent
+`510f8e7c6` to `dccb1918b`: the parallel content lane merged PR #8
+(`feat/content-chem`) — MRB-281, C6 and C7, ten lessons and forty questions,
+671 files. `git pull --rebase` replayed my commit cleanly on top; no conflict,
+never force-pushed.
+
+**No overlap, and it was checked rather than assumed.** They touched
+`shared/ks3.css`, `shared/ks3.js`, `ks3_data/` and the `ks3/` output tree — none
+of which this run edits, and three of which it is forbidden to. The one place
+the two lanes could have collided is the new `shared/ks3-lesson-urls.js`, which
+is generated from `ks3_data`: regenerated after the rebase and **byte-identical**
+(183 lessons). C6 and C7 added content to existing lesson slots, not new slots.
+
+---
+
+### ⚠️ Design delivered the bench redraw MID-RUN — this is Mide's, not mine
+
+At **16:44 tonight**, while this run was in progress, an untracked folder
+appeared in the repo root: **`Student class view fixes/`**, with
+`ks3-class-view-bench-done.html` and `ks3-class-view-bench-open.html`. It is
+Design's answer to the very thing P4 says is coming.
+
+**I have not ported it, and I have not committed it.** P4's ruling is explicit —
+build an interim from existing tokens, "structure yours so their delivery
+replaces it cleanly" — and the delivery is far larger than a done-state: six
+themes with a new Harbour default, a flashcard deck, the nav "Recall" item
+REMOVED, the recall round rebuilt as a standalone surface, and a reward slot.
+That is a redesign, and adopting it is a product decision.
+
+**It independently confirms three of tonight's rulings**, which is worth Mide
+knowing:
+
+| Design's note | tonight's ruling |
+|---|---|
+| §8 — "SIX A ROUND / SIX QUESTIONS removed from the recall header … only the live counter states a number" | P2, reached from the other direction |
+| §6 — the done bench, one line: "Good week, AY." | P4 |
+| "THEME PERSISTENCE … write the student pref to `data-bench-theme`" | P7 — this is the job Settings gets back |
+| "REWARD SURFACE … `bench-reward-slot` is a real, empty 64px region" | the prompt's noted-and-NOT-built reward surface |
+
+Design's §"CODE'S JOB" also asks for a recall bank of hundreds with six drawn
+per round, weighted to what the student got wrong, "and never repeat inside a
+round". That does not conflict with P2 — for a large bank both say six — and the
+never-repeat property already holds.
+
+I have used one thing from it: the done-state COPY, so the interim reads like
+the real one and the swap is a component change rather than a rewrite.
+
+### Unit 4 — P4, the bench done state
+
+A student who had finished the week was shown the open-work bench, checklist
+and all, telling them to open it and answer the questions — while the work list
+six inches below correctly said COMPLETED. **The page contradicted itself on one
+screen.**
+
+**The whole done state is DATA. Not one new template node.** That is what
+"arranging, not designing" turned out to mean, because Design had already drawn
+every part of it:
+
+| slot | open state | done state |
+|---|---|---|
+| eyebrow | "On the bench now · due Thu 18:00" | "Good week, Overnight · completed Fri 21 Aug" |
+| heading | the assignment's title | unchanged |
+| paragraph (wide only) | "4 questions, set from…" | "You scored 1 out of 2. Go back over the lesson…" |
+| checklist | three items | **empty array → the `sc-for` draws nothing** |
+| primary button | "Open the assignment" | "Revisit the lesson" → the real lesson page |
+| second button | **"Practise recall" — Design already drew it, right beside** | unchanged |
+| meter + caption | "0 / 3 DONE" | "1 / 2 MARKS", bar at the mark |
+
+The congratulation is in the EYEBROW rather than the paragraph, because Design
+puts the paragraph inside `sc-if wide` — a phone would otherwise get the score
+and no acknowledgement at all.
+
+When Design's redraw is ported it replaces markup, not logic, which is what the
+ruling asked for.
+
+#### Two more defects the SCREENSHOT found, that no check did
+
+**1. The docket still said `OPEN`, and counted down.** Directly above the bench,
+over work the student had finished: `OPEN` and `14 days left`. Two statements
+about one assignment, contradicting each other, two inches apart — the exact
+fault P4 exists to remove, in the panel above the one the brief names.
+`docketFlag` was a welded `'OPEN'`. No text check could have caught it: OPEN is
+the right word for an open assignment, and every drive that had a docket had an
+open one. It now reads MARKED / COMPLETE / MISSED / OPEN, and the countdown slot
+LABELS the progress bar under it ("3 of 4 answered") instead of counting down to
+a deadline the student has already beaten.
+
+**2. "LESSONS IN THIS TOPIC **04**" over a list of ONE.** Another literal `04`,
+the third Week-04-shaped default tonight, sitting above an `sc-for` over the
+real list. Bound to the length of the list it counts — the only definition that
+cannot drift.
+
+---
+
+### Unit 5 — what the control sweep found
+
+`student_controls_drive.py` presses every control on every screen at both
+widths and reports any whose only effect is a scroll. On its **first run, first
+screen** it found a fifth member of the P1/P3/P5/P7 family:
+
+**The lesson cards in "Lessons in this topic" scrolled to the top.** Each is an
+`<a href="#top">`, so tapping the lesson a student had just been told they were
+being tested on took them to the top of the page. Now each card opens ITS
+lesson, via a per-card handler resolved out of the `sc-for`'s own loop scope.
+
+It also confirmed, by pressing the real controls:
+
+| control | result |
+|---|---|
+| "Revisit the lesson" | **NAVIGATED** → `/ks3/biology/breathing-and-gas-exchange/…` |
+| "Sign out" | **NAVIGATED** → `/auth.html` |
+
+**Five controls report NOTHING and are CORRECT** — `MrBadmusAI`, `My class`,
+`8r/Sc1`, `ALL 2`, `W01`. All five are the *current* view's own nav item or the
+active filter; the brand and the breadcrumb are both `goClass` buttons, and you
+are already on the class. The sweep flags candidates; a person judges. That is
+in its docstring, and it is why it reports rather than asserts.
+
+#### ⚠️ A defect in the INSTRUMENTS, not the product
+
+Every drive in this repo navigated first and set the viewport second. Two things
+compound to make that measure the wrong breakpoint:
+
+1. the CDP viewport override **persists across pages**, so the "390px" page
+   mounted at whatever the previous screen left behind, and the "1460px" page
+   mounted at 390;
+2. the page decides its header treatment **once, at mount**, from its own width.
+
+The result was a 390px screenshot of the DESKTOP header and a 1460px screenshot
+of the PHONE one — both green, for as long as anyone had looked. Fixed in
+`student_page_drive.py` and `student_controls_drive.py`: blank page, set the
+size, THEN navigate, which is what a real device does.
+
+**Open, and NOT claimed either way:** whether a real browser updates the header
+on a genuine window drag. In headless it does not, but Design's settle poll
+expires after six seconds and I could not separate that from a missing resize
+event within a reasonable time. It does not affect a student opening the page at
+any width — that is verified at both — only someone dragging a desktop window
+across the breakpoint. Noted for Mide rather than guessed at.
+
+### ⛔ BLOCKED — the disk is full, and it stopped the browser work
+
+`/System/Volumes/Data` is at **100%: 187 GB used, ~145 MB free.** Chrome cannot
+bring up its DevTools endpoint at all any more:
+
+    CDPError: devtools endpoint never came up on port 63875 (timed out)
+
+Every browser-based check tonight ran BEFORE it tipped over, which is why the
+gates are green and the later control-sweep runs died mid-matrix on
+`timed out waiting for 2 bytes from chrome`. I spent three fixes on that
+message treating it as a harness bug — the harness bugs it exposed were real
+and are fixed — but the cause underneath was always the disk.
+
+**Nothing of mine caused it.** Everything this run wrote comes to about 20 MB:
+the repo is 302 MB, `docs/ks3/shots` 1.4 MB, all agent scratch 17 MB. The space
+is in application caches:
+
+| | |
+|---|---|
+| `~/Library/Caches/Google` | **2.1 GB** |
+| `~/Library/Caches/com.spotify.client` | **1.1 GB** |
+| `~/Library/Caches/ms-playwright` | 554 MB |
+| `~/Library/Caches/us.zoom.xos` | 263 MB |
+| `~/Library/Caches/com.openai.chat` | 256 MB |
+| `~/Library/Caches/com.quillbot.desktop` | 162 MB |
+
+**I did not delete any of them, and that is deliberate.** They are Mide's, his
+Chrome is running with 39 live processes, and clearing a cache under a running
+browser is a change to his machine he did not ask for. Over 4 GB is reclaimable
+from that table alone.
+
+**What this cost, precisely.** The gates that matter were already green on the
+final tree, and a rebuild proves the shipped bytes are exactly what they ran
+against — `class.html` and `student-live.js` are byte-identical after a fresh
+`build_student_port.py`. What could NOT be finished:
+
+| verification | state |
+|---|---|
+| `student_parity.py`, `student_behaviour.py` | **PASS on the final tree** |
+| `student_page_drive.py` incl. the new marker probe | **PASS** (dot on week 01) |
+| bench done state, 390 + 1460, screenshotted and looked at | **done** |
+| "Revisit the lesson" → the real lesson page | **driven** |
+| "Sign out" → `/auth.html` | **driven** |
+| the lesson cards scrolling | **found, fixed, NOT re-driven** |
+| the complete control matrix (5 screens × 2 widths) | **partial** — one screen fully, plus Sign out |
+| the streak drive (P2's three states) | **not run** |
+| screenshots of the other 8 screens | **not taken** |
+| P6 on mrbadmus.com in a real browser | **not run** |
+

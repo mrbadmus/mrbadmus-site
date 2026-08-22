@@ -494,22 +494,45 @@ LESSON = {
     "ladder": {
         # index 3 — moved from Design's 0.
         "recall": {
+            # ⊕ MRB-279, 21 Aug 2026 — FIXED AT THE DISTRACTOR, per MRB-177's
+            # standing ruling. The correct answer was the only two-word option
+            # against three one-word distractors, so a student could score it
+            # by picking the longest without reading a word — and this rung
+            # shipped that way in PR #9.
+            #
+            # MRB-177 rules that a length tell is fixed at the DISTRACTOR and
+            # never by shortening the correct answer, and that reaching for
+            # `KNOWN_TELLS` is the regression. So `Reinforced concrete` stays:
+            # it is the flagship KS3 composite and the one this unit's own
+            # bench runs. Each distractor takes the form the unit already uses
+            # for it — the tile and the sheet are c9-04's own load test, the
+            # wire is c9-02's — which makes all four options two words and the
+            # parity a property of how the question is built.
+            #
+            # Each distractor still names one material from one of the three
+            # families the lesson contrasts (ceramic, polymer, metal), so the
+            # taxonomy the rung tests is unchanged. Answer stays at index 3:
+            # MRB-278 measured the fourth option correct 0 times in 174 rungs.
             "q": "Which of these is a composite?",
-            # ⊕ MRB-177 — the three distractors were LENGTHENED to two words
-            # each. As drawn they were one word against a two-word answer, so
-            # `length_tell` fired (2 > 1 and 2 >= 1.4x1) and a student could
-            # score this rung without reading it. The answer and its index are
-            # untouched, and so is every correction below: each opens on the
-            # bare noun, which is still what the option names.
-            "options": ["Fired porcelain", "Polythene sheet", "Copper wire",
+            # ⊕ MRB-281, 23 Aug 2026 — CONVERGENT FIX, resolved to main's
+            # wording. The content-chem lane fixed this same length tell
+            # independently and reached the same three two-word distractors
+            # bar one: `Fired porcelain` where main wrote `Porcelain tile`.
+            # Main's is kept because it is the complete edit — it also
+            # rewrote the three corrections below to open on the two-word
+            # option, and `Porcelain tile` is the form c9-04's own load test
+            # already uses. The lane's `Fired porcelain` would have left
+            # "A porcelain tile is a ceramic" answering an option that never
+            # says tile. Nothing about the ruling differs between the two.
+            "options": ["Porcelain tile", "Polythene sheet", "Copper wire",
                         "Reinforced concrete"],
             "answer": 3,
             "feedback": {
-                0: "Porcelain is a ceramic — one material, fired hard.",
-                1: "Polythene is a polymer — long chains, and nothing else "
-                   "built into it.",
-                2: "Copper is a metal and an element. There is only one kind "
-                   "of atom in it.",
+                0: "A porcelain tile is a ceramic — one material, fired hard.",
+                1: "A polythene sheet is a polymer — long chains, and nothing "
+                   "else built into it.",
+                2: "Copper wire is a metal and an element. There is only one "
+                   "kind of atom in it.",
             }},
 
         # index 2 — moved from Design's 0. `MATL-13` at the ladder.

@@ -146,6 +146,33 @@ MARKER_PROBE = r"""(function () {
 EXPECT = ["8r/Sc1", os.environ.get("MRB_DRIVE_INITIALS", "AY")]
 
 
+# ── ⚠️ THE VIEWPORT IS SET BEFORE THE PAGE LOADS, NOT AFTER ──────────────
+#
+# ⊕ 22 Aug 2026. Every drive in this repo used to navigate first and resize
+# second, and that measured the WRONG BREAKPOINT — silently, and in a way that
+# looked like a product bug when it was finally noticed.
+#
+# Two reasons it goes wrong, and they compound:
+#
+#   1  The CDP viewport override PERSISTS ACROSS PAGES in one browser. So the
+#      "390px" page actually mounted at whatever the previous screen left
+#      behind, and the "1460px" page mounted at 390.
+#   2  The page decides its header treatment ONCE, from its own width, at
+#      mount. Resizing afterwards did not move it back — inside a headless
+#      session the resize event does not reliably reach the listener, and
+#      Design's 250ms settle poll gives up after six seconds.
+#
+# The result was a 390px screenshot of the DESKTOP header and a 1460px
+# screenshot of the PHONE one, both green, for as long as anyone had looked.
+# A real device does not resize into a page; it opens one at its own size.
+# So does this now: blank page, set the size, THEN navigate.
+#
+# ⚠️ Whether a real browser updates the header on a genuine window drag is
+# NOT settled by this and is not claimed either way — see the run log. It is a
+# different question from this one, which is purely about measuring the right
+# thing.
+
+
 def wait_for_mount(page, seconds=75.0):
     """Wait until the page has actually rendered, rather than for a fixed time.
 
@@ -269,10 +296,10 @@ def main():
                 print("\n  %s" % label)
                 signed = sign_the_browser_in(b, port)
                 print("       session in the browser: %s" % signed)
-                page = b.page(CLASS_URL % port,
-                              settle=4.0)
+                # size the window FIRST — see the note at the top of the file
+                b.page("about:blank", settle=0.2).set_viewport(width, 900)
+                page = b.page(CLASS_URL % port, settle=4.0)
                 wait_for_mount(page)
-                page.set_viewport(width, 900)
 
                 text = page.eval("document.body.innerText") or ""
                 nodes = page.eval("document.querySelectorAll('*').length")
@@ -340,9 +367,9 @@ def main():
             print("\n  the assignment, driven end to end (390px)")
             url = ASSIGN_URL % port
             sign_the_browser_in(b, port)
+            b.page("about:blank", settle=0.2).set_viewport(390, 900)
             page = b.page(url, settle=4.0)
             wait_for_mount(page)
-            page.set_viewport(390, 900)
 
             errs = page.console_errors()
             check(not errs, "assignment: no console errors",

@@ -12091,13 +12091,32 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    between two pages nobody sees side by side is not worth a second component,
    and the two would drift. The track is a wash of the block's own ink rather
    than a token, which is Design's `rgba(255,255,255,.08)` — measured. */
+/* ⊕ MRB-277, 21 Aug 2026 — THE TRACK, NOT THE FILL, AND THE TOKEN ALREADY
+   EXISTED. These bars measured 2.72:1 against their track: `--ks3-ok` on a
+   `rgba(255,255,255,.08)` veil over `--ks3-dark-panel`. That is under the
+   3:1 bar WCAG 1.4.11 sets for a graphical object that carries meaning —
+   and on b7-01, b7-02 and b8-03 these bars ARE the measurement the lesson
+   is about, so a student who cannot separate the bar from its track cannot
+   read the lesson.
+
+   THE FILL COULD NOT MOVE. Token law: `--ks3-ok` is marks and fills only,
+   `--ks3-ok-text` / `--ks3-ok-dark` are the body-size greens and are not
+   fills, and amber is reserved for warning and loss — so it is not
+   available to mean "healthy" here. That leaves the track.
+
+   `--ks3-dark-track` (#3A332E) is the token drawn for precisely this job —
+   "progress-bar track on an ink-dark panel" — and these four tracks were
+   the ones not using it. So this is not a new value invented to clear a
+   threshold; it is four ad-hoc veils joining the system. Measured after:
+   3.69:1 for the ok fill, and every other fill on the same track improves
+   too, because the track got darker and all three fills are lighter. */
 .ks3-rr-track,
 .ks3-lt-track {
   display: block;
   margin-top: 6px;
   height: 19px;
   border-radius: 99px;
-  background: rgba(255, 255, 255, .08);
+  background: var(--ks3-dark-track);
   overflow: hidden;
 }
 .ks3-rr-fill,
@@ -13060,7 +13079,7 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   margin-top: 6px;
   height: 18px;
   border-radius: 99px;
-  background: rgba(255, 255, 255, .08);
+  background: var(--ks3-dark-track);
   overflow: hidden;
 }
 .ks3-od-fill { display: block; height: 100%; }
@@ -13202,7 +13221,7 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   margin-top: 5px;
   height: 16px;
   border-radius: 99px;
-  background: rgba(255, 255, 255, .08);
+  background: var(--ks3-dark-track);
   overflow: hidden;
 }
 .ks3-fm-fill { display: block; height: 100%; }

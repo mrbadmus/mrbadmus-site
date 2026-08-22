@@ -3,6 +3,29 @@
 say what each one did.
 
     MRB_DRIVE_EMAIL=… MRB_DRIVE_PASSWORD=… python3 student_controls_drive.py
+    python3 student_controls_drive.py --theme chalk
+    python3 student_controls_drive.py --fixture          # no credentials
+
+`--theme <name>` sets `data-bench-theme` on the document root of EVERY mount
+(and `--theme harbour` REMOVES the attribute, which is what harbour is — see
+`student_themes.py`). A control can be dead in one theme and alive in another:
+the 21 Aug amendments made the bench, the term spine and the leaderboard card
+themeable, and a control drawn in a colour its ground swallows is pressable by
+this script and invisible to a student.
+
+`--fixture` drives `class-fixture.html` / `assignment-fixture.html` instead of
+the wired pages, and signs nobody in. It exists because the wired sweep needs
+`MRB_DRIVE_PASSWORD`, and a sweep that cannot run without a secret is a sweep
+that does not get run. ⚠️ It is WEAKER, and knowingly so: THE WHOLE `EXPECT`
+TABLE IS INVALID UNDER IT, because every ruled destination is a destination the
+DATA names. `benchPrimaryHref` is empty on the fixture, so "Open the assignment"
+correctly ticks the checklist instead of navigating — Design's own line, kept
+deliberately (see student_rulings.py, P1) — and the fixture run reports that as
+a ruled failure. Likewise the lesson cards keep Design's inert `href="#top"`
+and report SCROLLED, and "Sign out" is exercised against a signed-out browser.
+Read a `--fixture` run for the DEAD list, never for the ruled destinations;
+only the wired run can speak to those. Everything that is purely markup and
+handlers — which is every other control — is the same bytes either way.
 
 ⚑ WHY THIS EXISTS.
 
@@ -78,6 +101,14 @@ CTX = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
 
 CLASS = "/student/class.html?env=prod"
 ASSIGN = "/student/assignment.html?env=prod"
+CLASS_FIXTURE = "/student/class-fixture.html"
+ASSIGN_FIXTURE = "/student/assignment-fixture.html"
+
+# Set from the command line in main(). Module-level because `fresh()` has to
+# re-apply the theme on EVERY mount — each control gets a page of its own, so
+# a theme set once would only ever reach the first press.
+THEME = None        # None = leave the attribute alone (the page's own default)
+FIXTURE = False
 
 # ── the screens, and how to get to each ──────────────────────────────────
 #
@@ -110,7 +141,10 @@ EXPECT = {
 # Controls that genuinely leave the pages, and so cannot be swept in place
 # without ending the screen. They are clicked LAST and their navigation is the
 # result. (Nothing here yet beyond the ruled ones above, which are handled.)
-DESTRUCTIVE = set()
+# ⚠️ Swept LAST on whatever screen they appear on, because pressing them ends
+# the session for everything that follows. They are still pressed for real —
+# the point of this instrument is that Sign out really signs out.
+DESTRUCTIVE = {"Sign out"}
 
 
 def anon_key():
@@ -134,6 +168,33 @@ def sign_in(key):
     del pw
     with urllib.request.urlopen(req, timeout=60, context=CTX) as r:
         return json.loads(r.read().decode())
+
+
+# ── ⚠️ THE VIEWPORT IS SET BEFORE THE PAGE LOADS, NOT AFTER ──────────────
+#
+# ⊕ 22 Aug 2026. Every drive in this repo used to navigate first and resize
+# second, and that measured the WRONG BREAKPOINT — silently, and in a way that
+# looked like a product bug when it was finally noticed.
+#
+# Two reasons it goes wrong, and they compound:
+#
+#   1  The CDP viewport override PERSISTS ACROSS PAGES in one browser. So the
+#      "390px" page actually mounted at whatever the previous screen left
+#      behind, and the "1460px" page mounted at 390.
+#   2  The page decides its header treatment ONCE, from its own width, at
+#      mount. Resizing afterwards did not move it back — inside a headless
+#      session the resize event does not reliably reach the listener, and
+#      Design's 250ms settle poll gives up after six seconds.
+#
+# The result was a 390px screenshot of the DESKTOP header and a 1460px
+# screenshot of the PHONE one, both green, for as long as anyone had looked.
+# A real device does not resize into a page; it opens one at its own size.
+# So does this now: blank page, set the size, THEN navigate.
+#
+# ⚠️ Whether a real browser updates the header on a genuine window drag is
+# NOT settled by this and is not claimed either way — see the run log. It is a
+# different question from this one, which is purely about measuring the right
+# thing.
 
 
 def wait_for_mount(page, seconds=75.0, poll=0.25):
@@ -198,6 +259,35 @@ STATE_JS = r"""(function () {
 })()"""
 
 
+_SET_THEME = (
+    "(function(t){var e=document.documentElement;"
+    "if(t===null){e.removeAttribute('data-bench-theme');}"
+    "else{e.setAttribute('data-bench-theme',t);}"
+    "return String(e.getAttribute('data-bench-theme'));})(%s)")
+
+
+def apply_theme(page):
+    """Put `THEME` on the document root of this mount, and say what stuck.
+
+    ⚠️ HARBOUR IS THE ABSENCE OF THE ATTRIBUTE, not `="harbour"` — Design's
+    README says "(absent = harbour)". Writing the attribute for it would
+    exercise a case no student is ever in, and would hide a default that had
+    silently reverted to the old graphite.
+
+    Returns the attribute the page reports, or None if no theme was asked for.
+    """
+    if THEME is None:
+        return None
+    arg = "null" if THEME == "harbour" else json.dumps(THEME)
+    got = page.eval(_SET_THEME % arg)
+    want = "null" if THEME == "harbour" else THEME
+    if str(got) != want:
+        raise SystemExit("data-bench-theme is %r after asking for %r — the "
+                         "sweep would be reported under the wrong theme"
+                         % (got, want))
+    return got
+
+
 def click_index(page, idx):
     """Click the idx'th element of the SAME query CONTROLS_JS enumerated."""
     return page.eval(
@@ -226,22 +316,76 @@ def verdict(before, after):
     return "NOTHING", ""
 
 
+def parse_args(argv):
+    """`--theme <name>` and `--fixture`. Deliberately hand-rolled and tiny —
+    this file's interface is two flags, and an unknown flag is a typo worth
+    stopping for rather than ignoring."""
+    global THEME, FIXTURE
+    i = 0
+    while i < len(argv):
+        a = argv[i]
+        if a == "--theme":
+            i += 1
+            if i >= len(argv):
+                raise SystemExit("--theme needs a theme name")
+            THEME = argv[i]
+        elif a.startswith("--theme="):
+            THEME = a.split("=", 1)[1]
+        elif a == "--fixture":
+            FIXTURE = True
+        else:
+            raise SystemExit("unknown argument %r "
+                             "(--theme <name> | --fixture)" % a)
+        i += 1
+    if FIXTURE:
+        for s in SCREENS:
+            s["url"] = (s["url"].replace(CLASS, CLASS_FIXTURE)
+                                .replace(ASSIGN, ASSIGN_FIXTURE))
+
+
 def main():
-    key = anon_key()
-    sess = sign_in(key)
+    parse_args(sys.argv[1:])
     print("\n🖲   drive_controls — press every control, and say what it did\n")
-    print("     as %s (token %s…)" % (EMAIL, sess["access_token"][:8]))
+    if FIXTURE:
+        key, sess = None, {"access_token": "(fixture — nobody signed in)"}
+        print("     ⚠️  --fixture: driving the FIXTURE pages, signed out. "
+              "Sign out's ruled destination is not proof about the wired page.")
+    else:
+        key = anon_key()
+        sess = sign_in(key)
+        print("     as %s (token %s…)" % (EMAIL, sess["access_token"][:8]))
+    print("     theme: %s" % (THEME if THEME else "(page default, untouched)"))
 
     server, port = cdp.serve("mrbadmus_site", port=PORT)
     base = "http://localhost:%d" % port
-    fails, dead, rows = [], [], []
+    fails, dead, rows, harness = [], [], [], []
+
+    def size_to(b, width):
+        """Set the window size once, on a blank page, before the screen's
+        first mount. The override persists across navigations on this target."""
+        b.page("about:blank", settle=0.15).set_viewport(width, 900)
 
     def fresh(b, url, setup, width):
         """A signed-in, mounted page with `setup` already clicked."""
+        # ⚠️ THE VIEWPORT IS SET ONCE PER SCREEN, NOT PER CONTROL, and it is
+        # the SAME persistence that caused the bug the note above describes
+        # that makes this safe: the override survives a navigation on this
+        # target, so every mount in this screen inherits the size set by
+        # `size_to` before the first one. Two page loads per control against a
+        # cold backend is what killed three runs of this sweep; one is enough.
         page = b.page(base + url, settle=0.6)
         wait_for_mount(page)
-        page.set_viewport(width, 900)
         time.sleep(0.35)
+        # bounced to the sign-in page? the last control signed us out. Sign
+        # back in and come again — see the note in main().
+        if not FIXTURE and "auth.html" in (page.eval("location.pathname") or ""):
+            sign_browser_in(b)
+            page = b.page(base + url, settle=0.6)
+            wait_for_mount(page)
+            time.sleep(0.35)
+        # ⚠️ EVERY MOUNT, not once per screen. Each control is pressed on a
+        # page of its own, and a fresh document carries no attribute.
+        apply_theme(page)
         for label in setup:
             if label == "__firstrow__":
                 page.eval(
@@ -262,28 +406,116 @@ def main():
             time.sleep(0.5)
         return page
 
-    try:
-        with cdp.Browser() as b:
-            # let the SDK write its own session, on this origin
-            boot = b.page(base + CLASS, settle=1.0)
-            boot.eval("(function(){var s=document.createElement('script');"
-                      "s.src='https://cdn.jsdelivr.net/npm/@supabase/"
-                      "supabase-js@2';document.head.appendChild(s);})()")
-            time.sleep(3.0)
-            got = boot.eval(
-                "(async function(){var c=window.supabase.createClient(%s,%s);"
-                "var r=await c.auth.setSession(%s);"
-                "return r.error ? ('err:'+r.error.message) : 'ok';})()"
-                % (json.dumps(SUPABASE_URL), json.dumps(key),
-                   json.dumps({"access_token": sess["access_token"],
-                               "refresh_token": sess["refresh_token"]})))
-            print("     session in the browser: %s\n" % got)
+    # ── ⚠️ PRESSING "SIGN OUT" ENDS THE SESSION FOR THE WHOLE SWEEP ──────
+    #
+    # And that is the correct behaviour of the control being tested, which is
+    # what makes it awkward: every page loaded after it is bounced to
+    # /auth.html by the guard, so the remaining controls on that screen — and
+    # every screen after it — were being measured on the SIGN-IN PAGE while
+    # still being reported under the class view's name. The first run of this
+    # sweep did exactly that and looked plausible: the controls kept reporting
+    # CHANGED, because the auth page changes too.
+    #
+    # So the session is re-established whenever a page lands on /auth.html.
+    # Signing out must stay a real sign-out — weakening it to make the sweep
+    # convenient would be testing a different button.
+    signed_in = [False]
+    live = {"sess": sess}
 
+    def sign_browser_in(b):
+        if FIXTURE:
+            return "skipped (--fixture)"
+        # ⚠️ MINT A NEW SESSION, DO NOT REPLAY THE OLD ONE. `auth.signOut()`
+        # revokes the refresh token server-side, so `setSession` with the
+        # session we started from silently fails and the browser stays signed
+        # out. The first attempt at this recovery reused `sess` and every
+        # screen after "Sign out" was measured on the SIGN-IN PAGE while still
+        # being reported under the class view's name — 24 controls of
+        # confident nonsense, with a "Sign In" button in the middle of it that
+        # gave the game away.
+        try:
+            live["sess"] = sign_in(key)
+        except Exception as err:                      # noqa: BLE001
+            print("     ⚠️  could not re-authenticate: %s" % err)
+        # ⚠️ SIGN IN ON A BARE SAME-ORIGIN PAGE, NOT ON THE CLASS PAGE.
+        # `localStorage` is per-origin, so this has to be served from
+        # localhost:5500 — but it does NOT have to be the app. Injecting the
+        # SDK into the class page means racing `student-live.js`, which is
+        # loading its own copy and doing its own auth at the same time, and
+        # three runs of this sweep hung inside `setSession` because of it.
+        # `http.server`'s directory listing is HTML on the right origin with
+        # no JavaScript of its own to fight.
+        boot = b.page(base + "/shared/", settle=0.4)
+        boot.eval("(function(){var s=document.createElement('script');"
+                  "s.src='https://cdn.jsdelivr.net/npm/@supabase/"
+                  "supabase-js@2';document.head.appendChild(s);})()")
+        for _ in range(30):
+            if boot.eval("!!(window.supabase && window.supabase.createClient)"):
+                break
+            time.sleep(0.25)
+        got = boot.eval(
+            "(async function(){var c=window.supabase.createClient(%s,%s);"
+            "var r=await c.auth.setSession(%s);"
+            "return r.error ? ('err:'+r.error.message) : 'ok';})()"
+            % (json.dumps(SUPABASE_URL), json.dumps(key),
+               json.dumps({"access_token": live["sess"]["access_token"],
+                           "refresh_token": live["sess"]["refresh_token"]})))
+        signed_in[0] = (got == "ok")
+        return got
+
+    # ── ⚠️ THE BROWSER IS RESTARTABLE, BECAUSE IT DIES ───────────────────
+    #
+    # This sweep makes several hundred real page loads against a real backend,
+    # and Chrome's DevTools socket does not always survive that: three runs
+    # ended on `timed out waiting for 2 bytes from chrome`, one of them on the
+    # very first sign-in. Losing the whole matrix to one dropped socket means
+    # the sweep never finishes, and a check that never finishes is a check
+    # nobody runs.
+    #
+    # So a CDP failure restarts Chrome, signs back in and carries on, and the
+    # presses it could not complete are listed separately at the end — as this
+    # harness failing, never as a verdict on the control.
+    holder = {"b": None}
+
+    def restart():
+        old_b = holder["b"]
+        if old_b is not None:
+            try:
+                old_b.close()
+            except Exception:                          # noqa: BLE001
+                pass
+        holder["b"] = cdp.Browser().start()
+        sign_browser_in(holder["b"])
+        return holder["b"]
+
+    try:
+        holder["b"] = cdp.Browser().start()
+        b = holder["b"]
+        print("     session in the browser: %s\n" % sign_browser_in(b))
+
+        if True:
             for width in (390, 1460):
                 print("\n  ══════ %dpx ══════" % width)
                 for screen in SCREENS:
-                    page = fresh(b, screen["url"], screen["setup"], width)
-                    raw = page.eval(CONTROLS_JS)
+                    b = holder["b"]
+                    try:
+                        size_to(b, width)
+                        page = fresh(b, screen["url"], screen["setup"], width)
+                        raw = page.eval(CONTROLS_JS)
+                    except Exception as err:           # noqa: BLE001
+                        print("\n   %s — restarting the browser (%s)"
+                              % (screen["name"], str(err)[:44]))
+                        b = restart()
+                        try:
+                            size_to(b, width)
+                            page = fresh(b, screen["url"], screen["setup"], width)
+                            raw = page.eval(CONTROLS_JS)
+                        except Exception as err2:      # noqa: BLE001
+                            harness.append("%s @%dpx: could not open the "
+                                           "screen at all — %s"
+                                           % (screen["name"], width,
+                                              str(err2)[:60]))
+                            continue
                     try:
                         controls = json.loads(raw) if raw else []
                     except Exception:
@@ -297,13 +529,30 @@ def main():
 
                     print("\n   %s — %d control(s)"
                           % (screen["name"], len(controls)))
+                    controls.sort(key=lambda c: c["label"] in DESTRUCTIVE)
                     for c in controls:
-                        p = fresh(b, screen["url"], screen["setup"], width)
-                        before = state(p)
-                        click_index(p, c["i"])
-                        time.sleep(0.5)
-                        after = state(p)
-                        v, detail = verdict(before, after)
+                        try:
+                            p = fresh(holder["b"], screen["url"],
+                                      screen["setup"], width)
+                            before = state(p)
+                            click_index(p, c["i"])
+                            time.sleep(0.5)
+                            after = state(p)
+                            v, detail = verdict(before, after)
+                        except Exception as err:      # noqa: BLE001
+                            # A dropped CDP socket is this harness failing, not
+                            # the control. Restart, say so, carry on.
+                            print("     ⁇  %-34s HARNESS   %s"
+                                  % (c["label"][:34], str(err)[:44]))
+                            harness.append("%s @%dpx: %r — %s"
+                                           % (screen["name"], width,
+                                              c["label"], str(err)[:60]))
+                            try:
+                                restart()
+                                size_to(holder["b"], width)
+                            except Exception:          # noqa: BLE001
+                                pass
+                            continue
 
                         want = EXPECT.get(c["label"])
                         mark = "  "
@@ -334,6 +583,11 @@ def main():
                         rows.append((screen["name"], width, c["label"],
                                      v, detail))
     finally:
+        if holder["b"] is not None:
+            try:
+                holder["b"].close()
+            except Exception:                          # noqa: BLE001
+                pass
         server.shutdown()
 
     print("\n  ── controls that did nothing but scroll, or nothing at all ──")
@@ -342,6 +596,12 @@ def main():
             print("     ⚠️  %s" % d)
     else:
         print("     none — every control on every screen did something")
+
+    if harness:
+        print("\n  ── presses this harness could not complete ──")
+        for h in harness:
+            print("     ⁇  %s" % h)
+        print("     (a dropped CDP socket, not a verdict on the control)")
 
     print("\n  ── ruled destinations ──")
     if fails:

@@ -332,6 +332,21 @@ LESSON = {
               "why": "A muscle needs something rigid to pull on, and where it attaches decides what the pull does."},
          ]},
 
+        # ⊕ #s-words — the six words this lesson USES and never stops to
+        # define. Design draws no words section on this page and the RAIL IS
+        # NOT TOUCHED: the block carries an `anchor` because that is what a
+        # section carries, and `check_rail_matches_design` compares the built
+        # rail against the one Design drew.
+        # `terms` must match `vocabulary[].term` byte for byte — `r_keyword`
+        # drops a term it cannot resolve, silently, and renders nothing at all
+        # if it drops them all.
+        {"type": "keyword", "anchor": "s-words",
+         "eyebrow": "Six words",
+         "lead": "Say your answer out loud before you turn each card over. "
+                 "If you cannot say it, you do not know it yet.",
+         "terms": ["Skeleton", "Bone marrow", "Tissue", "Red blood cell",
+                   "Respiration", "Tendon"]},
+
         {"type": "misconception", "id": "bones-are-dead", "anchor": "s-think",
          "targets": "BODY-01"},
         {"type": "quiz", "ref": "ladder", "anchor": "s-ladder"},
@@ -492,6 +507,56 @@ LESSON = {
 
     # Present and empty — §5.6's ruling: may be empty, never absent.
     "support": [],
+
+    # ── vocabulary (§10.2, §12) ─────────────────────────────────────────────
+    # ⚠️ `definition` + `note`, not `gloss`. The build contract's §12 names the
+    # key `gloss`; the SHIPPED schema is `{"term", "definition", "note"}` — that
+    # is what `r_keyword` reads (build_ks3.py:908) and what every live lesson
+    # authors. Authored to the shipped spelling so the terms reach the unit
+    # page's "Words this unit gives you" chips and the reading-age gate's
+    # exclusion list.
+    #
+    # Every definition is a KEY FACT (MRB-225): the version that is TRUE, not
+    # the famous one. Where this lesson's own `key_facts` entry says the same
+    # thing, the card agrees with it rather than restating it loosely.
+    #
+    # `Tendon` is here because the page uses it once, in the sorter's sixth
+    # item, without ever defining it: "a tendon attached to the back of it,
+    # well behind the ankle joint."
+    "vocabulary": [
+        {"term": "Skeleton",
+         "definition": "All the bones of the body, taken together as one "
+                       "system.",
+         "note": "It does four jobs at once: support, protection, movement, "
+                 "and making blood cells."},
+        {"term": "Bone marrow",
+         "definition": "The soft living tissue in the hollow middle of the "
+                       "big bones, where new blood cells are made.",
+         "note": "About two million new red blood cells every second, for "
+                 "your whole life."},
+        {"term": "Tissue",
+         "definition": "A group of similar cells working together to do one "
+                       "job.",
+         "note": "Bone is a tissue, and a living one: it has its own cells "
+                 "and its own blood supply, and it repairs itself when it "
+                 "breaks."},
+        {"term": "Red blood cell",
+         "definition": "The cell that carries oxygen round the body in the "
+                       "blood.",
+         "note": "They wear out and are removed after about four months, so "
+                 "the marrow has to keep replacing them."},
+        {"term": "Respiration",
+         "definition": "The reaction inside every living cell that releases "
+                       "the energy in food.",
+         "note": "The kind your cells depend on needs a steady supply of "
+                 "oxygen — which is why every failure in this lesson ends in "
+                 "the same place."},
+        {"term": "Tendon",
+         "definition": "A tough cord joining a muscle to a bone, so that the "
+                       "muscle's pull reaches the skeleton.",
+         "note": "Where it attaches decides what the pull does. A sprinter's "
+                 "is fixed well behind the ankle joint."},
+    ],
 
     # ── end matter (§4.8.1 C, D) ────────────────────────────────────────────
     # Design heads the card "Ask Mr Badmus AI" and puts the lesson's own

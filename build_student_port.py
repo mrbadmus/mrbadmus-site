@@ -67,10 +67,22 @@ mark (captured from Design's render). What is ours is `shared/student-runtime.js
 — a 30-line base class and a renderer for three constructs.
 """
 
+import hashlib
 import html
 import json
 import os
+import re
 import sys
+
+# ⊕ 23 Aug 2026 — the cache-bust stamp. `stamp_versions` is IMPORTED, not
+# retyped: build_ks3.py already owns the one substitution that gets this right
+# (idempotent against a stale `?v=`, anchored on the trailing quote so a short
+# name cannot match inside a longer one, and agnostic about whether the path
+# sits in a `src` or an `href`). generate_site_v5.py carries a second inline
+# copy of the same regex; a third one here would be the copy that drifts.
+# Importing build_ks3 is cheap and side-effect-free — it loads the KS3 art
+# registry and writes nothing — measured at ~0.26s.
+from build_ks3 import stamp_versions
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 REF = os.path.join("docs", "ks3", "design-reference", "student")
@@ -81,6 +93,11 @@ MIRROR_OUT = "student"
 SHARED_OUT = os.path.join("mrbadmus_site", "shared")
 
 TEMPLATES = "student_templates.json"
+
+# ⊕ 22 Aug 2026. Design's class-view amendments, compiled by
+# `student_template.py` as a page that is never emitted. `apply_rulings` grafts
+# regions out of its tree; nothing else reads it, and nothing renders it.
+DONOR_PAGE = "class view amendments"
 DS_CSS_NAME = "student-ds.css"
 DS_CSS_URL = "/shared/" + DS_CSS_NAME
 SERVED_FONTS = "/shared/fonts/"
@@ -112,6 +129,72 @@ RUNTIME_JS_NAME = "student-runtime.js"
 LIVE_JS_NAME = "student-live.js"
 LIVE_JS_URL = "/shared/" + LIVE_JS_NAME
 
+# ── Cache-bust stamps ────────────────────────────────────────────────────
+#
+# ⚑ THIS CLOSED A DEFECT THAT WAS HITTING STUDENTS, and it is worth writing
+# down exactly, because a 200 with the right HTML is the failure mode that
+# looks like success.
+#
+# Measured on mrbadmus.com: `/student/class` is served
+# `max-age=0, must-revalidate` — always fresh — while every asset under
+# `/shared/` is served `max-age=14400, must-revalidate`, four hours. These two
+# pages loaded `student-runtime.js`, `student-live.js` and `student-ds.css`
+# with NO version query, so for up to four hours after every deploy a student
+# arriving by bookmark, typed URL or the "My class" nav got TODAY's HTML with
+# YESTERDAY's JavaScript. The compiled binding table then demanded a key the
+# old file never emitted:
+#
+#     [student-live] Error: student page: no data for "accountClassLine"
+#
+# and the catch in `student-live.js` fell through to "We could not load your
+# class just now. Try again in a moment." — a TRANSIENT sentence for a
+# condition that persists for four hours. Reload cures it (a reload
+# revalidates); NAVIGATION does not, which is why it looked intermittent.
+#
+# The stamp makes the skew impossible rather than unlikely: the URL names the
+# CONTENT, so a browser holding the old bytes is holding them under a
+# different URL and has no cached answer for the one the page asks for.
+#
+# ── the four the pages themselves link ───────────────────────────────────
+# `student-fixture-*.js` is per page and is added to the map inside the loop.
+#
+# ── AND THE FIVE THE RUNTIME LOADS, which is the half the brief did not see ──
+# `student-live.js` loads five more shared scripts itself, from its `DEPS`
+# list, and every one of them was unstamped:
+#
+#     config.js · class-entry.js · student-guard.js · student-data.js
+#     ks3-lesson-urls.js
+#
+# Stamping only the three tags in the HTML would have left `student-data.js`
+# — which carries `saveBenchTheme` and the `workingAcademicYear()` scoping —
+# on the same four-hour skew, reached through a `<script>` element this build
+# never writes. They cannot be stamped by rewriting `student-live.js` (it is a
+# hand-written source file, and rewriting the published copy would make the
+# deployed bytes differ from the repo's). So the BUILD publishes the map and
+# the RUNTIME reads it: `window.__MRB_ASSET_V__`, bare name → hash.
+#
+# ⚠️ THE MAP IS KEYED ON THE BARE NAME, ON PURPOSE. Keyed on the full
+# `/shared/<name>` URL it would be rewritten by generate_site_v5.py's own
+# cache-bust pass — that regex matches `/shared/student-data.js"` wherever it
+# occurs, including inside a JSON key — turning the key into
+# `"/shared/student-data.js?v=…"`, which `student-live.js` would then fail to
+# look up. Silent, and it would look like the stamp simply had no effect.
+STAMPED_DEPS = ("config.js", "class-entry.js", "student-guard.js",
+                "student-data.js")
+
+
+def asset_hash(text):
+    """The repo's one stamping scheme: md5 of the bytes, first 8 hex chars.
+
+    Identical to `build_ks3.asset_versions` and to generate_site_v5.py's
+    inline pass, which is what makes `class-entry.js?v=8be18391` read the same
+    on `student/classes.html` (stamped by the KS4 generator) and in this
+    build's `__MRB_ASSET_V__` map. Two writers, one number.
+    """
+    if isinstance(text, str):
+        text = text.encode("utf-8")
+    return hashlib.md5(text).hexdigest()[:8]
+
 PAGES = [
     dict(page="class view", out="class.html",
          fixture_out="class-fixture.html",
@@ -140,7 +223,11 @@ PAGES = [
          # fixture ticks its checklist and opens its recall panel precisely as
          # the delivery does — and the behaviour gate compares the two without
          # a divergence to register. The live page supplies real URLs.
-         constants=dict(assignmentHref="''")),
+         # `benchDone` false is Design's own state — the delivery draws the
+         # bench with work still on it — so every ruling below falls back to
+         # exactly what Design computed and the fixture is untouched.
+         constants=dict(benchPrimaryHref="''", benchDone="false",
+                        benchPct="''", benchDoneText="''")),
     dict(page="assignment", out="assignment.html",
          fixture_out="assignment-fixture.html",
          fixture_js="student-fixture-assignment.js",
@@ -242,6 +329,25 @@ BINDINGS = {
          "recallBlurb"),
         ("SIX QUESTIONS · UNLIMITED ROUNDS", "recallEyebrow"),
         ("OF SIX", "recallOutOf"),
+        # ── ⊕ RULED 22 Aug 2026 — P4. THE BENCH'S PRIMARY BUTTON ──────────
+        # In the OPEN state it opens the assignment. In the DONE state the
+        # assignment is finished, and the two actions the ruling asks for are
+        # "Revisit the lessons" and "Practise recall" — the second of which
+        # Design already drew, sitting right beside this one. So only this
+        # label changes, and the bench needs no new markup at all.
+        ("Open the assignment", "benchPrimaryLabel"),
+        # ⊕ RULED 22 Aug 2026 — ANOTHER "04", AND ANOTHER ONE THE SCREENSHOT
+        # FOUND. The "Lessons in this topic" badge is the literal text `04`,
+        # sitting above an `sc-for` over the real list. This class's current
+        # assignment draws on ONE lesson, so the page counted four and then
+        # listed one, directly underneath itself.
+        #
+        # It is the same shape as the leaderboard's WEEK 04 and the spine's
+        # now-dot: a number Design chose to draw four of something, left
+        # standing over real data. Three of them tonight. The count is now the
+        # length of the list it counts, which is the only definition that
+        # cannot drift — the same fix `shoutCount` already got.
+        ("04", "lessonCount"),
         # ⊕ 22 Aug 2026 — TWO SENTENCES A SCREENSHOT CAUGHT AND NO GREP COULD.
         #
         # Both are text nodes in Design's markup, and both are written in
@@ -257,6 +363,34 @@ BINDINGS = {
         # names Thursday as the deadline for every class in every week.
         ('On the bench now · due Thu 18:00', "benchLead"),
         ("Eight questions, set from this week's lessons. Open it, answer them, hand it in before Thursday.", "benchBlurb"),
+        # ── ⊕ 23 Aug 2026 — PHASE 1b. THE ACCOUNT SHEET'S TWO REAL ROWS ───
+        #
+        # Design's sheet carries three hardcoded facts about one sample class:
+        # `Mr Badmus`, `8r/Sc1 · SCIENCE` and `Summer · Week 01 / 39`. (The
+        # fourth, `ay@school.uk`, is not here because it is not on the page —
+        # see `omit` on the graft in student_rulings.py.)
+        #
+        # `Mr Badmus` needs nothing: it is already on this list, bound to
+        # `teacherName`, and `text_paths` binds EVERY node whose text is
+        # exactly that literal — so the grafted row binds for free, the moment
+        # the graft lands. That is not luck; it is why the binding table is
+        # keyed on the literal rather than on an index.
+        #
+        # ⚠️ THE OTHER TWO ARE NOT EXACT MATCHES FOR ANYTHING ALREADY HERE,
+        # and `8r/Sc1 · SCIENCE` is the trap. `8r/Sc1` IS on this list — but
+        # the donor's text node is `8r/Sc1\u00a0·\u00a0 SCIENCE`, one string,
+        # with NON-BREAKING SPACES around the separator. `text_paths` matches
+        # the whole node value and nothing less, so it would not bind, and the
+        # sheet would have shipped one real class's name and one real subject
+        # under a heading that said the student's own class.
+        #
+        # Both therefore become their own keys, composed in student-live.js
+        # from values it already holds — the class name and the subject pill,
+        # the term label and the teaching week. The separator is carried
+        # through verbatim, non-breaking spaces and all, because it is Design's
+        # typography and not data.
+        ("8r/Sc1 \u00a0\u00b7\u00a0 SCIENCE", "accountClassLine"),
+        ("Summer \u00a0\u00b7\u00a0 Week 01 / 39", "accountTerm"),
     ],
     "assignment": [
         ("8r/Sc1", "className"),
@@ -287,6 +421,48 @@ BINDINGS = {
         ("Handed in", "completeHeading"),
     ],
 }
+
+# ── one node, one key, where the LITERAL cannot tell two nodes apart ──────
+#
+# ⊕ 23 Aug 2026 — PHASE 1b, and it exists for exactly one node.
+#
+# `BINDINGS` is keyed on the literal, which is what lets it bind every copy of
+# a value wherever Design typed it. Design's account sheet contains two text
+# nodes reading `AY` and they are NOT the same fact:
+#
+#     donor 252   the 52px avatar disc          → the student's INITIALS
+#     donor 254   the 26px name line beside it  → the student's NAME
+#
+# In Design's amended sample they read alike because that sample's student is
+# called `AY`. On a real class they do not: `studentInitials` is `MB` where
+# `studentFirstName` is `Mide`, and binding both to the initials would print
+# a student's initials twice, in two sizes, where Design drew a monogram and a
+# name. The header directly above already says the name — so the sheet would
+# have contradicted the page it opened from.
+#
+# The literal cannot separate them, so this does, by NODE INDEX — the same way
+# `SET_ATTR` and `SET_ON` address a node, and asserted the same way.
+#
+# `{node index: (expected literal, key)}`. The literal is stated and CHECKED,
+# not decorative: an index that has drifted onto a different node fails loudly
+# instead of binding the class name into the avatar. The key must already be
+# claimed by a literal in `BINDINGS`, because that literal is what supplies the
+# FIXTURE's value — this table repoints a node at an existing key and never
+# invents one.
+#
+# ⚠️ ONE CONSEQUENCE, STATED RATHER THAN DISCOVERED LATER. The fixture now
+# renders `Ayo` in the sheet's name line where Design's amended delivery
+# renders `AY`. That is the same class of difference the whole
+# `AMENDED_ADDITIONS` mechanism exists to tolerate — the two deliveries carry
+# different sample data — and the registration in `student_behaviour.py`
+# matches the name as `\S+` for precisely this reason, with a note saying so.
+BINDINGS_AT = {
+    "class view": {
+        10254: ("AY", "studentFirstName"),
+    },
+    "assignment": {},
+}
+
 
 # ── Design's data welded into METHOD BODIES, not into initialisers ────────
 #
@@ -572,6 +748,22 @@ REWRITES = {
         # The docket's countdown strip. `fresh ?` keeps its empty-class arm —
         # `No deadline` and `—` are what a class with nothing set says, which
         # is behaviour rather than data.
+        # ⊕ RULED 22 Aug 2026 — P4, FOUND IN THE SCREENSHOT AND NOT IN ANY
+        # CHECK. The docket sits directly above the bench, and while the bench
+        # was being taught a done state the docket went on saying `OPEN` and
+        # `14 days left` over a piece of work the student had finished. Two
+        # statements about the same assignment, contradicting each other, two
+        # inches apart — the exact fault P4 exists to remove, in the panel
+        # above the one the brief names.
+        #
+        # No text check could have caught it: `OPEN` is a correct word for an
+        # open assignment, and every drive that had a docket had an open one.
+        # A picture caught it, on the first look, which is the second time
+        # tonight that has happened.
+        dict(name="docketFlag",
+             pat=r"docketFlag: fresh \? 'BENCH CLEAR' : '(?P<docketFlag>OPEN)'",
+             new="docketFlag: fresh ? 'BENCH CLEAR' : MRB_DATA('docketFlag')",
+             keys=dict(docketFlag="str")),
         dict(name="docketLeft",
              pat=r"docketLeft: fresh \? 'No deadline' : "
                  r"'(?P<docketLeft>[^']*)'",
@@ -839,7 +1031,15 @@ def top_up(css, wanted, tpls):
     """Define, from shared/tokens.css, any token the bundle is missing."""
     import re as _re
     have = defined_tokens(css)
-    for t in tpls.values():
+    for name, t in tpls.items():
+        # ⚠️ THE DONOR DOES NOT COUNT. Its tree defines Design's `--b-*` and
+        # `--pg-*` families, and it is not on the page — only the subtrees
+        # GRAFTED out of it are. Counting them here would let a token that is
+        # referenced by the live page and defined only in the delivery pass as
+        # resolved, and an undefined custom property does not error: it falls
+        # back to the inherited value and the page looks almost right.
+        if name == DONOR_PAGE:
+            continue
         have |= defined_tokens("", t)
     missing = sorted(wanted - have)
     if not missing:
@@ -885,7 +1085,7 @@ def top_up(css, wanted, tpls):
 # the full account of the recovery. Nothing about their content changed.
 
 
-def apply_rulings(page, logic, roots):
+def apply_rulings(page, logic, roots, donor=None):
     """Design's logic and template with Mide's rulings applied.
 
     Returns (logic, roots, replacements, pruned, wired). Every `old` must appear
@@ -936,6 +1136,213 @@ def apply_rulings(page, logic, roots):
             "stands; re-read the delivery and re-anchor it."
             % (page, sorted(prune)))
 
+    # ── subtrees grafted from Design's amended delivery ──────────────────
+    #
+    # ⊕ 22 Aug 2026. See `GRAFT` in student_rulings.py for why the amendments
+    # are merged by region instead of replacing the live template.
+    #
+    # Runs BEFORE the handler pass on purpose: a grafted subtree carries
+    # Design's own `onClick` expressions, and `SET_ON` must be able to see and
+    # refuse to overwrite them like any other.
+    grafts = list(student_rulings.GRAFT.get(page, ()))
+    grafted = [0]
+    if grafts and donor is None:
+        raise SystemExit(
+            "build_student_port.py: %r has %d graft(s) but no donor tree was "
+            "passed. The donor is the compiled 'class view amendments' entry "
+            "in %s; without it there is nothing to graft FROM."
+            % (page, len(grafts), TEMPLATES))
+
+    def _index(tree):
+        found = {}
+
+        def walk(n):
+            if isinstance(n, dict):
+                if n.get("i") is not None:
+                    found[n["i"]] = n
+                for kid in n.get("c") or []:
+                    walk(kid)
+
+        for r in (tree or []):
+            walk(r)
+        return found
+
+    def _renumber(node):
+        """Design's subtree, deep-copied, with every index moved clear of the
+        live page's. Text nodes have no index and keep none."""
+        out = json.loads(json.dumps(node))
+
+        def walk(n):
+            if isinstance(n, dict):
+                if n.get("i") is not None:
+                    n["i"] = student_rulings.GRAFT_BASE + n["i"]
+                for kid in n.get("c") or []:
+                    walk(kid)
+
+        walk(out)
+        return out
+
+    def _omit(sub, drop, why):
+        """Donor subtrees a graft deliberately does NOT copy.
+
+        ⊕ 23 Aug 2026 — 1c, the EMAIL row. Runs INSIDE the graft, on the
+        donor's own numbering, before `_renumber` — which is the only place it
+        can run.
+
+        ⚠️ `PRUNE` CANNOT DO THIS, and the order of this function is why:
+        `PRUNE` walks the LIVE template near the top of `apply_rulings` and
+        asserts every index it was given was found. At that moment the donor
+        has not been copied in, so naming a grafted node there raises rather
+        than removing anything.
+
+        ⚠️ AND IT IS NOT `BINDINGS`' `drop`, which is a different rule with a
+        different lifetime: `drop` removes an element AT RUNTIME when its
+        BOUND VALUE turns out to be empty, and puts it back when it is not.
+        This removes markup at BUILD TIME, so there is no state in which the
+        subtree exists. Two mechanisms, two names, on purpose.
+
+        Every index must be PRESENT in the donor subtree. A stale entry —
+        Design redraws, the row moves, the number comes to mean something
+        else — stops the build rather than omitting nothing and shipping the
+        thing the ruling exists to remove, which is the failure mode that
+        looks exactly like success.
+        """
+        want = set(drop)
+        if not want:
+            return sub
+        seen = set()
+
+        def walk(n):
+            if not isinstance(n, dict) or not n.get("c"):
+                return
+            kept = []
+            for kid in n["c"]:
+                if isinstance(kid, dict) and kid.get("i") in want:
+                    seen.add(kid["i"])
+                    continue
+                walk(kid)
+                kept.append(kid)
+            n["c"] = kept
+
+        if sub.get("i") in want:
+            raise SystemExit(
+                "build_student_port.py: the graft %r omits donor node %s, "
+                "which is the grafted subtree's own ROOT. Omitting the root "
+                "omits the whole graft; graft something else, or drop the "
+                "graft." % (why[:60], sub.get("i")))
+        walk(sub)
+        missing = sorted(want - seen)
+        if missing:
+            raise SystemExit(
+                "build_student_port.py: the graft %r omits donor node(s) %s, "
+                "and they are not in the subtree it copies. The omission is a "
+                "RULING and it still stands — Design has redrawn that part of "
+                "the delivery, so re-read it and re-anchor the index. Leaving "
+                "a stale number here would omit NOTHING and ship exactly what "
+                "the ruling exists to remove, with a green build."
+                % (why[:60], missing))
+        return sub
+
+    if grafts:
+        donor_by_i = _index(donor)
+        live_by_i = _index(roots)
+        parent_of = {}
+
+        def note_parents(n):
+            if isinstance(n, dict):
+                for kid in n.get("c") or []:
+                    if isinstance(kid, dict):
+                        parent_of[id(kid)] = n
+                    note_parents(kid)
+
+        for r in roots:
+            note_parents(r)
+
+        for g in grafts:
+            if not g.get("why"):
+                raise SystemExit(
+                    "build_student_port.py: a graft on %r states no reason. "
+                    "`why` is required — a graft with no stated reason is a "
+                    "redesign nobody signed off." % page)
+            at, mode, src = g["at"], g["mode"], g["donor"]
+            if at not in live_by_i:
+                raise SystemExit(
+                    "build_student_port.py: the graft %r anchors on live "
+                    "template node %s, which is not in Design's live "
+                    "template. Design has redrawn it; re-anchor the graft "
+                    "rather than dropping it." % (g["why"][:60], at))
+            if src not in donor_by_i:
+                raise SystemExit(
+                    "build_student_port.py: the graft %r copies donor node "
+                    "%s, which is not in the amended delivery. The delivery "
+                    "moved; re-anchor the graft." % (g["why"][:60], src))
+            sub = _omit(json.loads(json.dumps(donor_by_i[src])),
+                        g.get("omit") or (), g["why"])
+            sub = _renumber(sub)
+            target = live_by_i[at]
+            if mode in ("append", "prepend"):
+                kids = target.setdefault("c", [])
+                kids.insert(len(kids) if mode == "append" else 0, sub)
+            elif mode in ("replace", "after"):
+                parent = parent_of.get(id(target))
+                if parent is None:
+                    raise SystemExit(
+                        "build_student_port.py: the graft %r asks to %s live "
+                        "node %s, which is a template ROOT and has no parent "
+                        "to hold the result." % (g["why"][:60], mode, at))
+                kids = parent["c"]
+                pos = kids.index(target)
+                if mode == "replace":
+                    kids[pos] = sub
+                else:
+                    kids.insert(pos + 1, sub)
+            else:
+                raise SystemExit(
+                    "build_student_port.py: the graft %r has mode %r. It must "
+                    "be replace, append, prepend or after."
+                    % (g["why"][:60], mode))
+            grafted[0] += 1
+
+    # ── attributes Design never wrote ────────────────────────────────────
+    #
+    # ⊕ 22 Aug 2026. See `SET_ATTR` in student_rulings.py — the bench themes
+    # need three surfaces to be nameable in CSS, and they carry no class.
+    #
+    # Refuses to overwrite an attribute Design already wrote, for the same
+    # reason `SET_ON` refuses to overwrite a handler: the page would still look
+    # and gate exactly right while one of Design's own values had been
+    # silently replaced.
+    attrs = dict(student_rulings.SET_ATTR.get(page, {}))
+    attred = [0]
+
+    def paint(node):
+        if not isinstance(node, dict):
+            return
+        idx = node.get("i")
+        if idx in attrs:
+            bag = node.setdefault("a", {})
+            for k, v in attrs[idx].items():
+                if k in bag:
+                    raise SystemExit(
+                        "build_student_port.py: the theme ruling for %r sets "
+                        "%s=%r on template node %s, and Design already gives "
+                        "that node %s=%r. Re-anchor rather than overwriting "
+                        "one of Design's own values."
+                        % (page, k, v, idx, k, bag[k]))
+                bag[k] = v
+            attrs.pop(idx)
+            attred[0] += 1
+        for kid in node.get("c") or []:
+            paint(kid)
+
+    for root in roots:
+        paint(root)
+    if attrs:
+        raise SystemExit(
+            "build_student_port.py: the theme ruling for %r sets attributes "
+            "on template node(s) %s, and they are not in the template. "
+            "Re-anchor them." % (page, sorted(attrs)))
+
     # ── handlers Design never attached ───────────────────────────────────
     #
     # ⊕ RULED 22 Aug 2026 — P5. See `SET_ON` in student_rulings.py.
@@ -973,7 +1380,8 @@ def apply_rulings(page, logic, roots):
             "(or were pruned out from under it). The ruling stands; re-read "
             "the delivery and re-anchor it." % (page, sorted(want)))
 
-    return logic, roots, len(reps), removed[0], wired[0]
+    return (logic, roots, len(reps), removed[0], wired[0],
+            grafted[0], attred[0])
 
 
 # ── lifting Design's data out of Design's logic ───────────────────────────
@@ -1320,7 +1728,68 @@ def bindings_for(page, tpl):
                         % (page, literal, len(path)))
                 row["d"] = 1
             table.append(row)
+
+    # ── the node-indexed overrides ────────────────────────────────────────
+    #
+    # ⊕ 23 Aug 2026. See `BINDINGS_AT` above for why one node needs addressing
+    # by index instead of by literal. Applied AFTER the literal table, and it
+    # REPLACES whatever row landed on the same path rather than adding a second
+    # — two rows on one path would both fire, in list order, and the page would
+    # show whichever happened to be last.
+    for idx, (literal, key) in sorted(
+            (BINDINGS_AT.get(page) or {}).items()):
+        if key not in values:
+            raise SystemExit(
+                "build_student_port.py: %s — BINDINGS_AT repoints template "
+                "node %s at the key %r, and no literal in BINDINGS claims that "
+                "key. The fixture would then have no value for it and the page "
+                "would throw at mount. Repoint it at a key the literal table "
+                "already defines, or add the literal." % (page, idx, key))
+        path = _path_to_text(tpl["roots"], idx)
+        if path is None:
+            raise SystemExit(
+                "build_student_port.py: %s — BINDINGS_AT names template node "
+                "%s, and there is no such node carrying a single text child. "
+                "It has been pruned, or Design has redrawn it, or the graft "
+                "that brings it in is not applied. Re-anchor it; a silently "
+                "skipped override binds the wrong value to the wrong place."
+                % (page, idx))
+        node = tpl["roots"][path[0]]
+        for i in path[1:]:
+            node = node["c"][i]
+        if node.get("v") != literal:
+            raise SystemExit(
+                "build_student_port.py: %s — BINDINGS_AT expects template node "
+                "%s to read %r and it reads %r. The index has drifted onto a "
+                "different node. Nothing is guessed here: binding on a drifted "
+                "index puts the right value in the wrong place, which is the "
+                "one failure that still looks like a working page."
+                % (page, idx, literal, node.get("v")))
+        table = [r for r in table if r["p"] != path]
+        table.append({"p": path, "k": key})
     return table, values
+
+
+def _path_to_text(roots, index):
+    """The path to the single text child of template node `index`, or None."""
+    found = []
+
+    def walk(node, path):
+        if not isinstance(node, dict):
+            return
+        if node.get("i") == index:
+            kids = [(i, k) for i, k in enumerate(node.get("c") or [])
+                    if isinstance(k, dict)]
+            texts = [(i, k) for i, k in kids if k.get("t") == "#"]
+            if len(kids) == 1 and len(texts) == 1:
+                found.append(path + [texts[0][0]])
+            return
+        for i, kid in enumerate(node.get("c") or []):
+            walk(kid, path + [i])
+
+    for i, root in enumerate(roots):
+        walk(root, [i])
+    return found[0] if len(found) == 1 else None
 
 
 def count_nodes(roots):
@@ -1502,14 +1971,243 @@ def lesson_index():
             "window.MRB_KS3_LESSONS = {\n%s\n};\n" % (len(index), rows)), len(index)
 
 
-def page_html(spec, tpl, roots, bind_table, logic, fixture=False):
+# ── the token bridge: Design's theme tokens → the live page's ────────────
+#
+# ⊕ 22 Aug 2026 — PHASE 2a. Design's six themes move `--b-*`; the live bench,
+# the leaderboard card and the leader's avatar are painted in `--st-*`. This is
+# the join between them, and it is SCOPED to the surfaces `SET_ATTR` names
+# rather than declared at the root — see student_rulings.py for why a root-level
+# remap of `--st-cream` breaks on Chalk.
+#
+# ⚠️ THESE TEN ARE A LIST, NOT A FAMILY SWEEP, AND THE DISTINCTION IS THE
+# WHOLE POINT OF THE RULE. Measured out of the compiled tree rather than read
+# off the markup: inside node 55, excluding the docket subtree at node 91, the
+# `--st-*` tokens in use are these ten colours PLUS `--st-ui`, `--st-display`,
+# `--st-mono`, `--st-r-btn`, `--st-r-frame`, `--st-r-chip`, `--st-shadow-frame`,
+# `--st-accent` and `--st-hatch-b`. The first seven of those are FONTS, RADII
+# AND A SHADOW. A rule that swept "the dark `--st-*` family" would have
+# re-pointed the bench's typeface and its corner radii at a colour, and half of
+# what it caught would not have been a colour at all.
+#
+# ⊕ 23 Aug 2026 — IT WAS EIGHT, AND EIGHT WAS WRONG. THE NINTH AND TENTH ARE
+# `--st-room-text` AND `--st-room-faint`, and the paragraph above used to claim
+# the list was complete. It was not, and the way it was incomplete is worth
+# recording, because the measurement that produced it was run against the
+# MARKUP and these two do not appear there.
+#
+# The bench checklist — "Open it" / "Answer the eight questions" / "Hand it in"
+# — takes its colour from a COMPUTED STRING in Design's logic, not from a style
+# attribute the compiler can see:
+#
+#     color: done ? 'var(--st-room-faint)' : 'var(--st-room-text)',
+#
+# so a sweep of node 55's compiled attributes finds nothing, and the two tokens
+# stayed at their `shared/student-ds.css` defaults on every theme. Those
+# defaults are `#B7AA98` and `#7E7263`, declared "readable text on dark" — FIXED
+# LIGHT VALUES FOR A DARK BENCH. On the five dark themes that is fine and
+# measures 5.55:1 on harbour. On CHALK, the one light theme, the bench ground is
+# `#EFE2CB` and the same fixed light ink lands on it at **1.78:1** — three
+# labels telling a student what to do, in a colour they cannot read. It shipped
+# green because the gate at the time asserted the `--b-*` tokens' own contrast
+# and never asked what the bench's rendered text actually did; `student_themes.py`
+# now walks every text-bearing leaf inside the bench, which is what closes it.
+#
+# ⚠️ `--st-room-text` → `--b-ink` IS NOT A JUDGEMENT CALL. Design's amended
+# delivery redraws this exact checklist, and draws it
+# `color:var(--b-ink)` — `class-view-amendments/source/KS3 Class View.dc.html`,
+# lines 138-140, the three `<li>`s. The bridge is adopting Design's own value
+# for Design's own element, not inferring one.
+#
+# `--st-room-faint` → `--b-muted` IS a judgement call, and a small one. It is
+# the TICKED state — a task the student has finished and no longer needs to
+# read — and Design's amended bench draws no ticked label to copy. `--b-muted`
+# is the theme's only de-emphasis tone, it is where the bridge already sends
+# `--st-room-muted`, and it is asserted at or above AA on all six themes
+# (5.05:1 on chalk, its worst). The alternative — leaving it fixed — reproduces
+# the defect above in the one state a student reaches by making progress.
+#
+# ⚠️ AND THIS IS WHY IT IS A BRIDGE RULE AND NOT A `LOGIC` RULING. The obvious
+# fix is to rewrite that computed string in `student_rulings.py`. It is the
+# wrong one twice over. First, the inline style declares the PROPERTY but its
+# VALUE is a `var()`, so the token resolves from the cascade at the element and
+# a scoped redeclaration reaches it with no `!important` and no rewrite — the
+# opposite of node 266's avatar, where the inline declared a literal and the
+# keyword was load-bearing. Second, `--st-room-text` appears TWICE in that
+# logic, and the second is the recall round's option colour
+# (`ok || chosen ? 'var(--st-cream)' : 'var(--st-room-text)'`), which must NOT
+# move: Design replaces that card wholesale with flashcards in a later unit.
+# The bridge cannot touch it even by accident — MEASURED, not assumed: driving
+# the fixture into the recall round leaves ZERO `[data-bench-surface]` elements
+# on the page, because the round replaces the class view rather than nesting
+# inside it. A `LOGIC` ruling would have had to anchor around that collision by
+# hand; the scope does it for free.
+#
+# ⚠️ AND A SWEEP WOULD HAVE TAKEN THE DOCKET WITH IT. `--st-paper` IS in the
+# list — it is the CTA ink on nodes 74 and 88 — and it is ALSO the background
+# of node 91, the one paper card sitting inside the dark bench. Custom
+# properties inherit, so the bridge reaches it whether or not it was aimed
+# there. Hence the restore two rules down. Mide's brief for this unit said the
+# docket uses none of the eight and that no reset rule was needed; measured, it
+# uses exactly one, and without the restore the docket's ground moves from
+# #FFFDF8 to #FFF7EC on five themes and to #FBF3E6 on Chalk. Small, real, and
+# contrary to the ruling that the docket stays paper and ink on all six.
+#
+# The restore is written as a CAPTURE, not as a value: `--st-docket-paper` is
+# taken from `--st-paper` at the root, OUTSIDE the bench, so the docket follows
+# `shared/student-ds.css` if that file ever changes. Retyping #FFFDF8 here is
+# exactly the kind of restated constant that rots, which is what the brief was
+# guarding against; capturing it is not.
+#
+# ⚠️ `[data-bench-avatar]` IS NOT AN EXEMPTION — IT IS AN INVERSION. Node 266
+# is the leader's avatar disc: `background:var(--st-cream)` carrying `--st-ink`
+# initials, and the only place in the class view where `--st-cream` is a
+# background rather than text. Bridging `--st-cream → var(--b-ink)` is REQUIRED,
+# because on Chalk the card ground goes light #EFE2CB and cream text on it is
+# unreadable — but the same bridge would turn the disc near-black under
+# near-black initials. Inverting gives a cream disc with dark initials on the
+# five dark themes and a dark disc with light initials on Chalk. Legible on all
+# six, and it is the relationship Design draws rather than a special case bolted
+# on beside it.
+#
+# ⚠️ AND IT NEEDS `!important`, WHICH IS NOT DECORATION. Node 266 carries its
+# colours in an INLINE style — `background:var(--st-cream)` and
+# `color:var(--st-ink)` — and an inline declaration outranks any selector.
+# Written without the keyword, both declarations parse, match, and lose, and the
+# page looks exactly as if the rule were there: measured on Chalk before the
+# keyword was added, the disc came out rgb(34,30,27) with rgb(34,30,27)
+# initials — the disc and the letters the same colour, which is the precise
+# defect this rule exists to prevent, shipped under a rule that claims to
+# prevent it. The two declarations are Mide's, verbatim; the keyword is what
+# makes them true.
+#
+# ⚠️ THERE IS DELIBERATELY NO `[data-bench-docket]` RULE BEYOND THE ONE TOKEN IT
+# ACTUALLY USES. `SET_ATTR` names node 91 so a gate has a handle to assert "the
+# docket stays paper and ink on all six themes" against; that gate is a separate
+# unit. Restating the docket's other colours here would pin values it does not
+# reference and would rot the moment Design moved one.
+#
+# CLASS VIEW ONLY. The assignment page has no bench, and emitting these rules
+# into it would move that page's bytes to define selectors it can never match.
+_THEME_BRIDGE = (
+    ":root{--st-docket-paper:var(--st-paper)}"
+    "[data-bench-surface]{"
+    "--st-room-panel:var(--b-ground);"
+    "--st-room-body:var(--b-ink);"
+    # ⊕ 23 Aug 2026 — the ninth and tenth. The bench checklist; see above.
+    "--st-room-text:var(--b-ink);"
+    "--st-room-faint:var(--b-muted);"
+    "--st-room-muted:var(--b-muted);"
+    # ⊕ 23 Aug 2026 — THE ELEVENTH, and the one that hurt the DEFAULT theme.
+    #
+    # `--st-room-line-strong` (#4A4036) draws the unticked checkbox outlines
+    # beside those three labels, the leader card's streak chip and the recall
+    # bar. Measured against the theme grounds it is 1.25:1 on HARBOUR — the new
+    # default — 1.79 on graphite and 7.90 on chalk. A checkbox a student cannot
+    # see, on the theme every student now gets.
+    #
+    # ⚠️ IT WAS NEARLY LEFT OUT ON A "PRE-EXISTING" ARGUMENT, and that argument
+    # is wrong HERE even though it is right about the docket header. It measured
+    # 1.73:1 on the old graphite bench, so the themes did not break it — but
+    # Design's amended bench REDRAWS this element, as
+    # `border:2px solid var(--b-muted)`, which measures 5.05–6.97 across the
+    # six. "Design has not changed it" is what makes a shortfall somebody
+    # else's; Design changing it is what makes it ours. Adopting Design's own
+    # value is not inventing one.
+    #
+    # Found twice, independently, by two agents looking at the same page from
+    # different ends — one measuring tokens, one looking at a screenshot and
+    # asking why the checkboxes were faint.
+    "--st-room-line-strong:var(--b-muted);"
+    "--st-room-line:var(--b-rule);"
+    "--st-room-border:var(--b-edge);"
+    "--st-cream:var(--b-ink);"
+    "--st-ember:var(--b-ember);"
+    "--st-paper:var(--b-cta-ink)}"
+    "[data-bench-docket]{--st-paper:var(--st-docket-paper)}"
+    "[data-bench-avatar]{background:var(--b-ink)!important;"
+    "color:var(--b-ground)!important}"
+)
+
+
+# ── page chrome: espresso, and FIXED on every theme ──────────────────────
+#
+# ⊕ 23 Aug 2026 — PHASE 1a. Design's amended README, change 1, first sentence:
+#
+#     "The near-black ground is gone as a default, and no page chrome is
+#      near-black any more. Page-chrome dark is now espresso #4A3728
+#      (10.4:1 on cream) — top rule, work-row and legend DONE dots."
+#
+# `--pg-strong: #4A3728` is Design's own NEW page token. It is declared exactly
+# once on the built page, in the `:root` block grafted from Design's node 7, so
+# this rule is a reference to Design's value and not a second copy of it — if
+# Design moves espresso, this follows.
+#
+# ⚠️ THIS IS A PAGE RULE, NOT A THEME RULE, AND THAT IS THE POINT. The two
+# dots it paints sit on the CREAM PAGE GROUND, outside `[data-bench-surface]`,
+# which is why they are unreachable from the theme bridge and why they must NOT
+# be reachable from it. `--pg-strong` is a fixed hex on `:root` and no
+# `[data-bench-theme]` rule touches it, so these read #4A3728 on all six themes
+# and on the attribute's absence — asserted, in `student_themes.py`.
+#
+# That fixedness is the safety margin the term spine's `numColor` note already
+# records: page chrome routed through a THEME token would put `--b-ground` on
+# the cream page at about 1.1:1 on Chalk. Espresso on cream is 10.20:1
+# measured, everywhere, unconditionally.
+#
+# ⚠️ AND IT NEEDS `!important`, FOR THE REASON NODE 266 DOCUMENTS. Both dots
+# carry `background:var(--st-ink)` in an INLINE style attribute of Design's
+# own, and an inline declaration outranks any selector. Without the keyword
+# this rule parses, matches and loses, and the page looks exactly as if it were
+# not here. `background-color` rather than the `background` shorthand, so the
+# important-flag covers the one component that is actually being replaced and
+# nothing else.
+#
+# The value the rule REPLACES is `--st-ink`, which the page frame re-points at
+# `--ks3-ink` #221E1B — 15.0:1 on cream. Espresso is 10.20:1. Both clear AA by
+# a wide margin for a graphic mark; this is a tone change, not a legibility fix,
+# and it is Design's tone.
+#
+# ⚑ WHAT IS DELIBERATELY NOT IN HERE. Three other near-black paints survive
+# outside the themed surfaces, and none of them is this unit's:
+#
+#   · the sidebar RECALL card (#15110C) — Design's C2 REPLACES that card
+#     wholesale with the themed flashcards card. It stops existing; it does not
+#     turn espresso.
+#   · the leaderboard's selected week chip (#221E1B) — Design's change 1 says
+#     the week chips take the BENCH THEME, not espresso. That is unfinished
+#     theme work, not page chrome.
+#   · every near-black `color:` on the page — that is `--pg-ink` #221E1B, which
+#     Design's token table lists UNCHANGED at 15.0:1. Body ink is not chrome.
+#
+# CLASS VIEW ONLY, like the bridge above it: the assignment page has no term
+# spine and no work list, so neither selector could ever match there.
+_PAGE_STRONG = (
+    "[data-page-strong]{background-color:var(--pg-strong)!important}"
+)
+
+
+def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
+              versions=None):
     tail = (
         "<script src=\"/shared/%s\"></script>\n"
         "<script>window.__MRB_MOUNT__();</script>\n" % spec["fixture_js"]
     ) if fixture else (
         "<script src=\"%s\"></script>\n" % LIVE_JS_URL
     )
-    return (
+    # ⚠️ EMITTED ON BOTH PAGES, including the fixture, which never reads it.
+    # `student_behaviour.py` and `student_themes.py` both document the fixture
+    # as "the same bytes apart from its banner and its last two script tags",
+    # and that sentence is why they are allowed to measure the fixture and
+    # report on the production page. A tag on one and not the other would make
+    # it false — for a JSON blob no student can see. One line of dead weight on
+    # the fixture is the cheaper side of that trade.
+    dep_map = (
+        "<script>window.__MRB_ASSET_V__=%s;</script>\n"
+        % json.dumps({k: v for k, v in sorted((versions or {}).items())
+                      if k in STAMPED_DEPS or k == LESSON_INDEX_NAME},
+                     separators=(",", ":"))
+    )
+    return stamp_versions((
         # ⚑ THE <title> CARRIES NO CLASS. It used to read
         # `8r/Sc1 · My class · MrBadmusAI` on the production page — one real
         # class's name shipped in a file whose own banner says it holds no
@@ -1533,7 +2231,8 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False):
         "<style>body{margin:0;background:#FBF3E6}"
         "a{color:var(--ks3-accent-text);text-decoration:none}"
         "a:hover{color:var(--ks3-accent-hover)}"
-        "button{font-family:inherit}</style>\n"
+        "button{font-family:inherit}"
+        "%s</style>\n"
         "</head>\n<body>\n"
         "<div id=\"mrb-student\" style=\"background:var(--st-ground);"
         "min-height:100vh\"></div>\n"
@@ -1543,6 +2242,7 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False):
         "<script>\n%s\n</script>\n"
         "<script>\n%s\n</script>\n"
         "%s"
+        "%s"
         "</body>\n</html>\n"
         % (html.escape(spec["title"]),
            (_BANNER_FIXTURE % (spec["page"].capitalize(), spec["out"]))
@@ -1550,6 +2250,10 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False):
            (_BANNER % (spec["page"].capitalize(), LIVE_JS_NAME,
                        spec["fixture_out"])),
            DS_CSS_URL,
+           # ⊕ 22 Aug 2026 — the theme bridge, class view only. See above.
+           # ⊕ 23 Aug 2026 — and the espresso page chrome beside it.
+           (_THEME_BRIDGE + _PAGE_STRONG)
+           if spec["page"] == "class view" else "",
            json.dumps({"roots": roots, "imports": tpl["imports"]},
                       separators=(",", ":")).replace("<", "\\u003c"),
            json.dumps(bind_table, separators=(",", ":")),
@@ -1586,8 +2290,9 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False):
            "    props: {}\n"
            "  });\n"
            "};",
-           tail)
-    )
+           dep_map,
+           tail)),
+        versions or {})
 
 
 def write(path, body):
@@ -1595,6 +2300,90 @@ def write(path, body):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as fh:
         fh.write(body)
+
+
+def _verify_stamps(stamped, pages):
+    """Re-read from disk and refuse to finish if any stamp names other bytes.
+
+    ⚑ THE ORDERING IS THE WHOLE UNIT, so it is asserted rather than commented.
+    A `?v=` naming content that is not the content being served is worse than
+    no `?v=` at all: the page looks fixed, the browser caches the wrong bytes
+    under a URL that will never change again, and every gate stays green. The
+    only way to know the stamp is honest is to hash the file that will actually
+    be deployed, AFTER everything that writes it has run.
+
+    Three checks, and each one has caught a different mistake in rehearsal:
+
+      1. every stamp matches the deployed copy under `mrbadmus_site/shared/`;
+      2. every stamp matches the repo-root copy under `shared/`, where one
+         exists — the two trees are round-tripped and must not disagree;
+      3. no `/shared/…` reference survives in a built page WITHOUT a stamp,
+         so adding a fourth asset to `page_html` and forgetting the map is a
+         red build rather than a silent hole four hours wide.
+    """
+    bad = []
+    for name, want in sorted(stamped.items()):
+        for tree in (SHARED_OUT, "shared"):
+            path = os.path.join(tree, name)
+            if not os.path.exists(path):
+                # Only the deployed copy of a dependency this build does not
+                # write can legitimately be absent — a bare `build_student_port`
+                # run in a tree where `generate_site_v5.py` has never run.
+                if tree == SHARED_OUT and name in STAMPED_DEPS:
+                    print("        ⚠️  %s/%s is missing — %s has not run here, "
+                          "so the stamp could not be checked against the "
+                          "deployed copy" % (tree, name, "generate_site_v5.py"))
+                    continue
+                bad.append("%s/%s does not exist, but a page stamps it "
+                           "?v=%s" % (tree, name, want))
+                continue
+            with open(path, "rb") as fh:
+                got = asset_hash(fh.read())
+            if got != want:
+                bad.append(
+                    "%s hashes %s but the pages shipped ?v=%s — the stamp "
+                    "names content that is not what will be served. Run "
+                    "`python3 build_all.py`, which publishes shared/ before "
+                    "this build stamps it." % (path, got, want))
+
+    # ⚠️ WRITTEN AS AN OPTIONAL GROUP, NOT A NEGATIVE LOOKAHEAD, and the first
+    # draft was the lookahead. `/shared/[\w.-]+(?!\?v=)` is satisfied by
+    # BACKTRACKING one character: on the correctly stamped
+    # `/shared/student-ds.css?v=1a2b3c4d` it matched `/shared/student-ds.cs`,
+    # saw that `s` is not `?v=`, and reported a perfectly stamped page as
+    # unstamped — twelve times. A check that cannot be trusted when it is red
+    # is no better than one that cannot be trusted when it is green.
+    #
+    # Matching the stamp OPTIONALLY and testing whether it was captured has no
+    # such ambiguity: `?` is not in the character class, so the greedy run
+    # stops exactly at the end of the filename every time.
+    #
+    # `finditer` rather than a lookup of the first occurrence: a page linking
+    # the same asset twice, once stamped and once not, must report the bad one.
+    linked = re.compile(r'/shared/[A-Za-z0-9._/-]+(\?v=[0-9a-f]+)?')
+    for tree in (SITE_OUT, MIRROR_OUT):
+        for spec in pages:
+            for key in ("out", "fixture_out"):
+                path = os.path.join(tree, spec[key])
+                if not os.path.exists(path):
+                    continue
+                page = open(path, encoding="utf-8").read()
+                for m in linked.finditer(page):
+                    if m.group(1):
+                        continue
+                    bad.append(
+                        "%s links %s with no cache-bust stamp, at offset %d. "
+                        "Every asset a student page names must be in the "
+                        "version map — see STAMPED_DEPS and build()."
+                        % (path, m.group(0), m.start()))
+    if bad:
+        raise SystemExit(
+            "build_student_port.py: the cache-bust stamps are not honest.\n  "
+            + "\n  ".join(bad))
+    print("     ✅ cache-bust: %d asset(s) stamped from their own content, "
+          "each re-hashed from disk — %s"
+          % (len(stamped), ", ".join("%s=%s" % (n, v)
+                                     for n, v in sorted(stamped.items()))))
 
 
 def build():
@@ -1629,6 +2418,87 @@ def build():
     print("     ✅ %-24s %7d bytes, %d sheet(s), linked and cached once"
           % (DS_CSS_NAME, len(css), len(sizes)))
 
+    # ⚑ THE VERSION MAP IS BUILT FROM CONTENT, and every asset it names is
+    # PUBLISHED BEFORE THE PAGE THAT NAMES IT IS WRITTEN. Both halves matter.
+    versions = {DS_CSS_NAME: asset_hash(css)}
+    stamped = dict(versions)   # every hash any page shipped — see _verify_stamps
+
+    # ── the runtime is mirrored HERE, not left to the KS4 generator ──────
+    #
+    # ⚑ THIS COST A RED GATE. Both pages load `/shared/student-runtime.js`, and
+    # until now nothing in this build put it there — `generate_site_v5.py`
+    # glob-copies `shared/` into the output, so the served copy was whatever
+    # the last full site build happened to leave. Editing the runtime and
+    # re-running this build therefore produced a page that loaded the OLD
+    # runtime, and the failure arrived as `R.applyBindings is not a function`
+    # from a file that plainly contained `applyBindings`.
+    #
+    # A build that emits a page depending on a file it does not publish is a
+    # build with a hidden prerequisite. This one publishes it.
+    #
+    # ⊕ 23 Aug 2026 — MOVED, from the last thing this build did to one of the
+    # first, and the move is the whole point of the cache-bust unit rather
+    # than tidying.
+    #
+    # A stamp that names the WRONG content is worse than no stamp, because it
+    # looks fixed. Written where it used to be, the runtime, the live source
+    # and the lesson index were all published AFTER the pages loop — so a
+    # stamp computed inside that loop from `mrbadmus_site/shared/` would have
+    # read the PREVIOUS build's copy and pinned the page to bytes this build
+    # was about to overwrite. The page would then carry `?v=<yesterday>` and
+    # be served today's file under it: the four-hour skew, made permanent and
+    # given a green build.
+    #
+    # `ks3-lesson-urls.js` is the sharpest case, because this build GENERATES
+    # it — there is no source file to fall back on, so the only correct hash is
+    # of the bytes about to be written.
+    #
+    # Two independent guards, and neither is a convention:
+    #   · publish first, stamp second — the ordering above;
+    #   · `_verify_stamps()` at the end of build(), which re-reads every file
+    #     from disk and refuses to finish if any hash disagrees with the stamp
+    #     that shipped.
+    idx_js, n_lessons = lesson_index()
+    for out in (os.path.join("shared", LESSON_INDEX_NAME),
+                os.path.join(SHARED_OUT, LESSON_INDEX_NAME)):
+        with open(out, "w", encoding="utf-8") as fh:
+            fh.write(idx_js)
+    versions[LESSON_INDEX_NAME] = asset_hash(idx_js)
+    print("     ✅ %-24s %7d bytes  (%d KS3 lesson(s), every page checked on "
+          "disk)" % (LESSON_INDEX_NAME, len(idx_js), n_lessons))
+
+    for name in (RUNTIME_JS_NAME, LIVE_JS_NAME):
+        src = os.path.join("shared", name)
+        if not os.path.exists(src):
+            raise SystemExit(
+                "build_student_port.py: shared/%s does not exist, and both "
+                "pages load it. Without it they mount nothing at all — which "
+                "is the correct failure and still a failure." % name)
+        text = open(src, encoding="utf-8").read()
+        with open(os.path.join(SHARED_OUT, name), "w", encoding="utf-8") as fh:
+            fh.write(text)
+        versions[name] = asset_hash(text)
+        print("     ✅ %-24s %7d bytes  (%s)"
+              % (name, len(text),
+                 "STUB — throws; the live data source is not wired yet"
+                 if "not wired yet" in text else "published, not assumed"))
+
+    # The five `student-live.js` loads for itself. These four are published by
+    # `generate_site_v5.py`'s glob copy of `shared/`, not by this build, so
+    # they are hashed from the SOURCE tree — the one input both generators
+    # agree on, and the same choice `build_ks3.asset_versions` documents at
+    # length. `_verify_stamps()` then checks the deployed copy really does
+    # match, so the agreement is asserted rather than assumed.
+    for name in STAMPED_DEPS:
+        src = os.path.join("shared", name)
+        if not os.path.exists(src):
+            raise SystemExit(
+                "build_student_port.py: shared/%s does not exist, and "
+                "student-live.js loads it on every student page. A missing "
+                "dependency is a blank class page." % name)
+        with open(src, "rb") as fh:
+            versions[name] = asset_hash(fh.read())
+
     for spec in PAGES:
         tpl = tpls.get(spec["page"])
         if not tpl:
@@ -1641,8 +2511,11 @@ def build():
         # template and then pruning would leave every path after node 275
         # pointing one sibling to the left — the class name would appear where
         # the term label belongs, and it would look like a data bug.
-        logic, ruled_roots, n_rep, n_pruned, n_wired = apply_rulings(
-            spec["page"], tpl["logic"], tpl["roots"])
+        donor_tpl = tpls.get(DONOR_PAGE)
+        (logic, ruled_roots, n_rep, n_pruned, n_wired,
+         n_grafted, n_attred) = apply_rulings(
+            spec["page"], tpl["logic"], tpl["roots"],
+            donor=(donor_tpl or {}).get("roots"))
         ruled_tpl = {"roots": ruled_roots, "imports": tpl["imports"]}
 
         # ⚠️ THE BINDINGS ARE READ BEFORE THE SEAM, not after. They used to
@@ -1657,19 +2530,29 @@ def build():
             spec, logic, spec["page"], bind_values)
         roots = scrub_roots(ruled_roots, bind_table)
 
-        body = page_html(spec, tpl, roots, bind_table, logic, fixture=False)
-        for out_dir in (SITE_OUT, MIRROR_OUT):
-            write(os.path.join(out_dir, spec["out"]), body)
-
-        fix_body = page_html(spec, tpl, roots, bind_table, logic, fixture=True)
-        for out_dir in (SITE_OUT, MIRROR_OUT):
-            write(os.path.join(out_dir, spec["fixture_out"]), fix_body)
-
+        # ⚑ THE FIXTURE'S DATA FILE IS WRITTEN BEFORE THE PAGE THAT LINKS IT,
+        # for the reason the version map's own comment gives: the fixture page
+        # carries `student-fixture-<page>.js?v=<hash>`, and the only honest
+        # hash is of the bytes this build is about to write. Computed after,
+        # it would name the previous run's example data.
         js = fixture_js(spec, spec["page"], data_literals, bind_values)
         for out_dir in (SHARED_OUT, "shared"):
             with open(os.path.join(out_dir, spec["fixture_js"]), "w",
                       encoding="utf-8") as fh:
                 fh.write(js)
+        page_versions = dict(versions)
+        page_versions[spec["fixture_js"]] = asset_hash(js)
+        stamped.update(page_versions)
+
+        body = page_html(spec, tpl, roots, bind_table, logic, fixture=False,
+                         versions=page_versions)
+        for out_dir in (SITE_OUT, MIRROR_OUT):
+            write(os.path.join(out_dir, spec["out"]), body)
+
+        fix_body = page_html(spec, tpl, roots, bind_table, logic, fixture=True,
+                             versions=page_versions)
+        for out_dir in (SITE_OUT, MIRROR_OUT):
+            write(os.path.join(out_dir, spec["fixture_out"]), fix_body)
 
         # ⚑ ASSERTED, NOT ASSUMED — and precise about what is asserted.
         # ── what this build GUARANTEES, and what it only reports ─────────
@@ -1722,9 +2605,11 @@ def build():
 
         if n_rep or n_pruned or n_wired:
             print("        ⊕ rulings: %d ruled edit(s) to Design's logic, "
-                  "%d template subtree(s) pruned, %d handler(s) attached — "
-                  "from student_rulings.py, not from a hand edit to the built "
-                  "page" % (n_rep, n_pruned, n_wired))
+                  "%d template subtree(s) pruned, %d handler(s) attached, "
+                  "%d subtree(s) grafted from the amendments, %d node(s) "
+                  "named for the themes — from student_rulings.py, not from "
+                  "a hand edit to the built page"
+                  % (n_rep, n_pruned, n_wired, n_grafted, n_attred))
         print("     ✅ %-24s %7d bytes  (%d template node(s), "
               "%d chars of Design's logic, 0 bytes of data)"
               % (spec["out"], len(body), count_nodes(roots), len(logic)))
@@ -1739,41 +2624,7 @@ def build():
                   "rather than initialisers — see LIFTS and REWRITES"
                   % n_welded)
 
-    # ── the runtime is mirrored HERE, not left to the KS4 generator ──────
-    #
-    # ⚑ THIS COST A RED GATE. Both pages load `/shared/student-runtime.js`, and
-    # until now nothing in this build put it there — `generate_site_v5.py`
-    # glob-copies `shared/` into the output, so the served copy was whatever
-    # the last full site build happened to leave. Editing the runtime and
-    # re-running this build therefore produced a page that loaded the OLD
-    # runtime, and the failure arrived as `R.applyBindings is not a function`
-    # from a file that plainly contained `applyBindings`.
-    #
-    # A build that emits a page depending on a file it does not publish is a
-    # build with a hidden prerequisite. This one publishes it.
-    idx_js, n_lessons = lesson_index()
-    for out in (os.path.join("shared", LESSON_INDEX_NAME),
-                os.path.join(SHARED_OUT, LESSON_INDEX_NAME)):
-        with open(out, "w", encoding="utf-8") as fh:
-            fh.write(idx_js)
-    print("     ✅ %-24s %7d bytes  (%d KS3 lesson(s), every page checked on "
-          "disk)" % (LESSON_INDEX_NAME, len(idx_js), n_lessons))
-
-    for name in (RUNTIME_JS_NAME, LIVE_JS_NAME):
-        src = os.path.join("shared", name)
-        if not os.path.exists(src):
-            raise SystemExit(
-                "build_student_port.py: shared/%s does not exist, and both "
-                "pages load it. Without it they mount nothing at all — which "
-                "is the correct failure and still a failure." % name)
-        text = open(src, encoding="utf-8").read()
-        with open(os.path.join(SHARED_OUT, name), "w", encoding="utf-8") as fh:
-            fh.write(text)
-        print("     ✅ %-24s %7d bytes  (%s)"
-              % (name, len(text),
-                 "STUB — throws; the live data source is not wired yet"
-                 if "not wired yet" in text else "published, not assumed"))
-
+    _verify_stamps(stamped, PAGES)
 
     print("\n     → %s/  and  %s/  (mirror)" % (SITE_OUT, MIRROR_OUT))
     print("\n     ⚠️  *-ported.html carry NO data and do not mount themselves; "

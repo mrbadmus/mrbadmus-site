@@ -1,0 +1,11 @@
+#!/bin/sh
+# ⊕ MRB-277 — the push guard. See `prepush_gate.py` and `gate_registry.py`.
+#
+# Wired with:   git config core.hooksPath hooks
+# so the hook is VERSION CONTROLLED. A hook in .git/hooks/ exists on exactly
+# one machine, is invisible to review, and disappears on a fresh clone — which
+# makes it the wrong place for a rule the repo is meant to keep.
+#
+# It refuses a push while any registered gate is red, and the only way past it
+# is a `GATE-OVERRIDE:` line in the commit message naming the gate.
+exec python3 prepush_gate.py --check

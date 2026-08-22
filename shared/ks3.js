@@ -5644,6 +5644,52 @@
     MOTION_LISTENERS.push(fn);
   }
 
+  /* ⊕ MRB-277 — the narrow-viewport half of `data-format-narrow`.
+
+     `setCount` is called with the live numbers and then forgets them, so a
+     student who ROTATES the phone would keep whichever form was chosen at
+     the last interaction until the next one. These remember the last call
+     per element and replay it when the query flips, which is the only way
+     the compact form can be correct at both orientations without the
+     instruments each learning about viewports.
+
+     360px rather than 320: the readout has to fit the narrowest phone in
+     use, and the breakpoint is the width at which the full sentence stops
+     fitting rather than the width of any particular device. */
+  var NARROW_Q = "(max-width: 360px)";
+  var narrowCounters = [];
+
+  function isNarrowViewport() {
+    return !!(window.matchMedia && window.matchMedia(NARROW_Q).matches);
+  }
+
+  function rememberNarrowCounter(sec, el, n, extra) {
+    for (var i = 0; i < narrowCounters.length; i++) {
+      if (narrowCounters[i].el === el) {
+        narrowCounters[i].n = n;
+        narrowCounters[i].extra = extra;
+        return;
+      }
+    }
+    narrowCounters.push({ sec: sec, el: el, n: n, extra: extra });
+  }
+
+  if (window.matchMedia) {
+    var narrowMql = window.matchMedia(NARROW_Q);
+    var replayNarrow = function () {
+      // A copy, because `setCount` calls `rememberNarrowCounter` again.
+      var all = narrowCounters.slice(0);
+      for (var i = 0; i < all.length; i++) {
+        setCount(all[i].sec, all[i].n, all[i].extra);
+      }
+    };
+    if (narrowMql.addEventListener) {
+      narrowMql.addEventListener("change", replayNarrow);
+    } else if (narrowMql.addListener) {
+      narrowMql.addListener(replayNarrow);
+    }
+  }
+
   /* The block head's live progress readout. Three authored shapes — a count
      ("3 of 6 decided"), a two-state label ("Meter fitted") and a count with
      a bespoke zero ("All three claims on" → "2 switched off") — one element
@@ -5652,6 +5698,24 @@
     var el = sec && sec.querySelector("[data-count]");
     if (!el) { return; }
     var fmt = el.getAttribute("data-format");
+    /* ⊕ MRB-277 — `data-format-narrow`, the COMPACT form, and it is the
+       mirror of `data-zero` / `data-full` / `data-format-one` rather than a
+       fifth shape. Measured at 320px, c2-02's readout — "8 of 8 tests left ·
+       0 of 6 decided", 33 characters of 15px mono at `flex: 0 0 auto` — put
+       the page 342px wide and made it scroll sideways.
+
+       ⚖️ RULED (Mide, 21 Aug 2026): SHORTEN THE FORMAT, DO NOT WRAP IT. A
+       wrapped mono readout changes height as its numbers change, so the
+       block would jump under the student's finger while they were reading
+       it. What the counter SAYS at any width is the author's sentence; only
+       which of the author's two sentences is chosen depends on the viewport.
+
+       Opt-in, so all 102 other counters are byte-identical, and read BEFORE
+       the `extra` substitution below so the compact form carries the same
+       live numbers as the full one. */
+    var narrow = el.getAttribute("data-format-narrow");
+    if (fmt && narrow && isNarrowViewport()) { fmt = narrow; }
+    if (narrow) { rememberNarrowCounter(sec, el, n, extra); }
     // ⊕ C2. `data-zero` is opt-in, so every shipped counter still opens on
     // its own "0 of 6 decided" and only c2-01's reads a sentence at zero.
     var zero = el.getAttribute("data-zero");

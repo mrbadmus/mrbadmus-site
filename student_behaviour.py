@@ -26,6 +26,39 @@ constant, because a constant is a claim about the past.
 ⚠️ EVERY DRIVE ENDS IN AN ASSERTION ABOUT VISIBLE TEXT, not about internal
 state. A test that reads `logic.state` would pass on a page whose render is
 broken, which is the failure this exists to catch.
+
+── the SECOND reference, and why it is not an oracle ────────────────────
+
+Design has since delivered AMENDMENTS to the class view, vendored under
+`docs/ks3/design-reference/class-view-amendments/`. It is tempting to point the
+oracle at the newer file and be done. That is not available, and the reason is
+measured rather than assumed:
+
+  · the amended delivery carries DIFFERENT SAMPLE DATA. Its hero reads
+    `WELCOME BACK, AY … SCIENCE` where the original reads
+    `WELCOME BACK, AYO … BIOLOGY`; its bench reads
+    `Breathing and gas exchange / 4 questions` where the original reads
+    `Cells & microscopy / Eight questions`.
+  · the proof that this is DATA and not DESIGN is Design's own markup. Design
+    marked the hero `data-port-region="hero"` and gave it NO
+    `data-port-change` — Design stating, in the file, that the hero was not
+    amended — and its text differs anyway. A region Design did not touch
+    cannot have diverged for any reason except its data.
+
+So the port's rendered text can never be compared to the amended delivery's
+rendered text: the comparison would report a data difference as a defect, on
+every drive, forever. The original delivery stays the oracle.
+
+What the merge legitimately ADDS to the port is Design's new CHROME — words
+like `FLASHCARDS`, `BENCH THEME`, `Practise recall` — which do not vary with
+data. `AMENDED_ADDITIONS` is the register for exactly those, and it is the
+EXACT MIRROR of `RULED_DIVERGENCE`:
+
+    RULED_DIVERGENCE   strips a span out of DESIGN's text  (the port removed it)
+    AMENDED_ADDITIONS  strips a span out of the PORT's text (the port gained it)
+
+Everything outside a registered span stays under the same byte-for-byte
+comparison against the original delivery it has always been under.
 """
 
 import json
@@ -48,10 +81,19 @@ SITE = "mrbadmus_site"
 # driven here is Design's markup, Design's logic and Design's data, on our
 # runtime — which is exactly what this gate was always driving. The seam moved
 # the data out of the page; it did not move it out of the comparison.
+#
+# `amended_root` / `amended` are OPTIONAL and name Design's amended delivery for
+# that page — a second reference, never an oracle (see the module docstring).
+# Their ABSENCE is meaningful and is the normal case: it says this page has no
+# amended delivery, and every line of the additions machinery below must treat
+# it as "skip", not as "missing file". The assignment has no amendments, so it
+# carries neither key and never reaches any of it.
 PAIRS = [
     dict(name="class view",
          design="standalone/MrBadmusAI Class View.html",
-         ported="student/class-fixture.html"),
+         ported="student/class-fixture.html",
+         amended_root="docs/ks3/design-reference/class-view-amendments",
+         amended="standalone/ks3-class-view-bench-open.html"),
     dict(name="assignment",
          design="standalone/MrBadmusAI Assignment.html",
          ported="student/assignment-fixture.html"),
@@ -104,6 +146,39 @@ DRIVES = {
          sum([[("opt", 0), ("click", "Check"), ("click", "Next question")]
               for _ in range(6)], [])),
         ("recall · back to the class", [("click", "Recall"), ("click", "My class")]),
+        # ⊕ 23 Aug 2026 — PHASE 1b. Two states of Design's account sheet, and
+        # they are the only drives on this page that reach the theme picker.
+        #
+        # `Settings` is pressed rather than the avatar, deliberately: the
+        # avatar toggles the header dropdown on our page (Design's amended
+        # header has no dropdown, so Design wires the avatar to the sheet
+        # instead), and the control that opens the sheet on BOTH files is this
+        # one. A drive has to work on Design's file or it is reported as this
+        # file's bug — see `run()`.
+        ("Settings opens the account sheet", [("click", "Settings")]),
+        #
+        # ⚠️ AND THERE IS NO DRIVE HERE THAT PRESSES A SWATCH, WHICH IS A
+        # LIMIT OF THIS GATE RATHER THAN AN OMISSION. It was written, run, and
+        # taken back out:
+        #
+        #     ("a theme swatch is picked",
+        #      [("click", "Settings"), ("click", "CHALK")]),
+        #
+        # `run()` requires every step to be performable on DESIGN'S ORIGINAL
+        # file — a step that only works on the port is reported as this file's
+        # bug, deliberately, because otherwise a typo in a label reads as a
+        # behavioural divergence. Design's original has no picker, so it has no
+        # `CHALK`, and the drive failed exactly as designed with "the drive
+        # does not work on Design's file".
+        #
+        # That generalises: **no control this port GAINS from the amendments
+        # can ever be pressed by this gate**, only observed. `Settings` can be
+        # pressed because Design's original has one too (dead there, live
+        # here). The six swatches are asserted to EXIST as controls, in
+        # `AMENDED_CONTROLS`; what happens when one is pressed is measured by
+        # `student_themes.py`, which drives the port alone and needs no oracle
+        # because a colour is checked against Design's stated palette rather
+        # than against Design's file.
     ],
     "assignment": [
         ("an option is selected but not confirmed", [("opt", 0)]),
@@ -183,6 +258,26 @@ _CLICK_CONTAINS = """(function (needle) {
 # What is compared after every drive. Visible text and the control census —
 # text catches a wrong value, the census catches a control that appeared or
 # vanished when it should not have.
+#
+# `regions` is the third reading, and it is the one an `AMENDED_ADDITIONS` entry
+# is checked against. Design's amended delivery annotates its own surfaces with
+# `data-port-region`, and where it changed one, `data-port-change` says so in
+# Design's words. Reading them here rather than grepping the file means an
+# addition is checked against what a RENDERED region actually contains, in a
+# named state, which is the only thing a student ever sees.
+#
+# ⚠️ AN EMPTY MAP IS THE NORMAL CASE, NOT AN ERROR, and code downstream must
+# never read `{}` as a failure to measure. Counted: the ORIGINAL delivery and
+# both fixtures carry ZERO `data-port-region` markers — the markers are new,
+# they exist only on the amended delivery, and there they number nine visible at
+# rest out of fourteen drawn (the account sheet, the flashcards overlay, the
+# recall round, the done bench and the reward slot sit behind a conditional).
+# So on the oracle and on the port this reads `{}` today, and will keep reading
+# `{}` until the merge lands Design's markers on our markup too.
+#
+# Hidden nodes are dropped here for the same reason they are dropped from the
+# control census: `innerText` of a `display:none` subtree is empty anyway, and a
+# region that is drawn but not on screen is not a region a student has reached.
 _STATE = r"""(function () {
   var r = document.querySelector('.rd[data-mode="ks3"]');
   if (!r) { return JSON.stringify({error: 'no design root'}); }
@@ -196,7 +291,26 @@ _STATE = r"""(function () {
     error: '',
     text: (r.innerText || '').replace(/\s+/g, ' ').trim(),
     nodes: r.querySelectorAll('*').length,
-    controls: ctl
+    controls: ctl,
+    regions: (function () {
+      var out = {};
+      r.querySelectorAll('[data-port-region]').forEach(function (e) {
+        var cs = getComputedStyle(e);
+        if (cs.display === 'none' || cs.visibility === 'hidden') { return; }
+        var c = [];
+        e.querySelectorAll('button,a').forEach(function (x) {
+          var xs = getComputedStyle(x);
+          if (xs.display === 'none' || xs.visibility === 'hidden') { return; }
+          c.push((x.innerText || '').replace(/\s+/g, ' ').trim());
+        });
+        out[e.getAttribute('data-port-region')] = {
+          change: e.getAttribute('data-port-change') || '',
+          text: (e.innerText || '').replace(/\s+/g, ' ').trim(),
+          controls: c
+        };
+      });
+      return out;
+    })()
   });
 })()"""
 
@@ -251,13 +365,52 @@ def run_one(cdp, root, path, drives):
     return out
 
 
+def _amended_wanted(pair):
+    """Whether Design's amended delivery has to be driven for this page.
+
+    Two independent reasons not to, and both are ordinary rather than
+    exceptional:
+
+      · the page has no amended delivery at all — the assignment carries
+        neither `amended_root` nor `amended`, and never will unless Design
+        amends it;
+      · the page has one, and NOTHING IS REGISTERED against it. An inert
+        registry must not cost a browser launch. This gate already launches
+        four (two pages × oracle and port) and each costs seconds; a third per
+        page, to drive a file whose findings nothing would consult, would make
+        the run slower for no reading at all.
+
+    ⚠️ The second clause is what keeps this change genuinely invisible today.
+    With both registries empty the amended file is never served, never loaded
+    and never measured, so the run is byte-for-byte the run it was before the
+    mechanism existed — which is the only honest way to add a gate to a green
+    tree.
+    """
+    if not pair.get("amended") or not pair.get("amended_root"):
+        return False
+    name = pair["name"]
+    # ⊕ 23 Aug 2026 — omissions count too, and for the same reason additions
+    # do: an omission that is never checked against Design's amended delivery
+    # is a claim about a file nobody opened.
+    return bool(AMENDED_ADDITIONS.get(name) or AMENDED_CONTROLS.get(name)
+                or AMENDED_OMISSIONS.get(name))
+
+
 def run(cdp):
-    rows, problems = [], []
+    # The self-proof first, so a machinery that cannot see never gets as far as
+    # reporting clean — the same ordering `student_parity.py` uses for its
+    # count scan, and for the same reason.
+    rows, problems = _prove_additions()
     for pair in PAIRS:
         name = pair["name"]
         drives = DRIVES[name]
         d = run_one(cdp, REF, pair["design"], drives)
         g = run_one(cdp, SITE, pair["ported"], drives)
+        amended_states = None
+        if _amended_wanted(pair):
+            amended_states = run_one(cdp, pair["amended_root"],
+                                     pair["amended"],
+                                     AMENDED_DRIVES.get(name, []))
         seen = set()
 
         for label, _steps in drives:
@@ -294,20 +447,56 @@ def run(cdp):
                 name, ds["controls"], gs["controls"], problems, seen)
             rows.extend(ctl_rows)
 
-            same_text = d_text == gs["text"]
-            same_ctl = d_ctl == gs["controls"]
+            # ⚑ THE TWO MECHANISMS COMPOSE, AND THE ORDER IS THIS WAY ROUND.
+            # Design's side loses its ruled spans first; the port's side then
+            # loses its registered additions. They never touch the same text —
+            # one edits `d_text`, the other `g_text` — so a page that both
+            # removed something Design drew AND gained something Design drew
+            # later ends up with two shortened strings that are still held to
+            # byte-for-byte equality everywhere else.
+            #
+            # ⚠️ `_apply_additions` is handed `ds["text"]`, the ORACLE's text
+            # BEFORE the ruled spans came out of it, and that is deliberate: it
+            # asks "was this already in Design's original?", and a span that
+            # was ruled away is still something Design's original said.
+            g_text, add_rows = _apply_additions(
+                name, ds["text"], gs["text"], gs.get("regions") or {},
+                amended_states, problems, seen)
+            rows.extend(add_rows)
+
+            g_ctl, add_ctl_rows = _apply_additions_controls(
+                name, ds["controls"], gs["controls"], amended_states,
+                problems, seen)
+            rows.extend(add_ctl_rows)
+
+            # ⊕ 23 Aug 2026 — PHASE 1c. Strips nothing from either side; it
+            # only records what the registered omissions look like on this
+            # drive. `gs["text"]` and not `g_text`: an omission asks whether
+            # the span is on the PAGE, and reading the already-stripped copy
+            # would ask whether it survived a strip that never targets it.
+            _apply_omissions(name, ds["text"], gs["text"],
+                             gs.get("regions") or {}, amended_states,
+                             problems, seen)
+
+            same_text = d_text == g_text
+            same_ctl = d_ctl == g_ctl
             ok = same_text and same_ctl
             if ok:
                 rows.append((name, label, "PASS",
                              "%d node(s), %d control(s), text identical"
-                             % (gs["nodes"], len(gs["controls"]))))
+                             % (gs["nodes"], len(g_ctl))))
             else:
+                # ⚠️ THE DIFF IS TAKEN ON THE STRIPPED PAIR, not on the raw
+                # readings, because the stripped pair is what was compared.
+                # Reporting the raw texts here would point at the first
+                # REGISTERED span as though it were the defect, and send
+                # whoever reads it to re-litigate a ruling that is working.
                 bits = []
                 if not same_text:
-                    bits.append(_first_diff(ds["text"], gs["text"]))
+                    bits.append(_first_diff(d_text, g_text))
                 if not same_ctl:
-                    only_d = [c for c in ds["controls"] if c not in gs["controls"]]
-                    only_g = [c for c in gs["controls"] if c not in ds["controls"]]
+                    only_d = [c for c in d_ctl if c not in g_ctl]
+                    only_g = [c for c in g_ctl if c not in d_ctl]
                     bits.append("controls only in Design: %s; only in port: %s"
                                 % (only_d[:3], only_g[:3]))
                 problems.append("%s — %r diverges: %s"
@@ -315,6 +504,8 @@ def run(cdp):
                 rows.append((name, label, "FAIL", "; ".join(bits)[:110]))
 
         rows.extend(_ruled_seen(name, seen, problems))
+        rows.extend(_additions_seen(name, seen, amended_states, problems))
+        rows.extend(_omissions_seen(name, seen, amended_states, problems))
     return rows, problems
 
 
@@ -343,26 +534,31 @@ RULED_DIVERGENCE = {
          r"ON TIME \d+ SCORE \d+ RECALL \d+ "),
         ("the static 40 / 40 / 20 split legend",
          r"ON TIME · 40 SCORE · 40 RECALL · 20 "),
-        # ⊕ RULED 22 Aug 2026 — P7. Settings did nothing at all: an
-        # `<a href="#top">` with no handler, which scrolls to the top and is
-        # read by a student as the app ignoring them. Removed from the port
-        # until Design's theme picker gives it a job.
+        # ⊕ RULED 22 Aug 2026 — P7, and ⊕ RETIRED 23 Aug 2026 — PHASE 1b.
+        # The entry that stood here read:
         #
-        # ⚠️ THIS IS THE FIRST DIVERGENCE THAT REMOVES A WORD FROM THE HEADER
-        # rather than a figure from the leaderboard, so it shows on EVERY
-        # class-view drive rather than on the two that reach the board. That
-        # is why it is registered rather than argued about: the gate asserts
-        # it both ways — still in Design's delivery, and gone from ours — so
-        # if Design ever gives Settings a purpose, the first half fails and
-        # this ruling gets re-read instead of quietly outliving its reason.
+        #     ("the dead Settings control", r"Settings "),
         #
-        # ⚠️ THE TRAILING SPACE IS PART OF THE PATTERN, exactly as it is in the
-        # two entries above. `_apply_ruled` deletes the match from Design's
-        # text; a pattern of `Settings` alone leaves the space that separated
-        # it behind, Design's side reads "Ayo  Sign out" with two spaces
-        # against the port's one, and all nineteen drives go red over
-        # whitespace while reporting a defect that is not there.
-        ("the dead Settings control", r"Settings "),
+        # It is quoted rather than deleted because its own note said what
+        # would end it: *"if Design ever gives Settings a purpose, the first
+        # half fails and this ruling gets re-read instead of quietly
+        # outliving its reason."* Design's amended delivery gives it one —
+        # donor node 22 is the same word as a `<button>` carrying
+        # `onClick={{ openAccount }}` — so the port wires it to the account
+        # sheet and renders it again, exactly as Design's ORIGINAL delivery
+        # does. There is no divergence left to declare.
+        #
+        # ⚠️ AND IT COULD NOT HAVE BEEN LEFT IN "just in case". This registry
+        # strips the match out of DESIGN's text, so a stale entry would have
+        # taken `Settings ` off Design's side while the port had it, and all
+        # nineteen class-view drives would have gone red naming a defect that
+        # is the ruling being satisfied. Its twin in `RULED_CONTROLS` goes in
+        # the same commit for the same reason.
+        #
+        # ⚑ THE SHEET IT NOW OPENS IS NOT REGISTERED HERE. It is not something
+        # the port REMOVED from Design's original; it is something the port
+        # GAINED from Design's amendments, which is the mirror registry —
+        # `AMENDED_ADDITIONS`, below.
     ],
 }
 
@@ -382,8 +578,14 @@ RULED_DIVERGENCE = {
 #
 # Asserted both ways, exactly as the text is: it must be one of Design's
 # controls, and it must not be one of ours.
+# ⊕ RETIRED 23 Aug 2026 — PHASE 1b. This read `{"class view": ["Settings"]}`
+# and its comment said *"It returns when Design's theme picker gives it a job,
+# not before."* The picker gives it one, so `Settings` is a control on both
+# sides again and there is nothing to declare. Kept as an empty map rather
+# than deleted: the mechanism is sound and the next ruling that removes a
+# pressable control needs it.
 RULED_CONTROLS = {
-    "class view": ["Settings"],
+    "class view": [],
 }
 #
 # ⊕ RULED 21 Aug 2026 (MRB-275). The bar shows the TOTAL and omits the split.
@@ -489,6 +691,835 @@ def _ruled_seen(page, seen, problems):
                 "registration is a claim about the past; re-read the delivery."
                 % (page, label))
     return rows
+
+
+# ── AMENDED ADDITIONS — where the port must NOT match Design's ORIGINAL ───
+#
+# ⚑ THE EXACT MIRROR OF `RULED_DIVERGENCE`, AND THE MIRROR IS THE WHOLE IDEA.
+#
+#   RULED_DIVERGENCE   the port REMOVED something Design drew.
+#                      Strip it from DESIGN's text; assert it is still in
+#                      Design's file, and gone from ours.
+#   AMENDED_ADDITIONS  the port GAINED something Design drew LATER.
+#                      Strip it from the PORT's text; assert it is in Design's
+#                      AMENDED delivery and in the port, and that it was NOT in
+#                      Design's ORIGINAL.
+#
+# Both leave everything outside the registered span under the same byte-for-byte
+# comparison against the original delivery. Neither is a licence to stop
+# comparing: a registration is a sentence about ONE span, and it is asserted
+# from every side that could rot.
+#
+# ⚠️ WHY THIS CANNOT SIMPLY BE "COMPARE TO THE AMENDED FILE INSTEAD". Measured,
+# not assumed: the amended delivery carries different SAMPLE DATA (hero
+# `WELCOME BACK, AY … SCIENCE` against the original's `WELCOME BACK, AYO …
+# BIOLOGY`; bench `Breathing and gas exchange / 4 questions` against
+# `Cells & microscopy / Eight questions`). Design's own markup proves it is data
+# and not design — the hero is marked `data-port-region="hero"` with NO
+# `data-port-change`, which is Design saying in the file that the hero was not
+# amended, and its text differs anyway. Repointing the oracle would therefore
+# report Design's sample data as a defect on every drive, permanently, and the
+# only way to keep the gate green after that is to stop comparing text. That is
+# how a behaviour gate turns into a screenshot.
+#
+# What the merge does legitimately add is Design's new CHROME — `FLASHCARDS`,
+# `BENCH THEME`, `Practise recall` — which does not vary with data, which is why
+# a registered addition is a fixed pattern inside a NAMED REGION rather than a
+# free-floating substring of the whole page.
+
+# Which states of the AMENDED delivery to visit, in the shape of `DRIVES`.
+#
+# Several of Design's amendments sit behind a conditional and are simply not on
+# screen at rest — the account sheet, the flashcards overlay, the recall round,
+# the done bench — so an addition NAMES the state that reveals it, and that name
+# has to be a label in here. Ships with `at rest` alone because every addition
+# registered so far is visible without a click; a state lands here when the
+# region that needs it is registered, and not before, because a drive nobody
+# reads is a browser launch nobody needed.
+AMENDED_DRIVES = {
+    "class view": [
+        ("at rest", []),
+        # ⊕ 23 Aug 2026 — PHASE 1b. The account sheet is `if accountOpen` in
+        # Design's amended delivery too, so it is not on screen at rest and a
+        # registration against it would be checked against a region that is
+        # never rendered. `Settings` is Design's own way in: donor node 22 is
+        # a `<button>` carrying `onClick={{ openAccount }}`.
+        ("the account sheet", [("click", "Settings")]),
+    ],
+}
+
+# ── the registry ──────────────────────────────────────────────────────────
+#
+# Entry shape:
+#
+#     label   a phrase a person would use, for the report
+#     region  the `data-port-region` the addition must live inside, on BOTH
+#             the amended delivery and the port
+#     pat     a regex, matched against that region's text
+#     state   the AMENDED_DRIVES label that reveals it (default "at rest")
+#     why     a sentence. Required.
+#
+# ⚠️ `why` IS NOT DECORATION AND IS NOT OPTIONAL. Every entry here removes text
+# from the port's side of the only comparison that can see a runtime defect, and
+# in six months the only defence against somebody widening a pattern to make a
+# red gate green is a sentence saying what the span is FOR. `RULED_DIVERGENCE`
+# earned its reasons in comments; this one carries them in the data, because
+# this registry is expected to grow with the merge and comments drift out of
+# line with entries in a way a required field cannot.
+#
+# ⚠️ THE PATTERN'S TRAILING SPACE MATTERS, for exactly the reason spelled out on
+# `RULED_DIVERGENCE`'s Settings entry: the match is DELETED from the port's
+# text, so a pattern that stops short of the separating space leaves a double
+# space behind, and every drive on the page goes red over whitespace while
+# reporting a defect that is not there.
+#
+# SHIPPING EMPTY, deliberately. The mechanism lands before the merge does, so
+# that the first addition is a one-line registration reviewed on its own rather
+# than a gate rewritten under deadline alongside the change it is meant to
+# police. An empty registry costs nothing at all — `run()` will not even launch
+# a browser for the amended delivery until something is registered.
+# ── ⊕ 23 Aug 2026 — PHASE 1b + 1c. THE FIRST FIVE ENTRIES ────────────────
+#
+# All five live inside `account-sheet`, Design's own region marker, and all
+# five are reached by the drive named `the account sheet` — the sheet is
+# `if accountOpen` on BOTH deliveries and is not on screen at rest.
+#
+# ⚠️ THE PATTERNS TILE THE SHEET EXACTLY, WITH ONE SEPARATOR EACH, and that
+# is arithmetic rather than taste. `_apply_additions` deletes each match from
+# the port's WHOLE text, which reads
+#
+#     …<the page> <ACCOUNT …> <TEACHER …> <TERM …> <BENCH THEME …> <CLAY …>
+#
+# so what has to come out is the sheet PLUS the single space that joins it to
+# the page before it. Entries 1–4 each take their own trailing space, entry 5
+# takes none (it is the end of the string), and entry 1 takes the joining
+# space in front — which is why it alone begins ` ?`. The space is optional
+# because the same pattern is also searched inside the REGION's own text,
+# where the sheet starts at `ACCOUNT` with nothing before it. Get this wrong
+# in either direction and every drive on the page goes red over one space
+# while reporting a defect that is not there.
+#
+# ⚠️ THE NAME IS `\S+` AND EVERYTHING ELSE IS LITERAL. Design's amended sample
+# student is called `AY`, so its sheet reads `AY AY` — a monogram and a name
+# that happen to match. The port binds the monogram to `studentInitials` and
+# the name to `studentFirstName` (see `BINDINGS_AT` in build_student_port.py),
+# and the fixture's student is `Ayo`, so the port reads `AY Ayo`. That is the
+# two deliveries' different SAMPLE DATA, which is the thing this whole
+# mechanism exists to tolerate and the reason it cannot simply compare the two
+# files. One wildcard, on the one value that is data; nothing else is loosened.
+AMENDED_ADDITIONS = {
+    "class view": [
+        dict(label="the account sheet's heading and identity block",
+             region="account-sheet", state="the account sheet",
+             pat=r" ?ACCOUNT AY \S+ 8r/Sc1 · SCIENCE ",
+             why="Design's C1 puts the bench theme control in an account "
+                 "sheet the original delivery has no counterpart for at all. "
+                 "This is its header row and the monogram / name / class line "
+                 "beneath it."),
+        dict(label="the account sheet's TEACHER row",
+             region="account-sheet", state="the account sheet",
+             pat=r"TEACHER Mr Badmus ",
+             why="One of the sheet's two surviving fact rows. The value is "
+                 "bound to `teacherName`, which the live page fills with "
+                 "'Your teacher' because a student has no read policy on a "
+                 "teacher's profile; the fixture shows Design's own value, so "
+                 "the pattern is Design's own bytes."),
+        dict(label="the account sheet's TERM row",
+             region="account-sheet", state="the account sheet",
+             pat=r"TERM Summer · Week 01 / 39 ",
+             why="The sheet's second fact row. Bound to `accountTerm`, "
+                 "composed in student-live.js from the term this page already "
+                 "computes and the teaching week the server reports, so it is "
+                 "not a second opinion about either."),
+        dict(label="the BENCH THEME heading and its note",
+             region="account-sheet", state="the account sheet",
+             pat=r"BENCH THEME Sets the bench, the week spine and the "
+                 r"leaderboard card\. ",
+             why="Design's own words for what the picker does, and the two "
+                 "sentences C1 is named after. Pure chrome — it does not vary "
+                 "with any data."),
+        dict(label="the six theme swatch labels",
+             region="account-sheet", state="the account sheet",
+             pat=r"CLAY CHALK MOSS HARBOUR DAMSON GRAPHITE",
+             why="The six themes, in Design's own order. This is the picker "
+                 "itself: the six bench themes shipped on 23 Aug with no way "
+                 "to choose between them, and these six words are the way."),
+    ],
+}
+
+# ── the same registry, on the CONTROL list ────────────────────────────────
+#
+# ⚑ TEXT AND CONTROLS ARE COMPARED SEPARATELY, AND A REGISTRATION HAS TO REACH
+# BOTH. This is not a new lesson; it is `RULED_CONTROLS`' lesson, read in the
+# mirror. Stripping `FLASHCARDS` out of the port's TEXT does nothing to
+# `gs["controls"]`, which is compared as a plain list — so an addition that a
+# student can press passes the text half and fails the control half, with a
+# message ("controls only in port: ['FLASHCARDS']") that reads like a bug in the
+# port rather than a gap in the registration.
+#
+# Entry shape: `label`, `region`, `control` (the EXACT control text, as the
+# census renders it — whitespace-collapsed and trimmed, not a substring),
+# `state`, `why`.
+AMENDED_CONTROLS = {
+    "class view": [
+        # ⚠️ AN EMPTY LABEL IS A REAL CONTROL AND HAS TO BE REGISTERED LIKE
+        # ANY OTHER. Design's close button is a 44×44 icon button carrying an
+        # SVG and a `title="Close"`, so the census — which stores `innerText`
+        # — records it as the empty string. Measured before it was trusted:
+        # Design's ORIGINAL delivery has 44 controls and ZERO empty labels, so
+        # removing "" from the port's census on every drive can only remove
+        # this one. If the original ever gains an icon button, the
+        # not-in-the-original assertion below goes red and says so.
+        dict(label="the account sheet's close button",
+             region="account-sheet", state="the account sheet", control="",
+             why="Design's 44x44 icon close on the sheet. It is the only way "
+                 "out of the sheet that Design drew, and it is a control a "
+                 "student presses, so the census has to know it is ours by "
+                 "way of Design's amendment rather than a stray."),
+    ] + [
+        # The six swatches. One entry each rather than a loop with a shared
+        # label, because every failure message names the entry and "one of the
+        # six swatches is missing" is not a sentence anybody can act on.
+        dict(label="the %s swatch" % name.lower(),
+             region="account-sheet", state="the account sheet", control=name,
+             why="One of Design's six bench-theme swatches. It is pressable, "
+                 "so it is in the control census as well as in the text, and "
+                 "a registration that reached only the text would report "
+                 "'controls only in port' and read like a bug in the port.")
+        for name in ("CLAY", "CHALK", "MOSS", "HARBOUR", "DAMSON", "GRAPHITE")
+    ],
+}
+
+# ── AMENDED OMISSIONS — where the port must NOT match Design's AMENDED file ─
+#
+# ⊕ 23 Aug 2026 — PHASE 1c, and it is the third corner of a square that had
+# only two.
+#
+#   RULED_DIVERGENCE   in Design's ORIGINAL, ruled OUT of the port.
+#   AMENDED_ADDITIONS  in Design's AMENDED delivery, merged INTO the port.
+#   AMENDED_OMISSIONS  in Design's AMENDED delivery, and ruled out of the port
+#                      on its way in.
+#
+# The account sheet is the first merged region that needed the third: Design
+# draws an EMAIL row in it, and the ruling is that no student surface shows an
+# email address. A class page is opened on shared classroom machines and on a
+# projector; a school email is a real identifier and a real contact route, and
+# it would be on screen for whoever is standing behind the student.
+#
+# ⚠️ NEITHER OF THE OTHER TWO COULD CARRY IT, and that is why this exists
+# rather than being folded in. `RULED_DIVERGENCE` asserts the span is PRESENT
+# in Design's original — the original has no account sheet at all, so that
+# assertion is false and the entry would go red on a healthy page.
+# `AMENDED_ADDITIONS` asserts the span is PRESENT IN THE PORT, which is the
+# exact opposite of what is wanted. Registering an omission as either would
+# have meant writing a pattern that lies about what it is for.
+#
+# ⚠️ AND LEAVING IT UNREGISTERED IS NOT NEUTRAL. Nothing strips it, nothing
+# needs it, and every gate stays green — which is precisely the failure this
+# repo keeps naming: the removal would be unwatched, and the day somebody
+# widened the graft or dropped `omit` from the entry, a hundred and thirty-five
+# children's email addresses would ship with a green build.
+#
+# STRIPS NOTHING. It is assertions only: the span is in Design's amended
+# delivery (so a stale registration goes red when Design redraws), and it is
+# not on the port (so a reverted ruling goes red on every drive).
+#
+# Entry shape: `label`, `region`, `pat`, `state`, `why` — the same as
+# `AMENDED_ADDITIONS`, deliberately, so the two read as one mechanism.
+AMENDED_OMISSIONS = {
+    "class view": [
+        dict(label="the account sheet's EMAIL row",
+             region="account-sheet", state="the account sheet",
+             pat=r"EMAIL ay@school\.uk ",
+             why="RULED 23 Aug 2026 — no student surface shows an email "
+                 "address. Nothing else on the student side does, and the "
+                 "class page is read on shared classroom machines and "
+                 "projectors. Removed at BUILD time by `omit` on the graft "
+                 "(student_rulings.py), which is asserted from the other end: "
+                 "the build stops if donor node 263 is no longer there to "
+                 "remove."),
+    ],
+}
+
+_OMIT_IN_AMENDED = "omitted-in-amended:"
+_OMIT_IN_PORT = "omitted-still-in-port:"
+_OMIT_IN_ORIGINAL = "omitted-was-in-original:"
+
+
+def _apply_omissions(page, d_text, g_text, g_regions, amended_states,
+                     problems, seen):
+    """Record, per drive, what a registered omission looks like right now.
+
+    Strips NOTHING from either side, and returns nothing — every verdict is a
+    statement about the page rather than about one drive, so they are recorded
+    here and reported once by `_omissions_seen`. The scopes split exactly as
+    `_apply_additions` splits them, with one deliberate inversion:
+
+      · PRESENT IN THE AMENDED DELIVERY'S REGION — once per page. Stale
+        registration if it stops matching.
+      · STILL ON THE PORT — recorded on ANY drive, and any one is fatal. This
+        is the inversion: for an ADDITION, finding it once is the pass; for an
+        omission, finding it once is the failure, because the ruling holds on
+        every screen and there is no state in which it may come back.
+      · IN DESIGN'S ORIGINAL — once per page. If it is, this is the wrong
+        register and the entry belongs in `RULED_DIVERGENCE`.
+    """
+    import re
+    adds = AMENDED_OMISSIONS.get(page) or ()
+    if not adds or amended_states is None:
+        return
+    for add in adds:
+        pat = add["pat"]
+        reg = _amended_region(amended_states, add)
+        if reg is not None and re.search(pat, reg["text"]):
+            seen.add(_OMIT_IN_AMENDED + add["label"])
+        # ⚠️ THE WHOLE PORT, NOT JUST ITS REGION. A ruling that says "this is
+        # not on a student's screen" is not satisfied by the span moving to
+        # another part of the same screen, and the region is exactly where a
+        # careless fix would move it FROM.
+        if re.search(pat, g_text):
+            seen.add(_OMIT_IN_PORT + add["label"])
+        port_reg = (g_regions or {}).get(add["region"])
+        if port_reg is not None and re.search(pat, port_reg["text"]):
+            seen.add(_OMIT_IN_PORT + add["label"])
+        if re.search(pat, d_text):
+            seen.add(_OMIT_IN_ORIGINAL + add["label"])
+
+
+def _omissions_seen(page, seen, amended_states, problems):
+    """Once per page: every registered omission is really an omission."""
+    rows = []
+    adds = list(AMENDED_OMISSIONS.get(page) or ())
+    if not adds:
+        return rows
+
+    if amended_states is None:
+        rows.append((page, "omissions · the amended delivery was driven",
+                     "FAIL", "%d registration(s) with no amended reference"
+                     % len(adds)))
+        problems.append(
+            "%s — %d omission(s) are registered and Design's AMENDED delivery "
+            "was never driven, so nothing checked that Design still draws the "
+            "thing this port is removing. Give the page `amended_root` / "
+            "`amended` in PAIRS, or take the registrations out."
+            % (page, len(adds)))
+        return rows
+
+    known_states = {lbl for lbl, _steps in AMENDED_DRIVES.get(page, ())}
+    for add in adds:
+        label, state = add["label"], add.get("state", "at rest")
+
+        if state not in known_states:
+            rows.append((page, "omissions · %s — the state is driven" % label,
+                         "FAIL", "no AMENDED_DRIVES entry named %r" % state))
+            problems.append(
+                "%s — the omission %r names the state %r and AMENDED_DRIVES "
+                "has no drive by that name, so the region it lives in is never "
+                "reached and the entry cannot be checked against Design at "
+                "all. Add the drive, or correct the state name."
+                % (page, label, state))
+            continue
+
+        ok = (_OMIT_IN_AMENDED + label) in seen
+        rows.append((page, "omissions · %s — in Design's amended delivery"
+                     % label, "PASS" if ok else "FAIL",
+                     "found in the %r region, %r" % (add["region"], state)
+                     if ok else "NOT in the %r region of the amended delivery"
+                     % add["region"]))
+        if not ok:
+            problems.append(
+                "%s — the omission %r was NOT found in the %r region of "
+                "Design's AMENDED delivery in the %r state. The registration "
+                "is stale: Design has redrawn or removed it. If Design has "
+                "removed it, this entry has nothing left to be about and the "
+                "`omit` on the graft has nothing left to remove — check the "
+                "build, which asserts the same thing from the other end, "
+                "before deleting either." % (page, label, add["region"], state))
+
+        bad = (_OMIT_IN_PORT + label) in seen
+        rows.append((page, "omissions · %s — gone from the port" % label,
+                     "FAIL" if bad else "PASS",
+                     "STILL ON THE PORT" if bad
+                     else "absent from the port on every drive, as the ruling "
+                          "requires"))
+        if bad:
+            problems.append(
+                "%s — the omission %r is BACK ON THE PORTED PAGE. This is a "
+                "ruling about what a student's screen may show, and it has "
+                "been reverted: either `omit` has been dropped from the graft "
+                "in student_rulings.py, or the graft now copies a different "
+                "subtree. Nothing here is cosmetic — put it back."
+                % (page, label))
+
+        bad = (_OMIT_IN_ORIGINAL + label) in seen
+        rows.append((page, "omissions · %s — not in Design's original" % label,
+                     "FAIL" if bad else "PASS",
+                     "ALSO in the original delivery" if bad
+                     else "absent from the original delivery, so this really "
+                          "is about the amendment"))
+        if bad:
+            problems.append(
+                "%s — the omission %r ALSO matches Design's ORIGINAL "
+                "delivery. Then the port is not declining something Design "
+                "added; it is removing something Design always drew, which is "
+                "a RULED_DIVERGENCE with a ruling behind it. Move the entry."
+                % (page, label))
+    return rows
+
+
+# The keys `seen` is stamped with. Named once rather than spelled inline in four
+# places, because a typo in one of them is a silent PASS — the page-level
+# assertion would look for a key nothing ever writes, find it missing, and
+# report the registration stale when the registration is fine.
+_ADD_IN_AMENDED = "added-in-amended:"
+_ADD_IN_PORT = "added-in-port:"
+_ADD_IN_ORIGINAL = "added-was-already-there:"
+_ADD_CTL_IN_AMENDED = "added-control-in-amended:"
+_ADD_CTL_IN_PORT = "added-control-in-port:"
+_ADD_CTL_IN_ORIGINAL = "added-control-was-already-there:"
+
+
+def _amended_region(amended_states, add):
+    """The rendered `{change, text, controls}` of an addition's region, or None.
+
+    Returns None for both ways of missing it — the named state was never driven,
+    or the named region is not on screen in it — because the caller reports them
+    with the same sentence: the registration does not describe the delivery any
+    more.
+    """
+    st = (amended_states or {}).get(add.get("state", "at rest"))
+    if not st:
+        return None
+    return (st.get("regions") or {}).get(add["region"])
+
+
+def _apply_additions(page, d_text, g_text, g_regions, amended_states,
+                     problems, seen):
+    """Strip registered additions from the PORT's text, asserting each 3 ways.
+
+    ⚠️ THE SCOPES ARE SPLIT EXACTLY AS `_apply_ruled` SPLITS THEM, and for the
+    identical reason — the mistake that function's docstring records is the
+    mistake this one would otherwise repeat. Not every drive reaches every
+    surface: the six recall drives navigate away from the sidebar entirely, so
+    "the addition is present" is legitimately false there, and demanding it per
+    drive would paint twelve healthy drives red for the crime of being on
+    another screen.
+
+      · STRIPPED FROM THE PORT — per drive, every drive. Wherever the pattern
+        matches, it goes, so the remaining text meets Design's ORIGINAL under
+        the byte-for-byte comparison it has always been under. This is the one
+        half that must be per drive, because the text being compared is.
+      · PRESENT IN THE PORT'S REGION — once per page, over all drives.
+      · PRESENT IN THE AMENDED DELIVERY'S SAME REGION — once per page.
+      · ABSENT FROM THE ORIGINAL DELIVERY — once per page, over all drives:
+        matching it on ANY drive is fatal, because one screen where Design
+        already drew it is enough to prove it was never an addition.
+
+    The three page-level halves are RECORDED here (into `seen`) and REPORTED by
+    `_additions_seen`, which is how `_apply_ruled` and `_ruled_seen` already
+    divide the work.
+
+    Returns `(g_text, rows)`. `rows` is empty by construction and the shape is
+    kept anyway: `_apply_ruled` has a genuine per-drive verdict to emit — a
+    ruled-away span that came BACK is wrong on the drive it came back on —
+    whereas every way an addition can be wrong is a statement about the page,
+    not about one drive. A row emitted here would be the same row nineteen
+    times.
+    """
+    import re
+    rows = []
+    adds = AMENDED_ADDITIONS.get(page) or ()
+    if not adds or amended_states is None:
+        return g_text, rows
+    for add in adds:
+        pat = add["pat"]
+        reg = _amended_region(amended_states, add)
+        if reg is not None and re.search(pat, reg["text"]):
+            seen.add(_ADD_IN_AMENDED + add["label"])
+        port_reg = (g_regions or {}).get(add["region"])
+        if port_reg is not None and re.search(pat, port_reg["text"]):
+            seen.add(_ADD_IN_PORT + add["label"])
+        # ⚠️ Checked against the ORACLE's text on this drive, NOT against the
+        # amended delivery. If Design's original already said it, the entry is
+        # not registering an addition — it is deleting a span out of the port's
+        # side of a live comparison, which is the one thing this must not do.
+        if re.search(pat, d_text):
+            seen.add(_ADD_IN_ORIGINAL + add["label"])
+        g_text = re.sub(pat, "", g_text)
+    return g_text, rows
+
+
+def _apply_additions_controls(page, d_controls, g_controls, amended_states,
+                              problems, seen):
+    """The port's control list with the registered added controls removed.
+
+    Same discipline and the same split of scopes as `_apply_additions`: removed
+    from the port's census on EVERY drive, and the three "is it really an
+    addition" halves recorded once per page for `_additions_seen` to report.
+
+    Matched on EXACT control text rather than a substring, because the census
+    stores one whole label per entry and a substring rule would quietly swallow
+    a second control that merely contains the first — `FLASHCARDS` would take
+    `FLASHCARDS · 8r/Sc1` with it, and the port would lose a control from the
+    comparison without anybody registering it.
+    """
+    rows = []
+    adds = AMENDED_CONTROLS.get(page) or ()
+    if not adds or amended_states is None:
+        return g_controls, rows
+    labels = set()
+    for add in adds:
+        ctl = add["control"]
+        labels.add(ctl)
+        reg = _amended_region(amended_states, add)
+        if reg is not None and ctl in reg["controls"]:
+            seen.add(_ADD_CTL_IN_AMENDED + add["label"])
+        if ctl in (g_controls or ()):
+            seen.add(_ADD_CTL_IN_PORT + add["label"])
+        if ctl in (d_controls or ()):
+            seen.add(_ADD_CTL_IN_ORIGINAL + add["label"])
+    return [c for c in g_controls if c not in labels], rows
+
+
+def _additions_seen(page, seen, amended_states, problems):
+    """Once per page: every registered addition is really an addition.
+
+    Three assertions per entry, and each of them fails a DIFFERENT way of being
+    wrong. They are separate rows on purpose — collapsing them into one "the
+    registration is bad" verdict would tell whoever reads the output that
+    something is wrong without telling them which of three quite different
+    things to go and do.
+    """
+    rows = []
+    adds = list(AMENDED_ADDITIONS.get(page) or ())
+    ctls = list(AMENDED_CONTROLS.get(page) or ())
+    if not adds and not ctls:
+        return rows
+
+    if amended_states is None:
+        # Registered additions with no amended delivery driven. Either the page
+        # has no `amended` entry in PAIRS, or `run()` skipped the drive — both
+        # mean the entries below were applied to the port's text without
+        # anything ever checking them against Design. Fatal, and reported once.
+        rows.append((page, "additions · the amended delivery was driven", "FAIL",
+                     "%d registration(s) with no amended reference"
+                     % (len(adds) + len(ctls))))
+        problems.append(
+            "%s — %d addition(s) are registered and Design's AMENDED delivery "
+            "was never driven, so every one of them was stripped out of the "
+            "port's text on trust. Give the page `amended_root` / `amended` in "
+            "PAIRS, or take the registrations out; a registry that nothing "
+            "checks is a licence to delete text from a comparison."
+            % (page, len(adds) + len(ctls)))
+        return rows
+
+    known_states = {lbl for lbl, _steps in AMENDED_DRIVES.get(page, ())}
+    for add in adds:
+        label, state = add["label"], add.get("state", "at rest")
+
+        if state not in known_states:
+            rows.append((page, "additions · %s — the state is driven" % label,
+                         "FAIL", "no AMENDED_DRIVES entry named %r" % state))
+            problems.append(
+                "%s — the addition %r names the state %r, and AMENDED_DRIVES "
+                "for this page has no drive by that name. The region it lives "
+                "in is therefore never reached and the entry cannot be checked "
+                "against Design at all. Add the drive that reveals it, or "
+                "correct the state name." % (page, label, state))
+            continue
+
+        ok = (_ADD_IN_AMENDED + label) in seen
+        rows.append((page, "additions · %s — in Design's amended delivery"
+                     % label, "PASS" if ok else "FAIL",
+                     "found in the %r region, %r" % (add["region"], state) if ok
+                     else "NOT in the %r region of the amended delivery"
+                     % add["region"]))
+        if not ok:
+            problems.append(
+                "%s — the addition %r was NOT found in the %r region of "
+                "Design's AMENDED delivery in the %r state. This registration "
+                "is stale: Design has redrawn the amendment, or the region was "
+                "renamed, or the state that reveals it is no longer %r. "
+                "Re-read the amended delivery and re-register it. Do NOT widen "
+                "the pattern until it matches something — a pattern loosened "
+                "to go green deletes more of the port's text than anybody "
+                "agreed to." % (page, label, add["region"], state, state))
+
+        ok = (_ADD_IN_PORT + label) in seen
+        rows.append((page, "additions · %s — on the ported page" % label,
+                     "PASS" if ok else "FAIL",
+                     "found in the port's own %r region" % add["region"] if ok
+                     else "NOT in the port's %r region on any drive"
+                     % add["region"]))
+        if not ok:
+            problems.append(
+                "%s — the addition %r is registered as chrome this port GAINS "
+                "from Design's amendments, and it is not in the port's own %r "
+                "region on any drive. Either the merge has not landed that "
+                "region yet, or the port's markup carries no "
+                "`data-port-region=\"%s\"` for this to be found inside, or the "
+                "pattern has rotted. An addition the port does not have is not "
+                "an addition — it is a registration written ahead of the work, "
+                "and while it stands the pattern is being stripped out of a "
+                "comparison it never appears in. Land the merge, or take the "
+                "entry out until you do."
+                % (page, label, add["region"], add["region"]))
+
+        bad = (_ADD_IN_ORIGINAL + label) in seen
+        rows.append((page, "additions · %s — not in Design's original" % label,
+                     "FAIL" if bad else "PASS",
+                     "ALSO matches the original delivery" if bad
+                     else "absent from the original delivery, as an addition "
+                          "must be"))
+        if bad:
+            problems.append(
+                "%s — the addition %r ALSO matches DESIGN's ORIGINAL delivery, "
+                "which is the oracle. Then it is not an addition, and this "
+                "entry is claiming credit for work Design had already drawn "
+                "while quietly deleting that span from the port's side of the "
+                "comparison — the one thing this mechanism must never do. "
+                "Remove the entry. If the port genuinely diverges from the "
+                "original here, that is a RULED_DIVERGENCE with a ruling "
+                "behind it, not an addition." % (page, label))
+
+    for add in ctls:
+        label, state = add["label"], add.get("state", "at rest")
+
+        if state not in known_states:
+            rows.append((page, "additions · the %s control — the state is "
+                         "driven" % add["control"], "FAIL",
+                         "no AMENDED_DRIVES entry named %r" % state))
+            problems.append(
+                "%s — the added control %r names the state %r, and there is no "
+                "AMENDED_DRIVES entry by that name, so nothing ever reaches "
+                "the screen it lives on. Add the drive, or correct the state."
+                % (page, add["control"], state))
+            continue
+
+        ok = (_ADD_CTL_IN_AMENDED + label) in seen
+        rows.append((page, "additions · the %s control — in Design's amended "
+                     "delivery" % add["control"], "PASS" if ok else "FAIL",
+                     "a control in the %r region" % add["region"] if ok
+                     else "NOT a control in the amended delivery's %r region"
+                     % add["region"]))
+        if not ok:
+            problems.append(
+                "%s — %r is registered as a control this port gains, and it is "
+                "not a control in the %r region of Design's AMENDED delivery "
+                "in the %r state. The census stores whole labels, so a near "
+                "miss reads as a total miss: check the text character for "
+                "character before assuming Design removed it."
+                % (page, add["control"], add["region"], state))
+
+        ok = (_ADD_CTL_IN_PORT + label) in seen
+        rows.append((page, "additions · the %s control — on the ported page"
+                     % add["control"], "PASS" if ok else "FAIL",
+                     "a control on the port too" if ok
+                     else "NOT a control on the port on any drive"))
+        if not ok:
+            problems.append(
+                "%s — %r is registered as a control this port gains, and it is "
+                "not a control on the ported page on any drive — while being "
+                "removed from the port's census on every one of them. Land the "
+                "merge, or take the entry out." % (page, add["control"]))
+
+        bad = (_ADD_CTL_IN_ORIGINAL + label) in seen
+        rows.append((page, "additions · the %s control — not in Design's "
+                     "original" % add["control"], "FAIL" if bad else "PASS",
+                     "ALSO a control in the original delivery" if bad
+                     else "absent from the original delivery, as an addition "
+                          "must be"))
+        if bad:
+            problems.append(
+                "%s — %r is ALSO a control in Design's ORIGINAL delivery, so "
+                "it is not something the port gained; it is something both "
+                "sides always had, being deleted from one side of the "
+                "comparison. Remove the entry." % (page, add["control"]))
+    return rows
+
+
+# ── the self-proof ────────────────────────────────────────────────────────
+#
+# ⚑ A SWEEP THAT FINDS NOTHING HAS SAID NOTHING UNTIL IT HAS BEEN SHOWN FINDING
+# SOMETHING. This is layer E/F/H's rule in `student_parity.py`, and it applies
+# here with more force than it does there, because this registry SHIPS EMPTY:
+# on the day it lands, every line of it runs against nothing and reports
+# nothing, which is indistinguishable from every line of it being broken.
+#
+# So before the real comparison, the machinery is driven on synthetic strings —
+# no browser, no files, no network — and made to prove BOTH directions:
+#
+#   (a) a REGISTERED addition present in the port is stripped, and the stripped
+#       port text then equals Design's original exactly → the drive PASSES.
+#       This is the half that lets the mechanism say yes.
+#   (b) an UNREGISTERED extra span, in an untouched region, is NOT stripped, and
+#       the comparison still FAILS. This is the half that stops it from being a
+#       blanket amnesty — a bug that made `_apply_additions` strip broadly, or
+#       return Design's text instead of the port's, would pass (a) happily and
+#       turn the whole gate into a formality.
+#
+# ⚠️ THE PROOF USES THE REAL FUNCTIONS, not a copy of their logic. A proof that
+# reimplements what it is proving tests the copy.
+def _prove_additions():
+    """Prove the additions machinery can both strip and refuse to strip."""
+    page = "__additions self-proof__"
+    disp = "the additions self-proof"
+    entry = dict(label="a synthetic addition",
+                 region="r",
+                 pat=r"NEWCHROME ",
+                 state="at rest",
+                 why="synthetic — exists only for the length of this proof")
+    # Design's ORIGINAL: what the port must still equal once the addition is
+    # taken back out.
+    d_text = "ALPHA BETA GAMMA"
+    # Design's AMENDED delivery, and the port, both carrying the new chrome
+    # inside the region the entry names.
+    region = {"change": "synthetic", "text": "ALPHA NEWCHROME BETA",
+              "controls": []}
+    amended = {"at rest": {"regions": {"r": region}}}
+    port_regions = {"r": dict(region, change="")}
+
+    faults = []
+    AMENDED_ADDITIONS[page] = [entry]
+    AMENDED_DRIVES[page] = [("at rest", [])]
+    try:
+        # (a) the registered span is stripped, and what is left IS the oracle.
+        seen, sink = set(), []
+        got, _rows = _apply_additions(
+            page, d_text, "ALPHA NEWCHROME BETA GAMMA", port_regions,
+            amended, sink, seen)
+        if got != d_text:
+            faults.append(
+                "a registered addition was not stripped out of the port's "
+                "text: %r was left as %r, which does not equal Design's %r"
+                % ("ALPHA NEWCHROME BETA GAMMA", got, d_text))
+        if (_ADD_IN_AMENDED + entry["label"]) not in seen:
+            faults.append("the amended delivery's own region was not "
+                          "recognised as containing the addition")
+        if (_ADD_IN_PORT + entry["label"]) not in seen:
+            faults.append("the port's own region was not recognised as "
+                          "containing the addition")
+        if (_ADD_IN_ORIGINAL + entry["label"]) in seen:
+            faults.append("the addition was reported as ALREADY PRESENT in "
+                          "Design's original, which does not contain it — the "
+                          "staleness check fires on healthy entries")
+
+        # (b) an UNREGISTERED span survives, and the comparison still fails.
+        seen2, sink2 = set(), []
+        got2, _rows2 = _apply_additions(
+            page, d_text, "ALPHA NEWCHROME BETA UNREGISTERED GAMMA",
+            port_regions, amended, sink2, seen2)
+        if got2 == d_text:
+            faults.append(
+                "an UNREGISTERED extra span was swallowed: the port read %r "
+                "and still compared equal to Design's %r, so the machinery is "
+                "stripping more than it was told to and no unregistered "
+                "divergence on the real page could ever be seen"
+                % ("ALPHA NEWCHROME BETA UNREGISTERED GAMMA", d_text))
+        if "UNREGISTERED" not in got2:
+            faults.append("the unregistered span %r did not survive the strip"
+                          % "UNREGISTERED")
+    finally:
+        AMENDED_ADDITIONS.pop(page, None)
+        AMENDED_DRIVES.pop(page, None)
+
+    # ── ⊕ 23 Aug 2026 — the OMISSIONS half of the same proof ─────────────
+    #
+    # ⚑ AND IT NEEDS ITS OWN, BECAUSE IT FAILS THE OTHER WAY ROUND. An
+    # additions entry passes by FINDING its span on the port; an omission
+    # passes by NOT finding it. A mechanism that recorded nothing at all —
+    # a typo in a `seen` key, a registry read from the wrong page — would
+    # look identical to a healthy omission and would report a clean page
+    # forever. So the proof drives BOTH directions: a span that is absent
+    # must pass, and the SAME span put back must fail.
+    ofaults = []
+    oentry = dict(label="a synthetic omission",
+                  region="r",
+                  pat=r"SECRET ",
+                  state="at rest",
+                  why="synthetic — exists only for the length of this proof")
+    AMENDED_OMISSIONS[page] = [oentry]
+    AMENDED_DRIVES[page] = [("at rest", [])]
+    try:
+        # (a) Design's amended file draws it; the port does not. That is the
+        #     whole ruling, and it must report clean.
+        oregion = {"change": "synthetic",
+                   "text": "ALPHA SECRET BETA", "controls": []}
+        oamended = {"at rest": {"regions": {"r": oregion}}}
+        seen3, sink3 = set(), []
+        _apply_omissions(page, d_text, "ALPHA BETA GAMMA",
+                         {"r": {"change": "", "text": "ALPHA BETA",
+                                "controls": []}},
+                         oamended, sink3, seen3)
+        rows3 = _omissions_seen(page, seen3, oamended, sink3)
+        if sink3:
+            ofaults.append(
+                "a healthy omission — drawn by Design, absent from the port — "
+                "was reported as a problem: %s" % sink3[0][:90])
+        if not any(v == "PASS" for _p, _l, v, _d in rows3):
+            ofaults.append("a healthy omission produced no PASS row at all, "
+                           "so nothing was actually checked")
+
+        # (b) the span COMES BACK on the port. The ruling has been reverted,
+        #     and the gate must say so.
+        seen4, sink4 = set(), []
+        _apply_omissions(page, d_text, "ALPHA SECRET BETA GAMMA",
+                         {"r": {"change": "", "text": "ALPHA SECRET BETA",
+                                "controls": []}},
+                         oamended, sink4, seen4)
+        rows4 = _omissions_seen(page, seen4, oamended, sink4)
+        if not sink4:
+            ofaults.append(
+                "the omitted span was put BACK on the port and the machinery "
+                "reported nothing. An omission that cannot see its own ruling "
+                "being reverted is a registration, not a gate")
+        if not any(v == "FAIL" for _p, _l, v, _d in rows4):
+            ofaults.append("the reverted omission produced no FAIL row")
+
+        # (c) it is in Design's ORIGINAL as well — wrong register, and the
+        #     machinery has to name the right one rather than pass.
+        seen5, sink5 = set(), []
+        _apply_omissions(page, "ALPHA SECRET BETA GAMMA", "ALPHA BETA GAMMA",
+                         {}, oamended, sink5, seen5)
+        rows5 = _omissions_seen(page, seen5, oamended, sink5)
+        if not any("RULED_DIVERGENCE" in pr for pr in sink5):
+            ofaults.append(
+                "a span present in Design's ORIGINAL was accepted as an "
+                "amended-delivery omission, so the two registers can be "
+                "confused without the gate noticing")
+    finally:
+        AMENDED_OMISSIONS.pop(page, None)
+        AMENDED_DRIVES.pop(page, None)
+
+    rows, problems = [], []
+    if ofaults:
+        rows.append((disp, "the omissions machinery sees a ruling reverted",
+                     "FAIL", "; ".join(ofaults)[:110]))
+        problems.append(
+            "the omissions self-proof FAILED: %s. Until this passes, every "
+            "AMENDED_OMISSIONS entry is an unchecked promise — and the one "
+            "registered today is the promise that no child's email address "
+            "ships on a classroom projector." % "; ".join(ofaults))
+    else:
+        rows.append((disp, "the omissions machinery sees a ruling reverted",
+                     "PASS",
+                     "absent passes; the same span put back fails; a span "
+                     "Design's original had is sent to RULED_DIVERGENCE"))
+    if faults:
+        rows.append((disp, "the additions machinery strips, and only what it "
+                     "was told to", "FAIL", "; ".join(faults)[:110]))
+        problems.append(
+            "the additions self-proof FAILED: %s. Until this passes, the "
+            "additions machinery is blind, and its silence on the real page "
+            "proves nothing whatever — an empty problem list would mean only "
+            "that a broken mechanism found nothing, which is what a broken "
+            "mechanism always does." % "; ".join(faults))
+    else:
+        rows.append((disp, "the additions machinery strips, and only what it "
+                     "was told to", "PASS",
+                     "registered span removed and the text then matches; "
+                     "unregistered span survives and it does not"))
+    return rows, problems
 
 
 def _first_diff(a, b):

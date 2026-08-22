@@ -153,6 +153,17 @@ LESSON = {
          # into the format at build time; `left` and `n` move.
          "head_counter": {
              "format": "{left} of {budget} tests left · {n} of 6 decided",
+             # ⊕ MRB-277 — the compact form, shown below 360px. Measured at
+             # 320px the full sentence put this page 342px wide and made it
+             # scroll sideways; it is the longest counter in the key stage by
+             # four characters and the only one that overflows.
+             #
+             # Both live numbers survive, in the same order, with the same
+             # denominators — the budget and the six samples are what the
+             # student is spending and deciding, and a compact form that
+             # dropped either would be a different readout rather than a
+             # shorter one.
+             "format_narrow": "{left}/{budget} left · {n}/6 done",
              "constants": {"budget": 8},
              "start_extra": {"left": 8},
              "total": 6,

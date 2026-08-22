@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<script src="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js"></script>
+<style>
+:root{
+  --pg-ground:#FBF3E6; --pg-card:#FFFCF5; --pg-band:#F4E9D8; --pg-inset:#F7EFE1;
+  --pg-rule:#E0D2B9; --pg-rule-strong:#C3B191; --pg-ink:#221E1B; --pg-body:#3B342E;
+  --pg-muted:#5F564F; --pg-strong:#4A3728; --pg-accent:#E4572E; --pg-accent-text:#A93411;
+  --pg-accent-hover:#7F2408; --pg-tint:#FCE7DE; --pg-ok:#12A150; --pg-ok-text:#0A6B36; --pg-ok-tint:#E4F7EB;
+  --t-clay:#6B4A33; --t-chalk:#EFE2CB; --t-moss:#294036; --t-harbour:#20363F; --t-damson:#38243A; --t-graphite:#1A1512;
+  /* CHANGE 1 — bench theme tokens. Default = HARBOUR. */
+  --b-ground:#20363F; --b-ink:#FBF3E6; --b-muted:#A9BFC6; --b-rule:#37545F; --b-inset:#182B33;
+  --b-accent:#E4572E; --b-ember:#F79E76; --b-cta:#C0431C; --b-cta-ink:#FFF7EC; --b-edge:rgba(169,191,198,.28);
+}
+[data-bench-theme="clay"]{--b-ground:#6B4A33;--b-ink:#FBF3E6;--b-muted:#E0CDB4;--b-rule:#8A6849;--b-inset:#5B3D28;--b-ember:#FFC4A6;--b-cta:#C0431C;--b-edge:rgba(255,196,166,.30);}
+[data-bench-theme="chalk"]{--b-ground:#EFE2CB;--b-ink:#221E1B;--b-muted:#6A5C4C;--b-rule:#D3BF9F;--b-inset:#E5D4B6;--b-accent:#E4572E;--b-ember:#A93411;--b-cta:#A93411;--b-cta-ink:#FBF3E6;--b-edge:rgba(34,30,27,.18);}
+[data-bench-theme="moss"]{--b-ground:#294036;--b-ink:#FBF3E6;--b-muted:#B4C6B6;--b-rule:#42604F;--b-inset:#1F332B;--b-ember:#F79E76;--b-cta:#C0431C;--b-edge:rgba(180,198,182,.28);}
+[data-bench-theme="harbour"]{--b-ground:#20363F;--b-ink:#FBF3E6;--b-muted:#A9BFC6;--b-rule:#37545F;--b-inset:#182B33;--b-ember:#F79E76;--b-cta:#C0431C;--b-edge:rgba(169,191,198,.28);}
+[data-bench-theme="damson"]{--b-ground:#38243A;--b-ink:#FBF3E6;--b-muted:#C6AFC4;--b-rule:#553855;--b-inset:#2C1B2E;--b-ember:#F79E76;--b-cta:#C0431C;--b-edge:rgba(198,175,196,.28);}
+[data-bench-theme="graphite"]{--b-ground:#1A1512;--b-ink:#FBF3E6;--b-muted:#A99C8C;--b-rule:#2F2823;--b-inset:#120E0C;--b-ember:#F0855C;--b-cta:#C0431C;--b-edge:rgba(169,156,140,.24);}
+body{margin:0;background:var(--pg-ground);-webkit-font-smoothing:antialiased;text-wrap:pretty;}
+a{color:var(--pg-accent-text);text-decoration:none;}
+a:hover{color:var(--pg-accent-hover);text-decoration:underline;}
+.wk[data-sel="1"]{--wk-fill:var(--b-ground);--wk-edge:var(--b-ground);}
+.wk[data-sel="1"] .wkline{--wk-line:var(--b-ink);}
+.tab[data-on="1"]{--tab-bg:var(--pg-card);--tab-ink:var(--pg-ink);--tab-shadow:0 1px 2px rgba(34,30,27,.12);}
+.lbchip[data-on="1"]{--lb-bg:var(--b-ground);--lb-edge:var(--b-ground);--lb-ink:var(--b-ink);}
+.sw[data-on="1"]{outline:2px solid var(--pg-ink);outline-offset:3px;}
+.sw[data-on="1"] .swtick{--tick-o:1;}
+.stbtn[data-on="1"]{--st-bg:var(--pg-ink);--st-ink:var(--pg-ground);--st-edge:var(--pg-ink);}
+.pip[data-on="1"]{--pip-bg:var(--pg-accent);}
+.opt[data-st="picked"]{--opt-bg:var(--b-inset);--opt-edge:var(--b-ember);--opt-mark-bg:var(--b-ember);--opt-mark-ink:var(--b-inset);}
+.opt[data-st="correct"]{--opt-bg:rgba(18,161,80,.18);--opt-edge:#12A150;--opt-mark-bg:#12A150;--opt-mark-ink:#08240F;}
+.opt[data-st="wrong"]{--opt-bg:var(--b-inset);--opt-edge:var(--b-muted);--opt-mark-bg:var(--b-muted);--opt-mark-ink:var(--b-inset);}
+.rprog[data-w="0"]{--rp-w:0%;}.rprog[data-w="1"]{--rp-w:17%;}.rprog[data-w="2"]{--rp-w:33%;}
+.rprog[data-w="3"]{--rp-w:50%;}.rprog[data-w="4"]{--rp-w:67%;}.rprog[data-w="5"]{--rp-w:83%;}.rprog[data-w="6"]{--rp-w:100%;}
+.fcflip{transition:transform 460ms cubic-bezier(.2,.7,.2,1);}
+.fcflip[data-flip="1"]{transform:rotateY(180deg);}
+@media (prefers-reduced-motion: reduce){.fcflip{transition-duration:1ms;}}
+@keyframes fcIn{from{opacity:0}to{opacity:1}}
+@keyframes fcUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-bench-theme="{{ theme }}" data-screen-label="Class page · 8r/Sc1" style="min-height:100vh;background:var(--pg-ground);color:var(--pg-ink);font-family:'Instrument Sans',system-ui,sans-serif;font-size:17px;line-height:1.6;">
+
+  <template id="__bundler_thumbnail"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" rx="18" fill="#20363F"></rect><rect x="34" y="30" width="52" height="6" rx="3" fill="#E4572E"></rect><g fill="none" stroke="#FBF3E6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M40 50l10 10-10 10"></path><path d="M58 50l10 10-10 10"></path></g><rect x="34" y="84" width="34" height="6" rx="3" fill="#A9BFC6"></rect></svg></template>
+
+  <div style="height:5px;background:var(--pg-strong)"></div>
+
+  <header data-port-region="topbar" style="display:flex;align-items:center;gap:28px;padding:14px 32px;background:var(--pg-card);border-bottom:1px solid var(--pg-rule);flex-wrap:wrap;">
+    <a href="#top" style="display:flex;align-items:center;gap:10px;color:var(--pg-ink);text-decoration:none;">
+      <x-import component-from-global-scope="MrBadmusDS.BrandMark" size="26" hint-size="26px,26px"></x-import>
+      <span style="font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:21px;letter-spacing:-.02em;">MrBadmusAI</span>
+    </a>
+    <nav style="display:flex;align-items:center;gap:22px;">
+      <a href="#top" style="font-weight:600;font-size:16px;color:var(--pg-ink);padding-bottom:4px;border-bottom:2px solid var(--pg-accent);text-decoration:none;">My class</a>
+    </nav>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:16px;">
+      <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;padding:5px 10px;border:1px solid var(--pg-rule-strong);border-radius:999px;color:var(--pg-muted);">PROD</span>
+      <button type="button" onClick="{{ openAccount }}" title="Account" style="display:flex;align-items:center;gap:9px;background:none;border:0;padding:6px;cursor:pointer;font:inherit;color:var(--pg-ink);border-radius:999px;" style-hover="background:var(--pg-band)">
+        <span style="width:34px;height:34px;border-radius:999px;border:1px solid var(--pg-rule-strong);background:var(--pg-band);display:grid;place-items:center;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.04em;">AY</span>
+        <span style="font-weight:600;font-size:15px;">AY</span>
+      </button>
+      <button type="button" onClick="{{ openAccount }}" style="background:none;border:0;font:inherit;font-size:15px;font-weight:600;color:var(--pg-muted);cursor:pointer;" style-hover="color:var(--pg-accent-text)">Settings</button>
+      <button type="button" style="font:inherit;font-size:15px;font-weight:700;padding:9px 18px;border-radius:12px;border:1.5px solid var(--pg-ink);background:var(--pg-card);color:var(--pg-ink);cursor:pointer;min-height:44px;" style-hover="background:var(--pg-band)">Sign out</button>
+    </div>
+  </header>
+
+  <div id="top" data-port-region="crumbs" style="display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;padding:13px 32px;background:var(--pg-band);border-bottom:1px solid var(--pg-rule);font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.13em;color:var(--pg-muted);">
+    <span>8r/Sc1 &nbsp;·&nbsp; OVERVIEW</span>
+    <span>SUMMER TERM &nbsp;·&nbsp; WEEK 01 / 39</span>
+  </div>
+
+  <main style="max-width:1320px;margin:0 auto;padding:48px 32px 96px;">
+
+    <section data-port-region="hero" style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-end;justify-content:space-between;">
+      <div style="flex:1 1 420px;">
+        <p style="margin:0;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.15em;color:var(--pg-muted);">WELCOME BACK, AY &nbsp;·&nbsp; YOUR CLASS</p>
+        <h1 style="margin:10px 0 0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:clamp(56px,7vw,96px);line-height:.9;letter-spacing:-.045em;">8r/Sc1</h1>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;">
+          <span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.13em;padding:8px 14px;border-radius:999px;background:var(--pg-tint);border:1px solid var(--pg-accent);color:var(--pg-accent-text);">SCIENCE</span>
+          <span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.13em;padding:8px 14px;border-radius:999px;border:1px solid var(--pg-rule-strong);color:var(--pg-muted);">YOUR TEACHER</span>
+        </div>
+      </div>
+      <div style="flex:0 1 620px;display:flex;flex-wrap:wrap;gap:28px 0;">
+        <div style="flex:1 1 130px;padding:0 22px;border-left:1px solid var(--pg-rule);">
+          <p style="margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--pg-muted);">COMPLETED</p>
+          <p style="margin:8px 0 0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:34px;letter-spacing:-.03em;line-height:1;">2/2</p>
+          <div style="height:3px;background:var(--pg-accent);width:72px;margin-top:12px;"></div>
+          <p style="margin:12px 0 0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-muted);">THIS TERM</p>
+        </div>
+        <div style="flex:1 1 130px;padding:0 22px;border-left:1px solid var(--pg-rule);">
+          <p style="margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--pg-muted);">ON TIME</p>
+          <p style="margin:8px 0 0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:34px;letter-spacing:-.03em;line-height:1;">2/2</p>
+          <div style="height:3px;background:var(--pg-ok);width:72px;margin-top:12px;"></div>
+          <p style="margin:12px 0 0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-muted);">OF COMPLETED</p>
+        </div>
+        <div style="flex:1 1 130px;padding:0 22px;border-left:1px solid var(--pg-rule);">
+          <p style="margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--pg-muted);">AVG SCORE</p>
+          <p style="margin:8px 0 0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:34px;letter-spacing:-.03em;line-height:1;">50%</p>
+          <div style="height:3px;background:var(--pg-rule);width:72px;margin-top:12px;"><div style="height:3px;width:36px;background:var(--pg-accent);"></div></div>
+          <p style="margin:12px 0 0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-muted);">2 MARKED</p>
+        </div>
+        <div style="flex:1 1 130px;padding:0 22px;border-left:1px solid var(--pg-rule);">
+          <p style="margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--pg-muted);">RECALL</p>
+          <div style="height:3px;background:var(--pg-accent);width:72px;margin-top:20px;"></div>
+          <p style="margin:12px 0 0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-muted);">ANSWERED · WK 01</p>
+        </div>
+      </div>
+    </section>
+
+    <div style="height:1px;background:var(--pg-rule);margin:44px 0 0;"></div>
+
+    <section data-port-region="bench" data-port-change="C1 bench theme · C3 done state" data-screen-label="Bench" style="margin-top:40px;border-radius:24px;overflow:hidden;background:var(--b-ground);">
+      <div style="height:10px;background:repeating-linear-gradient(115deg,var(--b-accent) 0 13px,#A93411 13px 26px);"></div>
+
+      <sc-if value="{{ benchOpen }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:34px 36px 38px;display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start;">
+          <div style="flex:1 1 440px;min-width:290px;">
+            <p style="margin:0;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--b-ember);">ON THE BENCH NOW &nbsp;·&nbsp; DUE THU 3 SEP, 18:00</p>
+            <h2 style="margin:14px 0 0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:clamp(38px,4.4vw,60px);line-height:1;letter-spacing:-.04em;color:var(--b-ink);">Breathing and gas exchange</h2>
+            <p style="margin:20px 0 0;max-width:38ch;font-size:18px;line-height:1.6;color:var(--b-muted);">4 questions, set from this week's lessons. Open it, answer them, and complete it before Thursday.</p>
+            <ul style="list-style:none;margin:30px 0 0;padding:0;display:flex;flex-direction:column;gap:16px;">
+              <li style="display:flex;align-items:center;gap:16px;font-size:18px;font-weight:600;color:var(--b-ink);"><span style="width:24px;height:24px;border-radius:7px;border:2px solid var(--b-muted);flex:0 0 auto;"></span>Open it</li>
+              <li style="display:flex;align-items:center;gap:16px;font-size:18px;font-weight:600;color:var(--b-ink);"><span style="width:24px;height:24px;border-radius:7px;border:2px solid var(--b-muted);flex:0 0 auto;"></span>Answer the 4 questions</li>
+              <li style="display:flex;align-items:center;gap:16px;font-size:18px;font-weight:600;color:var(--b-ink);"><span style="width:24px;height:24px;border-radius:7px;border:2px solid var(--b-muted);flex:0 0 auto;"></span>Complete it</li>
+            </ul>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:34px;">
+              <button type="button" style="display:inline-flex;align-items:center;gap:10px;font:inherit;font-size:17px;font-weight:700;padding:15px 24px;min-height:44px;border-radius:14px;border:1px solid var(--b-edge);background:var(--b-cta);color:var(--b-cta-ink);cursor:pointer;" style-hover="background:#A93411">Open the assignment<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
+              <button type="button" data-port-action="recall-round" onClick="{{ openRecall }}" style="font:inherit;font-size:17px;font-weight:700;padding:15px 22px;min-height:44px;border-radius:14px;border:1.5px solid var(--b-muted);background:transparent;color:var(--b-ink);cursor:pointer;" style-hover="border-color:var(--b-ink)">Practise recall</button>
+              <div style="display:flex;align-items:center;gap:14px;margin-left:auto;">
+                <span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.13em;color:var(--b-muted);">0 / 3 DONE</span>
+                <span style="display:block;width:120px;height:2px;background:var(--b-rule);"></span>
+              </div>
+            </div>
+          </div>
+          <div style="flex:0 1 420px;min-width:280px;width:100%;max-width:440px;background:var(--pg-card);border-radius:20px;overflow:hidden;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;background:var(--pg-band);border-bottom:1px solid var(--pg-rule);">
+              <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--pg-muted);">THIS WEEK'S ASSIGNMENT</span>
+              <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;padding:5px 11px;border-radius:999px;background:var(--pg-tint);border:1px solid var(--pg-accent);color:var(--pg-accent-text);">OPEN</span>
+            </div>
+            <div style="padding:6px 20px 20px;">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--pg-rule);">
+                <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);">QUESTIONS</span>
+                <span style="font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:24px;">4</span>
+              </div>
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--pg-rule);">
+                <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);">DRAWS ON</span>
+                <span style="font-weight:600;font-size:17px;text-align:right;">The gas exchange system</span>
+              </div>
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--pg-rule);">
+                <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);">SET</span>
+                <span style="font-weight:600;font-size:17px;">Thu 20 Aug</span>
+              </div>
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 0;">
+                <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);">DUE</span>
+                <span style="font-weight:600;font-size:17px;">Thu 3 Sep, 18:00</span>
+              </div>
+              <p style="margin:14px 0 0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:28px;letter-spacing:-.03em;color:var(--pg-accent);">14 days left</p>
+              <div style="height:4px;border-radius:2px;background:var(--pg-rule);margin-top:10px;overflow:hidden;"><div style="height:4px;width:62%;background:var(--pg-accent);"></div></div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ benchDone }}" hint-placeholder-val="{{ false }}">
+        <div data-port-region="bench-done" style="padding:34px 36px 38px;display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start;">
+          <div style="flex:1 1 440px;min-width:290px;">
+            <p style="margin:0;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--b-ember);">THE WEEK'S WORK</p>
+            <h2 style="margin:14px 0 0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:clamp(38px,4.4vw,60px);line-height:1;letter-spacing:-.04em;color:var(--b-ink);">Breathing and gas exchange</h2>
+            <p style="margin:20px 0 0;max-width:34ch;font-size:20px;line-height:1.5;font-weight:600;color:var(--b-ink);">Good week, AY.</p>
+            <div style="display:flex;align-items:center;gap:14px;margin-top:28px;padding:14px 18px;border-radius:14px;background:var(--b-inset);">
+              <span style="width:26px;height:26px;border-radius:999px;background:var(--b-ember);display:grid;place-items:center;flex:0 0 auto;color:var(--b-inset);"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"></path></svg></span>
+              <span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.13em;color:var(--b-muted);">OPENED &nbsp;·&nbsp; ANSWERED &nbsp;·&nbsp; COMPLETED</span>
+              <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.13em;color:var(--b-muted);">3 / 3</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:28px;">
+              <a href="#lessons" style="display:inline-flex;align-items:center;gap:10px;font-size:17px;font-weight:700;padding:15px 24px;min-height:44px;border-radius:14px;border:1px solid var(--b-edge);background:var(--b-cta);color:var(--b-cta-ink);text-decoration:none;" style-hover="background:#A93411;color:var(--b-cta-ink);text-decoration:none">Revisit this week's lessons<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a>
+              <button type="button" data-port-action="recall-round" onClick="{{ openRecall }}" style="font:inherit;font-size:17px;font-weight:700;padding:15px 22px;min-height:44px;border-radius:14px;border:1.5px solid var(--b-muted);background:transparent;color:var(--b-ink);cursor:pointer;" style-hover="border-color:var(--b-ink)">Practise recall</button>
+            </div>
+            <div data-port-region="bench-reward-slot" data-port-note="reserved for the score-gated reward surface — nothing drawn" style="min-height:64px;"></div>
+          </div>
+          <div style="flex:0 1 420px;min-width:280px;width:100%;max-width:440px;background:var(--pg-card);border-radius:20px;overflow:hidden;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;background:var(--pg-band);border-bottom:1px solid var(--pg-rule);">
+              <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--pg-muted);">THIS WEEK'S ASSIGNMENT</span>
+              <span style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;padding:5px 11px;border-radius:999px;background:var(--pg-ok-tint);border:1px solid var(--pg-ok);color:var(--pg-ok-text);"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"></path></svg>MARKED</span>
+            </div>
+            <div style="padding:6px 20px 20px;">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--pg-rule);">
+                <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);">SCORE</span>
+                <span style="font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:34px;letter-spacing:-.03em;">50%</span>
+              </div>
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--pg-rule);">
+                <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);">RIGHT</span>
+                <span style="font-weight:600;font-size:17px;">2 of 4</span>
+              </div>
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 0;">
+                <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);">COMPLETED</span>
+                <span style="font-weight:600;font-size:17px;">Wed 20 Aug, 19:42</span>
+              </div>
+              <a href="#work" style="display:inline-flex;align-items:center;gap:8px;margin-top:8px;font-size:16px;font-weight:700;">Read the feedback<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+    </section>
+
+    <section data-port-region="term-spine" data-port-change="C1 selected week takes the bench theme" style="margin-top:56px;">
+      <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:baseline;justify-content:space-between;">
+        <p style="margin:0;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--pg-muted);">TERM SPINE &nbsp;&nbsp; TAP A WEEK TO FILTER</p>
+        <div style="display:flex;gap:20px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);">
+          <span style="display:inline-flex;align-items:center;gap:7px;"><span style="width:9px;height:9px;border-radius:999px;background:var(--pg-strong);"></span>DONE</span>
+          <span style="display:inline-flex;align-items:center;gap:7px;"><span style="width:9px;height:9px;border-radius:999px;background:var(--pg-accent);"></span>OPEN</span>
+          <span style="display:inline-flex;align-items:center;gap:7px;"><span style="width:9px;height:9px;border:1.5px solid var(--pg-rule-strong);transform:rotate(45deg);"></span>MISSED</span>
+        </div>
+      </div>
+      <div style="height:1px;background:var(--pg-rule);margin:14px 0 22px;"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:14px;">
+        <sc-for list="{{ weeks }}" as="w" hint-placeholder-count="12">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <button type="button" class="wk" data-sel="{{ w.sel }}" onClick="{{ w.pick }}" title="{{ w.title }}" style="width:56px;height:56px;border-radius:12px;border:1px solid var(--wk-edge,var(--pg-rule));background:var(--wk-fill,var(--pg-band));cursor:pointer;padding:0;display:grid;place-items:center;" style-hover="border-color:var(--pg-rule-strong)">
+              <span class="wkline" style="display:block;width:56px;height:2px;background:var(--wk-line,transparent);opacity:.9;"></span>
+            </button>
+            <sc-if value="{{ w.now }}" hint-placeholder-val="{{ false }}">
+              <span style="display:flex;flex-direction:column;align-items:center;gap:5px;"><span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--pg-accent-text);">{{ w.label }}</span><span style="width:5px;height:5px;border-radius:999px;background:var(--pg-accent);"></span></span>
+            </sc-if>
+            <sc-if value="{{ w.later }}" hint-placeholder-val="{{ true }}">
+              <span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--pg-muted);">{{ w.label }}</span>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <div id="work" style="display:flex;flex-wrap:wrap;gap:40px;margin-top:60px;align-items:flex-start;">
+
+      <section data-port-region="work-list" style="flex:1 1 560px;min-width:300px;">
+        <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;">
+          <p style="margin:0;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--pg-muted);">WORK &nbsp;&nbsp; SUMMER TERM</p>
+          <div style="display:flex;gap:4px;padding:4px;border-radius:12px;background:var(--pg-band);">
+            <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+              <button type="button" class="tab" data-on="{{ t.on }}" onClick="{{ t.pick }}" style="font:inherit;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.12em;padding:9px 14px;min-height:38px;border:0;border-radius:9px;background:var(--tab-bg,transparent);color:var(--tab-ink,var(--pg-muted));box-shadow:var(--tab-shadow,none);cursor:pointer;">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="height:1px;background:var(--pg-rule);margin:14px 0 0;"></div>
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="2">
+          <div style="border-bottom:1px solid var(--pg-rule);padding:22px 0;">
+            <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:center;">
+              <span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.1em;color:var(--pg-muted);width:34px;flex:0 0 auto;">{{ r.week }}</span>
+              <span style="width:10px;height:10px;border-radius:999px;background:var(--pg-strong);flex:0 0 auto;"></span>
+              <div style="flex:1 1 260px;min-width:200px;">
+                <p style="margin:0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:21px;letter-spacing:-.02em;line-height:1.25;">{{ r.title }}</p>
+                <p style="margin:4px 0 0;font-size:16px;color:var(--pg-muted);">{{ r.meta }}</p>
+              </div>
+              <span style="font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:28px;letter-spacing:-.03em;">{{ r.score }}</span>
+              <button type="button" onClick="{{ r.toggle }}" style="display:inline-flex;align-items:center;gap:8px;font:inherit;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;background:none;border:0;color:var(--pg-muted);cursor:pointer;min-height:44px;" style-hover="color:var(--pg-accent-text)">READ FEEDBACK<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+            </div>
+            <sc-if value="{{ r.open }}" hint-placeholder-val="{{ false }}">
+              <p style="margin:16px 0 0;padding:16px 18px;border-radius:14px;background:var(--pg-inset);border:1px solid var(--pg-rule);font-size:17px;line-height:1.55;color:var(--pg-body);max-width:60ch;">{{ r.feedback }}</p>
+            </sc-if>
+          </div>
+        </sc-for>
+        <div style="margin-top:40px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 22px;border-radius:16px;background:var(--pg-band);">
+          <span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--pg-muted);">SHOUTOUTS</span>
+          <span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.1em;color:var(--pg-muted);">00</span>
+        </div>
+      </section>
+
+      <div style="flex:0 1 380px;min-width:280px;width:100%;display:flex;flex-direction:column;gap:24px;">
+
+        <section id="lessons" data-port-region="lessons-panel" style="background:var(--pg-card);border:1px solid var(--pg-rule);border-radius:20px;padding:20px;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;">
+            <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--pg-muted);">LESSONS IN THIS TOPIC</span>
+            <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--pg-muted);">04</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px;">
+            <a href="#top" style="display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-radius:14px;background:var(--pg-tint);border:1px solid var(--pg-accent);text-decoration:none;">
+              <span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--pg-accent-text);padding-top:2px;">01</span>
+              <span style="display:block;">
+                <span style="display:block;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:18px;letter-spacing:-.02em;color:var(--pg-ink);">The gas exchange system</span>
+                <span style="display:block;margin-top:3px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-accent-text);">SET IN THIS WEEK'S ASSIGNMENT</span>
+              </span>
+            </a>
+            <a href="#top" style="display:flex;gap:14px;align-items:center;padding:14px 16px;border-radius:14px;border:1px solid var(--pg-rule);text-decoration:none;" style-hover="border-color:var(--pg-rule-strong);text-decoration:none">
+              <span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--pg-muted);">02</span>
+              <span style="font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:18px;letter-spacing:-.02em;color:var(--pg-ink);">Pressure in gases</span>
+            </a>
+            <a href="#top" style="display:flex;gap:14px;align-items:center;padding:14px 16px;border-radius:14px;border:1px solid var(--pg-rule);text-decoration:none;" style-hover="border-color:var(--pg-rule-strong);text-decoration:none">
+              <span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--pg-muted);">03</span>
+              <span style="font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:18px;letter-spacing:-.02em;color:var(--pg-ink);">Chemical reactions</span>
+            </a>
+            <a href="#top" style="display:flex;gap:14px;align-items:center;padding:14px 16px;border-radius:14px;border:1px solid var(--pg-rule);text-decoration:none;" style-hover="border-color:var(--pg-rule-strong);text-decoration:none">
+              <span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--pg-muted);">04</span>
+              <span style="font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:18px;letter-spacing:-.02em;color:var(--pg-ink);">The particle model</span>
+            </a>
+          </div>
+        </section>
+
+        <section id="recall" data-port-region="sidebar-flashcards" data-port-change="C2 replaces the dark RECALL card" style="position:relative;">
+          <div style="position:absolute;left:14px;right:14px;top:12px;height:40px;border-radius:18px;background:var(--b-ground);opacity:.34;"></div>
+          <div style="position:absolute;left:7px;right:7px;top:6px;height:40px;border-radius:19px;background:var(--b-ground);opacity:.62;"></div>
+          <button type="button" onClick="{{ openCards }}" style="position:relative;display:block;width:100%;text-align:left;font:inherit;cursor:pointer;border:0;padding:22px;border-radius:20px;background:var(--b-ground);color:var(--b-ink);transition:transform .16s;" style-hover="transform:translateY(-2px)">
+            <span style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;">
+              <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--b-ember);">FLASHCARDS</span>
+              <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--b-muted);">{{ cardCount }}</span>
+            </span>
+            <span style="display:block;margin-top:18px;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:23px;line-height:1.2;letter-spacing:-.025em;">{{ topFront }}</span>
+            <sc-if value="{{ topMine }}" hint-placeholder-val="{{ false }}">
+              <span style="display:inline-flex;align-items:center;gap:7px;margin-top:14px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.13em;padding:5px 10px;border-radius:999px;border:1px solid var(--b-rule);color:var(--b-muted);"><span style="width:5px;height:5px;border-radius:999px;background:var(--b-ember);"></span>FROM YOUR WORK</span>
+            </sc-if>
+            <span style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px;padding-top:16px;border-top:1px solid var(--b-rule);">
+              <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--b-muted);">{{ stackPos }}</span>
+              <span style="width:34px;height:34px;border-radius:999px;background:var(--b-inset);display:grid;place-items:center;color:var(--b-ember);"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></span>
+            </span>
+          </button>
+        </section>
+
+      </div>
+    </div>
+
+    <section data-port-region="leaderboard" data-port-change="C1 card + week chips take the bench theme" style="margin-top:72px;">
+      <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;">
+        <p style="margin:0;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--pg-muted);">LEADERBOARD &nbsp;&nbsp; CURRENT WEEK</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <sc-for list="{{ lbchips }}" as="c" hint-placeholder-count="5">
+            <button type="button" class="lbchip" data-on="{{ c.on }}" onClick="{{ c.pick }}" style="font:inherit;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;padding:10px 14px;min-height:40px;border-radius:11px;border:1px solid var(--lb-edge,var(--pg-rule));background:var(--lb-bg,var(--pg-card));color:var(--lb-ink,var(--pg-muted));cursor:pointer;">{{ c.label }}</button>
+          </sc-for>
+          <button type="button" style="font:inherit;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;padding:10px 16px;min-height:40px;border-radius:11px;border:1px solid var(--pg-rule-strong);background:var(--pg-band);color:var(--pg-muted);cursor:pointer;">SHOW TOP 10</button>
+        </div>
+      </div>
+      <div style="height:1px;background:var(--pg-rule);margin:14px 0 24px;"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:32px;align-items:stretch;">
+        <div style="flex:0 1 460px;min-width:280px;border-radius:22px;overflow:hidden;background:var(--b-ground);position:relative;">
+          <div style="height:9px;background:repeating-linear-gradient(115deg,var(--b-accent) 0 13px,#A93411 13px 26px);"></div>
+          <div style="padding:22px 24px 26px;position:relative;">
+            <span style="position:absolute;right:-6px;bottom:-34px;pointer-events:none;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:150px;line-height:1;letter-spacing:-.05em;color:var(--b-ink);opacity:.05;">01</span>
+            <p style="margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--b-ember);">TOP OF WEEK 01</p>
+            <div style="display:flex;align-items:center;gap:16px;margin-top:20px;position:relative;">
+              <span style="width:72px;height:72px;border-radius:999px;border:3px solid var(--b-accent);background:var(--b-inset);display:grid;place-items:center;font-family:'DM Mono',monospace;font-size:16px;letter-spacing:.06em;color:var(--b-ink);">RA</span>
+              <span style="display:block;">
+                <span style="display:block;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:24px;letter-spacing:-.02em;color:var(--b-ink);">Rae A.</span>
+                <span style="display:block;margin-top:2px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--b-muted);">8r/Sc1</span>
+              </span>
+            </div>
+            <p style="margin:22px 0 0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--b-muted);">POINTS &nbsp; 240</p>
+          </div>
+        </div>
+        <div style="flex:1 1 320px;min-width:240px;display:flex;flex-direction:column;justify-content:space-between;gap:20px;padding-top:6px;">
+          <div style="height:1px;background:var(--pg-rule);"></div>
+          <p style="margin:0;text-align:right;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);">RESETS EVERY MONDAY 00:00</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <sc-if value="{{ accountOpen }}" hint-placeholder-val="{{ false }}">
+    <div data-port-region="account-sheet" data-port-change="C1 bench theme control lives here" data-screen-label="Account sheet" style="position:fixed;inset:0;z-index:40;background:rgba(59,42,32,.55);display:flex;justify-content:flex-end;animation:fcIn .18s both;">
+      <div style="width:min(460px,100%);height:100%;overflow:auto;background:var(--pg-ground);border-left:1px solid var(--pg-rule-strong);padding:26px 28px 48px;animation:fcUp .22s both;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;">
+          <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--pg-muted);">ACCOUNT</span>
+          <button type="button" onClick="{{ closeAll }}" title="Close" style="width:44px;height:44px;border-radius:12px;border:1px solid var(--pg-rule);background:var(--pg-card);color:var(--pg-ink);display:grid;place-items:center;cursor:pointer;" style-hover="background:var(--pg-band)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;margin-top:24px;">
+          <span style="width:52px;height:52px;border-radius:999px;border:1px solid var(--pg-rule-strong);background:var(--pg-band);display:grid;place-items:center;font-family:'DM Mono',monospace;font-size:14px;letter-spacing:.06em;">AY</span>
+          <span style="display:block;">
+            <span style="display:block;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:26px;letter-spacing:-.03em;">AY</span>
+            <span style="display:block;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-muted);">8r/Sc1 &nbsp;·&nbsp; SCIENCE</span>
+          </span>
+        </div>
+        <div style="margin-top:28px;border-top:1px solid var(--pg-rule);">
+          <div style="display:flex;justify-content:space-between;gap:16px;padding:15px 0;border-bottom:1px solid var(--pg-rule);"><span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);">TEACHER</span><span style="font-weight:600;">Mr Badmus</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;padding:15px 0;border-bottom:1px solid var(--pg-rule);"><span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);">TERM</span><span style="font-weight:600;">Summer &nbsp;·&nbsp; Week 01 / 39</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;padding:15px 0;border-bottom:1px solid var(--pg-rule);"><span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);">EMAIL</span><span style="font-weight:600;">ay@school.uk</span></div>
+        </div>
+        <div style="margin-top:32px;">
+          <p style="margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--pg-muted);">BENCH THEME</p>
+          <p style="margin:8px 0 0;font-size:16px;color:var(--pg-body);">Sets the bench, the week spine and the leaderboard card.</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:16px;">
+            <button type="button" class="sw" data-on="{{ isClay }}" onClick="{{ pickClay }}" style="font:inherit;text-align:left;padding:0;border:1px solid var(--pg-rule);border-radius:14px;overflow:hidden;background:var(--pg-card);cursor:pointer;">
+              <span style="display:block;height:58px;background:var(--t-clay);position:relative;"><span style="position:absolute;left:12px;top:16px;width:52px;height:4px;border-radius:2px;background:#FBF3E6;opacity:.9;"></span><span style="position:absolute;left:12px;top:28px;width:30px;height:4px;border-radius:2px;background:#E4572E;"></span><span class="swtick" style="position:absolute;right:8px;top:8px;width:20px;height:20px;border-radius:999px;background:#FBF3E6;color:#6B4A33;display:grid;place-items:center;opacity:var(--tick-o,0);"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"></path></svg></span></span>
+              <span style="display:block;padding:10px 12px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-ink);">CLAY</span>
+            </button>
+            <button type="button" class="sw" data-on="{{ isChalk }}" onClick="{{ pickChalk }}" style="font:inherit;text-align:left;padding:0;border:1px solid var(--pg-rule);border-radius:14px;overflow:hidden;background:var(--pg-card);cursor:pointer;">
+              <span style="display:block;height:58px;background:var(--t-chalk);position:relative;"><span style="position:absolute;left:12px;top:16px;width:52px;height:4px;border-radius:2px;background:#221E1B;opacity:.85;"></span><span style="position:absolute;left:12px;top:28px;width:30px;height:4px;border-radius:2px;background:#E4572E;"></span><span class="swtick" style="position:absolute;right:8px;top:8px;width:20px;height:20px;border-radius:999px;background:#221E1B;color:#EFE2CB;display:grid;place-items:center;opacity:var(--tick-o,0);"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"></path></svg></span></span>
+              <span style="display:block;padding:10px 12px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-ink);">CHALK</span>
+            </button>
+            <button type="button" class="sw" data-on="{{ isMoss }}" onClick="{{ pickMoss }}" style="font:inherit;text-align:left;padding:0;border:1px solid var(--pg-rule);border-radius:14px;overflow:hidden;background:var(--pg-card);cursor:pointer;">
+              <span style="display:block;height:58px;background:var(--t-moss);position:relative;"><span style="position:absolute;left:12px;top:16px;width:52px;height:4px;border-radius:2px;background:#FBF3E6;opacity:.9;"></span><span style="position:absolute;left:12px;top:28px;width:30px;height:4px;border-radius:2px;background:#E4572E;"></span><span class="swtick" style="position:absolute;right:8px;top:8px;width:20px;height:20px;border-radius:999px;background:#FBF3E6;color:#294036;display:grid;place-items:center;opacity:var(--tick-o,0);"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"></path></svg></span></span>
+              <span style="display:block;padding:10px 12px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-ink);">MOSS</span>
+            </button>
+            <button type="button" class="sw" data-on="{{ isHarbour }}" onClick="{{ pickHarbour }}" style="font:inherit;text-align:left;padding:0;border:1px solid var(--pg-rule);border-radius:14px;overflow:hidden;background:var(--pg-card);cursor:pointer;">
+              <span style="display:block;height:58px;background:var(--t-harbour);position:relative;"><span style="position:absolute;left:12px;top:16px;width:52px;height:4px;border-radius:2px;background:#FBF3E6;opacity:.9;"></span><span style="position:absolute;left:12px;top:28px;width:30px;height:4px;border-radius:2px;background:#E4572E;"></span><span class="swtick" style="position:absolute;right:8px;top:8px;width:20px;height:20px;border-radius:999px;background:#FBF3E6;color:#20363F;display:grid;place-items:center;opacity:var(--tick-o,0);"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"></path></svg></span></span>
+              <span style="display:block;padding:10px 12px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-ink);">HARBOUR</span>
+            </button>
+            <button type="button" class="sw" data-on="{{ isDamson }}" onClick="{{ pickDamson }}" style="font:inherit;text-align:left;padding:0;border:1px solid var(--pg-rule);border-radius:14px;overflow:hidden;background:var(--pg-card);cursor:pointer;">
+              <span style="display:block;height:58px;background:var(--t-damson);position:relative;"><span style="position:absolute;left:12px;top:16px;width:52px;height:4px;border-radius:2px;background:#FBF3E6;opacity:.9;"></span><span style="position:absolute;left:12px;top:28px;width:30px;height:4px;border-radius:2px;background:#E4572E;"></span><span class="swtick" style="position:absolute;right:8px;top:8px;width:20px;height:20px;border-radius:999px;background:#FBF3E6;color:#38243A;display:grid;place-items:center;opacity:var(--tick-o,0);"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"></path></svg></span></span>
+              <span style="display:block;padding:10px 12px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-ink);">DAMSON</span>
+            </button>
+            <button type="button" class="sw" data-on="{{ isGraphite }}" onClick="{{ pickGraphite }}" style="font:inherit;text-align:left;padding:0;border:1px solid var(--pg-rule);border-radius:14px;overflow:hidden;background:var(--pg-card);cursor:pointer;">
+              <span style="display:block;height:58px;background:var(--t-graphite);position:relative;"><span style="position:absolute;left:12px;top:16px;width:52px;height:4px;border-radius:2px;background:#FBF3E6;opacity:.9;"></span><span style="position:absolute;left:12px;top:28px;width:30px;height:4px;border-radius:2px;background:#E4572E;"></span><span class="swtick" style="position:absolute;right:8px;top:8px;width:20px;height:20px;border-radius:999px;background:#FBF3E6;color:#1A1512;display:grid;place-items:center;opacity:var(--tick-o,0);"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"></path></svg></span></span>
+              <span style="display:block;padding:10px 12px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-ink);">GRAPHITE</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ cardsOpen }}" hint-placeholder-val="{{ false }}">
+    <div data-port-region="flashcards-overlay" data-port-change="C2 new surface" data-screen-label="Flashcards" style="position:fixed;inset:0;z-index:50;background:rgba(59,42,32,.62);display:flex;align-items:center;justify-content:center;padding:0;animation:fcIn .18s both;">
+      <div style="width:390px;max-width:100%;height:min(100%,760px);background:var(--pg-ground);display:flex;flex-direction:column;border-radius:0;overflow:hidden;animation:fcUp .24s both;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--pg-rule);background:var(--pg-card);">
+          <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--pg-muted);">FLASHCARDS &nbsp;·&nbsp; 8r/Sc1</span>
+          <span style="display:flex;align-items:center;gap:10px;">
+            <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--pg-muted);">{{ stackPos }}</span>
+            <button type="button" onClick="{{ closeAll }}" title="Close" style="width:44px;height:44px;border-radius:12px;border:1px solid var(--pg-rule);background:var(--pg-ground);color:var(--pg-ink);display:grid;place-items:center;cursor:pointer;" style-hover="background:var(--pg-band)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+          </span>
+        </div>
+        <div style="flex:1 1 auto;padding:18px;display:flex;flex-direction:column;gap:16px;min-height:0;">
+          <div style="display:flex;gap:6px;">
+            <sc-for list="{{ pips }}" as="p" hint-placeholder-count="6">
+              <span class="pip" data-on="{{ p.on }}" style="flex:1 1 auto;height:3px;border-radius:2px;background:var(--pip-bg,var(--pg-rule));"></span>
+            </sc-for>
+          </div>
+          <div style="flex:1 1 auto;perspective:1400px;min-height:300px;">
+            <div class="fcflip" data-flip="{{ flipOn }}" style="position:relative;width:100%;height:100%;transform-style:preserve-3d;">
+              <button type="button" onClick="{{ flip }}" style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;font:inherit;text-align:left;cursor:pointer;border:0;border-radius:22px;padding:24px;background:var(--b-ground);color:var(--b-ink);display:flex;flex-direction:column;gap:14px;">
+                <span style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                  <span style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--b-ember);">{{ card.tag }}</span>
+                  <sc-if value="{{ card.mine }}" hint-placeholder-val="{{ false }}">
+                    <span style="display:inline-flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;padding:5px 10px;border-radius:999px;border:1px solid var(--b-rule);color:var(--b-muted);"><span style="width:5px;height:5px;border-radius:999px;background:var(--b-ember);"></span>FROM YOUR WORK</span>
+                  </sc-if>
+                </span>
+                <span style="display:block;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:29px;line-height:1.15;letter-spacing:-.03em;">{{ card.front }}</span>
+                <sc-if value="{{ card.triangle }}" hint-placeholder-val="{{ false }}">
+                  <span style="display:block;color:var(--b-muted);">
+                    <svg viewBox="0 0 120 104" width="118" height="102" aria-hidden="true"><path d="M60 7 L110 95 L10 95 Z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"></path><path d="M32 60 H88" stroke="currentColor" stroke-width="2.4"></path><path d="M60 60 V95" stroke="currentColor" stroke-width="2.4"></path><text x="60" y="48" text-anchor="middle" font-size="23" fill="currentColor" font-family="DM Mono, monospace">F</text><text x="40" y="85" text-anchor="middle" font-size="21" fill="currentColor" font-family="DM Mono, monospace">p</text><text x="82" y="85" text-anchor="middle" font-size="21" fill="currentColor" font-family="DM Mono, monospace">A</text></svg>
+                  </span>
+                </sc-if>
+                <span style="display:flex;align-items:center;gap:8px;margin-top:auto;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--b-muted);">{{ card.topic }}</span>
+              </button>
+              <div style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);border-radius:22px;padding:24px;background:var(--b-inset);color:var(--b-ink);display:flex;flex-direction:column;gap:14px;">
+                <span style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--b-ember);">ANSWER</span>
+                <span style="display:block;font-size:21px;line-height:1.45;font-weight:600;">{{ card.back }}</span>
+                <sc-if value="{{ card.arrow }}" hint-placeholder-val="{{ false }}">
+                  <span style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-family:'DM Mono',monospace;font-size:15px;letter-spacing:.02em;color:var(--b-ink);">
+                    <span>{{ card.eqLeft }}</span>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--b-ember)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h16M13 6l6 6-6 6"></path></svg>
+                    <span>{{ card.eqRight }}</span>
+                  </span>
+                </sc-if>
+                <span style="margin-top:auto;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--b-muted);">{{ card.topic }}</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;">
+            <button type="button" onClick="{{ flip }}" style="flex:1 1 auto;font:inherit;font-size:17px;font-weight:700;min-height:52px;border-radius:14px;border:1.5px solid var(--pg-ink);background:var(--pg-card);color:var(--pg-ink);cursor:pointer;" style-hover="background:var(--pg-band)">{{ flipLabel }}</button>
+            <button type="button" onClick="{{ next }}" style="flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:10px;font:inherit;font-size:17px;font-weight:700;min-height:52px;border-radius:14px;border:0;background:var(--pg-accent-text);color:#FFF7EC;cursor:pointer;" style-hover="background:var(--pg-accent-hover)">Next<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ recallOpen }}" hint-placeholder-val="{{ false }}">
+    <div data-port-region="recall-round" data-port-change="C2b bench 'Practise recall' lands here" data-screen-label="Recall round" style="position:fixed;inset:0;z-index:45;overflow:auto;background:var(--pg-ground);color:var(--pg-ink);font-family:'Instrument Sans',system-ui,sans-serif;">
+      <div style="height:5px;background:var(--pg-strong)"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;padding:13px 32px;background:var(--pg-band);border-bottom:1px solid var(--pg-rule);font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.13em;color:var(--pg-muted);">
+        <span>8r/Sc1 &nbsp;·&nbsp; RECALL</span>
+        <span>UNLIMITED ROUNDS</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:center;padding:18px 32px;border-bottom:1px solid var(--pg-rule);background:var(--pg-card);">
+        <button type="button" onClick="{{ closeRecall }}" style="display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:15px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:12px;border:1px solid var(--pg-rule-strong);background:var(--pg-ground);color:var(--pg-ink);cursor:pointer;" style-hover="background:var(--pg-band)"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>8r/Sc1</button>
+        <div>
+          <p style="margin:0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:26px;letter-spacing:-.03em;line-height:1;">Recall</p>
+          <p style="margin:6px 0 0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);">{{ roundLabel }} &nbsp;·&nbsp; UNLIMITED ROUNDS</p>
+        </div>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:14px;">
+          <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--pg-muted);">QUESTION {{ qPos }}</span>
+          <span style="display:block;width:150px;height:3px;background:var(--pg-rule);border-radius:2px;overflow:hidden;"><span class="rprog" data-w="{{ qStep }}" style="display:block;height:3px;width:var(--rp-w,0%);background:var(--pg-accent);"></span></span>
+        </div>
+      </div>
+
+      <div style="max-width:1320px;margin:0 auto;padding:32px;display:flex;flex-wrap:wrap;gap:28px;align-items:stretch;">
+        <div style="flex:1 1 560px;min-width:290px;border-radius:24px;background:var(--b-ground);color:var(--b-ink);padding:30px 32px 32px;display:flex;flex-direction:column;gap:26px;">
+          <sc-if value="{{ inRound }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:26px;">
+              <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;">
+                <span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--b-ember);">QUESTION {{ qPos }} &nbsp;·&nbsp; {{ q.topic }}</span>
+                <span style="display:flex;gap:5px;">
+                  <sc-for list="{{ qpips }}" as="p" hint-placeholder-count="6">
+                    <span class="pip" data-on="{{ p.on }}" style="width:22px;height:4px;border-radius:2px;background:var(--pip-bg,var(--b-rule));"></span>
+                  </sc-for>
+                </span>
+              </div>
+              <h2 style="margin:0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:clamp(30px,3.4vw,44px);line-height:1.1;letter-spacing:-.035em;max-width:26ch;">{{ q.q }}</h2>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:auto;">
+                <sc-for list="{{ opts }}" as="o" hint-placeholder-count="4">
+                  <button type="button" class="opt" data-st="{{ o.st }}" onClick="{{ o.pick }}" style="display:flex;align-items:center;gap:14px;font:inherit;font-size:18px;font-weight:600;text-align:left;padding:16px 18px;min-height:60px;border-radius:16px;border:1.5px solid var(--opt-edge,var(--b-rule));background:var(--opt-bg,transparent);color:var(--b-ink);cursor:pointer;">
+                    <span style="width:30px;height:30px;flex:0 0 auto;border-radius:9px;display:grid;place-items:center;background:var(--opt-mark-bg,var(--b-inset));color:var(--opt-mark-ink,var(--b-muted));font-family:'DM Mono',monospace;font-size:12px;">{{ o.letter }}</span>
+                    <span style="flex:1 1 auto;">{{ o.label }}</span>
+                    <sc-if value="{{ o.right }}" hint-placeholder-val="{{ false }}">
+                      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#12A150" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+                    </sc-if>
+                  </button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ checked }}" hint-placeholder-val="{{ false }}">
+                <p style="margin:0;padding:16px 18px;border-radius:14px;background:var(--b-inset);font-size:17px;line-height:1.55;color:var(--b-ink);"><span style="font-weight:700;">{{ verdict }}</span> {{ q.note }}</p>
+              </sc-if>
+              <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
+                <sc-if value="{{ canCheck }}" hint-placeholder-val="{{ true }}">
+                  <button type="button" onClick="{{ check }}" style="display:inline-flex;align-items:center;gap:10px;font:inherit;font-size:17px;font-weight:700;padding:15px 24px;min-height:44px;border-radius:14px;border:1px solid var(--b-edge);background:var(--b-cta);color:var(--b-cta-ink);cursor:pointer;" style-hover="background:#A93411">Check<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
+                </sc-if>
+                <sc-if value="{{ checked }}" hint-placeholder-val="{{ false }}">
+                  <button type="button" onClick="{{ nextQ }}" style="display:inline-flex;align-items:center;gap:10px;font:inherit;font-size:17px;font-weight:700;padding:15px 24px;min-height:44px;border-radius:14px;border:1px solid var(--b-edge);background:var(--b-cta);color:var(--b-cta-ink);cursor:pointer;" style-hover="background:#A93411">{{ nextLabel }}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
+                </sc-if>
+                <button type="button" onClick="{{ skipQ }}" style="font:inherit;font-size:17px;font-weight:700;padding:15px 22px;min-height:44px;border-radius:14px;border:1.5px solid var(--b-muted);background:transparent;color:var(--b-ink);cursor:pointer;" style-hover="border-color:var(--b-ink)">Skip</button>
+                <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--b-muted);">{{ streakLabel }}</span>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ roundDone }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:24px;">
+              <span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--b-ember);">{{ roundLabel }} DONE</span>
+              <p style="margin:0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:clamp(34px,4vw,54px);line-height:1;letter-spacing:-.04em;">{{ roundScore }} right</p>
+              <p style="margin:0;font-size:18px;line-height:1.55;color:var(--b-muted);max-width:34ch;">Go again as many times as you like. Nothing here is handed in.</p>
+              <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;">
+                <button type="button" onClick="{{ anotherRound }}" style="display:inline-flex;align-items:center;gap:10px;font:inherit;font-size:17px;font-weight:700;padding:15px 24px;min-height:44px;border-radius:14px;border:1px solid var(--b-edge);background:var(--b-cta);color:var(--b-cta-ink);cursor:pointer;" style-hover="background:#A93411">Another round<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
+                <button type="button" onClick="{{ closeRecall }}" style="font:inherit;font-size:17px;font-weight:700;padding:15px 22px;min-height:44px;border-radius:14px;border:1.5px solid var(--b-muted);background:transparent;color:var(--b-ink);cursor:pointer;" style-hover="border-color:var(--b-ink)">Back to my class</button>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="flex:0 1 340px;min-width:270px;border-radius:24px;background:var(--b-ground);color:var(--b-ink);padding:26px;display:flex;flex-direction:column;gap:22px;">
+          <span style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--b-ember);">THIS WEEK</span>
+          <div>
+            <p style="margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--b-muted);">ANSWERED</p>
+            <p style="margin:6px 0 0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:38px;letter-spacing:-.04em;line-height:1;">{{ answered }}</p>
+          </div>
+          <div style="height:1px;background:var(--b-rule);"></div>
+          <div style="display:flex;gap:26px;">
+            <div>
+              <p style="margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--b-muted);">BEST STREAK</p>
+              <p style="margin:6px 0 0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:30px;letter-spacing:-.03em;line-height:1;">{{ best }}</p>
+            </div>
+            <div>
+              <p style="margin:0;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.13em;color:var(--b-muted);">ROUNDS</p>
+              <p style="margin:6px 0 0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:30px;letter-spacing:-.03em;line-height:1;">{{ rounds }}</p>
+            </div>
+          </div>
+          <div style="height:1px;background:var(--b-rule);"></div>
+          <p style="margin:0;font-size:16px;line-height:1.6;color:var(--b-muted);">Recall counts for 20 of the 100 points on the leaderboard. Rounds are unlimited and do not need handing in.</p>
+          <button type="button" onClick="{{ closeRecall }}" style="margin-top:auto;font:inherit;font-size:16px;font-weight:700;padding:14px 18px;min-height:44px;border-radius:14px;border:1.5px solid var(--b-muted);background:transparent;color:var(--b-ink);cursor:pointer;" style-hover="border-color:var(--b-ink)">Open the assignment instead</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showBar }}" hint-placeholder-val="{{ true }}">
+    <div data-port-ignore="1" style="position:fixed;right:16px;bottom:16px;z-index:60;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;background:var(--pg-card);border:1px solid var(--pg-rule-strong);box-shadow:0 6px 18px rgba(34,30,27,.14);">
+      <span style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--pg-muted);">STATES</span>
+      <button type="button" class="stbtn" data-on="{{ benchOpenOn }}" onClick="{{ setOpen }}" style="font:inherit;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;padding:8px 10px;border-radius:9px;border:1px solid var(--st-edge,var(--pg-rule));background:var(--st-bg,var(--pg-ground));color:var(--st-ink,var(--pg-muted));cursor:pointer;">BENCH OPEN</button>
+      <button type="button" class="stbtn" data-on="{{ benchDoneOn }}" onClick="{{ setDone }}" style="font:inherit;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;padding:8px 10px;border-radius:9px;border:1px solid var(--st-edge,var(--pg-rule));background:var(--st-bg,var(--pg-ground));color:var(--st-ink,var(--pg-muted));cursor:pointer;">BENCH DONE</button>
+      <button type="button" onClick="{{ openCards }}" style="font:inherit;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;padding:8px 10px;border-radius:9px;border:1px solid var(--pg-rule);background:var(--pg-ground);color:var(--pg-muted);cursor:pointer;">FLASHCARDS</button>
+      <button type="button" onClick="{{ openRecall }}" style="font:inherit;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;padding:8px 10px;border-radius:9px;border:1px solid var(--pg-rule);background:var(--pg-ground);color:var(--pg-muted);cursor:pointer;">RECALL ROUND</button>
+      <button type="button" onClick="{{ openAccount }}" style="font:inherit;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;padding:8px 10px;border-radius:9px;border:1px solid var(--pg-rule);background:var(--pg-ground);color:var(--pg-muted);cursor:pointer;">THEME</button>
+      <button type="button" onClick="{{ cycleTheme }}" style="font:inherit;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;padding:8px 10px;border-radius:9px;border:1px solid var(--pg-ink);background:var(--pg-ink);color:var(--pg-ground);cursor:pointer;">{{ themeLabel }}</button>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;benchTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;harbour&quot;,&quot;clay&quot;,&quot;chalk&quot;,&quot;moss&quot;,&quot;damson&quot;,&quot;graphite&quot;],&quot;default&quot;:&quot;harbour&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bench&quot;},&quot;benchState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;open&quot;,&quot;done&quot;],&quot;default&quot;:&quot;open&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bench&quot;},&quot;showStateBar&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Delivery&quot;}}">
+class Component extends DCLogic {
+  state = {
+    theme: this.props.benchTheme || 'harbour',
+    bench: this.props.benchState || 'open',
+    week: 1, filter: 'ALL', lbweek: 'W01',
+    account: false, cards: false, idx: 0, flipped: false, openRow: null,
+    recall: false, qi: 0, picked: null, checked: false, roundNo: 1,
+    answered: 0, streak: 0, best: 0, rounds: 0, roundScore: 0, roundDone: false,
+  };
+
+  // Sample of the recall bank. The live bank is generated from every lesson the
+  // class has covered — hundreds of questions; six are drawn per round.
+  bank() {
+    return [
+      { topic: 'BREATHING AND GAS EXCHANGE', q: 'A plant in a dark cupboard is releasing carbon dioxide. Which of the three processes is it carrying out?', options: ['Breathing', 'Respiration', 'Gas exchange only', 'All three'], answer: 1, note: 'Plants respire day and night; they do not breathe.' },
+      { topic: 'PRESSURE', q: 'A fixed amount of gas is squeezed into half the space. What happens to its pressure?', options: ['It halves', 'It doubles', 'It stays the same', 'It drops to zero'], answer: 1, note: 'Same particles, smaller space, more collisions.' },
+      { topic: 'GAS EXCHANGE', q: 'Which feature would make a gas exchange surface worse?', options: ['Thick walls', 'A large surface area', 'A good blood supply', 'A moist surface'], answer: 0, note: 'Thick walls make the diffusion distance longer — thin walls keep it short.' },
+      { topic: 'CHEMICAL REACTIONS', q: 'Magnesium burns in oxygen. What is the product?', options: ['Magnesium oxide', 'Magnesium hydroxide', 'Magnesium carbonate', 'Magnesium chloride'], answer: 0, note: 'Metal + oxygen gives a metal oxide.' },
+      { topic: 'PARTICLE MODEL', q: 'Which state has particles close together that can still move past each other?', options: ['Solid', 'Liquid', 'Gas', 'None of them'], answer: 1, note: 'Close packed, but not fixed in place.' },
+      { topic: 'PRESSURE', q: 'A force of 20 N presses on 4 m2. What is the pressure?', options: ['5 Pa', '80 Pa', '24 Pa', '0.2 Pa'], answer: 0, note: 'p = F / A, so 20 / 4.' },
+      { topic: 'GAS EXCHANGE', q: 'Where in the lungs does gas exchange happen?', options: ['The trachea', 'The bronchi', 'The alveoli', 'The diaphragm'], answer: 2, note: 'Millions of tiny air sacs, each with a thin wall.' },
+      { topic: 'CHEMICAL REACTIONS', q: 'What is always conserved in a chemical reaction?', options: ['Mass', 'Colour', 'Volume', 'Temperature'], answer: 0, note: 'No atoms are made or lost, only rearranged.' },
+    ];
+  }
+
+  round() {
+    const bank = this.bank();
+    const start = ((this.state.roundNo - 1) * 6) % bank.length;
+    return Array.from({ length: 6 }, (_, i) => bank[(start + i) % bank.length]);
+  }
+
+  componentDidUpdate(prev) {
+    if (prev.benchTheme !== this.props.benchTheme && this.props.benchTheme) this.setState({ theme: this.props.benchTheme });
+    if (prev.benchState !== this.props.benchState && this.props.benchState) this.setState({ bench: this.props.benchState });
+  }
+
+  reduced() {
+    return typeof window !== 'undefined' && window.matchMedia
+      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
+  }
+
+  deck() {
+    return [
+      { tag: 'DEFINITION', topic: 'GAS EXCHANGE', front: 'Define diffusion.', back: 'The net movement of particles from where they are more concentrated to where they are less concentrated.', mine: false },
+      { tag: 'KEY FACT', topic: 'GAS EXCHANGE', front: 'Three things that make a gas exchange surface efficient.', back: 'A large surface area. Thin walls. A good blood supply.', mine: true },
+      { tag: 'EQUATION', topic: 'PRESSURE', front: 'Pressure, force, area — which one sits on top?', back: 'Force sits on top: p = F / A.', mine: false, triangle: true },
+      { tag: 'EQUATION', topic: 'CHEMICAL REACTIONS', front: 'Write the word equation for magnesium burning in oxygen.', back: '', mine: true, arrow: true, eqLeft: 'magnesium + oxygen', eqRight: 'magnesium oxide' },
+      { tag: 'DEFINITION', topic: 'GAS EXCHANGE', front: 'Define ventilation.', back: 'Moving air into and out of the lungs.', mine: false },
+      { tag: 'KEY FACT', topic: 'PRESSURE', front: 'A fixed amount of gas is squeezed into a smaller space. What happens to the pressure?', back: 'It goes up. The same particles hit a smaller area more often.', mine: false },
+    ];
+  }
+
+  set(k, v) { this.setState({ [k]: v }); }
+
+  renderVals() {
+    const s = this.state;
+    const deck = this.deck();
+    const idx = ((s.idx % deck.length) + deck.length) % deck.length;
+    const card = deck[idx];
+    const pad = (n) => (n < 10 ? '0' + n : '' + n);
+
+    const weeks = Array.from({ length: 12 }, (_, i) => {
+      const n = i + 1;
+      return {
+        label: pad(n), sel: s.week === n ? '1' : '0', now: n === 4, later: n !== 4,
+        title: 'Week ' + pad(n),
+        pick: () => this.set('week', n),
+      };
+    });
+
+    const tabLabels = [['ALL', 'ALL  2'], ['TODO', 'TO DO  0'], ['MARKED', 'MARKED  2']];
+    const tabs = tabLabels.map(([id, label]) => ({
+      label, on: s.filter === id ? '1' : '0', pick: () => this.set('filter', id),
+    }));
+
+    const rowData = [
+      { week: 'W01', title: 'Breathing and gas exchange · Pressure · Chemical reactions', meta: '4 questions', score: '50%', feedback: 'Two of four. Your diffusion answer needs the words "high to low concentration" to earn the mark — the rest was solid.' },
+      { week: 'W01', title: 'Particle model — recall and apply', meta: '2 marks', score: '50%', feedback: 'One of two. Say what happens to the spacing between particles, not just that they "move more".' },
+    ];
+    const rows = rowData.map((r, i) => ({
+      ...r, open: s.openRow === i,
+      toggle: () => this.set('openRow', s.openRow === i ? null : i),
+    }));
+
+    const lbchips = ['W01', 'W02', 'W03', 'W04', 'TERM'].map((label) => ({
+      label, on: s.lbweek === label ? '1' : '0', pick: () => this.set('lbweek', label),
+    }));
+
+    const pips = deck.map((_, i) => ({ on: i <= idx ? '1' : '0' }));
+
+    const themes = ['clay', 'chalk', 'moss', 'harbour', 'damson', 'graphite'];
+    const pick = (t) => () => this.setState({ theme: t });
+
+    const round = this.round();
+    const q = round[Math.min(s.qi, 5)];
+    const optState = (i) => {
+      if (!s.checked) return s.picked === i ? 'picked' : 'idle';
+      if (i === q.answer) return 'correct';
+      return s.picked === i ? 'wrong' : 'idle';
+    };
+    const opts = q.options.map((label, i) => ({
+      label, letter: 'ABCD'[i], st: optState(i),
+      right: s.checked && i === q.answer,
+      pick: () => { if (!s.checked) this.setState({ picked: i }); },
+    }));
+    const gotIt = s.checked && s.picked === q.answer;
+    const advance = (scored) => {
+      const last = s.qi >= 5;
+      const streak = scored ? s.streak + 1 : 0;
+      this.setState({
+        answered: s.answered + 1,
+        streak, best: Math.max(s.best, streak),
+        roundScore: s.roundScore + (scored ? 1 : 0),
+        picked: null, checked: false,
+        qi: last ? 5 : s.qi + 1,
+        roundDone: last,
+        rounds: last ? s.rounds + 1 : s.rounds,
+      });
+    };
+
+    return {
+      theme: s.theme,
+      recallOpen: s.recall,
+      inRound: s.recall && !s.roundDone,
+      roundDone: s.roundDone,
+      roundLabel: 'ROUND ' + pad(s.roundNo),
+      roundScore: s.roundScore + ' / 6',
+      qPos: pad(Math.min(s.qi + 1, 6)) + ' / 06',
+      qStep: String(s.qi),
+      qpips: round.map((_, i) => ({ on: i <= s.qi ? '1' : '0' })),
+      q, opts,
+      checked: s.checked,
+      canCheck: !s.checked,
+      verdict: gotIt ? 'Correct.' : 'Not this time.',
+      nextLabel: s.qi >= 5 ? 'Finish the round' : 'Next question',
+      streakLabel: s.streak > 0 ? 'STREAK ' + pad(s.streak) : 'STREAK 00',
+      answered: pad(s.answered),
+      best: pad(s.best),
+      rounds: pad(s.rounds),
+      check: () => { if (s.picked !== null) this.setState({ checked: true }); },
+      nextQ: () => advance(s.picked === q.answer),
+      skipQ: () => advance(false),
+      anotherRound: () => this.setState({ roundNo: s.roundNo + 1, qi: 0, picked: null, checked: false, roundScore: 0, roundDone: false, streak: 0 }),
+      openRecall: () => this.setState({ recall: true, cards: false, account: false }),
+      closeRecall: () => this.setState({ recall: false }),
+      themeLabel: s.theme.toUpperCase(),
+      benchOpen: s.bench === 'open',
+      benchDone: s.bench === 'done',
+      benchOpenOn: s.bench === 'open' ? '1' : '0',
+      benchDoneOn: s.bench === 'done' ? '1' : '0',
+      showBar: this.props.showStateBar !== false,
+      weeks, tabs, rows, lbchips, pips,
+      cardCount: pad(deck.length),
+      stackPos: pad(idx + 1) + ' / ' + pad(deck.length),
+      topFront: card.front,
+      topMine: card.mine,
+      card,
+      flipOn: s.flipped ? '1' : '0',
+      flipLabel: s.flipped ? 'Hide' : 'Reveal',
+      flip: () => this.setState({ flipped: !s.flipped }),
+      next: () => this.setState({ idx: idx + 1, flipped: false }),
+      openCards: () => this.setState({ cards: true, account: false, flipped: false }),
+      openAccount: () => this.setState({ account: true, cards: false }),
+      closeAll: () => this.setState({ account: false, cards: false }),
+      accountOpen: s.account,
+      cardsOpen: s.cards,
+      setOpen: () => this.set('bench', 'open'),
+      setDone: () => this.set('bench', 'done'),
+      cycleTheme: () => this.setState({ theme: themes[(themes.indexOf(s.theme) + 1) % themes.length] }),
+      pickClay: pick('clay'), pickChalk: pick('chalk'), pickMoss: pick('moss'),
+      pickHarbour: pick('harbour'), pickDamson: pick('damson'), pickGraphite: pick('graphite'),
+      isClay: s.theme === 'clay' ? '1' : '0',
+      isChalk: s.theme === 'chalk' ? '1' : '0',
+      isMoss: s.theme === 'moss' ? '1' : '0',
+      isHarbour: s.theme === 'harbour' ? '1' : '0',
+      isDamson: s.theme === 'damson' ? '1' : '0',
+      isGraphite: s.theme === 'graphite' ? '1' : '0',
+    };
+  }
+}
+
+</script>
+</body>
+</html>

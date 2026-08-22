@@ -1131,50 +1131,41 @@ def main():
     # arrives red on other people's work gets switched off. One property, all
     # 103 lessons, pass/fail.
     #
-    # ⚠️ THE EXEMPTION LIST IS NAMED, COUNTED, AND IS NOT A LICENCE.
-    # B2's four lessons carry no vocabulary. They are `main`'s to fix — B2 is
-    # a shipped Biology unit and Biology is nobody's active lane
-    # (`docs/ks3/worktrees.md` §1), so a chemistry lane authoring cards into
-    # them would be reaching into a unit it does not own. They are exempted
-    # BY NAME so that the gate is red for anyone else and green for them, and
-    # the LENGTH of the list is asserted so a fifth cannot be appended
-    # quietly. An exemption that can grow is not an exemption, it is an
-    # off switch.
-    VOCAB_EXEMPT = {
-        ("B2", "what-the-skeleton-does"),
-        ("B2", "joints"),
-        ("B2", "antagonistic-muscle-pairs"),
-        ("B2", "biomechanics-forces-in-the-body"),
-    }
-    vocab_missing, vocab_seen, n_vocab_lessons = [], set(), 0
+    # ⊕ MRB-279, 21 Aug 2026 — THE EXEMPTION LIST IS GONE, AND THE GATE NOW
+    # COVERS ALL 103 LESSONS WITH NO NAMED ESCAPES.
+    #
+    # It used to hold B2's four — `what-the-skeleton-does`, `joints`,
+    # `antagonistic-muscle-pairs`, `biomechanics-forces-in-the-body` — exempted
+    # BY NAME with the length asserted at 4 so a fifth could not be appended
+    # quietly. They were exempted because B2 is a shipped Biology unit and
+    # Biology was nobody's active lane, so the chemistry lane that wrote this
+    # gate could not author into it without reaching into a unit it did not
+    # own. The exemption named `main` as the owner of the debt.
+    #
+    # `main` has now paid it: all four carry a vocabulary list and a keyword
+    # block. The rows are DELETED rather than left standing, which is what the
+    # `stale` branch above existed to force — an exemption that outlives its
+    # reason is a live licence for a lesson nobody is looking at any more.
+    #
+    # There is deliberately no list to add to. A lesson that ships without
+    # vocabulary now fails, and the only way to make it pass is to define its
+    # words.
+    vocab_missing, n_vocab_lessons = [], 0
     for u in units:
         for l in u["lessons"]:
             if not l.get("authored"):
                 continue
             n_vocab_lessons += 1
-            key = (u["code"], l["slug"])
             if l.get("vocabulary"):
                 continue
-            if key in VOCAB_EXEMPT:
-                vocab_seen.add(key)
-                continue
-            vocab_missing.append("%s/%s" % key)
-    stale = sorted("%s/%s" % k for k in (VOCAB_EXEMPT - vocab_seen))
+            vocab_missing.append("%s/%s" % (u["code"], l["slug"]))
     check("⊕ MRB-281 · every authored lesson names and defines its words",
-          not vocab_missing and not stale and len(VOCAB_EXEMPT) == 4,
-          "%d authored lesson(s) carry vocabulary; %d exempted BY NAME and "
-          "still owed by `main` (B2)"
-          % (n_vocab_lessons - len(VOCAB_EXEMPT), len(VOCAB_EXEMPT))
-          if not (vocab_missing or stale) else
-          "; ".join(filter(None, [
-              ("%d with NO vocabulary: %s"
-               % (len(vocab_missing), ", ".join(vocab_missing[:6])))
-              if vocab_missing else "",
-              ("%d exemption(s) no longer needed — delete the row rather "
-               "than leaving it: %s" % (len(stale), ", ".join(stale)))
-              if stale else "",
-              ("the exemption list has %d rows, not 4 — it may not grow"
-               % len(VOCAB_EXEMPT)) if len(VOCAB_EXEMPT) != 4 else ""])))
+          not vocab_missing,
+          "%d authored lesson(s) carry vocabulary — the whole key stage, no "
+          "exemptions" % n_vocab_lessons
+          if not vocab_missing else
+          "%d with NO vocabulary: %s"
+          % (len(vocab_missing), ", ".join(vocab_missing[:6])))
 
     print("\nAccessibility and device\n" + "=" * 60)
 
@@ -1221,9 +1212,24 @@ def main():
             if 'class="ks3-cards"' not in block:
                 continue
             before = block.split('<ul class="ks3-cards"')[0]
+            # ⊕ MRB-279, 21 Aug 2026 — THE HEADING COUNTS, AND IT DID NOT.
+            # This read `<p>` only, so a block that asks for the commitment in
+            # its HEADING read as a block that never asked. `c9-02`'s
+            # prediction deck is headed "Commit to an answer, then run it." —
+            # the ask is there, in words, before the cards, and more prominent
+            # than any paragraph — and the gate called the page cardless.
+            #
+            # What must be SAID is unchanged; only WHERE it may be said is
+            # widened, and only to the same region already searched (before the
+            # grid, inside the block). This is the treatment MRB-279 gave the
+            # done-list, which accepted an activity id and refused the section
+            # anchor that 51 misconceptions legitimately use: a check whose
+            # evidence set is narrower than the rule it enforces reports a
+            # correct page as a defect, and the fix is the check.
             texts = [re.sub(r"<[^>]+>", "", t).lower()
-                     for t in re.findall(r"<p(?![^>]*\bhidden\b)[^>]*>(.*?)</p>",
-                                         before, re.S)]
+                     for t in re.findall(
+                         r"<(?:p|h2|h3)(?![^>]*\bhidden\b)[^>]*>(.*?)</(?:p|h2|h3)>",
+                         before, re.S)]
             prompt = " ".join(texts)
             if not (any(c in prompt for c in COMMIT_CUES)
                     and ("tap" in prompt or "check" in prompt

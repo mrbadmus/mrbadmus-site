@@ -51,6 +51,15 @@
        whose only class finished in July — the working-year scope hides the
        second, and "this year" keeps the sentence honest for both. */
     noClass:    "You are not in a class this year yet. Your teacher will add you to one.",
+    /* ⊕ 23 Aug 2026 — the TIMEOUT sentence, and it is deliberately not
+       `generic`. `generic` says "just now" and "in a moment", which is right
+       for a request that was refused and wrong for one that was never
+       answered: a backend that has just spent 75 seconds not replying will not
+       be ready a moment later. This says what actually happened — we waited,
+       it did not come — and gives the advice that matches it. It is about the
+       student's class and the waiting they did, not about requests, servers or
+       timeouts (CLAUDE.md §8.10). */
+    slow:       "We waited for your class and it did not arrive. Try again in a minute or two.",
     pastYear:   "That class finished at the end of last year.",
     notMine:    "That class is not one of yours.",
     noRecall:   "There is nothing to look back over yet. Check again after your next lesson.",
@@ -60,12 +69,19 @@
 
   function host() { return document.getElementById(HOST_ID); }
 
-  function say(line) {
-    var el = host();
-    if (!el) { return; }
-    el.textContent = "";
+  /* One centred line in the host, in the page's own typeface. Both of the two
+     states this file can draw are made of it — the boot line below and `say()`
+     underneath — so they cannot drift apart in shape, only in colour.
+
+     ⚠️ EVERY TOKEN NAMED HERE CARRIES A LITERAL FALLBACK, and that is
+     load-bearing for the boot line rather than defensive. `--pg-*` and every
+     other page token live in a `:root` block INSIDE the compiled template, so
+     they do not exist until the page mounts; only `/shared/student-ds.css` —
+     a real `<link>` in the head — is loaded when the boot line paints, and
+     `--ks3-ink` / `--ks3-ink-muted` come from there. */
+  function panel(text, state, colour) {
     var wrap = document.createElement("div");
-    wrap.setAttribute("data-mrb-state", "unavailable");
+    wrap.setAttribute("data-mrb-state", state);
     wrap.style.cssText =
       "min-height:60vh;display:flex;align-items:center;justify-content:center;" +
       "padding:32px;box-sizing:border-box;";
@@ -73,10 +89,60 @@
     p.style.cssText =
       "margin:0;max-width:34ch;text-align:center;font:400 17px/1.55 " +
       "'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;" +
-      "color:var(--ks3-ink,#2A2018);";
-    p.textContent = line;
+      "color:" + colour + ";";
+    p.textContent = text;
     wrap.appendChild(p);
-    el.appendChild(wrap);
+    return wrap;
+  }
+
+  function say(line) {
+    var el = host();
+    if (!el) { return; }
+    el.textContent = "";
+    el.appendChild(panel(line, "unavailable", "var(--ks3-ink,#2A2018)"));
+  }
+
+  /* ── the boot line ─────────────────────────────────────────────────────
+     ⊕ 23 Aug 2026. Nothing on this page paints until every request has come
+     back — `window.__MRB_MOUNT__()` is the first thing that draws anything —
+     so a slow load was a WHITE PAGE with no explanation and no way to tell it
+     from a broken one. A student cannot wait for something that is not
+     visibly happening.
+
+     ⚠️ IT SAYS ONLY WHAT IS TRUE BEFORE ANY DATA HAS ARRIVED, WHICH IS TWO
+     WORDS. CLAUDE.md §8.10 forbids the page explaining itself to a student, so
+     "Loading your class…", a spinner's caption, "Connecting", "One moment" and
+     every other sentence about the software, the network or a wait are all
+     out. What is left is what the student came for: this is their class, and
+     on the assignment page it is their work. Both are true the instant the
+     page opens, both are true whatever comes back, and neither is a value —
+     under this file's own rule that nothing may INVENT student-visible
+     content, the only honest line at boot is one that contains no data at all.
+     Not a class name, not a teacher, not a count of anything.
+
+     It is drawn in the muted ink rather than the body ink so it reads as a
+     page that has not finished rather than as a message that has been given.
+
+     ⚠️ IT CANNOT SURVIVE THE MOUNT, structurally, and not by being tidied up.
+     It is a child of the host, and BOTH of the two ways out of `run()` empty
+     the host before they write into it: `student-runtime.js`'s `draw()` opens
+     with `host.textContent = ""` and then appends synchronously inside
+     `__MRB_MOUNT__()`, and `say()` above does the same. There is no third
+     exit, so there is no path on which a student sees this line beside real
+     content — including the case where the mount throws half-way, because that
+     lands in the catch, which calls `say()`. Removing it here as well would
+     add a blank frame between the clear and the paint and would look like the
+     guarantee while not being it. */
+  var BOOT = {
+    "class":      "Your class",
+    "assignment": "Your work"
+  };
+
+  function boot(page) {
+    var el = host();
+    if (!el || el.firstChild) { return; }   // never over the top of anything
+    el.appendChild(panel(BOOT[page] || BOOT["class"], "boot",
+                         "var(--ks3-ink-muted,#5F564F)"));
   }
 
   /* ── which page am I on? ────────────────────────────────────────────────
@@ -95,7 +161,35 @@
   }
 
   // ── loading the helpers ───────────────────────────────────────────────
-  function loadScript(src) {
+
+  /* ⚑ THE CACHE-BUST STAMP, FOR THE FILES THIS ONE LOADS ITSELF.
+
+     Every asset under /shared/ is served `max-age=14400, must-revalidate` —
+     four hours — while the pages themselves are `max-age=0`. So a page and the
+     scripts it pulls in can be four hours apart, and the failure is silent:
+     `student-data.js` is where `saveBenchTheme` and the academic-year scoping
+     live, and an old copy of it does not error, it just behaves like
+     yesterday.
+
+     The stamps cannot live in the DEPS list above, because this file is
+     hand-written source and the hashes are only knowable at build time. So
+     `build_student_port.py` publishes them onto the page as
+     `window.__MRB_ASSET_V__`, keyed on the BARE FILENAME — keyed on the full
+     path they would be rewritten by generate_site_v5.py's own cache-bust
+     regex, which matches `/shared/<name>"` wherever it occurs, including
+     inside a JSON key.
+
+     No map, no stamp, current behaviour: this file stays loadable by a page
+     that does not carry one. */
+  function stamped(src) {
+    var map = window.__MRB_ASSET_V__;
+    if (!map) { return src; }
+    var v = map[src.replace(/^\/shared\//, "")];
+    return v ? src + "?v=" + v : src;
+  }
+
+  function loadScript(rawSrc) {
+    var src = stamped(rawSrc);
     return new Promise(function (resolve, reject) {
       var existing = document.querySelector('script[src="' + src + '"]');
       if (existing && existing.getAttribute("data-mrb-loaded") === "1") {
@@ -371,6 +465,18 @@
     return "SUMMER TERM";
   }
 
+  /* "AUTUMN TERM" → "Autumn". ⊕ 23 Aug 2026 — PHASE 1b, for the account
+     sheet's TERM row, which Design sets in sentence case and beside a week
+     count rather than as the shouted crumb-rail label. Derived from the one
+     term label this file already computes rather than computed a second time:
+     two derivations of the same term is how the crumb rail and the sheet come
+     to disagree in March. */
+  function seasonOf(termLabel) {
+    var word = String(termLabel || "").split(" ")[0];
+    if (!word) { return ""; }
+    return word.charAt(0) + word.slice(1).toLowerCase();
+  }
+
   /* ── the backend ───────────────────────────────────────────────────────
      Bearer token from the live session. The response's `Date` header is the
      SERVER clock, and it is the only "now" this file trusts for deciding what
@@ -385,21 +491,94 @@
      exists to keep sharp. */
   var pendingSink = null;
 
+  /* ── THE DEADLINE EVERY BACKEND CALL NOW CARRIES ───────────────────────
+     ⊕ 23 Aug 2026. What was here was a bare `await fetch(...)`, and a bare
+     fetch has no timeout of any kind. A request that is never ANSWERED is
+     never REJECTED either, so `run()`'s catch — which only fires on a
+     rejection — never fires, `__MRB_MOUNT__()` is never reached, and nothing
+     is ever said. Driven and measured: a held-open backend request left this
+     page blank for 58 seconds and would have stayed blank for ever. The page
+     did not fail. It waited, silently, with no end.
+
+     THE TWO BUDGETS ARE NOT A TUNING PREFERENCE.
+
+     Render's free tier spins the backend down, and this repo already writes
+     down what that costs: `student_page_drive.wait_for_mount()` budgets
+     SEVENTY-FIVE SECONDS for the whole mount, because "the first request of
+     the day takes the better part of a minute to come back". A deadline
+     shorter than that would turn a slow-but-working cold start into a
+     failure — the page would tell a student it could not load a class that
+     was on its way. So the first request of a page load is given that whole
+     75 seconds to itself: strictly more generous than the budget the drive
+     already allows for every request put together, which is what makes it
+     impossible for this change to fail a load that used to succeed.
+
+     THE SPIN-UP IS PAID ONCE. After any request has come back the instance is
+     awake, and a second request still unanswered 25 seconds later is stuck,
+     not starting up — the measured warm response on these routes is under two
+     seconds, so the warm budget is more than ten times the worst seen.
+     Carrying the cold budget into every request would cost a student 75
+     seconds PER REQUEST in front of a dead backend instead of 75 once.
+
+     ⚠️ WRITES KEEP THE COLD BUDGET, ALWAYS — see `post()` in the sink. A tab
+     left open long enough for the instance to spin down again is not a cold
+     start, it is a cold RESTART, and the warm budget would abort a save that
+     was going to succeed. Nothing is watching a save the way a student watches
+     a paint. */
+  var COLD_MS = 75000;
+  var WARM_MS = 25000;
+  var backendWoken = false;
+
+  /* ⚠️ A TIMEOUT MUST BE TELLABLE FROM EVERY OTHER FAILURE, or the page says
+     "try again in a moment" about a backend that is not coming back for
+     minutes. `signal.aborted` is the test rather than the error's name: only
+     this timer ever aborts these requests, so it cannot be confused with a
+     network error that happens to be called something similar. */
+  async function withDeadline(ms, path, go) {
+    var ctl = new AbortController();
+    var timer = setTimeout(function () { ctl.abort(); }, ms);
+    try {
+      var out = await go(ctl.signal);
+      backendWoken = true;
+      return out;
+    } catch (err) {
+      if (ctl.signal.aborted) {
+        var late = new Error("no answer within " + Math.round(ms / 1000) +
+                             "s on " + path);
+        late.code = "backend_timeout";
+        late.mrbSay = SAY.slow;
+        throw late;
+      }
+      throw err;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
   async function api(path, token) {
     var cfg = window.MrBadmusConfig || {};
     var base = cfg.BACKEND_URL || "https://mrbadmus-backend.onrender.com";
-    var res = await fetch(base + path, {
-      headers: { Authorization: "Bearer " + token }
-    });
-    var stamp = res.headers.get("date");
-    if (stamp) {
-      var t = Date.parse(stamp);
-      if (!isNaN(t)) { serverNow = t; }
-    }
-    if (!res.ok) {
-      throw new Error("backend " + res.status + " on " + path);
-    }
-    return res.json();
+    return withDeadline(backendWoken ? WARM_MS : COLD_MS, path,
+      async function (signal) {
+        var res = await fetch(base + path, {
+          headers: { Authorization: "Bearer " + token },
+          signal: signal
+        });
+        var stamp = res.headers.get("date");
+        if (stamp) {
+          var t = Date.parse(stamp);
+          if (!isNaN(t)) { serverNow = t; }
+        }
+        if (!res.ok) {
+          throw new Error("backend " + res.status + " on " + path);
+        }
+        /* ⚠️ THE BODY READ IS INSIDE THE DEADLINE ON PURPOSE. A response whose
+           HEADERS arrive and whose BODY never does is the same blank page as a
+           request that was never answered at all, and a deadline that stopped
+           at the headers would not see it. `signal` aborts a body read in
+           progress, so both halves are covered by one timer. */
+        return res.json();
+      });
   }
 
   /* ── the four options of one question ──────────────────────────────────
@@ -448,6 +627,51 @@
       if (match) { return match; }
     }
     return classes[0];
+  }
+
+  /* ── the address must name the class that is on the screen ─────────────
+     ⊕ RULED 23 Aug 2026. `pickClass` above already ignores a `?class=` that
+     names a class this student is not in, and shows them their own instead.
+     That behaviour is right and it stays. What was wrong is that the ADDRESS
+     BAR went on reading the other class's id — the page showed 8r/Sc1 while
+     the URL said 9m/Sc2 — and `carryParams()` then copied that id onto every
+     internal link, so the wrong class travelled with the student all the way
+     to the assignment page.
+
+     ⛔ NO BANNER AND NO MESSAGE. Ruled explicitly. A student who followed a
+     friend's link gets their own class and an honest address, and is told
+     nothing at all: there is nothing they did wrong and nothing for them to
+     act on. `SAY.notMine` stays unreachable from here — it belongs to the
+     backend's own `not_authorised` / `class_not_found` codes in the catch.
+
+     THE CORRECTION DROPS THE PARAMETER RATHER THAN REWRITING IT, and the
+     reason is that when this fires the class on screen is ALWAYS `classes[0]`,
+     because that is the only thing `pickClass` can fall back to. A bare
+     `/student/class` is precisely what "the default class" means, so removing
+     the parameter is the URL telling the truth rather than the URL being
+     tidied. Writing the real id in instead would encode a choice the student
+     never made, and would pin any bookmark of it to one class id that stops
+     being in the working academic year next September — at which point the
+     address is lying again. The bare address resolves to whatever class the
+     student is in, in whatever year they open it.
+
+     Everything else in the query survives, `env` above all: `carryParams`
+     carries it deliberately so a tester is not moved from the test project to
+     production mid-journey, and this must not undo that.
+
+     `replaceState`, never `pushState`. The lying URL is REPLACED, so it is not
+     left behind in the history for Back to return to, and Back still goes
+     wherever the student came from on one press — exactly as it did before. */
+  function correctAddress(shown) {
+    if (!window.history || !window.history.replaceState) { return; }
+    var q = new URLSearchParams(window.location.search);
+    if (!q.has("class")) { return; }
+    if (q.get("class") === shown.id) { return; }      // already honest
+    q.delete("class");
+    var rest = q.toString();
+    window.history.replaceState(window.history.state, "",
+      window.location.pathname + (rest ? "?" + rest : "") +
+      window.location.hash);
   }
 
 
@@ -527,39 +751,56 @@
     var queue = [];
     var flushing = false;
 
+    /* ⊕ 23 Aug 2026 — this carries a deadline too, and it is the COLD one,
+       always. A hung save is not a blank page, but it is the same silence: a
+       `post` that never settles leaves `flushing` true for the rest of the
+       session, so `flush()` returns immediately for every answer after it and
+       NOTHING is ever saved again while the page goes on showing ticks. Both
+       routes behind it are idempotent by construction — the answer route
+       upserts on `(submission_id, question_index)` and the complete route
+       guards its update on `status = 'in_progress'` and serves the winning row
+       — so the queue's retry after an aborted write cannot double anything.
+
+       ⚠️ THE DEADLINE DOES NOT WEAKEN `keepalive` BELOW. The abort is fired by
+       a `setTimeout` inside this document; when the document unloads its
+       timers never run, so the request that `keepalive` exists to let outlive
+       the page is exactly the one this can never abort. */
     async function post(path, body) {
       var cfg = window.MrBadmusConfig || {};
       var base = cfg.BACKEND_URL || "https://mrbadmus-backend.onrender.com";
-      var res = await fetch(base + path, {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(body),
-        /* ⚠️ `keepalive` IS LOAD-BEARING, AND ITS ABSENCE COST AN ANSWER.
-           Found by driving: the page answered a question, navigated away a
-           moment later, and the row never reached the database — the browser
-           CANCELS in-flight requests when the document unloads, silently, with
-           no error anywhere. The page had already shown the tick.
+      return withDeadline(COLD_MS, path, async function (signal) {
+        var res = await fetch(base + path, {
+          signal: signal,
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(body),
+          /* ⚠️ `keepalive` IS LOAD-BEARING, AND ITS ABSENCE COST AN ANSWER.
+             Found by driving: the page answered a question, navigated away a
+             moment later, and the row never reached the database — the browser
+             CANCELS in-flight requests when the document unloads, silently, with
+             no error anywhere. The page had already shown the tick.
 
-           That is the exact shape of the defect this whole unit exists to
-           remove. It is not a test artefact: a student who taps Confirm and
-           then immediately taps "Back to 8r/Sc1", or closes the tab, or locks
-           their phone, is doing the same thing on a slower connection.
+             That is the exact shape of the defect this whole unit exists to
+             remove. It is not a test artefact: a student who taps Confirm and
+             then immediately taps "Back to 8r/Sc1", or closes the tab, or locks
+             their phone, is doing the same thing on a slower connection.
 
-           `keepalive` lets the request outlive the document. The 64 KB body
-           limit it comes with is not a constraint here — one answer is a few
-           hundred bytes. */
-        keepalive: true
+             `keepalive` lets the request outlive the document. The 64 KB body
+             limit it comes with is not a constraint here — one answer is a few
+             hundred bytes. */
+          keepalive: true
+        });
+        var stamp = res.headers.get("date");
+        if (stamp) {
+          var t = Date.parse(stamp);
+          if (!isNaN(t)) { serverNow = t; }
+        }
+        if (!res.ok) { throw new Error("backend " + res.status + " on " + path); }
+        return res.json();
       });
-      var stamp = res.headers.get("date");
-      if (stamp) {
-        var t = Date.parse(stamp);
-        if (!isNaN(t)) { serverNow = t; }
-      }
-      if (!res.ok) { throw new Error("backend " + res.status + " on " + path); }
-      return res.json();
     }
 
     async function flush() {
@@ -807,6 +1048,19 @@
       return row;
     });
 
+    /* ── ⊕ RULED 22 Aug 2026 — P4. IS THIS WEEK'S WORK DONE? ─────────────
+       The bench shows THIS WEEK'S assignment, so its state is that one card's
+       state — and the work list below the bench was already reading it
+       correctly, which is precisely why the two contradicted each other.
+       Same field, same card, one answer now. */
+    var benchCard = null;
+    cards.forEach(function (c) { if (c.id === currentId) { benchCard = c; } });
+    var benchDone = !!(benchCard && benchCard.is_submitted);
+    var benchMarked = !!(benchDone && benchCard.score != null
+                         && benchCard.max_score != null);
+    var benchLessons = (currentId && lessonsFor[currentId]) || [];
+    var benchLate = !!(benchDone && benchCard.due_at && !benchCard.on_time);
+
     /* ── the leaderboard: roster[] and weekPts{} ──────────────────────────
        ⛔ BOTH ARE EMPTY, AND THAT IS THE HONEST ANSWER TODAY.
 
@@ -850,7 +1104,16 @@
         num: pad2(lessonDefs.length + 1),
         name: deslug(q.lesson_slug),
         meta: "SET IN THIS WEEK’S ASSIGNMENT",
-        on: true
+        on: true,
+        /* ⊕ RULED 22 Aug 2026 — found by the control sweep, not by the brief.
+           Each card in "Lessons in this topic" is an `<a href="#top">`, so
+           tapping the lesson a student was just told to revise SCROLLED THE
+           PAGE TO THE TOP. Same defect as P1/P3/P5/P7 and the fifth of its
+           family tonight; it is only here rather than on the punch list
+           because nobody had pressed it either. Empty when this build has no
+           page for the slug, and the card then keeps Design's inert anchor
+           rather than pointing at a 404. */
+        href: lessonHref(q.lesson_slug)
       });
     });
 
@@ -917,8 +1180,42 @@
       : (recall && recall.week != null ? recall.week : null);
 
     var v = detail.viewer || {};
+
+    /* ⊕ 22 Aug 2026 — PHASE 2a. The student's bench theme, onto the page root,
+       BEFORE the mount. It is set on `document.documentElement` rather than on
+       the `.rd` root because the `.rd` root does not exist yet — the runtime
+       draws it — and Design's six `[data-bench-theme="…"]` rules are written
+       against whatever ancestor carries the attribute.
+
+       ⚠️ NULL IS A REAL VALUE AND IT MEANS HARBOUR, so a student with no
+       preference gets NO ATTRIBUTE. Design's contract is that the attribute
+       being ABSENT is harbour, and `:root` in the grafted block already carries
+       harbour's values; writing `data-bench-theme="harbour"` here would say the
+       same thing in a second place, and the two would disagree the first time
+       somebody changed the default in one of them. "No row, no preference, no
+       attribute" is ONE state — the same wording the column's own comment
+       uses. */
+    if (v.bench_theme) {
+      document.documentElement.setAttribute("data-bench-theme", v.bench_theme);
+    }
+
     var first = (v.first_name || "").trim();
     var name = klass.name || "";
+
+    /* ⊕ 23 Aug 2026 — PHASE 1b. THE CLASS PAGE GETS A SINK, and until now it
+       had none: `makeSink` is built inside `buildAssignment`, so on this page
+       `window.__MRB_SINK__` was never set and `_sinkCall` was a permanent
+       no-op. The theme picker is the first control on the class view that
+       WRITES anything, so it is the first thing that needed one.
+
+       One method, and deliberately not more. A sink is a writer; adding the
+       class page's reads to it would put a network object inside the thing the
+       page renders from, which is the line this file exists to keep sharp. */
+    pendingSink = {
+      saveBenchTheme: function (t) {
+        return D.saveBenchTheme(user.id, t);
+      }
+    };
 
     return {
       work: work,
@@ -938,12 +1235,6 @@
       boardWeek: weekNo == null ? 1 : weekNo,
 
       shoutouts: shoutouts,
-
-      /* ⊕ RULED 22 Aug 2026 — P1. Where "Open the assignment" goes. Empty
-         when this class has no current assignment, and the ruling falls back
-         to Design's own behaviour rather than navigating to a page that would
-         only tell the student there is no work. */
-      assignmentHref: (current && current.assignment) ? assignmentHref() : "",
 
       currentWeek: weekNo == null ? 0 : weekNo,
       weekNumber: weekNo == null ? "—" : pad2(weekNo),
@@ -988,8 +1279,27 @@
         ? fmtSet(current.assignment.created_at) : "",
       docketDue: current && current.assignment
         ? fmtDueMixed(current.assignment.due_at) : "",
-      docketLeft: current && current.assignment
-        ? daysLeft(current.assignment.due_at, serverNow) : "",
+      /* ⊕ RULED 22 Aug 2026 — P4. The docket agrees with the bench.
+         `OPEN` was welded, so a finished piece of work still wore it — and
+         the countdown beside it went on counting down to a deadline the
+         student had already beaten. Once it is done the deadline is not the
+         story, so that slot is empty rather than technically-true. */
+      docketFlag: benchDone
+        ? (benchMarked ? "MARKED" : "COMPLETE")
+        : ((benchCard && benchCard.due_at
+            && Date.parse(benchCard.due_at) < serverNow) ? "MISSED" : "OPEN"),
+      /* Once the work is done the deadline is not the story, and the slot is
+         directly above the answered-progress bar — so it LABELS that bar
+         instead, which is the other half of the 22 Aug progress ruling
+         ("'5 of 15 answered' and the same as a percentage"). An unlabelled
+         full bar was what emptying it left behind, and a graphic with no
+         words is not an honest blank. */
+      docketLeft: benchDone
+        ? ((current && current.progress)
+            ? current.progress.answered + " of " + current.progress.total
+              + " answered" : "")
+        : (current && current.assignment
+            ? daysLeft(current.assignment.due_at, serverNow) : ""),
 
       /* ⊕ 22 Aug 2026 — the bench checklist. Design's middle item spelled the
          assignment's length out IN WORDS — "Answer the eight questions" — which
@@ -1003,28 +1313,72 @@
          a fixed day, a fixed time, a count spelled out in words, and a verb
          W5 retires. Both are sentence-case in the markup and upper-cased by
          CSS, which is why every grep for the rendered form found nothing. */
-      benchLead: current && current.assignment && current.assignment.due_at
-        ? "On the bench now · due " + fmtDueMixed(current.assignment.due_at)
-        : "On the bench now",
-      benchBlurb: (currentCount && current && current.assignment
-                   && current.assignment.due_at)
-        ? (currentCount + " questions, set from this week's lessons. " +
-           "Open it, answer them, and complete it before " +
-           weekdayName(current.assignment.due_at) + ".")
-        : "Set from this week's lessons. Open it, answer the questions, "
-          + "and complete it.",
+      /* ⊕ RULED 22 Aug 2026 — P4. The eyebrow carries the congratulation,
+         because it is the one line of the three that shows at EVERY width —
+         Design puts the paragraph below it inside `sc-if wide`, so a phone
+         would otherwise get the score and no acknowledgement at all. */
+      benchLead: benchDone
+        ? ((first ? "Good week, " + first : "Good week")
+           + " · completed " + fmtDay(benchCard.submitted_at)
+           + (benchLate ? " · late" : ""))
+        : (current && current.assignment && current.assignment.due_at
+            ? "On the bench now · due " + fmtDueMixed(current.assignment.due_at)
+            : "On the bench now"),
+      benchBlurb: benchDone
+        ? ((benchMarked
+             ? "You scored " + benchCard.score + " out of "
+               + benchCard.max_score + ". "
+             : "It is with your teacher to mark. ")
+           + (benchLessons.length
+               ? "Go back over the lesson whenever you want, or practise your "
+                 + "recall."
+               : "Practise your recall whenever you want."))
+        : ((currentCount && current && current.assignment
+            && current.assignment.due_at)
+            ? (currentCount + " questions, set from this week's lessons. " +
+               "Open it, answer them, and complete it before " +
+               weekdayName(current.assignment.due_at) + ".")
+            : "Set from this week's lessons. Open it, answer the questions, "
+              + "and complete it."),
 
       /* W5, in the readings strip. */
       handedLabel: "Completed",
       handedCaption: "OF COMPLETED",
 
-      benchTasks: [
+      /* ⊕ RULED 22 Aug 2026 — P4. THE CHECKLIST DOES NOT RENDER when the
+         week is done. It is an `sc-for`, and the runtime returns without
+         drawing anything for an empty list, so an empty array IS the ruling —
+         there is no state flag and nothing to keep in step. */
+      benchTasks: benchDone ? [] : [
         { key: "t1", label: "Open it" },
         { key: "t2", label: currentCount
             ? "Answer the " + currentCount + " questions"
             : "Answer the questions" },
         { key: "t3", label: "Complete it" }
       ],
+
+      /* ── ⊕ RULED 22 Aug 2026 — P4, the rest of the done state ──────────
+         Two actions: the primary revisits the lesson, and "Practise recall"
+         is Design's own second button, already sitting beside it.
+
+         The meter stops counting a three-item checklist that is no longer on
+         screen and shows the MARK instead — which is the only percentage a
+         finished piece of work has. Unmarked, it is full and says so in
+         words: the student's part is complete even though the score is not
+         in yet. */
+      benchDone: benchDone,
+      benchPrimaryLabel: benchDone
+        ? (benchLessons.length ? "Revisit the lesson" : "Practise recall")
+        : "Open the assignment",
+      benchPrimaryHref: benchDone
+        ? (benchLessons.length ? benchLessons[0].href : "")
+        : ((current && current.assignment) ? assignmentHref() : ""),
+      benchPct: benchMarked && benchCard.max_score > 0
+        ? Math.round((benchCard.score / benchCard.max_score) * 100) + "%"
+        : "100%",
+      benchDoneText: benchMarked
+        ? (benchCard.score + " / " + benchCard.max_score + " MARKS")
+        : "NOT MARKED YET",
 
       /* COULD NOT SOURCE — nothing anywhere assigns a points value to an
          assignment. `40 POINTS AT STAKE` was a number Design chose for a
@@ -1074,6 +1428,32 @@
       subjectLabel: klass.pill_label || "",
       termLabel: termLabelFrom(serverNow, year),
 
+      /* ── ⊕ 23 Aug 2026 — PHASE 1b. The account sheet's two real rows ────
+         Design typed `8r/Sc1 · SCIENCE` and `Summer · Week 01 / 39` into the
+         markup of the sheet, one text node each. Both are composed here from
+         values this function already holds, so neither is a second source of
+         truth for the class, the subject or the week.
+
+         ⚠️ THE SEPARATOR IS DESIGN'S TYPOGRAPHY AND IS CARRIED VERBATIM —
+         space, NON-BREAKING space, middle dot, NON-BREAKING space, space. It
+         is what stops the subject wrapping onto its own line under a class
+         name on a 360px phone. It is not data and it is not decoration to be
+         tidied into a plain " · ".
+
+         Each half drops out cleanly when the platform does not have it: no
+         subject pill (`class_teachers` carries no subject) leaves the class
+         name alone rather than a class name with a dangling dot, and no week
+         leaves the term alone. An honest half-row beats a full one with a
+         placeholder in it — the same rule the docket rows already follow. */
+      accountClassLine: klass.pill_label
+        ? name + " \u00a0\u00b7\u00a0 " + String(klass.pill_label).toUpperCase()
+        : name,
+      accountTerm: (function () {
+        var season = seasonOf(termLabelFrom(serverNow, year));
+        if (weekNo == null) { return season; }
+        return season + " \u00a0\u00b7\u00a0 Week " + pad2(weekNo) + " / 39";
+      })(),
+
       /* ⊕ RULED 22 Aug 2026 — P6. Empty on the live site, and the binding is
          marked `drop`, so the chip's element goes with its text rather than
          leaving an empty bordered box in the header. */
@@ -1096,6 +1476,9 @@
            + (questions.length === 1 ? "" : "S") + " \u00B7 UNLIMITED ROUNDS")
         : "",
       recallOutOf: "OF " + numWord(questions.length).toUpperCase(),
+      /* ⊕ RULED 22 Aug 2026. The count is the length of the list it counts. */
+      lessonCount: pad2(lessonDefs.length),
+
       recallCrumb: questions.length
         ? (numWord(questions.length).toUpperCase() + " A ROUND") : "RECALL",
       topicTitle: current && current.assignment
@@ -1216,6 +1599,7 @@
   // ── go ────────────────────────────────────────────────────────────────
   async function run() {
     var page = whichPage();
+    boot(page);                     // ← before the first byte is asked for
     await loadDeps();
 
     window.MrBadmusStudentGuard.requireStudentRole({
@@ -1230,6 +1614,7 @@
           var classes = await window.MrBadmusStudentData.loadStudentClasses(ctx.user.id);
           var klass = pickClass(classes);
           if (!klass) { return say(SAY.noClass); }
+          correctAddress(klass);
 
           var data = page === "assignment"
             ? await buildAssignment(klass, token)

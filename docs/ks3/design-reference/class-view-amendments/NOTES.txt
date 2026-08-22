@@ -1,0 +1,64 @@
+MRBADMUSAI · KS3 CLASS VIEW — NOTES
+Corrections taken, decisions made, and what code still owns.
+
+MIDE'S CORRECTIONS, ALL APPLIED
+  1. Default theme is HARBOUR #20363F, not Clay. Clay stays in the set.
+  2. Flashcard science text: fine as it stands for now.
+  3. Question count: 6 per round is the round size, not the bank size —
+     see "CODE'S JOB" below.
+  4. Leaderboard mock shape (Rae A. / 240 points): fine as it stands.
+  5. Nav "Recall" removed. The bench "Practise recall" lands on the
+     recall round — NOT on flashcards. Flashcards live only on the
+     sidebar card.
+  6. Done bench: the MARKED date row is gone from the docket, the green
+     MARKED chip stays in the header band; the eyebrow no longer carries
+     "MARKED THU 21 AUG"; the copy is one line, "Good week, AY."
+  7. Recall round restored as a real surface with unlimited rounds after
+     the nav item went — it had lost its only door.
+  8. "SIX A ROUND / SIX QUESTIONS" removed from the recall header: the
+     bank is effectively unlimited, so only the live QUESTION 01 / 06
+     counter states a number.
+  9. Q03 feedback line now names the right feature: "Thick walls make
+     the diffusion distance longer — thin walls keep it short."
+
+CODE'S JOB — NOT BUILT HERE, DESIGNED FOR
+  RECALL BANK. 8 questions ship in this file as the design sample. The
+  live bank should be HUNDREDS, generated from every lesson the class
+  has covered; six are drawn per round. The surface makes no assumption
+  about bank size — it asks for round(n) and renders six. Suggested
+  selection policy: weight toward questions this student got wrong (the
+  same signal the flashcards' "from your work" marker uses), then
+  least-seen, then random, and never repeat inside a round.
+  FLASHCARD DECK. 6 cards ship as the sample; the deck takes any length.
+  One fixed cost: the progress pips divide the full width, so past
+  roughly 24 cards drop the pip row and keep the NN / NN counter — no
+  other change needed.
+  COUNTERS. ANSWERED / BEST STREAK / ROUNDS are zero-padded to two
+  digits; widen to three if a keen student passes 99 in a week.
+  THEME PERSISTENCE. Chosen once, remembered: write the student pref to
+  data-bench-theme on the page root.
+  WRONG-ANSWER TARGETING. The "FROM YOUR WORK" chip is already placed on
+  the card and in the sidebar preview; it needs data, not design.
+  REWARD SURFACE. bench-reward-slot is a real, empty 64px region in the
+  done state. Score-gated content drops in without moving anything.
+
+DESIGN DECISIONS WORTH KNOWING
+  The docket never takes the theme. Paper + ink on all six grounds keeps
+  the marking moment the strongest thing on the page, and stops the
+  theme choice from changing how a mark reads.
+  The light theme (Chalk) exists so a student who finds any dark panel
+  heavy is not forced into one; it keeps the bench's presence through
+  the striped edge and the ink title rather than through darkness.
+  Graphite is kept, unrenamed in spirit — it is the old default, now a
+  choice.
+  Colour is never the only signal: every recall state carries a word and
+  a drawn mark, every week state a label, every card a tag.
+
+STILL OPEN — YOUR CALL
+  1. Leaderboard "01" watermark sits behind POINTS at 5% opacity by
+     intent; automated overlap checks flag it. Keep or drop.
+  2. Recall points copy ("20 of the 100 points") is carried over from
+     the live page — confirm it is still true.
+  3. Done-state timestamps (completed Wed 20 Aug 19:42) are mock.
+  4. Whether the flashcard stack should also live in the recall round
+     as a warm-up, or stay purely a sidebar product.

@@ -38,9 +38,9 @@
 -- Row counts, generated:
 --
 --   Y7  Biology 18 · Chemistry 19 · Physics 16
---   Y8  Biology 22 · Chemistry 22 · Physics 35
+--   Y8  Biology 22 · Chemistry 24 · Physics 35
 --   Y9  Biology 18 · Chemistry 14 · Physics 19
---   183 rows total, max academic_week 35 (ceiling 39)
+--   185 rows total, max academic_week 35 (ceiling 39)
 --
 -- Lessons per half term (HT1 … HT6), generated:
 --
@@ -49,9 +49,9 @@
 --   Y7 Physics     3  3  3  3  2  2   (16)
 --   Y7 ALL        10  8 10  8  9  8   (53)
 --   Y8 Biology     4  4  4  4  3  3   (22)
---   Y8 Chemistry   4  4  4  4  3  3   (22)
+--   Y8 Chemistry   4  4  4  4  4  4   (24)
 --   Y8 Physics     6  6  6  6  6  5   (35)
---   Y8 ALL        14 14 14 14 12 11   (79)
+--   Y8 ALL        14 14 14 14 13 12   (81)
 --   Y9 Biology     3  3  3  3  3  3   (18)
 --   Y9 Chemistry   3  3  2  2  2  2   (14)
 --   Y9 Physics     4  3  3  3  3  3   (19)
@@ -97,7 +97,7 @@ values
   -- B3 Nutrition and digestion
   ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 11, 4, 'Nutrition and digestion', 'a-balanced-diet', null, true),
   ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 12, 4, 'Nutrition and digestion', 'food-tests', null, true),
-  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 13, 5, 'Nutrition and digestion', 'energy-in-food', 'Cross-reference (architecture.md §4.6): this lesson is owned by P2 Energy at home (Physics) and is taught from there. Listed here because Nutrition and digestion teaches the slot, not because the content is duplicated.', true),
+  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 13, 5, 'Nutrition and digestion', 'energy-in-food-and-what-you-need', null, true),
   ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 14, 5, 'Nutrition and digestion', 'when-diet-goes-wrong', null, true),
   ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 15, 5, 'Nutrition and digestion', 'the-digestive-system', null, true),
   ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 16, 6, 'Nutrition and digestion', 'enzymes-in-digestion', null, true),
@@ -186,7 +186,7 @@ values
   ('KS3', 8, null, null, (select id from public.subjects where name = 'Biology'), null, 21, 6, 'Respiration', 'fermentation', null, true),
   ('KS3', 8, null, null, (select id from public.subjects where name = 'Biology'), null, 22, 6, 'Respiration', 'aerobic-vs-anaerobic', null, true);
 
--- ── Year 8 · Chemistry — 22 lessons ─────────────────────────
+-- ── Year 8 · Chemistry — 24 lessons ─────────────────────────
 insert into public.scheme_of_work_entries
   (key_stage, year_group, tier, pathway, subject_id, exam_board, academic_week, half_term, topic, subtopic, notes, active)
 values
@@ -213,9 +213,11 @@ values
   -- C8 The periodic table
   ('KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), null, 18, 5, 'The periodic table', 'metals-and-non-metals', null, true),
   ('KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), null, 19, 5, 'The periodic table', 'mendeleev', null, true),
-  ('KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), null, 20, 6, 'The periodic table', 'groups-and-periods', null, true),
-  ('KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), null, 21, 6, 'The periodic table', 'patterns-you-can-predict', null, true),
-  ('KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), null, 22, 6, 'The periodic table', 'metal-and-non-metal-oxides', null, true);
+  ('KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), null, 20, 5, 'The periodic table', 'groups-and-periods', null, true),
+  ('KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), null, 21, 6, 'The periodic table', 'group-1-the-alkali-metals', null, true),
+  ('KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), null, 22, 6, 'The periodic table', 'group-7-the-halogens', null, true),
+  ('KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), null, 23, 6, 'The periodic table', 'group-0-and-why-groups-exist', null, true),
+  ('KS3', 8, null, null, (select id from public.subjects where name = 'Chemistry'), null, 24, 6, 'The periodic table', 'metal-and-non-metal-oxides', null, true);
 
 -- ── Year 8 · Physics — 35 lessons ─────────────────────────
 insert into public.scheme_of_work_entries
