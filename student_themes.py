@@ -134,6 +134,68 @@ BENCH_TEXT_EXCEPTIONS = [
     },
 ]
 
+# ── page chrome: espresso, fixed, and the two near-blacks still standing ─
+#
+# ⊕ 23 Aug 2026 — PHASE 1a. Design's amended README, change 1:
+#
+#     "no page chrome is near-black any more. Page-chrome dark is now
+#      espresso #4A3728 (10.4:1 on cream) — top rule, work-row and legend
+#      DONE dots."
+#
+# Everything above this point measures the BENCH. This measures the page the
+# bench sits on, and it exists because that is a different problem with a
+# different failure mode: the bench's colours MOVE with the theme and must
+# stay legible on each; page chrome must NOT move with the theme at all.
+#
+# ⚠️ THE FIXEDNESS IS THE ASSERTION, not a side note. Page chrome routed
+# through a `--b-*` token would put the theme's ground on the cream page —
+# `#EFE2CB` on `#FBF3E6` is about 1.1:1 on chalk — which is the defect
+# `student_rulings.py` records refusing on the term spine's `numColor`. So
+# `--pg-strong` is read off `:root` on all seven cases and required to be the
+# same fixed hex every time.
+PAGE_STRONG = "#4A3728"
+PAGE_GROUND = "#FBF3E6"
+PAGE_STRONG_RATIO = 10.20       # measured; Design's README states 10.4
+PAGE_STRONG_TOL = 0.05
+
+# How many marks the page-chrome rule is expected to paint, by kind. A count
+# is asserted for the same reason every `one()` selector above reports one:
+# a selector that matches nothing must fail, not pass quietly.
+#
+#   legend-done     1  the term spine's legend dot beside the word DONE
+#   work-row-done   3  one per MARKED row in the fixture's work list
+#   tile-seg        4  the week tiles' done segments, found without an index
+#                      by their own `background:var(--pg-strong)`
+PAGE_STRONG_MARKS = {"legend-done": 1, "work-row-done": 3, "tile-seg": 4}
+
+# ── the near-blacks that are still on the page, and why each is allowed ──
+#
+# Design's sentence is absolute — "no page chrome is near-black any more" —
+# and the page is not there yet, because two of the elements it is about are
+# owned by units that have not landed. Registering them beats either lying
+# about the property or dropping the sweep: each must still be FOUND, at its
+# registered colour, on every case. When Phase 2b replaces the recall card and
+# the leaderboard's week chips take the bench theme, these two go stale and
+# this gate says so instead of quietly excusing elements that no longer exist.
+PAGE_CHROME_EXCEPTIONS = [
+    {
+        "tpl": "136",
+        "bg": "#15110C",
+        "name": "the sidebar RECALL card",
+        "why": "Design's C2 replaces this card wholesale with the themed "
+               "flashcards card. It stops existing; it does not turn "
+               "espresso. Not this unit's to move.",
+    },
+    {
+        "tpl": "256",
+        "bg": "#221E1B",
+        "name": "the leaderboard's selected week chip",
+        "why": "Design's change 1 says the week chips take the BENCH THEME, "
+               "not espresso. Unfinished theme work, not page chrome.",
+    },
+]
+
+
 # ── Design's own stated figures, transcribed ─────────────────────────────
 #
 # From `docs/ks3/design-reference/class-view-amendments/README.txt`, lines
@@ -273,12 +335,58 @@ _MEASURE = r"""
     });
     return out;
   }
+  // ── page chrome ────────────────────────────────────────────────────
+  // Everything OUTSIDE the themed surfaces. `near` requires an opaque paint:
+  // `rgba(0,0,0,0)` parses as three zeroes and is not a black background, and
+  // reading it as one reports every transparent wrapper on the page.
+  function nearBlack(s){
+    var m = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)$/.exec(s||'');
+    if (!m) return false;
+    if (m[4] != null && +m[4] < 0.5) return false;
+    return +m[1] < 70 && +m[2] < 70 && +m[3] < 70;
+  }
+  function chrome(){
+    var out = [];
+    document.querySelectorAll('*').forEach(function(el){
+      if (el.closest('[data-bench-surface]')) return;
+      if (el.closest('[data-bench-docket]')) return;
+      var r = el.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      var bg = getComputedStyle(el).backgroundColor;
+      if (!nearBlack(bg)) return;
+      out.push({tpl: el.getAttribute('data-dc-tpl') || '', bg: bg,
+                text: (el.textContent || '').trim()
+                        .replace(/\s+/g, ' ').slice(0, 30)});
+    });
+    return out;
+  }
+  // The espresso marks. The two dots carry the attribute `SET_ATTR` gives
+  // them; the week-tile segments are found by the declaration the LOGIC
+  // ruling wrote, so no `data-dc-tpl` index is baked into this gate.
+  function marks(){
+    var out = [];
+    document.querySelectorAll('[data-page-strong]').forEach(function(el){
+      out.push({kind: el.getAttribute('data-page-strong'),
+                bg: getComputedStyle(el).backgroundColor});
+    });
+    document.querySelectorAll('[style*="var(--pg-strong)"]').forEach(
+      function(el){
+        if (el.hasAttribute('data-page-strong')) return;
+        out.push({kind: 'tile-seg', bg: getComputedStyle(el).backgroundColor});
+      });
+    return out;
+  }
   return JSON.stringify({
     bench:  one('[data-bench-surface="bench"]'),
     board:  one('[data-bench-surface="board"]'),
     docket: one('[data-bench-docket]'),
     avatar: one('[data-bench-avatar]'),
     text:   leaves(document.querySelector('[data-bench-surface="bench"]')),
+    marks:  marks(),
+    chrome: chrome(),
+    pgStrong: (getComputedStyle(document.documentElement)
+                 .getPropertyValue('--pg-strong') || '').trim(),
+    pageGround: getComputedStyle(document.body).backgroundColor,
     theme:  document.documentElement.getAttribute('data-bench-theme')
   });
 })()
@@ -638,6 +746,137 @@ def check_docket(case, m, baseline):
     return rows, problems
 
 
+def check_page_chrome(case, m):
+    """7 — the espresso page chrome, and it does NOT take the theme.
+
+    ⊕ 23 Aug 2026 — PHASE 1a. Three assertions, and the middle one is the one
+    with a defect behind it:
+
+      a  `--pg-strong` on `:root` is the fixed hex #4A3728 on every case. Page
+         chrome routed through a THEME token would put `--b-ground` on the
+         cream page — about 1.1:1 on chalk — and the page would look right on
+         the five dark themes while a student on the light one saw nothing.
+      b  every mark the rule paints measures that hex, at the expected COUNT
+         per kind. A count is asserted because the rule needs `!important` to
+         beat Design's inline `background:var(--st-ink)`, and a rule that
+         parses, matches and LOSES leaves a page that looks exactly as if the
+         rule were absent — which is precisely how the avatar inversion
+         shipped broken once already.
+      c  no OTHER near-black background survives outside the themed surfaces,
+         except the two registered in `PAGE_CHROME_EXCEPTIONS`, each of which
+         must still be found at its registered colour.
+
+    The contrast figure is reported rather than gated at AA: these are graphic
+    marks, not text, and 10.20:1 on the cream ground is well clear either way.
+    It is pinned to a tolerance (`PAGE_STRONG_TOL`) so that a drift in
+    Design's token shows up as a disagreement instead of as a silent
+    re-baselining.
+    """
+    disp = label_of(case)
+    rows, problems = [], []
+
+    got = (m.get("pgStrong") or "").upper()
+    if got != PAGE_STRONG:
+        rows.append((disp, "--pg-strong is fixed, not themed", "FAIL",
+                     "%s, wanted %s" % (got or "(undeclared)", PAGE_STRONG)))
+        problems.append(
+            "%s — :root reports --pg-strong=%r, not %s. Espresso is a PAGE "
+            "token and must be the same on all seven cases; a value that "
+            "moves with the theme is the cream-ground defect the term spine's "
+            "`numColor` note records refusing."
+            % (disp, got or "(undeclared)", PAGE_STRONG))
+    else:
+        rows.append((disp, "--pg-strong is fixed, not themed", "PASS", got))
+
+    marks = m.get("marks") or []
+    seen = {}
+    wrong = []
+    for mk in marks:
+        seen[mk["kind"]] = seen.get(mk["kind"], 0) + 1
+        try:
+            if hexof(parse_colour(mk["bg"])) != PAGE_STRONG:
+                wrong.append((mk["kind"], mk["bg"]))
+        except ValueError:
+            wrong.append((mk["kind"], mk["bg"]))
+    for kind, want in sorted(PAGE_STRONG_MARKS.items()):
+        n = seen.get(kind, 0)
+        if n != want:
+            rows.append((disp, "espresso mark · %s" % kind, "FAIL",
+                         "%d found, wanted %d" % (n, want)))
+            problems.append(
+                "%s — %d %r mark(s) on the page, not %d. Either the ruling "
+                "stopped matching Design's node or the fixture's data "
+                "changed; both are findings, and an espresso rule painting "
+                "nothing passes silently unless the count is asserted."
+                % (disp, n, kind, want))
+        else:
+            rows.append((disp, "espresso mark · %s" % kind, "PASS",
+                         "%d at %s" % (n, PAGE_STRONG)))
+    if wrong:
+        rows.append((disp, "espresso marks all measure %s" % PAGE_STRONG,
+                     "FAIL", "%d wrong: %s" % (len(wrong), wrong[:3])))
+        problems.append(
+            "%s — %d mark(s) carrying the page-chrome rule are not painted "
+            "%s: %s. The rule needs !important to beat Design's inline "
+            "declaration; check _PAGE_STRONG in build_student_port.py still "
+            "carries it." % (disp, len(wrong), PAGE_STRONG, wrong[:4]))
+    else:
+        rows.append((disp, "espresso marks all measure %s" % PAGE_STRONG,
+                     "PASS", "%d mark(s)" % len(marks)))
+        try:
+            r = contrast(parse_colour(PAGE_STRONG), parse_colour(PAGE_GROUND))
+            delta = abs(r - PAGE_STRONG_RATIO)
+            rows.append((disp, "espresso on the cream page ground",
+                         "PASS" if delta <= PAGE_STRONG_TOL else "NOTE",
+                         "%.2f:1 (pinned %.2f)" % (r, PAGE_STRONG_RATIO)))
+        except ValueError:
+            pass
+
+    # c — the sweep, and its registry
+    found = m.get("chrome") or []
+    reg = {(e["tpl"], e["bg"].upper()): e for e in PAGE_CHROME_EXCEPTIONS}
+    hit = set()
+    strays = []
+    for c in found:
+        try:
+            key = (c["tpl"], hexof(parse_colour(c["bg"])))
+        except ValueError:
+            strays.append(c)
+            continue
+        if key in reg:
+            hit.add(key)
+        else:
+            strays.append(c)
+    if strays:
+        rows.append((disp, "no unregistered near-black page chrome", "FAIL",
+                     "%d: %s" % (len(strays),
+                                 [(c["tpl"], c["bg"]) for c in strays[:3]])))
+        problems.append(
+            "%s — %d near-black background(s) outside the themed surfaces "
+            "are not registered: %s. Design's amendment says no page chrome "
+            "is near-black any more. Either move it to var(--pg-strong) or "
+            "register it in PAGE_CHROME_EXCEPTIONS with a reason."
+            % (disp, len(strays),
+               [(c["tpl"], c["bg"], c["text"]) for c in strays[:4]]))
+    else:
+        rows.append((disp, "no unregistered near-black page chrome", "PASS",
+                     "%d registered survivor(s)" % len(hit)))
+    for key, e in sorted(reg.items()):
+        if key in hit:
+            rows.append((disp, "registered survivor · %s" % e["name"][:26],
+                         "PASS", "still %s at node %s" % (e["bg"], e["tpl"])))
+        else:
+            rows.append((disp, "registered survivor · %s" % e["name"][:26],
+                         "FAIL", "not found"))
+            problems.append(
+                "%s — the registered near-black exception %r (node %s, %s) is "
+                "no longer on the page at that colour. Either the unit that "
+                "owns it has landed — in which case DELETE the registration — "
+                "or something else moved it. An exception that cannot go "
+                "stale is a hole." % (disp, e["name"], e["tpl"], e["bg"]))
+    return rows, problems
+
+
 def check_avatar(case, m):
     """6 — the leader's initials are visible.
 
@@ -743,13 +982,17 @@ def check_default(measures):
 def _prove(page, baseline):
     """Break the page on purpose; require the assertions to see it.
 
-    Two injections, one per KIND of check this gate makes, because they fail in
+    One injection per KIND of check this gate makes, because they fail in
     different ways and a proof of one is not a proof of the other:
 
       · an EQUALITY check — the docket's theme-independence. Injected: a docket
         painted black.
       · an ARITHMETIC check — a contrast floor. Injected: an ink so close to
         harbour's ground that the ratio collapses to about 1.1:1.
+      · the RENDERED-TEXT sweep — injected: the real 1.78:1 bench label.
+      · the PAGE-CHROME check, in both halves — injected: the espresso marks
+        forced back to near-black (the `!important` failure), and an
+        unregistered near-black painted onto a page section.
 
     Each is injected, re-measured, and required to produce at least one
     problem; then removed, re-measured, and required to produce none. A gate
@@ -860,6 +1103,72 @@ def _prove(page, baseline):
     else:
         rows.append((disp, "the text sweep can see an unreadable label",
                      "PASS", "red while injected, green once removed"))
+
+    # (d) the PAGE-CHROME sweep can see a near-black that is not registered,
+    # and it can see an espresso mark that lost its fight with an inline
+    # declaration. Two injections, because the check has two halves and each
+    # half has its own way of being blind.
+    #
+    # ⚠️ THE FIRST ONE REPLAYS THE REAL FAILURE MODE OF THIS RULE. `_PAGE_STRONG`
+    # only paints because of `!important`: Design's dots carry
+    # `background:var(--st-ink)` INLINE, and an inline declaration outranks any
+    # selector. Written without the keyword the rule parses, matches, and
+    # loses, and the page looks exactly as if the rule were not there — which
+    # is how the avatar inversion shipped broken once already. Forcing the
+    # marks back to #221E1B is that failure, exactly.
+    page.eval(_INJECT % json.dumps(
+        "[data-page-strong]{background-color:#221E1B !important}"))
+    time.sleep(0.35)
+    _r, broke4 = check_page_chrome(None, _measure(page))
+    page.eval(_UNINJECT)
+    time.sleep(0.35)
+    _r, clean4 = check_page_chrome(None, _measure(page))
+    if not broke4:
+        problems.append(
+            "SELF-PROOF FAILED: the espresso marks forced back to near-black "
+            "#221E1B were NOT caught. Every page-chrome row in this run is "
+            "worthless — the selector is finding nothing, or the hex "
+            "comparison is not running. Fix check_page_chrome first.")
+        rows.append((disp, "the chrome check can see a lost espresso mark",
+                     "FAIL", "injected near-black marks went unnoticed"))
+    elif clean4:
+        problems.append(
+            "SELF-PROOF FAILED: the page-chrome assertion still reports a "
+            "problem after the injected style was removed — %s. The page did "
+            "not return to its real palette." % clean4[0][:90])
+        rows.append((disp, "the chrome check can see a lost espresso mark",
+                     "FAIL", "page not clean after the injection was removed"))
+    else:
+        rows.append((disp, "the chrome check can see a lost espresso mark",
+                     "PASS", "red while injected, green once removed"))
+
+    # The second half: an UNREGISTERED near-black on the page ground. The hero
+    # is chosen because it is a large page element that no unit owns and that
+    # carries no background of its own, so the injection is unambiguous.
+    page.eval(_INJECT % json.dumps(
+        '[data-dc-tpl="39"]{background-color:#101010 !important}'))
+    time.sleep(0.35)
+    _r, broke5 = check_page_chrome(None, _measure(page))
+    page.eval(_UNINJECT)
+    time.sleep(0.35)
+    _r, clean5 = check_page_chrome(None, _measure(page))
+    if not broke5:
+        problems.append(
+            "SELF-PROOF FAILED: a page section forcibly painted #101010 on "
+            "the cream ground was NOT caught by the near-black sweep. "
+            "Design's amendment says no page chrome is near-black any more, "
+            "and this run cannot tell whether that is true.")
+        rows.append((disp, "the chrome sweep can see a new near-black",
+                     "FAIL", "injected near-black went unnoticed"))
+    elif clean5:
+        problems.append(
+            "SELF-PROOF FAILED: the near-black sweep still reports a problem "
+            "after the injected style was removed — %s." % clean5[0][:90])
+        rows.append((disp, "the chrome sweep can see a new near-black",
+                     "FAIL", "page not clean after the injection was removed"))
+    else:
+        rows.append((disp, "the chrome sweep can see a new near-black",
+                     "PASS", "red while injected, green once removed"))
     return rows, problems
 
 
@@ -929,6 +1238,10 @@ def run(cdp):
         r, p = check_bench_text(case, m)
         rows.extend(r)
         problems.extend(p)
+        # ⊕ 23 Aug 2026 — PHASE 1a. The page the bench sits on.
+        r, p = check_page_chrome(case, m)
+        rows.extend(r)
+        problems.extend(p)
 
     # The 18 — six named themes × three tokens — measured against Design's own
     # stated arithmetic. NOT a gate: a row here says the README is out, and the
@@ -986,6 +1299,12 @@ def main():
           "own painted ground on all seven — with %d registered exception(s), "
           "each asserted still present at its registered colours and ratio."
           % (len(CASES) * 3, AA, AA, len(BENCH_TEXT_EXCEPTIONS)))
+    print("        And the PAGE the bench sits on: --pg-strong fixed at %s "
+          "on all seven, %d espresso mark(s) measuring it, %.2f:1 on the "
+          "cream ground, and no near-black page chrome outside the %d "
+          "registered survivor(s) — each asserted still present."
+          % (PAGE_STRONG, sum(PAGE_STRONG_MARKS.values()),
+             PAGE_STRONG_RATIO, len(PAGE_CHROME_EXCEPTIONS)))
     return 0
 
 

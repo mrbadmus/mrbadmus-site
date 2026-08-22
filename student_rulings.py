@@ -425,6 +425,55 @@ LOGIC = {
             "           note above this entry for why each one stays. */\n"
             "        ring: sel ? '0 0 0 1.5px var(--b-ground)' : 'none',",
         ),
+        # ── ⊕ RULED 23 Aug 2026 — THE WEEK TILE'S *DONE* SEGMENT IS ESPRESSO ──
+        #
+        # Design's amendment 1 opens: *"no page chrome is near-black any more.
+        # Page-chrome dark is now espresso #4A3728 (10.4:1 on cream) — top
+        # rule, work-row and legend DONE dots."* The two DONE dots it names are
+        # template nodes and move through `SET_ATTR` + the page-chrome rule in
+        # build_student_port.py. This one is a COMPUTED COLOUR STRING, so it is
+        # a LOGIC rewrite — the same shape, and for the same reason, as `ring`
+        # directly above.
+        #
+        # ⚠ DESIGN DOES NOT NAME THIS ELEMENT, AND IT MOVES ANYWAY. The reason
+        # is the element three lines up from it in the same section: node 118,
+        # the legend's DONE dot, which Design DOES name. That legend is a KEY,
+        # and what it keys is these segments — `● DONE` beside a stack of
+        # `--st-ink` blocks is one statement, not two. Moving the key to
+        # espresso and leaving its referent near-black would leave the legend
+        # telling a student that a colour they can see means something, in a
+        # colour that is no longer on the page. Faithfulness to Design's list,
+        # read literally, would have produced a page that contradicts itself.
+        #
+        # ⚑ AND THIS IS NOT THE REFUSAL THE `ring` NOTE RECORDS. That note
+        # refuses `--wk-fill → var(--b-ground)` because the trough carries the
+        # week's work as stacked segments and a THEMED fill would sink them into
+        # it on five themes. Every word of that stands — and none of it applies
+        # here, because espresso is a FIXED PAGE COLOUR, not a themed one. The
+        # segment is #4A3728 on all six themes and on none of them does it move
+        # with the ground behind it. Measured, on the two troughs the tile
+        # actually uses: #4A3728 on `--st-rule-fact` #F0E6D3 and on
+        # `--st-crumb-bg` #F7EDDC, both well clear of any confusion, and still
+        # plainly distinct from the OPEN segment (`--st-accent`) and the MISSED
+        # segment (`--err`) beside it.
+        #
+        # ⚠ ONLY THE DONE BRANCH MOVES. `'open'` stays `--st-accent` and
+        # `'missed'` stays `--err`, byte-identical, because Design's amendment
+        # is about page-chrome DARK and neither of those is dark. The anchor is
+        # the whole line rather than the token: bare `var(--st-ink)` occurs
+        # SEVEN times in Design's logic and anchoring on it would have matched
+        # the wrong one — verified by counting, before this was written.
+        (
+            "        segs: items.map((w) => ({ bg: w.status === 'open' ? "
+            "'var(--st-accent)' : w.status === 'missed' ? 'var(--err)' : "
+            "'var(--st-ink)' })),",
+            "        /* ⊕ RULED 23 Aug 2026 — the DONE segment is espresso, so\n"
+            "           the legend's DONE dot above it still keys something\n"
+            "           that is on the page. Open and missed are unchanged. */\n"
+            "        segs: items.map((w) => ({ bg: w.status === 'open' ? "
+            "'var(--st-accent)' : w.status === 'missed' ? 'var(--err)' : "
+            "'var(--pg-strong)' })),",
+        ),
     ],
     'assignment': [
         (
@@ -558,10 +607,53 @@ SET_ATTR = {
     #        the ONE place in the class view where `--st-cream` is a
     #        background rather than text. That single line is why the bridge
     #        INVERTS this node instead of exempting it.
+    #
+    # ⊕ 23 Aug 2026 — PHASE 1a. TWO MORE, AND THEY ARE NOT SURFACES.
+    #
+    #   118  the term spine's legend DONE dot — a 9px disc,
+    #        `background:var(--st-ink)`, sitting beside the word DONE.
+    #   166  the work row's MARKED dot — the same disc at 13px, inside
+    #        `if r.isMarked`. Its three siblings are `--st-accent` (open),
+    #        `--err` (missed) and `--st-rule-strong` (pending); this is the
+    #        only near-black one, which is the whole reason it is the only one
+    #        named.
+    #
+    # Both are Design's OWN named page chrome — README change 1: *"no page
+    # chrome is near-black any more. Page-chrome dark is now espresso #4A3728
+    # … top rule, work-row and legend DONE dots."* — and both are drawn in the
+    # amended delivery as `background:var(--pg-strong)`, at donor nodes 171 and
+    # 142 respectively. So this adopts Design's own value for Design's own
+    # element rather than inferring one.
+    #
+    # ⚑ WHY AN ATTRIBUTE AND A CSS RULE RATHER THAN A `LOGIC` REWRITE. The
+    # colour is not computed — it is a LITERAL `var(--st-ink)` inside an inline
+    # `style` attribute on a template node, so there is no string in Design's
+    # logic to anchor on and `LOGIC` has nothing to bite. `SET_ATTR` plus a
+    # scoped rule is the mechanism that reaches an inline declaration, and it
+    # is the one `[data-bench-avatar]` already uses for exactly this shape.
+    # See `_PAGE_STRONG` in build_student_port.py for the rule, and for why it
+    # carries `!important`.
+    #
+    # ⚠ THE THIRD ELEMENT DESIGN NAMES — THE TOP RULE — IS NOT HERE, BECAUSE
+    # THE LIVE PAGE DOES NOT HAVE ONE. Design's amended delivery draws a 5px
+    # `var(--pg-strong)` bar above the topbar (donor node 10); Design's
+    # ORIGINAL delivery, which the live page is ported from, has no such node
+    # and neither does the port — measured in a browser, not inferred: there is
+    # no element of any colour in the top 40px of the page under 10px tall.
+    # So the top rule is not a near-black element that needs moving; it is
+    # markup that would have to be ADDED, by a `GRAFT` of donor node 10, and
+    # that node carries neither `data-port-region` nor `data-port-change` —
+    # Design's own signal that it is not a declared amendment to an existing
+    # region. Adding a visible bar to the top of every student's class page on
+    # the strength of a README noun is a design decision, not a colour port.
+    # Mapped here so it is one line of work whenever it is ruled; deliberately
+    # not taken.
     "class view": {
         55:  {"data-bench-surface": "bench", "data-port-region": "bench"},
         91:  {"data-bench-docket": "1"},
         107: {"data-port-region": "term-spine"},
+        118: {"data-page-strong": "legend-done"},
+        166: {"data-page-strong": "work-row-done"},
         249: {"data-port-region": "leaderboard"},
         260: {"data-bench-surface": "board"},
         266: {"data-bench-avatar": "1"},

@@ -1857,6 +1857,63 @@ _THEME_BRIDGE = (
 )
 
 
+# ── page chrome: espresso, and FIXED on every theme ──────────────────────
+#
+# ⊕ 23 Aug 2026 — PHASE 1a. Design's amended README, change 1, first sentence:
+#
+#     "The near-black ground is gone as a default, and no page chrome is
+#      near-black any more. Page-chrome dark is now espresso #4A3728
+#      (10.4:1 on cream) — top rule, work-row and legend DONE dots."
+#
+# `--pg-strong: #4A3728` is Design's own NEW page token. It is declared exactly
+# once on the built page, in the `:root` block grafted from Design's node 7, so
+# this rule is a reference to Design's value and not a second copy of it — if
+# Design moves espresso, this follows.
+#
+# ⚠️ THIS IS A PAGE RULE, NOT A THEME RULE, AND THAT IS THE POINT. The two
+# dots it paints sit on the CREAM PAGE GROUND, outside `[data-bench-surface]`,
+# which is why they are unreachable from the theme bridge and why they must NOT
+# be reachable from it. `--pg-strong` is a fixed hex on `:root` and no
+# `[data-bench-theme]` rule touches it, so these read #4A3728 on all six themes
+# and on the attribute's absence — asserted, in `student_themes.py`.
+#
+# That fixedness is the safety margin the term spine's `numColor` note already
+# records: page chrome routed through a THEME token would put `--b-ground` on
+# the cream page at about 1.1:1 on Chalk. Espresso on cream is 10.20:1
+# measured, everywhere, unconditionally.
+#
+# ⚠️ AND IT NEEDS `!important`, FOR THE REASON NODE 266 DOCUMENTS. Both dots
+# carry `background:var(--st-ink)` in an INLINE style attribute of Design's
+# own, and an inline declaration outranks any selector. Without the keyword
+# this rule parses, matches and loses, and the page looks exactly as if it were
+# not here. `background-color` rather than the `background` shorthand, so the
+# important-flag covers the one component that is actually being replaced and
+# nothing else.
+#
+# The value the rule REPLACES is `--st-ink`, which the page frame re-points at
+# `--ks3-ink` #221E1B — 15.0:1 on cream. Espresso is 10.20:1. Both clear AA by
+# a wide margin for a graphic mark; this is a tone change, not a legibility fix,
+# and it is Design's tone.
+#
+# ⚑ WHAT IS DELIBERATELY NOT IN HERE. Three other near-black paints survive
+# outside the themed surfaces, and none of them is this unit's:
+#
+#   · the sidebar RECALL card (#15110C) — Design's C2 REPLACES that card
+#     wholesale with the themed flashcards card. It stops existing; it does not
+#     turn espresso.
+#   · the leaderboard's selected week chip (#221E1B) — Design's change 1 says
+#     the week chips take the BENCH THEME, not espresso. That is unfinished
+#     theme work, not page chrome.
+#   · every near-black `color:` on the page — that is `--pg-ink` #221E1B, which
+#     Design's token table lists UNCHANGED at 15.0:1. Body ink is not chrome.
+#
+# CLASS VIEW ONLY, like the bridge above it: the assignment page has no term
+# spine and no work list, so neither selector could ever match there.
+_PAGE_STRONG = (
+    "[data-page-strong]{background-color:var(--pg-strong)!important}"
+)
+
+
 def page_html(spec, tpl, roots, bind_table, logic, fixture=False):
     tail = (
         "<script src=\"/shared/%s\"></script>\n"
@@ -1907,7 +1964,9 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False):
                        spec["fixture_out"])),
            DS_CSS_URL,
            # ⊕ 22 Aug 2026 — the theme bridge, class view only. See above.
-           _THEME_BRIDGE if spec["page"] == "class view" else "",
+           # ⊕ 23 Aug 2026 — and the espresso page chrome beside it.
+           (_THEME_BRIDGE + _PAGE_STRONG)
+           if spec["page"] == "class view" else "",
            json.dumps({"roots": roots, "imports": tpl["imports"]},
                       separators=(",", ":")).replace("<", "\\u003c"),
            json.dumps(bind_table, separators=(",", ":")),
