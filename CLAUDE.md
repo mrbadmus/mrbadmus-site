@@ -295,9 +295,28 @@ its skip list.
 
 The gates are `student_parity.py` (Design-fidelity, layers A–H at 360/390/820/
 1460) and `student_behaviour.py` (30 drives, visible text identical to Design's
-own file). Both drive `*-fixture.html`, never the live page — which is why the
-fixture must keep Design's own values even when the live page shows different
-words. A ruling that changes what Design DREW belongs in `RULED_DIVERGENCE`;
+own file).
+
+⊕ **Corrected 22 Aug 2026.** This used to read *"Both drive `*-fixture.html`,
+never the live page"*. Only one of them does, and the difference matters:
+
+| gate | drives | which generator wrote it |
+|---|---|---|
+| `student_behaviour.py` | `student/class-fixture.html` | `build_student_port.py` — the ported page, **with the rulings applied** |
+| `student_parity.py` | `student/class-preview.html` | `build_student.py` — a headless-Chrome snapshot of Design's own standalone, with **no rulings applied at all** |
+
+So `student_parity` gates the PREVIEW generator's reproduction of Design's
+original file. It has no path to `student/class.html`, to
+`student/class-fixture.html`, to `build_student_port.py`, to
+`student_rulings.py` or to `shared/student-live.js` — its `PAIRS`,
+its `COUNT_SOURCES` and `ks3_parity.ST_SWEEP_PAGES` all name the preview pair
+and nothing else. ⚠️ **A change to the ported page cannot turn `student_parity`
+red**, and reasoning that assumes it can — as the 22 Aug port plan did — will
+plan around a gate that is not watching. `student_behaviour` is the gate that
+watches the port.
+
+The fixture must keep Design's own values even when the live page shows
+different words. A ruling that changes what Design DREW belongs in `RULED_DIVERGENCE`;
 a value that merely DIFFERS on real data belongs in the data seam.
 
 **The order is load-bearing.** `generate_site_v5.build_site()` opens by wiping
