@@ -453,7 +453,43 @@ LOGIC = {
 # gives them something. `SET_ON` attaches handlers; this attaches attributes,
 # and refuses to overwrite one Design already wrote.
 SET_ATTR = {
-    "class view": {},
+    # ⊕ 22 Aug 2026 — PHASE 2a. Six nodes, and every one is either the token
+    # bridge's anchor or a handle for a gate. Read out of the COMPILED tree
+    # node by node rather than off the markup — see MERGE-2026-08-23.md,
+    # "Phase 2a — the theme bridge, MEASURED before it was written".
+    #
+    #   55   the bench `<section>`, `background:var(--st-room-panel)`. It
+    #        takes BOTH names because they answer to different readers:
+    #        `data-bench-surface` is what the token bridge in
+    #        build_student_port.py scopes its eight declarations to, and
+    #        `data-port-region` is DESIGN'S OWN marker name, which is how the
+    #        behaviour gate's AMENDED_ADDITIONS machinery finds a region.
+    #        Spelling one of them the other way would silently detach one of
+    #        the two from the node it is about.
+    #   91   the docket — the one PAPER card inside the dark bench,
+    #        `background:var(--st-paper)`. Named so the ruling "the docket
+    #        stays paper and ink on all six themes" has something to hold on
+    #        to; see the bridge for why that is not free.
+    #   107  the term spine, 249 the leaderboard — regions ONLY, no surface.
+    #        Neither is painted by the bridge: the spine takes the theme
+    #        through Design's own computed colour strings (`ring`, `numColor`,
+    #        `trough`, `nowDot`), which is a LOGIC rewrite and a later unit.
+    #   260  the leaderboard CARD, `background:var(--st-room-panel)` — the
+    #        second surface the bridge paints, inside the region at 249.
+    #   266  the leader's avatar disc. `background:var(--st-cream)`, and it is
+    #        the ONE place in the class view where `--st-cream` is a
+    #        background rather than text. That single line is why the bridge
+    #        INVERTS this node instead of exempting it.
+    "class view": {
+        55:  {"data-bench-surface": "bench", "data-port-region": "bench"},
+        91:  {"data-bench-docket": "1"},
+        107: {"data-port-region": "term-spine"},
+        249: {"data-port-region": "leaderboard"},
+        260: {"data-bench-surface": "board"},
+        266: {"data-bench-avatar": "1"},
+    },
+    # The assignment page has no bench, no spine and no leaderboard. Nothing
+    # to name, and naming it anyway would move that page's bytes for nothing.
     "assignment": {},
 }
 
@@ -497,6 +533,56 @@ SET_ATTR = {
 GRAFT_BASE = 10000
 
 GRAFT = {
-    "class view": [],
+    "class view": [
+        # ⊕ 22 Aug 2026 — PHASE 2a, and the first graft the port has ever
+        # applied. Design's node 7 is a single `<style>`: the `--pg-*`, `--t-*`
+        # and `--b-*` families on `:root` with HARBOUR as the default, the six
+        # `[data-bench-theme="…"]` rules, and the state classes.
+        #
+        # It is PREPENDED into the live page root (node 9) rather than typed
+        # into the `<style>` build_student_port.py emits, for the same reason
+        # the brand SVG is captured rather than retyped: it is Design's
+        # stylesheet, and a copy of it would drift the first time somebody
+        # tidied one of the six themes.
+        #
+        # ⚠️ MEASURED SAFE BEFORE IT WAS WRITTEN, not assumed. The live page
+        # references ZERO `--pg-*` tokens and `shared/student-ds.css` defines
+        # none, so the whole `:root` block is purely additive — it cannot
+        # re-point anything already on the page. The state classes are inert
+        # for the same reason: the live class view carries exactly three class
+        # names (`rd`, `eyebrow`, `kchip`) and Design's rules key on `wk`,
+        # `tab`, `lbchip`, `sw`, `stbtn`, `pip`, `opt`, `rprog` and `fcflip`,
+        # none of which exist on it yet. They arrive with the subtrees that
+        # use them, in later units.
+        #
+        # The two rules that DO reach the rest of the page are `body{}` and
+        # `a{}`/`a:hover{}`, which sit in the same block and land after the
+        # emitted `<style>` in document order, so they win. MEASURED in a
+        # browser, before and after, rather than reasoned about:
+        #
+        #   body background       rgb(251,243,230) → rgb(251,243,230)  same
+        #   -webkit-font-smoothing  antialiased → antialiased          same
+        #   link colour           rgb(169,52,17) → rgb(169,52,17)      same
+        #   link :hover colour    rgb(127,36,8)  → rgb(127,36,8)       same
+        #   body text-wrap        wrap → PRETTY                        NEW
+        #   link :hover           no underline → UNDERLINE             NEW
+        #
+        # `var(--pg-ground)` is the same #FBF3E6 the emitted rule already
+        # carried, `--pg-accent-text`/`-hover` are the same values as
+        # `--ks3-accent-text`/`-hover`, and student-ds.css's own `body` rule
+        # was already antialiasing. So exactly two things change outside the
+        # bench, both of them Design's own treatment of a page Design drew:
+        # links underline on hover, and the body balances its last lines. They
+        # are adopted rather than stripped — but adopted KNOWINGLY, which is
+        # what this paragraph is for.
+        dict(at=9, mode="prepend", donor=7,
+             why="Design's six-theme token block — the --pg-/--t-/--b- "
+                 "families with harbour as :root's default, the six "
+                 "[data-bench-theme] rules and the state classes. Every "
+                 "themed surface on the page resolves a --b-* token, so the "
+                 "block has to be ON the page before any of them can paint, "
+                 "and it is grafted from Design's file rather than retyped "
+                 "so the six themes cannot drift from the delivery."),
+    ],
     "assignment": [],
 }

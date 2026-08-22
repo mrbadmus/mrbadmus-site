@@ -939,6 +939,25 @@
       : (recall && recall.week != null ? recall.week : null);
 
     var v = detail.viewer || {};
+
+    /* ⊕ 22 Aug 2026 — PHASE 2a. The student's bench theme, onto the page root,
+       BEFORE the mount. It is set on `document.documentElement` rather than on
+       the `.rd` root because the `.rd` root does not exist yet — the runtime
+       draws it — and Design's six `[data-bench-theme="…"]` rules are written
+       against whatever ancestor carries the attribute.
+
+       ⚠️ NULL IS A REAL VALUE AND IT MEANS HARBOUR, so a student with no
+       preference gets NO ATTRIBUTE. Design's contract is that the attribute
+       being ABSENT is harbour, and `:root` in the grafted block already carries
+       harbour's values; writing `data-bench-theme="harbour"` here would say the
+       same thing in a second place, and the two would disagree the first time
+       somebody changed the default in one of them. "No row, no preference, no
+       attribute" is ONE state — the same wording the column's own comment
+       uses. */
+    if (v.bench_theme) {
+      document.documentElement.setAttribute("data-bench-theme", v.bench_theme);
+    }
+
     var first = (v.first_name || "").trim();
     var name = klass.name || "";
 

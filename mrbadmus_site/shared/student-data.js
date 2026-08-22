@@ -365,13 +365,22 @@ window.MrBadmusStudentData = (function () {
     // 3. Viewer's profile (for "Hi, [first_name]" greeting). Could be
     // pulled from the auth/profile in the guard's onAllowed, but we
     // fetch fresh here to keep this module self-contained.
+    //
+    // ⊕ 22 Aug 2026 — `bench_theme` joins the select. It is the student's
+    // chosen bench theme, and it is on the PROFILE rather than in the browser
+    // so it follows them from the school machine to their phone. NULL is a
+    // real value and it means harbour: see the column's own comment in
+    // `supabase/migrations/20260822000050_profiles_bench_theme.sql`.
     const viewerProfileRes = await sb
       .from('profiles')
-      .select('id, first_name, last_name, avatar_url')
+      .select('id, first_name, last_name, avatar_url, bench_theme')
       .eq('id', viewingStudentId)
       .single();
     const viewer = viewerProfileRes.data || {
       id: viewingStudentId, first_name: null, last_name: null, avatar_url: null,
+      // No profile row read at all is the same state as a profile that has
+      // never chosen: no preference, and therefore no attribute.
+      bench_theme: null,
     };
 
     // 4. Parallel: assignments + own submissions + RPC leaderboard.

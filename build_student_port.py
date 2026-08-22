@@ -1699,6 +1699,87 @@ def lesson_index():
             "window.MRB_KS3_LESSONS = {\n%s\n};\n" % (len(index), rows)), len(index)
 
 
+# ── the token bridge: Design's theme tokens → the live page's ────────────
+#
+# ⊕ 22 Aug 2026 — PHASE 2a. Design's six themes move `--b-*`; the live bench,
+# the leaderboard card and the leader's avatar are painted in `--st-*`. This is
+# the join between them, and it is SCOPED to the surfaces `SET_ATTR` names
+# rather than declared at the root — see student_rulings.py for why a root-level
+# remap of `--st-cream` breaks on Chalk.
+#
+# ⚠️ THESE EIGHT ARE A LIST, NOT A FAMILY SWEEP, AND THE DISTINCTION IS THE
+# WHOLE POINT OF THE RULE. Measured out of the compiled tree rather than read
+# off the markup: inside node 55, excluding the docket subtree at node 91, the
+# `--st-*` tokens in use are these eight colours PLUS `--st-ui`, `--st-display`,
+# `--st-mono`, `--st-r-btn`, `--st-r-frame`, `--st-r-chip`, `--st-shadow-frame`,
+# `--st-accent` and `--st-hatch-b`. The first seven of those are FONTS, RADII
+# AND A SHADOW. A rule that swept "the dark `--st-*` family" would have
+# re-pointed the bench's typeface and its corner radii at a colour, and half of
+# what it caught would not have been a colour at all.
+#
+# ⚠️ AND A SWEEP WOULD HAVE TAKEN THE DOCKET WITH IT. `--st-paper` IS in the
+# list — it is the CTA ink on nodes 74 and 88 — and it is ALSO the background
+# of node 91, the one paper card sitting inside the dark bench. Custom
+# properties inherit, so the bridge reaches it whether or not it was aimed
+# there. Hence the restore two rules down. Mide's brief for this unit said the
+# docket uses none of the eight and that no reset rule was needed; measured, it
+# uses exactly one, and without the restore the docket's ground moves from
+# #FFFDF8 to #FFF7EC on five themes and to #FBF3E6 on Chalk. Small, real, and
+# contrary to the ruling that the docket stays paper and ink on all six.
+#
+# The restore is written as a CAPTURE, not as a value: `--st-docket-paper` is
+# taken from `--st-paper` at the root, OUTSIDE the bench, so the docket follows
+# `shared/student-ds.css` if that file ever changes. Retyping #FFFDF8 here is
+# exactly the kind of restated constant that rots, which is what the brief was
+# guarding against; capturing it is not.
+#
+# ⚠️ `[data-bench-avatar]` IS NOT AN EXEMPTION — IT IS AN INVERSION. Node 266
+# is the leader's avatar disc: `background:var(--st-cream)` carrying `--st-ink`
+# initials, and the only place in the class view where `--st-cream` is a
+# background rather than text. Bridging `--st-cream → var(--b-ink)` is REQUIRED,
+# because on Chalk the card ground goes light #EFE2CB and cream text on it is
+# unreadable — but the same bridge would turn the disc near-black under
+# near-black initials. Inverting gives a cream disc with dark initials on the
+# five dark themes and a dark disc with light initials on Chalk. Legible on all
+# six, and it is the relationship Design draws rather than a special case bolted
+# on beside it.
+#
+# ⚠️ AND IT NEEDS `!important`, WHICH IS NOT DECORATION. Node 266 carries its
+# colours in an INLINE style — `background:var(--st-cream)` and
+# `color:var(--st-ink)` — and an inline declaration outranks any selector.
+# Written without the keyword, both declarations parse, match, and lose, and the
+# page looks exactly as if the rule were there: measured on Chalk before the
+# keyword was added, the disc came out rgb(34,30,27) with rgb(34,30,27)
+# initials — the disc and the letters the same colour, which is the precise
+# defect this rule exists to prevent, shipped under a rule that claims to
+# prevent it. The two declarations are Mide's, verbatim; the keyword is what
+# makes them true.
+#
+# ⚠️ THERE IS DELIBERATELY NO `[data-bench-docket]` RULE BEYOND THE ONE TOKEN IT
+# ACTUALLY USES. `SET_ATTR` names node 91 so a gate has a handle to assert "the
+# docket stays paper and ink on all six themes" against; that gate is a separate
+# unit. Restating the docket's other colours here would pin values it does not
+# reference and would rot the moment Design moved one.
+#
+# CLASS VIEW ONLY. The assignment page has no bench, and emitting these rules
+# into it would move that page's bytes to define selectors it can never match.
+_THEME_BRIDGE = (
+    ":root{--st-docket-paper:var(--st-paper)}"
+    "[data-bench-surface]{"
+    "--st-room-panel:var(--b-ground);"
+    "--st-room-body:var(--b-ink);"
+    "--st-room-muted:var(--b-muted);"
+    "--st-room-line:var(--b-rule);"
+    "--st-room-border:var(--b-edge);"
+    "--st-cream:var(--b-ink);"
+    "--st-ember:var(--b-ember);"
+    "--st-paper:var(--b-cta-ink)}"
+    "[data-bench-docket]{--st-paper:var(--st-docket-paper)}"
+    "[data-bench-avatar]{background:var(--b-ink)!important;"
+    "color:var(--b-ground)!important}"
+)
+
+
 def page_html(spec, tpl, roots, bind_table, logic, fixture=False):
     tail = (
         "<script src=\"/shared/%s\"></script>\n"
@@ -1730,7 +1811,8 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False):
         "<style>body{margin:0;background:#FBF3E6}"
         "a{color:var(--ks3-accent-text);text-decoration:none}"
         "a:hover{color:var(--ks3-accent-hover)}"
-        "button{font-family:inherit}</style>\n"
+        "button{font-family:inherit}"
+        "%s</style>\n"
         "</head>\n<body>\n"
         "<div id=\"mrb-student\" style=\"background:var(--st-ground);"
         "min-height:100vh\"></div>\n"
@@ -1747,6 +1829,8 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False):
            (_BANNER % (spec["page"].capitalize(), LIVE_JS_NAME,
                        spec["fixture_out"])),
            DS_CSS_URL,
+           # ⊕ 22 Aug 2026 — the theme bridge, class view only. See above.
+           _THEME_BRIDGE if spec["page"] == "class view" else "",
            json.dumps({"roots": roots, "imports": tpl["imports"]},
                       separators=(",", ":")).replace("<", "\\u003c"),
            json.dumps(bind_table, separators=(",", ":")),

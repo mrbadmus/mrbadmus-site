@@ -87,6 +87,16 @@ GATES = [
          needs="student_behaviour.py",
          why="the ported student pages driven against Design's own — 30 "
              "drives, visible text identical."),
+
+    dict(name="student_themes",
+         cmd=["python3", "student_themes.py"],
+         speed="slow",
+         needs="mrbadmus_site/student/class-fixture.html",
+         why="the ported class page's COLOUR — six bench themes plus the "
+             "attribute absent, grounds, tokens and every contrast ratio "
+             "against the AA floor. The only gate that watches the port's "
+             "palette: parity drives the PREVIEW pair and behaviour compares "
+             "text, so a colour change ships unwatched without this."),
 ]
 
 
