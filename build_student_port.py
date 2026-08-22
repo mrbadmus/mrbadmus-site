@@ -67,10 +67,22 @@ mark (captured from Design's render). What is ours is `shared/student-runtime.js
 — a 30-line base class and a renderer for three constructs.
 """
 
+import hashlib
 import html
 import json
 import os
+import re
 import sys
+
+# ⊕ 23 Aug 2026 — the cache-bust stamp. `stamp_versions` is IMPORTED, not
+# retyped: build_ks3.py already owns the one substitution that gets this right
+# (idempotent against a stale `?v=`, anchored on the trailing quote so a short
+# name cannot match inside a longer one, and agnostic about whether the path
+# sits in a `src` or an `href`). generate_site_v5.py carries a second inline
+# copy of the same regex; a third one here would be the copy that drifts.
+# Importing build_ks3 is cheap and side-effect-free — it loads the KS3 art
+# registry and writes nothing — measured at ~0.26s.
+from build_ks3 import stamp_versions
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 REF = os.path.join("docs", "ks3", "design-reference", "student")
@@ -116,6 +128,72 @@ LESSON_INDEX_NAME = "ks3-lesson-urls.js"
 RUNTIME_JS_NAME = "student-runtime.js"
 LIVE_JS_NAME = "student-live.js"
 LIVE_JS_URL = "/shared/" + LIVE_JS_NAME
+
+# ── Cache-bust stamps ────────────────────────────────────────────────────
+#
+# ⚑ THIS CLOSED A DEFECT THAT WAS HITTING STUDENTS, and it is worth writing
+# down exactly, because a 200 with the right HTML is the failure mode that
+# looks like success.
+#
+# Measured on mrbadmus.com: `/student/class` is served
+# `max-age=0, must-revalidate` — always fresh — while every asset under
+# `/shared/` is served `max-age=14400, must-revalidate`, four hours. These two
+# pages loaded `student-runtime.js`, `student-live.js` and `student-ds.css`
+# with NO version query, so for up to four hours after every deploy a student
+# arriving by bookmark, typed URL or the "My class" nav got TODAY's HTML with
+# YESTERDAY's JavaScript. The compiled binding table then demanded a key the
+# old file never emitted:
+#
+#     [student-live] Error: student page: no data for "accountClassLine"
+#
+# and the catch in `student-live.js` fell through to "We could not load your
+# class just now. Try again in a moment." — a TRANSIENT sentence for a
+# condition that persists for four hours. Reload cures it (a reload
+# revalidates); NAVIGATION does not, which is why it looked intermittent.
+#
+# The stamp makes the skew impossible rather than unlikely: the URL names the
+# CONTENT, so a browser holding the old bytes is holding them under a
+# different URL and has no cached answer for the one the page asks for.
+#
+# ── the four the pages themselves link ───────────────────────────────────
+# `student-fixture-*.js` is per page and is added to the map inside the loop.
+#
+# ── AND THE FIVE THE RUNTIME LOADS, which is the half the brief did not see ──
+# `student-live.js` loads five more shared scripts itself, from its `DEPS`
+# list, and every one of them was unstamped:
+#
+#     config.js · class-entry.js · student-guard.js · student-data.js
+#     ks3-lesson-urls.js
+#
+# Stamping only the three tags in the HTML would have left `student-data.js`
+# — which carries `saveBenchTheme` and the `workingAcademicYear()` scoping —
+# on the same four-hour skew, reached through a `<script>` element this build
+# never writes. They cannot be stamped by rewriting `student-live.js` (it is a
+# hand-written source file, and rewriting the published copy would make the
+# deployed bytes differ from the repo's). So the BUILD publishes the map and
+# the RUNTIME reads it: `window.__MRB_ASSET_V__`, bare name → hash.
+#
+# ⚠️ THE MAP IS KEYED ON THE BARE NAME, ON PURPOSE. Keyed on the full
+# `/shared/<name>` URL it would be rewritten by generate_site_v5.py's own
+# cache-bust pass — that regex matches `/shared/student-data.js"` wherever it
+# occurs, including inside a JSON key — turning the key into
+# `"/shared/student-data.js?v=…"`, which `student-live.js` would then fail to
+# look up. Silent, and it would look like the stamp simply had no effect.
+STAMPED_DEPS = ("config.js", "class-entry.js", "student-guard.js",
+                "student-data.js")
+
+
+def asset_hash(text):
+    """The repo's one stamping scheme: md5 of the bytes, first 8 hex chars.
+
+    Identical to `build_ks3.asset_versions` and to generate_site_v5.py's
+    inline pass, which is what makes `class-entry.js?v=8be18391` read the same
+    on `student/classes.html` (stamped by the KS4 generator) and in this
+    build's `__MRB_ASSET_V__` map. Two writers, one number.
+    """
+    if isinstance(text, str):
+        text = text.encode("utf-8")
+    return hashlib.md5(text).hexdigest()[:8]
 
 PAGES = [
     dict(page="class view", out="class.html",
@@ -2108,14 +2186,28 @@ _PAGE_STRONG = (
 )
 
 
-def page_html(spec, tpl, roots, bind_table, logic, fixture=False):
+def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
+              versions=None):
     tail = (
         "<script src=\"/shared/%s\"></script>\n"
         "<script>window.__MRB_MOUNT__();</script>\n" % spec["fixture_js"]
     ) if fixture else (
         "<script src=\"%s\"></script>\n" % LIVE_JS_URL
     )
-    return (
+    # ⚠️ EMITTED ON BOTH PAGES, including the fixture, which never reads it.
+    # `student_behaviour.py` and `student_themes.py` both document the fixture
+    # as "the same bytes apart from its banner and its last two script tags",
+    # and that sentence is why they are allowed to measure the fixture and
+    # report on the production page. A tag on one and not the other would make
+    # it false — for a JSON blob no student can see. One line of dead weight on
+    # the fixture is the cheaper side of that trade.
+    dep_map = (
+        "<script>window.__MRB_ASSET_V__=%s;</script>\n"
+        % json.dumps({k: v for k, v in sorted((versions or {}).items())
+                      if k in STAMPED_DEPS or k == LESSON_INDEX_NAME},
+                     separators=(",", ":"))
+    )
+    return stamp_versions((
         # ⚑ THE <title> CARRIES NO CLASS. It used to read
         # `8r/Sc1 · My class · MrBadmusAI` on the production page — one real
         # class's name shipped in a file whose own banner says it holds no
@@ -2149,6 +2241,7 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False):
         "<script>window.__MRB_BIND__=%s;</script>\n"
         "<script>\n%s\n</script>\n"
         "<script>\n%s\n</script>\n"
+        "%s"
         "%s"
         "</body>\n</html>\n"
         % (html.escape(spec["title"]),
@@ -2197,8 +2290,9 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False):
            "    props: {}\n"
            "  });\n"
            "};",
-           tail)
-    )
+           dep_map,
+           tail)),
+        versions or {})
 
 
 def write(path, body):
@@ -2206,6 +2300,90 @@ def write(path, body):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as fh:
         fh.write(body)
+
+
+def _verify_stamps(stamped, pages):
+    """Re-read from disk and refuse to finish if any stamp names other bytes.
+
+    ⚑ THE ORDERING IS THE WHOLE UNIT, so it is asserted rather than commented.
+    A `?v=` naming content that is not the content being served is worse than
+    no `?v=` at all: the page looks fixed, the browser caches the wrong bytes
+    under a URL that will never change again, and every gate stays green. The
+    only way to know the stamp is honest is to hash the file that will actually
+    be deployed, AFTER everything that writes it has run.
+
+    Three checks, and each one has caught a different mistake in rehearsal:
+
+      1. every stamp matches the deployed copy under `mrbadmus_site/shared/`;
+      2. every stamp matches the repo-root copy under `shared/`, where one
+         exists — the two trees are round-tripped and must not disagree;
+      3. no `/shared/…` reference survives in a built page WITHOUT a stamp,
+         so adding a fourth asset to `page_html` and forgetting the map is a
+         red build rather than a silent hole four hours wide.
+    """
+    bad = []
+    for name, want in sorted(stamped.items()):
+        for tree in (SHARED_OUT, "shared"):
+            path = os.path.join(tree, name)
+            if not os.path.exists(path):
+                # Only the deployed copy of a dependency this build does not
+                # write can legitimately be absent — a bare `build_student_port`
+                # run in a tree where `generate_site_v5.py` has never run.
+                if tree == SHARED_OUT and name in STAMPED_DEPS:
+                    print("        ⚠️  %s/%s is missing — %s has not run here, "
+                          "so the stamp could not be checked against the "
+                          "deployed copy" % (tree, name, "generate_site_v5.py"))
+                    continue
+                bad.append("%s/%s does not exist, but a page stamps it "
+                           "?v=%s" % (tree, name, want))
+                continue
+            with open(path, "rb") as fh:
+                got = asset_hash(fh.read())
+            if got != want:
+                bad.append(
+                    "%s hashes %s but the pages shipped ?v=%s — the stamp "
+                    "names content that is not what will be served. Run "
+                    "`python3 build_all.py`, which publishes shared/ before "
+                    "this build stamps it." % (path, got, want))
+
+    # ⚠️ WRITTEN AS AN OPTIONAL GROUP, NOT A NEGATIVE LOOKAHEAD, and the first
+    # draft was the lookahead. `/shared/[\w.-]+(?!\?v=)` is satisfied by
+    # BACKTRACKING one character: on the correctly stamped
+    # `/shared/student-ds.css?v=1a2b3c4d` it matched `/shared/student-ds.cs`,
+    # saw that `s` is not `?v=`, and reported a perfectly stamped page as
+    # unstamped — twelve times. A check that cannot be trusted when it is red
+    # is no better than one that cannot be trusted when it is green.
+    #
+    # Matching the stamp OPTIONALLY and testing whether it was captured has no
+    # such ambiguity: `?` is not in the character class, so the greedy run
+    # stops exactly at the end of the filename every time.
+    #
+    # `finditer` rather than a lookup of the first occurrence: a page linking
+    # the same asset twice, once stamped and once not, must report the bad one.
+    linked = re.compile(r'/shared/[A-Za-z0-9._/-]+(\?v=[0-9a-f]+)?')
+    for tree in (SITE_OUT, MIRROR_OUT):
+        for spec in pages:
+            for key in ("out", "fixture_out"):
+                path = os.path.join(tree, spec[key])
+                if not os.path.exists(path):
+                    continue
+                page = open(path, encoding="utf-8").read()
+                for m in linked.finditer(page):
+                    if m.group(1):
+                        continue
+                    bad.append(
+                        "%s links %s with no cache-bust stamp, at offset %d. "
+                        "Every asset a student page names must be in the "
+                        "version map — see STAMPED_DEPS and build()."
+                        % (path, m.group(0), m.start()))
+    if bad:
+        raise SystemExit(
+            "build_student_port.py: the cache-bust stamps are not honest.\n  "
+            + "\n  ".join(bad))
+    print("     ✅ cache-bust: %d asset(s) stamped from their own content, "
+          "each re-hashed from disk — %s"
+          % (len(stamped), ", ".join("%s=%s" % (n, v)
+                                     for n, v in sorted(stamped.items()))))
 
 
 def build():
@@ -2240,6 +2418,87 @@ def build():
     print("     ✅ %-24s %7d bytes, %d sheet(s), linked and cached once"
           % (DS_CSS_NAME, len(css), len(sizes)))
 
+    # ⚑ THE VERSION MAP IS BUILT FROM CONTENT, and every asset it names is
+    # PUBLISHED BEFORE THE PAGE THAT NAMES IT IS WRITTEN. Both halves matter.
+    versions = {DS_CSS_NAME: asset_hash(css)}
+    stamped = dict(versions)   # every hash any page shipped — see _verify_stamps
+
+    # ── the runtime is mirrored HERE, not left to the KS4 generator ──────
+    #
+    # ⚑ THIS COST A RED GATE. Both pages load `/shared/student-runtime.js`, and
+    # until now nothing in this build put it there — `generate_site_v5.py`
+    # glob-copies `shared/` into the output, so the served copy was whatever
+    # the last full site build happened to leave. Editing the runtime and
+    # re-running this build therefore produced a page that loaded the OLD
+    # runtime, and the failure arrived as `R.applyBindings is not a function`
+    # from a file that plainly contained `applyBindings`.
+    #
+    # A build that emits a page depending on a file it does not publish is a
+    # build with a hidden prerequisite. This one publishes it.
+    #
+    # ⊕ 23 Aug 2026 — MOVED, from the last thing this build did to one of the
+    # first, and the move is the whole point of the cache-bust unit rather
+    # than tidying.
+    #
+    # A stamp that names the WRONG content is worse than no stamp, because it
+    # looks fixed. Written where it used to be, the runtime, the live source
+    # and the lesson index were all published AFTER the pages loop — so a
+    # stamp computed inside that loop from `mrbadmus_site/shared/` would have
+    # read the PREVIOUS build's copy and pinned the page to bytes this build
+    # was about to overwrite. The page would then carry `?v=<yesterday>` and
+    # be served today's file under it: the four-hour skew, made permanent and
+    # given a green build.
+    #
+    # `ks3-lesson-urls.js` is the sharpest case, because this build GENERATES
+    # it — there is no source file to fall back on, so the only correct hash is
+    # of the bytes about to be written.
+    #
+    # Two independent guards, and neither is a convention:
+    #   · publish first, stamp second — the ordering above;
+    #   · `_verify_stamps()` at the end of build(), which re-reads every file
+    #     from disk and refuses to finish if any hash disagrees with the stamp
+    #     that shipped.
+    idx_js, n_lessons = lesson_index()
+    for out in (os.path.join("shared", LESSON_INDEX_NAME),
+                os.path.join(SHARED_OUT, LESSON_INDEX_NAME)):
+        with open(out, "w", encoding="utf-8") as fh:
+            fh.write(idx_js)
+    versions[LESSON_INDEX_NAME] = asset_hash(idx_js)
+    print("     ✅ %-24s %7d bytes  (%d KS3 lesson(s), every page checked on "
+          "disk)" % (LESSON_INDEX_NAME, len(idx_js), n_lessons))
+
+    for name in (RUNTIME_JS_NAME, LIVE_JS_NAME):
+        src = os.path.join("shared", name)
+        if not os.path.exists(src):
+            raise SystemExit(
+                "build_student_port.py: shared/%s does not exist, and both "
+                "pages load it. Without it they mount nothing at all — which "
+                "is the correct failure and still a failure." % name)
+        text = open(src, encoding="utf-8").read()
+        with open(os.path.join(SHARED_OUT, name), "w", encoding="utf-8") as fh:
+            fh.write(text)
+        versions[name] = asset_hash(text)
+        print("     ✅ %-24s %7d bytes  (%s)"
+              % (name, len(text),
+                 "STUB — throws; the live data source is not wired yet"
+                 if "not wired yet" in text else "published, not assumed"))
+
+    # The five `student-live.js` loads for itself. These four are published by
+    # `generate_site_v5.py`'s glob copy of `shared/`, not by this build, so
+    # they are hashed from the SOURCE tree — the one input both generators
+    # agree on, and the same choice `build_ks3.asset_versions` documents at
+    # length. `_verify_stamps()` then checks the deployed copy really does
+    # match, so the agreement is asserted rather than assumed.
+    for name in STAMPED_DEPS:
+        src = os.path.join("shared", name)
+        if not os.path.exists(src):
+            raise SystemExit(
+                "build_student_port.py: shared/%s does not exist, and "
+                "student-live.js loads it on every student page. A missing "
+                "dependency is a blank class page." % name)
+        with open(src, "rb") as fh:
+            versions[name] = asset_hash(fh.read())
+
     for spec in PAGES:
         tpl = tpls.get(spec["page"])
         if not tpl:
@@ -2271,19 +2530,29 @@ def build():
             spec, logic, spec["page"], bind_values)
         roots = scrub_roots(ruled_roots, bind_table)
 
-        body = page_html(spec, tpl, roots, bind_table, logic, fixture=False)
-        for out_dir in (SITE_OUT, MIRROR_OUT):
-            write(os.path.join(out_dir, spec["out"]), body)
-
-        fix_body = page_html(spec, tpl, roots, bind_table, logic, fixture=True)
-        for out_dir in (SITE_OUT, MIRROR_OUT):
-            write(os.path.join(out_dir, spec["fixture_out"]), fix_body)
-
+        # ⚑ THE FIXTURE'S DATA FILE IS WRITTEN BEFORE THE PAGE THAT LINKS IT,
+        # for the reason the version map's own comment gives: the fixture page
+        # carries `student-fixture-<page>.js?v=<hash>`, and the only honest
+        # hash is of the bytes this build is about to write. Computed after,
+        # it would name the previous run's example data.
         js = fixture_js(spec, spec["page"], data_literals, bind_values)
         for out_dir in (SHARED_OUT, "shared"):
             with open(os.path.join(out_dir, spec["fixture_js"]), "w",
                       encoding="utf-8") as fh:
                 fh.write(js)
+        page_versions = dict(versions)
+        page_versions[spec["fixture_js"]] = asset_hash(js)
+        stamped.update(page_versions)
+
+        body = page_html(spec, tpl, roots, bind_table, logic, fixture=False,
+                         versions=page_versions)
+        for out_dir in (SITE_OUT, MIRROR_OUT):
+            write(os.path.join(out_dir, spec["out"]), body)
+
+        fix_body = page_html(spec, tpl, roots, bind_table, logic, fixture=True,
+                             versions=page_versions)
+        for out_dir in (SITE_OUT, MIRROR_OUT):
+            write(os.path.join(out_dir, spec["fixture_out"]), fix_body)
 
         # ⚑ ASSERTED, NOT ASSUMED — and precise about what is asserted.
         # ── what this build GUARANTEES, and what it only reports ─────────
@@ -2355,41 +2624,7 @@ def build():
                   "rather than initialisers — see LIFTS and REWRITES"
                   % n_welded)
 
-    # ── the runtime is mirrored HERE, not left to the KS4 generator ──────
-    #
-    # ⚑ THIS COST A RED GATE. Both pages load `/shared/student-runtime.js`, and
-    # until now nothing in this build put it there — `generate_site_v5.py`
-    # glob-copies `shared/` into the output, so the served copy was whatever
-    # the last full site build happened to leave. Editing the runtime and
-    # re-running this build therefore produced a page that loaded the OLD
-    # runtime, and the failure arrived as `R.applyBindings is not a function`
-    # from a file that plainly contained `applyBindings`.
-    #
-    # A build that emits a page depending on a file it does not publish is a
-    # build with a hidden prerequisite. This one publishes it.
-    idx_js, n_lessons = lesson_index()
-    for out in (os.path.join("shared", LESSON_INDEX_NAME),
-                os.path.join(SHARED_OUT, LESSON_INDEX_NAME)):
-        with open(out, "w", encoding="utf-8") as fh:
-            fh.write(idx_js)
-    print("     ✅ %-24s %7d bytes  (%d KS3 lesson(s), every page checked on "
-          "disk)" % (LESSON_INDEX_NAME, len(idx_js), n_lessons))
-
-    for name in (RUNTIME_JS_NAME, LIVE_JS_NAME):
-        src = os.path.join("shared", name)
-        if not os.path.exists(src):
-            raise SystemExit(
-                "build_student_port.py: shared/%s does not exist, and both "
-                "pages load it. Without it they mount nothing at all — which "
-                "is the correct failure and still a failure." % name)
-        text = open(src, encoding="utf-8").read()
-        with open(os.path.join(SHARED_OUT, name), "w", encoding="utf-8") as fh:
-            fh.write(text)
-        print("     ✅ %-24s %7d bytes  (%s)"
-              % (name, len(text),
-                 "STUB — throws; the live data source is not wired yet"
-                 if "not wired yet" in text else "published, not assumed"))
-
+    _verify_stamps(stamped, PAGES)
 
     print("\n     → %s/  and  %s/  (mirror)" % (SITE_OUT, MIRROR_OUT))
     print("\n     ⚠️  *-ported.html carry NO data and do not mount themselves; "

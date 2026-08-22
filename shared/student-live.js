@@ -95,7 +95,35 @@
   }
 
   // ── loading the helpers ───────────────────────────────────────────────
-  function loadScript(src) {
+
+  /* ⚑ THE CACHE-BUST STAMP, FOR THE FILES THIS ONE LOADS ITSELF.
+
+     Every asset under /shared/ is served `max-age=14400, must-revalidate` —
+     four hours — while the pages themselves are `max-age=0`. So a page and the
+     scripts it pulls in can be four hours apart, and the failure is silent:
+     `student-data.js` is where `saveBenchTheme` and the academic-year scoping
+     live, and an old copy of it does not error, it just behaves like
+     yesterday.
+
+     The stamps cannot live in the DEPS list above, because this file is
+     hand-written source and the hashes are only knowable at build time. So
+     `build_student_port.py` publishes them onto the page as
+     `window.__MRB_ASSET_V__`, keyed on the BARE FILENAME — keyed on the full
+     path they would be rewritten by generate_site_v5.py's own cache-bust
+     regex, which matches `/shared/<name>"` wherever it occurs, including
+     inside a JSON key.
+
+     No map, no stamp, current behaviour: this file stays loadable by a page
+     that does not carry one. */
+  function stamped(src) {
+    var map = window.__MRB_ASSET_V__;
+    if (!map) { return src; }
+    var v = map[src.replace(/^\/shared\//, "")];
+    return v ? src + "?v=" + v : src;
+  }
+
+  function loadScript(rawSrc) {
+    var src = stamped(rawSrc);
     return new Promise(function (resolve, reject) {
       var existing = document.querySelector('script[src="' + src + '"]');
       if (existing && existing.getAttribute("data-mrb-loaded") === "1") {
