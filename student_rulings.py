@@ -55,28 +55,46 @@ absent from the port. Those gates are what catch this file rotting.
 #   322 … 330  the static "ON TIME · 40 / SCORE · 40 / RECALL · 20" legend
 PRUNE = {
     # ⊕ RULED 22 Aug 2026 — P7. SETTINGS IS A DEAD CONTROL, SO IT GOES.
+    # ⊕ RETIRED 23 Aug 2026 — PHASE 1b. THE CONDITION P7 NAMED HAS BEEN MET.
+    #
+    # P7 pruned two nodes and stated its own retirement condition in the same
+    # breath: *"It comes back when Design's theme picker gives it a job."*
     #
     #   26   the wide header's "Settings" link
-    #   30   the same item inside the narrow account sheet
+    #   30   the same item inside the narrow account menu
     #
-    # It did nothing. Not "did something small" — nothing: an `<a href="#top">`
-    # with no handler, which scrolls the page to the top and is read by a
-    # student as the app ignoring them. There is nothing to set yet, and a
-    # button that lies about being a button teaches a child not to trust the
-    # other ones.
+    # Both were `<a href="#top">` with no handler, which scrolls the page to
+    # the top and is read by a student as the app ignoring them.
     #
-    # It comes back when Design's theme picker gives it a job. Removing it now
-    # and restoring it with a purpose is a smaller lie than leaving it.
+    # ⚑ DESIGN'S AMENDED DELIVERY SETTLES IT LITERALLY, not by analogy.
+    # Donor node 22 — the same "Settings" in Design's amended header — is a
+    # `<button>` carrying `onClick={{ openAccount }}`, and `openAccount` is
+    # what opens the account sheet the theme picker lives in. So the job P7
+    # was waiting for is the exact job Design gave this exact control.
     #
-    # ⚠️ REGISTERED IN `student_behaviour.RULED_DIVERGENCE`, because this one
-    # is VISIBLE. The seven MRB-275 prunes below remove figures Design draws
-    # from data we do not have; this removes a word from the header, so every
-    # class-view drive's text now differs from Design's by that word and the
-    # gate has to be told why. It is asserted from both sides: present in
-    # Design's own file, absent from the port.
+    # The two indices therefore leave `PRUNE` and arrive in `SET_ON` below,
+    # wired to `openAccount`. Their twin registrations in
+    # `student_behaviour.RULED_DIVERGENCE` and `.RULED_CONTROLS` come out in
+    # the SAME commit: the port renders `Settings` again, exactly as Design's
+    # original delivery does, so there is no divergence left to declare and a
+    # registration that outlived its ruling would go red for being satisfied.
+    #
+    # ⚠️ THE AVATAR BUTTON (node 21) IS NOT REWIRED, and this was checked
+    # rather than assumed. Design's amended header gives node 19 — its avatar —
+    # `openAccount` too, because Design's amended header has NO dropdown menu:
+    # the sheet replaces it. Ours still has one, at node 28 (`if menuOpen`),
+    # and at NARROW width that dropdown is the only route to `Sign out` — node
+    # 25's inline Settings/Sign out pair is inside `if wide`. Rewiring node 21
+    # to `openAccount` would therefore sign a phone user out of the ability to
+    # sign out. It keeps `toggleMenu`; the route into the sheet on a phone is
+    # avatar → menu → Settings, which is two presses and no dead ones.
+    # (`SET_ON` would have refused the rewrite anyway — node 21 already
+    # carries a handler and the build stops rather than overwrite one.)
+    #
+    # ── the MRB-275 prunes, unchanged ────────────────────────────────────
     #
     # ⚠️ CLASS VIEW ONLY, AND THAT WAS CHECKED RATHER THAN ASSUMED. The first
-    # draft of this ruling pruned 26 and 30 on BOTH pages, because both pages
+    # draft of the P7 ruling pruned 26 and 30 on BOTH pages, because both pages
     # obviously have a header. They do not have the same one: node indices are
     # per-page, and on the assignment page 26/27/30/31 are the `sc-if` around
     # the deadline chip, the LATE chip, the HANDED IN chip and a chevron.
@@ -84,7 +102,7 @@ PRUNE = {
     # "HANDED IN" badges — a far worse defect than the one being fixed, shipped
     # in the same commit that claimed to fix it. The assignment page has no
     # account menu at all: no Settings, no Sign out, no environment badge.
-    "class view": [26, 30, 275, 279, 297, 298, 322, 325, 328],
+    "class view": [275, 279, 297, 298, 322, 325, 328],
 }
 
 # ── template nodes that need a CLICK HANDLER Design never gave them ───────
@@ -118,7 +136,19 @@ SET_ON = {
     # `<a href="#top">`, which scrolled instead of opening the lesson. Its
     # handler is `l.open`, resolved out of the `sc-for`'s own loop scope, so
     # each card opens ITS lesson rather than a shared one.
-    "class view": {27: "signOut", 31: "signOut", 231: "l.open"},
+    #
+    # ⊕ 23 Aug 2026 — PHASE 1b. 26 and 30 are the two "Settings" controls,
+    # back from `PRUNE` with the job Design gave them: they OPEN THE ACCOUNT
+    # SHEET, which is where the bench theme picker lives. See the retirement
+    # note on `PRUNE` above, and the graft of donor node 243 below.
+    #
+    # Both, not one. 26 is the wide header's inline link and 30 is the same
+    # item inside the narrow dropdown, and a phone only ever sees 30 — wiring
+    # the one that reads first in the file would have left every phone with a
+    # picker it could not reach and a gate that never noticed, because the
+    # behaviour gate drives at 1460.
+    "class view": {26: "openAccount", 30: "openAccount",
+                   27: "signOut", 31: "signOut", 231: "l.open"},
 }
 
 # ── the logic, transformed ───────────────────────────────────────────────
@@ -474,6 +504,192 @@ LOGIC = {
             "'var(--st-accent)' : w.status === 'missed' ? 'var(--err)' : "
             "'var(--pg-strong)' })),",
         ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ 23 Aug 2026 — PHASE 1b. THE LOGIC HALF OF THE THEME PICKER.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # ⚠️ `GRAFT` COPIES MARKUP AND NOTHING ELSE. It deep-copies a donor
+        # SUBTREE and renumbers it; it never touches the logic class. Design's
+        # account sheet is `if accountOpen` wrapped around six buttons carrying
+        # `onClick={{ pickClay }}` … `{{ pickGraphite }}` and
+        # `data-on={{ isClay }}` … `{{ isGraphite }}`, and the LIVE logic class
+        # has none of those thirteen names.
+        #
+        # What that costs if it is forgotten is not an error. `build` resolves
+        # an `if` with `lookup(node.e, scope, null)` — miss list deliberately
+        # null — so an absent `accountOpen` reads `undefined`, the branch is
+        # skipped, and the sheet RENDERS NOTHING, silently, on a page whose
+        # build printed a graft and whose gates would all stay green. Every one
+        # of the thirteen is therefore written here, by hand, against the live
+        # page's own state rather than copied out of Design's self-contained
+        # sample (whose `week`/`filter`/`lbweek`/`bench` state would collide
+        # with ours).
+        #
+        # Design's NAMES are kept exactly, because Design's markup is what
+        # resolves them. Design's VALUES are kept where they are pure
+        # presentation — the `'1'`/`'0'` strings below are Design's, and they
+        # have to be strings; see the note beside them.
+        (
+            'class Component extends DCLogic {',
+            "/* ⊕ 23 Aug 2026 — PHASE 1b. WHERE A STUDENT'S THEME ACTUALLY GOES.\n"
+            "\n"
+            "   The same seam the assignment page already uses for answers, and the\n"
+            "   same two rules: `window.__MRB_SINK__` is a WRITER and never a data\n"
+            "   source, and it is read LAZILY on every call. The logic script runs\n"
+            "   before `student-live.js` has loaded, so a reference captured at\n"
+            "   evaluation time would be null forever and every theme a student\n"
+            "   chose would be dropped on the floor without a word.\n"
+            "\n"
+            "   On the fixture page there is no sink, every call is a no-op\n"
+            "   returning null, and the picker behaves exactly as Design's own file\n"
+            "   does — it paints and it ticks. That is deliberate: the gates drive\n"
+            "   the fixture, and a gate that had to reach a network would not be a\n"
+            "   gate. */\n"
+            "function _sink() {\n"
+            "  return (typeof window !== 'undefined' && window.__MRB_SINK__) || null;\n"
+            "}\n"
+            "function _sinkCall(name, arg) {\n"
+            "  var s = _sink();\n"
+            "  if (!s || typeof s[name] !== 'function') { return null; }\n"
+            "  try { return s[name](arg); } catch (e) { return null; }\n"
+            "}\n"
+            "class Component extends DCLogic {",
+        ),
+        (
+            "    view: 'class', w: 1200, menu: false,",
+            "    /* ⊕ 23 Aug 2026 — PHASE 1b. Two keys, and both are read by\n"
+            "       Design's grafted markup rather than by anything of ours.\n"
+            "\n"
+            "       `theme` is SEEDED FROM THE PAGE, not from a constant.\n"
+            "       `student-live.js` writes `data-bench-theme` onto\n"
+            "       documentElement in `buildClass`, BEFORE `__MRB_MOUNT__()` is\n"
+            "       called, so by the time this initialiser runs the student's\n"
+            "       saved preference is already on the page and reading it back is\n"
+            "       reading the one value that is true. Seeding it with a literal\n"
+            "       'harbour' instead would have opened every sheet with the\n"
+            "       harbour swatch ticked for a student sitting on damson — the\n"
+            "       page correct and the picker lying about it.\n"
+            "\n"
+            "       NO ATTRIBUTE IS HARBOUR, which is the column's own contract:\n"
+            "       NULL means no preference, `:root` carries harbour's values, and\n"
+            "       the fallback here says the same thing in the same words. */\n"
+            "    account: false,\n"
+            "    theme: (typeof document !== 'undefined' && document.documentElement\n"
+            "      && document.documentElement.getAttribute('data-bench-theme'))\n"
+            "      || 'harbour',\n"
+            "    view: 'class', w: 1200, menu: false,",
+        ),
+        (
+            "  toggleMenu = () => this.setState((s) => ({ menu: !s.menu }));",
+            "  toggleMenu = () => this.setState((s) => ({ menu: !s.menu }));\n"
+            "\n"
+            "  /* ⊕ 23 Aug 2026 — PHASE 1b. THE BENCH THEME PICKER. */\n"
+            "  benchThemes = ['clay', 'chalk', 'moss', 'harbour', 'damson', 'graphite'];\n"
+            "\n"
+            "  /* Both Settings controls are Design's `<a href=\"#top\">`, and the\n"
+            "     href is still on them — `SET_ON` adds a handler, it does not\n"
+            "     rewrite markup. Without `preventDefault` the sheet would open and\n"
+            "     the page behind it would jump to the top at the same moment, which\n"
+            "     is the half of P7's original complaint that has nothing to do with\n"
+            "     the handler. `menu: false` closes the dropdown the phone opened to\n"
+            "     get here, so the student is not left with a menu behind a sheet. */\n"
+            "  openAccount = (e) => {\n"
+            "    if (e && e.preventDefault) { e.preventDefault(); }\n"
+            "    this.setState({ account: true, menu: false });\n"
+            "  };\n"
+            "  closeAccount = () => this.setState({ account: false });\n"
+            "\n"
+            "  /* PAINT AND TICK IN ONE PLACE, deliberately. The attribute on\n"
+            "     documentElement is what the six `[data-bench-theme]` rules key on;\n"
+            "     `state.theme` is what the six `data-on` values key on. They are\n"
+            "     two statements about one preference, and anything that moves one\n"
+            "     without the other leaves a page wearing damson with harbour\n"
+            "     ticked. This is also the path a FAILED WRITE takes back. */\n"
+            "  showBenchTheme = (t) => {\n"
+            "    if (typeof document !== 'undefined' && document.documentElement) {\n"
+            "      document.documentElement.setAttribute('data-bench-theme', t);\n"
+            "    }\n"
+            "    this.setState({ theme: t });\n"
+            "  };\n"
+            "\n"
+            "  /* OPTIMISTIC, AND HONEST ABOUT FAILING.\n"
+            "\n"
+            "     The paint happens first and the network is never waited on: a\n"
+            "     colour a student asked for has to arrive under their finger, not\n"
+            "     after a round trip to Frankfurt on a school wifi.\n"
+            "\n"
+            "     ⚠️ WHAT HAPPENS WHEN THE WRITE FAILS IS A RULING, not an\n"
+            "     oversight. The tick is not decoration — it is the page saying\n"
+            "     THIS IS YOUR SAVED PREFERENCE. If the write did not land, that\n"
+            "     sentence is false, and it stays false until the student reloads\n"
+            "     tomorrow on a different machine and finds their theme gone with no\n"
+            "     idea when it went. So a failure puts the previous theme back —\n"
+            "     visibly, under their eye, in the moment they can simply press it\n"
+            "     again — and the page never claims a preference the database does\n"
+            "     not hold. The alternative (keep the colour, log the error) is the\n"
+            "     hand-in stamp defect this port already removed once: a false\n"
+            "     confirmation is worse than a visible failure, because it stops the\n"
+            "     student worrying about it.\n"
+            "\n"
+            "     ⚠️ THERE IS DELIBERATELY NO \"same theme, do nothing\" SHORTCUT,\n"
+            "     and the first draft had one. It looks free and it is not, because\n"
+            "     the page's theme and the DATABASE's theme are not the same fact.\n"
+            "     A student who has never chosen sits on harbour with `bench_theme`\n"
+            "     NULL — no preference. Pressing HARBOUR is that student CHOOSING\n"
+            "     harbour, and with the shortcut in place it wrote nothing at all,\n"
+            "     so the row stayed NULL and their choice would silently follow the\n"
+            "     default the day the default moved. NULL means 'never chose'; it\n"
+            "     cannot also mean 'chose the thing that is currently default'.\n"
+            "     The cost of dropping it is one redundant PATCH of a few dozen\n"
+            "     bytes when a student presses the swatch they are already on.\n"
+            "\n"
+            "     `ok === false` rather than a throw is the sink's own vocabulary:\n"
+            "     `_sinkCall` swallows exceptions by design, so the writer reports a\n"
+            "     refusal by RESOLVING false. A null return (no sink at all, which is\n"
+            "     every fixture and every gate) takes neither branch and the picker\n"
+            "     behaves exactly as Design's file does. */\n"
+            "  pickBenchTheme = (t) => {\n"
+            "    if (this.benchThemes.indexOf(t) < 0) { return; }\n"
+            "    const was = this.state.theme;\n"
+            "    this.showBenchTheme(t);\n"
+            "    const out = _sinkCall('saveBenchTheme', t);\n"
+            "    if (out && typeof out.then === 'function') {\n"
+            "      const back = () => this.showBenchTheme(was);\n"
+            "      out.then(function (ok) { if (ok === false) { back(); } }, back);\n"
+            "    }\n"
+            "  };",
+        ),
+        (
+            "      nav: nav, menuOpen: st.menu, toggleMenu: this.toggleMenu,",
+            "      nav: nav, menuOpen: st.menu, toggleMenu: this.toggleMenu,\n"
+            "      /* ⊕ 23 Aug 2026 — PHASE 1b. Thirteen names Design's grafted\n"
+            "         markup resolves out of this object. The spellings are\n"
+            "         Design's and are not negotiable: one letter out and the\n"
+            "         swatch is a dead control on a page that still builds. */\n"
+            "      openAccount: this.openAccount,\n"
+            "      closeAll: this.closeAccount,\n"
+            "      accountOpen: st.account,\n"
+            "      pickClay: () => this.pickBenchTheme('clay'),\n"
+            "      pickChalk: () => this.pickBenchTheme('chalk'),\n"
+            "      pickMoss: () => this.pickBenchTheme('moss'),\n"
+            "      pickHarbour: () => this.pickBenchTheme('harbour'),\n"
+            "      pickDamson: () => this.pickBenchTheme('damson'),\n"
+            "      pickGraphite: () => this.pickBenchTheme('graphite'),\n"
+            "      /* '1' AND '0' AS STRINGS, WHICH IS DESIGN'S OWN CHOICE AND IS\n"
+            "         LOAD-BEARING TWICE. The selected treatment is\n"
+            "         `.sw[data-on=\"1\"]`, an attribute-VALUE match, so a boolean\n"
+            "         true would write `data-on=\"true\"` and no swatch would ever\n"
+            "         tick. And the runtime SKIPS an attribute whose resolved value\n"
+            "         is `false`, so the unselected five would lose the attribute\n"
+            "         altogether rather than carrying '0'. Both failures look like\n"
+            "         a CSS problem and neither is. */\n"
+            "      isClay: st.theme === 'clay' ? '1' : '0',\n"
+            "      isChalk: st.theme === 'chalk' ? '1' : '0',\n"
+            "      isMoss: st.theme === 'moss' ? '1' : '0',\n"
+            "      isHarbour: st.theme === 'harbour' ? '1' : '0',\n"
+            "      isDamson: st.theme === 'damson' ? '1' : '0',\n"
+            "      isGraphite: st.theme === 'graphite' ? '1' : '0',",
+        ),
     ],
     'assignment': [
         (
@@ -753,6 +969,88 @@ GRAFT = {
                  "block has to be ON the page before any of them can paint, "
                  "and it is grafted from Design's file rather than retyped "
                  "so the six themes cannot drift from the delivery."),
+
+        # ⊕ 23 Aug 2026 — PHASE 1b + 1c. THE ACCOUNT SHEET AND ITS PICKER.
+        #
+        # Donor 243 is Design's `<if accountOpen>`; its subtree is the whole
+        # sheet — the scrim, the 460px panel, the close button, the identity
+        # block, the TEACHER / TERM / EMAIL rows, and the BENCH THEME block
+        # with the six `class="sw"` swatches at donor 270/278/286/294/302/310.
+        #
+        # ── WHY node 10, and WHY append ──────────────────────────────────
+        #
+        # Node 10 is `.rd[data-mode="ks3"]` — the DESIGN ROOT, and the direct
+        # counterpart of the donor's own node 8, which is the `.rd` Design's
+        # sheet is drawn inside. The sheet goes at the END of it.
+        #
+        #   INSIDE `.rd`, and this is not a preference. Everything that reads
+        #   this page reads it through `.rd[data-mode="ks3"]`:
+        #   `student_behaviour`'s text and control census and
+        #   `student_controls_drive`'s press sweep both open with
+        #   `document.querySelector('.rd[data-mode="ks3"]')`. Node 9 — the
+        #   outer `<div>` the token block was prepended into — is its PARENT,
+        #   and a sheet grafted there is a control surface no gate can see
+        #   while being perfectly visible to a student. That was tried first
+        #   and the drive found it: six live swatches, and every gate reading
+        #   an empty sheet.
+        #
+        #   LAST, because it is `position:fixed;inset:0;z-index:40` and it has
+        #   to paint over the page. z-index alone does not settle it — the
+        #   header at node 11 carries `z-index:20` inside a `position:relative`
+        #   context of its own, and painting order breaks ties. Last child and
+        #   higher z-index, both.
+        #
+        # `append` and not `after`: `after` needs a parent to insert into, and
+        # would put the sheet outside `.rd` again.
+        #
+        # ⚠️ ONE THING HERE WAS MEASURED RATHER THAN REASONED, AND THE
+        # REASONING WOULD HAVE BEEN WRONG. Node 10 carries
+        # `container-type:inline-size`, and CSS containment makes an element a
+        # containing block for its `position:fixed` descendants — which would
+        # have anchored this sheet to the top of a 3597px-tall document
+        # instead of to the viewport, so scrolling would have slid the scrim
+        # off the screen. Driven at 1460 and at 390, at scrollY 0 and 1200:
+        # the scrim measures exactly the viewport (1460×1200 and 390×844) and
+        # stays at top:0 through the scroll. Chrome does not apply
+        # fixed-position containment for `inline-size`. The graft stays where
+        # the gates can see it, and it behaves as Design drew it.
+        #
+        # ── ⊕ 1c — THE EMAIL ROW IS OMITTED ──────────────────────────────
+        #
+        # RULED: no student surface shows an email address. A class page is
+        # opened on a shared classroom machine and on a projector; a school
+        # email is a real identifier and a real contact route, and it is on
+        # screen for whoever is standing behind the student. Nothing else on
+        # the student surface shows one, and the sheet showing one would make
+        # it the first place on the site that does.
+        #
+        # ⚠️ IT CANNOT BE DONE WITH `PRUNE`, and the reason is the order of
+        # `apply_rulings`: PRUNE walks the LIVE template first and asserts
+        # every index it was given was found, and only THEN does the graft
+        # copy the donor in. Listing the renumbered 10263 would therefore
+        # raise "they are not in Design's template" — correctly, because at
+        # that moment they are not. Hence `omit`, which runs inside the graft,
+        # on the donor's own numbering, before the renumber.
+        #
+        # ⚠️ `omit` IS NOT `BINDINGS`' `drop`, AND THEY ARE DELIBERATELY NOT
+        # SPELLED ALIKE. `drop` is a RUNTIME rule about a bound value — the
+        # element goes when its text turns out to be empty, and it comes back
+        # when the value is not (the environment badge on localhost). `omit`
+        # is a BUILD-TIME rule about Design's markup — the subtree is never
+        # copied at all, so there is nothing on the page in any state and no
+        # value could bring it back.
+        #
+        # Each index is asserted PRESENT in the donor subtree before it is
+        # removed, so an entry that goes stale — Design redraws the sheet, the
+        # row moves, the number means something else — stops the build instead
+        # of silently omitting nothing and shipping the email.
+        dict(at=10, mode="append", donor=243, omit=[263],
+             why="Design's account sheet, which is where change C1 puts the "
+                 "bench theme control. Six swatches, one tick, and the two "
+                 "Settings controls P7 pruned come back wired to it. The "
+                 "EMAIL row is omitted: no student surface shows an email "
+                 "address, and a class page is read on shared classroom "
+                 "machines."),
     ],
     "assignment": [],
 }

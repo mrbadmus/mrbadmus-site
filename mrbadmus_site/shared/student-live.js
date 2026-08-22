@@ -371,6 +371,18 @@
     return "SUMMER TERM";
   }
 
+  /* "AUTUMN TERM" → "Autumn". ⊕ 23 Aug 2026 — PHASE 1b, for the account
+     sheet's TERM row, which Design sets in sentence case and beside a week
+     count rather than as the shouted crumb-rail label. Derived from the one
+     term label this file already computes rather than computed a second time:
+     two derivations of the same term is how the crumb rail and the sheet come
+     to disagree in March. */
+  function seasonOf(termLabel) {
+    var word = String(termLabel || "").split(" ")[0];
+    if (!word) { return ""; }
+    return word.charAt(0) + word.slice(1).toLowerCase();
+  }
+
   /* ── the backend ───────────────────────────────────────────────────────
      Bearer token from the live session. The response's `Date` header is the
      SERVER clock, and it is the only "now" this file trusts for deciding what
@@ -961,6 +973,21 @@
     var first = (v.first_name || "").trim();
     var name = klass.name || "";
 
+    /* ⊕ 23 Aug 2026 — PHASE 1b. THE CLASS PAGE GETS A SINK, and until now it
+       had none: `makeSink` is built inside `buildAssignment`, so on this page
+       `window.__MRB_SINK__` was never set and `_sinkCall` was a permanent
+       no-op. The theme picker is the first control on the class view that
+       WRITES anything, so it is the first thing that needed one.
+
+       One method, and deliberately not more. A sink is a writer; adding the
+       class page's reads to it would put a network object inside the thing the
+       page renders from, which is the line this file exists to keep sharp. */
+    pendingSink = {
+      saveBenchTheme: function (t) {
+        return D.saveBenchTheme(user.id, t);
+      }
+    };
+
     return {
       work: work,
       roster: roster,
@@ -1171,6 +1198,32 @@
 
       subjectLabel: klass.pill_label || "",
       termLabel: termLabelFrom(serverNow, year),
+
+      /* ── ⊕ 23 Aug 2026 — PHASE 1b. The account sheet's two real rows ────
+         Design typed `8r/Sc1 · SCIENCE` and `Summer · Week 01 / 39` into the
+         markup of the sheet, one text node each. Both are composed here from
+         values this function already holds, so neither is a second source of
+         truth for the class, the subject or the week.
+
+         ⚠️ THE SEPARATOR IS DESIGN'S TYPOGRAPHY AND IS CARRIED VERBATIM —
+         space, NON-BREAKING space, middle dot, NON-BREAKING space, space. It
+         is what stops the subject wrapping onto its own line under a class
+         name on a 360px phone. It is not data and it is not decoration to be
+         tidied into a plain " · ".
+
+         Each half drops out cleanly when the platform does not have it: no
+         subject pill (`class_teachers` carries no subject) leaves the class
+         name alone rather than a class name with a dangling dot, and no week
+         leaves the term alone. An honest half-row beats a full one with a
+         placeholder in it — the same rule the docket rows already follow. */
+      accountClassLine: klass.pill_label
+        ? name + " \u00a0\u00b7\u00a0 " + String(klass.pill_label).toUpperCase()
+        : name,
+      accountTerm: (function () {
+        var season = seasonOf(termLabelFrom(serverNow, year));
+        if (weekNo == null) { return season; }
+        return season + " \u00a0\u00b7\u00a0 Week " + pad2(weekNo) + " / 39";
+      })(),
 
       /* ⊕ RULED 22 Aug 2026 — P6. Empty on the live site, and the binding is
          marked `drop`, so the chip's element goes with its text rather than

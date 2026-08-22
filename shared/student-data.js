@@ -724,9 +724,95 @@ window.MrBadmusStudentData = (function () {
     });
   }
 
+  /* ── the bench theme, written ────────────────────────────────────────
+     ⊕ 23 Aug 2026 — PHASE 1b. The read side of this has existed since 22 Aug
+     (`bench_theme` joins the viewer's profile select above); nothing wrote it,
+     so every student was on harbour and stayed there.
+
+     ⚠️ THE COLUMN GRANT IS WHY THIS IS A DIRECT WRITE AND NOT AN ENDPOINT.
+     `authenticated` holds UPDATE on fifteen columns of `profiles` and
+     `bench_theme` is one of them (migration
+     20260822000056_profiles_update_column_scope.sql), so a student may write
+     their own preference and may not write their own `role`. That was proved
+     on production, both ways, before this could be called. There is no
+     backend route for it and there does not need to be one.
+
+     ⚠️ THE THEME NAME IS CHECKED HERE AS WELL AS IN THE PAGE. The page's own
+     `pickBenchTheme` already refuses anything outside the six, and this
+     refuses it again — a data layer that trusts its caller is one console
+     paste away from an arbitrary string in a column the page turns into a CSS
+     attribute selector. Two cheap checks, one of which is the last one.
+
+     Returns TRUE on a write that landed and FALSE on one that did not, and
+     never throws: the caller's contract is "false means put the old theme
+     back", and an exception escaping here would take that decision away from
+     the one place that can act on it. */
+  const BENCH_THEMES = ['clay', 'chalk', 'moss', 'harbour', 'damson', 'graphite'];
+
+  async function saveBenchTheme(viewingStudentId, theme) {
+    if (BENCH_THEMES.indexOf(theme) < 0) {
+      console.error('[student-data] refusing an unknown bench theme', theme);
+      return false;
+    }
+    try {
+      const cfg = window.MrBadmusConfig || {};
+      const sb = window.MrBadmusStudentGuard.getClient();
+      const session = await sb.auth.getSession();
+      const token = session && session.data && session.data.session
+        ? session.data.session.access_token : null;
+      if (!token) {
+        console.error('[student-data] bench theme not saved: no session');
+        return false;
+      }
+      /* ⚠️ RAW `fetch` WITH `keepalive`, AND NOT `sb.from(...).update(...)`.
+         The supabase-js client is the right tool everywhere else on this
+         page; here it is the wrong one for one reason, and the reason cost
+         a lost answer once already (see `post` in student-live.js): a
+         browser CANCELS in-flight requests when the document unloads,
+         silently, with no error anywhere. Tapping a swatch and immediately
+         tapping "My class", closing the tab, or locking the phone is the
+         ordinary way a student uses this control — the picker is a thing you
+         press on your way somewhere. `keepalive` lets the request outlive
+         the document; supabase-js exposes no way to set it. The body is a
+         few dozen bytes, far inside `keepalive`'s 64 KB limit.
+
+         This is the PostgREST route the client would have called, written
+         out: the same table, the same filter, the same row-level security
+         and the same fifteen-column grant. Nothing is bypassed — the JWT is
+         the student's own and the database decides, exactly as before. */
+      const res = await fetch(
+        cfg.SUPABASE_URL + '/rest/v1/profiles?id=eq.' +
+          encodeURIComponent(viewingStudentId),
+        {
+          method: 'PATCH',
+          headers: {
+            apikey: cfg.SUPABASE_ANON_KEY,
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            Prefer: 'return=minimal',
+          },
+          body: JSON.stringify({
+            bench_theme: theme,
+            updated_at: new Date().toISOString(),
+          }),
+          keepalive: true,
+        });
+      if (!res.ok) {
+        console.error('[student-data] bench theme not saved',
+                      res.status, await res.text().catch(function () { return ''; }));
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.error('[student-data] bench theme not saved', err);
+      return false;
+    }
+  }
+
   return {
     loadStudentClass: loadStudentClass,
     loadStudentClasses: loadStudentClasses,
     loadStudentClassShoutouts: loadStudentClassShoutouts,
+    saveBenchTheme: saveBenchTheme,
   };
 })();

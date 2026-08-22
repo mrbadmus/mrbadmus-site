@@ -227,6 +227,32 @@ OLD_DEFAULT = "graphite"       # README: "GRAPHITE (the old default, opt-in)"
 # absent != graphite.
 CASES = [None] + [t[0] for t in THEMES]
 
+# ── ⊕ 23 Aug 2026 — PHASE 1b. THE PICKER ─────────────────────────────────
+#
+# Everything above measures what a theme LOOKS like once it is on. None of it
+# can see whether a student can choose one: the seven cases are driven by
+# setting `data-bench-theme` from the outside, which is exactly what no student
+# can do. Six correct themes and no way to reach five of them is the state this
+# page shipped in on 23 August, and every assertion in this file was green
+# throughout it.
+#
+# So this half presses the swatches. Design's order, Design's labels, and the
+# labels are asserted rather than derived from `THEMES` — the six words are
+# what a student reads, and a gate that generated them from the same list the
+# page is built from could not see them go wrong together.
+PICKER_LABELS = ["CLAY", "CHALK", "MOSS", "HARBOUR", "DAMSON", "GRAPHITE"]
+
+# The order the six are PRESSED in. Not alphabetical and not Design's: it
+# starts on the swatch the page is NOT on, so the very first press is a real
+# change of state rather than a no-op that would prove nothing, and it ends on
+# HARBOUR so the page is left on the default for anything that runs after.
+PICKER_ORDER = ["CHALK", "CLAY", "GRAPHITE", "MOSS", "DAMSON", "HARBOUR"]
+
+# The tick inside a selected swatch is a GRAPHIC, not text, so it is held to
+# WCAG's non-text floor rather than to AA 4.5. The word under the swatch is
+# text and is held to AA like everything else on this page.
+NONTEXT_AA = 3.0
+
 
 # ══════════════════════════════════════════════════════════════════════════
 # colour arithmetic — WCAG 2.1, written out rather than approximated
@@ -388,6 +414,83 @@ _MEASURE = r"""
                  .getPropertyValue('--pg-strong') || '').trim(),
     pageGround: getComputedStyle(document.body).backgroundColor,
     theme:  document.documentElement.getAttribute('data-bench-theme')
+  });
+})()
+"""
+
+# ── ⊕ 23 Aug 2026 — driving the picker ───────────────────────────────────
+#
+# One eval per press, and each returns the WHOLE reading, so a case is a
+# self-contained record: what was pressed, what the attribute says, what the
+# bench is painted, and what all six swatches look like at that moment. The
+# alternative — press, then measure in a second call — cannot tell a swatch
+# that never ticked from a reading taken too early.
+_OPEN_SHEET = r"""(function(){
+  var r = document.querySelector('.rd[data-mode="ks3"]');
+  if (!r) return 'no design root';
+  if (r.querySelector('[data-port-region="account-sheet"]')) return 'already';
+  var hit = null;
+  r.querySelectorAll('button,a').forEach(function(e){
+    if (!hit && (e.innerText||'').replace(/\s+/g,' ').trim() === 'Settings') hit = e;
+  });
+  if (!hit) return 'no Settings control';
+  hit.click();
+  return 'ok';
+})()"""
+
+_PRESS_SWATCH = """(function(label){
+  var r = document.querySelector('.rd[data-mode="ks3"]');
+  var sheet = r && r.querySelector('[data-port-region="account-sheet"]');
+  if (!sheet) return 'no sheet';
+  var hit = null;
+  sheet.querySelectorAll('.sw').forEach(function(e){
+    if ((e.textContent||'').trim() === label) hit = e;
+  });
+  if (!hit) return 'no swatch';
+  hit.click();
+  return 'ok';
+})(%s)"""
+
+_PICKER = r"""
+(function(){
+  var r = document.querySelector('.rd[data-mode="ks3"]');
+  if (!r) return JSON.stringify({error:'no design root'});
+  var sheet = r.querySelector('[data-port-region="account-sheet"]');
+  if (!sheet) return JSON.stringify({open:false});
+  // The opaque stack behind an element, starting at the element itself — the
+  // same rule `leaves()` above uses, and for the same reason: a chip that
+  // paints its own ground is the ground its own ink sits on.
+  function stack(el){
+    var out = [], p = el;
+    while (p) {
+      var bg = getComputedStyle(p).backgroundColor;
+      if (bg && !/rgba\(0,\s*0,\s*0,\s*0\)/.test(bg)) out.push(bg);
+      p = p.parentElement;
+    }
+    return out;
+  }
+  var sw = [].map.call(sheet.querySelectorAll('.sw'), function(e){
+    var chip = e.firstElementChild, label = e.lastElementChild,
+        tick = e.querySelector('.swtick');
+    return {
+      label: (label ? label.textContent : '').trim(),
+      on: e.getAttribute('data-on'),
+      outline: getComputedStyle(e).outlineStyle,
+      chip: chip ? getComputedStyle(chip).backgroundColor : null,
+      labelColor: label ? getComputedStyle(label).color : null,
+      labelStack: label ? stack(label) : [],
+      tickOpacity: tick ? getComputedStyle(tick).opacity : null,
+      tickBg: tick ? getComputedStyle(tick).backgroundColor : null,
+      tickInk: tick ? getComputedStyle(tick).color : null
+    };
+  });
+  var bench = r.querySelector('[data-bench-surface="bench"]');
+  var board = r.querySelector('[data-bench-surface="board"]');
+  return JSON.stringify({
+    open: true, sw: sw,
+    attr: document.documentElement.getAttribute('data-bench-theme'),
+    bench: bench ? getComputedStyle(bench).backgroundColor : null,
+    board: board ? getComputedStyle(board).backgroundColor : null
   });
 })()
 """
@@ -975,6 +1078,232 @@ def check_default(measures):
     return rows, problems
 
 
+def _drive_picker(page, url):
+    """Open the account sheet and press all six swatches. Returns a reading.
+
+    ⚠️ THE PAGE IS RELOADED FIRST, and that is not tidiness. The seven cases
+    above move `data-bench-theme` from OUTSIDE the component, which no student
+    can do and which leaves the attribute and the component's own `theme`
+    state disagreeing. Pressing a swatch from that state would measure a
+    situation the product cannot be in. A reload puts both back where a
+    student finds them: no attribute, and harbour.
+    """
+    import json
+    out = {"opened": None, "cases": {}, "at_open": None,
+           "expect": list(PICKER_ORDER)}
+    page.goto(url)
+    time.sleep(2.6)
+    out["opened"] = page.eval(_OPEN_SHEET)
+    time.sleep(0.5)
+    out["at_open"] = json.loads(page.eval(_PICKER))
+    for name in PICKER_ORDER:
+        got = page.eval(_PRESS_SWATCH % json.dumps(name))
+        time.sleep(0.45)
+        m = json.loads(page.eval(_PICKER))
+        m["pressed"] = got
+        out["cases"][name] = m
+    return out
+
+
+def check_picker(pk):
+    """Six swatches, one tick, the theme it names, and a legible chip.
+
+    Pure over the reading, like every other check here, so the self-proof can
+    run the same code against a deliberately broken page.
+    """
+    rows, problems = [], []
+    lbl = "the picker"
+
+    if pk["opened"] != "ok" and pk["opened"] != "already":
+        rows.append((lbl, "Settings opens the account sheet", "FAIL",
+                     str(pk["opened"])))
+        problems.append(
+            "the account sheet could not be opened: %r. Six themes exist and "
+            "no student can reach five of them, which is the exact state this "
+            "half of the gate was written for. Everything below is unmeasured."
+            % pk["opened"])
+        return rows, problems
+    rows.append((lbl, "Settings opens the account sheet", "PASS",
+                 "the account-sheet region is on screen"))
+
+    at_open = pk["at_open"]
+    if not at_open.get("open"):
+        rows.append((lbl, "the sheet renders its picker", "FAIL",
+                     "no account-sheet region after the press"))
+        problems.append(
+            "the account sheet did not render. A grafted subtree whose `if` "
+            "reads an undefined name renders NOTHING, silently — check that "
+            "`accountOpen` is in renderVals.")
+        return rows, problems
+
+    got_labels = [x["label"] for x in at_open["sw"]]
+    if got_labels != PICKER_LABELS:
+        rows.append((lbl, "six swatches, in Design's order", "FAIL",
+                     "%d: %s" % (len(got_labels), got_labels)))
+        problems.append(
+            "the picker shows %d swatch(es) %s; Design draws six, %s. A "
+            "missing swatch is a theme a student cannot choose; a reordered "
+            "one is Design's drawing altered without a ruling."
+            % (len(got_labels), got_labels, PICKER_LABELS))
+    else:
+        rows.append((lbl, "six swatches, in Design's order", "PASS",
+                     " ".join(PICKER_LABELS)))
+
+    # The swatch preview strip must show the theme it names. This is the one
+    # place the page states a theme's colour OUTSIDE the theme's own rules —
+    # `--t-clay` and friends — so it is the one place the two can drift apart
+    # and leave a student picking a colour they were not shown.
+    for x in at_open["sw"]:
+        name = x["label"].lower()
+        if name not in BY_NAME or not x.get("chip"):
+            continue
+        want = BY_NAME[name][1]
+        got = hexof(parse_colour(x["chip"]))
+        if got.lower() != want.lower():
+            rows.append((lbl, "the %s swatch shows %s" % (name, want),
+                         "FAIL", got))
+            problems.append(
+                "the %s swatch previews %s and the %s bench is painted %s. "
+                "The preview is Design's `--t-%s` and the bench is Design's "
+                "`--b-ground` under `[data-bench-theme=\"%s\"]`; they are two "
+                "statements of one colour and they have drifted. A student is "
+                "being shown one thing and given another."
+                % (name, got, name, want, name, name))
+        else:
+            rows.append((lbl, "the %s swatch shows %s" % (name, want),
+                         "PASS", got))
+
+    # The themes this reading actually covers. A FULL run covers all six and
+    # says so; the self-proof drives one on purpose, so it names the one it
+    # drove rather than being told six are missing.
+    expect = pk.get("expect") or PICKER_ORDER
+    if [n for n in expect if n in pk["cases"]] != list(expect):
+        rows.append((lbl, "every swatch was pressed", "FAIL",
+                     "pressed %s of %s" % (sorted(pk["cases"]), list(expect))))
+        problems.append(
+            "the picker drive reached %s and was asked for %s. A theme that "
+            "was never pressed is a theme this run says nothing about."
+            % (sorted(pk["cases"]), list(expect)))
+    for name in expect:
+        m = pk["cases"].get(name) or {}
+        key = name.lower()
+        if m.get("pressed") != "ok":
+            rows.append((lbl, "%s is pressable" % key, "FAIL",
+                         str(m.get("pressed"))))
+            problems.append(
+                "the %s swatch could not be pressed: %r. A swatch that is on "
+                "the page and does not respond is a dead control, and the "
+                "text-and-controls gate cannot see one."
+                % (key, m.get("pressed")))
+            continue
+
+        # 1 — the attribute the six CSS rules key on.
+        if m.get("attr") != key:
+            rows.append((lbl, "%s sets data-bench-theme" % key, "FAIL",
+                         "attribute reads %r" % m.get("attr")))
+            problems.append(
+                "pressing the %s swatch left data-bench-theme=%r. The six "
+                "`[data-bench-theme]` rules key on that attribute and nothing "
+                "else, so the page is not wearing the theme the student "
+                "chose." % (key, m.get("attr")))
+        else:
+            rows.append((lbl, "%s sets data-bench-theme" % key, "PASS", key))
+
+        # 2 — the bench and the board actually moved. The attribute being
+        #     right and the paint being wrong is a rule that did not match.
+        want = BY_NAME[key][1]
+        for surf in ("bench", "board"):
+            if not m.get(surf):
+                continue
+            got = hexof(parse_colour(m[surf]))
+            if got.lower() != want.lower():
+                rows.append((lbl, "%s paints the %s" % (key, surf), "FAIL",
+                             "%s, wanted %s" % (got, want)))
+                problems.append(
+                    "pressing %s left the %s painted %s and Design's ground "
+                    "for that theme is %s." % (key, surf, got, want))
+            else:
+                rows.append((lbl, "%s paints the %s" % (key, surf), "PASS",
+                             got))
+
+        # 3 — EXACTLY ONE tick, on the swatch that was pressed. Both halves
+        #     are the assertion: two ticks is as wrong as none, and a page
+        #     with the right theme and the wrong tick is a page lying about
+        #     which preference it holds.
+        on = [x["label"] for x in m.get("sw", []) if x.get("on") == "1"]
+        if on != [name]:
+            rows.append((lbl, "%s is the only swatch ticked" % key, "FAIL",
+                         "ticked: %s" % (on or "none")))
+            problems.append(
+                "after pressing %s the swatches marked data-on=\"1\" are %s. "
+                "Exactly one may be, and it must be the one pressed — the "
+                "tick is the page's statement of which theme is saved."
+                % (key, on or "none"))
+        else:
+            rows.append((lbl, "%s is the only swatch ticked" % key, "PASS",
+                         name))
+
+        # 4 — and the tick is VISIBLE. `data-on` is an attribute; the mark a
+        #     student sees is `--tick-o`, and a rule that stopped matching
+        #     would leave the attribute perfectly correct and the swatch
+        #     showing nothing at all.
+        lit = [x["label"] for x in m.get("sw", [])
+               if x.get("tickOpacity") not in (None, "0")
+               and float(x["tickOpacity"]) > 0.5]
+        if lit != [name]:
+            rows.append((lbl, "%s shows its tick, alone" % key, "FAIL",
+                         "lit: %s" % (lit or "none")))
+            problems.append(
+                "after pressing %s the visible ticks are %s. `data-on` is set "
+                "correctly but `.sw[data-on=\"1\"] .swtick{--tick-o:1}` is not "
+                "reaching it, so the student sees no confirmation of their "
+                "own choice." % (key, lit or "none"))
+        else:
+            rows.append((lbl, "%s shows its tick, alone" % key, "PASS",
+                         "opacity 1"))
+
+        # 5 — LEGIBILITY. The six words a student reads, and the tick they
+        #     look for. Measured against the ground each actually sits on
+        #     rather than against the one it is assumed to sit on.
+        for x in m.get("sw", []):
+            gstack = [c for c in (x.get("labelStack") or [])]
+            if not x.get("labelColor") or not gstack:
+                continue
+            ratio = contrast(parse_colour(x["labelColor"]),
+                             parse_colour(gstack[0]))
+            if ratio + 1e-9 < AA:
+                rows.append((lbl, "%s · the %s label reads"
+                             % (key, x["label"].lower()), "FAIL",
+                             "%.2f:1" % ratio))
+                problems.append(
+                    "with %s selected, the %s swatch's label measures %.2f:1 "
+                    "against its own ground (%s on %s), below AA %.1f."
+                    % (key, x["label"].lower(), ratio,
+                       hexof(parse_colour(x["labelColor"])),
+                       hexof(parse_colour(gstack[0])), AA))
+        sel = [x for x in m.get("sw", []) if x.get("label") == name]
+        if sel and sel[0].get("tickBg") and sel[0].get("tickInk"):
+            ratio = contrast(parse_colour(sel[0]["tickInk"]),
+                             parse_colour(sel[0]["tickBg"]))
+            if ratio + 1e-9 < NONTEXT_AA:
+                rows.append((lbl, "%s · the tick mark reads" % key, "FAIL",
+                             "%.2f:1" % ratio))
+                problems.append(
+                    "the tick inside the %s swatch measures %.2f:1 against "
+                    "its own disc, below the %.1f:1 floor for a non-text "
+                    "mark. Design gives each swatch its own tick colours; "
+                    "this one's pair does not separate." % (key, ratio,
+                                                            NONTEXT_AA))
+            else:
+                rows.append((lbl, "%s · the tick mark reads" % key, "PASS",
+                             "%.2f:1" % ratio))
+    if not any(v == "FAIL" for _l, _n, v, _d in rows):
+        rows.append((lbl, "every label clears AA %.1f" % AA, "PASS",
+                     "%d swatch label(s) measured across %d theme(s)"
+                     % (len(PICKER_LABELS) * len(expect), len(expect))))
+    return rows, problems
+
+
 # ══════════════════════════════════════════════════════════════════════════
 # the self-proof
 # ══════════════════════════════════════════════════════════════════════════
@@ -1172,6 +1501,109 @@ def _prove(page, baseline):
     return rows, problems
 
 
+def _prove_picker(page, url):
+    """⊕ 23 Aug 2026 — PHASE 1b. The picker half, proved the same way.
+
+    ⚑ AND IT NEEDS ITS OWN PROOF FOR A REASON THE OTHERS DO NOT HAVE. Every
+    injection above breaks a COLOUR, and the checks above read colours. These
+    checks read a state attribute, an opacity and a control response — three
+    things a CSS injection cannot reach by accident, and three places where a
+    selector that matched nothing would report a clean picker exactly as a
+    healthy one does.
+
+    Two injections, one per kind of claim:
+
+      · THE TICK. `.sw[data-on="1"] .swtick{--tick-o:0}` leaves `data-on`
+        perfectly correct and takes the mark off the screen. That is precisely
+        the failure the tick check exists for, and it is one line away from
+        being real: the whole state treatment is two rules in a stylesheet
+        grafted out of Design's delivery.
+      · THE LABEL. The six words forced to their own card ground, which is
+        1.00:1. Design's swatch labels are `--pg-ink` on `--pg-card` today and
+        neither is a theme token, so nothing in the six themes can move
+        them — which is exactly the kind of "cannot happen" that a gate is
+        for.
+    """
+    import json
+    rows, problems = [], []
+    disp = "the self-proof"
+
+    def read():
+        return json.loads(page.eval(_PICKER))
+
+    # The page is already sitting with the sheet open on harbour, from
+    # `_drive_picker`. Re-press one swatch after each injection so the reading
+    # is of a real selection rather than of whatever was last on screen.
+    page.eval(_INJECT % json.dumps(
+        '.sw[data-on="1"] .swtick{--tick-o:0 !important}'))
+    time.sleep(0.35)
+    page.eval(_PRESS_SWATCH % json.dumps("MOSS"))
+    time.sleep(0.45)
+    broke = check_picker({"opened": "already", "at_open": read(),
+                          "expect": ["MOSS"],
+                          "cases": {"MOSS": dict(read(), pressed="ok")}})[1]
+    page.eval(_UNINJECT)
+    time.sleep(0.35)
+    page.eval(_PRESS_SWATCH % json.dumps("MOSS"))
+    time.sleep(0.45)
+    clean = check_picker({"opened": "already", "at_open": read(),
+                          "expect": ["MOSS"],
+                          "cases": {"MOSS": dict(read(), pressed="ok")}})[1]
+    if not broke:
+        problems.append(
+            "SELF-PROOF FAILED: the selected swatch's tick was forced to zero "
+            "opacity and the picker check did NOT notice. `data-on` was still "
+            "right, so every 'the tick moved' row in this run is worthless — "
+            "it is asserting an attribute and calling it a mark on a screen.")
+        rows.append((disp, "the picker check can see a tick that stopped "
+                     "showing", "FAIL", "injected --tick-o:0 went unnoticed"))
+    elif clean:
+        problems.append(
+            "SELF-PROOF FAILED: the picker still reports a problem after the "
+            "injected style was removed — %s." % clean[0][:90])
+        rows.append((disp, "the picker check can see a tick that stopped "
+                     "showing", "FAIL", "not clean after the injection"))
+    else:
+        rows.append((disp, "the picker check can see a tick that stopped "
+                     "showing", "PASS", "red while injected, green once "
+                     "removed"))
+
+    page.eval(_INJECT % json.dumps(
+        ".sw > span:last-child{color:var(--pg-card) !important}"))
+    time.sleep(0.35)
+    page.eval(_PRESS_SWATCH % json.dumps("CLAY"))
+    time.sleep(0.45)
+    broke2 = check_picker({"opened": "already", "at_open": read(),
+                           "expect": ["CLAY"],
+                           "cases": {"CLAY": dict(read(), pressed="ok")}})[1]
+    page.eval(_UNINJECT)
+    time.sleep(0.35)
+    page.eval(_PRESS_SWATCH % json.dumps("HARBOUR"))
+    time.sleep(0.45)
+    clean2 = check_picker({"opened": "already", "at_open": read(),
+                           "expect": ["HARBOUR"],
+                           "cases": {"HARBOUR": dict(read(), pressed="ok")}})[1]
+    if not broke2:
+        problems.append(
+            "SELF-PROOF FAILED: the six swatch labels were painted their own "
+            "card ground — 1.00:1, invisible — and the legibility sweep did "
+            "not see it. It is measuring something other than what a student "
+            "reads.")
+        rows.append((disp, "the picker check can see an unreadable swatch "
+                     "label", "FAIL", "injected 1.00:1 label went unnoticed"))
+    elif clean2:
+        problems.append(
+            "SELF-PROOF FAILED: the picker still reports a problem after the "
+            "label injection was removed — %s." % clean2[0][:90])
+        rows.append((disp, "the picker check can see an unreadable swatch "
+                     "label", "FAIL", "not clean after the injection"))
+    else:
+        rows.append((disp, "the picker check can see an unreadable swatch "
+                     "label", "PASS", "red while injected, green once "
+                     "removed"))
+    return rows, problems
+
+
 # ══════════════════════════════════════════════════════════════════════════
 # the run
 # ══════════════════════════════════════════════════════════════════════════
@@ -1212,6 +1644,20 @@ def run(cdp):
             prows, pproblems = _prove(page, baseline)
             rows.extend(prows)
             problems.extend(pproblems)
+
+            # ⊕ 23 Aug 2026 — PHASE 1b. THE PICKER, PRESSED.
+            #
+            # Last, and from a fresh load. Everything above drives the theme
+            # from outside the component; this is the only part of the file
+            # that does what a student does. It reloads first — see
+            # `_drive_picker` — so it starts from the state a student finds.
+            pk = _drive_picker(page, url)
+            r, p_ = check_picker(pk)
+            rows.extend(r)
+            problems.extend(p_)
+            r, p_ = _prove_picker(page, url)
+            rows.extend(r)
+            problems.extend(p_)
     finally:
         server.shutdown()
 
@@ -1299,6 +1745,13 @@ def main():
           "own painted ground on all seven — with %d registered exception(s), "
           "each asserted still present at its registered colours and ratio."
           % (len(CASES) * 3, AA, AA, len(BENCH_TEXT_EXCEPTIONS)))
+    print("        And the PICKER a student uses to choose one: Settings "
+          "opens Design's account sheet, six swatches in Design's order, "
+          "each previewing the ground its theme paints; every one pressed, "
+          "each setting data-bench-theme, painting the bench and the "
+          "leaderboard card, and leaving exactly one tick — its own — "
+          "visible. Every swatch label clears AA %.1f and every tick clears "
+          "%.1f:1 as a non-text mark." % (AA, NONTEXT_AA))
     print("        And the PAGE the bench sits on: --pg-strong fixed at %s "
           "on all seven, %d espresso mark(s) measuring it, %.2f:1 on the "
           "cream ground, and no near-black page chrome outside the %d "

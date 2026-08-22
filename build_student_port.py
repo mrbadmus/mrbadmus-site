@@ -285,6 +285,34 @@ BINDINGS = {
         # names Thursday as the deadline for every class in every week.
         ('On the bench now · due Thu 18:00', "benchLead"),
         ("Eight questions, set from this week's lessons. Open it, answer them, hand it in before Thursday.", "benchBlurb"),
+        # ── ⊕ 23 Aug 2026 — PHASE 1b. THE ACCOUNT SHEET'S TWO REAL ROWS ───
+        #
+        # Design's sheet carries three hardcoded facts about one sample class:
+        # `Mr Badmus`, `8r/Sc1 · SCIENCE` and `Summer · Week 01 / 39`. (The
+        # fourth, `ay@school.uk`, is not here because it is not on the page —
+        # see `omit` on the graft in student_rulings.py.)
+        #
+        # `Mr Badmus` needs nothing: it is already on this list, bound to
+        # `teacherName`, and `text_paths` binds EVERY node whose text is
+        # exactly that literal — so the grafted row binds for free, the moment
+        # the graft lands. That is not luck; it is why the binding table is
+        # keyed on the literal rather than on an index.
+        #
+        # ⚠️ THE OTHER TWO ARE NOT EXACT MATCHES FOR ANYTHING ALREADY HERE,
+        # and `8r/Sc1 · SCIENCE` is the trap. `8r/Sc1` IS on this list — but
+        # the donor's text node is `8r/Sc1\u00a0·\u00a0 SCIENCE`, one string,
+        # with NON-BREAKING SPACES around the separator. `text_paths` matches
+        # the whole node value and nothing less, so it would not bind, and the
+        # sheet would have shipped one real class's name and one real subject
+        # under a heading that said the student's own class.
+        #
+        # Both therefore become their own keys, composed in student-live.js
+        # from values it already holds — the class name and the subject pill,
+        # the term label and the teaching week. The separator is carried
+        # through verbatim, non-breaking spaces and all, because it is Design's
+        # typography and not data.
+        ("8r/Sc1 \u00a0\u00b7\u00a0 SCIENCE", "accountClassLine"),
+        ("Summer \u00a0\u00b7\u00a0 Week 01 / 39", "accountTerm"),
     ],
     "assignment": [
         ("8r/Sc1", "className"),
@@ -315,6 +343,48 @@ BINDINGS = {
         ("Handed in", "completeHeading"),
     ],
 }
+
+# ── one node, one key, where the LITERAL cannot tell two nodes apart ──────
+#
+# ⊕ 23 Aug 2026 — PHASE 1b, and it exists for exactly one node.
+#
+# `BINDINGS` is keyed on the literal, which is what lets it bind every copy of
+# a value wherever Design typed it. Design's account sheet contains two text
+# nodes reading `AY` and they are NOT the same fact:
+#
+#     donor 252   the 52px avatar disc          → the student's INITIALS
+#     donor 254   the 26px name line beside it  → the student's NAME
+#
+# In Design's amended sample they read alike because that sample's student is
+# called `AY`. On a real class they do not: `studentInitials` is `MB` where
+# `studentFirstName` is `Mide`, and binding both to the initials would print
+# a student's initials twice, in two sizes, where Design drew a monogram and a
+# name. The header directly above already says the name — so the sheet would
+# have contradicted the page it opened from.
+#
+# The literal cannot separate them, so this does, by NODE INDEX — the same way
+# `SET_ATTR` and `SET_ON` address a node, and asserted the same way.
+#
+# `{node index: (expected literal, key)}`. The literal is stated and CHECKED,
+# not decorative: an index that has drifted onto a different node fails loudly
+# instead of binding the class name into the avatar. The key must already be
+# claimed by a literal in `BINDINGS`, because that literal is what supplies the
+# FIXTURE's value — this table repoints a node at an existing key and never
+# invents one.
+#
+# ⚠️ ONE CONSEQUENCE, STATED RATHER THAN DISCOVERED LATER. The fixture now
+# renders `Ayo` in the sheet's name line where Design's amended delivery
+# renders `AY`. That is the same class of difference the whole
+# `AMENDED_ADDITIONS` mechanism exists to tolerate — the two deliveries carry
+# different sample data — and the registration in `student_behaviour.py`
+# matches the name as `\S+` for precisely this reason, with a note saying so.
+BINDINGS_AT = {
+    "class view": {
+        10254: ("AY", "studentFirstName"),
+    },
+    "assignment": {},
+}
+
 
 # ── Design's data welded into METHOD BODIES, not into initialisers ────────
 #
@@ -1034,6 +1104,67 @@ def apply_rulings(page, logic, roots, donor=None):
         walk(out)
         return out
 
+    def _omit(sub, drop, why):
+        """Donor subtrees a graft deliberately does NOT copy.
+
+        ⊕ 23 Aug 2026 — 1c, the EMAIL row. Runs INSIDE the graft, on the
+        donor's own numbering, before `_renumber` — which is the only place it
+        can run.
+
+        ⚠️ `PRUNE` CANNOT DO THIS, and the order of this function is why:
+        `PRUNE` walks the LIVE template near the top of `apply_rulings` and
+        asserts every index it was given was found. At that moment the donor
+        has not been copied in, so naming a grafted node there raises rather
+        than removing anything.
+
+        ⚠️ AND IT IS NOT `BINDINGS`' `drop`, which is a different rule with a
+        different lifetime: `drop` removes an element AT RUNTIME when its
+        BOUND VALUE turns out to be empty, and puts it back when it is not.
+        This removes markup at BUILD TIME, so there is no state in which the
+        subtree exists. Two mechanisms, two names, on purpose.
+
+        Every index must be PRESENT in the donor subtree. A stale entry —
+        Design redraws, the row moves, the number comes to mean something
+        else — stops the build rather than omitting nothing and shipping the
+        thing the ruling exists to remove, which is the failure mode that
+        looks exactly like success.
+        """
+        want = set(drop)
+        if not want:
+            return sub
+        seen = set()
+
+        def walk(n):
+            if not isinstance(n, dict) or not n.get("c"):
+                return
+            kept = []
+            for kid in n["c"]:
+                if isinstance(kid, dict) and kid.get("i") in want:
+                    seen.add(kid["i"])
+                    continue
+                walk(kid)
+                kept.append(kid)
+            n["c"] = kept
+
+        if sub.get("i") in want:
+            raise SystemExit(
+                "build_student_port.py: the graft %r omits donor node %s, "
+                "which is the grafted subtree's own ROOT. Omitting the root "
+                "omits the whole graft; graft something else, or drop the "
+                "graft." % (why[:60], sub.get("i")))
+        walk(sub)
+        missing = sorted(want - seen)
+        if missing:
+            raise SystemExit(
+                "build_student_port.py: the graft %r omits donor node(s) %s, "
+                "and they are not in the subtree it copies. The omission is a "
+                "RULING and it still stands — Design has redrawn that part of "
+                "the delivery, so re-read it and re-anchor the index. Leaving "
+                "a stale number here would omit NOTHING and ship exactly what "
+                "the ruling exists to remove, with a green build."
+                % (why[:60], missing))
+        return sub
+
     if grafts:
         donor_by_i = _index(donor)
         live_by_i = _index(roots)
@@ -1067,7 +1198,9 @@ def apply_rulings(page, logic, roots, donor=None):
                     "build_student_port.py: the graft %r copies donor node "
                     "%s, which is not in the amended delivery. The delivery "
                     "moved; re-anchor the graft." % (g["why"][:60], src))
-            sub = _renumber(donor_by_i[src])
+            sub = _omit(json.loads(json.dumps(donor_by_i[src])),
+                        g.get("omit") or (), g["why"])
+            sub = _renumber(sub)
             target = live_by_i[at]
             if mode in ("append", "prepend"):
                 kids = target.setdefault("c", [])
@@ -1517,7 +1650,68 @@ def bindings_for(page, tpl):
                         % (page, literal, len(path)))
                 row["d"] = 1
             table.append(row)
+
+    # ── the node-indexed overrides ────────────────────────────────────────
+    #
+    # ⊕ 23 Aug 2026. See `BINDINGS_AT` above for why one node needs addressing
+    # by index instead of by literal. Applied AFTER the literal table, and it
+    # REPLACES whatever row landed on the same path rather than adding a second
+    # — two rows on one path would both fire, in list order, and the page would
+    # show whichever happened to be last.
+    for idx, (literal, key) in sorted(
+            (BINDINGS_AT.get(page) or {}).items()):
+        if key not in values:
+            raise SystemExit(
+                "build_student_port.py: %s — BINDINGS_AT repoints template "
+                "node %s at the key %r, and no literal in BINDINGS claims that "
+                "key. The fixture would then have no value for it and the page "
+                "would throw at mount. Repoint it at a key the literal table "
+                "already defines, or add the literal." % (page, idx, key))
+        path = _path_to_text(tpl["roots"], idx)
+        if path is None:
+            raise SystemExit(
+                "build_student_port.py: %s — BINDINGS_AT names template node "
+                "%s, and there is no such node carrying a single text child. "
+                "It has been pruned, or Design has redrawn it, or the graft "
+                "that brings it in is not applied. Re-anchor it; a silently "
+                "skipped override binds the wrong value to the wrong place."
+                % (page, idx))
+        node = tpl["roots"][path[0]]
+        for i in path[1:]:
+            node = node["c"][i]
+        if node.get("v") != literal:
+            raise SystemExit(
+                "build_student_port.py: %s — BINDINGS_AT expects template node "
+                "%s to read %r and it reads %r. The index has drifted onto a "
+                "different node. Nothing is guessed here: binding on a drifted "
+                "index puts the right value in the wrong place, which is the "
+                "one failure that still looks like a working page."
+                % (page, idx, literal, node.get("v")))
+        table = [r for r in table if r["p"] != path]
+        table.append({"p": path, "k": key})
     return table, values
+
+
+def _path_to_text(roots, index):
+    """The path to the single text child of template node `index`, or None."""
+    found = []
+
+    def walk(node, path):
+        if not isinstance(node, dict):
+            return
+        if node.get("i") == index:
+            kids = [(i, k) for i, k in enumerate(node.get("c") or [])
+                    if isinstance(k, dict)]
+            texts = [(i, k) for i, k in kids if k.get("t") == "#"]
+            if len(kids) == 1 and len(texts) == 1:
+                found.append(path + [texts[0][0]])
+            return
+        for i, kid in enumerate(node.get("c") or []):
+            walk(kid, path + [i])
+
+    for i, root in enumerate(roots):
+        walk(root, [i])
+    return found[0] if len(found) == 1 else None
 
 
 def count_nodes(roots):

@@ -146,6 +146,8 @@ window.__MRB_DATA__ = {
   "benchDoneText": '',
   "benchPct": '',
   "benchPrimaryHref": '',
+  "accountClassLine": "8r/Sc1 \u00a0\u00b7\u00a0 SCIENCE",
+  "accountTerm": "Summer \u00a0\u00b7\u00a0 Week 01 / 39",
   "benchBlurb": "Eight questions, set from this week's lessons. Open it, answer them, hand it in before Thursday.",
   "benchLead": "On the bench now \u00b7 due Thu 18:00",
   "benchPrimaryLabel": "Open the assignment",
