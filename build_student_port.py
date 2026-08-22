@@ -1707,15 +1707,68 @@ def lesson_index():
 # rather than declared at the root — see student_rulings.py for why a root-level
 # remap of `--st-cream` breaks on Chalk.
 #
-# ⚠️ THESE EIGHT ARE A LIST, NOT A FAMILY SWEEP, AND THE DISTINCTION IS THE
+# ⚠️ THESE TEN ARE A LIST, NOT A FAMILY SWEEP, AND THE DISTINCTION IS THE
 # WHOLE POINT OF THE RULE. Measured out of the compiled tree rather than read
 # off the markup: inside node 55, excluding the docket subtree at node 91, the
-# `--st-*` tokens in use are these eight colours PLUS `--st-ui`, `--st-display`,
+# `--st-*` tokens in use are these ten colours PLUS `--st-ui`, `--st-display`,
 # `--st-mono`, `--st-r-btn`, `--st-r-frame`, `--st-r-chip`, `--st-shadow-frame`,
 # `--st-accent` and `--st-hatch-b`. The first seven of those are FONTS, RADII
 # AND A SHADOW. A rule that swept "the dark `--st-*` family" would have
 # re-pointed the bench's typeface and its corner radii at a colour, and half of
 # what it caught would not have been a colour at all.
+#
+# ⊕ 23 Aug 2026 — IT WAS EIGHT, AND EIGHT WAS WRONG. THE NINTH AND TENTH ARE
+# `--st-room-text` AND `--st-room-faint`, and the paragraph above used to claim
+# the list was complete. It was not, and the way it was incomplete is worth
+# recording, because the measurement that produced it was run against the
+# MARKUP and these two do not appear there.
+#
+# The bench checklist — "Open it" / "Answer the eight questions" / "Hand it in"
+# — takes its colour from a COMPUTED STRING in Design's logic, not from a style
+# attribute the compiler can see:
+#
+#     color: done ? 'var(--st-room-faint)' : 'var(--st-room-text)',
+#
+# so a sweep of node 55's compiled attributes finds nothing, and the two tokens
+# stayed at their `shared/student-ds.css` defaults on every theme. Those
+# defaults are `#B7AA98` and `#7E7263`, declared "readable text on dark" — FIXED
+# LIGHT VALUES FOR A DARK BENCH. On the five dark themes that is fine and
+# measures 5.55:1 on harbour. On CHALK, the one light theme, the bench ground is
+# `#EFE2CB` and the same fixed light ink lands on it at **1.78:1** — three
+# labels telling a student what to do, in a colour they cannot read. It shipped
+# green because the gate at the time asserted the `--b-*` tokens' own contrast
+# and never asked what the bench's rendered text actually did; `student_themes.py`
+# now walks every text-bearing leaf inside the bench, which is what closes it.
+#
+# ⚠️ `--st-room-text` → `--b-ink` IS NOT A JUDGEMENT CALL. Design's amended
+# delivery redraws this exact checklist, and draws it
+# `color:var(--b-ink)` — `class-view-amendments/source/KS3 Class View.dc.html`,
+# lines 138-140, the three `<li>`s. The bridge is adopting Design's own value
+# for Design's own element, not inferring one.
+#
+# `--st-room-faint` → `--b-muted` IS a judgement call, and a small one. It is
+# the TICKED state — a task the student has finished and no longer needs to
+# read — and Design's amended bench draws no ticked label to copy. `--b-muted`
+# is the theme's only de-emphasis tone, it is where the bridge already sends
+# `--st-room-muted`, and it is asserted at or above AA on all six themes
+# (5.05:1 on chalk, its worst). The alternative — leaving it fixed — reproduces
+# the defect above in the one state a student reaches by making progress.
+#
+# ⚠️ AND THIS IS WHY IT IS A BRIDGE RULE AND NOT A `LOGIC` RULING. The obvious
+# fix is to rewrite that computed string in `student_rulings.py`. It is the
+# wrong one twice over. First, the inline style declares the PROPERTY but its
+# VALUE is a `var()`, so the token resolves from the cascade at the element and
+# a scoped redeclaration reaches it with no `!important` and no rewrite — the
+# opposite of node 266's avatar, where the inline declared a literal and the
+# keyword was load-bearing. Second, `--st-room-text` appears TWICE in that
+# logic, and the second is the recall round's option colour
+# (`ok || chosen ? 'var(--st-cream)' : 'var(--st-room-text)'`), which must NOT
+# move: Design replaces that card wholesale with flashcards in a later unit.
+# The bridge cannot touch it even by accident — MEASURED, not assumed: driving
+# the fixture into the recall round leaves ZERO `[data-bench-surface]` elements
+# on the page, because the round replaces the class view rather than nesting
+# inside it. A `LOGIC` ruling would have had to anchor around that collision by
+# hand; the scope does it for free.
 #
 # ⚠️ AND A SWEEP WOULD HAVE TAKEN THE DOCKET WITH IT. `--st-paper` IS in the
 # list — it is the CTA ink on nodes 74 and 88 — and it is ALSO the background
@@ -1768,7 +1821,31 @@ _THEME_BRIDGE = (
     "[data-bench-surface]{"
     "--st-room-panel:var(--b-ground);"
     "--st-room-body:var(--b-ink);"
+    # ⊕ 23 Aug 2026 — the ninth and tenth. The bench checklist; see above.
+    "--st-room-text:var(--b-ink);"
+    "--st-room-faint:var(--b-muted);"
     "--st-room-muted:var(--b-muted);"
+    # ⊕ 23 Aug 2026 — THE ELEVENTH, and the one that hurt the DEFAULT theme.
+    #
+    # `--st-room-line-strong` (#4A4036) draws the unticked checkbox outlines
+    # beside those three labels, the leader card's streak chip and the recall
+    # bar. Measured against the theme grounds it is 1.25:1 on HARBOUR — the new
+    # default — 1.79 on graphite and 7.90 on chalk. A checkbox a student cannot
+    # see, on the theme every student now gets.
+    #
+    # ⚠️ IT WAS NEARLY LEFT OUT ON A "PRE-EXISTING" ARGUMENT, and that argument
+    # is wrong HERE even though it is right about the docket header. It measured
+    # 1.73:1 on the old graphite bench, so the themes did not break it — but
+    # Design's amended bench REDRAWS this element, as
+    # `border:2px solid var(--b-muted)`, which measures 5.05–6.97 across the
+    # six. "Design has not changed it" is what makes a shortfall somebody
+    # else's; Design changing it is what makes it ours. Adopting Design's own
+    # value is not inventing one.
+    #
+    # Found twice, independently, by two agents looking at the same page from
+    # different ends — one measuring tokens, one looking at a screenshot and
+    # asking why the checkboxes were faint.
+    "--st-room-line-strong:var(--b-muted);"
     "--st-room-line:var(--b-rule);"
     "--st-room-border:var(--b-edge);"
     "--st-cream:var(--b-ink);"

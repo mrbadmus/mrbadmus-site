@@ -3,6 +3,29 @@
 say what each one did.
 
     MRB_DRIVE_EMAIL=… MRB_DRIVE_PASSWORD=… python3 student_controls_drive.py
+    python3 student_controls_drive.py --theme chalk
+    python3 student_controls_drive.py --fixture          # no credentials
+
+`--theme <name>` sets `data-bench-theme` on the document root of EVERY mount
+(and `--theme harbour` REMOVES the attribute, which is what harbour is — see
+`student_themes.py`). A control can be dead in one theme and alive in another:
+the 21 Aug amendments made the bench, the term spine and the leaderboard card
+themeable, and a control drawn in a colour its ground swallows is pressable by
+this script and invisible to a student.
+
+`--fixture` drives `class-fixture.html` / `assignment-fixture.html` instead of
+the wired pages, and signs nobody in. It exists because the wired sweep needs
+`MRB_DRIVE_PASSWORD`, and a sweep that cannot run without a secret is a sweep
+that does not get run. ⚠️ It is WEAKER, and knowingly so: THE WHOLE `EXPECT`
+TABLE IS INVALID UNDER IT, because every ruled destination is a destination the
+DATA names. `benchPrimaryHref` is empty on the fixture, so "Open the assignment"
+correctly ticks the checklist instead of navigating — Design's own line, kept
+deliberately (see student_rulings.py, P1) — and the fixture run reports that as
+a ruled failure. Likewise the lesson cards keep Design's inert `href="#top"`
+and report SCROLLED, and "Sign out" is exercised against a signed-out browser.
+Read a `--fixture` run for the DEAD list, never for the ruled destinations;
+only the wired run can speak to those. Everything that is purely markup and
+handlers — which is every other control — is the same bytes either way.
 
 ⚑ WHY THIS EXISTS.
 
@@ -78,6 +101,14 @@ CTX = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
 
 CLASS = "/student/class.html?env=prod"
 ASSIGN = "/student/assignment.html?env=prod"
+CLASS_FIXTURE = "/student/class-fixture.html"
+ASSIGN_FIXTURE = "/student/assignment-fixture.html"
+
+# Set from the command line in main(). Module-level because `fresh()` has to
+# re-apply the theme on EVERY mount — each control gets a page of its own, so
+# a theme set once would only ever reach the first press.
+THEME = None        # None = leave the attribute alone (the page's own default)
+FIXTURE = False
 
 # ── the screens, and how to get to each ──────────────────────────────────
 #
@@ -228,6 +259,35 @@ STATE_JS = r"""(function () {
 })()"""
 
 
+_SET_THEME = (
+    "(function(t){var e=document.documentElement;"
+    "if(t===null){e.removeAttribute('data-bench-theme');}"
+    "else{e.setAttribute('data-bench-theme',t);}"
+    "return String(e.getAttribute('data-bench-theme'));})(%s)")
+
+
+def apply_theme(page):
+    """Put `THEME` on the document root of this mount, and say what stuck.
+
+    ⚠️ HARBOUR IS THE ABSENCE OF THE ATTRIBUTE, not `="harbour"` — Design's
+    README says "(absent = harbour)". Writing the attribute for it would
+    exercise a case no student is ever in, and would hide a default that had
+    silently reverted to the old graphite.
+
+    Returns the attribute the page reports, or None if no theme was asked for.
+    """
+    if THEME is None:
+        return None
+    arg = "null" if THEME == "harbour" else json.dumps(THEME)
+    got = page.eval(_SET_THEME % arg)
+    want = "null" if THEME == "harbour" else THEME
+    if str(got) != want:
+        raise SystemExit("data-bench-theme is %r after asking for %r — the "
+                         "sweep would be reported under the wrong theme"
+                         % (got, want))
+    return got
+
+
 def click_index(page, idx):
     """Click the idx'th element of the SAME query CONTROLS_JS enumerated."""
     return page.eval(
@@ -256,11 +316,45 @@ def verdict(before, after):
     return "NOTHING", ""
 
 
+def parse_args(argv):
+    """`--theme <name>` and `--fixture`. Deliberately hand-rolled and tiny —
+    this file's interface is two flags, and an unknown flag is a typo worth
+    stopping for rather than ignoring."""
+    global THEME, FIXTURE
+    i = 0
+    while i < len(argv):
+        a = argv[i]
+        if a == "--theme":
+            i += 1
+            if i >= len(argv):
+                raise SystemExit("--theme needs a theme name")
+            THEME = argv[i]
+        elif a.startswith("--theme="):
+            THEME = a.split("=", 1)[1]
+        elif a == "--fixture":
+            FIXTURE = True
+        else:
+            raise SystemExit("unknown argument %r "
+                             "(--theme <name> | --fixture)" % a)
+        i += 1
+    if FIXTURE:
+        for s in SCREENS:
+            s["url"] = (s["url"].replace(CLASS, CLASS_FIXTURE)
+                                .replace(ASSIGN, ASSIGN_FIXTURE))
+
+
 def main():
-    key = anon_key()
-    sess = sign_in(key)
+    parse_args(sys.argv[1:])
     print("\n🖲   drive_controls — press every control, and say what it did\n")
-    print("     as %s (token %s…)" % (EMAIL, sess["access_token"][:8]))
+    if FIXTURE:
+        key, sess = None, {"access_token": "(fixture — nobody signed in)"}
+        print("     ⚠️  --fixture: driving the FIXTURE pages, signed out. "
+              "Sign out's ruled destination is not proof about the wired page.")
+    else:
+        key = anon_key()
+        sess = sign_in(key)
+        print("     as %s (token %s…)" % (EMAIL, sess["access_token"][:8]))
+    print("     theme: %s" % (THEME if THEME else "(page default, untouched)"))
 
     server, port = cdp.serve("mrbadmus_site", port=PORT)
     base = "http://localhost:%d" % port
@@ -284,11 +378,14 @@ def main():
         time.sleep(0.35)
         # bounced to the sign-in page? the last control signed us out. Sign
         # back in and come again — see the note in main().
-        if "auth.html" in (page.eval("location.pathname") or ""):
+        if not FIXTURE and "auth.html" in (page.eval("location.pathname") or ""):
             sign_browser_in(b)
             page = b.page(base + url, settle=0.6)
             wait_for_mount(page)
             time.sleep(0.35)
+        # ⚠️ EVERY MOUNT, not once per screen. Each control is pressed on a
+        # page of its own, and a fresh document carries no attribute.
+        apply_theme(page)
         for label in setup:
             if label == "__firstrow__":
                 page.eval(
@@ -326,6 +423,8 @@ def main():
     live = {"sess": sess}
 
     def sign_browser_in(b):
+        if FIXTURE:
+            return "skipped (--fixture)"
         # ⚠️ MINT A NEW SESSION, DO NOT REPLAY THE OLD ONE. `auth.signOut()`
         # revokes the refresh token server-side, so `setSession` with the
         # session we started from silently fails and the browser stays signed

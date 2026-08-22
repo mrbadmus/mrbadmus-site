@@ -22,7 +22,7 @@
   ══════════════════════════════════════════════════════════════════════════
 -->
 <link rel="stylesheet" href="/shared/student-ds.css">
-<style>body{margin:0;background:#FBF3E6}a{color:var(--ks3-accent-text);text-decoration:none}a:hover{color:var(--ks3-accent-hover)}button{font-family:inherit}:root{--st-docket-paper:var(--st-paper)}[data-bench-surface]{--st-room-panel:var(--b-ground);--st-room-body:var(--b-ink);--st-room-muted:var(--b-muted);--st-room-line:var(--b-rule);--st-room-border:var(--b-edge);--st-cream:var(--b-ink);--st-ember:var(--b-ember);--st-paper:var(--b-cta-ink)}[data-bench-docket]{--st-paper:var(--st-docket-paper)}[data-bench-avatar]{background:var(--b-ink)!important;color:var(--b-ground)!important}</style>
+<style>body{margin:0;background:#FBF3E6}a{color:var(--ks3-accent-text);text-decoration:none}a:hover{color:var(--ks3-accent-hover)}button{font-family:inherit}:root{--st-docket-paper:var(--st-paper)}[data-bench-surface]{--st-room-panel:var(--b-ground);--st-room-body:var(--b-ink);--st-room-text:var(--b-ink);--st-room-faint:var(--b-muted);--st-room-muted:var(--b-muted);--st-room-line-strong:var(--b-muted);--st-room-line:var(--b-rule);--st-room-border:var(--b-edge);--st-cream:var(--b-ink);--st-ember:var(--b-ember);--st-paper:var(--b-cta-ink)}[data-bench-docket]{--st-paper:var(--st-docket-paper)}[data-bench-avatar]{background:var(--b-ink)!important;color:var(--b-ground)!important}</style>
 </head>
 <body>
 <div id="mrb-student" style="background:var(--st-ground);min-height:100vh"></div>
@@ -164,7 +164,11 @@ class Component extends DCLogic {
         trough: n <= MRB_DATA('currentWeek') ? 'var(--st-rule-fact)' : 'var(--st-crumb-bg)',
         stackH: !items.length ? '0%' : items.length > 1 ? '100%' : '70%',
         segs: items.map((w) => ({ bg: w.status === 'open' ? 'var(--st-accent)' : w.status === 'missed' ? 'var(--err)' : 'var(--st-ink)' })),
-        ring: sel ? '0 0 0 1.5px var(--st-ink)' : 'none',
+        /* ⊕ RULED 23 Aug 2026 — the selected week takes the bench
+           theme, per Design's `--wk-edge:var(--b-ground)`. The
+           trough, the nowDot and `numColor` do not move; see the
+           note above this entry for why each one stays. */
+        ring: sel ? '0 0 0 1.5px var(--b-ground)' : 'none',
         numColor: sel ? 'var(--st-ink)' : n === MRB_DATA('currentWeek') ? 'var(--ks3-accent-text)' : 'var(--st-ghost)',
         nowDot: n === MRB_DATA('currentWeek') ? 'var(--st-accent)' : 'transparent'
       });

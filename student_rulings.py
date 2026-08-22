@@ -356,6 +356,75 @@ LOGIC = {
             "        barWidth: Math.round((r.pts / maxPts) * 100) + '%',\n\n        up: d.up, down: d.down, flat: d.flat",
             "        barWidth: Math.round((r.pts / maxPts) * 100) + '%',\n        up: d.up, down: d.down, flat: d.flat",
         ),
+        # ── ⊕ RULED 23 Aug 2026 — THE TERM SPINE DID NOT MOVE WITH THE PAGE ─
+        #
+        # Design's amendment: *"The week-selection tile, the leaderboard card
+        # and its week chips take the bench theme, so the whole page moves
+        # together."* The bench does, through the token bridge. The leaderboard
+        # card does. THE SPINE DID NOT — so on Chalk a light bench sat above a
+        # graphite spine, and the page did not move together at all.
+        #
+        # The spine is not reachable from the bridge and never will be: it is
+        # painted by computed colour strings, and it sits on the PAGE ground,
+        # not on a themed one. `SET_ATTR` gives it `data-port-region` and
+        # deliberately no `data-bench-surface` for exactly that reason — a
+        # surface attribute there would remap `--st-cream` and `--st-ink` over
+        # cream page chrome. So this is the LOGIC rewrite that note deferred.
+        #
+        # ⚑ ONE LINE, AND ONLY THE SELECTED TILE. Design's own amended CSS is
+        #
+        #     .wk[data-sel="1"]{--wk-fill:var(--b-ground);--wk-edge:var(--b-ground);}
+        #     .wk[data-sel="1"] .wkline{--wk-line:var(--b-ink);}
+        #
+        # — a selected tile made of the bench's own material, and nothing else
+        # in the spine re-tokened. `trough`, `nowDot` and the unselected `num`
+        # are page chrome; Design left them on page tokens and so does this.
+        #
+        # Mapping Design's two properties onto the live tile, which is node 129
+        # (`background:w.trough`, `box-shadow:w.ring`) with the number at 133
+        # BELOW it:
+        #
+        #   --wk-edge  → `ring`.  Adopted. The ring IS the live tile's edge.
+        #   --wk-fill  → `trough`. REFUSED. The live trough is not empty the
+        #                way Design's tile is — it carries the week's work as
+        #                stacked `segs`, and those segs are `--st-ink` for done
+        #                and `--st-accent` for open. Filling it with
+        #                `--b-ground` would sink the done segments into a dark
+        #                ground on five themes and destroy the data the tile
+        #                exists to show. Design's tile has no data in it; this
+        #                one does, and fidelity to a drawing is not worth a
+        #                week's work becoming invisible.
+        #   --wk-line  → no counterpart. Design's `.wkline` is a mark drawn
+        #                INSIDE the filled tile. With no fill there is nothing
+        #                for it to be drawn on.
+        #
+        # ⚠️ `numColor` STAYS `var(--st-ink)`, AND THAT IS THE SAFETY MARGIN,
+        # not an omission. The number sits below the tile on the CREAM PAGE
+        # GROUND, not on the bench — the same position as Design's own `w.label`,
+        # which Design also leaves on page tokens (`--pg-accent-text` /
+        # `--pg-muted`) rather than theming. Theming it would be actively
+        # wrong: on Chalk `--b-ground` is #EFE2CB, and #EFE2CB on the cream page
+        # measures about 1.1:1 — this unit's other defect, rebuilt in a new
+        # place by the fix for it.
+        #
+        # Keeping it also means SELECTION IS NEVER LOST. The selected tile
+        # carries TWO cues — the ring, and the number going from `--st-ghost` to
+        # `--st-ink`. The ring now tints with the theme and on Chalk it is a
+        # pale edge on a pale page; the number is still full-strength ink on
+        # every one of the six, so the student can always see which week is
+        # picked. One cue takes the theme, the other guarantees the state.
+        #
+        # ⚠️ `n === 4` IS UNTOUCHED THROUGHOUT. It is a hardcoded "this week"
+        # in Design's pre-ruling logic and it is wrong, but correcting it is a
+        # different unit and doing it here would hide it inside a colour change.
+        (
+            "        ring: sel ? '0 0 0 1.5px var(--st-ink)' : 'none',",
+            "        /* ⊕ RULED 23 Aug 2026 — the selected week takes the bench\n"
+            "           theme, per Design's `--wk-edge:var(--b-ground)`. The\n"
+            "           trough, the nowDot and `numColor` do not move; see the\n"
+            "           note above this entry for why each one stays. */\n"
+            "        ring: sel ? '0 0 0 1.5px var(--b-ground)' : 'none',",
+        ),
     ],
     'assignment': [
         (
@@ -461,7 +530,7 @@ SET_ATTR = {
     #   55   the bench `<section>`, `background:var(--st-room-panel)`. It
     #        takes BOTH names because they answer to different readers:
     #        `data-bench-surface` is what the token bridge in
-    #        build_student_port.py scopes its eight declarations to, and
+    #        build_student_port.py scopes its ten declarations to, and
     #        `data-port-region` is DESIGN'S OWN marker name, which is how the
     #        behaviour gate's AMENDED_ADDITIONS machinery finds a region.
     #        Spelling one of them the other way would silently detach one of
@@ -474,6 +543,15 @@ SET_ATTR = {
     #        Neither is painted by the bridge: the spine takes the theme
     #        through Design's own computed colour strings (`ring`, `numColor`,
     #        `trough`, `nowDot`), which is a LOGIC rewrite and a later unit.
+    #        ⊕ 23 Aug 2026 — THAT LATER UNIT LANDED, and the sentence above is
+    #        kept rather than corrected because it names all four strings and
+    #        only ONE of them moved. `ring` now takes `var(--b-ground)`; see
+    #        the RULED 23 Aug entry at the end of LOGIC['class view'] for why
+    #        `trough`, `nowDot` and `numColor` are deliberately still page
+    #        chrome, and why theming `numColor` would have been a new defect
+    #        rather than a completion. The spine still takes NO surface
+    #        attribute: it sits on the cream page ground, and a bridge scope
+    #        there would remap `--st-ink` and `--st-cream` over page chrome.
     #   260  the leaderboard CARD, `background:var(--st-room-panel)` — the
     #        second surface the bridge paints, inside the region at 249.
     #   266  the leader's avatar disc. `background:var(--st-cream)`, and it is

@@ -73,6 +73,67 @@ VIEWPORT = (1460, 1200)
 AA = 4.5          # WCAG 2.1 AA for small text — these tokens all carry some.
 STATED_TOL = 0.15  # beyond this, Design's stated figure gets a row. Not a fail.
 
+# ── the RENDERED-TEXT sweep, and why asserting the tokens was not enough ─
+#
+# ⊕ 23 Aug 2026 — ADDED AFTER THIS GATE PASSED A 1.78:1 LABEL.
+#
+# Everything above asserts the `--b-*` TOKENS: that `--b-ink`, `--b-muted` and
+# `--b-ember` each clear AA against `--b-ground`. All eighteen figures were
+# green, and three of the bench's most important words were invisible anyway.
+#
+# The gap is exact. The bench checklist — "Open it" / "Answer the eight
+# questions" / "Hand it in" — was not painted in ANY of those three tokens. It
+# was painted `--st-room-text`, a token the theme bridge had missed, fixed at
+# `#B7AA98` and declared "readable text on dark". On the five dark themes it
+# measured 5.55:1. On CHALK, whose ground is the light `#EFE2CB`, it measured
+# **1.78:1** — and this gate had nothing whatever to say about it, because the
+# question it asked was "are the theme's tokens legible on the theme's ground",
+# and the answer to that was, truthfully, yes.
+#
+# So it now asks the question a student's eye actually asks: EVERY text-bearing
+# leaf inside the bench, on every one of the seven cases, against whatever is
+# really painted behind it. That assertion cannot be satisfied by a token the
+# text does not use, which is the whole difference.
+#
+# ── the one registered exception ────────────────────────────────────────
+#
+# The docket's header band reads "This week's assignment" at #7A6E5F on
+# #F2E8D6 — 4.09:1, below the floor. It is registered rather than fixed, and
+# rather than the floor being lowered to fit it, for three reasons that are
+# checked rather than asserted:
+#
+#   · it is DESIGN'S OWN docket styling, not a theme token;
+#   · it is THEME-INDEPENDENT — identical on all seven cases, which is itself
+#     the ruling the docket check enforces two functions down;
+#   · it is PRE-EXISTING. It measured 4.09 before the themes existed and the
+#     themes did not move it. Failing this unit for it would be reporting an
+#     old defect as a new regression.
+#
+# ⚠️ IT IS ASSERTED IN BOTH DIRECTIONS, and the second direction is the point.
+# Exempting a string is easy and rots silently: the day Design darkens that
+# band, a bare exemption keeps quietly excusing a string that no longer needs
+# it, and the gate is one row weaker forever with nobody told. So the entry
+# must still be FOUND, on every case, at these exact colours and within `tol`
+# of this ratio. If Design fixes it, this registration goes RED as stale and
+# whoever is here next deletes it. An exception that cannot go stale is a hole.
+#
+# ⚠️ NOT A FLOOR CHANGE. `AA` stays 4.5 for everything else. One string is
+# named, at one pair of colours, with its ratio pinned; nothing else in the
+# bench is excused by it, and a SECOND string appearing at 4.2 fails.
+BENCH_TEXT_EXCEPTIONS = [
+    {
+        "name": "the docket's header band",
+        "text": "This week’s assignment",
+        "fg": "#7A6E5F",
+        "bg": "#F2E8D6",
+        "ratio": 4.09,
+        "tol": 0.06,
+        "why": "Design's own docket styling, theme-independent, and it "
+               "measured 4.09 before the bench themes existed — the themes "
+               "did not move it.",
+    },
+]
+
 # ── Design's own stated figures, transcribed ─────────────────────────────
 #
 # From `docs/ks3/design-reference/class-view-amendments/README.txt`, lines
@@ -181,11 +242,43 @@ _MEASURE = r"""
             ember: (cs.getPropertyValue('--b-ember') || '').trim(),
             ground:(cs.getPropertyValue('--b-ground')|| '').trim()};
   }
+  // Every TEXT-BEARING LEAF inside the bench, with the ground actually
+  // painted behind it. A leaf is an element with no element children and some
+  // non-whitespace text — so a wrapper `<div>` is not measured twice through
+  // its own children, and a spacer `<span>` with nothing in it is not measured
+  // at all.
+  //
+  // `ground` walks OUTWARD FROM THE ELEMENT ITSELF, not from its parent: a
+  // chip that paints its own background is the ground its own text sits on,
+  // and starting at the parent would measure that text against the card
+  // behind the chip. The whole opaque stack is returned rather than just the
+  // first hit, so the Python side can say so when the nearest ground is
+  // semi-transparent instead of silently treating it as opaque.
+  function leaves(root){
+    var out = [];
+    if (!root) return out;
+    root.querySelectorAll('*').forEach(function(el){
+      if (el.children.length) return;
+      var t = (el.textContent || '').trim();
+      if (!t) return;
+      var stack = [], p = el;
+      while (p) {
+        var bg = getComputedStyle(p).backgroundColor;
+        if (bg && !/rgba\(0,\s*0,\s*0,\s*0\)/.test(bg)) stack.push(bg);
+        p = p.parentElement;
+      }
+      out.push({text: t.replace(/\s+/g, ' '),
+                color: getComputedStyle(el).color,
+                stack: stack});
+    });
+    return out;
+  }
   return JSON.stringify({
     bench:  one('[data-bench-surface="bench"]'),
     board:  one('[data-bench-surface="board"]'),
     docket: one('[data-bench-docket]'),
     avatar: one('[data-bench-avatar]'),
+    text:   leaves(document.querySelector('[data-bench-surface="bench"]')),
     theme:  document.documentElement.getAttribute('data-bench-theme')
   });
 })()
@@ -353,6 +446,138 @@ def check_contrast(case, m):
     rows.append((disp, "contrast on ground (AA floor %.1f)" % AA,
                  "PASS" if worst >= AA else "FAIL", detail))
     return rows, problems, figures
+
+
+def check_bench_text(case, m):
+    """7 — every rendered word on the bench clears AA against its real ground.
+
+    The assertion the token figures above could not make. See
+    `BENCH_TEXT_EXCEPTIONS` for the one registered exception and why it is
+    asserted in both directions rather than merely skipped.
+    """
+    disp = label_of(case)
+    rows, problems = [], []
+    b = m["bench"]
+    if b.get("n") != 1:
+        return rows, problems      # already reported by check_surfaces
+    leaves = m.get("text") or []
+    if not leaves:
+        rows.append((disp, "every bench word clears AA", "FAIL",
+                     "no text found inside the bench"))
+        problems.append(
+            "%s — the sweep found NO text-bearing element inside "
+            "[data-bench-surface=\"bench\"]. A sweep over nothing passes "
+            "everything, so this is a failure and not an empty pass: either "
+            "the bench rendered empty or the walk is pointed at the wrong "
+            "node. Check the page mounted before re-reading any row above."
+            % disp)
+        return rows, problems
+
+    # Each exception may be spent at most once per case, so a second string at
+    # the same colours cannot hide behind the first one's registration.
+    unspent = list(BENCH_TEXT_EXCEPTIONS)
+    hit = {}
+    worst, worst_of, measured = None, None, 0
+
+    for leaf in leaves:
+        stack = leaf.get("stack") or []
+        if not stack:
+            problems.append(
+                "%s — %r inside the bench has NO painted ground anywhere in "
+                "its ancestry, so there is nothing to measure its colour "
+                "against. The bench must carry an opaque ground; see "
+                "check_surfaces." % (disp, leaf["text"][:60]))
+            continue
+        ground = parse_colour(stack[0])
+        if ground[3] != 1.0:
+            rows.append((disp, "every bench word clears AA", "FAIL",
+                         "ground %s is not opaque" % stack[0]))
+            problems.append(
+                "%s — the nearest painted ground behind %r is %s, which is "
+                "not opaque, so its contrast cannot be computed without "
+                "guessing what shows through. This gate does not guess: give "
+                "that element an opaque background, or paint the text against "
+                "one." % (disp, leaf["text"][:60], stack[0]))
+            continue
+        fg = parse_colour(leaf["color"])
+        if fg[3] != 1.0:
+            # Same refusal to guess as the ground case above, in the other
+            # direction: text at 60% opacity is not the colour it names, and
+            # compositing it here would invent a figure and then assert on it.
+            rows.append((disp, "every bench word clears AA", "FAIL",
+                         "text colour %s is not opaque" % leaf["color"]))
+            problems.append(
+                "%s — %r is painted %s, which is not opaque, so the ratio it "
+                "actually delivers depends on what shows through and cannot "
+                "be computed from the colour alone. Give that text an opaque "
+                "colour — on a themed surface it should be taking a --b-* "
+                "token anyway." % (disp, leaf["text"][:60], leaf["color"]))
+            continue
+        r = contrast(fg, ground)
+
+        exc = None
+        for e in unspent:
+            if (leaf["text"] == e["text"]
+                    and hexof(fg) == e["fg"] and hexof(ground) == e["bg"]):
+                exc = e
+                break
+        if exc is not None:
+            unspent.remove(exc)
+            hit[exc["name"]] = r
+            continue
+
+        measured += 1
+        if worst is None or r < worst:
+            worst, worst_of = r, leaf
+
+    if worst is not None and worst < AA:
+        rows.append((disp, "every bench word clears AA", "FAIL",
+                     "%.2f — %s" % (worst, worst_of["text"][:44])))
+        problems.append(
+            "%s — the bench renders %r at %s on %s, which measures %.2f:1, "
+            "below the AA floor of %.1f. This is text a student is being "
+            "asked to read on the theme they chose. Find the token it is "
+            "painted in and map it onto the theme family in _THEME_BRIDGE "
+            "(build_student_port.py) the way the other ten are mapped — do "
+            "NOT lower the floor and do NOT register it as an exception "
+            "unless it is genuinely theme-independent and pre-existing."
+            % (disp, worst_of["text"][:60], hexof(parse_colour(worst_of["color"])),
+               hexof(parse_colour(worst_of["stack"][0])), worst, AA))
+    elif worst is not None:
+        rows.append((disp, "every bench word clears AA (%d words)" % measured,
+                     "PASS", "worst %.2f" % worst))
+
+    # ── the registered exceptions, asserted the OTHER way ────────────────
+    for e in BENCH_TEXT_EXCEPTIONS:
+        got = hit.get(e["name"])
+        if got is None:
+            rows.append((disp, "exception: %s" % e["name"], "FAIL",
+                         "no longer present as registered"))
+            problems.append(
+                "%s — the registered exception %s (%r at %s on %s, %.2f:1) "
+                "was NOT found on the page as registered. Either it was "
+                "fixed, restyled or removed. This is a STALE REGISTRATION, "
+                "not a rendering fault: if the string now clears %.1f, delete "
+                "its entry from BENCH_TEXT_EXCEPTIONS in student_themes.py so "
+                "the floor covers it again. An exemption nobody revisits is "
+                "how a gate quietly loses a row."
+                % (disp, e["name"], e["text"][:40], e["fg"], e["bg"],
+                   e["ratio"], AA))
+            continue
+        if abs(got - e["ratio"]) > e["tol"]:
+            rows.append((disp, "exception: %s" % e["name"], "FAIL",
+                         "%.2f, registered %.2f" % (got, e["ratio"])))
+            problems.append(
+                "%s — the registered exception %s now measures %.2f:1 where "
+                "it is registered at %.2f (tolerance %.2f). Its colours still "
+                "match but its contrast has moved, so the registration no "
+                "longer describes it. Re-measure and update the entry — or "
+                "delete it, if it now clears %.1f."
+                % (disp, e["name"], got, e["ratio"], e["tol"], AA))
+        else:
+            rows.append((disp, "exception: %s" % e["name"], "NOTE",
+                         "%.2f, still as registered (%.2f)" % (got, e["ratio"])))
+    return rows, problems
 
 
 def check_docket(case, m, baseline):
@@ -595,6 +820,46 @@ def _prove(page, baseline):
     else:
         rows.append((disp, "the contrast check can see a collapsed ratio",
                      "PASS", "red while injected, green once removed"))
+
+    # (c) the RENDERED-TEXT sweep can see an unreadable label. This is the
+    # proof that matters most, because this assertion exists precisely because
+    # the other two were green while three bench labels sat at 1.78:1 — a
+    # widened gate that cannot demonstrate seeing the defect it was widened for
+    # has widened nothing.
+    #
+    # ⚠️ INJECTED ON `--st-room-text`, THE EXACT TOKEN THAT CAUSED IT, and set
+    # to the exact value it was stuck at (#B7AA98) — so this replays the real
+    # defect on harbour rather than a synthetic one. On harbour's #20363F that
+    # is 5.55:1 and would NOT fail, so the injection also puts the bench on
+    # chalk's light ground, which is where the pair collapses to 1.78.
+    page.eval(_INJECT % json.dumps(
+        '[data-bench-surface="bench"]{--b-ground:#EFE2CB !important;'
+        '--st-room-text:#B7AA98 !important}'))
+    time.sleep(0.35)
+    _r, broke3 = check_bench_text(None, _measure(page))
+    page.eval(_UNINJECT)
+    time.sleep(0.35)
+    _r, clean3 = check_bench_text(None, _measure(page))
+    if not broke3:
+        problems.append(
+            "SELF-PROOF FAILED: the bench checklist forced back to #B7AA98 on "
+            "a light #EFE2CB ground — 1.78:1, the exact defect this sweep was "
+            "added for — was NOT caught. Every 'every bench word clears AA' "
+            "row in this run is worthless: the walk is finding no leaves, or "
+            "reading the wrong ground, or the exception list is swallowing "
+            "them. Fix the sweep before reading any other line.")
+        rows.append((disp, "the text sweep can see an unreadable label",
+                     "FAIL", "injected 1.78:1 label went unnoticed"))
+    elif clean3:
+        problems.append(
+            "SELF-PROOF FAILED: the bench text sweep still reports a problem "
+            "after the injected style was removed — %s. The page did not "
+            "return to its real palette." % clean3[0][:90])
+        rows.append((disp, "the text sweep can see an unreadable label",
+                     "FAIL", "page not clean after the injection was removed"))
+    else:
+        rows.append((disp, "the text sweep can see an unreadable label",
+                     "PASS", "red while injected, green once removed"))
     return rows, problems
 
 
@@ -661,6 +926,9 @@ def run(cdp):
         r, p = check_avatar(case, m)
         rows.extend(r)
         problems.extend(p)
+        r, p = check_bench_text(case, m)
+        rows.extend(r)
+        problems.extend(p)
 
     # The 18 — six named themes × three tokens — measured against Design's own
     # stated arithmetic. NOT a gate: a row here says the README is out, and the
@@ -713,8 +981,11 @@ def main():
     print("  PASS  seven cases (six themes and the attribute absent); bench "
           "and leaderboard both take the theme ground, every token matches "
           "Design's table, all %d contrast figures clear AA %.1f, the docket "
-          "is identical on all seven, and the avatar is legible on each."
-          % (len(CASES) * 3, AA))
+          "is identical on all seven, the avatar is legible on each, and "
+          "every rendered word inside the bench clears AA %.1f against its "
+          "own painted ground on all seven — with %d registered exception(s), "
+          "each asserted still present at its registered colours and ratio."
+          % (len(CASES) * 3, AA, AA, len(BENCH_TEXT_EXCEPTIONS)))
     return 0
 
 
