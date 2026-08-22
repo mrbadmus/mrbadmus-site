@@ -6,12 +6,12 @@ six lessons, ELEVEN instrument families and no drawn figure so far, all DOM,
 no canvas and no animation loop anywhere in the unit.
 
 ═══════════════════════════════════════════════════════════════════════════
-⚠️ WAVE 4 — SEVEN FAMILIES IMPLEMENTED, FOUR STILL TO COME
+⚠️ WAVE 5 — NINE FAMILIES IMPLEMENTED, TWO STILL TO COME
 ═══════════════════════════════════════════════════════════════════════════
 
 Wave 1 built the unit spine and the reference lesson `c10-04`; wave 2 added
-`c10-01`; wave 3 added `c10-02`; wave 4 adds `c10-03`. Seven families are
-implemented and only those seven are registered:
+`c10-01`; wave 3 added `c10-02`; wave 4 added `c10-03`; wave 5 adds `c10-05`.
+Nine families are implemented and only those nine are registered:
 
     material-loop   ks3-mloop-block   c10-04  #s-loop    ← INK-DARK
     stock-limits    ks3-stock-block   c10-04  #s-stock
@@ -20,18 +20,16 @@ implemented and only those seven are registered:
     rock-bench      ks3-rockb-block   c10-02  #s-bench
     grain-journey   ks3-grain-block   c10-03  #s-journey
     process-arrows  ks3-parrow-block  c10-03  #s-processes
+    air-mix         ks3-amix-block    c10-05  #s-mix
+    atmos-history   ks3-ahist-block   c10-05  #s-history
 
-⊖ **THE OTHER FOUR ARE NOT REGISTERED, AND MUST NOT BE UNTIL THEY EXIST.**
+⊖ **THE OTHER TWO ARE NOT REGISTERED, AND MUST NOT BE UNTIL THEY EXIST.**
 `ks3_art.check_placements` gate 2 fails a family that is registered and never
 placed, and gate 3 fails one that is placed and never registered. A stub row
 added "ready" for a later lane would ship the shell around the generic
 prompt/options branch — the C1 defect (MRB-228) — the moment a lesson named
 it. Each lane registers its own:
 
-    grain-journey     ks3-grain-block   c10-03  #s-journey
-    process-arrows    ks3-parrow-block  c10-03  #s-processes
-    air-mix           ks3-amix-block    c10-05  #s-mix
-    atmos-history     ks3-ahist-block   c10-05  #s-history
     greenhouse-steps  ks3-ghouse-block  c10-06  #s-how
     climate-evidence  ks3-cev-block     c10-06  #s-evidence
 
@@ -1484,9 +1482,471 @@ def r_process_arrows(a, act_id):
             % (len(procs), target, picks, panels))
 
 
+# ═══ c10-05 · air-mix ════════════════════════════════════════════════════
+#
+# ⚠️ WHAT HAPPENS TO A GAS IN A PAIR OF LUNGS is a CLOSED SET, and it is closed
+# because the block's lead sentence is derived from it. Design writes "Two of
+# these four are gases that do nothing at all in your body"; the two are
+# nitrogen and argon, and the reason carbon dioxide is not a third is that you
+# breathe out far more of it than you breathed in. A fourth value would be a
+# category the lead sentence cannot count.
+_AMIX_LUNGS = ("absorbed", "unchanged", "added")
+
+
+def _amix_pct(v):
+    """A share printed at the precision it was authored to, and no further.
+
+    78 → "78%", 0.9 → "0.9%", 0.04 → "0.04%", 78.9 → "78.9%". One formatter for
+    every printed percentage on the block — the panel's, the lead's and the
+    scale note's — so a figure cannot be rounded one way in a sentence and
+    another way in the readout above it.
+    """
+    v = float(v)
+    if abs(v - round(v)) < 1e-9:
+        return "%d%%" % int(round(v))
+    if v >= 1:
+        return "%.1f%%" % v
+    return ("%.2f" % v).rstrip("0").rstrip(".") + "%"
+
+
+def _c10_join(items):
+    """"argon and carbon dioxide" — a list read as a sentence, not as a list.
+
+    The scale note names the gases the bar cannot draw honestly, and that set
+    is DERIVED, so the sentence has to be built from however many there turn
+    out to be rather than from however many there are today.
+    """
+    items = [x for x in items if x]
+    if not items:
+        return ""
+    if len(items) == 1:
+        return items[0]
+    return ", ".join(items[:-1]) + " and " + items[-1]
+
+
+def r_air_mix(a, act_id):
+    """⊕ c10-05 `#s-mix` — four gases, a bar drawn from their shares.
+
+    FOUR REACHABLE STATES, ALL ENUMERATED. Each carries the gas's name, its
+    share, and its note — and NOT ONE PERCENTAGE IS PRINTED AS AUTHORED. The
+    payload states four shares; every figure on the page, every bar width and
+    both derived sentences are computed here.
+
+    THE ARITHMETIC, ONCE. A gas's `pct` is its `flex-grow` on a bar whose items
+    have `flex-basis: 0`, so the widths ARE the proportions rather than a
+    drawing of them. The same number is formatted into the panel's readout and
+    into the button's accessible name, from `_amix_pct`, so the bar and the
+    caption cannot drift apart.
+
+    ⚖️ **`accounts_for` IS A CLAIM, AND IT IS CHECKED.** The explainer above
+    the block says almost all of the air is just a few gases. That is true of
+    78 + 21 + 0.9 + 0.04, and it would stop being true if a gas were removed
+    from the set. The build refuses a payload whose shares no longer reach the
+    claimed floor, and refuses one that exceeds 100 per cent — which is the
+    other way the same edit goes wrong.
+
+    ⚖️ **THE LEAD SENTENCE IS DERIVED FROM `lungs`, NOT AUTHORED.** Design
+    writes "Two of these four ... together they are 79 per cent of every
+    breath", and both numbers are facts about the payload. Each gas declares
+    what happens to it in a pair of lungs; this counts the ones that come back
+    out unchanged and adds their shares. A payload that gained a fifth gas
+    would move both numbers, and the sentence would move with them.
+
+    ⚠️ **THE ONE PLACE THE DRAWING IS NOT TO SCALE.** Argon is 0.9% of the air
+    and carbon dioxide is 0.04%. At any width that makes nitrogen readable
+    those two are a hairline and a sub-pixel, and neither is a tappable target,
+    so `.ks3-amix-seg` carries a `min-width` floor in `shared/ks3.css` — the
+    same solution `c10-01`'s crust segment takes, reused rather than
+    reinvented. The floored gases and their TRUE combined share are therefore
+    derived here and the block REFUSES a `scale_note` that does not name both.
+    A distortion a page admits to is a scale lesson; the same distortion
+    unremarked is the misconception being taught.
+
+    ⚠️ **AND `dry_note` IS REQUIRED.** MRB-225: the 78/21 figures are for DRY
+    air, and the reason they are quoted dry is that water vapour is variable.
+    Four percentages with no qualifier teach a student that the air has a fixed
+    recipe — which is the belief the lesson's own key fact is trying to break,
+    arriving four lines later by the back door. A block that cannot say so does
+    not build.
+
+    ⚠️ **THIS BLOCK DOES NOT OPEN EMPTY.** Design opens on nitrogen with its
+    panel showing, so the build emits that button `aria-pressed="true"` and
+    that panel unhidden — the resting HTML and the runtime then agree rather
+    than agreeing one frame later. MRB-208 is untouched: what may not be ticked
+    on load is the RAIL STOP, and `data-stage-done` still opens at 0. There is
+    no zero state to model: a gas is always selected, which is what makes the
+    resting page a readout rather than a blank.
+
+    HOOKS: `data-amix` (wrapper, `data-total`, `data-target`) ·
+    `data-amix-gas` · `data-amix-out`.
+    """
+    gases = a.get("gases") or []
+    if len(gases) < 3:
+        raise ValueError(
+            "air-mix %r has %d gas(es). The block is a comparison of "
+            "proportions, and with fewer than three there is no set to read "
+            "one against." % (act_id, len(gases)))
+    _unique_ids(gases, act_id, "air-mix", "gas")
+    _no_correct_flags(gases, act_id, "air-mix")
+
+    seen_lungs = set()
+    for g in gases:
+        for key in ("label", "name", "note"):
+            if not g.get(key):
+                raise ValueError(
+                    "air-mix %r gas %r has no %r. The label is the strip on "
+                    "the bar, the name is the panel's heading and the note is "
+                    "what tapping it buys — a missing one leaves a heading "
+                    "over nothing." % (act_id, g.get("id"), key))
+        if g.get("lungs") not in _AMIX_LUNGS:
+            raise ValueError(
+                "air-mix %r gas %r says %r happens to it in a pair of lungs, "
+                "and the closed set is %s. The block's lead sentence COUNTS "
+                "the gases that come back out unchanged and adds their "
+                "shares, so a fourth value is a category that sentence cannot "
+                "count." % (act_id, g.get("id"), g.get("lungs"),
+                            list(_AMIX_LUNGS)))
+        seen_lungs.add(g["lungs"])
+        pct = float(g.get("pct") or 0)
+        if not 0 < pct <= 100:
+            raise ValueError(
+                "air-mix %r gas %r has a share of %r. It is what draws the "
+                "bar and what every percentage on the block is derived from, "
+                "so it lives in (0, 100]." % (act_id, g["id"], g.get("pct")))
+    for want in ("absorbed", "unchanged"):
+        if want not in seen_lungs:
+            raise ValueError(
+                "air-mix %r has no gas that is %r in the lungs. The lead "
+                "sentence contrasts the gas a body takes with the gases it "
+                "does not, and a set that is all one thing has nothing for it "
+                "to contrast." % (act_id, want))
+
+    total_pct = sum(float(g["pct"]) for g in gases)
+    if total_pct > 100.0 + 1e-9:
+        raise ValueError(
+            "air-mix %r's gases add up to %s%% of the air. A bar whose "
+            "segments are the proportions cannot hold more than the whole."
+            % (act_id, _amix_pct(total_pct)))
+    floor_claim = a.get("accounts_for")
+    if floor_claim is not None and total_pct < float(floor_claim) - 1e-9:
+        raise ValueError(
+            "air-mix %r claims these gases account for at least %s%% of the "
+            "air and its own shares reach %s%%. The explainer above the block "
+            "says almost all of the air is just these few gases, and a set "
+            "that no longer supports it leaves the sentence standing over a "
+            "bar that contradicts it."
+            % (act_id, _num(floor_claim), _amix_pct(total_pct)))
+
+    start = a.get("start_gas") or gases[0]["id"]
+    if start not in [g["id"] for g in gases]:
+        raise ValueError(
+            "air-mix %r opens on %r, which is not a gas on the bar. The "
+            "opening state is what a student reads before touching anything."
+            % (act_id, start))
+
+    target = int(a.get("gases_to_tick") or 0)
+    if not 2 <= target <= len(gases):
+        raise ValueError(
+            "air-mix %r ticks its rail stop at %r of %d. Two is the fewest "
+            "that is a comparison and more than the set is a stop that can "
+            "never tick." % (act_id, target, len(gases)))
+
+    # ── the derived sentences ────────────────────────────────────────────
+    unchanged = [g for g in gases if g["lungs"] == "unchanged"]
+    floor_below = float(a.get("floor_below") or 0)
+    wide = [g for g in gases if float(g["pct"]) < floor_below]
+
+    lead = a.get("lead") or ""
+    if not lead:
+        raise ValueError(
+            "air-mix %r authors no lead. Design's lead is the sentence that "
+            "tells a student what they are about to find on the bar, and "
+            "without it the block opens on a wall of four buttons." % act_id)
+    if "{share_unchanged}" not in lead or not (
+            "{n_unchanged}" in lead or "{N_unchanged}" in lead):
+        raise ValueError(
+            "air-mix %r's lead %r names no {share_unchanged}, or no count "
+            "slot ({n_unchanged} / {N_unchanged}). Both are facts about the "
+            "payload rather than numbers an author chose, and a sentence that "
+            "hard-codes either goes on saying it after the set has changed."
+            % (act_id, lead))
+
+    note = a.get("scale_note") or ""
+    if wide and not note:
+        raise ValueError(
+            "air-mix %r draws %s below its own %s%% floor and authors no "
+            "scale_note. A segment that thin is not a tappable target, so the "
+            "bar gives it a minimum width and stops being to scale — and a "
+            "page that exaggerates a share without saying so is teaching the "
+            "misconception it is on the page to break."
+            % (act_id, [g["id"] for g in wide], _num(floor_below)))
+    if note and not wide:
+        raise ValueError(
+            "air-mix %r authors a scale_note and no gas falls below its %s%% "
+            "floor. The note tells a student the bar is drawn wider than the "
+            "truth somewhere; on this payload it is not, so the note is a "
+            "distortion the page is confessing to and has not made."
+            % (act_id, _num(floor_below)))
+    if note and ("{share_wide}" not in note or not (
+            "{drawn_wide}" in note or "{Drawn_wide}" in note)):
+        raise ValueError(
+            "air-mix %r's scale_note %r never names {share_wide}, or names no "
+            "gas slot ({drawn_wide} / {Drawn_wide}). The bar draws the thinnest gases WIDER than their "
+            "share, so the true share has to be printed as a number in the "
+            "one sentence that talks about the scale, and the gases it "
+            "applies to have to be named — or the page is asserting a "
+            "proportion it is visibly not drawing." % (act_id, note))
+
+    dry = a.get("dry_note") or ""
+    if not dry:
+        raise ValueError(
+            "air-mix %r authors no dry_note. The shares on this bar are the "
+            "composition of DRY air, and the reason they are quoted dry is "
+            "that water vapour is variable. Four percentages with no "
+            "qualifier teach a student that the air has a fixed recipe, which "
+            "is the belief this lesson's own key fact exists to break."
+            % act_id)
+
+    fills = {
+        "{n_unchanged}": _rockb_word(len(unchanged)),
+        "{N_unchanged}": _rockb_word(len(unchanged)).capitalize(),
+        "{share_unchanged}": _amix_pct(sum(float(g["pct"])
+                                           for g in unchanged)),
+        "{total}": _rockb_word(len(gases)),
+        # `{Drawn_wide}` is the same derived list with a capital, because the
+        # sentence that quotes it OPENS with it. Without the pair, the note
+        # ships "argon and carbon dioxide are drawn wider…" mid-sentence-cased
+        # at the start of its own paragraph — and the alternatives are
+        # capitalising the whole filled string (which would also capitalise a
+        # slot used mid-sentence) or authoring the gas names. Same treatment
+        # as `rock-bench`'s `{n}` / `{N}`.
+        "{drawn_wide}": _c10_join([g["name"].lower() for g in wide]),
+        "{Drawn_wide}": _c10_join([g["name"].lower()
+                                   for g in wide]).capitalize(),
+        "{share_wide}": _amix_pct(sum(float(g["pct"]) for g in wide)),
+    }
+
+    def _fill(text):
+        for k, v in fills.items():
+            text = text.replace(k, v)
+        return text
+
+    _c10_count_word_agrees(a.get("heading"), len(gases), act_id,
+                           "air-mix", "heading")
+    # One panel is open in the resting bytes, so the counter opens at one.
+    _c10_head_agrees(a, act_id, "air-mix", len(gases), 1)
+
+    suffix = a.get("share_suffix") or "of the air"
+
+    segs, outs = [], []
+    for g in gases:
+        pct = float(g["pct"])
+        shown = _amix_pct(pct)
+        pressed = g["id"] == start
+        thin = pct < floor_below
+
+        # The accessible name carries the share the panel prints, spoken
+        # rather than drawn: a screen reader gets the proportion without
+        # having to open the panel to find it.
+        segs.append(
+            '<button type="button" class="ks3-amix-seg%s%s" '
+            'data-amix-gas="%s" '
+            'aria-pressed="%s" aria-label="%s" style="flex-grow:%.4f">'
+            '<span class="ks3-amix-slabel">%s</span></button>'
+            % (" ks3-amix-thin" if thin else "",
+               # ⊕ Design paints ONE strip on the bar a different ground, and
+               # it is oxygen's. Hers tests `g.id === 'o2'` — a gas id written
+               # into the drawing code. Taken off `lungs` instead, so the tint
+               # means "the gas your body actually takes" and follows the
+               # payload rather than a hard-coded name.
+               " ks3-amix-used" if g["lungs"] == "absorbed" else "",
+               e(g["id"]),
+               "true" if pressed else "false",
+               e("%s, %s %s" % (g["name"], shown, suffix)),
+               pct, t(g["label"])))
+
+        outs.append(
+            '<div class="ks3-amix-one" data-amix-out="%s"%s>'
+            '<div class="ks3-amix-head">'
+            '<p class="ks3-amix-name">%s</p>'
+            '<p class="ks3-amix-pct">%s %s</p></div>'
+            '<p class="ks3-amix-note">%s</p></div>'
+            % (e(g["id"]), "" if pressed else " hidden",
+               t(g["name"]), t(shown), t(suffix), rich(g["note"])))
+
+    feet = ['<p class="ks3-amix-foot">%s</p>' % rich(_fill(note))] if note \
+        else []
+    feet.append('<p class="ks3-amix-foot">%s</p>' % rich(dry))
+
+    return ('<div class="ks3-amix" data-amix data-total="%d" data-target="%d">'
+            '<p class="ks3-amix-lead">%s</p>'
+            '<div class="ks3-amix-bar">%s</div>'
+            '<div class="ks3-amix-readout">%s</div>%s</div>'
+            % (len(gases), target, rich(_fill(lead)), "".join(segs),
+               "".join(outs), "".join(feet)))
+
+
+# ═══ c10-05 · atmos-history ══════════════════════════════════════════════
+
+def _ahist_when(mya):
+    """A date in millions of years, printed the way a geologist would say it.
+
+    4600 → "4.6 bya", 400 → "400 mya". The payload states ONE number per stage
+    and this writes the label, so a stage cannot carry a date and a caption
+    that disagree — which is the failure `c10-01`'s derived boundaries exist to
+    stop, arriving at a timeline instead of at a bar.
+    """
+    mya = float(mya)
+    if mya >= 1000:
+        return "%.1f bya" % (mya / 1000.0)
+    return "%d mya" % int(round(mya))
+
+
+def r_atmos_history(a, act_id):
+    """⊕ c10-05 `#s-history` — five stages, revealed one at a time.
+
+    A STEPPER, and the only one in C10. Every stage is in the document from the
+    moment the page loads with its explanation `hidden`; `shared/ks3.js`
+    unhides them in order and swaps the button's label between three AUTHORED
+    strings. It composes nothing and it computes nothing.
+
+    ⚖️ **THE ORDER IS THE CLAIM, AND IT IS CHECKED.** The block asserts that
+    the atmosphere arrived at today's composition through a sequence: volcanic
+    gases, then oceans, then carbon dioxide dissolving, then photosynthesis,
+    then carbon buried in rock. Every stage carries `mya` and the build refuses
+    a set that does not run forwards in time. A payload re-sorted for layout
+    cannot quietly re-teach the lesson, and an edited date fails the build
+    instead of shipping a history that runs backwards.
+
+    ⚖️ **THE THREE BUTTON LABELS ARE AUTHORED AND THE DONE ONE IS CHECKED.**
+    Design's own button reads "Reveal the first stage", then "Reveal the next
+    stage", then "All five shown" — and the third names the size of the set,
+    which §5A forbids an author to hard-code. It is not authored twice: it is
+    authored once and CHECKED against the payload by
+    `_c10_count_word_agrees`, so a sixth stage fails the build rather than
+    leaving the button saying five.
+
+    ⚠️ **THE BUTTON IS NEVER DISABLED.** Design dims it once every stage is
+    open. Disabling the control a keyboard user is standing on drops them to
+    `<body>` — MRB-257, and `depth-evidence`, `rock-bench` and `grain-journey`
+    all reached it by the same route. A press once the set is exhausted is a
+    genuine no-op, and the label already says so in words.
+
+    ⚠️ **NOTHING IS REVEALED IN THE BYTES.** The resting page opens with five
+    closed stages, the counter at zero, the first label on the button and the
+    closing panel hidden, which is the on-load state modelled rather than
+    assumed.
+
+    ⊕ **THE DATE IS NOT `aria-hidden`, AND DESIGN'S IS.** Her mono date chip
+    carries `aria-hidden="true"`, which on this block removes the timeline
+    from a screen reader entirely — the stages are five undated sentences, and
+    the sequence is the whole content. It is read here, in the same words a
+    sighted reader sees.
+
+    HOOKS: `data-ahist` (wrapper, `data-total`, `data-target`) ·
+    `data-ahist-step` (valued with the stage's index, with `data-open`) ·
+    `data-ahist-why` · `data-ahist-reveal` (with `data-l-first`, `data-l-next`,
+    `data-l-done`) · `data-ahist-panel`.
+    """
+    stages = a.get("stages") or []
+    if len(stages) < 4:
+        raise ValueError(
+            "atmos-history %r has %d stage(s). The block's claim is that the "
+            "air arrived at today's composition through a SEQUENCE, and a "
+            "handful of steps cannot make it." % (act_id, len(stages)))
+    _unique_ids(stages, act_id, "atmos-history", "stage")
+    _no_correct_flags(stages, act_id, "atmos-history")
+
+    for s in stages:
+        for key in ("what", "why"):
+            if not s.get(key):
+                raise ValueError(
+                    "atmos-history %r stage %r has no %r. The what is the "
+                    "headline a student reads before revealing anything and "
+                    "the why is what revealing it buys — a missing one is a "
+                    "row with nothing behind it." % (act_id, s.get("id"), key))
+        if s.get("mya") is None or float(s["mya"]) <= 0:
+            raise ValueError(
+                "atmos-history %r stage %r is dated %r. Every date LABEL on "
+                "the block is written from this one number, and the order of "
+                "the whole history is checked against it."
+                % (act_id, s["id"], s.get("mya")))
+
+    for prev, nxt in zip(stages, stages[1:]):
+        if float(nxt["mya"]) >= float(prev["mya"]):
+            raise ValueError(
+                "atmos-history %r puts %r (%s) after %r (%s), so the history "
+                "runs backwards. The ORDER is what this block asserts — that "
+                "the air arrived at today's composition through a sequence — "
+                "and a set that no longer runs forwards has quietly re-taught "
+                "the lesson."
+                % (act_id, nxt["id"], _ahist_when(nxt["mya"]),
+                   prev["id"], _ahist_when(prev["mya"])))
+
+    target = int(a.get("stages_to_reveal") or 0)
+    if not 2 <= target <= len(stages):
+        raise ValueError(
+            "atmos-history %r ticks its rail stop at %r of %d. Two is the "
+            "fewest that is a sequence and more than the set is a stop that "
+            "can never tick." % (act_id, target, len(stages)))
+
+    labels = {}
+    for key, default in (("label_first", "Reveal the first stage"),
+                         ("label_next", "Reveal the next stage"),
+                         ("label_done", "All of them shown")):
+        labels[key] = a.get(key) or default
+    if len(set(labels.values())) != 3:
+        raise ValueError(
+            "atmos-history %r gives the button the same label in two of its "
+            "three states (%s). The label is the only thing that tells a "
+            "student whether there is another stage to come."
+            % (act_id, sorted(set(labels.values()))))
+    _c10_count_word_agrees(labels["label_done"], len(stages), act_id,
+                           "atmos-history", "label_done")
+    _c10_count_word_agrees(a.get("heading"), len(stages), act_id,
+                           "atmos-history", "heading")
+    # Nothing is revealed in the resting bytes, so the counter opens at zero.
+    _c10_head_agrees(a, act_id, "atmos-history", len(stages), 0)
+
+    panel = a.get("close_panel") or {}
+    panel_text = panel.get("text") or []
+    if isinstance(panel_text, str):
+        panel_text = [panel_text]
+    if not panel.get("title") or not panel_text:
+        raise ValueError(
+            "atmos-history %r authors no close panel title or text. The panel "
+            "is the payoff of revealing every stage, and an empty one is a "
+            "reward for finishing that says nothing." % act_id)
+
+    rows = "".join(
+        '<li class="ks3-ahist-step" data-ahist-step="%d" data-open="0">'
+        '<div class="ks3-ahist-head">'
+        '<span class="ks3-ahist-when">%s</span>'
+        '<p class="ks3-ahist-what">%s</p></div>'
+        '<p class="ks3-ahist-why" data-ahist-why hidden>%s</p></li>'
+        % (i, t(_ahist_when(s["mya"])), rich(s["what"]), rich(s["why"]))
+        for i, s in enumerate(stages))
+
+    close = ('<div class="ks3-ahist-panel" data-ahist-panel hidden>'
+             '<p class="ks3-ahist-ptitle">%s</p>%s</div>'
+             % (t(panel["title"]),
+                "".join('<p class="ks3-ahist-ptext">%s</p>' % rich(p)
+                        for p in panel_text)))
+
+    return ('<div class="ks3-ahist" data-ahist data-total="%d" '
+            'data-target="%d"><ol class="ks3-ahist-list">%s</ol>'
+            '<div class="ks3-ahist-tools">'
+            '<button type="button" class="ks3-ahist-reveal" data-ahist-reveal '
+            'data-l-first="%s" data-l-next="%s" data-l-done="%s">%s</button>'
+            '</div>%s</div>'
+            % (len(stages), target, rows,
+               e(labels["label_first"]), e(labels["label_next"]),
+               e(labels["label_done"]), t(labels["label_first"]), close))
+
+
 # ═══ registration ════════════════════════════════════════════════════════
 #
-# ⚠️ FIVE ROWS, BECAUSE FIVE RENDERERS EXIST. The other six C10 families are
+# ⚠️ NINE ROWS, BECAUSE NINE RENDERERS EXIST. The other two C10 families are
 # listed in this module's header and are registered by their own lesson's
 # author, in this file, when the renderer lands beside the row.
 
@@ -1505,6 +1965,10 @@ KIND_SHELL = {
                       ' data-instrument data-grainblock data-stage-done="0"'),
     'process-arrows': ("ks3-parrow-block",
                        ' data-instrument data-parrowblock data-stage-done="0"'),
+    'air-mix': ("ks3-amix-block",
+                ' data-instrument data-amixblock data-stage-done="0"'),
+    'atmos-history': ("ks3-ahist-block",
+                      ' data-instrument data-ahistblock data-stage-done="0"'),
 }
 
 KIND_FN = {
@@ -1515,4 +1979,6 @@ KIND_FN = {
     'rock-bench': r_rock_bench,
     'grain-journey': r_grain_journey,
     'process-arrows': r_process_arrows,
+    'air-mix': r_air_mix,
+    'atmos-history': r_atmos_history,
 }

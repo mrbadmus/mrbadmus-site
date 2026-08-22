@@ -1613,10 +1613,11 @@ Opened by **C10 *The Earth and its atmosphere*** (2026-08-22, drawn by Claude De
 `EARTH-01` to `EARTH-16` are C10's, six lessons, two or three entries each. All are
 `review_state: draft`.
 
-⚠️ **THE RANGE IS ALLOCATED, THE ROWS ARE NOT.** Only `c10-01`, `c10-02`, `c10-03` and
-`c10-04` are authored so far, so only their thirteen rows are below. The remaining allocation is written down here so five lanes authoring five
-lessons cannot collide on a number: `EARTH-01`–`04` are c10-01's, `05`–`07` c10-02's, `08`–`10`
-c10-03's, `11`–`13` c10-04's, and `14`–`16` are shared between c10-05 and c10-06. **An id appears
+⚠️ **THE RANGE IS ALLOCATED, THE ROWS ARE NOT.** `c10-01` to `c10-05` are authored so far, so
+only their fifteen rows are below. The remaining allocation is written down here so lanes authoring
+different lessons cannot collide on a number: `EARTH-01`–`04` are c10-01's, `05`–`07` c10-02's,
+`08`–`10` c10-03's, `11`–`13` c10-04's, and `14`–`16` were allocated to be shared between c10-05
+and c10-06 — **c10-05 has taken `14` and `15` and left `16` for c10-06.** **An id appears
 in the table below only when the lesson that references it exists** — registering ahead of
 authoring is legal (`CELL-09`–`12` are the live example) but allocating a block and then filling
 it is how a number ends up meaning two things.
@@ -1642,6 +1643,8 @@ they are left unwritten and the numbering stops at 16. **Do not close the gap.**
 | `EARTH-11` | If we recycled everything, we would never run out of anything. | `think-commit-recycling` | `think-reveal-recycling` | `a-planet-with-limits` |
 | `EARTH-12` | How much comes back depends on how carefully people sort their bins. | `loop-bench` | `loop-bench` | `a-planet-with-limits` |
 | `EARTH-13` | “Years left” is a measured fact about how much is in the ground. | — | `s-stock` | `a-planet-with-limits` |
+| `EARTH-14` | Air is mostly oxygen — that is the point of it. | `think-commit-oxygen` | `think-reveal-oxygen` | `whats-in-the-air` |
+| `EARTH-15` | The air has always been roughly like this, so the oxygen was there from the start. | — | `s-history` | `whats-in-the-air` |
 
 **`EARTH-01` is the one this whole topic turns on, and it is the reason `c10-01` refuses the famous
 sentence.** A thin crust floating on a sea of magma is taught in a great many classrooms and it is
@@ -1767,6 +1770,42 @@ the work. Inventing an anchor to fill the column would be the dishonest version,
 absence legal precisely so that it need not be invented. The question bank carries the elicitation
 instead, at `c10-04-h01`, where a country's copper reserves rise by a fifth with no new deposit
 found.
+
+**`EARTH-14` is the belief Design quotes in her own words at `#s-think`, and it is the one this
+whole page is built to break.** "Air is mostly oxygen — that is the point of it" is not a careless
+answer; it is a student reasoning correctly from a true premise. Oxygen IS the gas a body needs, it
+IS the gas without which nothing burns, and it is the only one of the four that gets talked about.
+Concluding that there must be most of it is the obvious next step, and it is wrong by a factor of
+four. The hook elicits it first, in plain words — "Roughly what fraction of the air is oxygen?" with
+"Almost all of it" and "About three quarters" both on offer — and `#s-think` is where the student
+has to commit to it as a BELIEF rather than as a guess about a number. The reveal carries
+`id="think-reveal-oxygen"` so `confronted_by` names the PANEL where the belief is answered rather
+than the surrounding section — the MRB-277 pattern.
+
+⚑ **What the reveal does NOT do is treat the nitrogen as filler**, and that is the difference
+between correcting the number and correcting the belief. A student told "actually it is 78 per cent
+nitrogen" has learned a swap. The reveal instead says what the nitrogen is FOR: in pure oxygen
+everything that can burn burns ferociously, and the nitrogen dilutes the oxygen to a level at which
+fire is possible but not automatic. Then it closes at the other extreme — carbon dioxide is 0.04 per
+cent of the air and every plant on Earth is built out of it — because the belief underneath
+`EARTH-14` is that "how much there is" and "how much it matters" are the same measurement, and one
+end of the bar cannot break that on its own.
+
+**`EARTH-15` carries no `elicited_by`, deliberately, and that is audit law 15 working rather than a
+hole.** Nothing on `c10-05` asks a student to commit to the belief that the oxygen was always there.
+Design's history block is a stepper — it reveals, it does not ask — and inventing an anchor to fill
+the column would be the dishonest version. MRB-248 makes absence legal precisely so that it need not
+be invented. The question bank carries the elicitation instead, at `c10-05-s02`, where rocks older
+than two and a half billion years hold minerals that could not have survived in oxygen, and at
+`c10-05-h01`, where photosynthesis has been running for three hundred million years and the air
+still has none.
+
+⚑ **`EARTH-15` and `EARTH-10` are neighbours and are not the same belief.** `EARTH-10` is about
+ROCK being permanent and it dies on a journey round the cycle. `EARTH-15` is about the AIR being a
+fixed backdrop that living things arrived into, and what kills it is the discovery that living
+things made it. A student can hold either without the other, and joining them would blur the thing
+C10's last two lessons add: that the atmosphere is not scenery, it is a product, and it is still
+being changed.
 
 ⚑ **`EARTH-11` overlaps `MATL-08`'s neighbourhood in SHAPE ONLY and no cross-reference is
 recorded.** Both are wrong beliefs about where a material comes from. But `MATL-08` is about

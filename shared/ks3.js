@@ -22194,11 +22194,11 @@
    marked block so that a lane merging into this file resolves mechanically:
    nothing above this marker moves.
 
-   ⚠️ WAVE 4. Seven of the unit's eleven families are here — c10-04's loop
+   ⚠️ WAVE 5. Nine of the unit's eleven families are here — c10-04's loop
    bench and its stock shelf, c10-01's layer bar and evidence set, c10-02's
-   rock bench, and c10-03's grain sequencer and process arrows. The other four
-   are listed in `ks3_art/c10.py` and are wired by their own lesson's author,
-   inside this same marked block.
+   rock bench, c10-03's grain sequencer and process arrows, and c10-05's gas
+   bar and atmosphere stepper. The other two are listed in `ks3_art/c10.py`
+   and are wired by their own lesson's author, inside this same marked block.
 
    ⚖️ NOTHING IS COMPUTED IN THIS BLOCK. Not one mass, not one percentage, not
    one multiplier and not one VERDICT. The loop bench's TWENTY states are all
@@ -22648,6 +22648,121 @@
     });
     setCount(sec, seenN);
   }
+
+  /* ── air-mix (c10-05 #s-mix) ─────────────────────────────────────────
+     Four gases, four authored panels, one shown at a time. Every share, every
+     bar width and both derived sentences under the bar were computed at build
+     time in `ks3_art/c10.py` from four numbers; nothing here does arithmetic.
+
+     THE RAIL STOP TICKS AT THREE OF FOUR — Design's own `DONE('s-mix')`,
+     which reads `Object.keys(s.seen).length >= 3` over a set of four, and it
+     is not a slip. The block opens with one panel already showing, so the
+     stop asks for two more taps: a comparison rather than a reading receipt
+     on every panel. Honoured exactly; `data-target` carries it.
+
+     ⚠️ THIS BLOCK DOES NOT OPEN EMPTY, which it shares with c10-03's process
+     arrows and c10-04's two benches. The opening selection is in the HTML,
+     not in this file, and is read out of it — so the resting page and the
+     runtime cannot disagree about which gas is showing. MRB-208 is untouched:
+     `data-stage-done` still opens at 0.
+
+     Nothing is disabled and nothing is marked. A press on the open gas is a
+     genuine no-op, which is the same shape as `wireProcessArrows`'s. */
+  function wireAirMix(sec) {
+    var wrap = sec.querySelector("[data-amix]");
+    if (!wrap) { return; }
+    var segs = toArray(wrap.querySelectorAll("[data-amix-gas]"));
+    var outs = toArray(wrap.querySelectorAll("[data-amix-out]"));
+    var target = parseInt(wrap.getAttribute("data-target"), 10) || segs.length;
+    if (!segs.length || !outs.length) { return; }
+
+    /* The opening selection is in the HTML, not in this file. */
+    var cur = segs[0].getAttribute("data-amix-gas");
+    for (var i = 0; i < segs.length; i += 1) {
+      if (segs[i].getAttribute("aria-pressed") === "true") {
+        cur = segs[i].getAttribute("data-amix-gas");
+        break;
+      }
+    }
+    var seen = {}, seenN = 1;
+    seen[cur] = 1;
+
+    each(segs, function (btn) {
+      btn.addEventListener("click", function () {
+        var v = btn.getAttribute("data-amix-gas");
+        if (v === cur) { return; }                 /* the no-op press */
+        cur = v;
+        each(segs, function (b) {
+          b.setAttribute("aria-pressed",
+                         b.getAttribute("data-amix-gas") === v
+                           ? "true" : "false");
+        });
+        each(outs, function (o) {
+          setHidden(o, o.getAttribute("data-amix-out") !== v);
+        });
+        if (!seen[v]) { seen[v] = 1; seenN += 1; setCount(sec, seenN); }
+        if (seenN >= target) { markStage(sec, true); }
+      });
+    });
+    setCount(sec, seenN);
+  }
+
+  /* ── atmos-history (c10-05 #s-history) ───────────────────────────────
+     A STEPPER, and the only one in C10. Five stages are in the document from
+     the moment the page loads with their explanations hidden; each press
+     unhides the next one in order, and the closing panel opens once the set
+     is exhausted.
+
+     ⚖️ NOTHING IS COMPOSED HERE. The button's three labels are AUTHORED and
+     ride on the button as `data-l-first`, `data-l-next` and `data-l-done`;
+     this chooses between them. It never builds a sentence and never counts
+     anything the build has not already counted — `data-total` is the size of
+     the set and `setCount` is the shell's own readout.
+
+     ⚠️ THE BUTTON IS NEVER DISABLED — MRB-257, the same ruling as
+     `wireDepthEvidence`, `wireRockBench` and `wireGrainJourney` above and for
+     the same reason: disabling the control a keyboard user is standing on
+     drops them to `<body>`. A press once every stage is open is a genuine
+     no-op, and the label already says so in words.
+
+     `markStage` is one-way (MRB-208). There is no collapse: unrevealing a
+     stage teaches nothing and gives a student a way to lose their place. */
+  function wireAtmosHistory(sec) {
+    var wrap = sec.querySelector("[data-ahist]");
+    if (!wrap) { return; }
+    var steps = toArray(wrap.querySelectorAll("[data-ahist-step]"));
+    var btn = wrap.querySelector("[data-ahist-reveal]");
+    var panel = wrap.querySelector("[data-ahist-panel]");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || steps.length;
+    var target = parseInt(wrap.getAttribute("data-target"), 10) || total;
+    if (!steps.length || !btn) { return; }
+
+    var open = 0;
+
+    function label() {
+      var key = open <= 0 ? "data-l-first"
+        : (open >= total ? "data-l-done" : "data-l-next");
+      var txt = btn.getAttribute(key);
+      if (txt !== null) { btn.textContent = txt; }
+    }
+
+    btn.addEventListener("click", function () {
+      if (open >= total) { return; }               /* the no-op press */
+      var step = steps[open];
+      if (step) {
+        step.setAttribute("data-open", "1");
+        setHidden(step.querySelector("[data-ahist-why]"), false);
+      }
+      open += 1;
+      setCount(sec, open);
+      label();
+      if (open >= total) { setHidden(panel, false); }
+      if (open >= target) { markStage(sec, true); }
+    });
+
+    setCount(sec, open);
+    label();
+  }
 /* ═══ END C10 wiring ═══ */
 
 
@@ -23002,6 +23117,8 @@
     each(root.querySelectorAll("[data-rockbblock]"), wireRockBench);
     each(root.querySelectorAll("[data-grainblock]"), wireGrainJourney);
     each(root.querySelectorAll("[data-parrowblock]"), wireProcessArrows);
+    each(root.querySelectorAll("[data-amixblock]"), wireAirMix);
+    each(root.querySelectorAll("[data-ahistblock]"), wireAtmosHistory);
     // ═══ END C10 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
