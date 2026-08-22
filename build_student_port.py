@@ -240,8 +240,25 @@ PAGES = [
          # empty state for this card, so there is nothing of Design's to
          # carry, and Design's own six-card deck never reaches the branch
          # that reads it. The live source supplies the real sentence.
+         # ⊕ 23 Aug 2026 — PHASE 4. `benchPct` and `benchDoneText` LEAVE THIS
+         # LIST. Both were here for the interim done state's two overrides on
+         # Design's bench line; Design's done bench is drawn now, the open
+         # bench does not render beside it, and those two overrides came off in
+         # the same commit — so nothing reads either key through `MRB_DATA` any
+         # more, and a constant nothing reads cannot go stale loudly.
+         #
+         # FOUR JOIN IT, and all four are FALSE-ISH ON PURPOSE, because the
+         # fixture is Design's own delivery and Design's bench has work still
+         # on it. `benchOpen` true and `benchDone` false is exactly the state
+         # Design drew, so the behaviour gate sees the same page it always saw
+         # and there is no divergence to register. The other three gate parts
+         # of a bench the fixture never reaches; they are here because
+         # `MRB_DATA` THROWS on a missing key and `renderVals` reads all four
+         # unconditionally — a page that mounts is not evidence they were
+         # optional.
          constants=dict(benchPrimaryHref="''", benchDone="false",
-                        benchPct="''", benchDoneText="''",
+                        benchOpen="true", benchDoneMarked="false",
+                        benchDoneLessons="false", benchDoneFeedback="''",
                         cardsEmpty="''")),
     dict(page="assignment", out="assignment.html",
          fixture_out="assignment-fixture.html",
@@ -452,7 +469,60 @@ BINDINGS = {
         # "Revisit the lessons" and "Practise recall" — the second of which
         # Design already drew, sitting right beside this one. So only this
         # label changes, and the bench needs no new markup at all.
+        # ⊕ 23 Aug 2026 — PHASE 4. THE THREE SENTENCES ABOVE ARE THE INTERIM,
+        # AND THEY ARE KEPT RATHER THAN CORRECTED because they are the reason
+        # this binding exists and the reason it now does nothing.
+        #
+        # Design has DRAWN the done bench (donor 101), it is grafted, and the
+        # grid this button lives in no longer renders once the week is
+        # finished. So `benchPrimaryLabel` has exactly one value again —
+        # Design's own — and `student-live.js` supplies that literal rather
+        # than the interim's `Revisit the lesson` / `Practise recall` fork.
+        #
+        # The binding STAYS. It costs one row in a table and it is the seam a
+        # future ruling would need; removing it would mean re-deriving the path
+        # to this node the next time the label has an opinion. What came out is
+        # the fork, not the join.
         ("Open the assignment", "benchPrimaryLabel"),
+        # ── ⊕ 23 Aug 2026 — PHASE 4. DESIGN'S DONE BENCH, DONOR 101 ────────
+        #
+        # Seven values, and every one of them comes out of the student's own
+        # `assignment_submissions` row. Each literal below is Design's amended
+        # sample, and each occurs at EXACTLY ONE path in the port after the
+        # graft — measured, not assumed: none of the seven is a text node in
+        # the live template at all, and the donor's own duplicates (`50%` at
+        # donor 48, `Breathing and gas exchange` at donor 63, `COMPLETED` at
+        # donor 37, `THIS WEEK'S ASSIGNMENT` at donor 82) all sit in the OPEN
+        # branch, which is not grafted.
+        #
+        # ⚠️ `benchDoneTitle` IS A SECOND KEY FOR THE SAME FACT, AND IT HAS TO
+        # BE. The open bench's heading already binds `Cells & microscopy` to
+        # `topicTitle`; Design's done bench draws `Breathing and gas exchange`
+        # in the same slot. `bindings_for` refuses one key claimed by two
+        # different literals — correctly, because a key IS its value and the
+        # fixture would then render whichever literal was registered last in a
+        # place Design drew the other. So the port carries two names for the
+        # topic, each holding its own delivery's sample, and `student-live.js`
+        # fills both from the same `current.assignment.topic`. One fact, one
+        # source, two fixture values, which is what the amendments' whole
+        # sample-data problem looks like whenever it reaches a bound literal.
+        #
+        # ⚠️ `Practise recall` (donor 116) IS NOT BOUND, and that is not an
+        # oversight. It is the same literal as live node 77's own button, it
+        # says the same thing in both places, and it has no data behind it in
+        # either. `recallLabel` above already claims that literal, and binding
+        # a second node to it would be correct but pointless; leaving it is
+        # what Design drew. `THE WEEK'S WORK`, `OPENED · ANSWERED ·
+        # COMPLETED`, `THIS WEEK'S ASSIGNMENT`, `SCORE`, `RIGHT`, `COMPLETED`,
+        # `Revisit this week's lessons` and `Read the feedback` are chrome for
+        # the same reason: they are labels, not values.
+        ("Breathing and gas exchange", "benchDoneTitle"),
+        ("Good week, AY.", "benchDoneLead"),
+        ("3 / 3", "benchDoneSteps"),
+        ("MARKED", "benchDoneFlag"),
+        ("50%", "benchDoneScore"),
+        ("2 of 4", "benchDoneRight"),
+        ("Wed 20 Aug, 19:42", "benchDoneAt"),
         # ⊕ RULED 22 Aug 2026 — ANOTHER "04", AND ANOTHER ONE THE SCREENSHOT
         # FOUND. The "Lessons in this topic" badge is the literal text `04`,
         # sitting above an `sc-for` over the real list. This class's current
@@ -1672,8 +1742,89 @@ def apply_rulings(page, logic, roots, donor=None):
             "(or were pruned out from under it). The ruling stands; re-read "
             "the delivery and re-anchor it." % (page, sorted(want)))
 
+    # ── a live node that has to STOP RENDERING in a state Design draws
+    #    separately ─────────────────────────────────────────────────────
+    #
+    # ⊕ 23 Aug 2026 — PHASE 4. THE SEVENTH MECHANISM, and it exists because
+    # none of the other six can make an EXISTING node conditional.
+    #
+    #   PRUNE      removes a subtree, in every state
+    #   GRAFT      adds one, in every state
+    #   SET_ON     attaches a handler
+    #   SET_ATTR   names a node for CSS and for a gate
+    #   SET_EXPR   renames a loop's list
+    #   BINDINGS   replaces a text node's text (and `drop` can remove the
+    #              element that CARRIES that text, when its value is empty —
+    #              which is a rule about a VALUE, not about a state)
+    #
+    # Design's amended bench has TWO branches — `<if benchOpen>` at donor 59
+    # and `<if benchDone>` at donor 100 — each with its own left column AND its
+    # own docket. The live bench has ONE unconditional grid (node 57) holding
+    # the live left column and the live docket, because when Design drew the
+    # original there was only one bench state. Grafting the done bench beside
+    # it without gating it leaves BOTH on screen: two headings, two dockets,
+    # and `[data-bench-docket]` matching two elements, which is the exact
+    # reading `student_themes.check_docket` refuses.
+    #
+    # ⚠️ AND `drop` COULD NOT DO IT, WHICH WAS CHECKED RATHER THAN ASSUMED.
+    # `drop` removes the element carrying a bound text node when that value is
+    # empty, and it splices from the tree by PATH — so two drops inside one
+    # parent make the second path stale, and the removal that should collapse
+    # a row either throws or removes the wrong sibling depending on the order
+    # they were registered in. A state is not a value, and the mechanism for
+    # one is not the mechanism for the other.
+    #
+    # `{node index: expression}`. The node is REPLACED IN ITS PARENT by an
+    # `<if>` whose single child is the node itself, so the subtree, its
+    # indices, its handlers and its bindings are all untouched — the only
+    # change is that it now renders when the expression is truthy and not
+    # otherwise.
+    #
+    # ⚠️ THE WRAPPER CARRIES NO `i`, AND THAT IS DELIBERATE. `student-runtime`
+    # renders an `<if>` as a branch and never as an element (see `build`), so
+    # it has nothing to hang a `data-dc-tpl` on; and `count_nodes` counts
+    # nodes that HAVE an index, so a wrapper with one would report a node the
+    # page does not contain. It is a branch, not a box.
+    #
+    # ⚠️ IT RUNS LAST, AFTER THE GRAFTS. Two of Phase 4's four entries name
+    # GRAFTED nodes (the done docket's SCORE and RIGHT rows), which do not
+    # exist until the graft has run; and the graft anchored on the live bench
+    # section must not find an `<if>` where it expects the grid. Every index
+    # is asserted present, so an entry that goes stale stops the build rather
+    # than silently leaving a surface on screen in a state it contradicts.
+    wraps = dict(student_rulings.WRAP.get(page, {}))
+    wrapped = [0]
+
+    def enclose(node):
+        if not isinstance(node, dict) or not node.get("c"):
+            return
+        kids = node["c"]
+        for pos, kid in enumerate(kids):
+            if isinstance(kid, dict) and kid.get("i") in wraps:
+                expr = wraps.pop(kid["i"])
+                kids[pos] = {"t": "if", "e": expr, "c": [kid]}
+                wrapped[0] += 1
+            enclose(kid)
+
+    for root in roots:
+        if isinstance(root, dict) and root.get("i") in wraps:
+            raise SystemExit(
+                "build_student_port.py: the PHASE 4 ruling for %r wraps "
+                "template node %s in `<if %s>`, and that node is a template "
+                "ROOT with no parent to hold the wrapper. Wrap something "
+                "further in." % (page, root.get("i"), wraps[root["i"]]))
+        enclose(root)
+    if wraps:
+        raise SystemExit(
+            "build_student_port.py: the PHASE 4 ruling for %r wraps template "
+            "node(s) %s in a conditional, and they are not in the template "
+            "(or the graft that brings them in did not run). Re-anchor them: "
+            "a silently skipped wrap leaves the OPEN bench on screen "
+            "underneath the DONE bench, with two dockets, and the build stays "
+            "green." % (page, sorted(wraps)))
+
     return (logic, roots, len(reps), removed[0], wired[0],
-            grafted[0], attred[0], exprd[0])
+            grafted[0], attred[0], exprd[0], wrapped[0])
 
 
 # ── lifting Design's data out of Design's logic ───────────────────────────
@@ -2843,7 +2994,7 @@ def build():
         # the term label belongs, and it would look like a data bug.
         donor_tpl = tpls.get(DONOR_PAGE)
         (logic, ruled_roots, n_rep, n_pruned, n_wired,
-         n_grafted, n_attred, n_exprd) = apply_rulings(
+         n_grafted, n_attred, n_exprd, n_wrapped) = apply_rulings(
             spec["page"], tpl["logic"], tpl["roots"],
             donor=(donor_tpl or {}).get("roots"))
         ruled_tpl = {"roots": ruled_roots, "imports": tpl["imports"]}
@@ -2942,10 +3093,12 @@ def build():
             print("        ⊕ rulings: %d ruled edit(s) to Design's logic, "
                   "%d template subtree(s) pruned, %d handler(s) attached, "
                   "%d subtree(s) grafted from the amendments, %d node(s) "
-                  "named for the themes, %d loop expression(s) renamed — "
+                  "named for the themes, %d loop expression(s) renamed, "
+                  "%d node(s) made conditional — "
                   "from student_rulings.py, not from a hand edit to the "
                   "built page"
-                  % (n_rep, n_pruned, n_wired, n_grafted, n_attred, n_exprd))
+                  % (n_rep, n_pruned, n_wired, n_grafted, n_attred, n_exprd,
+                     n_wrapped))
         print("     ✅ %-24s %7d bytes  (%d template node(s), "
               "%d chars of Design's logic, 0 bytes of data)"
               % (spec["out"], len(body), count_nodes(roots), len(logic)))

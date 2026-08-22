@@ -165,8 +165,40 @@ SET_ON = {
     # the one that reads first in the file would have left every phone with a
     # picker it could not reach and a gate that never noticed, because the
     # behaviour gate drives at 1460.
+    # ⊕ 23 Aug 2026 — PHASE 4. THE DONE BENCH'S TWO LINKS.
+    #
+    # Design draws both as `<a href="#…">` with no handler at all — the same
+    # shape as node 231's lesson card, and the same defect: on a page with no
+    # element of that id, an unhandled `href="#lessons"` SCROLLS THE PAGE TO
+    # THE TOP, which a student reads as the app ignoring them. This is the
+    # sixth member of the P1/P3/P5/P7 family and the third one found by
+    # reading Design's markup rather than by pressing anything.
+    #
+    #   10113  "Revisit this week's lessons"  → `goLessons`
+    #   10134  "Read the feedback"            → `readFeedback`
+    #
+    # Both handlers `preventDefault` first, exactly as `l.open` does, because
+    # the `href` Design wrote is still on the element and an anchor jump would
+    # otherwise race the handler.
+    #
+    # ⚠️ DESIGN'S OWN `href` NAMES DESIGN'S OWN INTENT, and only one of the two
+    # can be honoured literally. `#lessons` means the lessons panel, and the
+    # live page has one — node 225, "Lessons in this topic" — so `goLessons`
+    # takes the student there. `#work` means the work list, and the work row's
+    # expanded panel carries NO FEEDBACK: `student-live.js` omits `notes` and
+    # `items` deliberately ("nothing in `assignment_submissions` records a
+    # teacher's written feedback, and the per-question breakdown lives in
+    # `assignment_question_attempts`, which this page does not read"). Sending
+    # a control named "Read the feedback" to a panel with no feedback in it is
+    # the defect this family is about, committed in the act of porting a fix
+    # for it. The feedback a student can actually read is on the ASSIGNMENT
+    # page's done screen — `wrongList`, "Where it went wrong", their answer and
+    # the authored explanation beside the right one — which is where
+    # `readFeedback` goes. See the report; the wording is Design's and the
+    # destination is the only one that makes it true.
     "class view": {26: "openAccount", 30: "openAccount",
-                   27: "signOut", 31: "signOut", 231: "l.open"},
+                   27: "signOut", 31: "signOut", 231: "l.open",
+                   10113: "goLessons", 10134: "readFeedback"},
 }
 
 # ── the logic, transformed ───────────────────────────────────────────────
@@ -227,14 +259,99 @@ LOGIC = {
         #
         # `benchDone` is false in the fixture, so both branches below evaluate
         # to Design's own expression and the behaviour gate sees no change.
+        #
+        # ── ⊕ 23 Aug 2026 — PHASE 4. THE INTERIM IS RETIRED, AND ITS TWO
+        #    OVERRIDES ON THIS LINE COME OFF ─────────────────────────────────
+        #
+        # P4's ruling STANDS — a student who has finished the week must not be
+        # shown the open-work bench. What is retired is the way it was
+        # expressed. The interim redressed the OPEN bench in done words; Design
+        # has now DRAWN a done bench, it is grafted above, and the open bench
+        # no longer renders at all once the week is finished (see `WRAP`).
+        #
+        # ⛔ WHAT THIS ENTRY USED TO DO, quoted rather than deleted because it
+        # is a ruling of Mide's and reading it is how the next person knows the
+        # ruling was carried and not dropped:
+        #
+        #     benchPct: MRB_DATA('benchDone') ? MRB_DATA('benchPct')
+        #       : Math.round((doneCount / 3) * 100) + '%',
+        #     benchDoneText: MRB_DATA('benchDone') ? MRB_DATA('benchDoneText')
+        #       : doneCount + ' / 3 DONE',
+        #
+        # Nodes 79 and 81 — the caption and the meter those two feed — live
+        # inside `if hasWork`, inside the grid this file now wraps in
+        # `<if benchOpen>`. So on a finished week they are not on the page, and
+        # both overrides were reaching for a value nothing would draw. Design's
+        # own expressions come back, and in the state they are now the only
+        # state for, they mean exactly what Design meant: how much of the
+        # three-item checklist is ticked.
+        #
+        # `benchPct` and `benchDoneText` therefore stop being read through
+        # `MRB_DATA` at all, and both leave `PAGES[…]["constants"]` and
+        # `student-live.js` in this same commit. A constant nothing reads is a
+        # value that cannot go stale loudly.
+        #
+        # The anchor is Design's own line, unchanged, and it now carries the
+        # five names the grafted done bench resolves out of this scope plus the
+        # two handlers its two links need. They are added HERE rather than
+        # beside `signOut` for one reason: this is the bench's line, and a
+        # future reader looking for why the done bench renders should find it
+        # next to the values that decide whether it does.
         (
             "      benchTasks: benchTasks, benchPct: Math.round((doneCount / 3) * 100) + '%', benchDoneText: doneCount + ' / 3 DONE',",
-            "      benchTasks: benchTasks,\n"
-            "      /* ⊕ RULED 22 Aug 2026 — P4. */\n"
-            "      benchPct: MRB_DATA('benchDone') ? MRB_DATA('benchPct')\n"
-            "        : Math.round((doneCount / 3) * 100) + '%',\n"
-            "      benchDoneText: MRB_DATA('benchDone') ? MRB_DATA('benchDoneText')\n"
-            "        : doneCount + ' / 3 DONE',",
+            "      benchTasks: benchTasks, benchPct: Math.round((doneCount / 3) * 100) + '%', benchDoneText: doneCount + ' / 3 DONE',\n"
+            "      /* ⊕ 23 Aug 2026 — PHASE 4. THE DONE BENCH'S OWN NAMES.\n"
+            "\n"
+            "         Five booleans and two handlers. `benchDone` and `benchOpen`\n"
+            "         are the two branches of the bench and are ONE fact —\n"
+            "         student-live.js emits `benchOpen: !benchDone` — so there is\n"
+            "         no state in which both or neither is on the page. The other\n"
+            "         three gate parts of the done bench that are only true\n"
+            "         sometimes: a mark that has not arrived, a class with no\n"
+            "         lesson pages, an assignment this page cannot link to.\n"
+            "\n"
+            "         ⚠️ EVERY ONE OF THESE NAMES WAS AUDITED AGAINST THE WHOLE\n"
+            "         SCOPE BEFORE IT WAS WRITTEN, and by DRIVING rather than by\n"
+            "         reading — which is how `pips` and `roundDone` were found,\n"
+            "         and how they would have been missed. */\n"
+            "      benchDone: MRB_DATA('benchDone'),\n"
+            "      benchOpen: MRB_DATA('benchOpen'),\n"
+            "      benchDoneMarked: MRB_DATA('benchDoneMarked'),\n"
+            "      benchDoneLessons: MRB_DATA('benchDoneLessons'),\n"
+            "      benchDoneFeedback: MRB_DATA('benchDoneFeedback'),\n"
+            "      /* Design draws this as `<a href=\"#lessons\">` with no handler,\n"
+            "         and on a page with no element of that id an unhandled hash\n"
+            "         link SCROLLS TO THE TOP — the P1/P3/P5/P7 defect again. The\n"
+            "         anchor names the lessons panel, so that is where it goes.\n"
+            "         `tabindex` before `focus` so a keyboard reaches it too; the\n"
+            "         panel is a `<div>` and is not focusable on its own. */\n"
+            "      goLessons: (e) => {\n"
+            "        if (e && e.preventDefault) { e.preventDefault(); }\n"
+            "        const el = document.querySelector('[data-lessons-panel]');\n"
+            "        if (!el) { return; }\n"
+            "        if (el.scrollIntoView) {\n"
+            "          el.scrollIntoView({ behavior: 'smooth', block: 'start' });\n"
+            "        }\n"
+            "        if (el.setAttribute && el.focus) {\n"
+            "          el.setAttribute('tabindex', '-1');\n"
+            "          el.focus({ preventScroll: true });\n"
+            "        }\n"
+            "      },\n"
+            "      /* Design draws this one as `<a href=\"#work\">`, and the work\n"
+            "         list is the one place on this page that has no feedback in\n"
+            "         it: `student-live.js` omits the work rows' `notes` and\n"
+            "         `items` because nothing records a teacher's written comment\n"
+            "         and this page does not read the per-question attempts. The\n"
+            "         feedback a student CAN read is the assignment page's done\n"
+            "         screen — their answer, the authored explanation, and the\n"
+            "         right one beside it — so that is the destination. Empty\n"
+            "         href means no destination, and `WRAP` has already taken the\n"
+            "         link off the page. */\n"
+            "      readFeedback: (e) => {\n"
+            "        if (e && e.preventDefault) { e.preventDefault(); }\n"
+            "        const href = MRB_DATA('benchDoneFeedback');\n"
+            "        if (href) { window.location.href = href; }\n"
+            "      },",
         ),
         # ── ⊕ RULED 22 Aug 2026 — P2. "STREAK BROKEN" BEFORE A STREAK ─────
         # ── ⊕ RETIRED 23 Aug 2026 — PHASE 3. THE SURFACE P2 RULED IS GONE. ──
@@ -1361,52 +1478,33 @@ LOGIC = {
             "    this.setState({ cards: true, account: false, flipped: false, recall: false });\n",
         ),
         # ── ⊕ 23 Aug 2026 — PHASE 3. A DEAD PRIMARY BUTTON, FOUND IN PASSING ──
+        # ── ⊕ RETIRED 23 Aug 2026 — PHASE 4. THE BUTTON IT GUARDED IS GONE. ──
         #
-        # ⚠️ THIS IS LIVE TODAY, and it is not Phase 4's. Ruling P4 gives the
-        # bench's primary button a second job once the week is done, and its
-        # own label says which:
+        # Phase 3 found that a student whose finished work drew on a lesson
+        # this build has no page for got a primary button reading `Practise
+        # recall` with an EMPTY href, and gave it somewhere to go:
         #
-        #     benchPrimaryLabel: benchDone
-        #       ? (benchLessons.length ? 'Revisit the lesson' : 'Practise recall')
-        #       : 'Open the assignment'
-        #     benchPrimaryHref:  benchDone
-        #       ? (benchLessons.length ? benchLessons[0].href : '')
-        #       : (current ? assignmentHref() : '')
+        #     const href = MRB_DATA('benchPrimaryHref');
+        #     if (href) { window.location.href = href; return; }
+        #     if (MRB_DATA('benchDone')) { this.openRecall(); return; }
         #
-        # So a student who finishes work drawn on a lesson this build has NO
-        # PAGE for — a retired slug, or a bank that has moved on — gets a
-        # primary button reading `Practise recall` with an EMPTY href, and P1's
-        # fallback ticks checklist item one. `benchDone` also empties
-        # `benchTasks`, so the checklist is not rendered at all: the tick is
-        # invisible and the press does nothing a student can see. The biggest
-        # control on the page, saying the name of a surface, going nowhere.
+        # ⚠️ THAT GUARD IS NOW A DEFECT RATHER THAN A FIX, and this is the
+        # fourth removal of this phase that would have shipped one with a green
+        # build. Node 74 — the only control that could ever reach it while the
+        # week was done — lives inside the grid `WRAP` now gates on
+        # `benchOpen`, so on a finished week it is not on the page at all.
+        # `openAssignment` still HAS a caller in that state, though: the work
+        # list's own primary, `(w.status === 'open' || w.retake) ?
+        # this.openAssignment : …`. So a student with this week's work finished
+        # and a DIFFERENT row still open would press a button reading `Open the
+        # assignment` and land in the recall round — the guard firing on a
+        # press it was never written for, in the one state it is always true.
         #
-        # It could not be fixed before this phase, because until this phase
-        # there was nothing for it to open that would not have blanked the
-        # page. Now `openRecall` exists and it is one line.
-        #
-        # ⚠️ GUARDED ON `benchDone` AND NOT ON THE EMPTY HREF, and the
-        # difference matters: `benchPrimaryHref` is ALSO empty in the OPEN
-        # state when no assignment is set, and there the label reads `Open the
-        # assignment`. Sending that student to the recall round would be a
-        # second button naming a destination it does not go to — this ruling's
-        # own complaint, committed in the act of fixing it.
-        #
-        # `openRecall` refuses an empty bank, so a class with no rungs presses
-        # a button that still does nothing. That is not this ruling's to fix:
-        # it is P4's done-bench markup, which Phase 4 grafts (donor 101), and
-        # Design draws `Practise recall` there as its own separate control
-        # (donor 116) rather than as the primary.
-        (
-            "    const href = MRB_DATA('benchPrimaryHref');\n"
-            "    if (href) { window.location.href = href; return; }\n",
-            "    const href = MRB_DATA('benchPrimaryHref');\n"
-            "    if (href) { window.location.href = href; return; }\n"
-            "    /* ⊕ 23 Aug 2026 — PHASE 3. The done bench with no lesson page\n"
-            "       labels this button `Practise recall`, and until this phase\n"
-            "       it had nowhere to send them. Now it does. */\n"
-            "    if (MRB_DATA('benchDone')) { this.openRecall(); return; }\n",
-        ),
+        # The line comes out, `openAssignment` goes back to P1's two cases, and
+        # `Practise recall` on a finished week is Design's OWN separate control
+        # on the done bench (donor 116), wired to `openRecall` through
+        # `goRecall` — which is what Phase 3 said would happen when Phase 4
+        # landed, and it did.
         (
             "      ...this.cardVals(),\n",
             "      ...this.cardVals(),\n"
@@ -1660,9 +1758,53 @@ SET_ATTR = {
         10329: {"data-pip-row": "1"},
         10384: {"data-bench-surface": "recall"},
         91:  {"data-bench-docket": "1"},
+        # ⊕ 23 Aug 2026 — PHASE 4. THE DONE BENCH HAS ITS OWN DOCKET, AND IT
+        # TAKES THE SAME NAME AS THE OPEN ONE.
+        #
+        # 10118 is Design's done-bench docket — the paper card carrying the
+        # MARKED chip, SCORE, RIGHT and COMPLETED. It is a DIFFERENT element
+        # from node 91, drawn in a different branch, and Mide's ruling ("the
+        # docket stays paper and ink on all six themes") is about the marking
+        # moment rather than about one node — so it takes the same attribute
+        # and `student_themes.check_docket` holds it to the same reading with
+        # no new selector.
+        #
+        # ⚠️ ONE NAME, NEVER TWO ELEMENTS AT ONCE, AND THAT IS WHY `WRAP`
+        # EXISTS. `check_docket` opens with `one('[data-bench-docket]')`, which
+        # FAILS on any count but exactly 1. The two dockets are mutually
+        # exclusive — node 91 lives inside the grid this file wraps in
+        # `<if benchOpen>`, and 10118 inside Design's `<if benchDone>` — so
+        # precisely one is on the page in either state. Grafting the done bench
+        # without the wrap would have put both there and turned this gate red,
+        # which is the gate doing its job rather than a reason to rename.
+        #
+        # ⚠️ IT IS NOT PAINTED BY THE BRIDGE, AND IT STILL NEEDS THE NAME.
+        # Measured rather than assumed: Design's done docket references only
+        # `--pg-card`, `--pg-band`, `--pg-rule`, `--pg-muted` and the three
+        # `--pg-ok*` tokens for its own paint — page tokens, fixed on `:root`,
+        # untouched by any `[data-bench-theme]` rule — so no theme token
+        # reaches its background. Its INK is another matter: the three value
+        # spans (10127, 10130, 10133) declare no colour at all and inherit,
+        # and what they inherit from is the design root's `color:var(--st-ink)`
+        # — which the bridge does NOT remap. So the docket is theme-independent
+        # by construction today. The attribute is what makes that a GATED fact
+        # rather than a lucky one: the day somebody adds `--st-ink` to the
+        # bridge's list, or paints the bench a colour, this goes red instead of
+        # shipping a mark a student cannot read.
+        10118: {"data-bench-docket": "1"},
         107: {"data-port-region": "term-spine"},
         118: {"data-page-strong": "legend-done"},
         166: {"data-page-strong": "work-row-done"},
+        # ⊕ 23 Aug 2026 — PHASE 4. A HANDLE FOR THE DONE BENCH'S FIRST LINK.
+        #
+        # 225 is the live page's "Lessons in this topic" panel. Design's done
+        # bench sends `Revisit this week's lessons` to `#lessons`, and this is
+        # the element that anchor means. Named rather than addressed by index
+        # from inside a handler: a `data-dc-tpl` number typed into JavaScript
+        # cannot be asserted by anything and would silently scroll to nowhere
+        # the day Design renumbers the sidebar, whereas `SET_ATTR` stops the
+        # build when the node is not there.
+        225: {"data-lessons-panel": "1"},
         249: {"data-port-region": "leaderboard"},
         260: {"data-bench-surface": "board"},
         266: {"data-bench-avatar": "1"},
@@ -2032,6 +2174,124 @@ GRAFT = {
                  "records, and its one sentence states the 20-of-100 "
                  "apportionment the 21 Aug ruling already removed from the "
                  "leaderboard."),
+
+        # ⊕ 23 Aug 2026 — PHASE 4. THE DONE BENCH.
+        #
+        # Donor 100 is `<if benchDone>`; donor 101 is the surface inside it,
+        # and it is the node Design marks `data-port-region="bench-done"`.
+        # Design's own `data-port-change` on the bench section above it names
+        # this as one of the two amendments to that region: *"C1 bench theme ·
+        # C3 done state"*.
+        #
+        # `at=55, mode="append"` — node 55 is the live bench `<section>`, whose
+        # children are the hatch bar (56) and the grid (57). The done bench
+        # goes LAST, so the two branches sit in Design's own order: open bench
+        # first, done bench second, with the hatch bar above both.
+        #
+        # ⚠️ IT IS THE `<if>` AND NOT THE `<div>`, for the reason the overlay
+        # and the round both record: donor 101 alone is an unconditional flex
+        # row, and grafting it would put a DONE bench under every student's
+        # OPEN bench, permanently. The conditional IS the feature.
+        #
+        # ⚠️ AND THE GRAFT IS ONLY HALF OF IT. Design's amended bench has TWO
+        # branches, each with its own left column AND ITS OWN DOCKET; the live
+        # bench has one unconditional grid holding one of each. Adding the done
+        # branch without gating the open one leaves both on screen — two
+        # headings, two dockets, and `[data-bench-docket]` matching two
+        # elements. The gate on the grid is `WRAP` below, and the two are one
+        # change: this graft is not shippable without it.
+        #
+        # ── NOTHING IS OMITTED, AND THAT WAS CHECKED RATHER THAN ASSUMED ──
+        #
+        # Every one of the eleven values in this subtree has a real source, so
+        # unlike the recall round's THIS WEEK sidebar there is nothing here to
+        # leave out:
+        #
+        #   the eyebrow      "THE WEEK'S WORK" — chrome, no data
+        #   the heading      the assignment's topic, the same value the open
+        #                    bench's heading already binds
+        #   the line         "Good week, <first name>."
+        #   OPENED · ANSWERED · COMPLETED — a milestone count, computed from
+        #                    the submission and the progress block
+        #   the two controls the lessons panel, and the recall round
+        #   THE REWARD SLOT  Design's own note says nothing is drawn. The
+        #                    64px is reserved and it SHIPS EMPTY — a reserved
+        #                    space is a decision, and drawing something in it
+        #                    would be inventing the reward surface it is
+        #                    holding a place for.
+        #   the docket       MARKED / COMPLETE, the score, the marks, and the
+        #                    completion stamp — every one out of the student's
+        #                    own `assignment_submissions` row.
+        dict(at=55, mode="append", donor=100,
+             why="Design's C3 done state for the bench, grafted as the `if "
+                 "benchDone` rather than as the surface inside it, so it "
+                 "exists only for a student whose week is finished. It "
+                 "REPLACES the interim done state, which dressed the OPEN "
+                 "bench in done words through nine `benchDone ?` ternaries in "
+                 "student-live.js — the port must not end up with two done "
+                 "states. The live grid is gated by the `WRAP` below in the "
+                 "same commit; the graft alone would show both at once."),
     ],
     "assignment": [],
+}
+
+
+# ── a live node that has to STOP RENDERING in a state Design draws
+#    separately ────────────────────────────────────────────────────────────
+#
+# ⊕ 23 Aug 2026 — PHASE 4. THE SEVENTH MECHANISM, and it exists because none
+# of the other six can make an EXISTING node conditional. See the long note on
+# `apply_rulings` in build_student_port.py for what each of the six does and
+# why `drop` is not this.
+#
+# `{node index: expression}`. The node is replaced IN ITS PARENT by an `<if>`
+# whose single child is the node itself — same subtree, same indices, same
+# handlers, same bindings, one new branch above it.
+#
+#   57      THE LIVE BENCH GRID. Design's amended bench is two mutually
+#           exclusive branches (`<if benchOpen>` at donor 59, `<if benchDone>`
+#           at donor 100), each with its own left column and its own docket.
+#           The live bench is ONE grid, because when Design drew the original
+#           there was only one bench state. This is the gate that makes the
+#           two exclusive, and it is the half of Phase 4 without which the
+#           graft above ships a page with two dockets on it.
+#
+#           ⚠️ `benchOpen` IS DESIGN'S OWN NAME FOR THIS BRANCH, taken from
+#           donor 59 rather than invented, and it is `!benchDone` in
+#           student-live.js — one fact, one negation, no second opinion about
+#           whether the week is finished. Audited against the live scope
+#           before it was used: the live logic emits `fresh` and `hasWork` and
+#           has never had a `benchOpen`, so this introduces a name rather than
+#           shadowing one. Checked by DRIVING, not by reading — see the run
+#           log; `pips` and `roundDone` were both found the other way.
+#
+#   10125   the done docket's SCORE row
+#   10128   the done docket's RIGHT row
+#
+#           Both are gated on `benchDoneMarked`. A submission with no score
+#           yet is a REAL state — `student-live.js` calls it `pending` and the
+#           docket chip above says COMPLETE rather than MARKED — and a row
+#           reading `SCORE` over a blank is the "empty bordered box" this
+#           build refuses everywhere else. The COMPLETED row and its stamp
+#           stay, because a completion time is a fact the moment the work is
+#           in.
+#
+#   10134   "Read the feedback", gated on `benchDoneFeedback`. There is
+#           feedback to read only when this page knows where the assignment
+#           is; with no destination the link is removed rather than left
+#           pointing at nothing.
+#
+#   10113   "Revisit this week's lessons", gated on `benchDoneLessons`. The
+#           lessons panel is worth going to when there are lessons in it. With
+#           an empty `lessonDefs` the control would scroll a student to a
+#           heading over nothing, so the bench shows `Practise recall` alone.
+WRAP = {
+    "class view": {
+        57: "benchOpen",
+        10113: "benchDoneLessons",
+        10125: "benchDoneMarked",
+        10128: "benchDoneMarked",
+        10134: "benchDoneFeedback",
+    },
+    "assignment": {},
 }

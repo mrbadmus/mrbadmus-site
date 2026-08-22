@@ -1508,6 +1508,49 @@
     var benchLessons = (currentId && lessonsFor[currentId]) || [];
     var benchLate = !!(benchDone && benchCard.due_at && !benchCard.on_time);
 
+    /* ── ⊕ 23 Aug 2026 — PHASE 4. DESIGN'S DONE BENCH, FROM THE REAL ROW ──
+       Every value the grafted done bench shows is derived HERE, from
+       `benchCard` — this student's own `assignment_submissions` row as the
+       data layer returns it — and from the `progress` block the
+       current-assignment endpoint carries. Nothing on that surface is a
+       constant, and nothing is computed twice: `benchCard`, `benchMarked` and
+       `benchLate` are the same three facts the work list two hundred lines
+       below reads for its own `marked` / `score` / `detail`, resolved once,
+       above both readers.
+
+       ⚠️ THE SCORE IS THE SAME PAIR TWICE, AND THAT IS THE POINT. Design draws
+       `SCORE 50%` and `RIGHT 2 of 4` as two rows, and they are two READINGS of
+       `(score, max_score)` — the percentage and the raw marks. Deriving the
+       percentage from anything else would let the docket disagree with itself
+       on the same card. `row.score` in the work list is `Math.round((score /
+       max_score) * 100)` and this is the identical expression, on the identical
+       pair, which is why the bench and the row can never differ. */
+    var benchPct = (benchMarked && benchCard.max_score > 0)
+      ? Math.round((benchCard.score / benchCard.max_score) * 100) : null;
+
+    /* OPENED · ANSWERED · COMPLETED, and it is a count of MILESTONES rather
+       than a drawing. Design's sample says `3 / 3`.
+
+         OPENED     a submission row exists, so it was opened. Certain.
+         ANSWERED   every question has an answer. `progress` carries
+                    `answered` and `total`; where it does not, the submission
+                    itself is the only evidence and it says yes.
+         COMPLETED  `is_submitted`, which is what put this branch on screen.
+
+       A student who completes with blanks therefore reads `2 / 3`, which is
+       true, rather than `3 / 3`, which is Design's sample. */
+    var benchProg = (current && current.progress) || null;
+    var benchAllAnswered = !(benchProg && benchProg.total != null)
+      || benchProg.answered >= benchProg.total;
+    var benchSteps = 2 + (benchAllAnswered ? 1 : 0);
+
+    /* The topic, resolved once for the two headings that show it — the open
+       bench's and the done bench's. Design's two deliveries drew two different
+       sample topics in that slot, so the port carries two bound KEYS; there is
+       still exactly one FACT, and it is this. */
+    var benchTopic = (current && current.assignment)
+      ? (current.assignment.topic || current.assignment.title || "") : "";
+
     /* ── the leaderboard: roster[] and weekPts{} ──────────────────────────
        ⛔ BOTH ARE EMPTY, AND THAT IS THE HONEST ANSWER TODAY.
 
@@ -2114,22 +2157,34 @@
          the countdown beside it went on counting down to a deadline the
          student had already beaten. Once it is done the deadline is not the
          story, so that slot is empty rather than technically-true. */
-      docketFlag: benchDone
-        ? (benchMarked ? "MARKED" : "COMPLETE")
-        : ((benchCard && benchCard.due_at
-            && Date.parse(benchCard.due_at) < serverNow) ? "MISSED" : "OPEN"),
+      /* ⊕ 23 Aug 2026 — PHASE 4. THE `benchDone ?` ARM IS GONE, and the
+         ruling it served is kept by the graft instead: the docket this key
+         feeds is node 91, inside the grid that no longer renders once the week
+         is finished. Design's done bench draws its OWN docket with its own
+         chip — `benchDoneFlag` below — so keeping the arm would have been two
+         answers to one question, in two elements that are never both there.
+         What it used to read:
+
+             benchDone ? (benchMarked ? "MARKED" : "COMPLETE") : …
+
+         and the MARKED / COMPLETE distinction survives verbatim, on the
+         surface Design drew for it. */
+      docketFlag: (benchCard && benchCard.due_at
+                   && Date.parse(benchCard.due_at) < serverNow)
+        ? "MISSED" : "OPEN",
       /* Once the work is done the deadline is not the story, and the slot is
          directly above the answered-progress bar — so it LABELS that bar
          instead, which is the other half of the 22 Aug progress ruling
          ("'5 of 15 answered' and the same as a percentage"). An unlabelled
          full bar was what emptying it left behind, and a graphic with no
          words is not an honest blank. */
-      docketLeft: benchDone
-        ? ((current && current.progress)
-            ? current.progress.answered + " of " + current.progress.total
-              + " answered" : "")
-        : (current && current.assignment
-            ? daysLeft(current.assignment.due_at, serverNow) : ""),
+      /* ⊕ 23 Aug 2026 — PHASE 4. Same removal, same reason: this slot is on
+         the OPEN docket, and once the week is done that docket is not drawn.
+         The finished-week reading it used to carry — "5 of 15 answered" — is
+         now the done bench's OPENED · ANSWERED · COMPLETED row, which says the
+         same thing about the same numbers in the place Design put it. */
+      docketLeft: current && current.assignment
+        ? daysLeft(current.assignment.due_at, serverNow) : "",
 
       /* ⊕ 22 Aug 2026 — the bench checklist. Design's middle item spelled the
          assignment's length out IN WORDS — "Answer the eight questions" — which
@@ -2147,39 +2202,49 @@
          because it is the one line of the three that shows at EVERY width —
          Design puts the paragraph below it inside `sc-if wide`, so a phone
          would otherwise get the score and no acknowledgement at all. */
-      benchLead: benchDone
-        ? ((first ? "Good week, " + first : "Good week")
-           + " · completed " + fmtDay(benchCard.submitted_at)
-           + (benchLate ? " · late" : ""))
-        : (current && current.assignment && current.assignment.due_at
-            ? "On the bench now · due " + fmtDueMixed(current.assignment.due_at)
-            : "On the bench now"),
-      benchBlurb: benchDone
-        ? ((benchMarked
-             ? "You scored " + benchCard.score + " out of "
-               + benchCard.max_score + ". "
-             : "It is with your teacher to mark. ")
-           + (benchLessons.length
-               ? "Go back over the lesson whenever you want, or practise your "
-                 + "recall."
-               : "Practise your recall whenever you want."))
-        : ((currentCount && current && current.assignment
-            && current.assignment.due_at)
-            ? (currentCount + " questions, set from this week's lessons. " +
-               "Open it, answer them, and complete it before " +
-               weekdayName(current.assignment.due_at) + ".")
-            : "Set from this week's lessons. Open it, answer the questions, "
-              + "and complete it."),
+      /* ── ⊕ 23 Aug 2026 — PHASE 4. THE INTERIM DONE STATE COMES OFF ────
+         These two are the OPEN bench's eyebrow and paragraph, and until
+         tonight they carried the done state too. What they used to say when
+         the week was finished:
+
+             "Good week, Ayo · completed SAT 23 AUG · late"
+             "You scored 2 out of 4. Go back over the lesson whenever you
+              want, or practise your recall."
+
+         Both were P4 arranging Design's OPEN bench into a done one, which was
+         the right answer while there was no done bench to draw. There is one
+         now — `benchDoneLead` below is the sentence, the score is in the
+         docket where Design put it, and the two actions are two controls
+         rather than a clause. The arms come off here, in the same commit as
+         the graft, so there is never a build with both.
+
+         ⚠️ AND THE OPEN ARMS ARE UNTOUCHED. Nothing about a student with work
+         still on the bench changes tonight. */
+      benchLead: current && current.assignment && current.assignment.due_at
+        ? "On the bench now · due " + fmtDueMixed(current.assignment.due_at)
+        : "On the bench now",
+      benchBlurb: (currentCount && current && current.assignment
+                   && current.assignment.due_at)
+        ? (currentCount + " questions, set from this week's lessons. " +
+           "Open it, answer them, and complete it before " +
+           weekdayName(current.assignment.due_at) + ".")
+        : "Set from this week's lessons. Open it, answer the questions, "
+          + "and complete it.",
 
       /* W5, in the readings strip. */
       handedLabel: "Completed",
       handedCaption: "OF COMPLETED",
 
       /* ⊕ RULED 22 Aug 2026 — P4. THE CHECKLIST DOES NOT RENDER when the
-         week is done. It is an `sc-for`, and the runtime returns without
-         drawing anything for an empty list, so an empty array IS the ruling —
-         there is no state flag and nothing to keep in step. */
-      benchTasks: benchDone ? [] : [
+         week is done.
+         ⊕ 23 Aug 2026 — PHASE 4, AND IT NO LONGER NEEDS TO SAY SO. The empty
+         array was `benchDone ? [] : […]`; the checklist lives inside the grid
+         that is now gated on `benchOpen`, so on a finished week the whole
+         branch above it is absent and there is no list to empty. The ruling is
+         kept by the structure instead of by a flag — which is what P4's own
+         note asked for: "when Design's redraw is ported it replaces markup,
+         not logic". */
+      benchTasks: [
         { key: "t1", label: "Open it" },
         { key: "t2", label: currentCount
             ? "Answer the " + currentCount + " questions"
@@ -2197,18 +2262,72 @@
          words: the student's part is complete even though the score is not
          in yet. */
       benchDone: benchDone,
-      benchPrimaryLabel: benchDone
-        ? (benchLessons.length ? "Revisit the lesson" : "Practise recall")
-        : "Open the assignment",
-      benchPrimaryHref: benchDone
-        ? (benchLessons.length ? benchLessons[0].href : "")
-        : ((current && current.assignment) ? assignmentHref() : ""),
-      benchPct: benchMarked && benchCard.max_score > 0
-        ? Math.round((benchCard.score / benchCard.max_score) * 100) + "%"
-        : "100%",
-      benchDoneText: benchMarked
-        ? (benchCard.score + " / " + benchCard.max_score + " MARKS")
-        : "NOT MARKED YET",
+      /* ⊕ 23 Aug 2026 — PHASE 4. ONE FACT, ONE NEGATION. Design's amended
+         bench is two branches and names them `benchOpen` and `benchDone`;
+         `build_student_port.py` wraps the live grid in the first and grafts
+         the second beside it. Emitting the negation here rather than writing
+         `!benchDone` into the template is what makes it impossible for the two
+         to disagree — there is no state in which both branches or neither is
+         on the page. */
+      benchOpen: !benchDone,
+
+      /* ── the done bench, from the real submission ─────────────────────
+         ⊕ 23 Aug 2026 — PHASE 4. Design's `bench-done` region, donor 101. The
+         three booleans gate parts of it that are only sometimes true; the rest
+         are the values themselves. Every one is derived above, from
+         `benchCard` and from `progress`, and from nothing else. */
+      benchDoneMarked: benchMarked,
+      benchDoneLessons: benchLessons.length > 0,
+      /* The destination for "Read the feedback", and the flag that decides
+         whether the link is drawn at all — one string doing both jobs, so
+         there is no way to show a link with nowhere to go. It is the
+         ASSIGNMENT page: a returning student with a completed submission lands
+         on its done screen, which is the only surface on the platform that
+         shows their own answer, the authored explanation for it and the right
+         answer beside it. The work list's rows carry none of that — `notes`
+         and `items` are omitted a hundred lines above, because nothing records
+         a teacher's written feedback and this page does not read the
+         per-question attempts. */
+      benchDoneFeedback: (current && current.assignment) ? assignmentHref() : "",
+      benchDoneTitle: benchTopic,
+      benchDoneLead: first ? "Good week, " + first + "." : "Good week.",
+      benchDoneSteps: benchSteps + " / 3",
+      benchDoneFlag: benchMarked ? "MARKED" : "COMPLETE",
+      /* Empty rather than a dash when there is no mark yet: the two rows that
+         hold these are gated on `benchDoneMarked` and are not on the page at
+         all in that state, so an empty string here can never be rendered. */
+      benchDoneScore: benchPct == null ? "" : benchPct + "%",
+      benchDoneRight: benchMarked
+        ? (benchCard.score + " of " + benchCard.max_score) : "",
+      /* The completion stamp, in the docket's own mixed-case shape — the same
+         `fmtDueMixed` the OPEN docket prints its deadline with, so the two
+         dockets speak about time the same way. Lateness rides with it because
+         Design's done bench draws no other slot for it, and a completion time
+         with no note that it was after the deadline is a fact with the
+         interesting half missing. */
+      benchDoneAt: fmtDueMixed(benchCard && benchCard.submitted_at)
+        + (benchLate ? " · late" : ""),
+
+      /* ⊕ 23 Aug 2026 — PHASE 4. ONE VALUE AGAIN, AND IT IS DESIGN'S. The
+         interim forked this label — "Revisit the lesson" / "Practise recall"
+         once the week was done — because the same button had to serve both
+         states. Design's done bench has its own two controls, and the button
+         this names is inside the branch that no longer renders beside them. */
+      benchPrimaryLabel: "Open the assignment",
+      benchPrimaryHref: (current && current.assignment) ? assignmentHref() : "",
+      /* ⊕ 23 Aug 2026 — PHASE 4. `benchPct` and `benchDoneText` are GONE from
+         this object. They filled the open bench's meter and its caption with
+         the MARK once the week was done; that meter is not drawn on a finished
+         week any more, and the ruled override that read them through
+         `MRB_DATA` came off in the same commit, so Design's own expressions
+         (how much of the checklist is ticked) are the only readings left and
+         they are computed in Design's own logic. What they used to say:
+
+             benchPct:      "50%" — the mark, or "100%" unmarked
+             benchDoneText: "2 / 4 MARKS", or "NOT MARKED YET"
+
+         Both facts survive, on the done bench's docket, as `benchDoneScore`
+         and `benchDoneRight`. */
 
       /* COULD NOT SOURCE — nothing anywhere assigns a points value to an
          assignment. `40 POINTS AT STAKE` was a number Design chose for a

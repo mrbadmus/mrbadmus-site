@@ -674,13 +674,28 @@ def check_contrast(case, m):
     return rows, problems, figures
 
 
-def check_bench_text(case, m):
+def check_bench_text(case, m, exceptions=None):
     """7 — every rendered word on the bench clears AA against its real ground.
 
     The assertion the token figures above could not make. See
     `BENCH_TEXT_EXCEPTIONS` for the one registered exception and why it is
     asserted in both directions rather than merely skipped.
+
+    ⊕ 23 Aug 2026 — PHASE 4. `exceptions` is a PARAMETER because the bench has
+    two branches now and they draw different words. The open bench's docket
+    header band does not exist on the DONE bench at all, so running the open
+    bench's registry against the done branch reports every entry in it as a
+    stale registration — this check's loudest failure, and entirely untrue.
+    Two branches, two registries, one function.
+
+    An entry may carry `"cases"`: the theme cases it applies to. Where it is
+    present the entry is REQUIRED on those cases and FORBIDDEN on the rest,
+    which is STRICTER than an unscoped exception rather than looser — on every
+    other theme the same string still has to clear the floor unaided.
     """
+    exceptions = (BENCH_TEXT_EXCEPTIONS if exceptions is None else exceptions)
+    exceptions = [e for e in exceptions
+                  if e.get("cases") is None or case in e["cases"]]
     disp = label_of(case)
     rows, problems = [], []
     b = m["bench"]
@@ -701,7 +716,7 @@ def check_bench_text(case, m):
 
     # Each exception may be spent at most once per case, so a second string at
     # the same colours cannot hide behind the first one's registration.
-    unspent = list(BENCH_TEXT_EXCEPTIONS)
+    unspent = list(exceptions)
     hit = {}
     worst, worst_of, measured = None, None, 0
 
@@ -774,7 +789,7 @@ def check_bench_text(case, m):
                      "PASS", "worst %.2f" % worst))
 
     # ── the registered exceptions, asserted the OTHER way ────────────────
-    for e in BENCH_TEXT_EXCEPTIONS:
+    for e in exceptions:
         got = hit.get(e["name"])
         if got is None:
             rows.append((disp, "exception: %s" % e["name"], "FAIL",
@@ -2446,6 +2461,263 @@ def _prove_round(page):
     return rows, problems
 
 
+# ══════════════════════════════════════════════════════════════════════════
+# ⊕ 23 Aug 2026 — PHASE 4. THE DONE BENCH, WHICH NO OTHER GATE CAN SEE
+# ══════════════════════════════════════════════════════════════════════════
+#
+# Design's amended bench has two branches. Everything above this line measures
+# the OPEN one, because that is the branch Design's fixture data draws: the
+# delivery's sample class has work still on it, `benchDone` is false, and the
+# `<if benchDone>` grafted beside the grid is never entered.
+#
+# ⚠️ AND THE DONE BRANCH HAS ITS OWN DOCKET, so Mide's standing ruling — *the
+# docket stays paper and ink on all six themes* — has a second element to hold
+# and nothing was holding it. `check_docket` is not extended or loosened: it is
+# CALLED AGAIN, against the done bench's own docket and its own absent-case
+# baseline. Two dockets, two baselines, one assertion, and both are `n == 1`
+# because `WRAP` makes the two branches mutually exclusive.
+#
+# ⚠️ THE FLIP IS DATA, NOT A CONTROL, AND THAT IS A LIMIT WORTH STATING. There
+# is no control on the fixture that finishes the week — a student reaches this
+# branch by completing an assignment, which is a database write. So this drives
+# the branch by setting `window.__MRB_DATA__.benchDone` and re-mounting, which
+# is the same page, the same template, the same logic and the same bindings,
+# reached the way the live page reaches it (student-live.js supplies exactly
+# these keys). It is NOT the same as a student pressing something, and no claim
+# here says it is: the live done bench is verified by driving production
+# signed-in, and by nothing in this gate set.
+#
+# The four values below are the fixture's own constants with the booleans
+# turned over — Design's amended delivery draws the done bench MARKED, with
+# lessons and with a feedback link, so this is Design's own drawing rather than
+# a state invented to be measured. The seven BOUND values (the topic, the
+# congratulation, the milestone count, the chip, the score, the marks, the
+# stamp) are untouched: they are Design's literals, and they are what the
+# fixture must keep.
+_DONE_ON = r"""(function(){
+  var d = window.__MRB_DATA__;
+  if (!d) return 'no fixture data on the page';
+  d.benchDone = true;
+  d.benchOpen = false;
+  d.benchDoneMarked = true;
+  d.benchDoneLessons = true;
+  d.benchDoneFeedback = '/student/assignment.html';
+  if (typeof window.__MRB_MOUNT__ !== 'function') return 'no mount hook';
+  window.__MRB_MOUNT__();
+  return 'ok';
+})()
+"""
+
+# The three things about this surface that are NOT colours, read in the same
+# call as the colours so a case is one record.
+#
+#   reward   Design's reserved slot, donor 117. It must be THERE, it must be
+#            64px tall, and it must be EMPTY — Design's own note says nothing
+#            is drawn in it. All three are asserted, because "reserved" fails
+#            in two opposite directions: a slot that was never grafted, and a
+#            slot somebody filled.
+#   open     the OPEN bench's own nodes. `WRAP` is what makes the two branches
+#            exclusive, and a wrap that silently did not apply would leave the
+#            open bench on screen UNDERNEATH the done one with the build green.
+#            Node 57 is the grid; the three strings are the open bench's
+#            eyebrow, its checklist and its primary button.
+#   done     the done bench's own region, so a reading taken before the
+#            re-mount cannot pass as a done-bench reading.
+_DONE_READ = r"""
+(function(){
+  var slot = document.querySelectorAll('[data-port-region="bench-reward-slot"]');
+  var r = null;
+  if (slot.length === 1) {
+    var cs = getComputedStyle(slot[0]);
+    r = {minHeight: cs.minHeight,
+         height: Math.round(slot[0].getBoundingClientRect().height),
+         kids: slot[0].children.length,
+         text: (slot[0].textContent || '').trim()};
+  }
+  // ⚠️ SCOPED TO THE BENCH SECTION, not to the document. `Open the
+  // assignment` is ALSO the work list's own primary button on an open row,
+  // and Design's fixture has one — so a document-wide scan reports the work
+  // list as a second bench. Node 55 is the bench `<section>`; both branches
+  // are inside it and nothing else is.
+  var sect = document.querySelector('[data-dc-tpl="55"]');
+  var body = ((sect || document.body).textContent || '').replace(/\s+/g, ' ');
+  return JSON.stringify({
+    reward: {n: slot.length, m: r},
+    bench: sect ? 1 : 0,
+    openGrid: document.querySelectorAll('[data-dc-tpl="57"]').length,
+    doneRegion: document.querySelectorAll('[data-port-region="bench-done"]').length,
+    openWords: ['On the bench now', 'Open it', 'Open the assignment']
+      .filter(function(w){ return body.indexOf(w) >= 0; })
+  });
+})()
+"""
+
+
+# ── the done bench's own text registrations ──────────────────────────────
+#
+# ⊕ 23 Aug 2026 — PHASE 4. TWO STRINGS, ONE THEME, AND IT IS THE SECOND TIME
+# THIS EXACT TOKEN PAIR HAS COME UP 0.06 SHORT.
+#
+# Design's done bench draws its milestone row as `background:var(--b-inset)`
+# with `color:var(--b-muted)` (donor 106/110/111). On five themes that is
+# comfortable. On CHALK — the one light theme — `--b-muted` #6A5C4C on
+# `--b-inset` #E5D4B6 measures **4.44:1** against a floor of 4.5.
+#
+# ⚠️ IT IS DESIGN'S OWN PAIR, ON DESIGN'S OWN ELEMENT, AND IT IS THE SAME PAIR
+# PHASE 3 FOUND. That phase measured the recall round's option letter chips at
+# the identical 4.44 on the identical theme, registered them with the ratio
+# pinned, and put it on the report as *"0.06 from the line, on one theme of
+# six, and it is Design's to move"*. Nothing about the arithmetic has changed;
+# what HAS changed is what is painted in it. Phase 3 could say *"nothing a
+# student must READ is affected — the option's own text on the same card is
+# 12.93:1"*. That is NOT true here: this row's entire content is these two
+# strings, and a student on chalk reading how much of their week is done is
+# reading exactly this. ⚑ It is on the report for Mide as a second instance
+# with a worse consequence, and it is registered rather than repainted because
+# repainting it is changing a colour Design chose on a surface Design drew,
+# which is Design's call and not a port's.
+#
+# ⚠️ SCOPED TO CHALK, WHICH IS STRICTER THAN NOT SCOPING IT. `"cases"` makes
+# each entry REQUIRED on chalk and FORBIDDEN everywhere else, so the same two
+# strings still have to clear 4.5 unaided on the other six cases — and if
+# Design darkens `--b-muted` on chalk, these go red as stale and come out.
+#
+# ⚠️ TWO ENTRIES AND NOT ONE, because an exception is spent at most once per
+# case. The row holds two text leaves at the same pair — the labels and the
+# count — and one registration would excuse the first while failing the
+# second, which is the behaviour that stops a blanket exemption forming.
+DONE_BENCH_TEXT_EXCEPTIONS = [
+    {
+        "name": "the done bench's milestone labels (chalk)",
+        # ⚠️ THE REGISTERED TEXT IS THE COLLAPSED FORM, and that is not a
+        # transcription slip. Design types this row with NON-BREAKING spaces
+        # around its separators (`OPENED \u00a0·\u00a0 ANSWERED …`), and the
+        # sweep normalises every leaf with `replace(/\s+/g, ' ')` — which in
+        # JavaScript matches U+00A0. So what the comparison sees, and what has
+        # to be written here, is the ordinary-space form.
+        "text": "OPENED · ANSWERED · COMPLETED",
+        "fg": "#6A5C4C",
+        "bg": "#E5D4B6",
+        "ratio": 4.44,
+        "tol": 0.06,
+        "cases": ["chalk"],
+        "why": "Design's own --b-muted on Design's own --b-inset, on the one "
+               "light theme. The same pair and the same 4.44 the recall "
+               "round's option chips were registered at in Phase 3; it is "
+               "Design's to move, and it is on the report as a second "
+               "instance.",
+    },
+    {
+        "name": "the done bench's milestone count (chalk)",
+        "text": "3 / 3",
+        "fg": "#6A5C4C",
+        "bg": "#E5D4B6",
+        "ratio": 4.44,
+        "tol": 0.06,
+        "cases": ["chalk"],
+        "why": "The same row's figure, at the same pair. Registered "
+               "separately because an exception is spent once per case and a "
+               "single entry would silently excuse whichever leaf was walked "
+               "first.",
+    },
+]
+
+
+def _done_bench(page, url):
+    """Every theme case, with the fixture driven into Design's DONE bench."""
+    import json
+    out = {}
+    page.goto(url)
+    time.sleep(2.6)
+    flip = page.eval(_DONE_ON)
+    for case in CASES:
+        _select(page, case)
+        m = _measure(page)
+        m["done"] = json.loads(page.eval(_DONE_READ))
+        m["flip"] = flip
+        out[case] = m
+    return out
+
+
+def check_done_bench(case, m):
+    """The done bench's reserved slot, and the proof there is only one bench."""
+    disp = label_of(case)
+    rows, problems = [], []
+    if m.get("flip") != "ok":
+        rows.append((disp, "the done bench is on screen", "FAIL",
+                     str(m.get("flip"))))
+        problems.append(
+            "%s — the fixture could not be driven into the done bench (%r). "
+            "Every done-bench row in this run is therefore about the OPEN "
+            "bench and none of them mean what they say."
+            % (disp, m.get("flip")))
+        return rows, problems
+
+    d = m.get("done") or {}
+    if d.get("doneRegion") != 1:
+        rows.append((disp, "the done bench is on screen", "FAIL",
+                     "%d bench-done region(s)" % d.get("doneRegion", 0)))
+        problems.append(
+            "%s — [data-port-region=\"bench-done\"] matched %d elements, not "
+            "1. Design's C3 done state is either not grafted or grafted twice."
+            % (disp, d.get("doneRegion", 0)))
+        return rows, problems
+    rows.append((disp, "the done bench is on screen", "PASS", "1 region"))
+
+    # ── only ONE done state ──────────────────────────────────────────────
+    strays = d.get("openWords") or []
+    if d.get("openGrid") or strays:
+        rows.append((disp, "only one bench is drawn", "FAIL",
+                     "grid=%s words=%s" % (d.get("openGrid"), strays)))
+        problems.append(
+            "%s — the OPEN bench is still on the page underneath the DONE "
+            "bench: %d copy of template node 57, and the open bench's own "
+            "words still readable (%s). `WRAP` did not apply, or something "
+            "put `benchOpen` back. Two benches means two dockets, two "
+            "headings, and a student told to open work they have finished."
+            % (disp, d.get("openGrid", 0), ", ".join(strays) or "none"))
+    else:
+        rows.append((disp, "only one bench is drawn", "PASS",
+                     "no open-bench node or word"))
+
+    # ── the reward slot: present, 64px, and EMPTY ────────────────────────
+    rw = d.get("reward") or {}
+    if rw.get("n") != 1 or not rw.get("m"):
+        rows.append((disp, "the reward slot is reserved", "FAIL",
+                     "%d slot(s)" % rw.get("n", 0)))
+        problems.append(
+            "%s — Design's reserved reward slot (donor 117, "
+            "data-port-note=\"reserved for the score-gated reward surface — "
+            "nothing drawn\") matched %d elements, not 1. A reserved space "
+            "that is not on the page is a space nobody is holding."
+            % (disp, rw.get("n", 0)))
+        return rows, problems
+    mm = rw["m"]
+    if mm.get("minHeight") != "64px" or mm.get("height", 0) < 64:
+        rows.append((disp, "the reward slot is reserved", "FAIL",
+                     "min-height %s, drawn %spx"
+                     % (mm.get("minHeight"), mm.get("height"))))
+        problems.append(
+            "%s — the reward slot measures min-height %s and %spx tall; "
+            "Design reserves 64px. The slot is holding a place for a surface "
+            "that does not exist yet, and the height IS the reservation."
+            % (disp, mm.get("minHeight"), mm.get("height")))
+    elif mm.get("kids") or mm.get("text"):
+        rows.append((disp, "the reward slot is reserved", "FAIL",
+                     "%d child(ren), %r"
+                     % (mm.get("kids"), (mm.get("text") or "")[:40])))
+        problems.append(
+            "%s — something has been drawn in the reward slot (%d child "
+            "element(s), text %r). Design's own note on that node says "
+            "NOTHING IS DRAWN. Whatever is in there is an invention of the "
+            "score-gated reward surface, not a port of it."
+            % (disp, mm.get("kids"), (mm.get("text") or "")[:60]))
+    else:
+        rows.append((disp, "the reward slot is reserved", "PASS",
+                     "64px, empty"))
+    return rows, problems
+
+
 def run(cdp):
     rows, problems, figures = [], [], []
     server, port = cdp.serve(SITE)
@@ -2516,8 +2788,30 @@ def run(cdp):
             r, p_ = check_round_themes(rt)
             rows.extend(r)
             problems.extend(p_)
+
+            # ⊕ 23 Aug 2026 — PHASE 4. THE DONE BENCH, on all seven cases.
+            # LAST, because it leaves the fixture's data mutated: nothing
+            # after it would be reading Design's own state.
+            done = _done_bench(page, url)
     finally:
         server.shutdown()
+
+    # ── the done bench's docket gets its OWN baseline ────────────────────
+    #
+    # NOT the open docket's. Both are paper and ink, and they are not the SAME
+    # paper: the open docket is the live page's `--st-paper` (#FFFDF8, restored
+    # inside the themed bench by the bridge) and Design's done docket is
+    # `--pg-card` (#FFFCF5, Design's own page token and the exact value
+    # Design's README names — *"the docket stays paper #FFFCF5 + ink on every
+    # theme"*). Holding the second to the first's bytes would fail a docket
+    # that is doing precisely what the ruling says. What the ruling asserts is
+    # that the docket DOES NOT MOVE with the theme, and that is what the
+    # absent-case baseline measures, once per docket.
+    done_base = None
+    if done:
+        d0 = done[None]["docket"]
+        if d0.get("n") == 1:
+            done_base = (d0["bg"], d0["color"])
 
     drows, dproblems = check_default(measures)
     rows.extend(drows)
@@ -2546,6 +2840,29 @@ def run(cdp):
         r, p = check_page_chrome(case, m)
         rows.extend(r)
         problems.extend(p)
+
+        # ⊕ 23 Aug 2026 — PHASE 4. And the same page with the week FINISHED.
+        # The docket check is the SAME FUNCTION against the same ruling, on
+        # the other branch's docket; the text sweep and the chrome sweep are
+        # the same two, over words and elements no other reading in this file
+        # has ever seen.
+        dm = (done or {}).get(case)
+        if dm is not None:
+            r, p = check_done_bench(case, dm)
+            rows.extend(r)
+            problems.extend(p)
+            r, p = check_docket(case, dm, done_base)
+            rows.extend(("done bench · " + a0, b0, c0, d0_)
+                        for a0, b0, c0, d0_ in r)
+            problems.extend("done bench — " + x for x in p)
+            r, p = check_bench_text(case, dm, DONE_BENCH_TEXT_EXCEPTIONS)
+            rows.extend(("done bench · " + a0, b0, c0, d0_)
+                        for a0, b0, c0, d0_ in r)
+            problems.extend("done bench — " + x for x in p)
+            r, p = check_page_chrome(case, dm)
+            rows.extend(("done bench · " + a0, b0, c0, d0_)
+                        for a0, b0, c0, d0_ in r)
+            problems.extend("done bench — " + x for x in p)
 
     # The 18 — six named themes × three tokens — measured against Design's own
     # stated arithmetic. NOT a gate: a row here says the README is out, and the
@@ -2623,6 +2940,20 @@ def main():
           "registered survivor(s) — each asserted still present."
           % (PAGE_STRONG, sum(PAGE_STRONG_MARKS.values()),
              PAGE_STRONG_RATIO, len(PAGE_CHROME_EXCEPTIONS)))
+    # ⊕ 23 Aug 2026 — PHASE 4. Said out loud, because a summary that describes
+    # the OPEN bench while the file also measures the DONE one is a gate
+    # claiming less than it does, and the next reader would add the coverage
+    # twice.
+    print("        And the DONE BENCH, which the fixture's own data never "
+          "reaches: driven into `benchDone` and measured on all seven cases "
+          "— Design's C3 region present exactly once, the OPEN bench gone "
+          "from the page rather than hidden under it, the reserved reward "
+          "slot 64px and EMPTY as Design's note requires, and the done "
+          "bench's OWN docket paper-and-ink and byte-identical on every "
+          "theme against its own baseline. Every word in it clears AA %.1f "
+          "on all seven, with %d registered exception(s) — Design's "
+          "--b-muted on --b-inset, chalk only."
+          % (AA, len(DONE_BENCH_TEXT_EXCEPTIONS)))
     return 0
 
 
