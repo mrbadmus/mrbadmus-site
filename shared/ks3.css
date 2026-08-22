@@ -22461,3 +22461,840 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 .ks3-specb [hidden] { display: none; }
 
 /* ═══ END C9 ═══ */
+
+/* ═══ BEGIN C10 ══════════════════════════════════════════════════════════
+   C10's instrument styling — *The Earth and its atmosphere*. A PURE APPEND at
+   EOF — every byte above this marker is unchanged, which is the one conflict
+   shape that resolves mechanically when another lane merges.
+
+   ⚠️ WAVE 5. Nine families are here: c10-04's `material-loop` (`#s-loop`)
+   and `stock-limits` (`#s-stock`), c10-01's `earth-layers` (`#s-layers`) and
+   `depth-evidence` (`#s-evidence`), c10-02's `rock-bench` (`#s-bench`),
+   c10-03's `grain-journey` (`#s-journey`) and `process-arrows`
+   (`#s-processes`), and c10-05's `air-mix` (`#s-mix`) and `atmos-history`
+   (`#s-history`). The unit's other two families are listed in
+   `ks3_art/c10.py` and their rules land with their lessons, inside this same
+   marked block.
+
+   ⚠️ `#s-loop` IS THE UNIT'S ONE INK-DARK INSTRUMENT — `ks3-block ks3-dark`
+   in Design's file, built as `ks3-block ks3-dark ks3-practical` (the ruling
+   is in `ks3_art/c10.py`). `.ks3-dark p` is (0,1,1) and a bare component
+   class is (0,1,0), so an unscoped colour rule on this bench LOSES and loses
+   SILENTLY: `--ks3-on-dark-body` at #E7DECE would paint over every readout on
+   the panel. EVERY rule below is self-scoped at (0,2,0) — `.ks3-mloop
+   .ks3-mloop-mass`, never a bare `.ks3-mloop-mass`.
+
+   ⚠️ `--ks3-ember` DOES NOT EXIST, and neither does any other on-dark accent
+   token in the KS3 family. NOTES-C10's closing note records it: the name
+   people reach for is `--st-ember`, which belongs to the studio surface, and
+   an undefined custom property is DROPPED — the declaration vanishes, the
+   element inherits, contrast stays fine and no gate trips. The mono labels on
+   this bench are `--ks3-on-dark-muted`, which is the same token the stat
+   labels under them use.
+
+   ⚠️ `--ks3-data` IS NOT SPENT HERE. It is an ON-INK token (the C3 ruling) and
+   the one ink block in this unit reads its numbers in `--ks3-on-dark` at
+   display weight, which is what Design drew. `--ks3-ok` is used ONLY as a bar
+   FILL, never as `color:` on text, which is the split `shared/tokens.css`
+   spells out at the token itself.
+
+   ⚠️ THE BAR TRACK IS `rgba(0,0,0,.25)` WITH AN INSET WHITE HAIRLINE — the
+   same fix applied to the b7/b8 oxygen readouts. Without the hairline the
+   empty part of a bar disappears into the panel and a 4% bar reads as no bar
+   at all, which on this bench is the difference between "almost nothing came
+   back" and "the instrument is broken".
+
+   ⚠️ SELECTION AND CATEGORY STATE USES THE HOUSE `.ks3-seg-btn`, unchanged.
+   On ink that is `--ks3-alert` with ink text (MRB-242), not the `--ks3-accent`
+   pair Design drew here; the reasoning is in `ks3_art/c10.py`. Every button
+   also carries `aria-pressed` and a WORD, so colour is never the only channel.
+   ═══ */
+
+.ks3-mloop-block,
+.ks3-stock-block { --c10-gap: 12px; }
+
+/* ── c10-04 · material-loop (ON INK) ───────────────────────────────────── */
+.ks3-mloop .ks3-mloop-glabel {
+  margin: 22px 0 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-mloop .ks3-mloop-group {
+  margin-top: 10px; display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-mloop .ks3-mloop-hint {
+  margin: 14px 0 0; font-size: 16px; line-height: 1.5;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-mloop .ks3-mloop-readout { margin-top: 24px; }
+.ks3-mloop .ks3-mloop-panel {
+  padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+}
+.ks3-mloop .ks3-mloop-name {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; line-height: 1.25; color: var(--ks3-on-dark);
+}
+.ks3-mloop .ks3-mloop-what {
+  margin: 6px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-mloop .ks3-mloop-bars {
+  list-style: none; margin: 20px 0 0; padding: 0;
+  display: flex; flex-direction: column; gap: 11px;
+}
+.ks3-mloop .ks3-mloop-bar {
+  display: flex; align-items: center; gap: 14px;
+}
+.ks3-mloop .ks3-mloop-blabel {
+  flex: 0 0 78px; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+/* CONTAINMENT, NOT CLIPPING: the fill is a child of the track and the track
+   owns the radius, so a 100% bar cannot spill a square corner past it. */
+.ks3-mloop .ks3-mloop-track {
+  flex: 1 1 auto; min-width: 0; height: 18px; border-radius: 99px;
+  background: rgba(0, 0, 0, .25);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
+  overflow: hidden;
+}
+.ks3-mloop .ks3-mloop-fill {
+  display: block; height: 100%; background: var(--ks3-ok);
+}
+.ks3-mloop .ks3-mloop-mass {
+  flex: 0 0 84px; text-align: right; font-family: var(--ks3-font-mono);
+  font-size: 15px; font-weight: 500; color: var(--ks3-on-dark);
+}
+.ks3-mloop .ks3-mloop-stats {
+  margin-top: 22px; display: flex; gap: 14px 26px; flex-wrap: wrap;
+}
+.ks3-mloop .ks3-mloop-stat { flex: 1 1 12rem; min-width: 0; }
+.ks3-mloop .ks3-mloop-slabel {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 12px;
+  font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-mloop .ks3-mloop-svalue {
+  margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 27px; line-height: 1.15; color: var(--ks3-on-dark);
+}
+.ks3-mloop .ks3-mloop-snote {
+  margin: 3px 0 0; font-size: 15px; line-height: 1.5;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-mloop .ks3-mloop-verdict {
+  margin: 20px 0 0; font-size: 20px; line-height: 1.55; font-weight: 600;
+  color: var(--ks3-on-dark);
+}
+.ks3-mloop [hidden] { display: none; }
+
+/* At 360px the label + mass columns take 162px of a 300px row and the track
+   collapses to a stub, so the two fixed columns give ground rather than the
+   thing the bench is for. */
+@media (max-width: 30rem) {
+  .ks3-mloop .ks3-mloop-bar { gap: 10px; }
+  .ks3-mloop .ks3-mloop-blabel { flex: 0 0 58px; font-size: 12px; }
+  .ks3-mloop .ks3-mloop-mass { flex: 0 0 66px; font-size: 14px; }
+  .ks3-mloop .ks3-mloop-svalue { font-size: 24px; }
+}
+
+/* ── c10-04 · stock-limits (light) ─────────────────────────────────────── */
+.ks3-stock .ks3-stock-shelf {
+  margin-top: 18px; display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-stock .ks3-stock-readout {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-stock .ks3-stock-name {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 24px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-stock .ks3-stock-use {
+  margin: 10px 0 0; font-size: 18px; line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+.ks3-stock .ks3-stock-row {
+  margin: 12px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink);
+}
+.ks3-stock [hidden] { display: none; }
+
+/* ── c10-01 · earth-layers (light) ─────────────────────────────────────
+   ⚠️ THE BAR IS THE ARGUMENT. `flex-grow` is written inline by
+   `ks3_art/c10.py` as the layer's share of the distance to the centre, so
+   nothing in here may set `flex` on a segment — a rule that did would
+   silently overwrite the one number the instrument exists to draw.
+
+   ⚠️ `min-width` IS THE ONE DELIBERATE DISTORTION, and only the thinnest
+   layer ever meets it: half of one per cent of a phone screen is under four
+   pixels and is not a tappable target (44px is the guidance; 34 is the floor
+   at which a vertical mono label is still readable inside a 96px-tall bar).
+   The scale panel states the true share as a derived number and says the bar
+   draws it wider, which is why `r_earth_layers` REFUSES a scale panel that
+   does not name `{thin_share}`. */
+.ks3-elay .ks3-elay-bar {
+  margin: 22px 0 0; display: flex; height: 96px; gap: 3px;
+}
+.ks3-elay .ks3-elay-seg {
+  font: inherit; flex-basis: 0; flex-shrink: 1; min-width: 34px;
+  display: grid; place-items: center; padding: 6px 2px; border-radius: 10px;
+  cursor: pointer; border: 2px solid var(--ks3-ink);
+  background: var(--ks3-card); color: var(--ks3-ink);
+}
+.ks3-elay .ks3-elay-liquid { background: var(--ks3-band); }
+.ks3-elay .ks3-elay-seg[aria-pressed="true"] {
+  border-color: var(--ks3-accent); background: var(--ks3-accent-tint);
+  box-shadow: 0 0 0 4px var(--ks3-accent-tint);
+}
+.ks3-elay .ks3-elay-slabel {
+  font-family: var(--ks3-font-mono); font-size: 11px; font-weight: 500;
+  letter-spacing: .04em; text-transform: uppercase; color: var(--ks3-ink);
+  writing-mode: vertical-rl; text-orientation: mixed;
+}
+.ks3-elay .ks3-elay-ends {
+  margin-top: 8px; display: flex; justify-content: space-between; gap: 12px;
+}
+.ks3-elay .ks3-elay-end {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 12px;
+  font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-elay .ks3-elay-readout {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-elay .ks3-elay-head {
+  display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap;
+  justify-content: space-between;
+}
+.ks3-elay .ks3-elay-name {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 26px; line-height: 1.2; color: var(--ks3-ink);
+}
+.ks3-elay .ks3-elay-depth {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-elay .ks3-elay-facts {
+  margin-top: 14px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 12px;
+}
+.ks3-elay .ks3-elay-fact {
+  padding: 12px 14px; border-radius: 14px; background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule);
+}
+.ks3-elay .ks3-elay-flabel {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 11px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-elay .ks3-elay-fvalue {
+  margin: 5px 0 0; font-size: 17px; font-weight: 700; line-height: 1.35;
+  color: var(--ks3-ink);
+}
+.ks3-elay .ks3-elay-note {
+  margin: 14px 0 0; font-size: 18px; line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+.ks3-elay .ks3-elay-scale {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band); border: 2px solid var(--ks3-ink);
+}
+.ks3-elay .ks3-elay-stitle {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-elay .ks3-elay-stext {
+  margin: 10px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-ink);
+}
+.ks3-elay [hidden] { display: none; }
+
+/* At 360px a 96px bar leaves the vertical label of a 34px segment clipped
+   against its own padding, so the bar loses height rather than the label
+   losing its word. */
+@media (max-width: 30rem) {
+  .ks3-elay .ks3-elay-bar { height: 84px; gap: 2px; }
+  .ks3-elay .ks3-elay-seg { min-width: 30px; }
+  .ks3-elay .ks3-elay-name { font-size: 22px; }
+  .ks3-elay .ks3-elay-stext { font-size: 18px; }
+}
+
+/* ── c10-01 · depth-evidence (light) ───────────────────────────────────
+   Selection uses the house `.ks3-seg-btn` unchanged. The block is on the
+   card ground, so MRB-242's on-ink correction does not arise here; what does
+   arise is that a spent, unchosen button is `disabled` by `shared/ks3.js`
+   and must still read as text rather than as a smudge. */
+.ks3-edep-block .ks3-edep {
+  margin-top: 18px; display: flex; flex-direction: column; gap: 14px;
+}
+.ks3-edep .ks3-edep-one {
+  padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-edep .ks3-edep-q {
+  margin: 0; font-size: 19px; line-height: 1.55; color: var(--ks3-ink);
+}
+.ks3-edep .ks3-edep-picks {
+  margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-edep .ks3-edep-choice[disabled] { opacity: .55; cursor: default; }
+.ks3-edep .ks3-edep-answer {
+  margin: 12px 0 0; padding: 14px 16px; border-radius: 14px;
+  background: var(--ks3-card); border: 2px solid var(--ks3-rule);
+  font-size: 17px; line-height: 1.55; color: var(--ks3-ink);
+}
+.ks3-edep [hidden] { display: none; }
+
+/* ── c10-02 · rock-bench (light) ───────────────────────────────────────
+   Six sample rows on the card ground, each moving from `--ks3-inset` to
+   `--ks3-card` the moment it is decided — Design's own two-state row, and
+   the ONLY thing on this bench that changes colour. Nothing here is green
+   and nothing here is red: the verdict is a sentence.
+
+   ⚠️ `[data-decided]` IS SET BY `shared/ks3.js` AND BY NOTHING ELSE, and
+   the resting page carries none — six undecided rows and a hidden pattern
+   panel is the on-load state, which is the state the payload models.
+
+   Selection uses the house `.ks3-seg-btn` unchanged. The block is light, so
+   MRB-242's on-ink correction does not arise; what does arise is that a
+   spent, unchosen button is `disabled` and must still read as text rather
+   than as a smudge, which is `depth-evidence`'s rule above at the same
+   opacity. */
+.ks3-rockb .ks3-rockb-note {
+  margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;
+  color: var(--ks3-ink-body);
+}
+.ks3-rockb .ks3-rockb-list {
+  margin-top: 18px; display: flex; flex-direction: column; gap: 12px;
+}
+.ks3-rockb .ks3-rockb-row {
+  padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-rockb .ks3-rockb-row[data-decided] { background: var(--ks3-card); }
+.ks3-rockb .ks3-rockb-head {
+  display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap;
+  justify-content: space-between;
+}
+.ks3-rockb .ks3-rockb-code {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 21px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-rockb .ks3-rockb-found {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-rockb .ks3-rockb-facts {
+  margin: 10px 0 0; padding-left: 20px; display: flex;
+  flex-direction: column; gap: 4px; font-size: 17px; line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+.ks3-rockb .ks3-rockb-picks {
+  margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-rockb .ks3-rockb-pick[disabled] { opacity: .55; cursor: default; }
+.ks3-rockb .ks3-rockb-out {
+  margin-top: 12px; padding: 14px 16px; border-radius: 14px;
+  background: var(--ks3-card); border: 2px solid var(--ks3-rule);
+}
+.ks3-rockb .ks3-rockb-verdict {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 700;
+  font-size: 18px; line-height: 1.35; color: var(--ks3-ink);
+}
+.ks3-rockb .ks3-rockb-why {
+  margin: 7px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+.ks3-rockb .ks3-rockb-pattern {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band); border: 2px solid var(--ks3-ink);
+}
+.ks3-rockb .ks3-rockb-ptitle {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-rockb .ks3-rockb-ptext {
+  margin: 10px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-ink);
+}
+.ks3-rockb [hidden] { display: none; }
+
+/* At 360px three group buttons on one row leave "Sedimentary" and
+   "Metamorphic" each on a line of their own, so the row gives padding
+   rather than the buttons giving their words. */
+@media (max-width: 30rem) {
+  .ks3-rockb .ks3-rockb-row { padding: 16px 15px; }
+  .ks3-rockb .ks3-rockb-code { font-size: 19px; }
+  .ks3-rockb .ks3-rockb-picks { gap: 8px; }
+  .ks3-rockb .ks3-rockb-ptext { font-size: 18px; }
+}
+/* ── c10-03 · grain-journey (light) ────────────────────────────────────
+   A SEQUENCER, and the only one in C10. Seven full-width rows on the card
+   ground; a row that has been placed moves to the accent tint with an accent
+   badge carrying its position. That is Design's own two-state row, and it is
+   the only thing on this block that changes colour — the verdict is a
+   sentence, and nothing here is green or red.
+
+   ⚠️ `[data-placed]` IS SET BY `shared/ks3.js` AND BY NOTHING ELSE, and the
+   resting page carries none: seven live rows, seven empty badges and a hidden
+   panel is the on-load state, which is the state the payload models.
+
+   ⚠️ A PLACED ROW IS LIT, NOT DIMMED, and it is NOT disabled — the ruling and
+   its reason are in `ks3_art/c10.py`. There is deliberately no `[disabled]`
+   opacity rule below, because nothing on this block is ever disabled; adding
+   one would be a style waiting for a state that cannot happen.
+
+   No element here is absolutely positioned and no part of the block scrolls,
+   so the containment rule the sticky rail and the wide tables need does not
+   arise. Recorded rather than assumed. */
+.ks3-grain-block .ks3-grain { margin-top: 18px; }
+.ks3-grain .ks3-grain-list {
+  list-style: none; margin: 0; padding: 0; display: flex;
+  flex-direction: column; gap: 9px;
+}
+.ks3-grain .ks3-grain-step {
+  font: inherit; font-size: 17px; line-height: 1.5; width: 100%;
+  display: flex; gap: 14px; align-items: center; text-align: left;
+  padding: 14px 16px; border-radius: var(--ks3-r-panel); cursor: pointer;
+  border: 2px solid var(--ks3-option-border); background: var(--ks3-card);
+  color: var(--ks3-ink);
+}
+.ks3-grain .ks3-grain-step[data-placed] {
+  border-color: var(--ks3-accent); background: var(--ks3-accent-tint);
+  cursor: default;
+}
+.ks3-grain .ks3-grain-badge {
+  display: grid; place-items: center; width: 30px; height: 30px;
+  flex: 0 0 30px; border-radius: 9px; font-family: var(--ks3-font-mono);
+  font-size: 14px; font-weight: 500; background: var(--ks3-band);
+  color: var(--ks3-ink-ghost);
+}
+.ks3-grain .ks3-grain-step[data-placed] .ks3-grain-badge {
+  background: var(--ks3-accent); color: var(--ks3-on-dark);
+}
+.ks3-grain .ks3-grain-tools {
+  margin-top: 14px; display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-grain .ks3-grain-reset {
+  font: inherit; font-size: 16px; font-weight: 700; padding: 11px 16px;
+  min-height: 44px; border-radius: var(--ks3-r-control); cursor: pointer;
+  border: 2px solid var(--ks3-rule-strong); background: transparent;
+  color: var(--ks3-ink-muted);
+}
+.ks3-grain .ks3-grain-panel {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band); border: 2px solid var(--ks3-ink);
+}
+.ks3-grain .ks3-grain-verdict {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-grain .ks3-grain-answer {
+  margin: 14px 0 0; padding-left: 22px; display: flex;
+  flex-direction: column; gap: 10px; font-size: 18px; line-height: 1.55;
+  color: var(--ks3-ink);
+}
+.ks3-grain .ks3-grain-close {
+  margin: 16px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-ink);
+}
+.ks3-grain [hidden] { display: none; }
+
+/* At 360px a 30px badge plus 14px of gap leaves a seven-word row breaking
+   mid-word against its own padding, so the row gives padding and gap rather
+   than the stage giving its words. */
+@media (max-width: 30rem) {
+  .ks3-grain .ks3-grain-step {
+    padding: 12px 13px; gap: 11px; font-size: 16px;
+  }
+  .ks3-grain .ks3-grain-badge { width: 26px; height: 26px; flex: 0 0 26px; }
+  .ks3-grain .ks3-grain-panel { padding: 18px 17px; }
+  .ks3-grain .ks3-grain-verdict { font-size: 20px; }
+  .ks3-grain .ks3-grain-answer { font-size: 17px; padding-left: 19px; }
+  .ks3-grain .ks3-grain-close { font-size: 18px; }
+}
+
+/* ── c10-03 · process-arrows (light) ───────────────────────────────────
+   Six segmented buttons over one panel, the panel swapping as the buttons do.
+   Selection uses the house `.ks3-seg-btn` unchanged; the block is light, so
+   MRB-242's on-ink correction does not arise, and nothing here is ever
+   disabled, so `depth-evidence`'s spent-button opacity does not arise either.
+
+   ⚠️ THE ROUTE LINE IS A FLEX ROW THAT WRAPS, and the arrow between its two
+   ends is DRAWN as SVG on `currentColor` — the fonts in `shared/fonts/` carry
+   no U+2192, which is why `ks3_art.kit.MARKS` exists. At 360px "any rock, deep
+   and hot enough" and "igneous rock" each take a line and the arrow sits
+   between them; `flex: 0 0 auto` is what stops it being squashed to a stub
+   when they do. */
+.ks3-parrow-block .ks3-parrow { margin-top: 18px; }
+.ks3-parrow .ks3-parrow-picks {
+  display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-parrow .ks3-parrow-panel {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-parrow .ks3-parrow-name {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 24px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-parrow .ks3-parrow-route {
+  margin: 10px 0 0; display: flex; align-items: center; gap: 12px;
+  flex-wrap: wrap; font-family: var(--ks3-font-display); font-weight: 700;
+  font-size: 19px; line-height: 1.3; color: var(--ks3-ink);
+}
+.ks3-parrow .ks3-parrow-arrow { flex: 0 0 auto; }
+.ks3-parrow .ks3-parrow-note {
+  margin: 12px 0 0; font-size: 18px; line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+.ks3-parrow .ks3-parrow-time {
+  margin: 12px 0 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-parrow [hidden] { display: none; }
+
+/* At 360px six buttons wrap to four rows and the panel's display-weight
+   route line is the first thing to overflow, so the panel gives padding and
+   the route line gives leading. */
+@media (max-width: 30rem) {
+  .ks3-parrow .ks3-parrow-panel { padding: 18px 17px; }
+  .ks3-parrow .ks3-parrow-name { font-size: 21px; }
+  .ks3-parrow .ks3-parrow-route { font-size: 18px; gap: 9px; }
+  .ks3-parrow .ks3-parrow-note { font-size: 17px; }
+}
+/* ── c10-05 · air-mix (light) ──────────────────────────────────────────
+   A bar whose segment widths ARE the proportions — `flex-grow` is the gas's
+   own percentage and `flex-basis` is 0 — over one panel that swaps as the
+   segments do. Selection uses this family's own segment treatment rather than
+   the house `.ks3-seg-btn`, because the control IS the drawing: it has to
+   carry a width, and a button that carries a width cannot also carry the
+   house control's padding.
+
+   ⚠️ `min-width` IS THE ONE DELIBERATE DISTORTION ON THIS BLOCK, and it is
+   `c10-01`'s solution reused. Argon is 0.9% of the air and carbon dioxide is
+   0.04%; at any width that leaves nitrogen readable those two are a hairline
+   and a sub-pixel, and neither is a tappable target (44px is the guidance; 34
+   is the floor at which a vertical mono label still fits inside an 88px bar).
+   `r_air_mix` REFUSES a payload whose `scale_note` does not name both the
+   gases the floor affects and their true combined share, so the page cannot
+   exaggerate a proportion without admitting it in the same breath.
+
+   ⚠️ `--ks3-ember` DOES NOT EXIST and neither does any other on-dark accent
+   token. This block is light and does not want one; the note is here because
+   the unit's ink-dark bench is eight hundred lines above and the name is the
+   one people reach for. */
+.ks3-amix-block .ks3-amix { margin-top: 18px; }
+.ks3-amix .ks3-amix-lead {
+  margin: 0; font-size: 19px; line-height: 1.6; max-width: 54ch;
+  color: var(--ks3-ink);
+}
+.ks3-amix .ks3-amix-bar {
+  margin: 22px 0 0; display: flex; height: 88px; gap: 3px;
+}
+.ks3-amix .ks3-amix-seg {
+  font: inherit; flex-basis: 0; flex-shrink: 1; min-width: 34px;
+  display: grid; place-items: center; padding: 6px 2px; border-radius: 10px;
+  cursor: pointer; border: 2px solid var(--ks3-ink);
+  background: var(--ks3-card); color: var(--ks3-ink);
+}
+/* The gas a body actually takes out of a breath. Derived from the payload's
+   `lungs` value, never from a gas name — see `r_air_mix`. */
+.ks3-amix .ks3-amix-used { background: var(--ks3-band); }
+.ks3-amix .ks3-amix-seg[aria-pressed="true"] {
+  border-color: var(--ks3-accent); background: var(--ks3-accent-tint);
+  box-shadow: 0 0 0 4px var(--ks3-accent-tint);
+}
+.ks3-amix .ks3-amix-slabel {
+  font-family: var(--ks3-font-mono); font-size: 11px; font-weight: 500;
+  letter-spacing: .04em; text-transform: uppercase; color: var(--ks3-ink);
+}
+/* Only a segment sitting on the width floor turns its label. Emitted from the
+   same comparison that chooses the floored set, so the geometry and the
+   lettering cannot disagree about which strips are the thin ones. */
+.ks3-amix .ks3-amix-thin .ks3-amix-slabel {
+  writing-mode: vertical-rl; text-orientation: mixed;
+}
+.ks3-amix .ks3-amix-readout {
+  margin-top: 18px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-amix .ks3-amix-head {
+  display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap;
+  justify-content: space-between;
+}
+.ks3-amix .ks3-amix-name {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 26px; line-height: 1.2; color: var(--ks3-ink);
+}
+.ks3-amix .ks3-amix-pct {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 15px;
+  font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+.ks3-amix .ks3-amix-note {
+  margin: 12px 0 0; font-size: 18px; line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+/* The two sentences the block is not allowed to ship without: what the bar
+   exaggerates, and the fact that these are the figures for DRY air. Both sit
+   under the readout, both are always visible, and neither is behind a tap. */
+.ks3-amix .ks3-amix-foot {
+  margin: 14px 0 0; font-size: 17px; line-height: 1.6;
+  color: var(--ks3-ink-muted); max-width: 62ch;
+}
+.ks3-amix [hidden] { display: none; }
+
+/* At 360px an 88px bar leaves the vertical label of a 34px segment clipped
+   against its own padding, so the bar loses height rather than the label
+   losing its word. */
+@media (max-width: 30rem) {
+  .ks3-amix .ks3-amix-bar { height: 80px; gap: 2px; }
+  .ks3-amix .ks3-amix-seg { min-width: 30px; }
+  .ks3-amix .ks3-amix-lead { font-size: 18px; }
+  .ks3-amix .ks3-amix-readout { padding: 18px 17px; }
+  .ks3-amix .ks3-amix-name { font-size: 22px; }
+  .ks3-amix .ks3-amix-note { font-size: 17px; }
+  .ks3-amix .ks3-amix-foot { font-size: 16px; }
+}
+
+/* ── c10-05 · atmos-history (light) ────────────────────────────────────
+   Five stages stacked, each one a closed card until it is revealed. `data-open`
+   is what the runtime sets and what everything visual below hangs on, so the
+   open state is one attribute rather than a class the handler has to remember
+   to add and remove.
+
+   ⚠️ NOTHING HERE IS ABSOLUTELY POSITIONED, so the containment rule does not
+   bite on this block. The date chip is a flex item with a fixed basis, not an
+   overlay, which is what keeps it aligned down the left of a list that wraps.
+
+   The reveal button is styled here rather than taken from `.ks3-seg-btn`
+   because it is not a selection: it has one job, it is never pressed-in, and
+   `aria-pressed` on it would be a lie. It is never disabled either — MRB-257,
+   the ruling recorded in `ks3_art/c10.py`. */
+.ks3-ahist-block .ks3-ahist { margin-top: 18px; }
+.ks3-ahist .ks3-ahist-list {
+  list-style: none; margin: 20px 0 0; padding: 0; display: flex;
+  flex-direction: column; gap: 10px;
+}
+.ks3-ahist .ks3-ahist-step {
+  padding: 16px 18px; border-radius: var(--ks3-r-panel);
+  border: 2px solid var(--ks3-rule); background: var(--ks3-inset);
+}
+.ks3-ahist .ks3-ahist-step[data-open="1"] {
+  border-color: var(--ks3-ink); background: var(--ks3-card);
+}
+.ks3-ahist .ks3-ahist-head {
+  display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap;
+}
+.ks3-ahist .ks3-ahist-when {
+  font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500;
+  letter-spacing: .05em; text-transform: uppercase;
+  color: var(--ks3-accent-text); flex: 0 0 74px;
+}
+.ks3-ahist .ks3-ahist-what {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 700;
+  font-size: 20px; line-height: 1.3; color: var(--ks3-ink);
+}
+.ks3-ahist .ks3-ahist-why {
+  margin: 10px 0 0; font-size: 18px; line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+.ks3-ahist .ks3-ahist-tools {
+  margin-top: 16px; display: flex; gap: 9px; flex-wrap: wrap;
+  align-items: center;
+}
+.ks3-ahist .ks3-ahist-reveal {
+  font: inherit; font-size: 16px; font-weight: 700; padding: 11px 16px;
+  min-height: 44px; border-radius: var(--ks3-r-control); cursor: pointer;
+  border: 2px solid var(--ks3-option-border); background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-ahist .ks3-ahist-panel {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band); border: 2px solid var(--ks3-ink);
+}
+.ks3-ahist .ks3-ahist-ptitle {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-ahist .ks3-ahist-ptext {
+  margin: 10px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-ink);
+}
+.ks3-ahist [hidden] { display: none; }
+
+/* At 360px a 74px date chip and a display-weight headline cannot share a
+   line, so the chip takes the whole row and the headline drops under it —
+   which is what `flex-wrap` was already going to do, given the room. The
+   card gives padding rather than the stage giving its words. */
+@media (max-width: 30rem) {
+  .ks3-ahist .ks3-ahist-step { padding: 14px 15px; }
+  .ks3-ahist .ks3-ahist-head { gap: 6px 14px; }
+  .ks3-ahist .ks3-ahist-what { font-size: 18px; }
+  .ks3-ahist .ks3-ahist-why { font-size: 17px; }
+  .ks3-ahist .ks3-ahist-panel { padding: 18px 17px; }
+  .ks3-ahist .ks3-ahist-ptitle { font-size: 20px; }
+  .ks3-ahist .ks3-ahist-ptext { font-size: 18px; }
+}
+/* ── c10-06 · greenhouse-steps (light) ─────────────────────────────────
+   C10's second stepper, and it takes `atmos-history`'s two-state row rather
+   than a new one: a closed card on `--ks3-inset` that becomes an open card on
+   `--ks3-card`, driven by `data-open` so the open state is one attribute
+   rather than a class the handler has to remember to add and remove. Design
+   draws exactly this on `#s-how` and exactly this on `#s-history`, and two
+   rulesets would be one drift away from disagreeing.
+
+   ⊕ THE ONE THING THAT IS NOT `atmos-history`'s is `.ks3-ghouse-chip` — the
+   mono line derived from what the step declares about direction, band and
+   absorption. It sits UNDER the headline rather than beside it, because it is
+   three facts joined by middots and a 74px flex basis would break it across
+   two lines at any width. It is `--ks3-ink-muted` rather than
+   `--ks3-accent-text`: the date chip on the history block is the timeline and
+   earns the accent; this is a label on a claim the headline already made.
+
+   ⚠️ NOTHING HERE IS ABSOLUTELY POSITIONED, so the containment rule does not
+   bite on this block. Recorded rather than assumed.
+
+   The reveal button is styled here rather than taken from `.ks3-seg-btn`
+   because it is not a selection: it has one job, it is never pressed-in, and
+   `aria-pressed` on it would be a lie. It is never disabled either — MRB-257,
+   the ruling recorded in `ks3_art/c10.py`. */
+.ks3-ghouse-block .ks3-ghouse { margin-top: 18px; }
+.ks3-ghouse .ks3-ghouse-list {
+  list-style: none; margin: 20px 0 0; padding: 0; display: flex;
+  flex-direction: column; gap: 10px;
+}
+.ks3-ghouse .ks3-ghouse-step {
+  padding: 16px 18px; border-radius: var(--ks3-r-panel);
+  border: 2px solid var(--ks3-rule); background: var(--ks3-inset);
+}
+.ks3-ghouse .ks3-ghouse-step[data-open="1"] {
+  border-color: var(--ks3-ink); background: var(--ks3-card);
+}
+.ks3-ghouse .ks3-ghouse-head {
+  display: flex; gap: 14px; align-items: baseline;
+}
+.ks3-ghouse .ks3-ghouse-num {
+  font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500;
+  color: var(--ks3-ink-muted); flex: 0 0 24px;
+}
+.ks3-ghouse .ks3-ghouse-what {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 700;
+  font-size: 20px; line-height: 1.3; color: var(--ks3-ink);
+}
+.ks3-ghouse .ks3-ghouse-chip {
+  margin: 8px 0 0 38px; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-ghouse .ks3-ghouse-why {
+  margin: 10px 0 0 38px; font-size: 18px; line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+.ks3-ghouse .ks3-ghouse-tools {
+  margin-top: 16px; display: flex; gap: 9px; flex-wrap: wrap;
+  align-items: center;
+}
+.ks3-ghouse .ks3-ghouse-reveal {
+  font: inherit; font-size: 16px; font-weight: 700; padding: 11px 16px;
+  min-height: 44px; border-radius: var(--ks3-r-control); cursor: pointer;
+  border: 2px solid var(--ks3-option-border); background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-ghouse .ks3-ghouse-panel {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band); border: 2px solid var(--ks3-ink);
+}
+.ks3-ghouse .ks3-ghouse-ptitle {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-ghouse .ks3-ghouse-ptext {
+  margin: 10px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-ink);
+}
+.ks3-ghouse [hidden] { display: none; }
+
+/* At 360px a 24px number gutter plus a display-weight headline is tight but
+   holds; what does not hold is the 38px indent under it, which leaves the
+   chip and the explanation in a 250px column. Both come back to the card's
+   own left edge, which is what the number was marking anyway. */
+@media (max-width: 30rem) {
+  .ks3-ghouse .ks3-ghouse-step { padding: 14px 15px; }
+  .ks3-ghouse .ks3-ghouse-what { font-size: 18px; }
+  .ks3-ghouse .ks3-ghouse-chip { margin-left: 0; }
+  .ks3-ghouse .ks3-ghouse-why { margin-left: 0; font-size: 17px; }
+  .ks3-ghouse .ks3-ghouse-panel { padding: 18px 17px; }
+  .ks3-ghouse .ks3-ghouse-ptitle { font-size: 20px; }
+  .ks3-ghouse .ks3-ghouse-ptext { font-size: 18px; }
+}
+
+/* ── c10-06 · climate-evidence (light) ─────────────────────────────────
+   `depth-evidence`'s card, plus a tag row and a closing panel. Selection uses
+   the house `.ks3-seg-btn` unchanged; the block is on the card ground, so
+   MRB-242's on-ink correction does not arise. What does arise is that a
+   spent, unchosen button is `disabled` by `shared/ks3.js` and must still read
+   as text rather than as a smudge — the same `.55` opacity `depth-evidence`
+   settled on.
+
+   ⊕ `.ks3-cev-role` IS THE LINE THAT MAKES THE BLOCK AN ARGUMENT — "On its
+   own, this establishes …", derived from the entry's declared role. It is
+   mono and muted and it sits ABOVE the answer prose, because it is the
+   verdict and the paragraph under it is the reasoning. It is inside the
+   `hidden` answer wrapper, so it cannot be read before the student commits.
+
+   ⚠️ NOTHING HERE IS ABSOLUTELY POSITIONED, so the containment rule does not
+   bite on this block either. */
+.ks3-cev-block .ks3-cev {
+  margin-top: 18px; display: flex; flex-direction: column; gap: 14px;
+}
+.ks3-cev .ks3-cev-one {
+  padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-cev .ks3-cev-tag {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-cev .ks3-cev-q {
+  margin: 6px 0 0; font-size: 19px; line-height: 1.55; color: var(--ks3-ink);
+}
+.ks3-cev .ks3-cev-picks {
+  margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-cev .ks3-cev-choice[disabled] { opacity: .55; cursor: default; }
+.ks3-cev .ks3-cev-answer {
+  margin-top: 12px; padding: 14px 16px; border-radius: 14px;
+  background: var(--ks3-card); border: 2px solid var(--ks3-rule);
+}
+.ks3-cev .ks3-cev-role {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .05em; color: var(--ks3-accent-text);
+}
+.ks3-cev .ks3-cev-atext {
+  margin: 8px 0 0; font-size: 17px; line-height: 1.55; color: var(--ks3-ink);
+}
+.ks3-cev .ks3-cev-panel {
+  margin-top: 6px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band); border: 2px solid var(--ks3-ink);
+}
+.ks3-cev .ks3-cev-ptitle {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-cev .ks3-cev-ptext {
+  margin: 10px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-ink);
+}
+.ks3-cev [hidden] { display: none; }
+
+@media (max-width: 30rem) {
+  .ks3-cev .ks3-cev-one { padding: 16px 15px; }
+  .ks3-cev .ks3-cev-q { font-size: 18px; }
+  .ks3-cev .ks3-cev-atext { font-size: 16px; }
+  .ks3-cev .ks3-cev-panel { padding: 18px 17px; }
+  .ks3-cev .ks3-cev-ptitle { font-size: 20px; }
+  .ks3-cev .ks3-cev-ptext { font-size: 18px; }
+}
+/* ═══ END C10 ═══ */

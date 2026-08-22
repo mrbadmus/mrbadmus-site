@@ -451,7 +451,7 @@ def r_model_limit(a, act_id):
     ⚠️ The reveal is UNGATED BY THE ANSWER — it opens on any commitment.
     Commitment, never marking (R3).
     """
-    cards = a.get("cards") or []
+    cards = a.get("panels") or []
     if len(cards) != 2:
         raise ValueError(
             "model-limit %r takes exactly two contrast cards; got %d. The "

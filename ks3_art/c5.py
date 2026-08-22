@@ -454,7 +454,7 @@ def r_fuel_cards(a, act_id):
     HOOKS: see the module header.
     """
     options = a.get("options") or []
-    cards = a.get("cards") or []
+    cards = a.get("fuels") or []
     if len(options) < 2:
         raise ValueError(
             "fuel-cards %r offers %d option(s). The section asks the same "

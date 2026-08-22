@@ -62,12 +62,27 @@ INSTRUMENTS = [
     ("C9", "data-pdeckblock",    "prediction-deck"),
     ("C9", "data-xrouteblock",   "extraction-route"),
     ("C9", "data-specbblock",    "spec-bench"),
+
+    # ── C10 · The Earth and its atmosphere (MRB-282) ──
+    ("C10", "data-elayblock",    "earth-layers"),
+    ("C10", "data-edepblock",    "depth-evidence"),
+    ("C10", "data-rockbblock",   "rock-bench"),
+    ("C10", "data-grainblock",   "grain-journey"),
+    ("C10", "data-parrowblock",  "process-arrows"),
+    ("C10", "data-mloopblock",   "material-loop"),
+    ("C10", "data-stockblock",   "stock-limits"),
+    ("C10", "data-amixblock",    "air-mix"),
+    ("C10", "data-ahistblock",   "atmos-history"),
+    ("C10", "data-ghouseblock",  "greenhouse-steps"),
+    ("C10", "data-cevblock",     "climate-evidence"),
 ]
+
 
 UNIT_DIRS = {
     "C3": "ks3/chemistry/mixtures-and-separation",
     "C8": "ks3/chemistry/the-periodic-table",
     "C9": "ks3/chemistry/metals-and-materials",
+    "C10": "ks3/chemistry/the-earth-and-its-atmosphere",
 }
 
 # Press the first thing inside the block that a student could press. Buttons

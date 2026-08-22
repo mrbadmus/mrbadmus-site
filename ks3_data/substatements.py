@@ -558,6 +558,32 @@ SUBSTATEMENTS = {
               "address alone.", "C8"),
     ],
 
+    # ── C10, minted 22 Aug 2026 (MRB-281) ───────────────────────────────
+    #
+    # The bullet reads "the rock cycle and the formation of igneous,
+    # sedimentary and metamorphic rocks". It carries two ideas that every
+    # scheme of work teaches a week apart, and `structure.py` reserved two
+    # slots for them long before either was authored: `c10-02` makes the three
+    # rock types and `c10-03` runs the cycle. The ruling is recorded in full
+    # in `ks3_data/c10/__init__.py`; these are the rows it said would land
+    # with the lessons.
+    #
+    # ⚠️ BOTH CLAUSES ARE MINTED IN ONE PASS, and only `a` has a lesson today.
+    # Rule 3 is about not big-banging a whole register ahead of any need, not
+    # about splitting one bullet in half twice: a bullet split at `a` alone
+    # would leave the parent partly owned and partly not, which rule 2 is
+    # written to prevent. `b` is registered ahead of `the-rock-cycle` in
+    # exactly the sense `CELL-09`–`12` are registered ahead of their lesson,
+    # and no gate treats an unowned clause as a failure.
+    "KS3.C.EA.03": [
+        ("a", "The formation of igneous, sedimentary and metamorphic rocks: "
+              "the three routes by which rock is made, and the evidence in a "
+              "sample that says which route it took.", "C10"),
+        ("b", "The rock cycle: the processes that carry material from one of "
+              "those three groups into another, and the fact that the route "
+              "has no beginning and no end.", "C10"),
+    ],
+
     "KS3.C.ENER.02": [
         ("a", "Exothermic changes: energy transferred out to the "
               "surroundings, so the temperature of the mixture rises, and the "

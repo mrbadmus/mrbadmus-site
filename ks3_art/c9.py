@@ -437,7 +437,7 @@ def r_prediction_deck(a, act_id):
     `data-pdeck-opt` · `data-pdeck-reveal` · `data-pdeck-close`.
     """
     strip = a.get("strip") or []
-    cards = a.get("cards") or []
+    cards = a.get("proposals") or []
     if len(strip) < 3 or len(cards) < 4:
         raise ValueError(
             "prediction-deck %r has %d strip entr(ies) and %d card(s)."
