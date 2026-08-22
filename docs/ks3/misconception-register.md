@@ -1613,8 +1613,8 @@ Opened by **C10 *The Earth and its atmosphere*** (2026-08-22, drawn by Claude De
 `EARTH-01` to `EARTH-16` are C10's, six lessons, two or three entries each. All are
 `review_state: draft`.
 
-⚠️ **THE RANGE IS ALLOCATED, THE ROWS ARE NOT.** Only `c10-01` and `c10-04` are authored so far,
-so only their seven rows are below. The remaining allocation is written down here so five lanes authoring five
+⚠️ **THE RANGE IS ALLOCATED, THE ROWS ARE NOT.** Only `c10-01`, `c10-02` and `c10-04` are
+authored so far, so only their ten rows are below. The remaining allocation is written down here so five lanes authoring five
 lessons cannot collide on a number: `EARTH-01`–`04` are c10-01's, `05`–`07` c10-02's, `08`–`10`
 c10-03's, `11`–`13` c10-04's, and `14`–`16` are shared between c10-05 and c10-06. **An id appears
 in the table below only when the lesson that references it exists** — registering ahead of
@@ -1633,6 +1633,9 @@ they are left unwritten and the numbering stops at 16. **Do not close the gap.**
 | `EARTH-02` | Nobody has ever been down there, so what is inside the Earth is really only a guess. | `s-hook` | `s-evidence` | `inside-the-earth` |
 | `EARTH-03` | Anything that hot must be melted, so the hottest part of the Earth is liquid. | — | `s-layers` | `inside-the-earth` |
 | `EARTH-04` | The crust is a thick shell, and mines and boreholes have been most of the way through it. | — | `s-layers` | `inside-the-earth` |
+| `EARTH-05` | If a rock has crystals in it, it must be igneous. | `think-commit-crystals` | `think-reveal-crystals` | `three-ways-to-make-a-rock` |
+| `EARTH-06` | Rocks are grouped by what they look like, so two rocks that look alike are the same kind of rock. | `s-hook` | `bench-pattern` | `three-ways-to-make-a-rock` |
+| `EARTH-07` | Metamorphic rock is rock that was melted and then set again as something new. | — | `bench-samples` | `three-ways-to-make-a-rock` |
 | `EARTH-11` | If we recycled everything, we would never run out of anything. | `think-commit-recycling` | `think-reveal-recycling` | `a-planet-with-limits` |
 | `EARTH-12` | How much comes back depends on how carefully people sort their bins. | `loop-bench` | `loop-bench` | `a-planet-with-limits` |
 | `EARTH-13` | “Years left” is a measured fact about how much is in the ground. | — | `s-stock` | `a-planet-with-limits` |
@@ -1670,6 +1673,36 @@ carries a minimum width. A page that exaggerates the crust and says nothing is t
 misconception it has just listed. The scale panel therefore prints the true share as a derived
 number and says the bar is drawn wider than it, and `ks3_art/c10.py` refuses a scale panel that
 does not name that number.
+
+**`EARTH-05` is the belief Design quotes in her own words at `#s-think`, and it is the one a
+student arrives with.** Crystals really do grow when molten rock cools, so the belief is a correct
+observation over-extended into a rule — which is the shape that survives being told it is wrong and
+has to be broken by a counter-example instead. Marble is that counter-example: packed with
+interlocking crystals, and it never melted. The reveal carries `id="think-reveal-crystals"` so
+`confronted_by` names the PANEL where the belief is answered rather than the surrounding section —
+the MRB-277 pattern. What the reveal is careful NOT to say is that crystals mean metamorphic: it
+says crystals narrow the answer to two and no further, because a lesson that replaces one
+one-clue rule with another has taught the same mistake in a new colour.
+
+**`EARTH-06` is elicited by the hook and confronted by the panel the bench opens at the end.** The
+hook puts a granite worktop beside a marble statue — both hard, both shiny, both full of crystals —
+and offers "That it is an igneous rock" as an option a student can pick on the look of the thing.
+It is confronted at `bench-pattern` rather than at the hook's own reveal because by then the
+student has decided six samples themselves, and the panel can say what actually settled each one:
+not colour, not hardness, not weight, but texture, layers, fossils and how the rock breaks. Two of
+the six are the same chemical compound as each other and are in different groups, and neither that
+count nor the size of the set is typed anywhere — `ks3_art/c10.py` derives both from the samples'
+own `compound` values and refuses to build a bench in which the sharers land in one group.
+
+**`EARTH-07` carries no `elicited_by`, deliberately, and that is audit law 15 working rather than a
+hole.** Nothing on `c10-02` asks a student to commit to the belief that metamorphic rock was melted
+and re-set; the bench simply hands them a marble and a slate and says, in the verdict of each, that
+it never melted. Inventing an anchor to fill the column would be the dishonest version, and MRB-248
+makes absence legal precisely so that it need not be invented. The question bank carries the
+elicitation instead, at `c10-02-s02` and `c10-02-h01`. ⚑ This is also the entry that decides the
+whole classification: melt a metamorphic rock and what cools out of it is igneous, which is why
+"without melting" appears in the reference panel, the key fact and the key note and is contradicted
+nowhere.
 
 **`EARTH-11` is the unit's load-bearing entry, and the page breaks it with arithmetic rather than
 with an assertion.** By the time `#s-think` quotes the belief, the student has run 1000 kg round

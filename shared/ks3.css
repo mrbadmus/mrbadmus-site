@@ -22448,10 +22448,11 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    EOF — every byte above this marker is unchanged, which is the one conflict
    shape that resolves mechanically when another lane merges.
 
-   ⚠️ WAVE 1. Only c10-04's two families are here: `material-loop` (`#s-loop`)
-   and `stock-limits` (`#s-stock`). The unit's other nine families are listed
-   in `ks3_art/c10.py` and their rules land with their lessons, inside this
-   same marked block.
+   ⚠️ WAVE 3. Five families are here: c10-04's `material-loop` (`#s-loop`) and
+   `stock-limits` (`#s-stock`), c10-01's `earth-layers` (`#s-layers`) and
+   `depth-evidence` (`#s-evidence`), and c10-02's `rock-bench` (`#s-bench`).
+   The unit's other six families are listed in `ks3_art/c10.py` and their
+   rules land with their lessons, inside this same marked block.
 
    ⚠️ `#s-loop` IS THE UNIT'S ONE INK-DARK INSTRUMENT — `ks3-block ks3-dark`
    in Design's file, built as `ks3-block ks3-dark ks3-practical` (the ruling
@@ -22723,4 +22724,88 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   font-size: 17px; line-height: 1.55; color: var(--ks3-ink);
 }
 .ks3-edep [hidden] { display: none; }
+
+/* ── c10-02 · rock-bench (light) ───────────────────────────────────────
+   Six sample rows on the card ground, each moving from `--ks3-inset` to
+   `--ks3-card` the moment it is decided — Design's own two-state row, and
+   the ONLY thing on this bench that changes colour. Nothing here is green
+   and nothing here is red: the verdict is a sentence.
+
+   ⚠️ `[data-decided]` IS SET BY `shared/ks3.js` AND BY NOTHING ELSE, and
+   the resting page carries none — six undecided rows and a hidden pattern
+   panel is the on-load state, which is the state the payload models.
+
+   Selection uses the house `.ks3-seg-btn` unchanged. The block is light, so
+   MRB-242's on-ink correction does not arise; what does arise is that a
+   spent, unchosen button is `disabled` and must still read as text rather
+   than as a smudge, which is `depth-evidence`'s rule above at the same
+   opacity. */
+.ks3-rockb .ks3-rockb-note {
+  margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;
+  color: var(--ks3-ink-body);
+}
+.ks3-rockb .ks3-rockb-list {
+  margin-top: 18px; display: flex; flex-direction: column; gap: 12px;
+}
+.ks3-rockb .ks3-rockb-row {
+  padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-rockb .ks3-rockb-row[data-decided] { background: var(--ks3-card); }
+.ks3-rockb .ks3-rockb-head {
+  display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap;
+  justify-content: space-between;
+}
+.ks3-rockb .ks3-rockb-code {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 21px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-rockb .ks3-rockb-found {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-rockb .ks3-rockb-facts {
+  margin: 10px 0 0; padding-left: 20px; display: flex;
+  flex-direction: column; gap: 4px; font-size: 17px; line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+.ks3-rockb .ks3-rockb-picks {
+  margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-rockb .ks3-rockb-pick[disabled] { opacity: .55; cursor: default; }
+.ks3-rockb .ks3-rockb-out {
+  margin-top: 12px; padding: 14px 16px; border-radius: 14px;
+  background: var(--ks3-card); border: 2px solid var(--ks3-rule);
+}
+.ks3-rockb .ks3-rockb-verdict {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 700;
+  font-size: 18px; line-height: 1.35; color: var(--ks3-ink);
+}
+.ks3-rockb .ks3-rockb-why {
+  margin: 7px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+.ks3-rockb .ks3-rockb-pattern {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band); border: 2px solid var(--ks3-ink);
+}
+.ks3-rockb .ks3-rockb-ptitle {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-rockb .ks3-rockb-ptext {
+  margin: 10px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-ink);
+}
+.ks3-rockb [hidden] { display: none; }
+
+/* At 360px three group buttons on one row leave "Sedimentary" and
+   "Metamorphic" each on a line of their own, so the row gives padding
+   rather than the buttons giving their words. */
+@media (max-width: 30rem) {
+  .ks3-rockb .ks3-rockb-row { padding: 16px 15px; }
+  .ks3-rockb .ks3-rockb-code { font-size: 19px; }
+  .ks3-rockb .ks3-rockb-picks { gap: 8px; }
+  .ks3-rockb .ks3-rockb-ptext { font-size: 18px; }
+}
 /* ═══ END C10 ═══ */

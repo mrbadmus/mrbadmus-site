@@ -6,25 +6,26 @@ six lessons, ELEVEN instrument families and no drawn figure so far, all DOM,
 no canvas and no animation loop anywhere in the unit.
 
 ═══════════════════════════════════════════════════════════════════════════
-⚠️ WAVE 2 — FOUR FAMILIES IMPLEMENTED, SEVEN STILL TO COME
+⚠️ WAVE 3 — FIVE FAMILIES IMPLEMENTED, SIX STILL TO COME
 ═══════════════════════════════════════════════════════════════════════════
 
-Wave 1 built the unit spine and the reference lesson `c10-04`; wave 2 adds
-`c10-01`. Four families are implemented and only those four are registered:
+Wave 1 built the unit spine and the reference lesson `c10-04`; wave 2 added
+`c10-01`; wave 3 adds `c10-02`. Five families are implemented and only those
+five are registered:
 
     material-loop   ks3-mloop-block   c10-04  #s-loop    ← INK-DARK
     stock-limits    ks3-stock-block   c10-04  #s-stock
     earth-layers    ks3-elay-block    c10-01  #s-layers
     depth-evidence  ks3-edep-block    c10-01  #s-evidence
+    rock-bench      ks3-rockb-block   c10-02  #s-bench
 
-⊖ **THE OTHER SEVEN ARE NOT REGISTERED, AND MUST NOT BE UNTIL THEY EXIST.**
+⊖ **THE OTHER SIX ARE NOT REGISTERED, AND MUST NOT BE UNTIL THEY EXIST.**
 `ks3_art.check_placements` gate 2 fails a family that is registered and never
 placed, and gate 3 fails one that is placed and never registered. A stub row
 added "ready" for a later lane would ship the shell around the generic
 prompt/options branch — the C1 defect (MRB-228) — the moment a lesson named
 it. Each lane registers its own:
 
-    rock-bench        ks3-rockb-block   c10-02  #s-bench
     grain-journey     ks3-grain-block   c10-03  #s-journey
     process-arrows    ks3-parrow-block  c10-03  #s-processes
     air-mix           ks3-amix-block    c10-05  #s-mix
@@ -902,10 +903,253 @@ def r_depth_evidence(a, act_id):
             % (len(entries), target, "".join(cards)))
 
 
+# ═══ c10-02 · rock-bench ═════════════════════════════════════════════════
+
+# Small counts written as words, because the two sentences this instrument
+# derives are prose ("Two of these six...") and "2 of these 6" in the middle of
+# a paragraph reads as a spreadsheet. Nine is more than any bench will hold.
+_ROCKB_WORDS = ("zero", "one", "two", "three", "four", "five",
+                "six", "seven", "eight", "nine")
+
+
+def _rockb_word(n):
+    return _ROCKB_WORDS[n] if 0 <= n < len(_ROCKB_WORDS) else str(n)
+
+
+def r_rock_bench(a, act_id):
+    """⊕ c10-02 `#s-bench` — six samples, three groups, one decision each.
+
+    EIGHTEEN REACHABLE VERDICTS, ALL ENUMERATED (six samples × three groups),
+    every one of them in the document from the moment the page loads and
+    exactly one of them unhidden per decided sample. `shared/ks3.js` chooses
+    which; it composes nothing.
+
+    ⚖️ **THE VERDICT IS TWO TEMPLATES, NOT EIGHTEEN SENTENCES.** The payload
+    authors `verdict_right` and `verdict_wrong` once and this fills `{choice}`
+    and `{answer}` from the group's own label, lower-cased, per branch. A
+    per-panel sentence would let two samples in the same group be marked with
+    different words, which on a classification bench is the page disagreeing
+    with itself about what the group is called.
+
+    ⚖️ **THE "TWO OF THESE SIX" CLAIM IS DERIVED AND CHECKED, NOT TYPED.** The
+    lesson says twice — once over the bench and once in the panel that opens
+    at the end — that two of the samples are the same chemical compound as
+    each other and are in different groups. That is the sentence the whole
+    lesson turns on (marble and limestone are both calcium carbonate), so it
+    is not allowed to be a number an author remembered. Samples carry
+    `compound`; this counts the ones that share theirs with another sample,
+    refuses a payload where none do, and refuses one where the sharers all sit
+    in the SAME group — which would leave both sentences standing over a bench
+    that no longer makes the point.
+
+    ⚖️ **EVERY GROUP MUST BE SOME SAMPLE'S ANSWER.** A button that is never
+    right is MRB-278's defect wearing a bench's clothes: a three-way choice a
+    student can play as a two-way one.
+
+    ⚠️ **THE CHOSEN BUTTON STAYS ENABLED; THE OTHER TWO DO NOT.** Design
+    disables all three the moment one is pressed, which disables the element a
+    keyboard user is standing on and drops them to `<body>` — MRB-257's
+    finding, and `c10-01`'s `depth-evidence` reached it by the same route.
+    Locking the two NOT chosen closes the decision just as firmly and is what
+    her own `seg(on, dis)` draws anyway: a spent button is dimmed only when it
+    is not the one that was pressed.
+
+    Nothing is disabled in the BYTES and nothing is decided in them: the
+    resting page opens with six live rows, a counter at zero and the pattern
+    panel hidden, which is the on-load state modelled rather than assumed.
+
+    HOOKS: `data-rockb` (wrapper, `data-total`, `data-target`) ·
+    `data-rockb-row` · `data-rockb-pick` (valued `sample:group`, with
+    `data-rockb-of`) · `data-rockb-out` (valued `sample:group`) ·
+    `data-rockb-pattern`.
+    """
+    samples = a.get("samples") or []
+    groups = a.get("groups") or []
+
+    if len(samples) < 4:
+        raise ValueError(
+            "rock-bench %r has %d sample(s). The bench's claim is that one "
+            "clue rarely closes a classification, and that needs enough "
+            "samples for the clues to cut across each other."
+            % (act_id, len(samples)))
+    if len(groups) < 3:
+        raise ValueError(
+            "rock-bench %r offers %d group(s). Two is a coin flip, and a "
+            "classification a student can make by tossing a coin measures "
+            "nothing." % (act_id, len(groups)))
+    _unique_ids(samples, act_id, "rock-bench", "sample")
+    _unique_ids(groups, act_id, "rock-bench", "group")
+    _no_correct_flags(samples + groups, act_id, "rock-bench")
+
+    by_group = {}
+    for g in groups:
+        if not g.get("label"):
+            raise ValueError(
+                "rock-bench %r group %r has no label — a blank button."
+                % (act_id, g.get("id")))
+        by_group[g["id"]] = g
+
+    for s in samples:
+        for key in ("code", "found", "why"):
+            if not s.get(key):
+                raise ValueError(
+                    "rock-bench %r sample %r has no %r. The code names the "
+                    "row, the find names where it came from and the why is "
+                    "what the decision buys — a missing one leaves a heading "
+                    "over nothing." % (act_id, s.get("id"), key))
+        facts = s.get("facts") or []
+        if len(facts) < 2:
+            raise ValueError(
+                "rock-bench %r sample %r lists %d observation(s). One "
+                "observation is not evidence a student can weigh; it is a "
+                "label with the answer in it."
+                % (act_id, s["id"], len(facts)))
+        if s.get("answer") not in by_group:
+            raise ValueError(
+                "rock-bench %r sample %r answers %r, which is not a group on "
+                "the bench (%s)."
+                % (act_id, s["id"], s.get("answer"), sorted(by_group)))
+
+    unused = [g["id"] for g in groups
+              if not any(s["answer"] == g["id"] for s in samples)]
+    if unused:
+        raise ValueError(
+            "rock-bench %r offers group(s) %s that no sample belongs to. A "
+            "button that is never the answer turns a %d-way decision into a "
+            "%d-way one, which is MRB-278's defect at a bench."
+            % (act_id, unused, len(groups), len(groups) - len(unused)))
+
+    # ── the shared-compound claim, derived and checked ───────────────────
+    counts = {}
+    for s in samples:
+        if s.get("compound"):
+            counts.setdefault(s["compound"], []).append(s)
+    sharers = [s for c, rows in counts.items() if len(rows) > 1 for s in rows]
+    if not sharers:
+        raise ValueError(
+            "rock-bench %r has no two samples sharing a `compound`. The "
+            "lesson says twice — over the bench and in the panel that opens "
+            "at the end — that two of these are the same compound and are in "
+            "different groups, and neither sentence is authored as a number: "
+            "both are derived from this. A bench with no shared compound "
+            "leaves both sentences standing over a set that cannot support "
+            "them." % act_id)
+    for compound, rows in sorted(counts.items()):
+        if len(rows) > 1 and len({r["answer"] for r in rows}) < 2:
+            raise ValueError(
+                "rock-bench %r puts every sample made of %r in the group %r. "
+                "The whole point of the shared compound is that what a rock "
+                "is MADE OF does not decide its group, and a set that agrees "
+                "with itself teaches the opposite."
+                % (act_id, compound, rows[0]["answer"]))
+
+    # `{N}` is the same derived word with a capital, because both sentences
+    # that quote it OPEN with it. Without it the note ships "two of these six
+    # …" mid-paragraph-cased at the start of its own paragraph, and the only
+    # alternatives are capitalising the whole filled string (which would also
+    # capitalise a slot used mid-sentence) or authoring the number.
+    fills = {"{n}": _rockb_word(len(sharers)),
+             "{N}": _rockb_word(len(sharers)).capitalize(),
+             "{total}": _rockb_word(len(samples))}
+
+    def _fill(text):
+        for k, v in fills.items():
+            text = text.replace(k, v)
+        return text
+
+    note = a.get("shared_note") or ""
+    if note and not (("{n}" in note or "{N}" in note) and "{total}" in note):
+        raise ValueError(
+            "rock-bench %r's shared_note %r names no count slot ({n} or {N}) "
+            "or does not name {total}. Both are facts about the payload "
+            "rather than numbers an author chose, and a sentence that "
+            "hard-codes one of them goes on saying it after the bench has "
+            "changed." % (act_id, note))
+
+    right = a.get("verdict_right") or ""
+    wrong = a.get("verdict_wrong") or ""
+    if "{choice}" not in right:
+        raise ValueError(
+            "rock-bench %r's verdict_right %r never names {choice}. The "
+            "student has just pressed a button and the sentence has to say "
+            "which one." % (act_id, right))
+    if "{answer}" not in wrong:
+        raise ValueError(
+            "rock-bench %r's verdict_wrong %r never names {answer}. A wrong "
+            "decision that is not told what the answer is has been marked and "
+            "not taught." % (act_id, wrong))
+
+    target = int(a.get("samples_to_tick") or 0)
+    if not 2 <= target <= len(samples):
+        raise ValueError(
+            "rock-bench %r ticks its rail stop at %r of %d. Two is the fewest "
+            "that is a pattern and more than the set is a stop that can never "
+            "tick." % (act_id, target, len(samples)))
+
+    panel = a.get("pattern_panel") or {}
+    panel_text = panel.get("text") or []
+    if isinstance(panel_text, str):
+        panel_text = [panel_text]
+    if not panel.get("title") or not panel_text:
+        raise ValueError(
+            "rock-bench %r authors no pattern panel title or text. The panel "
+            "is the payoff of deciding every sample, and an empty one is a "
+            "reward for finishing that says nothing." % act_id)
+
+    # ── the six rows, each carrying all three of its verdicts ────────────
+    rows = []
+    for s in samples:
+        picks = "".join(
+            _c10_seg("ks3-rockb-pick", g["label"], False,
+                     aria_label="%s — %s" % (s["code"], g["label"]),
+                     data_rockb_pick="%s:%s" % (s["id"], g["id"]),
+                     data_rockb_of=s["id"])
+            for g in groups)
+
+        answer_word = by_group[s["answer"]]["label"].lower()
+        outs = "".join(
+            '<div class="ks3-rockb-out" data-rockb-out="%s" hidden>'
+            '<p class="ks3-rockb-verdict">%s</p>'
+            '<p class="ks3-rockb-why">%s</p></div>'
+            % (e("%s:%s" % (s["id"], g["id"])),
+               t((right if g["id"] == s["answer"] else wrong)
+                 .replace("{choice}", g["label"].lower())
+                 .replace("{answer}", answer_word)),
+               rich(s["why"]))
+            for g in groups)
+
+        rows.append(
+            '<div class="ks3-rockb-row" data-rockb-row="%s">'
+            '<div class="ks3-rockb-head">'
+            '<p class="ks3-rockb-code">%s</p>'
+            '<p class="ks3-rockb-found">%s</p></div>'
+            '<ul class="ks3-rockb-facts">%s</ul>'
+            '<div class="ks3-rockb-picks">%s</div>%s</div>'
+            % (e(s["id"]), t(s["code"]), t(s["found"]),
+               "".join("<li>%s</li>" % rich(f) for f in s["facts"]),
+               picks, outs))
+
+    pattern = (
+        '<div class="ks3-rockb-pattern"%s data-rockb-pattern hidden>'
+        '<p class="ks3-rockb-ptitle">%s</p>%s</div>'
+        % ((' id="%s"' % e(a["pattern_anchor"])) if a.get("pattern_anchor")
+           else "",
+           t(panel["title"]),
+           "".join('<p class="ks3-rockb-ptext">%s</p>' % rich(_fill(p))
+                   for p in panel_text)))
+
+    head = ('<p class="ks3-rockb-note">%s</p>' % rich(_fill(note))) if note \
+        else ""
+
+    return ('<div class="ks3-rockb" data-rockb data-total="%d" '
+            'data-target="%d">%s<div class="ks3-rockb-list">%s</div>%s</div>'
+            % (len(samples), target, head, "".join(rows), pattern))
+
+
 # ═══ registration ════════════════════════════════════════════════════════
 #
-# ⚠️ FOUR ROWS, BECAUSE FOUR RENDERERS EXIST. The other seven C10 families
-# are listed in this module's header and are registered by their own lesson's
+# ⚠️ FIVE ROWS, BECAUSE FIVE RENDERERS EXIST. The other six C10 families are
+# listed in this module's header and are registered by their own lesson's
 # author, in this file, when the renderer lands beside the row.
 
 KIND_SHELL = {
@@ -917,6 +1161,8 @@ KIND_SHELL = {
                       ' data-instrument data-mloopblock data-stage-done="0"'),
     'stock-limits': ("ks3-stock-block",
                      ' data-instrument data-stockblock data-stage-done="0"'),
+    'rock-bench': ("ks3-rockb-block",
+                   ' data-instrument data-rockbblock data-stage-done="0"'),
 }
 
 KIND_FN = {
@@ -924,4 +1170,5 @@ KIND_FN = {
     'depth-evidence': r_depth_evidence,
     'material-loop': r_material_loop,
     'stock-limits': r_stock_limits,
+    'rock-bench': r_rock_bench,
 }

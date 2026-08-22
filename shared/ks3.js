@@ -22194,10 +22194,10 @@
    marked block so that a lane merging into this file resolves mechanically:
    nothing above this marker moves.
 
-   ⚠️ WAVE 2. Four of the unit's eleven families are here — c10-04's loop
-   bench and its stock shelf, and c10-01's layer bar and evidence set. The
-   other seven are listed in `ks3_art/c10.py` and are wired by their own
-   lesson's author, inside this same marked block.
+   ⚠️ WAVE 3. Five of the unit's eleven families are here — c10-04's loop
+   bench and its stock shelf, c10-01's layer bar and evidence set, and
+   c10-02's rock bench. The other six are listed in `ks3_art/c10.py` and are
+   wired by their own lesson's author, inside this same marked block.
 
    ⚖️ NOTHING IS COMPUTED IN THIS BLOCK. Not one mass, not one percentage, not
    one multiplier and not one VERDICT. The loop bench's TWENTY states are all
@@ -22210,8 +22210,8 @@
    ⚖️ NOTHING GREEN AND NOTHING RED REACHES A CONTROL. Only the ladder marks,
    and `ks3_art/c10.py` refuses a payload carrying a `correct` key.
 
-   ⚠️ NEITHER BENCH OPENS EMPTY, and that is the one way these differ from
-   C9's four. Design's loop bench opens on aluminium at nine-in-ten and the
+   ⚠️ c10-04's TWO BENCHES DO NOT OPEN EMPTY, and that is the one way they
+   differ from C9's four (c10-01's and c10-02's do). Design's loop bench opens on aluminium at nine-in-ten and the
    shelf opens on bauxite, so the build already emits one lit button and one
    unhidden panel in each. These functions READ that opening state out of the
    DOM rather than assuming an index, so the resting HTML and the runtime
@@ -22448,6 +22448,65 @@
                }
              });
         setCount(sec, decidedN);
+        if (target && decidedN >= target) { markStage(sec, true); }
+      });
+    });
+    setCount(sec, decidedN);
+  }
+
+  /* ── rock-bench (c10-02 #s-bench) ────────────────────────────────────
+     Six samples, three groups, one decision each, and eighteen verdict
+     panels already in the document — one per (sample, group) pair, every
+     sentence of them composed in `ks3_art/c10.py` from two authored
+     templates. This handler decides which one stops being `hidden`. It
+     writes no sentence and marks nothing: the verdict says "correct" or
+     names the answer IN WORDS, which is C10's rule for every bench.
+
+     ONE THRESHOLD, READ TWICE. `data-target` ticks the rail stop and
+     `data-total` opens the closing pattern panel, and on this bench Design
+     sets both to the whole set — her `DONE('s-bench')` and her
+     `benchPatternOpen` are the same expression. They are still read
+     separately, because the panel is the payoff for having decided every
+     row and the stop is a completion contract, and a later payload may
+     legitimately want them apart.
+
+     ⚠️ THE CHOSEN BUTTON STAYS ENABLED AND THE OTHER TWO DO NOT — the same
+     ruling as `wireDepthEvidence` above, for the same reason: disabling all
+     three disables the element the student is standing on and drops a
+     keyboard user to `<body>` (MRB-257). Pressing the chosen button again
+     is a genuine no-op. */
+  function wireRockBench(sec) {
+    var wrap = sec.querySelector("[data-rockb]");
+    if (!wrap) { return; }
+    var picks = toArray(wrap.querySelectorAll("[data-rockb-pick]"));
+    var outs = toArray(wrap.querySelectorAll("[data-rockb-out]"));
+    var pattern = wrap.querySelector("[data-rockb-pattern]");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || 0;
+    var target = parseInt(wrap.getAttribute("data-target"), 10) || 0;
+    if (!picks.length || !outs.length) { return; }
+
+    var decided = {}, decidedN = 0;
+
+    each(picks, function (btn) {
+      btn.addEventListener("click", function () {
+        var of = btn.getAttribute("data-rockb-of");
+        if (decided[of]) { return; }               /* already decided */
+        var key = btn.getAttribute("data-rockb-pick");
+        decided[of] = 1;
+        decidedN += 1;
+        btn.setAttribute("aria-pressed", "true");
+        each(picks, function (b) {
+          if (b !== btn && b.getAttribute("data-rockb-of") === of) {
+            b.disabled = true;
+          }
+        });
+        each(outs, function (o) {
+          if (o.getAttribute("data-rockb-out") === key) { setHidden(o, false); }
+        });
+        var row = wrap.querySelector('[data-rockb-row="' + of + '"]');
+        if (row) { row.setAttribute("data-decided", "1"); }
+        setCount(sec, decidedN);
+        if (total && decidedN >= total) { setHidden(pattern, false); }
         if (target && decidedN >= target) { markStage(sec, true); }
       });
     });
@@ -22804,6 +22863,7 @@
     each(root.querySelectorAll("[data-edepblock]"), wireDepthEvidence);
     each(root.querySelectorAll("[data-mloopblock]"), wireMaterialLoop);
     each(root.querySelectorAll("[data-stockblock]"), wireStockLimits);
+    each(root.querySelectorAll("[data-rockbblock]"), wireRockBench);
     // ═══ END C10 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
