@@ -110,14 +110,12 @@ window.__MRB_DATA__ = {
           'The diaphragm and the ribs do that.',
           'Only dissolved gases cross into the blood, never bubbles.'] }
   ],
-  "streak": 3,
   "boardWeek": 4,
   "benchTasks": [
       { key: 't1', label: 'Open it' },
       { key: 't2', label: 'Answer the eight questions' },
       { key: 't3', label: 'Hand it in' }
     ],
-  "bestStreakFloor": 9,
   "cards": [
       { tag: 'DEFINITION', topic: 'GAS EXCHANGE', front: 'Define diffusion.', back: 'The net movement of particles from where they are more concentrated to where they are less concentrated.', mine: false },
       { tag: 'KEY FACT', topic: 'GAS EXCHANGE', front: 'Three things that make a gas exchange surface efficient.', back: 'A large surface area. Thin walls. A good blood supply.', mine: true },
@@ -140,10 +138,18 @@ window.__MRB_DATA__ = {
   "handedCaption": "OF HANDED IN",
   "handedLabel": "Handed in",
   "recallAnswered": "46",
+  "recallBank": [
+      { topic: 'BREATHING AND GAS EXCHANGE', q: 'A plant in a dark cupboard is releasing carbon dioxide. Which of the three processes is it carrying out?', options: ['Breathing', 'Respiration', 'Gas exchange only', 'All three'], answer: 1, note: 'Plants respire day and night; they do not breathe.' },
+      { topic: 'PRESSURE', q: 'A fixed amount of gas is squeezed into half the space. What happens to its pressure?', options: ['It halves', 'It doubles', 'It stays the same', 'It drops to zero'], answer: 1, note: 'Same particles, smaller space, more collisions.' },
+      { topic: 'GAS EXCHANGE', q: 'Which feature would make a gas exchange surface worse?', options: ['Thick walls', 'A large surface area', 'A good blood supply', 'A moist surface'], answer: 0, note: 'Thick walls make the diffusion distance longer — thin walls keep it short.' },
+      { topic: 'CHEMICAL REACTIONS', q: 'Magnesium burns in oxygen. What is the product?', options: ['Magnesium oxide', 'Magnesium hydroxide', 'Magnesium carbonate', 'Magnesium chloride'], answer: 0, note: 'Metal + oxygen gives a metal oxide.' },
+      { topic: 'PARTICLE MODEL', q: 'Which state has particles close together that can still move past each other?', options: ['Solid', 'Liquid', 'Gas', 'None of them'], answer: 1, note: 'Close packed, but not fixed in place.' },
+      { topic: 'PRESSURE', q: 'A force of 20 N presses on 4 m2. What is the pressure?', options: ['5 Pa', '80 Pa', '24 Pa', '0.2 Pa'], answer: 0, note: 'p = F / A, so 20 / 4.' },
+      { topic: 'GAS EXCHANGE', q: 'Where in the lungs does gas exchange happen?', options: ['The trachea', 'The bronchi', 'The alveoli', 'The diaphragm'], answer: 2, note: 'Millions of tiny air sacs, each with a thin wall.' },
+      { topic: 'CHEMICAL REACTIONS', q: 'What is always conserved in a chemical reaction?', options: ['Mass', 'Colour', 'Volume', 'Temperature'], answer: 0, note: 'No atoms are made or lost, only rearranged.' },
+    ],
   "recallCrumb": "SIX A ROUND",
   "recallPct": "77%",
-  "recallRounds": "08",
-  "roundNote": "Six answers logged against Week 04. Recall is worth 20 of the 100 points on the leaderboard.",
   "shoutouts": [
         { who: 'MB', text: 'Best score in the class on digestion this week.', meta: 'MR BADMUS \u00B7 2 DAYS AGO' },
         { who: 'MB', text: 'Third week running you handed in first. Keep it.', meta: 'MR BADMUS \u00B7 1 WEEK AGO' }
@@ -161,13 +167,12 @@ window.__MRB_DATA__ = {
   "benchLead": "On the bench now \u00b7 due Thu 18:00",
   "benchPrimaryLabel": "Open the assignment",
   "className": "8r/Sc1",
-  "classNamePadded": "8r/Sc1\n        ",
   "classSize": "28 students",
   "envBadge": "PROD",
   "flashcardsTitle": "FLASHCARDS \u00a0\u00b7\u00a0 8r/Sc1",
   "lessonCount": "04",
-  "recallEyebrow": "SIX QUESTIONS \u00b7 UNLIMITED ROUNDS",
-  "recallOutOf": "OF SIX",
+  "recallLabel": "Practise recall",
+  "recallTitle": "8r/Sc1 \u00a0\u00b7\u00a0 RECALL",
   "studentFirstName": "Ayo",
   "studentInitials": "AY",
   "subjectLabel": "Biology",

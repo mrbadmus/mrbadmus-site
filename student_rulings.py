@@ -102,7 +102,25 @@ PRUNE = {
     # "HANDED IN" badges — a far worse defect than the one being fixed, shipped
     # in the same commit that claimed to fix it. The assignment page has no
     # account menu at all: no Settings, no Sign out, no environment badge.
-    "class view": [275, 279, 297, 298, 322, 325, 328],
+    # ⊕ 23 Aug 2026 — PHASE 3. 335 IS DESIGN'S ORIGINAL RECALL ROUND.
+    #
+    # The whole `if onRecall` subtree — from the band at 336 to the "Open the
+    # assignment instead" link at 403. Design's AMENDED delivery replaces it
+    # wholesale with the themed overlay at donor 366, which is grafted below,
+    # and there must not end up being two reachable rounds.
+    #
+    # ⚠️ PRUNING THE MARKUP IS THE SMALLEST PART OF RETIRING IT. Five other
+    # things reached this subtree, and every one of them is dealt with in
+    # `LOGIC` above — the data, the locals, the methods, the state, and the
+    # three ROUTES into `go('recall')`, which after this prune would each have
+    # rendered an empty page with a perfectly green build. See the PHASE 3
+    # banner in LOGIC['class view'] for the list.
+    #
+    # ⚑ IT IS THE `if`, NOT THE `<div>` INSIDE IT — the same reading as the
+    # flashcards overlay's graft. Pruning node 336 alone would leave a bare
+    # `<if onRecall>` with no children: harmless today, and a place for a
+    # future edit to put something back into a branch nothing else can see.
+    "class view": [275, 279, 297, 298, 322, 325, 328, 335],
 }
 
 # ── template nodes that need a CLICK HANDLER Design never gave them ───────
@@ -219,53 +237,50 @@ LOGIC = {
             "        : doneCount + ' / 3 DONE',",
         ),
         # ── ⊕ RULED 22 Aug 2026 — P2. "STREAK BROKEN" BEFORE A STREAK ─────
+        # ── ⊕ RETIRED 23 Aug 2026 — PHASE 3. THE SURFACE P2 RULED IS GONE. ──
         #
-        #     streakText: st.streak > 0 ? 'STREAK ' + pad(st.streak)
-        #                                : 'STREAK BROKEN',
+        # P2's ruling stands, word for word. Its four TRANSFORMATIONS do not,
+        # because every line they anchored on has been removed with Design's
+        # ORIGINAL recall round — see the Phase 3 entries at the end of this
+        # list, and the `PRUNE` of live node 335. `apply_rulings` asserts each
+        # `old` occurs EXACTLY ONCE, so leaving them here would stop the build
+        # naming four lines that no longer exist, which is that check working.
         #
-        # The streak opens at 0 — correctly, since nothing records a recall
-        # streak between sessions — and 0 rendered as STREAK BROKEN. So the
-        # first thing the round said to a student who had not yet answered a
-        # single question was that they had broken something.
+        # They are quoted rather than deleted, because deleting them would
+        # hide a ruling of Mide's rather than move it:
         #
-        # RULED: the label appears only after a streak ACTUALLY BREAKS. Zero
-        # is now two different states and the page has to tell them apart:
+        #     ("  state = {",
+        #      "  state = {\n    broke: false,")
+        #     ("  skipQuestion = () => this.setState((s) => ({ qi: s.qi + 1,
+        #       pick: null, checked: false, streak: 0 }));",
+        #      "  … streak: 0, broke: s.broke || s.streak > 0 }));")
+        #     ("      return { checked: true, right: s.right + (ok ? 1 : 0),
+        #       streak: ok ? s.streak + 1 : 0 };",
+        #      "      … broke: s.broke || (!ok && s.streak > 0) };")
+        #     ("      streakText: st.streak > 0 ? 'STREAK ' + pad(st.streak)
+        #       : 'STREAK BROKEN',",
+        #      "      … : (st.broke ? 'STREAK BROKEN' : ''),")
         #
-        #     no streak yet      nothing is said
-        #     a streak, running  STREAK 03
-        #     a streak, broken   STREAK BROKEN
+        # ⚑ THE RULING IS CARRIED, NOT DROPPED, and it is carried into a
+        # drawing that would otherwise have re-created the exact defect it
+        # names. Design's AMENDED round writes
         #
-        # ⚠️ A FIRST WRONG ANSWER IS NOT A BROKEN STREAK EITHER, and that is
-        # the case the obvious fix ("say nothing until they have answered
-        # one") gets wrong. Nothing was built, so nothing broke. `broke` is
-        # therefore set only on the transition FROM a streak TO none —
-        # `s.streak > 0` at the moment it is zeroed — and not on reaching
-        # zero, which is where it starts.
+        #     streakLabel: s.streak > 0 ? 'STREAK ' + pad(s.streak) : 'STREAK 00',
         #
-        # It rides with `streak` rather than with the round: `newRound` does
-        # not reset either, because a student's best run is theirs across the
-        # sitting and Design already kept the streak across rounds.
-        (
-            "  state = {",
-            "  /* ⊕ RULED 22 Aug 2026 — P2. `broke` — see streakText below. */\n"
-            "  state = {\n    broke: false,",
-        ),
-        (
-            "  skipQuestion = () => this.setState((s) => ({ qi: s.qi + 1, pick: null, checked: false, streak: 0 }));",
-            "  skipQuestion = () => this.setState((s) => ({ qi: s.qi + 1, pick: null, checked: false, streak: 0, broke: s.broke || s.streak > 0 }));",
-        ),
-        (
-            "      return { checked: true, right: s.right + (ok ? 1 : 0), streak: ok ? s.streak + 1 : 0 };",
-            "      /* ⊕ RULED 22 Aug 2026 — P2. A streak BREAKS only when there\n"
-            "         was one: wrong on the first question of a round zeroes a\n"
-            "         streak that was already zero, and nothing was broken. */\n"
-            "      return { checked: true, right: s.right + (ok ? 1 : 0), streak: ok ? s.streak + 1 : 0, broke: s.broke || (!ok && s.streak > 0) };",
-        ),
-        (
-            "      streakText: st.streak > 0 ? 'STREAK ' + pad(st.streak) : 'STREAK BROKEN',",
-            "      /* ⊕ RULED 22 Aug 2026 — P2. Silent until a streak breaks. */\n"
-            "      streakText: st.streak > 0 ? 'STREAK ' + pad(st.streak) : (st.broke ? 'STREAK BROKEN' : ''),",
-        ),
+        # and resets `streak` to 0 on every `anotherRound` — so a student who
+        # had never answered anything would be shown `STREAK 00`, and P2's
+        # three states would be back down to two. `recallVals` below reproduces
+        # P2 exactly: nothing said before a streak exists, `STREAK 03` while one
+        # runs, `STREAK BROKEN` only on the transition FROM a streak TO none.
+        #
+        # ⚠️ AND `rbroke` IS RESET BY `anotherRound`, WHICH P2's `broke` WAS
+        # NOT. That is not a departure from the ruling; it is the ruling read
+        # against a different reset. Design's ORIGINAL `newRound` did not touch
+        # `streak`, so a streak survived a round and so did the fact it had
+        # broken. Design's AMENDED `anotherRound` zeroes the streak — and a
+        # `rbroke` that outlived it would open the new round with
+        # `STREAK BROKEN` over a student who had not yet answered a question,
+        # which is P2's defect verbatim, in a new place.
         # ── ⊕ RULED 22 Aug 2026 — P5. SIGN OUT NOW SIGNS OUT ──────────────
         #
         # The handler `SET_ON` attaches to the two "Sign out" nodes. It is
@@ -859,6 +874,552 @@ LOGIC = {
             "         grafted flashcard regions resolve out of this object. */\n"
             "      ...this.cardVals(),\n",
         ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ 23 Aug 2026 — PHASE 3. THE RECALL ROUND.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # ⚠️ THE SURFACE DECISION, MADE DELIBERATELY AND MADE ONCE.
+        #
+        # The live page ALREADY HAD a recall round — Design's original, drawn
+        # months before the amendments: a `view` switch at template node 335,
+        # `choose`/`advance`/`skipQuestion`/`newRound` over `this.questions`,
+        # painted in `--st-room` / `--st-cream` page-chrome dark. Design's
+        # AMENDED round (donor 366) is a themed OVERLAY in `--b-*`, and it is
+        # the richer surface: a round number, a best streak, a rounds count, a
+        # round score, a progress bar, a per-question verdict, a
+        # Finish-the-round label and an Another-round exit.
+        #
+        # RULED: GRAFT THE AMENDED ROUND AND RETIRE THE ORIGINAL. Re-skinning
+        # the original was considered and refused for a mechanical reason, not
+        # a taste one: its colours are LITERAL `var(--st-room)` / `--st-cream`
+        # strings inside inline `style` attributes on some thirty template
+        # nodes. `LOGIC` cannot reach an inline literal — that is the whole
+        # reason `SET_ATTR` and `_PAGE_STRONG` exist — so re-skinning meant
+        # thirty attribute registrations against a drawing Design had already
+        # replaced, and it would still have been the poorer surface.
+        #
+        # ⚠️ THERE MUST NOT END UP BEING TWO REACHABLE ROUNDS, and "retired"
+        # here means REMOVED, in five places, each of which was a live part of
+        # the old one:
+        #
+        #   1  the DATA          the renderVals block below, removed entire
+        #   2  the LOCALS        qi / q / options / pickIdx / rightPick / pips
+        #   3  the METHODS       choose / advance / skipQuestion / newRound
+        #   4  the STATE         qi / pick / checked / right / streak
+        #   5  the ROUTES        the nav's `Recall` tab, `goRecall` on the two
+        #                        bench buttons, and P3's work-row fallback
+        #
+        # plus the MARKUP, which is `PRUNE` 335 — the whole `if onRecall`
+        # subtree — because a prune is not a LOGIC transformation.
+        #
+        # ⚠️ 5 IS THE ONE THAT WOULD HAVE SHIPPED A BLANK PAGE. `go('recall')`
+        # sets `view: 'recall'`, and with node 335 pruned there is NOTHING
+        # rendered for that view — the class view is `if onClass` and the round
+        # was the only other branch. So every surviving caller of `go('recall')`
+        # becomes a control that blanks the page, and the build would have been
+        # green. There were three: the nav tab, `goRecall` (nodes 77 and 88),
+        # and the marked-work row's fallback from ruling P3.
+        (
+            "      recallMeter: 'QUESTION ' + pad(Math.min(st.qi + 1, 6)) + ' / 06',\n"
+            "      recallMeterPct: Math.round((Math.min(st.qi, 6) / 6) * 100) + '%',\n"
+            "      roundLive: st.qi < 6, roundDone: st.qi >= 6,\n"
+            "      qCounter: 'QUESTION ' + pad(Math.min(st.qi + 1, 6)) + ' / 06 \\u00B7 ' + q.topic,\n"
+            "      question: q.q, options: options, pips: pips,\n"
+            "      showFeedback: st.checked && pickIdx > -1,\n"
+            "      fbLabel: rightPick ? 'CORRECT' : 'NOT THIS ONE',\n"
+            "      fbEdge: rightPick ? 'var(--st-ok-room)' : 'var(--st-ember)',\n"
+            "      // ⊕ MRB-270 phase 3, RULED 20 Aug 2026: the LABEL is text, and\n"
+            "      // --st-ok-room is graphic-only. The 3px edge above keeps it.\n"
+            "      fbLabelColor: rightPick ? 'var(--ks3-ok-dark)' : 'var(--st-ember)',\n"
+            "      fbText: pickIdx > -1 ? q.f[pickIdx] : '',\n"
+            "      primaryRecall: this.advance, skipQuestion: this.skipQuestion, newRound: this.newRound,\n"
+            "      recallBtnLabel: st.checked ? 'Next question' : 'Check',\n"
+            "      recallBtnBg: st.pick || st.checked ? 'var(--ks3-accent-text)' : 'transparent',\n"
+            "      recallBtnColor: st.pick || st.checked ? 'var(--st-paper)' : 'var(--st-room-muted)',\n"
+            "      recallBtnBorder: st.pick || st.checked ? 'var(--ks3-accent-text)' : 'var(--st-room-line)',\n"
+            "      streakText: st.streak > 0 ? 'STREAK ' + pad(st.streak) : 'STREAK BROKEN',\n"
+            "      roundScore: pad(st.right),\n"
+            "      roundNote: 'Six answers logged against Week 04. Recall is worth 20 of the 100 points on the leaderboard.',\n"
+            "      recallStats: [{ label: 'BEST STREAK', value: pad(Math.max(9, st.streak)) }, { label: 'ROUNDS', value: '08' }],\n"
+            "\n",
+            "      /* ⊕ 23 Aug 2026 — PHASE 3, part 1 of 5. The old round's DATA.\n"
+            "\n"
+            "         Twenty keys, and pruned node 335 was the only reader of\n"
+            "         every one of them. Removed rather than left dead, for a\n"
+            "         reason that is not tidiness: TWO of them — `roundDone` and\n"
+            "         `roundScore` — are names Design's AMENDED round needs, in\n"
+            "         this same scope object. Leaving them would put the port back\n"
+            "         in exactly the position the `pips` collision put it in one\n"
+            "         phase ago: one scope, one name, two lists, and whichever key\n"
+            "         was written later silently winning. That defect shipped with\n"
+            "         a green build and all three gates green, and the fix for it\n"
+            "         is not to rely on ordering a second time.\n"
+            "\n"
+            "         `roundNote` goes with them, and it is the sentence that has\n"
+            "         to stay gone: *'Recall is worth 20 of the 100 points on the\n"
+            "         leaderboard'* states an apportionment the platform cannot\n"
+            "         compute — the same fault the 21 Aug ruling took out of the\n"
+            "         split bar and its static 40/40/20 legend — and it is\n"
+            "         platform self-explanation on a student page. Design's\n"
+            "         AMENDED delivery draws it AGAIN, at donor node 439, and that\n"
+            "         node is omitted on the way in; see the graft.\n"
+            "\n"
+            "         `recallStats` goes with them for the reason student-live.js\n"
+            "         already records against `recallAnswered` / `recallPct` /\n"
+            "         `recallRounds`: BEST STREAK 09 and ROUNDS 08 were a drawing.\n"
+            "         Nothing anywhere records a recall round. */\n",
+        ),
+        (
+            "    const qi = Math.min(st.qi, 5);\n"
+            "    const q = this.questions[qi];\n"
+            "    const keys = ['A', 'B', 'C', 'D'];\n"
+            "    const options = q.o.map((t, i) => {\n"
+            "      const k = keys[i];\n"
+            "      const chosen = st.pick === k;\n"
+            "      const isAns = q.a === k;\n"
+            "      const ok = st.checked && isAns;\n"
+            "      const bad = st.checked && chosen && !isAns;\n"
+            "      return {\n"
+            "        key: k, text: t, onClick: () => this.choose(k), ok: ok, bad: bad,\n"
+            "        bg: ok ? 'rgba(85,179,106,0.12)' : chosen ? '#241E17' : 'transparent',\n"
+            "        border: bad ? 'var(--err)' : ok ? 'var(--st-ok-room)' : chosen ? 'var(--st-room-line-strong)' : 'var(--st-room-line)',\n"
+            "        keyBg: chosen || ok ? 'var(--st-ember)' : 'transparent',\n"
+            "        keyBorder: chosen || ok ? 'var(--st-ember)' : 'var(--st-room-line-strong)',\n"
+            "        keyColor: chosen || ok ? '#15110C' : 'var(--st-room-muted)',\n"
+            "        color: ok || chosen ? 'var(--st-cream)' : 'var(--st-room-text)'\n"
+            "      };\n"
+            "    });\n"
+            "    const pickIdx = keys.indexOf(st.pick);\n"
+            "    const rightPick = st.checked && st.pick === q.a;\n"
+            "    const pips = this.questions.map((x, i) => ({\n"
+            "      w: i === st.qi ? '26px' : '12px',\n"
+            "      bg: i < st.qi ? 'var(--st-ember)' : i === st.qi ? 'var(--st-cream)' : 'var(--st-room-line)'\n"
+            "    }));\n",
+            "    /* ⊕ 23 Aug 2026 — PHASE 3, part 2 of 5. The old round's LOCALS.\n"
+            "\n"
+            "       ⚠️ THIS BLOCK IS WHY AN EMPTY BANK USED TO TAKE THE WHOLE\n"
+            "       PAGE DOWN. `const q = this.questions[qi]` ran on EVERY render\n"
+            "       of the class view — the round was a VIEW, not an overlay, and\n"
+            "       `renderVals` computes both — so a class with no ladder rungs\n"
+            "       behind its lessons hit `q.o.map` of undefined during the first\n"
+            "       paint and drew nothing at all. That is what the `throw` in\n"
+            "       student-live.js was defending against, and removing this block\n"
+            "       is what let the throw go.\n"
+            "\n"
+            "       `pips` LEAVES HERE TOO, and it is the name the flashcards\n"
+            "       overlay collided with in Phase 2. `SET_EXPR`'s rename of the\n"
+            "       grafted loop to `cardPips` is DELIBERATELY KEPT rather than\n"
+            "       retired with it: the rename costs nothing, it is asserted at\n"
+            "       build time against the expected old value, and unwinding it\n"
+            "       would put the overlay back on a name this file has already\n"
+            "       proved two surfaces can want. */\n",
+        ),
+        (
+            "  choose = (k) => { if (!this.state.checked) this.setState({ pick: k }); };\n"
+            "  advance = () => this.setState((s) => {\n"
+            "    if (!s.checked) {\n"
+            "      if (!s.pick) return {};\n"
+            "      const ok = s.pick === this.questions[s.qi].a;\n"
+            "      return { checked: true, right: s.right + (ok ? 1 : 0), streak: ok ? s.streak + 1 : 0 };\n"
+            "    }\n"
+            "    return { qi: s.qi + 1, pick: null, checked: false };\n"
+            "  });\n"
+            "  skipQuestion = () => this.setState((s) => ({ qi: s.qi + 1, pick: null, checked: false, streak: 0 }));\n"
+            "  newRound = () => this.setState({ qi: 0, pick: null, checked: false, right: 0 });\n",
+            "  /* ⊕ 23 Aug 2026 — PHASE 3, part 3 of 5. The old round's METHODS,\n"
+            "     replaced by the amended round's. Every name below is Design's\n"
+            "     own, spelled Design's way, because Design's grafted markup is\n"
+            "     what resolves them: `build` looks an `if` up with a null miss\n"
+            "     list, so one letter out is a branch that renders NOTHING,\n"
+            "     silently, on a page whose build printed a graft and whose gates\n"
+            "     all stay green.\n"
+            "\n"
+            "     ⚠️ AND NO GATE OPENS THIS SURFACE. `student_behaviour` requires\n"
+            "     every step of a drive to be performable on Design's ORIGINAL\n"
+            "     file, and pressing `Practise recall` there opens the round this\n"
+            "     unit retires — so the two files would diverge by a whole screen\n"
+            "     and the drive cannot be kept. The seven `Recall` drives are\n"
+            "     retired with it. `student_themes` is extended instead: it drives\n"
+            "     the port alone, needs no oracle, and is the one gate that CAN\n"
+            "     open the round. */\n"
+            "\n"
+            "  /* THE ROUND IS min(6, POOL) — ruling P2 — and the number is\n"
+            "     computed in ONE place so nothing can state a size it will not\n"
+            "     show. `recallBank` arrives from student-live.js already ranked\n"
+            "     by `rankForPractice`; this file neither sorts it nor chooses\n"
+            "     from it, which is what keeps one definition of 'what should this\n"
+            "     student practise next' in one file. */\n"
+            "  RECALL_MAX = 6;\n"
+            "\n"
+            "  recallBank() {\n"
+            "    var b = MRB_DATA('recallBank');\n"
+            "    return (b && b.length) ? b : [];\n"
+            "  }\n"
+            "\n"
+            "  recallSize() {\n"
+            "    return Math.min(this.RECALL_MAX, this.recallBank().length);\n"
+            "  }\n"
+            "\n"
+            "  /* NO REPEAT WITHIN A ROUND, STRUCTURALLY RATHER THAN BY CHECKING.\n"
+            "     A round is `size` CONSECUTIVE items of a bank of `length`, and\n"
+            "     `size` is `min(6, length)` — so the modulo can never come back\n"
+            "     round to an index it has already handed out. Design's own\n"
+            "     arithmetic, with the real size in place of Design's literal 6:\n"
+            "     Design writes `length: 6` over a bank of 8, which would repeat\n"
+            "     two questions in every round the moment a real bank was shorter\n"
+            "     than six. Round two starts where round one stopped, so a student\n"
+            "     with a long bank works THROUGH it rather than round the same\n"
+            "     six; with a bank of exactly `size` the same questions come back,\n"
+            "     which is the honest answer rather than a defect. */\n"
+            "  recallRound() {\n"
+            "    const bank = this.recallBank();\n"
+            "    const size = this.recallSize();\n"
+            "    if (!size) { return []; }\n"
+            "    const start = ((this.state.rno - 1) * size) % bank.length;\n"
+            "    const out = [];\n"
+            "    for (var i = 0; i < size; i += 1) {\n"
+            "      out.push(bank[(start + i) % bank.length]);\n"
+            "    }\n"
+            "    return out;\n"
+            "  }\n"
+            "\n"
+            "  /* ⚠️ AN EMPTY BANK MUST NOT OPEN AN EMPTY ROUND — the same rule\n"
+            "     `openCards` follows one surface over. It cannot normally be\n"
+            "     reached at all: `recallLabel` is empty with no bank and its\n"
+            "     binding is marked `drop`, so the button is not on the page. This\n"
+            "     is the second lock, because the first one lives in another\n"
+            "     file. */\n"
+            "  openRecall = (e) => {\n"
+            "    if (e && e.preventDefault) { e.preventDefault(); }\n"
+            "    if (!this.recallSize()) { return; }\n"
+            "    this.setState({ recall: true, cards: false, account: false, menu: false });\n"
+            "  };\n"
+            "  closeRecall = () => this.setState({ recall: false });\n"
+            "\n"
+            "  /* ⛔ NOTHING IS HANDED IN, AND THIS METHOD IS WHERE THAT IS TRUE\n"
+            "     OR NOT. There is no submission, no attempt row, no score and no\n"
+            "     network call of any kind anywhere in the round. The one thing a\n"
+            "     round writes is a per-device SEEN COUNT, in localStorage, which\n"
+            "     feeds the least-seen half of the ordering and is read by nothing\n"
+            "     a student or a teacher ever sees. */\n"
+            "  recallAdvance = (scored) => {\n"
+            "    const size = this.recallSize();\n"
+            "    this.setState((s) => {\n"
+            "      const last = s.rqi >= size - 1;\n"
+            "      const streak = scored ? s.rstreak + 1 : 0;\n"
+            "      return {\n"
+            "        rstreak: streak,\n"
+            "        /* ⊕ P2, CARRIED. A streak BREAKS only when there was one:\n"
+            "           getting the first question of a round wrong zeroes a\n"
+            "           streak that was already zero, and nothing was broken. */\n"
+            "        rbroke: s.rbroke || (!scored && s.rstreak > 0),\n"
+            "        rbest: Math.max(s.rbest, streak),\n"
+            "        rright: s.rright + (scored ? 1 : 0),\n"
+            "        rpick: null, rchecked: false,\n"
+            "        rqi: last ? s.rqi : s.rqi + 1,\n"
+            "        rdone: last,\n"
+            "        rrounds: last ? s.rrounds + 1 : s.rrounds\n"
+            "      };\n"
+            "    });\n"
+            "  };\n"
+            "\n"
+            "  nextRecall = () => {\n"
+            "    const at = this.recallRound()[this.state.rqi];\n"
+            "    this.recallAdvance(!!at && this.state.rpick === at.answer);\n"
+            "  };\n"
+            "  skipRecall = () => this.recallAdvance(false);\n"
+            "\n"
+            "  /* CHECKING IS WHAT COUNTS AS SEEING A QUESTION, and moving past\n"
+            "     one is not — the same distinction `flipCard` draws between\n"
+            "     revealing a card and flicking past it. Through the sink, lazily:\n"
+            "     on the fixture there is none, `_sinkCall` returns null, and\n"
+            "     Design's file behaves exactly as drawn. */\n"
+            "  checkRecall = () => {\n"
+            "    if (this.state.rchecked || this.state.rpick === null) { return; }\n"
+            "    this.setState({ rchecked: true });\n"
+            "    const at = this.recallRound()[this.state.rqi];\n"
+            "    if (at && at.id) { _sinkCall('questionSeen', at.id); }\n"
+            "  };\n"
+            "\n"
+            "  /* Design's own `anotherRound`, with `rbroke` reset alongside the\n"
+            "     streak it belongs to — see the retired P2 note above for why\n"
+            "     that is the ruling being kept rather than bent. `rbest` and\n"
+            "     `rrounds` survive it: a student's best run, and how many rounds\n"
+            "     they have done, are facts about the sitting and not about a\n"
+            "     round. */\n"
+            "  anotherRound = () => this.setState((s) => ({\n"
+            "    rno: s.rno + 1, rqi: 0, rpick: null, rchecked: false,\n"
+            "    rright: 0, rdone: false, rstreak: 0, rbroke: false\n"
+            "  }));\n"
+            "\n"
+            "  recallVals() {\n"
+            "    const s = this.state;\n"
+            "    const pad = (x) => (x < 10 ? '0' + x : '' + x);\n"
+            "    const size = this.recallSize();\n"
+            "    const round = this.recallRound();\n"
+            "    const at = Math.min(s.rqi, Math.max(0, size - 1));\n"
+            "    const qq = round[at];\n"
+            "    /* With no bank there is no surface: `openRecall` refuses and the\n"
+            "       button is not on the page. This is what stops a state reached\n"
+            "       some other way from indexing an empty array. */\n"
+            "    if (!size || !qq) {\n"
+            "      return {\n"
+            "        recallOpen: false, inRound: false, roundDone: false,\n"
+            "        q: { topic: '', q: '', note: '' }, opts: [], qpips: [],\n"
+            "        checked: false, canCheck: false, verdict: '',\n"
+            "        nextLabel: '', streakLabel: '', roundLabel: '',\n"
+            "        roundScore: '', qPos: '', qStep: '0',\n"
+            "        check: this.checkRecall, nextQ: this.nextRecall,\n"
+            "        skipQ: this.skipRecall, anotherRound: this.anotherRound,\n"
+            "        openRecall: this.openRecall, closeRecall: this.closeRecall\n"
+            "      };\n"
+            "    }\n"
+            "    const gotIt = s.rchecked && s.rpick === qq.answer;\n"
+            "    const optState = (i) => {\n"
+            "      if (!s.rchecked) { return s.rpick === i ? 'picked' : 'idle'; }\n"
+            "      if (i === qq.answer) { return 'correct'; }\n"
+            "      return s.rpick === i ? 'wrong' : 'idle';\n"
+            "    };\n"
+            "    const opts = (qq.options || []).map((label, i) => ({\n"
+            "      label: label, letter: 'ABCD'[i], st: optState(i),\n"
+            "      right: s.rchecked && i === qq.answer,\n"
+            "      pick: () => { if (!this.state.rchecked) { this.setState({ rpick: i }); } }\n"
+            "    }));\n"
+            "    /* ⚠️ THE LINE UNDER THE VERDICT IS THE ONE WRITTEN AGAINST THE\n"
+            "       ANSWER THE STUDENT GAVE, and it is empty when they were right.\n"
+            "       Design's amended sample carries ONE note per question and\n"
+            "       prints it whatever was picked; the real corpus carries a `why`\n"
+            "       per OPTION, and — measured across both content sources, and\n"
+            "       recorded in the 21 Aug ruling — the ones that exist are always\n"
+            "       the DISTRACTORS. The teaching in a multiple-choice question\n"
+            "       lands on the MISTAKE. A correct answer gets the verdict word\n"
+            "       and nothing beneath it, which is that ruling exactly, and the\n"
+            "       slot does not stand open because the verdict is in it. Both\n"
+            "       shapes are read, so the fixture keeps Design's behaviour byte\n"
+            "       for byte. */\n"
+            "    const note = Array.isArray(qq.notes)\n"
+            "      ? (s.rpick === null ? '' : (qq.notes[s.rpick] || ''))\n"
+            "      : (qq.note || '');\n"
+            "    /* ⚠️⚠️ THE PROGRESS BAR ASSUMES SIX, AND THE POOL DOES NOT.\n"
+            "       Design's grafted CSS carries `.rprog[data-w=\"0\"]` … `[\"6\"]` at\n"
+            "       0/17/33/50/67/83/100%, and Design's own logic feeds it the RAW\n"
+            "       step index — right for a round of six and wrong for every\n"
+            "       other length. With the real pool of FOUR on 8r/Sc1, a student\n"
+            "       who had answered all four would have seen a bar at 67%: the\n"
+            "       round complete, and the graphic saying it was not.\n"
+            "\n"
+            "       The step is scaled onto Design's six buckets instead, so no\n"
+            "       CSS is added and Design's stylesheet is not touched: a round of\n"
+            "       six is unchanged (the scale is the identity), a round of four\n"
+            "       reads 0 / 33 / 50 / 83(*) / 100 and a round of two reads\n"
+            "       0 / 50 / 100 — both measured in the browser, not derived on\n"
+            "       paper. (*) 3 of 4 is 75%, which falls exactly between the 67%\n"
+            "       and 83% buckets, and `Math.round` takes the half upward. The\n"
+            "       buckets are 17 points apart and a 3px bar is not a readout;\n"
+            "       what matters is that the bar MOVES on every question and is\n"
+            "       FULL when the round is done, and both hold at every length.\n"
+            "\n"
+            "       ⚑ AND IT NOW REACHES 100%, WHICH DESIGN'S NEVER DID. Design\n"
+            "       pins `qi` at the last question when the round ends, so the bar\n"
+            "       stopped at 83% over a finished round. The step here is the\n"
+            "       number of questions COMPLETED, which is the size once the\n"
+            "       round is done. */\n"
+            "    const step = s.rdone ? size : s.rqi;\n"
+            "    return {\n"
+            "      recallOpen: s.recall,\n"
+            "      inRound: s.recall && !s.rdone,\n"
+            "      roundDone: s.rdone,\n"
+            "      roundLabel: 'ROUND ' + pad(s.rno),\n"
+            "      /* Both of these STATE THE REAL SIZE, which is ruling P2's whole\n"
+            "         requirement. The two text nodes that used to spell it out in\n"
+            "         a WORD — `SIX QUESTIONS · UNLIMITED ROUNDS` and `OF SIX` —\n"
+            "         are retired with the old round's markup, so there is no\n"
+            "         wording left on the page that CAN be wrong about it. */\n"
+            "      roundScore: s.rright + ' / ' + size,\n"
+            "      qPos: pad(Math.min(s.rqi + 1, size)) + ' / ' + pad(size),\n"
+            "      qStep: String(Math.round((step / size) * 6)),\n"
+            "      qpips: round.map((_, i) => ({ on: i <= s.rqi ? '1' : '0' })),\n"
+            "      q: { topic: qq.topic, q: qq.q, note: note },\n"
+            "      opts: opts,\n"
+            "      checked: s.rchecked,\n"
+            "      canCheck: !s.rchecked,\n"
+            "      verdict: gotIt ? 'Correct.' : 'Not this time.',\n"
+            "      nextLabel: s.rqi >= size - 1 ? 'Finish the round' : 'Next question',\n"
+            "      /* ⊕ P2, CARRIED WHOLE. Three states and not two: nothing said\n"
+            "         before a streak exists, the count while one runs, and the\n"
+            "         word only once one has actually broken. Design's amended line\n"
+            "         prints `STREAK 00` in the first state, which is P2's defect\n"
+            "         in a politer font. */\n"
+            "      streakLabel: s.rstreak > 0 ? 'STREAK ' + pad(s.rstreak)\n"
+            "        : (s.rbroke ? 'STREAK BROKEN' : ''),\n"
+            "      check: this.checkRecall,\n"
+            "      nextQ: this.nextRecall,\n"
+            "      skipQ: this.skipRecall,\n"
+            "      anotherRound: this.anotherRound,\n"
+            "      openRecall: this.openRecall,\n"
+            "      closeRecall: this.closeRecall\n"
+            "    };\n"
+            "  }\n",
+        ),
+        (
+            "    qi: 0, pick: null, checked: false, right: 0, streak: 3\n  };",
+            "    /* ⊕ 23 Aug 2026 — PHASE 3, part 4 of 5. The old round's STATE,\n"
+            "       replaced by the amended round's. Every key is prefixed `r` and\n"
+            "       that is not a style choice: `checked`, `pick` and `right` are\n"
+            "       words other surfaces in this codebase also use, and this port\n"
+            "       has already shipped one defect that was two surfaces wanting\n"
+            "       one name in one scope.\n"
+            "\n"
+            "       Design's own amended state is `qi, picked, checked, roundNo,\n"
+            "       answered, streak, best, rounds, roundScore, roundDone`.\n"
+            "       `answered` is NOT carried: it is Design's THIS WEEK figure, and\n"
+            "       nothing anywhere records a recall round, so the panel it lives\n"
+            "       in is omitted on the way in rather than filled with a session\n"
+            "       count wearing a week's label. See the graft.\n"
+            "\n"
+            "       Nothing here is persisted, and that is deliberate in the same\n"
+            "       way the flashcards' `idx` is: a round is a sitting, the bank is\n"
+            "       re-ranked on every load, and a restored `rqi` would name a\n"
+            "       DIFFERENT question. */\n"
+            "    recall: false, rqi: 0, rpick: null, rchecked: false,\n"
+            "    rright: 0, rstreak: 0, rbest: 0, rbroke: false,\n"
+            "    rno: 1, rrounds: 0, rdone: false\n  };",
+        ),
+        (
+            "      goClass: () => this.go('class'), goRecall: () => this.go('recall'),\n"
+            "      /* ⊕ RULED 22 Aug 2026 — P5. */",
+            "      goClass: () => this.go('class'),\n"
+            "      /* ⊕ 23 Aug 2026 — PHASE 3, part 5 of 5. THE ROUTES.\n"
+            "\n"
+            "         ⛔ `goRecall: () => this.go('recall')` is what this replaces,\n"
+            "         and after the prune of node 335 it was a control that blanked\n"
+            "         the page: `view: 'recall'` has no branch left to render. Two\n"
+            "         live buttons resolve this name — `Practise recall` on the\n"
+            "         bench (node 77) and `Start recall` on the empty-class bench\n"
+            "         (node 88) — and Design's AMENDED delivery wires its own\n"
+            "         `Practise recall` (donor 76, and donor 116 on the done bench)\n"
+            "         to `openRecall`. So the NAME is repointed rather than the\n"
+            "         nodes rewired: `SET_ON` refuses a node that already carries a\n"
+            "         handler, and one line here reaches every caller there will\n"
+            "         ever be — including the done bench's copy when Phase 4\n"
+            "         lands.\n"
+            "\n"
+            "         The name stays `goRecall` because Design's markup resolves\n"
+            "         that spelling on both nodes. What it means has changed; where\n"
+            "         it is written has not. */\n"
+            "      goRecall: this.openRecall,\n"
+            "      /* ⊕ RULED 22 Aug 2026 — P5. */",
+        ),
+        (
+            "            : () => this.go('recall'),",
+            "            /* ⊕ 23 Aug 2026 — PHASE 3. P3's fallback, repointed. It\n"
+            "               sent a marked row with no known lesson page to the\n"
+            "               recall round, deliberately — \"at least about the same\n"
+            "               class\". That destination is an overlay now rather than\n"
+            "               a view, and `go('recall')` would have blanked the page.\n"
+            "               Same destination, reached the way it is reached now. */\n"
+            "            : this.openRecall,",
+        ),
+        (
+            "    const nav = [\n"
+            "      { label: 'My class', onClick: () => this.go('class'), on: onClass },\n"
+            "      { label: 'Recall', onClick: () => this.go('recall'), on: !onClass }\n"
+            "    ].map((n) => ({",
+            "    /* ⊕ 23 Aug 2026 — PHASE 3. THE NAV'S `Recall` TAB IS GONE.\n"
+            "\n"
+            "       It was the third route into `go('recall')`, and the only one\n"
+            "       that could not simply be repointed: the nav is a VIEW SWITCH —\n"
+            "       its `on` state is `!onClass` and its underline says which view\n"
+            "       you are in — and the round is no longer a view. Wiring the tab\n"
+            "       to `openRecall` would have left a tab that opens an overlay and\n"
+            "       can never look selected, which is a control lying about what\n"
+            "       kind of thing it is.\n"
+            "\n"
+            "       ⚑ NO DESTINATION IS LOST. `Practise recall` sits on the bench\n"
+            "       at the top of the same page, and Design's amended delivery puts\n"
+            "       it there in BOTH bench states — donor 76 open, donor 116 done —\n"
+            "       which is Design saying in the file that the bench is where the\n"
+            "       round is reached from.\n"
+            "\n"
+            "       Registered from the other end in student_behaviour.py:\n"
+            "       `RULED_DIVERGENCE` for the text and `RULED_CONTROLS` for the\n"
+            "       census, because the two are compared separately and a ruling\n"
+            "       that reaches only one of them reads as a broken port. */\n"
+            "    const nav = [\n"
+            "      { label: 'My class', onClick: () => this.go('class'), on: onClass }\n"
+            "    ].map((n) => ({",
+        ),
+        (
+            "    this.setState({ account: true, menu: false, cards: false });\n",
+            "    /* ⊕ 23 Aug 2026 — PHASE 3. `recall: false` joins them: three\n"
+            "       surfaces, one at a time, and each opener closes the other\n"
+            "       two. */\n"
+            "    this.setState({ account: true, menu: false, cards: false, recall: false });\n",
+        ),
+        (
+            "    this.setState({ cards: true, account: false, flipped: false });\n",
+            "    this.setState({ cards: true, account: false, flipped: false, recall: false });\n",
+        ),
+        # ── ⊕ 23 Aug 2026 — PHASE 3. A DEAD PRIMARY BUTTON, FOUND IN PASSING ──
+        #
+        # ⚠️ THIS IS LIVE TODAY, and it is not Phase 4's. Ruling P4 gives the
+        # bench's primary button a second job once the week is done, and its
+        # own label says which:
+        #
+        #     benchPrimaryLabel: benchDone
+        #       ? (benchLessons.length ? 'Revisit the lesson' : 'Practise recall')
+        #       : 'Open the assignment'
+        #     benchPrimaryHref:  benchDone
+        #       ? (benchLessons.length ? benchLessons[0].href : '')
+        #       : (current ? assignmentHref() : '')
+        #
+        # So a student who finishes work drawn on a lesson this build has NO
+        # PAGE for — a retired slug, or a bank that has moved on — gets a
+        # primary button reading `Practise recall` with an EMPTY href, and P1's
+        # fallback ticks checklist item one. `benchDone` also empties
+        # `benchTasks`, so the checklist is not rendered at all: the tick is
+        # invisible and the press does nothing a student can see. The biggest
+        # control on the page, saying the name of a surface, going nowhere.
+        #
+        # It could not be fixed before this phase, because until this phase
+        # there was nothing for it to open that would not have blanked the
+        # page. Now `openRecall` exists and it is one line.
+        #
+        # ⚠️ GUARDED ON `benchDone` AND NOT ON THE EMPTY HREF, and the
+        # difference matters: `benchPrimaryHref` is ALSO empty in the OPEN
+        # state when no assignment is set, and there the label reads `Open the
+        # assignment`. Sending that student to the recall round would be a
+        # second button naming a destination it does not go to — this ruling's
+        # own complaint, committed in the act of fixing it.
+        #
+        # `openRecall` refuses an empty bank, so a class with no rungs presses
+        # a button that still does nothing. That is not this ruling's to fix:
+        # it is P4's done-bench markup, which Phase 4 grafts (donor 101), and
+        # Design draws `Practise recall` there as its own separate control
+        # (donor 116) rather than as the primary.
+        (
+            "    const href = MRB_DATA('benchPrimaryHref');\n"
+            "    if (href) { window.location.href = href; return; }\n",
+            "    const href = MRB_DATA('benchPrimaryHref');\n"
+            "    if (href) { window.location.href = href; return; }\n"
+            "    /* ⊕ 23 Aug 2026 — PHASE 3. The done bench with no lesson page\n"
+            "       labels this button `Practise recall`, and until this phase\n"
+            "       it had nowhere to send them. Now it does. */\n"
+            "    if (MRB_DATA('benchDone')) { this.openRecall(); return; }\n",
+        ),
+        (
+            "      ...this.cardVals(),\n",
+            "      ...this.cardVals(),\n"
+            "      /* ⊕ 23 Aug 2026 — PHASE 3. The twenty-one names Design's\n"
+            "         grafted recall round resolves out of this object. It is\n"
+            "         spread LAST, and there is deliberately nothing riding on\n"
+            "         that: every name it emits was checked against the whole\n"
+            "         object first, and the two that DID collide — `roundDone` and\n"
+            "         `roundScore` — were removed at source rather than shadowed.\n"
+            "         Ordering is what the `pips` defect relied on, and relying on\n"
+            "         it twice is how a lesson stops being one. */\n"
+            "      ...this.recallVals(),\n",
+        ),
     ],
     'assignment': [
         (
@@ -1071,10 +1632,33 @@ SET_ATTR = {
     #          rule, for the same reason `data-page-strong` is one: the row's
     #          `display` is a LITERAL inside Design's inline `style`, so there
     #          is no string in the logic for a `LOGIC` ruling to anchor on.
+    #
+    # ⊕ 23 Aug 2026 — PHASE 3. ONE MORE, ON THE GRAFTED RECALL ROUND.
+    #
+    #   10384  the round's question panel — `background:var(--b-ground)`, a
+    #          THEME token used directly, exactly as the flashcards card at
+    #          10204 is. So the token bridge has nothing to do here and the
+    #          attribute is inert as CSS.
+    #
+    #          ⚠️ IT IS NOT INERT TO THE GATE. `--b-ground` is near-black on
+    #          four of the six themes, and `student_themes.check_page_chrome`
+    #          sweeps every element OUTSIDE `[data-bench-surface]` for a
+    #          near-black background. Without this the panel would be reported
+    #          as four unregistered strays the moment anything opens the round —
+    #          which `student_themes` now does, deliberately, because it is the
+    #          only gate that can.
+    #
+    #          The ROUND ROOT at 10367 takes no surface attribute and needs
+    #          none: it is `background:var(--pg-ground)`, the cream page, and it
+    #          already carries Design's own `data-port-region="recall-round"`
+    #          through the graft. The sidebar panel Design draws beside this one
+    #          — donor 425, also `--b-ground` — is omitted on the way in, so
+    #          there is no second surface to name.
     "class view": {
         55:  {"data-bench-surface": "bench", "data-port-region": "bench"},
         10204: {"data-bench-surface": "cards"},
         10329: {"data-pip-row": "1"},
+        10384: {"data-bench-surface": "recall"},
         91:  {"data-bench-docket": "1"},
         107: {"data-port-region": "term-spine"},
         118: {"data-page-strong": "legend-done"},
@@ -1362,6 +1946,92 @@ GRAFT = {
                  "rather than as the surface inside it, so it exists only when "
                  "a student has opened it. Header, pip row, the 460ms flip card "
                  "with its two faces, and the Reveal / Next pair."),
+
+        # ⊕ 23 Aug 2026 — PHASE 3. THE RECALL ROUND.
+        #
+        # Donor 366 is `<if recallOpen>`; donor 367 is the surface inside it,
+        # and it is the node Design marked
+        # `data-port-change="C2b bench 'Practise recall' lands here"`.
+        #
+        # `at=10, mode="append"` for the three reasons the two grafts above
+        # already record, and they hold here identically:
+        #
+        #   · INSIDE `.rd[data-mode="ks3"]` (node 10), because every gate opens
+        #     with `document.querySelector('.rd[data-mode="ks3"]')` and a
+        #     surface grafted onto node 9 is one no gate can see. This surface
+        #     needs that more than either of the others: it is the one
+        #     `student_themes` is being extended to open.
+        #   · LAST, and after the sheet and the overlay. This is
+        #     `position:fixed;inset:0;z-index:45` — between the sheet's 40 and
+        #     the overlay's 50 — and painting order breaks ties. All three are
+        #     mutually exclusive in the logic (each opener clears the other
+        #     two), so this is belt and braces rather than load-bearing.
+        #   · `append` and not `after`: `after` inserts into the PARENT, which
+        #     would put the round outside `.rd` again.
+        #
+        # ⚠️ IT IS THE `<if>` AND NOT THE `<div>`, for the reason the overlay's
+        # graft spells out: grafting 367 alone would put a `position:fixed`
+        # full-screen panel over every student's class page, permanently, with
+        # no way to close it. The conditional IS the feature.
+        #
+        # ── THE `THIS WEEK` PANEL IS OMITTED — donor 425 ──────────────────
+        #
+        # Design's round has a sidebar beside the question panel. It contains
+        # exactly five things, and NOT ONE of them can ship:
+        #
+        #   ANSWERED       Design's `answered`, a THIS WEEK count. Nothing
+        #                  anywhere records a recall round — `/api/class/recall`
+        #                  only reads, and no table carries a class, a teaching
+        #                  week and a rung together. `student-live.js` has
+        #                  emitted `recallAnswered: ""` since the day the figure
+        #                  was found to be a drawing, and it still does.
+        #   BEST STREAK    a SESSION value under a WEEK heading. The number is
+        #                  real inside one sitting and false the next morning,
+        #                  when the student comes back to `00` having answered
+        #                  thirty the day before. The round shows the streak
+        #                  where it is honest — `streakLabel`, live, inside the
+        #                  round itself.
+        #   ROUNDS         `recallRounds`, the same unrecorded fact as ANSWERED.
+        #   the sentence   *"Recall counts for 20 of the 100 points on the
+        #                  leaderboard."* This is the SAME apportionment the
+        #                  21 Aug ruling took out of the leaderboard's split bar
+        #                  and its static 40 / 40 / 20 legend, because the
+        #                  platform cannot compute it — and it is platform
+        #                  self-explanation on a student page (§8.10).
+        #   the button    `Open the assignment instead`, wired by Design to
+        #                  `closeRecall`. It does not open the assignment. It
+        #                  closes the round, which is what the two other
+        #                  controls already do and say so.
+        #
+        # So the panel is three unsourceable figures, one sentence that is
+        # ruled out twice over, and a button that names the wrong destination.
+        # Keeping the frame and emptying the figures would have left a heading
+        # over three blanks, which is the "empty bordered box" the `drop` flag
+        # exists to prevent. It goes whole.
+        #
+        # ⚠️ NOTHING A STUDENT CAN DO IS LOST WITH IT. `closeRecall` is on TWO
+        # surviving controls — the `8r/Sc1` button in the round's own bar
+        # (donor 373) and `Back to my class` on the round-done card (donor 424).
+        # Counted before this was written.
+        #
+        # `omit` and not `PRUNE`, for the reason the account sheet's EMAIL row
+        # records: PRUNE walks the LIVE template and asserts every index was
+        # found, and at that moment the donor has not been copied in yet. It
+        # runs on the donor's own numbering, before the renumber, and asserts
+        # 425 is present — so if Design redraws the sidebar, the build stops
+        # rather than omitting nothing and shipping the sentence.
+        #
+        # Registered from the other end in `student_behaviour.AMENDED_OMISSIONS`.
+        dict(at=10, mode="append", donor=366, omit=[425],
+             why="Design's C2b recall round, grafted as the `if recallOpen` "
+                 "rather than as the surface inside it, so it exists only once "
+                 "a student has opened it from the bench. It REPLACES Design's "
+                 "original round, which is pruned at live node 335 — the port "
+                 "must not end up with two reachable recall surfaces. The THIS "
+                 "WEEK sidebar is omitted: its three figures are facts nothing "
+                 "records, and its one sentence states the 20-of-100 "
+                 "apportionment the 21 Aug ruling already removed from the "
+                 "leaderboard."),
     ],
     "assignment": [],
 }

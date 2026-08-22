@@ -589,10 +589,26 @@
      is no sentence. */
   var SEEN_PREFIX = "mrbadmusai.cardseen.v1.";
 
-  function seenStore(userId, classId) {
+  /* ⊕ 23 Aug 2026 — PHASE 3. A SECOND CORPUS, THE SAME STORE SHAPE.
+
+     The recall round needs the identical "how many times has this student seen
+     this" count, keyed on a LADDER QUESTION REF rather than on a card id, and
+     `rankForPractice` reads `opts.seen[it.id]` for both. So `seenStore` takes
+     the prefix as a parameter and there is still ONE implementation of the
+     store, the key discipline and the ownership check.
+
+     ⚠️ THEY ARE SEPARATE KEYS AND NOT ONE SHARED MAP, and the ids being
+     provably disjoint (`<lesson>#def#<term>` against `<lesson>#recall`) is not
+     a reason to merge them. A card is SEEN when it is revealed; a question is
+     SEEN when it is answered. Two different events, two different corpora, two
+     different blobs — and one growing without bound because the other is busy
+     is a bug nobody would ever look for. */
+  var QSEEN_PREFIX = "mrbadmusai.recallseen.v1.";
+
+  function seenStore(userId, classId, prefix) {
     var owner = String(userId || "anon");
     var kls = String(classId || "");
-    var key = SEEN_PREFIX + owner + "." + kls;
+    var key = (prefix || SEEN_PREFIX) + owner + "." + kls;
 
     function ls() {
       try { return window.localStorage || null; } catch (e) { return null; }
@@ -1565,13 +1581,34 @@
         f: n.f
       });
     });
-    if (!questions.length) {
-      /* The page reads `questions[0]` on its first render, so with nothing to
-         recall it cannot draw at all. Say the true thing instead. */
-      var e = new Error("no recall questions");
-      e.mrbSay = SAY.noRecall;
-      throw e;
-    }
+    /* ⊕ 23 Aug 2026 — PHASE 3. THE THROW THAT USED TO BE HERE IS GONE, AND
+       ITS REMOVAL IS THE POINT OF THE UNIT RATHER THAN A SIDE EFFECT.
+
+       ⛔ What stood here read:
+
+           if (!questions.length) {
+             var e = new Error("no recall questions");
+             e.mrbSay = SAY.noRecall;   // "There is nothing to look back over
+             throw e;                   //  yet. Check again after your next
+           }                            //  lesson."
+
+       It was correct for the page it was written against. Design's ORIGINAL
+       recall round is a VIEW, always mounted, and its logic opened with
+       `const q = this.questions[qi]` — so an empty list meant `q.o.map` threw
+       during the first render and NOTHING drew, not even the class view. The
+       throw turned a crash into a sentence.
+
+       The amended round is a CONDITIONAL SURFACE (`if recallOpen`) and the
+       class view no longer reads `this.questions` at all — the old round's
+       renderVals block is retired with its markup, see student_rulings.py. So
+       a class with no ladder rungs behind its lessons now gets its CLASS PAGE:
+       its work, its lessons, its leaderboard, its flashcards. What it does not
+       get is a recall button, because `recallLabel` is empty and the binding
+       is marked `drop`.
+
+       That is the whole trade, stated plainly: a student whose class has no
+       recall bank used to lose the entire page over it. Now they lose one
+       button. */
 
     /* ═══════════════════════════════════════════════════════════════════
        ── ⊕ 23 Aug 2026 — PHASE 2. THE FLASHCARD DECK ────────────────────
@@ -1747,6 +1784,112 @@
       seed: klass.id + "|" + londonYmd(serverNow)
     });
 
+    /* ═══════════════════════════════════════════════════════════════════
+       ── ⊕ 23 Aug 2026 — PHASE 3. THE RECALL BANK ───────────────────────
+       ═══════════════════════════════════════════════════════════════════
+
+       Design's C2b round draws from "the recall and apply rungs of every
+       lesson the class has covered". Two sources could answer that, and both
+       were measured on 8r/Sc1 before one was chosen:
+
+         a  `/api/class/recall`, already called at the top of this function.
+            It returns the rungs of the lessons the class's SCHEME says have
+            been taught — for 8r/Sc1, `the-gas-exchange-system` alone, so TWO
+            questions.
+         b  `ks3_ladder_questions` read directly, filtered by `deckSlugs` —
+            the covered-lesson set Phase 2 already assembled, which is the
+            UNION of the scheme's lessons and every lesson behind every
+            assignment this class has ever been set. For 8r/Sc1 that is
+            `the-gas-exchange-system` + `particle-model`, so FOUR.
+
+       (b), and the reason is not that it is bigger. It is that (a) cannot see
+       the hand-seeded May work at all — the only marked work on the platform —
+       and a round drawn from (a) would leave a student unable to practise the
+       one lesson they have a mark in. (a) is a strict SUBSET of (b) here; the
+       endpoint stays exactly where it is and still supplies `questions` and
+       the teaching week.
+
+       ⚠️ AND THE COVERED-LESSON SET IS NOT RESOLVED A THIRD TIME. `deckSlugs`
+       is the same variable the flashcard deck reads, filled by the same single
+       walk of `assignment_questions.source_ref` that the work rows' "Open the
+       lesson" button uses. Three surfaces, one answer to "which lessons has
+       this class covered".
+
+       ⚠️ THE TABLE HAS NO `topic` COLUMN — checked against the schema, not
+       assumed. `/api/class/recall` composes one; a direct read has to derive
+       it, and `deslug(lesson_slug)` is what this file already falls back to
+       for exactly that value, so the two routes agree.
+
+       ⛔ NOTHING HERE IS HANDED IN. This is a SELECT and there is no writer
+       anywhere in the round: no submission row, no attempt row, no score. The
+       only thing a round writes is a per-device seen count, in localStorage,
+       for the ordering — see `QSEEN_PREFIX`. */
+    var recallBank = [];
+    try {
+      if (deckSlugs.length) {
+        var lq = await sb.from("ks3_ladder_questions")
+          .select("question_ref, lesson_slug, unit_code, rung, text, "
+                  + "answer_letter, options")
+          .in("lesson_slug", deckSlugs)
+          .in("rung", ["recall", "apply"])
+          .order("lesson_slug").order("rung");
+        /* supabase-js RESOLVES with an `error` rather than rejecting, so
+           without this the bank would simply be empty and nothing would say
+           why — the same silence the deck's own read documents. */
+        if (lq.error) { throw lq.error; }
+        (lq.data || []).forEach(function (r) {
+          var n = normalise(r.options, r.answer_letter);
+          if (!n) { return; }
+          recallBank.push({
+            /* ⚠️ THE ID IS `question_ref`, AND IT IS THE ONLY id this corpus
+               has. `rankForPractice` keys `opts.seen` on `it.id` and
+               `opts.wrong` on `it.lesson`, so this is what a seen count is
+               recorded against and what a second round is stopped from
+               repeating. It is stable across a re-export: it is composed from
+               the lesson slug and the rung, never from a position. */
+            id: r.question_ref,
+            lesson: r.lesson_slug,
+            topic: deslug(r.lesson_slug).toUpperCase(),
+            q: r.text || "",
+            options: n.o,
+            answer: n.a,
+            /* ⚠️ `notes`, PLURAL, AND DESIGN'S IS SINGULAR. Design's amended
+               sample carries ONE teaching note per question and shows it
+               whatever the student picked. This corpus carries a `why` per
+               OPTION and — measured across both content sources, and recorded
+               in the 21 Aug ruling — the ones that exist are always the
+               DISTRACTORS. So the round shows the line written against the
+               answer the student actually gave, which is where the teaching
+               lands, and a correct answer gets the verdict word and nothing
+               else. `recallVals` reads whichever shape it is handed, so the
+               fixture keeps Design's behaviour byte for byte. */
+            notes: n.f
+          });
+        });
+      }
+    } catch (bankErr) {
+      console.error("[student-live] could not build the recall bank", bankErr);
+      recallBank = [];
+    }
+
+    /* ── THE SAME ORDER, FROM THE SAME FUNCTION ───────────────────────────
+       `rankForPractice` — wrong first, then least-seen, then a fixed jitter.
+       Written once, in this file, and called by the deck above and the round
+       here; a second implementation of "what should this student practise
+       next" would drift invisibly, because nothing on the page states the
+       order.
+
+       The seed carries `|recall` so the two corpora do not receive the same
+       jitter for the same lesson and end up correlated — the deck and the
+       round should not agree about which lesson to lead with just because
+       they happen to hash the same slug. */
+    var recallSeen = seenStore(user.id, klass.id, QSEEN_PREFIX);
+    recallBank = rankForPractice(recallBank, {
+      wrong: wrongLessons,
+      seen: recallSeen.all(),
+      seed: klass.id + "|recall|" + londonYmd(serverNow)
+    });
+
     /* ── shoutouts[] ─────────────────────────────────────────────────────
        The class's real shout-out feed, narrowed to the ones written TO this
        student (and the ones written to the class as a whole). The card does
@@ -1828,6 +1971,14 @@
          held-state defect got shipped once already. */
       cardSeen: function (cardId) {
         return deckSeen.bump(cardId);
+      },
+      /* ⊕ 23 Aug 2026 — PHASE 3. A recall question was ANSWERED. Same store
+         shape, same device-only argument, different corpus and a different
+         event: a card counts as seen when it is REVEALED, a question when it
+         is CHECKED. Reaches no network, writes no row — the round hands
+         nothing in, and this is the only thing it records anywhere. */
+      questionSeen: function (questionRef) {
+        return recallSeen.bump(questionRef);
       }
     };
 
@@ -1866,6 +2017,46 @@
          student_rulings.py), so a student is never taken to a surface with a
          counter reading 00 / 00 on it. */
       cardsEmpty: SAY.noRecall,
+
+      /* ── ⊕ 23 Aug 2026 — PHASE 3. THE ROUND'S THREE KEYS ───────────────
+
+         `recallBank` is every recall and apply rung behind every lesson this
+         class has covered, already in practice order. The page does not sort
+         it, cap it or choose from it: `recallVals` in student_rulings.py takes
+         the first `min(6, length)` of it, which is ruling P2's round size, and
+         states that size in the two places the round prints a number.
+
+         Design's `bank()` on the fixture is eight authored samples; this is
+         the real one, and on 8r/Sc1 today it is FOUR. */
+      recallBank: recallBank,
+
+      /* ⊕ RULED 22 Aug 2026 — P2, HONOURED BY THE NEW SURFACE. "The round is
+         min(6, pool), and the page has to say the size it is actually going to
+         show." The two text nodes that used to state it in a WORD — Design's
+         `SIX QUESTIONS · UNLIMITED ROUNDS` eyebrow and its `OF SIX` caption —
+         are retired with the old round's markup. What states the size now is
+         `qPos` ("QUESTION 01 / 04") and `roundScore` ("2 / 4"), both computed
+         from the real length, so there is no wording left that CAN be wrong. */
+
+      /* Design typed `8r/Sc1 \u00a0·\u00a0 RECALL` into the round's band as
+         ONE text node with NON-BREAKING spaces — the same trap
+         `flashcardsTitle` and `accountClassLine` both document, and it would
+         have shipped one real class's name at the top of every student's
+         round. Composed here from the class name this function already holds;
+         the separator is Design's typography and is carried verbatim. */
+      recallTitle: name + " \u00a0\u00b7\u00a0 RECALL",
+
+      /* ⛔ THE BENCH BUTTON GOES WHEN THERE IS NOTHING TO PRACTISE. Design's
+         `Practise recall` is a real control, and a class whose covered lessons
+         carry no ladder rungs would have one that opens nothing — the dead
+         control P7 exists to prevent. The binding is marked `drop`, so an
+         empty value takes the BUTTON with it rather than leaving an empty
+         bordered box, which is the `envBadge` shape exactly.
+
+         Not a disabled button and not an explanatory sentence: §8.10 forbids
+         the page explaining itself, and a greyed-out control a student cannot
+         act on is a worse answer than a bench that simply offers what it has. */
+      recallLabel: recallBank.length ? "Practise recall" : "",
 
       /* Design typed `FLASHCARDS \u00a0·\u00a0 8r/Sc1` into the overlay's
          header as ONE text node with NON-BREAKING spaces, which is why it

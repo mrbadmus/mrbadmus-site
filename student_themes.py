@@ -1623,6 +1623,829 @@ def _prove_picker(page, url):
 # the run
 # ══════════════════════════════════════════════════════════════════════════
 
+# ══════════════════════════════════════════════════════════════════════════
+# ⊕ 23 Aug 2026 — PHASE 3. THE RECALL ROUND, WHICH NO OTHER GATE CAN OPEN.
+# ══════════════════════════════════════════════════════════════════════════
+#
+# ⚠️ WHY A BEHAVIOUR DRIVE LIVES IN THE COLOUR GATE.
+#
+# `student_behaviour.py` compares the port against DESIGN'S ORIGINAL DELIVERY
+# and requires every step of a drive to be performable on both. Design's C2b
+# REPLACES the recall round: the original is a `view` painted in page-chrome
+# dark, the amendment is a themed overlay. So a step that opens a round opens
+# two different screens, and the seven `Recall` drives that used to walk the
+# old one had to be retired — see the note where they were.
+#
+# This file has the property that makes the round drivable: it drives the PORT
+# ALONE and needs no oracle, because a colour is checked against Design's
+# stated palette and arithmetic rather than against Design's file. It can
+# therefore press a control the port GAINED. That is the same argument the six
+# swatches are here on, one unit later — and the round is the largest surface
+# in that position.
+#
+# What it covers, and it is deliberately more than colour:
+#
+#   · the round OPENS from the bench control Design's own amendment wires it
+#     to (donor node 76, `data-port-action="recall-round"`)
+#   · the round WALKS — pick, Check, verdict, Next question, Skip, the last
+#     question's `Finish the round`, the round-done card, `Another round`
+#   · `min(6, pool)` is stated by the page, at THREE pool sizes
+#   · no question repeats inside a round, at each of those sizes
+#   · ⚠️ THE `.rprog` BAR READS THE RIGHT FRACTION AT A SHORT POOL, which is
+#     the defect this unit was told about and could not otherwise prove: the
+#     fixture's bank is Design's EIGHT questions, so `min(6, 8)` is six and the
+#     scaling is the identity on it. The bank is truncated IN THE PAGE — it is
+#     read through `MRB_DATA` on every render, so this is the product's own
+#     seam and not a hook added for a test — and the bar is re-read at every
+#     step of a round of 6, of 4 and of 2.
+#   · every word inside the round clears AA against the ground it is painted
+#     on, on all six themes and on the attribute's absence.
+#
+# The self-proof is at the end, and it is the same standard as the rest of the
+# file: the sweep is shown catching a colour it should catch before its silence
+# is allowed to mean anything.
+
+_OPEN_ROUND = r"""(function(){
+  var r = document.querySelector('.rd[data-mode="ks3"]');
+  if (!r) return 'no design root';
+  if (r.querySelector('[data-port-region="recall-round"]')) return 'already';
+  var hit = null;
+  r.querySelectorAll('button,a').forEach(function(e){
+    if (!hit && (e.innerText||'').replace(/\s+/g,' ').trim() === 'Practise recall') hit = e;
+  });
+  if (!hit) return 'no Practise recall control';
+  hit.click();
+  return 'ok';
+})()"""
+
+# Press a control INSIDE the round by its exact label. Scoped to the round so
+# a label that also exists on the page behind it cannot be hit by mistake.
+_PRESS_IN_ROUND = """(function(label){
+  var r = document.querySelector('.rd[data-mode="ks3"]');
+  var rd = r && r.querySelector('[data-port-region="recall-round"]');
+  if (!rd) return 'no round';
+  var hit = null;
+  rd.querySelectorAll('button,a').forEach(function(e){
+    if (!hit && (e.innerText||'').replace(/\\s+/g,' ').trim() === label) hit = e;
+  });
+  if (!hit) return 'no control';
+  hit.click();
+  return 'ok';
+})(%s)"""
+
+_PRESS_OPT = """(function(n){
+  var r = document.querySelector('.rd[data-mode="ks3"]');
+  var rd = r && r.querySelector('[data-port-region="recall-round"]');
+  if (!rd) return 'no round';
+  var o = rd.querySelectorAll('.opt');
+  if (n >= o.length) return 'no such option';
+  o[n].click();
+  return 'ok';
+})(%s)"""
+
+# ⚠️ THE BANK IS SHORTENED THROUGH THE PRODUCT'S OWN SEAM, and that is what
+# makes this a measurement rather than a simulation. `recallBank()` calls
+# `MRB_DATA('recallBank')` on every render and `MRB_DATA` reads
+# `window.__MRB_DATA__` at call time, so a shorter array is exactly what a
+# class with fewer covered lessons looks like to this page. No method is
+# replaced and no state is written; the surface has no way to know.
+_TRUNCATE_BANK = """(function(n){
+  var d = window.__MRB_DATA__;
+  if (!d || !d.recallBank) return 'no bank';
+  if (!window.__MRB_FULL_BANK__) { window.__MRB_FULL_BANK__ = d.recallBank; }
+  d.recallBank = window.__MRB_FULL_BANK__.slice(0, n);
+  return String(d.recallBank.length);
+})(%s)"""
+
+_RESTORE_BANK = """(function(){
+  var d = window.__MRB_DATA__;
+  if (d && window.__MRB_FULL_BANK__) { d.recallBank = window.__MRB_FULL_BANK__; }
+  return 'ok';
+})()"""
+
+_ROUND = r"""
+(function(){
+  var r = document.querySelector('.rd[data-mode="ks3"]');
+  if (!r) return JSON.stringify({error:'no design root'});
+  var rd = r.querySelector('[data-port-region="recall-round"]');
+  if (!rd) return JSON.stringify({open:false});
+  function txt(e){ return e ? (e.innerText||'').replace(/\s+/g,' ').trim() : null; }
+
+  // ⚠️ THE GROUND UNDER A WORD IS COMPOSITED, NOT TAKEN AS READ, and the
+  // first version of this took the topmost non-transparent layer and used it
+  // whole. That is right everywhere on this page except the one place it
+  // matters most: Design's correct-answer treatment is
+  // `--opt-bg: rgba(18,161,80,.18)`, an 18% green over the panel's own
+  // ground, and reading it as an opaque #12A150 reported the RIGHT answer's
+  // label at 3.06:1 on six themes — a defect that is not on the page. A
+  // contrast gate that cannot composite alpha invents failures, and an
+  // invented failure is how a real one gets waved through.
+  function layers(el){
+    var out = [], p = el;
+    while (p) {
+      var m = /rgba?\(([^)]+)\)/.exec(getComputedStyle(p).backgroundColor);
+      if (m) {
+        var v = m[1].split(',').map(parseFloat);
+        var a = (v.length > 3) ? v[3] : 1;
+        if (a > 0) { out.push([v[0], v[1], v[2], a]); if (a >= 1) { break; } }
+      }
+      p = p.parentElement;
+    }
+    return out;
+  }
+  function ground(el){
+    var L = layers(el);
+    if (!L.length) { return null; }
+    var out = L[L.length - 1];
+    for (var i = L.length - 2; i >= 0; i--) {
+      var t = L[i], a = t[3];
+      out = [t[0]*a + out[0]*(1-a), t[1]*a + out[1]*(1-a), t[2]*a + out[2]*(1-a), 1];
+    }
+    return 'rgb(' + Math.round(out[0]) + ', ' + Math.round(out[1]) + ', '
+                  + Math.round(out[2]) + ')';
+  }
+
+  // Every element in the round that renders a word of its OWN — a text node
+  // that is not only whitespace. Inherited text belongs to the child that
+  // draws it, which is where its colour and its ground are decided.
+  var words = [];
+  rd.querySelectorAll('*').forEach(function(e){
+    var own = '';
+    for (var i = 0; i < e.childNodes.length; i++) {
+      if (e.childNodes[i].nodeType === 3) { own += e.childNodes[i].nodeValue; }
+    }
+    own = own.replace(/\s+/g, ' ').trim();
+    if (!own) { return; }
+    var cs = getComputedStyle(e);
+    if (cs.visibility === 'hidden' || cs.display === 'none') { return; }
+    var box = e.getBoundingClientRect();
+    if (box.width < 1 || box.height < 1) { return; }
+    words.push({
+      text: own.slice(0, 60), color: cs.color, bg: ground(e),
+      size: parseFloat(cs.fontSize), weight: cs.fontWeight
+    });
+  });
+
+  var bar = rd.querySelector('.rprog');
+  var barBox = bar ? bar.getBoundingClientRect() : null;
+  var track = bar ? bar.parentElement.getBoundingClientRect() : null;
+  var opts = [].map.call(rd.querySelectorAll('.opt'), function(e){
+    return { st: e.getAttribute('data-st'), text: txt(e) };
+  });
+  var pips = [].map.call(rd.querySelectorAll('.pip'), function(e){
+    return e.getAttribute('data-on');
+  });
+  var panel = rd.querySelector('[data-bench-surface="recall"]');
+  var q = rd.querySelector('h2');
+  var controls = [];
+  rd.querySelectorAll('button,a').forEach(function(e){ controls.push(txt(e)); });
+
+  return JSON.stringify({
+    open: true,
+    theme: document.documentElement.getAttribute('data-bench-theme'),
+    text: txt(rd),
+    question: txt(q),
+    controls: controls,
+    words: words,
+    opts: opts,
+    pips: pips,
+    barW: bar ? bar.getAttribute('data-w') : null,
+    barPx: barBox ? barBox.width : null,
+    trackPx: track ? track.width : null,
+    panelBg: panel ? getComputedStyle(panel).backgroundColor : null,
+    rootBg: getComputedStyle(rd).backgroundColor
+  });
+})()
+"""
+
+
+def _read_round(page):
+    import json
+    return json.loads(page.eval(_ROUND))
+
+
+def _checked(rd):
+    """Has the current question been Checked? Read off Design's own states."""
+    return "correct" in [o.get("st") for o in (rd.get("opts") or [])]
+
+
+def _advance(page, skip=False):
+    """Answer the current question and move on. 'done' | 'ok' | a reason.
+
+    ⚠️ IT READS WHICH BUTTON IS THERE RATHER THAN COUNTING QUESTIONS, and the
+    first version counted. That version stalled at question five of six and
+    reported the round as broken, because Design's own label changes on the
+    LAST question — `Next question` becomes `Finish the round` — and a walk
+    that assumes where the last question is cannot survive `min(6, pool)`
+    moving it. The round is asked what it is showing.
+    """
+    import json
+    rd = _read_round(page)
+    if not rd.get("open"):
+        return "closed"
+    if "Another round" in (rd.get("controls") or []):
+        return "done"
+    if skip:
+        if page.eval(_PRESS_IN_ROUND % json.dumps("Skip")) != "ok":
+            return "no Skip"
+        time.sleep(0.3)
+        return "ok"
+    if not _checked(rd):
+        if page.eval(_PRESS_OPT % json.dumps(0)) != "ok":
+            return "no option"
+        time.sleep(0.15)
+        if page.eval(_PRESS_IN_ROUND % json.dumps("Check")) != "ok":
+            return "no Check"
+        time.sleep(0.2)
+    for label in ("Next question", "Finish the round"):
+        if page.eval(_PRESS_IN_ROUND % json.dumps(label)) == "ok":
+            time.sleep(0.3)
+            return "ok"
+    return "stuck"
+
+
+def _run_to_end(page, cap=12):
+    """Walk from wherever the round is to its done card. Returns each screen."""
+    screens = []
+    for _ in range(cap):
+        rd = _read_round(page)
+        if not rd.get("open"):
+            break
+        if "Another round" in (rd.get("controls") or []):
+            break
+        screens.append(rd)
+        if _advance(page) != "ok":
+            break
+    return screens
+
+
+def _walk_round(page, url):
+    """Open the round and walk it, recording every step. Returns a reading.
+
+    ⚠️ THE PAGE IS RELOADED FIRST, for the reason `_drive_picker` gives: the
+    seven theme cases above move `data-bench-theme` from OUTSIDE the component,
+    which no student can do. A reload puts the page back where a student finds
+    it.
+    """
+    import json
+    out = {"opened": None, "pools": {}}
+    page.goto(url)
+    time.sleep(2.6)
+    out["opened"] = page.eval(_OPEN_ROUND)
+    time.sleep(0.5)
+    out["at_open"] = _read_round(page)
+
+    # (a) pick an option and Check it. Option 0 on Design's first sample
+    # question is 'Breathing' and the answer is index 1, so this is the WRONG
+    # one — deliberately, because that is the branch with a line to show.
+    out["picked"] = page.eval(_PRESS_OPT % json.dumps(0))
+    time.sleep(0.35)
+    out["after_pick"] = _read_round(page)
+    out["checked"] = page.eval(_PRESS_IN_ROUND % json.dumps("Check"))
+    time.sleep(0.35)
+    out["after_check"] = _read_round(page)
+
+    # (b) move on, then SKIP the next one — the third control on the row, and
+    # the one that carries P2's streak rule: a skip zeroes the streak, and the
+    # label may only say STREAK BROKEN if there was a streak to break.
+    out["next"] = _advance(page)
+    out["after_next"] = _read_round(page)
+    out["skipped"] = _advance(page, skip=True)
+    out["after_skip"] = _read_round(page)
+
+    # (c) run it out, then take the done card and press Another round.
+    out["screens"] = [(s.get("question") or "") for s in _run_to_end(page)]
+    out["at_done"] = _read_round(page)
+    out["another"] = page.eval(_PRESS_IN_ROUND % json.dumps("Another round"))
+    time.sleep(0.4)
+    out["after_another"] = _read_round(page)
+
+    # (d) ⚠️ THE SHORT POOL. Three sizes, and the middle one is 8r/Sc1's real
+    # bank today: `the-gas-exchange-system` and `particle-model`, two ladder
+    # rungs each. Every screen of every round is read, bar included.
+    for n in (6, 4, 2):
+        out["pools"][n] = None
+        if page.eval(_TRUNCATE_BANK % json.dumps(n)) == "no bank":
+            continue
+        # Drive to the end of whatever round is up, so `Another round` exists
+        # to press — it is the only reset, and it is what re-renders against
+        # the shortened bank.
+        _run_to_end(page)
+        page.eval(_PRESS_IN_ROUND % json.dumps("Another round"))
+        time.sleep(0.4)
+        steps = []
+        for _ in range(n + 2):
+            rd = _read_round(page)
+            steps.append({"barW": rd.get("barW"), "barPx": rd.get("barPx"),
+                          "trackPx": rd.get("trackPx"),
+                          "text": (rd.get("text") or "")[:200],
+                          "question": rd.get("question"),
+                          "pips": rd.get("pips"),
+                          "controls": rd.get("controls")})
+            if "Another round" in (rd.get("controls") or []):
+                break
+            if _advance(page) != "ok":
+                break
+        out["pools"][n] = steps
+    page.eval(_RESTORE_BANK)
+    _run_to_end(page)
+    page.eval(_PRESS_IN_ROUND % json.dumps("Another round"))
+    time.sleep(0.4)
+
+    # (e) the round is left OPEN and mid-question with one option Checked, so
+    # the theme sweep below reads it in the state that has the most colours on
+    # screen at once: idle options, the wrong one, the correct one, the verdict
+    # block, the progress bar and the streak line.
+    page.eval(_PRESS_OPT % json.dumps(0))
+    time.sleep(0.2)
+    page.eval(_PRESS_IN_ROUND % json.dumps("Check"))
+    time.sleep(0.35)
+    out["left_open"] = _read_round(page)
+    return out
+
+
+def _streak_probe(page):
+    """⊕ P2, DRIVEN: a streak must exist before the page may say it broke.
+
+    ⚠️ THE WALK ABOVE CANNOT PROVE THIS, and its NOTE row says so honestly. It
+    presses option 0 on every question, which on Design's bank is wrong every
+    time, so it never builds a streak and there is nothing for its skip to
+    break. A row that can only ever say "not seen" is not an assertion.
+
+    So this learns the answer instead of guessing it. With the bank shortened
+    to THREE, `recallRound()` returns the whole bank and round two starts at
+    `((2-1)*3) % 3 = 0` — the same three questions, in the same order. Round
+    one is used to read which option Design marks `correct`; round two answers
+    that question RIGHT (a streak of one), then SKIPS the next (the streak
+    breaks), and the third screen is where the page has to say so.
+
+    Three is the shortest bank that can show it: the label lives in the
+    `inRound` branch, so a streak broken by the LAST question is broken onto
+    the round-done card, where there is nothing to read it.
+    """
+    import json
+    out = {"answer": None}
+    page.eval(_TRUNCATE_BANK % json.dumps(3))
+    _run_to_end(page)
+    page.eval(_PRESS_IN_ROUND % json.dumps("Another round"))
+    time.sleep(0.4)
+
+    # Round one: learn question one's answer from Design's own `correct` state.
+    page.eval(_PRESS_OPT % json.dumps(0))
+    time.sleep(0.15)
+    page.eval(_PRESS_IN_ROUND % json.dumps("Check"))
+    time.sleep(0.3)
+    rd = _read_round(page)
+    ans = [i for i, o in enumerate(rd.get("opts") or [])
+           if o.get("st") == "correct"]
+    if not ans:
+        page.eval(_RESTORE_BANK)
+        return out
+    out["answer"] = ans[0]
+    _run_to_end(page)
+    page.eval(_PRESS_IN_ROUND % json.dumps("Another round"))
+    time.sleep(0.4)
+
+    # Round two: right, then skip.
+    page.eval(_PRESS_OPT % json.dumps(out["answer"]))
+    time.sleep(0.15)
+    page.eval(_PRESS_IN_ROUND % json.dumps("Check"))
+    time.sleep(0.3)
+    out["right"] = _read_round(page)
+    page.eval(_PRESS_IN_ROUND % json.dumps("Next question"))
+    time.sleep(0.35)
+    out["on_streak"] = _read_round(page)
+    page.eval(_PRESS_IN_ROUND % json.dumps("Skip"))
+    time.sleep(0.35)
+    out["after_skip"] = _read_round(page)
+    page.eval(_RESTORE_BANK)
+    _run_to_end(page)
+    page.eval(_PRESS_IN_ROUND % json.dumps("Another round"))
+    time.sleep(0.4)
+    return out
+
+
+def check_streak(sp):
+    """The three states P2 ruled: silent, running, broken."""
+    rows, problems = [], []
+    disp = "the recall round"
+    if sp.get("answer") is None:
+        rows.append((disp, "⊕ P2 · a streak runs, then breaks", "FAIL",
+                     "could not read a correct option to build a streak with"))
+        problems.append(
+            "the streak probe could not learn any question's answer from "
+            "Design's `.opt[data-st]` states, so P2's three states were never "
+            "driven. A check that cannot reach its subject reports clean.")
+        return rows, problems
+    on = (sp.get("on_streak") or {}).get("text") or ""
+    if "STREAK 01" not in on:
+        rows.append((disp, "⊕ P2 · a running streak is counted", "FAIL",
+                     "no STREAK 01 after one right answer"))
+        problems.append(
+            "⊕ P2 — one right answer did not produce `STREAK 01`. The middle "
+            "of P2's three states is the only one that shows a number, and it "
+            "is the one a student is working towards.")
+    else:
+        rows.append((disp, "⊕ P2 · a running streak is counted", "PASS",
+                     "STREAK 01 after one right answer"))
+    br = (sp.get("after_skip") or {}).get("text") or ""
+    if "STREAK BROKEN" not in br:
+        rows.append((disp, "⊕ P2 · a broken streak is named", "FAIL",
+                     "no STREAK BROKEN after skipping off a streak"))
+        problems.append(
+            "⊕ P2 — skipping a question while a streak was running did not "
+            "produce `STREAK BROKEN`. The third of P2's three states is the "
+            "one the whole ruling is about: the word may appear ONLY here, and "
+            "it has to appear here.")
+    else:
+        rows.append((disp, "⊕ P2 · a broken streak is named", "PASS",
+                     "STREAK BROKEN, and only once one existed"))
+    return rows, problems
+
+
+def _round_themes(page):
+    """The open round, read on all seven cases. The round is left open."""
+    out = {}
+    for case in CASES:
+        _select(page, case)
+        time.sleep(0.3)
+        out[case] = _read_round(page)
+    _select(page, None)
+    return out
+
+
+def check_round(rd):
+    """The round opens, walks, states its real size, and never repeats."""
+    import re as _re
+    rows, problems = [], []
+    disp = "the recall round"
+
+    if rd["opened"] not in ("ok", "already"):
+        rows.append((disp, "`Practise recall` opens the round", "FAIL",
+                     str(rd["opened"])))
+        problems.append(
+            "the bench control `Practise recall` did not open the recall "
+            "round: %r. Design's C2b marks donor node 76 "
+            "`data-port-action=\"recall-round\"`, so this is the control the "
+            "amendment names, and the round is unreachable without it — the "
+            "nav tab that used to reach the old round is retired."
+            % (rd["opened"],))
+        return rows, problems
+    rows.append((disp, "`Practise recall` opens the round", "PASS",
+                 "the recall-round region is on the page"))
+
+    at = rd["at_open"]
+    if not at.get("open"):
+        problems.append("the round region is not on the page after opening it.")
+        rows.append((disp, "the round renders", "FAIL", "no region"))
+        return rows, problems
+
+    m = _re.search(r"QUESTION (\d\d) / (\d\d)", at.get("text") or "")
+    if not m:
+        rows.append((disp, "the round states its size", "FAIL",
+                     "no `QUESTION nn / nn` on the surface"))
+        problems.append(
+            "the round does not state how many questions it is going to show. "
+            "Ruling P2 requires the page to say the size it will ACTUALLY "
+            "show, and `qPos` is the place that says it now that Design's "
+            "`SIX QUESTIONS · UNLIMITED ROUNDS` eyebrow is retired.")
+    else:
+        rows.append((disp, "the round states its size", "PASS",
+                     "QUESTION %s / %s" % (m.group(1), m.group(2))))
+
+    after = rd.get("after_check") or {}
+    if "Not this time." not in (after.get("text") or ""):
+        rows.append((disp, "a wrong answer is marked", "FAIL",
+                     "no verdict after Check"))
+        problems.append("Check did not produce Design's verdict line.")
+    else:
+        rows.append((disp, "a wrong answer is marked", "PASS",
+                     "the verdict is on the page"))
+    sts = [o["st"] for o in (after.get("opts") or [])]
+    if "correct" not in sts or "wrong" not in sts:
+        rows.append((disp, "the option states after Check", "FAIL",
+                     "data-st = %r" % (sts,)))
+        problems.append(
+            "after Check the options should carry Design's `correct` and "
+            "`wrong` states — the `.opt[data-st=…]` rules in Design's own "
+            "grafted stylesheet are the only thing that paints them. Got %r."
+            % (sts,))
+    else:
+        rows.append((disp, "the option states after Check", "PASS",
+                     "correct + wrong + %d idle"
+                     % len([s for s in sts if s == "idle"])))
+
+    # ⊕ P2, ASSERTED FROM THE SCREEN. A skip zeroes the streak, and the label
+    # may only say STREAK BROKEN if there was a streak to break. The walk
+    # answers question one WRONG and question two RIGHT, so by the skip there
+    # is a streak of one — which the skip breaks, and the page must say so.
+    if rd.get("skipped") != "ok":
+        rows.append((disp, "Skip moves on", "FAIL", str(rd.get("skipped"))))
+        problems.append("the round's `Skip` control did not advance it.")
+    else:
+        rows.append((disp, "Skip moves on", "PASS", "the round advanced"))
+    op = (rd.get("at_open") or {}).get("text") or ""
+    if "STREAK" in op:
+        rows.append((disp, "no streak is claimed before one exists", "FAIL",
+                     "the opening screen mentions a streak"))
+        problems.append(
+            "⊕ P2 — the round's first screen says something about a streak "
+            "before a single question has been answered. Zero is TWO states: "
+            "never had one, and had one and broke it. `streakLabel` is silent "
+            "in the first.")
+    else:
+        rows.append((disp, "no streak is claimed before one exists", "PASS",
+                     "the opening screen says nothing about a streak"))
+    # ⚠️ THE SKIP IN THIS WALK CANNOT BREAK A STREAK, and that is a property
+    # of the walk rather than of the page: it presses option 0 every time, and
+    # option 0 is wrong on every one of Design's eight samples. So there is
+    # never a streak here for a skip to break, and asserting `STREAK BROKEN`
+    # would assert the opposite of what P2 requires. `_streak_probe` below
+    # learns an answer and drives all three of P2's states properly.
+    sk = (rd.get("after_skip") or {}).get("text") or ""
+    if "STREAK BROKEN" in sk:
+        rows.append((disp, "no streak is claimed after a skip that broke "
+                     "nothing", "FAIL", "STREAK BROKEN with no streak to break"))
+        problems.append(
+            "⊕ P2 — the round says STREAK BROKEN after a skip taken with no "
+            "streak running. Zero is TWO states and this is the first of them: "
+            "nothing was built, so nothing broke.")
+    else:
+        rows.append((disp, "no streak is claimed after a skip that broke "
+                     "nothing", "PASS", "silent, as P2 requires"))
+
+    done = rd.get("at_done") or {}
+    if "Another round" not in (done.get("controls") or []):
+        rows.append((disp, "the round ends and offers another", "FAIL",
+                     "no `Another round` at the end of the walk"))
+        problems.append(
+            "walking the round to its end did not reach Design's round-done "
+            "card. Its `Another round` button is the only way back into a "
+            "fresh round without leaving the surface.")
+    else:
+        rows.append((disp, "the round ends and offers another", "PASS",
+                     "the round-done card is on the page"))
+    if not _re.search(r"\d+ / \d+ right", done.get("text") or ""):
+        rows.append((disp, "the round-done card scores the round", "FAIL",
+                     "no `n / n right` on the done card"))
+        problems.append(
+            "the round-done card does not state the round score against the "
+            "round's real length. It is the second of the two places ruling "
+            "P2's size has to show through.")
+    else:
+        rows.append((disp, "the round-done card scores the round", "PASS",
+                     _re.search(r"\d+ / \d+ right",
+                                done.get("text") or "").group(0)))
+
+    again = rd.get("after_another") or {}
+    if "ROUND 02" not in (again.get("text") or ""):
+        rows.append((disp, "`Another round` starts a fresh round", "FAIL",
+                     "the round number did not move"))
+        problems.append(
+            "pressing `Another round` did not increment the round number. A "
+            "round that does not renumber is the same round with its score "
+            "reset, under a heading that says ROUND 01.")
+    else:
+        rows.append((disp, "`Another round` starts a fresh round", "PASS",
+                     "ROUND 02, question 01"))
+    if "STREAK BROKEN" in (again.get("text") or ""):
+        rows.append((disp, "a fresh round does not open broken", "FAIL",
+                     "STREAK BROKEN on the first screen of round 2"))
+        problems.append(
+            "⊕ P2 — round two opens saying STREAK BROKEN over a student who "
+            "has not answered a question in it. Design's `anotherRound` zeroes "
+            "the streak, so `rbroke` has to be zeroed with it or P2's defect "
+            "comes back in a new place.")
+    else:
+        rows.append((disp, "a fresh round does not open broken", "PASS",
+                     "round two says nothing about a streak"))
+
+    # ── min(6, pool), and the bar that assumes six ────────────────────────
+    for n, steps in sorted(rd["pools"].items()):
+        size = min(6, n)
+        if not steps:
+            rows.append((disp, "a pool of %d was driven" % n, "FAIL",
+                         "the bank could not be shortened"))
+            problems.append(
+                "the recall bank could not be shortened to %d, so `min(6, "
+                "pool)` was never measured at a short pool — which is the one "
+                "thing the fixture's own eight-question bank cannot show."
+                % n)
+            continue
+        head = steps[0]["text"]
+        want = "QUESTION 01 / %02d" % size
+        if want not in head:
+            rows.append((disp, "a pool of %d shows %d and says so" % (n, size),
+                         "FAIL", "no %r in %r" % (want, head[:70])))
+            problems.append(
+                "with a bank of %d the round must be min(6, %d) = %d long and "
+                "must SAY that size — ruling P2. The band reads %r."
+                % (n, n, size, head[:90]))
+        else:
+            rows.append((disp, "a pool of %d shows %d and says so" % (n, size),
+                         "PASS", want))
+
+        qs = [st["question"] for st in steps
+              if "Another round" not in (st["controls"] or [])]
+        if len(qs) != size:
+            rows.append((disp, "a pool of %d runs %d question(s)" % (n, size),
+                         "FAIL", "%d question screen(s)" % len(qs)))
+            problems.append(
+                "a bank of %d produced a round of %d question screens, and "
+                "min(6, %d) is %d." % (n, len(qs), n, size))
+        elif len(set(qs)) != len(qs):
+            rows.append((disp, "a pool of %d repeats nothing" % n, "FAIL",
+                         "%d screen(s), %d distinct" % (len(qs), len(set(qs)))))
+            problems.append(
+                "a round of %d showed the same question twice. A round is "
+                "`size` CONSECUTIVE items of the bank and `size` is "
+                "min(6, length), so the modulo cannot come back round — if "
+                "this is red, one of those two facts has stopped being true."
+                % size)
+        else:
+            rows.append((disp, "a pool of %d runs %d, repeating nothing"
+                         % (n, size), "PASS",
+                         "%d question screen(s), all distinct" % len(qs)))
+
+        # THE BAR. Design's stylesheet carries seven buckets — 0/17/33/50/67/
+        # 83/100% keyed on `data-w` 0..6 — and Design's own logic feeds it the
+        # RAW step index, which is right for a round of six and wrong for
+        # every other length. The drawn fraction has to track the fraction of
+        # the round that is actually DONE, at every length.
+        bad = []
+        for i, st in enumerate(steps):
+            if st["barW"] is None or not st["trackPx"]:
+                bad.append((i, "no bar"))
+                continue
+            frac = float(st["barPx"]) / float(st["trackPx"])
+            done_n = size if ("Another round" in (st["controls"] or [])) else i
+            want_f = done_n / float(size)
+            # Half a bucket. The buckets are 1/6 apart, so a correctly scaled
+            # step can land at most half a bucket from its true fraction; a
+            # RAW index at a short pool lands whole buckets away.
+            if abs(frac - want_f) > (1.0 / 12.0) + 0.02:
+                bad.append((i, "%.3f drawn vs %.3f done" % (frac, want_f)))
+        if bad:
+            rows.append((disp, "a pool of %d fills the bar honestly" % n,
+                         "FAIL", str(bad[:3])))
+            problems.append(
+                "the `.rprog` bar does not track the round at a pool of %d: "
+                "%s. The step is scaled onto Design's six buckets in "
+                "`recallVals`; if this is red that scaling has been lost, and "
+                "a student finishing a short round is shown a bar that is not "
+                "full — 4 of 4 drawn at 67%%." % (n, bad[:3]))
+        else:
+            last = steps[-1]
+            full = (float(last["barPx"]) / float(last["trackPx"])) if last["trackPx"] else 0
+            rows.append((disp, "a pool of %d fills the bar honestly" % n,
+                         "PASS", "%d step(s), ends at %.0f%%"
+                         % (len(steps), full * 100)))
+    return rows, problems
+
+
+def check_round_themes(rt):
+    """Every word in the open round clears AA on the ground it is painted on."""
+    rows, problems = [], []
+    for case in sorted(rt.keys(), key=lambda c: CASES.index(c)):
+        m = rt.get(case) or {}
+        disp = label_of(case)
+        if not m.get("open"):
+            rows.append((disp, "the round is on screen", "FAIL", "not open"))
+            problems.append(
+                "%s — the recall round is not on the page, so nothing about "
+                "its colour was measured on this theme." % disp)
+            continue
+        worst, worst_of, n = None, None, 0
+        excused = 0
+        for w in m.get("words") or []:
+            if not w.get("bg"):
+                continue
+            fg = parse_colour(w["color"])
+            bg = parse_colour(w["bg"])
+            if fg is None or bg is None:
+                continue
+            c = contrast(fg, bg)
+            ex = _round_exception(case, w, c)
+            if ex:
+                excused += 1
+                continue
+            n += 1
+            if worst is None or c < worst:
+                worst, worst_of = c, w
+        if worst is None:
+            rows.append((disp, "the round's text is legible", "FAIL",
+                         "no measurable words"))
+            problems.append(
+                "%s — the round rendered no measurable text at all. A sweep "
+                "that measures nothing reports clean exactly as a healthy one "
+                "does." % disp)
+        elif worst < AA:
+            rows.append((disp, "the round's text is legible", "FAIL",
+                         "%.2f:1 on %r" % (worst, (worst_of or {}).get("text"))))
+            problems.append(
+                "%s — %r in the recall round measures %.2f:1 against the "
+                "ground it is painted on, under AA %.1f. The round is drawn in "
+                "`--b-*`, so it moves with all six themes, and this is the "
+                "only gate that opens it."
+                % (disp, (worst_of or {}).get("text"), worst, AA))
+        else:
+            rows.append((disp, "the round's text is legible", "PASS",
+                         "%d word(s), worst %.2f:1%s"
+                         % (n, worst,
+                            ", %d registered" % excused if excused else "")))
+    return rows, problems
+
+
+# ── the one string in the round that does not clear AA, registered ───────
+#
+# ⊕ 23 Aug 2026 — PHASE 3, and it was found by this gate on its first run.
+#
+# Design's option cards carry a 30px letter chip — `A`, `B`, `C`, `D` in DM
+# Mono 12px — painted `color: var(--opt-mark-ink, var(--b-muted))` on
+# `background: var(--opt-mark-bg, var(--b-inset))`. On CHALK, and only on
+# chalk, that pairing measures 4.44:1 against an AA floor of 4.5. Six themes
+# and one of them is 0.06 short.
+#
+# ⚠️ IT IS DESIGN'S OWN PALETTE PAIRING AND THE PORT DID NOT MAKE IT. Both
+# tokens are Design's, both are declared in the `:root` block grafted from
+# Design's own file, and the two are put together by Design's own inline style
+# on donor node 396. Nothing in the port chooses either.
+#
+# Registered rather than excused wholesale, in the shape
+# `BENCH_TEXT_EXCEPTIONS` already established: ONE string, on ONE theme, with
+# its ratio PINNED. A second string at 4.4 fails, the same string at 3.9 fails,
+# and the same string on any other theme fails. If Design ever moves `--b-muted`
+# on chalk the registration goes stale and this gate says so rather than
+# quietly excusing whatever is there instead.
+#
+# ⚑ AND IT IS ON THE REPORT FOR MIDE rather than only in this comment. A
+# letter chip is a LABEL for the option beside it, and the option's own text is
+# `--b-ink` on the same card at 12.93:1 — so nothing a student has to READ is
+# at 4.44. It is 0.06 from the line, on one theme of six, and it is Design's to
+# move.
+ROUND_TEXT_EXCEPTIONS = [
+    {
+        "case": "chalk",
+        "texts": ("A", "B", "C", "D"),
+        "ratio": 4.44,
+        "tol": 0.06,
+        "why": "Design's option letter chip, --b-muted on --b-inset, on chalk "
+               "alone. Design's own pairing in Design's own inline style; the "
+               "option's own text on the same card is 12.93:1.",
+    },
+]
+
+
+def _round_exception(case, w, c):
+    """Is this word a registered exception, at its registered ratio?"""
+    for ex in ROUND_TEXT_EXCEPTIONS:
+        if ex["case"] != case:
+            continue
+        if w["text"] not in ex["texts"]:
+            continue
+        if abs(c - ex["ratio"]) <= ex["tol"]:
+            return ex
+    return None
+
+
+def _prove_round(page):
+    """The round sweep is shown catching a colour before its silence counts.
+
+    Same standard as every other check in this file. The injection targets the
+    round's own panel — `[data-bench-surface="recall"]`, the node `SET_ATTR`
+    names for exactly this purpose — and forces the question heading to its own
+    ground, which is 1.00:1.
+    """
+    import json
+    rows, problems = [], []
+    disp = "the self-proof"
+    page.eval(_INJECT % json.dumps(
+        '[data-bench-surface="recall"] h2{color:var(--b-ground) !important}'))
+    time.sleep(0.35)
+    broke = check_round_themes({None: _read_round(page)})[1]
+    page.eval(_UNINJECT)
+    time.sleep(0.35)
+    clean = check_round_themes({None: _read_round(page)})[1]
+    if not broke:
+        problems.append(
+            "SELF-PROOF FAILED: the round's own question heading forced to "
+            "1.00:1 against its ground was NOT caught. Every recall-round "
+            "colour row in this run is worthless — the region selector is "
+            "finding nothing, or the word walk is not running.")
+        rows.append((disp, "the round sweep can see an unreadable question",
+                     "FAIL", "injected 1.00:1 went unnoticed"))
+    elif clean:
+        problems.append(
+            "SELF-PROOF FAILED: the round sweep still reports a problem after "
+            "the injected style was removed — %s." % clean[0][:90])
+        rows.append((disp, "the round sweep can see an unreadable question",
+                     "FAIL", "not clean after the injection was removed"))
+    else:
+        rows.append((disp, "the round sweep can see an unreadable question",
+                     "PASS", "red while injected, green once removed"))
+    return rows, problems
+
+
 def run(cdp):
     rows, problems, figures = [], [], []
     server, port = cdp.serve(SITE)
@@ -1671,6 +2494,26 @@ def run(cdp):
             rows.extend(r)
             problems.extend(p_)
             r, p_ = _prove_picker(page, url)
+            rows.extend(r)
+            problems.extend(p_)
+
+            # ⊕ 23 Aug 2026 — PHASE 3. THE RECALL ROUND, opened from the
+            # bench and walked. See the banner above `_OPEN_ROUND` for why a
+            # behaviour drive lives in the colour gate: this is the only gate
+            # that can press a control the port GAINED from the amendments,
+            # and the round is the largest surface in that position.
+            rd = _walk_round(page, url)
+            r, p_ = check_round(rd)
+            rows.extend(r)
+            problems.extend(p_)
+            r, p_ = check_streak(_streak_probe(page))
+            rows.extend(r)
+            problems.extend(p_)
+            r, p_ = _prove_round(page)
+            rows.extend(r)
+            problems.extend(p_)
+            rt = _round_themes(page)
+            r, p_ = check_round_themes(rt)
             rows.extend(r)
             problems.extend(p_)
     finally:
@@ -1767,6 +2610,13 @@ def main():
           "leaderboard card, and leaving exactly one tick — its own — "
           "visible. Every swatch label clears AA %.1f and every tick clears "
           "%.1f:1 as a non-text mark." % (AA, NONTEXT_AA))
+    print("        And the RECALL ROUND, which no other gate can open: "
+          "`Practise recall` opens it, a wrong answer is marked and "
+          "explained, the round runs to its end and offers another, and the "
+          "round renumbers. At pools of 6, 4 and 2 it shows min(6, pool), "
+          "SAYS that size, repeats nothing inside a round, and fills Design's "
+          "seven-bucket progress bar to the fraction actually done. Every "
+          "word in it clears AA %.1f on all seven cases." % AA)
     print("        And the PAGE the bench sits on: --pg-strong fixed at %s "
           "on all seven, %d espresso mark(s) measuring it, %.2f:1 on the "
           "cream ground, and no near-black page chrome outside the %d "

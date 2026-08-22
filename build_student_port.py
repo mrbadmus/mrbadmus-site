@@ -211,7 +211,15 @@ PAGES = [
          # that has not happened. Found by photographing the page; no grep for
          # a welded string would have found it, because there is no welded
          # string. The fixture still carries 4, so Design's render is unchanged.
-         state_fields=["streak", "boardWeek"],
+         # ⊕ 23 Aug 2026 — PHASE 3. `streak` LEAVES THIS LIST, and the build
+         # stopping is what found it: *"`streak` is not a property of the
+         # `state` initialiser in Design's logic"*. It is not, any more.
+         # Design's original recall round is retired — its state went with its
+         # markup, its methods and its data (see PHASE 3 in
+         # student_rulings.LOGIC) — and the amended round's streak is `rstreak`,
+         # which opens at 0 and is a fact about the SITTING rather than a
+         # student's record. There is nothing for a data source to seed.
+         state_fields=["boardWeek"],
          # ── constants ────────────────────────────────────────────────────
          # ⊕ RULED 22 Aug 2026 — P1 and P3. Two destinations Design's file has
          # no opinion about, because Design's file has nowhere to go: it is one
@@ -284,7 +292,26 @@ PAGES = [
 BINDINGS = {
     "class view": [
         ("8r/Sc1", "className"),
-        ("8r/Sc1\n        ", "classNamePadded"),
+        # ⊕ 23 Aug 2026 — PHASE 3. `classNamePadded` IS RETIRED, and it was
+        # found by the build stopping rather than by reading — which is the
+        # check working. Quoted rather than deleted:
+        #
+        #     ("8r/Sc1\n        ", "classNamePadded"),
+        #
+        # Its ONE text node on the whole class view was node 338, the back
+        # button of Design's ORIGINAL recall round, and Phase 3 prunes that
+        # subtree. Measured both ways before this was written: the literal
+        # occurs at exactly one path in Design's original template and at NO
+        # path in the amended delivery — Design's amended round draws the same
+        # button (donor 373) with the text node `8r/Sc1`, no trailing
+        # indentation, which binds to `className` for free.
+        #
+        # So the padded twin exists because Design's compiler kept the markup's
+        # indentation inside that one text node, and it stops existing with the
+        # node. `student-live.js` still computes it, like `recallBlurb` and
+        # `recallEyebrow`; it is in `_MUST_NOT_LEAK`, which is an assertion
+        # about a key's VALUE never reaching the page and is unaffected by the
+        # key having no reader.
         ("Ayo", "studentFirstName"),
         ("Welcome back, Ayo · your class", "welcomeLine"),
         ("AY", "studentInitials"),
@@ -349,8 +376,76 @@ BINDINGS = {
         # failing. `student-live.js` still computes the key; it is unread until
         # a later unit gives the sentence a new home, which is cheaper than
         # deleting a computation that is correct.
-        ("SIX QUESTIONS · UNLIMITED ROUNDS", "recallEyebrow"),
-        ("OF SIX", "recallOutOf"),
+        # ⊕ 23 Aug 2026 — PHASE 3. BOTH ENTRIES ARE RETIRED, and they are
+        # quoted here rather than deleted for the same reason `recallBlurb`
+        # above is — deleting them would hide WHY two sentences stopped being
+        # on the page:
+        #
+        #     ("SIX QUESTIONS · UNLIMITED ROUNDS", "recallEyebrow"),
+        #     ("OF SIX", "recallOutOf"),
+        #
+        # Their only text nodes on the whole class view were 343 and 387, both
+        # inside Design's ORIGINAL recall round — and Phase 3 prunes that whole
+        # subtree and grafts Design's amended round in its place (see `PRUNE`
+        # 335 and the graft of donor 366 in student_rulings.py). `text_paths`
+        # finds each literal at exactly one path, measured, so with the round
+        # gone the literals are gone, and leaving these entries would stop the
+        # build with "the literal is not a text node in Design's template" —
+        # that check doing its job.
+        #
+        # ⚑ P2 IS NOT WEAKENED BY THEIR GOING; IT IS FINISHED BY IT. P2 exists
+        # because those two sentences spelled the round size out in a WORD and
+        # went on saying SIX over a round of two. What states the size now is
+        # `qPos` ("QUESTION 01 / 04") and `roundScore` ("2 / 4"), both computed
+        # from `min(6, pool)` in one place in `recallVals`. There is no wording
+        # left on the page that CAN be wrong about it.
+        #
+        # `student-live.js` still computes both keys, and `recallCrumb` with
+        # them, exactly as it still computes `recallBlurb` — a correct
+        # computation costs nothing and is cheaper than deleting it and
+        # rediscovering it.
+        #
+        # ── ⊕ 23 Aug 2026 — PHASE 3. THE ROUND'S BAND, AND ITS BENCH BUTTON ──
+        #
+        # ⚠️ THE NON-BREAKING-SPACE TRAP, FOR THE THIRD TIME, and it would have
+        # failed the same silent way as `accountClassLine` and
+        # `flashcardsTitle`. Design's round opens with
+        # `8r/Sc1 \u00a0·\u00a0 RECALL` as ONE text node. `8r/Sc1` is on this
+        # list already, but `text_paths` matches the WHOLE node value and
+        # nothing less, so this node would not have bound and every student's
+        # recall round would have been headed with one real class's name.
+        # Composed in student-live.js from the class name it already holds; the
+        # separator is Design's typography and is carried verbatim.
+        #
+        # (The `8r/Sc1` on the round's own back button — donor 373 — is its own
+        # text node and binds to `className` for free, which is exactly why the
+        # binding table is keyed on the literal rather than on an index.)
+        ("8r/Sc1 \u00a0\u00b7\u00a0 RECALL", "recallTitle"),
+        # ⛔ AND THE BENCH BUTTON GOES WHEN THERE IS NOTHING TO PRACTISE.
+        #
+        # `Practise recall` is live node 77, the bench's route into the round,
+        # and it is a real control. A class whose covered lessons carry no
+        # ladder rungs has an empty bank, and the button would open nothing —
+        # the dead control P7 exists to prevent, and `openRecall` refusing to
+        # open an empty round is what makes it dead rather than broken.
+        #
+        # Marked `drop`, so an empty value takes the BUTTON with it rather than
+        # leaving a bordered box with nothing in it. That is the `envBadge`
+        # shape exactly, and the same reasoning: an empty control is not
+        # nothing, it is worse than either state.
+        #
+        # Design's fixture value is `Practise recall`, and Design's own bank is
+        # eight questions long, so the fixture and every gate that drives it
+        # render exactly what Design drew.
+        #
+        # ⚑ `Start recall` (node 88) IS DELIBERATELY NOT GIVEN THE SAME
+        # TREATMENT, and that was checked rather than assumed. It lives inside
+        # `if fresh`, and `fresh` is `this.props.classState === 'Fresh class'` —
+        # the mount emits `props: {}`, so it is false on every ported page and
+        # node 88 never renders there at all. Binding it would have added a key
+        # nothing can reach, and a `drop` on a node that never draws is a
+        # registration that can never be checked.
+        ("Practise recall", "recallLabel", "drop"),
         # ── ⊕ RULED 22 Aug 2026 — P4. THE BENCH'S PRIMARY BUTTON ──────────
         # In the OPEN state it opens the assignment. In the DONE state the
         # assignment is finished, and the two actions the ruling asks for are
@@ -607,6 +702,26 @@ DONOR_LIFTS = {
                  "renders the grafted card and overlay exactly as the amended "
                  "delivery draws them. The live page reads a real deck built "
                  "from the lessons the class has covered."),
+        # ⊕ 23 Aug 2026 — PHASE 3. Design's eight sample recall questions.
+        #
+        # The same shape and the same reason as the deck above: the fixture has
+        # to render the grafted round exactly as Design's amended delivery
+        # draws it, and the value is CARRIED rather than retyped so Design's
+        # apostrophes and its `p = F / A` survive unchanged.
+        #
+        # ⚠️ ALL EIGHT ARE FIXTURE TELLS, registered in
+        # `student_page_drive.FIXTURE_TELLS`. If any of them reaches the screen
+        # on a page that is supposed to be showing real data, the bank has
+        # fallen back to Design's sample and a student is revising one
+        # drawing's science. The live bank is every recall and apply rung of
+        # every lesson the class has covered, read from `ks3_ladder_questions`.
+        dict(key="recallBank",
+             anchor="  bank() {\n    return ",
+             why="Design's eight sample recall questions, so "
+                 "`class-fixture.html` renders the grafted round exactly as "
+                 "the amended delivery draws it. The live page reads the real "
+                 "recall and apply rungs of the lessons the class has "
+                 "covered."),
     ],
 }
 
@@ -917,12 +1032,22 @@ REWRITES = {
         # around them would fix the sentence in place — on real data it is a
         # different sentence ("One answer logged…", and nothing says the
         # weighting stays 20 of 100). One string, one key.
-        dict(name="roundNote",
-             pat=r"roundNote: '(?P<roundNote>[A-Z][a-z]+ answers? logged "
-                 r"against Week \d+\. Recall is worth \d+ of the \d+ points "
-                 r"on the leaderboard\.)'",
-             new="roundNote: MRB_DATA('roundNote')",
-             keys=dict(roundNote="str")),
+        # ⊕ 23 Aug 2026 — PHASE 3. RETIRED WITH THE LINE IT SEAMED. Quoted
+        # rather than deleted, because it is the seam that made the sentence
+        # removable in the first place:
+        #
+        #     dict(name="roundNote",
+        #          pat=r"roundNote: '(?P<roundNote>[A-Z][a-z]+ answers? logged
+        #              against Week \d+\. Recall is worth \d+ of the \d+
+        #              points on the leaderboard\.)'", …)
+        #
+        # `roundNote` was removed from Design's logic entirely by the Phase 3
+        # ruling, along with the other nineteen keys only the pruned round read.
+        # The sentence it carried — *"Recall is worth 20 of the 100 points on
+        # the leaderboard"* — stays gone, and it is now refused in TWO places
+        # rather than emptied in one: the original's key does not exist, and
+        # Design's amended delivery draws the same sentence again at donor node
+        # 439, which the graft omits. Registered in `AMENDED_OMISSIONS`.
 
         # ⚑ `Math.max(9, st.streak)` IS NOT A DEFAULT — IT IS A FLOOR ON A
         # REAL CHILD'S RECORD. Design needed the example streak to read `09`
@@ -933,14 +1058,20 @@ REWRITES = {
         # NUMBER so Design's own render is byte-identical, and the live source
         # supplies 0, which makes the `Math.max` a no-op and lets the real
         # streak — however small — through.
-        dict(name="recallStats",
-             pat=r"recallStats: \[\{ label: 'BEST STREAK', value: "
-                 r"pad\(Math\.max\((?P<bestStreakFloor>\d+), st\.streak\)\) "
-                 r"\}, \{ label: 'ROUNDS', value: '(?P<recallRounds>\d+)' \}\]",
-             new="recallStats: [{ label: 'BEST STREAK', value: "
-                 "pad(Math.max(MRB_DATA('bestStreakFloor'), st.streak)) "
-                 "}, { label: 'ROUNDS', value: MRB_DATA('recallRounds') }]",
-             keys=dict(bestStreakFloor="num", recallRounds="str")),
+        # ⊕ 23 Aug 2026 — PHASE 3. RETIRED WITH THE LINE IT SEAMED, and the
+        # note above it is kept because it is the reasoning, not the mechanism:
+        #
+        #     dict(name="recallStats",
+        #          pat=r"recallStats: \[\{ label: 'BEST STREAK', value:
+        #              pad\(Math\.max\((?P<bestStreakFloor>\d+), st\.streak\)\)
+        #              \}, \{ label: 'ROUNDS', value: '(?P<recallRounds>\d+)' \}\]", …)
+        #
+        # `recallStats` is one of the twenty keys removed with Design's original
+        # round. BEST STREAK and ROUNDS are drawn again in Design's AMENDED
+        # delivery — in the THIS WEEK panel at donor 425 — and that panel is
+        # omitted on the way in, because both figures are facts nothing records
+        # and the third one beside them, ANSWERED, is the same. `bestStreakFloor`
+        # therefore has no floor left to lift: there is no `Math.max` on the page.
 
         # ── THE SIX-QUESTION ROUND, WHICH IS NOT DATA AND NOT A KEY ───────
         #
@@ -957,36 +1088,23 @@ REWRITES = {
         # The division is guarded: an empty round is `0%` and not `NaN%`.
         # Design's own round has six questions, so every string below renders
         # the same bytes it did — that equality is the check on this one.
-        dict(name="recall round — length from this.questions",
-             pat=r"      recallMeter: 'QUESTION ' \+ "
-                 r"pad\(Math\.min\(st\.qi \+ 1, 6\)\) \+ ' / 06',\n"
-                 r"      recallMeterPct: Math\.round\(\("
-                 r"Math\.min\(st\.qi, 6\) / 6\) \* 100\) \+ '%',\n"
-                 r"      roundLive: st\.qi < 6, roundDone: st\.qi >= 6,\n"
-                 r"      qCounter: 'QUESTION ' \+ "
-                 r"pad\(Math\.min\(st\.qi \+ 1, 6\)\) \+ "
-                 r"' / 06 \\u00B7 ' \+ q\.topic,",
-             new="      recallMeter: 'QUESTION ' + "
-                 "pad(Math.min(st.qi + 1, this.questions.length)) + ' / ' + "
-                 "pad(this.questions.length),\n"
-                 "      recallMeterPct: (this.questions.length ? "
-                 "Math.round((Math.min(st.qi, this.questions.length) / "
-                 "this.questions.length) * 100) : 0) + '%',\n"
-                 "      roundLive: st.qi < this.questions.length, "
-                 "roundDone: st.qi >= this.questions.length,\n"
-                 "      qCounter: 'QUESTION ' + "
-                 "pad(Math.min(st.qi + 1, this.questions.length)) + ' / ' + "
-                 "pad(this.questions.length) + "
-                 "' \\u00B7 ' + q.topic,",
-             keys={}),
-        # The same six, 200 lines earlier, as the index clamp that picks the
-        # question. `Math.max(0, …)` keeps it a valid index rather than -1 on
-        # an empty round.
-        dict(name="recall round — index clamp",
-             pat=r"const qi = Math\.min\(st\.qi, 5\);",
-             new="const qi = Math.min(st.qi, "
-                 "Math.max(0, this.questions.length - 1));",
-             keys={}),
+        # ⊕ 23 Aug 2026 — PHASE 3. BOTH ARE RETIRED, and the paragraph above
+        # is kept because its REASONING is what Phase 3 finishes rather than
+        # abandons: "the length comes from the round itself, and there is no
+        # key because there is nothing here a data source should get to decide".
+        #
+        #     dict(name="recall round — length from this.questions", …)
+        #     dict(name="recall round — index clamp",
+        #          pat=r"const qi = Math\.min\(st\.qi, 5\);", …)
+        #
+        # Every line either of them anchored on — `recallMeter`,
+        # `recallMeterPct`, `roundLive`, `qCounter`, `const qi` — is removed
+        # with Design's original round. The amended round computes its own
+        # length ONCE, in `recallSize()`, as `min(6, bank.length)`, and every
+        # number the surface prints is derived from it: `qPos`, `roundScore`,
+        # `qpips`, `nextLabel`, the round's last-question test and the progress
+        # bar's scale. Still no key, and still for the same reason.
+
     ],
 }
 

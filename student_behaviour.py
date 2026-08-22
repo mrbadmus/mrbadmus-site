@@ -132,20 +132,46 @@ DRIVES = {
         ("the term chip", [("click", "TERM")]),
         ("SHOW TOP 10", [("click", "SHOW TOP 10")]),
         ("a work row expands", [("clickAt", "03\nAnimal and plant cells", 0)]),
-        ("recall opens", [("click", "Recall")]),
-        ("recall · pick an option", [("click", "Recall"), ("opt", 0)]),
-        ("recall · Check reveals the answer and the feedback",
-         [("click", "Recall"), ("opt", 0), ("click", "Check")]),
-        ("recall · Next question moves on",
-         [("click", "Recall"), ("opt", 0), ("click", "Check"),
-          ("click", "Next question")]),
-        ("recall · Skip breaks the streak",
-         [("click", "Recall"), ("click", "Skip")]),
-        ("recall · six answers reach the round card",
-         [("click", "Recall")] +
-         sum([[("opt", 0), ("click", "Check"), ("click", "Next question")]
-              for _ in range(6)], [])),
-        ("recall · back to the class", [("click", "Recall"), ("click", "My class")]),
+        # ── ⊕ 23 Aug 2026 — PHASE 3. THE SEVEN `Recall` DRIVES ARE RETIRED ──
+        #
+        # They read:
+        #
+        #     ("recall opens",                      [click Recall])
+        #     ("recall · pick an option",           [click Recall, opt 0])
+        #     ("recall · Check reveals the answer and the feedback", …)
+        #     ("recall · Next question moves on",   …)
+        #     ("recall · Skip breaks the streak",   [click Recall, click Skip])
+        #     ("recall · six answers reach the round card", …)
+        #     ("recall · back to the class",        [click Recall, click My class])
+        #
+        # Quoted rather than deleted, because seven drives leaving a gate is
+        # exactly the change that must not happen quietly.
+        #
+        # ⚠️ THEY CANNOT BE REWRITTEN, AND THAT IS THE POINT. Design's C2b
+        # replaces the recall round wholesale: the ORIGINAL is a `view` painted
+        # in page-chrome dark, the AMENDED one is a themed overlay with a round
+        # number, a progress bar, a verdict and an Another-round exit. The port
+        # takes Design's amended round and prunes Design's original (see PHASE
+        # 3 in student_rulings.py).
+        #
+        # `run()` requires every step of a drive to be performable on DESIGN'S
+        # ORIGINAL FILE — that is what makes the original the ORACLE — and the
+        # step that opens a round therefore opens the OLD round on Design's side
+        # and the NEW one on ours. The two screens share almost no text: the
+        # comparison would be a whole-screen divergence, and the only way to
+        # keep it green would be to register the entire old round in
+        # `RULED_DIVERGENCE` and the entire new one in `AMENDED_ADDITIONS`.
+        # That is not what those registries are for — "a registration is a
+        # sentence about ONE span" — and a gate that deletes both sides of a
+        # screen before comparing them has stopped comparing it.
+        #
+        # ⚑ SO THE ROUND JOINS THE FLASHCARDS OVERLAY IN THE PLACE THIS GATE
+        # CANNOT REACH, and that is stated here rather than left to be
+        # discovered. `student_themes.py` is extended to cover it instead: it
+        # drives the PORT ALONE, needs no oracle because a colour is checked
+        # against Design's stated palette, and it can therefore press a control
+        # this port gained. It opens the round, walks it, and sweeps its text
+        # on all six themes. It is the only gate that watches this surface.
         # ⊕ 23 Aug 2026 — PHASE 1b. Two states of Design's account sheet, and
         # they are the only drives on this page that reach the theme picker.
         #
@@ -595,6 +621,27 @@ RULED_DIVERGENCE = {
         ("the dark sidebar RECALL card, which C2 replaces",
          r"RECALL 46 ANSWERED THIS WEEK Questions from the lessons this class "
          r"has covered\. Six a round, unlimited rounds\. Start a round "),
+        # ── ⊕ 23 Aug 2026 — PHASE 3. THE NAV'S `Recall` TAB ───────────────
+        #
+        # The header nav is a VIEW SWITCH — two tabs, `on: onClass` and
+        # `on: !onClass`, an underline saying which view you are in. Design's
+        # C2b makes the round a fixed overlay opened from the bench, so there
+        # is no second view for a tab to switch to, and a tab wired to an
+        # overlay could never look selected. It is removed; `Practise recall`
+        # on the bench is the route, in both bench states, which is where
+        # Design's own amended delivery puts it (donor 76 and donor 116).
+        #
+        # ⚠️ THE LOOKBEHIND IS LOAD-BEARING, AND A BARE `Recall ` WOULD HAVE
+        # BEEN WRONG TWICE. It is the same trap the entry above documents from
+        # the other side: that one had to start `RECALL 46` so it would NOT
+        # catch this nav item, and this one has to be anchored so it does not
+        # catch anything else that says the word. `_apply_ruled` runs these in
+        # LIST ORDER and each `re.sub` edits the text the next one sees, so an
+        # unanchored pattern here would also eat into the card above it
+        # depending on which ran first. `My class` immediately precedes it in
+        # the nav, on every drive, on both files.
+        ("the nav's Recall tab, which C2b replaces with the bench route",
+         r"(?<=My class )Recall "),
     ],
 }
 
@@ -627,8 +674,12 @@ RULED_DIVERGENCE = {
 # card's TEXT does nothing to the control census, and the census would report
 # "controls only in Design: ['Start a round']" as though the port had broken a
 # button rather than adopted an amendment.
+# ⊕ 23 Aug 2026 — PHASE 3. AND A THIRD TIME, one unit later again. `Recall`
+# is the nav tab, and it is a `<button>` — so it is in the census as well as in
+# the text, and a ruling that reached only the text would report "controls only
+# in Design: ['Recall']" on all nineteen drives and read like a broken port.
 RULED_CONTROLS = {
-    "class view": ["Start a round"],
+    "class view": ["Start a round", "Recall"],
 }
 #
 # ⊕ RULED 21 Aug 2026 (MRB-275). The bar shows the TOTAL and omits the split.
@@ -782,6 +833,20 @@ def _ruled_seen(page, seen, problems):
 AMENDED_DRIVES = {
     "class view": [
         ("at rest", []),
+        # ⊕ 23 Aug 2026 — PHASE 3. Design's amended recall round is
+        # `if recallOpen`, so it is not on screen at rest either, and the
+        # OMISSION registered against it has to be checked inside a region that
+        # is actually rendered. `Practise recall` is Design's own way in: donor
+        # node 76 is a `<button>` carrying `onClick={{ openRecall }}` and
+        # `data-port-action="recall-round"`, which is Design saying in the file
+        # which control opens it.
+        #
+        # ⚠️ THIS DRIVES DESIGN'S AMENDED DELIVERY ONLY, and that is the
+        # difference between it and a `DRIVES` entry. `AMENDED_DRIVES` never
+        # touches the port and never touches the original, so it cannot put the
+        # two files on different screens — which is precisely why the seven
+        # retired `Recall` drives could not be rewritten to do this.
+        ("the recall round", [("click", "Practise recall")]),
         # ⊕ 23 Aug 2026 — PHASE 1b. The account sheet is `if accountOpen` in
         # Design's amended delivery too, so it is not on screen at rest and a
         # registration against it would be checked against a region that is
@@ -1033,6 +1098,56 @@ AMENDED_OMISSIONS = {
                  "(student_rulings.py), which is asserted from the other end: "
                  "the build stops if donor node 263 is no longer there to "
                  "remove."),
+        # ── ⊕ 23 Aug 2026 — PHASE 3. THE ROUND'S `THIS WEEK` PANEL ────────
+        #
+        # Design draws a sidebar beside the round's question panel with three
+        # figures, one sentence and a button. The whole panel — donor node 425
+        # — is omitted by the graft, and the three registrations below are what
+        # watch that it stays omitted. Split into three rather than one,
+        # because the three are ruled out for three DIFFERENT reasons and a
+        # single pattern would let two of them be reinstated silently under the
+        # third one's justification.
+        dict(label="the recall round's THIS WEEK figures",
+             region="recall-round", state="the recall round",
+             pat=r"THIS WEEK ANSWERED \d+ BEST STREAK \d+ ROUNDS \d+ ",
+             why="RULED — nothing anywhere records a recall round. "
+                 "`/api/class/recall` only reads, and no table carries a "
+                 "class, a teaching week and a rung together, so ANSWERED and "
+                 "ROUNDS are unrecorded; student-live.js has emitted "
+                 "`recallAnswered` and `recallRounds` as empty since the day "
+                 "Design's 46 was found to be a drawing. BEST STREAK is real "
+                 "inside one sitting and false the next morning, when a "
+                 "student who answered thirty yesterday is shown 00 under a "
+                 "heading that says THIS WEEK. The round shows the streak "
+                 "where it is honest — `streakLabel`, live, inside the round."),
+        dict(label="the recall round's 20-of-100 sentence",
+             region="recall-round", state="the recall round",
+             pat=r"Recall counts for 20 of the 100 points on the "
+                 r"leaderboard\. Rounds are unlimited and do not need handing "
+                 r"in\. ?",
+             why="RULED 21 Aug 2026, and this is the THIRD place the same "
+                 "apportionment has been drawn: the leaderboard's split bar, "
+                 "its static ON TIME 40 / SCORE 40 / RECALL 20 legend, and now "
+                 "here. The platform cannot compute it — nothing records a "
+                 "recall round at all — so the sentence states a rule the "
+                 "product does not implement. It is also platform "
+                 "self-explanation on a student page (KS3 copy rule §8.10). "
+                 "The half that IS true, that rounds are unlimited and hand "
+                 "nothing in, is said twice over by the round itself: "
+                 "`UNLIMITED ROUNDS` in the band, and Design's own "
+                 "round-done line 'Go again as many times as you like. "
+                 "Nothing here is handed in.'"),
+        dict(label="the recall round's 'Open the assignment instead' button",
+             region="recall-round", state="the recall round",
+             pat=r"Open the assignment instead ?",
+             why="It does not open the assignment. Design wires it to "
+                 "`closeRecall`, so it closes the round and leaves the student "
+                 "on their class page — which is what the two other controls "
+                 "in the round already do and say so (`8r/Sc1` in the band, "
+                 "`Back to my class` on the round-done card, both counted "
+                 "before this was written). A control whose label names a "
+                 "destination it does not go to is ruling P3's defect, and P1's "
+                 "and P7's; the port has taken three of them out already."),
     ],
 }
 

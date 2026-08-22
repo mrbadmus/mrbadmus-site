@@ -135,6 +135,56 @@ FIXTURE_TELLS = [
     "A fixed amount of gas is squeezed into a smaller space. "
     "What happens to the pressure?",
     "KEY FACT",
+    # ⊕ 23 Aug 2026 — PHASE 3. DESIGN'S SAMPLE RECALL BANK.
+    #
+    # The grafted recall round renders `MRB_DATA('recallBank')`. On the fixture
+    # that is Design's own `bank()`, lifted out of the amended delivery by
+    # `DONOR_LIFTS`; on a real page it is every recall and apply rung of every
+    # lesson the class has covered, read from `ks3_ladder_questions`. If one of
+    # these is on screen on a page that is supposed to be showing real data,
+    # the bank has fallen back to Design's sample.
+    #
+    # ⚠️⚠️ SEVEN OF DESIGN'S EIGHT, AND THE EIGHTH IS DELIBERATELY ABSENT.
+    #
+    #     "A plant in a dark cupboard is releasing carbon dioxide. Which of
+    #      the three processes is it carrying out?"
+    #
+    # is NOT a tell, because it is a REAL LADDER QUESTION — `the-gas-exchange-
+    # system#recall`, word for word, one exact match in `ks3_ladder_questions`.
+    # Design did not invent it; Design drew the sample from the corpus. And
+    # `the-gas-exchange-system` is a lesson `8r/Sc1` has covered, so it is the
+    # FIRST question a real student on the real page can be shown.
+    #
+    # Registering it would have made this list report the correct page as
+    # dirty, every time, on the one class the drives actually use. That is the
+    # failure mode this list's own header names: "a tell that cries wolf gets
+    # ignored, which is the failure mode that let the docket ship in the first
+    # place." Checked by exact match against all 154 ladder rows and all 924
+    # bank rows before any of the eight was written down — the other seven
+    # match NOTHING in either corpus, on an exact test and on a 40-character
+    # prefix test.
+    "A fixed amount of gas is squeezed into half the space. "
+    "What happens to its pressure?",
+    "Which feature would make a gas exchange surface worse?",
+    "Magnesium burns in oxygen. What is the product?",
+    "Which state has particles close together that can still move past "
+    "each other?",
+    "A force of 20 N presses on 4 m2. What is the pressure?",
+    "Where in the lungs does gas exchange happen?",
+    "What is always conserved in a chemical reaction?",
+    # ⊕ 23 Aug 2026 — PHASE 3. THE ROUND'S OMITTED SIDEBAR, WATCHED FROM THE
+    # LIVE SIDE.
+    #
+    # `student_behaviour.AMENDED_OMISSIONS` asserts these are absent, and it
+    # drives the FIXTURE. Nothing else watches the page a student actually
+    # loads, so the two sentences the graft's `omit` removes are registered
+    # here as well: if either ever appears on mrbadmus.com, the omission has
+    # been reverted and the drive says so on the real page rather than on a
+    # copy of it. Neither can appear from real data — there is no key behind
+    # either — so neither can cry wolf.
+    "Recall counts for 20 of the 100 points on the leaderboard",
+    "Open the assignment instead",
+    "BEST STREAK",
 ]
 
 # ── the defaults that are NOT text, and so can never be a tell ────────────
