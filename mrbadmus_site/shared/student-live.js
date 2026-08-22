@@ -51,6 +51,15 @@
        whose only class finished in July — the working-year scope hides the
        second, and "this year" keeps the sentence honest for both. */
     noClass:    "You are not in a class this year yet. Your teacher will add you to one.",
+    /* ⊕ 23 Aug 2026 — the TIMEOUT sentence, and it is deliberately not
+       `generic`. `generic` says "just now" and "in a moment", which is right
+       for a request that was refused and wrong for one that was never
+       answered: a backend that has just spent 75 seconds not replying will not
+       be ready a moment later. This says what actually happened — we waited,
+       it did not come — and gives the advice that matches it. It is about the
+       student's class and the waiting they did, not about requests, servers or
+       timeouts (CLAUDE.md §8.10). */
+    slow:       "We waited for your class and it did not arrive. Try again in a minute or two.",
     pastYear:   "That class finished at the end of last year.",
     notMine:    "That class is not one of yours.",
     noRecall:   "There is nothing to look back over yet. Check again after your next lesson.",
@@ -60,12 +69,19 @@
 
   function host() { return document.getElementById(HOST_ID); }
 
-  function say(line) {
-    var el = host();
-    if (!el) { return; }
-    el.textContent = "";
+  /* One centred line in the host, in the page's own typeface. Both of the two
+     states this file can draw are made of it — the boot line below and `say()`
+     underneath — so they cannot drift apart in shape, only in colour.
+
+     ⚠️ EVERY TOKEN NAMED HERE CARRIES A LITERAL FALLBACK, and that is
+     load-bearing for the boot line rather than defensive. `--pg-*` and every
+     other page token live in a `:root` block INSIDE the compiled template, so
+     they do not exist until the page mounts; only `/shared/student-ds.css` —
+     a real `<link>` in the head — is loaded when the boot line paints, and
+     `--ks3-ink` / `--ks3-ink-muted` come from there. */
+  function panel(text, state, colour) {
     var wrap = document.createElement("div");
-    wrap.setAttribute("data-mrb-state", "unavailable");
+    wrap.setAttribute("data-mrb-state", state);
     wrap.style.cssText =
       "min-height:60vh;display:flex;align-items:center;justify-content:center;" +
       "padding:32px;box-sizing:border-box;";
@@ -73,10 +89,60 @@
     p.style.cssText =
       "margin:0;max-width:34ch;text-align:center;font:400 17px/1.55 " +
       "'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;" +
-      "color:var(--ks3-ink,#2A2018);";
-    p.textContent = line;
+      "color:" + colour + ";";
+    p.textContent = text;
     wrap.appendChild(p);
-    el.appendChild(wrap);
+    return wrap;
+  }
+
+  function say(line) {
+    var el = host();
+    if (!el) { return; }
+    el.textContent = "";
+    el.appendChild(panel(line, "unavailable", "var(--ks3-ink,#2A2018)"));
+  }
+
+  /* ── the boot line ─────────────────────────────────────────────────────
+     ⊕ 23 Aug 2026. Nothing on this page paints until every request has come
+     back — `window.__MRB_MOUNT__()` is the first thing that draws anything —
+     so a slow load was a WHITE PAGE with no explanation and no way to tell it
+     from a broken one. A student cannot wait for something that is not
+     visibly happening.
+
+     ⚠️ IT SAYS ONLY WHAT IS TRUE BEFORE ANY DATA HAS ARRIVED, WHICH IS TWO
+     WORDS. CLAUDE.md §8.10 forbids the page explaining itself to a student, so
+     "Loading your class…", a spinner's caption, "Connecting", "One moment" and
+     every other sentence about the software, the network or a wait are all
+     out. What is left is what the student came for: this is their class, and
+     on the assignment page it is their work. Both are true the instant the
+     page opens, both are true whatever comes back, and neither is a value —
+     under this file's own rule that nothing may INVENT student-visible
+     content, the only honest line at boot is one that contains no data at all.
+     Not a class name, not a teacher, not a count of anything.
+
+     It is drawn in the muted ink rather than the body ink so it reads as a
+     page that has not finished rather than as a message that has been given.
+
+     ⚠️ IT CANNOT SURVIVE THE MOUNT, structurally, and not by being tidied up.
+     It is a child of the host, and BOTH of the two ways out of `run()` empty
+     the host before they write into it: `student-runtime.js`'s `draw()` opens
+     with `host.textContent = ""` and then appends synchronously inside
+     `__MRB_MOUNT__()`, and `say()` above does the same. There is no third
+     exit, so there is no path on which a student sees this line beside real
+     content — including the case where the mount throws half-way, because that
+     lands in the catch, which calls `say()`. Removing it here as well would
+     add a blank frame between the clear and the paint and would look like the
+     guarantee while not being it. */
+  var BOOT = {
+    "class":      "Your class",
+    "assignment": "Your work"
+  };
+
+  function boot(page) {
+    var el = host();
+    if (!el || el.firstChild) { return; }   // never over the top of anything
+    el.appendChild(panel(BOOT[page] || BOOT["class"], "boot",
+                         "var(--ks3-ink-muted,#5F564F)"));
   }
 
   /* ── which page am I on? ────────────────────────────────────────────────
@@ -425,21 +491,94 @@
      exists to keep sharp. */
   var pendingSink = null;
 
+  /* ── THE DEADLINE EVERY BACKEND CALL NOW CARRIES ───────────────────────
+     ⊕ 23 Aug 2026. What was here was a bare `await fetch(...)`, and a bare
+     fetch has no timeout of any kind. A request that is never ANSWERED is
+     never REJECTED either, so `run()`'s catch — which only fires on a
+     rejection — never fires, `__MRB_MOUNT__()` is never reached, and nothing
+     is ever said. Driven and measured: a held-open backend request left this
+     page blank for 58 seconds and would have stayed blank for ever. The page
+     did not fail. It waited, silently, with no end.
+
+     THE TWO BUDGETS ARE NOT A TUNING PREFERENCE.
+
+     Render's free tier spins the backend down, and this repo already writes
+     down what that costs: `student_page_drive.wait_for_mount()` budgets
+     SEVENTY-FIVE SECONDS for the whole mount, because "the first request of
+     the day takes the better part of a minute to come back". A deadline
+     shorter than that would turn a slow-but-working cold start into a
+     failure — the page would tell a student it could not load a class that
+     was on its way. So the first request of a page load is given that whole
+     75 seconds to itself: strictly more generous than the budget the drive
+     already allows for every request put together, which is what makes it
+     impossible for this change to fail a load that used to succeed.
+
+     THE SPIN-UP IS PAID ONCE. After any request has come back the instance is
+     awake, and a second request still unanswered 25 seconds later is stuck,
+     not starting up — the measured warm response on these routes is under two
+     seconds, so the warm budget is more than ten times the worst seen.
+     Carrying the cold budget into every request would cost a student 75
+     seconds PER REQUEST in front of a dead backend instead of 75 once.
+
+     ⚠️ WRITES KEEP THE COLD BUDGET, ALWAYS — see `post()` in the sink. A tab
+     left open long enough for the instance to spin down again is not a cold
+     start, it is a cold RESTART, and the warm budget would abort a save that
+     was going to succeed. Nothing is watching a save the way a student watches
+     a paint. */
+  var COLD_MS = 75000;
+  var WARM_MS = 25000;
+  var backendWoken = false;
+
+  /* ⚠️ A TIMEOUT MUST BE TELLABLE FROM EVERY OTHER FAILURE, or the page says
+     "try again in a moment" about a backend that is not coming back for
+     minutes. `signal.aborted` is the test rather than the error's name: only
+     this timer ever aborts these requests, so it cannot be confused with a
+     network error that happens to be called something similar. */
+  async function withDeadline(ms, path, go) {
+    var ctl = new AbortController();
+    var timer = setTimeout(function () { ctl.abort(); }, ms);
+    try {
+      var out = await go(ctl.signal);
+      backendWoken = true;
+      return out;
+    } catch (err) {
+      if (ctl.signal.aborted) {
+        var late = new Error("no answer within " + Math.round(ms / 1000) +
+                             "s on " + path);
+        late.code = "backend_timeout";
+        late.mrbSay = SAY.slow;
+        throw late;
+      }
+      throw err;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
   async function api(path, token) {
     var cfg = window.MrBadmusConfig || {};
     var base = cfg.BACKEND_URL || "https://mrbadmus-backend.onrender.com";
-    var res = await fetch(base + path, {
-      headers: { Authorization: "Bearer " + token }
-    });
-    var stamp = res.headers.get("date");
-    if (stamp) {
-      var t = Date.parse(stamp);
-      if (!isNaN(t)) { serverNow = t; }
-    }
-    if (!res.ok) {
-      throw new Error("backend " + res.status + " on " + path);
-    }
-    return res.json();
+    return withDeadline(backendWoken ? WARM_MS : COLD_MS, path,
+      async function (signal) {
+        var res = await fetch(base + path, {
+          headers: { Authorization: "Bearer " + token },
+          signal: signal
+        });
+        var stamp = res.headers.get("date");
+        if (stamp) {
+          var t = Date.parse(stamp);
+          if (!isNaN(t)) { serverNow = t; }
+        }
+        if (!res.ok) {
+          throw new Error("backend " + res.status + " on " + path);
+        }
+        /* ⚠️ THE BODY READ IS INSIDE THE DEADLINE ON PURPOSE. A response whose
+           HEADERS arrive and whose BODY never does is the same blank page as a
+           request that was never answered at all, and a deadline that stopped
+           at the headers would not see it. `signal` aborts a body read in
+           progress, so both halves are covered by one timer. */
+        return res.json();
+      });
   }
 
   /* ── the four options of one question ──────────────────────────────────
@@ -488,6 +627,51 @@
       if (match) { return match; }
     }
     return classes[0];
+  }
+
+  /* ── the address must name the class that is on the screen ─────────────
+     ⊕ RULED 23 Aug 2026. `pickClass` above already ignores a `?class=` that
+     names a class this student is not in, and shows them their own instead.
+     That behaviour is right and it stays. What was wrong is that the ADDRESS
+     BAR went on reading the other class's id — the page showed 8r/Sc1 while
+     the URL said 9m/Sc2 — and `carryParams()` then copied that id onto every
+     internal link, so the wrong class travelled with the student all the way
+     to the assignment page.
+
+     ⛔ NO BANNER AND NO MESSAGE. Ruled explicitly. A student who followed a
+     friend's link gets their own class and an honest address, and is told
+     nothing at all: there is nothing they did wrong and nothing for them to
+     act on. `SAY.notMine` stays unreachable from here — it belongs to the
+     backend's own `not_authorised` / `class_not_found` codes in the catch.
+
+     THE CORRECTION DROPS THE PARAMETER RATHER THAN REWRITING IT, and the
+     reason is that when this fires the class on screen is ALWAYS `classes[0]`,
+     because that is the only thing `pickClass` can fall back to. A bare
+     `/student/class` is precisely what "the default class" means, so removing
+     the parameter is the URL telling the truth rather than the URL being
+     tidied. Writing the real id in instead would encode a choice the student
+     never made, and would pin any bookmark of it to one class id that stops
+     being in the working academic year next September — at which point the
+     address is lying again. The bare address resolves to whatever class the
+     student is in, in whatever year they open it.
+
+     Everything else in the query survives, `env` above all: `carryParams`
+     carries it deliberately so a tester is not moved from the test project to
+     production mid-journey, and this must not undo that.
+
+     `replaceState`, never `pushState`. The lying URL is REPLACED, so it is not
+     left behind in the history for Back to return to, and Back still goes
+     wherever the student came from on one press — exactly as it did before. */
+  function correctAddress(shown) {
+    if (!window.history || !window.history.replaceState) { return; }
+    var q = new URLSearchParams(window.location.search);
+    if (!q.has("class")) { return; }
+    if (q.get("class") === shown.id) { return; }      // already honest
+    q.delete("class");
+    var rest = q.toString();
+    window.history.replaceState(window.history.state, "",
+      window.location.pathname + (rest ? "?" + rest : "") +
+      window.location.hash);
   }
 
 
@@ -567,39 +751,56 @@
     var queue = [];
     var flushing = false;
 
+    /* ⊕ 23 Aug 2026 — this carries a deadline too, and it is the COLD one,
+       always. A hung save is not a blank page, but it is the same silence: a
+       `post` that never settles leaves `flushing` true for the rest of the
+       session, so `flush()` returns immediately for every answer after it and
+       NOTHING is ever saved again while the page goes on showing ticks. Both
+       routes behind it are idempotent by construction — the answer route
+       upserts on `(submission_id, question_index)` and the complete route
+       guards its update on `status = 'in_progress'` and serves the winning row
+       — so the queue's retry after an aborted write cannot double anything.
+
+       ⚠️ THE DEADLINE DOES NOT WEAKEN `keepalive` BELOW. The abort is fired by
+       a `setTimeout` inside this document; when the document unloads its
+       timers never run, so the request that `keepalive` exists to let outlive
+       the page is exactly the one this can never abort. */
     async function post(path, body) {
       var cfg = window.MrBadmusConfig || {};
       var base = cfg.BACKEND_URL || "https://mrbadmus-backend.onrender.com";
-      var res = await fetch(base + path, {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(body),
-        /* ⚠️ `keepalive` IS LOAD-BEARING, AND ITS ABSENCE COST AN ANSWER.
-           Found by driving: the page answered a question, navigated away a
-           moment later, and the row never reached the database — the browser
-           CANCELS in-flight requests when the document unloads, silently, with
-           no error anywhere. The page had already shown the tick.
+      return withDeadline(COLD_MS, path, async function (signal) {
+        var res = await fetch(base + path, {
+          signal: signal,
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(body),
+          /* ⚠️ `keepalive` IS LOAD-BEARING, AND ITS ABSENCE COST AN ANSWER.
+             Found by driving: the page answered a question, navigated away a
+             moment later, and the row never reached the database — the browser
+             CANCELS in-flight requests when the document unloads, silently, with
+             no error anywhere. The page had already shown the tick.
 
-           That is the exact shape of the defect this whole unit exists to
-           remove. It is not a test artefact: a student who taps Confirm and
-           then immediately taps "Back to 8r/Sc1", or closes the tab, or locks
-           their phone, is doing the same thing on a slower connection.
+             That is the exact shape of the defect this whole unit exists to
+             remove. It is not a test artefact: a student who taps Confirm and
+             then immediately taps "Back to 8r/Sc1", or closes the tab, or locks
+             their phone, is doing the same thing on a slower connection.
 
-           `keepalive` lets the request outlive the document. The 64 KB body
-           limit it comes with is not a constraint here — one answer is a few
-           hundred bytes. */
-        keepalive: true
+             `keepalive` lets the request outlive the document. The 64 KB body
+             limit it comes with is not a constraint here — one answer is a few
+             hundred bytes. */
+          keepalive: true
+        });
+        var stamp = res.headers.get("date");
+        if (stamp) {
+          var t = Date.parse(stamp);
+          if (!isNaN(t)) { serverNow = t; }
+        }
+        if (!res.ok) { throw new Error("backend " + res.status + " on " + path); }
+        return res.json();
       });
-      var stamp = res.headers.get("date");
-      if (stamp) {
-        var t = Date.parse(stamp);
-        if (!isNaN(t)) { serverNow = t; }
-      }
-      if (!res.ok) { throw new Error("backend " + res.status + " on " + path); }
-      return res.json();
     }
 
     async function flush() {
@@ -1398,6 +1599,7 @@
   // ── go ────────────────────────────────────────────────────────────────
   async function run() {
     var page = whichPage();
+    boot(page);                     // ← before the first byte is asked for
     await loadDeps();
 
     window.MrBadmusStudentGuard.requireStudentRole({
@@ -1412,6 +1614,7 @@
           var classes = await window.MrBadmusStudentData.loadStudentClasses(ctx.user.id);
           var klass = pickClass(classes);
           if (!klass) { return say(SAY.noClass); }
+          correctAddress(klass);
 
           var data = page === "assignment"
             ? await buildAssignment(klass, token)
