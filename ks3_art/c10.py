@@ -6,20 +6,22 @@ six lessons, ELEVEN instrument families and no drawn figure so far, all DOM,
 no canvas and no animation loop anywhere in the unit.
 
 ═══════════════════════════════════════════════════════════════════════════
-⚠️ WAVE 3 — FIVE FAMILIES IMPLEMENTED, SIX STILL TO COME
+⚠️ WAVE 4 — SEVEN FAMILIES IMPLEMENTED, FOUR STILL TO COME
 ═══════════════════════════════════════════════════════════════════════════
 
 Wave 1 built the unit spine and the reference lesson `c10-04`; wave 2 added
-`c10-01`; wave 3 adds `c10-02`. Five families are implemented and only those
-five are registered:
+`c10-01`; wave 3 added `c10-02`; wave 4 adds `c10-03`. Seven families are
+implemented and only those seven are registered:
 
     material-loop   ks3-mloop-block   c10-04  #s-loop    ← INK-DARK
     stock-limits    ks3-stock-block   c10-04  #s-stock
     earth-layers    ks3-elay-block    c10-01  #s-layers
     depth-evidence  ks3-edep-block    c10-01  #s-evidence
     rock-bench      ks3-rockb-block   c10-02  #s-bench
+    grain-journey   ks3-grain-block   c10-03  #s-journey
+    process-arrows  ks3-parrow-block  c10-03  #s-processes
 
-⊖ **THE OTHER SIX ARE NOT REGISTERED, AND MUST NOT BE UNTIL THEY EXIST.**
+⊖ **THE OTHER FOUR ARE NOT REGISTERED, AND MUST NOT BE UNTIL THEY EXIST.**
 `ks3_art.check_placements` gate 2 fails a family that is registered and never
 placed, and gate 3 fails one that is placed and never registered. A stub row
 added "ready" for a later lane would ship the shell around the generic
@@ -113,6 +115,8 @@ studio surface, and an undefined custom property is dropped in silence — the
 label inherits `--ks3-on-dark`, contrast stays fine and no gate trips. The
 mono control-group labels on this bench are `--ks3-on-dark-muted`.
 """
+
+import re
 
 from ks3_art.kit import e, rich, t
 
@@ -1146,6 +1150,340 @@ def r_rock_bench(a, act_id):
             % (len(samples), target, head, "".join(rows), pattern))
 
 
+# ═══ c10-03 · grain-journey ══════════════════════════════════════════════
+#
+# ⚠️ `_rockb_word` ABOVE IS C10'S NUMBER-WORD HELPER, not the bench's — the
+# prefix records where it was first needed. Both instruments below quote a
+# count in a drawn sentence, and both check that sentence against their own
+# payload rather than trusting it.
+
+
+def _c10_count_word_agrees(text, n, act_id, family, where):
+    """Refuse a drawn sentence whose number word disagrees with the payload.
+
+    §5A forbids hard-coding a figure the instrument computes. Design types the
+    size of both sets into her own headings — "Seven stages, shuffled" and
+    "the six processes" — and those are HER words, so they ship. What must not
+    ship is those words surviving an edit to the payload underneath them: a
+    seventh process added to `processes` would leave the eyebrow saying six,
+    on the page, with every gate green.
+
+    So the number is not authored twice; it is authored once and the sentence
+    is CHECKED against it. A heading naming no count is fine — nothing to
+    disagree with.
+
+    ⚠️ ONLY "three" TO "nine" COUNT AS COUNTS, and that is a real limit rather
+    than an oversight. "One" and "two" are ordinary English words long before
+    they are numbers — Design's own heading here reads "Tap a process. Each
+    ONE is an arrow on the diagram", which is not a claim about the size of
+    anything — and a check that read them as counts would fail a correct page
+    on a pronoun. Both instruments in this unit refuse a payload smaller than
+    four, so nothing checkable is lost by the narrowing.
+    """
+    words = re.findall(r"[a-z]+", (text or "").lower())
+    want = _rockb_word(n)
+    countable = _ROCKB_WORDS[3:]
+    found = [w for w in words if w in countable]
+    if found and want not in found:
+        raise ValueError(
+            "%s %r: the %s says %r but the payload holds %d. The count is a "
+            "fact about the payload, not a number an author chose, and a "
+            "sentence that disagrees with it goes on saying so after the set "
+            "has changed." % (family, act_id, where, found[0], n))
+
+
+def _c10_head_agrees(a, act_id, family, total, start):
+    """The block's head counter is DERIVED FROM THE PAYLOAD, then checked.
+
+    `head_counter` is rendered by the shell in `build_ks3.py`, which never
+    sees the instrument's payload, so its `total` and `start` have to be
+    authored on the block. Authoring a number the instrument owns is exactly
+    what §5A forbids, so both are asserted here: `total` is the size of the
+    set and `start` is how many panels the RESTING page has open. A payload
+    that gains a row and a counter that does not is a denominator that lies.
+    """
+    hc = a.get("head_counter")
+    if not hc:
+        return
+    if int(hc.get("total") or 0) != total:
+        raise ValueError(
+            "%s %r: head_counter counts to %r and the payload holds %d. The "
+            "denominator is a fact about the set."
+            % (family, act_id, hc.get("total"), total))
+    if int(hc.get("start") or 0) != start:
+        raise ValueError(
+            "%s %r: head_counter opens at %r and the resting page opens with "
+            "%d open. The opening number is what the HTML already shows, not "
+            "a number an author chose."
+            % (family, act_id, hc.get("start"), start))
+
+
+def r_grain_journey(a, act_id):
+    """⊕ c10-03 `#s-journey` — one grain, seven stages, put them in order.
+
+    A SEQUENCER, and the only one in C10. The student taps the stages in the
+    order they think they happen; the badge on each row records the position
+    it was placed in, and when the set is full the panel underneath opens with
+    the journey in its real order and the name of every stage.
+
+    ⚖️ **THE TWO VERDICTS ARE BOTH IN THE DOCUMENT AND ONE IS UNHIDDEN.** The
+    handler in `shared/ks3.js` compares the ranks this renderer emitted
+    against the positions the student pressed them in and chooses which of two
+    AUTHORED sentences stops being `hidden`. It composes nothing, and the list
+    of stages under it is the same list either way — the order is the answer,
+    so it is printed in full whether the student got it or not. A wrong order
+    that is only told it is wrong has been marked and not taught.
+
+    ⚖️ **THE CYCLE CLOSING IS DERIVED AND CHECKED, NOT TYPED.** The closing
+    sentence says the rock at the end is the rock at the beginning, which is
+    the whole reason this is a cycle and not a list. It is not allowed to be a
+    word an author remembered: the first and last stage each carry `rock`,
+    `{rock}` in `close` is filled from them, and a payload whose journey does
+    not return to where it started fails the build rather than shipping a
+    sentence that is no longer true of it.
+
+    ⚠️ **A PLACED ROW STAYS ENABLED.** Design sets `disabled` on it, which
+    disables the element the student has just pressed and drops a keyboard
+    user to `<body>` — MRB-257's finding, and `depth-evidence` and
+    `rock-bench` both reached it by the same route. A second press is a
+    genuine no-op instead, and nothing is lost visually: her placed row is LIT
+    (accent border, accent tint, accent badge), not dimmed, so the two look
+    identical.
+
+    Nothing is placed in the BYTES: the resting page opens with every row
+    live, every badge empty, the counter at zero and the panel hidden, which
+    is the on-load state modelled rather than assumed.
+
+    HOOKS: `data-grain` (wrapper, `data-total`, `data-target`) ·
+    `data-grain-pick` (valued with the stage id, with `data-grain-rank`) ·
+    `data-grain-badge` · `data-grain-reset` · `data-grain-panel` ·
+    `data-grain-verdict` (valued `right` / `wrong`).
+    """
+    stages = a.get("stages") or []
+    shuffled = list(a.get("shuffled") or [])
+
+    if len(stages) < 4:
+        raise ValueError(
+            "grain-journey %r has %d stage(s). A cycle a student can put in "
+            "order needs enough stages for the order to be a decision rather "
+            "than a guess." % (act_id, len(stages)))
+    ids = _unique_ids(stages, act_id, "grain-journey", "stage")
+    _no_correct_flags(stages, act_id, "grain-journey")
+
+    for s in stages:
+        for key in ("text", "why"):
+            if not s.get(key):
+                raise ValueError(
+                    "grain-journey %r stage %r has no %r. The text is the row "
+                    "a student presses and the why is the name of the process "
+                    "— a missing one is a button with nothing behind it."
+                    % (act_id, s.get("id"), key))
+    texts = [s["text"] for s in stages]
+    if len(set(texts)) != len(texts):
+        raise ValueError(
+            "grain-journey %r repeats a stage's text. Two rows that read the "
+            "same are two rows a student cannot order." % act_id)
+
+    if sorted(shuffled) != sorted(ids):
+        raise ValueError(
+            "grain-journey %r shuffles %s over stages %s. The display order "
+            "must be exactly the stages, every one of them once, or a stage "
+            "is either unreachable or offered twice."
+            % (act_id, shuffled, ids))
+    if shuffled == ids:
+        raise ValueError(
+            "grain-journey %r displays the stages in their answer order. "
+            "There is nothing to put in order." % act_id)
+
+    # ── the cycle closes, derived from the payload's own ends ────────────
+    first, last = stages[0].get("rock"), stages[-1].get("rock")
+    if not first or not last:
+        raise ValueError(
+            "grain-journey %r: the first and last stage must each name the "
+            "`rock` the grain is in. The closing sentence says the journey "
+            "comes back to where it started and fills its name from these; "
+            "without them the claim is a word an author remembered."
+            % act_id)
+    if first != last:
+        raise ValueError(
+            "grain-journey %r starts in %r and ends in %r, so the journey "
+            "does not close. This block is what makes the cycle a cycle, and "
+            "a set that does not return to its own beginning teaches the "
+            "opposite." % (act_id, first, last))
+
+    close = a.get("close") or ""
+    if "{rock}" not in close:
+        raise ValueError(
+            "grain-journey %r's close %r never names {rock}. The sentence's "
+            "whole claim is that the rock at the end is the rock at the "
+            "beginning, and hard-coding the name lets the payload change "
+            "under it." % (act_id, close))
+
+    right = a.get("verdict_right") or ""
+    wrong = a.get("verdict_wrong") or ""
+    if not right or not wrong:
+        raise ValueError(
+            "grain-journey %r authors no verdict_right or verdict_wrong. Both "
+            "are in the document from the moment the page loads and the "
+            "runtime chooses between them; a blank one is a student who "
+            "finishes and is told nothing." % act_id)
+    if right == wrong:
+        raise ValueError(
+            "grain-journey %r gives the same verdict either way, which tells "
+            "a student who got the order right nothing they did not already "
+            "know." % act_id)
+
+    _c10_count_word_agrees(a.get("heading"), len(stages), act_id,
+                           "grain-journey", "heading")
+    _c10_head_agrees(a, act_id, "grain-journey", len(stages), 0)
+
+    rank = dict((sid, i) for i, sid in enumerate(ids))
+    by_id = dict((s["id"], s) for s in stages)
+
+    rows = "".join(
+        '<li><button type="button" class="ks3-grain-step" '
+        'data-grain-pick="%s" data-grain-rank="%d" aria-pressed="false">'
+        '<span class="ks3-grain-badge" data-grain-badge aria-hidden="true">'
+        '</span><span class="ks3-grain-text">%s</span></button></li>'
+        % (e(sid), rank[sid], rich(by_id[sid]["text"]))
+        for sid in shuffled)
+
+    answer = "".join('<li><strong>%s</strong> — %s</li>'
+                     % (rich(s["text"]), rich(s["why"])) for s in stages)
+
+    reset = a.get("reset_label") or "Start the order again"
+
+    return ('<div class="ks3-grain" data-grain data-total="%d" '
+            'data-target="%d">'
+            '<ol class="ks3-grain-list">%s</ol>'
+            '<div class="ks3-grain-tools">'
+            '<button type="button" class="ks3-grain-reset" data-grain-reset>'
+            '%s</button></div>'
+            '<div class="ks3-grain-panel" data-grain-panel hidden>'
+            '<p class="ks3-grain-verdict" data-grain-verdict="right" hidden>'
+            '%s</p>'
+            '<p class="ks3-grain-verdict" data-grain-verdict="wrong" hidden>'
+            '%s</p>'
+            '<ol class="ks3-grain-answer">%s</ol>'
+            '<p class="ks3-grain-close">%s</p></div></div>'
+            % (len(stages), len(stages), rows, t(reset), t(right), t(wrong),
+               answer, rich(close.replace("{rock}", first))))
+
+
+# ═══ c10-03 · process-arrows ═════════════════════════════════════════════
+
+# Design's arrow between the two ends of a route. DRAWN, never typed: the
+# fonts in `shared/fonts/` carry no U+2192, which is why `kit.MARKS` exists at
+# all — and this one is wider than the 1em mark, because it spans a gap
+# between two display-weight phrases rather than sitting inside a sentence.
+_PARROW_SVG = ('<svg class="ks3-parrow-arrow" viewBox="0 0 44 24" width="44" '
+               'height="24" aria-hidden="true"><path '
+               'd="M4 12h30M26 5l8 7-8 7" fill="none" stroke="currentColor" '
+               'stroke-width="2.6" stroke-linecap="round" '
+               'stroke-linejoin="round"></path></svg>')
+
+
+def r_process_arrows(a, act_id):
+    """⊕ c10-03 `#s-processes` — six processes, six arrows, one open at a time.
+
+    The reference half of the lesson. Each process is one arrow on the rock
+    cycle: what it takes in, what it turns that into, what it actually does,
+    and how long it takes. Every panel is in the document from the moment the
+    page loads and `shared/ks3.js` chooses which one is `hidden`.
+
+    ⚖️ **THE RAIL STOP TICKS AT FOUR OF SIX, WHICH IS DESIGN'S OWN NUMBER.**
+    Her `DONE('s-processes')` is `Object.keys(s.seen).length >= 4` while the
+    set is six, and it is not a slip: the block is a REFERENCE a student keeps
+    open, and requiring all six would make the stop a reading receipt rather
+    than a record of having used it. `processes_to_open` carries it, and it is
+    checked against the set rather than assumed.
+
+    ⚠️ **THIS BLOCK DOES NOT OPEN EMPTY**, which it shares with `c10-04`'s two
+    benches and not with `c10-01`'s or `c10-02`'s. Design opens on the first
+    process with its panel showing, so the build emits that button
+    `aria-pressed="true"` and that panel unhidden — the resting HTML and the
+    runtime then agree, rather than agreeing one frame later. MRB-208 is
+    untouched: what may not be ticked on load is the RAIL STOP, and
+    `data-stage-done` still opens at 0.
+
+    ⚠️ **NOTHING IS DISABLED AND NOTHING IS MARKED.** Every button stays live
+    for the whole block, a press on the open process is a genuine no-op, and
+    the panel gives its answer in words. `_no_correct_flags` refuses a payload
+    that tries to mark one.
+
+    HOOKS: `data-parrow` (wrapper, `data-total`, `data-target`) ·
+    `data-parrow-pick` (valued with the process id) · `data-parrow-out`
+    (valued with the process id).
+    """
+    procs = a.get("processes") or []
+
+    if len(procs) < 4:
+        raise ValueError(
+            "process-arrows %r has %d process(es). The claim the block is "
+            "making is that there are many routes between the three rock "
+            "types, and a handful of arrows cannot make it."
+            % (act_id, len(procs)))
+    _unique_ids(procs, act_id, "process-arrows", "process")
+    _no_correct_flags(procs, act_id, "process-arrows")
+
+    for p in procs:
+        for key in ("label", "name", "from", "to", "note", "time"):
+            if not p.get(key):
+                raise ValueError(
+                    "process-arrows %r process %r has no %r. The label names "
+                    "the button, the name and the two ends are the arrow, the "
+                    "note is what the process does and the time is what stops "
+                    "the cycle reading as a schedule — a missing one leaves a "
+                    "panel with a hole in it." % (act_id, p.get("id"), key))
+        if p["from"] == p["to"]:
+            raise ValueError(
+                "process-arrows %r process %r goes from %r to %r. An arrow "
+                "that ends where it started is not a process."
+                % (act_id, p["id"], p["from"], p["to"]))
+
+    labels = [p["label"] for p in procs]
+    if len(set(labels)) != len(labels):
+        raise ValueError(
+            "process-arrows %r repeats a button label in %s. Two buttons that "
+            "read the same are one process a student can never reach."
+            % (act_id, labels))
+
+    target = int(a.get("processes_to_open") or 0)
+    if not 2 <= target <= len(procs):
+        raise ValueError(
+            "process-arrows %r ticks its rail stop at %r of %d. Two is the "
+            "fewest that is more than the one already open, and more than the "
+            "set is a stop that can never tick."
+            % (act_id, target, len(procs)))
+
+    _c10_count_word_agrees(a.get("eyebrow"), len(procs), act_id,
+                           "process-arrows", "eyebrow")
+    _c10_count_word_agrees(a.get("heading"), len(procs), act_id,
+                           "process-arrows", "heading")
+    # One panel is open in the resting bytes, so the counter opens at one.
+    _c10_head_agrees(a, act_id, "process-arrows", len(procs), 1)
+
+    picks = "".join(
+        _c10_seg("ks3-parrow-pick", p["label"], i == 0,
+                 data_parrow_pick=p["id"])
+        for i, p in enumerate(procs))
+
+    panels = "".join(
+        '<div class="ks3-parrow-panel" data-parrow-out="%s"%s>'
+        '<p class="ks3-parrow-name">%s</p>'
+        '<p class="ks3-parrow-route"><span>%s</span>%s<span>%s</span></p>'
+        '<p class="ks3-parrow-note">%s</p>'
+        '<p class="ks3-parrow-time">%s</p></div>'
+        % (e(p["id"]), "" if i == 0 else " hidden", t(p["name"]),
+           t(p["from"]), _PARROW_SVG, t(p["to"]), rich(p["note"]),
+           t(p["time"]))
+        for i, p in enumerate(procs))
+
+    return ('<div class="ks3-parrow" data-parrow data-total="%d" '
+            'data-target="%d"><div class="ks3-parrow-picks">%s</div>%s</div>'
+            % (len(procs), target, picks, panels))
+
+
 # ═══ registration ════════════════════════════════════════════════════════
 #
 # ⚠️ FIVE ROWS, BECAUSE FIVE RENDERERS EXIST. The other six C10 families are
@@ -1163,6 +1501,10 @@ KIND_SHELL = {
                      ' data-instrument data-stockblock data-stage-done="0"'),
     'rock-bench': ("ks3-rockb-block",
                    ' data-instrument data-rockbblock data-stage-done="0"'),
+    'grain-journey': ("ks3-grain-block",
+                      ' data-instrument data-grainblock data-stage-done="0"'),
+    'process-arrows': ("ks3-parrow-block",
+                       ' data-instrument data-parrowblock data-stage-done="0"'),
 }
 
 KIND_FN = {
@@ -1171,4 +1513,6 @@ KIND_FN = {
     'material-loop': r_material_loop,
     'stock-limits': r_stock_limits,
     'rock-bench': r_rock_bench,
+    'grain-journey': r_grain_journey,
+    'process-arrows': r_process_arrows,
 }

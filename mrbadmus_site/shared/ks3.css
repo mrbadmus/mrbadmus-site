@@ -22448,11 +22448,13 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    EOF — every byte above this marker is unchanged, which is the one conflict
    shape that resolves mechanically when another lane merges.
 
-   ⚠️ WAVE 3. Five families are here: c10-04's `material-loop` (`#s-loop`) and
-   `stock-limits` (`#s-stock`), c10-01's `earth-layers` (`#s-layers`) and
-   `depth-evidence` (`#s-evidence`), and c10-02's `rock-bench` (`#s-bench`).
-   The unit's other six families are listed in `ks3_art/c10.py` and their
-   rules land with their lessons, inside this same marked block.
+   ⚠️ WAVE 4. Seven families are here: c10-04's `material-loop` (`#s-loop`)
+   and `stock-limits` (`#s-stock`), c10-01's `earth-layers` (`#s-layers`) and
+   `depth-evidence` (`#s-evidence`), c10-02's `rock-bench` (`#s-bench`), and
+   c10-03's `grain-journey` (`#s-journey`) and `process-arrows`
+   (`#s-processes`). The unit's other four families are listed in
+   `ks3_art/c10.py` and their rules land with their lessons, inside this same
+   marked block.
 
    ⚠️ `#s-loop` IS THE UNIT'S ONE INK-DARK INSTRUMENT — `ks3-block ks3-dark`
    in Design's file, built as `ks3-block ks3-dark ks3-practical` (the ruling
@@ -22807,5 +22809,140 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   .ks3-rockb .ks3-rockb-code { font-size: 19px; }
   .ks3-rockb .ks3-rockb-picks { gap: 8px; }
   .ks3-rockb .ks3-rockb-ptext { font-size: 18px; }
+}
+/* ── c10-03 · grain-journey (light) ────────────────────────────────────
+   A SEQUENCER, and the only one in C10. Seven full-width rows on the card
+   ground; a row that has been placed moves to the accent tint with an accent
+   badge carrying its position. That is Design's own two-state row, and it is
+   the only thing on this block that changes colour — the verdict is a
+   sentence, and nothing here is green or red.
+
+   ⚠️ `[data-placed]` IS SET BY `shared/ks3.js` AND BY NOTHING ELSE, and the
+   resting page carries none: seven live rows, seven empty badges and a hidden
+   panel is the on-load state, which is the state the payload models.
+
+   ⚠️ A PLACED ROW IS LIT, NOT DIMMED, and it is NOT disabled — the ruling and
+   its reason are in `ks3_art/c10.py`. There is deliberately no `[disabled]`
+   opacity rule below, because nothing on this block is ever disabled; adding
+   one would be a style waiting for a state that cannot happen.
+
+   No element here is absolutely positioned and no part of the block scrolls,
+   so the containment rule the sticky rail and the wide tables need does not
+   arise. Recorded rather than assumed. */
+.ks3-grain-block .ks3-grain { margin-top: 18px; }
+.ks3-grain .ks3-grain-list {
+  list-style: none; margin: 0; padding: 0; display: flex;
+  flex-direction: column; gap: 9px;
+}
+.ks3-grain .ks3-grain-step {
+  font: inherit; font-size: 17px; line-height: 1.5; width: 100%;
+  display: flex; gap: 14px; align-items: center; text-align: left;
+  padding: 14px 16px; border-radius: var(--ks3-r-panel); cursor: pointer;
+  border: 2px solid var(--ks3-option-border); background: var(--ks3-card);
+  color: var(--ks3-ink);
+}
+.ks3-grain .ks3-grain-step[data-placed] {
+  border-color: var(--ks3-accent); background: var(--ks3-accent-tint);
+  cursor: default;
+}
+.ks3-grain .ks3-grain-badge {
+  display: grid; place-items: center; width: 30px; height: 30px;
+  flex: 0 0 30px; border-radius: 9px; font-family: var(--ks3-font-mono);
+  font-size: 14px; font-weight: 500; background: var(--ks3-band);
+  color: var(--ks3-ink-ghost);
+}
+.ks3-grain .ks3-grain-step[data-placed] .ks3-grain-badge {
+  background: var(--ks3-accent); color: var(--ks3-on-dark);
+}
+.ks3-grain .ks3-grain-tools {
+  margin-top: 14px; display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-grain .ks3-grain-reset {
+  font: inherit; font-size: 16px; font-weight: 700; padding: 11px 16px;
+  min-height: 44px; border-radius: var(--ks3-r-control); cursor: pointer;
+  border: 2px solid var(--ks3-rule-strong); background: transparent;
+  color: var(--ks3-ink-muted);
+}
+.ks3-grain .ks3-grain-panel {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band); border: 2px solid var(--ks3-ink);
+}
+.ks3-grain .ks3-grain-verdict {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-grain .ks3-grain-answer {
+  margin: 14px 0 0; padding-left: 22px; display: flex;
+  flex-direction: column; gap: 10px; font-size: 18px; line-height: 1.55;
+  color: var(--ks3-ink);
+}
+.ks3-grain .ks3-grain-close {
+  margin: 16px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-ink);
+}
+.ks3-grain [hidden] { display: none; }
+
+/* At 360px a 30px badge plus 14px of gap leaves a seven-word row breaking
+   mid-word against its own padding, so the row gives padding and gap rather
+   than the stage giving its words. */
+@media (max-width: 30rem) {
+  .ks3-grain .ks3-grain-step {
+    padding: 12px 13px; gap: 11px; font-size: 16px;
+  }
+  .ks3-grain .ks3-grain-badge { width: 26px; height: 26px; flex: 0 0 26px; }
+  .ks3-grain .ks3-grain-panel { padding: 18px 17px; }
+  .ks3-grain .ks3-grain-verdict { font-size: 20px; }
+  .ks3-grain .ks3-grain-answer { font-size: 17px; padding-left: 19px; }
+  .ks3-grain .ks3-grain-close { font-size: 18px; }
+}
+
+/* ── c10-03 · process-arrows (light) ───────────────────────────────────
+   Six segmented buttons over one panel, the panel swapping as the buttons do.
+   Selection uses the house `.ks3-seg-btn` unchanged; the block is light, so
+   MRB-242's on-ink correction does not arise, and nothing here is ever
+   disabled, so `depth-evidence`'s spent-button opacity does not arise either.
+
+   ⚠️ THE ROUTE LINE IS A FLEX ROW THAT WRAPS, and the arrow between its two
+   ends is DRAWN as SVG on `currentColor` — the fonts in `shared/fonts/` carry
+   no U+2192, which is why `ks3_art.kit.MARKS` exists. At 360px "any rock, deep
+   and hot enough" and "igneous rock" each take a line and the arrow sits
+   between them; `flex: 0 0 auto` is what stops it being squashed to a stub
+   when they do. */
+.ks3-parrow-block .ks3-parrow { margin-top: 18px; }
+.ks3-parrow .ks3-parrow-picks {
+  display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-parrow .ks3-parrow-panel {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-parrow .ks3-parrow-name {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 24px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-parrow .ks3-parrow-route {
+  margin: 10px 0 0; display: flex; align-items: center; gap: 12px;
+  flex-wrap: wrap; font-family: var(--ks3-font-display); font-weight: 700;
+  font-size: 19px; line-height: 1.3; color: var(--ks3-ink);
+}
+.ks3-parrow .ks3-parrow-arrow { flex: 0 0 auto; }
+.ks3-parrow .ks3-parrow-note {
+  margin: 12px 0 0; font-size: 18px; line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+.ks3-parrow .ks3-parrow-time {
+  margin: 12px 0 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-parrow [hidden] { display: none; }
+
+/* At 360px six buttons wrap to four rows and the panel's display-weight
+   route line is the first thing to overflow, so the panel gives padding and
+   the route line gives leading. */
+@media (max-width: 30rem) {
+  .ks3-parrow .ks3-parrow-panel { padding: 18px 17px; }
+  .ks3-parrow .ks3-parrow-name { font-size: 21px; }
+  .ks3-parrow .ks3-parrow-route { font-size: 18px; gap: 9px; }
+  .ks3-parrow .ks3-parrow-note { font-size: 17px; }
 }
 /* ═══ END C10 ═══ */

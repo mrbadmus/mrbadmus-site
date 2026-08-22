@@ -1613,8 +1613,8 @@ Opened by **C10 *The Earth and its atmosphere*** (2026-08-22, drawn by Claude De
 `EARTH-01` to `EARTH-16` are C10's, six lessons, two or three entries each. All are
 `review_state: draft`.
 
-⚠️ **THE RANGE IS ALLOCATED, THE ROWS ARE NOT.** Only `c10-01`, `c10-02` and `c10-04` are
-authored so far, so only their ten rows are below. The remaining allocation is written down here so five lanes authoring five
+⚠️ **THE RANGE IS ALLOCATED, THE ROWS ARE NOT.** Only `c10-01`, `c10-02`, `c10-03` and
+`c10-04` are authored so far, so only their thirteen rows are below. The remaining allocation is written down here so five lanes authoring five
 lessons cannot collide on a number: `EARTH-01`–`04` are c10-01's, `05`–`07` c10-02's, `08`–`10`
 c10-03's, `11`–`13` c10-04's, and `14`–`16` are shared between c10-05 and c10-06. **An id appears
 in the table below only when the lesson that references it exists** — registering ahead of
@@ -1636,6 +1636,9 @@ they are left unwritten and the numbering stops at 16. **Do not close the gap.**
 | `EARTH-05` | If a rock has crystals in it, it must be igneous. | `think-commit-crystals` | `think-reveal-crystals` | `three-ways-to-make-a-rock` |
 | `EARTH-06` | Rocks are grouped by what they look like, so two rocks that look alike are the same kind of rock. | `s-hook` | `bench-pattern` | `three-ways-to-make-a-rock` |
 | `EARTH-07` | Metamorphic rock is rock that was melted and then set again as something new. | — | `bench-samples` | `three-ways-to-make-a-rock` |
+| `EARTH-08` | Sedimentary rock becomes metamorphic, and metamorphic becomes igneous. It goes round one way, like a clock. | `think-commit-direction` | `think-reveal-direction` | `the-rock-cycle` |
+| `EARTH-09` | A rock has to go through every stage of the cycle in turn, so nothing can become sedimentary without melting first. | — | `process-arrows` | `the-rock-cycle` |
+| `EARTH-10` | A rock is a permanent thing, so the stone and the mountains around us have always been what they are now. | `s-hook` | `grain-order` | `the-rock-cycle` |
 | `EARTH-11` | If we recycled everything, we would never run out of anything. | `think-commit-recycling` | `think-reveal-recycling` | `a-planet-with-limits` |
 | `EARTH-12` | How much comes back depends on how carefully people sort their bins. | `loop-bench` | `loop-bench` | `a-planet-with-limits` |
 | `EARTH-13` | “Years left” is a measured fact about how much is in the ground. | — | `s-stock` | `a-planet-with-limits` |
@@ -1703,6 +1706,44 @@ elicitation instead, at `c10-02-s02` and `c10-02-h01`. ⚑ This is also the entr
 whole classification: melt a metamorphic rock and what cools out of it is igneous, which is why
 "without melting" appears in the reference panel, the key fact and the key note and is contradicted
 nowhere.
+
+**`EARTH-08` is the one `c10-03` is built to break, and it is the belief Design quotes in her own
+words at `#s-think`.** The rock cycle in the front of every textbook is a ring with arrows drawn one
+way round, and a student who has only ever seen that diagram holds it as an ORDER: sedimentary
+becomes metamorphic, metamorphic becomes igneous, round and round like a clock face. What is true is
+that there are arrows across the middle as well as round the edge, and that the route is decided by
+where the rock ends up rather than by what it currently is — at the surface, weathering; buried
+deep, heat and pressure; deeper and hotter still, melting. The confrontation is the reveal directly
+under the commitment, and the reason the page carries no rock-cycle diagram at all is that shipping
+the ring would hand the student the belief and then take it away eight blocks later.
+
+⚠️ **`EARTH-08` IS ALSO WHY `#s-journey` IS FENCED.** The sequencer walks one grain through seven
+stages in a fixed order, which is the one block on the page that could be read as confirming the
+belief. It is closed twice: the panel's closing sentence says the journey starts again *because the
+granite at the end is the granite at the beginning*, and `#s-think` is the very next rail stop. The
+order is a journey one grain took, never the order every rock takes.
+
+**`EARTH-09` carries no `elicited_by`, deliberately, and that is audit law 15 working rather than a
+gap.** Nothing on the page asks a student to commit to "every rock must pass through every stage" as
+a belief in its own right — `#s-think`'s four options are about DIRECTION, which is `EARTH-08`, and
+inventing an anchor to fill the column would be the dishonest version. What confronts it is the
+reference block: three of the six processes declare an input that is ANY rock in the right place
+(`any rock at the surface`, `any buried rock`, `any rock, deep and hot enough`), which is the
+skipping stated as a payload rather than as a sentence. The question bank carries the elicitation
+instead, at `c10-03-s02` and `c10-03-h01`.
+
+**`EARTH-10` is elicited by the hook and confronted by the sequencer.** Three of the hook's four
+options offer a way for marine limestone to be sitting at 8800 metres without the rock itself having
+changed — birds carried the fossils, the sea used to be that high, limestone forms anywhere. Each
+one preserves the rock as a fixed thing and moves something else instead, which is exactly how the
+belief survives contact with the evidence. What kills it is following one grain all the way round
+and finding it in seven different rocks, the last of which is the first.
+
+⚑ **`EARTH-10` and `EARTH-06` are neighbours and are not the same belief.** `EARTH-06` is about
+CLASSIFICATION — two rocks that look alike must be the same kind — and it dies on a bench where
+colour and hardness decide nothing. `EARTH-10` is about PERMANENCE, and it dies on a journey. A
+student can hold either without the other, and `c10-02` needs the first while `c10-03` needs the
+second.
 
 **`EARTH-11` is the unit's load-bearing entry, and the page breaks it with arithmetic rather than
 with an assertion.** By the time `#s-think` quotes the belief, the student has run 1000 kg round

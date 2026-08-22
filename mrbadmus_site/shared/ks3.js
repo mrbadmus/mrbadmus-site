@@ -22194,10 +22194,11 @@
    marked block so that a lane merging into this file resolves mechanically:
    nothing above this marker moves.
 
-   ⚠️ WAVE 3. Five of the unit's eleven families are here — c10-04's loop
-   bench and its stock shelf, c10-01's layer bar and evidence set, and
-   c10-02's rock bench. The other six are listed in `ks3_art/c10.py` and are
-   wired by their own lesson's author, inside this same marked block.
+   ⚠️ WAVE 4. Seven of the unit's eleven families are here — c10-04's loop
+   bench and its stock shelf, c10-01's layer bar and evidence set, c10-02's
+   rock bench, and c10-03's grain sequencer and process arrows. The other four
+   are listed in `ks3_art/c10.py` and are wired by their own lesson's author,
+   inside this same marked block.
 
    ⚖️ NOTHING IS COMPUTED IN THIS BLOCK. Not one mass, not one percentage, not
    one multiplier and not one VERDICT. The loop bench's TWENTY states are all
@@ -22511,6 +22512,141 @@
       });
     });
     setCount(sec, decidedN);
+  }
+  /* ── grain-journey (c10-03 #s-journey) ───────────────────────────────
+     A SEQUENCER, and the only one in C10. Seven rows in shuffled order; the
+     student presses them in the order they think the stages happen, and the
+     badge on each row records the position it went into.
+
+     ⚖️ NOTHING IS COMPOSED HERE EITHER. Both verdict sentences are in the
+     document already, written in `ks3_art/c10.py` from the payload, and this
+     unhides one of them; the list of stages under it is the same list either
+     way, because the order IS the answer and a wrong order that is only told
+     it is wrong has been marked and not taught. What this handler decides is
+     which of two authored sentences stops being `hidden`, by comparing the
+     ranks the build emitted against the order they were pressed in.
+
+     ⚠️ A PLACED ROW STAYS ENABLED — MRB-257, the same ruling as
+     `wireDepthEvidence` and `wireRockBench` above and for the same reason:
+     disabling the element the student has just pressed drops a keyboard user
+     to `<body>`. A second press on a placed row is a genuine no-op, and
+     nothing is lost visually, because Design draws a placed row LIT rather
+     than dimmed.
+
+     `markStage` is one-way (MRB-208), so starting the order again clears the
+     badges and the panel and leaves the rail stop ticked. What the rail
+     records is participation, and the student did participate. */
+  function wireGrainJourney(sec) {
+    var wrap = sec.querySelector("[data-grain]");
+    if (!wrap) { return; }
+    var picks = toArray(wrap.querySelectorAll("[data-grain-pick]"));
+    var verdicts = toArray(wrap.querySelectorAll("[data-grain-verdict]"));
+    var panel = wrap.querySelector("[data-grain-panel]");
+    var reset = wrap.querySelector("[data-grain-reset]");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || picks.length;
+    var target = parseInt(wrap.getAttribute("data-target"), 10) || total;
+    if (!picks.length) { return; }
+
+    var placed = {}, seq = [];
+
+    function badgeOf(btn) { return btn.querySelector("[data-grain-badge]"); }
+
+    function clear() {
+      placed = {};
+      seq = [];
+      each(picks, function (b) {
+        b.setAttribute("aria-pressed", "false");
+        b.removeAttribute("data-placed");
+        var badge = badgeOf(b);
+        if (badge) { badge.textContent = ""; }
+      });
+      each(verdicts, function (v) { setHidden(v, true); });
+      setHidden(panel, true);
+      setCount(sec, 0);
+    }
+
+    each(picks, function (btn) {
+      btn.addEventListener("click", function () {
+        var id = btn.getAttribute("data-grain-pick");
+        if (placed[id]) { return; }                /* already placed */
+        placed[id] = 1;
+        seq.push(parseInt(btn.getAttribute("data-grain-rank"), 10));
+        btn.setAttribute("aria-pressed", "true");
+        btn.setAttribute("data-placed", "1");
+        var badge = badgeOf(btn);
+        if (badge) { badge.textContent = String(seq.length); }
+        setCount(sec, seq.length);
+        if (seq.length >= total) {
+          var right = true, i;
+          for (i = 0; i < seq.length; i += 1) {
+            if (seq[i] !== i) { right = false; }
+          }
+          each(verdicts, function (v) {
+            setHidden(v, v.getAttribute("data-grain-verdict")
+                         !== (right ? "right" : "wrong"));
+          });
+          setHidden(panel, false);
+        }
+        if (seq.length >= target) { markStage(sec, true); }
+      });
+    });
+
+    if (reset) { reset.addEventListener("click", clear); }
+    setCount(sec, 0);
+  }
+
+  /* ── process-arrows (c10-03 #s-processes) ────────────────────────────
+     Six processes, six panels, one shown at a time. The rail stop ticks at
+     FOUR of the six — Design's own `DONE('s-processes')`, and not a slip:
+     the block is a reference a student keeps open beside the sequencer, and
+     requiring all six would make the stop a reading receipt rather than a
+     record of having used it.
+
+     ⚠️ THIS BLOCK DOES NOT OPEN EMPTY, which it shares with c10-04's two
+     benches and not with c10-01's or c10-02's. The opening selection is in
+     the HTML, not in this file, and is read out of it — so the resting page
+     and the runtime cannot disagree about which process is showing. MRB-208
+     is untouched: `data-stage-done` still opens at 0.
+
+     Nothing is disabled and nothing is marked. A press on the open process
+     is a genuine no-op, which is the same shape as `wireMaterialLoop`'s. */
+  function wireProcessArrows(sec) {
+    var wrap = sec.querySelector("[data-parrow]");
+    if (!wrap) { return; }
+    var picks = toArray(wrap.querySelectorAll("[data-parrow-pick]"));
+    var outs = toArray(wrap.querySelectorAll("[data-parrow-out]"));
+    var target = parseInt(wrap.getAttribute("data-target"), 10) || picks.length;
+    if (!picks.length || !outs.length) { return; }
+
+    /* The opening selection is in the HTML, not in this file. */
+    var cur = picks[0].getAttribute("data-parrow-pick");
+    for (var i = 0; i < picks.length; i += 1) {
+      if (picks[i].getAttribute("aria-pressed") === "true") {
+        cur = picks[i].getAttribute("data-parrow-pick");
+        break;
+      }
+    }
+    var seen = {}, seenN = 1;
+    seen[cur] = 1;
+
+    each(picks, function (btn) {
+      btn.addEventListener("click", function () {
+        var v = btn.getAttribute("data-parrow-pick");
+        if (v === cur) { return; }                 /* the no-op press */
+        cur = v;
+        each(picks, function (b) {
+          b.setAttribute("aria-pressed",
+                         b.getAttribute("data-parrow-pick") === v
+                           ? "true" : "false");
+        });
+        each(outs, function (o) {
+          setHidden(o, o.getAttribute("data-parrow-out") !== v);
+        });
+        if (!seen[v]) { seen[v] = 1; seenN += 1; setCount(sec, seenN); }
+        if (seenN >= target) { markStage(sec, true); }
+      });
+    });
+    setCount(sec, seenN);
   }
 /* ═══ END C10 wiring ═══ */
 
@@ -22864,6 +23000,8 @@
     each(root.querySelectorAll("[data-mloopblock]"), wireMaterialLoop);
     each(root.querySelectorAll("[data-stockblock]"), wireStockLimits);
     each(root.querySelectorAll("[data-rockbblock]"), wireRockBench);
+    each(root.querySelectorAll("[data-grainblock]"), wireGrainJourney);
+    each(root.querySelectorAll("[data-parrowblock]"), wireProcessArrows);
     // ═══ END C10 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
