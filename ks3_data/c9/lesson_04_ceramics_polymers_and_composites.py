@@ -514,6 +514,16 @@ LESSON = {
             # taxonomy the rung tests is unchanged. Answer stays at index 3:
             # MRB-278 measured the fourth option correct 0 times in 174 rungs.
             "q": "Which of these is a composite?",
+            # ⊕ MRB-281, 23 Aug 2026 — CONVERGENT FIX, resolved to main's
+            # wording. The content-chem lane fixed this same length tell
+            # independently and reached the same three two-word distractors
+            # bar one: `Fired porcelain` where main wrote `Porcelain tile`.
+            # Main's is kept because it is the complete edit — it also
+            # rewrote the three corrections below to open on the two-word
+            # option, and `Porcelain tile` is the form c9-04's own load test
+            # already uses. The lane's `Fired porcelain` would have left
+            # "A porcelain tile is a ceramic" answering an option that never
+            # says tile. Nothing about the ruling differs between the two.
             "options": ["Porcelain tile", "Polythene sheet", "Copper wire",
                         "Reinforced concrete"],
             "answer": 3,

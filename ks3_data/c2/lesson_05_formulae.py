@@ -251,7 +251,7 @@ LESSON = {
          "prompt": "Everything so far has treated a formula as a recipe for "
                    "one particle. For salt that is not what is happening, and "
                    "the model has to bend.",
-         "cards": [
+         "panels": [
              {"ground": "card",
               "caption": "A molecule · CO2",
               "text": "Separate particles float about, each one made of "

@@ -111,6 +111,7 @@ rewrites §1 below. Run it when Design delivers a new unit; never hand-edit rows
 | `inside-the-earth` | `c10-01-inside-the-earth` | s-hook s-layers s-evidence s-think s-ladder | — |
 | `three-ways-to-make-a-rock` | `c10-02-three-ways-to-make-a-rock` | s-hook s-table s-bench s-think s-ladder | s-table=s-hook |
 | `the-rock-cycle` | `c10-03-the-rock-cycle` | s-hook s-journey s-processes s-think s-ladder | — |
+| `a-planet-with-limits` | `c10-04-a-planet-with-limits` | s-hook s-loop s-stock s-words s-think s-ladder | — |
 | `whats-in-the-air` | `c10-05-whats-in-the-air` | s-hook s-mix s-history s-think s-ladder | — |
 | `carbon-dioxide-humans-and-climate` | `c10-06-carbon-dioxide-humans-and-climate` | s-hook s-how s-evidence s-think s-ladder | — |
 | `the-carbon-cycle` | `c10-07-the-carbon-cycle` | s-hook s-flows s-store s-think s-ladder | — |
@@ -154,6 +155,7 @@ rewrites §1 below. Run it when Design delivers a new unit; never hand-edit rows
 | `group-1-the-alkali-metals` | `c8-04-group-1-the-alkali-metals` | s-hook s-trough s-predict s-think s-ladder | — |
 | `group-7-the-halogens` | `c8-05-group-7-the-halogens` | s-hook s-family s-grid s-think s-ladder | s-family=s-hook |
 | `group-0-and-why-groups-exist` | `c8-06-group-0-and-why-groups-exist` | s-hook s-shells s-file s-uses s-think s-ladder | — |
+| `metal-and-non-metal-oxides` | `c8-07-metal-and-non-metal-oxides` | s-hook s-rule s-bench s-think s-ladder | s-rule=s-hook |
 | `the-reactivity-series` | `c9-01-the-reactivity-series` | s-hook s-series s-bench s-think s-ladder | s-series=s-hook |
 | `predicting-displacement` | `c9-02-predicting-displacement` | s-hook s-rule s-deck s-think s-ladder | s-rule=s-hook |
 | `getting-metals-out-of-rocks` | `c9-03-getting-metals-out-of-rocks` | s-hook s-line s-bench s-think s-ladder | s-line=s-hook |

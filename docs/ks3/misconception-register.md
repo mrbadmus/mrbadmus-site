@@ -1604,3 +1604,281 @@ confrontation cannot deny the observation and does not: it separates POISONED fr
 the platinum in a dead converter and finds it all there, and lands on "blocked is not the same as
 consumed". MRB-225 applies squarely — the version that is true is more interesting than the version
 that is famous, and nothing in `c6-07` retracts the definition it opened with.
+
+---
+
+### `EARTH` — the Earth and its atmosphere: what a fixed stock is, what a loop actually returns, and what a "reserve" is a fact about
+
+Opened by **C10 *The Earth and its atmosphere*** (2026-08-22, drawn by Claude Design, MRB-281).
+`EARTH-01` to `EARTH-17` are C10's, six lessons, two or three entries each. All are
+`review_state: draft`.
+
+⊕ **THE UNIT IS COMPLETE AND THE RANGE IS CLOSED AT `EARTH-17`.** All six lessons are authored,
+so all seventeen rows are below. The allocation, kept because it is what stopped six lanes
+colliding on a number: `EARTH-01`–`04` are c10-01's, `05`–`07` c10-02's, `08`–`10` c10-03's,
+`11`–`13` c10-04's, `14`–`15` c10-05's, and `16`–`17` c10-06's. **An id appears in the table below
+only when the lesson that references it exists** — registering ahead of authoring is legal
+(`CELL-09`–`12` are the live example) but allocating a block and then filling it is how a number
+ends up meaning two things.
+
+⊖ **`EARTH-17` IS SPENT. `EARTH-18` IS THE SOLE REMAINING SPARE AND IS NOT MINTED.** Both were
+reserved against a lesson needing a further entry, in exactly the sense `MATL-04/07/10/14` were
+pre-allocated and then deliberately left unallocated. `c10-06` needed one and took `17`; the
+justification is with the row. `EARTH-18` stays unwritten — a spare that is never used is an id
+reserved against nothing, and ids are permanent once referenced, so with the unit finished the
+numbering stops at 17. **Do not close the gap and do not mint 18.**
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `EARTH-01` | The mantle is a sea of molten lava, and volcanoes are holes that let it out. | `think-commit-mantle` | `think-reveal-mantle` | `inside-the-earth` |
+| `EARTH-02` | Nobody has ever been down there, so what is inside the Earth is really only a guess. | `s-hook` | `s-evidence` | `inside-the-earth` |
+| `EARTH-03` | Anything that hot must be melted, so the hottest part of the Earth is liquid. | — | `s-layers` | `inside-the-earth` |
+| `EARTH-04` | The crust is a thick shell, and mines and boreholes have been most of the way through it. | — | `s-layers` | `inside-the-earth` |
+| `EARTH-05` | If a rock has crystals in it, it must be igneous. | `think-commit-crystals` | `think-reveal-crystals` | `three-ways-to-make-a-rock` |
+| `EARTH-06` | Rocks are grouped by what they look like, so two rocks that look alike are the same kind of rock. | `s-hook` | `bench-pattern` | `three-ways-to-make-a-rock` |
+| `EARTH-07` | Metamorphic rock is rock that was melted and then set again as something new. | — | `bench-samples` | `three-ways-to-make-a-rock` |
+| `EARTH-08` | Sedimentary rock becomes metamorphic, and metamorphic becomes igneous. It goes round one way, like a clock. | `think-commit-direction` | `think-reveal-direction` | `the-rock-cycle` |
+| `EARTH-09` | A rock has to go through every stage of the cycle in turn, so nothing can become sedimentary without melting first. | — | `process-arrows` | `the-rock-cycle` |
+| `EARTH-10` | A rock is a permanent thing, so the stone and the mountains around us have always been what they are now. | `s-hook` | `grain-order` | `the-rock-cycle` |
+| `EARTH-11` | If we recycled everything, we would never run out of anything. | `think-commit-recycling` | `think-reveal-recycling` | `a-planet-with-limits` |
+| `EARTH-12` | How much comes back depends on how carefully people sort their bins. | `loop-bench` | `loop-bench` | `a-planet-with-limits` |
+| `EARTH-13` | “Years left” is a measured fact about how much is in the ground. | — | `s-stock` | `a-planet-with-limits` |
+| `EARTH-14` | Air is mostly oxygen — that is the point of it. | `think-commit-oxygen` | `think-reveal-oxygen` | `whats-in-the-air` |
+| `EARTH-15` | The air has always been roughly like this, so the oxygen was there from the start. | — | `s-history` | `whats-in-the-air` |
+| `EARTH-16` | The planet is warming because of the hole in the ozone layer letting extra heat in. | `think-commit-ozone` | `think-reveal-ozone` | `carbon-dioxide-humans-and-climate` |
+| `EARTH-17` | The greenhouse effect is the problem — it is what is causing the planet to warm. | — | `s-hook` | `carbon-dioxide-humans-and-climate` |
+
+**`EARTH-01` is the one this whole topic turns on, and it is the reason `c10-01` refuses the famous
+sentence.** A thin crust floating on a sea of magma is taught in a great many classrooms and it is
+wrong, and the evidence three blocks above the confrontation is what makes it wrong: the earthquake
+wave that cannot cross liquid crosses the entire mantle. The reveal carries
+`id="think-reveal-mantle"` so `confronted_by` names the PANEL where the belief is answered rather
+than the surrounding section — the MRB-277 pattern. What the reveal separates is SOLID from RIGID,
+because a student who has been told the mantle moves has usually concluded it must be liquid, and
+they are reasoning correctly from a true observation (MRB-225: the true version, not the famous
+one).
+
+**`EARTH-02` is elicited by the hook's fourth option, which offers the belief in plain words.** "So
+how do we know what the inside is made of?" is a real question, and "Nobody knows; it is a guess"
+is a real answer a twelve-year-old will pick — the honest form of it, from a student who has just
+been told that the deepest hole ever drilled is two tenths of one per cent of the way down.
+`confronted_by` is `s-evidence` rather than the hook's own reveal: the hook says the answer came
+from earthquake waves, and saying so is not yet showing it. The evidence block makes the student
+commit to three separate inferences and then walks each one, which is what turns "scientists say
+so" into "here is how anyone could tell".
+
+**`EARTH-03` and `EARTH-04` carry no `elicited_by`, deliberately, and that is audit law 15 working
+rather than a hole.** Nothing on `c10-01` asks a student to commit to either belief. The inner-core
+panel simply prints "About 5500 °C" and "Solid" in adjacent cards and lets the pair do the work;
+the bar simply draws the crust at its real share and prints that share as a number underneath.
+Inventing an anchor to fill the column would be the dishonest version, and MRB-248 makes absence
+legal precisely so that it need not be invented. The question bank carries the elicitation instead
+— `c10-01-e02` and `c10-01-h02` for `EARTH-03`, `c10-01-e01` and `c10-01-s04` for `EARTH-04`.
+
+⚑ **`EARTH-04` IS ALSO WHY THE BAR ADMITS ITS OWN DISTORTION.** The crust is 0.5% of the distance
+to the centre, which on a phone is under four pixels and is not a tappable target, so the segment
+carries a minimum width. A page that exaggerates the crust and says nothing is teaching the
+misconception it has just listed. The scale panel therefore prints the true share as a derived
+number and says the bar is drawn wider than it, and `ks3_art/c10.py` refuses a scale panel that
+does not name that number.
+
+**`EARTH-05` is the belief Design quotes in her own words at `#s-think`, and it is the one a
+student arrives with.** Crystals really do grow when molten rock cools, so the belief is a correct
+observation over-extended into a rule — which is the shape that survives being told it is wrong and
+has to be broken by a counter-example instead. Marble is that counter-example: packed with
+interlocking crystals, and it never melted. The reveal carries `id="think-reveal-crystals"` so
+`confronted_by` names the PANEL where the belief is answered rather than the surrounding section —
+the MRB-277 pattern. What the reveal is careful NOT to say is that crystals mean metamorphic: it
+says crystals narrow the answer to two and no further, because a lesson that replaces one
+one-clue rule with another has taught the same mistake in a new colour.
+
+**`EARTH-06` is elicited by the hook and confronted by the panel the bench opens at the end.** The
+hook puts a granite worktop beside a marble statue — both hard, both shiny, both full of crystals —
+and offers "That it is an igneous rock" as an option a student can pick on the look of the thing.
+It is confronted at `bench-pattern` rather than at the hook's own reveal because by then the
+student has decided six samples themselves, and the panel can say what actually settled each one:
+not colour, not hardness, not weight, but texture, layers, fossils and how the rock breaks. Two of
+the six are the same chemical compound as each other and are in different groups, and neither that
+count nor the size of the set is typed anywhere — `ks3_art/c10.py` derives both from the samples'
+own `compound` values and refuses to build a bench in which the sharers land in one group.
+
+**`EARTH-07` carries no `elicited_by`, deliberately, and that is audit law 15 working rather than a
+hole.** Nothing on `c10-02` asks a student to commit to the belief that metamorphic rock was melted
+and re-set; the bench simply hands them a marble and a slate and says, in the verdict of each, that
+it never melted. Inventing an anchor to fill the column would be the dishonest version, and MRB-248
+makes absence legal precisely so that it need not be invented. The question bank carries the
+elicitation instead, at `c10-02-s02` and `c10-02-h01`. ⚑ This is also the entry that decides the
+whole classification: melt a metamorphic rock and what cools out of it is igneous, which is why
+"without melting" appears in the reference panel, the key fact and the key note and is contradicted
+nowhere.
+
+**`EARTH-08` is the one `c10-03` is built to break, and it is the belief Design quotes in her own
+words at `#s-think`.** The rock cycle in the front of every textbook is a ring with arrows drawn one
+way round, and a student who has only ever seen that diagram holds it as an ORDER: sedimentary
+becomes metamorphic, metamorphic becomes igneous, round and round like a clock face. What is true is
+that there are arrows across the middle as well as round the edge, and that the route is decided by
+where the rock ends up rather than by what it currently is — at the surface, weathering; buried
+deep, heat and pressure; deeper and hotter still, melting. The confrontation is the reveal directly
+under the commitment, and the reason the page carries no rock-cycle diagram at all is that shipping
+the ring would hand the student the belief and then take it away eight blocks later.
+
+⚠️ **`EARTH-08` IS ALSO WHY `#s-journey` IS FENCED.** The sequencer walks one grain through seven
+stages in a fixed order, which is the one block on the page that could be read as confirming the
+belief. It is closed twice: the panel's closing sentence says the journey starts again *because the
+granite at the end is the granite at the beginning*, and `#s-think` is the very next rail stop. The
+order is a journey one grain took, never the order every rock takes.
+
+**`EARTH-09` carries no `elicited_by`, deliberately, and that is audit law 15 working rather than a
+gap.** Nothing on the page asks a student to commit to "every rock must pass through every stage" as
+a belief in its own right — `#s-think`'s four options are about DIRECTION, which is `EARTH-08`, and
+inventing an anchor to fill the column would be the dishonest version. What confronts it is the
+reference block: three of the six processes declare an input that is ANY rock in the right place
+(`any rock at the surface`, `any buried rock`, `any rock, deep and hot enough`), which is the
+skipping stated as a payload rather than as a sentence. The question bank carries the elicitation
+instead, at `c10-03-s02` and `c10-03-h01`.
+
+**`EARTH-10` is elicited by the hook and confronted by the sequencer.** Three of the hook's four
+options offer a way for marine limestone to be sitting at 8800 metres without the rock itself having
+changed — birds carried the fossils, the sea used to be that high, limestone forms anywhere. Each
+one preserves the rock as a fixed thing and moves something else instead, which is exactly how the
+belief survives contact with the evidence. What kills it is following one grain all the way round
+and finding it in seven different rocks, the last of which is the first.
+
+⚑ **`EARTH-10` and `EARTH-06` are neighbours and are not the same belief.** `EARTH-06` is about
+CLASSIFICATION — two rocks that look alike must be the same kind — and it dies on a bench where
+colour and hardness decide nothing. `EARTH-10` is about PERMANENCE, and it dies on a journey. A
+student can hold either without the other, and `c10-02` needs the first while `c10-03` needs the
+second.
+
+**`EARTH-11` is the unit's load-bearing entry, and the page breaks it with arithmetic rather than
+with an assertion.** By the time `#s-think` quotes the belief, the student has run 1000 kg round
+the loop for at least three materials and watched the bars shrink every pass; aluminium at nine
+collected in ten reaches 6.90 lifetimes per kilogram of ore, not infinite lifetimes. The reveal
+carries `id="think-reveal-recycling"` so `confronted_by` names the PANEL where the belief is
+answered rather than the surrounding section — the MRB-277 pattern.
+
+**`EARTH-12` is elicited and confronted by the same instrument, which is unusual and is the point.**
+The bench is the only place on the page where collection is held equal and the material is the only
+thing that changes: nine in ten collected gives aluminium 6.90× and the crisp packet 1.02×. A
+student holding this belief presses the packet expecting the dial to rescue it, and the verdict
+sentence for that state says so in words — "collection is not the problem here, the material is".
+No separate confrontation block would be as convincing as the one the student ran themselves.
+
+**`EARTH-13` has no `elicited_by`, deliberately, and that is audit law 15 working rather than a
+hole.** Nothing on `c10-04` asks the student to commit to the belief that a reserve is a measured
+quantity of rock; the shelf and the going-further layer simply say what a reserve is — the part of
+a resource that can be extracted at a profit with today's technology — and let the definition do
+the work. Inventing an anchor to fill the column would be the dishonest version, and MRB-248 makes
+absence legal precisely so that it need not be invented. The question bank carries the elicitation
+instead, at `c10-04-h01`, where a country's copper reserves rise by a fifth with no new deposit
+found.
+
+**`EARTH-14` is the belief Design quotes in her own words at `#s-think`, and it is the one this
+whole page is built to break.** "Air is mostly oxygen — that is the point of it" is not a careless
+answer; it is a student reasoning correctly from a true premise. Oxygen IS the gas a body needs, it
+IS the gas without which nothing burns, and it is the only one of the four that gets talked about.
+Concluding that there must be most of it is the obvious next step, and it is wrong by a factor of
+four. The hook elicits it first, in plain words — "Roughly what fraction of the air is oxygen?" with
+"Almost all of it" and "About three quarters" both on offer — and `#s-think` is where the student
+has to commit to it as a BELIEF rather than as a guess about a number. The reveal carries
+`id="think-reveal-oxygen"` so `confronted_by` names the PANEL where the belief is answered rather
+than the surrounding section — the MRB-277 pattern.
+
+⚑ **What the reveal does NOT do is treat the nitrogen as filler**, and that is the difference
+between correcting the number and correcting the belief. A student told "actually it is 78 per cent
+nitrogen" has learned a swap. The reveal instead says what the nitrogen is FOR: in pure oxygen
+everything that can burn burns ferociously, and the nitrogen dilutes the oxygen to a level at which
+fire is possible but not automatic. Then it closes at the other extreme — carbon dioxide is 0.04 per
+cent of the air and every plant on Earth is built out of it — because the belief underneath
+`EARTH-14` is that "how much there is" and "how much it matters" are the same measurement, and one
+end of the bar cannot break that on its own.
+
+**`EARTH-15` carries no `elicited_by`, deliberately, and that is audit law 15 working rather than a
+hole.** Nothing on `c10-05` asks a student to commit to the belief that the oxygen was always there.
+Design's history block is a stepper — it reveals, it does not ask — and inventing an anchor to fill
+the column would be the dishonest version. MRB-248 makes absence legal precisely so that it need not
+be invented. The question bank carries the elicitation instead, at `c10-05-s02`, where rocks older
+than two and a half billion years hold minerals that could not have survived in oxygen, and at
+`c10-05-h01`, where photosynthesis has been running for three hundred million years and the air
+still has none.
+
+⚑ **`EARTH-15` and `EARTH-10` are neighbours and are not the same belief.** `EARTH-10` is about
+ROCK being permanent and it dies on a journey round the cycle. `EARTH-15` is about the AIR being a
+fixed backdrop that living things arrived into, and what kills it is the discovery that living
+things made it. A student can hold either without the other, and joining them would blur the thing
+C10's last two lessons add: that the atmosphere is not scenery, it is a product, and it is still
+being changed.
+
+**`EARTH-16` is the belief Design quotes in her own words at `#s-think`, and it is the single most
+common error in this topic anywhere in the country.** Ozone depletion and the greenhouse effect are
+two real problems with the atmosphere, they arrived in public conversation within a few years of
+each other, and both are spoken about as "damage to the atmosphere" — so a student who merges them
+is doing something reasonable with the evidence they have. They are not the same thing in any
+respect that matters: different gas, different altitude, different radiation, different
+consequence, and largely different solutions. Ozone blocks ULTRAVIOLET coming IN; the greenhouse
+effect is about INFRARED going OUT. Ozone depletion does not "let the heat in" and never did.
+
+The predict elicits the belief in plain words before the page says anything, and the reveal carries
+`id="think-reveal-ozone"` so `confronted_by` names the PANEL where the belief is answered rather
+than the surrounding section — the MRB-277 pattern.
+
+⚑ **The confrontation ends on the ozone problem being the one humanity actually FIXED, and that
+sentence is doing two jobs.** It is the reason the two are worth keeping apart — one has a treaty
+and a recovering layer behind it and the other does not — and it is the page's only worked example
+of an atmospheric problem being identified, understood, legislated against and reversed. The
+lesson's safeguarding ruling (in `ks3_data/c10/lesson_06_*.py`) turns on that sentence being
+science rather than reassurance, which it is: the Montreal Protocol was signed in 1987 and the
+layer is measurably recovering.
+
+**`EARTH-17` was one of the two NAMED SPARES, and this is why it was spent.** The belief is that
+the greenhouse effect is itself the problem — that the thing to be got rid of is the effect rather
+than the increase in it. It is not a careless answer. A student meets the phrase "the greenhouse
+effect" exclusively in sentences about something going wrong, and concluding that the effect is the
+wrong thing is the obvious next step. It is also completely wrong in the most consequential
+direction available: without the natural effect the surface would average about −18 °C instead of
+about 15 °C, and the oceans would be ice.
+
+It earns an id rather than a paragraph because `c10-06` is BUILT around it. Design's hook is the
+thirty-three degrees the effect already provides; her second ladder rung asks "Is the greenhouse
+effect a bad thing?" directly; and the lesson adds a key fact of its own (`natural-and-enhanced`)
+whose only job is to hold "natural and necessary" and "we have strengthened it" in the same
+sentence. Four separate places on one page, which is the definition of a belief a lesson is built
+to break rather than a slip a distractor can handle.
+
+**`EARTH-17` carries no `elicited_by`, deliberately, and that is audit law 15 working rather than a
+hole.** Nothing on `c10-06` asks a student to commit to it — the hook asks where the warmth comes
+from, not whether it is welcome — and inventing an anchor to fill the column would be the dishonest
+version. MRB-248 makes absence legal precisely so that it need not be invented. `confronted_by` is
+`s-hook`, where the reveal says the planet would be frozen without it and then names the real
+question. The bank carries the elicitation, at `c10-06-e02` and `c10-06-s01`.
+
+⚑ **THREE MORE BELIEFS ARE CORRECTED ON `c10-06` AND NONE OF THEM IS MINTED, which is a decision
+rather than an omission.** The page also handles "water vapour does most of it, so carbon dioxide
+cannot be the cause", "two graphs rising together proves one causes the other", and "it was
+freezing last week, so the planet is not warming". Each is corrected in the place it arises — an
+explainer in the main flow, the evidence block's derived closing panel, and the vocabulary
+definition of "climate", which is written AGAINST weather rather than beside it — and each is
+elicited in the question bank at `c10-06-s02`, `s03` and `s04`.
+
+They are not register entries because the register names the beliefs a page is BUILT to break, and
+`c10-06` is built on two. A page with five declared misconceptions has stopped having a spine, and
+`EARTH-18` is the only spare left in the range: spending it on the third-most-important belief on
+one page would leave the next lane with nothing and would say that these three are the same kind of
+thing as the ozone conflation. They are not. A student can be talked out of the water-vapour
+argument in one sentence; the ozone conflation survives being told it is wrong, which is what a
+misconception entry is for.
+
+⚑ **`EARTH-16` and `EARTH-17` are neighbours and are not the same belief.** `EARTH-16` is about
+which PROBLEM is happening and it dies when the two mechanisms are laid side by side. `EARTH-17` is
+about whether the mechanism this page teaches is a good thing, and what kills it is the thirty-three
+degrees. A student can hold either without the other — the commonest combination in a real class is
+to have both — and joining them would blur the one thing this lesson has to leave behind: that the
+greenhouse effect is not the problem, the change to it is, and neither of them is the ozone hole.
+
+⚑ **`EARTH-11` overlaps `MATL-08`'s neighbourhood in SHAPE ONLY and no cross-reference is
+recorded.** Both are wrong beliefs about where a material comes from. But `MATL-08` is about
+EXTRACTION — metals are in the ground as metal, so getting them out is digging and melting — and
+`EARTH-11` is about RETURN, and specifically about a loop the student believes is closed. A student
+can hold either without the other, and joining them would blur the one thing C10 adds to C9: that
+the interesting number is not what it costs to get a material out but what fraction of it ever
+comes back.
