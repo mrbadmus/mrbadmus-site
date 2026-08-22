@@ -23119,4 +23119,163 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   .ks3-ahist .ks3-ahist-ptitle { font-size: 20px; }
   .ks3-ahist .ks3-ahist-ptext { font-size: 18px; }
 }
+/* ── c10-06 · greenhouse-steps (light) ─────────────────────────────────
+   C10's second stepper, and it takes `atmos-history`'s two-state row rather
+   than a new one: a closed card on `--ks3-inset` that becomes an open card on
+   `--ks3-card`, driven by `data-open` so the open state is one attribute
+   rather than a class the handler has to remember to add and remove. Design
+   draws exactly this on `#s-how` and exactly this on `#s-history`, and two
+   rulesets would be one drift away from disagreeing.
+
+   ⊕ THE ONE THING THAT IS NOT `atmos-history`'s is `.ks3-ghouse-chip` — the
+   mono line derived from what the step declares about direction, band and
+   absorption. It sits UNDER the headline rather than beside it, because it is
+   three facts joined by middots and a 74px flex basis would break it across
+   two lines at any width. It is `--ks3-ink-muted` rather than
+   `--ks3-accent-text`: the date chip on the history block is the timeline and
+   earns the accent; this is a label on a claim the headline already made.
+
+   ⚠️ NOTHING HERE IS ABSOLUTELY POSITIONED, so the containment rule does not
+   bite on this block. Recorded rather than assumed.
+
+   The reveal button is styled here rather than taken from `.ks3-seg-btn`
+   because it is not a selection: it has one job, it is never pressed-in, and
+   `aria-pressed` on it would be a lie. It is never disabled either — MRB-257,
+   the ruling recorded in `ks3_art/c10.py`. */
+.ks3-ghouse-block .ks3-ghouse { margin-top: 18px; }
+.ks3-ghouse .ks3-ghouse-list {
+  list-style: none; margin: 20px 0 0; padding: 0; display: flex;
+  flex-direction: column; gap: 10px;
+}
+.ks3-ghouse .ks3-ghouse-step {
+  padding: 16px 18px; border-radius: var(--ks3-r-panel);
+  border: 2px solid var(--ks3-rule); background: var(--ks3-inset);
+}
+.ks3-ghouse .ks3-ghouse-step[data-open="1"] {
+  border-color: var(--ks3-ink); background: var(--ks3-card);
+}
+.ks3-ghouse .ks3-ghouse-head {
+  display: flex; gap: 14px; align-items: baseline;
+}
+.ks3-ghouse .ks3-ghouse-num {
+  font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500;
+  color: var(--ks3-ink-muted); flex: 0 0 24px;
+}
+.ks3-ghouse .ks3-ghouse-what {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 700;
+  font-size: 20px; line-height: 1.3; color: var(--ks3-ink);
+}
+.ks3-ghouse .ks3-ghouse-chip {
+  margin: 8px 0 0 38px; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-ghouse .ks3-ghouse-why {
+  margin: 10px 0 0 38px; font-size: 18px; line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+.ks3-ghouse .ks3-ghouse-tools {
+  margin-top: 16px; display: flex; gap: 9px; flex-wrap: wrap;
+  align-items: center;
+}
+.ks3-ghouse .ks3-ghouse-reveal {
+  font: inherit; font-size: 16px; font-weight: 700; padding: 11px 16px;
+  min-height: 44px; border-radius: var(--ks3-r-control); cursor: pointer;
+  border: 2px solid var(--ks3-option-border); background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-ghouse .ks3-ghouse-panel {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band); border: 2px solid var(--ks3-ink);
+}
+.ks3-ghouse .ks3-ghouse-ptitle {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-ghouse .ks3-ghouse-ptext {
+  margin: 10px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-ink);
+}
+.ks3-ghouse [hidden] { display: none; }
+
+/* At 360px a 24px number gutter plus a display-weight headline is tight but
+   holds; what does not hold is the 38px indent under it, which leaves the
+   chip and the explanation in a 250px column. Both come back to the card's
+   own left edge, which is what the number was marking anyway. */
+@media (max-width: 30rem) {
+  .ks3-ghouse .ks3-ghouse-step { padding: 14px 15px; }
+  .ks3-ghouse .ks3-ghouse-what { font-size: 18px; }
+  .ks3-ghouse .ks3-ghouse-chip { margin-left: 0; }
+  .ks3-ghouse .ks3-ghouse-why { margin-left: 0; font-size: 17px; }
+  .ks3-ghouse .ks3-ghouse-panel { padding: 18px 17px; }
+  .ks3-ghouse .ks3-ghouse-ptitle { font-size: 20px; }
+  .ks3-ghouse .ks3-ghouse-ptext { font-size: 18px; }
+}
+
+/* ── c10-06 · climate-evidence (light) ─────────────────────────────────
+   `depth-evidence`'s card, plus a tag row and a closing panel. Selection uses
+   the house `.ks3-seg-btn` unchanged; the block is on the card ground, so
+   MRB-242's on-ink correction does not arise. What does arise is that a
+   spent, unchosen button is `disabled` by `shared/ks3.js` and must still read
+   as text rather than as a smudge — the same `.55` opacity `depth-evidence`
+   settled on.
+
+   ⊕ `.ks3-cev-role` IS THE LINE THAT MAKES THE BLOCK AN ARGUMENT — "On its
+   own, this establishes …", derived from the entry's declared role. It is
+   mono and muted and it sits ABOVE the answer prose, because it is the
+   verdict and the paragraph under it is the reasoning. It is inside the
+   `hidden` answer wrapper, so it cannot be read before the student commits.
+
+   ⚠️ NOTHING HERE IS ABSOLUTELY POSITIONED, so the containment rule does not
+   bite on this block either. */
+.ks3-cev-block .ks3-cev {
+  margin-top: 18px; display: flex; flex-direction: column; gap: 14px;
+}
+.ks3-cev .ks3-cev-one {
+  padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-cev .ks3-cev-tag {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-cev .ks3-cev-q {
+  margin: 6px 0 0; font-size: 19px; line-height: 1.55; color: var(--ks3-ink);
+}
+.ks3-cev .ks3-cev-picks {
+  margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-cev .ks3-cev-choice[disabled] { opacity: .55; cursor: default; }
+.ks3-cev .ks3-cev-answer {
+  margin-top: 12px; padding: 14px 16px; border-radius: 14px;
+  background: var(--ks3-card); border: 2px solid var(--ks3-rule);
+}
+.ks3-cev .ks3-cev-role {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .05em; color: var(--ks3-accent-text);
+}
+.ks3-cev .ks3-cev-atext {
+  margin: 8px 0 0; font-size: 17px; line-height: 1.55; color: var(--ks3-ink);
+}
+.ks3-cev .ks3-cev-panel {
+  margin-top: 6px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band); border: 2px solid var(--ks3-ink);
+}
+.ks3-cev .ks3-cev-ptitle {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-cev .ks3-cev-ptext {
+  margin: 10px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-ink);
+}
+.ks3-cev [hidden] { display: none; }
+
+@media (max-width: 30rem) {
+  .ks3-cev .ks3-cev-one { padding: 16px 15px; }
+  .ks3-cev .ks3-cev-q { font-size: 18px; }
+  .ks3-cev .ks3-cev-atext { font-size: 16px; }
+  .ks3-cev .ks3-cev-panel { padding: 18px 17px; }
+  .ks3-cev .ks3-cev-ptitle { font-size: 20px; }
+  .ks3-cev .ks3-cev-ptext { font-size: 18px; }
+}
 /* ═══ END C10 ═══ */

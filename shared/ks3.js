@@ -22194,11 +22194,12 @@
    marked block so that a lane merging into this file resolves mechanically:
    nothing above this marker moves.
 
-   ⚠️ WAVE 5. Nine of the unit's eleven families are here — c10-04's loop
+   ⊕ WAVE 6. ALL ELEVEN of the unit's families are here — c10-04's loop
    bench and its stock shelf, c10-01's layer bar and evidence set, c10-02's
-   rock bench, c10-03's grain sequencer and process arrows, and c10-05's gas
-   bar and atmosphere stepper. The other two are listed in `ks3_art/c10.py`
-   and are wired by their own lesson's author, inside this same marked block.
+   rock bench, c10-03's grain sequencer and process arrows, c10-05's gas bar
+   and atmosphere stepper, and c10-06's greenhouse stepper and climate
+   evidence set. Each lesson's author wired their own, inside this same marked
+   block; c10-06 was the last, and the unit is complete.
 
    ⚖️ NOTHING IS COMPUTED IN THIS BLOCK. Not one mass, not one percentage, not
    one multiplier and not one VERDICT. The loop bench's TWENTY states are all
@@ -22763,6 +22764,124 @@
     setCount(sec, open);
     label();
   }
+  /* ── greenhouse-steps (c10-06 #s-how) ────────────────────────────────
+     C10's SECOND stepper, and it shares this shape with `wireAtmosHistory`
+     above rather than borrowing its attributes: four steps in the document
+     from load with their explanations hidden, each press unhiding the next
+     in order, and the closing panel opening once the set is exhausted.
+
+     ⚖️ NOTHING IS COMPOSED HERE, and on this block that matters more than on
+     most. The step numbers, the mono chip over each step ("Going out ·
+     infrared · absorbed") and the closing panel were all derived in
+     `ks3_art/c10.py` from what each step DECLARES about direction, band and
+     absorption — which is the same data the build checks the greenhouse
+     asymmetry against. This handler chooses which node is `hidden` and picks
+     one of three AUTHORED button labels. It states nothing about physics.
+
+     ⚠️ THE BUTTON IS NEVER DISABLED — MRB-257, the same ruling as
+     `wireDepthEvidence`, `wireRockBench`, `wireGrainJourney` and
+     `wireAtmosHistory` above and for the same reason. A press once every step
+     is open is a genuine no-op, and the label already says so in words.
+
+     `markStage` is one-way (MRB-208). There is no collapse: unrevealing a
+     step teaches nothing and gives a student a way to lose their place. */
+  function wireGreenhouseSteps(sec) {
+    var wrap = sec.querySelector("[data-ghouse]");
+    if (!wrap) { return; }
+    var steps = toArray(wrap.querySelectorAll("[data-ghouse-step]"));
+    var btn = wrap.querySelector("[data-ghouse-reveal]");
+    var panel = wrap.querySelector("[data-ghouse-panel]");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || steps.length;
+    var target = parseInt(wrap.getAttribute("data-target"), 10) || total;
+    if (!steps.length || !btn) { return; }
+
+    var open = 0;
+
+    function label() {
+      var key = open <= 0 ? "data-l-first"
+        : (open >= total ? "data-l-done" : "data-l-next");
+      var txt = btn.getAttribute(key);
+      if (txt !== null) { btn.textContent = txt; }
+    }
+
+    btn.addEventListener("click", function () {
+      if (open >= total) { return; }               /* the no-op press */
+      var step = steps[open];
+      if (step) {
+        step.setAttribute("data-open", "1");
+        setHidden(step.querySelector("[data-ghouse-why]"), false);
+      }
+      open += 1;
+      setCount(sec, open);
+      label();
+      if (open >= total) { setHidden(panel, false); }
+      if (open >= target) { markStage(sec, true); }
+    });
+
+    setCount(sec, open);
+    label();
+  }
+
+  /* ── climate-evidence (c10-06 #s-evidence) ───────────────────────────
+     Four pieces of evidence, three readings each, one commitment per piece
+     and the answer underneath. The same commit-then-read contract as
+     `wireDepthEvidence` above, with one addition: this block has a CLOSING
+     PANEL, opened once every piece has been judged, because the argument the
+     lesson makes is about the four TOGETHER and cannot be made until the
+     student has decided what each one does alone.
+
+     ONE THRESHOLD, READ TWICE — `data-target` ticks the rail stop and
+     `data-total` opens the panel, the same separation `wireRockBench` keeps
+     and for the same reason.
+
+     ⚖️ NOTHING IS COMPOSED HERE. The panel's sentences were joined at build
+     time from each entry's own `alone` line, and the line under each answer
+     naming what that piece establishes was written from the entry's declared
+     role. This handler unhides them.
+
+     ⚠️ THE CHOSEN BUTTON STAYS ENABLED AND THE OTHER TWO DO NOT — MRB-257,
+     `wireDepthEvidence`'s ruling unchanged: disabling all three drops a
+     keyboard user to `<body>`, and disabling the two not chosen locks the
+     commitment just as firmly while keeping focus on a live control.
+
+     Nothing is marked. Every reading opens the same answer, because the block
+     exists to make a student say what they think before the page does. */
+  function wireClimateEvidence(sec) {
+    var wrap = sec.querySelector("[data-cev]");
+    if (!wrap) { return; }
+    var picks = toArray(wrap.querySelectorAll("[data-cev-pick]"));
+    var answers = toArray(wrap.querySelectorAll("[data-cev-answer]"));
+    var panel = wrap.querySelector("[data-cev-panel]");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || 0;
+    var target = parseInt(wrap.getAttribute("data-target"), 10) || 0;
+    if (!picks.length) { return; }
+
+    var decided = {}, decidedN = 0;
+
+    each(picks, function (btn) {
+      btn.addEventListener("click", function () {
+        var of = btn.getAttribute("data-cev-of");
+        if (decided[of]) { return; }               /* already committed */
+        decided[of] = 1;
+        decidedN += 1;
+        btn.setAttribute("aria-pressed", "true");
+        each(picks, function (b) {
+          if (b !== btn && b.getAttribute("data-cev-of") === of) {
+            b.disabled = true;
+          }
+        });
+        each(answers, function (p) {
+          if (p.getAttribute("data-cev-answer") === of) {
+            setHidden(p, false);
+          }
+        });
+        setCount(sec, decidedN);
+        if (total && decidedN >= total) { setHidden(panel, false); }
+        if (target && decidedN >= target) { markStage(sec, true); }
+      });
+    });
+    setCount(sec, decidedN);
+  }
 /* ═══ END C10 wiring ═══ */
 
 
@@ -23119,6 +23238,8 @@
     each(root.querySelectorAll("[data-parrowblock]"), wireProcessArrows);
     each(root.querySelectorAll("[data-amixblock]"), wireAirMix);
     each(root.querySelectorAll("[data-ahistblock]"), wireAtmosHistory);
+    each(root.querySelectorAll("[data-ghouseblock]"), wireGreenhouseSteps);
+    each(root.querySelectorAll("[data-cevblock]"), wireClimateEvidence);
     // ═══ END C10 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);

@@ -6,12 +6,13 @@ six lessons, ELEVEN instrument families and no drawn figure so far, all DOM,
 no canvas and no animation loop anywhere in the unit.
 
 ═══════════════════════════════════════════════════════════════════════════
-⚠️ WAVE 5 — NINE FAMILIES IMPLEMENTED, TWO STILL TO COME
+⊕ WAVE 6 — ALL ELEVEN FAMILIES IMPLEMENTED. THE UNIT IS COMPLETE.
 ═══════════════════════════════════════════════════════════════════════════
 
 Wave 1 built the unit spine and the reference lesson `c10-04`; wave 2 added
-`c10-01`; wave 3 added `c10-02`; wave 4 added `c10-03`; wave 5 adds `c10-05`.
-Nine families are implemented and only those nine are registered:
+`c10-01`; wave 3 added `c10-02`; wave 4 added `c10-03`; wave 5 added `c10-05`;
+wave 6 adds `c10-06` and closes the unit. Eleven families are implemented and
+all eleven are registered:
 
     material-loop   ks3-mloop-block   c10-04  #s-loop    ← INK-DARK
     stock-limits    ks3-stock-block   c10-04  #s-stock
@@ -20,24 +21,25 @@ Nine families are implemented and only those nine are registered:
     rock-bench      ks3-rockb-block   c10-02  #s-bench
     grain-journey   ks3-grain-block   c10-03  #s-journey
     process-arrows  ks3-parrow-block  c10-03  #s-processes
-    air-mix         ks3-amix-block    c10-05  #s-mix
-    atmos-history   ks3-ahist-block   c10-05  #s-history
+    air-mix          ks3-amix-block    c10-05  #s-mix
+    atmos-history    ks3-ahist-block   c10-05  #s-history
+    greenhouse-steps ks3-ghouse-block  c10-06  #s-how
+    climate-evidence ks3-cev-block     c10-06  #s-evidence
 
-⊖ **THE OTHER TWO ARE NOT REGISTERED, AND MUST NOT BE UNTIL THEY EXIST.**
-`ks3_art.check_placements` gate 2 fails a family that is registered and never
-placed, and gate 3 fails one that is placed and never registered. A stub row
-added "ready" for a later lane would ship the shell around the generic
-prompt/options branch — the C1 defect (MRB-228) — the moment a lesson named
-it. Each lane registers its own:
-
-    greenhouse-steps  ks3-ghouse-block  c10-06  #s-how
-    climate-evidence  ks3-cev-block     c10-06  #s-evidence
+⊖ **THE LAST TWO ROWS WERE HELD BACK UNTIL THEY EXISTED, and this paragraph is
+kept because it is the reason they were.** `ks3_art.check_placements` gate 2
+fails a family that is registered and never placed, and gate 3 fails one that
+is placed and never registered. A stub row added "ready" for a later lane
+would have shipped the shell around the generic prompt/options branch — the C1
+defect (MRB-228) — the moment a lesson named it. Each lane registered its own;
+`c10-06` was the last, and both of its renderers land in this file beside their
+rows.
 
 The eleven shell classes above were checked free against every `KIND_SHELL`
-value in `ks3_art` before minting (MRB-279), so a later lane may take its row
-without re-checking. `c10-02`'s `#s-table` is NOT on the list: it is a
-controlless REFERENCE stop mirroring the hook, which is a `rule` block and not
-an instrument, and `c10-04`'s `#s-words` is the existing vocabulary block.
+value in `ks3_art` before minting (MRB-279). `c10-02`'s `#s-table` is NOT on
+the list: it is a controlless REFERENCE stop mirroring the hook, which is a
+`rule` block and not an instrument, and `c10-04`'s `#s-words` is the existing
+vocabulary block.
 
 ═══════════════════════════════════════════════════════════════════════════
 ⚖️ RULED · `#s-loop` TAKES THE `practical` SHELL, NOT A `ks3-dark` MODIFIER
@@ -1944,11 +1946,471 @@ def r_atmos_history(a, act_id):
                e(labels["label_done"]), t(labels["label_first"]), close))
 
 
+# ═══ c10-06 · greenhouse-steps ═══════════════════════════════════════════
+#
+# ⚠️ WHAT A STEP IS ABOUT IS A CLOSED SET, and it is closed because the whole
+# mechanism is an ASYMMETRY: the gases are transparent to what arrives and
+# opaque to what leaves. Every step therefore declares which direction it is
+# about and whether the gases absorb what is moving, and the build refuses a
+# set that no longer states the asymmetry — including, specifically, a set
+# that says greenhouse gases absorb sunlight, which is the wrong picture this
+# whole block exists to replace.
+_GHOUSE_DIRS = {"in": "Coming in", "out": "Going out", "balance": "In and out"}
+_GHOUSE_BANDS = {"visible": "visible light", "infrared": "infrared"}
+
+# ⚠️ `fate` IS THREE-VALUED AND NOT A BOOLEAN, and the difference is a science
+# error caught while this was being written. A boolean "do the gases absorb
+# this?" forces a false claim onto the step where the warmed ground EMITS
+# infrared: at that point the radiation has not met a gas, so answering the
+# question either way asserts something the step is not saying — and answering
+# it "no" contradicts the step immediately below, which is the one where the
+# gases absorb exactly that radiation.
+_GHOUSE_FATES = {
+    "passes":   "passes straight through",
+    "emitted":  "emitted by the warmed surface",
+    "absorbed": "absorbed and re-emitted",
+}
+
+
+def _ghouse_chip(step):
+    """The mono line under a step's headline, DERIVED from what it claims.
+
+    "Coming in · visible light · passes straight through" / "Going out ·
+    infrared · absorbed and re-emitted". The balance step has no band and no
+    fate — it is about the temperature the two settle at rather than about one
+    beam — so its chip is the direction alone. Nothing here is authored: a
+    step that changed from infrared to visible relabels itself.
+    """
+    where = _GHOUSE_DIRS[step["direction"]]
+    if step["direction"] == "balance":
+        return where
+    return "%s · %s · %s" % (where, _GHOUSE_BANDS[step["band"]],
+                             _GHOUSE_FATES[step["fate"]])
+
+
+def r_greenhouse_steps(a, act_id):
+    """⊕ c10-06 `#s-how` — four steps of a mechanism, revealed one at a time.
+
+    C10's SECOND stepper, and it is not `atmos-history` with different words.
+    The history block asserts a SEQUENCE IN TIME and is checked against dates;
+    this one asserts a CHAIN OF CAUSE, and what it is checked against is the
+    asymmetry that makes the chain work.
+
+    ⚖️ **THE ASYMMETRY IS THE LESSON, SO IT IS THE THING THE BUILD REFUSES TO
+    LOSE.** Every step declares a `direction` and, unless it is the closing
+    balance step, a `band` and whether the gases absorb it. Four rules follow,
+    and each of them is a misconception with a build failure attached:
+
+      1. Visible light has to ARRIVE and pass straight through. Without that
+         step the block starts with a warm ground and never says where the
+         warmth came from — and it is the step that says the gases do nothing
+         at all to the sunlight.
+      2. Infrared has to LEAVE and be ABSORBED. That is the only step at which
+         a greenhouse gas does anything, and a set without it has described a
+         planet with no greenhouse effect.
+      3. ⚑ **NOTHING MAY ABSORB VISIBLE LIGHT.** "The gases trap the Sun's
+         rays" is the single most common wrong picture of this mechanism, it
+         is what Design's own step one exists to kill, and a payload that
+         quietly re-asserted it would leave every other gate green.
+      4. The BALANCE step comes last, and there is exactly one of it. The
+         chain's conclusion is the last thing revealed; a stepper that opens
+         with its conclusion has stopped being an argument.
+
+    ⚖️ **THE STEP NUMBER AND THE STEP'S CHIP ARE BOTH DERIVED.** Design numbers
+    her steps 1–4 in the drawing and states in prose what each one is about.
+    The number is the index and the chip is `_ghouse_chip`, so a fifth step
+    numbers itself and a step whose science is edited relabels itself.
+
+    ⚠️ **THE BUTTON IS NEVER DISABLED** — MRB-257, the ruling `depth-evidence`,
+    `rock-bench`, `grain-journey` and `atmos-history` all reached before this
+    one. Design dims it once every step is open; disabling the control a
+    keyboard user is standing on drops them to `<body>`. A press once the set
+    is exhausted is a genuine no-op and the label says so in words.
+
+    ⚠️ **NOTHING IS REVEALED IN THE BYTES.** The resting page opens with four
+    closed steps, the counter at zero, the first label on the button and the
+    closing panel hidden — the on-load state modelled rather than assumed.
+
+    ⊕ **THE CLOSING PANEL IS AN ADDITION TO WHAT DESIGN DREW, and it is where
+    the lesson pays for keeping the word "greenhouse".** See the lesson
+    record's docstring: the name is the specification's own and cannot be
+    dropped, the analogy behind it is wrong, and the honest place to say so is
+    the moment a student has just watched the real mechanism four steps in a
+    row. It is `close_panel`, the same shape `atmos-history` already uses, and
+    it is REQUIRED rather than optional.
+
+    HOOKS: `data-ghouse` (wrapper, `data-total`, `data-target`) ·
+    `data-ghouse-step` (valued with the step's index, with `data-open`) ·
+    `data-ghouse-why` · `data-ghouse-reveal` (with `data-l-first`,
+    `data-l-next`, `data-l-done`) · `data-ghouse-panel`.
+    """
+    steps = a.get("steps") or []
+    if len(steps) < 3:
+        raise ValueError(
+            "greenhouse-steps %r has %d step(s). The block's claim is that the "
+            "greenhouse effect is a CHAIN — something arrives, something "
+            "leaves, something absorbs what leaves — and fewer than three "
+            "cannot make it." % (act_id, len(steps)))
+    _unique_ids(steps, act_id, "greenhouse-steps", "step")
+    _no_correct_flags(steps, act_id, "greenhouse-steps")
+
+    for s in steps:
+        for key in ("what", "why"):
+            if not s.get(key):
+                raise ValueError(
+                    "greenhouse-steps %r step %r has no %r. The what is the "
+                    "headline a student reads before revealing anything and "
+                    "the why is what revealing it buys — a missing one is a "
+                    "row with nothing behind it." % (act_id, s.get("id"), key))
+        if s.get("direction") not in _GHOUSE_DIRS:
+            raise ValueError(
+                "greenhouse-steps %r step %r is about %r and the closed set "
+                "is %s. Every step's mono chip is written from this, and the "
+                "asymmetry the block exists to teach is checked against it."
+                % (act_id, s["id"], s.get("direction"), list(_GHOUSE_DIRS)))
+        if s["direction"] == "balance":
+            if s.get("band") is not None or s.get("fate") is not None:
+                raise ValueError(
+                    "greenhouse-steps %r step %r is the balance step and also "
+                    "names a band or a fate. The balance step is about the "
+                    "temperature the incoming and outgoing energy settle at, "
+                    "not about one beam, and giving it either would print a "
+                    "claim the step is not making." % (act_id, s["id"]))
+            continue
+        if s.get("band") not in _GHOUSE_BANDS:
+            raise ValueError(
+                "greenhouse-steps %r step %r carries the band %r and the "
+                "closed set is %s. The band is a third of what the step's chip "
+                "says and half of what rule 3 below checks."
+                % (act_id, s["id"], s.get("band"), list(_GHOUSE_BANDS)))
+        if s.get("fate") not in _GHOUSE_FATES:
+            raise ValueError(
+                "greenhouse-steps %r step %r says %r happens to the radiation "
+                "it is about, and the closed set is %s. What happens to each "
+                "beam IS the greenhouse effect, and the block's asymmetry is "
+                "checked against these three values."
+                % (act_id, s["id"], s.get("fate"), list(_GHOUSE_FATES)))
+        if s["band"] == "visible" and s["fate"] == "absorbed":
+            raise ValueError(
+                "greenhouse-steps %r step %r says greenhouse gases absorb "
+                "VISIBLE light. They do not — they are transparent to it, "
+                "which is why sunlight reaches the ground at all. \"The gases "
+                "trap the Sun's rays\" is the wrong picture this block exists "
+                "to replace, and a payload asserting it would leave every "
+                "other gate on this page green." % (act_id, s["id"]))
+
+    if not any(s["direction"] == "in" and s["band"] == "visible"
+               and s["fate"] == "passes"
+               for s in steps if s["direction"] != "balance"):
+        raise ValueError(
+            "greenhouse-steps %r has no step in which visible light ARRIVES "
+            "and passes straight through. Without it the chain opens on a "
+            "warm ground and never says where the warmth came from — and it "
+            "is the step that says the gases do nothing at all to the "
+            "sunlight." % act_id)
+    if not any(s["direction"] == "out" and s["band"] == "infrared"
+               and s["fate"] == "absorbed"
+               for s in steps if s["direction"] != "balance"):
+        raise ValueError(
+            "greenhouse-steps %r has no step in which outgoing INFRARED is "
+            "absorbed. That is the only step at which a greenhouse gas does "
+            "anything at all, and a set without it has described a planet "
+            "with no greenhouse effect." % act_id)
+
+    balance = [i for i, s in enumerate(steps) if s["direction"] == "balance"]
+    if len(balance) != 1 or balance[0] != len(steps) - 1:
+        raise ValueError(
+            "greenhouse-steps %r puts its balance step(s) at %s of %d. There "
+            "is exactly one conclusion and it is revealed last — a stepper "
+            "that opens with its conclusion has stopped being an argument."
+            % (act_id, [i + 1 for i in balance], len(steps)))
+
+    target = int(a.get("steps_to_reveal") or 0)
+    if not 2 <= target <= len(steps):
+        raise ValueError(
+            "greenhouse-steps %r ticks its rail stop at %r of %d. Two is the "
+            "fewest that is a chain and more than the set is a stop that can "
+            "never tick." % (act_id, target, len(steps)))
+
+    labels = {}
+    for key, default in (("label_first", "Reveal the first step"),
+                         ("label_next", "Reveal the next step"),
+                         ("label_done", "All of them shown")):
+        labels[key] = a.get(key) or default
+    if len(set(labels.values())) != 3:
+        raise ValueError(
+            "greenhouse-steps %r gives the button the same label in two of "
+            "its three states (%s). The label is the only thing that tells a "
+            "student whether there is another step to come."
+            % (act_id, sorted(set(labels.values()))))
+    _c10_count_word_agrees(labels["label_done"], len(steps), act_id,
+                           "greenhouse-steps", "label_done")
+    _c10_count_word_agrees(a.get("heading"), len(steps), act_id,
+                           "greenhouse-steps", "heading")
+    # Nothing is revealed in the resting bytes, so the counter opens at zero.
+    _c10_head_agrees(a, act_id, "greenhouse-steps", len(steps), 0)
+
+    panel = a.get("close_panel") or {}
+    panel_text = panel.get("text") or []
+    if isinstance(panel_text, str):
+        panel_text = [panel_text]
+    if not panel.get("title") or not panel_text:
+        raise ValueError(
+            "greenhouse-steps %r authors no close panel title or text. This "
+            "page keeps the word \"greenhouse\" because it is the "
+            "specification's own, and the panel is where it says what the "
+            "name does and does not share with an actual greenhouse. Without "
+            "it the block has taught the mechanism and left the analogy "
+            "standing." % act_id)
+
+    rows = "".join(
+        '<li class="ks3-ghouse-step" data-ghouse-step="%d" data-open="0">'
+        '<div class="ks3-ghouse-head">'
+        '<span class="ks3-ghouse-num" aria-hidden="true">%d</span>'
+        '<p class="ks3-ghouse-what">%s</p></div>'
+        '<p class="ks3-ghouse-chip">%s</p>'
+        '<p class="ks3-ghouse-why" data-ghouse-why hidden>%s</p></li>'
+        % (i, i + 1, rich(s["what"]), t(_ghouse_chip(s)), rich(s["why"]))
+        for i, s in enumerate(steps))
+
+    close = ('<div class="ks3-ghouse-panel" data-ghouse-panel hidden>'
+             '<p class="ks3-ghouse-ptitle">%s</p>%s</div>'
+             % (t(panel["title"]),
+                "".join('<p class="ks3-ghouse-ptext">%s</p>' % rich(p)
+                        for p in panel_text)))
+
+    return ('<div class="ks3-ghouse" data-ghouse data-total="%d" '
+            'data-target="%d"><ol class="ks3-ghouse-list">%s</ol>'
+            '<div class="ks3-ghouse-tools">'
+            '<button type="button" class="ks3-ghouse-reveal" '
+            'data-ghouse-reveal data-l-first="%s" data-l-next="%s" '
+            'data-l-done="%s">%s</button></div>%s</div>'
+            % (len(steps), target, rows,
+               e(labels["label_first"]), e(labels["label_next"]),
+               e(labels["label_done"]), t(labels["label_first"]), close))
+
+
+# ═══ c10-06 · climate-evidence ═══════════════════════════════════════════
+#
+# ⚠️ WHAT A PIECE OF EVIDENCE ESTABLISHES ON ITS OWN is a CLOSED SET, and it
+# is closed because the whole point of the block is that the four pieces do
+# DIFFERENT jobs. Four measurements of the same kind are one measurement
+# repeated; four independent kinds agreeing is an argument. The set is checked
+# rather than trusted, and the closing panel is written from it.
+_CEV_ROLES = {
+    "trend":     "that the amount really is changing, and by how much",
+    "context":   "how the present compares with the whole past record",
+    "source":    "where the extra carbon dioxide came from",
+    "mechanism": "why carbon dioxide should warm anything at all",
+}
+
+
+def r_climate_evidence(a, act_id):
+    """⊕ c10-06 `#s-evidence` — four pieces of evidence, each committed to.
+
+    A commit-then-read set, the same contract as `depth-evidence`: a question,
+    three readings of it, and the answer underneath, hidden until the student
+    has picked one. NOTHING IS MARKED — every reading opens the same answer,
+    because what the block is for is making the student say what they think
+    BEFORE the page says what is known.
+
+    ⚖️ **THE INSTRUMENT EXPRESSES "CORRELATION IS NOT CAUSATION" RATHER THAN
+    ASSERTING IT, AND THAT IS WHY `establishes` EXISTS.** Every entry declares
+    what it can establish ON ITS OWN, from a closed set, and the build refuses:
+
+      · a set with no `mechanism` entry — because then the page is offering
+        agreeing correlations as proof of a cause, which is the reasoning
+        error the whole block is built to inoculate against;
+      · a set with more than one, because "the mechanism" is what the other
+        three lack and naming two of them makes the word mean nothing;
+      · a set whose non-mechanism entries are all the same role, because four
+        measurements of one kind are one measurement repeated.
+
+    The role is then printed INSIDE the answer, under `role_line`, so a
+    student who has committed reads what their piece of evidence can and
+    cannot carry — and the closing panel names the mechanism entry by its own
+    tag rather than by a sentence an author typed.
+
+    ⚖️ **THE CLOSING PANEL IS COMPOSED FROM THE ENTRIES.** Design's middle
+    paragraph is four sentences, one per piece — "A rising curve on its own
+    could be natural. Ice cores on their own only give the past…" — and each
+    of them is a fact about the entry it describes. They are authored on the
+    entries as `alone` and joined here in payload order, so a fifth piece of
+    evidence appears in the panel instead of leaving a paragraph that names
+    four. The count in the panel's title is derived for the same reason.
+
+    ⚠️ **THE CHOSEN BUTTON STAYS ENABLED; THE OTHERS DO NOT** — MRB-257 and
+    `depth-evidence`'s ruling, unchanged. Nothing is disabled in the BYTES:
+    the resting page has nothing chosen, so every button opens live.
+
+    ⊕ **"Evidence 1 ·" IS DERIVED.** Design types the ordinal into each tag.
+    The payload states the descriptor alone and the prefix is the index, so a
+    reordered set renumbers itself.
+
+    HOOKS: `data-cev` (wrapper, `data-total`, `data-target`) ·
+    `data-cev-pick` (valued `entry:choice`, with `data-cev-of`) ·
+    `data-cev-answer` · `data-cev-panel`.
+    """
+    entries = a.get("entries") or []
+    if len(entries) < 3:
+        raise ValueError(
+            "climate-evidence %r has %d entr(y/ies). The block's claim is that "
+            "the case rests on SEVERAL independent lines pointing the same "
+            "way, and two lines are a coincidence." % (act_id, len(entries)))
+    _unique_ids(entries, act_id, "climate-evidence", "entry")
+    _no_correct_flags(entries, act_id, "climate-evidence")
+
+    for x in entries:
+        for key in ("tag", "q", "answer", "alone"):
+            if not x.get(key):
+                raise ValueError(
+                    "climate-evidence %r entry %r has no %r. The tag names the "
+                    "kind of evidence, the question is what is committed to, "
+                    "the answer is what the commitment buys, and `alone` is "
+                    "this entry's own sentence in the closing panel."
+                    % (act_id, x.get("id"), key))
+        if x.get("establishes") not in _CEV_ROLES:
+            raise ValueError(
+                "climate-evidence %r entry %r establishes %r and the closed "
+                "set is %s. What each piece can carry on its own is the whole "
+                "argument of the block, and it is printed from this."
+                % (act_id, x["id"], x.get("establishes"), list(_CEV_ROLES)))
+        choices = x.get("choices") or []
+        if len(choices) < 3:
+            raise ValueError(
+                "climate-evidence %r entry %r offers %d reading(s). Two is a "
+                "coin flip, and a commitment a student can make by tossing a "
+                "coin is not a commitment." % (act_id, x["id"], len(choices)))
+        _unique_ids(choices, act_id, "climate-evidence", "choice")
+        _no_correct_flags(choices, act_id, "climate-evidence")
+        for c in choices:
+            if not c.get("label"):
+                raise ValueError(
+                    "climate-evidence %r entry %r has a reading with no "
+                    "label — a blank button." % (act_id, x["id"]))
+
+    mech = [x for x in entries if x["establishes"] == "mechanism"]
+    if len(mech) != 1:
+        raise ValueError(
+            "climate-evidence %r carries %d entries establishing a MECHANISM. "
+            "Exactly one is right. With none, the page offers a pile of "
+            "agreeing correlations as proof of a cause, which is the reasoning "
+            "error this block exists to inoculate against; with two, the word "
+            "stops distinguishing the piece of evidence that says WHY from the "
+            "pieces that say WHAT." % (act_id, len(mech)))
+    others = {x["establishes"] for x in entries if x is not mech[0]}
+    if len(others) < 2:
+        raise ValueError(
+            "climate-evidence %r has %d kind(s) of non-mechanism evidence. "
+            "Four measurements of the same kind are one measurement repeated, "
+            "and the panel's claim is that INDEPENDENT lines agree."
+            % (act_id, len(others)))
+
+    target = int(a.get("entries_to_tick") or 0)
+    if not 2 <= target <= len(entries):
+        raise ValueError(
+            "climate-evidence %r ticks its rail stop at %r of %d. Two is the "
+            "fewest that is a comparison and more than the set is a stop that "
+            "can never tick." % (act_id, target, len(entries)))
+
+    role_line = a.get("role_line") or ""
+    if "{role}" not in role_line:
+        raise ValueError(
+            "climate-evidence %r's role_line %r names no {role}. The line "
+            "under each answer says what that piece of evidence can carry on "
+            "its own, and hard-coding it would let an entry's declared role "
+            "and its printed role drift apart." % (act_id, role_line))
+
+    panel = a.get("close_panel") or {}
+    panel_text = panel.get("text") or []
+    if isinstance(panel_text, str):
+        panel_text = [panel_text]
+    title = panel.get("title") or ""
+    if not title or not panel_text:
+        raise ValueError(
+            "climate-evidence %r authors no close panel title or text. The "
+            "panel is the payoff of judging every piece — it is where four "
+            "separate commitments become one argument — and an empty one is a "
+            "reward for finishing that says nothing." % act_id)
+    if "{Total}" not in title and "{total}" not in title:
+        raise ValueError(
+            "climate-evidence %r's panel title %r names no {Total}. The title "
+            "says how many independent lines agree, which is a fact about the "
+            "payload, and a hard-coded number goes on saying four after the "
+            "fifth is added." % (act_id, title))
+    joined = " ".join(panel_text)
+    if "{alone}" not in joined:
+        raise ValueError(
+            "climate-evidence %r's panel names no {alone}. Each entry carries "
+            "its own sentence saying what it cannot do by itself, and the "
+            "panel is those sentences in payload order — authored as a "
+            "paragraph instead, it would describe the set that existed on the "
+            "day it was written." % act_id)
+    if "{mechanism}" not in joined:
+        raise ValueError(
+            "climate-evidence %r's panel names no {mechanism}. The point of "
+            "the panel is that one of these pieces is doing a different job "
+            "from the others, and naming it by hand is the page asserting "
+            "what the payload is supposed to be showing." % act_id)
+
+    fills = {
+        "{Total}": _rockb_word(len(entries)).capitalize(),
+        "{total}": _rockb_word(len(entries)),
+        "{alone}": " ".join(x["alone"] for x in entries),
+        "{mechanism}": mech[0]["tag"],
+    }
+
+    def _fill(text):
+        for k, v in fills.items():
+            text = text.replace(k, v)
+        return text
+
+    _c10_count_word_agrees(a.get("heading"), len(entries), act_id,
+                           "climate-evidence", "heading")
+    # Nothing is judged in the resting bytes, so the counter opens at zero.
+    _c10_head_agrees(a, act_id, "climate-evidence", len(entries), 0)
+
+    prefix = a.get("label") or "Evidence"
+
+    cards = []
+    for i, x in enumerate(entries):
+        picks = "".join(
+            _c10_seg("ks3-cev-choice", c["label"], False,
+                     data_cev_pick="%s:%s" % (x["id"], c["id"]),
+                     data_cev_of=x["id"])
+            for c in x["choices"])
+        cards.append(
+            '<div class="ks3-cev-one">'
+            '<p class="ks3-cev-tag">%s</p>'
+            '<p class="ks3-cev-q">%s</p>'
+            '<div class="ks3-cev-picks">%s</div>'
+            '<div class="ks3-cev-answer" data-cev-answer="%s" hidden>'
+            '<p class="ks3-cev-role">%s</p>'
+            '<p class="ks3-cev-atext">%s</p></div></div>'
+            % (t("%s %d · %s" % (prefix, i + 1, x["tag"])),
+               rich(x["q"]), picks, e(x["id"]),
+               t(role_line.replace("{role}", _CEV_ROLES[x["establishes"]])),
+               rich(x["answer"])))
+
+    close = ('<div class="ks3-cev-panel" data-cev-panel hidden>'
+             '<p class="ks3-cev-ptitle">%s</p>%s</div>'
+             % (t(_fill(title)),
+                "".join('<p class="ks3-cev-ptext">%s</p>' % rich(_fill(p))
+                        for p in panel_text)))
+
+    return ('<div class="ks3-cev" data-cev data-total="%d" data-target="%d">'
+            '%s%s</div>'
+            % (len(entries), target, "".join(cards), close))
+
+
 # ═══ registration ════════════════════════════════════════════════════════
 #
-# ⚠️ NINE ROWS, BECAUSE NINE RENDERERS EXIST. The other two C10 families are
-# listed in this module's header and are registered by their own lesson's
-# author, in this file, when the renderer lands beside the row.
+# ⊕ ELEVEN ROWS, AND THE UNIT IS COMPLETE. This block said "nine rows, because
+# nine renderers exist" for five waves; wave 6 lands the last two and there is
+# no longer a family named in this module's header and absent from here.
+# `ks3_art.check_placements` gate 2 fails a family registered and never placed
+# and gate 3 fails one placed and never registered, so the two lists agreeing
+# is now checkable rather than promised.
 
 KIND_SHELL = {
     'earth-layers': ("ks3-elay-block",
@@ -1969,6 +2431,11 @@ KIND_SHELL = {
                 ' data-instrument data-amixblock data-stage-done="0"'),
     'atmos-history': ("ks3-ahist-block",
                       ' data-instrument data-ahistblock data-stage-done="0"'),
+    'greenhouse-steps': ("ks3-ghouse-block",
+                         ' data-instrument data-ghouseblock '
+                         'data-stage-done="0"'),
+    'climate-evidence': ("ks3-cev-block",
+                         ' data-instrument data-cevblock data-stage-done="0"'),
 }
 
 KIND_FN = {
@@ -1981,4 +2448,6 @@ KIND_FN = {
     'process-arrows': r_process_arrows,
     'air-mix': r_air_mix,
     'atmos-history': r_atmos_history,
+    'greenhouse-steps': r_greenhouse_steps,
+    'climate-evidence': r_climate_evidence,
 }

@@ -1610,23 +1610,23 @@ that is famous, and nothing in `c6-07` retracts the definition it opened with.
 ### `EARTH` — the Earth and its atmosphere: what a fixed stock is, what a loop actually returns, and what a "reserve" is a fact about
 
 Opened by **C10 *The Earth and its atmosphere*** (2026-08-22, drawn by Claude Design, MRB-281).
-`EARTH-01` to `EARTH-16` are C10's, six lessons, two or three entries each. All are
+`EARTH-01` to `EARTH-17` are C10's, six lessons, two or three entries each. All are
 `review_state: draft`.
 
-⚠️ **THE RANGE IS ALLOCATED, THE ROWS ARE NOT.** `c10-01` to `c10-05` are authored so far, so
-only their fifteen rows are below. The remaining allocation is written down here so lanes authoring
-different lessons cannot collide on a number: `EARTH-01`–`04` are c10-01's, `05`–`07` c10-02's,
-`08`–`10` c10-03's, `11`–`13` c10-04's, and `14`–`16` were allocated to be shared between c10-05
-and c10-06 — **c10-05 has taken `14` and `15` and left `16` for c10-06.** **An id appears
-in the table below only when the lesson that references it exists** — registering ahead of
-authoring is legal (`CELL-09`–`12` are the live example) but allocating a block and then filling
-it is how a number ends up meaning two things.
+⊕ **THE UNIT IS COMPLETE AND THE RANGE IS CLOSED AT `EARTH-17`.** All six lessons are authored,
+so all seventeen rows are below. The allocation, kept because it is what stopped six lanes
+colliding on a number: `EARTH-01`–`04` are c10-01's, `05`–`07` c10-02's, `08`–`10` c10-03's,
+`11`–`13` c10-04's, `14`–`15` c10-05's, and `16`–`17` c10-06's. **An id appears in the table below
+only when the lesson that references it exists** — registering ahead of authoring is legal
+(`CELL-09`–`12` are the live example) but allocating a block and then filling it is how a number
+ends up meaning two things.
 
-⊖ **`EARTH-17` AND `EARTH-18` ARE NAMED SPARES AND ARE NOT MINTED.** They exist as a reservation
-against a lesson needing a fourth entry, in exactly the sense `MATL-04/07/10/14` were pre-allocated
-and then deliberately left unallocated. A spare that is never used is an id reserved against
-nothing, and ids are permanent once referenced — so if the unit finishes without needing them,
-they are left unwritten and the numbering stops at 16. **Do not close the gap.**
+⊖ **`EARTH-17` IS SPENT. `EARTH-18` IS THE SOLE REMAINING SPARE AND IS NOT MINTED.** Both were
+reserved against a lesson needing a further entry, in exactly the sense `MATL-04/07/10/14` were
+pre-allocated and then deliberately left unallocated. `c10-06` needed one and took `17`; the
+justification is with the row. `EARTH-18` stays unwritten — a spare that is never used is an id
+reserved against nothing, and ids are permanent once referenced, so with the unit finished the
+numbering stops at 17. **Do not close the gap and do not mint 18.**
 
 | ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
 |---|---|---|---|---|
@@ -1645,6 +1645,8 @@ they are left unwritten and the numbering stops at 16. **Do not close the gap.**
 | `EARTH-13` | “Years left” is a measured fact about how much is in the ground. | — | `s-stock` | `a-planet-with-limits` |
 | `EARTH-14` | Air is mostly oxygen — that is the point of it. | `think-commit-oxygen` | `think-reveal-oxygen` | `whats-in-the-air` |
 | `EARTH-15` | The air has always been roughly like this, so the oxygen was there from the start. | — | `s-history` | `whats-in-the-air` |
+| `EARTH-16` | The planet is warming because of the hole in the ozone layer letting extra heat in. | `think-commit-ozone` | `think-reveal-ozone` | `carbon-dioxide-humans-and-climate` |
+| `EARTH-17` | The greenhouse effect is the problem — it is what is causing the planet to warm. | — | `s-hook` | `carbon-dioxide-humans-and-climate` |
 
 **`EARTH-01` is the one this whole topic turns on, and it is the reason `c10-01` refuses the famous
 sentence.** A thin crust floating on a sea of magma is taught in a great many classrooms and it is
@@ -1806,6 +1808,72 @@ fixed backdrop that living things arrived into, and what kills it is the discove
 things made it. A student can hold either without the other, and joining them would blur the thing
 C10's last two lessons add: that the atmosphere is not scenery, it is a product, and it is still
 being changed.
+
+**`EARTH-16` is the belief Design quotes in her own words at `#s-think`, and it is the single most
+common error in this topic anywhere in the country.** Ozone depletion and the greenhouse effect are
+two real problems with the atmosphere, they arrived in public conversation within a few years of
+each other, and both are spoken about as "damage to the atmosphere" — so a student who merges them
+is doing something reasonable with the evidence they have. They are not the same thing in any
+respect that matters: different gas, different altitude, different radiation, different
+consequence, and largely different solutions. Ozone blocks ULTRAVIOLET coming IN; the greenhouse
+effect is about INFRARED going OUT. Ozone depletion does not "let the heat in" and never did.
+
+The predict elicits the belief in plain words before the page says anything, and the reveal carries
+`id="think-reveal-ozone"` so `confronted_by` names the PANEL where the belief is answered rather
+than the surrounding section — the MRB-277 pattern.
+
+⚑ **The confrontation ends on the ozone problem being the one humanity actually FIXED, and that
+sentence is doing two jobs.** It is the reason the two are worth keeping apart — one has a treaty
+and a recovering layer behind it and the other does not — and it is the page's only worked example
+of an atmospheric problem being identified, understood, legislated against and reversed. The
+lesson's safeguarding ruling (in `ks3_data/c10/lesson_06_*.py`) turns on that sentence being
+science rather than reassurance, which it is: the Montreal Protocol was signed in 1987 and the
+layer is measurably recovering.
+
+**`EARTH-17` was one of the two NAMED SPARES, and this is why it was spent.** The belief is that
+the greenhouse effect is itself the problem — that the thing to be got rid of is the effect rather
+than the increase in it. It is not a careless answer. A student meets the phrase "the greenhouse
+effect" exclusively in sentences about something going wrong, and concluding that the effect is the
+wrong thing is the obvious next step. It is also completely wrong in the most consequential
+direction available: without the natural effect the surface would average about −18 °C instead of
+about 15 °C, and the oceans would be ice.
+
+It earns an id rather than a paragraph because `c10-06` is BUILT around it. Design's hook is the
+thirty-three degrees the effect already provides; her second ladder rung asks "Is the greenhouse
+effect a bad thing?" directly; and the lesson adds a key fact of its own (`natural-and-enhanced`)
+whose only job is to hold "natural and necessary" and "we have strengthened it" in the same
+sentence. Four separate places on one page, which is the definition of a belief a lesson is built
+to break rather than a slip a distractor can handle.
+
+**`EARTH-17` carries no `elicited_by`, deliberately, and that is audit law 15 working rather than a
+hole.** Nothing on `c10-06` asks a student to commit to it — the hook asks where the warmth comes
+from, not whether it is welcome — and inventing an anchor to fill the column would be the dishonest
+version. MRB-248 makes absence legal precisely so that it need not be invented. `confronted_by` is
+`s-hook`, where the reveal says the planet would be frozen without it and then names the real
+question. The bank carries the elicitation, at `c10-06-e02` and `c10-06-s01`.
+
+⚑ **THREE MORE BELIEFS ARE CORRECTED ON `c10-06` AND NONE OF THEM IS MINTED, which is a decision
+rather than an omission.** The page also handles "water vapour does most of it, so carbon dioxide
+cannot be the cause", "two graphs rising together proves one causes the other", and "it was
+freezing last week, so the planet is not warming". Each is corrected in the place it arises — an
+explainer in the main flow, the evidence block's derived closing panel, and the vocabulary
+definition of "climate", which is written AGAINST weather rather than beside it — and each is
+elicited in the question bank at `c10-06-s02`, `s03` and `s04`.
+
+They are not register entries because the register names the beliefs a page is BUILT to break, and
+`c10-06` is built on two. A page with five declared misconceptions has stopped having a spine, and
+`EARTH-18` is the only spare left in the range: spending it on the third-most-important belief on
+one page would leave the next lane with nothing and would say that these three are the same kind of
+thing as the ozone conflation. They are not. A student can be talked out of the water-vapour
+argument in one sentence; the ozone conflation survives being told it is wrong, which is what a
+misconception entry is for.
+
+⚑ **`EARTH-16` and `EARTH-17` are neighbours and are not the same belief.** `EARTH-16` is about
+which PROBLEM is happening and it dies when the two mechanisms are laid side by side. `EARTH-17` is
+about whether the mechanism this page teaches is a good thing, and what kills it is the thirty-three
+degrees. A student can hold either without the other — the commonest combination in a real class is
+to have both — and joining them would blur the one thing this lesson has to leave behind: that the
+greenhouse effect is not the problem, the change to it is, and neither of them is the ozone hole.
 
 ⚑ **`EARTH-11` overlaps `MATL-08`'s neighbourhood in SHAPE ONLY and no cross-reference is
 recorded.** Both are wrong beliefs about where a material comes from. But `MATL-08` is about
