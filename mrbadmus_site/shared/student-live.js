@@ -477,6 +477,157 @@
     return word.charAt(0) + word.slice(1).toLowerCase();
   }
 
+  /* ═══════════════════════════════════════════════════════════════════════
+     THE PRACTICE ORDER — ONE DEFINITION, AND TWO THINGS WILL READ IT
+     ═══════════════════════════════════════════════════════════════════════
+
+     ⊕ 23 Aug 2026 — PHASE 2. Ruled: *"wrongly-answered sources first (with the
+     FROM YOUR WORK chip), then least-seen, then random."*
+
+     ⚠️ THIS IS WRITTEN ONCE ON PURPOSE. The flashcard deck below uses it now;
+     the recall round's question bank is the next unit and uses the IDENTICAL
+     rule. Two implementations of "what should this student practise next"
+     would drift, and they would drift INVISIBLY — nothing on the page states
+     the order, so a divergence between the cards and the round is not
+     something a student or a gate could see. `rankForPractice` is the one
+     place. Both callers hand it `{id, lesson}` and nothing else about the
+     item's shape matters here.
+
+     THE THREE KEYS, IN ORDER:
+
+       1  `wrong` — a lesson the student has got a question wrong in. This is
+          the chip Design draws (`FROM YOUR WORK`), and it is deliberately at
+          LESSON grain: a card id is `<lesson>#def#<term>` and a question ref
+          is `<lesson>#recall` or a bank id, so the two corpora share no ids at
+          all and can only ever be joined through the lesson they belong to.
+          Confirmed against real rows before it was written.
+
+       2  `seen` — how many times this student has REVEALED this card. Least
+          first, so a fresh open lands on what they have practised least
+          rather than on the same six cards for ever.
+
+       3  a deterministic jitter, from a SEED THE CALLER FIXES. Not
+          `Math.random()`: the deck must not reshuffle under the student's
+          fingers, and a random tiebreak would give a different order on every
+          re-render. The seed is the class and the school-local DATE, so the
+          order is stable for a session and stable across a reload, and it
+          moves tomorrow.
+
+       4  and finally the item's ORIGINAL index, so the sort is total. Two
+          cards with the same lesson, the same count and the same 32-bit hash
+          would otherwise be ordered by the engine's sort stability, which is
+          a guarantee in modern engines and was not always one. */
+
+  /* FNV-1a, 32-bit. A hash and not a PRNG: the same id under the same seed
+     must give the same number on every render, on every device, for ever. */
+  function hash32(str) {
+    var h = 0x811c9dc5, i;
+    for (i = 0; i < str.length; i += 1) {
+      h ^= str.charCodeAt(i);
+      h = (h + ((h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24))) >>> 0;
+    }
+    return h >>> 0;
+  }
+
+  function rankForPractice(items, opts) {
+    var wrong = (opts && opts.wrong) || {};
+    var seen = (opts && opts.seen) || {};
+    var seed = String((opts && opts.seed) || "");
+    return (items || []).map(function (it, i) {
+      return {
+        it: it, i: i,
+        mine: wrong[it.lesson] ? 0 : 1,
+        seen: Number(seen[it.id]) || 0,
+        jitter: hash32(seed + "|" + String(it.id))
+      };
+    }).sort(function (a, b) {
+      if (a.mine !== b.mine) { return a.mine - b.mine; }
+      if (a.seen !== b.seen) { return a.seen - b.seen; }
+      if (a.jitter !== b.jitter) { return a.jitter - b.jitter; }
+      return a.i - b.i;
+    }).map(function (r) { return r.it; });
+  }
+
+  /* ── HOW MANY TIMES HAS THIS STUDENT SEEN THIS CARD? ────────────────────
+
+     ⚠️ NOTHING RECORDS IT TODAY, and this is where the answer is decided.
+
+     THE CHOICE, AND THE REASON. A table would be the durable answer and it is
+     the wrong one for THIS value, on three counts:
+
+       · it is a PREFERENCE OF ORDER, not a fact about the student's work.
+         Nothing on the screen ever says "you have seen this three times". A
+         count that is lost degrades the ORDER of a revision stack; it does not
+         make the page say anything untrue. That is the whole difference
+         between this and the answer queue, where a lost entry meant a tick the
+         student had already been shown was a lie, and where localStorage was
+         chosen for exactly the opposite reason — because only a synchronous
+         store could be asked in time to keep the page honest.
+       · it would be a WRITE PER FLIP. A student turning thirty cards over in a
+         revision session is thirty round trips on school wifi, for a number
+         nobody reads.
+       · it is a PRODUCTION MIGRATION, and this run is not allowed to apply
+         one. Deferring the whole unit behind a migration Mide has to apply by
+         hand would have shipped a deck with no least-seen half at all.
+
+     THE KEY, AND IT FOLLOWS THE ANSWER QUEUE'S DISCIPLINE EXACTLY:
+
+         mrbadmusai.cardseen.v1.<auth user id>.<class id>
+
+     A school machine is shared. A second child signing in on the same browser
+     profile computes a DIFFERENT key, reads nothing, and has no code path to
+     the first child's counts. The blob repeats BOTH ids inside itself and a
+     read whose ids disagree with the key is discarded unread, so even a key
+     collision could not survive being opened. Per class, because the deck is
+     per class.
+
+     ⚠️ IT IS A CACHE AND IT MAY BE EMPTY. Every read is wrapped, every write
+     is wrapped, and a store that refuses (private mode, disabled by policy,
+     full) costs the least-seen tiebreak and nothing else — the deck still
+     ranks by wrong-answer first and by the fixed jitter after it. There is no
+     state in which a missing count can produce a wrong sentence, because there
+     is no sentence. */
+  var SEEN_PREFIX = "mrbadmusai.cardseen.v1.";
+
+  function seenStore(userId, classId) {
+    var owner = String(userId || "anon");
+    var kls = String(classId || "");
+    var key = SEEN_PREFIX + owner + "." + kls;
+
+    function ls() {
+      try { return window.localStorage || null; } catch (e) { return null; }
+    }
+    function read() {
+      var st = ls();
+      if (!st) { return {}; }
+      try {
+        var raw = st.getItem(key);
+        if (!raw) { return {}; }
+        var d = JSON.parse(raw);
+        if (!d || typeof d !== "object" || !d.n) { return {}; }
+        if (d.u !== owner || d.k !== kls) { return {}; }
+        return d.n;
+      } catch (e) { return {}; }
+    }
+    return {
+      all: read,
+      /* Returns whether the count really moved, so a caller that wanted to say
+         something about it could — nothing does today, and the shape is here
+         because a write that silently does nothing is what this file keeps
+         refusing to ship. */
+      bump: function (cardId) {
+        var st = ls();
+        if (!st || !cardId) { return false; }
+        try {
+          var n = read();
+          n[cardId] = (Number(n[cardId]) || 0) + 1;
+          st.setItem(key, JSON.stringify({ u: owner, k: kls, n: n }));
+          return true;
+        } catch (e) { return false; }
+      }
+    };
+  }
+
   /* ── the backend ───────────────────────────────────────────────────────
      Bearer token from the live session. The response's `Date` header is the
      SERVER clock, and it is the only "now" this file trusts for deciding what
@@ -1189,14 +1340,26 @@
        nothing else — the work list still renders, so this is caught and
        logged rather than thrown. */
     var lessonsFor = {};
+    /* ⊕ 23 Aug 2026 — PHASE 2. THE SAME RESOLUTION, READ TWICE OVER.
+       `lessonsFor` answers "which lesson does THIS piece of work draw on", and
+       drops any slug this build has no PAGE for, because its reader is a link.
+       The flashcard deck asks a different question of the same walk — "which
+       lessons has this class covered AT ALL" — and must NOT drop those: a card
+       comes out of `ks3_cards`, not out of a lesson page, so a lesson with no
+       page still has cards worth revising. Both are declared out here so the
+       one walk can fill both, rather than the deck growing a second resolution
+       that would drift the first time either changed. */
+    var coveredSlugs = {};
+    var bySlug = {};
+    var assignmentIds = (aw.data || []).map(function (r) { return r.id; });
     try {
-      var ids = (aw.data || []).map(function (r) { return r.id; });
+      var ids = assignmentIds;
       if (ids.length) {
         var aq = await sb.from("assignment_questions")
           .select("assignment_id, position, source_ref")
           .in("assignment_id", ids).order("position");
 
-        var refs = [], bySlug = {};
+        var refs = [];
         (aq.data || []).forEach(function (r) {
           if (r.source_ref && String(r.source_ref).indexOf("/") < 0) {
             refs.push(r.source_ref);
@@ -1215,6 +1378,7 @@
 
         (aq.data || []).forEach(function (r) {
           var slug = bySlug[r.source_ref] || slugFromRef(r.source_ref);
+          if (slug) { coveredSlugs[slug] = true; }
           var href = lessonHref(slug);
           if (!href) { return; }              // not a lesson this build knows
           var list = lessonsFor[r.assignment_id] ||
@@ -1409,6 +1573,180 @@
       throw e;
     }
 
+    /* ═══════════════════════════════════════════════════════════════════
+       ── ⊕ 23 Aug 2026 — PHASE 2. THE FLASHCARD DECK ────────────────────
+       ═══════════════════════════════════════════════════════════════════
+
+       Design's C2 puts a deck of cards where the dark RECALL card was. This
+       builds it, out of `ks3_cards` — the mirror this run authored, 582 rows,
+       `SELECT to authenticated USING (true)`, so the client reads it directly
+       with no backend route in between.
+
+       ── WHICH LESSONS. THE UNION OF THE TWO THE PRODUCT ALREADY HAS ──────
+
+       There is no `class_lessons` table; "the lessons this class has covered"
+       is not a stored fact, and TWO parts of the page already answer it from
+       different directions:
+
+         a  every `assignment_questions.source_ref` behind every assignment the
+            class has ever been set, resolved through `ks3_bank_questions` /
+            `ks3_ladder_questions` to a lesson slug. That is `coveredSlugs`
+            above — the SAME walk the work rows' "Open the lesson" button uses,
+            read a second time rather than repeated.
+         b  the lessons behind `/api/class/recall`, which is the endpoint whose
+            own blurb on this page says "questions from the lessons this class
+            has covered". The backend computes it from the class's scheme.
+
+       Neither contains the other, measured on 8r/Sc1: (a) is
+       `the-gas-exchange-system` + `particle-model`, from two assignments; (b)
+       is `the-gas-exchange-system` alone. So the deck is their UNION — a
+       lesson the class has been set work on, or one the scheme says they have
+       been taught, is a lesson worth revising either way. Taking only (a)
+       would lose a lesson taught but not yet assessed; taking only (b) would
+       lose the hand-seeded May work, which is still the only marked work on
+       the platform.
+
+       ── AND THE DECK IS NOT CAPPED ───────────────────────────────────────
+
+       `pad()` is two digits and the row of pips runs out of room, and neither
+       of those is a reason to hide cards from a student. The pip row drops
+       past 24 (see `PIP_MAX` in student_rulings.py); the counter stays right
+       at any length; the deck itself is every card those lessons carry.
+
+       ── A FAILURE HERE EMPTIES THE CARD; IT DOES NOT TAKE THE PAGE DOWN ──
+
+       Same rule as `lessonsFor` above and the shout-outs below: the work is
+       the page, and a card is a card. */
+    (recall && recall.questions ? recall.questions : []).forEach(function (q) {
+      if (q.lesson_slug) { coveredSlugs[q.lesson_slug] = true; }
+    });
+    var deckSlugs = Object.keys(coveredSlugs);
+
+    /* ── WHICH LESSONS DID THIS STUDENT GET SOMETHING WRONG IN? ───────────
+
+       ⚠️ A CARD ID IS NOT A QUESTION REF, AND THE JOIN IS AT LESSON GRAIN.
+       Checked against the real rows rather than taken from the brief: a card
+       is `the-gas-exchange-system#def#trachea`, an attempt's `question_ref` is
+       a bank id (`b4-01-s01`) or a ladder ref (`<lesson>#recall`) or, for the
+       hand-seeded May work, the lesson PATH. The two corpora share no id of
+       any kind, so nothing finer than the lesson is available — and the lesson
+       is the right grain anyway: a student who got the trachea question wrong
+       needs that lesson's vocabulary, not only the one term they missed.
+
+       Readable client-side under `attempts_self_all`, which is scoped through
+       `assignment_submissions.student_id = auth_user_id()`. The submissions
+       are read first and the attempts by `submission_id`, rather than through
+       an embedded join, so the RLS the policy describes is the RLS the query
+       relies on and nothing depends on PostgREST resolving a relationship. */
+    var wrongLessons = {};
+    try {
+      if (assignmentIds.length) {
+        var mySubs = await sb.from("assignment_submissions")
+          .select("id").eq("student_id", user.id)
+          .in("assignment_id", assignmentIds);
+        if (mySubs.error) { throw mySubs.error; }
+        var subIds = (mySubs.data || []).map(function (r) { return r.id; });
+        if (subIds.length) {
+          var att = await sb.from("assignment_question_attempts")
+            .select("question_ref, is_correct")
+            .in("submission_id", subIds).eq("is_correct", false);
+          if (att.error) { throw att.error; }
+          (att.data || []).forEach(function (r) {
+            var slug = bySlug[r.question_ref] || slugFromRef(r.question_ref);
+            if (slug) { wrongLessons[slug] = true; }
+          });
+        }
+      }
+    } catch (wrongErr) {
+      console.error("[student-live] could not read this student's wrong "
+                    + "answers; the deck loses its FROM YOUR WORK ordering "
+                    + "and nothing else", wrongErr);
+    }
+
+    var cards = [];
+    try {
+      if (deckSlugs.length) {
+        var cq = await sb.from("ks3_cards")
+          .select("id, lesson_slug, kind, card_position, topic, front, back, "
+                  + "equation_left, equation_arrow, equation_right, "
+                  + "equation_condition")
+          .in("lesson_slug", deckSlugs)
+          .order("lesson_slug").order("card_position");
+        /* A refusal here is silent otherwise — supabase-js RESOLVES with an
+           `error` rather than rejecting, so `.data` would simply be null and
+           the deck would be empty with nothing said anywhere. The card's own
+           empty state is honest either way; the console line is what tells
+           whoever is looking that it is empty for a REASON. */
+        if (cq.error) { throw cq.error; }
+        cards = (cq.data || []).map(function (r) {
+          var eq = r.kind === "equation";
+          var card = {
+            id: r.id,
+            lesson: r.lesson_slug,
+            /* Design's own two tags. `KEY FACT` is Design's third and there
+               are no key-fact rows: the exporter deliberately ships none,
+               because a key fact is a statement with no authored front, and
+               writing 107 science prompts is Mide's gate rather than an
+               export's. A tag with no rows behind it is not emitted. */
+            tag: eq ? "EQUATION" : "DEFINITION",
+            topic: String(r.topic || deslug(r.lesson_slug)).toUpperCase(),
+            front: r.front || "",
+            /* ⚠️ AN EQUATION CARD'S ANSWER IS THE EQUATION ROW, NOT THE PROSE
+               SLOT. Design draws an equation card with `back: ''` and lets the
+               left → right row below it be the answer, and printing the
+               right-hand side twice would be the page saying the same thing in
+               two type sizes. What DOES go in the prose slot is the authored
+               CONDITION where the lesson wrote one ("energy is transferred
+               from the glucose to the cell") — verbatim, because it is part of
+               the answer and it is somebody's sentence, not a composed one. */
+            back: eq ? (r.equation_condition || "") : (r.back || ""),
+            /* Design's chip. True for every card from a lesson this student
+               has got a question wrong in — see the join above. */
+            mine: !!wrongLessons[r.lesson_slug]
+          };
+          if (eq) {
+            /* ⚠️ `arrow` IS A FLAG, NOT THE WORD, and that is Design's reading
+               rather than an assumption: Design's `<if card.arrow>` gates the
+               whole equation ROW, and the row draws the arrow as an SVG (donor
+               357/358) and never prints `card.arrow` anywhere. So the mirror's
+               `equation_arrow` — a WORD like 'gives', or NULL — is exactly what
+               its own column comment says it is: NULL means DRAW the arrow and
+               do not read it, not "there is no arrow". Five of the nine
+               equation rows carry NULL and all nine must draw one.
+               ⛔ AND NOTHING HERE MAY TYPE ONE. A CHECK constraint refuses
+               U+2192 in the mirror; the page draws Design's path and never a
+               glyph. */
+            card.arrow = true;
+            card.eqLeft = r.equation_left || "";
+            card.eqRight = r.equation_right || "";
+          }
+          /* `triangle` is DELIBERATELY NEVER SET. Design draws a formula
+             triangle for `p = F / A` with the letters F, p and A typed into
+             the SVG — a drawing of ONE equation, not a component — and the
+             mirror has no triangle content of any kind to drive it with. A
+             branch with no data behind it renders nothing, which is the
+             correct outcome; faking one would put Design's pressure triangle
+             on a chemistry card. */
+          return card;
+        });
+      }
+    } catch (cardErr) {
+      console.error("[student-live] could not build the flashcard deck", cardErr);
+      cards = [];
+    }
+
+    /* ── AND THE ORDER, WHICH IS WRITTEN IN ONE PLACE ────────────────────
+       `rankForPractice` — wrong first, then least-seen, then a fixed jitter.
+       The seed is the class and the school-local DATE, so the deck is stable
+       for a session AND across a reload (a student who refreshes does not get
+       a reshuffled stack under their finger) and moves tomorrow. */
+    var deckSeen = seenStore(user.id, klass.id);
+    cards = rankForPractice(cards, {
+      wrong: wrongLessons,
+      seen: deckSeen.all(),
+      seed: klass.id + "|" + londonYmd(serverNow)
+    });
+
     /* ── shoutouts[] ─────────────────────────────────────────────────────
        The class's real shout-out feed, narrowed to the ones written TO this
        student (and the ones written to the class as a whole). The card does
@@ -1481,6 +1819,15 @@
     pendingSink = {
       saveBenchTheme: function (t) {
         return D.saveBenchTheme(user.id, t);
+      },
+      /* ⊕ 23 Aug 2026 — PHASE 2. A card was REVEALED. It writes to this
+         device and reaches no network at all, which is the whole argument for
+         where the count lives — see `seenStore`. It returns whether the write
+         landed; nothing reads that today, and it is returned rather than
+         swallowed because a writer that cannot report a refusal is how the
+         held-state defect got shipped once already. */
+      cardSeen: function (cardId) {
+        return deckSeen.bump(cardId);
       }
     };
 
@@ -1502,6 +1849,31 @@
       boardWeek: weekNo == null ? 1 : weekNo,
 
       shoutouts: shoutouts,
+
+      /* ── ⊕ 23 Aug 2026 — PHASE 2. THE DECK, AND ITS TWO WORDS ──────────
+         `cards` is every card behind every lesson this class has covered,
+         already in practice order. The page does not sort it, cap it or
+         choose from it — it reads `MRB_DATA('cards')` and shows what is
+         there, which keeps the one definition of "what should this student
+         practise next" in this file where the next unit can call it too. */
+      cards: cards,
+
+      /* ⛔ WHAT THE CARD SAYS WITH AN EMPTY DECK, and it says nothing about
+         the software. It is the sentence this file already uses for the same
+         condition one panel over — there is nothing to look back over yet —
+         rather than a second wording of the same fact. The card's button
+         refuses to open an empty overlay (see `openCards` in
+         student_rulings.py), so a student is never taken to a surface with a
+         counter reading 00 / 00 on it. */
+      cardsEmpty: SAY.noRecall,
+
+      /* Design typed `FLASHCARDS \u00a0·\u00a0 8r/Sc1` into the overlay's
+         header as ONE text node with NON-BREAKING spaces, which is why it
+         cannot bind to the `8r/Sc1` already on the binding list — the same
+         trap `accountClassLine` documents. Composed from the class name this
+         function already holds; the separator is Design's typography and is
+         carried through verbatim. */
+      flashcardsTitle: "FLASHCARDS \u00a0\u00b7\u00a0 " + name,
 
       currentWeek: weekNo == null ? 0 : weekNo,
       weekNumber: weekNo == null ? "—" : pad2(weekNo),

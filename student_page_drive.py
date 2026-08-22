@@ -105,6 +105,36 @@ FIXTURE_TELLS = [
     # above, from when it was Design's fixture value, and it has to come OUT
     # of the list or the correct page fails. The wrong ones are the tells now.
     "SUMMER TERM", "SPRING TERM",
+    # ⊕ 23 Aug 2026 — PHASE 2. DESIGN'S SIX SAMPLE FLASHCARDS.
+    #
+    # The grafted flashcards card and its overlay render `MRB_DATA('cards')`.
+    # On the fixture that is Design's own `deck()`, lifted out of the amended
+    # delivery by `DONOR_LIFTS`; on a real page it is every card behind the
+    # lessons the class has covered. If any of these six FRONTS is on screen on
+    # a page that is supposed to be showing real data, the deck has fallen back
+    # to Design's sample and the student is revising one drawing's science.
+    #
+    # ⚠️ THE FRONTS, AND DELIBERATELY NOT THE BACKS. Checked against all 582
+    # rows of `ks3_cards` before they were written down: every real front is
+    # `Define: <term>` or `Complete the word equation: <left>`, so
+    # `Define diffusion.` — no colon, and a full stop — is unreachable, and so
+    # are the other five. The BACKS are not safe to use: Design's diffusion
+    # answer, "The net movement of particles from where they are more
+    # concentrated…", IS a real card's back, word for word, because Design and
+    # the corpus are describing the same science. A tell that fires on correct
+    # content is the tell that gets ignored, which is how the docket shipped.
+    #
+    # `KEY FACT` is Design's third tag and the exporter emits none — 573
+    # definitions, 9 equations, 0 key facts — so the words on a card are a tell
+    # too, and the one that would survive Design rewriting a front.
+    "Define diffusion.",
+    "Three things that make a gas exchange surface efficient.",
+    "Pressure, force, area — which one sits on top?",
+    "Write the word equation for magnesium burning in oxygen.",
+    "Define ventilation.",
+    "A fixed amount of gas is squeezed into a smaller space. "
+    "What happens to the pressure?",
+    "KEY FACT",
 ]
 
 # ── the defaults that are NOT text, and so can never be a tell ────────────

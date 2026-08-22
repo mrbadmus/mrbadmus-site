@@ -690,6 +690,175 @@ LOGIC = {
             "      isDamson: st.theme === 'damson' ? '1' : '0',\n"
             "      isGraphite: st.theme === 'graphite' ? '1' : '0',",
         ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ 23 Aug 2026 — PHASE 2. THE LOGIC HALF OF THE FLASHCARD SURFACE.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # ⚠️ THE SAME LESSON AS THE PICKER, AND IT IS WORTH RESTATING BECAUSE
+        # IT FAILS SILENTLY. `GRAFT` copies MARKUP. Design's two flashcard
+        # regions reference twelve names — `cardCount`, `stackPos`, `topFront`,
+        # `topMine`, `card`, `pips`, `flipOn`, `flipLabel`, `flip`, `next`,
+        # `openCards`, `cardsOpen` — and the live logic class has none of them.
+        # `build` resolves an `if` with `lookup(node.e, scope, null)`, miss list
+        # deliberately null, so an absent `cardsOpen` reads `undefined`, the
+        # overlay renders NOTHING, and the build and every gate stay green.
+        #
+        # Design's NAMES are kept exactly; Design's VALUES are kept wherever
+        # they are pure presentation (the `'1'`/`'0'` strings, `Reveal`/`Hide`,
+        # the wrap-around index). What is OURS is where the deck comes from and
+        # what order it is in — see `shared/student-live.js`.
+        (
+            "    tab: 'all', week: null, open: null,",
+            "    /* ⊕ 23 Aug 2026 — PHASE 2. Design's own three state keys for\n"
+            "       the flashcards, spelled Design's way. None of them collides\n"
+            "       with the live page's own state — checked before it was\n"
+            "       written: the live initialiser carries view, w, menu, tab,\n"
+            "       week, open, bench, boardWeek, boardSize, qi, pick, checked,\n"
+            "       right, streak, and Phase 1b's account and theme.\n"
+            "\n"
+            "       `idx` IS DELIBERATELY NOT PERSISTED, and that is a ruling\n"
+            "       rather than an omission. It survives closing and reopening\n"
+            "       the overlay — Design's `closeAll` does not touch it — which\n"
+            "       is the resume the sidebar card is for. It does NOT survive a\n"
+            "       reload, because the deck is RE-RANKED on every load (the\n"
+            "       wrongly-answered set moves, the seen counts move), so a\n"
+            "       stored index would name a DIFFERENT card and the marker\n"
+            "       would be lying about where the student was. Storing the card\n"
+            "       id instead would be honest and would fight the ranking: the\n"
+            "       point of least-seen-first is that a fresh load opens on what\n"
+            "       the student most needs, not on the one they just finished. */\n"
+            "    cards: false, idx: 0, flipped: false,\n"
+            "    tab: 'all', week: null, open: null,",
+        ),
+        (
+            "  closeAccount = () => this.setState({ account: false });\n",
+            "  closeAccount = () => this.setState({ account: false });\n"
+            "\n"
+            "  /* ⊕ 23 Aug 2026 — PHASE 2. THE FLASHCARDS.\n"
+            "\n"
+            "     `closeAll` closes BOTH surfaces, which is Design's own\n"
+            "     definition of it (`closeAll: () => this.setState({ account:\n"
+            "     false, cards: false })`) and is why the name is plural. It is\n"
+            "     wired to the sheet's close button AND to the overlay's, and the\n"
+            "     two are mutually exclusive by construction — `openCards` clears\n"
+            "     `account` and `openAccount` clears `cards` — so closing both is\n"
+            "     never closing something the student wanted left open. */\n"
+            "  closeAll = () => this.setState({ account: false, cards: false });\n"
+            "\n"
+            "  /* THE DECK IS DATA AND IS READ THROUGH `MRB_DATA` LIKE EVERYTHING\n"
+            "     ELSE. Design's `deck()` returns six authored sample cards; ours\n"
+            "     returns whatever `shared/student-live.js` built from the lessons\n"
+            "     this class has covered, already ranked. There is no length cap\n"
+            "     anywhere in here: a class that has covered twenty lessons gets\n"
+            "     every card those lessons carry. */\n"
+            "  benchDeck() {\n"
+            "    var d = MRB_DATA('cards');\n"
+            "    return (d && d.length) ? d : [];\n"
+            "  }\n"
+            "\n"
+            "  /* ⚠️ AN EMPTY DECK MUST NOT OPEN AN EMPTY OVERLAY. A surface with\n"
+            "     a counter reading 00 / 00 and a Reveal button over nothing is\n"
+            "     worse than a card that says what is true and waits. */\n"
+            "  openCards = (e) => {\n"
+            "    if (e && e.preventDefault) { e.preventDefault(); }\n"
+            "    if (!this.benchDeck().length) { return; }\n"
+            "    this.setState({ cards: true, account: false, flipped: false });\n"
+            "  };\n"
+            "\n"
+            "  /* REVEALING A CARD IS WHAT COUNTS AS SEEING IT, and flipping past\n"
+            "     one is not. The count feeds the least-seen half of the ranking\n"
+            "     (see `rankForPractice` in shared/student-live.js), so counting a\n"
+            "     card the student never turned over would push a card they have\n"
+            "     not practised to the back of tomorrow's deck.\n"
+            "\n"
+            "     Through the sink, lazily, like every other write: on the fixture\n"
+            "     there is no sink, `_sinkCall` returns null, and Design's file\n"
+            "     behaves exactly as drawn. */\n"
+            "  flipCard = () => {\n"
+            "    const deck = this.benchDeck();\n"
+            "    if (!deck.length) { return; }\n"
+            "    const showing = !this.state.flipped;\n"
+            "    this.setState({ flipped: showing });\n"
+            "    if (!showing) { return; }\n"
+            "    const n = deck.length;\n"
+            "    const at = deck[((this.state.idx % n) + n) % n];\n"
+            "    if (at && at.id) { _sinkCall('cardSeen', at.id); }\n"
+            "  };\n"
+            "\n"
+            "  /* Design's own `next`: forward one, face down. The modulo lives in\n"
+            "     `cardVals` below, so this can add without bound and the deck\n"
+            "     wraps — which is what Design drew and what a revision stack\n"
+            "     should do. */\n"
+            "  nextCard = () => this.setState((p) => ({ idx: p.idx + 1, flipped: false }));\n"
+            "\n"
+            "  /* ⚠️ THE PIP ROW DROPS PAST TWENTY-FOUR CARDS, AND THE COUNTER DOES\n"
+            "     NOT. Design's row is `display:flex;gap:6px` inside a 390px panel\n"
+            "     with 18px of padding either side, so N pips are each\n"
+            "     (354 - 6(N-1)) / N pixels wide against a fixed height of 3px. At\n"
+            "     24 that is 9px — three times its own height, still legibly a bar\n"
+            "     with a 2px radius on each end. At 25 it goes under 3:1 and keeps\n"
+            "     shrinking; by 40 it is 3px, a square, and the row has stopped\n"
+            "     being a position and become texture.\n"
+            "\n"
+            "     So past 24 the row is emitted EMPTY and disappears — the `<for>`\n"
+            "     renders nothing, the container has no children, and\n"
+            "     `[data-pip-row]:empty{display:none}` in build_student_port.py\n"
+            "     takes the 16px flex gap with it. `stackPos` is untouched at any\n"
+            "     length, so the student always knows where they are; what goes is\n"
+            "     the graphic that could no longer say it. */\n"
+            "  PIP_MAX = 24;\n"
+            "\n"
+            "  cardVals() {\n"
+            "    const s = this.state;\n"
+            "    const deck = this.benchDeck();\n"
+            "    const n = deck.length;\n"
+            "    const pad = (x) => (x < 10 ? '0' + x : '' + x);\n"
+            "    const idx = n ? (((s.idx % n) + n) % n) : 0;\n"
+            "    /* The empty card carries no tag, no topic and no back — nothing\n"
+            "       that would read as a card with content missing from it. Its\n"
+            "       front is the one honest sentence, supplied as data. */\n"
+            "    const card = n ? deck[idx]\n"
+            "      : { tag: '', topic: '', front: MRB_DATA('cardsEmpty'),\n"
+            "          back: '', mine: false };\n"
+            "    return {\n"
+            "      cardCount: pad(n),\n"
+            "      stackPos: n ? (pad(idx + 1) + ' / ' + pad(n)) : '',\n"
+            "      topFront: card.front,\n"
+            "      topMine: card.mine,\n"
+            "      card: card,\n"
+            "      /* ⚠️ `cardPips`, NOT Design's `pips` — the live recall\n"
+            "         round already owns that name in this same scope object,\n"
+            "         and it won. The grafted `<for>` is renamed to match by\n"
+            "         `SET_EXPR`; see the note beside it for what the collision\n"
+            "         actually rendered. */\n"
+            "      cardPips: (n && n <= this.PIP_MAX)\n"
+            "        ? deck.map((_, i) => ({ on: i <= idx ? '1' : '0' })) : [],\n"
+            "      flipOn: s.flipped ? '1' : '0',\n"
+            "      flipLabel: s.flipped ? 'Hide' : 'Reveal',\n"
+            "      flip: this.flipCard,\n"
+            "      next: this.nextCard,\n"
+            "      openCards: this.openCards,\n"
+            "      cardsOpen: s.cards\n"
+            "    };\n"
+            "  }\n",
+        ),
+        (
+            "    this.setState({ account: true, menu: false });\n",
+            "    /* ⊕ 23 Aug 2026 — PHASE 2. `cards: false`, so the sheet and the\n"
+            "       overlay can never be open at once. Design's own\n"
+            "       `openAccount` says the same thing. */\n"
+            "    this.setState({ account: true, menu: false, cards: false });\n",
+        ),
+        (
+            "      openAccount: this.openAccount,\n      closeAll: this.closeAccount,\n",
+            "      openAccount: this.openAccount,\n"
+            "      /* ⊕ 23 Aug 2026 — PHASE 2. It closes BOTH now; the overlay's\n"
+            "         close button is wired to the same name. */\n"
+            "      closeAll: this.closeAll,\n"
+            "      /* ⊕ 23 Aug 2026 — PHASE 2. The twelve names Design's two\n"
+            "         grafted flashcard regions resolve out of this object. */\n"
+            "      ...this.cardVals(),\n",
+        ),
     ],
     'assignment': [
         (
@@ -872,8 +1041,40 @@ SET_ATTR = {
     # the strength of a README noun is a design decision, not a colour port.
     # Mapped here so it is one line of work whenever it is ruled; deliberately
     # not taken.
+    # ⊕ 23 Aug 2026 — PHASE 2. TWO MORE, ON THE GRAFTED FLASHCARD CARD.
+    #
+    #   10204  the flashcards card Design's C2 puts where the dark RECALL card
+    #          was. It is painted `background:var(--b-ground)` — a THEME token,
+    #          used DIRECTLY, with no `--st-*` anywhere in the whole subtree
+    #          (measured: the two regions reference only `--b-*` and `--pg-*`).
+    #          So the token bridge has nothing to do here and the attribute is
+    #          inert as CSS.
+    #
+    #          ⚠️ IT IS NOT INERT TO THE GATE, AND THAT IS WHY IT IS HERE.
+    #          `student_themes.check_page_chrome` sweeps every element OUTSIDE
+    #          `[data-bench-surface]` for a near-black background, because
+    #          Design's amendment says no page CHROME is near-black any more.
+    #          `--b-ground` is near-black on four of the six themes (harbour
+    #          #20363F, moss #294036, damson #38243A, graphite #1A1512 — every
+    #          channel under 70), so without this the card would be reported as
+    #          four unregistered strays on a page where it is doing exactly what
+    #          Design drew. Registering it as an EXCEPTION would be the wrong
+    #          shape: an exception says "near-black chrome that has not moved to
+    #          espresso yet". This is not chrome. It is a themed surface, and
+    #          `data-bench-surface` is this build's word for one.
+    #
+    #   10329  the overlay's pip row. It is `display:flex;gap:6px` with a single
+    #          `<for>` inside it; past 24 cards the loop is handed an empty list
+    #          and renders nothing, and an empty flex child still costs its
+    #          parent's 16px gap. `[data-pip-row]:empty{display:none}` in
+    #          build_student_port.py collapses it. An attribute plus a scoped
+    #          rule, for the same reason `data-page-strong` is one: the row's
+    #          `display` is a LITERAL inside Design's inline `style`, so there
+    #          is no string in the logic for a `LOGIC` ruling to anchor on.
     "class view": {
         55:  {"data-bench-surface": "bench", "data-port-region": "bench"},
+        10204: {"data-bench-surface": "cards"},
+        10329: {"data-pip-row": "1"},
         91:  {"data-bench-docket": "1"},
         107: {"data-port-region": "term-spine"},
         118: {"data-page-strong": "legend-done"},
@@ -884,6 +1085,44 @@ SET_ATTR = {
     },
     # The assignment page has no bench, no spine and no leaderboard. Nothing
     # to name, and naming it anyway would move that page's bytes for nothing.
+    "assignment": {},
+}
+
+
+# ── the ONE loop name that two of Design's surfaces both wanted ──────────
+#
+# ⊕ 23 Aug 2026 — PHASE 2, AND IT WAS FOUND BY DRIVING THE PAGE, NOT BY
+# READING IT. This is the sixth mechanism and it exists for one node.
+#
+# Design's flashcards overlay draws its position pips from `<for e="pips">`
+# (donor node 330). The live page's RECALL ROUND does too — Design drew that
+# months earlier, and `renderVals` line 673 reads `pips: pips`, built from
+# `this.questions`. One scope object, one name, two lists.
+#
+# ⚠️ WHAT THAT LOOKED LIKE, WHICH IS WHY NOTHING CAUGHT IT. The class-view
+# spread of `cardVals()` sits EARLIER in the returned object literal than the
+# recall round's own key, so the LATER key won. The flashcards overlay rendered
+# TWO pips for an eleven-card deck — the recall round's two questions — each
+# with no `data-on` at all, because a recall pip's shape is not a card pip's.
+# The build was green, all three gates were green (none of them can open the
+# overlay), and the row simply drew the wrong thing. It was measured in the
+# drive: `n: 2, w: 174, on: ''`.
+#
+# ⚠️ AND ORDERING IS NOT THE FIX, because the two surfaces are NOT mutually
+# exclusive. The recall round is `if onRecall` inside the page; the overlay is
+# grafted at the design root, outside both views, and `goRecall` does not clear
+# `cards`. A student who opens the cards and then the round has both, so
+# whichever list won would be wrong for one of them.
+#
+# So the GRAFTED loop is renamed to `cardPips` and the live one is untouched.
+# It is a BINDING NAME and not a drawing — nothing Design drew changes — and
+# `cardVals` in LOGIC above emits `cardPips` to match. The expected old value
+# is asserted at build time, so an index that drifts stops the build instead of
+# repointing some other loop at a list that is not its own.
+SET_EXPR = {
+    "class view": {
+        10330: ("pips", "cardPips"),
+    },
     "assignment": {},
 }
 
@@ -1059,6 +1298,70 @@ GRAFT = {
                  "EMAIL row is omitted: no student surface shows an email "
                  "address, and a class page is read on shared classroom "
                  "machines."),
+
+        # ⊕ 23 Aug 2026 — PHASE 2. THE FLASHCARD SURFACE, IN TWO GRAFTS.
+        #
+        # ── 1. THE SIDEBAR CARD, AND IT IS A `replace` ────────────────────
+        #
+        # Design's own marker says what to do with it, in Design's own words:
+        # donor 204 carries `data-port-change="C2 replaces the dark RECALL
+        # card"`. Live node 136 IS that card — `background:var(--st-room)`,
+        # #15110C, the one near-black slab in the sidebar — and it is the node
+        # `student_themes.PAGE_CHROME_EXCEPTIONS` registered as a survivor with
+        # the note "Design's C2 replaces this card wholesale … it stops
+        # existing". That registration is retired in this same commit, from the
+        # other end: an exception that cannot go stale is a hole.
+        #
+        # ⚠️ WHAT THE REPLACEMENT TAKES WITH IT, counted rather than assumed:
+        #
+        #   · `Start a round` — the card's `goRecall` button. The recall round
+        #     is still reachable from the bench (`Practise recall` at node 77,
+        #     `Start recall` at node 88) and from the nav, so no destination is
+        #     lost. It is registered in `student_behaviour.RULED_CONTROLS`.
+        #   · `retrievalCount` and its ANSWERED / THIS WEEK caption. The same
+        #     count is drawn a second time inside the recall room (node 395),
+        #     so the seam that carries it still has an anchor and still has a
+        #     reader.
+        #   · the `recallBlurb` sentence, whose ONLY text node on the whole page
+        #     was node 142 inside this card. Its `BINDINGS` entry comes out in
+        #     the same commit — measured, not guessed: `text_paths` finds it at
+        #     exactly one path, and leaving the entry would stop the build with
+        #     "the literal is not a text node in Design's template", which is
+        #     that check doing its job.
+        #
+        # ── 2. THE OVERLAY, AND WHY IT IS THE `<if>` AND NOT THE `<div>` ──
+        #
+        # Donor 318 is `<if cardsOpen>`; donor 319 is the surface inside it.
+        # Grafting 319 alone would put a `position:fixed;inset:0` scrim over
+        # every student's class page, permanently, with no way to close it —
+        # the graft would look like it worked and the page would be unusable.
+        # The conditional IS the feature.
+        #
+        # `at=10, mode="append"`, for the two reasons the account sheet's graft
+        # already records and one more:
+        #
+        #   · INSIDE `.rd[data-mode="ks3"]` (node 10), because every gate opens
+        #     with `document.querySelector('.rd[data-mode="ks3"]')` and a
+        #     surface grafted onto node 9 is one no gate can see.
+        #   · LAST, and AFTER the sheet, because it is `z-index:50` against the
+        #     sheet's 40 and painting order breaks ties. The sheet and the
+        #     overlay are mutually exclusive in the logic, so this is belt and
+        #     braces rather than load-bearing — which is the right amount of
+        #     care for a scrim.
+        #   · `append` and not `after`: `after` inserts into the PARENT, which
+        #     would put the overlay outside `.rd` again.
+        dict(at=136, mode="replace", donor=204,
+             why="Design's C2, in Design's own words on the donor node: the "
+                 "flashcards card replaces the dark RECALL card. It is the "
+                 "deck's front door and its resume marker — the top card's "
+                 "front, the stack position, and the FROM YOUR WORK chip when "
+                 "that card comes from a lesson the student got something "
+                 "wrong in."),
+        dict(at=10, mode="append", donor=318,
+             why="Design's C2 flashcards overlay, grafted as the `if cardsOpen` "
+                 "rather than as the surface inside it, so it exists only when "
+                 "a student has opened it. Header, pip row, the 460ms flip card "
+                 "with its two faces, and the Reveal / Next pair."),
     ],
     "assignment": [],
 }

@@ -226,8 +226,15 @@ PAGES = [
          # `benchDone` false is Design's own state — the delivery draws the
          # bench with work still on it — so every ruling below falls back to
          # exactly what Design computed and the fixture is untouched.
+         # ⊕ 23 Aug 2026 — PHASE 2. `cardsEmpty` is the sentence the
+         # flashcards card shows when the deck has nothing in it. EMPTY on
+         # the fixture, deliberately: Design's amended delivery draws no
+         # empty state for this card, so there is nothing of Design's to
+         # carry, and Design's own six-card deck never reaches the branch
+         # that reads it. The live source supplies the real sentence.
          constants=dict(benchPrimaryHref="''", benchDone="false",
-                        benchPct="''", benchDoneText="''")),
+                        benchPct="''", benchDoneText="''",
+                        cardsEmpty="''")),
     dict(page="assignment", out="assignment.html",
          fixture_out="assignment-fixture.html",
          fixture_js="student-fixture-assignment.js",
@@ -325,8 +332,23 @@ BINDINGS = {
         # filling the pool at six, so the round IS min(6, pool) and grows back
         # to six by itself when the Physics and C4+ banks land — with no code
         # change, which is the ruling's own test.
-        ("Questions from the lessons this class has covered. Six a round, unlimited rounds.",
-         "recallBlurb"),
+        # ⊕ 23 Aug 2026 — PHASE 2. THE `recallBlurb` ENTRY IS RETIRED, and it
+        # is kept here as a comment rather than deleted because deleting it
+        # would hide WHY the sentence stopped being on the page.
+        #
+        #     ("Questions from the lessons this class has covered. Six a
+        #       round, unlimited rounds.", "recallBlurb"),
+        #
+        # Its only text node on the whole class view was node 142, inside the
+        # dark sidebar RECALL card — and Design's C2 replaces that card
+        # wholesale with the flashcards card (see the graft on live node 136 in
+        # student_rulings.py). `text_paths` finds the literal at exactly one
+        # path, measured, so with the card gone the literal is gone, and
+        # leaving this entry in place would stop the build with "the literal is
+        # not a text node in Design's template" — that check working, not
+        # failing. `student-live.js` still computes the key; it is unread until
+        # a later unit gives the sentence a new home, which is cheaper than
+        # deleting a computation that is correct.
         ("SIX QUESTIONS · UNLIMITED ROUNDS", "recallEyebrow"),
         ("OF SIX", "recallOutOf"),
         # ── ⊕ RULED 22 Aug 2026 — P4. THE BENCH'S PRIMARY BUTTON ──────────
@@ -391,6 +413,22 @@ BINDINGS = {
         # typography and not data.
         ("8r/Sc1 \u00a0\u00b7\u00a0 SCIENCE", "accountClassLine"),
         ("Summer \u00a0\u00b7\u00a0 Week 01 / 39", "accountTerm"),
+        # ── ⊕ 23 Aug 2026 — PHASE 2. THE FLASHCARD OVERLAY'S HEADING ──────
+        #
+        # ⚠️ THE SAME TRAP `accountClassLine` DOCUMENTS, ONE FLOOR UP, AND IT
+        # WOULD HAVE FAILED THE SAME SILENT WAY. Design's overlay header reads
+        # `FLASHCARDS \u00a0·\u00a0 8r/Sc1` — ONE text node, with NON-BREAKING
+        # spaces around the separator. `8r/Sc1` is on this list already, but
+        # `text_paths` matches the WHOLE node value and nothing less, so this
+        # node would not have bound and every student's flashcards would have
+        # been headed with one real class's name.
+        #
+        # Composed in student-live.js from the class name it already holds, so
+        # the overlay is not a second opinion about which class this is. The
+        # separator is carried through verbatim, non-breaking spaces and all:
+        # it is Design's typography, and it is what stops the class name
+        # wrapping under the word FLASHCARDS on a 360px phone.
+        ("FLASHCARDS \u00a0\u00b7\u00a0 8r/Sc1", "flashcardsTitle"),
     ],
     "assignment": [
         ("8r/Sc1", "className"),
@@ -536,6 +574,81 @@ LIFTS = {
         dict(key="benchTasks", anchor="    const benchTasks = "),
     ],
 }
+
+# ── ⊕ 23 Aug 2026 — PHASE 2. LIFTING A LITERAL OUT OF THE *DONOR* ────────
+#
+# The graft brings Design's markup across. The FIXTURE then has to render that
+# markup, and Design's amended delivery renders it against Design's own six
+# sample flashcards — six cards of authored science prose, in a method body:
+#
+#     deck() {
+#       return [ { tag: 'DEFINITION', … }, … ];
+#     }
+#
+# ⚠️ THE OBVIOUS PLACE FOR IT IS `constants`, AND `constants` SAYS IN ITS OWN
+# COMMENT WHY NOT. It is "the one place in the build a value is TYPED rather
+# than extracted, and it is deliberately small … if it ever grows past a
+# handful, the seam has stopped being a seam." Six authored cards is not a
+# handful, and retyping them would put a copy of Design's prose in this file
+# that drifts from the delivery the first time Design rewrites a card.
+#
+# So it is lifted, by the same balanced scan `LIFTS` uses, from the DONOR's
+# logic instead of the page's. Nothing about the donor's logic is otherwise
+# read or shipped — `apply_rulings` takes its TREE and never its behaviour —
+# so this is a read of one literal and not a second logic source.
+#
+# Entry shape: `key` (the fixture key), `anchor` (text immediately before the
+# literal, which must occur EXACTLY ONCE), `why`.
+DONOR_LIFTS = {
+    "class view": [
+        dict(key="cards",
+             anchor="  deck() {\n    return ",
+             why="Design's six sample flashcards, so `class-fixture.html` "
+                 "renders the grafted card and overlay exactly as the amended "
+                 "delivery draws them. The live page reads a real deck built "
+                 "from the lessons the class has covered."),
+    ],
+}
+
+
+def donor_lifts(page, donor_logic, fixture):
+    """Design's own literals, lifted out of the AMENDED delivery's logic.
+
+    Returns the number lifted. Same discipline as `lift_literals`: the anchor
+    must match exactly once or the build stops naming it, and the literal is
+    carried as SOURCE so Design's `\u00B7` and apostrophes survive unchanged.
+    """
+    lifts = DONOR_LIFTS.get(page, ())
+    if not lifts:
+        return 0
+    if donor_logic is None:
+        raise SystemExit(
+            "build_student_port.py: %r lifts %d literal(s) out of the amended "
+            "delivery's logic and there is no %r entry in %s to lift from. "
+            "Recompile the templates; a graft whose fixture value is missing "
+            "renders an empty surface with a green build."
+            % (page, len(lifts), DONOR_PAGE, TEMPLATES))
+    for spec in lifts:
+        anchor, key = spec["anchor"], spec["key"]
+        n = donor_logic.count(anchor)
+        if n != 1:
+            raise SystemExit(
+                "build_student_port.py: %s — the donor seam anchor for %r "
+                "occurs %d times in Design's AMENDED logic, not once:\n    %s\n"
+                "Design has redrawn it. Re-anchor it in DONOR_LIFTS rather "
+                "than dropping it: without the value the fixture renders an "
+                "empty version of a surface the gates are asserting against."
+                % (page, key, n, anchor.strip()))
+        at = donor_logic.index(anchor) + len(anchor)
+        lit, _end = balanced_group(donor_logic, at, key)
+        if key in fixture:
+            raise SystemExit(
+                "build_student_port.py: %s — %r is supplied both by the "
+                "donor lift and by the page's own seam. One key is one value."
+                % (page, key))
+        fixture[key] = lit
+    return len(lifts)
+
 
 # (name, pattern, replacement, {capture: "str"|"num"}). `name` appears in the
 # failure message; the pattern is matched against Design's logic AFTER the
@@ -1303,6 +1416,67 @@ def apply_rulings(page, logic, roots, donor=None):
                     % (g["why"][:60], mode))
             grafted[0] += 1
 
+    # ── the ONE name two of Design's surfaces both want ──────────────────
+    #
+    # ⊕ 23 Aug 2026 — PHASE 2, and it was found by DRIVING, not by reading.
+    #
+    # Design's flashcard overlay draws a row of position pips from
+    # `<for e="pips">`. So does the live page's RECALL ROUND, which Design drew
+    # months earlier — `renderVals` line 673, `pips: pips`, built from
+    # `this.questions`. Both loops resolve the same name out of the same scope
+    # object, and the class-view spread lands EARLIER in that object literal
+    # than the recall round's key, so the recall round's list won: the
+    # flashcards overlay rendered TWO pips for an eleven-card deck, each with
+    # no `data-on` at all, and nothing errored anywhere.
+    #
+    # ⚠️ AND THEY ARE NOT MUTUALLY EXCLUSIVE, which is what makes renaming the
+    # right fix rather than an ordering tweak. The recall round is
+    # `if onRecall` INSIDE the page; the flashcards overlay is grafted at the
+    # design root, OUTSIDE both views. `goRecall` does not clear `cards`, so a
+    # student who opens the cards and then the round has both on screen, and
+    # whichever name won would be wrong for one of them.
+    #
+    # So the GRAFTED loop is renamed and the live one is left alone. It is a
+    # binding NAME, not a drawing: nothing about what Design drew changes, and
+    # the alternative is two surfaces silently sharing one variable.
+    #
+    # `{node index: (expected expression, new expression)}`. The expected value
+    # is asserted, exactly as `BINDINGS_AT` asserts its literal: an index that
+    # has drifted onto a different node would otherwise repoint some other loop
+    # at a list that is not its own, and the page would still build.
+    exprs = dict(student_rulings.SET_EXPR.get(page, {}))
+    exprd = [0]
+
+    def rename(node):
+        if not isinstance(node, dict):
+            return
+        idx = node.get("i")
+        if idx in exprs:
+            want, new_e = exprs[idx]
+            if node.get("e") != want:
+                raise SystemExit(
+                    "build_student_port.py: the expression ruling for %r "
+                    "renames template node %s from %r, and that node reads "
+                    "%r. The index has drifted, or Design has redrawn it. "
+                    "Re-anchor it: a silently skipped rename leaves two "
+                    "surfaces sharing one name, which is the defect it exists "
+                    "to remove and which nothing errors on."
+                    % (page, idx, want, node.get("e")))
+            node["e"] = new_e
+            exprs.pop(idx)
+            exprd[0] += 1
+        for kid in node.get("c") or []:
+            rename(kid)
+
+    for root in roots:
+        rename(root)
+    if exprs:
+        raise SystemExit(
+            "build_student_port.py: the expression ruling for %r renames "
+            "template node(s) %s, and they are not in the template (or the "
+            "graft that brings them in did not run). Re-anchor them."
+            % (page, sorted(exprs)))
+
     # ── attributes Design never wrote ────────────────────────────────────
     #
     # ⊕ 22 Aug 2026. See `SET_ATTR` in student_rulings.py — the bench themes
@@ -1381,7 +1555,7 @@ def apply_rulings(page, logic, roots, donor=None):
             "the delivery and re-anchor it." % (page, sorted(want)))
 
     return (logic, roots, len(reps), removed[0], wired[0],
-            grafted[0], attred[0])
+            grafted[0], attred[0], exprd[0])
 
 
 # ── lifting Design's data out of Design's logic ───────────────────────────
@@ -2186,6 +2360,44 @@ _PAGE_STRONG = (
 )
 
 
+# ── the pip row, and what happens to it past twenty-four cards ───────────
+#
+# ⊕ 23 Aug 2026 — PHASE 2. Design's flashcard overlay draws a row of position
+# pips, one per card, `display:flex;gap:6px` across a 390px panel with 18px of
+# padding either side. Each pip is `flex:1 1 auto` against a FIXED 3px height,
+# so N pips are (354 - 6(N-1)) / N pixels wide: 9px at 24 cards, under 3:1 at
+# 25, and 3px — a square — by 40. Past two dozen the row has stopped being a
+# position and become texture.
+#
+# `cardVals` in student_rulings.py therefore hands the `<for>` an EMPTY list
+# past `PIP_MAX`, and the runtime renders nothing for an empty loop. That is
+# not enough on its own: the row's CONTAINER survives, and an empty flex child
+# still costs its parent's 16px gap — a band of dead space where a graphic used
+# to be, which reads as something that failed to load rather than as something
+# deliberately not drawn.
+#
+# ⚠️ AN ATTRIBUTE AND A SCOPED RULE, FOR THE REASON `data-page-strong` ALREADY
+# DOCUMENTS. The row's `display:flex` is a LITERAL inside Design's inline
+# `style`, so there is no computed string in Design's logic for a `LOGIC`
+# ruling to anchor on, and `SET_ATTR` refuses to overwrite an attribute Design
+# already wrote. `:empty` is what makes the rule need no state of its own: it
+# is true exactly when the loop drew nothing, so the two can never disagree.
+#
+# ⚠️ AND IT NEEDS `!important`, FOR THE THIRD TIME IN THIS FILE. Design's row
+# carries `display:flex;gap:6px` in an INLINE style attribute, and an inline
+# declaration outranks any selector however specific — `:empty` adds a compound
+# and changes nothing about that. Without the keyword this rule parses,
+# matches, loses, and the page looks exactly as if it were absent: an empty
+# 3px-tall flex row still costing its parent's 16px gap. Same failure mode as
+# `[data-bench-avatar]`, which shipped broken once for precisely this reason.
+#
+# CLASS VIEW ONLY, like the two rules above it: the assignment page has no
+# flashcards and the selector could never match there.
+_PIP_ROW = (
+    "[data-pip-row]:empty{display:none!important}"
+)
+
+
 def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
               versions=None):
     tail = (
@@ -2252,7 +2464,7 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
            DS_CSS_URL,
            # ⊕ 22 Aug 2026 — the theme bridge, class view only. See above.
            # ⊕ 23 Aug 2026 — and the espresso page chrome beside it.
-           (_THEME_BRIDGE + _PAGE_STRONG)
+           (_THEME_BRIDGE + _PAGE_STRONG + _PIP_ROW)
            if spec["page"] == "class view" else "",
            json.dumps({"roots": roots, "imports": tpl["imports"]},
                       separators=(",", ":")).replace("<", "\\u003c"),
@@ -2513,7 +2725,7 @@ def build():
         # the term label belongs, and it would look like a data bug.
         donor_tpl = tpls.get(DONOR_PAGE)
         (logic, ruled_roots, n_rep, n_pruned, n_wired,
-         n_grafted, n_attred) = apply_rulings(
+         n_grafted, n_attred, n_exprd) = apply_rulings(
             spec["page"], tpl["logic"], tpl["roots"],
             donor=(donor_tpl or {}).get("roots"))
         ruled_tpl = {"roots": ruled_roots, "imports": tpl["imports"]}
@@ -2528,6 +2740,11 @@ def build():
         bind_table, bind_values = bindings_for(spec["page"], ruled_tpl)
         logic, data_literals, n_welded = seam_logic(
             spec, logic, spec["page"], bind_values)
+        # ⊕ 23 Aug 2026 — PHASE 2. Design's own sample deck, lifted out of the
+        # AMENDED delivery's logic so the fixture renders the grafted
+        # flashcard surfaces exactly as Design draws them. See DONOR_LIFTS.
+        n_donor = donor_lifts(spec["page"], (donor_tpl or {}).get("logic"),
+                              data_literals)
         roots = scrub_roots(ruled_roots, bind_table)
 
         # ⚑ THE FIXTURE'S DATA FILE IS WRITTEN BEFORE THE PAGE THAT LINKS IT,
@@ -2607,9 +2824,10 @@ def build():
             print("        ⊕ rulings: %d ruled edit(s) to Design's logic, "
                   "%d template subtree(s) pruned, %d handler(s) attached, "
                   "%d subtree(s) grafted from the amendments, %d node(s) "
-                  "named for the themes — from student_rulings.py, not from "
-                  "a hand edit to the built page"
-                  % (n_rep, n_pruned, n_wired, n_grafted, n_attred))
+                  "named for the themes, %d loop expression(s) renamed — "
+                  "from student_rulings.py, not from a hand edit to the "
+                  "built page"
+                  % (n_rep, n_pruned, n_wired, n_grafted, n_attred, n_exprd))
         print("     ✅ %-24s %7d bytes  (%d template node(s), "
               "%d chars of Design's logic, 0 bytes of data)"
               % (spec["out"], len(body), count_nodes(roots), len(logic)))
@@ -2619,6 +2837,10 @@ def build():
               "%d identity string(s) from the markup)"
               % (spec["fixture_js"], len(js), len(data_literals),
                  len(bind_values)))
+        if n_donor:
+            print("        ⊕ %d literal(s) lifted out of the AMENDED "
+                  "delivery's own logic for the fixture — see DONOR_LIFTS"
+                  % n_donor)
         if n_welded:
             print("        ⊕ %d data seam(s) closed inside METHOD BODIES "
                   "rather than initialisers — see LIFTS and REWRITES"

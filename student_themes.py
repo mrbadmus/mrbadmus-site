@@ -178,14 +178,29 @@ PAGE_STRONG_MARKS = {"legend-done": 1, "work-row-done": 3, "tile-seg": 4}
 # the leaderboard's week chips take the bench theme, these two go stale and
 # this gate says so instead of quietly excusing elements that no longer exist.
 PAGE_CHROME_EXCEPTIONS = [
-    {
-        "tpl": "136",
-        "bg": "#15110C",
-        "name": "the sidebar RECALL card",
-        "why": "Design's C2 replaces this card wholesale with the themed "
-               "flashcards card. It stops existing; it does not turn "
-               "espresso. Not this unit's to move.",
-    },
+    # ⊕ RETIRED 23 Aug 2026 — PHASE 2. THE ENTRY THAT STOOD HERE READ:
+    #
+    #     {"tpl": "136", "bg": "#15110C", "name": "the sidebar RECALL card",
+    #      "why": "Design's C2 replaces this card wholesale with the themed
+    #             flashcards card. It stops existing; it does not turn
+    #             espresso. Not this unit's to move."}
+    #
+    # C2 has landed. Live node 136 is gone — `GRAFT` replaces it with Design's
+    # flashcards card (donor 204) — so the registration named an element that
+    # is no longer on the page, and this gate would have said so on all seven
+    # cases: "the registered near-black exception is no longer on the page at
+    # that colour … the unit that owns it has landed, in which case DELETE the
+    # registration." It is deleted in the same commit that landed the unit,
+    # which is the whole reason the exception was written to be able to go
+    # stale.
+    #
+    # ⚑ AND ITS REPLACEMENT IS NOT A NEW EXCEPTION. Design's card is painted
+    # `background:var(--b-ground)` — near-black on harbour, moss, damson and
+    # graphite — but it is not page CHROME, it is a themed SURFACE, which is
+    # exactly what Design's amendment says it should be. It carries
+    # `data-bench-surface="cards"` (SET_ATTR on the grafted node 10204) and the
+    # sweep below already skips every `[data-bench-surface]`. Registering it as
+    # an exception would have said the opposite of what is true about it.
     {
         "tpl": "256",
         "bg": "#221E1B",

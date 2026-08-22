@@ -559,6 +559,42 @@ RULED_DIVERGENCE = {
         # the port REMOVED from Design's original; it is something the port
         # GAINED from Design's amendments, which is the mirror registry —
         # `AMENDED_ADDITIONS`, below.
+        #
+        # ── ⊕ 23 Aug 2026 — PHASE 2. THE DARK RECALL CARD ────────────────
+        #
+        # Design's own donor node says what happened to it, in Design's words:
+        # `data-port-change="C2 replaces the dark RECALL card"`. So the whole
+        # card leaves the port — its eyebrow, its answered count, its blurb and
+        # its button — and Design's flashcards card arrives in its place. The
+        # arrival is registered in `AMENDED_ADDITIONS`; this is the departure.
+        #
+        # ⚠️ THE PATTERN STARTS `Recall 46` AND NOT `Recall`, and that is not
+        # tidiness. `Recall` on its own also matches the NAV item three lines
+        # into the page, and stripping that from Design's side would take a
+        # control label out of the comparison on every drive while reporting
+        # nothing. The count that follows it is Design's own `retrievalCount`,
+        # which is a fixture value and therefore fixed.
+        #
+        # ⚑ NOTHING A STUDENT COULD DO IS LOST WITH IT. `Start a round` was one
+        # of THREE routes into the recall round — `Practise recall` (node 77)
+        # and `Start recall` (node 88) are both on the bench, and the nav has
+        # `Recall` — and all three still work. Counted before the graft was
+        # written, not assumed afterwards.
+        # ⚠️ `RECALL` UPPER-CASE, AND THE FIRST DRAFT HAD IT SENTENCE-CASE.
+        # Design's eyebrow is typed `Recall` in the markup and upper-cased by
+        # `.eyebrow`'s CSS, so the SOURCE says one thing and `innerText` — which
+        # is what this gate reads — says another. The same trap the bench blurb
+        # and the docket lead both sprang on the seam: a pattern written against
+        # the file cannot be matched against the render. Corrected by reading
+        # the render, not by reading harder.
+        #
+        # `RECALL 46 ANSWERED` also opens the READINGS strip six hundred
+        # characters earlier, and the two are told apart by what follows: this
+        # one continues `THIS WEEK Questions from…`, the strip continues
+        # `· WK 04`. Checked before the pattern was narrowed.
+        ("the dark sidebar RECALL card, which C2 replaces",
+         r"RECALL 46 ANSWERED THIS WEEK Questions from the lessons this class "
+         r"has covered\. Six a round, unlimited rounds\. Start a round "),
     ],
 }
 
@@ -584,8 +620,15 @@ RULED_DIVERGENCE = {
 # sides again and there is nothing to declare. Kept as an empty map rather
 # than deleted: the mechanism is sound and the next ruling that removes a
 # pressable control needs it.
+# ⊕ 23 Aug 2026 — PHASE 2. AND THE MECHANISM IS NEEDED AGAIN ONE UNIT LATER,
+# which is why it was kept. `Start a round` is the dark RECALL card's button,
+# and the card is replaced wholesale by Design's C2. Registered here as well as
+# in `RULED_DIVERGENCE` because the two comparisons are separate: stripping the
+# card's TEXT does nothing to the control census, and the census would report
+# "controls only in Design: ['Start a round']" as though the port had broken a
+# button rather than adopted an amendment.
 RULED_CONTROLS = {
-    "class view": [],
+    "class view": ["Start a round"],
 }
 #
 # ⊕ RULED 21 Aug 2026 (MRB-275). The bar shows the TOTAL and omits the split.
@@ -844,6 +887,46 @@ AMENDED_ADDITIONS = {
              why="The six themes, in Design's own order. This is the picker "
                  "itself: the six bench themes shipped on 23 Aug with no way "
                  "to choose between them, and these six words are the way."),
+        # ── ⊕ 23 Aug 2026 — PHASE 2. THE FLASHCARDS CARD ─────────────────
+        #
+        # Design's C2 puts this where the dark RECALL card was, and unlike the
+        # account sheet it is on screen AT REST on both deliveries — so it
+        # needs no new `AMENDED_DRIVES` state.
+        #
+        # ⚠️ THE WHOLE CARD IS ONE PATTERN, because on the amended delivery it
+        # is one CONTROL and the census stores one whole label per control. The
+        # three values in it are Design's own: `06` is `pad(deck.length)` over
+        # Design's six sample cards, `Define diffusion.` is card one's front,
+        # and `01 / 06` is `stackPos` at rest. The port renders the identical
+        # three because the fixture's deck IS Design's — lifted out of the
+        # amended delivery's own `deck()` by `DONOR_LIFTS` in
+        # build_student_port.py rather than retyped.
+        #
+        # ⚠️ THE TRAILING SPACE IS OPTIONAL, FOR THE REASON ENTRY 1 ABOVE
+        # DOCUMENTS IN THE MIRROR. In the page's WHOLE text the card is
+        # followed by `WORK`, so the joining space has to come out with it or
+        # every drive goes red over a double space. In the REGION's own text
+        # the card IS the whole string and there is no trailing space to take.
+        # `re.sub` is greedy, so one pattern serves both.
+        #
+        # ⚑ AND THE OVERLAY IS NOT REGISTERED, WHICH IS A LIMIT OF THIS GATE
+        # AND NOT AN OMISSION. Design's flashcards overlay is `if cardsOpen`,
+        # and the only control that opens it is the card above — a control the
+        # port GAINED. `run()` requires every step of a drive to be performable
+        # on Design's ORIGINAL file, which has no flashcards card at all, so
+        # the port can never be driven into the overlay here. That is the same
+        # limit the missing swatch drive records: no control this port gains
+        # from the amendments can ever be PRESSED by this gate, only observed.
+        # The overlay is verified by hand-driving the live page, and by nothing
+        # in the gate set.
+        dict(label="the flashcards card that replaces the RECALL card",
+             region="sidebar-flashcards", state="at rest",
+             pat=r"FLASHCARDS 06 Define diffusion\. 01 / 06 ?",
+             why="Design's C2, at rest: the deck's size, the top card's front "
+                 "and the stack position. It is the deck's front door and its "
+                 "resume marker — reopening mid-deck returns to this card — "
+                 "and it replaces the dark RECALL card registered as leaving "
+                 "in RULED_DIVERGENCE."),
     ],
 }
 
@@ -887,6 +970,18 @@ AMENDED_CONTROLS = {
                  "a registration that reached only the text would report "
                  "'controls only in port' and read like a bug in the port.")
         for name in ("CLAY", "CHALK", "MOSS", "HARBOUR", "DAMSON", "GRAPHITE")
+    ] + [
+        # ⊕ 23 Aug 2026 — PHASE 2. The flashcards card is a `<button>`, so it
+        # is in the census as well as in the text, and its label is the whole
+        # card — Design's own three values, rendered from Design's own deck on
+        # both sides. Matched on EXACT text, like every entry here: a substring
+        # rule would swallow anything that merely contains it.
+        dict(label="the flashcards card", region="sidebar-flashcards",
+             state="at rest", control="FLASHCARDS 06 Define diffusion. 01 / 06",
+             why="Design's C2 card is pressable — it is what opens the "
+                 "flashcards overlay — so a registration that reached only the "
+                 "text would report 'controls only in port' and read like a "
+                 "bug in the port rather than an amendment being adopted."),
     ],
 }
 
