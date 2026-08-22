@@ -1613,8 +1613,8 @@ Opened by **C10 *The Earth and its atmosphere*** (2026-08-22, drawn by Claude De
 `EARTH-01` to `EARTH-16` are C10's, six lessons, two or three entries each. All are
 `review_state: draft`.
 
-⚠️ **THE RANGE IS ALLOCATED, THE ROWS ARE NOT.** Only `c10-04` is authored so far, so only its
-three rows are below. The remaining allocation is written down here so five lanes authoring five
+⚠️ **THE RANGE IS ALLOCATED, THE ROWS ARE NOT.** Only `c10-01` and `c10-04` are authored so far,
+so only their seven rows are below. The remaining allocation is written down here so five lanes authoring five
 lessons cannot collide on a number: `EARTH-01`–`04` are c10-01's, `05`–`07` c10-02's, `08`–`10`
 c10-03's, `11`–`13` c10-04's, and `14`–`16` are shared between c10-05 and c10-06. **An id appears
 in the table below only when the lesson that references it exists** — registering ahead of
@@ -1629,9 +1629,47 @@ they are left unwritten and the numbering stops at 16. **Do not close the gap.**
 
 | ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
 |---|---|---|---|---|
+| `EARTH-01` | The mantle is a sea of molten lava, and volcanoes are holes that let it out. | `think-commit-mantle` | `think-reveal-mantle` | `inside-the-earth` |
+| `EARTH-02` | Nobody has ever been down there, so what is inside the Earth is really only a guess. | `s-hook` | `s-evidence` | `inside-the-earth` |
+| `EARTH-03` | Anything that hot must be melted, so the hottest part of the Earth is liquid. | — | `s-layers` | `inside-the-earth` |
+| `EARTH-04` | The crust is a thick shell, and mines and boreholes have been most of the way through it. | — | `s-layers` | `inside-the-earth` |
 | `EARTH-11` | If we recycled everything, we would never run out of anything. | `think-commit-recycling` | `think-reveal-recycling` | `a-planet-with-limits` |
 | `EARTH-12` | How much comes back depends on how carefully people sort their bins. | `loop-bench` | `loop-bench` | `a-planet-with-limits` |
 | `EARTH-13` | “Years left” is a measured fact about how much is in the ground. | — | `s-stock` | `a-planet-with-limits` |
+
+**`EARTH-01` is the one this whole topic turns on, and it is the reason `c10-01` refuses the famous
+sentence.** A thin crust floating on a sea of magma is taught in a great many classrooms and it is
+wrong, and the evidence three blocks above the confrontation is what makes it wrong: the earthquake
+wave that cannot cross liquid crosses the entire mantle. The reveal carries
+`id="think-reveal-mantle"` so `confronted_by` names the PANEL where the belief is answered rather
+than the surrounding section — the MRB-277 pattern. What the reveal separates is SOLID from RIGID,
+because a student who has been told the mantle moves has usually concluded it must be liquid, and
+they are reasoning correctly from a true observation (MRB-225: the true version, not the famous
+one).
+
+**`EARTH-02` is elicited by the hook's fourth option, which offers the belief in plain words.** "So
+how do we know what the inside is made of?" is a real question, and "Nobody knows; it is a guess"
+is a real answer a twelve-year-old will pick — the honest form of it, from a student who has just
+been told that the deepest hole ever drilled is two tenths of one per cent of the way down.
+`confronted_by` is `s-evidence` rather than the hook's own reveal: the hook says the answer came
+from earthquake waves, and saying so is not yet showing it. The evidence block makes the student
+commit to three separate inferences and then walks each one, which is what turns "scientists say
+so" into "here is how anyone could tell".
+
+**`EARTH-03` and `EARTH-04` carry no `elicited_by`, deliberately, and that is audit law 15 working
+rather than a hole.** Nothing on `c10-01` asks a student to commit to either belief. The inner-core
+panel simply prints "About 5500 °C" and "Solid" in adjacent cards and lets the pair do the work;
+the bar simply draws the crust at its real share and prints that share as a number underneath.
+Inventing an anchor to fill the column would be the dishonest version, and MRB-248 makes absence
+legal precisely so that it need not be invented. The question bank carries the elicitation instead
+— `c10-01-e02` and `c10-01-h02` for `EARTH-03`, `c10-01-e01` and `c10-01-s04` for `EARTH-04`.
+
+⚑ **`EARTH-04` IS ALSO WHY THE BAR ADMITS ITS OWN DISTORTION.** The crust is 0.5% of the distance
+to the centre, which on a phone is under four pixels and is not a tappable target, so the segment
+carries a minimum width. A page that exaggerates the crust and says nothing is teaching the
+misconception it has just listed. The scale panel therefore prints the true share as a derived
+number and says the bar is drawn wider than it, and `ks3_art/c10.py` refuses a scale panel that
+does not name that number.
 
 **`EARTH-11` is the unit's load-bearing entry, and the page breaks it with arithmetic rather than
 with an assertion.** By the time `#s-think` quotes the belief, the student has run 1000 kg round

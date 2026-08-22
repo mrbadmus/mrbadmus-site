@@ -22596,4 +22596,131 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   margin: 12px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink);
 }
 .ks3-stock [hidden] { display: none; }
+
+/* ── c10-01 · earth-layers (light) ─────────────────────────────────────
+   ⚠️ THE BAR IS THE ARGUMENT. `flex-grow` is written inline by
+   `ks3_art/c10.py` as the layer's share of the distance to the centre, so
+   nothing in here may set `flex` on a segment — a rule that did would
+   silently overwrite the one number the instrument exists to draw.
+
+   ⚠️ `min-width` IS THE ONE DELIBERATE DISTORTION, and only the thinnest
+   layer ever meets it: half of one per cent of a phone screen is under four
+   pixels and is not a tappable target (44px is the guidance; 34 is the floor
+   at which a vertical mono label is still readable inside a 96px-tall bar).
+   The scale panel states the true share as a derived number and says the bar
+   draws it wider, which is why `r_earth_layers` REFUSES a scale panel that
+   does not name `{thin_share}`. */
+.ks3-elay .ks3-elay-bar {
+  margin: 22px 0 0; display: flex; height: 96px; gap: 3px;
+}
+.ks3-elay .ks3-elay-seg {
+  font: inherit; flex-basis: 0; flex-shrink: 1; min-width: 34px;
+  display: grid; place-items: center; padding: 6px 2px; border-radius: 10px;
+  cursor: pointer; border: 2px solid var(--ks3-ink);
+  background: var(--ks3-card); color: var(--ks3-ink);
+}
+.ks3-elay .ks3-elay-liquid { background: var(--ks3-band); }
+.ks3-elay .ks3-elay-seg[aria-pressed="true"] {
+  border-color: var(--ks3-accent); background: var(--ks3-accent-tint);
+  box-shadow: 0 0 0 4px var(--ks3-accent-tint);
+}
+.ks3-elay .ks3-elay-slabel {
+  font-family: var(--ks3-font-mono); font-size: 11px; font-weight: 500;
+  letter-spacing: .04em; text-transform: uppercase; color: var(--ks3-ink);
+  writing-mode: vertical-rl; text-orientation: mixed;
+}
+.ks3-elay .ks3-elay-ends {
+  margin-top: 8px; display: flex; justify-content: space-between; gap: 12px;
+}
+.ks3-elay .ks3-elay-end {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 12px;
+  font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-elay .ks3-elay-readout {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-elay .ks3-elay-head {
+  display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap;
+  justify-content: space-between;
+}
+.ks3-elay .ks3-elay-name {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 26px; line-height: 1.2; color: var(--ks3-ink);
+}
+.ks3-elay .ks3-elay-depth {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-elay .ks3-elay-facts {
+  margin-top: 14px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 12px;
+}
+.ks3-elay .ks3-elay-fact {
+  padding: 12px 14px; border-radius: 14px; background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule);
+}
+.ks3-elay .ks3-elay-flabel {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 11px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-elay .ks3-elay-fvalue {
+  margin: 5px 0 0; font-size: 17px; font-weight: 700; line-height: 1.35;
+  color: var(--ks3-ink);
+}
+.ks3-elay .ks3-elay-note {
+  margin: 14px 0 0; font-size: 18px; line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+.ks3-elay .ks3-elay-scale {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band); border: 2px solid var(--ks3-ink);
+}
+.ks3-elay .ks3-elay-stitle {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-elay .ks3-elay-stext {
+  margin: 10px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-ink);
+}
+.ks3-elay [hidden] { display: none; }
+
+/* At 360px a 96px bar leaves the vertical label of a 34px segment clipped
+   against its own padding, so the bar loses height rather than the label
+   losing its word. */
+@media (max-width: 30rem) {
+  .ks3-elay .ks3-elay-bar { height: 84px; gap: 2px; }
+  .ks3-elay .ks3-elay-seg { min-width: 30px; }
+  .ks3-elay .ks3-elay-name { font-size: 22px; }
+  .ks3-elay .ks3-elay-stext { font-size: 18px; }
+}
+
+/* ── c10-01 · depth-evidence (light) ───────────────────────────────────
+   Selection uses the house `.ks3-seg-btn` unchanged. The block is on the
+   card ground, so MRB-242's on-ink correction does not arise here; what does
+   arise is that a spent, unchosen button is `disabled` by `shared/ks3.js`
+   and must still read as text rather than as a smudge. */
+.ks3-edep-block .ks3-edep {
+  margin-top: 18px; display: flex; flex-direction: column; gap: 14px;
+}
+.ks3-edep .ks3-edep-one {
+  padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-edep .ks3-edep-q {
+  margin: 0; font-size: 19px; line-height: 1.55; color: var(--ks3-ink);
+}
+.ks3-edep .ks3-edep-picks {
+  margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-edep .ks3-edep-choice[disabled] { opacity: .55; cursor: default; }
+.ks3-edep .ks3-edep-answer {
+  margin: 12px 0 0; padding: 14px 16px; border-radius: 14px;
+  background: var(--ks3-card); border: 2px solid var(--ks3-rule);
+  font-size: 17px; line-height: 1.55; color: var(--ks3-ink);
+}
+.ks3-edep [hidden] { display: none; }
 /* ═══ END C10 ═══ */

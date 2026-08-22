@@ -6,24 +6,24 @@ six lessons, ELEVEN instrument families and no drawn figure so far, all DOM,
 no canvas and no animation loop anywhere in the unit.
 
 ═══════════════════════════════════════════════════════════════════════════
-⚠️ WAVE 1 — TWO FAMILIES IMPLEMENTED, NINE STILL TO COME
+⚠️ WAVE 2 — FOUR FAMILIES IMPLEMENTED, SEVEN STILL TO COME
 ═══════════════════════════════════════════════════════════════════════════
 
-This pass builds the unit spine and ONE reference lesson, `c10-04`. Only its
-two families are implemented and only they are registered:
+Wave 1 built the unit spine and the reference lesson `c10-04`; wave 2 adds
+`c10-01`. Four families are implemented and only those four are registered:
 
     material-loop   ks3-mloop-block   c10-04  #s-loop    ← INK-DARK
     stock-limits    ks3-stock-block   c10-04  #s-stock
+    earth-layers    ks3-elay-block    c10-01  #s-layers
+    depth-evidence  ks3-edep-block    c10-01  #s-evidence
 
-⊖ **THE OTHER NINE ARE NOT REGISTERED, AND MUST NOT BE UNTIL THEY EXIST.**
+⊖ **THE OTHER SEVEN ARE NOT REGISTERED, AND MUST NOT BE UNTIL THEY EXIST.**
 `ks3_art.check_placements` gate 2 fails a family that is registered and never
 placed, and gate 3 fails one that is placed and never registered. A stub row
 added "ready" for a later lane would ship the shell around the generic
 prompt/options branch — the C1 defect (MRB-228) — the moment a lesson named
 it. Each lane registers its own:
 
-    earth-layers      ks3-elay-block    c10-01  #s-layers
-    depth-evidence    ks3-edep-block    c10-01  #s-evidence
     rock-bench        ks3-rockb-block   c10-02  #s-bench
     grain-journey     ks3-grain-block   c10-03  #s-journey
     process-arrows    ks3-parrow-block  c10-03  #s-processes
@@ -569,13 +569,350 @@ def r_stock_limits(a, act_id):
             % (len(entries), target, shelf, outs))
 
 
+# ═══ c10-01 · earth-layers ═══════════════════════════════════════════════
+
+# The two states a layer may be in. The set is closed on purpose: the bar
+# paints the liquid one differently and the evidence section three blocks
+# below rests entirely on there being a solid/liquid BOUNDARY to find, so a
+# third value would be a colour nothing defines and a claim nothing checks.
+_ELAY_STATES = ("solid", "liquid")
+
+
+def _elay_share(thickness, total):
+    """One layer's share of the distance from the surface to the centre.
+
+    Printed as a number AND used as the bar's `flex-grow`, from the same
+    expression, so the figure under the panel and the width above it cannot
+    drift apart. §5A: the drawn geometry has to express the ratio it claims.
+    """
+    return 100.0 * float(thickness) / float(total)
+
+
+def r_earth_layers(a, act_id):
+    """⊕ c10-01 `#s-layers` — four layers, drawn from four thicknesses.
+
+    FOUR REACHABLE STATES, ALL ENUMERATED, plus the scale panel that opens
+    once every layer has been read. Each state carries the layer's name, its
+    depth range, its state, its composition facts, its share of the depth and
+    its note — and NOT ONE DEPTH, SHARE OR TOTAL IS AUTHORED.
+
+    THE ARITHMETIC, ONCE. The payload gives four thicknesses. The boundary at
+    the bottom of layer *n* is the running sum; the total is the whole sum;
+    a layer's share is `thickness / total`. The bar's `flex-grow` is that same
+    share, so the widths are the proportions rather than a drawing of them.
+
+    ⚖️ **`radius` IS A CLAIM, AND IT IS CHECKED.** The lesson states the
+    Earth's radius and the four thicknesses separately, and the build refuses
+    a set whose thicknesses no longer sum to it. Without this, one edited
+    thickness moves every boundary on the page, silently, and the caption
+    under the bar goes on saying 6371 km because nothing joins the two.
+
+    ⚖️ **`thinnest_claim` IS THE OTHER CLAIM, AND IT IS CHECKED TOO.** The
+    lesson's prose calls the crust a sliver, a skin and a strip you can barely
+    see, and the scale panel admits the bar draws it wider than it is. All of
+    that is true only while one layer is in a different league from the rest,
+    so the named layer must be the thinnest AND the next thinnest must be at
+    least five times it. A payload that no longer supports the sentence fails
+    the build instead of leaving the sentence standing over a bar that
+    contradicts it.
+
+    ⚠️ **THE ONE PLACE THE DRAWING IS NOT TO SCALE.** A segment at half of one
+    per cent is under four pixels wide on a phone and is not a tappable
+    target, so `.ks3-elay-seg` carries a `min-width` floor in
+    `shared/ks3.css`. Only the thinnest layer is ever affected by it, and the
+    scale panel says so in the same breath as it gives the true share — which
+    is why `{thin_share}` is REQUIRED to appear in that panel's text.
+
+    HOOKS: `data-elay` (wrapper, `data-total`, `data-target`) ·
+    `data-elay-layer` · `data-elay-out` · `data-elay-scale`.
+    """
+    layers = a.get("layers") or []
+    if len(layers) < 3:
+        raise ValueError(
+            "earth-layers %r has %d layer(s). The instrument is a comparison "
+            "of proportions, and with fewer than three there is no set to "
+            "read one against." % (act_id, len(layers)))
+    _unique_ids(layers, act_id, "earth-layers", "layer")
+    _no_correct_flags(layers, act_id, "earth-layers")
+
+    seen_states = set()
+    for l in layers:
+        for key in ("label", "name", "note", "state_detail"):
+            if not l.get(key):
+                raise ValueError(
+                    "earth-layers %r layer %r has no %r. Every one of them is "
+                    "on the panel, and a missing one leaves a heading over "
+                    "nothing." % (act_id, l.get("id"), key))
+        if l.get("state") not in _ELAY_STATES:
+            raise ValueError(
+                "earth-layers %r layer %r has state %r, and the closed set is "
+                "%s. The bar paints the liquid layer differently and the "
+                "evidence section rests on there being a boundary between the "
+                "two, so a third value is a claim nothing checks."
+                % (act_id, l.get("id"), l.get("state"), list(_ELAY_STATES)))
+        seen_states.add(l["state"])
+        facts = l.get("facts") or []
+        if len(facts) < 2 or any(len(f) != 2 for f in facts):
+            raise ValueError(
+                "earth-layers %r layer %r authors %d fact pair(s). The grid is "
+                "label/value pairs and the panel is a composition readout, so "
+                "two is the fewest that says anything."
+                % (act_id, l.get("id"), len(facts)))
+        if float(l.get("thickness") or 0) <= 0:
+            raise ValueError(
+                "earth-layers %r layer %r is %r %s thick. The thickness is "
+                "what draws the bar and what every depth on the page is "
+                "derived from." % (act_id, l.get("id"), l.get("thickness"),
+                                   a.get("depth_unit") or "km"))
+    if set(_ELAY_STATES) - seen_states:
+        raise ValueError(
+            "earth-layers %r has no %s layer. The whole evidence section "
+            "below it turns on a wave that crosses one state and stops at the "
+            "other, and a set that is all one state has nothing for it to "
+            "have found."
+            % (act_id, sorted(set(_ELAY_STATES) - seen_states)[0]))
+
+    unit = a.get("depth_unit") or "km"
+    total = sum(float(l["thickness"]) for l in layers)
+    claimed = a.get("radius")
+    if claimed is not None and int(round(total)) != int(claimed):
+        raise ValueError(
+            "earth-layers %r claims a radius of %s %s and its own thicknesses "
+            "sum to %s. Every boundary, every share and the caption under the "
+            "bar are derived from those thicknesses, so a set that no longer "
+            "reaches the stated centre has quietly moved the whole planet."
+            % (act_id, claimed, unit, int(round(total))))
+
+    thin_id = a.get("thinnest_claim")
+    if thin_id is not None:
+        by_thickness = sorted(layers, key=lambda l: float(l["thickness"]))
+        if by_thickness[0]["id"] != thin_id:
+            raise ValueError(
+                "earth-layers %r claims %r is the thinnest layer and its own "
+                "figures make that %r. The lesson's prose calls the named "
+                "layer a sliver you can barely see."
+                % (act_id, thin_id, by_thickness[0]["id"]))
+        if float(by_thickness[1]["thickness"]) < 5 * float(
+                by_thickness[0]["thickness"]):
+            raise ValueError(
+                "earth-layers %r claims %r is a sliver, and the next thinnest "
+                "layer is only %.1f times it. The page says skin, sliver and "
+                "strip you can barely see, and admits the bar draws it wider "
+                "than it is; none of that survives the two being the same "
+                "order of size."
+                % (act_id, thin_id,
+                   float(by_thickness[1]["thickness"])
+                   / float(by_thickness[0]["thickness"])))
+
+    start = a.get("start_layer") or layers[0]["id"]
+    if start not in [l["id"] for l in layers]:
+        raise ValueError(
+            "earth-layers %r opens on %r, which is not a layer on the bar. "
+            "The opening state is what a student reads before touching "
+            "anything." % (act_id, start))
+
+    target = int(a.get("layers_to_tick") or 0)
+    if not 2 <= target <= len(layers):
+        raise ValueError(
+            "earth-layers %r ticks its rail stop at %r of %d. Two is the "
+            "fewest that is a comparison and more than the set is a stop that "
+            "can never tick." % (act_id, target, len(layers)))
+
+    scale = a.get("scale_panel") or {}
+    scale_text = scale.get("text") or []
+    if isinstance(scale_text, str):
+        scale_text = [scale_text]
+    if not scale.get("title") or not scale_text:
+        raise ValueError(
+            "earth-layers %r authors no scale panel title or text. The panel "
+            "is the payoff of opening every layer, and an empty one is a "
+            "reward for finishing that says nothing." % act_id)
+    if not any("{thin_share}" in p for p in scale_text):
+        raise ValueError(
+            "earth-layers %r's scale panel never names {thin_share}. The bar "
+            "draws the thinnest layer WIDER than its share, because half of "
+            "one per cent of a screen is not a tappable target — so the true "
+            "share has to be printed as a number in the one panel that talks "
+            "about the scale, or the page is asserting a proportion it is "
+            "visibly not drawing." % act_id)
+
+    # ── the four states ──────────────────────────────────────────────────
+    state_label = a.get("state_label") or "State"
+    share_label = a.get("share_label") or "Share of the depth"
+
+    segs, outs, top = [], [], 0.0
+    shares = {}
+    for l in layers:
+        thickness = float(l["thickness"])
+        bottom = top + thickness
+        share = _elay_share(thickness, total)
+        shares[l["id"]] = share
+        depth = "%d %s %d %s" % (int(round(top)), "–",
+                                 int(round(bottom)), unit)
+        pressed = l["id"] == start
+
+        # The accessible name carries the same three numbers the panel does,
+        # spoken rather than punctuated: a screen reader gets the depth and
+        # the proportion without having to open the panel to find them.
+        segs.append(
+            '<button type="button" class="ks3-elay-seg%s" data-elay-layer="%s"'
+            ' aria-pressed="%s" aria-label="%s" style="flex-grow:%.4f">'
+            '<span class="ks3-elay-slabel">%s</span></button>'
+            % (" ks3-elay-liquid" if l["state"] == "liquid" else "",
+               e(l["id"]), "true" if pressed else "false",
+               e("%s, %d to %d %s down, %.1f%% of the way to the centre"
+                 % (l["name"], int(round(top)), int(round(bottom)), unit,
+                    share)),
+               share, t(l["label"])))
+
+        cards = [(state_label, l["state_detail"])]
+        cards += [(f[0], f[1]) for f in l["facts"]]
+        cards += [(share_label, "%.1f%%" % share)]
+        facts_html = "".join(
+            '<div class="ks3-elay-fact">'
+            '<p class="ks3-elay-flabel">%s</p>'
+            '<p class="ks3-elay-fvalue">%s</p></div>' % (t(lab), t(val))
+            for lab, val in cards)
+
+        outs.append(
+            '<div class="ks3-elay-one" data-elay-out="%s"%s>'
+            '<div class="ks3-elay-head">'
+            '<p class="ks3-elay-name">%s</p>'
+            '<p class="ks3-elay-depth">%s</p></div>'
+            '<div class="ks3-elay-facts">%s</div>'
+            '<p class="ks3-elay-note">%s</p></div>'
+            % (e(l["id"]), "" if pressed else " hidden",
+               t(l["name"]), t(depth), facts_html, rich(l["note"])))
+        top = bottom
+
+    thin = min(layers, key=lambda l: float(l["thickness"]))
+    fills = {"{thin_name}": thin["name"].lower(),
+             "{thin_share}": "%.1f%%" % shares[thin["id"]],
+             "{total}": "%d" % int(round(total)),
+             "{unit}": unit}
+
+    def _fill(text):
+        for k, v in fills.items():
+            text = text.replace(k, v)
+        return text
+
+    ends = "".join(
+        '<p class="ks3-elay-end">%s</p>' % t(_fill(a.get(key) or ""))
+        for key in ("surface_label", "centre_label") if a.get(key))
+
+    scale_html = (
+        '<div class="ks3-elay-scale" data-elay-scale hidden>'
+        '<p class="ks3-elay-stitle">%s</p>%s</div>'
+        % (t(scale["title"]),
+           "".join('<p class="ks3-elay-stext">%s</p>' % rich(_fill(p))
+                   for p in scale_text)))
+
+    return ('<div class="ks3-elay" data-elay data-total="%d" '
+            'data-target="%d"><div class="ks3-elay-bar">%s</div>'
+            '<div class="ks3-elay-ends">%s</div>'
+            '<div class="ks3-elay-readout">%s</div>%s</div>'
+            % (len(layers), target, "".join(segs), ends, "".join(outs),
+               scale_html))
+
+
+# ═══ c10-01 · depth-evidence ═════════════════════════════════════════════
+
+def r_depth_evidence(a, act_id):
+    """⊕ c10-01 `#s-evidence` — three inferences, each committed to first.
+
+    A commit-then-read set: a question, three readings of it, and the answer
+    underneath, hidden until the student has picked one. NOTHING IS MARKED —
+    every option opens the same answer, because what the block is for is
+    making the student say what they think BEFORE the page says what is known,
+    and a green tick would turn three inferences into three guesses with a
+    score attached.
+
+    ⚖️ **THREE READINGS, NOT TWO.** A two-option commitment is a coin flip and
+    measures nothing, so the build refuses one. The third reading is what
+    makes committing a decision rather than a toss.
+
+    ⚠️ **THE CHOSEN BUTTON STAYS ENABLED; THE OTHERS DO NOT.** Design disables
+    all three the moment one is pressed. That drops a keyboard user to
+    `<body>` — the element they are standing on is disabled underneath them —
+    which is MRB-257's finding reached by a different route. Disabling the
+    two NOT chosen locks the commitment just as firmly, keeps focus on a live
+    control, and is visually what Design drew anyway: her own `seg(on, dis)`
+    dims a spent button only when it is not the chosen one.
+
+    Nothing is disabled in the BYTES: the resting page has nothing chosen, so
+    every button opens live and `shared/ks3.js` does the locking.
+
+    HOOKS: `data-edep` (wrapper, `data-total`, `data-target`) ·
+    `data-edep-pick` (valued `entry:choice`, with `data-edep-of`) ·
+    `data-edep-answer`.
+    """
+    entries = a.get("entries") or []
+    if len(entries) < 2:
+        raise ValueError(
+            "depth-evidence %r has %d entr(y/ies). The block's claim is that "
+            "the structure was worked out from SEVERAL independent readings, "
+            "and one reading is an assertion." % (act_id, len(entries)))
+    _unique_ids(entries, act_id, "depth-evidence", "entry")
+    _no_correct_flags(entries, act_id, "depth-evidence")
+
+    for x in entries:
+        for key in ("q", "answer"):
+            if not x.get(key):
+                raise ValueError(
+                    "depth-evidence %r entry %r has no %r. The question is "
+                    "what is committed to and the answer is what the "
+                    "commitment buys." % (act_id, x.get("id"), key))
+        choices = x.get("choices") or []
+        if len(choices) < 3:
+            raise ValueError(
+                "depth-evidence %r entry %r offers %d reading(s). Two is a "
+                "coin flip, and a commitment a student can make by tossing a "
+                "coin is not a commitment." % (act_id, x["id"], len(choices)))
+        _unique_ids(choices, act_id, "depth-evidence", "choice")
+        _no_correct_flags(choices, act_id, "depth-evidence")
+        for c in choices:
+            if not c.get("label"):
+                raise ValueError(
+                    "depth-evidence %r entry %r has a reading with no label — "
+                    "a blank button." % (act_id, x["id"]))
+
+    target = int(a.get("entries_to_tick") or 0)
+    if not 2 <= target <= len(entries):
+        raise ValueError(
+            "depth-evidence %r ticks its rail stop at %r of %d. Two is the "
+            "fewest that is a pattern and more than the set is a stop that "
+            "can never tick." % (act_id, target, len(entries)))
+
+    cards = []
+    for x in entries:
+        picks = "".join(
+            _c10_seg("ks3-edep-choice", c["label"], False,
+                     data_edep_pick="%s:%s" % (x["id"], c["id"]),
+                     data_edep_of=x["id"])
+            for c in x["choices"])
+        cards.append(
+            '<div class="ks3-edep-one">'
+            '<p class="ks3-edep-q">%s</p>'
+            '<div class="ks3-edep-picks">%s</div>'
+            '<p class="ks3-edep-answer" data-edep-answer="%s" hidden>%s</p>'
+            '</div>' % (rich(x["q"]), picks, e(x["id"]), rich(x["answer"])))
+
+    return ('<div class="ks3-edep" data-edep data-total="%d" '
+            'data-target="%d">%s</div>'
+            % (len(entries), target, "".join(cards)))
+
+
 # ═══ registration ════════════════════════════════════════════════════════
 #
-# ⚠️ TWO ROWS, BECAUSE TWO RENDERERS EXIST. The other nine C10 families are
-# listed in this module's header and are registered by their own lesson's
+# ⚠️ FOUR ROWS, BECAUSE FOUR RENDERERS EXIST. The other seven C10 families
+# are listed in this module's header and are registered by their own lesson's
 # author, in this file, when the renderer lands beside the row.
 
 KIND_SHELL = {
+    'earth-layers': ("ks3-elay-block",
+                     ' data-instrument data-elayblock data-stage-done="0"'),
+    'depth-evidence': ("ks3-edep-block",
+                       ' data-instrument data-edepblock data-stage-done="0"'),
     'material-loop': ("ks3-mloop-block",
                       ' data-instrument data-mloopblock data-stage-done="0"'),
     'stock-limits': ("ks3-stock-block",
@@ -583,6 +920,8 @@ KIND_SHELL = {
 }
 
 KIND_FN = {
+    'earth-layers': r_earth_layers,
+    'depth-evidence': r_depth_evidence,
     'material-loop': r_material_loop,
     'stock-limits': r_stock_limits,
 }

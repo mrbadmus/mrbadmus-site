@@ -22194,9 +22194,10 @@
    marked block so that a lane merging into this file resolves mechanically:
    nothing above this marker moves.
 
-   ⚠️ WAVE 1. Two of the unit's eleven families are here — c10-04's loop bench
-   and its stock shelf. The other nine are listed in `ks3_art/c10.py` and are
-   wired by their own lesson's author, inside this same marked block.
+   ⚠️ WAVE 2. Four of the unit's eleven families are here — c10-04's loop
+   bench and its stock shelf, and c10-01's layer bar and evidence set. The
+   other seven are listed in `ks3_art/c10.py` and are wired by their own
+   lesson's author, inside this same marked block.
 
    ⚖️ NOTHING IS COMPUTED IN THIS BLOCK. Not one mass, not one percentage, not
    one multiplier and not one VERDICT. The loop bench's TWENTY states are all
@@ -22348,6 +22349,109 @@
       });
     });
     setCount(sec, seenN);
+  }
+
+  /* ── earth-layers (c10-01 #s-layers) ─────────────────────────────────
+     Four layers, four authored panels, one shown at a time. Every depth,
+     every share and the width of every segment were computed at build time
+     in `ks3_art/c10.py` from four thicknesses; nothing here does arithmetic.
+
+     TWO THRESHOLDS, AND THEY ARE DIFFERENT ON PURPOSE. `data-target` ticks
+     the rail stop; `data-total` opens the scale panel. Design's own
+     `scaleOpen` is `seen >= LAYERS.length` — the panel is the payoff for
+     having read the WHOLE bar, and it says "look at how little of that bar
+     is crust", which is a sentence about a bar the student has finished. */
+  function wireEarthLayers(sec) {
+    var wrap = sec.querySelector("[data-elay]");
+    if (!wrap) { return; }
+    var segs = toArray(wrap.querySelectorAll("[data-elay-layer]"));
+    var outs = toArray(wrap.querySelectorAll("[data-elay-out]"));
+    var scale = wrap.querySelector("[data-elay-scale]");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || segs.length;
+    var target = parseInt(wrap.getAttribute("data-target"), 10) || segs.length;
+    if (!segs.length || !outs.length) { return; }
+
+    /* The opening selection is in the HTML, not in this file. */
+    var current = null;
+    each(segs, function (b) {
+      if (b.getAttribute("aria-pressed") === "true") {
+        current = b.getAttribute("data-elay-layer");
+      }
+    });
+    if (current === null) {
+      current = segs[0].getAttribute("data-elay-layer");
+    }
+    var seen = {}, seenN = 1;
+    seen[current] = 1;
+
+    each(segs, function (btn) {
+      btn.addEventListener("click", function () {
+        var v = btn.getAttribute("data-elay-layer");
+        if (v === current) { return; }             /* the no-op press */
+        current = v;
+        each(segs, function (b) {
+          b.setAttribute("aria-pressed",
+                         b.getAttribute("data-elay-layer") === v
+                           ? "true" : "false");
+        });
+        each(outs, function (o) {
+          setHidden(o, o.getAttribute("data-elay-out") !== v);
+        });
+        if (!seen[v]) { seen[v] = 1; seenN += 1; setCount(sec, seenN); }
+        if (seenN >= total) { setHidden(scale, false); }
+        if (seenN >= target) { markStage(sec, true); }
+      });
+    });
+    setCount(sec, seenN);
+  }
+
+  /* ── depth-evidence (c10-01 #s-evidence) ─────────────────────────────
+     Three questions, three readings each, and the answer underneath. Nothing
+     is marked: every reading opens the same answer, because the block is a
+     commitment and not a quiz.
+
+     ⚠️ THE CHOSEN BUTTON STAYS ENABLED AND THE OTHERS DO NOT. Design
+     disables all three at once, which disables the element the student is
+     standing on and drops a keyboard user to `<body>` — MRB-257's finding by
+     another route. Locking the two NOT chosen closes the commitment just as
+     firmly and leaves focus on a live control, and it is what her own
+     `seg(on, dis)` draws anyway: a spent button is dimmed only when it is
+     not the one that was pressed.
+
+     Pressing the chosen button again is a genuine no-op, which is the same
+     shape as the material-loop's no-op press above. */
+  function wireDepthEvidence(sec) {
+    var wrap = sec.querySelector("[data-edep]");
+    if (!wrap) { return; }
+    var picks = toArray(wrap.querySelectorAll("[data-edep-pick]"));
+    var target = parseInt(wrap.getAttribute("data-target"), 10) || 0;
+    if (!picks.length) { return; }
+
+    var decided = {}, decidedN = 0;
+
+    each(picks, function (btn) {
+      btn.addEventListener("click", function () {
+        var of = btn.getAttribute("data-edep-of");
+        if (decided[of]) { return; }               /* already committed */
+        decided[of] = 1;
+        decidedN += 1;
+        btn.setAttribute("aria-pressed", "true");
+        each(picks, function (b) {
+          if (b !== btn && b.getAttribute("data-edep-of") === of) {
+            b.disabled = true;
+          }
+        });
+        each(toArray(wrap.querySelectorAll("[data-edep-answer]")),
+             function (p) {
+               if (p.getAttribute("data-edep-answer") === of) {
+                 setHidden(p, false);
+               }
+             });
+        setCount(sec, decidedN);
+        if (target && decidedN >= target) { markStage(sec, true); }
+      });
+    });
+    setCount(sec, decidedN);
   }
 /* ═══ END C10 wiring ═══ */
 
@@ -22696,6 +22800,8 @@
     each(root.querySelectorAll("[data-specbblock]"), wireSpecBench);
     // ═══ END C9 wiring ═══
     // ═══ BEGIN C10 wiring ═══
+    each(root.querySelectorAll("[data-elayblock]"), wireEarthLayers);
+    each(root.querySelectorAll("[data-edepblock]"), wireDepthEvidence);
     each(root.querySelectorAll("[data-mloopblock]"), wireMaterialLoop);
     each(root.querySelectorAll("[data-stockblock]"), wireStockLimits);
     // ═══ END C10 wiring ═══
