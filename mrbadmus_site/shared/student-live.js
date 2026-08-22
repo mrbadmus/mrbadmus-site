@@ -719,7 +719,7 @@
     return days + (days === 1 ? " day late" : " days late");
   }
 
-  function makeSink(assignment, questions, progress, token) {
+  function makeSink(assignment, questions, progress, token, userId) {
     /* The page speaks in (question index, option index). The route speaks in
        question_ref and option letters. This is the whole of the translation,
        kept in one place so neither side has to know the other's vocabulary. */
@@ -745,11 +745,204 @@
       };
     }
 
-    /* Answers given while the browser is offline. The page shows them as held
-       — that is Design's `held` map and its reconnect animation, untouched —
-       and this re-sends them in order when the browser says it is back. */
-    var queue = [];
+    /* ═══ THE OFFLINE QUEUE — ON THE DEVICE, NOT IN THE PAGE ══════════
+       ⊕ RULED 23 Aug 2026 by Mide. "Queued answers survive reload
+       (localStorage or equivalent), drain on reconnect, and the held state is
+       honest — nothing shows as held unless it genuinely survives a tab close."
+
+       ⛔ WHAT THIS REPLACES: `var queue = []`. A plain array in the page's
+       memory. An answer given offline was shown to the student as
+       `OFFLINE · 01 HELD ON THIS DEVICE` and was on no device at all: a reload,
+       a tab close, a phone locking itself and killing the tab, and the answer
+       was gone with no trace, no retry and no message. The student had seen a
+       tick. That is the same shape as the hardcoded hand-in stamp — a false
+       confirmation, which is worse than a visible failure because the student
+       stops worrying about it.
+
+       ⚠️ localStorage, NOT IndexedDB, and the reason is the honesty rule
+       rather than convenience. `confirm` has to decide, in the same turn the
+       answer is given, whether it is allowed to SHOW that answer as held — and
+       only a SYNCHRONOUS store can be asked. IndexedDB would force the page to
+       claim the answer is held and then take the claim back a tick later,
+       which is the defect wearing a different hat. Capacity is not close: one
+       entry is a few hundred bytes, a whole 15-question assignment under
+       10 KB, against a 5 MB budget. Design's own page already keeps its state
+       here, so this adds no failure surface the page did not have.
+
+       ⚠️ THE KEY IS PER STUDENT AND PER ASSIGNMENT. This is the single most
+       important line in the unit:
+
+           mrbadmusai.answerqueue.v1.<auth user id>.<assignment id>
+
+       A school machine is shared. `<auth user id>` is the Supabase auth id of
+       the student whose session built this page, so a second child signing in
+       on the same browser profile computes a DIFFERENT key, reads nothing, and
+       has no path of any kind to the first child's queued answers. The stored
+       blob repeats both ids INSIDE it and a read whose ids disagree with the
+       key is discarded unread, so even a key collision could not survive being
+       opened. The assignment id keeps two pieces of work apart for one child.
+
+       ⚠️ AT MOST ONE ENTRY PER QUESTION, which is what makes a superseded
+       answer unresurrectable BY CONSTRUCTION rather than by ordering. The
+       queue is a MAP keyed by question index, never a list: answering Q3 a
+       second time REPLACES Q3's entry instead of queueing behind it. There is
+       no "must not overwrite C with B" problem to get right, because B stops
+       existing the moment C is given. Each entry lands in its own
+       `(submission_id, question_index)` row, so the order entries drain in
+       cannot change the result either. */
+    var QOWNER = String(userId || "anon");
+    var QPREFIX = "mrbadmusai.answerqueue.v1.";
+    var QKEY = QPREFIX + QOWNER + "." + String(assignment.id);
+
+    /* Every access below can throw — private mode, a store disabled by policy,
+       a full one. None of them may take the page down, and none of them may be
+       allowed to LOOK like success. */
+    function lstore() {
+      try { return window.localStorage || null; } catch (e) { return null; }
+    }
+
+    function readStored() {
+      var ls = lstore();
+      if (!ls) { return {}; }
+      try {
+        var raw = ls.getItem(QKEY);
+        if (!raw) { return {}; }
+        var d = JSON.parse(raw);
+        if (!d || typeof d !== "object" || !d.e) { return {}; }
+        if (d.u !== QOWNER || d.a !== String(assignment.id)) { return {}; }
+        return d.e;
+      } catch (e) { return {}; }
+    }
+
+    var pending = readStored();     // question index → entry, in memory
+    var seen = {};                  // every index THIS sink has ever held
+    Object.keys(pending).forEach(function (k) { seen[k] = 1; });
     var flushing = false;
+
+    /* A write keeps any entry for a question this sink has never touched — a
+       second tab on the same assignment — and drops the ones it HAS touched
+       and no longer holds, which are exactly the ones it has just delivered.
+       Merging blindly would resurrect what `delete` was for; overwriting
+       blindly would throw away another tab's work. `seen` is the difference.
+       Returns whether the write actually happened. */
+    function persist() {
+      var ls = lstore();
+      if (!ls) { return false; }
+      try {
+        var out = {};
+        var stored = readStored();
+        Object.keys(stored).forEach(function (k) {
+          if (!seen[k]) { out[k] = stored[k]; }
+        });
+        Object.keys(pending).forEach(function (k) { out[k] = pending[k]; });
+        if (!Object.keys(out).length) { ls.removeItem(QKEY); return true; }
+        ls.setItem(QKEY, JSON.stringify({
+          u: QOWNER, a: String(assignment.id), e: out
+        }));
+        return true;
+      } catch (e) { return false; }
+    }
+
+    /* ⚠️ THE CLAIM IS VERIFIED, NOT ASSUMED. `setItem` not throwing is very
+       nearly a guarantee, and "very nearly" is what a child is being asked to
+       trust with a lesson's work. The entry is READ BACK and matched before
+       the page is allowed to say the word held. */
+    function keptOnDevice(index, ts) {
+      var e = readStored()[String(index)];
+      return !!(e && e.ts === ts);
+    }
+
+    /* ⚠️ PRUNED AGAINST THE SERVER BEFORE ANYTHING IS SENT. This runs at
+       CONSTRUCTION, before the first `flush()` and before `resume()`, because
+       a drain that started first could deliver a stale entry over a newer
+       answer in the half-second before the pruning caught up.
+
+       An entry whose question the SERVER ALREADY HAS AN ANSWER FOR is dropped,
+       without comparing what either one says. Two different histories arrive
+       at that state and dropping is right for both:
+
+         · THE `keepalive` DUPLICATE. The answer WAS delivered — by the request
+           `keepalive` let outlive the tab — and the queue was killed before it
+           could hear so. Re-sending is a harmless upsert of an identical value,
+           but it is a write nobody needs and a tick nobody should have to
+           trust twice.
+
+         · THE SUPERSEDED ANSWER. The student answered that question again
+           somewhere this queue cannot see — the school computer at lunchtime,
+           the other phone — and THAT answer is on the server. Replaying the
+           stranded one would overwrite a NEWER answer with an OLDER one, which
+           is the one thing a queue must never do. No timestamps are needed to
+           prevent it: an entry is only ever written by a page that had just
+           found the server holding nothing for that question, so a server that
+           now holds something is always holding something later.
+
+       And an entry is dropped if the question it names has MOVED. The index is
+       positional, and a retired question shifts every index after it, so the
+       stored `question_ref` and option letter are checked against the question
+       list THIS page loaded. A mismatch means the answer can no longer be
+       attributed with certainty — and a confidently wrong attribution is worse
+       than a lost answer, because it marks a child against a question they
+       never saw. */
+    var serverHas = {};
+    ((progress || {}).answers || []).forEach(function (a) {
+      serverHas[String(a.question_index)] = 1;
+    });
+    (function prune() {
+      var changed = false;
+      Object.keys(pending).forEach(function (k) {
+        var e = pending[k] || {};
+        var src = (questions[Number(k)] && questions[Number(k)].__src) || null;
+        var opts = (src && src.options) || [];
+        var chosen = opts[e.opt] || null;
+        var ok = !serverHas[k] && !!src && !!chosen &&
+                 (!e.ref || !src.question_ref || e.ref === src.question_ref) &&
+                 (chosen.letter || LETTERS[e.opt]) === e.letter;
+        if (!ok) { delete pending[k]; changed = true; }
+      });
+      if (changed) { persist(); }
+    }());
+
+    /* ⚠️ SNAPSHOTTED HERE, and read by `resume()` from the snapshot rather than
+       from the live map. `resume()` runs inside the first render and the
+       construction `flush()` below is asynchronous, so in principle a fast
+       drain could empty an entry out of `pending` between the two — and the
+       student would see that question blank, because `progress` was fetched
+       before it landed and the queue no longer holds it. Nothing is lost from
+       the database by that race, but the paint would be wrong for one load.
+       A snapshot cannot race. */
+    var atLoad = {};
+    Object.keys(pending).forEach(function (k) { atLoad[k] = pending[k].opt; });
+
+    /* ⚠️ AND A BOUND ON A SHARED MACHINE. Queues belonging to ANOTHER student
+       or another assignment are never read and never drained by this sink —
+       that is the key scoping above — but left alone they would accumulate on a
+       classroom computer until the store was full, at which point THIS
+       student's writes start failing and the honest held state starts saying
+       no. So keys under this prefix that are not ours and whose newest entry
+       is over 30 days old are removed. Never our own, whatever its age: the
+       work of the child in front of us is not something to tidy. Thirty days
+       is well past any assignment's deadline, and it is also the answer to how
+       long one child's answers should sit on a machine other children use. */
+    (function sweep() {
+      var ls = lstore();
+      if (!ls) { return; }
+      try {
+        var cut = Date.now() - 30 * 86400000;
+        var kill = [];
+        for (var i = 0; i < ls.length; i += 1) {
+          var k = ls.key(i);
+          if (!k || k.indexOf(QPREFIX) !== 0 || k === QKEY) { continue; }
+          var d = JSON.parse(ls.getItem(k) || "null");
+          var e = (d && d.e) || {};
+          var newest = 0;
+          Object.keys(e).forEach(function (j) {
+            if (e[j] && e[j].ts > newest) { newest = e[j].ts; }
+          });
+          if (newest < cut) { kill.push(k); }
+        }
+        kill.forEach(function (k) { ls.removeItem(k); });
+      } catch (e) { /* a store that cannot be swept still works */ }
+    }());
 
     /* ⊕ 23 Aug 2026 — this carries a deadline too, and it is the COLD one,
        always. A hung save is not a blank page, but it is the same silence: a
@@ -803,17 +996,41 @@
       });
     }
 
+    /* One drain at a time, and it always ends. The `flushing` flag is the same
+       one the last unit found stuck true for ever behind a hung `post`; it is
+       safe now for the same reason it was made safe then — `post` carries a
+       deadline, so every path out of this loop reaches the `finally`. */
     async function flush() {
       if (flushing) { return; }
       flushing = true;
       try {
-        while (queue.length) {
-          var next = queue[0];
+        for (;;) {
+          var keys = Object.keys(pending);
+          if (!keys.length) { break; }
+          /* Oldest first. Ordering is a courtesy rather than a correctness
+             property here — one entry per question, one row per question — but
+             a queue that drains in the order the answers were given is the one
+             a teacher watching the marks appear would expect. */
+          keys.sort(function (a, b) {
+            return (pending[a].ts - pending[b].ts) || (Number(a) - Number(b));
+          });
+          var k = keys[0];
+          var entry = pending[k];
           await post("/api/assignment/answer",
-                     { assignment_id: assignment.id, answer: next });
-          queue.shift();          // ← only on success, so a failure retries
+                     { assignment_id: assignment.id, answer: entry.body });
+          /* ⚠️ REMOVED ONLY IF IT IS STILL THE ANSWER THAT WAS SENT. A newer
+             answer to the same question, given while this request was in
+             flight, must not be deleted by this request's success — it has not
+             been sent. The loop comes round and sends it. */
+          if (pending[k] && pending[k].ts === entry.ts) {
+            delete pending[k];
+            persist();
+          }
         }
       } catch (err) {
+        /* Nothing is lost here. The entry is still in `pending` AND still on
+           the device, and the next `online`, the next answer, or simply the
+           next time this page opens will send it. */
         console.error("[student-live] answer not saved yet", err);
       } finally {
         flushing = false;
@@ -822,6 +1039,16 @@
 
     if (typeof window.addEventListener === "function") {
       window.addEventListener("online", function () { flush(); });
+    }
+
+    /* ⚠️ AND ON THE WAY IN, WHICH IS THE CASE `online` CANNOT COVER. `online`
+       fires on a TRANSITION. A student who answered on the bus, closed the
+       tab, and opened it again at home is never in one: the page simply starts
+       up connected with answers already on the device. Without this the queue
+       would sit there until they happened to lose signal and find it again. */
+    if (!(typeof navigator === "object" && navigator &&
+          navigator.onLine === false)) {
+      flush();
     }
 
     return {
@@ -837,6 +1064,23 @@
           answers[a.question_index] = li;
           count += 1;
         });
+        /* ⊕ 23 Aug 2026 — AND THE DEVICE'S OWN UNSENT ANSWERS. Already pruned
+           against the server at construction, so what is left is work the
+           server has never been told about and the student is entitled to see
+           exactly where they left it: answered, and hatched as held.
+
+           This does not soften W2. The server is still the truth; the queue is
+           not a cached copy of the truth competing with it, it is the sink's
+           own unfinished business — writes it accepted and has not yet
+           delivered. Every question the server HAS an answer for was dropped
+           before this line ran, so the two can never disagree. */
+        var heldNow = {};
+        Object.keys(atLoad).forEach(function (k) {
+          answers[Number(k)] = atLoad[k];
+          heldNow[Number(k)] = 1;
+          count += 1;
+        });
+
         /* Where to put them: the first question they have NOT answered, so
            returning on Thursday opens where they stopped rather than at the
            beginning. If everything is answered, at the start of the review. */
@@ -849,7 +1093,7 @@
         return {
           answers: answers,
           sels: {},
-          held: {},
+          held: heldNow,
           idx: done ? 0 : idx,
           elapsed: (sub && sub.total_time_seconds) || 0,
           view: done ? "done" : "q",
@@ -863,9 +1107,32 @@
       saveAnswer: function (ev) {
         var body = payloadFor(ev.index, ev.option, null);
         if (!body) { return null; }
-        queue.push(body);
+        var k = String(ev.index);
+        var ts = Date.now();
+        /* A REPLACEMENT, never an addition — see the map note above. */
+        pending[k] = {
+          ts: ts, opt: ev.option, ref: body.question_ref,
+          letter: body.selected_option_letter, body: body
+        };
+        seen[k] = 1;
+        var kept = persist() && keptOnDevice(ev.index, ts);
         flush();
-        return null;
+        /* ⚠️ WHAT THE PAGE IS ALLOWED TO SAY, AND IT IS A FACT RATHER THAN AN
+           INTENTION. `held` drives the hatch and the "HELD ON THIS DEVICE"
+           count. It is true here or it is not said: an answer that could not
+           be written to the device is still sent from memory if this tab lives
+           long enough, but it will NOT survive the tab being closed — so it is
+           not held, and the student is not told it is. */
+        return { held: !!(ev.offline && kept), kept: kept };
+      },
+
+      /* Which questions are still waiting ON THIS DEVICE. `drain` reads this
+         so a hatch clears when the answer has actually gone, rather than when
+         a timer says it has. */
+      pending: function () {
+        var out = {};
+        Object.keys(pending).forEach(function (k) { out[k] = 1; });
+        return out;
       },
 
       complete: function (elapsed) {
@@ -1488,7 +1755,7 @@
   }
 
   // ── the assignment ────────────────────────────────────────────────────
-  async function buildAssignment(klass, token) {
+  async function buildAssignment(klass, token, userId) {
     var current = await api("/api/class/current-assignment?class_id=" + klass.id, token);
     var progress = null;
 
@@ -1552,7 +1819,7 @@
     }
 
     var name = klass.name || "";
-    pendingSink = makeSink(a, questions, progress, token);
+    pendingSink = makeSink(a, questions, progress, token, userId);
 
     return {
       questions: questions,
@@ -1617,7 +1884,7 @@
           correctAddress(klass);
 
           var data = page === "assignment"
-            ? await buildAssignment(klass, token)
+            ? await buildAssignment(klass, token, ctx.user.id)
             : await buildClass(sb, ctx.user, klass, token);
 
           window.__MRB_DATA__ = data;

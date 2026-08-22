@@ -273,20 +273,57 @@ class Component extends DCLogic {
 
   isOffline() { return !!(this.props.offline ?? false) || this.state.realOff; }
 
-  /* answers made offline are held on the device, then sent one at a time */
+  /* ⊕ RULED 23 Aug 2026 — A HATCH CLEARS WHEN THE ANSWER HAS ACTUALLY GONE.
+
+     ⛔ What this replaces ran a 130ms timer and deleted one held key per
+     tick, whatever was happening on the wire, and headed it
+     `BACK ONLINE · 03 SENT`. On Design's own page that is honest — nothing
+     is being sent, it is a DRAWING of sending. On a real one it is the
+     hand-in stamp again: three answers announced as sent while the request
+     carrying them was failing.
+
+     With a sink, `held` is a PROJECTION of what is still on the device. Each
+     tick asks the sink what is left and removes exactly what has left; what is
+     still waiting stays hatched, because it is still waiting. `sentN` counts
+     what actually went.
+
+     Without a sink — the fixture, and only the fixture — Design's animation
+     is untouched, which is why it is copied out whole rather than adapted. */
   drain() {
     const ids = Object.keys(this.state.held);
-    this.setState({ net: 'sent', sentN: ids.length });
-    let i = 0;
+    if (!_sink()) {
+      this.setState({ net: 'sent', sentN: ids.length });
+      let i = 0;
+      clearInterval(this.drainT);
+      this.drainT = setInterval(() => {
+        if (i >= ids.length) {
+          clearInterval(this.drainT);
+          setTimeout(() => this.setState({ net: null }), 1100);
+          return;
+        }
+        const k = ids[i++];
+        this.setState((s) => { const h = Object.assign({}, s.held); delete h[k]; return { held: h }; }, () => this.saveLive());
+      }, 130);
+      return;
+    }
+    this.setState({ net: 'sent', sentN: 0 });
+    let ticks = 0;
     clearInterval(this.drainT);
     this.drainT = setInterval(() => {
-      if (i >= ids.length) {
+      const still = _sinkCall('pending', null) || {};
+      this.setState((s) => {
+        const h = {};
+        Object.keys(s.held).forEach((k) => { if (still[k]) h[k] = 1; });
+        return { held: h, sentN: ids.length - Object.keys(h).length };
+      }, () => this.saveLive());
+      ticks += 1;
+      /* It stops when there is nothing left, and it stops anyway. An answer
+         the backend will not take stays hatched rather than keeping a banner
+         alive for the rest of the lesson — the hatch is the truth about it. */
+      if (!Object.keys(this.state.held).length || ticks >= 60) {
         clearInterval(this.drainT);
         setTimeout(() => this.setState({ net: null }), 1100);
-        return;
       }
-      const k = ids[i++];
-      this.setState((s) => { const h = Object.assign({}, s.held); delete h[k]; return { held: h }; }, () => this.saveLive());
     }, 130);
   }
 
@@ -305,26 +342,47 @@ class Component extends DCLogic {
     const s = this.state;
     const oi = s.sels[s.idx];
     if (oi == null || s.answers[s.idx] != null || s.handedAt) return;
+    /* ⊕ RULED 23 Aug 2026 — THE HELD MARK IS A FACT, NOT AN INTENTION.
+
+       ⛔ What this replaces set `held[idx]` from `isOffline()` alone, before
+       anything had been written anywhere. The page told the student
+       HELD ON THIS DEVICE about an answer that was in a variable and would die
+       with the tab — a reload, a closed tab, a phone locking itself, and the
+       tick they had already seen was all that was ever left of it.
+
+       So the sink is asked FIRST, synchronously, and the claim is made out of
+       what it reports: `held` is set only when the answer is genuinely on the
+       device and will still be there after the tab is closed. When it is not
+       — a store that is full, disabled, or private — nothing is marked held,
+       and `notKept` records it instead so the header can say the true thing
+       rather than the comfortable one.
+
+       ⚠️ Without a sink — the fixture, and only the fixture — `kept` falls
+       back to `off` and Design's behaviour is byte for byte what it was. */
     const off = this.isOffline();
     const at = s.idx;
     this.lastAct = Date.now();
+    /* W1. THE ANSWER GOES TO THE SERVER HERE, NOW. Not batched, not held until
+       the end: the submission row is created by the first of these and the
+       work is safe from question one. The call is idempotent per
+       (submission, question) at the database, so changing an answer updates
+       that row rather than adding a second — which is why re-confirming is
+       harmless and why no bookkeeping is needed here.
+
+       It runs BEFORE the setState rather than inside its callback, and that is
+       deliberate twice over: the state is not its input (it is handed the
+       index and the option), and its answer decides what the state is allowed
+       to say. Asking afterwards would mean claiming first and checking second,
+       which is the defect this ruling removes. */
+    const r = _sinkCall('saveAnswer', { index: at, option: oi, offline: off });
+    const kept = r ? !!r.held : off;
     this.setState((p) => {
-      const a = Object.assign({}, p.answers); a[p.idx] = oi;
-      const h = Object.assign({}, p.held); if (off) h[p.idx] = 1;
-      return { answers: a, held: h, resumed: false, paused: false };
-    }, () => {
-      this.saveLive();
-      /* ⊕ RULED 22 Aug 2026 — W1. THE ANSWER GOES TO THE SERVER HERE, NOW.
-         Not batched, not held until the end: the submission row is created by
-         the first of these and the work is safe from question one. The call is
-         idempotent per (submission, question) at the database, so changing an
-         answer updates that row rather than adding a second — which is why
-         re-confirming is harmless and why no bookkeeping is needed here.
-         The offline queue lives in the sink, not in Design's logic; `held` and
-         `drain` stay exactly what Design drew them as, which is the UI telling
-         the student what it knows. */
-      _sinkCall('saveAnswer', { index: at, option: oi, offline: off });
-    });
+      const a = Object.assign({}, p.answers); a[at] = oi;
+      const h = Object.assign({}, p.held); if (kept) h[at] = 1;
+      const nk = Object.assign({}, p.notKept || {});
+      if (off && !kept) nk[at] = 1; else delete nk[at];
+      return { answers: a, held: h, notKept: nk, resumed: false, paused: false };
+    }, () => this.saveLive());
   };
 
   go = (i) => {
@@ -589,9 +647,34 @@ class Component extends DCLogic {
     }
 
     const pctVal = nDone ? Math.round((nRight / total) * 100) : 0;
+    /* ⊕ RULED 23 Aug 2026 — AND WHAT IT SAYS WHEN THE ANSWER IS NOT HELD.
+
+       An answer given offline that the device would not keep is not held, so
+       the page may not print the held count at it. It prints that sentence's
+       literal negation, in Design's own grammar, with a real number:
+
+           OFFLINE · 01 NOT HELD ON THIS DEVICE
+
+       §8.10: it says something true about the student's WORK — their answer,
+       counted — and nothing whatever about storage, quotas, private browsing,
+       or the platform. There is no hatch legend beside it, because there is
+       nothing hatched.
+
+       When both exist the NOT-HELD count wins, because it is the fact that
+       changes what the student should do next. In practice a store either
+       works from the first answer or from none, so both is close to
+       unreachable.
+
+       `st.notKept` is undefined on the fixture, which reads as none, which
+       leaves Design's line exactly as drawn. */
+    const notKept = Object.keys(st.notKept || {});
     const netNote = st.net === 'sent'
       ? 'BACK ONLINE \u00B7 ' + pad(st.sentN || 0) + ' SENT'
-      : offline ? 'OFFLINE \u00B7 ' + pad(heldKeys.length) + ' HELD ON THIS DEVICE' : '';
+      : offline
+        ? (notKept.length
+            ? 'OFFLINE \u00B7 ' + pad(notKept.length) + ' NOT HELD ON THIS DEVICE'
+            : 'OFFLINE \u00B7 ' + pad(heldKeys.length) + ' HELD ON THIS DEVICE')
+        : '';
 
     const onQ = st.view === 'q' && !st.handing;
     const onDone = st.view === 'done' && !st.handing;
