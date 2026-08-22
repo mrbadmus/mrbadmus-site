@@ -111,6 +111,7 @@ rewrites §1 below. Run it when Design delivers a new unit; never hand-edit rows
 | `inside-the-earth` | `c10-01-inside-the-earth` | s-hook s-layers s-evidence s-think s-ladder | — |
 | `three-ways-to-make-a-rock` | `c10-02-three-ways-to-make-a-rock` | s-hook s-table s-bench s-think s-ladder | s-table=s-hook |
 | `the-rock-cycle` | `c10-03-the-rock-cycle` | s-hook s-journey s-processes s-think s-ladder | — |
+| `a-planet-with-limits` | `c10-04-a-planet-with-limits` | s-hook s-loop s-stock s-words s-think s-ladder | — |
 | `whats-in-the-air` | `c10-05-whats-in-the-air` | s-hook s-mix s-history s-think s-ladder | — |
 | `carbon-dioxide-humans-and-climate` | `c10-06-carbon-dioxide-humans-and-climate` | s-hook s-how s-evidence s-think s-ladder | — |
 | `the-carbon-cycle` | `c10-07-the-carbon-cycle` | s-hook s-flows s-store s-think s-ladder | — |

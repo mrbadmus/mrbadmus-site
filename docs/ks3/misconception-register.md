@@ -1604,3 +1604,62 @@ confrontation cannot deny the observation and does not: it separates POISONED fr
 the platinum in a dead converter and finds it all there, and lands on "blocked is not the same as
 consumed". MRB-225 applies squarely — the version that is true is more interesting than the version
 that is famous, and nothing in `c6-07` retracts the definition it opened with.
+
+---
+
+### `EARTH` — the Earth and its atmosphere: what a fixed stock is, what a loop actually returns, and what a "reserve" is a fact about
+
+Opened by **C10 *The Earth and its atmosphere*** (2026-08-22, drawn by Claude Design, MRB-281).
+`EARTH-01` to `EARTH-16` are C10's, six lessons, two or three entries each. All are
+`review_state: draft`.
+
+⚠️ **THE RANGE IS ALLOCATED, THE ROWS ARE NOT.** Only `c10-04` is authored so far, so only its
+three rows are below. The remaining allocation is written down here so five lanes authoring five
+lessons cannot collide on a number: `EARTH-01`–`04` are c10-01's, `05`–`07` c10-02's, `08`–`10`
+c10-03's, `11`–`13` c10-04's, and `14`–`16` are shared between c10-05 and c10-06. **An id appears
+in the table below only when the lesson that references it exists** — registering ahead of
+authoring is legal (`CELL-09`–`12` are the live example) but allocating a block and then filling
+it is how a number ends up meaning two things.
+
+⊖ **`EARTH-17` AND `EARTH-18` ARE NAMED SPARES AND ARE NOT MINTED.** They exist as a reservation
+against a lesson needing a fourth entry, in exactly the sense `MATL-04/07/10/14` were pre-allocated
+and then deliberately left unallocated. A spare that is never used is an id reserved against
+nothing, and ids are permanent once referenced — so if the unit finishes without needing them,
+they are left unwritten and the numbering stops at 16. **Do not close the gap.**
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `EARTH-11` | If we recycled everything, we would never run out of anything. | `think-commit-recycling` | `think-reveal-recycling` | `a-planet-with-limits` |
+| `EARTH-12` | How much comes back depends on how carefully people sort their bins. | `loop-bench` | `loop-bench` | `a-planet-with-limits` |
+| `EARTH-13` | “Years left” is a measured fact about how much is in the ground. | — | `s-stock` | `a-planet-with-limits` |
+
+**`EARTH-11` is the unit's load-bearing entry, and the page breaks it with arithmetic rather than
+with an assertion.** By the time `#s-think` quotes the belief, the student has run 1000 kg round
+the loop for at least three materials and watched the bars shrink every pass; aluminium at nine
+collected in ten reaches 6.90 lifetimes per kilogram of ore, not infinite lifetimes. The reveal
+carries `id="think-reveal-recycling"` so `confronted_by` names the PANEL where the belief is
+answered rather than the surrounding section — the MRB-277 pattern.
+
+**`EARTH-12` is elicited and confronted by the same instrument, which is unusual and is the point.**
+The bench is the only place on the page where collection is held equal and the material is the only
+thing that changes: nine in ten collected gives aluminium 6.90× and the crisp packet 1.02×. A
+student holding this belief presses the packet expecting the dial to rescue it, and the verdict
+sentence for that state says so in words — "collection is not the problem here, the material is".
+No separate confrontation block would be as convincing as the one the student ran themselves.
+
+**`EARTH-13` has no `elicited_by`, deliberately, and that is audit law 15 working rather than a
+hole.** Nothing on `c10-04` asks the student to commit to the belief that a reserve is a measured
+quantity of rock; the shelf and the going-further layer simply say what a reserve is — the part of
+a resource that can be extracted at a profit with today's technology — and let the definition do
+the work. Inventing an anchor to fill the column would be the dishonest version, and MRB-248 makes
+absence legal precisely so that it need not be invented. The question bank carries the elicitation
+instead, at `c10-04-h01`, where a country's copper reserves rise by a fifth with no new deposit
+found.
+
+⚑ **`EARTH-11` overlaps `MATL-08`'s neighbourhood in SHAPE ONLY and no cross-reference is
+recorded.** Both are wrong beliefs about where a material comes from. But `MATL-08` is about
+EXTRACTION — metals are in the ground as metal, so getting them out is digging and melting — and
+`EARTH-11` is about RETURN, and specifically about a loop the student believes is closed. A student
+can hold either without the other, and joining them would blur the one thing C10 adds to C9: that
+the interesting number is not what it costs to get a material out but what fraction of it ever
+comes back.

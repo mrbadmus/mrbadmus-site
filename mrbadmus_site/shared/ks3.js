@@ -22189,6 +22189,168 @@
   }
 /* ═══ END C9 wiring ═══ */
 
+/* ═══ BEGIN C10 wiring ══════════════════════════════════════════════════
+   C10's instrument families — *The Earth and its atmosphere*. Added as ONE
+   marked block so that a lane merging into this file resolves mechanically:
+   nothing above this marker moves.
+
+   ⚠️ WAVE 1. Two of the unit's eleven families are here — c10-04's loop bench
+   and its stock shelf. The other nine are listed in `ks3_art/c10.py` and are
+   wired by their own lesson's author, inside this same marked block.
+
+   ⚖️ NOTHING IS COMPUTED IN THIS BLOCK. Not one mass, not one percentage, not
+   one multiplier and not one VERDICT. The loop bench's TWENTY states are all
+   in the document already, each with its six bars, its three stats and its
+   verdict sentence (EMIT-BOTH-SHOW-ONE), every number of it derived in
+   `ks3_art/c10.py` from the material's recovery fraction and the collection
+   rate. These handlers choose which node is `hidden`. They never decide how
+   far a kilogram of ore goes.
+
+   ⚖️ NOTHING GREEN AND NOTHING RED REACHES A CONTROL. Only the ladder marks,
+   and `ks3_art/c10.py` refuses a payload carrying a `correct` key.
+
+   ⚠️ NEITHER BENCH OPENS EMPTY, and that is the one way these differ from
+   C9's four. Design's loop bench opens on aluminium at nine-in-ten and the
+   shelf opens on bauxite, so the build already emits one lit button and one
+   unhidden panel in each. These functions READ that opening state out of the
+   DOM rather than assuming an index, so the resting HTML and the runtime
+   cannot disagree — and MRB-208 is untouched, because what may not be ticked
+   on load is the rail stop, and `data-stage-done` still opens at 0.
+
+   ⚠️ AND NEITHER CALLS `focusReveal`. MRB-257 moves focus where a result
+   appears and the control that produced it DISABLES in the same breath,
+   dropping a keyboard user to `<body>`. Nothing here disables: the buttons
+   stay live for the whole bench, focus stays on the button the student just
+   pressed, and pulling it into the panel would take it off the control they
+   are working.
+   ═══ */
+
+  /* ── material-loop (c10-04 #s-loop) ──────────────────────────────────
+     Five materials × four collection rates = twenty authored readouts, one
+     shown at a time. The rail stop ticks when three materials have been
+     opened AND the collection rate has been touched — Design's own
+     `DONE('s-loop')`, and both halves matter: three materials without moving
+     the dial is the student reading a table, and moving the dial on one
+     material is the student never meeting the case that contradicts it. */
+  function wireMaterialLoop(sec) {
+    var wrap = sec.querySelector("[data-mloop]");
+    if (!wrap) { return; }
+    var mats = toArray(wrap.querySelectorAll("[data-mloop-mat]"));
+    var rates = toArray(wrap.querySelectorAll("[data-mloop-rate]"));
+    var outs = toArray(wrap.querySelectorAll("[data-mloop-out]"));
+    var hint = wrap.querySelector("[data-mloop-hint]");
+    var target = parseInt(wrap.getAttribute("data-target"), 10) || mats.length;
+    if (!mats.length || !rates.length || !outs.length) { return; }
+
+    /* The opening selection is in the HTML, not in this file. */
+    function lit(list, attr) {
+      for (var i = 0; i < list.length; i += 1) {
+        if (list[i].getAttribute("aria-pressed") === "true") {
+          return list[i].getAttribute(attr);
+        }
+      }
+      return list[0].getAttribute(attr);
+    }
+    var mat = lit(mats, "data-mloop-mat");
+    var rate = lit(rates, "data-mloop-rate");
+    var seen = {}, seenN = 1, rateTouched = false;
+    seen[mat] = 1;
+
+    function paint() {
+      var key = mat + ":" + rate;
+      each(outs, function (o) {
+        setHidden(o, o.getAttribute("data-mloop-out") !== key);
+      });
+    }
+    function tick() {
+      if (seenN >= target && rateTouched) { markStage(sec, true); }
+    }
+
+    each(mats, function (btn) {
+      btn.addEventListener("click", function () {
+        var v = btn.getAttribute("data-mloop-mat");
+        if (v === mat) { return; }                 /* the no-op press */
+        mat = v;
+        each(mats, function (b) {
+          b.setAttribute("aria-pressed",
+                         b.getAttribute("data-mloop-mat") === v
+                           ? "true" : "false");
+        });
+        if (!seen[v]) { seen[v] = 1; seenN += 1; setCount(sec, seenN); }
+        paint();
+        tick();
+      });
+    });
+
+    each(rates, function (btn) {
+      btn.addEventListener("click", function () {
+        var v = btn.getAttribute("data-mloop-rate");
+        /* ⚠️ THE BOOKKEEPING COMES BEFORE THE NO-OP RETURN, and only on this
+           picker. The bench opens with a rate already selected, so pressing
+           the lit one is a student answering the hint under the buttons —
+           and if the early return came first, that press would do nothing at
+           all and the stop could never tick for anybody who chose the rate
+           the page opened on. Design's own handler sets `rateTouched` on
+           every press for the same reason. */
+        if (!rateTouched) { rateTouched = true; setHidden(hint, true); tick(); }
+        if (v === rate) { return; }                /* the no-op press */
+        rate = v;
+        each(rates, function (b) {
+          b.setAttribute("aria-pressed",
+                         b.getAttribute("data-mloop-rate") === v
+                           ? "true" : "false");
+        });
+        paint();
+        tick();
+      });
+    });
+    setCount(sec, seenN);
+  }
+
+  /* ── stock-limits (c10-04 #s-stock) ──────────────────────────────────
+     Five extracted things, five authored panels, one shown at a time. The
+     stop ticks at three of five opened — Design's own threshold, and it is
+     three because no two of these run out the same way and two is not yet a
+     pattern. */
+  function wireStockLimits(sec) {
+    var wrap = sec.querySelector("[data-stock]");
+    if (!wrap) { return; }
+    var items = toArray(wrap.querySelectorAll("[data-stock-item]"));
+    var outs = toArray(wrap.querySelectorAll("[data-stock-out]"));
+    var target = parseInt(wrap.getAttribute("data-target"), 10) || items.length;
+    if (!items.length || !outs.length) { return; }
+
+    var current = null;
+    each(items, function (b) {
+      if (b.getAttribute("aria-pressed") === "true") {
+        current = b.getAttribute("data-stock-item");
+      }
+    });
+    if (current === null) { current = items[0].getAttribute("data-stock-item"); }
+    var seen = {}, seenN = 1;
+    seen[current] = 1;
+
+    each(items, function (btn) {
+      btn.addEventListener("click", function () {
+        var v = btn.getAttribute("data-stock-item");
+        if (v === current) { return; }             /* the no-op press */
+        current = v;
+        each(items, function (b) {
+          b.setAttribute("aria-pressed",
+                         b.getAttribute("data-stock-item") === v
+                           ? "true" : "false");
+        });
+        each(outs, function (o) {
+          setHidden(o, o.getAttribute("data-stock-out") !== v);
+        });
+        if (!seen[v]) { seen[v] = 1; seenN += 1; setCount(sec, seenN); }
+        if (seenN >= target) { markStage(sec, true); }
+      });
+    });
+    setCount(sec, seenN);
+  }
+/* ═══ END C10 wiring ═══ */
+
 
 
 
@@ -22533,6 +22695,10 @@
     each(root.querySelectorAll("[data-xrouteblock]"), wireExtractionRoute);
     each(root.querySelectorAll("[data-specbblock]"), wireSpecBench);
     // ═══ END C9 wiring ═══
+    // ═══ BEGIN C10 wiring ═══
+    each(root.querySelectorAll("[data-mloopblock]"), wireMaterialLoop);
+    each(root.querySelectorAll("[data-stockblock]"), wireStockLimits);
+    // ═══ END C10 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
   }

@@ -711,7 +711,7 @@ LESSON = {
                    "ends up in carbon dioxide, and every hydrogen atom ends up "
                    "in water. Read the fuel, commit, then check.",
          "options": _FUEL_OPTIONS,
-         "cards": _CARDS},
+         "fuels": _CARDS},
 
         # ── #s-think — REACT-10. The misconception shell, amber. ───────────
         {"type": "misconception", "id": "think-commit-yellow",

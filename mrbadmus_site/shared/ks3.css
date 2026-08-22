@@ -22442,3 +22442,158 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 .ks3-specb [hidden] { display: none; }
 
 /* ═══ END C9 ═══ */
+
+/* ═══ BEGIN C10 ══════════════════════════════════════════════════════════
+   C10's instrument styling — *The Earth and its atmosphere*. A PURE APPEND at
+   EOF — every byte above this marker is unchanged, which is the one conflict
+   shape that resolves mechanically when another lane merges.
+
+   ⚠️ WAVE 1. Only c10-04's two families are here: `material-loop` (`#s-loop`)
+   and `stock-limits` (`#s-stock`). The unit's other nine families are listed
+   in `ks3_art/c10.py` and their rules land with their lessons, inside this
+   same marked block.
+
+   ⚠️ `#s-loop` IS THE UNIT'S ONE INK-DARK INSTRUMENT — `ks3-block ks3-dark`
+   in Design's file, built as `ks3-block ks3-dark ks3-practical` (the ruling
+   is in `ks3_art/c10.py`). `.ks3-dark p` is (0,1,1) and a bare component
+   class is (0,1,0), so an unscoped colour rule on this bench LOSES and loses
+   SILENTLY: `--ks3-on-dark-body` at #E7DECE would paint over every readout on
+   the panel. EVERY rule below is self-scoped at (0,2,0) — `.ks3-mloop
+   .ks3-mloop-mass`, never a bare `.ks3-mloop-mass`.
+
+   ⚠️ `--ks3-ember` DOES NOT EXIST, and neither does any other on-dark accent
+   token in the KS3 family. NOTES-C10's closing note records it: the name
+   people reach for is `--st-ember`, which belongs to the studio surface, and
+   an undefined custom property is DROPPED — the declaration vanishes, the
+   element inherits, contrast stays fine and no gate trips. The mono labels on
+   this bench are `--ks3-on-dark-muted`, which is the same token the stat
+   labels under them use.
+
+   ⚠️ `--ks3-data` IS NOT SPENT HERE. It is an ON-INK token (the C3 ruling) and
+   the one ink block in this unit reads its numbers in `--ks3-on-dark` at
+   display weight, which is what Design drew. `--ks3-ok` is used ONLY as a bar
+   FILL, never as `color:` on text, which is the split `shared/tokens.css`
+   spells out at the token itself.
+
+   ⚠️ THE BAR TRACK IS `rgba(0,0,0,.25)` WITH AN INSET WHITE HAIRLINE — the
+   same fix applied to the b7/b8 oxygen readouts. Without the hairline the
+   empty part of a bar disappears into the panel and a 4% bar reads as no bar
+   at all, which on this bench is the difference between "almost nothing came
+   back" and "the instrument is broken".
+
+   ⚠️ SELECTION AND CATEGORY STATE USES THE HOUSE `.ks3-seg-btn`, unchanged.
+   On ink that is `--ks3-alert` with ink text (MRB-242), not the `--ks3-accent`
+   pair Design drew here; the reasoning is in `ks3_art/c10.py`. Every button
+   also carries `aria-pressed` and a WORD, so colour is never the only channel.
+   ═══ */
+
+.ks3-mloop-block,
+.ks3-stock-block { --c10-gap: 12px; }
+
+/* ── c10-04 · material-loop (ON INK) ───────────────────────────────────── */
+.ks3-mloop .ks3-mloop-glabel {
+  margin: 22px 0 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-mloop .ks3-mloop-group {
+  margin-top: 10px; display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-mloop .ks3-mloop-hint {
+  margin: 14px 0 0; font-size: 16px; line-height: 1.5;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-mloop .ks3-mloop-readout { margin-top: 24px; }
+.ks3-mloop .ks3-mloop-panel {
+  padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+}
+.ks3-mloop .ks3-mloop-name {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; line-height: 1.25; color: var(--ks3-on-dark);
+}
+.ks3-mloop .ks3-mloop-what {
+  margin: 6px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-mloop .ks3-mloop-bars {
+  list-style: none; margin: 20px 0 0; padding: 0;
+  display: flex; flex-direction: column; gap: 11px;
+}
+.ks3-mloop .ks3-mloop-bar {
+  display: flex; align-items: center; gap: 14px;
+}
+.ks3-mloop .ks3-mloop-blabel {
+  flex: 0 0 78px; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+/* CONTAINMENT, NOT CLIPPING: the fill is a child of the track and the track
+   owns the radius, so a 100% bar cannot spill a square corner past it. */
+.ks3-mloop .ks3-mloop-track {
+  flex: 1 1 auto; min-width: 0; height: 18px; border-radius: 99px;
+  background: rgba(0, 0, 0, .25);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
+  overflow: hidden;
+}
+.ks3-mloop .ks3-mloop-fill {
+  display: block; height: 100%; background: var(--ks3-ok);
+}
+.ks3-mloop .ks3-mloop-mass {
+  flex: 0 0 84px; text-align: right; font-family: var(--ks3-font-mono);
+  font-size: 15px; font-weight: 500; color: var(--ks3-on-dark);
+}
+.ks3-mloop .ks3-mloop-stats {
+  margin-top: 22px; display: flex; gap: 14px 26px; flex-wrap: wrap;
+}
+.ks3-mloop .ks3-mloop-stat { flex: 1 1 12rem; min-width: 0; }
+.ks3-mloop .ks3-mloop-slabel {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 12px;
+  font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-mloop .ks3-mloop-svalue {
+  margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 27px; line-height: 1.15; color: var(--ks3-on-dark);
+}
+.ks3-mloop .ks3-mloop-snote {
+  margin: 3px 0 0; font-size: 15px; line-height: 1.5;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-mloop .ks3-mloop-verdict {
+  margin: 20px 0 0; font-size: 20px; line-height: 1.55; font-weight: 600;
+  color: var(--ks3-on-dark);
+}
+.ks3-mloop [hidden] { display: none; }
+
+/* At 360px the label + mass columns take 162px of a 300px row and the track
+   collapses to a stub, so the two fixed columns give ground rather than the
+   thing the bench is for. */
+@media (max-width: 30rem) {
+  .ks3-mloop .ks3-mloop-bar { gap: 10px; }
+  .ks3-mloop .ks3-mloop-blabel { flex: 0 0 58px; font-size: 12px; }
+  .ks3-mloop .ks3-mloop-mass { flex: 0 0 66px; font-size: 14px; }
+  .ks3-mloop .ks3-mloop-svalue { font-size: 24px; }
+}
+
+/* ── c10-04 · stock-limits (light) ─────────────────────────────────────── */
+.ks3-stock .ks3-stock-shelf {
+  margin-top: 18px; display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-stock .ks3-stock-readout {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-stock .ks3-stock-name {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 24px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-stock .ks3-stock-use {
+  margin: 10px 0 0; font-size: 18px; line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+.ks3-stock .ks3-stock-row {
+  margin: 12px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink);
+}
+.ks3-stock [hidden] { display: none; }
+/* ═══ END C10 ═══ */

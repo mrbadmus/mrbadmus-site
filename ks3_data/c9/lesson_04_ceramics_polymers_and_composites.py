@@ -495,7 +495,13 @@ LESSON = {
         # index 3 — moved from Design's 0.
         "recall": {
             "q": "Which of these is a composite?",
-            "options": ["Porcelain", "Polythene", "Copper",
+            # ⊕ MRB-177 — the three distractors were LENGTHENED to two words
+            # each. As drawn they were one word against a two-word answer, so
+            # `length_tell` fired (2 > 1 and 2 >= 1.4x1) and a student could
+            # score this rung without reading it. The answer and its index are
+            # untouched, and so is every correction below: each opens on the
+            # bare noun, which is still what the option names.
+            "options": ["Fired porcelain", "Polythene sheet", "Copper wire",
                         "Reinforced concrete"],
             "answer": 3,
             "feedback": {

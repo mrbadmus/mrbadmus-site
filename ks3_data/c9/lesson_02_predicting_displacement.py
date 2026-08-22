@@ -206,7 +206,7 @@ LESSON = {
                  "tag": "",
              },
          ],
-         "cards": [
+         "proposals": [
              {
                  "id": "c1",
                  "added": "Magnesium",

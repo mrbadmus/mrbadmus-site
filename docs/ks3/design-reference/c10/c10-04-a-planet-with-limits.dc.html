@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A planet with limits · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Earth and its atmosphere</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">A planet with limits</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="6">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">The Earth and its atmosphere · System</p>
+        <h1>A planet with limits</h1>
+        <p class="ks3-bigq">Everything manufactured on Earth came out of the crust, and the crust is not being topped up. Recycling sends some of it round again — but only some, and how much depends on the material, not on how carefully you sort it.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>About three quarters of all the aluminium ever smelted is still in use today.</h2>
+        <p class="ks3-hook-prompt">Smelting began in the 1880s. Roughly 75% of every tonne produced since is still in a window frame, an engine block, a can or a plane — not in a hole in the ground. Almost no other material comes close.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What does that tell you?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Aluminium can be melted and cast again almost without loss, so the amount in circulation keeps building up. But the stock in use is still growing, which means new metal is still being dug up every year — recycling is not keeping pace with demand. <strong>A material can be almost perfectly recyclable and the world can still be mining more of it.</strong></p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Ores, crude oil and phosphate rock took tens of millions of years to concentrate, and we are using them in centuries. On any human timescale the supply is <strong>finite</strong>: extraction is a one-way trip out of the crust.</p>
+        <p>Recycling is the only thing that sends any of it back. The question this lesson answers is how much comes back — and that turns out to be a property of the material.</p>
+      </section>
+
+      <section id="s-loop" class="ks3-block ks3-dark" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">The bench · run the loop</p>
+        <h2 style="margin: 6px 0 0;">Start with 1000 kg. See how far it goes round.</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 56ch; color: var(--ks3-on-dark-body);">{{ loopLead }}</p>
+
+        <p style="margin: 22px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Pick a material</p>
+        <div style="margin-top: 10px; display: flex; gap: 9px; flex-wrap: wrap;">
+          <sc-for list="{{ matButtons }}" as="b" hint-placeholder-count="5">
+            <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button>
+          </sc-for>
+        </div>
+
+        <p style="margin: 20px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How much gets collected</p>
+        <div style="margin-top: 10px; display: flex; gap: 9px; flex-wrap: wrap;">
+          <sc-for list="{{ rateButtons }}" as="b" hint-placeholder-count="4">
+            <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 24px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25; color: var(--ks3-on-dark);">{{ matName }}</p>
+          <p style="margin: 6px 0 0; font-size: 17px; line-height: 1.55; color: var(--ks3-on-dark-muted);">{{ matWhat }}</p>
+
+          <ul style="list-style: none; margin: 20px 0 0; padding: 0; display: flex; flex-direction: column; gap: 11px;">
+            <sc-for list="{{ loopBars }}" as="bar" hint-placeholder-count="6">
+              <li style="display: flex; align-items: center; gap: 14px;">
+                <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-on-dark-muted); flex: 0 0 78px;">{{ bar.label }}</span>
+                <span style="flex: 1 1 auto; height: 18px; border-radius: 99px; background: rgba(0,0,0,.25); box-shadow: inset 0 0 0 1px rgba(255,255,255,.16); overflow: hidden;"><span style="{{ bar.fillStyle }}"></span></span>
+                <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark); flex: 0 0 84px; text-align: right;">{{ bar.mass }}</span>
+              </li>
+            </sc-for>
+          </ul>
+
+          <div style="margin-top: 22px; display: flex; gap: 14px 26px; flex-wrap: wrap;">
+            <sc-for list="{{ loopStats }}" as="stat" hint-placeholder-count="3">
+              <div style="flex: 1 1 12rem;">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">{{ stat.label }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 27px; line-height: 1.15; color: var(--ks3-on-dark);">{{ stat.value }}</p>
+                <p style="margin: 3px 0 0; font-size: 15px; line-height: 1.5; color: var(--ks3-on-dark-muted);">{{ stat.note }}</p>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <p style="margin: 20px 0 0; font-size: 20px; line-height: 1.55; font-weight: 600; color: var(--ks3-on-dark);">{{ loopVerdict }}</p>
+      </section>
+
+      <section id="s-stock" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Reference · five things we take out of the ground</p>
+        <h2 style="margin: 6px 0 0;">Tap one. Each has a different kind of limit.</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">{{ stockLead }}</p>
+
+        <div style="margin-top: 18px; display: flex; gap: 9px; flex-wrap: wrap;">
+          <sc-for list="{{ stockButtons }}" as="b" hint-placeholder-count="5">
+            <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" style="{{ b.style }}">{{ b.label }}</button>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; line-height: 1.25;">{{ stockName }}</p>
+          <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body);">{{ stockUse }}</p>
+          <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.6;"><strong>The limit:</strong> {{ stockLimit }}</p>
+          <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.6;"><strong>Does recycling help?</strong> {{ stockRecycle }}</p>
+        </div>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">The Earth holds a fixed stock of every ore, and extraction is one-way. Recycling returns part of the material each time round, so one kilogram from the ground can serve several lifetimes — but every loop leaks, so recycling slows the loss and never stops it.</p>
+      </div>
+
+      <section id="s-words" class="ks3-block ks3-keywords" data-key-fact="vocabulary" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Five words</p>
+        <p class="ks3-keywords-lead">Say your answer out loud before you turn each card over. If you cannot say it, you do not know it yet.</p>
+        <ul class="ks3-cards">
+          <sc-for list="{{ cards }}" as="card" hint-placeholder-count="5">
+            <li>
+              <button type="button" class="{{ card.className }}" onClick="{{ card.onClick }}">
+                <span class="ks3-card-front">{{ card.front }}</span>
+                <span class="ks3-card-back" hidden="{{ card.hidden }}">
+                  <span class="ks3-card-def">{{ card.def }}</span>
+                  <span class="ks3-card-note">{{ card.note }}</span>
+                </span>
+                <span class="ks3-card-hint">Say it, then tap</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“If we recycled everything, we would never run out of anything.”</p>
+        <p style="max-width: 54ch;">You have just run the loop five times. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div id="think-reveal-recycling" data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">Every pass through the loop loses material. Some is never collected, some is lost in sorting and melting, and some comes back too degraded to do the original job. Even at nine collected out of ten, aluminium gets about seven lifetimes out of a kilogram of ore, not infinite lifetimes — and a crisp packet gets barely one, however carefully you put it in the right bin.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">So recycling buys time; it does not make a finite stock infinite. <strong>The two things that actually cut extraction are using less and using it for longer</strong> — which is why reduce and reuse come before recycle, and in that order.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Metal ores, crude oil and phosphate rock are finite: they formed over millions of years and are being extracted in centuries. Recycling returns part of the material to be used again, saving raw material and usually a large amount of energy — recycled aluminium takes about a twentieth of the energy of new metal from ore. But every loop loses some material, and some materials come back degraded or cannot be separated at all, so recycling slows extraction rather than ending it. Using less and using things for longer cut extraction more than recycling does.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>You will see headlines saying a metal has a certain number of years left. Those figures move, and not because anyone found more planet. A <strong>reserve</strong> is the part of a resource that can be extracted at a profit with today's technology, so when the price rises or the mining gets cleverer, ore that was worthless becomes a reserve and the number of years left goes up. That does not mean the stock is unlimited — it means the cheap, concentrated part gets used first, and everything after it takes more energy to extract. The limit shows up as rising energy cost long before anything physically runs out.</p>
+          <p>The awkward one is the crisp packet. Plastic film laminated to a layer of aluminium a few microns thick is a brilliant piece of engineering — it keeps food fresh for months using very little material — and it is close to unrecyclable, because no process separates the two layers economically. That is a real trade-off rather than a mistake, and it is the shape of most recycling problems: the property that makes a material useful is often the same property that makes it hard to get back.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c10-03-the-rock-cycle.html">The rock cycle<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c10-05-whats-in-the-air.html">What's in the air<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Life-cycle assessment, and the extraction of copper from low-grade ores by phytomining and bioleaching.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still not sure why recycling a can beats recycling a crisp packet?</p>
+          <a class="ks3-tutor-cta" href="#s-loop">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startMaterial&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;al&quot;,&quot;fe&quot;,&quot;gl&quot;,&quot;pet&quot;,&quot;film&quot;],&quot;default&quot;:&quot;al&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Bench&quot;},&quot;barCycles&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:6,&quot;min&quot;:3,&quot;max&quot;:8,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Bench&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Still in use', short: 'HOOK' },
+  { id: 's-loop', label: 'Run the loop', short: 'LOOP' },
+  { id: 's-stock', label: 'Five limits', short: 'STOCK' },
+  { id: 's-words', label: 'Five words', short: 'WORDS' },
+  { id: 's-think', label: 'Recycle it all', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+/* yield = fraction of COLLECTED material that comes back usable at the same grade.
+   ePrimary / eRecycled in MJ per kg. Figures are order-of-magnitude teaching values. */
+const MATERIALS = [
+  { id: 'al', label: 'Aluminium can', name: 'Aluminium can', yield: 0.95, ePrimary: 45, eRecycled: 2.3,
+    what: 'Melts and casts again with almost nothing lost. The metal does not care how many times it has been round.' },
+  { id: 'fe', label: 'Steel can', name: 'Steel can', yield: 0.92, ePrimary: 25, eRecycled: 7.5,
+    what: 'Magnetic, so it sorts itself out of mixed waste. Small amounts of other metals build up, which limits what the steel can be used for.' },
+  { id: 'gl', label: 'Glass bottle', name: 'Glass bottle', yield: 0.90, ePrimary: 15, eRecycled: 11,
+    what: 'Endlessly remeltable, but the melting is most of the energy — so recycling glass saves far less energy than people expect.' },
+  { id: 'pet', label: 'PET bottle', name: 'PET bottle', yield: 0.50, ePrimary: 85, eRecycled: 17,
+    what: 'The polymer chains shorten every time it is melted. Half of what comes back is only fit for something less demanding than a bottle.' },
+  { id: 'film', label: 'Crisp packet', name: 'Crisp packet (metallised film)', yield: 0.02, ePrimary: 90, eRecycled: 90,
+    what: 'Plastic laminated to a few microns of aluminium. No process separates the two layers economically, so almost none of it comes back as either material.' }
+];
+
+const RATES = [
+  { id: 'r0', label: 'None collected', rate: 0 },
+  { id: 'r25', label: '1 in 4', rate: 0.25 },
+  { id: 'r50', label: 'Half', rate: 0.5 },
+  { id: 'r90', label: '9 in 10', rate: 0.9 }
+];
+
+const STOCK = [
+  { id: 'bx', label: 'Bauxite', name: 'Bauxite — aluminium ore',
+    use: 'The only ore aluminium is extracted from in quantity. Smelting it needs electricity on a scale that decides where smelters get built.',
+    limit: 'Plenty in the ground for now, but extraction is one of the most energy-hungry industrial processes there is, so the real limit is energy rather than rock.',
+    recycle: 'Enormously. Recycled aluminium takes about a twentieth of the energy, and the metal comes back as good as new.' },
+  { id: 'fe', label: 'Iron ore', name: 'Iron ore',
+    use: 'Steel — buildings, cars, ships, tools, tins. By mass, the most used metal on the planet by a wide margin.',
+    limit: 'The most abundant of the useful ores, but the high-grade deposits get taken first, and lower grades need more digging and more energy per tonne of iron.',
+    recycle: 'Well. Steel is easy to separate magnetically, and a large share of new steel is already made from scrap.' },
+  { id: 'oil', label: 'Crude oil', name: 'Crude oil',
+    use: 'Fuels, and the feedstock for almost every plastic, dye, solvent and synthetic fibre.',
+    limit: 'Formed over tens of millions of years from buried marine organisms, and used in a couple of centuries. Burning it also puts its carbon into the atmosphere.',
+    recycle: 'Not once it is burnt — that carbon is gone from the loop entirely. Plastics made from it can be recycled, but only a few times before the polymer is too degraded.' },
+  { id: 'ph', label: 'Phosphate rock', name: 'Phosphate rock',
+    use: 'Fertiliser. Phosphorus is one of the few elements crops cannot be grown without and for which there is no substitute at all.',
+    limit: 'Concentrated deposits are in a handful of countries, and there is no alternative source. This is the resource limit with the sharpest consequences.',
+    recycle: 'In principle, from sewage and manure, and this is starting to happen. Phosphorus spread thinly on fields or washed into rivers is effectively lost.' },
+  { id: 'he', label: 'Helium', name: 'Helium',
+    use: 'Cooling the magnets in MRI scanners, and in welding and leak detection. Nothing else stays liquid at 4 kelvin.',
+    limit: 'Made underground by radioactive decay over hundreds of millions of years, and collected as a by-product of natural gas. Released to the air, it leaves the atmosphere for space and is gone for good.',
+    recycle: 'Only by capturing it before it escapes, which good MRI installations now do. Party balloons are a one-way trip.' }
+];
+
+const CARDS = [
+  { front: 'finite resource', def: 'Something taken from the Earth that is not being replaced on any timescale that matters to us.', note: 'Finite does not mean nearly gone. It means the stock only goes one way.' },
+  { front: 'ore', def: 'Rock containing enough of a metal compound to be worth extracting it.', note: 'Ore is not the metal. Whether a rock counts as ore depends on the price and the technology, so the same rock can stop and start being ore.' },
+  { front: 'recycling', def: 'Collecting a used material and processing it so it can be made into something again.', note: 'Every pass loses some. Recycling slows extraction; it does not replace it.' },
+  { front: 'downcycling', def: 'Recycling a material into something less demanding than it was, because it comes back degraded.', note: 'A bottle that becomes fleece is not a bottle again, and the fleece has nowhere to go after that.' },
+  { front: 'reserve', def: 'The part of a resource that can be extracted at a profit with the technology we have now.', note: 'This is why "years left" figures keep changing without anyone finding more planet.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'Why is a metal ore described as a finite resource?',
+    options: [
+      { text: 'It formed over millions of years and is not being replaced as fast as we extract it', correct: true },
+      { text: 'Because there is only a small amount of it in the crust', correction: 'Some ores are abundant. Finite is about not being replaced, not about being scarce today.' },
+      { text: 'Because it can only be used once', correction: 'Metal can be used many times over by recycling. It is the ore in the ground that is not coming back.' },
+      { text: 'Because it will run out in the next few years', correction: 'No ore is that close to gone, and reserve figures move. Finite means the stock only goes one way.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'Nine out of ten crisp packets are collected, and nine out of ten aluminium cans are collected. Why does recycling do so much more for the cans?',
+    options: [
+      { text: 'Almost all of the collected aluminium comes back usable, while almost none of the packet does', correct: true },
+      { text: 'There is more aluminium in a can than in a packet', correction: 'True, but irrelevant — the bench compared equal masses and the gap was still enormous.' },
+      { text: 'Cans are collected more carefully', correction: 'Both were collected at nine in ten. Collection was held equal on purpose.' },
+      { text: 'Aluminium is more valuable', correction: 'Value affects whether anyone bothers, but the reason the loop works is physical: the metal survives melting and the laminate cannot be separated.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A council doubles its collection rate for plastic bottles and is disappointed that the amount of new plastic being made barely falls. Explain why, using what the bench showed you.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Collecting more only helps if…',
+    criteria: [
+      'Says collecting more material is only half of it — the material also has to survive the process.',
+      'Says PET degrades when melted, so only about half comes back fit for a bottle.',
+      'Says the loop leaks every pass, so the multiplier stays low even at a high collection rate.',
+      'Compares with a material that does come back well, such as aluminium or steel.',
+      'Says cutting new plastic needs using less or reusing, not only better collection.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A smartphone contains around thirty different elements, each in tiny amounts and bonded into layers a few atoms thick. Predict how well it recycles compared with an aluminium can, and say what the designers would have to change.',
+    fieldLabel: 'Your answer',
+    placeholder: 'A phone recycles much worse than a can because…',
+    criteria: [
+      'Predicts much worse recycling than a can.',
+      'Says the materials are mixed or bonded together so they cannot be separated.',
+      'Says the amount of each element per phone is tiny, so recovery is expensive per kilogram.',
+      'Notes that some materials are recovered (gold, copper) while most are lost.',
+      'Says designing for disassembly — fewer materials, separable parts — is what would change it.'
+    ] }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-loop') return Object.keys(s.matSeen).length >= 3 && s.rateTouched;
+  if (id === 's-stock') return Object.keys(s.stockSeen).length >= 3;
+  if (id === 's-words') return s.flipped.length >= 5;
+  if (id === 's-think') return s.thinkChoice !== null;
+  if (id === 's-ladder') return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  return false;
+}
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0, answers: {}, text: {}, checked: {}, ticks: {}
+  }, {
+    hookChoice: null, thinkChoice: null, flipped: [],
+    mat: 'al', matSeen: { al: true }, rate: 3, rateTouched: false,
+    stock: 'bx', stockSeen: { bx: true }
+  });
+
+  componentDidMount() {
+    const start = this.props.startMaterial;
+    if (start && MATERIALS.some((m) => m.id === start) && start !== this.state.mat) {
+      this.setState({ mat: start, matSeen: { [start]: true } });
+    }
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : (dark ? 'rgba(255,255,255,.28)' : 'var(--ks3-option-border)')) +
+      ';background:' + (on ? 'var(--ks3-accent)' : (dark ? 'rgba(255,255,255,.06)' : 'var(--ks3-ground)')) +
+      ';color:' + (on ? 'var(--ks3-on-dark)' : (dark ? 'var(--ks3-on-dark)' : 'var(--ks3-ink)')) + ';';
+  }
+
+  /* One kilogram of new material delivers this many lifetimes of service:
+     1 + f + f² + … with f = collection × yield, which converges to 1/(1−f). */
+  loopVals(s) {
+    const mat = MATERIALS.find((m) => m.id === s.mat) || MATERIALS[0];
+    const rate = RATES[s.rate] || RATES[0];
+    const f = rate.rate * mat.yield;
+    const mult = 1 / (1 - f);
+    const cycles = Math.max(3, Math.min(8, parseInt(this.props.barCycles, 10) || 6));
+    const saving = Math.round((1 - mat.eRecycled / mat.ePrimary) * 100);
+
+    const bars = [];
+    for (let n = 0; n < cycles; n += 1) {
+      const pct = 100 * Math.pow(f, n);
+      const kg = 1000 * Math.pow(f, n);
+      bars.push({
+        label: 'Use ' + (n + 1),
+        mass: (kg >= 100 ? Math.round(kg) : kg >= 1 ? kg.toFixed(1) : kg < 0.05 ? '0' : kg.toFixed(2)) + ' kg',
+        fillStyle: 'display:block;height:100%;width:' + Math.max(pct, 0).toFixed(2) + '%;background:var(--ks3-ok);'
+      });
+    }
+
+    let verdict;
+    if (rate.rate === 0) {
+      verdict = 'Nothing comes back. Every kilogram used is a kilogram out of the ground, used once and finished — whatever the material is capable of.';
+    } else if (mat.yield <= 0.05) {
+      verdict = 'Collection is not the problem here — the material is. Nine kilograms in ten come back and still almost nothing is reusable, so the second bar has already all but vanished.';
+    } else if (mult >= 5) {
+      verdict = 'A kilogram of ore now does the work of about ' + mult.toFixed(1) + ' kilograms, and each pass costs ' + saving + '% less energy than making it new. This is recycling working about as well as it ever does.';
+    } else if (mult >= 1.7) {
+      verdict = 'A kilogram of ore does the work of about ' + mult.toFixed(1) + ' kilograms — a real gain, and still a leaking loop. Look at how fast the bars shrink.';
+    } else if (mat.yield <= 0.5) {
+      verdict = 'Even collecting this much, the multiplier is only ' + mult.toFixed(2) + '. What comes back is degraded, so most of it cannot do the original job again.';
+    } else {
+      verdict = 'The multiplier is ' + mult.toFixed(2) + '. The material would go round well; not enough of it is being collected to find out.';
+    }
+
+    return {
+      loopLead: Object.keys(s.matSeen).length + ' of 5 materials opened' + (s.rateTouched ? '' : ' · change the collection rate to finish this bench'),
+      matButtons: MATERIALS.map((m) => ({
+        label: m.label, pressed: m.id === s.mat, style: this.seg(m.id === s.mat, true),
+        onClick: () => this.setState((st) => ({ mat: m.id, matSeen: Object.assign({}, st.matSeen, { [m.id]: true }) }))
+      })),
+      rateButtons: RATES.map((r, i) => ({
+        label: r.label, pressed: i === s.rate, style: this.seg(i === s.rate, true),
+        onClick: () => this.setState({ rate: i, rateTouched: true })
+      })),
+      matName: mat.name,
+      matWhat: mat.what,
+      loopBars: bars,
+      loopStats: [
+        { label: 'Lifetimes per kg of ore', value: mult.toFixed(2) + '\u00d7', note: rate.rate === 0 ? 'Used once, then gone.' : 'Adding up every pass through the loop.' },
+        { label: 'Energy, new from ore', value: mat.ePrimary + ' MJ/kg', note: 'What it costs to make the material the first time.' },
+        { label: 'Energy, from recycled', value: mat.eRecycled + ' MJ/kg', note: saving > 0 ? saving + '% less than new.' : 'No recycling route, so no saving.' }
+      ],
+      loopVerdict: verdict
+    };
+  }
+
+  lessonVals(s) {
+    const stock = STOCK.find((x) => x.id === s.stock) || STOCK[0];
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'Aluminium is not really a limited resource' },
+        { letter: 'B', text: 'It reuses almost without loss, so the stock in use keeps building — but new cans still start as ore' },
+        { letter: 'C', text: 'We have stopped mining aluminium' },
+        { letter: 'D', text: 'Aluminium never wears out, so recycling it is unnecessary' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      stockLead: Object.keys(s.stockSeen).length + ' of 5 opened. Not one of these runs out in the same way.',
+      stockButtons: STOCK.map((x) => ({
+        label: x.label, pressed: x.id === s.stock, style: this.seg(x.id === s.stock, false),
+        onClick: () => this.setState((st) => ({ stock: x.id, stockSeen: Object.assign({}, st.stockSeen, { [x.id]: true }) }))
+      })),
+      stockName: stock.name,
+      stockUse: stock.use,
+      stockLimit: stock.limit,
+      stockRecycle: stock.recycle,
+
+      cards: CARDS.map((c, i) => {
+        const on = s.flipped.indexOf(i) >= 0;
+        return { front: c.front, def: c.def, note: c.note, hidden: !on,
+          className: 'ks3-card-btn' + (on ? ' is-flipped' : ''),
+          onClick: () => this.setState((st) => (st.flipped.indexOf(i) >= 0 ? null : { flipped: st.flipped.concat([i]) })) };
+      }),
+
+      thinkOptions: [
+        { letter: 'A', text: 'Right — a recycled material is back to the start each time' },
+        { letter: 'B', text: 'Wrong — every pass loses some, so recycling slows the loss rather than stopping it' },
+        { letter: 'C', text: 'Right, as long as everyone sorts their bins properly' },
+        { letter: 'D', text: 'Wrong — recycling never returns any useful material' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.thinkChoice === i, onClick: () => this.setState({ thinkChoice: i }) })),
+      thinkOpen: s.thinkChoice !== null
+    };
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.loopVals(s),
+      this.lessonVals(s)
+    );
+  }
+}
+</script>
+</body>
+</html>
