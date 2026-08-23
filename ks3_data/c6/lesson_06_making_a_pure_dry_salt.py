@@ -12,14 +12,24 @@ also the better one here: PURE and DRY are the two words the whole lesson is
 about, and "making a salt" is the easy half that the hook dispatches in one
 sentence.
 
-⚠️ **THERE IS NO `lesson_05_` IN THIS PACKAGE AND THAT IS A RULING, NOT AN
-OVERSIGHT.** See `ks3_data/c6/__init__.py`. Design drew
-`c6-05-acids-and-carbonates` in `structure.py`'s `acid-plus-alkali` slot and
-flagged the divergence herself; the commander ruled that the slot stays
-unauthored and renders an honest coming-soon page. This lesson's "Before this
-lesson" link on Design's page points at that page; the generator's own
-`lesson_neighbours` skips unauthored slots, so the built page links back to
-`acid-plus-metal` instead and nothing points at a page that does not exist.
+⊖ **SUPERSEDED 23 Aug 2026 (MRB-281). `lesson_05_acids_and_carbonates.py`
+EXISTS.** The paragraph below is kept because it is a statement that the file
+is deliberately absent, and acting on it now would delete a shipped lesson.
+
+> ⚠️ **THERE IS NO `lesson_05_` IN THIS PACKAGE AND THAT IS A RULING, NOT AN
+> OVERSIGHT.** See `ks3_data/c6/__init__.py`. Design drew
+> `c6-05-acids-and-carbonates` in `structure.py`'s `acid-plus-alkali` slot and
+> flagged the divergence herself; the commander ruled that the slot stays
+> unauthored and renders an honest coming-soon page. This lesson's "Before
+> this lesson" link on Design's page points at that page; the generator's own
+> `lesson_neighbours` skips unauthored slots, so the built page links back to
+> `acid-plus-metal` instead and nothing points at a page that does not exist.
+
+Mide overrode the retirement and the slot was renamed in place to
+`acids-and-carbonates` and authored. `lesson_neighbours` therefore resolves
+this lesson's "Before this lesson" to `acids-and-carbonates.html`, which is
+what Design's own page draws — verified on the built page rather than assumed,
+and nothing here was hand-wired to make it happen.
 
 ════════════════════════════════════════════════════════════════════════
 ⚠️ AN UNRESOLVED GATE CONFLICT, REPORTED RATHER THAN WORKED AROUND

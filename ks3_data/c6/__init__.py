@@ -11,28 +11,59 @@ Every student-facing string is lifted from the approved page — by
 READING `lessonVals()` for the rest, which is where most of a lesson's words
 live and which a lift of the top-level constants alone silently loses.
 
-── SIX LESSONS, SEVEN DRAWINGS, AND THERE IS NO `lesson_05_` ────────────
+── SEVEN LESSONS, SEVEN DRAWINGS, SEVEN SLOTS ──────────────────────────
 
-⚠️ **THE MAPPING IS NOT 1:1 AND THE GAP IS DELIBERATE. Do not "fix" it by
-adding a fifth module.**
+⊖ **SUPERSEDED 23 Aug 2026 (MRB-281). The paragraph below is kept because it
+is an instruction NOT to write `lesson_05_`, and following it now would delete
+a shipped lesson.**
 
-`ks3_data/structure.py`'s fifth C6 slot is `acid-plus-alkali` ("Acid + alkali:
-making a salt", PROCESS). Design drew `c6-05-acids-and-carbonates` there
-instead and flagged the divergence herself in NOTES-C6 §2 with "Ruling
-wanted": her case is that acid + carbonate is the third of the three acid
-reaction families and carries the limewater test, and her case against is that
-it is not in §7 and owns no statutory statement.
+> ── SIX LESSONS, SEVEN DRAWINGS, AND THERE IS NO `lesson_05_` ────────────
+>
+> ⚠️ **THE MAPPING IS NOT 1:1 AND THE GAP IS DELIBERATE. Do not "fix" it by
+> adding a fifth module.**
+>
+> `ks3_data/structure.py`'s fifth C6 slot is `acid-plus-alkali` ("Acid +
+> alkali: making a salt", PROCESS). Design drew `c6-05-acids-and-carbonates`
+> there instead and flagged the divergence herself in NOTES-C6 §2 with
+> "Ruling wanted": her case is that acid + carbonate is the third of the
+> three acid reaction families and carries the limewater test, and her case
+> against is that it is not in §7 and owns no statutory statement.
+>
+> **The commander ruled: build the six slots where Design's drawing and
+> `structure.py` agree, and author nothing for the seventh.** The slug is
+> permanent (§8.4), `structure.py` is not edited by a unit module and was not
+> edited by this one, and the unauthored slot renders an honest coming-soon
+> page — the structure-first guarantee (§11 decision 8), which is a supported
+> state rather than a gap to be apologised for.
+>
+> So the modules here are numbered 01, 02, 03, 04, 06, 07 against the slot
+> positions in `structure.py`, and the missing 05 is a record of the ruling
+> rather than an oversight. `lessons()` globs, so the gap costs nothing.
 
-**The commander ruled: build the six slots where Design's drawing and
-`structure.py` agree, and author nothing for the seventh.** The slug is
-permanent (§8.4), `structure.py` is not edited by a unit module and was not
-edited by this one, and the unauthored slot renders an honest coming-soon page
-— the structure-first guarantee (§11 decision 8), which is a supported state
-rather than a gap to be apologised for.
+**Mide overrode that retirement on 23 Aug 2026 and `acids-and-carbonates` is
+built.** What actually happened is worth being precise about, because the
+obvious reading of "add the lesson" would have been wrong:
 
-So the modules here are numbered 01, 02, 03, 04, 06, 07 against the slot
-positions in `structure.py`, and the missing 05 is a record of the ruling
-rather than an oversight. `lessons()` globs, so the gap costs nothing.
+  · **The phantom slot was RENAMED, not joined by an eighth.**
+    `acid-plus-alkali` could never legally have been authored — acid + alkali
+    is owned twice already, by `neutralisation` (`CR.07a`) and by
+    `making-a-pure-dry-salt` (`CR.07b`), so a third lesson under that name
+    would double-own `CR.07` and fail `validate()`'s rule 4. Leaving it in
+    place beside a new eighth tuple would have left a permanent, un-fillable
+    coming-soon ghost at position 5 for ever.
+  · **Nothing below it moved.** `making-a-pure-dry-salt` was already at
+    position 6 and `catalysts` at position 7. No slug changed, no URL changed,
+    and the key stage total stayed at **185** slots — the phantom was already
+    counted.
+  · **It owns no statutory statement and mints none.** It carries §7.6's
+    declared exemption instead: `beyond_statutory: True`, `covers: []`,
+    `ks4_links` non-empty. See the lesson module's own docstring for why a
+    minted `CR.06c`/`CR.07c` would have been a false statement about the
+    National Curriculum rather than a tidier answer.
+
+So the modules here are now numbered 01 through 07 against the slot positions
+in `structure.py`, with no gap. `lessons()` globs, so nothing here changed to
+pick the new one up.
 
 ── THE TITLE AND THE SLUG COME FROM `structure.py`, THE WORDS FROM DESIGN ──
 
@@ -69,7 +100,7 @@ interactive tasks with a demand, a commitment and a reveal, which is what
 lifts it into `activities[]` leaving the right SHELL behind it.
 
 ⚠️ THE SEGMENT IS A MEASUREMENT, AND IN THIS UNIT IT IS UNIFORM. Measured from
-Design's own markup, every anchored instrument section in all six lessons
+Design's own markup, every anchored instrument section in all seven lessons
 carries `class="ks3-block"` and nothing else:
 
     c6-01 #s-bench    ks3-block  light  → check
@@ -80,6 +111,9 @@ carries `class="ks3-block"` and nothing else:
     c6-03 #s-uses     ks3-block  light  → check
     c6-04 #s-bench    ks3-block  light  → check
     c6-04 #s-test     ks3-block  light  → check
+    c6-05 #s-rig      ks3-block  light  → check
+    c6-05 #s-bench    ks3-block  light  → check
+    c6-05 #s-world    ks3-block  light  → check
     c6-06 #s-name     ks3-block  light  → check
     c6-06 #s-method   ks3-block  light  → check
     c6-07 #s-bench    ks3-block  light  → check
@@ -119,6 +153,8 @@ _INSTRUMENT_SEGMENTS = {
     "salt-namer":       "check",
     "method-order":     "check",
     "catalyst-bench":   "check",
+    "step-rig":         "check",
+    "solid-sorter":     "check",
 }
 
 # Keys that stay on the BLOCK when an instrument is lifted, because they
@@ -165,10 +201,11 @@ def _normalise(lesson):
 def lessons():
     """The authored C6 lesson records, in slot order, normalised.
 
-    A slot with no module here renders an honest coming-soon page — that is
-    the structure-first guarantee (§11 decision 8) and not a gap to be
-    apologised for. `acid-plus-alkali` is that slot, on purpose; see the module
-    docstring.
+    ⊕ MRB-281 — all SEVEN slots are authored and C6 has no coming-soon page.
+    This used to name `acid-plus-alkali` as a deliberately empty slot; that
+    slot was renamed to `acids-and-carbonates` and built. A slot with no module
+    here would still render an honest coming-soon page — the structure-first
+    guarantee (§11 decision 8) — and there is simply no longer one in C6.
     """
     found = []
     for mod in sorted(m.name for m in pkgutil.iter_modules(__path__)):

@@ -1,25 +1,52 @@
-"""C6 — Acids and alkalis. Six lessons, Year 8 Chemistry.
+"""C6 — Acids and alkalis. Seven lessons, Year 8 Chemistry.
 
 The thin unit wrapper. The lesson records live one per module under
 `ks3_data/c6/`, authored against Claude Design's approved reference screens
 (`docs/ks3/design-reference/c6/`) under MRB-220.
 
-⚠️ **SIX LESSONS AGAINST SEVEN SLOTS AND SEVEN DRAWINGS, AND THE GAP IS A
-RULING.** `structure.py`'s fifth C6 slot is `acid-plus-alkali`; Design drew
-`c6-05-acids-and-carbonates` there instead and flagged the divergence herself in
-NOTES-C6 §2 with "Ruling wanted" — her case being that acid + carbonate is the
-third of the three acid reaction families and carries the limewater test, her
-case against being that it is not in §7 and owns no statutory statement.
+── SEVEN LESSONS AGAINST SEVEN SLOTS AND SEVEN DRAWINGS ────────────────
 
-The commander ruled: build the six slots where the drawing and the skeleton
-agree, author nothing for the seventh. `structure.py` is not edited by a unit
-module and was not edited by this one, and the unauthored slot renders an
-honest coming-soon page — the structure-first guarantee (§11 decision 8).
+⊖ **SUPERSEDED 23 Aug 2026 (MRB-281).** The retirement ruling below is kept
+rather than deleted, because it is a ruling and because the paragraph that
+replaces it only makes sense beside it.
 
-If the ruling is ever revisited, the limewater test needs a home; NOTES-C6 §2
-suggests C10-02.
+> ⚠️ **SIX LESSONS AGAINST SEVEN SLOTS AND SEVEN DRAWINGS, AND THE GAP IS A
+> RULING.** `structure.py`'s fifth C6 slot is `acid-plus-alkali`; Design drew
+> `c6-05-acids-and-carbonates` there instead and flagged the divergence
+> herself in NOTES-C6 §2 with "Ruling wanted" — her case being that acid +
+> carbonate is the third of the three acid reaction families and carries the
+> limewater test, her case against being that it is not in §7 and owns no
+> statutory statement.
+>
+> The commander ruled: build the six slots where the drawing and the skeleton
+> agree, author nothing for the seventh. `structure.py` is not edited by a
+> unit module and was not edited by this one, and the unauthored slot renders
+> an honest coming-soon page — the structure-first guarantee (§11 decision 8).
+>
+> If the ruling is ever revisited, the limewater test needs a home; NOTES-C6
+> §2 suggests C10-02.
 
-── FIVE BULLETS, SIX LESSONS, AND ONE MINTED PAIR ──────────────────────
+**Mide overrode it on 23 Aug 2026: `acids-and-carbonates` is built, in this
+unit, and the limewater test lives here rather than in C10-02.** Design's case
+carried — it is the third of the three acid reaction families, and without it
+the unit teaches two reactions of acids and calls it a set.
+
+Three things about HOW it was built, because each is easy to get wrong:
+
+  · **The fifth slot was RENAMED in place**, from `acid-plus-alkali` /
+    "Acid + alkali: making a salt" to `acids-and-carbonates` / "Acids and
+    carbonates". No eighth tuple was inserted. `acid-plus-alkali` could never
+    legally have been authored — its topic is owned twice already by
+    `neutralisation` (`CR.07a`) and `making-a-pure-dry-salt` (`CR.07b`) — so
+    keeping it alongside would have left an un-fillable coming-soon ghost at
+    position 5 permanently.
+  · **Nothing below it moved and the key stage is still 185 slots.** Positions
+    6 and 7 were already `making-a-pure-dry-salt` and `catalysts`; the phantom
+    was already counted. Renaming an unauthored slot to something real does
+    not add a slot.
+  · **It owns no statutory statement and mints none.** See the next section.
+
+── FIVE BULLETS, SEVEN LESSONS, ONE MINTED PAIR AND ONE EXEMPTION ──────
 
 C6 owns `KS3.C.CR.04` through `CR.08`:
 
@@ -44,8 +71,33 @@ So the allocation is:
     the-ph-scale-and-indicators  CR.05
     neutralisation               CR.07a   (+ touches CR.04)
     acid-plus-metal              CR.06
+    acids-and-carbonates         none — beyond_statutory (see below)
     making-a-pure-dry-salt       CR.07b
     catalysts                    CR.08
+
+⚠️ **`acids-and-carbonates` MINTS NOTHING, AND MUST NOT.** None of C6's five
+statements mentions carbonates, carbon dioxide, or the reaction of an acid
+with either — `CR.06` is metals and hydrogen, `CR.07` is alkalis and water.
+`CR.07a`/`CR.07b` are legitimate because they split `CR.07`'s OWN text across
+two lessons that are both about acid + alkali; a `CR.06c` or `CR.07c` here
+would be different in kind, because acid + carbonate is chemically neither of
+its parents. The clause would misstate the National Curriculum, and a statutory
+id is permanent — "an ID never changes meaning ... a re-mint is a breaking
+change" (`docs/ks3/statutory-register.md`). Design's own §2 agrees: "it owns no
+statutory statement."
+
+So it takes §7.6's OTHER legal shape, all three legs enforced by
+`validate()` rule 3: `beyond_statutory: True`, `covers: []`, `ks4_links`
+non-empty (`chemistry/chemical-changes/reactions-of-acids`, which resolves).
+Nothing enters the coverage register and `docs/ks3/statutory-register.md`
+gains no row — it is generated from the DfE source and is never hand-edited.
+
+⚑ This revives a pattern Mide closed under MRB-199, where two off-spec B1
+lessons were REMOVED rather than kept as `beyond_statutory`. That gate is
+scoped to B1 and does not bind here, and the product call to keep this lesson
+in this unit is his own and freshly made; the tension is recorded in full in
+`ks3_data/c6/lesson_05_acids_and_carbonates.py`'s docstring rather than
+buried.
 
 ⚠️ **`CR.07a` AND `CR.07b` DO NOT EXIST IN `ks3_data/substatements.py` YET.**
 The commander's brief for this unit forbade minting clauses and that file is
@@ -61,21 +113,23 @@ statement.
 `touches`, which is not an ownership claim and is not gated. `CR.04` is owned
 once, by the lesson that defines the two words.
 
-── EIGHT INSTRUMENT FAMILIES, ONE DRAWN FIGURE, THIRTEEN PLACEMENTS ────
+── TEN INSTRUMENT FAMILIES, ONE DRAWN FIGURE, SIXTEEN PLACEMENTS ───────
 
     bottle-sorter     c6-01 #s-bench
     acid-judgements   c6-01 #s-hazard · c6-02 #s-choose · c6-03 #s-uses ·
-                      c6-04 #s-test · c6-07 #s-uses
+                      c6-04 #s-test · c6-05 #s-world · c6-07 #s-uses
     ph-strip (ART)    c6-02 #s-scale
     ph-bench          c6-02 #s-bench
     titration-dial    c6-03 #s-titrate
     acid-metal-grid   c6-04 #s-bench
+    step-rig          c6-05 #s-rig
+    solid-sorter      c6-05 #s-bench
     salt-namer        c6-06 #s-name
     method-order      c6-06 #s-method
     catalyst-bench    c6-07 #s-bench
 
-`acid-judgements` is one family placed five times, because Design draws the
-identical component on five of the six pages: a question, a small set of
+`acid-judgements` is one family placed six times, because Design draws the
+identical component on six of the seven pages: a question, a small set of
 options, one commitment, one answer. §6's warning about repeated block lineups
 is answered the way C5 answered it — the FLAGSHIP of every page is different,
 and this is the small second instrument beside each of them.

@@ -1533,21 +1533,39 @@ and `predicting-displacement` both argue from where a metal sits relative to hyd
 `ACID-07` is the entry that owns the belief they have to defeat. It now has a permanent id to be
 cross-referenced by.
 
-⚠️ **`ACID-08` IS DELIBERATELY UNUSED AND MUST STAY UNUSED.** Design's §6 assigns it to
-*"A gas that puts out a splint is carbon dioxide"*, on `acids-and-carbonates` — the lesson she drew
-into `structure.py`'s `acid-plus-alkali` slot and flagged herself for a ruling. The commander ruled
-that slot stays unauthored, so the belief has no page that elicits it and no page that confronts
-it, and an entry naming neither would fail MRB-244/248 the moment anything checked it. The number
-is left as a gap rather than the nine that follow being renumbered: **IDs are permanent, including
-the ones that never shipped.** If `acid-plus-alkali` is ever authored with the limewater test in
-it, `ACID-08` is waiting and means what Design said it means.
+⊕ **`ACID-08` IS LIVE AS OF 23 Aug 2026 (MRB-281).** The paragraph below is kept because it is an
+instruction to leave the id empty, and following it now would delete a shipped join.
 
-⚑ **`ACID-08` WOULD ALSO HAVE BEEN THE NINTH `NOS`-SHAPED ENTRY**, and Design says so: *"`ACID-08`
-is `NOS`-shaped — it is about what counts as a specific test, not about carbonates."* Nothing here
-opens `NOS` or moves anything into it. The ruling stands from MRB-246 and from C7's notes: whether
-`NOS` absorbs entries out of content families changes permanent ids across several units at once,
-and the next pass takes the parked list together with the principle written down. C6 adds nothing
-to that list, because the one entry that would have joined it was never authored.
+> ⚠️ **`ACID-08` IS DELIBERATELY UNUSED AND MUST STAY UNUSED.** Design's §6 assigns it to
+> *"A gas that puts out a splint is carbon dioxide"*, on `acids-and-carbonates` — the lesson she
+> drew into `structure.py`'s `acid-plus-alkali` slot and flagged herself for a ruling. The
+> commander ruled that slot stays unauthored, so the belief has no page that elicits it and no page
+> that confronts it, and an entry naming neither would fail MRB-244/248 the moment anything checked
+> it. The number is left as a gap rather than the nine that follow being renumbered: **IDs are
+> permanent, including the ones that never shipped.** If `acid-plus-alkali` is ever authored with
+> the limewater test in it, `ACID-08` is waiting and means what Design said it means.
+
+Mide overrode the retirement on 23 Aug 2026 and `acids-and-carbonates` is built — into that same
+slot, renamed in place from `acid-plus-alkali` rather than added beside it. So the last sentence
+above is what happened, exactly as written: **the id was waiting and means what Design said it
+means.** It was never reissued, never renumbered, and its statement is unchanged from her §6 table.
+That is the permanent-gap law working rather than being tested — an id held empty for two days is
+the same thing as an id held empty for two years.
+
+Its joins take the same repair as the other six `think-*` entries in this family: Design's proposed
+`think-reveal-specificity` is unreachable, because the `#s-think` reveal panel is drawn by
+`build_ks3.py`'s shared `r_activity` and carries no `id`. Both columns name `think-commit-splint`,
+the activity that holds the commitment AND the two confronting paragraphs.
+
+⚑ **`ACID-08` IS STILL THE ENTRY THAT WOULD JOIN `NOS` FIRST**, and Design says why: *"`ACID-08`
+is `NOS`-shaped — it is about what counts as a specific test, not about carbonates."* She is right,
+and its lesson now argues exactly that in prose — *"A good test has one answer. A test that dozens
+of substances could pass is not evidence."* Nothing here opens `NOS` or moves anything into it. The
+ruling stands from MRB-246 and from C7's notes: whether `NOS` absorbs entries out of content
+families changes permanent ids across several units at once, and the next pass takes the parked
+list together with the principle written down. **C6 adds one to that parked list**, where before it
+added none — the sentence below the old paragraph said C6 added nothing "because the one entry that
+would have joined it was never authored", and that is the half that has changed.
 
 ⚠️ **TWO JOINS ARE NOT DESIGN'S PROPOSED NAMES, AND BOTH CHANGES ARE FORCED.** MRB-244/248 resolve
 `elicited_by` and `confronted_by` against the BUILT page, where the only legal names are `id="…"`
@@ -1579,6 +1597,7 @@ and `data-activity="…"`.
 | `ACID-05` | Neutralising an acid destroys it; only water is left. | `think-commit-gone` | `think-commit-gone` | `neutralisation` |
 | `ACID-06` | The pH climbs steadily as alkali is added. | `s-titrate` | `curve-reveal` | `neutralisation` |
 | `ACID-07` | The bubbles are the metal turning into gas. | `think-commit-fizz` | `think-commit-fizz` | `acid-plus-metal` |
+| `ACID-08` | A gas that puts out a splint is carbon dioxide. | `think-commit-splint` | `think-commit-splint` | `acids-and-carbonates` |
 | `ACID-09` | Boiling a solution dry gives the best crystals. | `think-commit-boil` | `think-commit-boil` | `making-a-pure-dry-salt` |
 | `ACID-10` | A catalyst is used up slowly, which is why it wears out. | `think-commit-consumed` | `think-commit-consumed` | `catalysts` |
 

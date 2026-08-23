@@ -20720,7 +20720,8 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 
    ── EVERY SECTION IS LIGHT ─────────────────────────────────────────────
    Measured off her own markup: `#s-bench`, `#s-hazard`, `#s-scale`,
-   `#s-choose`, `#s-titrate`, `#s-uses`, `#s-test`, `#s-name` and `#s-method`
+   `#s-choose`, `#s-titrate`, `#s-uses`, `#s-test`, `#s-rig`, `#s-world`,
+   `#s-name` and `#s-method`
    are each `class="ks3-block"` with no second class. There is no ink-dark
    practical block anywhere in C6, exactly as there is none in C3, C4 or C5. A
    later pass that "restores" a practical shell here would paint an instrument
@@ -21679,6 +21680,172 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 }
 
 
+/* ═══ c6-05 · #s-rig · step-rig ════════════════════════════════════════
+   Five steps in one column. Every step's INSTRUCTION is on the page from the
+   start and only its REASON is staged, so the list never changes height
+   under the student's finger by more than the paragraph they just asked for.
+
+   ⚠️ `data-open` IS A STATE, NOT A MARK. There is no right answer anywhere in
+   this block — it is a method — so the only thing the border and the ground
+   say is "you have been here", which is what `data-open` says everywhere else
+   in the key stage. `--ks3-ok` and `--ks3-danger` do not appear.
+
+   Measured off Design's own composed style strings: 16px 18px padding,
+   `--ks3-r-panel`, a 2px border moving from `--ks3-rule` to `--ks3-ink` and a
+   ground moving from `--ks3-inset` to `--ks3-card` as each step opens; the
+   number is 14px mono at `flex: 0 0 24px`, the instruction is display 700 at
+   20px, and the reason is 18px body indented to clear the number. */
+
+.ks3-srig .ks3-srig-list {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ks3-srig .ks3-srig-step {
+  padding: 16px 18px;
+  border-radius: var(--ks3-r-panel);
+  border: 2px solid var(--ks3-rule);
+  background: var(--ks3-inset);
+}
+.ks3-srig .ks3-srig-step[data-open="1"] {
+  border-color: var(--ks3-ink);
+  background: var(--ks3-card);
+}
+.ks3-srig .ks3-srig-head {
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+}
+.ks3-srig .ks3-srig-num {
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+  flex: 0 0 24px;
+}
+.ks3-srig .ks3-srig-what {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.3;
+  color: var(--ks3-ink);
+}
+/* Indented to the instruction's own text edge — 24px of number plus the
+   14px gap — so the reason reads as belonging to the line above it rather
+   than as a sixth step. */
+.ks3-srig .ks3-srig-why {
+  margin: 10px 0 0 38px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+.ks3-srig .ks3-srig-controls {
+  margin-top: 16px;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+
+/* ═══ c6-05 · #s-bench · solid-sorter ══════════════════════════════════
+   Four solids in one column, each a name, a what-it-looks-like tag, two
+   buttons and a reveal. `bottle-sorter`'s measurements to the pixel, because
+   Design draws the same card on both pages — the difference is that this one
+   carries a word equation inside the reveal for the rows that react.
+
+   The `looks` tag is doing the same work `bottle-sorter`'s where-it-lives tag
+   does: three of the four look identical in the bottle and the fourth is
+   green and fizzes hardest, so the tag is the evidence the bench takes away
+   rather than a caption. */
+
+.ks3-solid .ks3-solid-cards {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ks3-solid .ks3-solid-card {
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  border: 2px solid var(--ks3-ink);
+  background: var(--ks3-inset);
+}
+.ks3-solid .ks3-solid-card[data-open="1"] { background: var(--ks3-card); }
+
+.ks3-solid .ks3-solid-head {
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.ks3-solid .ks3-solid-name {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 21px;
+  line-height: 1.25;
+  color: var(--ks3-ink);
+}
+.ks3-solid .ks3-solid-looks {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-solid .ks3-solid-opts {
+  margin-top: 12px;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+.ks3-solid .ks3-solid-reveal {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule);
+}
+.ks3-solid .ks3-solid-verdict {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--ks3-ink);
+}
+.ks3-solid .ks3-solid-why {
+  margin: 7px 0 0;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+/* The word equation, and it WRAPS rather than scrolls: "hydrochloric acid +
+   sodium hydrogencarbonate makes sodium chloride + water + carbon dioxide"
+   is the longest line in the unit and at 390px it cannot be one row. Wrapping
+   keeps every part on the ground it belongs to; a sideways scroller here
+   would be a second scroll direction inside a card. */
+.ks3-solid .ks3-solid-eq {
+  margin: 10px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--ks3-ink);
+}
+.ks3-solid .ks3-solid-arrow { flex: 0 0 auto; }
+
+
 /* ═══ THE `[hidden]` GUARD ═════════════════════════════════════════════
    ⚠️ LOAD-BEARING IN THIS BLOCK, not precautionary. An author `display`
    beats the UA stylesheet's `[hidden] { display: none }` at ANY specificity,
@@ -21698,7 +21865,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 .ks3-amgrid [hidden],
 .ks3-namer [hidden],
 .ks3-morder [hidden],
-.ks3-catb [hidden] { display: none !important; }
+.ks3-catb [hidden],
+.ks3-srig [hidden],
+.ks3-solid [hidden] { display: none !important; }
 
 /* ═══ END C6 ═══ */
 
