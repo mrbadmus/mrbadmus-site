@@ -189,10 +189,15 @@ GATES = [
     dict(name="student_controls_drive",
          cmd=["python3", "student_controls_drive.py"],
          speed="slow",
-         needs="mrbadmus_site/student/class-fixture.html",
+         needs_env=("MRB_DRIVE_PASSWORD", "MRB_TEST_STUDENT_PASSWORD"),
          why="presses every control on the student pages and fails on one "
              "that does nothing. The student-side twin of "
-             "ks3_instrument_liveness."),
+             "ks3_instrument_liveness. Signs in to production, so it is "
+             "SKIPPED BY NAME without a credential. ⚠️ Its --fixture mode "
+             "needs none and is NOT what this row runs: the file's own header "
+             "says the whole EXPECT table is invalid under it, and "
+             "registering the weaker sweep as though it were the real one is "
+             "the overstated-scope defect this registry exists to stop."),
 
     dict(name="export_ks3_questions_verify",
          cmd=["python3", "export_ks3_questions.py", "--verify"],

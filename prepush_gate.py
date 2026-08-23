@@ -97,8 +97,14 @@ def _skip_reason(gate):
     # is a PASS that measured nothing, which is the failure mode this whole
     # guard exists to make impossible.
     env = gate.get("needs_env")
-    if env and not os.environ.get(env):
-        return "$%s is not set, so this gate cannot reach what it checks" % env
+    if env:
+        # A row may name ALTERNATIVES — student_controls_drive accepts either
+        # MRB_DRIVE_PASSWORD or MRB_TEST_STUDENT_PASSWORD. Any one present is
+        # enough; the skip only fires when none of them is.
+        names = (env,) if isinstance(env, str) else tuple(env)
+        if not any(os.environ.get(n) for n in names):
+            return ("none of %s is set, so this gate cannot reach what it "
+                    "checks" % ", ".join("$" + n for n in names))
     return None
 
 
