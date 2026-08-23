@@ -985,6 +985,8 @@
     var seen = {};                  // every index THIS sink has ever held
     Object.keys(pending).forEach(function (k) { seen[k] = 1; });
     var flushing = false;
+    /* ⊕ 23 Aug 2026 — THE PROMISE A CONCURRENT CALLER WAITS ON. See `flush`. */
+    var flushWait = null;
 
     /* A write keeps any entry for a question this sink has never touched — a
        second tab on the same assignment — and drops the ones it HAS touched
@@ -1167,9 +1169,31 @@
        one the last unit found stuck true for ever behind a hung `post`; it is
        safe now for the same reason it was made safe then — `post` carries a
        deadline, so every path out of this loop reaches the `finally`. */
-    async function flush() {
-      if (flushing) { return; }
+    /* ⚠️ ⊕ 23 Aug 2026 — A CONCURRENT CALLER NOW WAITS FOR THE DRAIN, AND THAT
+       IS A DATA-LOSS FIX, NOT A TIDY-UP.
+
+       This used to read `if (flushing) { return; }`, which resolves INSTANTLY.
+       `complete()` opens with `flush().then(...)` and a comment promising
+       "answers first" — but every answer also calls `flush()` un-awaited, so
+       when a student pressed Complete a drain was almost always already in
+       flight. `complete`'s flush then no-opped, resolved on the spot, and the
+       completion POST overtook the answers still draining.
+
+       `/api/assignment/complete` flips the submission off `in_progress`, and
+       the answer route then REFUSES the stragglers with a 409. They are not
+       retried into existence later: the row will not accept them again.
+
+       Measured on production, one completion in four: the student was shown
+       `3 / 4 · 75%` and the database recorded `score 2, max_score 2` with two
+       of the four attempts missing. The last answer POSTed 240ms AFTER
+       `completed_at`. Answer POSTs measured 386–2605ms and drain serially, so
+       a cold backend or a phone on 4G widens the window rather than closing it.
+
+       Returning the in-flight promise makes `complete`'s own comment true. */
+    function flush() {
+      if (flushing) { return flushWait; }
       flushing = true;
+      flushWait = (async function () {
       try {
         for (;;) {
           var keys = Object.keys(pending);
@@ -1201,7 +1225,10 @@
         console.error("[student-live] answer not saved yet", err);
       } finally {
         flushing = false;
+        flushWait = null;
       }
+      })();
+      return flushWait;
     }
 
     if (typeof window.addEventListener === "function") {
@@ -1304,8 +1331,38 @@
 
       complete: function (elapsed) {
         /* Answers first. A completion that overtook the last answer would mark
-           the work finished without the answer that finished it. */
+           the work finished without the answer that finished it.
+
+           ⊕ 23 Aug 2026 — AND THE SECOND HALF OF THAT FIX. `flush` now waits
+           for an in-flight drain, which closes the race that was actually
+           losing marks. This closes the remaining one: a drain that ENDED
+           because a send FAILED leaves entries in `pending`, and completing on
+           top of them asks the backend to freeze a submission the student's
+           answers can never be added to afterwards.
+
+           So the emptiness is CHECKED rather than assumed. If the queue will
+           not drain, the completion is not sent: the answers stay queued on
+           the device, the submission stays `in_progress`, and the next visit —
+           which reads its state from the server — sends them and can complete
+           for real. A completion is the one thing on this page that cannot be
+           taken back.
+
+           ⚠️ AND IT IS ONE DRAIN, NOT TWO. The first draft re-drove the queue
+           before checking, which read as belt-and-braces and was not: `flush`
+           already loops until the queue is empty or a send throws, so a second
+           call repeats the failure that just happened — and it does so behind
+           `post`'s own 75s cold deadline, chaining two of them. Measured, that
+           held the button's spinner for up to two and a half minutes where the
+           old code returned instantly. A retry that cannot succeed is not
+           worth a minute of a child staring at a spinner; the recovery path is
+           the next page load, and it is driven. */
         return flush().then(function () {
+          var stuck = Object.keys(pending).length;
+          if (stuck) {
+            var e = new Error("answers still queued: " + stuck);
+            e.code = "answers_unsaved";
+            throw e;
+          }
           return post("/api/assignment/complete", {
             assignment_id: assignment.id,
             total_time_seconds: elapsed == null ? null : elapsed
