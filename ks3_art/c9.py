@@ -700,8 +700,17 @@ def r_extraction_route(a, act_id):
         for g in groups if g["id"] in by_group)
 
     close = _close_panel(a, "ks3-xroute", "data-xroute-close")
+    # ⊕ MRB-282. `data-pairs` used to be the attribute name here, and it is
+    # B1's INSTRUMENT MARKER (`sort-pairs`, ks3_art/b1.py:1233). `shared/ks3.js`
+    # dispatches `wirePairs` on `[data-pairs]` across the whole document, so
+    # this counter made every C9 extraction page call B1's wire function on a
+    # div that has nothing to do with it. It bails on the missing
+    # `.ks3-pairrow`, so nothing broke — but that is the wire function being
+    # defensive, not the markup being right, and it is the same collision
+    # MRB-279 ruled build-blocking one level down on the shell CLASS. Nothing
+    # reads this value; renaming it costs nothing and removes the hook.
     return ('<div class="ks3-xroute" data-xroute data-total="%d" '
-            'data-pairs="%d">'
+            'data-xroute-pairs="%d">'
             '<div class="ks3-xroute-pickers">'
             '<div class="ks3-xroute-ores">%s</div>'
             '<div class="ks3-xroute-methods">%s</div></div>'
@@ -860,8 +869,10 @@ def r_spec_bench(a, act_id):
                            t("%s for the %s" % (m["name"], j["name"])), inner))
 
     close = _close_panel(a, "ks3-specb", "data-specb-close")
+    # ⊕ MRB-282 — same collision with B1's `sort-pairs` marker; see the note
+    # in `_extraction_route` above.
     return ('<div class="ks3-specb" data-specb data-total="%d" '
-            'data-pairs="%d">'
+            'data-specb-pairs="%d">'
             '<div class="ks3-specb-jobs">%s</div>'
             '<div class="ks3-specb-shelf">%s</div>'
             '<div class="ks3-specb-readout" data-specb-readout>'
