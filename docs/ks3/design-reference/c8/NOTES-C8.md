@@ -19,8 +19,27 @@ lesson count by design — see §2.** Everything is draft and unreviewed.
 
 **Every statutory statement in C1–C8 is now covered.** `PT.06` — the chemical
 properties of metal and non-metal oxides with respect to acidity — was the last
-gap and was closed by `c8-07`, authored 21 Aug 2026 as the seventh lesson §7
-names.
+gap, and it was closed by `c8-07` on **23 August 2026**.
+
+⊖ **CORRECTED 23 Aug 2026. This paragraph used to say the gap "was closed by
+`c8-07`, authored 21 Aug 2026", and that was not true when it was written.**
+What happened on 21 August is that Design DREW
+`c8-07-metal-and-non-metal-oxides.dc.html` — a real, finished artboard, not a
+stub. No lesson record existed: `ks3_data/c8/` held `lesson_01` to `lesson_06`
+and nothing else, the slot rendered a coming-soon page, and three other files
+(`chemistry_c8_periodic.py`, `ks3_data/c8/__init__.py` and
+`ks3_instrument_liveness.py`) each said so in their own words.
+
+The correction is dated rather than silently overwritten because the false claim
+cost a run: a later session read the `.dc.html` on disk, took it for the build,
+and reported `c8-07` as done. **MRB-205 is what makes that a distinction and not
+a technicality — Design draws, Code renders.** A page in the design reference is
+half a lesson, and this file is the half that says which half is finished, so a
+sentence here claiming a build that has not happened is the one kind of error
+the file cannot afford.
+
+Everything below in §8 was accurate as a BRIEF throughout, and the build
+followed it.
 
 ---
 
@@ -44,7 +63,8 @@ The case against: it is 40% over the specified lesson count for one statutory
 statement.
 
 **RULED (a), 21 Aug 2026 — keep all three group lessons and add the oxides
-lesson, giving a seven-lesson unit.** The alternatives were (b) merge 04–06 into
+lesson, giving a seven-lesson unit.** ⊕ The ruling was taken on 21 August and
+BUILT on 23 August; §1 above records why the two dates are kept apart. The alternatives were (b) merge 04–06 into
 one and match §7 exactly at five, and (c) move oxides to C9 where the
 reactivity series lives. (b) was rejected because the compression falls almost
 entirely on group 7, and group 7's reversed trend is the single most valuable
@@ -190,7 +210,14 @@ worth keeping separate, but the cross-reference should be recorded.
 ## 7. For Code
 
 - Seven instruments, all DOM, no canvas, no animation loops.
-- Rail stops: five in every lesson except `c8-06` and `c8-07`, which have six.
+- Rail stops: five in every lesson except `c8-06`, which has six.
+  ⊖ **CORRECTED 23 Aug 2026: `c8-07` has FIVE, not six.** Its own `RAIL` const
+  lists `s-hook s-rule s-bench s-think s-ladder`, and
+  `docs/ks3/rail-manifest.md` — generated from the delivered page rather than
+  written by hand — records the same five with `s-rule=s-hook`. `README.txt`
+  says six as well and is wrong for the same reason. The sixth thing on the
+  page is the closing key note, which is a dark section the engine emits and
+  has never been a rail stop in any C8 lesson.
 - SVG arrows for every equation, per the C4 convention.
 - `c8-06`'s forward link to `c8-07-metal-and-non-metal-oxides.html` **now
   resolves**. The intra-unit dead link recorded here as a build blocker is
@@ -284,8 +311,12 @@ Unicode symbols.
 
 - The forward link in `c8-06` was left pointing at `c8-07` rather than reversed;
   flagged as a deviation at the time and still open if the direction bothers you.
-- `c8-07` does not yet carry a Law 7 vocabulary block. Gate E was added the same
-  day and covers all 103 lessons with no named escapes, so **this lesson will
-  fail gate E until a five-card block is added** — its three definitions live in
-  the KEY FACT block, which satisfies gate D but not gate E. One pass, listed
-  here rather than assumed done.
+- ⊕ **CLOSED 23 Aug 2026.** This read: *"`c8-07` does not yet carry a Law 7
+  vocabulary block … this lesson will fail gate E until a five-card block is
+  added."* Correct, and it was the first thing the build had to add that Design
+  had not drawn. Five cards are authored on the lesson record and a `keyword`
+  block sits at `#s-words`, the same component in the same position as
+  `c8-06`'s and not a rail stop on either page. The terms are the three the KEY
+  FACT box already defines — oxide, base, alkali — plus **insoluble** and
+  **neutral**, which are the two words the bench cannot be read without and are
+  each the whole of one of the two counter-cases.

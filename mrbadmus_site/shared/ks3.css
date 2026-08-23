@@ -21922,7 +21922,8 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 .ks3-tread-block,
 .ks3-trough-block,
 .ks3-hgrid-block,
-.ks3-shell-block { --c8-gap: 12px; }
+.ks3-shell-block,
+.ks3-oxb-block { --c8-gap: 12px; }
 
 /* ── c8-01 · property-sorter ───────────────────────────────────────────── */
 .ks3-prop { display: flex; flex-direction: column; gap: var(--c8-gap); }
@@ -22262,6 +22263,145 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   color: var(--ks3-ink-body);
 }
 
+/* ── c8-07 · oxide-bench ───────────────────────────────────────────────
+   Six tray chips, two beakers, and one ink-dark comparison panel. Measured off
+   Design's `c8-07-metal-and-non-metal-oxides.dc.html` — the beaker at
+   100 x 128 with a 3px ink wall and no top edge, the fill at 76% of the
+   height, the reading at 48px display 800.
+
+   ⚠️ CONTAINMENT, NOT CLIPPING — AND THE GLASS IS THE POSITIONED BOX. The
+   water fill and the undissolved solid are both `position: absolute`, so
+   `.ks3-oxb-glass` carries `position: relative` and they are contained by it
+   rather than escaping to the nearest positioned ancestor and widening the
+   document. `overflow: hidden` is on the glass ONLY: it is what makes the
+   fill take the rounded bottom of the beaker, and there is nothing inside it
+   a student needs to scroll to.
+
+   ⚠️ Z-ORDER IS THE DRAWING. Body, then fill, then solid, then the numeral
+   OUTSIDE the glass. It falls out of source order — the solid is emitted after
+   the water — so no `z-index` is spent and no later rule can quietly reverse
+   it by stacking context.
+
+   ⚠️ THE PH NUMERAL IS `--ks3-accent-text` ON THE LIGHT CARD AND `--ks3-data`
+   ON THE INK PANEL, and that is a CORRECTION to Design's markup rather than a
+   copy of it. She writes `var(--ks3-data, var(--ks3-accent-text))` in both
+   places. `--ks3-data` is DEFINED, so the fallback never fires and the light
+   card would take `#8FB7FF` — an ON-INK token, about 2:1 on cream, at the one
+   size on this page that the whole instrument is read from. The fallback she
+   wrote is the value she meant on that ground, so it is taken directly. On the
+   side-by-side panel, which really is on ink, `--ks3-data` is correct and is
+   the only place C8 spends it. */
+.ks3-oxb { display: flex; flex-direction: column; gap: 18px; }
+.ks3-oxb .ks3-oxb-tray { display: flex; gap: 9px; flex-wrap: wrap; }
+.ks3-oxb .ks3-oxb-chip {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-size: 16px; font-weight: 700;
+}
+.ks3-oxb .ks3-oxb-chipformula {
+  font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+.ks3-oxb .ks3-oxb-chip[aria-pressed="true"] .ks3-oxb-chipformula {
+  color: var(--ks3-accent-text);
+}
+.ks3-oxb .ks3-oxb-beakers { display: flex; gap: 16px; flex-wrap: wrap; }
+.ks3-oxb .ks3-oxb-beaker { flex: 1 1 300px; min-width: 0; }
+.ks3-oxb .ks3-oxb-panel {
+  padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  border: 2px solid var(--ks3-ink); background: var(--ks3-card);
+}
+/* The empty beaker is the INSET ground, so "nothing added yet" and "something
+   is in here" differ by more than a sentence. Both still say which they are. */
+.ks3-oxb .ks3-oxb-panel[data-oxb-panel$=":empty"] {
+  background: var(--ks3-inset);
+}
+.ks3-oxb .ks3-oxb-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 12px; flex-wrap: wrap;
+}
+.ks3-oxb .ks3-oxb-slot,
+.ks3-oxb .ks3-oxb-kind {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .08em; text-transform: uppercase;
+}
+.ks3-oxb .ks3-oxb-slot { color: var(--ks3-ink-muted); }
+.ks3-oxb .ks3-oxb-kind { color: var(--ks3-accent-text); }
+.ks3-oxb .ks3-oxb-title {
+  margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; line-height: 1.25; color: var(--ks3-ink);
+}
+.ks3-oxb .ks3-oxb-row {
+  margin-top: 16px; display: flex; gap: 20px; align-items: flex-end;
+  flex-wrap: wrap;
+}
+.ks3-oxb .ks3-oxb-glass {
+  position: relative; flex: 0 0 100px; width: 100px; height: 128px;
+  border: 3px solid var(--ks3-ink); border-top-width: 0;
+  border-radius: 4px 4px 20px 20px; background: var(--ks3-ground);
+  overflow: hidden;
+}
+.ks3-oxb .ks3-oxb-water {
+  display: block; position: absolute; left: 0; right: 0; bottom: 0; height: 76%;
+}
+.ks3-oxb .ks3-oxb-solid {
+  display: block; position: absolute; left: 5px; right: 5px; bottom: 0;
+  border-radius: 9px 9px 15px 15px;
+}
+.ks3-oxb .ks3-oxb-phlabel {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 12px;
+  font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-oxb .ks3-oxb-ph {
+  margin: 2px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 48px; line-height: 1; letter-spacing: -.03em;
+  color: var(--ks3-accent-text);
+}
+.ks3-oxb .ks3-oxb-ui {
+  margin: 10px 0 0; font-size: 17px; line-height: 1.4;
+  color: var(--ks3-ink-body);
+}
+.ks3-oxb .ks3-oxb-residue {
+  margin: 14px 0 0; font-size: 17px; line-height: 1.55; font-weight: 600;
+  color: var(--ks3-ink);
+}
+.ks3-oxb .ks3-oxb-note {
+  margin: 8px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+/* The one ink-dark surface in C8. Every text rule under it is written at
+   (0,2,0) so `.ks3-dark p` can never out-specify a component's own colour. */
+.ks3-oxb .ks3-oxb-compare {
+  padding: 20px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ink);
+}
+.ks3-oxb .ks3-oxb-cmp-eyebrow {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ks3-data);
+}
+.ks3-oxb .ks3-oxb-cmp {
+  margin: 8px 0 0; font-size: 19px; line-height: 1.6;
+  color: var(--ks3-on-dark-body);
+}
+.ks3-oxb .ks3-oxb-controls {
+  display: flex; gap: 14px; flex-wrap: wrap; align-items: center;
+}
+.ks3-oxb .ks3-oxb-clear {
+  font: inherit; font-size: 16px; font-weight: 700;
+  padding: 12px 20px; min-height: 44px;
+  border-radius: var(--ks3-r-control); border: 2px solid var(--ks3-ink);
+  background: var(--ks3-band); color: var(--ks3-ink); cursor: pointer;
+}
+.ks3-oxb .ks3-oxb-clear[disabled] {
+  background: var(--ks3-row-dim); cursor: default; opacity: .45;
+}
+.ks3-oxb .ks3-oxb-untested {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 14px;
+  font-weight: 500; color: var(--ks3-ink-muted);
+}
+.ks3-oxb .ks3-oxb-untested-lead { color: var(--ks3-ink-muted); }
+
 /* ── closing panels, shared shape ──────────────────────────────────────── */
 .ks3-prop-close,
 .ks3-gapf-close,
@@ -22269,11 +22409,13 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 .ks3-tread-close,
 .ks3-trough-close,
 .ks3-hgrid-close,
+.ks3-oxb-close,
 .ks3-shel-close {
   margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
   background: var(--ks3-band); border: 2px solid var(--ks3-ink);
 }
 .ks3-prop .ks3-prop-closetitle,
+.ks3-oxb .ks3-oxb-closetitle,
 .ks3-gapf .ks3-gapf-closetitle,
 .ks3-pcards .ks3-pcards-closetitle,
 .ks3-tread .ks3-tread-closetitle,
@@ -22284,6 +22426,7 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   font-size: 22px; line-height: 1.25; color: var(--ks3-ink);
 }
 .ks3-prop-close p,
+.ks3-oxb-close p,
 .ks3-gapf-close p,
 .ks3-pcards-close p,
 .ks3-tread-close p,
@@ -22294,6 +22437,7 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   color: var(--ks3-ink);
 }
 .ks3-prop-close p:last-child,
+.ks3-oxb-close p:last-child,
 .ks3-gapf-close p:last-child,
 .ks3-pcards-close p:last-child,
 .ks3-tread-close p:last-child,
@@ -22307,6 +22451,7 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    this the halogen grid would show all nine readouts at once, the periodic
    table all twenty, and both would still read as correct CSS. */
 .ks3-prop [hidden],
+.ks3-oxb [hidden],
 .ks3-gapf [hidden],
 .ks3-pcards [hidden],
 .ks3-tread [hidden],

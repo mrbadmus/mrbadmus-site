@@ -1,8 +1,8 @@
 """ks3_art.c8 — C8's instruments and registrations.
 
 ONE UNIT, ONE FILE. Nothing here is read by any other unit; nothing here may
-be added to any other unit's module. C8 is *The periodic table*: six authored
-lessons, SEVEN instrument families and NO drawn figure, all DOM, no canvas and
+be added to any other unit's module. C8 is *The periodic table*: seven authored
+lessons, EIGHT instrument families and NO drawn figure, all DOM, no canvas and
 no animation loop anywhere in the unit.
 
 ═══════════════════════════════════════════════════════════════════════════
@@ -98,7 +98,7 @@ THE HOOKS ARE AN INTERFACE
 ═══════════════════════════════════════════════════════════════════════════
 
 Every ``data-`` attribute below is named off the family's short name — prop /
-gapf / pcard / tread / trough / hgrid / shel — and is the contract
+gapf / pcard / tread / trough / hgrid / shel / oxb — and is the contract
 ``shared/ks3.js`` binds against. Renaming one here without renaming it there is
 a silent dead instrument.
 
@@ -106,8 +106,30 @@ Checked free before minting, against every KIND_SHELL value in ``ks3_art`` and
 against ``shared/ks3.js`` and ``shared/ks3.css``:
 ``ks3-prop-block``, ``ks3-gapfill-block``, ``ks3-pcards-block``,
 ``ks3-tread-block``, ``ks3-trough-block``, ``ks3-hgrid-block``,
-``ks3-shell-block``. Note ``ks3-gap-block`` (c1) and ``ks3-psort-block`` (c3)
-are TAKEN and are deliberately not what any of these is called.
+``ks3-shell-block``, ``ks3-oxb-block``. Note ``ks3-gap-block`` (c1) and
+``ks3-psort-block`` (c3) are TAKEN and are deliberately not what any of these
+is called.
+
+═══════════════════════════════════════════════════════════════════════════
+THE pH RAMP IS COPIED, NOT IMPORTED — AND THAT IS THE `halogen-grid` RULING
+═══════════════════════════════════════════════════════════════════════════
+
+``PH_COLOURS`` below is byte-identical to ``ks3_art/c6.py``'s, which is
+byte-identical to Design's own ``PH_COLOURS`` in c6-02, c6-03 **and in her
+c8-07 script, where she re-declares the whole fifteen-value array rather than
+referencing c6's**. That re-declaration is the measurement: Design treats the
+ramp as data each page carries.
+
+Importing c6's would be this module reading another unit's module, which the
+header above forbids in both directions and which ``docs/ks3/worktrees.md`` §1
+forbids for the same reason ``halogen-grid`` is not ``reactivity-grid``. The
+values are the printed universal-indicator chart — scientific data, not brand
+colour — so two copies cannot drift without one of them becoming factually
+wrong, which is a different and much louder failure than a palette drifting.
+
+⚠️ AND IDENTITY IS NEVER HUE-ONLY HERE EITHER. Every beaker prints its pH as a
+NUMBER at 48px, says the indicator colour in WORDS, and describes what is left
+on the bottom in a sentence. ``r_oxide_bench`` refuses a payload that cannot.
 """
 
 import re
@@ -1273,6 +1295,411 @@ def r_shell_strip(a, act_id):
             '%s%s</div>' % (slots, len(rows), "".join(out), close))
 
 
+# ═══ c8-07 · oxide-bench ═════════════════════════════════════════════════
+#
+# THE FIFTEEN VALUES ARE SCIENTIFIC DATA. See the note in this module's
+# header. Index IS the pH.
+PH_COLOURS = [
+    "#C1272D", "#D2382B", "#E04A22", "#EA6A1E", "#EE8C1B",
+    "#EFB120", "#D7CA2A", "#4FA352", "#3E9C86", "#2F8DA8",
+    "#2A6FA8", "#2E4E96", "#453C8E", "#553191", "#5E2483",
+]
+
+# What is left on the bottom of the beaker, and how much of it. Design's own
+# `{ thin: 11, heap: 28 }` and `residue === 'heap' ? '#1A1714' : '#EFE7D6'`.
+#
+# ⚠️ THESE TWO HEX VALUES ARE OBSERVATION, NOT PALETTE, exactly as the ramp
+# above is. Copper oxide is a black powder and magnesium oxide is a white one;
+# routing either through `--ks3-accent` would make the drawing wrong in order
+# to make the stylesheet tidy. Neither is ever the only channel — every panel
+# says in a sentence what is on the bottom and what colour it is.
+RESIDUE_DEPTH = {"thin": 11, "heap": 28}
+RESIDUE_DARK = "#1A1714"
+RESIDUE_PALE = "#EFE7D6"
+
+OXIDE_KINDS = ("metal", "non-metal")
+
+
+def _ph_word(ph):
+    """The universal-indicator colour at a whole-number pH, in WORDS.
+
+    Design's `uiWord()`, ported unchanged. It exists so that the beaker's
+    reading is announced rather than merely painted: the ramp above is the only
+    non-token colour in the unit and it is allowed to be one precisely because
+    nothing on this page is identified by hue alone.
+    """
+    if ph <= 4:
+        return "red"
+    if ph <= 6:
+        return "orange"
+    if ph == 7:
+        return "green"
+    if ph <= 9:
+        return "blue-green"
+    if ph <= 11:
+        return "blue"
+    return "purple"
+
+
+def _cap(s):
+    return s[:1].upper() + s[1:]
+
+
+def _oxide_compare(a, b):
+    """The side-by-side sentence, BUILT FROM THE TWO READINGS ON THE BENCH.
+
+    ⚖️ §5A — A COMPARATIVE LABEL IS DERIVED, NEVER STORED PER PAIR. Thirty
+    ordered pairs are reachable and every one of their sentences comes out of
+    here, from `ph`, `kind` and `insoluble` and from nothing else. Storing
+    thirty sentences beside the payload would be thirty chances for one of them
+    to disagree with the number printed six inches above it, and the one that
+    disagreed would look exactly like the twenty-nine that did not.
+
+    Design's own six branches, ported unchanged:
+
+      equal · acidic against alkaline · acidic against neutral ·
+      neutral against alkaline · both alkaline · both acidic
+
+    ⚠️ THE EQUAL BRANCH IS NOT AN EDGE CASE ON THIS BENCH, IT IS THE LESSON.
+    Copper oxide and water both read 7 and mean completely different things by
+    it, so the tail below says which of the two readings is not a verdict —
+    and it says it about whichever chip is the insoluble one, in either order.
+    """
+    hi, lo = (a, b) if a["ph"] >= b["ph"] else (b, a)
+    if a["ph"] == b["ph"]:
+        head = ("%s and %s both read pH %d."
+                % (_cap(a["name"]), b["name"], a["ph"]))
+    elif lo["ph"] < 7 and hi["ph"] > 7:
+        head = ("%s read pH %d, which is acidic. %s read pH %d, which is "
+                "alkaline."
+                % (_cap(lo["name"]), lo["ph"], _cap(hi["name"]), hi["ph"]))
+    elif lo["ph"] < 7 and hi["ph"] == 7:
+        head = ("%s took the reading down to %d. %s left it at 7."
+                % (_cap(lo["name"]), lo["ph"], _cap(hi["name"])))
+    elif lo["ph"] == 7 and hi["ph"] > 7:
+        head = ("%s took the reading up to %d. %s left it at 7."
+                % (_cap(hi["name"]), hi["ph"], _cap(lo["name"])))
+    elif lo["ph"] > 7:
+        head = ("Both readings are above 7. %s at pH %d is the more alkaline "
+                "of the two." % (_cap(hi["name"]), hi["ph"]))
+    else:
+        head = ("Both readings are below 7. %s at pH %d is the more acidic of "
+                "the two." % (_cap(lo["name"]), lo["ph"]))
+
+    kinds = (" Both are %s oxides." % a["kind"]
+             if a["kind"] == b["kind"]
+             else " One of them is a metal oxide and one is not.")
+
+    tail = ""
+    if a.get("insoluble") or b.get("insoluble"):
+        which = a if a.get("insoluble") else b
+        tail = (" The 7 beside %s is not a verdict on it: almost none of it "
+                "dissolved, so the water had nothing to report." % which["name"])
+    elif a["ph"] == b["ph"]:
+        tail = " Nothing on this test separates them."
+    return head + kinds + tail
+
+
+def _oxide_beaker(a, o, slot):
+    """One beaker panel: the glass, the fill, the solid, and the reading.
+
+    ⚠️ Z-ORDER IS FIXED AND IS PART OF THE DRAWING (NOTES-C8 §8): body, then
+    the water fill, then the undissolved solid, then the pH numeral OUTSIDE the
+    glass. The solid is emitted after the water so it sits on top of it — a
+    heap drawn under the fill would be a heap that dissolved, which is the one
+    thing the copper-oxide case must not show.
+
+    ⚠️ CONTAINMENT, NOT CLIPPING. Both spans are absolutely positioned and the
+    glass carries `position: relative` in the stylesheet, so neither can escape
+    and widen the document. The glass is the only positioned box this
+    instrument draws.
+    """
+    ph = o["ph"] if o else 7
+    depth = RESIDUE_DEPTH.get((o or {}).get("residue"), 0) if o else 0
+    water = ('<span class="ks3-oxb-water" aria-hidden="true" '
+             'style="background:%s"></span>' % e(PH_COLOURS[ph]))
+    solid = ""
+    if depth:
+        solid = ('<span class="ks3-oxb-solid" aria-hidden="true" '
+                 'data-solid="%s" style="height:%dpx;background:%s"></span>'
+                 % (e(o["residue"]), depth,
+                    e(RESIDUE_DARK if o["residue"] == "heap"
+                      else RESIDUE_PALE)))
+    # DERIVED, never authored (§5A). The label is a description of what is
+    # actually drawn — the fill's colour and whether a solid is on the bottom —
+    # so an authored one would be a second statement of the same two facts and
+    # the copy that went stale would be the one nobody can see.
+    alt = ("A beaker of water with the indicator %s, and %s on the bottom."
+           % (_ph_word(ph), "undissolved solid" if depth else "nothing"))
+    note = (('<p class="ks3-oxb-note">%s</p>' % rich(o["note"]))
+            if o and o.get("note") else "")
+    return (
+        '<div class="ks3-oxb-panel" data-oxb-panel="%d:%s"%s>'
+        '<div class="ks3-oxb-head">'
+        '<p class="ks3-oxb-slot">%s</p><p class="ks3-oxb-kind">%s</p></div>'
+        '<p class="ks3-oxb-title">%s</p>'
+        '<div class="ks3-oxb-row">'
+        '<div class="ks3-oxb-glass" role="img" aria-label="%s">%s%s</div>'
+        '<div class="ks3-oxb-readout">'
+        '<p class="ks3-oxb-phlabel">%s</p>'
+        '<p class="ks3-oxb-ph">%d</p>'
+        '<p class="ks3-oxb-ui">%s %s.</p></div></div>'
+        '<p class="ks3-oxb-residue">%s</p>%s</div>'
+        % (slot, e(o["id"]) if o else "empty",
+           "" if o is None else " hidden",
+           t((a.get("slot_fmt") or "Beaker %d") % (slot + 1)),
+           t("%s oxide" % o["kind"] if o else (a.get("empty_kind")
+                                              or "water only")),
+           t(o["title"] if o else (a.get("empty_title")
+                                   or "Water, nothing added")),
+           e(alt), water, solid,
+           t(a.get("ph_label") or "pH of the solution"), ph,
+           t(a.get("indicator_label") or "Universal indicator:"),
+           t(_ph_word(ph)),
+           t(o["residue_line"] if o else (a.get("empty_line") or "")),
+           note))
+
+
+def r_oxide_bench(a, act_id):
+    """⊕ c8-07 `#s-bench` — six oxides, two beakers of the same water.
+
+    THIRTY-SEVEN REACHABLE STATES, AND EVERY ONE OF THEM IS IN THE DOCUMENT AT
+    REST. One empty, six with a single oxide in beaker 1, and thirty ordered
+    pairs — ordered because the sentence names the LEFT reading first, so
+    calcium-then-carbon and carbon-then-calcium are two different sentences.
+    `[null, y]` is unreachable: taking a chip out slides the other one left,
+    which is Design's own `pick()` and is why the count is 37 and not 49.
+
+    Fourteen beaker panels and thirty comparison sentences are emitted here and
+    hidden — emit-both-show-one — so every pH, every indicator word and every
+    comparative is BYTES a crawler and a no-JS reader get, not a string
+    JavaScript assembles.
+
+    ⚖️ **BOTH DISCRIMINATING CASES ARE ASSERTED ON THE INSTRUMENT, NOT TRUSTED
+    TO THE PROSE.** The famous version of this lesson's rule — metal oxide
+    means alkaline water, non-metal oxide means acid — is wrong twice, and
+    NOTES-C8 §8 puts both counter-cases on the bench rather than in a footnote:
+
+      1. AN INSOLUBLE METAL OXIDE THAT READS 7. Copper oxide is a base and the
+         water does not move, because almost none of it dissolves. The bench
+         has to SHOW that: an oxide flagged `insoluble` must read pH 7 AND draw
+         a residue with real depth, so the student sees undissolved solid
+         sitting under an unmoved number. An insoluble oxide that dissolved
+         away in the drawing would make the reading look like a refutation of
+         the rule, which is the exact misbelief `PTAB-11` exists to confront.
+      2. A NEUTRAL NON-METAL OXIDE. Water is hydrogen oxide and it reads 7.
+         Without it on the tray, "non-metal oxides are acidic" ships as a rule
+         with no exception a student can reach.
+
+    ⚖️ **AND THE RULE ITSELF MUST BE ON THE BENCH TOO** — at least one metal
+    oxide above 7 and at least one non-metal oxide below it. Two exceptions and
+    no pattern is not a contrast lesson, it is a page of special cases.
+
+    ⚖️ **THE CLOSING PANEL'S COUNTS ARE DERIVED FROM THE READINGS.** It says
+    "Two went above 7. Two went below. Two did not move at all." and then names
+    all six by name. Both halves are checked: the three counts against
+    `pattern_claim`, and every name in the paragraph against the tray. A pH
+    edited later fails the build rather than shipping a panel that contradicts
+    the six numbers directly above it.
+
+    ⚖️ **EVERY NAMED QUANTITY IS READABLE AS A NUMBER** (§5A). `ph` is a whole
+    number 0..14, it is printed as a numeral, and the indicator colour is said
+    in words beside it.
+
+    HOOKS: `data-oxb` (wrapper, `data-total`) · `data-oxb-chip` (valued with
+    the oxide id) · `data-oxb-name` · `data-oxb-panel` (valued `slot:id`, or
+    `slot:empty`) · `data-oxb-compare` · `data-oxb-cmp` (valued `left:right`) ·
+    `data-oxb-clear` · `data-oxb-untested` / `data-oxb-untested-list` /
+    `data-oxb-alltested` · `data-oxb-close`.
+    """
+    oxides = a.get("oxides") or []
+    if len(oxides) < 4:
+        raise ValueError(
+            "oxide-bench %r puts %d oxide(s) on the tray. The lesson's claim is "
+            "that the SIDE OF THE TABLE decides the direction, and that is not "
+            "visible without several of each kind." % (act_id, len(oxides)))
+    if a.get("pairs") or a.get("comparisons"):
+        raise ValueError(
+            "oxide-bench %r authors a stored comparison. Every side-by-side "
+            "sentence is DERIVED at render from the two readings (§5A) — a "
+            "stored one is a sentence free to disagree with the numbers "
+            "printed above it." % act_id)
+    if a.get("cards"):
+        raise ValueError(
+            "oxide-bench %r authors a `cards` key. That name is reserved by "
+            "`r_activity`, which would draw a blank vocabulary flip-card for "
+            "every entry beside this bench. Use `oxides`." % act_id)
+    _counter_agrees(a, act_id, len(oxides), "oxide(s)")
+
+    seen = set()
+    for o in oxides:
+        for key in ("id", "name", "formula", "kind", "title", "residue",
+                    "residue_line", "note"):
+            if not o.get(key):
+                raise ValueError(
+                    "oxide-bench %r oxide %r has no %r. A chip with no name is "
+                    "unpickable, one with no reading is unreadable, and one "
+                    "with no note opens on a gap."
+                    % (act_id, o.get("id"), key))
+        if o["id"] in seen:
+            raise ValueError(
+                "oxide-bench %r authors the oxide id %r twice. The id keys the "
+                "beaker panel AND both halves of every comparison, so the "
+                "second chip would show the first one's beaker."
+                % (act_id, o["id"]))
+        seen.add(o["id"])
+        if o["kind"] not in OXIDE_KINDS:
+            raise ValueError(
+                "oxide-bench %r oxide %r is a %r. The whole instrument is a "
+                "sort into %s, and the comparison sentence says 'Both are %%s "
+                "oxides' out of this word."
+                % (act_id, o["id"], o["kind"], " and ".join(OXIDE_KINDS)))
+        ph = o.get("ph")
+        if not isinstance(ph, int) or isinstance(ph, bool) or not 0 <= ph <= 14:
+            raise ValueError(
+                "oxide-bench %r oxide %r reads pH %r. §5A: a named quantity is "
+                "readable as a NUMBER, the chart it is read against runs 0 to "
+                "14, and the numeral is printed at 48px."
+                % (act_id, o["id"], ph))
+        if o["residue"] not in RESIDUE_DEPTH and o["residue"] not in (
+                "clear", "self", "gas"):
+            raise ValueError(
+                "oxide-bench %r oxide %r has residue %r. The drawing knows "
+                "%s (a heap with depth) and clear / self / gas (nothing on the "
+                "bottom); anything else would draw as nothing and the sentence "
+                "beside it would still describe a solid."
+                % (act_id, o["id"], o["residue"],
+                   " and ".join(sorted(RESIDUE_DEPTH))))
+        # ── discriminating case 1, asserted at the drawing ────────────────
+        if o.get("insoluble"):
+            if ph != 7:
+                raise ValueError(
+                    "oxide-bench %r flags %r insoluble and reads it at pH %d. "
+                    "The whole point of that chip is that the reading DOES NOT "
+                    "MOVE — a base the water cannot report. A moved reading "
+                    "makes it an ordinary alkali and removes the case."
+                    % (act_id, o["id"], ph))
+            if not RESIDUE_DEPTH.get(o["residue"]):
+                raise ValueError(
+                    "oxide-bench %r flags %r insoluble and draws no residue "
+                    "with depth. The student has to SEE the solid sitting "
+                    "under an unmoved number: an insoluble oxide drawn as a "
+                    "clear beaker is a page saying one thing and showing the "
+                    "opposite." % (act_id, o["id"]))
+        elif RESIDUE_DEPTH.get(o["residue"]) and ph == 7:
+            raise ValueError(
+                "oxide-bench %r draws %r as a heap on the bottom at pH 7 and "
+                "does not flag it insoluble. That is the copper-oxide case "
+                "unlabelled, and the comparison sentence would leave the 7 "
+                "standing as a verdict." % (act_id, o["id"]))
+
+    metals = [o for o in oxides if o["kind"] == "metal"]
+    nons = [o for o in oxides if o["kind"] == "non-metal"]
+    if not metals or not nons:
+        raise ValueError(
+            "oxide-bench %r puts %d metal oxide(s) and %d non-metal oxide(s) "
+            "on the tray. The bench IS the contrast; one side of it alone "
+            "teaches no discrimination."
+            % (act_id, len(metals), len(nons)))
+    if not any(o["ph"] > 7 for o in metals):
+        raise ValueError(
+            "oxide-bench %r has no metal oxide that takes the water above 7. "
+            "The rule has to be on the bench as well as its exceptions, or the "
+            "page is a list of special cases." % act_id)
+    if not any(o["ph"] < 7 for o in nons):
+        raise ValueError(
+            "oxide-bench %r has no non-metal oxide that takes the water below "
+            "7." % act_id)
+    # ── discriminating case 1 and 2, asserted as PRESENT ──────────────────
+    if not any(o["kind"] == "metal" and o.get("insoluble") for o in oxides):
+        raise ValueError(
+            "oxide-bench %r has no insoluble METAL oxide. `PTAB-11` — "
+            "alkaline and basic are the same word — is elicited by a base that "
+            "leaves the pH at 7, and without that chip the lesson's central "
+            "distinction is a claim in a paragraph rather than a reading a "
+            "student produced." % act_id)
+    if not any(o["kind"] == "non-metal" and o["ph"] == 7 for o in oxides):
+        raise ValueError(
+            "oxide-bench %r has no NEUTRAL non-metal oxide. Water is hydrogen "
+            "oxide and it reads 7; without it 'non-metal oxides are acidic' "
+            "ships as a rule with no exception a student can reach." % act_id)
+    if len({o["ph"] for o in oxides}) == len(oxides):
+        raise ValueError(
+            "oxide-bench %r gives every oxide a different pH, so the EQUAL "
+            "branch of the comparison is unreachable. Two readings that match "
+            "and mean different things is what this bench is for (NOTES-C8 "
+            "§8)." % act_id)
+
+    # ── the closing panel, checked against the readings under it ──────────
+    claim = a.get("pattern_claim")
+    if claim is not None:
+        got = {"above": sum(1 for o in oxides if o["ph"] > 7),
+               "below": sum(1 for o in oxides if o["ph"] < 7),
+               "same": sum(1 for o in oxides if o["ph"] == 7)}
+        if {k: int(v) for k, v in claim.items()} != got:
+            raise ValueError(
+                "oxide-bench %r closes by claiming %r and the six readings on "
+                "the bench are %r. The student reads that sentence immediately "
+                "after producing the numbers it counts."
+                % (act_id, claim, got))
+    close_prose = " ".join([a.get("close_title") or ""]
+                           + list(a.get("close") or []))
+    if close_prose.strip():
+        low = _words(close_prose)
+        for o in oxides:
+            if _words(o["name"]) not in low:
+                raise ValueError(
+                    "oxide-bench %r closing panel never names %r, which is on "
+                    "the tray. The panel reads the WHOLE bench — an oxide it "
+                    "leaves out is one the student tested and the payoff "
+                    "ignores." % (act_id, o["name"]))
+
+    # ── the tray ──────────────────────────────────────────────────────────
+    chips = "".join(
+        '<button type="button" class="ks3-seg-btn ks3-oxb-chip" '
+        'data-oxb-chip="%s" data-oxb-name="%s" aria-pressed="false">'
+        '<span class="ks3-oxb-chipname">%s</span>'
+        '<span class="ks3-oxb-chipformula">%s</span></button>'
+        % (e(o["id"]), e(o["name"]), t(o["name"]), t(o["formula"]))
+        for o in oxides)
+
+    # ── fourteen beaker panels: the empty one shown, thirteen hidden ──────
+    beakers = "".join(
+        '<div class="ks3-oxb-beaker" data-oxb-slot="%d">%s%s</div>'
+        % (slot, _oxide_beaker(a, None, slot),
+           "".join(_oxide_beaker(a, o, slot) for o in oxides))
+        for slot in (0, 1))
+
+    # ── thirty ordered pairs, every sentence derived ──────────────────────
+    cmps = "".join(
+        '<p class="ks3-oxb-cmp" data-oxb-cmp="%s:%s" hidden>%s</p>'
+        % (e(left["id"]), e(right["id"]), t(_oxide_compare(left, right)))
+        for left in oxides for right in oxides if left["id"] != right["id"])
+
+    untested = ", ".join(o["name"] for o in oxides)
+    close = _close_panel(a, "ks3-oxb", "data-oxb-close")
+    return (
+        '<div class="ks3-oxb" data-oxb data-total="%d">'
+        '<div class="ks3-oxb-tray">%s</div>'
+        '<div class="ks3-oxb-beakers">%s</div>'
+        '<div class="ks3-oxb-compare" data-oxb-compare hidden>'
+        '<p class="ks3-oxb-cmp-eyebrow">%s</p>%s</div>'
+        '<div class="ks3-oxb-controls">'
+        '<button type="button" class="ks3-oxb-clear" data-oxb-clear disabled>'
+        '%s</button>'
+        '<p class="ks3-oxb-untested" data-oxb-untested>'
+        '<span class="ks3-oxb-untested-lead">%s</span> '
+        '<span data-oxb-untested-list>%s.</span></p>'
+        '<p class="ks3-oxb-untested" data-oxb-alltested hidden>%s</p>'
+        '</div>%s</div>'
+        % (len(oxides), chips, beakers,
+           t(a.get("compare_eyebrow") or "Side by side"), cmps,
+           t(a.get("clear_label") or "Empty both beakers"),
+           t(a.get("untested_lead") or "Not yet in a beaker:"), t(untested),
+           t(a.get("all_tested") or "All of them have been in a beaker."),
+           close))
+
+
 # ═══ registration ════════════════════════════════════════════════════════
 
 KIND_SHELL = {
@@ -1293,6 +1720,8 @@ KIND_SHELL = {
                      ' data-instrument data-hgridblock data-stage-done="0"'),
     'shell-strip': ("ks3-shell-block",
                     ' data-instrument data-shelblock data-stage-done="0"'),
+    'oxide-bench': ("ks3-oxb-block",
+                    ' data-instrument data-oxbblock data-stage-done="0"'),
 }
 
 KIND_FN = {
@@ -1303,4 +1732,5 @@ KIND_FN = {
     'water-trough': r_water_trough,
     'halogen-grid': r_halogen_grid,
     'shell-strip': r_shell_strip,
+    'oxide-bench': r_oxide_bench,
 }
