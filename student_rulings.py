@@ -283,6 +283,73 @@ SET_ON = {
                    10113: "goLessons", 10134: "readFeedback"},
 }
 
+
+# ── a handler Design DID attach, pointed somewhere else ───────────────────
+#
+# ⊕ RULED 23 Aug 2026 — THE EIGHTH MECHANISM, and it exists for two nodes.
+#
+# Mide's ruling: the BRAND — the chevron and the MrBadmusAI wordmark in the
+# top-left of both student pages — goes to the KS3 landing page. It is the
+# mark, and a mark goes home. Everything else that currently says "back to the
+# class" keeps saying it.
+#
+# ⚠️ AND `goClass` COULD NOT SIMPLY BE REDEFINED, WHICH IS THE WHOLE REASON
+# THIS MECHANISM IS HERE. The obvious fix — one `LOGIC` rewrite of `goClass` —
+# looks like a one-liner and is a page-breaker, because `goClass` is not the
+# brand's handler. It is SEVEN controls' handler, counted in Design's delivery
+# rather than assumed:
+#
+#   Class View.dc.html
+#     line  30   the header brand            ← this ruling
+#     line  63   the breadcrumb `8r/Sc1`
+#     line 484   the recall screen's back button
+#     line 551   `Back to class` on the round-done card
+#     line 572   a second `Back to class` link
+#   Assignment.dc.html
+#     line  44   the header brand            ← this ruling
+#     line 485   a button reading `Back to 8r/Sc1`
+#
+# On the class view `goClass` is `this.go('class')` — a VIEW SWITCH — so three
+# of its callers are the recall screen's way back. Repointing the name at
+# `/ks3/index.html` would throw a student who had just finished a recall round
+# off the page entirely instead of returning them to their class. On the
+# assignment page it would make a button that says `Back to 8r/Sc1` not go to
+# 8r/Sc1. Two real controls broken, in the act of fixing a third.
+#
+# ⚑ WHY NOT `SET_ON`. `SET_ON` is the mechanism for a node Design left with no
+# handler, and it REFUSES a node that already carries one — deliberately, and
+# the refusal is right: silently replacing an `onClick` Design drew would swap
+# one working control's behaviour for another's while the page still looked and
+# gated exactly correct. That check is load-bearing and is not weakened here.
+# This is its stated counterpart: a move that must SAY what it expects to find.
+#
+# `{node index: (from, to)}` — the same `(old, new)` shape `LOGIC` uses, for
+# the same reason. `from` is the handler Design has wired there TODAY, asserted
+# at build time; a delivery that redraws the brand, or renumbers it onto some
+# other control, stops the build rather than quietly retargeting whatever
+# happens to be sitting at that index. `to` is asserted to APPEAR IN THE LOGIC,
+# because a mistyped destination resolves to `undefined` at mount, and an inert
+# button is still a button: it draws, it is in the control list, and no gate
+# here can tell it does nothing.
+#
+#   12  the class view's brand — `<button onClick="{{ goClass }}">` wrapping
+#       Design's BrandMark import and the MrBadmusAI wordmark.
+#   15  the assignment's brand — the same button, plus the back chevron and the
+#       class name, which travel with it. Design draws them as ONE control and
+#       this does not split them: the whole thing is the mark.
+#
+# ⚠️ THE 22 AUG `goClass` RULING IS UNTOUCHED AND STILL STANDS. That ruling
+# repaired the assignment's dead-link fallback (`Class View.dc.html`, Design's
+# own filename, never a URL on this site) and it is about `goClass` itself.
+# `goClass` still exists, still does exactly what that ruling made it do, and
+# still serves its other five callers. What moved is one node's wiring, not the
+# handler — which is precisely the distinction this mechanism was added to be
+# able to express.
+RETARGET_ON = {
+    "class view": {12: ("goClass", "goKS3")},
+    "assignment": {15: ("goClass", "goKS3")},
+}
+
 # ── the logic, transformed ───────────────────────────────────────────────
 #
 # (old, new). `old` must occur exactly once in Design's logic class, or the
@@ -1604,6 +1671,20 @@ LOGIC = {
             "      goClass: () => this.go('class'), goRecall: () => this.go('recall'),\n"
             "      /* ⊕ RULED 22 Aug 2026 — P5. */",
             "      goClass: () => this.go('class'),\n"
+            "      /* ⊕ RULED 23 Aug 2026 — THE BRAND GOES HOME.\n"
+            "\n"
+            "         `RETARGET_ON` moves template node 12 — the chevron and the\n"
+            "         MrBadmusAI wordmark — off `goClass` and onto this. It is a\n"
+            "         NEW name beside `goClass` rather than a redefinition of it,\n"
+            "         because `goClass` here is `this.go('class')`, a VIEW SWITCH,\n"
+            "         and four other controls still need it to be one — the\n"
+            "         breadcrumb, and the recall screen's three ways back. See\n"
+            "         `RETARGET_ON` for the count.\n"
+            "\n"
+            "         A full navigation and not a view change: /ks3 is a different\n"
+            "         page. The student's class is still one press away on the\n"
+            "         breadcrumb, which is why the mark is free to mean the mark. */\n"
+            "      goKS3: () => { window.location.href = '/ks3/index.html'; },\n"
             "      /* ⊕ 23 Aug 2026 — PHASE 3, part 5 of 5. THE ROUTES.\n"
             "\n"
             "         ⛔ `goRecall: () => this.go('recall')` is what this replaces,\n"
@@ -1951,6 +2032,75 @@ LOGIC = {
             "    else window.location.href = 'Class View.dc.html';",
             '    else {\n      /* ⊕ RULED 22 Aug 2026 — THE FALLBACK WAS A DEAD LINK.\n         `Class View.dc.html` is DESIGN\'S OWN FILENAME inside Design\'s own\n         delivery, and it has never existed on this site. `history.back()`\n         above covers the ordinary path — a student who came from their class\n         page goes back to it — so this only bites the student who opened the\n         assignment directly, from a bookmark or a link in a message, and they\n         are exactly the student with no history to go back to. For them "Back\n         to 8r/Sc1" was a 404.\n\n         Nothing caught it because nothing drives navigation ACROSS pages: the\n         behaviour gate drives one page\'s states, and a href is not a state.\n\n         `?class=` is carried over when it is there. A student has one class\n         and does not need it; a teacher previewing does, and dropping a\n         parameter on the way back is how a preview quietly becomes somebody\n         else\'s page. */\n      var cls = new URLSearchParams(window.location.search).get(\'class\');\n      window.location.href = \'/student/class.html\'\n        + (cls ? \'?class=\' + encodeURIComponent(cls) : \'\');\n    }',
         ),
+        # ── ⊕ RULED 23 Aug 2026 — THE BRAND GOES HOME ─────────────────────
+        #
+        # `RETARGET_ON` moves template node 15 — the back chevron, the
+        # BrandMark and the class name, which Design draws as one control — off
+        # `goClass` and onto this.
+        #
+        # ⚠️ A NEW NAME BESIDE `goClass`, NOT A REDEFINITION OF IT, and on this
+        # page the reason has a label on it. `goClass` is also the handler of
+        # the done screen's button reading `Back to 8r/Sc1` (Design's line 485,
+        # template node 347). Repointing the name would leave that button
+        # saying `Back to 8r/Sc1` and going somewhere else — and the ruling
+        # directly above this one is the one that made it go to 8r/Sc1 in the
+        # first place. That ruling stands, untouched; `goClass` is unchanged.
+        #
+        # No comment inside the arrow: this is the last key of the object
+        # Design returns and it is one line. The `why` is here.
+        # ── ⊕ RULED 23 Aug 2026 — THE TICK AND THE DISC IT SITS ON ────────
+        #
+        # `SET_ATTR` names node 293 so the scorecard takes the student's bench
+        # theme. That remaps `--st-cream` to `var(--b-ink)` inside the card,
+        # and `--st-cream` inside this card is not only a text colour.
+        #
+        # `endMarks` is the row of one-per-question marks under the score. A
+        # correct one is a filled disc — `bg: var(--st-cream)` — carrying a
+        # tick drawn in `mark: var(--st-ink)`. That is `--st-cream` as a
+        # BACKGROUND, and it is the identical shape that makes
+        # `[data-bench-avatar]` an INVERSION on the class view rather than an
+        # exemption: on the five dark themes `--b-ink` is #FBF3E6 and nothing
+        # changes, but on CHALK it is #221E1B — a near-black disc under a
+        # near-black tick. Every question the student got RIGHT would have gone
+        # blank, on the one theme where the rest of the card looked perfect.
+        #
+        # ⚑ A `LOGIC` RULING AND NOT A CSS RULE, BECAUSE THE VALUE IS COMPUTED.
+        # The disc's `background` is `{{ m.bg }}` and the tick is an SVG
+        # `stroke="{{ m.mark }}"` — both interpolated from this string, not
+        # literals in the markup. There is no selector to scope and no inline
+        # declaration to outrank; there is a string, and this is the mechanism
+        # for a string. Same shape as the term spine's `ring`, which took
+        # `var(--b-ground)` for the same reason on the class view.
+        #
+        # ⚠️ ONLY THE `ok` BRANCH MOVES. The other branch is `--st-ember`,
+        # which the bridge already sends to `var(--b-ember)` — the theme's own
+        # accent, drawn on the theme's own ground, legible on all six by
+        # Design's own contrast table. `bg` is untouched: `var(--st-cream)`
+        # already means "the theme's ink" inside a bridged surface, and that is
+        # exactly the disc Design drew. What was wrong was the tick ON it.
+        #
+        # ⚠️ AND IT IS `--b-ground` AND NOT `--st-ground`. The tick has to be
+        # the colour of the surface the disc sits on, which under the bridge is
+        # the theme's ground and not the page's cream. Naming the page token
+        # would look right on graphite and wrong on chalk — the same near-miss
+        # in the opposite direction.
+        #
+        # No text changes and no control changes: this is colour only.
+        (
+            "        mark: m.ok ? 'var(--st-ink)' : 'var(--st-ember)',\n",
+            "        /* ⊕ RULED 23 Aug 2026 — the tick, inverted against its own\n"
+            "           disc. `bg` above is `--st-cream`, which the theme bridge\n"
+            "           maps to the theme's INK inside this card, so the tick has\n"
+            "           to be the theme's GROUND or it disappears on chalk. */\n"
+            "        mark: m.ok ? 'var(--b-ground)' : 'var(--st-ember)',\n",
+        ),
+        (
+            "      goClass: this.goClass\n",
+            "      goClass: this.goClass,\n"
+            "      /* ⊕ RULED 23 Aug 2026 — the brand's own destination; see\n"
+            "         RETARGET_ON in student_rulings.py. Node 15 only. */\n"
+            "      goKS3: () => { window.location.href = '/ks3/index.html'; }\n",
+        ),
     ],
 }
 
@@ -2107,10 +2257,77 @@ SET_ATTR = {
     #          through the graft. The sidebar panel Design draws beside this one
     #          — donor 425, also `--b-ground` — is omitted on the way in, so
     #          there is no second surface to name.
+    # ⊕ RULED 23 Aug 2026 — PHASE 5. THE FLASHCARDS OVERLAY LOST ITS BUTTONS ON
+    # A PHONE HELD SIDEWAYS, and it lost them silently.
+    #
+    #   10332  the flip card's stage — donor 332, `flex:1 1 auto;
+    #          perspective:1400px;min-height:300px`, the box the two card faces
+    #          are absolutely positioned inside.
+    #
+    # ⚠️ WHAT WAS ACTUALLY WRONG, MEASURED RATHER THAN INFERRED. Design's
+    # overlay card (donor 320) is `height:min(100%,760px)` inside a
+    # `position:fixed;inset:0` scrim, so on any viewport under 760px tall the
+    # card is exactly as tall as the viewport — and it is `overflow:hidden`.
+    # Its column has ONE incompressible child: this stage, whose `min-height`
+    # floors it at 300px however little room there is. Everything else in the
+    # column is already at its natural minimum:
+    #
+    #     header  77   (a 44px close button in 16px of padding, plus its rule)
+    #     padding 36   (18px top and bottom on the body)
+    #     gaps    32   (two 16px flex gaps)
+    #     pips     3
+    #     stage  300   ← the floor
+    #     buttons 52   (both `min-height:52px`)
+    #     ────────────
+    #            500
+    #
+    # So below about 500px of viewport height the column cannot fit, and
+    # because the CARD clips rather than the layout reflowing, the thing that
+    # goes over the edge is the LAST flex child — the Reveal / Next pair.
+    # Measured on the built fixture, at the bottom of this file's own
+    # `data-card-fit` reasoning:
+    #
+    #     1200 × 900   0px clipped        390 ×  844   0px clipped
+    #     1200 × 700   0px clipped        360 ×  640   0px clipped
+    #     1200 × 500   0px clipped
+    #     1200 × 460  22px clipped        844 ×  390  92px clipped
+    #     1200 × 420  62px clipped        740 ×  360 122px clipped
+    #
+    # The two on the right are a PHONE TURNED SIDEWAYS, which is not an exotic
+    # viewport — it is what a student does when the card front is a long
+    # sentence. Both buttons are then entirely off-screen with no way to scroll
+    # to them, so the deck cannot be revealed and cannot be advanced: the
+    # overlay is open, drawn correctly, and completely inert. Nothing caught it
+    # because no gate opens this surface and measures a box.
+    #
+    # ⚑ THE FIX IS TO GIVE THE FLOOR A CEILING, and to change nothing above
+    # 500px. `min(300px, calc(100vh - 240px))` is 300px — Design's own value,
+    # untouched — on every viewport tall enough to hold the column, and only
+    # below that does it yield. 240 is the 200px of fixed chrome above plus
+    # 40px of slack, because the header's 77px is content-derived and a narrow
+    # viewport can wrap it.
+    #
+    # ⚑ WHY NOT THE OTHER THREE CANDIDATES. `flex-shrink:0` on the button row
+    # does not help: the row is not what is being squeezed — it is being pushed
+    # out by a sibling that refuses to shrink, and pinning it only moves the
+    # squeeze onto the header. `overflow-y:auto` on the card puts a scrollbar
+    # around a 3D flip stage whose faces are `position:absolute;inset:0`, which
+    # scrolls nothing. Editing Design's delivery file is the one thing this
+    # whole file exists to avoid.
+    #
+    # ⚠️ AND IT NEEDS `!important`, FOR THE FOURTH TIME IN THIS PORT. The
+    # `min-height:300px` is a LITERAL inside Design's inline `style` attribute,
+    # so there is no computed string in the logic for a `LOGIC` ruling to
+    # anchor on — the same shape as `data-page-strong` and `data-pip-row` — and
+    # an inline declaration outranks any selector however specific. Without the
+    # keyword the rule parses, matches, loses, and the buttons stay off the
+    # screen under a rule that claims to have put them back. See `_CARD_FIT` in
+    # build_student_port.py.
     "class view": {
         55:  {"data-bench-surface": "bench", "data-port-region": "bench"},
         10204: {"data-bench-surface": "cards"},
         10329: {"data-pip-row": "1"},
+        10332: {"data-card-fit": "1"},
         10384: {"data-bench-surface": "recall"},
         91:  {"data-bench-docket": "1"},
         # ⊕ 23 Aug 2026 — PHASE 4. THE DONE BENCH HAS ITS OWN DOCKET, AND IT
@@ -2192,8 +2409,44 @@ SET_ATTR = {
     #
     # Design's markup is untouched — `SET_ATTR` refuses to overwrite an
     # attribute Design wrote, and this is a name Design has never used.
+    # ⊕ RULED 23 Aug 2026 — AND ONE SURFACE, WHICH IS WHY THE SENTENCE ABOVE
+    # STARTS "The assignment page has no bench". It still has no bench. It has
+    # a card painted in the bench's colours, which turns out to be the same
+    # problem.
+    #
+    #   293  the end-of-assignment SCORECARD — Design's line 407, the frame
+    #        holding MARKED · WEEK 01, the score fraction, the percentage, the
+    #        mark row and the RIGHT / WRONG / MISSED / TIME TAKEN figures. Its
+    #        ground is `var(--st-room-panel)`, its figures `var(--st-cream)`,
+    #        its kicker `var(--st-ember)` — the identical family the bench is
+    #        painted in, and until now fixed dark on all six themes. A student
+    #        who chose CHALK got a light class page and a near-black card at
+    #        the one moment the page tells them how they did.
+    #
+    # ⚠️ NODE 96 IS THE OTHER `--st-room-panel` CARD ON THIS PAGE AND IT IS
+    # DELIBERATELY NOT NAMED. It is the transient HANDING IN splash inside
+    # `<if handing>`, and its node 100 paints `background:var(--st-cream)`
+    # carrying `--st-ink` — `--st-cream` as a BACKGROUND, which is the exact
+    # shape that makes `[data-bench-avatar]` an inversion rather than an
+    # exemption on the class view. Bridging it without inverting it would put
+    # near-black on near-black on CHALK. It is out of scope for this ruling and
+    # it is recorded here so the next person to reach for it knows the card is
+    # not simply un-named by oversight.
+    #
+    # ⚠️ AND THE SCORECARD HAS ONE OF THOSE TOO, WHICH IS WHY THERE IS A
+    # `LOGIC` RULING BESIDE THIS ONE. `endMarks` paints its correct-answer pips
+    # `bg: var(--st-cream)` with `mark: var(--st-ink)`. See the entry at the
+    # end of LOGIC['assignment']: the fix is in the computed string, because
+    # that is where the value is.
+    #
+    # ⚠️ THE `--b-*` TOKENS THE BRIDGE MAPS ONTO DO NOT EXIST ON THIS PAGE BY
+    # DEFAULT — the class view is grafted them in Design's donor node 7 and
+    # this page is not. `bench_theme_tokens` in build_student_port.py extracts
+    # them and emits them here. Naming this node without that would have
+    # remapped eleven live tokens onto nothing at all.
     "assignment": {
         111: {"data-q-eyebrow": "1"},
+        293: {"data-bench-surface": "scorecard"},
     },
 }
 

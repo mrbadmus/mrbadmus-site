@@ -637,6 +637,81 @@
      is a bug nobody would ever look for. */
   var QSEEN_PREFIX = "mrbadmusai.recallseen.v1.";
 
+  /* ── the bench theme, mirrored so a second page can wear it ───────────
+     ⊕ RULED 23 Aug 2026. The end-of-assignment scorecard is painted in the
+     same `--st-room-panel` / `--st-cream` / `--st-ember` family as the class
+     page's bench, and it stayed fixed-dark on all six themes: a student who
+     chose CHALK got a light class page and a near-black marking card.
+
+     The theme lives on the PROFILE, which is right — it follows a student from
+     the school machine to their phone. But the assignment page has no reason
+     to read a profile: `buildAssignment` fetches the assignment, the progress
+     and nothing else, and it has no `detail.viewer` to read `bench_theme` off.
+
+     ⚠️ SO THIS IS A MIRROR AND DELIBERATELY NOT A SECOND FETCH. The
+     alternative was a profile round-trip on every assignment open, for a
+     colour — on school wifi, in front of a child with fifteen minutes of
+     homework. The class page already reads the value it needs; this writes it
+     down on the way past.
+
+     ⚠️ AND IT IS A CACHE, WHICH MEANS IT MAY BE ABSENT AND MUST DEGRADE TO THE
+     TRUTH. Absent means NO ATTRIBUTE, which is harbour — the same one state
+     the profile's own null means, in the same words the column's comment uses.
+     A student who has never opened their class page on this device gets the
+     default, not somebody's guess.
+
+     ⚠️ THE NULL WRITE IS THE HALF THAT MATTERS. `put` is called on every class
+     load even when the profile says null, so CLEARING a theme on one device
+     clears the mirror rather than leaving the last one it saw. Writing only
+     truthy values would make the mirror a ratchet: a student who set damson
+     and then went back to the default would keep damson on the assignment page
+     for as long as the browser kept the key.
+
+     THE KEY FOLLOWS THE TWO STORES ABOVE IT EXACTLY:
+
+         mrbadmusai.benchtheme.v1.<auth user id>
+
+     Per user and not per class — the preference is one per student, on the
+     profile. A school machine is shared, so the owner id is repeated INSIDE
+     the blob and a read whose id disagrees with the key is discarded unread:
+     a second child signing in on the same browser profile computes a
+     different key, reads nothing, and has no path to the first child's choice.
+
+     ⚠️ THE NAME IS CHECKED ON THE WAY OUT AS WELL AS ON THE WAY IN, for the
+     reason `saveBenchTheme` gives about its own two checks. This value becomes
+     a CSS attribute selector on the document root, and localStorage is one
+     devtools paste away from holding anything at all. Six names, or nothing. */
+  var THEME_KEY = "mrbadmusai.benchtheme.v1.";
+  var BENCH_THEMES = ["clay", "chalk", "moss", "harbour", "damson", "graphite"];
+
+  var benchThemeMirror = {
+    put: function (userId, theme) {
+      var owner = String(userId || "anon");
+      try {
+        var st = window.localStorage;
+        if (!st) { return; }
+        if (theme && BENCH_THEMES.indexOf(theme) >= 0) {
+          st.setItem(THEME_KEY + owner,
+                     JSON.stringify({ u: owner, t: theme }));
+        } else {
+          st.removeItem(THEME_KEY + owner);
+        }
+      } catch (e) { /* private window, or storage disabled by policy */ }
+    },
+    get: function (userId) {
+      var owner = String(userId || "anon");
+      try {
+        var st = window.localStorage;
+        if (!st) { return null; }
+        var raw = st.getItem(THEME_KEY + owner);
+        if (!raw) { return null; }
+        var d = JSON.parse(raw);
+        if (!d || d.u !== owner) { return null; }
+        return BENCH_THEMES.indexOf(d.t) >= 0 ? d.t : null;
+      } catch (e) { return null; }
+    }
+  };
+
   function seenStore(userId, classId, prefix) {
     var owner = String(userId || "anon");
     var kls = String(classId || "");
@@ -2152,6 +2227,10 @@
     if (v.bench_theme) {
       document.documentElement.setAttribute("data-bench-theme", v.bench_theme);
     }
+    /* ⊕ 23 Aug 2026 — AND MIRRORED, so the ASSIGNMENT page can wear it too.
+       Written on every class-page load, including when it is null — see
+       `benchThemeMirror` for why the null write is the load-bearing half. */
+    benchThemeMirror.put(user.id, v.bench_theme);
 
     var first = (v.first_name || "").trim();
     var name = klass.name || "";
@@ -2623,6 +2702,19 @@
 
   // ── the assignment ────────────────────────────────────────────────────
   async function buildAssignment(klass, token, userId) {
+    /* ⊕ RULED 23 Aug 2026 — the bench theme, onto this page's root too.
+       BEFORE the first await, so the attribute is on `document.documentElement`
+       ahead of the mount and the scorecard paints right on its first frame
+       rather than flashing the default and correcting itself.
+
+       Set exactly as the class page sets it, from the mirror the class page
+       wrote — see `benchThemeMirror`. Nothing here means no attribute, which
+       means harbour, which is the same one state a null profile column means. */
+    var mirrored = benchThemeMirror.get(userId);
+    if (mirrored) {
+      document.documentElement.setAttribute("data-bench-theme", mirrored);
+    }
+
     var current = await api("/api/class/current-assignment?class_id=" + klass.id, token);
     var progress = null;
 

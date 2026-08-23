@@ -1429,7 +1429,8 @@ def top_up(css, wanted, tpls):
 def apply_rulings(page, logic, roots, donor=None):
     """Design's logic and template with Mide's rulings applied.
 
-    Returns (logic, roots, replacements, pruned, wired). Every `old` must appear
+    Returns (logic, roots, replacements, pruned, wired, grafted, attred,
+    exprd, wrapped, moved). Every `old` must appear
     EXACTLY ONCE — not zero times, and not twice. A ruling that silently
     matched nothing is the same failure as the hand-edit it replaces: the build
     goes green and the ruling is not in the page.
@@ -1782,17 +1783,89 @@ def apply_rulings(page, logic, roots, donor=None):
             "(or were pruned out from under it). The ruling stands; re-read "
             "the delivery and re-anchor it." % (page, sorted(want)))
 
+    # ── a handler Design DID attach, pointed somewhere else ──────────────
+    #
+    # ⊕ RULED 23 Aug 2026 — THE EIGHTH MECHANISM. See `RETARGET_ON` in
+    # student_rulings.py for the ruling and for the seven-caller count that
+    # makes it necessary.
+    #
+    # It is `SET_ON`'s stated counterpart, and the two assertions are mirror
+    # images of each other. `SET_ON` refuses a node that ALREADY carries a
+    # handler; this one refuses a node that does not carry the EXPECTED one.
+    # Neither can quietly repoint a control Design drew — the failure both are
+    # written against is the one where the page still looks and gates perfectly
+    # while a button does somebody else's job.
+    #
+    # ⚠️ AND THE DESTINATION IS ASSERTED TOO, WHICH `SET_ON` CANNOT DO. A
+    # handler name resolves out of `renderVals`'s returned object at mount, so
+    # a typo in `to` is not an error anywhere — it is `undefined`, the runtime
+    # attaches nothing, and the brand becomes a mark that draws correctly and
+    # does nothing when pressed. No gate in this build can see that: the
+    # element is still there, its text is unchanged, and it is still in the
+    # control list. So the name is required to APPEAR IN THE LOGIC. That is a
+    # cheap check rather than a proof it is a live key, and it catches the
+    # whole of the failure it is aimed at, which is a misspelling.
+    moves = dict(student_rulings.RETARGET_ON.get(page, {}))
+    moved = [0]
+
+    for _idx, (_from, _to) in sorted(moves.items()):
+        if _to not in logic:
+            raise SystemExit(
+                "build_student_port.py: the RETARGET_ON ruling for %r points "
+                "template node %s at the handler %r, and that name appears "
+                "nowhere in the logic this build is about to ship. It would "
+                "resolve to `undefined` at mount and the control would draw "
+                "perfectly and do nothing — which no gate here can see. Add "
+                "it in LOGIC[%r] beside the handler it replaces."
+                % (page, _idx, _to, page))
+
+    def retarget(node):
+        if not isinstance(node, dict):
+            return
+        idx = node.get("i")
+        if idx in moves:
+            want_from, want_to = moves[idx]
+            got = node.get("on")
+            if got != want_from:
+                raise SystemExit(
+                    "build_student_port.py: the RETARGET_ON ruling for %r "
+                    "moves template node %s from %r to %r, and Design gives "
+                    "that node %r. Design has redrawn it, or the index now "
+                    "names a different control. The ruling is Mide's and "
+                    "stands; re-anchor it rather than retargeting whatever is "
+                    "sitting at that index — that is how the brand's ruling "
+                    "would silently land on somebody's Back button."
+                    % (page, idx, want_from, want_to,
+                       got or "no handler at all"))
+            node["on"] = want_to
+            moves.pop(idx)
+            moved[0] += 1
+        for kid in node.get("c") or []:
+            retarget(kid)
+
+    for root in roots:
+        retarget(root)
+    if moves:
+        raise SystemExit(
+            "build_student_port.py: the RETARGET_ON ruling for %r moves "
+            "template node(s) %s onto another handler, and they are not in "
+            "the template (or were pruned out from under it). A silently "
+            "skipped move leaves the control pointing where it always did "
+            "and the build green. Re-anchor it." % (page, sorted(moves)))
+
     # ── a live node that has to STOP RENDERING in a state Design draws
     #    separately ─────────────────────────────────────────────────────
     #
     # ⊕ 23 Aug 2026 — PHASE 4. THE SEVENTH MECHANISM, and it exists because
     # none of the other six can make an EXISTING node conditional.
     #
-    #   PRUNE      removes a subtree, in every state
-    #   GRAFT      adds one, in every state
-    #   SET_ON     attaches a handler
-    #   SET_ATTR   names a node for CSS and for a gate
-    #   SET_EXPR   renames a loop's list
+    #   PRUNE        removes a subtree, in every state
+    #   GRAFT        adds one, in every state
+    #   SET_ON       attaches a handler to a node that has none
+    #   RETARGET_ON  moves a node off the handler Design gave it, naming that
+    #                handler so a redraw stops the build (⊕ 23 Aug 2026)
+    #   SET_ATTR     names a node for CSS and for a gate
+    #   SET_EXPR     renames a loop's list
     #   BINDINGS   replaces a text node's text (and `drop` can remove the
     #              element that CARRIES that text, when its value is empty —
     #              which is a rule about a VALUE, not about a state)
@@ -1864,7 +1937,7 @@ def apply_rulings(page, logic, roots, donor=None):
             "green." % (page, sorted(wraps)))
 
     return (logic, roots, len(reps), removed[0], wired[0],
-            grafted[0], attred[0], exprd[0], wrapped[0])
+            grafted[0], attred[0], exprd[0], wrapped[0], moved[0])
 
 
 # ── lifting Design's data out of Design's logic ───────────────────────────
@@ -2733,6 +2806,48 @@ _PIP_ROW = (
 )
 
 
+# ── the flip stage, and the two buttons it pushed off a phone ────────────
+#
+# ⊕ RULED 23 Aug 2026 — PHASE 5. See `data-card-fit` in student_rulings.py for
+# the measurement; this is the rule it names, and it is the fourth in this file
+# to fight an inline declaration.
+#
+# Design's overlay card is `height:min(100%,760px)` inside a fixed full-screen
+# scrim and is `overflow:hidden`, so under 760px of viewport height the card is
+# the viewport and its column has to fit inside it. The column's fixed chrome —
+# header, body padding, two gaps, the pip row and the 52px button row — is
+# 200px, and the flip stage below it is floored at `min-height:300px`. Under
+# roughly 500px of viewport height the sum no longer fits, and what goes over
+# the clipped edge is the LAST flex child: Reveal and Next. On a phone held
+# sideways (844 × 390) both buttons are entirely off screen, with no scroll to
+# reach them — the deck is open and cannot be turned.
+#
+# `min(300px, calc(100vh - 240px))` yields ONLY when it has to. At 500px of
+# viewport height and above it evaluates to Design's own 300px and this rule
+# changes nothing whatever; below it the stage gives back exactly the room the
+# buttons need. 240px is the 200px of chrome plus 40px of slack, because the
+# header's height is content-derived and a narrow viewport can wrap it.
+#
+# ⚠️ `100vh` IS THE RIGHT UNIT HERE and not a guess at one. The card's `100%`
+# resolves against the scrim, and the scrim is `position:fixed;inset:0` — so
+# the card's height IS the viewport height wherever the 760px cap is not
+# binding, which is precisely the range in which this rule is not the identity.
+#
+# ⚠️ AND IT NEEDS `!important`, for the reason `_PAGE_STRONG` and `_PIP_ROW`
+# both record. `min-height:300px` is a LITERAL inside Design's inline `style`
+# attribute, and an inline declaration outranks any selector however specific.
+# Written without the keyword this rule parses, matches, loses, and the page
+# looks exactly as if it were absent — the failure mode `[data-bench-avatar]`
+# shipped once already.
+#
+# CLASS VIEW ONLY, like the three rules above it: the flashcards overlay is
+# grafted onto the class view and the assignment page has no such surface.
+_CARD_FIT = (
+    ".rd[data-mode=\"ks3\"] [data-card-fit]"
+    "{min-height:min(300px,calc(100vh - 240px))!important}"
+)
+
+
 # ── the question counter, which is now the only thing above the question ──
 #
 # ⊕ RULED 23 Aug 2026 — ASSIGNMENT ONLY, and it is the first emitted rule this
@@ -2782,8 +2897,121 @@ _Q_EYEBROW = (
 )
 
 
+# ── the six themes' tokens, for a page that has no grafted `:root` ───────
+#
+# ⊕ RULED 23 Aug 2026 — THE ASSIGNMENT'S SCORECARD FOLLOWS THE BENCH THEME.
+#
+# The end-of-assignment card — MARKED · WEEK 01, the score, the fraction, the
+# RIGHT / WRONG / MISSED / TIME TAKEN row — is painted in exactly the family
+# the class page's bench is: `--st-room-panel` for its ground, `--st-cream` for
+# its figures, `--st-ember` for its kicker. `_THEME_BRIDGE` already knows how
+# to remap all three. It could not be used here for one reason, which was
+# MEASURED rather than assumed: `grep -c -- '--b-ground' student/assignment.html`
+# returned 0. The bridge maps `--st-*` onto `--b-*`, and on this page `--b-*`
+# does not exist — so every one of its declarations would have resolved to
+# nothing and the card would have gone from fixed-dark to unpainted.
+#
+# The tokens exist on the class view because Design's amended delivery carries
+# them in a `<style>` at donor node 7, and that node is grafted in whole.
+#
+# ⚠️ GRAFTING THAT NODE HERE TOO WAS THE FIRST IDEA AND IT IS NOT SAFE. Donor 7
+# is not a token block; it is the amended page's entire stylesheet. Alongside
+# the `--b-*` and `--pg-*` sets it carries `.wk[data-sel="1"]`, `.tab[data-on]`,
+# `.lbchip`, `.sw`, `.stbtn`, `.pip`, `.rprog`, the `.fcflip` keyframes — and
+# `.opt[data-st="picked"] { --opt-bg: var(--b-inset); … }`. The assignment page
+# is BUILT out of `.opt` elements: every answer a student picks is one. Grafting
+# the block to obtain ten custom properties would have quietly restyled the
+# question screen of a page 135 students answer homework on.
+#
+# ⚑ SO THE TOKENS ARE EXTRACTED, AND EXTRACTED RATHER THAN RETYPED. Ten values
+# and six themes' worth of overrides is sixty-six numbers; typed out here they
+# would be a second copy of Design's palette, correct on the day it was pasted
+# and drifting from that day on. This reads Design's own `<style>` out of the
+# compiled donor and emits only what it is looking for, so a value Design moves
+# moves here too — the same argument `--st-docket-paper` makes for being a
+# capture instead of a hex.
+#
+# ⚠️ WHAT IT REFUSES TO SHIP. `--b-*` ONLY: every other declaration in that
+# block, custom property or rule, is dropped. Six theme rules exactly, or the
+# build stops — five would ship a picker with a swatch that does nothing, and
+# seven would mean Design added a theme nobody has ruled on. And every property
+# a theme rule sets must be one `:root` also defines, so a theme can never
+# introduce a token that has no default underneath it.
+_THEME_NAMES = ("clay", "chalk", "moss", "harbour", "damson", "graphite")
+
+
+def bench_theme_tokens(donor_roots):
+    """Design's `--b-*` defaults and its six theme overrides, and nothing else."""
+    import re
+
+    texts = []
+
+    def walk(node):
+        if not isinstance(node, dict):
+            return
+        if node.get("t") == "style":
+            for kid in node.get("c") or []:
+                if isinstance(kid, dict) and kid.get("t") == "#":
+                    texts.append(str(kid.get("v") or ""))
+        for kid in node.get("c") or []:
+            walk(kid)
+
+    for root in donor_roots or ():
+        walk(root)
+    src = "\n".join(t for t in texts if "--b-ground" in t)
+    if not src:
+        raise SystemExit(
+            "build_student_port.py: no `<style>` in the compiled 'class view "
+            "amendments' declares `--b-ground`. The six bench themes are "
+            "Design's and this build reads them out of Design's own delivery "
+            "rather than restating them; it will not invent a palette. "
+            "Re-compile the templates, or re-anchor bench_theme_tokens().")
+
+    decls = re.compile(r"(--b-[a-z0-9-]+)\s*:\s*([^;}]+)")
+
+    root_match = re.search(r":root\s*\{(.*?)\}", src, re.S)
+    if not root_match:
+        raise SystemExit(
+            "build_student_port.py: Design's amended stylesheet has no `:root` "
+            "block to read the bench-theme defaults out of.")
+    base = decls.findall(root_match.group(1))
+    if not base:
+        raise SystemExit(
+            "build_student_port.py: Design's `:root` declares no `--b-*` "
+            "token. Without the defaults, the attribute being ABSENT would "
+            "paint nothing rather than harbour.")
+    known = {name for name, _ in base}
+
+    out = [":root{%s}" % "".join(
+        "%s:%s;" % (n, v.strip()) for n, v in base)]
+
+    seen = []
+    for name, body in re.findall(
+            r'\[data-bench-theme="([a-z]+)"\]\s*\{([^}]*)\}', src):
+        rule = decls.findall(body)
+        stray = sorted({n for n, _ in rule} - known)
+        if stray:
+            raise SystemExit(
+                "build_student_port.py: Design's %r theme sets %s, which "
+                "`:root` does not define. A theme token with no default under "
+                "it is unpainted on every OTHER theme, silently."
+                % (name, ", ".join(stray)))
+        seen.append(name)
+        out.append('[data-bench-theme="%s"]{%s}' % (
+            name, "".join("%s:%s;" % (n, v.strip()) for n, v in rule)))
+
+    if tuple(seen) != _THEME_NAMES:
+        raise SystemExit(
+            "build_student_port.py: expected Design's six bench themes %s in "
+            "that order and read %s out of the amended stylesheet. The picker "
+            "offers six; a page that defines a different set has swatches "
+            "that do nothing." % (list(_THEME_NAMES), seen))
+
+    return "".join(out)
+
+
 def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
-              versions=None):
+              versions=None, bench_css=""):
     tail = (
         "<script src=\"/shared/%s\"></script>\n"
         "<script>window.__MRB_MOUNT__();</script>\n" % spec["fixture_js"]
@@ -2852,8 +3080,17 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
            # this is a choice between two pages rather than a class-view flag.
            # Each page emits only rules whose selectors could match ON it: a
            # rule that can never match is a rule nothing can tell is broken.
-           ((_THEME_BRIDGE + _PAGE_STRONG + _PIP_ROW)
-            if spec["page"] == "class view" else _Q_EYEBROW),
+           # ⊕ 23 Aug 2026 — and the flashcards stage's height ceiling.
+           # ⊕ 23 Aug 2026 — and the assignment takes the BRIDGE now too, for
+           # its scorecard (node 293), preceded by the `--b-*` tokens the
+           # bridge maps onto: the class view is grafted them and this page is
+           # not. `_PAGE_STRONG` and `_PIP_ROW` stay class-view-only — checked
+           # rather than assumed: there is no `[data-page-strong]` and no
+           # `[data-pip-row]` anywhere in the assignment template, so both
+           # would be rules nothing could tell were broken.
+           ((_THEME_BRIDGE + _PAGE_STRONG + _PIP_ROW + _CARD_FIT)
+            if spec["page"] == "class view"
+            else (bench_css + _THEME_BRIDGE + _Q_EYEBROW)),
            json.dumps({"roots": roots, "imports": tpl["imports"]},
                       separators=(",", ":")).replace("<", "\\u003c"),
            json.dumps(bind_table, separators=(",", ":")),
@@ -3099,6 +3336,15 @@ def build():
         with open(src, "rb") as fh:
             versions[name] = asset_hash(fh.read())
 
+    # ⊕ RULED 23 Aug 2026 — Design's six themes' tokens, read out of Design's
+    # own amended stylesheet ONCE, for the page that has no grafted `:root` to
+    # get them from. See `bench_theme_tokens` for why they are extracted rather
+    # than retyped, and why the whole donor block is not grafted instead.
+    bench_css = bench_theme_tokens((tpls.get(DONOR_PAGE) or {}).get("roots"))
+    print("     %d bench-theme rule(s) read from Design's amended stylesheet, "
+          "%d bytes, emitted onto the assignment page only"
+          % (len(_THEME_NAMES) + 1, len(bench_css)))
+
     for spec in PAGES:
         tpl = tpls.get(spec["page"])
         if not tpl:
@@ -3113,7 +3359,7 @@ def build():
         # the term label belongs, and it would look like a data bug.
         donor_tpl = tpls.get(DONOR_PAGE)
         (logic, ruled_roots, n_rep, n_pruned, n_wired,
-         n_grafted, n_attred, n_exprd, n_wrapped) = apply_rulings(
+         n_grafted, n_attred, n_exprd, n_wrapped, n_moved) = apply_rulings(
             spec["page"], tpl["logic"], tpl["roots"],
             donor=(donor_tpl or {}).get("roots"))
         ruled_tpl = {"roots": ruled_roots, "imports": tpl["imports"]}
@@ -3150,12 +3396,12 @@ def build():
         stamped.update(page_versions)
 
         body = page_html(spec, tpl, roots, bind_table, logic, fixture=False,
-                         versions=page_versions)
+                         versions=page_versions, bench_css=bench_css)
         for out_dir in (SITE_OUT, MIRROR_OUT):
             write(os.path.join(out_dir, spec["out"]), body)
 
         fix_body = page_html(spec, tpl, roots, bind_table, logic, fixture=True,
-                             versions=page_versions)
+                             versions=page_versions, bench_css=bench_css)
         for out_dir in (SITE_OUT, MIRROR_OUT):
             write(os.path.join(out_dir, spec["fixture_out"]), fix_body)
 
@@ -3213,11 +3459,11 @@ def build():
                   "%d template subtree(s) pruned, %d handler(s) attached, "
                   "%d subtree(s) grafted from the amendments, %d node(s) "
                   "named for the themes, %d loop expression(s) renamed, "
-                  "%d node(s) made conditional — "
+                  "%d node(s) made conditional, %d handler(s) retargeted — "
                   "from student_rulings.py, not from a hand edit to the "
                   "built page"
                   % (n_rep, n_pruned, n_wired, n_grafted, n_attred, n_exprd,
-                     n_wrapped))
+                     n_wrapped, n_moved))
         print("     ✅ %-24s %7d bytes  (%d template node(s), "
               "%d chars of Design's logic, 0 bytes of data)"
               % (spec["out"], len(body), count_nodes(roots), len(logic)))
