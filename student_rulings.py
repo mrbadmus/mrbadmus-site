@@ -231,6 +231,72 @@ LOGIC = {
             "      },\n"
             "      num: l.num, name: l.name, meta: l.meta,",
         ),
+        # ── ⊕ RULED 23 Aug 2026 — THE LEADERBOARD DREW AN EMPTY FRAME ─────
+        #
+        # ⚠️ THIS IS D3, AND IT IS EVERY STUDENT, ON EVERY LOAD.
+        #
+        # The class page has shipped `data-mrb-misses="5"` since the port
+        # landed, and nobody could name the five. They were named by capturing
+        # the runtime's own miss list off the live page:
+        #
+        #     leader.mono   leader.name   leader.streakText
+        #     leader.deltaText   leader.points
+        #
+        # All five are one component — Design's leader hero card inside
+        # `[data-port-region="leaderboard"]`. NONE is an `onClick:` miss, so
+        # nothing here is a dead control. What a student sees is a dark card
+        # holding an EMPTY ringed avatar circle, an EMPTY 18x12 pill, the bare
+        # word `POINTS` with no number, no name, and Design's giant ghost rank
+        # numeral behind it. Rendered text of the whole card, live:
+        # `'TOP OF WEEK 01 POINTS'`.
+        #
+        # ⚑ THE CAUSE IS NOT A MISSING BINDING — IT IS THE WRONG CONDITION.
+        # `renderVals` computes `const top = table[0]`, and `table` maps
+        # `this.roster`. `shared/student-live.js` sets `roster = []`
+        # DELIBERATELY and says so at length: filling the board needs a points
+        # series per student per week, nothing stores one, and fabricating it
+        # "would put a fabricated result next to a real child's name on a
+        # leaderboard their class can see". That refusal is right and it is
+        # not touched here.
+        #
+        # What was never carried through is the CONSEQUENCE of the refusal.
+        # With `roster` empty, `top` is undefined and `leader` is `{}` — but
+        # the card is gated on `hasBoard: !fresh`, which asks whether the class
+        # has any WORK, not whether there is a LEADER. There is work, so the
+        # card renders, and it renders as five holes.
+        #
+        # ⚑ DESIGN ALREADY DREW THE HONEST ALTERNATIVE AND THE PAGE ALREADY
+        # SHIPS IT. `noBoard` is the twin branch, nodes 332-334: a dashed box
+        # reading "The leaderboard starts when the first work is marked". So
+        # this ruling INVENTS NO STUDENT-VISIBLE COPY — it moves the page from
+        # a branch Design drew to a branch Design drew, on the condition that
+        # decides which one is true. That is the whole change.
+        #
+        # ⚠️ THE FIXTURE IS UNMOVED, AND THAT IS WHY THIS IS SAFE. Design's
+        # sample roster is full, so `top` is truthy, `hasBoard` stays true and
+        # `noBoard` stays false on `class-fixture.html` and on
+        # `class-preview.html`. `student_parity`, `student_behaviour` and
+        # `student_themes` therefore see byte-identical pages. The only page
+        # this moves is the one with REAL data — which is the page no gate
+        # watches, and the reason it survived this long.
+        #
+        # ⚑ ONE THING LEFT FOR MIDE, STATED RATHER THAN BURIED. Design's
+        # sentence says the board "starts when the first work is marked". With
+        # `roster` hardcoded empty it will not start then either — it starts
+        # when the points series exists, which is Mide's outstanding ruling.
+        # The sentence is true of every class today (nothing is marked) and
+        # becomes optimistic the day something is. It is Design's copy and
+        # replacing it is Design's call. An empty frame was false in a way that
+        # could not wait for that call; this is not.
+        (
+            "      hasBoard: !fresh, noBoard: fresh,",
+            "      /* ⊕ RULED 23 Aug 2026 — a board with no leader is not a\n"
+            "         board. `top` is `table[0]`, and `table` maps `roster`,\n"
+            "         which student-live.js keeps empty on purpose rather than\n"
+            "         fabricate a points series. Design drew both branches;\n"
+            "         this picks the one that is true. See student_rulings.py. */\n"
+            "      hasBoard: !fresh && !!top, noBoard: fresh || !top,",
+        ),
         # ── ⊕ RULED 22 Aug 2026 — P4. THE BENCH HAD NO DONE STATE ─────────
         #
         # A student who had finished the week was still shown the open-work

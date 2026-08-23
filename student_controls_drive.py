@@ -115,11 +115,48 @@ FIXTURE = False
 # `setup` is a list of label substrings to click, in order, before the sweep
 # begins. A screen whose setup cannot be reached is reported as unreachable
 # rather than silently skipped — an unreachable screen is itself a finding.
+#
+# ⊕ 23 Aug 2026 — THE SETUP LABELS WENT STALE AND THE SWEEP DID NOT SAY SO.
+#
+# `class · the recall round` was reached by clicking a nav entry labelled
+# `Recall`. Phase 3 RETIRED that nav entry (the round is now reached from the
+# bench), so the click matched nothing, `fresh()` returned the plain bench, and
+# the sweep swept the BENCH AGAIN while printing the recall round's name — a
+# screen reported as covered that was never opened. The docstring above claims
+# "a screen whose setup cannot be reached is reported as unreachable rather
+# than silently skipped"; it was not true, and it is now (see `fresh()`).
+#
+# A setup step is either an exact innerText match, `~fragment` for a substring
+# match, or one of the `__…__` verbs handled in `fresh()`.
 SCREENS = [
     dict(name="class · the bench", url=CLASS, setup=[]),
-    dict(name="class · account menu open", url=CLASS, setup=["OT"]),
+    # ⊕ 23 Aug 2026 — `"OT"` WAS STALE AND HAD NEVER OPENED ANYTHING.
+    # It is the avatar monogram, which is the student's INITIALS: `AY` on
+    # Design's fixture, `TO` on the live throwaway, `OT` on nobody. With the
+    # setup unchecked the click matched nothing and this screen was swept as
+    # the plain BENCH under its own name — so `account menu open` has never
+    # actually been swept, and neither has the work row below it. `__avatar__`
+    # finds the monogram button by SHAPE instead of by a literal, so it cannot
+    # go stale when the student changes.
+    dict(name="class · account menu open", url=CLASS, setup=["__avatar__"]),
+    # `/^\d\d\n/` never matched: a work row's innerText opens with its WEEK
+    # (`W01\n…`), not a bare pair of digits.
     dict(name="class · a work row expanded", url=CLASS, setup=["__firstrow__"]),
-    dict(name="class · the recall round", url=CLASS, setup=["Recall"]),
+    # ⚠️ At 390 there is NO inline Settings — node 26 is inside `if wide`, so
+    # the only route on a phone is avatar → dropdown → Settings (node 30).
+    # Pressing "Settings" blind reached the sheet at 1460 and nothing at 390.
+    dict(name="class · the account sheet", url=CLASS,
+         setup=["__avatar__", "Settings"]),
+    dict(name="class · the flashcards overlay", url=CLASS,
+         setup=["~FLASHCARDS"]),
+    dict(name="class · the flashcards overlay, revealed", url=CLASS,
+         setup=["~FLASHCARDS", "~Reveal"]),
+    dict(name="class · the recall round", url=CLASS,
+         setup=["~Practise recall"]),
+    dict(name="class · the recall round, an option picked", url=CLASS,
+         setup=["~Practise recall", "__opt0__"]),
+    dict(name="class · the recall round, checked", url=CLASS,
+         setup=["~Practise recall", "__opt0__", "~Check"]),
     dict(name="assignment · first question", url=ASSIGN, setup=[]),
 ]
 
@@ -135,7 +172,22 @@ EXPECT = {
     "Open the assignment": "nav:/student/assignment.html",
     "Open the lesson": "nav:/ks3/",
     "Sign out": "nav:/auth.html",
-    "Settings": "gone",
+    # ⊕ 23 Aug 2026 — THIS USED TO READ `"Settings": "gone"`, AND IT WENT
+    # STALE THE DAY THE PICKER SHIPPED.
+    #
+    # P7 pruned both Settings controls because they did nothing, and this line
+    # asserted they stayed pruned. Phase 1b UN-pruned them and gave them the
+    # job Design drew — `SET_ON` 26 and 30 both resolve `openAccount`, and the
+    # bench theme picker lives behind them. P7's own registration predicted
+    # this ("It returns when Design's theme picker gives it a job"), the prune
+    # and the RULED_CONTROLS twin were both retired, and THIS assertion was
+    # not. The sweep therefore failed six times on correct output, saying a
+    # control was "still on the page and is ruled removed" about the control
+    # the run had deliberately restored.
+    #
+    # It is now asserted the other way: Settings must OPEN something. `change`
+    # rather than a `nav:` target because the sheet is an overlay, not a page.
+    "Settings": "change",
 }
 
 # Controls that genuinely leave the pages, and so cannot be swept in place
@@ -248,11 +300,47 @@ CONTROLS_JS = r"""(function () {
   return JSON.stringify(out);
 })()"""
 
+#
+# ⊕ 23 Aug 2026 — THE FIFTH THING RECORDED, AND WHY IT HAD TO BE ADDED.
+#
+# `docs/ks3/MERGE-2026-08-23.md` recorded this instrument's own blind spot
+# rather than working around it:
+#
+#     "a genuinely dead option chip and a live one both read NOTHING today"
+#     "…the recall options change only a background, which the instrument
+#      does not watch."
+#
+# It was recorded for the recall unit. The recall round has now SHIPPED, so
+# four of the most-pressed controls a student touches — the A/B/C/D option
+# chips — were controls this sweep could not tell working from broken. Six
+# theme swatches arrived with the same shape (a swatch selects by moving a
+# tick and a border) and so did the flashcard pips.
+#
+# So the paint of every CONTROL is digested. Deliberately NOT every element:
+# a digest over the whole document would pick up the flip animation, the
+# progress bar and any transition still settling, and would report CHANGED
+# for everything — a gate that says yes to all inputs. The control set is
+# exactly the set being pressed, which is where a selection state lives.
+#
+# It is reported as its own verdict, REPAINTED, and NOT folded into CHANGED:
+# a reader must still be able to see at a glance which controls moved real
+# content and which only moved a colour.
 STATE_JS = r"""(function () {
+  var q = 'button, a, [role="button"], [onclick]';
+  var n = document.querySelectorAll(q), paint = '', i;
+  for (i = 0; i < n.length; i++) {
+    var cs = getComputedStyle(n[i]);
+    paint += cs.backgroundColor + '|' + cs.color + '|' + cs.borderColor + '|' +
+             cs.outlineColor + '|' + cs.opacity + '|' +
+             cs.boxShadow.slice(0, 40) + '|' +
+             (n[i].getAttribute('data-on') || '') + '|' +
+             (n[i].getAttribute('data-st') || '') + ';';
+  }
   return JSON.stringify({
     url: location.pathname + location.search,
     text: (document.body.innerText || ''),
     nodes: document.querySelectorAll('*').length,
+    paint: paint,
     scroll: Math.round(window.scrollY ||
       (document.documentElement && document.documentElement.scrollTop) || 0)
   });
@@ -302,7 +390,7 @@ def state(page):
     try:
         return json.loads(raw)
     except Exception:
-        return {"url": "", "text": "", "nodes": 0, "scroll": 0}
+        return {"url": "", "text": "", "nodes": 0, "paint": "", "scroll": 0}
 
 
 def verdict(before, after):
@@ -311,6 +399,9 @@ def verdict(before, after):
     if before["text"] != after["text"] or before["nodes"] != after["nodes"]:
         d = after["nodes"] - before["nodes"]
         return "CHANGED", ("%+d node(s)" % d) if d else "text changed"
+    # ⊕ 23 Aug 2026 — a selection is a real effect. See STATE_JS above.
+    if before.get("paint") != after.get("paint"):
+        return "REPAINTED", "a control's paint or selection state moved"
     if before["scroll"] != after["scroll"]:
         return "SCROLLED", "scroll %d → %d" % (before["scroll"], after["scroll"])
     return "NOTHING", ""
@@ -386,23 +477,75 @@ def main():
         # ⚠️ EVERY MOUNT, not once per screen. Each control is pressed on a
         # page of its own, and a fresh document carries no attribute.
         apply_theme(page)
+        # ⊕ 23 Aug 2026 — EVERY SETUP STEP IS NOW CHECKED. A step that matches
+        # nothing used to leave the sweep on whatever screen it happened to be
+        # on, under the name of the screen it failed to open. See SCREENS.
+        holder["setup"] = []
         for label in setup:
             if label == "__firstrow__":
-                page.eval(
+                # ⚠️ THE WEEK IS NOT ALWAYS FIRST. At 1460 a row reads
+                # "W01\nParticle model…"; at 390 it reads
+                # "Particle model…\nW01 · DUE". Anchoring the match at the
+                # START of the text therefore worked at one width and silently
+                # failed at the other — which is how this verb came to be
+                # measured at 1460 only. Matched anywhere in the label, and
+                # required to be a ROW rather than a chip by its height.
+                got = page.eval(
                     "(function(){var n=document.querySelectorAll("
                     "'[role=\"button\"],button');"
                     "for(var i=0;i<n.length;i++){"
-                    "var t=(n[i].innerText||'');"
-                    "if(/^\\d\\d\\n/.test(t)){n[i].click();return 'ok';}}"
-                    "return 'no row';})()")
+                    "var e=n[i], r=e.getBoundingClientRect();"
+                    "if(r.height<40||!r.width){continue;}"
+                    "var t=(e.innerText||'');"
+                    "if(/\\bW\\d\\d\\b/.test(t)){"
+                    "e.click();return 'ok';}}"
+                    "return 'not found';})()")
+            elif label == "__avatar__":
+                # The header monogram: a control in the top 120px whose whole
+                # label is 1-3 capitals. Matched by shape, never by initials.
+                got = page.eval(
+                    "(function(){var n=document.querySelectorAll("
+                    "'button,[role=\"button\"]');"
+                    "for(var i=0;i<n.length;i++){"
+                    "var e=n[i], r=e.getBoundingClientRect();"
+                    "if(r.top>120||!r.width){continue;}"
+                    "var t=(e.innerText||'').replace(/\\s+/g,' ').trim();"
+                    # ⚠️ THE MONOGRAM IS ALONE ONLY AT PHONE WIDTH. At 1460
+                    # the same button reads "AY Ayo" (monogram + first name),
+                    # so an anchored `^[A-Z]{1,3}$` matched at 390 and failed
+                    # at 1460 — the mirror image of __firstrow__'s failure.
+                    # The monogram is the FIRST token either way.
+                    "if(/^[A-Z]{1,3}( |$)/.test(t)){e.click();return 'ok';}}"
+                    "return 'not found';})()")
+            elif label == "__opt0__":
+                # the recall round's first option chip — it is drawn as a
+                # cursor:pointer div, not a <button>, which is why it needs a
+                # verb of its own rather than a label.
+                got = page.eval(
+                    "(function(){var d=document.querySelector("
+                    "'[data-port-region=\"recall-round\"]');"
+                    "if(!d){return 'not found';}"
+                    "var o=d.querySelectorAll('.opt');"
+                    "if(!o.length){return 'not found';}"
+                    "o[0].click();return 'ok';})()")
+            elif label.startswith("~"):
+                got = page.eval(
+                    "(function(){var n=document.querySelectorAll("
+                    "'button,a,[role=\"button\"]');"
+                    "for(var i=0;i<n.length;i++){"
+                    "var t=(n[i].innerText||'').replace(/\\s+/g,' ').trim();"
+                    "if(t.indexOf(%s)>=0){n[i].click();return 'ok';}}"
+                    "return 'not found';})()" % json.dumps(label[1:]))
             else:
-                page.eval(
+                got = page.eval(
                     "(function(){var n=document.querySelectorAll("
                     "'button,a,[role=\"button\"]');"
                     "for(var i=0;i<n.length;i++){"
                     "if(((n[i].innerText||'').trim())===%s){"
                     "n[i].click();return 'ok';}}"
                     "return 'not found';})()" % json.dumps(label))
+            if got != "ok":
+                holder["setup"].append((label, got))
             time.sleep(0.5)
         return page
 
@@ -475,7 +618,7 @@ def main():
     # So a CDP failure restarts Chrome, signs back in and carries on, and the
     # presses it could not complete are listed separately at the end — as this
     # harness failing, never as a verdict on the control.
-    holder = {"b": None}
+    holder = {"b": None, "setup": []}
 
     def restart():
         old_b = holder["b"]
@@ -526,6 +669,18 @@ def main():
                         fails.append("%s @%dpx: no controls found"
                                      % (screen["name"], width))
                         continue
+                    # ⊕ 23 Aug 2026 — a screen that did not open is a FINDING,
+                    # never a screen swept under the wrong name.
+                    if holder["setup"]:
+                        bad = ", ".join("%r → %s" % (a, c)
+                                        for a, c in holder["setup"])
+                        print("\n   %s — SETUP FAILED (%s) — NOT SWEPT"
+                              % (screen["name"], bad))
+                        fails.append("%s @%dpx: setup step(s) matched nothing "
+                                     "(%s) — the screen was never opened, so "
+                                     "it was NOT swept"
+                                     % (screen["name"], width, bad))
+                        continue
 
                     print("\n   %s — %d control(s)"
                           % (screen["name"], len(controls)))
@@ -556,7 +711,18 @@ def main():
 
                         want = EXPECT.get(c["label"])
                         mark = "  "
-                        if want == "gone":
+                        if want == "change":
+                            # scrolling alone does not count — that is the
+                            # whole point of this instrument.
+                            if v in ("CHANGED", "NAVIGATED", "REPAINTED"):
+                                mark = "✅"
+                            else:
+                                mark = "❌"
+                                fails.append(
+                                    "%s @%dpx: %r → %s %s (must open something)"
+                                    % (screen["name"], width, c["label"],
+                                       v, detail))
+                        elif want == "gone":
                             mark = "❌"
                             fails.append(
                                 "%s @%dpx: %r is still on the page and is "

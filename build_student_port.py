@@ -334,7 +334,30 @@ BINDINGS = {
         ("AY", "studentInitials"),
         ("Mr Badmus", "teacherName"),
         ("MB", "teacherInitials"),
-        ("28 students", "classSize"),
+        # ⊕ RULED 23 Aug 2026 — `drop`, and it is P6's ruling applied to the
+        # case P6 missed. `classSize` is a deliberate COULD-NOT-SOURCE empty
+        # string (`shared/student-live.js`: "class_members_self_read shows a
+        # student their own membership row and no one else's, so the size of
+        # the class cannot be counted from the client"). Without the flag the
+        # empty string blanks the TEXT and leaves Design's CHIP: measured on
+        # the live page, an 18x14 bordered pill, `border-radius:9px`, sitting
+        # in the hero beside SCIENCE and YOUR TEACHER, on every student's page
+        # on every load. That is word for word the thing P6 already ruled
+        # against for the environment badge —
+        #
+        #     "blanking its text leaves a small empty box in the header —
+        #      visible, meaningless, and worse than either showing the badge
+        #      or not having one"
+        #
+        # — and the mechanism P6 built for it needed one word here.
+        #
+        # ⚠️ Safe against the stale-path hazard the `drop` note below records:
+        # the other two drops (`envBadge`, `recallLabel`) are in different
+        # parents, so no two drops share a parent's child list.
+        #
+        # The FIXTURE is unmoved — Design supplies "28 students" there, the
+        # value is non-empty, and the chip stays exactly as Design drew it.
+        ("28 students", "classSize", "drop"),
         ("Biology", "subjectLabel"),
         ("Cells & microscopy", "topicTitle"),
         ("AUTUMN TERM", "termLabel"),
