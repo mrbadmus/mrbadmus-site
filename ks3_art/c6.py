@@ -1,9 +1,16 @@
 """ks3_art.c6 — C6's drawers, instruments and registrations.
 
 ONE UNIT, ONE FILE. Nothing here is read by any other unit; nothing here may be
-added to any other unit's module. C6 is *Acids and alkalis*: six authored
-lessons, eight instrument families and one drawn figure, all DOM, no canvas
+added to any other unit's module. C6 is *Acids and alkalis*: seven authored
+lessons, ten instrument families and one drawn figure, all DOM, no canvas
 anywhere in the unit.
+
+⊕ MRB-281, 23 Aug 2026. This used to read "six authored lessons, eight
+instrument families". `acids-and-carbonates` was built into the renamed fifth
+slot and brought `step-rig` and `solid-sorter` with it — see
+`ks3_data/c6/lesson_05_acids_and_carbonates.py` for the ruling, and the
+registrations block at the foot of this file for why the comment there that
+said those two families would never be registered is now rewritten.
 
 ═══════════════════════════════════════════════════════════════════════════
 WHAT THIS FILE IS RESPONSIBLE FOR, AND WHAT IT IS NOT
@@ -41,8 +48,9 @@ Renaming one here without renaming it there is a silent dead instrument.
     ph-bench           phbench    titration-dial     titr
     acid-metal-grid    amgrid     salt-namer         namer
     method-order       morder     catalyst-bench     catb
+    step-rig           srig       solid-sorter       solid
 
-All eight family names, all eight shell classes and all eight prefixes were
+All ten family names, all ten shell classes and all ten prefixes were
 grepped across ``ks3_art/*.py``, ``shared/ks3.js`` and ``shared/ks3.css``
 before a line was written, and every one was free. ⚠️ ``acid-metal-grid`` is
 NOT ``reactivity-grid``: Design's NOTES-C6 §4 reuses C5-04's name, and
@@ -1739,29 +1747,346 @@ def r_catalyst_bench(a, act_id):
             % (len(trials), tabs, titles, setups, predict, results, closer))
 
 
+# ═══ c6-05 · step-rig (#s-rig) ════════════════════════════════════════════
+
+def r_step_rig(a, act_id):
+    """⊕ c6-05 `#s-rig` — five steps of a method, revealed one at a time.
+
+    ⚖️ **THE STAGING IS THE TEACHING, NOT A FLOURISH.** Design's own lead says
+    what the block is for: "Each step has a reason, and each reason is a way
+    this test can be got wrong." A method printed whole is a recipe a student
+    copies; a method that arrives one reason at a time is five chances to
+    predict the reason before reading it. The `what` of every step is on the
+    page from the start — nothing is hidden that a student needs in order to
+    follow the sequence — and only the `why` is staged.
+
+    ⚖️ ONE-WAY, AND THERE IS NO COLLAPSE. `r_fifa`'s ruling, for its reason:
+    unshowing a step teaches nothing and gives a student a way to lose their
+    place.
+
+    ⚠️ THE BUTTON'S THREE LABELS ARE EMITTED TOGETHER AND ONE IS SHOWN. Design
+    composes them — `s.stepsOpen >= STEPS.length ? 'All five shown' :
+    (s.stepsOpen === 0 ? 'Reveal the first step' : 'Reveal the next step')` —
+    which is three authored sentences assembled by ternary. Emit-both-show-one
+    keeps all three as authored strings, so the resting render cannot disagree
+    with the runtime one and an em dash or a `<strong>` would survive.
+
+    ⚑ THE COUNT IS THE BLOCK HEAD'S. Design draws "N of 5 revealed" as a mono
+    uppercase line beside the button; the block head's `head_counter` is that
+    same component in Design's own treatment, right-aligned on the eyebrow
+    row, and routing it there is what every live count in C6 already does. The
+    denominator comes from the payload (`KIND_HEAD_TOTAL`), never from a
+    number an author types twice.
+
+    ⚠️ NOTHING HERE MARKS. There is no right answer in this block — it is a
+    method, not a question — so there is no `data-correct`, no colour that
+    means anything, and the only state a step carries is `data-open`, which
+    says "you have been here".
+
+    ── THE CONTENT-TRUTH ASSERTIONS (§5A) ───────────────────────────────
+
+    Walked over every step rather than sampled:
+
+      1. Every step is a `what` AND a `why`. A step with no reason is the
+         recipe this block exists not to be.
+      2. No two steps share a `what`, and no two share a `why`. Design's page
+         composes nothing here, but the failure this catches is a copy-paste
+         during authoring: two steps with one reason is a button that appears
+         to do nothing when it is pressed, and it reads as normal in the
+         source.
+      3. The three labels are all present and all DIFFERENT. Two identical
+         labels means a student presses the button and cannot tell whether it
+         worked.
+
+    ⚠️ THE RESTING RENDER: five steps, every `what` visible, every `why`
+    hidden, the button carrying the FIRST label, the head counter reading
+    zero, `data-stage-done="0"`.
+
+    HOOKS: `data-srig` (wrapper, with `data-total`) · `data-srig-step`
+    (valued with the step id, carrying `data-open`) · `data-srig-why` ·
+    `data-srig-reveal` (the button) · `data-srig-label` (valued
+    `first` / `next` / `all`).
+    """
+    steps = a.get("steps") or []
+    labels = a.get("labels") or {}
+
+    if len(steps) < 4:
+        raise ValueError(
+            "step-rig %r has %d step(s). A method a student can hold in one "
+            "glance does not need staging, and staging it would be a "
+            "flourish rather than five predictions." % (act_id, len(steps)))
+
+    seen, whats, whys = set(), {}, {}
+    for st in steps:
+        _c6_need(st, st.get("id"), "step-rig step", ("id", "what", "why"),
+                 "Every step is what you do and why it is there; the reasons "
+                 "are the whole block, and a step with none is a line of a "
+                 "recipe.")
+        if st["id"] in seen:
+            raise ValueError(
+                "step-rig %r authors step id %r twice. Two steps with one "
+                "name is one unreachable step." % (act_id, st["id"]))
+        seen.add(st["id"])
+        for field, bag in (("what", whats), ("why", whys)):
+            text = str(st[field]).strip()
+            if text in bag:
+                raise ValueError(
+                    "step-rig %r gives steps %r and %r the same %r. A "
+                    "repeated reason is a press that appears to do nothing, "
+                    "and it reads as entirely normal in the source."
+                    % (act_id, bag[text], st["id"], field))
+            bag[text] = st["id"]
+
+    want = ("first", "next", "all")
+    for key in want:
+        if not labels.get(key):
+            raise ValueError(
+                "step-rig %r has no %r label. The button says three different "
+                "things across its life and all three are authored sentences, "
+                "not one composed by ternary." % (act_id, key))
+    if len({str(labels[k]) for k in want}) != len(want):
+        raise ValueError(
+            "step-rig %r repeats a button label: %r. A button whose words do "
+            "not change when it is pressed cannot tell a student it worked."
+            % (act_id, [labels[k] for k in want]))
+
+    items = "".join(
+        '<li class="ks3-srig-step" data-srig-step="%s" data-open="0">'
+        '<div class="ks3-srig-head">'
+        '<span class="ks3-srig-num" aria-hidden="true">%d</span>'
+        '<p class="ks3-srig-what">%s</p></div>'
+        '<p class="ks3-srig-why" hidden data-srig-why>%s</p></li>'
+        % (e(st["id"]), i + 1, rich(st["what"]), rich(st["why"]))
+        for i, st in enumerate(steps))
+
+    button = ('<button type="button" class="ks3-seg-btn ks3-srig-reveal" '
+              'data-srig-reveal>%s</button>'
+              % "".join('<span class="ks3-srig-label"%s data-srig-label="%s">'
+                        '%s</span>'
+                        % ("" if key == "first" else " hidden", key,
+                           t(labels[key]))
+                        for key in want))
+
+    return ('<div class="ks3-srig" data-srig data-total="%d">'
+            '<ol class="ks3-srig-list" role="list">%s</ol>'
+            '<div class="ks3-srig-controls">%s</div></div>'
+            % (len(steps), items, button))
+
+
+# ═══ c6-05 · solid-sorter (#s-bench) ══════════════════════════════════════
+
+def r_solid_sorter(a, act_id):
+    """⊕ c6-05 `#s-bench` — four white solids, and only the acid can tell.
+
+    ⚖️ **THE BENCH IS AN ARGUMENT ABOUT EVIDENCE, NOT A QUIZ ABOUT
+    CARBONATES.** Three of the four look the same in the bottle and one of
+    them does nothing; the fourth is green and fizzes hardest. So neither
+    "white powder" nor "looks like a rock" survives the bench, and what is
+    left is the test. The `looks` tag on every row is doing that work and is
+    not decoration.
+
+    ⚖️ ONE COMMITMENT PER SOLID AND IT IS FINAL — `c3CommitCards`' contract,
+    the same one `bottle-sorter` takes four sections earlier in the same unit.
+    The reply is on screen the instant the solid is decided, so a second press
+    would be a student choosing an answer they can already read.
+
+    ⚠️ NOTHING HERE MARKS. Design composes the verdict headline as
+    `row.isCarb ? 'It fizzes — this one is a carbonate.' : 'No fizzing. Not a
+    carbonate.'`, which makes three of the four verdicts literally one string
+    and puts a flag into a sentence by ternary. All four are authored, the
+    same sentence whichever button was pressed, and `answer` reaches no
+    markup at all — it is read HERE, so keeping the flag on the record cannot
+    quietly mean keeping it wrong.
+
+    ── THE CONTENT-TRUTH ASSERTIONS (§5A) ───────────────────────────────
+
+    Five, walked over every solid rather than sampled, because the rule the
+    page argues — *acid + carbonate makes salt + water and CARBON DIOXIDE* —
+    is stated once in a key fact and demonstrated four times here, and nothing
+    else in the build could see the two disagree:
+
+      1. Every `answer` names one of the options actually offered.
+      2. Every option offered is the answer to at least one solid. Without a
+         solid that does nothing there is no rule, only three examples, and
+         the "No reaction" button would be a control nothing is ever an
+         example of.
+      3. A REACTING solid carries an equation and a non-reacting one carries
+         none. Writing products for a reaction that never happens is the
+         error `#s-think` and rung 2 are both about.
+      4. Every reacting solid's products name WATER and CARBON DIOXIDE, and
+         its reactants name an ACID. Three products, not two, asserted on
+         every row rather than stated once in the key fact and hoped for.
+      5. Every verdict agrees with its flag: a non-reacting solid's verdict
+         says it is not a carbonate, and a reacting solid's does not. The flag
+         is the author's intent and the verdict is what the student reads;
+         when they disagree the page states the wrong classification.
+
+    ⚠️ THE RESTING RENDER: four solids, nothing pressed, no reveal open, the
+    head counter reading zero, `data-stage-done="0"`.
+
+    HOOKS: `data-solid` (wrapper, with `data-total`) · `data-solid-card`
+    (valued with the solid id, carrying `data-open`) · `data-solid-opt`
+    (valued with the option id) · `data-solid-reveal`.
+    """
+    options = a.get("options") or []
+    solids = a.get("solids") or []
+
+    if len(options) < 2:
+        raise ValueError(
+            "solid-sorter %r offers %d option(s). The bench asks whether the "
+            "acid will do anything, and a question with one answer is a "
+            "caption." % (act_id, len(options)))
+    if len(solids) < 3:
+        raise ValueError(
+            "solid-sorter %r declares %d solid(s). The block's whole shape is "
+            "several things that look alike being told apart by one test, and "
+            "two of them cannot look alike as a group." % (act_id, len(solids)))
+
+    option_ids = [o["id"] for o in options]
+    reacting = [o["id"] for o in options if o.get("reacts")]
+    if len(reacting) != 1:
+        raise ValueError(
+            "solid-sorter %r flags %d option(s) as the reacting one: %r. "
+            "Exactly one has to be, or the build cannot tell an equation that "
+            "is MISSING from one that is correctly absent."
+            % (act_id, len(reacting), reacting))
+    reacts = reacting[0]
+
+    seen, answered, negatives = set(), set(), 0
+    for s in solids:
+        _c6_need(s, s.get("id"), "solid-sorter solid",
+                 ("id", "name", "looks", "answer", "verdict", "why"),
+                 "A solid is a name, what it looks like, a commitment and a "
+                 "reply; one missing any of them opens on nothing.")
+        if s["id"] in seen:
+            raise ValueError(
+                "solid-sorter %r authors solid id %r twice. Two solids with "
+                "one name is one unreachable solid." % (act_id, s["id"]))
+        seen.add(s["id"])
+        if s["answer"] not in option_ids:
+            raise ValueError(
+                "solid-sorter %r solid %r answers %r, which is not one of the "
+                "options %r. The record has to know which answer is right "
+                "even though the markup never says."
+                % (act_id, s["id"], s["answer"], option_ids))
+        answered.add(s["answer"])
+
+        left = str(s.get("eq_left") or "").strip()
+        right = str(s.get("eq_right") or "").strip()
+        verdict = str(s["verdict"]).lower()
+
+        if s["answer"] == reacts:
+            if not (left and right):
+                raise ValueError(
+                    "solid-sorter %r solid %r reacts but carries no equation. "
+                    "The bench's four rows are where the rule is "
+                    "demonstrated; a reacting row with nothing written is the "
+                    "claim made and not shown." % (act_id, s["id"]))
+            for want in ("water", "carbon dioxide"):
+                if want not in right.lower():
+                    raise ValueError(
+                        "solid-sorter %r solid %r gives products %r, which "
+                        "never say %r. The page's rule is THREE products, not "
+                        "two, and this row is one of the four places it is "
+                        "shown rather than asserted."
+                        % (act_id, s["id"], right, want))
+            if "acid" not in left.lower():
+                raise ValueError(
+                    "solid-sorter %r solid %r names reactants %r with no acid "
+                    "in them. Every row on this bench is a carbonate meeting "
+                    "an acid." % (act_id, s["id"], left))
+            if "not a carbonate" in verdict:
+                raise ValueError(
+                    "solid-sorter %r solid %r is flagged as reacting and its "
+                    "verdict reads %r. The flag is the author's intent and "
+                    "the verdict is what the student reads; when they "
+                    "disagree the page states the wrong classification and "
+                    "nothing else in the build can see it."
+                    % (act_id, s["id"], s["verdict"]))
+        else:
+            negatives += 1
+            if left or right:
+                raise ValueError(
+                    "solid-sorter %r solid %r does not react and carries an "
+                    "equation anyway (%r / %r). Writing products for a "
+                    "reaction that never happens is exactly what rung 2 is "
+                    "about." % (act_id, s["id"], left, right))
+            if "not a carbonate" not in verdict:
+                raise ValueError(
+                    "solid-sorter %r solid %r is flagged as doing nothing but "
+                    "its verdict reads %r, which never says it is not a "
+                    "carbonate. A negative row that does not say so is the "
+                    "one row on this bench a student cannot read."
+                    % (act_id, s["id"], s["verdict"]))
+
+    missing = [i for i in option_ids if i not in answered]
+    if missing:
+        raise ValueError(
+            "solid-sorter %r offers option(s) %s that no solid is an example "
+            "of. A button that is never the answer is a control that does "
+            "nothing." % (act_id, missing))
+    if not negatives:
+        raise ValueError(
+            "solid-sorter %r has no solid that does nothing. Without a "
+            "negative row there is no rule, only examples, and 'white powder' "
+            "would still be doing the identifying." % act_id)
+
+    cards = []
+    for s in solids:
+        buttons = "".join(
+            _c6_seg("ks3-solid-opt", False, o.get("label", ""),
+                    data_solid_opt=o["id"])
+            for o in options)
+        eq = ""
+        if s["answer"] == reacts:
+            eq = ('<p class="ks3-solid-eq">'
+                  '<span>%s</span>%s<span>%s</span></p>'
+                  % (t(s["eq_left"]), _c6_arrow("ks3-solid-arrow"),
+                     t(s["eq_right"])))
+        cards.append(
+            '<div class="ks3-solid-card" data-solid-card="%s" data-open="0">'
+            '<div class="ks3-solid-head">'
+            '<p class="ks3-solid-name">%s</p>'
+            '<p class="ks3-solid-looks">%s</p></div>'
+            '<div class="ks3-solid-opts">%s</div>'
+            '<div class="ks3-solid-reveal" hidden data-solid-reveal>'
+            '<p class="ks3-solid-verdict">%s</p>'
+            '<p class="ks3-solid-why">%s</p>%s</div></div>'
+            % (e(s["id"]), t(s["name"]), t(s["looks"]), buttons,
+               rich(s["verdict"]), rich(s["why"]), eq))
+
+    return ('<div class="ks3-solid" data-solid data-total="%d">'
+            '<div class="ks3-solid-cards">%s</div></div>'
+            % (len(solids), "".join(cards)))
+
+
 # ── registrations ────────────────────────────────────────────────────────
 #
-# Eight instrument families and ONE drawn figure. Every family below is placed
+# Ten instrument families and ONE drawn figure. Every family below is placed
 # by at least one C6 lesson and every kind those lessons place is registered
 # here — the two halves of `check_placements`' gates 2 and 3.
 #
-# `acid-judgements` is ONE family placed FIVE times, on c6-01 `#s-hazard`,
-# c6-02 `#s-choose`, c6-03 `#s-uses`, c6-04 `#s-test` and c6-07 `#s-uses`. See
-# its docstring: Design draws the identical component on five of the six pages,
-# and C3's `sequence-rebuild` is the precedent for one family placed more than
-# once.
+# `acid-judgements` is ONE family placed SIX times, on c6-01 `#s-hazard`,
+# c6-02 `#s-choose`, c6-03 `#s-uses`, c6-04 `#s-test`, c6-05 `#s-world` and
+# c6-07 `#s-uses`. See its docstring: Design draws the identical component on
+# six of the seven pages, and C3's `sequence-rebuild` is the precedent for one
+# family placed more than once.
 #
-# ⚠️ `step-rig` and `solid-sorter` ARE NOT REGISTERED. They belong to Design's
-# `c6-05 acids-and-carbonates`, which `structure.py` has no slot for and which
-# this unit does not build; registering a family nothing places is gate 2, and
-# gate 2 is right.
+# ⊕ MRB-281, 23 Aug 2026 — `step-rig` AND `solid-sorter` ARE NOW REGISTERED.
+# This comment used to say the opposite, and it is rewritten rather than
+# deleted because its reasoning was correct and its PREMISE stopped being
+# true: they belong to Design's `c6-05 acids-and-carbonates`, and
+# `structure.py` had no slot for it. It has one now — the dead
+# `acid-plus-alkali` slot was renamed in place — the lesson is authored, and
+# both families are placed. Registering a family nothing places is still gate
+# 2, and gate 2 is still right.
 #
 # Every family ticks a rail stop, so every one carries `data-stage-done="0"` —
 # NOTHING IS TICKED ON LOAD (MRB-208). `data-instrument` keeps the shell's
 # `wirePredictions` out of the benches' own prediction and guess options.
 #
 # SEGMENTS, measured off Design's own markup and for the commander's
-# `_INSTRUMENT_SEGMENTS` map: every anchored instrument section in all six
+# `_INSTRUMENT_SEGMENTS` map: every anchored instrument section in all seven
 # lessons is a light `ks3-block` with no second class, so every one of them is
 # `check`. There is no ink-dark practical block anywhere in C6.
 
@@ -1778,6 +2103,8 @@ KIND_SHELL = {
     'salt-namer': ("ks3-namer-block", ' data-instrument data-namerblock data-stage-done="0"'),
     'method-order': ("ks3-morder-block", ' data-instrument data-morderblock data-stage-done="0"'),
     'catalyst-bench': ("ks3-catb-block", ' data-instrument data-catbblock data-stage-done="0"'),
+    'step-rig': ("ks3-srig-block", ' data-instrument data-srigblock data-stage-done="0"'),
+    'solid-sorter': ("ks3-solid-block", ' data-instrument data-solidblock data-stage-done="0"'),
 }
 
 KIND_FN = {
@@ -1789,10 +2116,12 @@ KIND_FN = {
     'salt-namer': r_salt_namer,
     'method-order': r_method_order,
     'catalyst-bench': r_catalyst_bench,
+    'step-rig': r_step_rig,
+    'solid-sorter': r_solid_sorter,
 }
 
 # The head counter's denominator comes from the PAYLOAD rather than from a
-# number an author types twice. Four of the eight draw one; the pH bench, the
+# number an author types twice. Six of the ten draw one; the pH bench, the
 # titration dial, the naming bench and the method builder do not — Design
 # draws a live lead sentence on the first three and a placed-count on the
 # fourth, and both are inside the instrument rather than in the block head.
@@ -1801,4 +2130,6 @@ KIND_HEAD_TOTAL = {
     'acid-judgements': lambda a: len(a.get("items") or []),
     'acid-metal-grid': lambda a: len(a.get("cells") or []),
     'catalyst-bench': lambda a: len(a.get("trials") or []),
+    'step-rig': lambda a: len(a.get("steps") or []),
+    'solid-sorter': lambda a: len(a.get("solids") or []),
 }

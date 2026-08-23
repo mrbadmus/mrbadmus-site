@@ -21732,6 +21732,86 @@
     paint();
   }
 
+  /* ── step-rig (c6-05 #s-rig) ─────────────────────────────────────────
+     Five steps of the limewater test, one reason at a time.
+
+     ⚖️ ONE-WAY, AND THERE IS NO COLLAPSE. `r_fifa`'s ruling for its reason:
+     unshowing a step teaches nothing and gives a student a way to lose their
+     place. The button disables at five rather than becoming a "start again".
+
+     ⚠️ THE BUTTON'S THREE LABELS ARE ALL IN THE DOCUMENT AND ONE IS SHOWN.
+     Design composes them with a nested ternary; emit-both-show-one keeps them
+     as three authored sentences, so nothing here builds a sentence and the
+     resting render cannot disagree with the runtime one.
+
+     The instruction of every step is on the page from the start and only the
+     reason is staged — so the count is "revealed", not "shown", and the
+     student can always read the whole method.
+
+     The head counter is the shell's `[data-count]` — "0 of 5 revealed"
+     through to "5 of 5 revealed", a sentence whose noun does not inflect, so
+     no `data-format-one`. */
+  function wireStepRig(sec) {
+    var wrap = sec.querySelector("[data-srig]");
+    if (!wrap) { return; }
+    var steps = toArray(wrap.querySelectorAll("[data-srig-step]"));
+    var btn = wrap.querySelector("[data-srig-reveal]");
+    if (!steps.length || !btn) { return; }
+    var labels = toArray(wrap.querySelectorAll("[data-srig-label]"));
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || steps.length;
+    var open = 0;
+
+    function paint() {
+      each(steps, function (li, i) {
+        li.setAttribute("data-open", i < open ? "1" : "0");
+        setHidden(li.querySelector("[data-srig-why]"), i >= open);
+      });
+      var want = open >= total ? "all" : (open === 0 ? "first" : "next");
+      each(labels, function (sp) {
+        setHidden(sp, sp.getAttribute("data-srig-label") !== want);
+      });
+      c3Enable(btn, open < total);
+      setCount(sec, open);
+    }
+
+    btn.addEventListener("click", function () {
+      /* The guard is here as well as on the element: `disabled` is the drawn
+         half, and this is the half a synthetic click cannot pass. */
+      if (open >= total) { return; }
+      open += 1;
+      paint();
+      focusReveal(steps[open - 1].querySelector("[data-srig-why]"));
+      if (open >= total) { markStage(sec, true); }
+    });
+
+    paint();
+  }
+
+  /* ── solid-sorter (c6-05 #s-bench) ───────────────────────────────────
+     Four white solids, one question asked four times, and looking settles
+     none of them — which is the whole argument of the section.
+
+     `c3CommitCards` is the contract, the same one `bottle-sorter` takes four
+     lessons earlier in this unit: one commitment per solid, final, with every
+     button on that solid disabling and the answer on screen the instant it is
+     decided. There is no answer key in the markup and none is needed — the
+     verdict names what the solid IS, in the same voice whichever button was
+     pressed, and `r_solid_sorter` checks the flag, the verdict and the
+     equation against each other at BUILD time.
+
+     No `close`: Design draws no closing panel here. The payoff is the
+     top-level key fact that follows the bench, which the shell emits.
+
+     The head counter is the shell's `[data-count]` — "0 of 4 decided" through
+     to "4 of 4 decided". */
+  function wireSolidSorter(sec) {
+    c3CommitCards(sec, {
+      wrap: "[data-solid]", card: "[data-solid-card]",
+      opt: "[data-solid-opt]", reveal: "[data-solid-reveal]",
+      count: true
+    });
+  }
+
 /* ═══ END C6 wiring ═══ */
 
 /* ═══ BEGIN C8 wiring ═══════════════════════════════════════════════════
@@ -23276,6 +23356,8 @@
     each(root.querySelectorAll("[data-namerblock]"), wireSaltNamer);
     each(root.querySelectorAll("[data-morderblock]"), wireMethodOrder);
     each(root.querySelectorAll("[data-catbblock]"), wireCatalystBench);
+    each(root.querySelectorAll("[data-srigblock]"), wireStepRig);
+    each(root.querySelectorAll("[data-solidblock]"), wireSolidSorter);
     // ═══ END C6 wiring ═══
     // ═══ BEGIN C8 wiring ═══
     each(root.querySelectorAll("[data-propblock]"), wirePropertySorter);

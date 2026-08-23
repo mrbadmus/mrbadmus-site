@@ -225,7 +225,17 @@ UNITS = [
         ("the-ph-scale-and-indicators", "The pH scale and indicators", "MODEL"),
         ("neutralisation", "Neutralisation", "PROCESS"),
         ("acid-plus-metal", "Acid + metal", "PROCESS"),
-        ("acid-plus-alkali", "Acid + alkali: making a salt", "PROCESS"),
+        # ⊕ MRB-281, 23 Aug 2026 — RENAMED IN PLACE from `acid-plus-alkali`
+        # ("Acid + alkali: making a salt"). That slot was never authored and
+        # never could be: its topic is owned twice over by `neutralisation`
+        # (CR.07a) and `making-a-pure-dry-salt` (CR.07b), so a lesson under
+        # that name would double-own CR.07 and fail rule 4. Design drew
+        # `c6-05-acids-and-carbonates` at this position instead; the earlier
+        # ruling left the slot dead, and Mide has now overridden it. Renaming
+        # rather than inserting keeps the key stage at 185 slots and leaves
+        # positions 6 and 7 — and therefore every slug and URL below — exactly
+        # where they already were.
+        ("acids-and-carbonates", "Acids and carbonates", "PROCESS"),
         ("making-a-pure-dry-salt", "Making a pure dry salt", "INVESTIGATION"),
         ("catalysts", "Catalysts", "MODEL"),
      ]),
