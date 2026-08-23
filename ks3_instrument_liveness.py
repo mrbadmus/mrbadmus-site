@@ -82,13 +82,15 @@ def units(only=None):
     structure-first guarantee (architecture.md §11 decision 8) ships a slot
     with no lesson as an honest ~3.4 KB coming-soon page: no instruments, no
     activities, nothing a student can press. Today that is the whole of
-    physics (P1-P12, 70 slots), plus `metal-and-non-metal-oxides` in C8, which
-    is ruled and recorded in its unit module.
+    physics (P1-P12, 70 slots), and nothing else.
 
-    ⊕ MRB-281, 23 Aug 2026 — this used to name `acid-plus-alkali` in C6 here
-    as well. That slot was RENAMED to `acids-and-carbonates` and authored, so
-    C6 now has no coming-soon page. The count is derived rather than listed,
-    so nothing below this docstring had to change with it.
+    ⊕ MRB-281, 23 Aug 2026 — this used to name `acid-plus-alkali` in C6 and
+    `metal-and-non-metal-oxides` in C8 here as well. The C6 slot was RENAMED to
+    `acids-and-carbonates` and authored; the C8 slot was authored later the
+    same day, closing `KS3.C.PT.06`. Neither unit has a coming-soon page any
+    more, and **every authored chemistry slot in C1-C10 now has something a
+    student can press.** The count is derived rather than listed, so nothing
+    below this docstring had to change with either.
 
     They are counted and named in the coverage line rather than silently
     dropped, because "185 pages" and "113 pages with an instrument" are two

@@ -22092,6 +22092,120 @@
     });
     setCount(sec, 0);
   }
+
+  /* ── oxide-bench (c8-07 #s-bench) ────────────────────────────────────
+     Six tray chips, two beakers, THIRTY-SEVEN reachable states — and every
+     one of them is already in the document. Fourteen beaker panels and thirty
+     comparison sentences are server-rendered and hidden; this handler unhides
+     the right ones and composes nothing but the list of names still on the
+     tray.
+
+     ⚠️ TAKING A CHIP OUT SLIDES THE OTHER ONE LEFT, and that is what makes
+     the count 37 rather than 49: `[null, y]` is unreachable, so no panel is
+     ever needed for an empty beaker 1 beside a full beaker 2. It is Design's
+     own `pick()` and it is the reason the second beaker never sits alone.
+
+     ⚠️ THE RAIL STOP TICKS ON SIX TESTED, NOT ON SIX HELD. Only two chips fit
+     at once, so "all six in a beaker" has to be a ratchet over the whole
+     session — `tested` is never cleared, including by Empty both beakers,
+     because emptying the beakers does not un-see a reading (MRB-208: rail
+     credit is a ratchet). */
+  function wireOxideBench(sec) {
+    var wrap = sec.querySelector("[data-oxb]");
+    if (!wrap) { return; }
+    var chips = toArray(wrap.querySelectorAll("[data-oxb-chip]"));
+    var panels = toArray(wrap.querySelectorAll("[data-oxb-panel]"));
+    var cmps = toArray(wrap.querySelectorAll("[data-oxb-cmp]"));
+    var cmpBox = wrap.querySelector("[data-oxb-compare]");
+    var clearBtn = wrap.querySelector("[data-oxb-clear]");
+    var untested = wrap.querySelector("[data-oxb-untested]");
+    var untestedList = wrap.querySelector("[data-oxb-untested-list]");
+    var allTested = wrap.querySelector("[data-oxb-alltested]");
+    var closer = wrap.querySelector("[data-oxb-close]");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || chips.length;
+    if (!chips.length || !panels.length) { return; }
+    var slots = [null, null], tested = {}, testedN = 0;
+
+    function render() {
+      var want0 = "0:" + (slots[0] || "empty");
+      var want1 = "1:" + (slots[1] || "empty");
+      each(panels, function (p) {
+        var key = p.getAttribute("data-oxb-panel");
+        setHidden(p, key !== want0 && key !== want1);
+      });
+
+      var both = slots[0] !== null && slots[1] !== null;
+      each(chips, function (b) {
+        var id = b.getAttribute("data-oxb-chip");
+        var on = slots[0] === id || slots[1] === id;
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+        /* A chip that is out with both beakers full has nowhere to go. It is
+           disabled rather than silently ignored, so the control says what it
+           can do instead of doing nothing when pressed. */
+        b.disabled = !on && both;
+      });
+
+      var pair = both ? (slots[0] + ":" + slots[1]) : null;
+      var shown = null;
+      each(cmps, function (c) {
+        var on = c.getAttribute("data-oxb-cmp") === pair;
+        setHidden(c, !on);
+        if (on) { shown = c; }
+      });
+      setHidden(cmpBox, !both);
+
+      if (clearBtn) {
+        clearBtn.disabled = slots[0] === null && slots[1] === null;
+      }
+
+      var names = [];
+      each(chips, function (b) {
+        if (!tested[b.getAttribute("data-oxb-chip")]) {
+          names.push(b.getAttribute("data-oxb-name"));
+        }
+      });
+      setHidden(untested, !names.length);
+      setHidden(allTested, !!names.length);
+      if (untestedList && names.length) {
+        untestedList.textContent = names.join(", ") + ".";
+      }
+
+      if (testedN >= total) {
+        setHidden(closer, false);
+        markStage(sec, true);
+      }
+      return shown;
+    }
+
+    function pick(id) {
+      var at = slots[0] === id ? 0 : (slots[1] === id ? 1 : -1);
+      if (at >= 0) {
+        slots.splice(at, 1);
+        slots.push(null);
+      } else {
+        var free = slots[0] === null ? 0 : (slots[1] === null ? 1 : -1);
+        if (free < 0) { return; }
+        slots[free] = id;
+        if (!tested[id]) { tested[id] = 1; testedN += 1; setCount(sec, testedN); }
+      }
+      var shown = render();
+      if (shown) { focusReveal(shown); }
+    }
+
+    each(chips, function (b) {
+      b.addEventListener("click", function () {
+        pick(b.getAttribute("data-oxb-chip"));
+      });
+    });
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        slots = [null, null];
+        render();
+      });
+    }
+    setCount(sec, 0);
+    render();
+  }
 /* ═══ END C8 wiring ═══ */
 
 /* ═══ BEGIN C9 wiring ═══════════════════════════════════════════════════
@@ -23367,6 +23481,7 @@
     each(root.querySelectorAll("[data-troughblock]"), wireWaterTrough);
     each(root.querySelectorAll("[data-hgridblock]"), wireHalogenGrid);
     each(root.querySelectorAll("[data-shelblock]"), wireShellStrip);
+    each(root.querySelectorAll("[data-oxbblock]"), wireOxideBench);
     // ═══ END C8 wiring ═══
     // ═══ BEGIN C9 wiring ═══
     each(root.querySelectorAll("[data-raudblock]"), wireReactionAudit);

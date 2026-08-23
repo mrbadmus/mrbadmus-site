@@ -1449,8 +1449,24 @@ the moment the student is told that half of the green stone is copper and none o
 ### `PTAB` — the periodic table: what a column means, what a gap means, and why groups behave alike
 
 Opened by **C8 *The periodic table*** (2026-08-21, drawn by Claude Design, MRB-281).
-`PTAB-01` to `PTAB-10` are C8's, six lessons, one or two entries each. All are
+`PTAB-01` to `PTAB-13` are C8's, seven lessons, one to three entries each. All are
 `review_state: draft`.
+
+⊕ **`PTAB-11` to `PTAB-13` arrived on 23 August 2026 with `c8-07`**, the oxides
+lesson, which closed `KS3.C.PT.06` — the last uncovered statutory statement in
+C1–C8. `PTAB-11` is the load-bearing one of the three and is described below the
+table.
+
+⊖ **`PTAB-14` IS A NAMED SPARE, RESERVED FOR C9, AND HAS NO ROW.** NOTES-C8 §8
+allocated `PTAB-11`–`PTAB-14` to `c8-07` and reserved the fourth against C9's
+reactivity work, per §5.3. It is recorded here in prose and deliberately NOT in
+the table below, because a row is a claim that some authored lesson references
+the id and `ks3_parity.check_misconception_register` asserts exactly that in
+both directions — a row for an id no lesson names is a broken join, and naming
+it in `c8-07` to satisfy the row would create a live entry with no confrontation,
+which is Law 3's own failure. This is the `EARTH-18` shape: the number is held
+without being spent. It is **not yet minted** and it is **not** a permanent gap —
+C9 may take it, and until it does, nothing else may.
 
 ⚠️ **THE ROWS BELOW ARE GENERATED FROM `ks3_data/c8/`, NOT FROM NOTES-C8 §6, AND THEY DIFFER FROM
 IT IN SIX PLACES.** NOTES proposed the ids a delivery *expects* to emit; these are the names the
@@ -1498,6 +1514,9 @@ three cards are somebody paying money for a gas BECAUSE it does nothing.
 | `PTAB-08` | Reactivity always increases going down a group. | `grid-nine` | `grid-close` | `group-7-the-halogens` |
 | `PTAB-09` | The noble gases are unreactive because they are gases. | `think-commit-gas` | `think-commit-gas` | `group-0-and-why-groups-exist` |
 | `PTAB-10` | Unreactive means useless. | `uses-three` | `uses-three` | `group-0-and-why-groups-exist` |
+| `PTAB-11` | The copper oxide left the pH at 7, so it cannot be a base. | `think-commit-basic` | `think-commit-basic` | `metal-and-non-metal-oxides` |
+| `PTAB-12` | Alkaline and basic mean the same thing. | `think-commit-basic` | `think-commit-basic` | `metal-and-non-metal-oxides` |
+| `PTAB-13` | All oxides dissolve in water. | `bench-six-oxides` | `bench-pattern` | `metal-and-non-metal-oxides` |
 
 **`PTAB-08` is the unit's load-bearing entry, and it is the only one in the register that is
 created by the PREVIOUS lesson.** c8-04 establishes "reactivity increases going down a group" on a
@@ -1513,6 +1532,25 @@ had to light against a metal that melted itself — and a student can hold eithe
 so they stay separate. The cross-reference is recorded as a `reappears_in` edge on `ENER-03`'s own
 record, pointing at `group-1-the-alkali-metals`; see the ⊕ note in the `ENER` section above for why
 it is an edge and not this paragraph.
+
+⊕ **`PTAB-11` is the entry the oxides lesson is built around, and `PTAB-12` is
+the same belief with the case taken out.** `PTAB-11` is written concretely
+because `_misconception_quote` prints the statement of whatever id the activity
+`targets` as the amber block's quote — so this row IS the sentence on the page,
+and it is Design's own. `PTAB-12` is the abstract form and is confronted by the
+last paragraph of the same reveal, which does nothing else: *"Basic is what a
+substance does to an acid. Alkaline is a description of a solution."* They are
+kept separate on the `PTAB-02` / `PTAB-06` argument — a student can hold either
+without the other, and a student who has never met the word `basic` outside the
+phrase `basic solution` holds only the second.
+
+⚠️ **`PTAB-13` is anchored on the BENCH and confronted by the bench's own
+closing panel**, `bench-pattern`, not by the think block. It is the `PTAB-02`
+form: the tray holds two oxides that dissolve completely, one that dissolves a
+little, one that does not dissolve at all and two that are not solids in the
+first place, so the belief is contradicted by the instrument the student worked
+rather than by a sentence about it. `bench-pattern` is authored as `close_id`
+on the payload, so the register and the markup have one source.
 
 ⚑ **`PTAB-02` and `PTAB-06` are cousins and are worth keeping separate.** One reads a state of
 matter as settling a classification, the other reads one of two printed numbers as if it were the
