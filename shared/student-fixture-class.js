@@ -182,7 +182,7 @@ window.__MRB_DATA__ = {
   "lessonCount": "04",
   "recallLabel": "Practise recall",
   "recallTitle": "8r/Sc1 \u00a0\u00b7\u00a0 RECALL",
-  "studentFirstName": "Ayo",
+  "studentFirstName": "AY",
   "studentInitials": "AY",
   "subjectLabel": "Biology",
   "teacherInitials": "MB",

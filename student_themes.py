@@ -440,16 +440,63 @@ _MEASURE = r"""
 # bench is painted, and what all six swatches look like at that moment. The
 # alternative — press, then measure in a second call — cannot tell a swatch
 # that never ticked from a reading taken too early.
+#
+# ⊕ 23 Aug 2026 — IT OPENS THE ACCOUNT MENU FIRST, BECAUSE `Settings` IS ONLY
+# IN THERE NOW. The 23 Aug header ruling prunes the wide header's inline
+# `Settings` / `Sign out` pair (student_rulings.py, `PRUNE` 23 and 25) and
+# keeps the account menu's copies, because the menu is the only route a phone
+# ever had. So pressing `Settings` blind found nothing and this gate reported
+# `no Settings control` — which was this file being stale, not the port being
+# broken. `student_controls_drive.py` already drove it this way (its own note
+# says the phone route is avatar → menu → Settings) and needed no change.
+#
+# The avatar is matched BY SHAPE — a header control whose whole label is one
+# to three capitals — never by the initials, which are a student's name.
 _OPEN_SHEET = r"""(function(){
   var r = document.querySelector('.rd[data-mode="ks3"]');
   if (!r) return 'no design root';
   if (r.querySelector('[data-port-region="account-sheet"]')) return 'already';
-  var hit = null;
-  r.querySelectorAll('button,a').forEach(function(e){
-    if (!hit && (e.innerText||'').replace(/\s+/g,' ').trim() === 'Settings') hit = e;
-  });
+  function settings(){
+    var hit = null;
+    r.querySelectorAll('button,a').forEach(function(e){
+      if (!hit && (e.innerText||'').replace(/\s+/g,' ').trim() === 'Settings') hit = e;
+    });
+    return hit;
+  }
+  var hit = settings();
   if (!hit) return 'no Settings control';
   hit.click();
+  return 'ok';
+})()"""
+
+# ⊕ 23 Aug 2026 — THE STEP BEFORE IT, AND IT IS A SEPARATE `eval` FOR A REASON.
+#
+# The first draft did both halves in one expression — click the avatar, then
+# look for `Settings` again — and it reported `no Settings control` every time.
+# The click sets state; the runtime re-renders on a microtask; and the second
+# look ran before any of that, against the DOM as it was. Two evals with a
+# sleep between them is what every other driver in this repo already does
+# (`student_behaviour.drive` sleeps 0.35s per step) and it is the same lesson.
+#
+# It is a no-op when `Settings` is already on the page, so a delivery that goes
+# back to drawing it inline needs no change here.
+_OPEN_MENU = r"""(function(){
+  var r = document.querySelector('.rd[data-mode="ks3"]');
+  if (!r) return 'no design root';
+  var found = false;
+  r.querySelectorAll('button,a').forEach(function(e){
+    if ((e.innerText||'').replace(/\s+/g,' ').trim() === 'Settings') found = true;
+  });
+  if (found) return 'already';
+  var av = null;
+  r.querySelectorAll('button').forEach(function(e){
+    if (av) return;
+    if (!/^[A-Z]{1,3}$/.test((e.innerText||'').replace(/\s+/g,' ').trim())) return;
+    if (e.getBoundingClientRect().top > 200) return;
+    av = e;
+  });
+  if (!av) return 'no account menu control';
+  av.click();
   return 'ok';
 })()"""
 
@@ -1123,6 +1170,12 @@ def _drive_picker(page, url):
            "expect": list(PICKER_ORDER)}
     page.goto(url)
     time.sleep(2.6)
+    # ⊕ 23 Aug 2026 — the account menu first. `Settings` lives only inside it
+    # now (student_rulings.py prunes the wide header's inline pair), and the
+    # menu has to have RENDERED before the sheet's control can be found, which
+    # is why this is its own eval with a sleep after it.
+    out["menu"] = page.eval(_OPEN_MENU)
+    time.sleep(0.5)
     out["opened"] = page.eval(_OPEN_SHEET)
     time.sleep(0.5)
     out["at_open"] = json.loads(page.eval(_PICKER))

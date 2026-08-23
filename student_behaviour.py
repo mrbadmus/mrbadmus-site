@@ -181,7 +181,24 @@ DRIVES = {
         # instead), and the control that opens the sheet on BOTH files is this
         # one. A drive has to work on Design's file or it is reported as this
         # file's bug — see `run()`.
-        ("Settings opens the account sheet", [("click", "Settings")]),
+        # ⊕ 23 Aug 2026 — THE STEP THAT OPENS THE MENU IS NEW, AND IT IS NOT
+        # A CONVENIENCE. This drive used to read `[("click", "Settings")]`,
+        # which worked because BOTH files drew `Settings` inline in the header.
+        # The port no longer does: the wide header's inline `Settings` /
+        # `Sign out` pair is pruned (student_rulings.py — "the header said
+        # everything twice"), so on the port the only `Settings` is the one
+        # inside the account menu, and the menu has to be opened to reach it.
+        #
+        # ⚠️ THE TWO FILES PRESS DIFFERENT ELEMENTS, DELIBERATELY, AND END IN
+        # THE SAME STATE. `_CLICK` takes the first match in document order — on
+        # Design's file that is the inline link (dead there, as it always was),
+        # on the port it is the menu item wired to `openAccount`. Both files
+        # therefore finish with the account menu OPEN, which is why
+        # `openAccount` stops clearing `menu` in the same commit; a port that
+        # closed the menu here would diverge from the oracle by two controls
+        # that no registry can describe per drive.
+        ("Settings opens the account sheet",
+         [("has", "AY"), ("click", "Settings")]),
         #
         # ⚠️ AND THERE IS NO DRIVE HERE THAT PRESSES A SWATCH, WHICH IS A
         # LIMIT OF THIS GATE RATHER THAN AN OMISSION. It was written, run, and
@@ -495,6 +512,17 @@ def run(cdp):
                 problems, seen)
             rows.extend(add_ctl_rows)
 
+            # ⊕ 23 Aug 2026. LAST of the three census steps, and it is the only
+            # one that edits BOTH lists. It is applied after the other two
+            # rather than between them because it counts occurrences, and
+            # counting a label that a registry above is about to remove would
+            # make the arithmetic depend on the order two independent
+            # registries happen to be written in. Nothing it names appears in
+            # either of the others — checked, not assumed.
+            d_ctl, g_ctl, edit_rows = _apply_ruled_control_edits(
+                name, d_ctl, g_ctl, problems, seen)
+            rows.extend(edit_rows)
+
             # ⊕ 23 Aug 2026 — PHASE 1c. Strips nothing from either side; it
             # only records what the registered omissions look like on this
             # drive. `gs["text"]` and not `g_text`: an omission asks whether
@@ -642,6 +670,103 @@ RULED_DIVERGENCE = {
         # the nav, on every drive, on both files.
         ("the nav's Recall tab, which C2b replaces with the bench route",
          r"(?<=My class )Recall "),
+        # ── ⊕ RULED 23 Aug 2026 — THE HEADER SAID EVERYTHING TWICE ────────
+        #
+        # Design's wide header draws the student's first name beside the
+        # avatar disc and an inline `Settings` / `Sign out` pair beside that —
+        # and pressing the avatar drops a menu carrying `Settings` and
+        # `Sign out` AGAIN. The port keeps the MENU (it is the only route at
+        # phone width) and prunes the name and the inline pair.
+        #
+        # ⚠️ ONE PATTERN FOR THREE REMOVALS, AND THE ANCHOR IS WHAT MAKES IT
+        # SAFE. `Settings ` on its own, or `Sign out ` on its own, would also
+        # match the MENU's copies — which the port still has — and every drive
+        # that opens the menu would report the ruling as "back on the port".
+        # Anchored behind the monogram, the pattern can only match the run the
+        # inline pair makes: monogram, name, Settings, Sign out. The port never
+        # has a name after the monogram, so it never matches there, in any
+        # state. Checked in all three: menu closed, menu open, and menu open
+        # with the account sheet over it.
+        ("the header's duplicated name and its inline Settings / Sign out",
+         r"(?<=AY )Ayo Settings Sign out "),
+        # ── ⊕ RULED 23 Aug 2026 — THE WORK ROW'S HINT WORD ────────────────
+        #
+        # One word at the right-hand end of each work row's summary line,
+        # reading as a button and not being one — the whole line is a single
+        # `<button>` that expands the row, which is what pressing the word
+        # does. Design already drops all four below 720px, where the handoff
+        # note says the caret carries the affordance alone; the port drops them
+        # at every width (`showHint: false`, student_rulings.py).
+        #
+        # ⚠️ FOUR ENTRIES AND NOT ONE, because the fixture's six work rows
+        # exercise all four statuses — open, marked, pending, missed — and a
+        # single pattern would let three of them come back silently under the
+        # fourth one's registration. Each is its own sentence about its own
+        # word.
+        #
+        # ⚠️ AND EACH IS BARE RATHER THAN ANCHORED, which is the opposite
+        # choice from the header entry above and is made for the opposite
+        # reason: measured against the delivery, each of these four strings
+        # occurs at exactly ONE place in Design's whole class view — the
+        # `hintText` ternary — so there is nothing else on either file for a
+        # bare pattern to reach. The bench's own `Open it` task is sentence
+        # case and carries no `text-transform`, so it renders `Open it` and not
+        # `OPEN IT`; checked in the render, not in the file.
+        ("the work row's READ FEEDBACK hint", r"READ FEEDBACK "),
+        ("the work row's OPEN IT hint", r"OPEN IT "),
+        ("the work row's SEE IT hint", r"SEE IT "),
+        ("the work row's OPTIONS hint", r"OPTIONS "),
+    ],
+    # ── ⊕ RULED 23 Aug 2026 — THE FIRST DIVERGENCES ON THE ASSIGNMENT ─────
+    #
+    # This key did not exist. Every ruling this page has carried until now
+    # either changed a VALUE Design's fixture makes identical (the hand-in
+    # stamp, the week label, the topic) or closed a slot Design's own example
+    # data fills (the right answer's feedback line), so the rendered text was
+    # unmoved and there was nothing to declare. These two remove chrome.
+    "assignment": [
+        # The topic and the deadline, stacked above the question eyebrow. Both
+        # are already on the screen: the topic in the crumb bar and in the
+        # marker sheet's lead, the deadline in the crumb bar and on the bench
+        # of the page the student came from. `PRUNE` 107 takes the whole row.
+        #
+        # ⚠️ THE LATE CHIP BESIDE IT IS NOT REGISTERED, AND THAT IS NOT AN
+        # OVERSIGHT. `dueFlag` is `st.late ? … : ''` and the `<sc-if>` around
+        # it is therefore closed in every state these nine drives reach — none
+        # of them hands the work in, and the fixture's scenario is not a late
+        # one. A registration for it would be a claim about text that is not in
+        # DESIGN's file on any drive either, and `_ruled_seen` would correctly
+        # go red for it. It leaves the page with its parent row and is covered
+        # by that row's prune, not by a pattern.
+        ("the question screen's topic-and-deadline line",
+         r"CELLS & MICROSCOPY · DUE THU 18 SEP, 18:00 "),
+        # And the topic AGAIN, tacked onto the question counter — the third
+        # time on one screen, in the smallest type on it.
+        #
+        # ⚠️ THE FOUR TOPICS ARE SPELLED OUT RATHER THAN WILDCARDED. Design's
+        # sixteen questions carry exactly four distinct `q.t` values and the
+        # drives visit three different questions, so an alternation covers
+        # every state this gate reaches without a single `.*` — and a `.*` here
+        # would eat into the question text beside it, which is the one thing
+        # on this screen that must stay under byte-for-byte comparison.
+        #
+        # The values are already upper case in Design's data AND the span
+        # carries `.eyebrow`, which upper-cases again; the pattern is written
+        # against the RENDER, which is what `innerText` gives this gate.
+        #
+        # ⚠️ NO TRAILING SPACE, WHICH IS THE OPPOSITE OF EVERY OTHER PATTERN
+        # HERE AND IS RIGHT FOR THE OPPOSITE REASON. The registrations above
+        # remove a span that is FOLLOWED by more of the same line, so the
+        # joining space has to come out with it or a double space is left
+        # behind. This span is the END of its element: `innerText` puts one
+        # space between the eyebrow and the `<h1>` below it, and that space
+        # belongs to the counter, which survives. Taking it welded
+        # `QUESTION 07 OF 15` to `The diagram shows…` and failed all nine
+        # drives at the same character — measured, then corrected.
+        ("the question eyebrow's topic suffix",
+         r"(?<=QUESTION \d\d OF \d\d) · (?:USING A MICROSCOPE"
+         r"|ANIMAL AND PLANT CELLS|LIFE PROCESSES AND CELLS"
+         r"|SPECIALISED CELLS)"),
     ],
 }
 
@@ -755,9 +880,215 @@ def _apply_ruled_controls(page, d_controls, g_controls, problems, seen):
     return [c for c in d_controls if c not in ruled], rows
 
 
+# ── RULED CONTROL EDITS — a control the port RELABELS, or removes ONE OF ──
+#
+# ⊕ 23 Aug 2026 — THE THIRD SHAPE `RULED_CONTROLS` CANNOT SAY.
+#
+# `RULED_CONTROLS` is label-based and all-or-nothing: it takes EVERY entry
+# with that text out of Design's census, and it fails the port on every drive
+# where the label is present at all. That is exactly right for a control the
+# port removes outright — `Recall`, `Start a round` — and it cannot express
+# either half of the 23 Aug header ruling:
+#
+#   · THE PORT REMOVES ONE OF TWO IDENTICAL CONTROLS. Design draws `Settings`
+#     and `Sign out` twice over — inline in the wide header, and again inside
+#     the account menu. The port prunes the inline pair and KEEPS the menu, so
+#     `Settings` is still a control on the port and registering it in
+#     `RULED_CONTROLS` would report the surviving one as a reverted ruling on
+#     every drive that opens the menu.
+#   · THE PORT RELABELS A CONTROL. The avatar's label is the monogram AND the
+#     name (`AY Ayo`) on Design's file and the monogram alone (`AY`) on the
+#     port. `RULED_CONTROLS` can delete Design's label; nothing could then
+#     account for the port's, and the two lists would differ by one entry with
+#     no registry able to say why.
+#
+# ⚑ IT IS STILL ASSERTED BOTH WAYS, WHICH IS WHAT KEEPS IT A GATE.
+#
+#   · `design` must be a control in DESIGN's own file — once per page, over
+#     all drives. A registration that stops matching is a claim about the
+#     past and goes red, exactly as `RULED_DIVERGENCE`'s does.
+#   · `port`, when there is one, must be a control on the PORT — once per
+#     page. A relabel with no new label is a removal wearing the wrong shape.
+#   · PER DRIVE, EVERY DRIVE: the port may not carry MORE copies of `design`
+#     than `n` fewer than Design carries. That is the "back on the port" half:
+#     if the pruned pair returns, the count goes back up and this goes red on
+#     the drive it returned on.
+#
+# Everything outside the registered delta stays under the byte-for-byte list
+# comparison it has always been under: this removes `n` entries from each
+# side, in document order, and nothing else.
+#
+# TWO ENTRY SHAPES, and the second one arrived one ruling later:
+#
+#   `label`, `design`, `port` (or None), `n`, `why`
+#       exact labels. Removes `n` copies of `design` from Design's census and,
+#       when `port` is given, `n` copies of `port` from the port's — a relabel.
+#
+#   `label`, `suffix`, `why`
+#       a TAIL the port drops from a control whose label is otherwise
+#       untouched. Every Design control ENDING in `suffix` loses it; no port
+#       control may end in it. This is the shape a ruling takes when the text
+#       it removes is INSIDE a longer label rather than being the whole of one.
+#
+# ⚠️ THE SECOND SHAPE EXISTS BECAUSE THE FIRST COULD NOT SAY THE WORK ROWS.
+# Each work row is ONE `<button>` whose label is the whole summary line —
+# `W03 Digestion 6 questions · enzymes and the gut 82% READ FEEDBACK` — so the
+# hint word this port drops is six characters at the end of a label that also
+# carries a week, a title, a brief and a score, and every one of the six rows
+# has a different one. Registering them as exact labels would mean twelve
+# hand-typed strings carrying a student's marks, going stale the moment any
+# one of them changed for a reason nothing to do with this ruling.
+RULED_CONTROL_EDITS = {
+    "class view": [
+        dict(label="the avatar drops the duplicated name",
+             design="AY Ayo", port="AY", n=1,
+             why="RULED 23 Aug 2026 — the student's first name was on the "
+                 "header beside the monogram, again inside the account sheet "
+                 "that header opens, and again in the hero's 'Good week, …'. "
+                 "The avatar keeps the monogram, which is what a monogram is "
+                 "for. It is one control on both files and its LABEL moves, "
+                 "so both sides lose exactly one entry."),
+        dict(label="the header's inline Settings, duplicated by the menu",
+             design="Settings", port=None, n=1,
+             why="RULED 23 Aug 2026 — Design draws Settings twice at 1460: "
+                 "inline in the header and again in the account menu the "
+                 "avatar drops. The port keeps the MENU copy, because that is "
+                 "the only one a phone can reach (the inline pair is inside "
+                 "`if wide`), and prunes the inline one. n=1: Design's second "
+                 "copy is still expected, on every drive that opens the menu."),
+        dict(label="the header's inline Sign out, duplicated by the menu",
+             design="Sign out", port=None, n=1,
+             why="The other half of the same pair, and it is registered "
+                 "separately rather than folded in because the two are "
+                 "different destinations and a single entry would let one of "
+                 "them come back under the other's justification."),
+    ] + [
+        # The four work-row hint words, on the census side. Their twins in
+        # `RULED_DIVERGENCE` cover the page text; these cover the row buttons,
+        # because the hint sits INSIDE the button that carries the whole row
+        # and stripping the text does nothing to the control list.
+        #
+        # One per status, for the reason the text side gives: a single entry
+        # would let three of the four come back under the fourth's ruling.
+        dict(label="the work row's %s hint, on the row button" % word.lower(),
+             suffix=" " + word,
+             why="RULED 23 Aug 2026 — the hint word reads as a button and is "
+                 "not one: the whole summary line is a single control, and "
+                 "pressing the word expands the row rather than doing what it "
+                 "says. Design already drops all four below 720px, where the "
+                 "handoff note says the caret carries the affordance alone; "
+                 "the port drops them at every width. Nothing is lost — a "
+                 "marked row's expanded panel carries the real `Open the "
+                 "lesson` button, wired by ruling P3.")
+        for word in ("READ FEEDBACK", "OPEN IT", "SEE IT", "OPTIONS")
+    ],
+}
+
+
+def _take(seq, label, n):
+    """Return `seq` with the first `n` entries equal to `label` removed."""
+    out, left = [], n
+    for c in seq:
+        if left and c == label:
+            left -= 1
+            continue
+        out.append(c)
+    return out
+
+
+_EDIT_IN_DESIGN = "edit-in-design:"
+_EDIT_IN_PORT = "edit-in-port:"
+
+
+def _apply_ruled_control_edits(page, d_controls, g_controls, problems, seen):
+    """Remove the registered delta from each census. See the note above."""
+    rows = []
+    edits = RULED_CONTROL_EDITS.get(page) or ()
+    if not edits:
+        return d_controls, g_controls, rows
+    for e in edits:
+        label = e["label"]
+        if "suffix" in e:
+            suf = e["suffix"]
+            if any(c.endswith(suf) for c in d_controls):
+                seen.add(_EDIT_IN_DESIGN + label)
+            back = [c for c in g_controls if c.endswith(suf)]
+            if back:
+                rows.append((page, "ruled · %s" % label, "FAIL",
+                             "back on the port"))
+                problems.append(
+                    "%s — %r: %d control(s) on the ported page still END in "
+                    "%r, e.g. %r. RULED 23 Aug 2026: the hint word reads as a "
+                    "button and is not one — the whole row is a single control "
+                    "and pressing the word expands the row. Design itself "
+                    "drops all four below 720px."
+                    % (page, label, len(back), suf, back[0]))
+            d_controls = [c[:-len(suf)] if c.endswith(suf) else c
+                          for c in d_controls]
+            continue
+        design, port, n = e["design"], e.get("port"), e["n"]
+        d_has = d_controls.count(design)
+        g_has = g_controls.count(design)
+        if d_has:
+            seen.add(_EDIT_IN_DESIGN + label)
+        if port is not None and port in g_controls:
+            seen.add(_EDIT_IN_PORT + label)
+        # ⚠️ Only checked where Design HAS the control on this drive. Not every
+        # drive reaches every screen, and demanding the arithmetic on a screen
+        # neither file draws the control on is the mistake `_apply_ruled`'s
+        # docstring records — it paints healthy drives red for being elsewhere.
+        if d_has and g_has > d_has - n:
+            rows.append((page, "ruled · %s" % label, "FAIL",
+                         "the port carries %d, Design %d" % (g_has, d_has)))
+            problems.append(
+                "%s — %r: Design's own file carries %d %r control(s) and the "
+                "port carries %d, where the ruling removes %d. The pruned "
+                "control is BACK on the ported page, or the prune has moved to "
+                "the wrong node. RULED 23 Aug 2026: the header drew the name, "
+                "Settings and Sign out, and the account menu under the avatar "
+                "drew Settings and Sign out again; the menu is the copy that "
+                "survives, because it is the only one a phone can reach."
+                % (page, label, d_has, design, g_has, n))
+        d_controls = _take(d_controls, design, n)
+        if port is not None:
+            g_controls = _take(g_controls, port, n)
+    return d_controls, g_controls, rows
+
+
 def _ruled_seen(page, seen, problems):
     """Once per page: every registered divergence was found in Design's file."""
     rows = []
+    for e in RULED_CONTROL_EDITS.get(page, ()):
+        label = e["label"]
+        what = e.get("suffix", e.get("design"))
+        ok = (_EDIT_IN_DESIGN + label) in seen
+        rows.append((page, "ruled · %s — still in the delivery" % label,
+                     "PASS" if ok else "FAIL",
+                     "%r is on a control in Design's own file" % what if ok
+                     else "%r is on NO control in Design's file on any drive"
+                     % what))
+        if not ok:
+            problems.append(
+                "%s — the control edit %r names %r as something this port "
+                "removes from or relabels on a control, and no control in "
+                "DESIGN's own file carries it on any drive. The registration "
+                "is a claim about the past; re-read the delivery."
+                % (page, label, what))
+        if "suffix" in e or e.get("port") is None:
+            continue
+        ok = (_EDIT_IN_PORT + label) in seen
+        rows.append((page, "ruled · %s — the new label is on the port" % label,
+                     "PASS" if ok else "FAIL",
+                     "%r is a control on the ported page" % e["port"] if ok
+                     else "%r is NOT a control on the port on any drive"
+                     % e["port"]))
+        if not ok:
+            problems.append(
+                "%s — the control edit %r relabels a control to %r, and no "
+                "control on the ported page carries that label on any drive. "
+                "A relabel with no new label is a removal, and it is "
+                "registered as the wrong thing."
+                % (page, label, e["port"]))
     for label, _pat in RULED_DIVERGENCE.get(page, ()):
         ok = label in seen
         rows.append((page, "ruled · %s — still in the delivery" % label,

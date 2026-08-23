@@ -329,7 +329,24 @@ BINDINGS = {
         # `recallEyebrow`; it is in `_MUST_NOT_LEAK`, which is an assertion
         # about a key's VALUE never reaching the page and is unaffected by the
         # key having no reader.
-        ("Ayo", "studentFirstName"),
+        # ⊕ 23 Aug 2026 — RETIRED, and quoted rather than deleted for the same
+        # reason `recallBlurb` and `classNamePadded` above are — deleting it
+        # would hide WHY the student's name stopped being in the header:
+        #
+        #     ("Ayo", "studentFirstName"),
+        #
+        # Its ONE text node on the whole class view was node 24, inside the
+        # `<if wide>` beside the avatar disc — measured with `text_paths`, one
+        # path, not assumed — and the 23 Aug header ruling prunes that `<if>`
+        # (see `PRUNE` 23 in student_rulings.py: the header drew the name here,
+        # again inside the account sheet it opens, and again in the hero).
+        # Leaving the entry would stop the build with "the literal is not a
+        # text node in Design's template", which is that check working.
+        #
+        # ⚑ THE KEY IS NOT ORPHANED. `BINDINGS_AT` 10254 binds the account
+        # sheet's name to `studentFirstName`, and it is the reason that entry
+        # exists at all — Design's amended sample writes `AY` there, so the
+        # sheet needs the NAME bound where Design drew the monogram twice.
         ("Welcome back, Ayo · your class", "welcomeLine"),
         ("AY", "studentInitials"),
         ("Mr Badmus", "teacherName"),
@@ -2204,13 +2221,39 @@ def bindings_for(page, tpl):
     # show whichever happened to be last.
     for idx, (literal, key) in sorted(
             (BINDINGS_AT.get(page) or {}).items()):
+        # ⊕ 23 Aug 2026 — THIS NODE'S OWN LITERAL SUPPLIES THE FIXTURE'S VALUE
+        # WHEN NOTHING ELSE DOES.
+        #
+        # ⛔ This used to be fatal:
+        #
+        #     "BINDINGS_AT repoints template node %s at the key %r, and no
+        #      literal in BINDINGS claims that key. The fixture would then have
+        #      no value for it and the page would throw at mount."
+        #
+        # The DIAGNOSIS was right and the REMEDY was too narrow. What must
+        # never happen is a key with no fixture value; requiring a second node
+        # elsewhere in the template to carry the same literal is one way of
+        # guaranteeing that and not the only one. This table already states the
+        # literal it expects AND asserts it against the node, three lines
+        # below — so the value is in hand, checked, and Design's own.
+        #
+        # It became load-bearing with the 23 Aug header ruling. `studentFirstName`
+        # was claimed by the literal `Ayo` at exactly one node — the name beside
+        # the header avatar — and that node is pruned (the header drew the name
+        # three times over; see `PRUNE` 23 in student_rulings.py). The account
+        # sheet's name line, node 10254, is now the key's only reader, and the
+        # rule as written said a key may not be read by the only node that has
+        # it.
+        #
+        # ⚠️ THE FIXTURE'S NAME LINE THEREFORE READS `AY` RATHER THAN `Ayo`,
+        # which is Design's amended sample's own value and closer to the
+        # delivery than what it replaces. The registration that matches it —
+        # `AMENDED_ADDITIONS`' `" ?ACCOUNT AY \\S+ 8r/Sc1 · SCIENCE "` — already
+        # matches the name as `\\S+`, deliberately and with a note saying why,
+        # so it covers both. The LIVE page is unmoved either way: it binds
+        # `studentFirstName` to the real student's real first name.
         if key not in values:
-            raise SystemExit(
-                "build_student_port.py: %s — BINDINGS_AT repoints template "
-                "node %s at the key %r, and no literal in BINDINGS claims that "
-                "key. The fixture would then have no value for it and the page "
-                "would throw at mount. Repoint it at a key the literal table "
-                "already defines, or add the literal." % (page, idx, key))
+            values[key] = literal
         path = _path_to_text(tpl["roots"], idx)
         if path is None:
             raise SystemExit(
@@ -2690,6 +2733,55 @@ _PIP_ROW = (
 )
 
 
+# ── the question counter, which is now the only thing above the question ──
+#
+# ⊕ RULED 23 Aug 2026 — ASSIGNMENT ONLY, and it is the first emitted rule this
+# page has ever needed.
+#
+# The question screen used to open with three stacked meta lines: the topic and
+# the deadline (`dueLead`), a late chip beside them, and then
+# `Question 01 of 04 · ANIMAL AND PLANT CELLS`. The first two are pruned
+# (`PRUNE` 107 in student_rulings.py) and the third has lost its topic suffix,
+# because the topic was already in the crumb bar and in the marker sheet's own
+# lead and this was the third telling, in the smallest type on the screen.
+#
+# What is left is the one thing a student needs at the top of a question — WHICH
+# QUESTION THEY ARE ON — still drawn at `.eyebrow`'s 10.5px, a size it was given
+# when it was the last of three.
+#
+# ⚠️ `.eyebrow` ITSELF IS NOT TOUCHED, AND THAT IS THE WHOLE REASON THIS RULE
+# EXISTS RATHER THAN A ONE-LINE EDIT TO `shared/student-ds.css`. The class is
+# used six more times on this page alone — the marker sheet's lead, the rail's
+# heading, the review screen's labels — and every one of them is a caption doing
+# the job the class was sized for. Raising the class would raise all seven, and
+# that is a redesign of the page rather than a fix to one line of it.
+#
+# ⚠️ AND `shared/student-ds.css` IS GENERATED, WHICH THE FIRST DRAFT LEARNED THE
+# EXPENSIVE WAY. It is Design's six sheets concatenated by this very file, so a
+# rule appended to it survives exactly until the next build — the same mistake,
+# in a new file, that `student_rulings.py`'s banner exists to recover from. An
+# emitted rule beside `_PAGE_STRONG` and `_PIP_ROW` is where a port's own CSS
+# goes.
+#
+# ⚠️ NO `!important` HERE, and that is not an oversight — it is the difference
+# between this rule and the three above it. Those fight an INLINE declaration
+# (`background`, `display`) and an inline declaration outranks any selector.
+# `font-size`, `letter-spacing` and `color` for this span come from the
+# `.eyebrow` CLASS; the span's own inline style sets only `display` and
+# `margin-top`. A `[data-*]` attribute selector under `.rd[data-mode="ks3"]`
+# outranks a bare class, so it wins on specificity, as CSS is supposed to.
+#
+# The values: 10.5px → 13px is `.eyebrow` at the next step of the ramp, with
+# tracking eased from 0.18em to 0.14em because letter-spacing that reads at
+# 10.5px is loose at 13px, and colour up one tier of ink from `--st-caption` to
+# `--st-body`. Legible from a desk without becoming a heading in its own right:
+# the question below it is still twice the size at every viewport.
+_Q_EYEBROW = (
+    ".rd[data-mode=\"ks3\"] [data-q-eyebrow]"
+    "{font-size:13px;letter-spacing:0.14em;color:var(--st-body)}"
+)
+
+
 def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
               versions=None):
     tail = (
@@ -2756,8 +2848,12 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
            DS_CSS_URL,
            # ⊕ 22 Aug 2026 — the theme bridge, class view only. See above.
            # ⊕ 23 Aug 2026 — and the espresso page chrome beside it.
-           (_THEME_BRIDGE + _PAGE_STRONG + _PIP_ROW)
-           if spec["page"] == "class view" else "",
+           # ⊕ 23 Aug 2026 — and the assignment has one of its own now, so
+           # this is a choice between two pages rather than a class-view flag.
+           # Each page emits only rules whose selectors could match ON it: a
+           # rule that can never match is a rule nothing can tell is broken.
+           ((_THEME_BRIDGE + _PAGE_STRONG + _PIP_ROW)
+            if spec["page"] == "class view" else _Q_EYEBROW),
            json.dumps({"roots": roots, "imports": tpl["imports"]},
                       separators=(",", ":")).replace("<", "\\u003c"),
            json.dumps(bind_table, separators=(",", ":")),

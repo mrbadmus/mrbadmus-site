@@ -120,7 +120,78 @@ PRUNE = {
     # flashcards overlay's graft. Pruning node 336 alone would leave a bare
     # `<if onRecall>` with no children: harmless today, and a place for a
     # future edit to put something back into a branch nothing else can see.
-    "class view": [275, 279, 297, 298, 322, 325, 328, 335],
+    #
+    # ══════════════════════════════════════════════════════════════════════
+    # ⊕ RULED 23 Aug 2026 — THE HEADER SAID EVERYTHING TWICE.
+    # ══════════════════════════════════════════════════════════════════════
+    #
+    #   23   the `<if wide>` holding the student's first name beside the
+    #        avatar disc
+    #   25   the `<if wide>` holding the inline `Settings` + `Sign out` pair
+    #
+    # At 1460 the header read: `MB` `Mide` `Settings` `Sign out` — and
+    # pressing the avatar dropped a menu carrying `Settings` and `Sign out`
+    # AGAIN, six inches below the first pair. Two routes to two destinations,
+    # side by side, one of them hidden until you press the thing next to it.
+    # The name is drawn a third time inside the account sheet those controls
+    # open, and a fourth in the hero's `Good week, Mide.`
+    #
+    # RULED: the header carries the avatar and nothing else. The account menu
+    # under node 28 is the single route to both destinations.
+    #
+    # ⚑ IT IS THE MENU THAT SURVIVES, NOT THE INLINE PAIR, and that was the
+    # one real decision here. The inline pair is inside `<if wide>`; the menu
+    # is not. Keeping the pair and pruning the menu would have left a phone
+    # with no way to sign out at all — which is the hazard `SET_ON`'s own note
+    # already spells out, and it is the reason the avatar was never rewired to
+    # `openAccount`. Keeping the menu costs a wide-screen student one press and
+    # loses nobody anything.
+    #
+    # ⚑ IT IS THE `<if>` AND NOT THE LINKS INSIDE IT, for the reason node 335
+    # records directly above: pruning 26 and 27 would leave a bare `<if wide>`
+    # with no children, and pruning 24 would leave a bare `<if wide>` inside
+    # the avatar button.
+    #
+    # ⚠️ THREE OTHER FILES MOVE IN THIS SAME COMMIT, and none of them is
+    # optional:
+    #
+    #   · `SET_ON` loses 26 and 27. They are the nodes it wires to
+    #     `openAccount` / `signOut`, the build asserts every SET_ON node
+    #     EXISTS, and a wiring left pointing at a pruned node stops the build.
+    #     30 and 31 — the same two items inside the menu — keep their handlers
+    #     and are now the only ones.
+    #   · `openAccount` stops clearing `menu`. See the LOGIC entry; with the
+    #     inline pair gone, the menu is the only door in, and closing it behind
+    #     the student would return them from the sheet to a header with no
+    #     visible way back.
+    #   · `BINDINGS` in build_student_port.py loses `("Ayo",
+    #     "studentFirstName")`. Node 24 was that literal's ONLY text node on
+    #     the class view — measured, not assumed — so leaving the entry would
+    #     stop the build with "the literal is not a text node in Design's
+    #     template", which is that check working. The key still has a reader:
+    #     `BINDINGS_AT` 10254, the name inside the account sheet.
+    #
+    # Registered from the other end in `student_behaviour.py`:
+    # `RULED_DIVERGENCE` for the text and `RULED_CONTROL_EDITS` for the census.
+    "class view": [275, 279, 297, 298, 322, 325, 328, 335, 23, 25],
+    # ⊕ RULED 23 Aug 2026 — THE QUESTION SCREEN'S DUE LINE.
+    #
+    #   107   the flex row above the question eyebrow. Its two children are
+    #         `dueLead` (node 108, the topic and the deadline) and the `<if
+    #         dueFlag>` late chip (109/110).
+    #
+    # It is the ROW and not its children, for the reason the class view's
+    # prunes already record: pruning 108 and 109 would leave a bare flex
+    # container with no children — harmless today, and a place for a future
+    # edit to put something back into a row nothing else can see.
+    #
+    # ⚠️ THIS IS THE FIRST PRUNE ON THIS PAGE, and the assignment's node
+    # numbering was checked node-by-node out of the COMPILED tree rather than
+    # counted off the markup — the same discipline the class view's own
+    # warning demands. On the class view, 107 is the term spine. Here it is
+    # this row, and 26/27/30/31 are the deadline and status chips the class
+    # view's note warns against pruning. Nothing is shared but the arithmetic.
+    "assignment": [107],
 }
 
 # ── template nodes that need a CLICK HANDLER Design never gave them ───────
@@ -196,8 +267,19 @@ SET_ON = {
     # the authored explanation beside the right one — which is where
     # `readFeedback` goes. See the report; the wording is Design's and the
     # destination is the only one that makes it true.
-    "class view": {26: "openAccount", 30: "openAccount",
-                   27: "signOut", 31: "signOut", 231: "l.open",
+    #
+    # ⊕ RULED 23 Aug 2026 — 26 AND 27 ARE GONE, AND WITH THEM THEIR WIRING.
+    #
+    # The entry read `{26: "openAccount", 30: "openAccount", 27: "signOut",
+    # 31: "signOut", …}` — the same two destinations reached from two places,
+    # the wide header's inline pair and the account menu. The inline pair is
+    # pruned (see `PRUNE` above: the header said everything twice), so 26 and
+    # 27 no longer exist and a wiring naming them would stop the build.
+    #
+    # 30 and 31 stay and are now the ONLY route to either destination, at
+    # every width. That is why the pair that survived is the one inside the
+    # menu rather than the one inside `<if wide>`.
+    "class view": {30: "openAccount", 31: "signOut", 231: "l.open",
                    10113: "goLessons", 10134: "readFeedback"},
 }
 
@@ -387,21 +469,35 @@ LOGIC = {
             "      benchDoneFeedback: MRB_DATA('benchDoneFeedback'),\n"
             "      /* Design draws this as `<a href=\"#lessons\">` with no handler,\n"
             "         and on a page with no element of that id an unhandled hash\n"
-            "         link SCROLLS TO THE TOP — the P1/P3/P5/P7 defect again. The\n"
-            "         anchor names the lessons panel, so that is where it goes.\n"
-            "         `tabindex` before `focus` so a keyboard reaches it too; the\n"
-            "         panel is a `<div>` and is not focusable on its own. */\n"
+            "         link SCROLLS TO THE TOP — the P1/P3/P5/P7 defect again.\n"
+            "\n"
+            "         ⊕ RULED 23 Aug 2026 — IT NAVIGATES, IT DOES NOT SCROLL.\n"
+            "\n"
+            "         ⛔ What this replaces scrolled the page to the live\n"
+            "         `[data-lessons-panel]` sidebar:\n"
+            "\n"
+            "             const el = document.querySelector('[data-lessons-panel]');\n"
+            "             if (!el) { return; }\n"
+            "             el.scrollIntoView({ behavior: 'smooth', block: 'start' });\n"
+            "             el.setAttribute('tabindex', '-1');\n"
+            "             el.focus({ preventScroll: true });\n"
+            "\n"
+            "         The control says `Revisit this week's lessons`. A scroll to\n"
+            "         a heading over a list of cards is not revisiting a lesson —\n"
+            "         it is the same class of defect P1 and P3 name, a button\n"
+            "         whose label promises a destination and whose effect is a\n"
+            "         movement of the page. The lesson pages exist and this file\n"
+            "         already knows their URLs, so the button goes to one.\n"
+            "\n"
+            "         Same shape as `readFeedback` directly below, deliberately:\n"
+            "         one data key is BOTH the destination and the flag that\n"
+            "         decides whether the link is drawn at all (`WRAP` gates it\n"
+            "         on `benchDoneLessons`), so there is no state in which a\n"
+            "         link is on the page with nowhere to go. */\n"
             "      goLessons: (e) => {\n"
             "        if (e && e.preventDefault) { e.preventDefault(); }\n"
-            "        const el = document.querySelector('[data-lessons-panel]');\n"
-            "        if (!el) { return; }\n"
-            "        if (el.scrollIntoView) {\n"
-            "          el.scrollIntoView({ behavior: 'smooth', block: 'start' });\n"
-            "        }\n"
-            "        if (el.setAttribute && el.focus) {\n"
-            "          el.setAttribute('tabindex', '-1');\n"
-            "          el.focus({ preventScroll: true });\n"
-            "        }\n"
+            "        const href = MRB_DATA('benchDoneLessons');\n"
+            "        if (href) { window.location.href = href; }\n"
             "      },\n"
             "      /* Design draws this one as `<a href=\"#work\">`, and the work\n"
             "         list is the one place on this page that has no feedback in\n"
@@ -560,6 +656,42 @@ LOGIC = {
         # extension", which does not do that either; it is out of tonight's
         # scope and is on the report as such rather than being quietly
         # rewired.
+        # ── ⊕ RULED 23 Aug 2026 — THE WORK ROW'S HINT WORD IS NOT A CONTROL ──
+        #
+        # `READ FEEDBACK`, `OPEN IT`, `SEE IT`, `OPTIONS` — one word per row,
+        # sitting at the right-hand end of the row's own summary line. Every
+        # one of them reads as a button and none of them is one: the whole
+        # summary line IS one `<button>`, the caret beside it is the only
+        # affordance, and pressing anywhere on it expands the row. So a student
+        # who reads `READ FEEDBACK` and presses it gets the row opening — not
+        # feedback — and `READ FEEDBACK` is still sitting there.
+        #
+        # ⚑ DESIGN ALREADY DROPS IT, AND THAT IS WHAT SETTLES THIS. `showHint`
+        # is `wide && !expanded`: the word is not drawn below 720px at all, and
+        # Design's own handoff note says why — *"the caret carries the
+        # affordance alone"*. This ruling takes the narrow-viewport behaviour
+        # and makes it the behaviour at every width. Nothing new is invented
+        # and nothing a student can do is lost: the caret expands the row at
+        # every width, and for a marked row the expanded panel carries the real
+        # `Open the lesson` button, wired to `w.lessonHref` by ruling P3.
+        #
+        # ⚠️ `hintText` IS LEFT COMPUTING, deliberately. It is one ternary over
+        # four statuses; removing it would be a second edit with no effect on
+        # anything rendered, and leaving it means the day Design draws the hint
+        # somewhere it IS a control, the words are still here to draw.
+        #
+        # Registered from the other end in `student_behaviour.RULED_DIVERGENCE`
+        # — all four words, because the fixture's six work rows exercise all
+        # four statuses and every one of them is on screen at rest.
+        (
+            "        showHint: wide && !expanded,",
+            "        /* ⊕ RULED 23 Aug 2026 — the hint word is not a control and\n"
+            "           read as one. Design already drops it below 720px, where\n"
+            "           the note says the caret carries the affordance alone;\n"
+            "           this is that behaviour at every width. See\n"
+            "           student_rulings.py for the whole reading. */\n"
+            "        showHint: false,",
+        ),
         (
             "        primary: w.status === 'open' || w.retake ? this.openAssignment : () => this.go('recall'),",
             "        primary: (w.status === 'open' || w.retake)\n"
@@ -1539,6 +1671,31 @@ LOGIC = {
             "       two. */\n"
             "    this.setState({ account: true, menu: false, cards: false, recall: false });\n",
         ),
+        # ⊕ RULED 23 Aug 2026 — THE ACCOUNT MENU STAYS OPEN BEHIND THE SHEET.
+        #
+        # `menu: false` was written when `Settings` existed in TWO places — the
+        # wide header's inline link and the menu — and its note said so:
+        # *"closes the dropdown the phone opened to get here, so the student is
+        # not left with a menu behind a sheet."* With the inline pair pruned
+        # (see `PRUNE`), the menu is the ONLY door in, at every width.
+        #
+        # Closing it is now the wrong half of the trade. The sheet is
+        # `position:fixed;inset:0;z-index:40` and the menu lives inside the
+        # header's own `z-index:20` stacking context, so the menu is not
+        # visible while the sheet is open — nobody sees "a menu behind a
+        # sheet". What they see is what happens when they CLOSE the sheet: with
+        # `menu: false` they are returned to a header carrying an avatar and
+        # nothing else, having lost the only visible route back; without it
+        # they are returned exactly where they were.
+        (
+            "    this.setState({ account: true, menu: false, cards: false, recall: false });\n",
+            "    /* ⊕ RULED 23 Aug 2026 — `menu` is NOT cleared. The account menu\n"
+            "       is the only route to this sheet now that the inline header\n"
+            "       pair is pruned, it is not visible behind the sheet anyway,\n"
+            "       and closing it would return the student from the sheet to a\n"
+            "       header with no visible way back. See student_rulings.py. */\n"
+            "    this.setState({ account: true, cards: false, recall: false });\n",
+        ),
         (
             "    this.setState({ cards: true, account: false, flipped: false });\n",
             "    this.setState({ cards: true, account: false, flipped: false, recall: false });\n",
@@ -1657,6 +1814,138 @@ LOGIC = {
         (
             '        yourKey: keys[a], yourText: qq.o[a], yourNote: qq.f[a],\n        ansKey: keys[qq.a], ansText: qq.o[qq.a], ansNote: qq.f[qq.a],',
             "        yourKey: keys[a], yourText: qq.o[a], yourNote: _line(qq, a),\n        /* the correct option's line, closed when unauthored — see noteBlock above.\n           The review screen is the SECOND place it surfaces, and it was missed on\n           the first pass: closing it only on the question card would have left the\n           end-of-assignment review showing an empty rule under every right answer. */\n        ansKey: keys[qq.a], ansText: qq.o[qq.a], ansNote: _line(qq, qq.a),",
+        ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ RULED 23 Aug 2026 — SKIPPED IS NOT WRONG.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # Design's end-of-assignment scorecard reads
+        #
+        #     { label: 'WRONG', value: pad(total - nRight) },
+        #
+        # and `total - nRight` is every question that is not right — which
+        # includes every question the student never answered. On the real
+        # 8r/Sc1 assignment (four questions, one right, one answered wrong, two
+        # skipped) a child was told they got THREE WRONG. They got one wrong.
+        #
+        # ⚠️ IT IS NOT A ROUNDING QUIBBLE. "You got three of four wrong" and
+        # "you got one of four wrong and missed two" are different sentences
+        # about what to do next: the first says you do not understand the
+        # topic, the second says you ran out of time. The overall score is the
+        # same either way (`scoreFrac` is `nRight + ' / ' + total` and is
+        # untouched) — what changes is whether the breakdown under it is true.
+        #
+        # ⚑ THE FILE ALREADY KNOWS THE ANSWER, twice over, which is why this is
+        # three words rather than a computation. `wrongList` is built ten lines
+        # above and skips `a == null` explicitly, so `wrongList.length` is the
+        # count of ANSWERED-AND-WRONG; and `nDone` is the count of answered.
+        # The MISSED figure is `total - nDone`, and neither number is new.
+        #
+        # ⚠️ THE `edge` RULE IS GENERALISED IN THE SAME BREATH, and this is not
+        # tidiness — Design's `i < 2` means "every stat but the last" over a
+        # list of three, and with a fourth stat it would have drawn a divider
+        # after RIGHT and WRONG and none after MISSED, leaving TIME TAKEN
+        # welded to the stat before it. `i < a.length - 1` is Design's own
+        # intent, stated so it survives the list changing length again.
+        #
+        # ⚠️ NO DRIVE REACHES THIS SCREEN. `student_behaviour`'s nine
+        # assignment drives all stay on the question view — none of them hands
+        # the work in — so nothing here moves a single byte of the comparison.
+        # That is worth saying out loud rather than discovering: the scorecard
+        # is verified by hand-driving the live page, and by nothing in the gate
+        # set.
+        (
+            "      doneStats: [\n"
+            "        { label: 'RIGHT', value: pad(nRight) },\n"
+            "        { label: 'WRONG', value: pad(total - nRight) },\n"
+            "        { label: 'TIME TAKEN', value: this.mmss(st.elapsed) }\n"
+            "      ].map((s, i) => Object.assign(s, { edge: i < 2 ? '1px solid var(--st-room-line)' : 'none', pl: i ? '15px' : '0' })),",
+            "      /* ⊕ RULED 23 Aug 2026 — WRONG counts answers, not absences.\n"
+            "         `wrongList` already excludes the unanswered (it skips\n"
+            "         `a == null`); `nDone` already counts the answered. See\n"
+            "         student_rulings.py for what the old line told a child. */\n"
+            "      doneStats: [\n"
+            "        { label: 'RIGHT', value: pad(nRight) },\n"
+            "        { label: 'WRONG', value: pad(wrongList.length) },\n"
+            "        { label: 'MISSED', value: pad(total - nDone) },\n"
+            "        { label: 'TIME TAKEN', value: this.mmss(st.elapsed) }\n"
+            "      ].map((s, i, a) => Object.assign(s, { edge: i < a.length - 1 ? '1px solid var(--st-room-line)' : 'none', pl: i ? '15px' : '0' })),",
+        ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ RULED 23 Aug 2026 — THE QUESTION SCREEN SAID THE TOPIC THREE TIMES.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # Above the question, Design draws two stacked meta lines:
+        #
+        #     CELLS & MICROSCOPY · THU 18 SEP, 18:00   (dueLead + dueFlag)
+        #     Question 01 of 04 · Animal and plant cells   (qEyebrow)
+        #
+        # The topic is in the crumb bar, in the sheet's eyebrow and in both of
+        # those; the deadline is in the crumb bar and on the bench of the page
+        # the student came from. What a student needs at the top of a question
+        # is WHICH QUESTION THEY ARE ON, and it was the smallest type on the
+        # screen, third in a stack of three, after two things they already knew.
+        #
+        # RULED: the whole due line goes (`PRUNE` node 107 — the flex row
+        # holding `dueLead` and the `dueFlag` chip), and `qEyebrow` loses the
+        # topic it was tacking on. What is left is `Question 01 of 04`, alone,
+        # and `shared/student-ds.css` gives that one span its own size so it
+        # can be read from a desk rather than leaned into.
+        #
+        # ⚠️ `dueLead` AND `dueFlag` ARE LEFT COMPUTING, for the reason
+        # `hintText` is on the class view: they are a ruling of 22 Aug (a
+        # hardcoded topic and a fixed "2 DAYS LATE" replaced with real data),
+        # and deleting the computation would delete the record of that ruling
+        # while removing nothing from the page. The values are simply unread.
+        #
+        # Registered in `student_behaviour.RULED_DIVERGENCE` — the due line and
+        # the topic suffix, separately, because they are two decisions.
+        (
+            "      qEyebrow: 'Question ' + pad(idx + 1) + ' of ' + pad(total) + ' \\u00B7 ' + q.t,",
+            "      /* ⊕ RULED 23 Aug 2026 — the eyebrow says which question this\n"
+            "         is, and stops there. The topic is already in the crumb bar\n"
+            "         and in the marker sheet's own eyebrow; it was being said a\n"
+            "         third time in the smallest type on the screen. */\n"
+            "      qEyebrow: 'Question ' + pad(idx + 1) + ' of ' + pad(total),",
+        ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ RULED 23 Aug 2026 — THE OPTIONS THAT WERE NOT PICKED VANISHED.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # Once a question is confirmed, every option that is neither the
+        # student's pick nor the right answer takes the `off` treatment:
+        #
+        #     border: '1px solid var(--st-rule-fact)'   #F0E6D3
+        #     color:  'var(--st-faint)'                 on a #FBF3E6 ground
+        #
+        # `--st-rule-fact` is the lightest rule token in the whole system — it
+        # exists for hairlines BETWEEN rows of a key-fact table, where the
+        # ground either side of it is paper. Used as the OUTLINE of a box on
+        # the cream page ground it measures barely over 1:1, so the two
+        # remaining options stopped being boxes at all: two lines of grey text
+        # floating beside two bordered ones. A student looking back at what
+        # they chose could not see what the alternatives had been.
+        #
+        # ⚑ THE TIER IS KEPT. `bg` STAYS `transparent`, and that is the whole
+        # of the hierarchy: RIGHT and NOT THIS ONE carry a 2px coloured border
+        # AND a tinted fill, THE ANSWER carries a 2px green border on paper,
+        # and this carries a 1.5px neutral rule on nothing. It is Design's own
+        # `idle` treatment (`1.5px`, `--st-rule-strong` on the key, `--st-caption`)
+        # read onto the state below it — so the values are not invented either.
+        #
+        # No text changes, so nothing is registered: this is colour only.
+        (
+            "      return Object.assign(o, {\n"
+            "        bg: 'transparent', border: '1px solid var(--st-rule-fact)', color: 'var(--st-faint)',\n"
+            "        keyBg: 'transparent', keyBorder: '1px solid var(--st-rule-fact)', keyColor: 'var(--st-faint)',",
+            "      /* ⊕ RULED 23 Aug 2026 — an option a student did not pick is\n"
+            "         still an option they have to be able to read. --st-rule-fact\n"
+            "         is a between-rows hairline for use on paper; as the outline\n"
+            "         of a box on the cream page ground it is all but invisible.\n"
+            "         Design's own `idle` values, one tier down. */\n"
+            "      return Object.assign(o, {\n"
+            "        bg: 'transparent', border: '1.5px solid var(--st-rule-strong)', color: 'var(--st-muted)',\n"
+            "        keyBg: 'transparent', keyBorder: '1.5px solid var(--st-rule-strong)', keyColor: 'var(--st-caption)',",
         ),
         (
             "    else window.location.href = 'Class View.dc.html';",
@@ -1875,9 +2164,37 @@ SET_ATTR = {
         260: {"data-bench-surface": "board"},
         266: {"data-bench-avatar": "1"},
     },
-    # The assignment page has no bench, no spine and no leaderboard. Nothing
-    # to name, and naming it anyway would move that page's bytes for nothing.
-    "assignment": {},
+    # The assignment page has no bench, no spine and no leaderboard.
+    #
+    # ⊕ RULED 23 Aug 2026 — ONE NAME, AND IT IS FOR TYPE SIZE.
+    #
+    #   111  the question screen's eyebrow — `Question 01 of 04`, once the
+    #        topic suffix and the whole due line above it are gone (see LOGIC
+    #        and PRUNE 107). It is now the ONLY thing above the question, and
+    #        it was drawn at `.eyebrow`'s 10.5px because it used to be the
+    #        third line of a stack.
+    #
+    # ⚠️ `.eyebrow` COULD NOT SIMPLY BE BUMPED. The class is used SIX more
+    # times on this page alone — the marker sheet's lead, the rail's heading,
+    # the review screen's labels — and every one of them is a caption doing
+    # the job `.eyebrow` was sized for. Raising the class would raise all
+    # seven, which is a redesign of the page rather than a fix to one line.
+    #
+    # ⚠️ AND THERE IS NO EXISTING HOOK TO SCOPE TO. The span carries `class`
+    # and an inline `style` and nothing else; its parent is
+    # `main[data-screen-label]`, which is a BOUND attribute whose value is the
+    # eyebrow's own text — a selector keyed on it would be keyed on the state
+    # of the page. So the node is named here and `shared/student-ds.css`
+    # carries one rule against the name, which is exactly the shape
+    # `[data-page-strong]` and `[data-pip-row]` already use on the class view:
+    # an attribute plus a scoped rule is the mechanism that reaches an element
+    # whose size is set by a shared class.
+    #
+    # Design's markup is untouched — `SET_ATTR` refuses to overwrite an
+    # attribute Design wrote, and this is a name Design has never used.
+    "assignment": {
+        111: {"data-q-eyebrow": "1"},
+    },
 }
 
 
@@ -2347,10 +2664,13 @@ GRAFT = {
 #           is; with no destination the link is removed rather than left
 #           pointing at nothing.
 #
-#   10113   "Revisit this week's lessons", gated on `benchDoneLessons`. The
-#           lessons panel is worth going to when there are lessons in it. With
-#           an empty `lessonDefs` the control would scroll a student to a
-#           heading over nothing, so the bench shows `Practise recall` alone.
+#   10113   "Revisit this week's lessons", gated on `benchDoneLessons`.
+#           ⊕ 23 Aug 2026 — that key is now the LESSON'S OWN URL rather than a
+#           boolean, so the gate is unchanged (a non-empty string is truthy)
+#           and the same value is the destination `goLessons` navigates to.
+#           With no lesson page behind this week's work the string is empty,
+#           the link is off the page, and the bench shows `Practise recall`
+#           alone — rather than offering a revisit with nowhere to go.
 WRAP = {
     "class view": {
         57: "benchOpen",

@@ -203,13 +203,45 @@
     });
   }
 
+  /* ⊕ RULED 23 Aug 2026 — TWO WAVES, NOT SIX.
+
+     ⛔ What this replaces awaited the SDK and then each of the five helpers in
+     turn — six serial round trips before the page could even begin asking the
+     database anything. On a school wifi that is most of the seconds a student
+     spends looking at the word `Your class` over an empty page.
+
+     ⚠️ THE ORDER IS NOT DECORATION, AND ONLY PART OF IT IS. Every CROSS-FILE
+     reference in these five is inside a function body — `student-data.js`
+     looks `window.MRBClassEntry` up when `workingAcademicYear()` is CALLED and
+     throws a named error if it is not there (MRB-267), `student-guard.js`
+     reads `window.MrBadmusConfig` inside `getClient()`, and `student-data.js`
+     reaches for the guard inside its own loaders. None of that runs at script
+     evaluation time, so those four can arrive in any order provided nothing
+     CALLS them until all four are here, which is what awaiting the wave does.
+
+     ⚠️ ONE OF THEM IS NOT LAZY, AND IT IS THE REASON THIS IS TWO WAVES RATHER
+     THAN ONE. `class-entry.js` ends by MOUNTING ITSELF — `mount()` on
+     DOMContentLoaded, or immediately when the document is already parsed — and
+     `mount()` resolves through `cfg()`, which reads `window.MrBadmusConfig`
+     and falls back to the PRODUCTION url and key when it is absent. Load it
+     alongside `config.js` and a page running against the test project would,
+     intermittently and depending on which script won the network, point its
+     class-entry affordance at production. So `config.js` goes in the first
+     wave, on its own, and everything that could read it goes in the second.
+
+     The SDK keeps the first wave with `config.js` rather than a wave of its
+     own: it is the slowest of the six (a CDN, and the largest), nothing reads
+     `window.supabase` at evaluation time, and `class-entry.js` — the one file
+     with a load-time side effect — is in the wave after it either way. */
   async function loadDeps() {
+    var first = [loadScript(DEPS[0])];               // config.js
     if (!window.supabase || !window.supabase.createClient) {
-      await loadScript(SDK_URL);
+      first.push(loadScript(SDK_URL));
     }
-    for (var i = 0; i < DEPS.length; i++) {
-      await loadScript(DEPS[i]);   // strictly in order — see DEPS
-    }
+    await Promise.all(first);
+    await Promise.all(DEPS.slice(1).map(function (src) {
+      return loadScript(src);
+    }));
   }
 
   // ── small shared helpers ──────────────────────────────────────────────
@@ -1382,22 +1414,57 @@
   async function buildClass(sb, user, klass, token) {
     var D = window.MrBadmusStudentData;
 
-    var detail = await D.loadStudentClass(klass.id, user.id);
-    var recall  = await api("/api/class/recall?class_id=" + klass.id, token);
-    var current = await api("/api/class/current-assignment?class_id=" + klass.id, token);
+    /* ⊕ RULED 23 Aug 2026 — THE FIVE OPENING READS GO TOGETHER.
+
+       ⛔ They were five sequential `await`s — the class detail, the recall
+       bank, the current assignment, the assignments table and the academic
+       years — and a student watched `Your class` over an empty page for the
+       sum of five round trips before anything could be drawn.
+
+       ⚠️ EVERY ONE WAS CHECKED FOR A DEPENDENCY ON THE ONE BEFORE IT, and
+       none of them has one: all five take only `klass.id` and `user.id`,
+       both of which are arguments to this function. The fourth read
+       (`assignments`) is the one that DOES feed later work — `assignmentIds`
+       and `weeks` — and everything that consumes it is still strictly after
+       this line.
+
+       ⚠️ `academic_years` MOVED UP FROM THE BOTTOM OF THE FUNCTION, and that
+       is the only reordering here. It was read after the whole lesson walk;
+       its result (`year`) is not used until `weekOf()` runs, which is after
+       both. Nothing between the old position and this one touches it.
+
+       ⚠️ AND `serverNow` STILL DECIDES EVERYTHING IT DECIDED. It is set by
+       `api()` from the response, so it is set by whichever of the two api
+       calls answers first, and the check below is unchanged and still
+       unconditional. What a piece of work's status is measured against has
+       not moved; only when the requests leave has. */
+    var opening = await Promise.all([
+      D.loadStudentClass(klass.id, user.id),
+      api("/api/class/recall?class_id=" + klass.id, token),
+      api("/api/class/current-assignment?class_id=" + klass.id, token),
+      /* The teaching week each piece of work belongs to. `assignments`
+         records it (`academic_week`), so read it rather than recomputing it;
+         the fall back derives it from `due_at` against the academic year's
+         start_date, which is the same arithmetic the producer used to set
+         that due_at. */
+      sb.from("assignments")
+        .select("id, academic_week").eq("class_id", klass.id)
+        .is("deleted_at", null),
+      sb.from("academic_years")
+        .select("id, name, start_date, end_date").is("deleted_at", null)
+    ]);
+    var detail = opening[0];
+    var recall = opening[1];
+    var current = opening[2];
+    var aw = opening[3];
+    var yrs = opening[4];
 
     /* Whether a piece of work is still open or has been missed is decided
        against the SERVER's clock and nothing else. Without one, this page does
        not guess with the device's — it says it could not load. */
     if (!serverNow) { throw new Error("no server clock on the response"); }
 
-    /* The teaching week each piece of work belongs to. `assignments` records
-       it (`academic_week`), so read it rather than recomputing it; the fall
-       back derives it from `due_at` against the academic year's start_date,
-       which is the same arithmetic the producer used to set that due_at. */
     var weeks = {};
-    var aw = await sb.from("assignments")
-      .select("id, academic_week").eq("class_id", klass.id).is("deleted_at", null);
     (aw.data || []).forEach(function (r) { weeks[r.id] = r.academic_week; });
 
     /* ── which lesson each piece of work draws on ───────────────────────
@@ -1439,12 +1506,19 @@
           }
         });
         if (refs.length) {
-          var bank = await sb.from("ks3_bank_questions")
-            .select("id, lesson_slug").in("id", refs);
-          (bank.data || []).forEach(function (r) { bySlug[r.id] = r.lesson_slug; });
-          var lad = await sb.from("ks3_ladder_questions")
-            .select("question_ref, lesson_slug").in("question_ref", refs);
-          (lad.data || []).forEach(function (r) {
+          /* ⊕ 23 Aug 2026 — the two corpora are read TOGETHER. Both take the
+             same `refs` and neither reads the other's answer; they share no
+             id of any kind (recorded in the deck's own note below), so the
+             two writes into `bySlug` cannot collide. The ladder is applied
+             second, exactly as it was, so if that ever stopped being true the
+             precedence is the precedence it has always had. */
+          var pair = await Promise.all([
+            sb.from("ks3_bank_questions").select("id, lesson_slug").in("id", refs),
+            sb.from("ks3_ladder_questions")
+              .select("question_ref, lesson_slug").in("question_ref", refs)
+          ]);
+          (pair[0].data || []).forEach(function (r) { bySlug[r.id] = r.lesson_slug; });
+          (pair[1].data || []).forEach(function (r) {
             bySlug[r.question_ref] = r.lesson_slug;
           });
         }
@@ -1467,9 +1541,10 @@
                     + "this class's work", err);
     }
 
+    /* ⊕ 23 Aug 2026 — the READ moved into the opening batch at the top of
+       this function; the RESOLUTION stays here, where `year`'s first reader
+       (`weekOf`, directly below) is. Nothing between the two touches it. */
     var year = null;
-    var yrs = await sb.from("academic_years")
-      .select("id, name, start_date, end_date").is("deleted_at", null);
     if (!yrs.error) { year = window.MRBClassEntry.workingAcademicYear(yrs.data); }
 
     function weekOf(card) {
@@ -1759,6 +1834,47 @@
     });
     var deckSlugs = Object.keys(coveredSlugs);
 
+    /* ⊕ RULED 23 Aug 2026 — THE TWO DECK READS LEAVE NOW AND ARE AWAITED
+       LATER.
+
+       `ks3_cards` (the flashcard deck) and `ks3_ladder_questions` (the recall
+       bank) take the SAME `deckSlugs` and nothing else, they read different
+       tables, and neither looks at the other's answer — so there was no reason
+       for them to be two more round trips at the end of a function that had
+       already spent five. They are started here, the moment their one input
+       exists, and awaited where they were awaited before: the student's wrong
+       answers are read over the top of them rather than in front of them.
+
+       ⚠️ THE `.then` IS WHAT SENDS THE REQUEST. A supabase-js builder is a
+       THENABLE, not a promise: assigning it to a variable builds a query and
+       sends nothing. Without this the two would still leave in series, at the
+       old `await`s, and this whole comment would be describing something that
+       was not happening.
+
+       ⚠️ AND A REJECTION HERE MUST NOT BECOME AN UNHANDLED ONE. Each is given
+       a catch that RESOLVES with the error in supabase-js's own shape
+       (`{ error }`), because the two `await` sites below already check
+       `.error` and throw into their own try/catch. So a failure is handled in
+       exactly the place, and in exactly the way, it was handled before. */
+    function _started(builder) {
+      return builder.then(function (r) { return r; },
+                          function (err) { return { data: null, error: err }; });
+    }
+    var cardsQ = deckSlugs.length ? _started(
+      sb.from("ks3_cards")
+        .select("id, lesson_slug, kind, card_position, topic, front, back, "
+                + "equation_left, equation_arrow, equation_right, "
+                + "equation_condition")
+        .in("lesson_slug", deckSlugs)
+        .order("lesson_slug").order("card_position")) : null;
+    var bankQ = deckSlugs.length ? _started(
+      sb.from("ks3_ladder_questions")
+        .select("question_ref, lesson_slug, unit_code, rung, text, "
+                + "answer_letter, options")
+        .in("lesson_slug", deckSlugs)
+        .in("rung", ["recall", "apply"])
+        .order("lesson_slug").order("rung")) : null;
+
     /* ── WHICH LESSONS DID THIS STUDENT GET SOMETHING WRONG IN? ───────────
 
        ⚠️ A CARD ID IS NOT A QUESTION REF, AND THE JOIN IS AT LESSON GRAIN.
@@ -1802,13 +1918,8 @@
 
     var cards = [];
     try {
-      if (deckSlugs.length) {
-        var cq = await sb.from("ks3_cards")
-          .select("id, lesson_slug, kind, card_position, topic, front, back, "
-                  + "equation_left, equation_arrow, equation_right, "
-                  + "equation_condition")
-          .in("lesson_slug", deckSlugs)
-          .order("lesson_slug").order("card_position");
+      if (cardsQ) {
+        var cq = await cardsQ;      // started the moment deckSlugs existed
         /* A refusal here is silent otherwise — supabase-js RESOLVES with an
            `error` rather than rejecting, so `.data` would simply be null and
            the deck would be empty with nothing said anywhere. The card's own
@@ -1926,13 +2037,8 @@
        for the ordering — see `QSEEN_PREFIX`. */
     var recallBank = [];
     try {
-      if (deckSlugs.length) {
-        var lq = await sb.from("ks3_ladder_questions")
-          .select("question_ref, lesson_slug, unit_code, rung, text, "
-                  + "answer_letter, options")
-          .in("lesson_slug", deckSlugs)
-          .in("rung", ["recall", "apply"])
-          .order("lesson_slug").order("rung");
+      if (bankQ) {
+        var lq = await bankQ;       // started the moment deckSlugs existed
         /* supabase-js RESOLVES with an `error` rather than rejecting, so
            without this the bank would simply be empty and nothing would say
            why — the same silence the deck's own read documents. */
@@ -2334,7 +2440,29 @@
          are the values themselves. Every one is derived above, from
          `benchCard` and from `progress`, and from nothing else. */
       benchDoneMarked: benchMarked,
-      benchDoneLessons: benchLessons.length > 0,
+      /* ⊕ RULED 23 Aug 2026 — THIS IS A DESTINATION NOW, NOT A FLAG.
+         It was `benchLessons.length > 0`, a boolean whose only reader was the
+         `WRAP` that decides whether "Revisit this week's lessons" is drawn —
+         because the control SCROLLED to the lessons panel rather than opening
+         a lesson. It navigates now (student_rulings.py, `goLessons`), so the
+         key carries the URL and does both jobs at once, exactly as
+         `benchDoneFeedback` below already does: there is no state in which a
+         link is on the page with nowhere to go, because the same string is
+         the gate and the destination.
+
+         ⚠️ `benchLessons` AND NOT `lessonDefs`, and the difference is not
+         cosmetic. `lessonDefs` is built from the assignment's questions and
+         keeps every lesson slug, with `href: lessonHref(slug)` — EMPTY for a
+         slug this build has no page for. `benchLessons` is `lessonsFor[…]`,
+         which drops those on the way in, so its first entry always has a real
+         href. Reading `lessonDefs[0].href` would hand back "" whenever the
+         FIRST lesson of the week happened to have no page, and the button
+         would vanish for a student whose other lessons are all there.
+
+         The first lesson, not a list: the bench offers one revisit, and the
+         assignment draws on its lessons in order, so the first is where the
+         week starts. The full list is the sidebar panel, which is unchanged. */
+      benchDoneLessons: benchLessons.length ? benchLessons[0].href : "",
       /* The destination for "Read the feedback", and the flag that decides
          whether the link is drawn at all — one string doing both jobs, so
          there is no way to show a link with nowhere to go. It is the
