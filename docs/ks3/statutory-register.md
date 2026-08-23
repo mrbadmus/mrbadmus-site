@@ -1,6 +1,6 @@
 # KS3 statutory register
 
-**Generated file — do not hand-edit.** Source of truth is `ks3_statutory.py` at the repo root; regenerate with `python3 ks3_statutory.py`.
+**Generated file — do not hand-edit.** Source of truth is `ks3_statutory.py` at the repo root; regenerate with `python3 ks3_statutory.py --write`. A bare run and `--check-only` verify without writing — see the `RULINGS` note in that file for why.
 
 Phase 0 of `docs/ks3/architecture.md` §10.1. Every statutory bullet of the Key stage 3 programme of study, given a permanent ID per §4.4.
 
