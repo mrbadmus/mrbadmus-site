@@ -16,7 +16,8 @@ this exists to stop.
   2. RUNS every `fast` gate, so those can never be skipped;
   3. requires a RECEIPT for every `slow` gate, matching the exact tree being
      pushed;
-  4. reports every gate that is missing a precondition as SKIPPED, by name.
+  4. reports every gate that is missing a precondition as SKIPPED, by name —
+     a missing path (`needs`) or a missing credential (`needs_env`).
 
 ── THE RECEIPT, AND WHY IT IS KEYED ON THE TREE ────────────────────────
 
@@ -91,6 +92,13 @@ def _skip_reason(gate):
     need = gate.get("needs")
     if need and not os.path.exists(need):
         return "%s does not exist" % need
+    # ⊕ MRB-282. A gate that reads production cannot run without a credential.
+    # The alternative — letting the gate notice that for itself and exit 0 —
+    # is a PASS that measured nothing, which is the failure mode this whole
+    # guard exists to make impossible.
+    env = gate.get("needs_env")
+    if env and not os.environ.get(env):
+        return "$%s is not set, so this gate cannot reach what it checks" % env
     return None
 
 

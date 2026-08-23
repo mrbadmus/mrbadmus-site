@@ -690,7 +690,13 @@ def verify(bank, ladder, cards):
         print("\n     ⏭️  --verify SKIPPED: MRB_TEST_STUDENT_PASSWORD is not set,")
         print("        so the live tables cannot be read. This is the only check")
         print("        that the database still matches these files.\n")
-        return 0
+        # ⊕ MRB-282. This used to `return 0`, three lines under a docstring
+        # that says "a gate that passes because it could not run is worse than
+        # no gate". Exit 3 — distinct from 1, which means measured drift — so
+        # that a caller can tell "the mirror agrees" from "nobody looked".
+        # gate_registry marks this gate `needs_env`, so the pre-push guard
+        # reports the missing password as a SKIP by name and never sees a 3.
+        return 3
 
     url = "https://urklkrwevjtlfbwnipjn.supabase.co"
     src = open(os.path.join(REPO, "leaderboard.html"), encoding="utf-8").read()
