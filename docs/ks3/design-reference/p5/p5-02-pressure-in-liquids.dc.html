@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pressure in liquids · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p5-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p5-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].p5-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 22rem; height: 40px; background: transparent; }
+  input[type="range"].p5-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].p5-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].p5-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].p5-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Pressure</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Pressure in liquids</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Pressure · Model</p>
+        <h1>Pressure in liquids</h1>
+        <p class="ks3-bigq">Punch three holes down the side of a full can — near the top, halfway, near the bottom. The bottom jet shoots out furthest, every single time.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Three holes, one can, three different jets.</h2>
+        <p class="ks3-hook-prompt">The top hole dribbles. The middle one arches out. The bottom one throws water most of the way across the sink. Same can, same water, holes the same size.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Why does the bottom jet travel furthest?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Nothing about the water changes as it sinks. A litre near the bottom weighs exactly what a litre near the top weighs. What changes is how much water is <em>stacked above the hole</em>: at the bottom hole the whole depth of water is pressing, and at the top hole only a few centimetres are. More weight above, on the same area, means more pressure — and a faster jet.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>A liquid presses on everything it touches. Go deeper and there is more liquid stacked above you, so more weight is pressing on each square metre and the pressure is higher. At any one depth a liquid presses <strong>equally in every direction</strong> — down on the bottom, sideways on the walls, and upwards on anything underneath — which is why water comes out sideways through a hole in the side of a can rather than just running down the inside.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · a pressure probe on a cable</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Same probe. Same liquid. Just lower.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">The probe has a face of {{ faceLabel }}, and it reads the pressure of the liquid alone. Lower it, and change what the tank is filled with.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. You lower the probe from 1 m down to 2 m down in the same tank. What happens to the reading?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px; align-items: flex-end;">
+              <div style="flex: 1 1 340px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What the tank holds</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ liquidTabs }}" as="t" hint-placeholder-count="3">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 1 1 280px; min-width: 240px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <label for="p5depth" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Depth of the probe</label>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light);">{{ depthLabel }}</p>
+                </div>
+                <input class="p5-slider" type="range" id="p5depth" min="0" max="10" step="1" value="{{ depthStep }}" onChange="{{ onDepth }}" onInput="{{ onDepth }}">
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+              <svg viewBox="0 0 1000 600" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                <rect x="150" y="90" width="520" height="450" style="fill: #24405C;"></rect>
+                <rect x="380" y="90" width="120" height="{{ colH }}" style="fill: #6E93BD;"></rect>
+                <path d="M150 60 V540 H670 V60" style="fill: none; stroke: #C6B9A7; stroke-width: 6;"></path>
+                <path d="M150 90 H670" style="fill: none; stroke: #E9DCC8; stroke-width: 4;"></path>
+                <text x="686" y="96" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 16px; letter-spacing: .08em; fill: #E9DCC8;">SURFACE</text>
+
+                <path d="M440 20 V{{ probeY }}" style="fill: none; stroke: #8C8177; stroke-width: 4;"></path>
+                <path d="{{ rosette }}" style="fill: none; stroke: #8FB7FF; stroke-width: 6; stroke-linecap: round;"></path>
+                <rect x="380" y="{{ probeTop }}" width="120" height="26" rx="7" style="fill: #C6B9A7; stroke: #15110C; stroke-width: 3;"></rect>
+
+                <path d="{{ depthLine }}" style="fill: none; stroke: #E9DCC8; stroke-width: 3;"></path>
+                <text x="248" y="574" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #8C8177;">DEPTH</text>
+                <text x="440" y="574" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #8C8177;">PROBE FACE</text>
+              </svg>
+                <span style="{{ depthLabelStyle }}">{{ depthLabel }}</span>
+                <span style="{{ colLabelStyle }}">{{ weightLabel }} above the face</span>
+                <span style="position: absolute; left: 72%; top: 16%; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(13px, 2.1vw, 26px); color: #FBF3E6; white-space: nowrap; pointer-events: none;">{{ pressureLabel }}</span>
+                <span style="position: absolute; left: 72%; top: 25%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px, 1.4vw, 17px); letter-spacing: .08em; text-transform: uppercase; color: #C6B9A7; white-space: nowrap; pointer-events: none;">{{ dirWord }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Depth</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ depthLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Liquid above the face</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ weightLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ liquidName }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Pressure on the face</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ pressureLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Turn the face over</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ sameWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-formula" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <div style="padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(24px, 3.2vw, 36px); line-height: 1.14; letter-spacing: -.03em; text-align: center;">Pressure at a depth = weight of the liquid above ÷ the area it presses on</p>
+        </div>
+        <p class="ks3-eyebrow" style="margin: 24px 0 0; color: var(--ks3-accent-text);">The stack</p>
+        <h2 style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 32px; line-height: 1.1; letter-spacing: -.03em;">Every layer adds its weight</h2>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 30px 48px; margin-top: 22px;">
+          <svg viewBox="0 0 520 470" role="img" aria-label="A stack of five layers of water, each one metre deep. Each layer adds ten thousand newtons to every square metre below it, so the running total goes 10 000, 20 000, 30 000, 40 000 and 50 000 pascals at five metres down." style="width: 320px; height: auto; flex: 0 0 auto;">
+            <rect x="30" y="24" width="230" height="80" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+            <rect x="30" y="104" width="230" height="80" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+            <rect x="30" y="184" width="230" height="80" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+            <rect x="30" y="264" width="230" height="80" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+            <rect x="30" y="344" width="230" height="80" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+            <text x="145" y="72" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; fill: var(--ks3-ink);">1 m · 10 000 N</text>
+            <text x="145" y="152" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; fill: var(--ks3-ink);">1 m · 10 000 N</text>
+            <text x="145" y="232" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; fill: var(--ks3-ink);">1 m · 10 000 N</text>
+            <text x="145" y="312" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; fill: var(--ks3-ink);">1 m · 10 000 N</text>
+            <text x="145" y="392" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; fill: var(--ks3-ink);">1 m · 10 000 N</text>
+            <text x="278" y="70" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px; fill: var(--ks3-ink-muted);">10 000 Pa</text>
+            <text x="278" y="150" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px; fill: var(--ks3-ink-muted);">20 000 Pa</text>
+            <text x="278" y="230" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px; fill: var(--ks3-ink-muted);">30 000 Pa</text>
+            <text x="278" y="310" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px; fill: var(--ks3-ink-muted);">40 000 Pa</text>
+            <text x="278" y="390" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; fill: var(--ks3-ink);">50 000 Pa</text>
+            <path d="M30 440 H260" style="fill: none; stroke: var(--ks3-ink); stroke-width: 4;"></path>
+            <text x="145" y="462" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 16px; letter-spacing: .06em; fill: var(--ks3-ink-muted);">1 m² OF FLOOR</text>
+          </svg>
+          <div style="flex: 1 1 340px; min-width: 280px;">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(30px, 3.8vw, 40px); line-height: 1.14; letter-spacing: -.02em;">P = W ÷ A</p>
+            <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body);">Every layer adds its weight to what is below it. Twice the depth, twice the weight above, twice the pressure.</p>
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 9px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">P</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">pressure at that depth</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">Pa</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">W</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">weight of the liquid above</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">N</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">A</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">area it presses on</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">m²</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">h</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">depth below the surface</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">m</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <dc-import name="Cfifa" examples="{{ cfifaExamples }}" questions="{{ cfifaQuestions }}" on-open="{{ onCfifaOpen }}" hint-size="100%,980px"></dc-import>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Pressure in a liquid increases with depth, because the deeper you go the more liquid is stacked above you. At any one depth the liquid presses equally in every direction, and it is the depth that decides the pressure — not how much liquid there is in total.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“More water means more pressure, so a lake presses harder than a bucket.”</p>
+        <p>Only if it is deeper. Stand a narrow tube of water 2 m tall next to a swimming pool 2 m deep and the pressure at the bottom of each is the same, to the pascal. What sits above your square metre of floor is a column 2 m tall in both cases, and the water off to the sides in the pool is not resting on your square metre — it is resting on its own. This is why a water tower works: what matters for the pressure at your tap is how high the water is above it, not how many litres the tower holds.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“Water is heavier at the bottom.”</p>
+          <p>It is not. A litre from the bottom of the tank and a litre from the top balance each other exactly — and a liquid is very nearly impossible to squash, so the water down there is not even packed tighter. Nothing about the water changes with depth. What changes is how much of it is above you, which is a fact about your position, not about the water.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>The pressure in a liquid rises with depth, because each layer of liquid adds its weight to everything below it. Work it out the same way as any other pressure: the weight of the liquid above, divided by the area it presses on. At a given depth the push is the same in every direction, and it depends on the depth and the liquid — not on how much liquid there is or how wide the container is.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Every dam in the world is built to this fact. The pressure at the top of the wall is almost nothing and the pressure at the base is enormous, so a dam is thin at the top and thick at the bottom — the shape is a drawing of the pressure it has to hold. Submarines are the same story from the inside: a hull that is comfortable at 100 m is in serious trouble at 500 m, and the deep-sea vehicles that visit the bottom of the Mariana Trench sit inside spheres with walls several centimetres thick, because a sphere is the only shape that has no flat side for the water to work on.</p>
+          <p>The same idea runs your taps. Water is pumped up into a tower or a reservoir on high ground, and the pressure at your kitchen sink comes from the height of that water above it — nothing else. That is why the top flat in a block often has feeble water pressure and the ground floor does not, and why a hosepipe on a hill runs harder than the same hose at the top of the slope. Turn it round and you get a way to measure: a column of liquid whose height tells you a pressure, which is what a manometer is, and which is why blood pressure is still quoted as millimetres of mercury.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p5-01-pressure-force-over-area.html">Pressure = force ÷ area<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p5-03-upthrust-floating-and-sinking.html">Upthrust, floating and sinking<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p5-04-atmospheric-pressure.html">Atmospheric pressure<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p4-01-what-a-force-is.html">What a force is<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="c1-04-gas-pressure.html">Gas pressure<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Pressure in a column of liquid as height × density × gravitational field strength, pressure differences in fluids, and how those give upthrust.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Got a depth of your own in mind — a pool, a dam, a dive?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The tank is a teaching model. Water is taken as 1000 kg in every cubic metre, sea water as 1025 and paraffin as 800, and weight as mass × 10 N/kg; real values shift with temperature and, for sea water, with saltiness. The probe reads the pressure of the liquid alone — the atmosphere is pressing on the surface as well, and adds about 100 000 Pa everywhere in the tank. The tank is drawn to scale in depth; the probe face is drawn larger than 0.02 m² would be so that it can be seen.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Three holes in a can', short: 'CAN' },
+  { id: 's-bench', label: 'Probe in the tank', short: 'TANK' },
+  { id: 's-formula', label: 'The stack and four steps', short: 'FIFA' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const FACE = 0.02;      // m², the probe face
+const PX_PER_M = 90;    // drawing scale, depth only
+const SURFACE = 90;     // y of the liquid surface
+
+const LIQUIDS = [
+  { key: 'water', label: 'Water', name: 'fresh water', rho: 1000 },
+  { key: 'sea', label: 'Sea water', name: 'sea water', rho: 1025 },
+  { key: 'paraffin', label: 'Paraffin', name: 'paraffin', rho: 800 }
+];
+
+const CFIFA_EX = [
+  { tab: 'Nothing to convert', head: 'A probe with a 0.05 m² face sits 2 m down. The water above its face weighs 1000 N. What is the pressure on it?',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '1000 N stays 1000 N · 0.05 m² stays 0.05 m²',
+        note: 'The weight is already in newtons and the face already in square metres, so there is nothing to convert.' },
+      { letter: 'F', label: 'Formula', line: 'pressure = weight of the liquid above ÷ area',
+        note: 'The same relationship as any other pressure. Only the force has a new name.' },
+      { letter: 'I', label: 'Insert', line: 'pressure = 1000 N ÷ 0.05 m²',
+        note: 'The area is the probe face, not the area of the whole tank.' },
+      { letter: 'F', label: 'Fine-tune', line: '1000 ÷ 0.05 = 20 000',
+        note: 'Newtons divided by square metres leaves newtons per square metre.' },
+      { letter: 'A', label: 'Answer', line: 'pressure = 20 000 Pa',
+        note: 'Twenty thousand pascals, which is what 2 m of water comes to.' }
+    ] },
+  { tab: 'Convert first', head: 'A probe face of 250 cm² has 600 N of water above it. What is the pressure on the face?',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '250 cm² ÷ 10 000 = 0.0250 m²',
+        note: 'A pascal is a newton per square metre, and there are 10 000 square centimetres in a square metre.' },
+      { letter: 'F', label: 'Formula', line: 'pressure = weight of the liquid above ÷ area',
+        note: 'Force shared out over the face it presses on.' },
+      { letter: 'I', label: 'Insert', line: 'pressure = 600 N ÷ 0.0250 m²',
+        note: 'The converted area goes in. The 250 never does.' },
+      { letter: 'F', label: 'Fine-tune', line: '600 ÷ 0.0250 = 24 000',
+        note: 'Newtons divided by square metres leaves newtons per square metre.' },
+      { letter: 'A', label: 'Answer', line: 'pressure = 24 000 Pa',
+        note: 'Insert 250 instead of 0.0250 and the answer comes out 2.4 Pa.' }
+    ] }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Calculate',
+    question: 'A pressure probe has a face of 0.05 m². At the depth it is hanging, the water above its face weighs 1500 N. What is the pressure on the face?',
+    options: [
+      { text: '30 000 Pa', correct: true },
+      { text: '75 Pa — multiply the weight by the area', correction: 'Multiplying gives a force back from a pressure you already know. To find the pressure, the weight is shared out over the area, so you divide.' },
+      { text: '30 000 N — the probe is measuring a push, so it reads in newtons', correction: 'The arithmetic is right and the unit is wrong. Newtons divided by square metres gives pascals.' },
+      { text: '0.000033 Pa — divide the area by the weight', correction: 'That is the division upside down. Pressure asks how much force each square metre is carrying.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A swimming pool is filled to 2 m deep. Beside it stands a thin pipe of water, also 2 m tall, open at the top. Where is the pressure greater at the bottom?',
+    options: [
+      { text: 'The same in both — the depth is the same, and depth is what decides it.', correct: true },
+      { text: 'The pool, because it holds thousands of times more water.', correction: 'The extra water in the pool is sitting on its own patch of floor, not on yours. Above any one square metre there is 2 m of water in both cases.' },
+      { text: 'The pipe, because the same push is concentrated into a narrow tube.', correction: 'Nothing is being concentrated. Each square metre of the pipe\u2019s base carries the water directly above it, exactly as in the pool.' },
+      { text: 'The same in both, because water always presses the same everywhere.', correction: 'The verdict is right and the reason is wrong. Water does not press the same everywhere — it presses harder deeper down. These two match because their depths match.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A concrete dam is thin at the top and much thicker at the base. Explain why, using depth, pressure and the water above.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Near the top of the dam there is\u2026',
+    criteria: [
+      'Says the pressure on the dam increases with depth.',
+      'Says that is because there is more water stacked above the deeper parts.',
+      'Says the water presses sideways on the wall, not only downwards.',
+      'Says the base therefore has to withstand a much greater pressure than the top.',
+      'Says the extra thickness is there to take that larger push.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'You punch three holes down the side of a full can and watch the jets. Predict what the three jets look like, then say what happens to all three as the can empties, and explain both using pressure.',
+    fieldLabel: 'Your answer',
+    placeholder: 'The bottom hole\u2026',
+    criteria: [
+      'Says the lowest hole gives the fastest, furthest jet.',
+      'Explains it as the greatest depth of water above that hole.',
+      'Says the jets come out sideways because a liquid presses in every direction.',
+      'Says every jet weakens as the can empties.',
+      'Explains that as the depth of water above each hole falling, and notes each hole stops when the surface reaches it.'
+    ] }
+];
+
+function fmt(n) {
+  const s = String(n);
+  if (s.length < 5) return s;
+  return s.replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    liquid: 0,
+    depthStep: 6,
+    touched: {},
+    workedStep: 0,
+    formPick: null,
+    insertPick: null,
+    ansText: '',
+    ansUnit: '',
+    buildOpen: false,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  liquid() { return LIQUIDS[this.state.liquid]; }
+  depth() { return this.state.depthStep * 0.5; }
+  pressure() { return Math.round(this.liquid().rho * 10 * this.depth()); }
+  weightAbove() { return Math.round(this.pressure() * FACE * 10) / 10; }
+
+  benchNote() {
+    const d = this.depth();
+    const L = this.liquid();
+    const P = this.pressure();
+    const other = LIQUIDS.find((x) => x.key !== L.key && x.rho !== L.rho);
+    const otherP = Math.round(other.rho * 10 * d);
+    if (d === 0) {
+      return 'The probe is sitting at the surface with no ' + L.name + ' above it at all, so the liquid presses on it with ' + P +
+        ' Pa. This is the honest zero of the experiment: the reading counts the liquid only, and the air is still pressing on the surface the whole time.';
+    }
+    const half = Math.round(L.rho * 10 * (d / 2));
+    if (d <= 2) {
+      return d + ' m down in ' + L.name + ', and the ' + this.weightAbove() + ' N sitting on the face gives ' + fmt(P) +
+        ' Pa. Halve the depth to ' + (d / 2) + ' m and it falls to ' + fmt(half) + ' Pa — the depth and the pressure rise and fall together. In ' +
+        other.name + ' the same ' + d + ' m would read ' + fmt(otherP) + ' Pa instead.';
+    }
+    return 'Down at ' + d + ' m the column above the face weighs ' + this.weightAbove() + ' N, which is ' + fmt(P) +
+      ' Pa on the face — and it does not matter how wide the tank is, only how far down you are. Compare it with ' + (d / 2) + ' m, where the same probe read ' +
+      fmt(half) + ' Pa. In ' + other.name + ' this depth would give ' + fmt(otherP) + ' Pa, because a cubic metre of it weighs a different amount.';
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-bench') return s.gate !== null && Object.keys(s.touched).length >= 1;
+          if (id === 's-formula') return s.buildOpen;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  benchVals() {
+    const s = this.state;
+    const d = this.depth();
+    const colH = Math.round(d * PX_PER_M);
+    const probeTop = SURFACE + colH;
+    const cy = probeTop + 13;
+    return {
+      faceLabel: FACE + ' m²',
+      benchProgress: Object.keys(s.touched).length ? 'Both controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'It doubles — twice the depth means twice the liquid above the face' },
+        { letter: 'B', text: 'It stays the same — it is the same tank and the same liquid' },
+        { letter: 'C', text: 'It halves — the deeper water is out of the way of the surface' },
+        { letter: 'D', text: 'It goes up a little — the water down there is packed tighter' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      benchOpen: s.gate !== null,
+      liquidTabs: LIQUIDS.map((L, i) => ({
+        label: L.label, pressed: s.liquid === i,
+        style: this.seg(s.liquid === i, true, false),
+        onClick: () => this.setState((st) => ({ liquid: i, touched: Object.assign({}, st.touched, { liquid: true }) }))
+      })),
+      depthStep: s.depthStep,
+      onDepth: (e) => this.setState((st) => ({ depthStep: Number(e.target.value), touched: Object.assign({}, st.touched, { depth: true }) })),
+      colH: Math.max(1, colH),
+      probeY: probeTop,
+      probeTop: probeTop,
+      rosette: 'M440 ' + (cy - 74) + ' V' + (cy - 26) + ' M440 ' + (cy + 74) + ' V' + (cy + 26) +
+        ' M' + (440 - 122) + ' ' + cy + ' H' + (440 - 74) + ' M' + (440 + 122) + ' ' + cy + ' H' + (440 + 74),
+      depthLine: 'M248 ' + SURFACE + ' V' + probeTop + ' M236 ' + SURFACE + ' H260 M236 ' + probeTop + ' H260',
+      depthLabelStyle: 'position:absolute;left:12%;top:' + (((SURFACE + colH / 2) / 600) * 100).toFixed(2) +
+        '%;transform:translate(-100%,-50%);font-family:var(--ks3-font-mono);font-weight:500;font-size:clamp(10px,1.5vw,19px);color:#E9DCC8;white-space:nowrap;pointer-events:none;',
+      colLabelStyle: 'position:absolute;left:52%;top:' + (((SURFACE + Math.max(24, colH / 2)) / 600) * 100).toFixed(2) +
+        '%;transform:translate(0,-50%);font-family:var(--ks3-font-mono);font-weight:500;font-size:clamp(10px,1.5vw,18px);color:#FBF3E6;white-space:nowrap;pointer-events:none;',
+      depthLabel: d.toFixed(1) + ' m',
+      liquidName: this.liquid().name,
+      weightLabel: this.weightAbove() + ' N',
+      pressureLabel: fmt(this.pressure()) + ' Pa',
+      dirWord: 'THE SAME IN EVERY DIRECTION',
+      sameWord: 'Same reading',
+      benchAlt: 'A tank of ' + this.liquid().name + ' with a probe hanging ' + d.toFixed(1) +
+        ' metres below the surface. The column of liquid above its face is shaded, weighs ' + this.weightAbove() +
+        ' newtons, and presses on the face with ' + this.pressure() + ' pascals from every direction.',
+      benchNote: this.benchNote()
+    };
+  }
+
+  buildVals() {
+    const s = this.state;
+    const W = this.weightAbove();
+    const P = this.pressure();
+    const committed = (s.formPick !== null ? 1 : 0) + (s.insertPick !== null ? 1 : 0) + (s.ansText.trim() && s.ansUnit ? 1 : 0);
+    const locked = s.buildOpen || committed < 3;
+    return {
+      cfifaExamples: CFIFA_EX,
+      onCfifaOpen: () => this.setState({ buildOpen: true }),
+      cfifaQuestions: [
+        {
+          tab: 'Question 1', id: 'p502q1',
+          
+          head: 'Your probe: ' + W + ' N of ' + this.liquid().name + ' above a ' + FACE + ' m² face, ' + this.depth().toFixed(1) + ' m down.',
+          steps: [
+            { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+              line: W + ' N stays ' + W + ' N · ' + FACE + ' m² stays ' + FACE + ' m²',
+              note: 'The weight is already in newtons and the face already in square metres, so there is nothing to convert.' }
+          ].concat([
+        { letter: 'F', label: 'Formula', line: 'pressure = weight of the liquid above ÷ area',
+          note: 'Force over area, with the weight of the column as the force.' },
+        { letter: 'I', label: 'Insert', line: 'pressure = ' + W + ' N ÷ ' + FACE + ' m²',
+          note: 'Both figures come off the bench above.' },
+        { letter: 'F', label: 'Fine-tune', line: W + ' ÷ ' + FACE + ' = ' + fmt(P),
+          note: 'Newtons divided by square metres leaves newtons per square metre.' },
+        { letter: 'A', label: 'Answer', line: 'pressure = ' + fmt(P) + ' Pa',
+          note: 'At ' + this.depth().toFixed(1) + ' m down in ' + this.liquid().name + ', pressing equally in every direction.' }
+      ]),
+          close: 'The five lines give ' + fmt(P) + ' Pa, and the shaded column on the bench is the ' + W + ' N those lines used.'
+        },
+        {
+          tab: 'Question 2', id: 'p502q2',
+          head: 'A hatch of 400 cm² in the side of a tank has 1600 N of water above it. What is the pressure on the hatch?',
+          steps: [
+            { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+              line: '400 cm² ÷ 10 000 = 0.0400 m²',
+              note: 'A pascal needs square metres, and there are 10 000 square centimetres in one.' },
+            { letter: 'F', label: 'Formula', line: 'pressure = weight of the liquid above ÷ area',
+              note: 'Force shared out over the area it presses on.' },
+            { letter: 'I', label: 'Insert', line: 'pressure = 1600 N ÷ 0.0400 m²',
+              note: 'The converted area goes in. The 400 never does.' },
+            { letter: 'F', label: 'Fine-tune', line: '1600 ÷ 0.0400 = 40 000',
+              note: 'Newtons divided by square metres leaves newtons per square metre.' },
+            { letter: 'A', label: 'Answer', line: 'pressure = 40 000 Pa',
+              note: 'Insert 400 instead of 0.0400 and the answer comes out 4 Pa.' }
+          ],
+          close: 'The five lines give 40 000 Pa. The whole question turned on the first one.'
+        }
+      ]
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign({
+      draftVisible: this.props.showDraft !== false,
+      hookOptions: [
+        { letter: 'A', text: 'The water from the bottom hole has further to fall' },
+        { letter: 'B', text: 'There is more water stacked above the bottom hole, so it presses harder there' },
+        { letter: 'C', text: 'The can is narrower at the bottom, so the water speeds up' },
+        { letter: 'D', text: 'Water gets heavier as it sinks' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null
+    }, this.railVals(), this.benchVals(), this.buildVals(), this.ladderVals());
+  }
+}
+
+</script>
+</body>
+</html>

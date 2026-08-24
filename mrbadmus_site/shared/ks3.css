@@ -25710,3 +25710,630 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 /* ═══ END P3 ═══ */
 
 
+
+/* ═══ BEGIN P4 ═══════════════════════════════════════════════════════════
+   P4 — *Forces*. One marked block per unit.
+
+   ⚠️ EVERY SELECTOR HERE IS P4-ONLY, and every shell stem was checked
+   against the whole registry before it was written. `ks3-srig-` was already
+   C6's `step-rig`, and `ks3_art.load()` caught it on the first run, so the
+   support rig is `ks3-hrig-`.
+
+   ⚠️ EVERY FIGURE WRAPPER IS `position: relative`. Design's own note for
+   the generator: every live value on a P4 diagram is an absolutely
+   positioned HTML `<span>` over the SVG, because a `{{ hole }}` used as
+   text inside an SVG `<text>` renders NOTHING — the runtime wraps
+   interpolated text in a `<span>`, and a `span` created in the SVG
+   namespace is not a renderable element, and it fails silently. Without a
+   positioned ancestor those spans resolve against the page and widen the
+   document on a phone, which is the second half of the same rule.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── shared P4 shapes ───────────────────────────────────────────────── */
+
+.ks3-iboard-gate, .ks3-rbench-gate, .ks3-hrig-gate, .ks3-grun-gate,
+.ks3-dlane-gate, .ks3-fall-gate, .ks3-span-gate, .ks3-splot-gate {
+  padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: rgba(255, 255, 255, .06);
+  border: 2px solid var(--ks3-on-dark-muted);
+}
+
+.ks3-iboard-head, .ks3-rbench-head, .ks3-hrig-head, .ks3-grun-head,
+.ks3-dlane-head, .ks3-fall-head, .ks3-span-head, .ks3-splot-head,
+.ks3-fsort-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap; margin-bottom: 20px;
+}
+.ks3-iboard-head h2, .ks3-rbench-head h2, .ks3-hrig-head h2,
+.ks3-grun-head h2, .ks3-dlane-head h2, .ks3-fall-head h2,
+.ks3-span-head h2, .ks3-splot-head h2, .ks3-fsort-head h2 {
+  margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;
+  color: var(--ks3-on-dark);
+}
+.ks3-iboard-progress, .ks3-rbench-progress, .ks3-hrig-progress,
+.ks3-grun-progress, .ks3-dlane-progress, .ks3-fall-progress,
+.ks3-span-progress, .ks3-splot-progress, .ks3-fsort-progress {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 15px;
+  font-weight: 500; color: var(--ks3-on-dark-muted);
+}
+
+.ks3-grun-lead, .ks3-dlane-lead, .ks3-fall-lead, .ks3-span-lead,
+.ks3-splot-lead, .ks3-fsort-lead {
+  margin: 0 0 18px; font-size: 18px; line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+
+/* The readout row every bench closes on. */
+.ks3-iboard-tiles, .ks3-rbench-tiles, .ks3-hrig-tiles, .ks3-grun-tiles,
+.ks3-dlane-tiles, .ks3-fall-tiles, .ks3-span-tiles, .ks3-splot-tiles,
+.ks3-fsort-tiles {
+  margin-top: 16px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 12px;
+}
+.ks3-iboard-tile, .ks3-rbench-tile, .ks3-hrig-tile, .ks3-grun-tile,
+.ks3-dlane-tile, .ks3-fall-tile, .ks3-span-tile, .ks3-splot-tile,
+.ks3-fsort-tile {
+  padding: 15px 17px; border-radius: var(--ks3-r-panel);
+  background: rgba(255, 255, 255, .07);
+}
+.ks3-iboard-tile-label, .ks3-rbench-tile-label, .ks3-hrig-tile-label,
+.ks3-grun-tile-label, .ks3-dlane-tile-label, .ks3-fall-tile-label,
+.ks3-span-tile-label, .ks3-splot-tile-label, .ks3-fsort-tile-label {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-iboard-tile-value, .ks3-rbench-tile-value, .ks3-hrig-tile-value,
+.ks3-grun-tile-value, .ks3-dlane-tile-value, .ks3-fall-tile-value,
+.ks3-span-tile-value, .ks3-splot-tile-value, .ks3-fsort-tile-value {
+  margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 20px;
+  font-weight: 500; color: var(--ks3-on-dark);
+}
+
+/* The closing note. */
+.ks3-iboard-live, .ks3-rbench-note, .ks3-hrig-note, .ks3-grun-note,
+.ks3-dlane-note, .ks3-dlane-compare, .ks3-fall-note, .ks3-span-note,
+.ks3-splot-note, .ks3-fsort-note {
+  margin: 16px 0 0; padding: 16px 18px;
+  border-radius: var(--ks3-r-panel); background: rgba(255, 255, 255, .07);
+  font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);
+}
+.ks3-dlane-compare { margin-top: 10px; }
+
+/* ⚠️ POSITIONED, ALWAYS. See the block note above. */
+.ks3-iboard-figwrap, .ks3-rbench-figwrap, .ks3-hrig-figwrap,
+.ks3-grun-figwrap, .ks3-dlane-figwrap, .ks3-fall-figwrap,
+.ks3-span-figwrap, .ks3-splot-figwrap, .ks3-fsort-figwrap {
+  position: relative; margin-top: 20px;
+}
+.ks3-iboard-svg, .ks3-rbench-svg, .ks3-hrig-svg, .ks3-grun-svg,
+.ks3-dlane-svg, .ks3-fall-svg, .ks3-span-svg, .ks3-splot-spring,
+.ks3-splot-graph, .ks3-fsort-svg {
+  display: block; width: 100%; height: auto;
+}
+.ks3-iboard-fill, .ks3-rbench-fill, .ks3-hrig-fill, .ks3-grun-fill,
+.ks3-dlane-fill, .ks3-fall-fill, .ks3-span-fill, .ks3-splot-fill,
+.ks3-fsort-fill {
+  position: absolute; font-family: var(--ks3-font-mono); font-weight: 500;
+  font-size: clamp(10px, 1.5vw, 19px); white-space: nowrap;
+  pointer-events: none;
+}
+
+/* The picker rows. */
+.ks3-iboard-tabslabel, .ks3-hrig-pickerlabel, .ks3-grun-pickerlabel,
+.ks3-dlane-pickerlabel, .ks3-fall-pickerlabel, .ks3-span-pickerlabel {
+  margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-iboard-tabrow, .ks3-hrig-tabrow, .ks3-grun-tabrow, .ks3-dlane-tabrow,
+.ks3-fall-tabrow, .ks3-span-tabrow, .ks3-fsort-tabrow {
+  display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-grun-controls, .ks3-dlane-controls, .ks3-hrig-controls,
+.ks3-fall-controls, .ks3-span-controls, .ks3-splot-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+  gap: 18px;
+}
+
+/* The sliders. */
+.ks3-rbench-row, .ks3-hrig-row, .ks3-fall-row, .ks3-span-row,
+.ks3-splot-row { margin-top: 4px; }
+.ks3-rbench-rowhead, .ks3-hrig-rowhead, .ks3-fall-rowhead,
+.ks3-span-rowhead, .ks3-splot-rowhead {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px;
+}
+.ks3-rbench-rowhead label, .ks3-hrig-rowhead label, .ks3-fall-rowhead label,
+.ks3-span-rowhead label, .ks3-splot-rowhead label {
+  font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-rbench-reading, .ks3-hrig-reading, .ks3-fall-reading,
+.ks3-span-reading, .ks3-splot-reading {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 20px;
+  font-weight: 500; color: var(--ks3-on-dark);
+}
+.ks3-rbench-slider, .ks3-hrig-slider, .ks3-fall-slider, .ks3-span-slider,
+.ks3-splot-slider {
+  width: 100%; margin-top: 8px; accent-color: var(--ks3-accent);
+  min-height: 44px;
+}
+.ks3-rbench-controls { display: grid; gap: 16px; }
+
+/* ── p4-01 · the interaction board ──────────────────────────────────── */
+
+.ks3-iboard-stage {
+  margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-card);
+  background: var(--ks3-dark-panel);
+}
+.ks3-iboard-prompt {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 26px; line-height: 1.2; letter-spacing: -.02em;
+  color: var(--ks3-on-dark);
+}
+.ks3-iboard-ask {
+  margin-top: 16px; display: flex; flex-direction: column; gap: 9px;
+  max-width: 34rem;
+}
+.ks3-iboard-opt {
+  font: inherit; font-size: 16px; font-weight: 600; text-align: left;
+  padding: 11px 16px; min-height: 44px;
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-on-dark-muted); background: transparent;
+  color: var(--ks3-on-dark); cursor: pointer;
+}
+.ks3-iboard-opt[aria-pressed="true"] {
+  background: var(--ks3-blue-light); border-color: var(--ks3-blue-light);
+  color: var(--ks3-ink);
+}
+.ks3-iboard-opt[disabled] { cursor: default; }
+.ks3-iboard-opt[disabled][aria-pressed="false"] { opacity: .45; }
+.ks3-iboard-body { fill: #15110C; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 3; }
+.ks3-iboard-shaft { fill: none; stroke: #8FB7FF; stroke-width: 7;
+  stroke-linecap: round; }
+.ks3-iboard-head { fill: #8FB7FF; }
+.ks3-iboard-touch { fill: var(--ks3-on-dark-muted); }
+.ks3-iboard-gapline { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 4; stroke-dasharray: 12 12; }
+.ks3-iboard-name-a, .ks3-iboard-name-b {
+  font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: clamp(15px, 2vw, 26px);
+}
+.ks3-iboard-cap-a, .ks3-iboard-cap-b {
+  font-family: var(--ks3-font-body); font-weight: 600;
+  font-size: clamp(11px, 1.55vw, 20px);
+}
+.ks3-iboard-join { letter-spacing: .08em; }
+
+/* ── p4-02 · the sledge on ice ──────────────────────────────────────── */
+
+.ks3-rbench-ice, .ks3-rbench-base {
+  fill: none; stroke: var(--ks3-on-dark-muted); stroke-width: 3;
+}
+.ks3-rbench-base { stroke-dasharray: 10 10; }
+.ks3-rbench-sledge { fill: #15110C; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 3; }
+.ks3-rbench-caption {
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 26px;
+  fill: #FBF3E6;
+}
+.ks3-rbench-baselabel {
+  font-family: var(--ks3-font-mono); font-size: 16px; letter-spacing: .08em;
+  fill: #C6B9A7;
+}
+.ks3-rbench-shaft { fill: none; stroke: #8FB7FF; stroke-width: 8;
+  stroke-linecap: round; }
+.ks3-rbench-head { fill: #8FB7FF; }
+.ks3-rbench-res.ks3-rbench-shaft { stroke: #FFC53D; }
+.ks3-rbench-res.ks3-rbench-head { fill: #FFC53D; }
+.ks3-rbench-nores {
+  font-family: var(--ks3-font-mono); font-size: 20px; fill: #C6B9A7;
+}
+
+/* ── p4-03 · the support rig ────────────────────────────────────────── */
+
+.ks3-hrig-picker { display: grid; gap: 0; }
+.ks3-hrig-slab { fill: var(--ks3-on-dark-muted); }
+.ks3-hrig-hatch { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 3; }
+.ks3-hrig-sheet { fill: none; stroke: #C6B9A7; stroke-width: 5;
+  stroke-linecap: round; }
+.ks3-hrig-torn { stroke-dasharray: none; }
+.ks3-hrig-coil { fill: none; stroke: #C6B9A7; stroke-width: 5;
+  stroke-linejoin: round; }
+.ks3-hrig-load { fill: #15110C; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 3; }
+.ks3-hrig-shaft { fill: none; stroke: #8FB7FF; stroke-width: 8;
+  stroke-linecap: round; }
+.ks3-hrig-head { fill: #8FB7FF; }
+.ks3-hrig-over.ks3-hrig-shaft { stroke: #FFC53D; }
+.ks3-hrig-over.ks3-hrig-head { fill: #FFC53D; }
+.ks3-hrig-word { letter-spacing: .08em; font-size: clamp(10px, 1.4vw, 17px); }
+
+/* ── p4-04 · the trolley and the light gates ────────────────────────── */
+
+.ks3-grun-rail { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 4; }
+.ks3-grun-gate { fill: none; stroke: #FFC53D; stroke-width: 4; }
+.ks3-grun-gatelabel {
+  font-family: var(--ks3-font-mono); font-size: 17px; fill: #C6B9A7;
+}
+.ks3-grun-track { fill: none; stroke: #C6B9A7; stroke-width: 3;
+  stroke-dasharray: 12 10; }
+.ks3-grun-trolley { fill: var(--ks3-accent); stroke: var(--ks3-on-dark);
+  stroke-width: 3; }
+.ks3-grun-shaft { fill: none; stroke: #FFC53D; stroke-width: 8;
+  stroke-linecap: round; }
+.ks3-grun-head { fill: #FFC53D; }
+
+/* ── p4-05 · block and spring balance ───────────────────────────────── */
+
+.ks3-dlane-floor { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 4; }
+.ks3-dlane-texture { fill: none; stroke: #C6B9A7; stroke-width: 3; }
+.ks3-dlane-block { fill: #15110C; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 3; }
+.ks3-dlane-lanelabel {
+  font-family: var(--ks3-font-mono); font-size: 17px; letter-spacing: .08em;
+  fill: #C6B9A7;
+}
+.ks3-dlane-shaft { fill: none; stroke: #8FB7FF; stroke-width: 7;
+  stroke-linecap: round; }
+.ks3-dlane-head { fill: #8FB7FF; }
+.ks3-dlane-fric.ks3-dlane-shaft { stroke: #C6B9A7; }
+.ks3-dlane-fric.ks3-dlane-head { fill: #C6B9A7; }
+
+/* ── p4-06 · the fall ───────────────────────────────────────────────── */
+
+.ks3-fall-streaks { fill: none; stroke: #C6B9A7; stroke-width: 3;
+  opacity: .55; }
+.ks3-fall-body { fill: #15110C; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 3; }
+.ks3-fall-shaft { fill: none; stroke: #8FB7FF; stroke-width: 8;
+  stroke-linecap: round; }
+.ks3-fall-head { fill: #8FB7FF; }
+.ks3-fall-drag.ks3-fall-shaft { stroke: #C6B9A7; }
+.ks3-fall-drag.ks3-fall-head { fill: #C6B9A7; }
+.ks3-fall-over.ks3-fall-shaft { stroke: #FFC53D; }
+.ks3-fall-over.ks3-fall-head { fill: #FFC53D; }
+.ks3-fall-nodrag {
+  font-family: var(--ks3-font-mono); font-size: 20px; fill: #C6B9A7;
+}
+.ks3-fall-word { letter-spacing: .08em; font-size: clamp(10px, 1.4vw, 17px); }
+
+/* ── p4-07 · the spanner and the nut ────────────────────────────────── */
+
+.ks3-span-nut { fill: #15110C; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 4; }
+.ks3-span-pivot { fill: var(--ks3-accent); }
+.ks3-span-handle { fill: #C6B9A7; }
+.ks3-span-grip { fill: #15110C; stroke: #C6B9A7; stroke-width: 3; }
+.ks3-span-shaft { fill: none; stroke: #8FB7FF; stroke-width: 8;
+  stroke-linecap: round; }
+.ks3-span-head { fill: #8FB7FF; }
+.ks3-span-dim { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 2; }
+/* Solid when the moment clears the threshold, dashed when it does not —
+   and the verdict is also a WORD. Hue is never the only channel. */
+.ks3-span-turn { fill: none; stroke: #FFC53D; stroke-width: 6;
+  stroke-linecap: round; }
+.ks3-span-turn-label { letter-spacing: .08em; }
+
+/* ── p4-08 · loading a spring ───────────────────────────────────────── */
+
+.ks3-splot-figs {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) minmax(min(320px, 100%), 2.4fr);
+  gap: 18px; align-items: start; margin-top: 20px;
+}
+@media (max-width: 620px) {
+  .ks3-splot-figs { grid-template-columns: 1fr; }
+}
+.ks3-splot-btns { display: flex; gap: 9px; flex-wrap: wrap;
+  align-items: flex-end; }
+.ks3-splot-clamp { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 8; stroke-linecap: round; }
+.ks3-splot-natural { fill: none; stroke: #C6B9A7; stroke-width: 2;
+  stroke-dasharray: 8 8; }
+.ks3-splot-coil { fill: none; stroke: #C6B9A7; stroke-width: 5;
+  stroke-linejoin: round; }
+.ks3-splot-hanger { fill: var(--ks3-accent); stroke: var(--ks3-on-dark);
+  stroke-width: 3; }
+.ks3-splot-extbar { fill: none; stroke: #8FB7FF; stroke-width: 3; }
+.ks3-splot-axis { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 4; }
+.ks3-splot-grid { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 2; }
+/* The line of proportionality the first readings make. Dashed, because it
+   is a prediction rather than a measurement. */
+.ks3-splot-prop { fill: none; stroke: #C6B9A7; stroke-width: 3;
+  stroke-dasharray: 10 8; }
+.ks3-splot-line { fill: none; stroke: #8FB7FF; stroke-width: 3; }
+.ks3-splot-dots { fill: var(--ks3-accent); stroke: none; }
+.ks3-splot-axislabel {
+  font-family: var(--ks3-font-mono); font-size: 18px; fill: #C6B9A7;
+}
+
+/* ── p4-09 · the sorter ─────────────────────────────────────────────── */
+
+.ks3-fsort-title {
+  margin: 18px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 26px; line-height: 1.2; letter-spacing: -.02em;
+  color: var(--ks3-on-dark);
+}
+.ks3-fsort-body { fill: #15110C; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 3; }
+.ks3-fsort-shaft { fill: none; stroke: #8FB7FF; stroke-width: 7;
+  stroke-linecap: round; }
+.ks3-fsort-head { fill: #8FB7FF; }
+.ks3-fsort-gap { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 4; stroke-dasharray: 12 12; }
+.ks3-fsort-touch { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 10; stroke-linecap: round; }
+.ks3-fsort-joinword {
+  font-family: var(--ks3-font-mono); font-size: 18px; letter-spacing: .08em;
+  fill: #C6B9A7;
+}
+.ks3-fsort-askhead {
+  margin: 20px 0 9px; font-family: var(--ks3-font-mono); font-size: 14px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-fsort-labels { display: flex; gap: 9px; flex-wrap: wrap; }
+.ks3-fsort-label {
+  font: inherit; font-size: 16px; font-weight: 700;
+  padding: 11px 16px; min-height: 44px;
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-on-dark-muted); background: transparent;
+  color: var(--ks3-on-dark); cursor: pointer;
+}
+.ks3-fsort-label[aria-pressed="true"] {
+  background: var(--ks3-blue-light); border-color: var(--ks3-blue-light);
+  color: var(--ks3-ink);
+}
+.ks3-fsort-label[disabled] { cursor: default; }
+.ks3-fsort-label[disabled][aria-pressed="false"] { opacity: .45; }
+/* The unlabelled state says so in WORDS. Nothing is revealed until the
+   student commits to one of the four. */
+.ks3-fsort-sealed {
+  margin: 16px 0 0; font-size: 17px; line-height: 1.5;
+  color: var(--ks3-on-dark-muted);
+}
+
+/* ── the band block · #s-pairs · #s-three · #s-rules · #s-stages ─────── */
+
+.ks3-fband-heading {
+  margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1;
+  letter-spacing: -.03em; max-width: 26ch;
+}
+.ks3-fband-lead {
+  margin: 12px 0 0; font-size: 18px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+.ks3-fband-strip {
+  margin-top: 22px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.ks3-fband-strip svg { display: block; min-width: 560px; width: 100%;
+  height: auto; }
+.ks3-fband-list {
+  list-style: none; margin: 24px 0 0; padding: 0;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.ks3-fband-item {
+  display: grid; grid-template-columns: auto 1fr; gap: 8px 18px;
+  padding: 20px 24px; border-radius: var(--ks3-r-card);
+  background: var(--ks3-card); border: 2px solid var(--ks3-ink);
+}
+.ks3-fband-num {
+  grid-row: span 3; display: grid; place-items: center;
+  width: 38px; height: 38px; border-radius: 11px;
+  background: var(--ks3-accent); color: var(--ks3-on-dark);
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;
+}
+.ks3-fband-name {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; line-height: 1.2; letter-spacing: -.02em;
+}
+.ks3-fband-body { margin: 0; font-size: 18px; line-height: 1.55; }
+.ks3-fband-tell {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 16px;
+  line-height: 1.5; color: var(--ks3-accent-text);
+}
+.ks3-fband-cols {
+  margin-top: 20px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  gap: 14px;
+}
+.ks3-fband-col {
+  padding: 18px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card); border: 2px solid var(--ks3-ink);
+}
+.ks3-fband-coltitle {
+  margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+.ks3-fband-collist { margin: 0; padding-left: 1.15em; font-size: 17px;
+  line-height: 1.7; }
+.ks3-fband-close {
+  margin: 20px 0 0; font-size: 18px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+
+/* ── the P4 formula figures ─────────────────────────────────────────── */
+/* ⚠️ NONE OF THESE IS A TRIANGLE. p4-07 is the unit's only product and it
+   takes the engine's own `.ks3-triangle` path; every figure below draws a
+   sum, a difference or a ratio. */
+
+.ks3-p4fig { display: block; width: 100%; height: auto; }
+.ks3-p4fig-beam, .ks3-p4fig-spring, .ks3-p4fig-strip { min-width: 520px; }
+.ks3-formula-figure:has(.ks3-p4fig) {
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.ks3-p4fig-bar { fill: var(--ks3-blue-tint); stroke: var(--ks3-ink);
+  stroke-width: 3; }
+.ks3-p4fig-head { fill: var(--ks3-ink); }
+.ks3-p4fig-shaft { fill: none; stroke: var(--ks3-ink); stroke-width: 6;
+  stroke-linecap: round; }
+/* The two tie-lines that make "the parts fill the whole" a drawn claim
+   rather than a sentence. */
+.ks3-p4fig-tie { fill: none; stroke: var(--ks3-ink-muted); stroke-width: 2;
+  stroke-dasharray: 8 8; }
+.ks3-p4fig-tick { fill: none; stroke: var(--ks3-ink); stroke-width: 3; }
+.ks3-p4fig-rowlabel {
+  font-family: var(--ks3-font-mono); font-size: 20px; letter-spacing: .06em;
+  fill: var(--ks3-ink-muted);
+}
+.ks3-p4fig-barlabel {
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 26px;
+  fill: var(--ks3-ink);
+}
+.ks3-p4fig-panel { fill: none; stroke: var(--ks3-ink); stroke-width: 3; }
+.ks3-p4fig-panellabel {
+  font-family: var(--ks3-font-mono); font-size: 20px; letter-spacing: .08em;
+  fill: var(--ks3-accent-text);
+}
+.ks3-p4fig-load { fill: var(--ks3-blue-tint); stroke: var(--ks3-ink);
+  stroke-width: 3; }
+.ks3-p4fig-arrowlabel {
+  font-family: var(--ks3-font-mono); font-size: 19px;
+  fill: var(--ks3-ink-muted);
+}
+.ks3-p4fig-verdict {
+  font-family: var(--ks3-font-display); font-weight: 700; font-size: 21px;
+  fill: var(--ks3-ink);
+}
+.ks3-p4fig-note {
+  font-family: var(--ks3-font-mono); font-size: 19px;
+  fill: var(--ks3-ink-muted);
+}
+.ks3-p4fig-axis { fill: none; stroke: var(--ks3-ink); stroke-width: 4; }
+.ks3-p4fig-line { fill: none; stroke: var(--ks3-accent-text);
+  stroke-width: 4; }
+.ks3-p4fig-curve { fill: none; stroke: var(--ks3-accent-text);
+  stroke-width: 4; stroke-dasharray: 10 8; }
+.ks3-p4fig-limit { fill: none; stroke: var(--ks3-ink-muted);
+  stroke-width: 2; stroke-dasharray: 6 6; }
+.ks3-p4fig-axislabel {
+  font-family: var(--ks3-font-mono); font-size: 18px; letter-spacing: .06em;
+  fill: var(--ks3-ink-muted);
+}
+
+/* ── the CFIFA attempt panel ────────────────────────────────────────── */
+/* Design's `Cfifa` is one component with TWO halves and only the first had
+   ever been ported. This is the second: the student's own five lines, on
+   the numbers their own bench is showing. */
+
+.ks3-cfa-tabs { display: flex; gap: 9px; flex-wrap: wrap; margin: 10px 0 0; }
+.ks3-cfa-head {
+  margin: 18px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: clamp(22px, 3vw, 30px); line-height: 1.15;
+  letter-spacing: -.02em;
+}
+.ks3-cfa-lead { margin: 10px 0 0; font-size: 18px; line-height: 1.55;
+  color: var(--ks3-ink-body); }
+.ks3-cfa-blocked {
+  margin: 14px 0 0; padding: 14px 18px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-alert-tint, var(--ks3-band));
+  border: 2px solid var(--ks3-alert-border, var(--ks3-ink));
+  font-size: 17px; line-height: 1.5;
+}
+.ks3-cfa-rows { margin-top: 18px; display: flex; flex-direction: column;
+  gap: 10px; }
+.ks3-cfa-row, .ks3-cfa-modelrow {
+  display: grid; grid-template-columns: auto 1fr; gap: 14px;
+  align-items: start;
+}
+.ks3-cfa-chip {
+  display: grid; place-items: center; width: 38px; height: 38px;
+  border-radius: 11px; background: var(--ks3-accent-tint);
+  border: 2px solid var(--ks3-ink); color: var(--ks3-ink);
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 18px;
+}
+.ks3-cfa-field { display: flex; flex-direction: column; gap: 5px; }
+.ks3-cfa-label {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-cfa-input {
+  font: inherit; font-family: var(--ks3-font-mono); font-size: 18px;
+  padding: 11px 14px; min-height: 44px; width: 100%;
+  border-radius: var(--ks3-r-control); border: 2px solid var(--ks3-ink);
+  background: var(--ks3-ground); color: var(--ks3-ink);
+}
+.ks3-cfa-check {
+  margin-top: 18px; display: flex; gap: 14px; align-items: center;
+  flex-wrap: wrap;
+}
+.ks3-cfa-hint {
+  font-family: var(--ks3-font-mono); font-size: 15px;
+  color: var(--ks3-ink-muted);
+}
+.ks3-cfa-reveal {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-card);
+  background: var(--ks3-dark-panel); color: var(--ks3-on-dark);
+}
+/* ⚠️ `--ks3-on-dark-muted`, NOT `--ks3-accent`. The accent is 3.4:1 and
+   tokens.css marks it LARGE TEXT ONLY; this is a 13px mono eyebrow, and
+   MRB-252's gate caught it on the first run. The token for a caption on an
+   ink-dark block is the one used here, and it is 8.6:1. */
+.ks3-cfa-revealhead {
+  margin: 0 0 16px; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-cfa-reveal .ks3-cfa-modelrow { margin-bottom: 14px; }
+.ks3-cfa-reveal .ks3-cfa-chip {
+  background: rgba(255, 255, 255, .1); border-color: var(--ks3-on-dark-muted);
+  color: var(--ks3-on-dark);
+}
+.ks3-cfa-reveal .ks3-cfa-label { color: var(--ks3-on-dark-muted); }
+.ks3-cfa-line {
+  margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 21px;
+  color: var(--ks3-on-dark);
+}
+.ks3-cfa-stepnote {
+  margin: 6px 0 0; font-size: 17px; line-height: 1.5;
+  color: var(--ks3-on-dark-body);
+}
+/* The self-tick. Nothing here marks a line right or wrong — the model
+   appears beside what the student wrote and they decide, which is the same
+   contract the ladder's rungs 3 and 4 already use. */
+.ks3-cfa-yours {
+  margin-top: 10px; padding: 12px 14px; border-radius: var(--ks3-r-panel);
+  background: rgba(255, 255, 255, .07);
+  display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+}
+.ks3-cfa-yourline {
+  margin: 0; flex: 1 1 14rem; font-family: var(--ks3-font-mono);
+  font-size: 16px; color: var(--ks3-on-dark-body);
+}
+.ks3-cfa-tick {
+  font: inherit; font-size: 15px; font-weight: 700;
+  padding: 9px 14px; min-height: 44px; border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-on-dark-muted); background: transparent;
+  color: var(--ks3-on-dark); cursor: pointer;
+}
+.ks3-cfa-tick[aria-pressed="true"] {
+  background: var(--ks3-accent); border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
+}
+/* Same rule at 17px. The tally is a readout, so it takes the plain
+   on-dark text colour rather than a hue that has to carry meaning. */
+.ks3-cfa-tally {
+  margin: 16px 0 0; font-family: var(--ks3-font-mono); font-size: 17px;
+  color: var(--ks3-on-dark);
+}
+.ks3-cfa-close {
+  margin: 14px 0 0; font-size: 18px; line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+
+/* ═══ END P4 ═══ */

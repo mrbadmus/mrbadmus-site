@@ -8309,6 +8309,1592 @@
   }
 /* ═══ END P3 wiring ═══ */
 
+/* ═══ BEGIN P4 wiring ═══════════════════════════════════════════════════
+   P4's instrument families — *Forces*. Behaviour measured off Claude
+   Design's delivered pages in `docs/ks3/design-reference/p4/`.
+
+   ⚖️ THE BAND STOP TICKS EARLIER THAN THE BENCH, AND THAT IS HERS. On five
+   of the nine pages her own `DONE(id, s)` gives the band section a LOWER
+   threshold than the practical above it — `s-pairs` at one case opened
+   against `s-bench` at three, `s-three` at the gate alone against `s-bench`
+   at the gate AND a control touched. MRB-249's `mirrors` ties two stops
+   together and would make the band stop tick LATE, so it is not used: each
+   bench marks its own band sibling through `markSibling`, at her threshold.
+
+   ⚖️ EVERY LIVE VALUE IS AN HTML SPAN OVER A `position: relative` WRAPPER,
+   NEVER AN SVG `<text>`. Design's own note for the generator, and it fails
+   SILENTLY: the runtime wraps interpolated text in a `<span>`, and a `span`
+   created in the SVG namespace is not a renderable element. Fixed captions
+   stay as literal `<text>`; attribute holes (`d`, `x`, `width`) are fine.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+  /* The band section a bench ticks on its own count. See the note above. */
+  function markSibling(sec, wrap, n) {
+    var id = wrap.getAttribute("data-sibling");
+    var at = parseInt(wrap.getAttribute("data-sibling-at"), 10);
+    if (!id || !(at > 0)) { return; }
+    var band = document.getElementById(id);
+    if (band) { markStage(band, n >= at); }
+  }
+
+  /* Fill `{token}` holes from a live map. Used by the CFIFA attempt panel,
+     whose first question is computed from the bench above it. A token the
+     bench never publishes is LEFT AS THE LITERAL TEMPLATE — visible on the
+     page and caught by the liveness sweep — rather than blanked, which is
+     the failure mode that ships an empty sentence nobody notices. */
+  function fillTokens(tpl, vals) {
+    if (!tpl) { return ""; }
+    return tpl.replace(/\{([a-zA-Z0-9_]+)\}/g, function (whole, key) {
+      return Object.prototype.hasOwnProperty.call(vals, key)
+        ? String(vals[key]) : whole;
+    });
+  }
+
+  /* A bench publishes its live numbers here; the attempt panel on the same
+     page repaints from them. One direction only: the panel never writes
+     back, so a bench cannot be moved by the scaffold that reads it. */
+  function publishLive(sec, vals, blocked) {
+    var host = sec && sec.closest ? sec.closest(".ks3-lesson") : null;
+    if (!host) { host = document; }
+    var panels = toArray(host.querySelectorAll("[data-p4cfa]"));
+    each(panels, function (p) { paintAttempt(p, vals, blocked); });
+  }
+
+  function tagStyle(fx, fy, colour, align) {
+    return "position:absolute;left:" + (fx * 100).toFixed(2) + "%;top:" +
+      (fy * 100).toFixed(2) + "%;transform:translate(" +
+      (align === "end" ? "-100%" : align === "start" ? "0" : "-50%") +
+      ",-50%);color:" + colour + ";";
+  }
+
+  function fillSpan(wrap, hook, key, text, style) {
+    var el = wrap.querySelector('[data-' + hook + '-fill="' + key + '"]');
+    if (!el) { return; }
+    el.textContent = text === null || text === undefined ? "" : text;
+    if (style) { el.setAttribute("style", style); }
+    setHidden(el, !text);
+  }
+
+  function outEl(wrap, hook, id) {
+    return wrap.querySelector('[data-' + hook + '-out="' + id + '"]');
+  }
+
+  function setOut(wrap, hook, id, text) {
+    var el = outEl(wrap, hook, id);
+    if (el) { el.textContent = text; }
+  }
+
+  /* A vertical arrow, Design's own head geometry. `len` in px of the
+     drawing's own viewBox. Refuses to draw below 2px: a zero-length arrow
+     is not a small arrow, and every P4 bench prints words at zero instead. */
+  function arrowV(x, y0, len, down, head, half) {
+    head = head || 26; half = half || 17;
+    if (!(len > 2)) { return { shaft: "M0 0", head: "M0 0" }; }
+    var tip = down ? y0 + len : y0 - len;
+    var base = down ? tip - head : tip + head;
+    return {
+      shaft: "M" + x + " " + y0 + " V" + base,
+      head: "M" + x + " " + tip + " L" + (x - half) + " " + base +
+            " L" + (x + half) + " " + base + " Z"
+    };
+  }
+
+  function arrowH(x0, y, len, right, head, half) {
+    head = head || 28; half = half || 16;
+    if (!(len > 2)) { return { shaft: "M0 0", head: "M0 0" }; }
+    var tip = right ? x0 + len : x0 - len;
+    var base = right ? tip - head : tip + head;
+    return {
+      shaft: "M" + x0 + " " + y + " H" + base,
+      head: "M" + tip + " " + y + " L" + base + " " + (y - half) +
+            " L" + base + " " + (y + half) + " Z"
+    };
+  }
+
+  function setPath(wrap, sel, d) {
+    var el = wrap.querySelector(sel);
+    if (!el) { return; }
+    el.setAttribute("d", d || "M0 0");
+    setHidden(el, !d || d === "M0 0");
+  }
+
+  /* ── the CFIFA attempt panel (shared shape, P4's copy of the wiring) ──
+
+     ⚖️ THE CHECK BUTTON REFUSES AN EMPTY ATTEMPT. Design's own Check accepts
+     nothing and reveals the model; a student who taps it first has been
+     handed the answer before writing anything, which is the whole thing this
+     half of the block exists to prevent. Disabled until one line is written.
+
+     ⚖️ THE SELF-TICK IS THE STUDENT'S, AND THE TALLY COUNTS IT. Nothing here
+     marks a line right or wrong: the five model lines appear beside what the
+     student wrote and they decide. That is the same contract the mastery
+     ladder's rungs 3 and 4 already use. */
+  function paintAttempt(wrap, vals, blocked) {
+    var qs = toArray(wrap.querySelectorAll("[data-p4cfa-q]"));
+    each(qs, function (q, qi) {
+      if (qi !== 0) { return; }     /* only Q1 is live on the bench */
+      var head = q.querySelector("[data-p4cfa-head]");
+      if (head) {
+        head.textContent = fillTokens(head.getAttribute("data-template"),
+                                      vals);
+      }
+      each(toArray(q.querySelectorAll("[data-p4cfa-line]")), function (el) {
+        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      });
+      each(toArray(q.querySelectorAll("[data-p4cfa-note]")), function (el) {
+        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      });
+      var close = q.querySelector("[data-p4cfa-close]");
+      if (close) {
+        close.textContent = fillTokens(close.getAttribute("data-template"),
+                                       vals);
+      }
+      var block = q.querySelector("[data-p4cfa-blocked]");
+      var rows = q.querySelector(".ks3-cfa-rows");
+      var chk = q.querySelector("[data-p4cfa-check]");
+      if (block) { setHidden(block, !blocked); }
+      if (rows) { setHidden(rows, !!blocked); }
+      if (chk && blocked) { chk.setAttribute("disabled", ""); }
+    });
+  }
+
+  function wireCfifaAttempt(sec) {
+    var wrap = sec.querySelector("[data-p4cfa]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-p4cfa-tab]"));
+    var qs = toArray(wrap.querySelectorAll("[data-p4cfa-q]"));
+
+    each(tabs, function (t, i) {
+      t.addEventListener("click", function () {
+        each(tabs, function (o, j) {
+          o.setAttribute("aria-pressed", i === j ? "true" : "false");
+        });
+        each(qs, function (q, j) { setHidden(q, i !== j); });
+      });
+    });
+
+    each(qs, function (q) {
+      var inputs = toArray(q.querySelectorAll("[data-p4cfa-input]"));
+      var btn = q.querySelector("[data-p4cfa-check]");
+      var hint = q.querySelector("[data-p4cfa-hint]");
+      var reveal = q.querySelector("[data-p4cfa-reveal]");
+      var tally = q.querySelector("[data-p4cfa-tally]");
+      var ticks = toArray(q.querySelectorAll("[data-p4cfa-tick]"));
+      if (!btn) { return; }
+
+      function written() {
+        var n = 0;
+        each(inputs, function (i) { if (i.value.trim()) { n += 1; } });
+        return n;
+      }
+      function repaintBtn() {
+        var n = written();
+        if (n) { btn.removeAttribute("disabled"); }
+        else { btn.setAttribute("disabled", ""); }
+        if (hint) {
+          hint.textContent = n
+            ? n + " of " + inputs.length + " written"
+            : "Write at least one line first";
+        }
+      }
+      function retally() {
+        var got = 0;
+        each(ticks, function (t) {
+          if (t.getAttribute("aria-pressed") === "true") { got += 1; }
+        });
+        if (tally) {
+          tally.textContent = got + " of " + ticks.length +
+            " lines you had. " + (got === ticks.length
+              ? "All five, in order."
+              : "Rewrite the ones you missed before moving on.");
+        }
+      }
+
+      each(inputs, function (i) {
+        i.addEventListener("input", repaintBtn);
+        i.addEventListener("change", repaintBtn);
+      });
+
+      btn.addEventListener("click", function () {
+        if (!written()) { return; }
+        each(inputs, function (i, k) {
+          var yours = q.querySelector('[data-p4cfa-yours="' + k + '"]');
+          var line = q.querySelector('[data-p4cfa-yourline="' + k + '"]');
+          if (line) {
+            line.textContent = i.value.trim()
+              ? "You wrote: " + i.value.trim()
+              : "You left this line blank.";
+          }
+          if (yours) { setHidden(yours, false); }
+        });
+        setHidden(reveal, false);
+        btn.setAttribute("disabled", "");
+        btn.textContent = "Marked";
+        retally();
+        markStage(sec, true);          /* attempt_checked */
+      });
+
+      each(ticks, function (t) {
+        t.addEventListener("click", function () {
+          t.setAttribute("aria-pressed",
+            t.getAttribute("aria-pressed") === "true" ? "false" : "true");
+          retally();
+        });
+      });
+
+      repaintBtn();
+    });
+  }
+
+  /* p4-01 `#s-bench` — the interaction board.
+
+     ⚖️ THE VERDICT IS SEALED UNTIL THE PARTNER IS NAMED. Each case opens on
+     the question and three options and NOTHING ELSE; the diagram, the tiles
+     and the note appear together once one is pressed. Drawing the pair first
+     would hand over the answer to the only question the case asks.
+
+     ⚖️ THE ARROWS ARE A FIXED LENGTH AND THE SIZES ARE PRINTED. Five cases
+     spanning about 2 N to about 200 billion billion N cannot share a linear
+     bar. What the drawing asserts is that the two forces are the SAME, which
+     is true in every case; it asserts nothing about how big. */
+  function wireInteractionBoard(sec) {
+    var wrap = sec.querySelector("[data-iboard]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-iboard-tab]"));
+    var cases = toArray(wrap.querySelectorAll("[data-iboard-case]"));
+    var panel = wrap.querySelector("[data-iboard-panel]");
+    var svg = wrap.querySelector("[data-iboard-alt]");
+    var live = wrap.querySelector("[data-iboard-live]");
+    var TOTAL = parseInt(wrap.getAttribute("data-total"), 10) || cases.length;
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || 3;
+    var at = 0;
+    var picks = {};
+
+    function data(i) {
+      return wrap.querySelector('[data-iboard-data="' + i + '"]');
+    }
+
+    function paint() {
+      var d = data(at);
+      var opened = Object.keys(picks).length;
+      var open = picks[at] !== undefined;
+
+      each(tabs, function (t, i) {
+        t.setAttribute("aria-pressed", i === at ? "true" : "false");
+      });
+      each(cases, function (c, i) { setHidden(c, i !== at); });
+      setHidden(panel, !open);
+
+      var prog = wrap.querySelector("[data-iboard-progress]");
+      if (prog) {
+        prog.textContent = opened + " of " + TOTAL + " cases opened";
+      }
+
+      if (open && d) {
+        var contact = d.getAttribute("data-contact") === "1";
+        var kind = d.getAttribute("data-kind");
+        each(toArray(wrap.querySelectorAll("[data-iboard-arrow]")),
+          function (g) {
+            setHidden(g, g.getAttribute("data-iboard-arrow") !== kind);
+          });
+        each(toArray(wrap.querySelectorAll("[data-iboard-join]")),
+          function (g) {
+            setHidden(g, g.getAttribute("data-iboard-join") !==
+              (contact ? "contact" : "gap"));
+          });
+        fillSpan(wrap, "iboard", "name_a", d.getAttribute("data-a"),
+                 tagStyle(0.312, 0.505, "#FBF3E6"));
+        fillSpan(wrap, "iboard", "name_b", d.getAttribute("data-b"),
+                 tagStyle(0.688, 0.505, "#FBF3E6"));
+        fillSpan(wrap, "iboard", "size_a", d.getAttribute("data-size"),
+                 tagStyle(0.312, 0.12, "#8FB7FF"));
+        fillSpan(wrap, "iboard", "size_b", d.getAttribute("data-size"),
+                 tagStyle(0.688, 0.12, "#8FB7FF"));
+        fillSpan(wrap, "iboard", "join",
+                 contact ? "TOUCHING" : "NOT TOUCHING",
+                 tagStyle(0.5, 0.36, "#C6B9A7"));
+        fillSpan(wrap, "iboard", "cap_a", d.getAttribute("data-capa"),
+                 tagStyle(0.312, 0.74, "#C6B9A7"));
+        fillSpan(wrap, "iboard", "cap_b", d.getAttribute("data-capb"),
+                 tagStyle(0.688, 0.74, "#C6B9A7"));
+        setOut(wrap, "iboard", "pair", d.getAttribute("data-pair"));
+        setOut(wrap, "iboard", "size", d.getAttribute("data-size"));
+        setOut(wrap, "iboard", "kind",
+               kind === "push" ? "A push, apart" : "A pull, together");
+        if (svg) { svg.setAttribute("aria-label", d.getAttribute("data-alt")); }
+        var note = cases[at].querySelector(
+          '[data-iboard-note="' + picks[at] + '"]');
+        each(toArray(cases[at].querySelectorAll("[data-iboard-note]")),
+          function (n) { setHidden(n, n !== note); });
+        if (live && note) { live.textContent = note.textContent; }
+      }
+
+      setCount(sec, opened);
+      markStage(sec, opened >= TARGET);
+      markSibling(sec, wrap, opened);
+    }
+
+    each(tabs, function (t, i) {
+      t.addEventListener("click", function () { at = i; paint(); });
+    });
+
+    each(cases, function (c, i) {
+      each(toArray(c.querySelectorAll("[data-iboard-opt]")), function (b, j) {
+        b.addEventListener("click", function () {
+          if (picks[i] !== undefined) { return; }
+          picks[i] = j;
+          each(toArray(c.querySelectorAll("[data-iboard-opt]")),
+            function (o, k) {
+              o.setAttribute("aria-pressed", k === j ? "true" : "false");
+              o.setAttribute("disabled", "");
+            });
+          paint();
+        });
+      });
+    });
+
+    paint();
+  }
+
+  /* p4-02 `#s-bench` — the sledge on ice.
+
+     ⚖️ ONE PX-PER-NEWTON SCALE FOR ALL THREE ARROWS, INCLUDING THE
+     RESULTANT. The lesson's own second misconception is that arrows should
+     be drawn the same length for tidiness; a bench that scaled its arrows to
+     fit would be committing the error the block below it marks wrong.
+
+     ⚖️ ZERO DRAWS NOTHING AND PRINTS `0 N`. `arrowH` refuses below 2px. */
+  function wireResultantBench(sec) {
+    var wrap = sec.querySelector("[data-rbench]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-rbench-gate]");
+    var body = wrap.querySelector("[data-rbench-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-rbench-gopt]"));
+    var sliders = toArray(wrap.querySelectorAll("[data-rbench-slider]"));
+    var svg = wrap.querySelector("[data-rbench-alt]");
+    var noRes = wrap.querySelector("[data-rbench-nores]");
+    var noteEl = wrap.querySelector("[data-rbench-note]");
+    var SCALE = parseFloat(wrap.getAttribute("data-scale")) || 6.33;
+    var committed = false, touched = 0;
+
+    function val(id) {
+      var el = wrap.querySelector('[data-rbench-slider="' + id + '"]');
+      return el ? Number(el.value) : 0;
+    }
+    function branchNote(key, vals) {
+      var el = wrap.querySelector('[data-rbench-branch="' + key + '"]');
+      return el ? fillTokens(el.getAttribute("data-note"), vals) : "";
+    }
+
+    function paint() {
+      var r = val("right"), l = val("left");
+      var diff = Math.abs(r - l);
+      var big = Math.max(r, l), small = Math.min(r, l);
+      var resRight = r > l;
+      var dirWord = r === l ? "neither way"
+        : (resRight ? "to the right" : "to the left");
+
+      var rLen = Math.round(r * SCALE), lLen = Math.round(l * SCALE);
+      var resLen = Math.round(diff * SCALE);
+      var rA = arrowH(660, 56, rLen, true);
+      var lA = arrowH(460, 56, lLen, false);
+      var resA = resRight ? arrowH(560, 320, resLen, true)
+                          : arrowH(560, 320, resLen, false);
+
+      setPath(wrap, '[data-rbench-shaft="right"]', r > 0 ? rA.shaft : null);
+      setPath(wrap, '[data-rbench-head="right"]', r > 0 ? rA.head : null);
+      setPath(wrap, '[data-rbench-shaft="left"]', l > 0 ? lA.shaft : null);
+      setPath(wrap, '[data-rbench-head="left"]', l > 0 ? lA.head : null);
+      setPath(wrap, '[data-rbench-shaft="res"]', diff > 0 ? resA.shaft : null);
+      setPath(wrap, '[data-rbench-head="res"]', diff > 0 ? resA.head : null);
+      if (noRes) { setHidden(noRes, diff !== 0); }
+
+      fillSpan(wrap, "rbench", "right", r > 0 ? r + " N" : "",
+               tagStyle((660 + rLen / 2) / 1120, 0.068, "#8FB7FF"));
+      fillSpan(wrap, "rbench", "left", l > 0 ? l + " N" : "",
+               tagStyle((460 - lLen / 2) / 1120, 0.068, "#8FB7FF"));
+      fillSpan(wrap, "rbench", "res", diff > 0 ? diff + " N" : "",
+               tagStyle((resRight ? 560 + resLen / 2 : 560 - resLen / 2)
+                        / 1120, 0.921, "#FFC53D"));
+
+      setOut(wrap, "rbench", "right", r + " N");
+      setOut(wrap, "rbench", "left", l + " N");
+      setOut(wrap, "rbench", "res", diff === 0
+        ? "0 N — nothing left over" : diff + " N " + dirWord);
+
+      var key = (r === 0 && l === 0) ? "both_zero"
+        : (l === 0) ? "right_only"
+        : (r === 0) ? "left_only"
+        : (r === l) ? "equal" : "unequal";
+      var vals = { right: r, left: l, big: big, small: small, diff: diff,
+                   dir: dirWord };
+      if (noteEl) { noteEl.textContent = branchNote(key, vals); }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A sledge on ice. An arrow of " + r + " newtons points right and " +
+          "an arrow of " + l + " newtons points left, drawn to the same " +
+          "scale. Below them, a single arrow of " + diff + " newtons " +
+          dirWord + ".");
+      }
+
+      var prog = wrap.querySelector("[data-rbench-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both sliders live" : "Set a pull to begin";
+      }
+      publishLive(sec, vals, r === 0 && l === 0);
+      markStage(sec, committed && touched > 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+
+    each(sliders, function (s) {
+      ["input", "change"].forEach(function (ev) {
+        s.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    });
+
+    paint();
+  }
+
+  /* p4-03 `#s-bench` — the support rig.
+
+     ⚖️ `upward = min(weight, cap)` AND THE LEFTOVER IS THE REMAINDER. One
+     place, and everything on the block is derived from it: the two arrows,
+     the third arrow, the verdict word and the branch. A support that cannot
+     match the weight supplies what it can and the rest is left over
+     downwards.
+
+     ⚖️ THE COIL LENGTH TRACKS THE FORCE. Design redraws the zig at
+     `20 + U × 1.6` px, so the drawing agrees with rung 3 — the spring stops
+     stretching where its pull reaches the weight. A fixed coil would make
+     the figure contradict the answer the lesson marks. */
+  function wireSupportRig(sec) {
+    var wrap = sec.querySelector("[data-hrig]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-hrig-gate]");
+    var body = wrap.querySelector("[data-hrig-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-hrig-gopt]"));
+    var sups = toArray(wrap.querySelectorAll("[data-hrig-support]"));
+    var mass = wrap.querySelector("[data-hrig-mass]");
+    var svg = wrap.querySelector("[data-hrig-alt]");
+    var noteEl = wrap.querySelector("[data-hrig-note]");
+    var G = parseFloat(wrap.getAttribute("data-g")) || 10;
+    var SCALE = parseFloat(wrap.getAttribute("data-scale")) || 3;
+    var at = wrap.getAttribute("data-start") || "";
+    var committed = false, touched = 0;
+
+    function sup() {
+      for (var i = 0; i < sups.length; i += 1) {
+        if (sups[i].getAttribute("data-hrig-support") === at) {
+          return sups[i];
+        }
+      }
+      return sups[0];
+    }
+
+    function paint() {
+      var s = sup();
+      var m = mass ? Number(mass.value) : 0;
+      var W = Math.round(m * G * 100) / 100;
+      var capRaw = s.getAttribute("data-cap");
+      var cap = capRaw === "inf" ? Infinity : parseFloat(capRaw);
+      var U = Math.min(W, cap);
+      var L = Math.round((W - U) * 100) / 100;
+      var shape = s.getAttribute("data-shape");
+      var torn = shape === "sheet" && L > 0;
+
+      each(sups, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-hrig-support") === at ? "true" : "false");
+      });
+
+      each(toArray(wrap.querySelectorAll("[data-hrig-shape]")), function (g) {
+        var want = g.getAttribute("data-hrig-shape");
+        var show = (shape === "solid" && want === "solid")
+          || (shape === "sheet" && want === (torn ? "torn" : "sheet"));
+        setHidden(g, !show);
+      });
+
+      /* The coil, redrawn so its length tracks the pull. */
+      var coil = "M0 0";
+      if (shape === "spring") {
+        var stretch = Math.round(20 + U * 1.6);
+        coil = "M500 50";
+        for (var i = 0; i < 7; i += 1) {
+          coil += " L" + (i % 2 ? 460 : 540) + " " +
+                  (50 + (stretch / 7) * (i + 1));
+        }
+        coil += " L500 " + (50 + stretch + 12) + " V190";
+      }
+      setPath(wrap, "[data-hrig-coil]", shape === "spring" ? coil : null);
+
+      var wA = arrowV(760, 230, Math.round(W * SCALE), true);
+      var uA = arrowV(240, 230, Math.round(U * SCALE), false);
+      var oA = arrowV(520, 230, Math.round(L * SCALE), true);
+      setPath(wrap, '[data-hrig-shaft="weight"]', wA.shaft);
+      setPath(wrap, '[data-hrig-head="weight"]', wA.head);
+      setPath(wrap, '[data-hrig-shaft="up"]', U > 0 ? uA.shaft : null);
+      setPath(wrap, '[data-hrig-head="up"]', U > 0 ? uA.head : null);
+      setPath(wrap, '[data-hrig-shaft="over"]', L > 0 ? oA.shaft : null);
+      setPath(wrap, '[data-hrig-head="over"]', L > 0 ? oA.head : null);
+
+      fillSpan(wrap, "hrig", "mass", m.toFixed(1) + " kg",
+               tagStyle(0.5, 0.30, "#FBF3E6"));
+      fillSpan(wrap, "hrig", "weight", W + " N",
+               tagStyle(0.78, (230 + W * SCALE + 30) / 460, "#8FB7FF"));
+      fillSpan(wrap, "hrig", "up", U > 0 ? U + " N" : "",
+               tagStyle(0.24, (230 - U * SCALE - 26) / 460, "#8FB7FF"));
+      fillSpan(wrap, "hrig", "over", L > 0 ? L + " N left over" : "",
+               tagStyle(0.53, (230 + L * SCALE + 26) / 460, "#FFC53D",
+                        "start"));
+      fillSpan(wrap, "hrig", "word", s.getAttribute("data-word"),
+               tagStyle(0.5, 0.94, "#C6B9A7"));
+
+      setOut(wrap, "hrig", "mass", m.toFixed(1) + " kg");
+      setOut(wrap, "hrig", "weight", W + " N");
+      setOut(wrap, "hrig", "up", U + " N");
+      setOut(wrap, "hrig", "res", L === 0 ? "0 N" : L + " N down");
+      setOut(wrap, "hrig", "verdict",
+             L === 0 ? "Balanced — no change" : "Unbalanced — it falls");
+
+      var tpl = (torn || (shape === "sheet" && L === 0))
+        ? (L === 0 ? s.getAttribute("data-note-ok") : s.getAttribute("data-note"))
+        : s.getAttribute("data-note");
+      if (!tpl) { tpl = s.getAttribute("data-note"); }
+      if (noteEl) {
+        noteEl.textContent = fillTokens(tpl,
+          { up: U, weight: W, over: L, mass: m.toFixed(1) });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A " + m.toFixed(1) + " kilogram load with " +
+          (s.getAttribute("data-word") || "").toLowerCase() +
+          ". A downward arrow of " + W + " newtons and an upward arrow of " +
+          U + " newtons, drawn to the same scale" +
+          (L > 0 ? ", with a third arrow showing " + L +
+                   " newtons left over downwards." :
+                   ", the same length as each other."));
+      }
+
+      var prog = wrap.querySelector("[data-hrig-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+
+      /* The rig publishes the whole CFIFA line-set, because which
+         relationship the five lines need depends on whether it balances. */
+      var balanced = L === 0;
+      publishLive(sec, {
+        mass: m.toFixed(1), weight: W, up: U, over: L,
+        supportword: (s.getAttribute("data-word") || "").toLowerCase(),
+        target: balanced ? U : L,
+        formula: balanced ? "upward force = weight"
+                          : "resultant = weight − upward force",
+        formulanote: balanced
+          ? "It is at rest and staying at rest, so the two are equal."
+          : "The support cannot match the weight, so something is left over.",
+        insert: balanced
+          ? "upward force = " + m.toFixed(1) + " kg × 10 N/kg"
+          : "resultant = " + W + " N − " + U + " N",
+        finetune: balanced ? m.toFixed(1) + " × 10 = " + W
+                           : W + " − " + U + " = " + L,
+        answer: balanced ? "upward force = " + U + " N, upwards"
+                         : "resultant = " + L + " N, downwards",
+        answernote: balanced
+          ? "And the resultant is 0 N, which is why nothing happens."
+          : "Unbalanced, so the motion changes: it starts to fall."
+      }, false);
+
+      markStage(sec, committed && touched > 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+
+    each(sups, function (b) {
+      b.addEventListener("click", function () {
+        at = b.getAttribute("data-hrig-support");
+        touched += 1;
+        paint();
+      });
+    });
+
+    if (mass) {
+      ["input", "change"].forEach(function (ev) {
+        mass.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    paint();
+  }
+
+  /* p4-04 `#s-bench` — the trolley and the light gates.
+
+     ⚖️ EVERY RUN STARTS AT THE SAME 2.0 m/s, AND THAT IS THE CONTROL. The
+     only things allowed to vary between runs are the resultant and how long
+     it acts, because the lesson's claim is that the resultant decides what
+     changes. Gate 1 is a fixed readout and is never written to.
+
+     ⚖️ `s-three` TICKS ON THE GATE ALONE, before any control is moved. */
+  function wireGateRun(sec) {
+    var wrap = sec.querySelector("[data-grun]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-grun-gate]");
+    var body = wrap.querySelector("[data-grun-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-grun-gopt]"));
+    var caseBtns = toArray(wrap.querySelectorAll("[data-grun-case]"));
+    var secsBtns = toArray(wrap.querySelectorAll("[data-grun-secs]"));
+    var svg = wrap.querySelector("[data-grun-alt]");
+    var noteEl = wrap.querySelector("[data-grun-note]");
+    var at = wrap.getAttribute("data-start-case");
+    var secs = parseInt(wrap.getAttribute("data-start-secs"), 10) || 1;
+    var committed = false, touched = 0;
+
+    function caseData(id) {
+      return wrap.querySelector('[data-grun-case-data="' + id + '"]');
+    }
+    function runData(id, s) {
+      return wrap.querySelector('[data-grun-data="' + id + "|" + s + '"]');
+    }
+
+    function paint() {
+      var c = caseData(at), r = runData(at, secs);
+      if (!c || !r) { return; }
+      var dir = c.getAttribute("data-dir");
+      var far = secs === 3;
+      var bend = dir === "side" ? (far ? 96 : 34) : 0;
+      var stopShort = dir === "back" && far;
+      var endX = stopShort ? 520 : 840;
+      var tx = stopShort ? 400 : 720;
+      var ty = 194 - bend;
+
+      each(caseBtns, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-grun-case") === at ? "true" : "false");
+      });
+      each(secsBtns, function (b) {
+        b.setAttribute("aria-pressed",
+          parseInt(b.getAttribute("data-grun-secs"), 10) === secs
+            ? "true" : "false");
+      });
+
+      var track = "M180 222";
+      track += dir === "side"
+        ? " Q" + ((180 + endX) / 2) + " 222 " + endX + " " + (222 - bend)
+        : " H" + endX;
+      setPath(wrap, "[data-grun-track]", track);
+
+      var trolley = wrap.querySelector("[data-grun-trolley]");
+      if (trolley) {
+        trolley.setAttribute("x", tx);
+        trolley.setAttribute("y", ty);
+      }
+
+      var f = { shaft: "M0 0", head: "M0 0" }, fx = 0, fy = 0;
+      if (dir === "fwd") {
+        f = arrowH(tx + 120, ty + 28, 124, true);
+        fx = tx + 172; fy = ty - 4;
+      } else if (dir === "back") {
+        f = arrowH(tx, ty + 28, 124, false);
+        fx = tx - 52; fy = ty - 4;
+      } else if (dir === "side") {
+        f = arrowV(tx + 60, ty, 110, false, 30);
+        fx = tx + 150; fy = ty - 74;
+      }
+      setPath(wrap, '[data-grun-force="shaft"]',
+              dir === "none" ? null : f.shaft);
+      setPath(wrap, '[data-grun-force="head"]',
+              dir === "none" ? null : f.head);
+
+      fillSpan(wrap, "grun", "force",
+               dir === "none" ? "" : c.getAttribute("data-label"),
+               tagStyle(fx / 1080, (fy - 8) / 330, "#FFC53D"));
+      fillSpan(wrap, "grun", "path", c.getAttribute("data-path"),
+               tagStyle(0.5, 0.86, "#C6B9A7"));
+
+      setOut(wrap, "grun", "gate2", r.getAttribute("data-after"));
+      setOut(wrap, "grun", "changed", c.getAttribute("data-changed"));
+      setOut(wrap, "grun", "same", c.getAttribute("data-same"));
+      if (noteEl) { noteEl.textContent = r.getAttribute("data-note"); }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A trolley on a track between two light gates, with a resultant " +
+          "force of " + c.getAttribute("data-label") + " acting for " + secs +
+          " second" + (secs === 1 ? "" : "s") + ". The dashed path is " +
+          c.getAttribute("data-path") + ", and the second gate reads " +
+          r.getAttribute("data-after") + ".");
+      }
+
+      var prog = wrap.querySelector("[data-grun-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(caseBtns, function (b) {
+      b.addEventListener("click", function () {
+        at = b.getAttribute("data-grun-case"); touched += 1; paint();
+      });
+    });
+    each(secsBtns, function (b) {
+      b.addEventListener("click", function () {
+        secs = parseInt(b.getAttribute("data-grun-secs"), 10);
+        touched += 1; paint();
+      });
+    });
+
+    paint();
+  }
+
+  /* p4-05 `#s-bench` — the block and the spring balance.
+
+     ⚖️ TWO LANES, ONE SCALE, AND THE GAP IS THE LESSON. The break-away pull
+     and the sliding pull are drawn one above the other at the same px per
+     newton, because the hook is that starting is harder than keeping going.
+     Two figures at two scales would show the same numbers and hide the point.
+
+     ⚖️ THE SECOND SENTENCE IS ALWAYS PRESENT — a surface branch AND a
+     comparison against another load on the same surface, so a student is
+     never left with a reading whose only meaning is itself. */
+  function wireDragLane(sec) {
+    var wrap = sec.querySelector("[data-dlane]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-dlane-gate]");
+    var body = wrap.querySelector("[data-dlane-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-dlane-gopt]"));
+    var surfs = toArray(wrap.querySelectorAll("[data-dlane-surface]"));
+    var masses = toArray(wrap.querySelectorAll("[data-dlane-mass]"));
+    var svg = wrap.querySelector("[data-dlane-alt]");
+    var noteEl = wrap.querySelector("[data-dlane-note]");
+    var cmpEl = wrap.querySelector("[data-dlane-compare]");
+    var G = parseFloat(wrap.getAttribute("data-g")) || 10;
+    var SCALE = parseFloat(wrap.getAttribute("data-scale")) || 3;
+    var SF = parseFloat(wrap.getAttribute("data-start-factor")) || 1.2;
+    var at = wrap.getAttribute("data-start-surface");
+    var kg = parseFloat(wrap.getAttribute("data-start-mass")) || 6;
+    var committed = false, touched = 0;
+    var CMP = cmpEl ? cmpEl.getAttribute("data-template") : "";
+
+    function surf() {
+      for (var i = 0; i < surfs.length; i += 1) {
+        if (surfs[i].getAttribute("data-dlane-surface") === at) {
+          return surfs[i];
+        }
+      }
+      return surfs[0];
+    }
+    function grip() { return parseFloat(surf().getAttribute("data-grip")); }
+    function one(v) { return Math.round(v * 10) / 10; }
+
+    /* Design's four generated textures. Repeated marks are ONE path string
+       — no per-mark element, and no `<sc-for>` inside an `<svg>`. */
+    function texture(kind, y) {
+      var d = "", i, x;
+      if (kind === "gloss") {
+        for (i = 0; i < 5; i += 1) {
+          x = 120 + i * 180; d += "M" + x + " " + (y + 14) + " h96 ";
+        }
+      } else if (kind === "planks") {
+        for (i = 0; i < 9; i += 1) {
+          x = 100 + i * 100; d += "M" + x + " " + y + " v22 ";
+        }
+      } else if (kind === "loops") {
+        for (i = 0; i < 18; i += 1) {
+          x = 70 + i * 50; d += "M" + x + " " + y + " q12 26 24 0 ";
+        }
+      } else {
+        for (i = 0; i < 22; i += 1) {
+          x = 62 + i * 41; d += "M" + x + " " + y + " l10 20 l10 -20 ";
+        }
+      }
+      return d;
+    }
+
+    function paint() {
+      var s = surf();
+      var W = kg * G;
+      var slide = one(W * grip());
+      var start = one(W * grip() * SF);
+      var kind = s.getAttribute("data-texture");
+
+      each(surfs, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-dlane-surface") === at ? "true" : "false");
+      });
+      each(masses, function (b) {
+        b.setAttribute("aria-pressed",
+          parseFloat(b.getAttribute("data-dlane-mass")) === kg
+            ? "true" : "false");
+      });
+
+      setPath(wrap, '[data-dlane-texture="start"]', texture(kind, 212));
+      setPath(wrap, '[data-dlane-texture="slide"]', texture(kind, 402));
+
+      [["start", start, 170], ["slide", slide, 360]].forEach(function (row) {
+        var name = row[0], n = row[1], y = row[2];
+        var len = Math.round(n * SCALE);
+        var p = arrowH(580, y, len, true, 18, 13);
+        var f = arrowH(400, y, len, false, 18, 13);
+        setPath(wrap, '[data-dlane-shaft="pull-' + name + '"]', p.shaft);
+        setPath(wrap, '[data-dlane-head="pull-' + name + '"]', p.head);
+        setPath(wrap, '[data-dlane-shaft="fric-' + name + '"]', f.shaft);
+        setPath(wrap, '[data-dlane-head="fric-' + name + '"]', f.head);
+        fillSpan(wrap, "dlane", "pull-" + name, n + " N",
+                 tagStyle(596 / 1000, (y - 28) / 430, "#8FB7FF", "start"));
+        fillSpan(wrap, "dlane", "fric-" + name, n + " N",
+                 tagStyle(384 / 1000, (y - 28) / 430, "#8FB7FF", "end"));
+      });
+
+      setOut(wrap, "dlane", "weight", W + " N");
+      setOut(wrap, "dlane", "start", start + " N");
+      setOut(wrap, "dlane", "slide", slide + " N");
+      setOut(wrap, "dlane", "gap", one(start - slide) + " N more to start it");
+
+      var first = surfs[0] ? parseFloat(surfs[0].getAttribute("data-grip"))
+                           : grip();
+      if (noteEl) {
+        noteEl.textContent = fillTokens(s.getAttribute("data-note"), {
+          slide: slide, start: start,
+          ratio: Math.round((grip() / first) * 10) / 10
+        });
+      }
+
+      /* Design's own choice of the load to compare against: double it where
+         doubling stays on the bench, otherwise wrap to the smallest. The
+         comparison is never against the load already selected. */
+      var all = masses.map(function (b) {
+        return parseFloat(b.getAttribute("data-dlane-mass"));
+      });
+      var top = all[all.length - 1];
+      var other = kg === top ? all[0] : (kg * 2 <= top ? kg * 2 : all[0]);
+      if (cmpEl) {
+        cmpEl.textContent = fillTokens(CMP, {
+          mass: kg, slide: slide, other: other,
+          otherslide: one(other * G * grip())
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A " + kg + " kilogram block on " +
+          (s.getAttribute("data-name") || "").toLowerCase() +
+          ", drawn twice to one scale. In the upper diagram a pull of " +
+          start + " newtons and a friction arrow of " + start +
+          " newtons break it away; in the lower diagram a pull of " + slide +
+          " newtons and a friction arrow of " + slide +
+          " newtons keep it sliding steadily.");
+      }
+
+      var prog = wrap.querySelector("[data-dlane-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(surfs, function (b) {
+      b.addEventListener("click", function () {
+        at = b.getAttribute("data-dlane-surface"); touched += 1; paint();
+      });
+    });
+    each(masses, function (b) {
+      b.addEventListener("click", function () {
+        kg = parseFloat(b.getAttribute("data-dlane-mass"));
+        touched += 1; paint();
+      });
+    });
+
+    paint();
+  }
+
+  /* p4-06 `#s-bench` — the fall.
+
+     ⚖️ THE WEIGHT ARROW NEVER MOVES. One fixed length for every object and
+     every speed, because the whole lesson is that terminal velocity is a
+     BALANCE and not a limit: the weight is the same 750 N all the way down
+     and it is the resistance that changes.
+
+     ⚖️ `drag = weight × f²`, which is why it reaches the weight at f = 1 for
+     every object without the drawing knowing anything about the object.
+
+     ⚖️ THE HAILSTONE TAKES TWO DECIMALS. One rounding rule across a bench
+     spanning 1 N to 750 N prints `0.0 N` at half speed — a bench saying the
+     resistance is nothing when it is a quarter of the weight. */
+  function wireFallBalance(sec) {
+    var wrap = sec.querySelector("[data-fall]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-fall-gate]");
+    var bench = wrap.querySelector("[data-fall-bench]");
+    var gopts = toArray(wrap.querySelectorAll("[data-fall-gopt]"));
+    var objs = toArray(wrap.querySelectorAll("[data-fall-object]"));
+    var frac = wrap.querySelector("[data-fall-frac]");
+    var svg = wrap.querySelector("[data-fall-alt]");
+    var noteEl = wrap.querySelector("[data-fall-note]");
+    var noDrag = wrap.querySelector("[data-fall-nodrag]");
+    var WLEN = parseFloat(wrap.getAttribute("data-weight-px")) || 130;
+    var at = wrap.getAttribute("data-start-body");
+    var committed = false, touched = 0;
+
+    function obj() {
+      for (var i = 0; i < objs.length; i += 1) {
+        if (objs[i].getAttribute("data-fall-object") === at) {
+          return objs[i];
+        }
+      }
+      return objs[0];
+    }
+
+    function paint() {
+      var o = obj();
+      var weight = parseFloat(o.getAttribute("data-weight"));
+      var term = parseFloat(o.getAttribute("data-term"));
+      var small = weight < 10;
+      var pct = frac ? Number(frac.value) : 0;
+      var f = pct / 100;
+      var raw = weight * f * f;
+      var drag = small ? Math.round(raw * 100) / 100
+                       : Math.round(raw * 10) / 10;
+      var over = Math.round((weight - drag) * 100) / 100;
+      var up = over < 0;
+      var balanced = Math.abs(over) <= 0.001;
+
+      function n(v) {
+        return (small ? Number(v).toFixed(2)
+                      : Math.round(v * 10) / 10) + " N";
+      }
+
+      each(objs, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-fall-object") === at ? "true" : "false");
+      });
+
+      var shape = wrap.querySelector("[data-fall-body-shape]");
+      if (shape) {
+        var w = parseFloat(o.getAttribute("data-w"));
+        shape.setAttribute("x", 500 - w / 2);
+        shape.setAttribute("width", w);
+        shape.setAttribute("rx", o.getAttribute("data-r"));
+      }
+
+      var streaks = "";
+      if (pct > 0) {
+        var h = Math.round(12 + f * 46);
+        [300, 700].forEach(function (x) {
+          for (var i = 0; i < 3; i += 1) {
+            var y = 120 + i * 92;
+            streaks += "M" + x + " " + y + " V" + (y + h) + " ";
+          }
+        });
+      }
+      setPath(wrap, "[data-fall-streaks]", streaks || null);
+
+      var dLen = Math.round(WLEN * f * f);
+      var oLen = Math.round((Math.abs(over) / weight) * WLEN);
+      var wA = arrowV(500, 290, WLEN, true);
+      var dA = arrowV(500, 210, dLen, false);
+      var oA = arrowV(790, 250, oLen, !up ? true : false);
+      setPath(wrap, '[data-fall-shaft="weight"]', wA.shaft);
+      setPath(wrap, '[data-fall-head="weight"]', wA.head);
+      setPath(wrap, '[data-fall-shaft="drag"]', dLen > 2 ? dA.shaft : null);
+      setPath(wrap, '[data-fall-head="drag"]', dLen > 2 ? dA.head : null);
+      setPath(wrap, '[data-fall-shaft="over"]',
+              (!balanced && oLen > 2) ? oA.shaft : null);
+      setPath(wrap, '[data-fall-head="over"]',
+              (!balanced && oLen > 2) ? oA.head : null);
+      if (noDrag) { setHidden(noDrag, dLen > 2); }
+
+      fillSpan(wrap, "fall", "drag", n(drag),
+               tagStyle(0.52, (210 - Math.max(dLen, 14) - 16) / 520,
+                        "#8FB7FF", "start"));
+      fillSpan(wrap, "fall", "weight", n(weight),
+               tagStyle(0.52, (290 + WLEN + 24) / 520, "#8FB7FF", "start"));
+      fillSpan(wrap, "fall", "over",
+               balanced ? "" : n(Math.abs(over)) + " left over, " +
+                               (up ? "up" : "down"),
+               tagStyle(0.81, ((up ? 250 - oLen - 22 : 250 + oLen + 22))
+                        / 520, "#FFC53D", "start"));
+      fillSpan(wrap, "fall", "word", o.getAttribute("data-word"),
+               tagStyle(0.5, 0.95, "#C6B9A7"));
+
+      setOut(wrap, "fall", "speed",
+             (Math.round(term * f * 10) / 10) + " m/s · " + pct +
+             "% of steady");
+      setOut(wrap, "fall", "weight", n(weight));
+      setOut(wrap, "fall", "drag", n(drag));
+      setOut(wrap, "fall", "res",
+             balanced ? "0 N" : n(Math.abs(over)) + (up ? " up" : " down"));
+      setOut(wrap, "fall", "verdict",
+             pct === 0 ? "About to speed up"
+               : balanced ? "Steady — terminal velocity"
+               : (up ? "Slowing down" : "Still speeding up"));
+
+      var canopy = o.getAttribute("data-canopy") === "1";
+      var key = pct === 0 ? "at_rest"
+        : balanced ? "matched"
+        : up ? (canopy ? "canopy" : "past")
+        : "growing";
+      var bEl = wrap.querySelector('[data-fall-branch="' + key + '"]');
+      if (noteEl && bEl) {
+        noteEl.textContent = fillTokens(bEl.getAttribute("data-note"), {
+          weight: n(weight), drag: n(drag), over: n(Math.abs(over)),
+          pct: pct, term: term
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          (o.getAttribute("data-word") || "").toLowerCase() +
+          " falling at " + pct + " per cent of its steady speed. A downward " +
+          "weight arrow of " + n(weight) + " and an upward resistance arrow " +
+          "of " + n(drag) + ", drawn to one scale" +
+          (balanced ? ", exactly equal in length."
+            : ", with a third arrow showing " + n(Math.abs(over)) +
+              " left over " + (up ? "upwards." : "downwards.")));
+      }
+
+      var prog = wrap.querySelector("[data-fall-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(bench, false);
+        paint();
+      });
+    });
+    each(objs, function (b) {
+      b.addEventListener("click", function () {
+        at = b.getAttribute("data-fall-object"); touched += 1; paint();
+      });
+    });
+    if (frac) {
+      ["input", "change"].forEach(function (ev) {
+        frac.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    paint();
+  }
+
+  /* p4-07 `#s-bench` — the spanner and the tight nut.
+
+     ⚖️ BOTH BRANCHES NAME BOTH ROUTES TO THE THRESHOLD, WITH LIVE FIGURES.
+     The same pull further out, or a smaller pull at this distance — that is
+     the product being taught rather than a number being reported, so the
+     note computes `need ÷ arm` and `need ÷ force` rather than describing
+     them.
+
+     ⚖️ TWO SCALES, AND THEY ARE DIFFERENT QUANTITIES. The handle is a
+     LENGTH at 1400 px per metre; the pull is a FORCE at 0.9 px per newton.
+     One scale for both would be meaningless rather than more honest.
+
+     ⚖️ THE TURN ARROW IS SOLID WHEN IT CLEARS AND DASHED WHEN IT DOES NOT,
+     and the verdict is also a WORD. Hue is never the only channel. */
+  function wireSpannerRig(sec) {
+    var wrap = sec.querySelector("[data-span]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-span-gate]");
+    var body = wrap.querySelector("[data-span-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-span-gopt]"));
+    var arms = toArray(wrap.querySelectorAll("[data-span-arm]"));
+    var force = wrap.querySelector("[data-span-force]");
+    var svg = wrap.querySelector("[data-span-alt]");
+    var noteEl = wrap.querySelector("[data-span-note]");
+    var turn = wrap.querySelector("[data-span-turn]");
+    var NEED = parseFloat(wrap.getAttribute("data-need")) || 12;
+    var ARMS = parseFloat(wrap.getAttribute("data-arm-scale")) || 1400;
+    var FS = parseFloat(wrap.getAttribute("data-f-scale")) || 0.9;
+    var arm = parseFloat(wrap.getAttribute("data-start-arm")) || 0.1;
+    var committed = false, touched = 0;
+
+    function longest() {
+      var m = 0;
+      each(arms, function (b) {
+        m = Math.max(m, parseFloat(b.getAttribute("data-span-arm")));
+      });
+      return m;
+    }
+
+    function paint() {
+      var F = force ? Number(force.value) : 0;
+      var M = Math.round(F * arm * 100) / 100;
+      var arm2 = arm.toFixed(2);
+      var turns = M >= NEED;
+
+      each(arms, function (b) {
+        b.setAttribute("aria-pressed",
+          parseFloat(b.getAttribute("data-span-arm")) === arm
+            ? "true" : "false");
+      });
+
+      var handleW = Math.round(arm * ARMS);
+      var endX = 250 + handleW;
+      var handle = wrap.querySelector("[data-span-handle]");
+      if (handle) { handle.setAttribute("width", handleW); }
+      var grip = wrap.querySelector("[data-span-grip]");
+      if (grip) { grip.setAttribute("x", endX - 46); }
+
+      var fLen = Math.round(F * FS);
+      var fx = endX - 4;
+      var fA = arrowV(fx, 314, fLen, true, 24);
+      setPath(wrap, "[data-span-shaft]", fA.shaft);
+      setPath(wrap, "[data-span-head]", fA.head);
+      setPath(wrap, "[data-span-dim]",
+              "M250 258 H" + endX + " M250 248 V268 M" + endX + " 248 V268");
+      if (turn) {
+        turn.setAttribute("stroke-dasharray", turns ? "" : "10 10");
+      }
+
+      fillSpan(wrap, "span", "force", F + " N",
+               tagStyle((fx + 22) / 1000, (314 + fLen - 10) / 420,
+                        "#8FB7FF", "start"));
+      fillSpan(wrap, "span", "dist", arm2 + " m",
+               tagStyle((250 + handleW / 2) / 1000, 0.40, "#C6B9A7"));
+      fillSpan(wrap, "span", "turn",
+               turns ? "ENOUGH — IT TURNS" : "NOT ENOUGH — IT HOLDS",
+               tagStyle(0.5, 0.06, turns ? "#8FB7FF" : "#C6B9A7"));
+
+      setOut(wrap, "span", "force", F + " N");
+      setOut(wrap, "span", "arm", arm2 + " m");
+      setOut(wrap, "span", "moment", M + " N m");
+      setOut(wrap, "span", "verdict", turns ? "Moves" : "Does not budge");
+
+      var needF = Math.ceil(NEED / arm);
+      var needArm = Math.round((NEED / Math.max(F, 1)) * 100) / 100;
+      var key = turns ? "turns"
+        : (needArm > longest() ? "stuck_far" : "stuck");
+      var bEl = wrap.querySelector('[data-span-branch="' + key + '"]');
+      if (noteEl && bEl) {
+        noteEl.textContent = fillTokens(bEl.getAttribute("data-note"), {
+          moment: M + " N m", need: NEED + " N m", force: F + " N",
+          arm: arm2 + " m", needf: needF + " N", needarm: needArm + " m"
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A spanner drawn to scale with its handle " + arm2 +
+          " metres from the centre of the nut, pulled at right angles with " +
+          F + " newtons, giving a moment of " + M + " newton metres" +
+          (turns ? ", which is enough to turn the nut."
+                 : ", which is not enough to turn the nut."));
+      }
+
+      var prog = wrap.querySelector("[data-span-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      publishLive(sec, {
+        force: F + " N", arm: arm2 + " m", moment: M + " N m",
+        fnum: F, armnum: arm2, mnum: M,
+        verdictnote: turns
+          ? "More than the " + NEED + " N m the nut needs, so it turns."
+          : "Less than the " + NEED + " N m the nut needs, so it holds."
+      }, false);
+      markStage(sec, committed && touched > 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(arms, function (b) {
+      b.addEventListener("click", function () {
+        arm = parseFloat(b.getAttribute("data-span-arm"));
+        touched += 1; paint();
+      });
+    });
+    if (force) {
+      ["input", "change"].forEach(function (ev) {
+        force.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    paint();
+  }
+
+  /* p4-08 `#s-bench` — loading a spring.
+
+     ⚖️ THE GRAPH SHOWS ONLY WHAT THE STUDENT CHOSE TO RECORD, so an
+     incomplete investigation LOOKS incomplete. A bench that drew the whole
+     curve on load would answer the question the investigation exists to ask
+     — where does the line stop being straight — before a single reading
+     was taken.
+
+     ⚠️ POINTS ARE ARCS IN ONE `d` STRING, NOT `<circle>` ELEMENTS. Design's
+     note for the generator: no per-point element inside the SVG. */
+  function wireSpringPlot(sec) {
+    var wrap = sec.querySelector("[data-splot]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-splot-gate]");
+    var body = wrap.querySelector("[data-splot-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-splot-gopt]"));
+    var load = wrap.querySelector("[data-splot-load]");
+    var recBtn = wrap.querySelector("[data-splot-record]");
+    var clrBtn = wrap.querySelector("[data-splot-clear]");
+    var springSvg = wrap.querySelector("[data-splot-springalt]");
+    var graphSvg = wrap.querySelector("[data-splot-graphalt]");
+    var noteEl = wrap.querySelector("[data-splot-note]");
+    var PER = parseFloat(wrap.getAttribute("data-per-n")) || 20;
+    var LIMIT = parseFloat(wrap.getAttribute("data-limit")) || 6;
+    var SPOIL = parseFloat(wrap.getAttribute("data-spoil")) || 9;
+    var PAST = parseFloat(wrap.getAttribute("data-past")) || 32;
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || 2;
+    var committed = false;
+    var readings = [];
+
+    function ext(L) {
+      return L <= LIMIT ? L * PER : LIMIT * PER + (L - LIMIT) * PAST;
+    }
+    function gx(L) { return 120 + L * 82; }
+    function gy(mm) { return 340 - mm * 1.1538; }
+
+    function paint() {
+      var L = load ? Number(load.value) : 0;
+      var E = ext(L);
+      var px = E * 0.9;
+      var coilTop = 40, natural = 70;
+      var coilEnd = coilTop + natural + px;
+
+      var coil = "M150 " + coilTop;
+      var turns = 7, seg = (natural + px) / turns;
+      for (var i = 0; i < turns; i += 1) {
+        coil += " L" + (i % 2 ? 106 : 194) + " " +
+                (coilTop + seg * (i + 0.5)) + " L150 " +
+                (coilTop + seg * (i + 1));
+      }
+      setPath(wrap, "[data-splot-coil]", coil);
+      var hanger = wrap.querySelector("[data-splot-hanger]");
+      if (hanger) { hanger.setAttribute("y", coilEnd); }
+      setPath(wrap, "[data-splot-extbar]", px > 4
+        ? "M250 110 V" + coilEnd + " M240 110 H260 M240 " + coilEnd + " H260"
+        : null);
+
+      var sorted = readings.slice().sort(function (a, b) { return a - b; });
+      var dots = "", line = "";
+      sorted.forEach(function (r, i) {
+        var cx = gx(r), cy = gy(ext(r));
+        dots += "M" + (cx - 7) + " " + cy + " a7 7 0 1 0 14 0 a7 7 0 1 0 -14 0 ";
+        line += (i ? "L" : "M") + cx + " " + cy + " ";
+      });
+      var grid = "";
+      for (var k = 1; k <= 10; k += 1) { grid += "M" + gx(k) + " 340 V334 "; }
+      [50, 100, 150, 200, 250].forEach(function (mm) {
+        grid += "M120 " + gy(mm).toFixed(1) + " H126 ";
+      });
+      setPath(wrap, "[data-splot-grid]", grid);
+      setPath(wrap, "[data-splot-prop]",
+              "M" + gx(0) + " " + gy(0) + " L" + gx(LIMIT) + " " +
+              gy(LIMIT * PER));
+      setPath(wrap, "[data-splot-dots]", dots || null);
+      setPath(wrap, "[data-splot-line]", sorted.length > 1 ? line : null);
+
+      fillSpan(wrap, "splot", "ext", E + " mm",
+               tagStyle(0.88, ((110 + coilEnd) / 2) / 460, "#8FB7FF", "end"));
+      fillSpan(wrap, "splot", "load", L + " N",
+               tagStyle(0.5, (coilEnd + 27) / 460, "#FBF3E6"));
+
+      setOut(wrap, "splot", "load", L + " N");
+      setOut(wrap, "splot", "ext", E + " mm");
+      setOut(wrap, "splot", "pern", L === 0 ? "—"
+        : (Math.round((E / L) * 10) / 10) + " mm/N");
+      setOut(wrap, "splot", "verdict",
+             L === 0 ? "Unloaded"
+               : L < LIMIT ? "On the straight line"
+               : L === LIMIT ? "At the limit"
+               : L <= SPOIL ? "Past the limit" : "Permanently stretched");
+
+      var key = L === 0 ? "zero"
+        : L < LIMIT ? "on_line"
+        : L === LIMIT ? "at_limit"
+        : L <= SPOIL ? "past_limit" : "deformed";
+      var bEl = wrap.querySelector('[data-splot-branch="' + key + '"]');
+      if (noteEl && bEl) {
+        noteEl.textContent = fillTokens(bEl.getAttribute("data-note"), {
+          load: L, ext: E, predicted: L * PER
+        });
+      }
+
+      if (recBtn) {
+        var already = readings.indexOf(L) >= 0;
+        recBtn.textContent = already ? "Already plotted"
+                                     : "Record this reading";
+        if (already) { recBtn.setAttribute("disabled", ""); }
+        else { recBtn.removeAttribute("disabled"); }
+      }
+
+      if (springSvg) {
+        springSvg.setAttribute("aria-label",
+          "A spring hanging from a clamp with " + L + " newtons on it, " +
+          "stretched " + E + " millimetres below the dashed line marking " +
+          "its natural length.");
+      }
+      if (graphSvg) {
+        graphSvg.setAttribute("aria-label",
+          "A graph of extension in millimetres against load in newtons " +
+          "with " + readings.length + " points plotted, and a dashed line " +
+          "showing the straight line through the origin that the first " +
+          "readings make.");
+      }
+
+      var prog = wrap.querySelector("[data-splot-progress]");
+      if (prog) {
+        prog.textContent = readings.length
+          ? readings.length + " reading" +
+            (readings.length === 1 ? "" : "s") + " plotted"
+          : "No readings plotted yet";
+      }
+
+      var dbl = L * 2;
+      var pred = E * 2;
+      var actual = ext(dbl);
+      var pern = Math.round((E / Math.max(L, 1)) * 10) / 10;
+      publishLive(sec, {
+        load: L, ext: E, dbl: dbl, pern: pern, predicted: pred,
+        checkclose: dbl > 10
+          ? "The five lines predict " + pred + " mm at " + dbl +
+            " N — but the bench only goes to 10 N, so this one cannot be " +
+            "checked. Choose a smaller load and run it again."
+          : (Math.abs(actual - pred) < 0.5
+            ? "The five lines predict " + pred + " mm, and setting the " +
+              "bench to " + dbl + " N gives exactly " + actual + " mm. The " +
+              "proportionality held, because both loads are on the " +
+              "straight line."
+            : "The five lines predict " + pred + " mm, but setting the " +
+              "bench to " + dbl + " N gives " + actual + " mm — more than " +
+              "predicted. Doubling took the spring past its limit of " +
+              "proportionality. The arithmetic was right; the assumption " +
+              "behind it was not.")
+      }, L === 0);
+
+      setCount(sec, readings.length);
+      markStage(sec, committed && readings.length >= TARGET);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    if (load) {
+      ["input", "change"].forEach(function (ev) {
+        load.addEventListener(ev, paint);
+      });
+    }
+    if (recBtn) {
+      recBtn.addEventListener("click", function () {
+        var L = load ? Number(load.value) : 0;
+        if (readings.indexOf(L) < 0) { readings.push(L); }
+        paint();
+      });
+    }
+    if (clrBtn) {
+      clrBtn.addEventListener("click", function () {
+        readings = [];
+        paint();
+      });
+    }
+
+    paint();
+  }
+
+  /* p4-09 `#s-bench` — the sorter.
+
+     ⚖️ THE DIAGRAM IS DRAWN FROM THE START; THE VERDICT IS NOT. The two
+     bodies, the gap-or-contact marker and the arrow carry the evidence the
+     classification is made from. Printing the answer beside them would
+     remove the only demand the block makes.
+
+     ⚖️ A LABEL LOCKS ON COMMIT. A sorter that lets a student cycle through
+     four labels until the tick appears is a guessing game. */
+  function wireForceSorter(sec) {
+    var wrap = sec.querySelector("[data-fsort]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-fsort-tab]"));
+    var labels = toArray(wrap.querySelectorAll("[data-fsort-label]"));
+    var verdict = wrap.querySelector("[data-fsort-verdict]");
+    var sealed = wrap.querySelector("[data-fsort-sealed]");
+    var titleEl = wrap.querySelector("[data-fsort-title]");
+    var noteEl = wrap.querySelector("[data-fsort-note]");
+    /* The join word is a LIVE value, so it is a span over the drawing and
+       never an SVG <text>: an empty <text> ships in the bytes, which is
+       what MRB-254 gates. */
+    var svg = wrap.querySelector("[data-fsort-alt]");
+    var TOTAL = parseInt(wrap.getAttribute("data-total"), 10) || tabs.length;
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || TOTAL;
+    var at = 0;
+    var picks = {};
+
+    function data(i) {
+      return wrap.querySelector('[data-fsort-data="' + i + '"]');
+    }
+
+    function paint() {
+      var d = data(at);
+      if (!d) { return; }
+      var touching = d.getAttribute("data-touch") === "1";
+      var done = picks[at] !== undefined;
+      var count = Object.keys(picks).length;
+
+      each(tabs, function (t, i) {
+        t.setAttribute("aria-pressed", i === at ? "true" : "false");
+      });
+
+      var aX = touching ? 396 : 250;
+      var bX = touching ? 604 : 750;
+      var bodyA = wrap.querySelector('[data-fsort-body="a"]');
+      var bodyB = wrap.querySelector('[data-fsort-body="b"]');
+      if (bodyA) { bodyA.setAttribute("cx", aX); }
+      if (bodyB) { bodyB.setAttribute("cx", bX); }
+
+      var from = touching ? 476 : 350;
+      var to = touching ? 500 : 590;
+      var head = touching ? 524 : 640;
+      setPath(wrap, "[data-fsort-shaft]", "M" + from + " 150 H" + to);
+      setPath(wrap, "[data-fsort-head]",
+              "M" + head + " 150 L" + (head - 26) + " 132 L" +
+              (head - 26) + " 168 Z");
+      setPath(wrap, '[data-fsort-join="gap"]', touching ? null
+        : "M" + (aX + 74) + " 244 H" + (bX - 74) +
+          " M" + (aX + 74) + " 230 V258 M" + (bX - 74) + " 230 V258");
+      setPath(wrap, '[data-fsort-join="contact"]', touching
+        ? "M494 216 V262" : null);
+      fillSpan(wrap, "fsort", "join",
+               touching ? "TOUCHING" : "NOT TOUCHING",
+               tagStyle(0.5, 300 / 340, "#C6B9A7"));
+
+      fillSpan(wrap, "fsort", "a", d.getAttribute("data-a"),
+               tagStyle(aX / 1000, 150 / 340, "#FBF3E6"));
+      fillSpan(wrap, "fsort", "b", d.getAttribute("data-b"),
+               tagStyle(bX / 1000, 150 / 340, "#FBF3E6"));
+      if (titleEl) { titleEl.textContent = d.getAttribute("data-title"); }
+
+      each(labels, function (b) {
+        var id = b.getAttribute("data-fsort-label");
+        b.setAttribute("aria-pressed",
+          done && picks[at] === id ? "true" : "false");
+        if (done) { b.setAttribute("disabled", ""); }
+        else { b.removeAttribute("disabled"); }
+      });
+
+      setHidden(verdict, !done);
+      setHidden(sealed, done);
+      if (done) {
+        var yours = "";
+        each(labels, function (b) {
+          if (b.getAttribute("data-fsort-label") === picks[at]) {
+            yours = b.textContent;
+          }
+        });
+        setOut(wrap, "fsort", "yours", yours);
+        setOut(wrap, "fsort", "true", d.getAttribute("data-answer-label"));
+        setOut(wrap, "fsort", "kind", d.getAttribute("data-kind"));
+        setOut(wrap, "fsort", "sense", d.getAttribute("data-sense"));
+        if (noteEl) { noteEl.textContent = d.getAttribute("data-note"); }
+      }
+
+      if (svg) { svg.setAttribute("aria-label", d.getAttribute("data-alt")); }
+
+      var prog = wrap.querySelector("[data-fsort-progress]");
+      if (prog) {
+        prog.textContent = count === TOTAL
+          ? "All " + TOTAL + " labelled"
+          : count + " of " + TOTAL + " labelled";
+      }
+      setCount(sec, count);
+      markStage(sec, count >= TARGET);
+      markSibling(sec, wrap, count);
+    }
+
+    each(tabs, function (t, i) {
+      t.addEventListener("click", function () { at = i; paint(); });
+    });
+    each(labels, function (b) {
+      b.addEventListener("click", function () {
+        if (picks[at] !== undefined) { return; }
+        picks[at] = b.getAttribute("data-fsort-label");
+        paint();
+      });
+    });
+
+    paint();
+  }
+/* ═══ END P4 wiring ═══ */
+
 
 
 
@@ -26182,6 +27768,24 @@
     each(root.querySelectorAll("[data-rframeblock]"), wireRelativeFrames);
     each(root.querySelectorAll("[data-passblock]"), wirePassingSpeeds);
     // ═══ END P3 wiring ═══
+    // ═══ BEGIN P4 wiring ═══
+    each(root.querySelectorAll("[data-iboardblock]"), wireInteractionBoard);
+    each(root.querySelectorAll("[data-rbenchblock]"), wireResultantBench);
+    each(root.querySelectorAll("[data-hrigblock]"), wireSupportRig);
+    each(root.querySelectorAll("[data-grunblock]"), wireGateRun);
+    each(root.querySelectorAll("[data-dlaneblock]"), wireDragLane);
+    each(root.querySelectorAll("[data-fallblock]"), wireFallBalance);
+    each(root.querySelectorAll("[data-spanblock]"), wireSpannerRig);
+    each(root.querySelectorAll("[data-splotblock]"), wireSpringPlot);
+    each(root.querySelectorAll("[data-fsortblock]"), wireForceSorter);
+    // ⚠️ ORDER IS IMMATERIAL HERE, and it is worth saying why rather than
+    // leaving the next reader to work it out. Question 1's `{token}` holes
+    // are filled by `publishLive`, which each bench calls from its OWN
+    // `paint()` at the end of its own wiring — it walks the DOM and calls
+    // `paintAttempt` directly, so it does not depend on this line having
+    // run. `wireCfifaAttempt` only attaches listeners and paints the hint.
+    each(root.querySelectorAll("[data-p4cfablock]"), wireCfifaAttempt);
+    // ═══ END P4 wiring ═══
     // ═══ END C10 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);

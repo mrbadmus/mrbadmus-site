@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Balanced and unbalanced · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p4-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].p4-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 20rem; height: 40px; background: transparent; }
+  input[type="range"].p4-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].p4-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].p4-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].p4-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Forces</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Balanced and unbalanced</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Forces · Contrast</p>
+        <h1>Balanced and unbalanced</h1>
+        <p class="ks3-bigq">Two identical books have the same weight pulling them down. One is sitting on a table and one is falling. The difference is not the weight.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>The table is holding up 8 N and nobody notices.</h2>
+        <p class="ks3-hook-prompt">A 0.8 kg book weighs about 8 N — mass in kilograms × 10 N/kg. Rest it on a table and it stays. Hold it out and let go and it drops. Its weight was 8 N the whole time.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">So what is different about the forces on the book on the table?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">There is a second force. The table is squashed by an amount too small to see and pushes back up with 8 N — exactly matching the weight, so the resultant is 0 N and nothing changes. Take the table away and the 8 N has nothing to cancel it.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p><strong>Balanced</strong> means the forces along a line add up to a resultant of 0 N, so nothing about the motion changes. <strong>Unbalanced</strong> means something is left over, and whatever is left over is what changes the motion.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · the support rig</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Change what is holding it up</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. A 2 kg mass hangs from a spring and stays still. How hard is the spring pulling up?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px; align-items: flex-end;">
+              <div style="flex: 1 1 320px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What is holding it up</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ supportTabs }}" as="t" hint-placeholder-count="4">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 1 1 260px; min-width: 230px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <label for="p4mass" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Mass</label>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light);">{{ massLabel }}</p>
+                </div>
+                <input class="p4-slider" type="range" id="p4mass" min="0.5" max="5" step="0.5" value="{{ massValue }}" onChange="{{ onMass }}" onInput="{{ onMass }}">
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+              <svg viewBox="0 0 1000 460" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                <sc-if value="{{ isSpring }}">
+                  <path d="M300 50 H700" style="fill: none; stroke: var(--ks3-on-dark-muted); stroke-width: 8; stroke-linecap: round;"></path>
+                  <path d="{{ springPath }}" style="fill: none; stroke: #C6B9A7; stroke-width: 6;"></path>
+                </sc-if>
+                <sc-if value="{{ isSolid }}">
+                  <rect x="330" y="274" width="340" height="18" style="fill: #C6B9A7;"></rect>
+                  <path d="M340 292 L320 320 M400 292 L380 320 M460 292 L440 320 M520 292 L500 320 M580 292 L560 320 M640 292 L620 320" style="fill: none; stroke: #C6B9A7; stroke-width: 4;"></path>
+                </sc-if>
+                <sc-if value="{{ isPaperOk }}">
+                  <path d="M330 288 Q500 300 670 288" style="fill: none; stroke: #C6B9A7; stroke-width: 6;"></path>
+                </sc-if>
+                <sc-if value="{{ isPaperTorn }}">
+                  <path d="M330 284 Q400 300 470 316 M670 284 Q600 300 530 316" style="fill: none; stroke: #C6B9A7; stroke-width: 6;"></path>
+                </sc-if>
+                <sc-if value="{{ isFall }}">
+                  <path d="M420 320 H580 M440 350 H560 M460 380 H540" style="fill: none; stroke: #3E3730; stroke-width: 5; stroke-linecap: round;"></path>
+                </sc-if>
+
+                <rect x="390" y="190" width="220" height="80" rx="12" style="fill: #15110C; stroke: var(--ks3-on-dark-muted); stroke-width: 3;"></rect>
+
+                <path d="M610 230 H752" style="fill: none; stroke: #3E3730; stroke-width: 2; stroke-dasharray: 6 7;"></path>
+                <path d="M390 230 H248" style="fill: none; stroke: #3E3730; stroke-width: 2; stroke-dasharray: 6 7;"></path>
+
+                <path d="{{ weightShaft }}" style="fill: none; stroke: #8FB7FF; stroke-width: 8; stroke-linecap: round;"></path>
+                <path d="{{ weightHead }}" style="fill: #8FB7FF;"></path>
+                <text x="760" y="178" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 16px; letter-spacing: .07em; fill: #C6B9A7;">WEIGHT</text>
+
+                <sc-if value="{{ hasSupport }}">
+                  <path d="{{ supShaft }}" style="fill: none; stroke: #8FB7FF; stroke-width: 8; stroke-linecap: round;"></path>
+                  <path d="{{ supHead }}" style="fill: #8FB7FF;"></path>
+                </sc-if>
+                <text x="240" y="286" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 16px; letter-spacing: .07em; fill: #C6B9A7;">UPWARD FORCE</text>
+
+                <sc-if value="{{ hasLeftOver }}">
+                  <path d="{{ overShaft }}" style="fill: none; stroke: #FFC53D; stroke-width: 10; stroke-linecap: round;"></path>
+                  <path d="{{ overHead }}" style="fill: #FFC53D;"></path>
+                </sc-if>
+              </svg>
+                <span style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(15px, 2.2vw, 26px); color: #FBF3E6; white-space: nowrap; pointer-events: none;">{{ massLabel }}</span>
+                <span style="position: absolute; left: 79%; top: 52.5%; transform: translate(0, -50%); font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(11px, 1.8vw, 22px); color: #8FB7FF; white-space: nowrap; pointer-events: none;">{{ weightLabel }}</span>
+                <span style="position: absolute; left: 12%; top: 44%; transform: translate(0, -50%); font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(11px, 1.8vw, 22px); color: #8FB7FF; white-space: nowrap; pointer-events: none;">{{ supLabel }}</span>
+                <sc-if value="{{ hasLeftOver }}">
+                  <span style="{{ overLabelStyle }}">{{ overLabel }}</span>
+                </sc-if>
+                <span style="position: absolute; left: 50%; top: 93.5%; transform: translate(-50%, -50%); font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px, 1.4vw, 17px); letter-spacing: .08em; color: #C6B9A7; white-space: nowrap; pointer-events: none;">{{ supportWord }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Weight, pulling down</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ weightLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Push or pull, upwards</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ supLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Resultant</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ resLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Verdict</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ verdictWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-formula" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The relationship · a beam, not a triangle</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 28ch;">Same length, opposite ways, nothing left over.</p>
+
+        <div style="margin-top: 24px; padding: 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+          <svg viewBox="0 0 1000 380" role="img" aria-label="Two panels drawn to one scale. On the left, an upward arrow of 30 newtons and a downward arrow of 30 newtons are the same length, and the resultant is zero newtons. On the right, an upward arrow of 15 newtons is half the length of the 30 newton downward arrow, and a third arrow shows 15 newtons left over, downwards." style="display: block; width: 100%; height: auto;">
+            <text x="60" y="42" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; letter-spacing: .08em; fill: var(--ks3-ink-muted);">BALANCED</text>
+            <rect x="60" y="58" width="400" height="300" rx="14" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+            <rect x="200" y="188" width="120" height="46" rx="8" style="fill: var(--ks3-card); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+            <path d="M260 188 V102" style="fill: none; stroke: var(--ks3-ink); stroke-width: 7; stroke-linecap: round;"></path>
+            <path d="M260 82 L242 112 L278 112 Z" style="fill: var(--ks3-ink);"></path>
+            <path d="M260 234 V320" style="fill: none; stroke: var(--ks3-ink); stroke-width: 7; stroke-linecap: round;"></path>
+            <path d="M260 340 L242 310 L278 310 Z" style="fill: var(--ks3-ink);"></path>
+            <text x="300" y="120" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 21px; fill: var(--ks3-ink);">up 30 N</text>
+            <text x="300" y="320" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 21px; fill: var(--ks3-ink);">down 30 N</text>
+            <text x="80" y="352" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; fill: var(--ks3-ink);">resultant 0 N</text>
+
+            <text x="540" y="42" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; letter-spacing: .08em; fill: var(--ks3-ink-muted);">UNBALANCED</text>
+            <rect x="540" y="58" width="400" height="300" rx="14" style="fill: var(--ks3-alert-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+            <rect x="640" y="188" width="120" height="46" rx="8" style="fill: var(--ks3-card); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+            <path d="M700 188 V145" style="fill: none; stroke: var(--ks3-ink); stroke-width: 7; stroke-linecap: round;"></path>
+            <path d="M700 128 L682 158 L718 158 Z" style="fill: var(--ks3-ink);"></path>
+            <path d="M700 234 V320" style="fill: none; stroke: var(--ks3-ink); stroke-width: 7; stroke-linecap: round;"></path>
+            <path d="M700 340 L682 310 L718 310 Z" style="fill: var(--ks3-ink);"></path>
+            <text x="740" y="150" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 21px; fill: var(--ks3-ink);">up 15 N</text>
+            <text x="740" y="320" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 21px; fill: var(--ks3-ink);">down 30 N</text>
+            <path d="M598 234 V276" style="fill: none; stroke: var(--ks3-alert-border); stroke-width: 9; stroke-linecap: round;"></path>
+            <path d="M598 296 L580 266 L616 266 Z" style="fill: var(--ks3-alert-border);"></path>
+            <text x="560" y="352" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; fill: var(--ks3-ink);">15 N left over, down</text>
+          </svg>
+          <p style="margin: 16px 0 0; font-size: 19px; line-height: 1.55;">This is a beam and not a triangle, because the two forces are being subtracted from one another, never multiplied. Nothing here has a formula triangle, and putting one on it would teach a relationship that does not exist.</p>
+          <p style="margin: 12px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 23px; line-height: 1.35;">At rest and staying at rest: upward force = weight. So the upward force is the weight, in newtons.</p>
+          <p style="margin: 12px 0 0; font-family: var(--ks3-font-mono); font-size: 16px; font-weight: 500; line-height: 1.9; color: var(--ks3-ink-body);">weight in N = mass in kg × 10 N/kg<br>balanced: resultant = 0 N<br>unbalanced: resultant = bigger force − smaller force</p>
+        </div>
+
+        <dc-import name="Cfifa" examples="{{ cfifaExamples }}" questions="{{ cfifaQuestions }}" on-open="{{ onCfifaOpen }}" hint-size="100%,980px"></dc-import>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Balanced forces give a resultant of 0 N, so nothing about the motion changes — which is why a stretched spring or a squashed surface holding something at rest must be pushing back with exactly the weight, in newtons.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“If something is not moving, there are no forces on it.”</p>
+        <p>A resultant of 0 N and no forces at all look identical from a distance, and they are completely different situations. Hang a heavier and heavier load from a rope and nothing appears to happen — until the rope snaps, which is not something that happens to an object with no forces on it. Every bridge, chair and shelf you have ever used is holding a load in balance, and every one of them has a load it cannot hold. The forces are there; they are cancelling.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“Balanced forces mean the object is stopped.”</p>
+          <p>Balanced means <em>no change</em>, not <em>no motion</em>. A car at a steady 70 miles an hour on a motorway has a resultant force of 0 N: the engine's forward push exactly matches the air resistance and friction pushing back. Take your foot off the accelerator and the forces stop being balanced, and the car slows. A skydiver at terminal velocity is falling at a constant 55 metres per second with balanced forces. Balanced forces are the reason things carry on doing whatever they were doing, which is the whole subject of the next lesson.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Forces on an object are balanced when they cancel to a resultant of 0 N, and unbalanced when something is left over. Anything held at rest by a spring or a surface is in balance, so the upward force must equal the weight — mass in kilograms × 10 N/kg. Balanced does not mean stationary; it means nothing is changing.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>How does a table know how hard to push? It does not, and it does not need to. Every solid is a lattice of particles held together by forces that behave like tiny stiff springs. Put a book on the table and the top layer of particles is pushed a little closer to the layer below — a squash far too small to see, but real — and squashed springs push back. Add more load and they squash further and push back harder, and this continues automatically until the push matches the load. That is why the answer is always <em>exactly</em> the weight rather than approximately: the surface stops squashing at the point where the two are equal, and stays there. It is the same mechanism as the spring in the bench above, with a much shorter stretch.</p>
+          <p>It also explains why every support has a breaking point. Squash those particle springs far enough and the lattice fails — the paper tears, the shelf snaps, the ice gives way — and beyond that point the surface cannot supply the force needed, so the forces stop being balanced and the load goes through. Engineers do not design a bridge to be strong; they design it so that the largest load it will ever carry still leaves it in balance, with a margin. A structure that is in balance is doing its job, silently, and the failure is what happens when the arithmetic runs out.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p4-02-drawing-and-adding-forces.html">Drawing and adding forces<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p4-04-what-forces-do-to-motion.html">What forces do to motion<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p4-08-springs-and-hookes-law.html">Springs and Hooke's law<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p4-01-what-a-force-is.html">What a force is<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p5-01-pressure-force-over-area.html">Pressure = force ÷ area<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Resultant forces, equilibrium, Newton's first law, and terminal velocity.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Not sure whether a situation counts as balanced?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">Weight in newtons is taken as mass in kilograms × 10 N/kg throughout. The support rig shows only the vertical forces, and the sheet of paper is given a made-up breaking point of 2 N so that failure is something you can reach; a real sheet depends on its size, its fibres and how it is held.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Two identical books', short: 'HOOK' },
+  { id: 's-bench', label: 'The support rig', short: 'RIG' },
+  { id: 's-formula', label: 'Beam and four steps', short: 'FIFA' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const G = 10;            // N/kg, the KS3 convention
+const SCALE = 3;         // px per newton on the rig arrows
+const PAPER_MAX = 2;     // N, the made-up breaking point
+
+const SUPPORTS = [
+  { id: 'table', tab: 'A table top', word: 'RESTING ON A TABLE TOP', cap: Infinity },
+  { id: 'spring', tab: 'A spring', word: 'HANGING FROM A SPRING', cap: Infinity },
+  { id: 'paper', tab: 'A sheet of paper', word: 'RESTING ON A SHEET OF PAPER', cap: PAPER_MAX },
+  { id: 'none', tab: 'Nothing — dropped', word: 'NOTHING UNDERNEATH IT', cap: 0 }
+];
+
+const CFIFA_EX = [
+  { tab: 'Nothing to convert', head: 'A 3 kg toolbox rests on a shelf. How hard does the shelf push up?',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '3 kg stays 3 kg',
+        note: 'The mass is already in kilograms, which is what × 10 N/kg needs, so there is nothing to convert.' },
+      { letter: 'F', label: 'Formula', line: 'upward force = weight',
+        note: 'It is at rest and staying at rest, so the two forces are equal.' },
+      { letter: 'I', label: 'Insert', line: 'upward force = 3 kg × 10 N/kg',
+        note: 'Weight in newtons is mass in kilograms × 10 N/kg.' },
+      { letter: 'F', label: 'Fine-tune', line: '3 × 10 = 30',
+        note: 'Kilograms times newtons per kilogram leaves newtons.' },
+      { letter: 'A', label: 'Answer', line: 'upward force = 30 N, upwards',
+        note: 'Same size as the weight, opposite direction.' }
+    ] },
+  { tab: 'Convert first', head: 'A 250 g book rests on the same shelf. How hard does the shelf push up?',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '250 g ÷ 1000 = 0.250 kg',
+        note: '× 10 N/kg wants kilograms, and a gram is a thousandth of one, so divide by 1000.' },
+      { letter: 'F', label: 'Formula', line: 'upward force = weight',
+        note: 'At rest and staying at rest, so the two forces are equal.' },
+      { letter: 'I', label: 'Insert', line: 'upward force = 0.250 kg × 10 N/kg',
+        note: 'The converted mass goes in. The 250 never does.' },
+      { letter: 'F', label: 'Fine-tune', line: '0.250 × 10 = 2.5',
+        note: 'Kilograms times newtons per kilogram leaves newtons.' },
+      { letter: 'A', label: 'Answer', line: 'upward force = 2.5 N, upwards',
+        note: 'Insert 250 instead of 0.250 and the shelf comes out pushing a thousand times too hard.' }
+    ] }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Calculate',
+    question: 'A 4 kg box sits still on a bench. What is the upward force from the bench?',
+    options: [
+      { text: '40 N upwards', correct: true },
+      { text: '4 N upwards', correction: 'That is the mass in kilograms, not the weight. Multiply by 10 N/kg to get newtons.' },
+      { text: '0 N — it is not moving, so no force is needed', correction: 'The resultant is 0 N, which is not the same as the bench doing nothing. Remove the bench and the box falls.' },
+      { text: '80 N upwards', correction: 'That would leave 40 N over, upwards, and the box would lift off the bench. The upward force matches the weight exactly.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A lorry is driving along a motorway at a steady 25 m/s. What can you say about the forces on it?',
+    options: [
+      { text: 'They are balanced, because its motion is not changing.', correct: true },
+      { text: 'They are unbalanced forwards, because it is moving forwards.', correction: 'Movement does not need a resultant force; changing movement does. Steady speed in a straight line means balanced forces.' },
+      { text: 'Only the engine is acting, because the lorry is winning.', correction: 'Air resistance and friction are both acting the whole time. At a steady speed the engine\u2019s push matches them exactly.' },
+      { text: 'They must be balanced, because balanced forces always mean stopped.', correction: 'The verdict is right and the reason is wrong. Balanced means no change, and a lorry at a steady speed is not changing.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A 2 kg bag of flour hangs from a spring and does not move. Explain, using both forces, why the spring stops stretching where it does.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The weight of the bag is\u2026',
+    criteria: [
+      'Gives the weight as 20 N, using mass × 10 N/kg.',
+      'Says the spring pulls upwards on the bag.',
+      'Says the spring stretches further, and pulls harder, as it stretches.',
+      'Says it stops stretching when its pull reaches 20 N.',
+      'Says the resultant is then 0 N, so the bag stays where it is.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A lift with a total mass of 500 kg hangs from a cable. The cable can pull with up to 6 000 N. Work out whether the lift is safe at rest, and explain what would have to happen to the forces for the lift to start moving upwards.',
+    fieldLabel: 'Your answer',
+    placeholder: 'The weight of the lift is\u2026',
+    criteria: [
+      'Gives the weight as 5 000 N, using 500 × 10 N/kg.',
+      'Says the cable only needs to pull with 5 000 N to hold it at rest, which is within its limit.',
+      'Says at rest the resultant is 0 N and the forces are balanced.',
+      'Says the cable would have to pull with more than 5 000 N for the lift to start moving up.',
+      'Says the resultant would then be upwards, and gives a figure such as 5 200 N giving 200 N upwards.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    support: 'table',
+    mass: 2,
+    touched: {},
+    workedStep: 0,
+    formPick: null,
+    insertPick: null,
+    ansText: '',
+    ansUnit: '',
+    buildOpen: false,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  sup() { return SUPPORTS.find((x) => x.id === this.state.support); }
+  weight() { return this.state.mass * G; }
+  upward() { return Math.min(this.weight(), this.sup().cap); }
+  leftOver() { return this.weight() - this.upward(); }
+
+  arrowDown(x, y0, len) {
+    return { shaft: 'M' + x + ' ' + y0 + ' V' + (y0 + Math.max(2, len - 24)),
+      head: 'M' + x + ' ' + (y0 + len) + ' L' + (x - 16) + ' ' + (y0 + len - 26) + ' L' + (x + 16) + ' ' + (y0 + len - 26) + ' Z' };
+  }
+
+  arrowUp(x, y0, len) {
+    return { shaft: 'M' + x + ' ' + y0 + ' V' + (y0 - Math.max(2, len - 24)),
+      head: 'M' + x + ' ' + (y0 - len) + ' L' + (x - 16) + ' ' + (y0 - len + 26) + ' L' + (x + 16) + ' ' + (y0 - len + 26) + ' Z' };
+  }
+
+  benchNote() {
+    const s = this.state;
+    const W = this.weight();
+    const U = this.upward();
+    const L = this.leftOver();
+    if (s.support === 'table') {
+      return 'The table top is squashed by a fraction of a millimetre and pushes back with exactly ' + U + ' N. The resultant is 0 N, so the load stays exactly where it was put.';
+    }
+    if (s.support === 'spring') {
+      return 'The spring stretches until its pull reaches ' + U + ' N and then stops stretching. The resultant is 0 N, and the load hangs in mid-air with nothing underneath it.';
+    }
+    if (s.support === 'paper') {
+      if (L === 0) {
+        return 'The paper is bent but holding, pushing up with ' + U + ' N. The resultant is 0 N — right up to the point where the fibres give way.';
+      }
+      return 'The paper gives way at about ' + PAPER_MAX + ' N, so it can only push up with ' + U + ' N against a weight of ' + W + ' N. That leaves ' + L + ' N over, downwards, and the load goes through.';
+    }
+    return 'Nothing is pushing up at all, so the whole ' + W + ' N is left over, downwards. The resultant is ' + L + ' N down, and the load falls — faster every second it is falling.';
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-bench') return s.gate !== null && Object.keys(s.touched).length >= 1;
+          if (id === 's-formula') return s.buildOpen;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  benchVals() {
+    const s = this.state;
+    const sup = this.sup();
+    const W = this.weight();
+    const U = this.upward();
+    const L = this.leftOver();
+    const wA = this.arrowDown(760, 230, Math.round(W * SCALE));
+    const uA = this.arrowUp(240, 230, Math.round(U * SCALE));
+    const oA = this.arrowDown(520, 230, Math.round(L * SCALE));
+    const stretch = Math.round(20 + U * 1.6);
+    let zig = 'M500 50';
+    for (let i = 0; i < 7; i += 1) {
+      zig += ' L' + (i % 2 ? 460 : 540) + ' ' + (50 + (stretch / 7) * (i + 1));
+    }
+    zig += ' L500 ' + (50 + stretch + 12) + ' V190';
+    return {
+      benchProgress: Object.keys(s.touched).length ? 'Both controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: '20 N — the same as the weight' },
+        { letter: 'B', text: 'More than 20 N, or it would not hold' },
+        { letter: 'C', text: '2 N — the same as the mass' },
+        { letter: 'D', text: '0 N — nothing is moving' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      benchOpen: s.gate !== null,
+      supportTabs: SUPPORTS.map((x) => ({
+        label: x.tab, pressed: s.support === x.id,
+        style: this.seg(s.support === x.id, true, false),
+        onClick: () => this.setState((st) => ({ support: x.id, touched: Object.assign({}, st.touched, { support: true }) }))
+      })),
+      massValue: s.mass,
+      massLabel: s.mass.toFixed(1) + ' kg',
+      onMass: (e) => this.setState((st) => ({ mass: Number(e.target.value), touched: Object.assign({}, st.touched, { mass: true }) })),
+      isSpring: s.support === 'spring',
+      isSolid: s.support === 'table',
+      isPaperOk: s.support === 'paper' && L === 0,
+      isPaperTorn: s.support === 'paper' && L > 0,
+      isFall: s.support === 'none',
+      springPath: zig,
+      weightShaft: wA.shaft, weightHead: wA.head,
+      hasSupport: U > 0,
+      supShaft: uA.shaft, supHead: uA.head,
+      hasLeftOver: L > 0,
+      overShaft: oA.shaft, overHead: oA.head,
+      overTextY: 230 + Math.round(L * SCALE) + 30,
+      overLabelStyle: 'position:absolute;left:52%;top:' + (((230 + Math.round(L * SCALE) + 22) / 460) * 100).toFixed(2) +
+        '%;transform:translate(0,-50%);font-family:var(--ks3-font-mono);font-weight:500;font-size:clamp(11px,1.8vw,22px);color:#FFC53D;white-space:nowrap;pointer-events:none;',
+      overLabel: L + ' N left over',
+      weightLabel: W + ' N',
+      supLabel: U + ' N',
+      resLabel: L === 0 ? '0 N' : L + ' N down',
+      verdictWord: L === 0 ? 'Balanced — no change' : 'Unbalanced — it falls',
+      supportWord: sup.word,
+      benchAlt: 'A ' + s.mass.toFixed(1) + ' kilogram load with ' + sup.word.toLowerCase() +
+        '. A downward arrow of ' + W + ' newtons and an upward arrow of ' + U +
+        ' newtons, drawn to the same scale' + (L > 0 ? ', with a third arrow showing ' + L + ' newtons left over downwards.' : ', the same length as each other.'),
+      benchNote: this.benchNote()
+    };
+  }
+
+  buildVals() {
+    const s = this.state;
+    const W = this.weight();
+    const U = this.upward();
+    const L = this.leftOver();
+    const balanced = L === 0;
+    const committed = (s.formPick !== null ? 1 : 0) + (s.insertPick !== null ? 1 : 0) + (s.ansText.trim() && s.ansUnit ? 1 : 0);
+    const locked = s.buildOpen || committed < 3;
+    const target = balanced ? U : L;
+    return {
+      cfifaExamples: CFIFA_EX,
+      onCfifaOpen: () => this.setState({ buildOpen: true }),
+      cfifaQuestions: [
+        {
+          tab: 'Question 1', id: 'p403q1',
+          
+          head: 'Your rig: ' + s.mass.toFixed(1) + ' kg, ' + this.sup().word.toLowerCase() + '.',
+          steps: [
+            { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+              line: s.mass.toFixed(1) + ' kg stays ' + s.mass.toFixed(1) + ' kg',
+              note: 'The mass is already in kilograms, which is what × 10 N/kg needs, so there is nothing to convert.' }
+          ].concat((balanced ? [
+        { letter: 'F', label: 'Formula', line: 'upward force = weight',
+          note: 'It is at rest and staying at rest, so the two are equal.' },
+        { letter: 'I', label: 'Insert', line: 'upward force = ' + s.mass.toFixed(1) + ' kg × 10 N/kg',
+          note: 'Weight in newtons is mass in kilograms × 10 N/kg.' },
+        { letter: 'F', label: 'Fine-tune', line: s.mass.toFixed(1) + ' × 10 = ' + W,
+          note: 'Kilograms times newtons per kilogram leaves newtons.' },
+        { letter: 'A', label: 'Answer', line: 'upward force = ' + U + ' N, upwards',
+          note: 'And the resultant is 0 N, which is why nothing happens.' }
+      ] : [
+        { letter: 'F', label: 'Formula', line: 'resultant = weight − upward force',
+          note: 'The support cannot match the weight, so something is left over.' },
+        { letter: 'I', label: 'Insert', line: 'resultant = ' + W + ' N − ' + U + ' N',
+          note: 'The weight is ' + s.mass.toFixed(1) + ' kg × 10 N/kg = ' + W + ' N.' },
+        { letter: 'F', label: 'Fine-tune', line: W + ' − ' + U + ' = ' + L,
+          note: 'Both already in newtons, so nothing to convert.' },
+        { letter: 'A', label: 'Answer', line: 'resultant = ' + L + ' N, downwards',
+          note: 'Unbalanced, so the motion changes: it starts to fall.' }
+      ])),
+          close: 'The five lines give ' + target + ' N, and the arrows on the rig are drawn to match.'
+        },
+        {
+          tab: 'Question 2', id: 'p403q2',
+          head: 'A 400 g mug sits still on a table. How hard does the table push up?',
+          steps: [
+            { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+              line: '400 g ÷ 1000 = 0.400 kg',
+              note: '× 10 N/kg wants kilograms, so divide the grams by 1000.' },
+            { letter: 'F', label: 'Formula', line: 'upward force = weight',
+              note: 'Still and staying still, so the two forces are equal.' },
+            { letter: 'I', label: 'Insert', line: 'upward force = 0.400 kg × 10 N/kg',
+              note: 'The converted mass goes in. The 400 never does.' },
+            { letter: 'F', label: 'Fine-tune', line: '0.400 × 10 = 4',
+              note: 'Kilograms times newtons per kilogram leaves newtons.' },
+            { letter: 'A', label: 'Answer', line: 'upward force = 4 N, upwards',
+              note: 'Insert 400 instead of 0.400 and the table comes out pushing with 4000 N.' }
+          ],
+          close: 'The five lines give 4 N upwards. The whole question turned on the first one.'
+        }
+      ]
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign({
+      draftVisible: this.props.showDraft !== false,
+      hookOptions: [
+        { letter: 'A', text: 'The falling book has more weight' },
+        { letter: 'B', text: 'A second force pushes up on the resting book, exactly matching its weight' },
+        { letter: 'C', text: 'The resting book has no forces on it at all' },
+        { letter: 'D', text: 'Gravity switches off when something is resting on a surface' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null
+    }, this.railVals(), this.benchVals(), this.buildVals(), this.ladderVals());
+  }
+}
+
+</script>
+</body>
+</html>

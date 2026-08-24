@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Air and water resistance · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p4-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].p4-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 22rem; height: 40px; background: transparent; }
+  input[type="range"].p4-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].p4-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].p4-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].p4-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Forces</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Air and water resistance</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Forces · System</p>
+        <h1>Air and water resistance</h1>
+        <p class="ks3-bigq">A skydiver falls for a minute and stops getting any faster. Nothing has caught them, and their weight has not changed by a single newton.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Falling for a minute, and no longer speeding up.</h2>
+        <p class="ks3-hook-prompt">Ten seconds after stepping out of the aircraft a skydiver is falling at about 55 metres per second. Twenty seconds later, still falling, still nothing underneath them: 55 metres per second. It does not go up any further.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Why does the falling stop getting faster?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Air resistance is not a fixed force. The faster you go, the more air you have to shove out of the way every second, so the harder it pushes back — and it keeps growing until it matches the weight exactly. At that point the resultant is 0 N, and with nothing left over nothing changes. The weight was the same 750 N the whole way down.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p><strong>Air resistance</strong> and <strong>water resistance</strong> are the same idea: moving through a fluid means pushing it out of the way, and it pushes back. Both act against the motion, both grow as you go faster, and both grow when you present a bigger area to the flow. Together with friction they are called <strong>drag</strong>.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · the fall</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Watch the two arrows close the gap</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Pick something falling, then set how fast it is going as a share of its own steady speed. The weight arrow never changes. The resistance arrow does.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. A skydiver has just stepped out and is barely moving. What is the air resistance at that instant?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px; align-items: flex-end;">
+              <div style="flex: 1 1 340px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What is falling</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ bodyTabs }}" as="t" hint-placeholder-count="4">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 1 1 280px; min-width: 240px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <label for="p4speed" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How fast it is going</label>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light);">{{ speedLabel }}</p>
+                </div>
+                <input class="p4-slider" type="range" id="p4speed" min="0" max="125" step="25" value="{{ fracValue }}" onChange="{{ onFrac }}" onInput="{{ onFrac }}">
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+              <svg viewBox="0 0 1000 520" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                <path d="{{ streakPath }}" style="fill: none; stroke: #5C554D; stroke-width: 5; stroke-linecap: round;"></path>
+
+                <sc-if value="{{ isChute }}">
+                  <path d="M330 150 Q500 20 670 150 Q500 108 330 150 Z" style="fill: #3E3730; stroke: #C6B9A7; stroke-width: 4;"></path>
+                  <path d="M348 152 L470 208 M652 152 L530 208" style="fill: none; stroke: #C6B9A7; stroke-width: 3;"></path>
+                </sc-if>
+
+                <rect x="{{ bodyX }}" y="210" width="{{ bodyW }}" height="80" rx="{{ bodyR }}" style="fill: #15110C; stroke: var(--ks3-on-dark-muted); stroke-width: 3;"></rect>
+
+                <path d="{{ dragShaft }}" style="fill: none; stroke: #8FB7FF; stroke-width: 9; stroke-linecap: round;"></path>
+                <path d="{{ dragHead }}" style="fill: #8FB7FF;"></path>
+                <sc-if value="{{ noDrag }}">
+                  <path d="M420 196 H580" style="fill: none; stroke: #5C554D; stroke-width: 4; stroke-dasharray: 9 8;"></path>
+                </sc-if>
+
+                <path d="{{ weightShaft }}" style="fill: none; stroke: #8FB7FF; stroke-width: 9; stroke-linecap: round;"></path>
+                <path d="{{ weightHead }}" style="fill: #8FB7FF;"></path>
+
+                <sc-if value="{{ hasOver }}">
+                  <path d="M610 250 H772" style="fill: none; stroke: #5C554D; stroke-width: 2; stroke-dasharray: 6 7;"></path>
+                  <path d="{{ overShaft }}" style="fill: none; stroke: #FFC53D; stroke-width: 10; stroke-linecap: round;"></path>
+                  <path d="{{ overHead }}" style="fill: #FFC53D;"></path>
+                </sc-if>
+                <sc-if value="{{ isBalanced }}">
+                  <path d="M610 250 H772" style="fill: none; stroke: #5C554D; stroke-width: 2; stroke-dasharray: 6 7;"></path>
+                </sc-if>
+              </svg>
+                <span style="{{ dragLabelStyle }}">air resistance {{ dragLabel }}</span>
+                <span style="position: absolute; left: 52%; top: 84%; transform: translate(0, -50%); font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px, 1.6vw, 20px); color: #8FB7FF; white-space: nowrap; pointer-events: none;">weight {{ weightLabel }}</span>
+                <span style="{{ overLabelStyle }}">{{ overLabel }}</span>
+                <span style="position: absolute; left: 3%; top: 4%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px, 1.4vw, 17px); letter-spacing: .08em; text-transform: uppercase; color: #C6B9A7; white-space: nowrap; pointer-events: none;">{{ bodyWord }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Weight, down</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ weightLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Resistance, up</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ dragLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Resultant</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ resLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What happens next</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ verdictWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-stages" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">One jump, four stages</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 30ch;">The weight arrow is the same in all four.</p>
+
+        <div style="margin-top: 24px; padding: 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+          <svg viewBox="0 0 1000 400" role="img" aria-label="Four stages of a skydive drawn to one scale. In stage one the downward weight arrow is full length and there is no resistance arrow. In stage two the upward resistance arrow is about half the weight arrow. In stage three the two arrows are exactly equal. In stage four, with the parachute open, the upward resistance arrow is longer than the weight arrow." style="display: block; width: 100%; height: auto;">
+            <text x="30" y="30" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 16px; letter-spacing: .07em; fill: var(--ks3-ink-muted);">1 · STEP OUT</text>
+            <rect x="72" y="180" width="86" height="40" rx="8" style="fill: var(--ks3-card); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+            <path d="M115 220 V318" style="fill: none; stroke: var(--ks3-ink); stroke-width: 7; stroke-linecap: round;"></path>
+            <path d="M115 338 L97 308 L133 308 Z" style="fill: var(--ks3-ink);"></path>
+            <text x="30" y="378" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; fill: var(--ks3-ink);">no resistance yet</text>
+
+            <text x="280" y="30" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 16px; letter-spacing: .07em; fill: var(--ks3-ink-muted);">2 · SPEEDING UP</text>
+            <rect x="322" y="180" width="86" height="40" rx="8" style="fill: var(--ks3-card); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+            <path d="M365 220 V318" style="fill: none; stroke: var(--ks3-ink); stroke-width: 7; stroke-linecap: round;"></path>
+            <path d="M365 338 L347 308 L383 308 Z" style="fill: var(--ks3-ink);"></path>
+            <path d="M365 180 V132" style="fill: none; stroke: var(--ks3-ink); stroke-width: 7; stroke-linecap: round;"></path>
+            <path d="M365 112 L347 142 L383 142 Z" style="fill: var(--ks3-ink);"></path>
+            <text x="280" y="378" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; fill: var(--ks3-ink);">still some left over</text>
+
+            <text x="530" y="30" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 16px; letter-spacing: .07em; fill: var(--ks3-ink-muted);">3 · STEADY SPEED</text>
+            <rect x="572" y="180" width="86" height="40" rx="8" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+            <path d="M615 220 V318" style="fill: none; stroke: var(--ks3-ink); stroke-width: 7; stroke-linecap: round;"></path>
+            <path d="M615 338 L597 308 L633 308 Z" style="fill: var(--ks3-ink);"></path>
+            <path d="M615 180 V82" style="fill: none; stroke: var(--ks3-ink); stroke-width: 7; stroke-linecap: round;"></path>
+            <path d="M615 62 L597 92 L633 92 Z" style="fill: var(--ks3-ink);"></path>
+            <text x="530" y="378" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; fill: var(--ks3-ink);">resultant 0 N</text>
+
+            <text x="780" y="30" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 16px; letter-spacing: .07em; fill: var(--ks3-ink-muted);">4 · CHUTE OPEN</text>
+            <rect x="822" y="180" width="86" height="40" rx="8" style="fill: var(--ks3-alert-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+            <path d="M865 220 V318" style="fill: none; stroke: var(--ks3-ink); stroke-width: 7; stroke-linecap: round;"></path>
+            <path d="M865 338 L847 308 L883 308 Z" style="fill: var(--ks3-ink);"></path>
+            <path d="M865 180 V62" style="fill: none; stroke: var(--ks3-alert-border); stroke-width: 9; stroke-linecap: round;"></path>
+            <path d="M865 42 L847 72 L883 72 Z" style="fill: var(--ks3-alert-border);"></path>
+            <text x="780" y="378" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; fill: var(--ks3-ink);">left over, upwards</text>
+          </svg>
+        </div>
+
+        <ol style="list-style: none; margin: 22px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ stageCards }}" as="c" hint-placeholder-count="4">
+            <li style="display: grid; grid-template-columns: auto 1fr; gap: 8px 18px; padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <span aria-hidden="true" style="grid-row: span 2; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; background: var(--ks3-accent); color: var(--ks3-on-dark); font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;">{{ c.num }}</span>
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.2; letter-spacing: -.02em;">{{ c.name }}</p>
+              <p style="margin: 0; font-size: 18px; line-height: 1.55;">{{ c.body }}</p>
+            </li>
+          </sc-for>
+        </ol>
+
+        <p style="margin: 22px 0 0; font-size: 19px; line-height: 1.6; max-width: 60ch;">Water does the same job with far more force behind it, because a cubic metre of water has around eight hundred times the mass of a cubic metre of air. That is why a swimmer at two metres per second feels more resistance than a runner at four, and why boats are shaped the way they are.</p>
+
+        <div data-key-fact="1" style="margin: 22px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Air and water resistance act against the motion and grow as the object goes faster. When the resistance has grown to match the weight, the resultant is 0 N and the falling speed stops changing — a steady speed called terminal velocity.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Heavier things always fall faster.”</p>
+        <p>Drop a golf ball and a table-tennis ball together and the golf ball wins, so the belief has good evidence behind it. But look at what is actually different. The two balls are almost the same size, so at any given speed the air pushes back on them by about the same amount — and that push is a small fraction of the golf ball's weight and a large fraction of the table-tennis ball's. The light one runs out of gap between weight and resistance almost immediately and settles to a slow steady speed; the heavy one is still speeding up when it lands. Take the air away and the difference goes with it: on Apollo 15 an astronaut dropped a hammer and a feather on the Moon, and they hit the dust together. Weight is not what decides how fast something falls — the balance between weight and resistance is.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“When the parachute opens, you get pushed back up.”</p>
+          <p>The resultant force does point upwards for a few seconds — the bench above will show you that — and it is a violent few seconds. But an upward resultant does not mean upward motion. It means the downward motion is changing, which here means slowing: from about 55 metres per second to about 6, in the space of a couple of seconds. The skydiver is going downwards the whole time. As soon as the speed has dropped far enough, the resistance falls back to 750 N, the resultant returns to 0 N, and the rest of the descent is at a new steady speed. Nobody goes up.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Moving through air or water means pushing it out of the way, and it pushes back against the motion. That resistance grows with speed and with the area facing the flow, so a falling object speeds up until the resistance has grown to match its weight — after which the resultant is 0 N and the speed stays the same. Streamlining reduces the resistance; a parachute is designed to maximise it.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>At the speeds a car or a cyclist travels, air resistance does not simply double when the speed doubles — it roughly quadruples, because you are hitting twice as much air per second and hitting each bit of it twice as hard. The bench above uses exactly that rule, which is why the resistance arrow grows so slowly at first and then so fast. It also explains a fact drivers notice and rarely explain: fuel economy falls off a cliff above about 60 miles per hour, and driving at 80 rather than 70 costs far more than the extra tenth of the speed suggests. For a racing cyclist, most of the effort at speed goes into air, not into the road, which is why the shape of a helmet earns more than the weight of a frame.</p>
+          <p>Water resistance is the same physics in a much heavier fluid, and it sets the shape of everything that swims. Fish, dolphins, submarines and torpedoes converge on the same long, rounded-nose, tapering-tail form, because water separating cleanly from a tapered tail leaves far less of a churned-up wake than water tearing away from a blunt one. Engineers call that shape streamlined, and the test of it is the wake: the less mess left behind, the less energy has been thrown away. It is also why competitive swimmers shave, wear full-body suits and spend a fortune on the moment their fingers enter the water.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p4-05-friction.html">Friction<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p4-07-moments.html">Moments: the turning effect<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p4-03-balanced-and-unbalanced.html">Balanced and unbalanced<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p4-01-what-a-force-is.html">What a force is<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p5-01-pressure-force-over-area.html">Pressure = force ÷ area<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Drag, terminal velocity as a balance of forces, velocity–time graphs of a falling object, and streamlining.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to work out the terminal velocity of something of your own?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The fall bench is a teaching model. Resistance is calculated as growing with the square of the speed, fitted so that each object reaches the steady speed quoted for it, and the speeds and weights are typical values rather than measurements. The slider is a share of that object's own steady speed, so 125 per cent is a state only reached for a few seconds — right after a parachute opens. Real resistance also depends on air density, which falls with altitude, and only the vertical forces are drawn.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The skydiver', short: 'HOOK' },
+  { id: 's-bench', label: 'The fall', short: 'FALL' },
+  { id: 's-stages', label: 'Four stages', short: 'STAGES' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const WLEN = 130;   // px, the weight arrow — same for every object
+
+const BODIES = [
+  { id: 'spread', tab: 'Skydiver, spread out', word: 'SKYDIVER, ARMS AND LEGS OUT', weight: 750, term: 55, w: 200, r: 14 },
+  { id: 'head', tab: 'Skydiver, head-down', word: 'THE SAME SKYDIVER, HEAD-DOWN', weight: 750, term: 80, w: 96, r: 40 },
+  { id: 'chute', tab: 'Parachute open', word: 'THE SAME SKYDIVER, PARACHUTE OPEN', weight: 750, term: 6, w: 120, r: 14 },
+  { id: 'hail', tab: 'A hailstone', word: 'A LARGE HAILSTONE, 0.1 KG', weight: 1, term: 30, w: 74, r: 37 }
+];
+
+const STAGE_CARDS = [
+  { num: '1', name: 'Step out',
+    body: 'Barely moving, so almost no air is being pushed aside and the resistance is close to 0 N. The whole weight is left over, and the fall speeds up fastest right here.' },
+  { num: '2', name: 'Speeding up',
+    body: 'Faster means more air shoved aside every second, so the resistance grows. Something is still left over downwards, so the speed is still rising — but more slowly each second.' },
+  { num: '3', name: 'Terminal velocity',
+    body: 'The resistance has grown until it matches the weight exactly. Resultant 0 N, nothing changes, and the fall continues at a steady speed of about 55 metres per second.' },
+  { num: '4', name: 'Parachute opens',
+    body: 'A far bigger area facing the flow, so the resistance jumps well above the weight. The resultant now points upwards, which slows the fall — down to a new steady speed of about 6 metres per second.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Apply',
+    question: 'A hailstone with a weight of 1 N is falling at a steady speed. What is the air resistance on it?',
+    options: [
+      { text: '1 N, upwards.', correct: true },
+      { text: '0 N — it is falling, so nothing is resisting it.', correction: 'With 0 N of resistance the whole 1 N would be left over and the hailstone would still be speeding up. A steady speed means the two match.' },
+      { text: 'More than 1 N, or it would not have stopped speeding up.', correction: 'More than 1 N upwards would leave a resultant upwards, which would slow the hailstone down. Steady means equal.' },
+      { text: 'It cannot be worked out without knowing the speed.', correction: 'The speed would be needed to predict the resistance from scratch. Here the steady fall tells you it has already grown to match the weight.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A lead ball and a plastic ball are the same size. Both are dropped from a tall tower. Which lands first, and why?',
+    options: [
+      { text: 'The lead ball, because at any speed the resistance on the two is about the same, and it is a much smaller share of the lead ball\u2019s weight.', correct: true },
+      { text: 'They land together, because gravity pulls everything the same way.', correction: 'True with no air — the Moon test proves it. In air the resistance matters, and it holds the light ball back far more than the heavy one.' },
+      { text: 'The lead ball, because heavier things are pulled harder so they always fall faster.', correction: 'The verdict is right and the rule is wrong. In a vacuum the two land together despite the difference in weight; it is the resistance, not the weight on its own, that decides.' },
+      { text: 'The plastic ball, because there is less of it for the air to slow down.', correction: 'There is the same amount of ball facing the air — they are the same size. What differs is how much weight that resistance is working against.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A racing cyclist crouches low over the handlebars and wears tight clothing instead of a loose jacket. Explain, in terms of forces, why both of these make her faster.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Air resistance acts\u2026',
+    criteria: [
+      'Says air resistance acts against her motion, backwards.',
+      'Says crouching presents a smaller area to the air.',
+      'Says a smaller area means less air pushed aside each second, so less resistance.',
+      'Says loose clothing flaps and catches the air, increasing the resistance.',
+      'Says that with less resistance the same push from her legs leaves a bigger resultant forwards, or lets her hold a higher steady speed.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A car with the accelerator held flat to the floor speeds up, then settles at a top speed and goes no faster, even though the engine is still working just as hard. Explain why a car has a top speed at all.',
+    fieldLabel: 'Your answer',
+    placeholder: 'At low speed the forward force is\u2026',
+    criteria: [
+      'Says the engine gives a forward force that stays roughly the same.',
+      'Says air resistance and friction act backwards against the motion.',
+      'Says the air resistance grows as the car goes faster.',
+      'Says the car stops speeding up when the backwards forces have grown to match the forward force.',
+      'Says the resultant is then 0 N, which is why the speed stays steady rather than the engine running out.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    body: 'spread',
+    frac: 50,
+    touched: {},
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  obj() { return BODIES.find((x) => x.id === this.state.body); }
+  f() { return this.state.frac / 100; }
+  dragN() {
+    const o = this.obj();
+    const v = o.weight * this.f() * this.f();
+    return o.weight < 10 ? Math.round(v * 100) / 100 : Math.round(v * 10) / 10;
+  }
+  n(v) { return (this.obj().weight < 10 ? v.toFixed(2) : (Math.round(v * 10) / 10)) + ' N'; }
+
+  arrowUp(x, y0, len) {
+    return { shaft: 'M' + x + ' ' + y0 + ' V' + (y0 - Math.max(4, len - 20)),
+      head: 'M' + x + ' ' + (y0 - len) + ' L' + (x - 17) + ' ' + (y0 - len + 24) + ' L' + (x + 17) + ' ' + (y0 - len + 24) + ' Z' };
+  }
+
+  arrowDown(x, y0, len) {
+    return { shaft: 'M' + x + ' ' + y0 + ' V' + (y0 + Math.max(4, len - 20)),
+      head: 'M' + x + ' ' + (y0 + len) + ' L' + (x - 17) + ' ' + (y0 + len - 24) + ' L' + (x + 17) + ' ' + (y0 + len - 24) + ' Z' };
+  }
+
+  benchNote() {
+    const o = this.obj();
+    const f = this.state.frac;
+    const D = this.dragN();
+    const over = Math.round((o.weight - D) * 100) / 100;
+    if (f === 0) {
+      return 'Not moving yet, so no air is being pushed aside and the resistance is 0 N. The whole ' + o.weight +
+        ' N of weight is left over, downwards — this is the moment the fall speeds up fastest, and it is the same for a hailstone as for a skydiver.';
+    }
+    if (f === 100) {
+      return 'The resistance has grown to exactly ' + this.n(o.weight) + ', matching the weight. The resultant is 0 N, so nothing changes and the fall continues at a steady ' +
+        o.term + ' m/s. This is terminal velocity, and it is a balance, not a limit.';
+    }
+    if (f > 100) {
+      if (o.id === 'chute') {
+        return 'This is the second after the canopy opens: the same weight, but a huge area facing the flow, so the resistance is ' + this.n(D) +
+          ' against a weight of ' + this.n(o.weight) + '. The ' + this.n(Math.abs(over)) +
+          ' left over points upwards, which slows the fall hard — the skydiver is still going down the whole time.';
+      }
+      return 'Going faster than its own steady speed makes the resistance ' + this.n(D) + ', which is more than the ' + this.n(o.weight) +
+        ' of weight. The ' + this.n(Math.abs(over)) + ' left over points upwards, so the fall slows until the two match again. Nothing here can hold this state.';
+    }
+    return 'At ' + f + ' per cent of its steady speed the resistance is only ' + this.n(D) + ' against a weight of ' + this.n(o.weight) +
+      ', so ' + this.n(over) + ' is still left over downwards and the fall is still speeding up. Notice how little the resistance is at half speed: it grows with the square of the speed, so most of it arrives late.';
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-bench') return s.gate !== null && Object.keys(s.touched).length >= 1;
+          if (id === 's-stages') return s.gate !== null;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  benchVals() {
+    const s = this.state;
+    const o = this.obj();
+    const f = this.f();
+    const D = this.dragN();
+    const dLen = Math.round(WLEN * f * f);
+    const over = Math.round((o.weight - D) * 100) / 100;
+    const oLen = Math.round((Math.abs(over) / o.weight) * WLEN);
+    const wA = this.arrowDown(500, 290, WLEN);
+    const dA = this.arrowUp(500, 210, Math.max(0, dLen));
+    const up = over < 0;
+    const oA = up ? this.arrowUp(790, 250, oLen) : this.arrowDown(790, 250, oLen);
+    let streaks = '';
+    if (s.frac > 0) {
+      const h = Math.round(12 + f * 46);
+      [300, 700].forEach((x) => {
+        for (let i = 0; i < 3; i += 1) {
+          const y = 120 + i * 92;
+          streaks += 'M' + x + ' ' + y + ' V' + (y + h) + ' ';
+        }
+      });
+    }
+    return {
+      benchProgress: Object.keys(s.touched).length ? 'Both controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'Close to 0 N — barely any air is being pushed aside yet' },
+        { letter: 'B', text: '750 N — the same as their weight, straight away' },
+        { letter: 'C', text: 'Bigger than their weight, which is why the fall is gentle at first' },
+        { letter: 'D', text: 'Half their weight — it always starts at half' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      benchOpen: s.gate !== null,
+      bodyTabs: BODIES.map((x) => ({
+        label: x.tab, pressed: s.body === x.id,
+        style: this.seg(s.body === x.id, true, false),
+        onClick: () => this.setState((st) => ({ body: x.id, touched: Object.assign({}, st.touched, { body: true }) }))
+      })),
+      fracValue: s.frac,
+      onFrac: (e) => this.setState((st) => ({ frac: Number(e.target.value), touched: Object.assign({}, st.touched, { frac: true }) })),
+      speedLabel: (Math.round(o.term * f * 10) / 10) + ' m/s · ' + s.frac + '% of steady',
+      isChute: o.id === 'chute',
+      bodyX: 500 - o.w / 2,
+      bodyW: o.w,
+      bodyR: o.r,
+      streakPath: streaks || 'M0 0',
+      weightShaft: wA.shaft, weightHead: wA.head,
+      dragShaft: dLen > 0 ? dA.shaft : 'M0 0', dragHead: dLen > 0 ? dA.head : 'M0 0',
+      noDrag: dLen === 0,
+      dragLabelStyle: 'position:absolute;left:52%;top:' + (((210 - Math.max(dLen, 14) - 16) / 520) * 100).toFixed(2) +
+        '%;transform:translate(0,-50%);font-family:var(--ks3-font-mono);font-weight:500;font-size:clamp(10px,1.6vw,20px);color:#8FB7FF;white-space:nowrap;pointer-events:none;',
+      dragLabel: this.n(D),
+      weightLabel: this.n(o.weight),
+      hasOver: Math.abs(over) > 0.001,
+      isBalanced: Math.abs(over) <= 0.001,
+      overShaft: oA.shaft, overHead: oA.head,
+      overLabelStyle: 'position:absolute;left:81%;top:' + ((((up ? 250 - oLen - 22 : 250 + oLen + 22)) / 520) * 100).toFixed(2) +
+        '%;transform:translate(0,-50%);font-family:var(--ks3-font-mono);font-weight:500;font-size:clamp(10px,1.5vw,19px);color:#FFC53D;white-space:nowrap;pointer-events:none;',
+      overLabel: Math.abs(over) <= 0.001 ? '' : this.n(Math.abs(over)) + ' left over, ' + (up ? 'up' : 'down'),
+      bodyWord: o.word,
+      resLabel: Math.abs(over) <= 0.001 ? '0 N' : this.n(Math.abs(over)) + (up ? ' up' : ' down'),
+      verdictWord: s.frac === 0 ? 'About to speed up' : (Math.abs(over) <= 0.001 ? 'Steady — terminal velocity' : (up ? 'Slowing down' : 'Still speeding up')),
+      benchAlt: o.word.toLowerCase() + ' falling at ' + s.frac + ' per cent of its steady speed. A downward weight arrow of ' + this.n(o.weight) +
+        ' and an upward resistance arrow of ' + this.n(D) + ', drawn to one scale' +
+        (Math.abs(over) <= 0.001 ? ', exactly equal in length.' : ', with a third arrow showing ' + this.n(Math.abs(over)) + ' left over ' + (up ? 'upwards.' : 'downwards.')),
+      benchNote: this.benchNote()
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign({
+      draftVisible: this.props.showDraft !== false,
+      hookOptions: [
+        { letter: 'A', text: 'Gravity gets weaker as you fall' },
+        { letter: 'B', text: 'There is a fastest speed anything can fall at' },
+        { letter: 'C', text: 'Air resistance grows with speed until it matches the weight, leaving 0 N over' },
+        { letter: 'D', text: 'The air is holding the skydiver up completely' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+      stageCards: STAGE_CARDS
+    }, this.railVals(), this.benchVals(), this.ladderVals());
+  }
+}
+
+</script>
+</body>
+</html>

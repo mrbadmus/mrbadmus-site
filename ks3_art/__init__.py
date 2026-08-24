@@ -219,6 +219,27 @@ def check_placements(reg, units, generic_kinds=(), block_type_kinds=()):
                 if f.get("art"):
                     placed_art.add(f["art"])
                     where[f["art"]].add(unit["code"])
+            # ⊕ P4 (MRB-223), 24 Aug 2026 — A FORMULA BLOCK MAY NAME ART.
+            #
+            # `figures[]` was the only place a drawer could be placed from,
+            # because `balance` was the only figure `r_formula` could draw
+            # and it needed no drawer. Physics arrives with five formula
+            # figures that are neither a triangle nor a balance — three
+            # aligned bars, two opposed panels, a beam beside a graph that
+            # bends, a stack of fluid layers — and each is drawn by its own
+            # unit's module and named from `core[].figure.art`.
+            #
+            # Without this the gate reports every one of them as "registered
+            # but never placed", which is FALSE and, worse, false in the
+            # direction that reads as a real finding: a lane would delete a
+            # drawer that is on four built pages. Scanning the block is the
+            # honest fix — the gate asks whether a family reaches a page,
+            # and this is one of the ways a family reaches a page.
+            for b in (lesson.get("core") or []):
+                fig = b.get("figure") if isinstance(b, dict) else None
+                if isinstance(fig, dict) and fig.get("art"):
+                    placed_art.add(fig["art"])
+                    where[fig["art"]].add(unit["code"])
 
     problems = []
     excused = set(generic_kinds) | set(block_type_kinds)

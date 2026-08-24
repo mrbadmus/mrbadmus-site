@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Friction · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p4-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Forces</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Friction</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Forces · Process</p>
+        <h1>Friction</h1>
+        <p class="ks3-bigq">Nothing about a crate changes when you start sliding it. So why is the hardest part of the whole job the first centimetre?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>It will not budge, and then suddenly it slides.</h2>
+        <p class="ks3-hook-prompt">You lean on a full crate and push harder and harder. Nothing. Then it gives, and once it is moving you can keep it going with a much gentler push than the one that started it.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Why is starting it harder than keeping it going?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Friction is a force between two surfaces that resists them sliding across each other, and it is at its largest just before the sliding starts. Left alone the two surfaces settle into one another; once they are sliding they never get the chance to settle again, so the friction drops. The crate did not get lighter, and your push did not get stronger.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p><strong>Friction</strong> acts between two surfaces that are touching, and it always acts against the sliding — never with it. It is there before anything moves, which is why a book stays put on a sloping desk lid, and it turns movement into heat, which is why your hands warm up when you rub them.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · block and spring balance</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Two readings from every drag test</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">A spring balance is hooked to the block and pulled horizontally. Take one reading at the instant it breaks away, and a second while it slides steadily. Change the surface. Change the load.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. The same block is dragged over carpet, then over polished wood. What happens to the reading?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 360px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The surface underneath</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ surfaceTabs }}" as="t" hint-placeholder-count="4">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 0 1 280px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The load in the block</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ massTabs }}" as="t" hint-placeholder-count="4">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+              <svg viewBox="0 0 1000 430" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                <text x="40" y="52" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; letter-spacing: .08em; fill: #C6B9A7;">TO BREAK IT AWAY</text>
+                <path d="M60 210 H960" style="fill: none; stroke: #C6B9A7; stroke-width: 5;"></path>
+                <path d="{{ textureA }}" style="fill: none; stroke: #8C8177; stroke-width: 4;"></path>
+                <rect x="400" y="132" width="180" height="76" rx="9" style="fill: #15110C; stroke: var(--ks3-on-dark-muted); stroke-width: 3;"></rect>
+                <path d="{{ pullShaftA }}" style="fill: none; stroke: #8FB7FF; stroke-width: 8; stroke-linecap: round;"></path>
+                <path d="{{ pullHeadA }}" style="fill: #8FB7FF;"></path>
+                <path d="{{ fricShaftA }}" style="fill: none; stroke: #8FB7FF; stroke-width: 8; stroke-linecap: round;"></path>
+                <path d="{{ fricHeadA }}" style="fill: #8FB7FF;"></path>
+
+                <text x="40" y="272" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; letter-spacing: .08em; fill: #C6B9A7;">TO KEEP IT SLIDING</text>
+                <path d="M60 400 H960" style="fill: none; stroke: #C6B9A7; stroke-width: 5;"></path>
+                <path d="{{ textureB }}" style="fill: none; stroke: #8C8177; stroke-width: 4;"></path>
+                <rect x="400" y="322" width="180" height="76" rx="9" style="fill: #15110C; stroke: var(--ks3-on-dark-muted); stroke-width: 3;"></rect>
+                <path d="{{ pullShaftB }}" style="fill: none; stroke: #8FB7FF; stroke-width: 8; stroke-linecap: round;"></path>
+                <path d="{{ pullHeadB }}" style="fill: #8FB7FF;"></path>
+                <path d="{{ fricShaftB }}" style="fill: none; stroke: #8FB7FF; stroke-width: 8; stroke-linecap: round;"></path>
+                <path d="{{ fricHeadB }}" style="fill: #8FB7FF;"></path>
+              </svg>
+                <span style="position: absolute; left: 49%; top: 39.5%; transform: translate(-50%, -50%); font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(13px, 1.9vw, 22px); color: #FBF3E6; white-space: nowrap; pointer-events: none;">{{ massLabel }}</span>
+                <span style="position: absolute; left: 49%; top: 83.8%; transform: translate(-50%, -50%); font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(13px, 1.9vw, 22px); color: #FBF3E6; white-space: nowrap; pointer-events: none;">{{ massLabel }}</span>
+                <span style="{{ pullLabelStyleA }}">{{ startLabel }}</span>
+                <span style="{{ pullLabelStyleB }}">{{ slideLabel }}</span>
+                <span style="{{ fricLabelStyleA }}">friction {{ startLabel }}</span>
+                <span style="{{ fricLabelStyleB }}">friction {{ slideLabel }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Weight of the block</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ weightLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">To break it away</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ startLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">To keep it sliding</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ slideLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The gap</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ gapWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+            <p style="margin: 12px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ compareNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-rules" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Four things friction always does</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 30ch;">Every reading on the bench obeyed all four.</p>
+
+        <ol style="list-style: none; margin: 24px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ ruleCards }}" as="c" hint-placeholder-count="4">
+            <li style="display: grid; grid-template-columns: auto 1fr; gap: 8px 18px; padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <span aria-hidden="true" style="grid-row: span 2; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; background: var(--ks3-accent); color: var(--ks3-on-dark); font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;">{{ c.num }}</span>
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.2; letter-spacing: -.02em;">{{ c.name }}</p>
+              <p style="margin: 0; font-size: 18px; line-height: 1.55;">{{ c.body }}</p>
+            </li>
+          </sc-for>
+        </ol>
+
+        <p style="margin: 22px 0 0; font-size: 19px; line-height: 1.6; max-width: 60ch;">Friction is not a fault in the world to be designed out. Half of it is the problem and half of it is the point: the same force that wears out a brake pad is the force that lets you walk, and a floor with no friction is a floor nobody can stand up on.</p>
+
+        <div style="margin: 22px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 14px;">
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Wanted here</p>
+            <ul style="margin: 10px 0 0; padding-left: 22px; font-size: 18px; line-height: 1.6;">
+              <li>Shoes on a wet pavement</li>
+              <li>A brake pad on a wheel rim</li>
+              <li>A nail staying in a wall</li>
+              <li>A tyre turning a corner</li>
+            </ul>
+          </div>
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Not wanted here</p>
+            <ul style="margin: 10px 0 0; padding-left: 22px; font-size: 18px; line-height: 1.6;">
+              <li>A bicycle chain</li>
+              <li>A drawer that sticks</li>
+              <li>A hip joint</li>
+              <li>A piston in an engine</li>
+            </ul>
+          </div>
+        </div>
+
+        <div data-key-fact="1" style="margin: 22px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Friction is a contact force between two surfaces that always acts against the sliding. It depends on both surfaces and on how hard they are pressed together, it is largest just before sliding starts, and it turns movement into heat.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Friction only happens once something is moving.”</p>
+        <p>Tilt a desk lid slowly with a book on it. For the first few degrees the book stays exactly where it is — and gravity is pulling it down the slope the whole time, so something must be holding it. That something is friction, acting up the slope, matching the pull along the slope newton for newton. Keep tilting and there comes an angle where friction runs out of matching to do, and the book goes. Friction between surfaces that are not sliding is doing most of the work friction does anywhere: it is what stops a ladder slipping, a screw turning back out, and a parked car rolling down a hill.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“A smooth surface has no friction.”</p>
+          <p>Two sheets of glass are about as smooth as anything you will handle, and pressed together they are notoriously hard to slide apart — smooth is not the same as slippery. Under a microscope no surface is flat: what looks polished is a landscape of peaks, and only the peaks are actually touching. Sliding means dragging those peaks over each other, and on a very smooth surface there are so many contact points that the two can stick together instead. What makes something slippery is usually a layer of something else in between — water on ice, oil in a bearing, graphite in a lock — keeping the two surfaces apart rather than making either one smoother.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Friction is a contact force between two surfaces, acting against the sliding. Its size depends on what the two surfaces are and how hard they are pressed together, and it is bigger just before sliding starts than during the slide. It turns movement into heat, so it is wanted where grip matters and reduced — by lubricating, by rollers, by wheels — where it only wastes energy.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Press two flat metal blocks together and they touch far less than they appear to. Real surfaces are hills and valleys, so contact happens only at the highest peaks — and the true area in contact can be a tiny fraction of the area you can see and measure with a ruler. Push harder and those peaks flatten slightly, bringing more of them into contact, which is the reason friction grows with how hard the surfaces are pressed together rather than with how big the block looks. At the points that do touch, atoms of one surface come close enough to bond weakly to atoms of the other, and sliding means breaking those bonds and making new ones, over and over. That is where the heat comes from, and it is why the crate is hardest to start: given a moment at rest, the peaks settle deeper and more of those bonds form.</p>
+          <p>Because friction converts movement into heat, and heat spreads out and is difficult to use for anything, it is the reason no machine gives back everything you put in. Estimates of how much of the world's energy ends up wasted in rubbing contacts run to something like a fifth of the total — which is why bearings, gearbox oil and even the dimples on a golf ball are worth engineering carefully. The oldest fix is the simplest: get something between the two surfaces. Water under a hydroplaning tyre does it accidentally and dangerously; oil in a bearing does it deliberately, floating the metal apart so the peaks never meet. Your knee does it with a fluid that is more slippery than any oil humans make.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p4-04-what-forces-do-to-motion.html">What forces do to motion<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p4-06-air-and-water-resistance.html">Air and water resistance<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p4-03-balanced-and-unbalanced.html">Balanced and unbalanced<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p4-01-what-a-force-is.html">What a force is<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p5-01-pressure-force-over-area.html">Pressure = force ÷ area<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Work done against friction, energy dissipated to the surroundings, and drag as one of the forces in a free-body diagram.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to test whether friction is helping or wasting in a machine of your own?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The drag bench is a teaching model. Each surface is given a fixed grip figure chosen to be typical, and the break-away reading is modelled as one fifth more than the sliding reading; real surfaces vary with polish, dust, damp and wear, and a real spring balance reading wanders as you pull. Weight is taken as mass in kilograms × 10 N/kg, and only the horizontal forces are drawn.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The stuck crate', short: 'HOOK' },
+  { id: 's-bench', label: 'Block and balance', short: 'DRAG' },
+  { id: 's-rules', label: 'Four rules', short: 'RULES' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const G = 10;          // N/kg, the KS3 convention
+const SCALE = 3;       // px per newton on the arrows
+const START_FACTOR = 1.2;
+
+const SURFACES = [
+  { id: 'wood', tab: 'Polished wood', grip: 0.20,
+    note: 'Polished wood gives the smallest readings on the bench. The block still needs {S} N to keep sliding, so even a surface that looks slippery is doing something — there is no such thing as a floor with no friction at all.' },
+  { id: 'boards', tab: 'Bare floorboards', grip: 0.35, note: 'Bare boards need {S} N to keep the block moving, roughly {R} times the polished-wood reading with the same load. Nothing about the block changed. Friction is a property of the pair of surfaces, not of the block on its own.' },
+  { id: 'carpet', tab: 'Carpet', grip: 0.55, note: 'Carpet pushes the sliding reading up to {S} N. The fibres bend and spring back as the block passes over them, and every one of those bends takes movement out of the block and leaves it as heat.' },
+  { id: 'rubber', tab: 'Rubber matting', grip: 0.70, note: 'Rubber matting gives the biggest readings here — {S} N to keep sliding and {B} N to break away. This is friction being useful: matting is laid in doorways precisely because it is hard to slide anything, including a foot, across it.' }
+];
+
+const MASSES = [4, 6, 8, 10];
+
+const RULE_CARDS = [
+  { num: '1', name: 'It acts against the sliding',
+    body: 'Always the opposite way to the movement, or to the movement that is about to happen. Friction never pushes something along.' },
+  { num: '2', name: 'It depends on both surfaces',
+    body: 'Swap the floor and the reading changes even though the block has not. Rough or smooth is a fact about the pair, not about one of them.' },
+  { num: '3', name: 'It grows with how hard they press',
+    body: 'Load the block and every reading rises. On the bench, doubling the weight doubled both readings.' },
+  { num: '4', name: 'It turns movement into heat',
+    body: 'Rub your hands. Feel a brake disc after a long hill. The energy does not vanish — it leaves as heat, and it is not coming back.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Apply',
+    question: 'A sledge is pulled across level snow at a steady speed with a 40 N pull. What is the friction on it?',
+    options: [
+      { text: '40 N, backwards along the snow.', correct: true },
+      { text: '0 N — it is moving, so friction has been overcome.', correction: 'Steady speed means the forces are balanced, not absent. If friction were 0 N the sledge would be speeding up the whole time.' },
+      { text: 'More than 40 N, because the snow is resisting.', correction: 'More than 40 N backwards would leave a resultant backwards and the sledge would be slowing down, not holding a steady speed.' },
+      { text: 'It cannot be worked out without the mass of the sledge.', correction: 'The mass would be needed to predict the friction from scratch. Here the steady speed tells you it is balanced, so it must match the 40 N pull.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A heavy toolbox sits on a sloping garage roof and does not slide. Which statement is right?',
+    options: [
+      { text: 'Friction acts up the slope, matching the pull down the slope, so the resultant is 0 N.', correct: true },
+      { text: 'There is no friction, because nothing is sliding.', correction: 'Then nothing would be holding it and it would slide. Friction between surfaces that are not moving is what keeps it there.' },
+      { text: 'Friction acts down the slope, holding it against the roof.', correction: 'Friction acts against the sliding that would otherwise happen. The toolbox would slide down, so friction acts up.' },
+      { text: 'Friction is 0 N now and will appear the instant it starts to slide.', correction: 'It is the other way round: friction is at its largest just before sliding, and drops slightly once the surfaces are moving over each other.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A cyclist oils the chain and fits new brake blocks on the same afternoon. Explain why one job is about reducing friction and the other is about increasing it, and why both make the bicycle better.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The chain is oiled because\u2026',
+    criteria: [
+      'Says friction in the chain wastes energy as heat and is unwanted.',
+      'Says the oil keeps the metal surfaces apart so there is less friction.',
+      'Says the brakes need friction, between the blocks and the wheel rim.',
+      'Says that friction acts against the wheel turning, so it slows the bicycle.',
+      'Says friction is wanted or unwanted depending on the job, not good or bad in itself.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'In curling, two players sweep the ice hard in front of a sliding stone. Sweeping melts a very thin film of water on the surface. Explain what this does to the forces on the stone and why it travels further.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Sweeping changes\u2026',
+    criteria: [
+      'Says friction between the stone and the ice is the backwards force acting on it.',
+      'Says the water film keeps the two surfaces apart, so the friction gets smaller.',
+      'Says the resultant force on the stone is therefore smaller.',
+      'Says a smaller backwards resultant means the stone slows down more gradually.',
+      'Says no force is needed to keep the stone moving, so with less friction it goes further before stopping.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    surface: 'boards',
+    mass: 6,
+    touched: {},
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  surf() { return SURFACES.find((x) => x.id === this.state.surface); }
+  weight() { return this.state.mass * G; }
+  slideN() { return Math.round(this.weight() * this.surf().grip * 10) / 10; }
+  startN() { return Math.round(this.weight() * this.surf().grip * START_FACTOR * 10) / 10; }
+
+  n(v) { return (Math.round(v * 10) / 10) + ' N'; }
+
+  texture(id, y) {
+    let d = '';
+    if (id === 'wood') {
+      for (let i = 0; i < 5; i += 1) { const x = 120 + i * 180; d += 'M' + x + ' ' + (y + 14) + ' h96 '; }
+      return d;
+    }
+    if (id === 'boards') {
+      for (let i = 0; i < 9; i += 1) { const x = 100 + i * 100; d += 'M' + x + ' ' + y + ' v22 '; }
+      return d;
+    }
+    if (id === 'carpet') {
+      for (let i = 0; i < 18; i += 1) { const x = 70 + i * 50; d += 'M' + x + ' ' + y + ' q12 26 24 0 '; }
+      return d;
+    }
+    for (let i = 0; i < 22; i += 1) {
+      const x = 62 + i * 41;
+      d += 'M' + x + ' ' + y + ' l10 20 l10 -20 ';
+    }
+    return d;
+  }
+
+  arrowRight(x0, y, len) {
+    return { shaft: 'M' + x0 + ' ' + y + ' H' + (x0 + Math.max(4, len - 16)),
+      head: 'M' + (x0 + len) + ' ' + y + ' L' + (x0 + len - 18) + ' ' + (y - 13) + ' L' + (x0 + len - 18) + ' ' + (y + 13) + ' Z' };
+  }
+
+  arrowLeft(x0, y, len) {
+    return { shaft: 'M' + x0 + ' ' + y + ' H' + (x0 - Math.max(4, len - 16)),
+      head: 'M' + (x0 - len) + ' ' + y + ' L' + (x0 - len + 18) + ' ' + (y - 13) + ' L' + (x0 - len + 18) + ' ' + (y + 13) + ' Z' };
+  }
+
+  pos(x, y, colour, align) {
+    return 'position:absolute;left:' + ((x / 1000) * 100).toFixed(2) + '%;top:' + ((y / 430) * 100).toFixed(2) +
+      '%;transform:translate(' + (align === 'end' ? '-100%' : '0') + ',-50%);font-family:var(--ks3-font-mono);font-weight:500;font-size:clamp(10px,1.5vw,19px);color:' +
+      colour + ';white-space:nowrap;pointer-events:none;';
+  }
+
+  benchNote() {
+    const s = this.surf();
+    const slide = this.slideN();
+    const start = this.startN();
+    const ratio = Math.round((s.grip / SURFACES[0].grip) * 10) / 10;
+    return s.note.replace('{S}', slide).replace('{B}', start).replace('{R}', ratio);
+  }
+
+  compareNote() {
+    const m = this.state.mass;
+    const slide = this.slideN();
+    const other = m === MASSES[MASSES.length - 1] ? MASSES[0] : m * 2 <= MASSES[MASSES.length - 1] ? m * 2 : MASSES[0];
+    const otherSlide = Math.round(other * G * this.surf().grip * 10) / 10;
+    return 'Load it differently and both readings move together. At ' + m + ' kg the sliding reading is ' + slide +
+      ' N; at ' + other + ' kg on the same surface it is ' + otherSlide +
+      ' N. Pressing the surfaces together harder gives more friction, and the break-away reading stays about a fifth above the sliding one whatever the load.';
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-bench') return s.gate !== null && Object.keys(s.touched).length >= 1;
+          if (id === 's-rules') return s.gate !== null;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  benchVals() {
+    const s = this.state;
+    const start = this.startN();
+    const slide = this.slideN();
+    const lenA = Math.round(start * SCALE);
+    const lenB = Math.round(slide * SCALE);
+    const pA = this.arrowRight(580, 170, lenA);
+    const fA = this.arrowLeft(400, 170, lenA);
+    const pB = this.arrowRight(580, 360, lenB);
+    const fB = this.arrowLeft(400, 360, lenB);
+    return {
+      benchProgress: Object.keys(s.touched).length ? 'Both controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'It goes up — polished wood grips harder' },
+        { letter: 'B', text: 'It goes down — less friction between block and wood' },
+        { letter: 'C', text: 'It stays the same — the block has not changed' },
+        { letter: 'D', text: 'It drops to zero — polished wood has no friction' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      benchOpen: s.gate !== null,
+      surfaceTabs: SURFACES.map((x) => ({
+        label: x.tab, pressed: s.surface === x.id,
+        style: this.seg(s.surface === x.id, true, false),
+        onClick: () => this.setState((st) => ({ surface: x.id, touched: Object.assign({}, st.touched, { surface: true }) }))
+      })),
+      massTabs: MASSES.map((m) => ({
+        label: m + ' kg', pressed: s.mass === m,
+        style: this.seg(s.mass === m, true, false),
+        onClick: () => this.setState((st) => ({ mass: m, touched: Object.assign({}, st.touched, { mass: true }) }))
+      })),
+      textureA: this.texture(s.surface, 212),
+      textureB: this.texture(s.surface, 402),
+      pullShaftA: pA.shaft, pullHeadA: pA.head,
+      fricShaftA: fA.shaft, fricHeadA: fA.head,
+      pullShaftB: pB.shaft, pullHeadB: pB.head,
+      fricShaftB: fB.shaft, fricHeadB: fB.head,
+      pullLabelStyleA: this.pos(596, 142, '#8FB7FF'),
+      pullLabelStyleB: this.pos(596, 332, '#8FB7FF'),
+      fricLabelStyleA: this.pos(384, 142, '#8FB7FF', 'end'),
+      fricLabelStyleB: this.pos(384, 332, '#8FB7FF', 'end'),
+      massLabel: s.mass + ' kg',
+      weightLabel: this.n(this.weight()),
+      startLabel: this.n(start),
+      slideLabel: this.n(slide),
+      gapWord: this.n(Math.round((start - slide) * 10) / 10) + ' more to start it',
+      benchAlt: 'A ' + s.mass + ' kilogram block on ' + this.surf().tab.toLowerCase() +
+        ', drawn twice to one scale. In the upper diagram a pull of ' + start + ' newtons and a friction arrow of ' + start +
+        ' newtons break it away; in the lower diagram a pull of ' + slide + ' newtons and a friction arrow of ' + slide +
+        ' newtons keep it sliding steadily.',
+      benchNote: this.benchNote(),
+      compareNote: this.compareNote()
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign({
+      draftVisible: this.props.showDraft !== false,
+      hookOptions: [
+        { letter: 'A', text: 'The crate gets lighter once it is moving' },
+        { letter: 'B', text: 'Friction is largest just before sliding starts, and drops once the surfaces are sliding' },
+        { letter: 'C', text: 'Your push gets stronger as you lean into it' },
+        { letter: 'D', text: 'The floor stops pushing back once the crate moves' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+      ruleCards: RULE_CARDS
+    }, this.railVals(), this.benchVals(), this.ladderVals());
+  }
+}
+
+</script>
+</body>
+</html>

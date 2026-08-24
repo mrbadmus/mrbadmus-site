@@ -122,7 +122,7 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `REACT` | Chemical reactions — what counts as one, what happens to the atoms, and how one is written down | 2026-08-20, by C4 |
 | `ACID` | Acids, alkalis and the pH scale — what the words mean, what the scale measures, and what a catalyst does | 2026-08-21, by C6 |
 | `ENER` | Energy in a change: which way it travels, where it is stored, and what a thermometer is and is not measuring | 2026-08-21, by C7 |
-| `FORCE` | Forces and motion — what a speed is, what it is measured against, and what a distance–time graph does and does not record | 2026-08-24, by P3 |
+| `FORCE` | Forces and motion — what a speed is and what it is measured against; and what a force is, what it takes to make one, what is left over when they are added, and what that leftover does | 2026-08-24, by P3; widened 24 Aug 2026 by P4 |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
 — **not yet opened, listed so numbering starts consistently**: ~~`FORCE` (forces and motion)~~
@@ -1422,6 +1422,41 @@ DELIVERED page rather than taken from her proposed table: her `NOTES-P3.md` §4 
 | `FORCE-09` | An object has one true speed; a speed measured from a moving train is an illusion. | `s-hook` | `relative-frames` | `relative-motion` |
 | `FORCE-10` | Two things moving towards each other pass at the speed of one of them. | `s-think` | `s-think` | `relative-motion` |
 | `FORCE-11` | Sitting still in a train seat, you are not moving. | `s-think` | `s-think` | `relative-motion` |
+| `FORCE-12` | A moving object has force in it, and the force runs out. | `s-hook` | `s-think` | `what-a-force-is` |
+| `FORCE-13` | A table is not doing anything; it is just there. | *(none — nothing on the page asks for this commitment)* | `s-think` | `what-a-force-is` |
+| `FORCE-14` | A force can only act between things that are touching. | `board` | `board` | `what-a-force-is` |
+| `FORCE-15` | The force is in the movement of the object, and not in either object. | `s-ladder` | `s-ladder` | `what-a-force-is` |
+| `FORCE-16` | The bigger arrow wins, so the object moves at the bigger force. | `s-hook` | `s-think` | `drawing-and-adding-forces` |
+| `FORCE-17` | Force arrows should all be drawn the same length. | `s-ladder` | `s-think` | `drawing-and-adding-forces` |
+| `FORCE-18` | Forces along a line always add up. | `sledge` | `sledge` | `drawing-and-adding-forces` |
+| `FORCE-19` | Equal and opposite forces cancel out and stop existing. | `s-ladder` | `s-ladder` | `drawing-and-adding-forces` |
+| `FORCE-20` | If something is not moving, there are no forces on it. | `s-hook` | `s-think` | `balanced-and-unbalanced` |
+| `FORCE-21` | Balanced forces mean the object is stopped. | `s-ladder` | `s-think` | `balanced-and-unbalanced` |
+| `FORCE-22` | Weight in newtons is the same number as the mass in kilograms. | `rig` | `s-ladder` | `balanced-and-unbalanced` |
+| `FORCE-23` | A support pushes back as hard as it is able to, rather than as hard as it needs to. | `s-ladder` | `s-ladder` | `balanced-and-unbalanced` |
+| `FORCE-24` | If something is moving, a force must be pushing it along. | `s-hook` | `s-think` | `what-forces-do-to-motion` |
+| `FORCE-25` | A sideways force makes it go sideways instead. | `gates` | `s-think` | `what-forces-do-to-motion` |
+| `FORCE-26` | At the top of its flight a thrown ball has no force on it. | `s-ladder` | `s-ladder` | `what-forces-do-to-motion` |
+| `FORCE-27` | A force that is slowing something down has been used up by the time it stops. | `s-ladder` | `s-ladder` | `what-forces-do-to-motion` |
+| `FORCE-28` | Starting something sliding and keeping it sliding need the same push. | `s-hook` | `drag` | `friction` |
+| `FORCE-29` | A smooth surface has no friction. | `drag` | `s-think` | `friction` |
+| `FORCE-30` | Friction only exists once something is moving. | `s-ladder` | `s-think` | `friction` |
+| `FORCE-31` | A steady speed means the friction has been overcome, so there is none left. | `s-ladder` | `s-ladder` | `friction` |
+| `FORCE-32` | Heavier things always fall faster. | `s-ladder` | `s-think` | `air-and-water-resistance` |
+| `FORCE-33` | Air resistance is a fixed force, the same at any speed. | `fall` | `fall` | `air-and-water-resistance` |
+| `FORCE-34` | When the parachute opens you are pushed back upwards. | *(none — nothing on the page asks for this commitment)* | `s-think` | `air-and-water-resistance` |
+| `FORCE-35` | Terminal velocity is a speed limit that falling cannot pass. | `s-hook` | `fall` | `air-and-water-resistance` |
+| `FORCE-36` | A longer spanner means you are pulling harder. | `spanner` | `s-think` | `moments` |
+| `FORCE-37` | The distance is measured from where you are standing. | *(none — nothing on the page asks for this commitment)* | `s-think` | `moments` |
+| `FORCE-38` | A moment is a force, so it is measured in newtons. | `s-ladder` | `s-ladder` | `moments` |
+| `FORCE-39` | The distance from the pivot only decides which way something turns, not how much. | `s-ladder` | `s-ladder` | `moments` |
+| `FORCE-40` | Extension is how long the spring is. | *(none — nothing on the page asks for this commitment)* | `s-think` | `springs-and-hookes-law` |
+| `FORCE-41` | Double the load always doubles the extension. | `s-hook` | `plot` | `springs-and-hookes-law` |
+| `FORCE-42` | Past the limit of proportionality the spring snaps. | `s-hook` | `s-think` | `springs-and-hookes-law` |
+| `FORCE-43` | An overstretched spring goes back to its natural length if you leave it long enough. | `s-ladder` | `s-ladder` | `springs-and-hookes-law` |
+| `FORCE-44` | A force needs something in between to carry it across. | `s-hook` | `s-think` | `non-contact-forces` |
+| `FORCE-45` | There is no gravity in space. | *(none — nothing on the page asks for this commitment)* | `s-think` | `non-contact-forces` |
+| `FORCE-46` | Magnets attract all metals. | *(none — nothing on the page asks for this commitment)* | `three-forces` | `non-contact-forces` |
 
 ⊖ **ONE OF DESIGN'S PROPOSED ROWS MINTS NOTHING.** Her table names *"a steeper line means it went
 further"* as a row of its own, attached to `p3-02`'s rung 2. The belief IS on the page — it is
@@ -1440,6 +1475,56 @@ If a mathematics-facing family is ever opened, this is the first row that should
 ⚠️ **`FORCE-03` CLOSES ITS OWN LOOP IN `p3-03`.** Rung 4 there asks for the round trip to be found
 from total distance ÷ total time rather than by averaging 300 and 200 m/s — which is
 `FORCE-03` met again in a different situation. It is re-confronted and mints nothing.
+
+⊕ **`FORCE-12` … `FORCE-46` MINTED 24 Aug 2026 BY P4 *Forces*, exactly where this family's own
+ruling said they would be:** *"P4 continues from `FORCE-12`."* Thirty-five rows over nine lessons.
+
+⚠️ **DESIGN'S PROPOSED NUMBERS ARE NOT THE ONES USED, AND COULD NOT HAVE BEEN.** Her
+`NOTES-P4-P6.md` §6 reserves `FORCE-01` … `FORCE-36`, four per lesson, opening `p4-01` at
+`FORCE-01`. Those numbers were already spent three weeks' work earlier in the same family: P3 took
+`FORCE-01`…`FORCE-11` and `FORCE-01` there is *"whichever one gets there first is going faster"*.
+Her ranges are a reservation made without sight of this file, which she says in as many words —
+*"access here is read-only, so no id is cited on any page"* — and the ranges are the only part
+of her proposal that moved. **Every STATEMENT below is hers or is drawn from her delivered page.**
+
+⊕ **EIGHT ROWS ARE NOT IN HER PROPOSED TABLE.** Each arrived from a delivered distractor or a
+delivered correction rather than from her §6 list, and each is a genuinely separate belief rather
+than a re-dressing of one already minted — which is the `p1-08` test this register applies:
+
+  * `FORCE-15` the force is in the MOVEMENT, not in either object (`p4-01` rung 1 option D). A
+    student can hold this while being perfectly sound that force does not run out.
+  * `FORCE-19` equal and opposite forces cancel out and STOP EXISTING (`p4-02` rung 2 option D).
+    Separate from `FORCE-18`: the arithmetic is accepted and the forces are thought to have gone.
+  * `FORCE-23` a support pushes back as hard as it is ABLE to, not as hard as it NEEDS to
+    (`p4-03` rung 1 option D, 80 N under a 40 N box). It is the belief the *Going further* layer
+    answers.
+  * `FORCE-27` a force that is slowing something down has been USED UP by the time it stops
+    (`p4-04` rung 1 option C). The impetus theory in its second form — not "motion needs a
+    force" but "the force drains".
+  * `FORCE-31` a steady speed means friction has been OVERCOME, so there is none left
+    (`p4-05` rung 1 option B). A `p4-03` idea meeting friction for the first time.
+  * `FORCE-35` terminal velocity is a speed LIMIT rather than a balance. Design's own bench note
+    corrects it in as many words — *"this is terminal velocity, and it is a balance, not a
+    limit"* — which is a correction with no elicitation, and therefore a belief the page is
+    answering.
+  * `FORCE-39` the distance from the pivot only decides WHICH WAY it turns, not how much
+    (`p4-07` rung 1 option D).
+  * `FORCE-43` an overstretched spring recovers if you LEAVE IT LONG ENOUGH (`p4-08` rung 2
+    option B). Separate from `FORCE-42`: the permanence is accepted as a rate rather than denied.
+
+⊖ **THE PREDICTION ABOUT `FORCE-09` DID NOT COME TRUE, AND IT IS LEFT STANDING.** The note below
+says *"`FORCE-09` in P4 (`what-forces-do-to-motion`)"* — that a student's belief in one true
+speed would resurface there. It does not: `p4-04` never changes frame, and its hook is a curling
+stone on ice rather than anything measured against a moving thing. The prediction is kept rather
+than deleted because it is still a reasonable one for **P12** `gravity-earth-moon-and-sun`, which
+is the other half of the same sentence, and because a register that quietly removes its own
+wrong guesses stops being a record of what was expected.
+
+⚠️ **`FORCE-12` IS THE OLDEST IDEA IN THIS SUBJECT AND IT IS CONFRONTED FOUR TIMES.** Impetus —
+*a moving object has force in it, and the force runs out* — is elicited on `p4-01` and met again
+on `p4-04` (rung 1 option C, as `FORCE-27`), on `p4-05` (the crate) and on `p4-09` (the kicked
+ball, whose note says nothing is pushing the ball forwards once it has left the boot). Only the
+first mints; the rest are the same belief in new clothes, which is what this family is for.
 
 ⚠️ **EXPECTED TO RESURFACE.** `FORCE-06`/`FORCE-07` in P6 (waves on a graph) and in ANY graph
 lesson in biology or chemistry — `B10 variation` plots something completely different and the

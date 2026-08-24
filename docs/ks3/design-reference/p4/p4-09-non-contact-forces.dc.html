@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Non-contact forces · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p4-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Forces</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Non-contact forces</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Forces · Classify</p>
+        <h1>Non-contact forces</h1>
+        <p class="ks3-bigq">Every force so far has needed something to touch something. Three of them do not, and one of those is holding you to the planet right now.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>The hair moves before the balloon arrives.</h2>
+        <p class="ks3-hook-prompt">Rub a balloon on a jumper and bring it slowly towards someone's head. The hair stands up and reaches out to meet it — while there is still a clear centimetre of air in between.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What is pulling the hair?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">A force is acting across the gap. Rubbing moved electric charge from the jumper to the balloon, and charge attracts and repels other charge without any contact at all. There are three forces in KS3 that work like this — gravity, magnetism and electrostatic force — and calling them <strong>non-contact</strong> forces is the whole of the classification.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>A <strong>contact force</strong> needs the two objects to be touching: friction, air resistance, tension in a rope, the push of a table. A <strong>non-contact force</strong> acts across a gap with nothing in between: gravity, magnetism, and the electrostatic force between charges. Both kinds are measured in newtons and both change motion in exactly the same three ways.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · the sorter</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Eight situations. Four labels.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Pick a situation, look at whether the two things are touching, then give it a label. The diagram marks the gap or the contact for you; the naming is yours.</p>
+
+        <div style="margin-top: 20px; display: flex; gap: 9px; flex-wrap: wrap;">
+          <sc-for list="{{ cardTabs }}" as="t" hint-placeholder-count="8">
+            <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+          <p style="margin: 0 0 14px; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(20px, 2.6vw, 27px); line-height: 1.2; letter-spacing: -.02em; color: var(--ks3-on-dark);">{{ caseTitle }}</p>
+          <div style="position: relative;">
+          <svg viewBox="0 0 1000 340" role="img" aria-label="{{ caseAlt }}" style="display: block; width: 100%; height: auto;">
+            <circle cx="{{ aX }}" cy="150" r="68" style="fill: #15110C; stroke: var(--ks3-on-dark-muted); stroke-width: 4;"></circle>
+            <circle cx="{{ bX }}" cy="150" r="68" style="fill: #15110C; stroke: var(--ks3-on-dark-muted); stroke-width: 4;"></circle>
+
+            <path d="{{ arrowShaft }}" style="fill: none; stroke: #8FB7FF; stroke-width: 9; stroke-linecap: round;"></path>
+            <path d="{{ arrowHead }}" style="fill: #8FB7FF;"></path>
+
+            <sc-if value="{{ isGap }}">
+              <path d="{{ gapBar }}" style="fill: none; stroke: #FFC53D; stroke-width: 3; stroke-dasharray: 9 8;"></path>
+              <text x="500" y="300" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 19px; letter-spacing: .1em; fill: #FFC53D;">NOTHING IN BETWEEN</text>
+            </sc-if>
+            <sc-if value="{{ isTouch }}">
+              <path d="{{ touchBar }}" style="fill: none; stroke: #C6B9A7; stroke-width: 8; stroke-linecap: round;"></path>
+              <text x="500" y="300" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 19px; letter-spacing: .1em; fill: #C6B9A7;">TOUCHING HERE</text>
+            </sc-if>
+          </svg>
+            <span style="{{ aLabelStyle }}">{{ aLabel }}</span>
+            <span style="{{ bLabelStyle }}">{{ bLabel }}</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 18px;">
+          <p style="margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Give it a label</p>
+          <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+            <sc-for list="{{ sortButtons }}" as="b" hint-placeholder-count="4">
+              <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.pressed }}" disabled="{{ b.disabled }}" style="{{ b.style }}">{{ b.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <sc-if value="{{ caseSorted }}">
+          <div data-arrive="1" style="margin-top: 16px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Your label</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ yourLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The force</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ trueLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Contact or not</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ kindWord }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Pull or push</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ senseWord }}</p>
+              </div>
+            </div>
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ caseNote }}</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ caseUnsorted }}" hint-placeholder-val="{{ true }}">
+          <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-muted);">Unlabelled. Nothing is revealed until you commit to one of the four.</p>
+        </sc-if>
+      </section>
+
+      <section id="s-three" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The three, and how to tell them apart</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 30ch;">Only one of them can never push.</p>
+
+        <ol style="list-style: none; margin: 24px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ threeCards }}" as="c" hint-placeholder-count="3">
+            <li style="display: grid; grid-template-columns: auto 1fr; gap: 8px 18px; padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <span aria-hidden="true" style="grid-row: span 3; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; background: var(--ks3-accent); color: var(--ks3-on-dark); font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;">{{ c.num }}</span>
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.2; letter-spacing: -.02em;">{{ c.name }}</p>
+              <p style="margin: 0; font-size: 18px; line-height: 1.55;">{{ c.body }}</p>
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-accent-text);">{{ c.tell }}</p>
+            </li>
+          </sc-for>
+        </ol>
+
+        <p style="margin: 22px 0 0; font-size: 19px; line-height: 1.6; max-width: 60ch;">That difference matters more than it looks. Magnetism and electrostatic force can cancel themselves out, because for every attraction there is a repulsion available. Gravity cannot, so it never cancels — it only ever adds up. Which is why the weakest of the three is the one that shapes planets, stars and galaxies.</p>
+
+        <div data-key-fact="1" style="margin: 22px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Gravity, magnetism and the electrostatic force act at a distance, with no contact and nothing needed in between. Gravity only ever attracts; the other two attract and repel. All are measured in newtons, and all change motion in the same three ways as a push or a pull.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Something must be in between to carry the force across.”</p>
+        <p>It is a reasonable demand — every force you can feel with your hands is delivered by contact — and for two hundred years it bothered the best physicists alive. Newton himself would not claim to explain how the Sun pulls on the Earth across a hundred and fifty million kilometres of nothing; he only gave the arithmetic. Take the air out of a jar and a magnet still attracts a paperclip inside it; put a vacuum between the Earth and the Moon, which is what is actually there, and the pull continues. The modern answer is not a substance but a <strong>field</strong>: the magnet changes the space around it, and anything magnetic that enters that space feels a force. What travels is a change in the field, and it travels through nothing quite happily.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“There is no gravity in space.”</p>
+          <p>If that were true the space station would fly off in a straight line and the Moon would leave. The station orbits about four hundred kilometres up, where the Earth's pull is only slightly weaker than it is in your classroom, and the astronauts inside are not weightless — they are falling. So is the station, at exactly the same rate, which is why nothing inside presses on anything: they fall together, and the sideways speed means the fall keeps missing the planet. The word for what they experience is <em>free fall</em>, and you get a tiny sample of it at the top of a trampoline bounce.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Most forces need contact, but three do not. Gravity acts between anything with mass and only ever attracts. Magnetism acts between magnets and magnetic materials, and can attract or repel. The electrostatic force acts between electric charges, and can also do both. All three act across a gap with nothing in between, all are measured in newtons, and all change motion in exactly the same ways as a contact push or pull.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Here is a comparison worth sitting with. Hold a small fridge magnet above a steel paperclip lying on a table, and the paperclip jumps up to the magnet. In that moment a magnet you could hide under a stamp has beaten the gravitational pull of the entire planet Earth on the same object. Gravity is by far the weakest of the three non-contact forces — absurdly, almost embarrassingly weak — and yet it is the one that decides the shape of the universe. The reason is the thing you met in the cards above: electric charges come in two kinds that cancel, and magnets have two poles that cancel, so on any large scale their effects add up to almost nothing. Mass has no opposite. Every kilogram of the Earth pulls in the same direction as every other kilogram, so gravity is the only one of the three that keeps accumulating all the way up to a galaxy.</p>
+          <p>Non-contact forces also make possible machines that touch nothing at all. A maglev train is held a centimetre clear of its track by magnetic repulsion and pushed along by magnetic attraction, so the only resistance left is the air — no wheels, no rails rubbing, no bearings, almost no friction. Induction hobs heat a pan across a gap; wireless chargers move energy into a phone without a plug; the read head of a hard disk flies above the surface without touching it. In each case the engineering payoff is the same: nothing that touches, nothing that wears out.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p4-08-springs-and-hookes-law.html">Springs and Hooke's law<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next unit</h2>
+          <ul>
+            <li><a href="p5-01-pressure-force-over-area.html">Pressure = force ÷ area<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p4-01-what-a-force-is.html">What a force is<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p4-05-friction.html">Friction<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p4-03-balanced-and-unbalanced.html">Balanced and unbalanced<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Gravitational, magnetic and electric fields, field lines and field strength, and how the force between two objects falls with distance.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Got a situation you cannot decide how to label?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The sorter uses the three non-contact forces named at Key Stage 3. There are others in physics — the forces inside an atomic nucleus among them — and they are not in scope here. Air resistance is filed as a contact force because the air particles strike the surface; the diagram draws the two objects at a fixed size and does not show relative distances to scale.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Balloon and hair', short: 'HOOK' },
+  { id: 's-bench', label: 'The sorter', short: 'SORT' },
+  { id: 's-three', label: 'The three', short: 'THREE' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const LABELS = [
+  { id: 'contact', label: 'Contact force' },
+  { id: 'gravity', label: 'Gravity' },
+  { id: 'magnetic', label: 'Magnetism' },
+  { id: 'static', label: 'Electrostatic' }
+];
+
+const CASES = [
+  { id: 'book', tab: 'Book on a table', title: 'A book resting on a table', a: 'table top', b: 'book',
+    answer: 'contact', touch: true, sense: 'Push, upwards',
+    note: 'The two are pressed together, so this is a contact force — the squashed surface of the table pushing back on the book. Move the book a millimetre clear and the force vanishes instantly, which is the test for contact.' },
+  { id: 'kick', tab: 'Kicking a football', title: 'A boot kicking a football', a: 'boot', b: 'ball',
+    answer: 'contact', touch: true, sense: 'Push, forwards',
+    note: 'Contact, and only while they touch — about a hundredth of a second. Once the ball has left the boot nothing is pushing it forwards at all, which is the whole argument of the lesson on what forces do to motion.' },
+  { id: 'chute', tab: 'Air on a parachute', title: 'Air resistance on an open parachute', a: 'air', b: 'canopy',
+    answer: 'contact', touch: true, sense: 'Push, upwards',
+    note: 'This one is worth arguing about, and it is a contact force. Air is made of particles, and they strike the canopy; nothing acts across a gap. If it feels like an odd fit, that is because the thing doing the touching is a fluid rather than a solid.' },
+  { id: 'stone', tab: 'A dropped stone', title: 'A stone falling after being dropped', a: 'Earth', b: 'stone',
+    answer: 'gravity', touch: false, sense: 'Pull, downwards',
+    note: 'Gravity, acting across the gap between the Earth and the stone. Nothing is touching the stone once your hand has let go, and the pull is the same whether the stone is one metre up or a hundred.' },
+  { id: 'moon', tab: 'The Moon in orbit', title: 'The Moon circling the Earth', a: 'Earth', b: 'Moon',
+    answer: 'gravity', touch: false, sense: 'Pull, towards the Earth',
+    note: 'Gravity across 384 000 kilometres of vacuum. The pull is sideways-on to the Moon\u2019s motion, so it bends the path into a circle instead of dragging the Moon in — a force acting at a distance, doing exactly what a resultant force always does.' },
+  { id: 'fridge', tab: 'Magnet on a fridge', title: 'A magnet holding a note on a steel fridge door', a: 'magnet', b: 'steel door',
+    answer: 'magnetic', touch: false, sense: 'Pull, together',
+    note: 'Magnetism. The magnet is resting on the door, but the force does not need that contact: slide a sheet of paper or a hand between them and it still holds. That is the difference between two things touching and a force that needs touch.' },
+  { id: 'compass', tab: 'A compass needle', title: 'A compass needle swinging to point north', a: 'Earth', b: 'needle',
+    answer: 'magnetic', touch: false, sense: 'Turn, towards north',
+    note: 'Magnetism, from the Earth itself, acting on a needle thousands of kilometres away through the air, through the case and through nothing. Notice what the force does here: it does not move the needle along, it turns it — a moment.' },
+  { id: 'balloon', tab: 'Balloon and hair', title: 'A rubbed balloon lifting someone\u2019s hair', a: 'balloon', b: 'hair',
+    answer: 'static', touch: false, sense: 'Pull, together',
+    note: 'The electrostatic force, between charge on the balloon and charge in the hair. It works across a visible gap of a centimetre or two, and it stops working after a while as the charge leaks away — especially on a damp day.' }
+];
+
+const THREE_CARDS = [
+  { num: '1', name: 'Gravity',
+    body: 'Acts between anything with mass — you and the Earth, the Earth and the Moon, you and this page. It never switches off, and it gets weaker the further apart the two things are.',
+    tell: 'Tell it by: it only ever pulls. There is no such thing as gravitational repulsion.' },
+  { num: '2', name: 'Magnetism',
+    body: 'Acts between magnets, and between a magnet and a magnetic material — iron, steel, nickel, cobalt. Not aluminium, not copper, not gold, so a magnet does not attract all metals.',
+    tell: 'Tell it by: like poles repel, unlike poles attract. It can push as well as pull.' },
+  { num: '3', name: 'The electrostatic force',
+    body: 'Acts between electric charges, which is what rubbing two materials together moves about. Same reason your jumper crackles and cling film sticks to itself.',
+    tell: 'Tell it by: like charges repel, opposite charges attract. It fades as the charge leaks away.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Classify',
+    question: 'Which of these is a non-contact force?',
+    options: [
+      { text: 'The Earth pulling on a satellite four hundred kilometres above it.', correct: true },
+      { text: 'Air resistance slowing a cyclist down.', correction: 'Air is made of particles that strike the cyclist, so this is contact. A gap you cannot see is not a gap.' },
+      { text: 'The tension in a tug-of-war rope.', correction: 'The rope touches both teams. Let go and the force is gone at once, which is the mark of a contact force.' },
+      { text: 'Friction between a brake block and a wheel rim.', correction: 'Friction only exists between surfaces that are touching. Lift the block clear and there is no friction at all.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'Astronauts float around inside the space station. Why?',
+    options: [
+      { text: 'Gravity is still pulling on them — they and the station are falling around the Earth together, so nothing presses on anything.', correct: true },
+      { text: 'There is no gravity that far from the Earth.', correction: 'At that height the Earth\u2019s pull is only a little weaker than at the ground. With no gravity the station would leave in a straight line.' },
+      { text: 'The speed of the station cancels out gravity.', correction: 'Speed does not cancel a force. The sideways speed means the fall keeps missing the Earth, which is what an orbit is — the gravity is still there, unopposed.' },
+      { text: 'They are above the atmosphere, and gravity needs air to travel through.', correction: 'Gravity crosses a vacuum perfectly well — that is what non-contact means. It is also how the Moon is held.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A plastic ruler rubbed on a sleeve picks up small pieces of paper from the desk before it reaches them. Explain why this is a non-contact force, and describe one thing you could do to show the force is real rather than the paper being blown about.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Rubbing the ruler\u2026',
+    criteria: [
+      'Says rubbing moves electric charge on to the ruler.',
+      'Says the electrostatic force acts between that charge and the paper.',
+      'Says the paper moves while there is still a gap, with nothing touching it.',
+      'Names a check that rules out air movement — for example moving the ruler in slowly and steadily, or holding it still above the paper.',
+      'Says the force gets stronger as the ruler gets closer, or weaker as the charge leaks away.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A maglev train floats about a centimetre above its track and is pushed along without anything touching it. Sort the forces acting on it into contact and non-contact, and explain why it can reach higher speeds than a train on steel wheels.',
+    fieldLabel: 'Your answer',
+    placeholder: 'The forces holding it up and pushing it along are\u2026',
+    criteria: [
+      'Says the lifting force and the driving force are both magnetic, and therefore non-contact.',
+      'Says the train\u2019s weight is the gravitational pull of the Earth, also non-contact.',
+      'Says air resistance is a contact force and is still acting on it.',
+      'Says there is almost no friction, because no surfaces are sliding or rolling on each other.',
+      'Says that with the backwards forces reduced to air resistance alone, the train can hold a much higher steady speed for the same driving force.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    kase: 'book',
+    sorted: {},
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  kase() { return CASES.find((x) => x.id === this.state.kase); }
+
+  pos(x, y, colour) {
+    return 'position:absolute;left:' + ((x / 1000) * 100).toFixed(2) + '%;top:' + ((y / 340) * 100).toFixed(2) +
+      '%;transform:translate(-50%,-50%);font-family:var(--ks3-font-mono);font-weight:500;font-size:clamp(10px,1.5vw,19px);color:' +
+      colour + ';white-space:nowrap;pointer-events:none;';
+  }
+
+  railVals() {
+    const s = this.state;
+    const count = Object.keys(s.sorted).length;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-bench') return count >= CASES.length;
+          if (id === 's-three') return count >= 1;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  benchVals() {
+    const s = this.state;
+    const c = this.kase();
+    const touching = c.touch;
+    const aX = touching ? 396 : 250;
+    const bX = touching ? 604 : 750;
+    const shaftFrom = touching ? 476 : 350;
+    const shaftTo = touching ? 500 : 590;
+    const headAt = touching ? 524 : 640;
+    const picked = s.sorted[c.id];
+    const done = picked !== undefined;
+    const right = done && picked === c.answer;
+    const trueName = (LABELS.find((l) => l.id === c.answer) || {}).label;
+    const count = Object.keys(s.sorted).length;
+    return {
+      benchProgress: count === CASES.length ? 'All ' + CASES.length + ' labelled' : count + ' of ' + CASES.length + ' labelled',
+      cardTabs: CASES.map((x) => ({
+        label: (s.sorted[x.id] ? '· ' : '') + x.tab,
+        pressed: s.kase === x.id,
+        style: this.seg(s.kase === x.id, true, false) + 'font-size:15px;padding:10px 14px;',
+        onClick: () => this.setState({ kase: x.id })
+      })),
+      caseTitle: c.title,
+      aX: aX, bX: bX,
+      arrowShaft: 'M' + shaftFrom + ' 150 H' + shaftTo,
+      arrowHead: 'M' + headAt + ' 150 L' + (headAt - 26) + ' 132 L' + (headAt - 26) + ' 168 Z',
+      isGap: !touching,
+      isTouch: touching,
+      gapBar: 'M' + (aX + 74) + ' 244 H' + (bX - 74) + ' M' + (aX + 74) + ' 230 V258 M' + (bX - 74) + ' 230 V258',
+      touchBar: 'M494 216 V262',
+      aLabelStyle: this.pos(aX, 150, '#FBF3E6'),
+      bLabelStyle: this.pos(bX, 150, '#FBF3E6'),
+      aLabel: c.a,
+      bLabel: c.b,
+      caseAlt: c.title + '. Two circles labelled ' + c.a + ' and ' + c.b + ', ' +
+        (touching ? 'drawn touching, with a marker at the point of contact' : 'drawn apart with a marked gap and nothing in between') +
+        ', and a force arrow between them.',
+      sortButtons: LABELS.map((l) => ({
+        label: l.label,
+        pressed: picked === l.id,
+        disabled: done,
+        style: this.seg(picked === l.id, true, done) + (done && picked !== l.id ? 'opacity:.45;' : ''),
+        onClick: () => this.setState((st) => (st.sorted[c.id] !== undefined ? null : { sorted: Object.assign({}, st.sorted, { [c.id]: l.id }) }))
+      })),
+      caseSorted: done,
+      caseUnsorted: !done,
+      yourLabel: done ? (LABELS.find((l) => l.id === picked) || {}).label : '',
+      trueLabel: trueName,
+      kindWord: c.answer === 'contact' ? 'Contact' : 'Non-contact',
+      senseWord: c.sense,
+      caseNote: c.note
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign({
+      draftVisible: this.props.showDraft !== false,
+      hookOptions: [
+        { letter: 'A', text: 'The air in between is pushing the hair upwards' },
+        { letter: 'B', text: 'The balloon touches the hair too quickly to see' },
+        { letter: 'C', text: 'Some forces act across a gap, with nothing in between' },
+        { letter: 'D', text: 'Static is a stickiness rather than a force' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+      threeCards: THREE_CARDS
+    }, this.railVals(), this.benchVals(), this.ladderVals());
+  }
+}
+
+</script>
+</body>
+</html>

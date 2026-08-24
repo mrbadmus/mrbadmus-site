@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What forces do to motion · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p4-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Forces</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">What forces do to motion</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Forces · Model</p>
+        <h1>What forces do to motion</h1>
+        <p class="ks3-bigq">A resultant force does not make things move. It makes whatever they are already doing change — and that is a much stranger idea.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Nothing is pushing it, and it keeps going anyway.</h2>
+        <p class="ks3-hook-prompt">A curling stone slides down twenty metres of ice at a steady speed. Nobody is touching it. No engine, no rope, nothing pushing it forwards at all.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">So why does it keep moving?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">It keeps moving because nothing is stopping it. Moving needs no force at all — a resultant force is only needed to <em>change</em> what something is doing. On very smooth ice there is almost nothing left over, so almost nothing changes, and the stone carries on at the same speed in the same direction for a very long way.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>A resultant force can do exactly three things to motion: start it or speed it up, slow it down or stop it, or change its direction. If nothing is left over, none of those happens — whatever the object was doing, it carries on doing.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · trolley and light gates</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Same trolley, same start, four resultants</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Every run starts with the trolley already travelling at 2.0 m/s to the right, timed through a light gate. Choose a resultant force, choose how long it acts, and take a second reading.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. The resultant force is 0 N and the trolley is already moving. What does the second gate read?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 340px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The resultant force</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ caseTabs }}" as="t" hint-placeholder-count="4">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 0 1 260px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How long it acts</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ timeTabs }}" as="t" hint-placeholder-count="2">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+              <svg viewBox="0 0 1080 330" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                <path d="M60 250 H1020" style="fill: none; stroke: #3E3730; stroke-width: 8; stroke-linecap: round;"></path>
+                <path d="M180 130 V250 M900 130 V250" style="fill: none; stroke: #C6B9A7; stroke-width: 4; stroke-dasharray: 10 8;"></path>
+                <text x="180" y="118" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 16px; letter-spacing: .07em; fill: #C6B9A7;">GATE 1</text>
+                <text x="900" y="118" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 16px; letter-spacing: .07em; fill: #C6B9A7;">GATE 2</text>
+
+                <path d="{{ trackPath }}" style="fill: none; stroke: #8FB7FF; stroke-width: 3; stroke-dasharray: 8 9;"></path>
+
+                <rect x="{{ trolleyX }}" y="{{ trolleyY }}" width="120" height="56" rx="10" style="fill: #15110C; stroke: var(--ks3-on-dark-muted); stroke-width: 3;"></rect>
+                <text x="{{ trolleyTextX }}" y="{{ trolleyTextY }}" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px; fill: #FBF3E6;">1 kg</text>
+
+                <sc-if value="{{ hasForce }}">
+                  <path d="{{ forceShaft }}" style="fill: none; stroke: #FFC53D; stroke-width: 9; stroke-linecap: round;"></path>
+                  <path d="{{ forceHead }}" style="fill: #FFC53D;"></path>
+                </sc-if>
+                <sc-if value="{{ noForce }}">
+                  <text x="600" y="200" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 21px; fill: #C6B9A7;">resultant 0 N · no arrow to draw</text>
+                </sc-if>
+
+                <text x="60" y="300" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 16px; letter-spacing: .07em; fill: #C6B9A7;">THE DASHED PATH</text>
+              </svg>
+                <sc-if value="{{ hasForce }}">
+                  <span style="{{ forceLabelStyle }}">{{ forceLabel }}</span>
+                </sc-if>
+                <span style="position: absolute; left: 22%; top: 88%; transform: translate(0, -50%); font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(11px, 1.6vw, 18px); color: #C6B9A7; white-space: nowrap; pointer-events: none;">{{ pathWord }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Gate 1</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">2.0 m/s</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Gate 2</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ afterLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What changed</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ changedWord }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What stayed the same</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ sameWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-three" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Three things, and only three</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 28ch;">Everything on the bench was one of these.</p>
+
+        <ol style="list-style: none; margin: 24px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{ threeCards }}" as="c" hint-placeholder-count="4">
+            <li style="display: grid; grid-template-columns: auto 1fr; gap: 8px 18px; padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <span aria-hidden="true" style="grid-row: span 2; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; background: var(--ks3-accent); color: var(--ks3-on-dark); font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;">{{ c.num }}</span>
+              <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.2; letter-spacing: -.02em;">{{ c.name }}</p>
+              <p style="margin: 0; font-size: 18px; line-height: 1.55;">{{ c.body }}</p>
+            </li>
+          </sc-for>
+        </ol>
+
+        <p style="margin: 22px 0 0; font-size: 19px; line-height: 1.6; max-width: 60ch;">Two things also decide <em>how much</em> changes: how big the resultant force is, and which way it points. A bigger resultant changes the motion faster, and the direction it points is the direction the change happens in.</p>
+
+        <div data-key-fact="1" style="margin: 22px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">A resultant force is needed to start something moving, to speed it up, to slow it down or stop it, or to change its direction. Moving at a steady speed in a straight line needs no resultant force at all.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“If something is moving, there must be a force pushing it along.”</p>
+        <p>This one is worth taking seriously, because everyday life agrees with it. Stop pedalling and the bike slows; stop pushing the box and it stops. So it really does look as though motion needs a constant supply of push. What is hidden is friction: on a bicycle, on a floor, in the air, something is always pushing backwards, and your forward push is cancelling it rather than causing the motion. Remove the friction — a curling stone on ice, a puck on an air table, a spacecraft between planets — and the object needs nothing at all to keep going. Voyager 1 has had its engines off since 1980 and is still travelling at 17 kilometres a second.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“A force sideways makes it go sideways instead.”</p>
+          <p>It does not throw away what the object was already doing. On the bench above, a sideways resultant left the trolley still travelling to the right — it simply added a bend to the path, so the trolley ended up going right <em>and</em> sideways at once. This is exactly why the Moon goes round the Earth instead of falling into it: the Earth's pull is sideways-on to the Moon's motion, so it bends the path into a circle rather than stopping the Moon and dragging it in. A resultant force adds a change; it does not replace the motion.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Forces change motion; they do not maintain it. A resultant force can start something moving, speed it up, slow it down, stop it, or change its direction, and how much it changes depends on how big that force is and which way it points. With balanced forces nothing changes: something at rest stays at rest, and something moving carries on at the same speed in the same direction.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>For roughly two thousand years the best minds available believed that motion needed a cause, and they were not being stupid — they were describing the world in front of them, where everything does stop. Aristotle's version lasted until the 1600s, when Galileo tried rolling balls down one slope and up another and noticed that the smoother he made the surfaces, the further they went. He drew the conclusion nobody had drawn: that with the friction removed entirely, the ball would never stop, and therefore motion needs no cause at all. Nothing about that can be seen directly. It is reached by making an experiment cleaner and cleaner and then imagining the limit, which is one of the most powerful moves in science and worth recognising when you next meet it.</p>
+          <p>The same trolley pushed with the same resultant force does not always change by the same amount, and what makes the difference is its mass. Load the trolley with bricks and 1 N barely alters it; empty it and the same 1 N makes a much bigger change. That relationship — resultant force, mass and how fast the motion changes — is a real equation you will meet at GCSE. At this stage the useful half is the shape of it: bigger force, bigger change; bigger mass, smaller change.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p4-03-balanced-and-unbalanced.html">Balanced and unbalanced<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p4-05-friction.html">Friction<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p3-01-speed.html">Speed<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p4-01-what-a-force-is.html">What a force is<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p5-01-pressure-force-over-area.html">Pressure = force ÷ area<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Newton's first and second laws, acceleration, and the equation linking resultant force, mass and acceleration.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to test the idea on a situation of your own?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The trolley bench is a teaching model: the gate readings are the values a 1 kg trolley would give with a steady 1 N resultant and no friction, rounded to one decimal place. Real trolleys have friction, so real second readings are always a little lower.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Curling stone', short: 'HOOK' },
+  { id: 's-bench', label: 'Trolley and gates', short: 'GATES' },
+  { id: 's-three', label: 'Three things', short: 'THREE' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const CASES = [
+  { id: 'none', tab: 'None — balanced', label: '0 N', dir: 'none',
+    after: { 1: '2.0 m/s', 3: '2.0 m/s' },
+    changed: 'Nothing', same: 'Speed and direction',
+    path: 'straight, at a steady speed',
+    notes: {
+      1: 'Both gates read 2.0 m/s. With nothing left over there is nothing to change the motion, so the trolley arrives doing exactly what it was doing.',
+      3: 'Three seconds and still 2.0 m/s. Time makes no difference when the resultant is 0 N — this is the state a curling stone on good ice is nearly in.'
+    } },
+  { id: 'fwd', tab: '1 N forwards', label: '1 N forwards', dir: 'fwd',
+    after: { 1: '3.0 m/s', 3: '5.0 m/s' },
+    changed: 'Speed — faster', same: 'Direction',
+    path: 'straight, and getting faster',
+    notes: {
+      1: 'One second of 1 N forwards took it from 2.0 m/s to 3.0 m/s. The direction is untouched: the resultant pointed the way it was already going, so only the speed changed.',
+      3: 'Three seconds of the same 1 N took it to 5.0 m/s — three times the change of one second. The longer a resultant force acts, the bigger the change it makes.'
+    } },
+  { id: 'back', tab: '1 N backwards', label: '1 N backwards', dir: 'back',
+    after: { 1: '1.0 m/s', 3: '1.0 m/s, backwards' },
+    changed: 'Speed — slower, then reversed', same: 'The line it travels along',
+    path: 'straight, and slowing down',
+    notes: {
+      1: 'One second of 1 N backwards brought it down from 2.0 m/s to 1.0 m/s. A resultant force against the motion is what slowing down actually is.',
+      3: 'After two seconds it stopped; the force kept acting, so by three seconds it is moving backwards at 1.0 m/s. Nothing switched off when it reached zero — a ball thrown upwards does the same thing.'
+    } },
+  { id: 'side', tab: '1 N sideways', label: '1 N sideways', dir: 'side',
+    after: { 1: '2.2 m/s', 3: '3.6 m/s' },
+    changed: 'Direction — the path bends', same: 'It is still travelling to the right',
+    path: 'bending away from the straight line',
+    notes: {
+      1: 'The gate reads 2.2 m/s and the path has bent. The trolley did not stop going right and start going sideways — it is doing both, which is why the reading went up a little as well.',
+      3: 'Three seconds of sideways force and the path has bent a long way, with the reading up to 3.6 m/s. This is how an orbit works: a pull sideways-on to the motion curves the path instead of stopping it.'
+    } }
+];
+
+const THREE_CARDS = [
+  { num: '1', name: 'Start it, or speed it up',
+    body: 'A resultant force in the direction of travel makes the object go faster. From rest, it is what gets it moving at all.' },
+  { num: '2', name: 'Slow it down, or stop it',
+    body: 'A resultant force against the direction of travel makes it slower. Leave it acting and the object stops, then goes the other way.' },
+  { num: '3', name: 'Change its direction',
+    body: 'A resultant force across the direction of travel bends the path. The original motion is still there underneath.' },
+  { num: '4', name: 'Or, with 0 N left over: nothing',
+    body: 'At rest, it stays at rest. Moving, it carries on at the same speed in the same direction, with no push needed.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Apply',
+    question: 'A cyclist is freewheeling and slowing down. What must be true about the forces on the bicycle?',
+    options: [
+      { text: 'There is a resultant force backwards, against the direction of travel.', correct: true },
+      { text: 'There is no force at all, which is why it is slowing.', correction: 'With no resultant force it would carry on at the same speed. Slowing down is a change, and a change needs something left over.' },
+      { text: 'There is a resultant force forwards, which is running out.', correction: 'A force does not run out, and a forward resultant would make the bicycle speed up rather than slow down.' },
+      { text: 'The forces are balanced, because the cyclist has stopped pedalling.', correction: 'Balanced forces would keep the speed steady. Air resistance and friction are unopposed once the pedalling stops.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A ball is thrown straight up. At the highest point, just for an instant, it is not moving. What is the resultant force on it then?',
+    options: [
+      { text: 'Its weight, downwards — unchanged the whole way up and down.', correct: true },
+      { text: '0 N, because it is not moving at that instant.', correction: 'Force does not depend on speed. If the resultant were 0 N there the ball would hang in the air, which is not what happens.' },
+      { text: 'Upwards, left over from the throw.', correction: 'The hand\u2019s push ended the moment the ball left it. Nothing is pushing it up on the way at all.' },
+      { text: '0 N going up, then downwards on the way back.', correction: 'The Earth pulls with the same force throughout. The motion changes direction; the force never does.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A curling stone slides twenty metres across ice at almost the same speed the whole way, with nothing touching it. Explain why it keeps going, and why it does eventually stop.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Nothing needs to push it because\u2026',
+    criteria: [
+      'Says no force is needed to keep something moving.',
+      'Says the forces on the stone are very nearly balanced, so the resultant is close to 0 N.',
+      'Says a resultant force is only needed to change the motion.',
+      'Names friction with the ice, or air resistance, as a small backwards force.',
+      'Says that small backwards resultant is what slows it, and that on perfectly smooth ice it would not stop.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A satellite circles the Earth at a steady speed with its engines switched off. Its speed never changes, but there is a resultant force on it the whole time. Explain how both of those can be true, and say which way the force points.',
+    fieldLabel: 'Your answer',
+    placeholder: 'The force points\u2026',
+    criteria: [
+      'Says the resultant force is the Earth\u2019s gravitational pull.',
+      'Says it points towards the Earth, across the direction the satellite is travelling.',
+      'Says a force across the motion changes direction rather than speed.',
+      'Says that is why the path is a circle rather than a straight line.',
+      'Says the motion is still changing, because a change of direction is a change even at a steady speed.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    kase: 'fwd',
+    secs: 1,
+    touched: {},
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-bench') return s.gate !== null && Object.keys(s.touched).length >= 1;
+          if (id === 's-three') return s.gate !== null;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  benchVals() {
+    const s = this.state;
+    const c = CASES.find((x) => x.id === s.kase);
+    const far = s.secs === 3;
+    const bend = c.dir === 'side' ? (far ? 96 : 34) : 0;
+    const stopShort = c.dir === 'back' && far;
+    const endX = stopShort ? 520 : 840;
+    const trolleyX = stopShort ? 400 : 720;
+    const trolleyY = 194 - bend;
+    let track = 'M180 222';
+    if (c.dir === 'side') {
+      track += ' Q' + ((180 + endX) / 2) + ' 222 ' + endX + ' ' + (222 - bend);
+    } else {
+      track += ' H' + endX;
+    }
+    let fShaft = '', fHead = '', fx = 0, fy = 0;
+    if (c.dir === 'fwd') {
+      fShaft = 'M' + (trolleyX + 120) + ' ' + (trolleyY + 28) + ' H' + (trolleyX + 216);
+      fHead = 'M' + (trolleyX + 244) + ' ' + (trolleyY + 28) + ' L' + (trolleyX + 214) + ' ' + (trolleyY + 11) + ' L' + (trolleyX + 214) + ' ' + (trolleyY + 45) + ' Z';
+      fx = trolleyX + 172; fy = trolleyY - 4;
+    } else if (c.dir === 'back') {
+      fShaft = 'M' + trolleyX + ' ' + (trolleyY + 28) + ' H' + (trolleyX - 96);
+      fHead = 'M' + (trolleyX - 124) + ' ' + (trolleyY + 28) + ' L' + (trolleyX - 94) + ' ' + (trolleyY + 11) + ' L' + (trolleyX - 94) + ' ' + (trolleyY + 45) + ' Z';
+      fx = trolleyX - 52; fy = trolleyY - 4;
+    } else if (c.dir === 'side') {
+      fShaft = 'M' + (trolleyX + 60) + ' ' + trolleyY + ' V' + (trolleyY - 82);
+      fHead = 'M' + (trolleyX + 60) + ' ' + (trolleyY - 110) + ' L' + (trolleyX + 43) + ' ' + (trolleyY - 80) + ' L' + (trolleyX + 77) + ' ' + (trolleyY - 80) + ' Z';
+      fx = trolleyX + 150; fy = trolleyY - 74;
+    }
+    return {
+      benchProgress: Object.keys(s.touched).length ? 'Both controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'Less than 2.0 m/s — it must slow without a push' },
+        { letter: 'B', text: '2.0 m/s — the same as the first gate' },
+        { letter: 'C', text: '0 m/s — with no force it stops' },
+        { letter: 'D', text: 'More than 2.0 m/s' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      benchOpen: s.gate !== null,
+      caseTabs: CASES.map((x) => ({
+        label: x.tab, pressed: s.kase === x.id,
+        style: this.seg(s.kase === x.id, true, false),
+        onClick: () => this.setState((st) => ({ kase: x.id, touched: Object.assign({}, st.touched, { kase: true }) }))
+      })),
+      timeTabs: [1, 3].map((t) => ({
+        label: t === 1 ? 'For 1 second' : 'For 3 seconds', pressed: s.secs === t,
+        style: this.seg(s.secs === t, true, false),
+        onClick: () => this.setState((st) => ({ secs: t, touched: Object.assign({}, st.touched, { secs: true }) }))
+      })),
+      trackPath: track,
+      trolleyX: trolleyX,
+      trolleyY: trolleyY,
+      trolleyTextX: trolleyX + 60,
+      trolleyTextY: trolleyY + 36,
+      hasForce: c.dir !== 'none',
+      noForce: c.dir === 'none',
+      forceShaft: fShaft,
+      forceHead: fHead,
+      forceTextX: fx,
+      forceTextY: fy,
+      forceLabelStyle: 'position:absolute;left:' + ((fx / 1080) * 100).toFixed(2) + '%;top:' +
+        (((fy - 8) / 330) * 100).toFixed(2) +
+        '%;transform:translate(-50%,-50%);font-family:var(--ks3-font-mono);font-weight:500;font-size:clamp(11px,1.7vw,21px);color:#FFC53D;white-space:nowrap;pointer-events:none;',
+      forceLabel: c.label,
+      pathWord: c.path,
+      afterLabel: c.after[s.secs],
+      changedWord: c.changed,
+      sameWord: c.same,
+      benchNote: c.notes[s.secs],
+      benchAlt: 'A trolley on a track between two light gates, with a resultant force of ' + c.label +
+        ' acting for ' + s.secs + ' second' + (s.secs === 1 ? '' : 's') +
+        '. The dashed path is ' + c.path + ', and the second gate reads ' + c.after[s.secs] + '.'
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign({
+      draftVisible: this.props.showDraft !== false,
+      hookOptions: [
+        { letter: 'A', text: 'Force from the push is still inside it, slowly running out' },
+        { letter: 'B', text: 'Nothing needs to push it — with almost nothing left over, almost nothing changes' },
+        { letter: 'C', text: 'The ice is pushing it forwards' },
+        { letter: 'D', text: 'It keeps going because it is heavy' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+      threeCards: THREE_CARDS
+    }, this.railVals(), this.benchVals(), this.ladderVals());
+  }
+}
+
+</script>
+</body>
+</html>

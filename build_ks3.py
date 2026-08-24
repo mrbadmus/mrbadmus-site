@@ -3587,12 +3587,43 @@ def r_formula_figure(fig):
     can be out of balance and then settle, which is exactly the idea the lesson
     exists to kill.
     """
+    # ⊕ P4 (MRB-223), 24 Aug 2026 — A FORMULA FIGURE MAY BE UNIT-OWNED ART.
+    #
+    # `balance` below is the ONE shape this function draws itself, and it was
+    # written for c2-06's level beam. Physics then arrived with five more, all
+    # different and all specific to one lesson: p4-02's three aligned bars,
+    # p4-03's two opposed panels, p4-08's equal helpings beside a graph that
+    # bends, p5-02/p5-04's stack of fluid layers. Drawing those here would put
+    # five units' geometry in the engine, which is exactly what `ks3_art`
+    # exists to stop — and it would put two content lanes back in one file.
+    #
+    # So `art` names a drawer in the unit's OWN module, resolved through the
+    # same closed registry `r_figure` already uses, with the same raise on an
+    # unknown name. `shape` is untouched: a figure with no `art` goes down the
+    # identical path it always did, so c2-06 and p2-04 do not move a byte.
+    #
+    # ⚠️ THE TRIANGLE IS NOT REACHABLE FROM HERE, AND THAT IS DELIBERATE. A
+    # product's figure is the `triangle` key with its own renderer; this branch
+    # draws the sums, the differences and the ratios. A unit cannot register a
+    # triangle drawer into `art` and quietly get MRB-204's shape for a
+    # relationship that is not a product.
+    art = fig.get("art")
+    if art:
+        if art not in SVG_ART:
+            raise ValueError(
+                "formula figure declares art %r, which no unit module draws. "
+                "Known: %s. A declared drawing with no drawer renders an "
+                "empty block under the statement it is meant to draw."
+                % (art, ", ".join(sorted(SVG_ART))))
+        return ('<div class="ks3-formula-figure">%s</div>' % SVG_ART[art](fig))
+
     shape = fig.get("shape")
     if shape != "balance":
         raise ValueError(
-            "formula figure shape %r is not drawn. `balance` is the sum's "
-            "figure; a product's figure is the `triangle` key, which has its "
-            "own renderer." % shape)
+            "formula figure shape %r is not drawn, and it names no `art`. "
+            "`balance` is the sum's figure; a product's figure is the "
+            "`triangle` key, which has its own renderer; anything else is a "
+            "drawer in the unit's own ks3_art module." % shape)
     pans = fig.get("pans") or {}
     return ('<div class="ks3-formula-figure">'
             '<svg viewBox="0 0 520 210" role="img" aria-label="%s" '

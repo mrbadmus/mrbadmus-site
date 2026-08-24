@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Springs and Hooke's law · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p4-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].p4-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 22rem; height: 40px; background: transparent; }
+  input[type="range"].p4-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].p4-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].p4-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].p4-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Forces</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Springs and Hooke's law</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Forces · Investigation</p>
+        <h1>Springs and Hooke's law</h1>
+        <p class="ks3-bigq">A spring is the only instrument in the lab that turns a force into a length you can read with a ruler. It works beautifully — right up until it does not.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>1 N stretched it 20 mm. 2 N stretched it 40 mm.</h2>
+        <p class="ks3-hook-prompt">Two readings, one spring, a ruler clamped alongside it. The pattern looks obvious, so make it do some work: predict the extension when you hang 10 N on the same spring.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What will the extension be at 10 N?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">For the first few newtons the pattern holds exactly: every newton adds the same 20 mm, so the extension is proportional to the load. But every spring has a load beyond which that stops being true, and after that each newton adds more than the last. Two readings can tell you the rule. They cannot tell you how far the rule goes — only more readings can do that, which is what the bench below is for.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p><strong>Extension</strong> is how much longer the spring has become, not its total length: extension = stretched length − natural length. While the extension is proportional to the load, the spring is obeying <strong>Hooke's law</strong>, and a graph of extension against load is a straight line through the origin. The load where that stops is the <strong>limit of proportionality</strong>.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · loading a spring</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Take the readings. Plot them. Find where it bends.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">One spring, a clamped ruler, and loads from 0 to 10 N. Set a load, record the reading, and the point goes on the graph. The dashed line is the straight line the first readings make.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. Which two readings would you take to test whether the extension is proportional to the load?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px; align-items: flex-end;">
+              <div style="flex: 1 1 280px; min-width: 240px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <label for="p4load" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Load on the spring</label>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light);">{{ loadLabel }}</p>
+                </div>
+                <input class="p4-slider" type="range" id="p4load" min="0" max="10" step="1" value="{{ loadValue }}" onChange="{{ onLoad }}" onInput="{{ onLoad }}">
+              </div>
+              <div style="flex: 0 1 320px; display: flex; gap: 9px; flex-wrap: wrap;">
+                <button type="button" onClick="{{ onRecord }}" style="{{ recordStyle }}">{{ recordLabel }}</button>
+                <button type="button" onClick="{{ onClear }}" style="{{ clearStyle }}">Clear the graph</button>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; display: flex; flex-wrap: wrap; gap: 18px;">
+              <div style="flex: 0 1 230px; min-width: 190px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 16px;">
+                <div style="position: relative;">
+                <svg viewBox="0 0 300 460" role="img" aria-label="{{ springAlt }}" style="display: block; width: 100%; height: auto;">
+                  <path d="M40 40 H260" style="fill: none; stroke: var(--ks3-on-dark-muted); stroke-width: 8; stroke-linecap: round;"></path>
+                  <path d="M60 110 H240" style="fill: none; stroke: #5C554D; stroke-width: 3; stroke-dasharray: 8 7;"></path>
+                  <path d="{{ coilPath }}" style="fill: none; stroke: #C6B9A7; stroke-width: 6;"></path>
+                  <rect x="{{ hangerX }}" y="{{ hangerY }}" width="120" height="54" rx="10" style="fill: #15110C; stroke: var(--ks3-on-dark-muted); stroke-width: 3;"></rect>
+                  <path d="{{ extBar }}" style="fill: none; stroke: #8FB7FF; stroke-width: 4;"></path>
+                </svg>
+                  <span style="position: absolute; left: 21%; top: 20.5%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(9px, 1.5vw, 13px); letter-spacing: .06em; color: #8C8177; white-space: nowrap; pointer-events: none;">NATURAL LENGTH</span>
+                  <span style="{{ extLabelStyle }}">{{ extLabel }}</span>
+                  <span style="{{ hangerLabelStyle }}">{{ loadLabel }}</span>
+                </div>
+              </div>
+
+              <div style="flex: 1 1 420px; min-width: 300px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 16px;">
+                <svg viewBox="0 0 1000 400" role="img" aria-label="{{ graphAlt }}" style="display: block; width: 100%; height: auto;">
+                  <path d="M120 40 V340 H960" style="fill: none; stroke: #C6B9A7; stroke-width: 4;"></path>
+                  <path d="{{ gridPath }}" style="fill: none; stroke: #4A433C; stroke-width: 2;"></path>
+                  <path d="M120 340 L940 109" style="fill: none; stroke: #5C554D; stroke-width: 3; stroke-dasharray: 10 9;"></path>
+                  <path d="{{ plotLine }}" style="fill: none; stroke: #8FB7FF; stroke-width: 4;"></path>
+                  <path d="{{ plotDots }}" style="fill: #8FB7FF;"></path>
+                  <text x="540" y="386" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 20px; letter-spacing: .07em; fill: #C6B9A7;">LOAD / N</text>
+                  <text x="30" y="34" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 20px; letter-spacing: .07em; fill: #C6B9A7;">EXTENSION / mm</text>
+                  <text x="112" y="366" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; fill: #8C8177;">0</text>
+                  <text x="530" y="366" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; fill: #8C8177;">5</text>
+                  <text x="940" y="366" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; fill: #8C8177;">10</text>
+                  <text x="104" y="288" text-anchor="end" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; fill: #8C8177;">50</text>
+                  <text x="104" y="230" text-anchor="end" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; fill: #8C8177;">100</text>
+                  <text x="104" y="173" text-anchor="end" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; fill: #8C8177;">150</text>
+                  <text x="104" y="115" text-anchor="end" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; fill: #8C8177;">200</text>
+                </svg>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Load</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ loadLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Extension</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ extLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Extension per newton</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ perNewtonLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The spring</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ verdictWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section style="margin: 28px 0 0; padding: 26px 28px; border-radius: var(--ks3-r-block); background: var(--ks3-alert-tint); border: 2px solid var(--ks3-ink);">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-alert); color: var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px; flex: 0 0 34px;">!</span>
+          <p class="ks3-eyebrow" style="margin: 0;">Before this one is done for real</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6; max-width: 62ch;">This is the one investigation in the unit that needs a risk assessment, because finding the limit of proportionality means loading a spring until it stops behaving.</p>
+        <ul style="margin: 14px 0 0; padding-left: 24px; font-size: 18px; line-height: 1.65;">
+          <li>Eye protection for everyone at the bench. An overloaded spring can let go, and it leaves at speed.</li>
+          <li>A tray of sand or a padded box directly under the load, so a falling mass lands on something soft.</li>
+          <li>Nobody's hands, feet or knees under the hanger at any point.</li>
+          <li>The stand clamped or its base weighted, so the whole set-up cannot topple towards anyone.</li>
+          <li>Loading to destruction is a demonstration, done once, behind a safety screen — not a class activity.</li>
+        </ul>
+      </section>
+
+      <section id="s-formula" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The relationship · a beam and a graph, not a triangle</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; max-width: 30ch;">Each newton adds the same amount, until it does not.</p>
+
+        <div style="margin-top: 24px; padding: 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+          <svg viewBox="0 0 1000 400" role="img" aria-label="Three bars drawn to one scale. One newton gives a bar of twenty millimetres, two newtons gives a bar of forty millimetres made of two equal parts, and three newtons gives sixty millimetres made of three equal parts. Beside them, a graph of extension against load is a straight line through the origin that bends upwards past the limit of proportionality." style="display: block; width: 100%; height: auto;">
+            <text x="40" y="40" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; letter-spacing: .08em; fill: var(--ks3-ink-muted);">EVERY NEWTON, THE SAME 20 mm</text>
+            <text x="40" y="94" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 20px; fill: var(--ks3-ink);">1 N</text>
+            <rect x="110" y="72" width="100" height="30" rx="6" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+            <text x="228" y="94" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 19px; fill: var(--ks3-ink);">20 mm</text>
+
+            <text x="40" y="164" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 20px; fill: var(--ks3-ink);">2 N</text>
+            <rect x="110" y="142" width="200" height="30" rx="6" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+            <path d="M210 142 V172" style="fill: none; stroke: var(--ks3-ink); stroke-width: 3;"></path>
+            <text x="328" y="164" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 19px; fill: var(--ks3-ink);">40 mm</text>
+
+            <text x="40" y="234" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 20px; fill: var(--ks3-ink);">3 N</text>
+            <rect x="110" y="212" width="300" height="30" rx="6" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+            <path d="M210 212 V242 M310 212 V242" style="fill: none; stroke: var(--ks3-ink); stroke-width: 3;"></path>
+            <text x="428" y="234" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 19px; fill: var(--ks3-ink);">60 mm</text>
+
+            <text x="40" y="310" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; fill: var(--ks3-ink);">extension ÷ load is the same every time</text>
+            <text x="40" y="344" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 18px; fill: var(--ks3-ink-body);">20 ÷ 1 = 40 ÷ 2 = 60 ÷ 3 = 20 mm per newton</text>
+
+            <path d="M600 40 V340 H960" style="fill: none; stroke: var(--ks3-ink); stroke-width: 4;"></path>
+            <path d="M600 340 L840 148" style="fill: none; stroke: var(--ks3-ink); stroke-width: 5;"></path>
+            <path d="M840 148 Q890 112 930 52" style="fill: none; stroke: var(--ks3-alert-border); stroke-width: 5;"></path>
+            <path d="M840 148 V340" style="fill: none; stroke: var(--ks3-ink-muted); stroke-width: 3; stroke-dasharray: 8 7;"></path>
+            <text x="840" y="366" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; fill: var(--ks3-ink-muted);">limit</text>
+            <text x="620" y="70" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; letter-spacing: .07em; fill: var(--ks3-ink-muted);">EXTENSION</text>
+            <text x="880" y="330" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; letter-spacing: .07em; fill: var(--ks3-ink-muted);">LOAD</text>
+          </svg>
+          <p style="margin: 16px 0 0; font-size: 19px; line-height: 1.55;">This is a beam and a graph rather than a triangle, because what is being taught is a proportionality read off a straight line: two quantities that keep the same ratio. The bars show it as a part–whole — three newtons of extension is three equal helpings of one newton's worth — and the graph shows the same fact as a straight line through the origin, with the bend where the law gives out.</p>
+          <p style="margin: 12px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 23px; line-height: 1.35;">While a spring obeys Hooke's law, extension is proportional to load.</p>
+          <p style="margin: 12px 0 0; font-family: var(--ks3-font-mono); font-size: 16px; font-weight: 500; line-height: 1.9; color: var(--ks3-ink-body);">extension in mm = stretched length in mm − natural length in mm<br>extension ÷ load stays the same for every reading on the straight line<br>past the limit of proportionality, that ratio stops being constant</p>
+        </div>
+
+        <dc-import name="Cfifa" examples="{{ cfifaExamples }}" questions="{{ cfifaQuestions }}" on-open="{{ onCfifaOpen }}" hint-size="100%,980px"></dc-import>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">While a spring obeys Hooke's law, its extension is proportional to the load: a graph of extension against load is a straight line through the origin, and every newton adds the same extension. Past the limit of proportionality the line bends, and the spring may not return to its original length.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Extension is how long the spring is.”</p>
+        <p>It is how much longer it has become. A spring with a natural length of 50 mm holding a load at 90 mm has an extension of 40 mm, not 90 mm, and a graph plotted with total length on the axis does not go through the origin — it starts at 50 mm with no load on it at all. That is why the first measurement in this investigation is taken before anything is hung on the spring, and why the sentence <em>extension = stretched length − natural length</em> is worth writing out every time until it is automatic. Nearly every wrong Hooke's law graph is this mistake.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“Past the limit, the spring snaps.”</p>
+          <p>The limit of proportionality is not a breaking point, and passing it is not dramatic. What stops is the neat arithmetic: each extra newton now adds more extension than the newton before it, so the graph curves away from the straight line, and the spring no longer springs all the way back. Take the load off and it is left permanently longer than it started, which is why an overstretched spring balance reads wrongly for ever afterwards even though it looks perfectly all right. Snapping happens much later, if at all.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Forces deform objects as well as move them: they stretch and squash. For a spring, extension — the increase in length, not the length — is proportional to the load while the spring obeys Hooke's law, so the graph is a straight line through the origin and equal loads add equal extensions. That is what makes a spring a usable measuring instrument. Beyond the limit of proportionality the line bends and the spring stops returning to its original length.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Robert Hooke published this relationship in 1678, and he published it first as a scrambled anagram — a way of claiming a discovery without giving it away while he checked it. Unscrambled it says, in Latin, <em>as the extension, so the force</em>: nine words, no equation, no graph, because neither had been invented as a way of presenting results. Reading it now, the striking thing is how narrow the claim is. Hooke did not say all materials do this; he said that within a certain range, springs and wires do. Every honest law in physics comes with a range attached, and the interesting science usually starts at the edge of it.</p>
+          <p>Stretching a spring also stores energy. That is why a wound clock runs, a mousetrap goes off, a bow fires an arrow and a trampoline throws you back up — the work you do pulling it out of shape comes back when it returns. At GCSE you will find that the energy stored is the area under that straight line, which is a neat piece of reasoning: the further you stretch it, the harder each extra millimetre becomes, so the energy grows faster than the extension does. Squashing works the same way, which is what the springs in a car's suspension, the foam in a running shoe and the crumple zone of a car all rely on — though a crumple zone is designed to deform permanently and never come back, absorbing the energy instead of returning it.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p4-07-moments.html">Moments: the turning effect<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p4-09-non-contact-forces.html">Non-contact forces<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p4-03-balanced-and-unbalanced.html">Balanced and unbalanced<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p4-01-what-a-force-is.html">What a force is<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p5-01-pressure-force-over-area.html">Pressure = force ÷ area<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Hooke's law with a spring constant, elastic and inelastic deformation, and the energy stored in a stretched spring as the area under a force–extension graph.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Got a set of readings that will not make a straight line?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The spring bench is a teaching model. This spring is given 20 mm of extension for each newton, a limit of proportionality at 6 N, and permanent deformation above 9 N; all three are chosen so that the bend in the graph is reachable, not measured from a real spring. Real readings scatter by a millimetre or two, and a real spring's limit is not a sharp line. Loads are treated as exact newtons.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Predict 10 N', short: 'HOOK' },
+  { id: 's-bench', label: 'Loading a spring', short: 'PLOT' },
+  { id: 's-formula', label: 'Beam, graph, four steps', short: 'FIFA' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const PER_N = 20;      // mm of extension per newton, on the straight line
+const LIMIT = 6;       // N, the modelled limit of proportionality
+const SPOIL = 9;       // N, above which the spring is permanently deformed
+const PAST = 32;       // mm per newton past the limit
+
+const CFIFA_EX = [
+  { tab: 'Nothing to convert', head: 'A spring extends 40 mm under a 2 N load. Staying on the straight line, what is the extension under 5 N?',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '40 mm stays 40 mm · 2 N stays 2 N',
+        note: 'Both extensions are in millimetres and both loads in newtons, so there is nothing to convert.' },
+      { letter: 'F', label: 'Formula', line: 'extension ÷ load is the same for every reading',
+        note: 'That is what proportional means, and it is why the graph is a straight line.' },
+      { letter: 'I', label: 'Insert', line: 'extension ÷ load = 40 mm ÷ 2 N',
+        note: 'Using the one reading given, and extension means the increase in length.' },
+      { letter: 'F', label: 'Fine-tune', line: '40 ÷ 2 = 20 mm for each newton',
+        note: 'Millimetres divided by newtons leaves millimetres per newton.' },
+      { letter: 'A', label: 'Answer', line: '5 N × 20 mm/N = 100 mm',
+        note: 'A hundred millimetres, as long as 5 N is still on the straight line.' }
+    ] },
+  { tab: 'Convert first', head: 'A spring extends 6.0 cm under 3 N. Staying on the straight line, what is the extension under 8 N, in millimetres?',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '6.0 cm × 10 = 60 mm',
+        note: 'The answer is wanted in millimetres, and a centimetre is ten of them, so multiply by 10.' },
+      { letter: 'F', label: 'Formula', line: 'extension ÷ load is the same for every reading',
+        note: 'Proportional, so one ratio describes every point on the line.' },
+      { letter: 'I', label: 'Insert', line: 'extension ÷ load = 60 mm ÷ 3 N',
+        note: 'The converted extension goes in. The 6.0 never does.' },
+      { letter: 'F', label: 'Fine-tune', line: '60 ÷ 3 = 20 mm for each newton',
+        note: 'Millimetres divided by newtons leaves millimetres per newton.' },
+      { letter: 'A', label: 'Answer', line: '8 N × 20 mm/N = 160 mm',
+        note: 'Leave the 6.0 in centimetres and the answer reads 16 — ten times too small for the unit asked for.' }
+    ] }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Calculate',
+    question: 'A spring extends 30 mm under a 3 N load. Staying within the straight line, what is its extension under 7 N?',
+    options: [
+      { text: '70 mm', correct: true },
+      { text: '10 mm — divide the extension by the load', correction: '10 mm is the extension for one newton, which is a useful step. The question asks for seven of them.' },
+      { text: '70 N — the answer describes how hard the spring pulls', correction: 'The arithmetic is right and the quantity is wrong. An extension is a length, so it is in millimetres.' },
+      { text: '34 mm — add the extra 4 N on to the 30 mm', correction: 'That treats load and extension as if they add together. They are proportional: four extra newtons add four helpings of 10 mm.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A spring is loaded past its limit of proportionality, then the load is taken off completely. What happens?',
+    options: [
+      { text: 'It does not go back to its natural length — it stays permanently longer than it started.', correct: true },
+      { text: 'It goes back to its natural length, because that is what springs do.', correction: 'True only while it is within the limit. Past it, some of the stretching is permanent.' },
+      { text: 'It goes back to its natural length, but takes much longer to get there.', correction: 'It is not a matter of time. Wait as long as you like and it is still longer than it was.' },
+      { text: 'It snaps, because the limit of proportionality is the breaking point.', correction: 'The limit is where the arithmetic stops being neat, not where the metal fails. Breaking happens much later, if at all.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A newton meter has a scale of equally spaced marks alongside its spring. Explain why the marks can be equally spaced, and why the instrument becomes useless if it is badly overloaded.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The extension is proportional to\u2026',
+    criteria: [
+      'Says the extension is proportional to the force while the spring obeys Hooke\u2019s law.',
+      'Says equal increases in force therefore give equal increases in extension.',
+      'Says that is what allows the marks to be equally spaced all the way along.',
+      'Says overloading takes the spring past its limit of proportionality.',
+      'Says the spring is then permanently stretched, so every later reading is wrong even at zero load.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A set of kitchen scales weighs up to 5 kg and its dial is marked in equal steps of 100 g the whole way round. Someone stands on it with one foot. Explain what must be true of the spring inside for the dial to work, and what the owner should check afterwards.',
+    fieldLabel: 'Your answer',
+    placeholder: 'For equal steps on the dial\u2026',
+    criteria: [
+      'Says the spring inside must be squashed or stretched in proportion to the force on it.',
+      'Says that proportionality must hold across the whole range the dial covers, up to 5 kg.',
+      'Says the weight of a person is far more than 5 kg allows — around 700 N rather than 50 N.',
+      'Says the spring has probably been taken past its limit of proportionality.',
+      'Says to check that the dial still reads zero with nothing on it, because a permanently deformed spring reads wrongly for ever.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    load: 2,
+    readings: [],
+    workedStep: 0,
+    formPick: null,
+    insertPick: null,
+    ansText: '',
+    ansUnit: '',
+    buildOpen: false,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  ext(load) {
+    if (load <= LIMIT) return load * PER_N;
+    return LIMIT * PER_N + (load - LIMIT) * PAST;
+  }
+
+  gx(load) { return 120 + load * 82; }
+  gy(mm) { return 340 - mm * 1.1538; }
+
+  benchNote() {
+    const s = this.state;
+    const L = s.load;
+    const E = this.ext(L);
+    if (L === 0) {
+      return 'No load, no extension — and this reading matters as much as any of them. It is the zero the whole investigation is measured from, and a graph plotted without it usually goes through the wrong place.';
+    }
+    if (L < LIMIT) {
+      return L + ' N gives ' + E + ' mm, which is ' + PER_N + ' mm for every newton — the same as every reading before it. On the graph the point sits exactly on the dashed line, which is what proportional looks like.';
+    }
+    if (L === LIMIT) {
+      return 'At ' + LIMIT + ' N the extension is ' + E + ' mm, still ' + PER_N +
+        ' mm per newton and still on the line. This is the last reading that obeys Hooke\u2019s law: the limit of proportionality for this spring. Nothing about the spring looks any different.';
+    }
+    if (L <= SPOIL) {
+      return 'Past the limit. ' + L + ' N gives ' + E + ' mm, but the straight line predicted ' + (L * PER_N) +
+        ' mm, so this point sits above it — each newton now adds ' + PAST + ' mm instead of ' + PER_N +
+        ' mm. The spring will still shorten when you unload it, but not quite all the way.';
+    }
+    return 'Above ' + SPOIL + ' N this spring is permanently deformed. It is at ' + E +
+        ' mm now, and taking the load off will not bring it back to where it started — the coils have been pulled apart for good. A spring balance treated like this reads wrongly at every load afterwards.';
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-bench') return s.gate !== null && s.readings.length >= 2;
+          if (id === 's-formula') return s.buildOpen;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  benchVals() {
+    const s = this.state;
+    const E = this.ext(s.load);
+    const px = E * 0.9;
+    const coilTop = 40;
+    const natural = 70;
+    const coilEnd = coilTop + natural + px;
+    let coil = 'M150 ' + coilTop;
+    const turns = 7;
+    const seg = (natural + px) / turns;
+    for (let i = 0; i < turns; i += 1) {
+      coil += ' L' + (i % 2 ? 106 : 194) + ' ' + (coilTop + seg * (i + 0.5)) + ' L150 ' + (coilTop + seg * (i + 1));
+    }
+    const sorted = s.readings.slice().sort((a, b) => a - b);
+    let dots = '';
+    sorted.forEach((L) => {
+      const cx = this.gx(L);
+      const cy = this.gy(this.ext(L));
+      dots += 'M' + (cx - 7) + ' ' + cy + ' a7 7 0 1 0 14 0 a7 7 0 1 0 -14 0 ';
+    });
+    let line = '';
+    sorted.forEach((L, i) => {
+      line += (i ? 'L' : 'M') + this.gx(L) + ' ' + this.gy(this.ext(L)) + ' ';
+    });
+    let grid = '';
+    for (let i = 1; i <= 10; i += 1) { grid += 'M' + this.gx(i) + ' 340 V334 '; }
+    [50, 100, 150, 200, 250].forEach((mm) => { grid += 'M120 ' + this.gy(mm).toFixed(1) + ' H126 '; });
+    const recorded = s.readings.indexOf(s.load) >= 0;
+    const perN = s.load === 0 ? '—' : (Math.round((E / s.load) * 10) / 10) + ' mm/N';
+    return {
+      benchProgress: s.readings.length ? s.readings.length + ' reading' + (s.readings.length === 1 ? '' : 's') + ' plotted' : 'No readings plotted yet',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'Two readings anywhere — any two will show the pattern' },
+        { letter: 'B', text: 'The zero reading and one more, so the line has a starting point' },
+        { letter: 'C', text: 'As many as possible, spread across the range, including zero' },
+        { letter: 'D', text: 'Two readings at the same load, to check they agree' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      benchOpen: s.gate !== null,
+      loadValue: s.load,
+      loadLabel: s.load + ' N',
+      onLoad: (e) => this.setState({ load: Number(e.target.value) }),
+      recordLabel: recorded ? 'Already plotted' : 'Record this reading',
+      recordStyle: this.seg(!recorded, true, recorded) + (recorded ? 'opacity:.5;cursor:default;' : ''),
+      onRecord: () => this.setState((st) => (st.readings.indexOf(st.load) >= 0 ? null : { readings: st.readings.concat([st.load]) })),
+      clearStyle: this.seg(false, true, false),
+      onClear: () => this.setState({ readings: [] }),
+      coilPath: coil,
+      hangerX: 90,
+      hangerY: coilEnd,
+      extBar: px > 4 ? 'M250 110 V' + coilEnd + ' M240 110 H260 M240 ' + coilEnd + ' H260' : 'M0 0',
+      extLabelStyle: 'position:absolute;left:88%;top:' + ((((110 + coilEnd) / 2) / 460) * 100).toFixed(2) +
+        '%;transform:translate(-100%,-50%);font-family:var(--ks3-font-mono);font-weight:500;font-size:clamp(9px,1.4vw,14px);color:#8FB7FF;white-space:nowrap;pointer-events:none;',
+      extLabel: E + ' mm',
+      hangerLabelStyle: 'position:absolute;left:50%;top:' + (((coilEnd + 27) / 460) * 100).toFixed(2) +
+        '%;transform:translate(-50%,-50%);font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(11px,1.8vw,17px);color:#FBF3E6;white-space:nowrap;pointer-events:none;',
+      gridPath: grid,
+      plotDots: dots || 'M0 0',
+      plotLine: sorted.length > 1 ? line : 'M0 0',
+      perNewtonLabel: perN,
+      verdictWord: s.load === 0 ? 'Unloaded' : (s.load < LIMIT ? 'On the straight line' : (s.load === LIMIT ? 'At the limit' : (s.load <= SPOIL ? 'Past the limit' : 'Permanently stretched'))),
+      springAlt: 'A spring hanging from a clamp with ' + s.load + ' newtons on it, stretched ' + E +
+        ' millimetres below the dashed line marking its natural length.',
+      graphAlt: 'A graph of extension in millimetres against load in newtons with ' + s.readings.length +
+        ' points plotted, and a dashed line showing the straight line through the origin that the first readings make.',
+      benchNote: this.benchNote()
+    };
+  }
+
+  buildVals() {
+    const s = this.state;
+    const L = s.load;
+    const E = this.ext(L);
+    const dbl = L * 2;
+    const predicted = E * 2;
+    const actual = this.ext(dbl);
+    const committed = (s.formPick !== null ? 1 : 0) + (s.insertPick !== null ? 1 : 0) + (s.ansText.trim() && s.ansUnit ? 1 : 0);
+    const locked = s.buildOpen || committed < 3 || L === 0;
+    return {
+      cfifaExamples: CFIFA_EX,
+      onCfifaOpen: () => this.setState({ buildOpen: true }),
+      cfifaQuestions: [
+        {
+          tab: 'Question 1', id: 'p408q1',
+          blocked: L === 0, lead: 'Put a load on the spring first — a zero reading has nothing to scale up.', blockedProgress: 'No load on the spring',
+          head: L === 0 ? 'Put a load on the spring first — a zero reading has nothing to scale up.' : 'Your reading: ' + E + ' mm under ' + L + ' N. Predict the extension at ' + dbl + ' N.',
+          steps: [
+            { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+              line: E + ' mm stays ' + E + ' mm · ' + L + ' N stays ' + L + ' N',
+              note: 'The extension is already in millimetres and the load already in newtons, so there is nothing to convert.' }
+          ].concat([
+        { letter: 'F', label: 'Formula', line: 'extension ÷ load is the same for every reading',
+          note: 'True while the spring is on the straight line.' },
+        { letter: 'I', label: 'Insert', line: 'extension ÷ load = ' + E + ' mm ÷ ' + L + ' N',
+          note: 'Both figures come from the reading on your own bench.' },
+        { letter: 'F', label: 'Fine-tune', line: E + ' ÷ ' + L + ' = ' + (Math.round((E / Math.max(L, 1)) * 10) / 10) + ' mm for each newton',
+          note: 'Millimetres divided by newtons leaves millimetres per newton.' },
+        { letter: 'A', label: 'Answer', line: dbl + ' N × ' + (Math.round((E / Math.max(L, 1)) * 10) / 10) + ' mm/N = ' + predicted + ' mm',
+          note: 'Double the load, so the prediction is double the extension.' }
+      ]),
+          close: dbl > 10
+            ? 'The five lines predict ' + predicted + ' mm at ' + dbl + ' N — but the bench only goes to 10 N, so this one cannot be checked. Choose a smaller load and run it again.'
+            : (Math.abs(actual - predicted) < 0.5
+              ? 'The five lines predict ' + predicted + ' mm, and setting the bench to ' + dbl + ' N gives exactly ' + actual + ' mm. The proportionality held, because both loads are on the straight line.'
+              : 'The five lines predict ' + predicted + ' mm, but setting the bench to ' + dbl + ' N gives ' + actual + ' mm — more than predicted. Doubling took the spring past its limit of proportionality. The arithmetic was right; the assumption behind it was not.')
+        },
+        {
+          tab: 'Question 2', id: 'p408q2',
+          head: 'A spring stretches 2.4 cm under a 4 N load. Staying on the straight line, what is the extension under 10 N, in millimetres?',
+          steps: [
+            { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+              line: '2.4 cm × 10 = 24 mm',
+              note: 'The answer is wanted in millimetres, so multiply the centimetres by 10.' },
+            { letter: 'F', label: 'Formula', line: 'extension ÷ load is the same for every reading',
+              note: 'Proportional, so one ratio describes the whole line.' },
+            { letter: 'I', label: 'Insert', line: 'extension ÷ load = 24 mm ÷ 4 N',
+              note: 'The converted extension goes in. The 2.4 never does.' },
+            { letter: 'F', label: 'Fine-tune', line: '24 ÷ 4 = 6 mm for each newton',
+              note: 'Millimetres divided by newtons leaves millimetres per newton.' },
+            { letter: 'A', label: 'Answer', line: '10 N × 6 mm/N = 60 mm',
+              note: 'Leave it in centimetres and the answer reads 6 — right number, wrong unit, no marks.' }
+          ],
+          close: 'The five lines give 60 mm, provided 10 N is still on the straight part of the line.'
+        }
+      ]
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign({
+      draftVisible: this.props.showDraft !== false,
+      hookOptions: [
+        { letter: 'A', text: '200 mm — every newton adds another 20 mm, all the way' },
+        { letter: 'B', text: 'More than 200 mm — the pattern stops holding at some load' },
+        { letter: 'C', text: 'Less than 200 mm — a spring gets harder to stretch as it goes' },
+        { letter: 'D', text: 'Nothing — it will have snapped long before 10 N' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null
+    }, this.railVals(), this.benchVals(), this.buildVals(), this.ladderVals());
+  }
+}
+
+</script>
+</body>
+</html>
