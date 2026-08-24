@@ -180,3 +180,11 @@ rewrites §1 below. Run it when Design delivers a new unit; never hand-edit rows
 | `radiation` | `p1-06-radiation` | s-hook s-routes s-word s-ladder | — |
 | `insulation` | `p1-07-insulation` | s-hook s-plan s-trial s-ladder | — |
 | `simple-machines` | `p1-08-simple-machines` | s-hook s-bench s-worked s-ladder | — |
+| `energy-in-food` | `p2-01-energy-in-food` | s-hook s-burn s-worked s-ladder | — |
+| `power-ratings-in-watts` | `p2-02-power-ratings-in-watts` | s-hook s-bench s-cfifa s-ladder | — |
+| `calculating-energy-transferred` | `p2-03-calculating-energy-transferred` | s-hook s-bench s-worked s-ladder | — |
+| `reading-a-fuel-bill` | `p2-04-reading-a-fuel-bill` | s-hook s-bill s-cfifa s-ladder | — |
+| `fuels-and-energy-resources` | `p2-05-fuels-and-energy-resources` | s-hook s-sort s-grid s-ladder | — |
+| `speed` | `p3-01-speed` | s-hook s-track s-build s-ladder | — |
+| `distance-time-graphs` | `p3-02-distance-time-graphs` | s-hook s-plot s-match s-ladder | — |
+| `relative-motion` | `p3-03-relative-motion` | s-hook s-frames s-pass s-ladder | — |

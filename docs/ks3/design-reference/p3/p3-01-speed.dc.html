@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Speed · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  [data-runs] { display: grid; grid-template-columns: minmax(0, 68px) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr); gap: 10px 14px; align-items: center; }
+  @media (max-width: 620px) { [data-runs] { grid-template-columns: minmax(0, 56px) minmax(0, 1fr) minmax(0, 1fr); } [data-runs] > [data-run-hide] { display: none; } }
+  input[type="range"].p3-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 17rem; height: 40px; background: transparent; }
+  input[type="range"].p3-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].p3-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].p3-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].p3-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Describing motion</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Speed</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="6">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Describing motion · Quantitative</p>
+        <h1>Speed</h1>
+        <p class="ks3-bigq">A fly crosses your face in a blink. A plane crawls across the sky. Which one is moving faster?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>The slow-looking one covers 250 metres every second.</h2>
+        <p class="ks3-hook-prompt">The fly is 30 cm from your eye and takes half a second to cross your view. The plane is 10 km up and takes a minute to cross the same patch of sky. One of them would cross a football pitch in less than half a second, and it is not the fly.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">So what would you have to know to say which is faster?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">How fast something looks depends on how far away it is. Speed does not. It is one number built from two measurements — how far, and how long — and until you have both you have nothing to compare.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>A sprinter covers 100 m in 12 s. A marathon runner covers 42 000 m in 7 200 s. The sprinter travels far less ground and is far faster. Distance alone settles nothing and time alone settles nothing; the two have to be put together.</p>
+      </section>
+
+      <section id="s-track" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · two light gates</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">The timer gives you a time. Nothing else.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ runProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">The trolley rolls off the ramp and breaks two beams. The clock starts at the first gate and stops at the second. You choose how far apart the gates are, so you own both measurements.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 22px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. You raise the ramp so the trolley rolls faster. What does the gate timer read?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 24px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div>
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Ramp height</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ rampTabs }}" as="t" hint-placeholder-count="3">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" disabled="{{ t.disabled }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Speed of playback</p>
+                <button type="button" onClick="{{ onSlow }}" aria-pressed="{{ slowOn }}" style="{{ slowStyle }}">{{ slowLabel }}</button>
+              </div>
+              <div style="flex: 1 1 240px; min-width: 220px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <label for="p3sep" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Gate separation</label>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light);">{{ sepLabel }}</p>
+                </div>
+                <input class="p3-slider" type="range" id="p3sep" min="0.4" max="2" step="0.2" value="{{ sepValue }}" onChange="{{ onSep }}" onInput="{{ onSep }}" disabled="{{ running }}">
+              </div>
+            </div>
+
+            <div style="margin-top: 20px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-on-dark-muted); overflow: hidden;">
+              <canvas width="1800" height="620" ref="{{ benchRef }}" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+              <div style="padding: 15px 18px 17px; border-top: 2px solid var(--ks3-on-dark-muted); background: var(--ks3-dark-panel); display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+                <button type="button" onClick="{{ onRelease }}" disabled="{{ running }}" style="{{ releaseStyle }}">{{ releaseLabel }}</button>
+                <p style="margin: 0; font-size: 18px; font-weight: 700; color: var(--ks3-on-dark);">{{ benchStatus }}</p>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Distance between gates</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 25px; font-weight: 500; color: var(--ks3-on-dark);">{{ sepLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Last gate time</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 25px; font-weight: 500; color: var(--ks3-alert);">{{ lastTimeLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Speed</p>
+                <p style="margin: 5px 0 0; font-size: 19px; font-weight: 700; color: var(--ks3-on-dark);">not measured — you work it out</p>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink);">
+              <p style="margin: 0 0 14px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Your results table</p>
+              <div data-runs="1">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Run</p>
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Distance / m</p>
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Time / s</p>
+                <p data-run-hide="1" style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Ramp</p>
+                <sc-for list="{{ runRows }}" as="row" hint-placeholder-count="3">
+                  <p style="{{ row.numStyle }}">{{ row.n }}</p>
+                  <p style="{{ row.valStyle }}">{{ row.d }}</p>
+                  <p style="{{ row.valStyle }}">{{ row.t }}</p>
+                  <p data-run-hide="1" style="{{ row.rampStyle }}">{{ row.ramp }}</p>
+                </sc-for>
+              </div>
+              <p style="margin: 16px 0 0; font-size: 18px; line-height: 1.6;">{{ runsNote }}</p>
+            </div>
+          </div>
+        </sc-if>
+      </section>
+
+      <section style="margin: 28px 0 0; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 32px;">
+        <div style="padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(24px, 3.2vw, 36px); line-height: 1.14; letter-spacing: -.03em; text-align: center;">Speed = distance ÷ time</p>
+        </div>
+        <p class="ks3-eyebrow" style="margin: 24px 0 0; color: var(--ks3-accent-text);">The triangle</p>
+        <h2 style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 32px; line-height: 1.1; letter-spacing: -.03em;">Cover the one you want</h2>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 30px 48px; margin-top: 22px;">
+          <svg viewBox="0 0 300 214" role="img" aria-label="A formula triangle. Distance sits above a dividing line; speed and time sit below it, multiplied together. Covering one letter leaves the way to work it out." style="width: 260px; height: auto; flex: 0 0 auto;">
+            <path d="M150 8L290 200H10Z" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 5; stroke-linejoin: round;"></path>
+            <line x1="66" y1="120" x2="234" y2="120" style="stroke: var(--ks3-ink); stroke-width: 5; stroke-linecap: round;"></line>
+            <text x="150" y="100" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 66px; fill: var(--ks3-ink);">d</text>
+            <text x="106" y="182" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 58px; fill: var(--ks3-ink);">s</text>
+            <text x="150" y="178" text-anchor="middle" style="font-family: var(--ks3-font-body); font-weight: 600; font-size: 26px; fill: var(--ks3-ink-muted);">×</text>
+            <text x="196" y="182" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 58px; fill: var(--ks3-ink);">t</text>
+            <sc-if value="{{ coverTop }}">
+              <rect x="84" y="50" width="132" height="60" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="150" y="94" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 46px; fill: var(--ks3-ink-ghost);">d</text>
+            </sc-if>
+            <sc-if value="{{ coverLeft }}">
+              <rect x="60" y="132" width="94" height="58" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="107" y="176" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">s</text>
+            </sc-if>
+            <sc-if value="{{ coverRight }}">
+              <rect x="150" y="132" width="94" height="58" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="197" y="176" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">t</text>
+            </sc-if>
+          </svg>
+          <div style="flex: 1 1 340px; min-width: 280px;">
+            <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+              <sc-for list="{{ coverTabs }}" as="t" hint-placeholder-count="3">
+                <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+              </sc-for>
+            </div>
+            <p style="margin: 20px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(30px, 3.8vw, 40px); line-height: 1.14; letter-spacing: -.02em;">{{ coverResult }}</p>
+            <p style="margin: 10px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(20px, 2.4vw, 26px); line-height: 1.2; letter-spacing: -.02em; color: var(--ks3-ink-body);">m with s gives m/s · km with h gives km/h</p>
+            <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body);">Two things side by side means multiply. One thing over another means divide.</p>
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 9px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">d</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">distance</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">m</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">s</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">speed</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">m/s</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">t</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">time</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">s</span>
+              </div>
+            </div>
+            </div>
+        </div>
+      </section>
+
+      <section id="s-build" class="ks3-block" style="scroll-margin-top: 92px; background: var(--ks3-inset);">
+        <dc-import name="Cfifa" examples="{{ cfifaExamples }}" questions="{{ cfifaQuestions }}" on-open="{{ onCfifaOpen }}" hint-size="100%,980px"></dc-import>
+
+        <div style="margin-top: 24px;">
+            <p style="margin: 0 0 4px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Three words you have just used</p>
+            <p style="margin: 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body); max-width: 52ch;">Say what each one means out loud. Then turn the card and check yourself.</p>
+            <ul class="ks3-cards">
+              <sc-for list="{{ cards }}" as="c" hint-placeholder-count="3">
+                <li>
+                  <button type="button" class="{{ c.className }}" onClick="{{ c.onClick }}" aria-expanded="{{ c.open }}">
+                    <span class="ks3-card-front">{{ c.term }}</span>
+                    <span class="ks3-card-back" hidden="{{ c.closed }}">
+                      <span class="ks3-card-def">{{ c.def }}</span>
+                      <span class="ks3-card-note">{{ c.note }}</span>
+                    </span>
+                    <span class="ks3-card-hint">Say it, then turn</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+        </div>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">A speed is two measurements made into one number: distance ÷ time. On its own, neither measurement can tell you which is faster.</p>
+      </div>
+
+      <section id="s-compare" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">Your turn · three pairs</p>
+            <h2 style="margin: 6px 0 0;">Which one is faster?</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ pairProgress }}</p>
+        </div>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Work each one out before you choose. One of these three pairs is a dead heat.</p>
+
+        <div style="margin-top: 22px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px;">
+          <sc-for list="{{ pairs }}" as="p" hint-placeholder-count="3">
+            <div style="{{ p.style }}">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ p.label }}</p>
+              <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+                <p style="margin: 0; font-size: 19px; line-height: 1.45; font-weight: 600;">{{ p.a }}</p>
+                <p style="margin: 0; font-size: 19px; line-height: 1.45; font-weight: 600;">{{ p.b }}</p>
+              </div>
+              <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+                <sc-for list="{{ p.choices }}" as="c" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ c.onClick }}" aria-pressed="{{ c.pressed }}" disabled="{{ c.disabled }}" style="{{ c.style }}">{{ c.label }}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ p.open }}">
+                <div data-arrive="1" style="margin-top: 14px; padding-top: 14px; border-top: 2px solid var(--ks3-rule);">
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-ink);">{{ p.sums }}</p>
+                  <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body);">{{ p.why }}</p>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“I walked 100 m at 1 m/s, then ran 100 m at 5 m/s. So my average speed was 3 m/s.”</p>
+        <p style="max-width: 54ch;">Halfway between 1 and 5 is 3, and the two distances are equal, so it looks safe. Commit to a number before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 30rem;">
+          <sc-for list="{{ avgOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ avgOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 14px;">
+              <div style="padding: 16px 18px; border-radius: 16px; background: var(--ks3-inset);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">Walking</p>
+                <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 21px; font-weight: 500;">100 m ÷ 1 m/s = 100 s</p>
+              </div>
+              <div style="padding: 16px 18px; border-radius: 16px; background: var(--ks3-inset);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">Running</p>
+                <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 21px; font-weight: 500;">100 m ÷ 5 m/s = 20 s</p>
+              </div>
+              <div style="padding: 16px 18px; border-radius: 16px; background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-accent-text);">The whole journey</p>
+                <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 21px; font-weight: 500;">200 m ÷ 120 s = 1.67 m/s</p>
+              </div>
+            </div>
+            <p style="margin: 18px 0 0; font-size: 19px; line-height: 1.6;">You spent <strong>five times as long</strong> walking as running, so the walk counts five times as much. That is why the answer sits close to walking pace and nowhere near 3 m/s. Average speed is always the <strong>total distance divided by the total time</strong> — never the average of the speeds.</p>
+          </div>
+        </sc-if>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;A speed camera tells you how fast you were going on the journey.&rdquo;</p>
+          <p>It tells you how fast you were going over a few metres of it. That is an instantaneous speed — measured over a stretch so short that the speed has no time to change — and it can be far above or far below the average for the trip. Average speed checks on motorways exist because the two numbers are different: they time you between two gantries and work out distance ÷ time, which no single camera can do.</p>
+        </div>
+      </section>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Speed is distance ÷ time, measured in metres per second. The average speed for a whole journey is the total distance divided by the total time — never the average of the separate speeds.</p>
+        </div>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Speed = distance ÷ time, in metres per second. It turns two measurements into one number, so any two journeys can be compared. Finishing first is not the same as travelling fastest, and average speed is total distance ÷ total time.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>A roadside speed camera measures you over about half a metre of road. An average-speed camera measures you over two kilometres. Both are doing distance ÷ time, and they can disagree completely: you can pass every camera at exactly the limit and still have averaged more than the limit in between, or crawl through a jam and pass one camera far too fast. Neither reading is a lie. A speed is only ever the speed over the stretch you divided by, and how long that stretch is changes the answer.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p2-05-fuels-and-energy-resources.html">Fuels and energy resources<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p3-02-distance-time-graphs.html">Distance–time graphs<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p3-03-relative-motion.html">Relative motion<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p4-04-what-forces-do-to-motion.html">What forces do to motion<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Acceleration, velocity–time graphs, and the equations of motion — all built on distance ÷ time.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Stuck on which number to divide by which?</p>
+          <a class="ks3-tutor-cta" href="#s-build">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">Clear the floor at the end of the runway before you release a trolley, and catch it rather than letting it hit the bench stop.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startRamp&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;low&quot;,&quot;med&quot;,&quot;high&quot;],&quot;default&quot;:&quot;med&quot;,&quot;tsType&quot;:&quot;'low' | 'med' | 'high'&quot;,&quot;section&quot;:&quot;The bench&quot;},&quot;startGap&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.4,&quot;max&quot;:2,&quot;step&quot;:0.2,&quot;default&quot;:1.2,&quot;unit&quot;:&quot; m&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;The bench&quot;},&quot;slowMotion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;The bench&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Fly or plane', short: 'HOOK' },
+  { id: 's-track', label: 'Two light gates', short: 'GATES' },
+  { id: 's-build', label: 'Your own five steps', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-track') return s.runs.length >= 3;
+  if (id === 's-build') return !!s.buildOpen;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+// Lab trolley speeds off a ramp, in m/s. Constant-speed model between the
+// gates — the trolley has left the ramp before gate A.
+const RAMPS = [
+  { id: 'low', label: 'Low', v: 0.55 },
+  { id: 'med', label: 'Medium', v: 0.95 },
+  { id: 'high', label: 'High', v: 1.45 }
+];
+
+const CFIFA_EX = [
+  { tab: 'Nothing to convert', head: 'A trolley crosses gates 1.20 m apart in 0.84 s.',
+    next: 'Nothing needed converting there. Now the one that does.',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '1.20 m stays 1.20 m · 0.84 s stays 0.84 s',
+        note: 'The gap is already in metres and the time is already in seconds, so there is nothing to convert.' },
+      { letter: 'F', label: 'Formula', line: 's = d ÷ t',
+        note: 'Cover s on the triangle: d sits over t, so you divide.' },
+      { letter: 'I', label: 'Insert', line: 's = 1.20 m ÷ 0.84 s',
+        note: 'Distance on top, because distance is on top of the triangle.' },
+      { letter: 'F', label: 'Fine-tune', line: '1.20 ÷ 0.84 = 1.4285…',
+        note: 'Metres divided by seconds leaves metres per second.' },
+      { letter: 'A', label: 'Answer', line: 's = 1.43 m/s',
+        note: 'Two decimal places, and the unit.' }
+    ] },
+  { tab: 'Convert first', head: 'A car covers 1.8 km of motorway in 90 s.',
+    next: 'Convert first, then the same four lines. Your turn below.',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '1.8 km × 1000 = 1800 m',
+        note: 'The formula wants metres, and a kilometre is a thousand of them, so multiply by 1000.' },
+      { letter: 'F', label: 'Formula', line: 's = d ÷ t',
+        note: 'Cover s on the triangle: d sits over t, so you divide.' },
+      { letter: 'I', label: 'Insert', line: 's = 1800 m ÷ 90 s',
+        note: 'The converted distance goes in. The kilometre reading never does.' },
+      { letter: 'F', label: 'Fine-tune', line: '1800 ÷ 90 = 20',
+        note: 'Metres divided by seconds leaves metres per second.' },
+      { letter: 'A', label: 'Answer', line: 's = 20 m/s',
+        note: 'Insert 1.8 instead of 1800 and the answer comes out 1000 times too small.' }
+    ] }
+];
+
+const COVERS = {
+  s: { result: 's = d ÷ t', sentence: 's sits underneath, with d above it. Cover it and you are left with d over t — divide.' },
+  d: { result: 'd = s × t', sentence: 'd is on its own at the top, with the other two side by side underneath. Cover it and you are left with s × t — multiply.' },
+  t: { result: 't = d ÷ s', sentence: 't sits underneath, with d above it. Cover it and you are left with d over s — divide.' }
+};
+
+const CARDS = [
+  { term: 'Speed', def: 'How far something travels in a certain time — distance divided by time.', note: 'Not "how fast it looks". A plane looks slow because it is far away.' },
+  { term: 'Average speed', def: 'Total distance divided by total time for a whole journey.', note: 'It is not the average of the speeds. Time spent slowly counts for more.' },
+  { term: 'Metre per second', def: 'The unit of speed: the number of metres travelled in each second.', note: 'Written m/s. The slash means "divided by", which is where it comes from.' }
+];
+
+const PAIRS = [
+  {
+    id: 'p1', label: 'Pair 1',
+    a: 'Sprinter — 100 m in 10.5 s', b: 'Cyclist — 400 m in 32 s',
+    answer: 'b',
+    sums: '100 ÷ 10.5 = 9.52 m/s · 400 ÷ 32 = 12.50 m/s',
+    why: 'The sprinter finishes first and is slower. Finishing first only means the distance was shorter.'
+  },
+  {
+    id: 'p2', label: 'Pair 2 · the one from the top of the page',
+    a: 'Fly — 1.5 m in 0.8 s, 30 cm from your eye', b: 'Plane — 15 000 m in 60 s, 10 km up',
+    answer: 'b',
+    sums: '1.5 ÷ 0.8 = 1.88 m/s · 15 000 ÷ 60 = 250 m/s',
+    why: 'The plane is over a hundred times faster than the thing that looked fast. Distance from you changes how it looks, not how fast it goes.'
+  },
+  {
+    id: 'p3', label: 'Pair 3 · different units',
+    a: 'Car — 72 km/h', b: 'Racing cyclist — 20 m/s',
+    answer: 'same',
+    sums: '72 km/h ÷ 3.6 = 20 m/s',
+    why: 'A dead heat. Two speeds cannot be compared until they are in the same unit — 3.6 converts km/h to m/s, because there are 1000 m in a km and 3600 s in an hour.'
+  }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Calculate',
+    question: 'A trolley crosses two light gates 1.5 m apart in 0.60 s. What is its speed?',
+    options: [
+      { text: '2.5 m/s', correct: true },
+      { text: '0.4 m/s', correction: 'That is 0.60 ÷ 1.5 — time divided by distance. Distance goes on top, as it does on the triangle.' },
+      { text: '0.9 m/s', correction: 'That is 1.5 × 0.60. Multiplying gives you a distance, not a speed.' },
+      { text: '2.5 m', correction: 'The number is right and the unit is not. Metres divided by seconds gives metres per second.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A runner covers the first 200 m in 40 s, then the next 200 m in 60 s. What is their average speed for the whole 400 m?',
+    options: [
+      { text: '4 m/s', correct: true },
+      { text: '4.17 m/s', correction: 'That is the average of 5 m/s and 3.33 m/s. Averaging the speeds ignores that more time was spent on the slower part.' },
+      { text: '5 m/s', correction: 'That is the first 200 m only. The question asks for the whole journey.' },
+      { text: '3.33 m/s', correction: 'That is the second 200 m only. The whole journey is 400 m in 100 s.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A student times a trolley over the same 1.20 m three times and gets 0.81 s, 0.84 s and 0.90 s. Say what they should do with the three numbers before working out a speed, and why one run on its own is not good enough.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The three times are different because…',
+    criteria: [
+      'Says the three readings are not identical, and that this is normal rather than a mistake.',
+      'Names a reason the times vary — the release, the trolley running slightly crooked, or where it was let go.',
+      'Says to add the three times and divide by three to get a mean time.',
+      'Uses the mean time in speed = distance ÷ time, with the distance staying 1.20 m.',
+      'Says that using one run means the answer depends on which run you happened to pick.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'You have a tape measure and a phone stopwatch, and you want the speed of someone walking down a corridor. Describe how you would measure it, and say what the biggest source of error is and how you would cut it down.',
+    fieldLabel: 'Your method',
+    placeholder: 'I would measure…',
+    criteria: [
+      'Measures a distance along the corridor and marks a clear start and finish.',
+      'Times how long the walk takes between those two marks.',
+      'Divides distance by time and gives the unit as m/s.',
+      'Names starting and stopping the stopwatch by eye — reaction time — as the biggest error.',
+      'Reduces it in a named way: a longer distance, repeating and taking a mean, or someone standing at each mark.'
+    ] }
+];
+
+function rr(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+const X0 = 90, PX_PER_M = 310, BASE = 250, GATE_A = 0.30, RUN_END = 2.5;
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    ramp: ['low', 'med', 'high'].indexOf(this.props.startRamp) >= 0 ? this.props.startRamp : 'med',
+    sep: Number(this.props.startGap) > 0 ? Number(this.props.startGap) : 1.2,
+    slow: this.props.slowMotion === true,
+    running: false,
+    runs: [],
+    buildOpen: false,
+    cover: 's',
+    cardOpen: {},
+    pairPick: {},
+    avgChoice: null,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.pos = 0;            // trolley position along the runway, in metres
+    this.simT = 0;           // simulated seconds since release
+    this.gateT = null;       // frozen gate reading
+    this.timing = false;
+    this.last = null;
+    this.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+    this.draw();
+    this.tick();
+  }
+
+  componentDidUpdate() { this.draw(); }
+  componentWillUnmount() {
+    if (this.io) this.io.disconnect();
+    if (this.raf) cancelAnimationFrame(this.raf);
+  }
+
+  rampDef() { return RAMPS.find((r) => r.id === this.state.ramp) || RAMPS[1]; }
+
+  tick() {
+    this.raf = requestAnimationFrame((now) => {
+      if (this.state.running) {
+        const prev = this.lastFrame || now;
+        const dt = Math.min(0.05, (now - prev) / 1000) / (this.state.slow ? 4 : 1);
+        this.lastFrame = now;
+        this.advance(dt);
+      } else {
+        this.lastFrame = now;
+      }
+      this.tick();
+    });
+  }
+
+  advance(dt) {
+    const gB = GATE_A + this.state.sep;
+    const before = this.pos;
+    this.pos += this.runV * dt;
+    this.simT += dt;
+    if (before < GATE_A && this.pos >= GATE_A) { this.timing = true; this.tStart = this.simT; }
+    if (before < gB && this.pos >= gB) {
+      this.timing = false;
+      this.gateT = this.state.sep / this.runV;
+      this.finish();
+    }
+    if (this.pos >= RUN_END) {
+      this.pos = RUN_END;
+      this.setState({ running: false });
+    }
+    this.draw();
+  }
+
+  finish() {
+    const t = this.gateT;
+    const r = this.rampDef();
+    this.last = { d: this.state.sep, t: t, ramp: r.label };
+    this.setState((st) => ({ runs: st.runs.concat([{ d: st.sep, t: t, ramp: r.label }]).slice(-6) }));
+  }
+
+  release() {
+    if (this.state.running) return;
+    const r = this.rampDef();
+    // real trolleys scatter: ±3% on the speed between the gates
+    this.runV = r.v * (0.97 + Math.random() * 0.06);
+    this.pos = 0;
+    this.simT = 0;
+    this.gateT = null;
+    this.timing = false;
+    if (this.reduced) {
+      this.pos = RUN_END;
+      this.gateT = this.state.sep / this.runV;
+      this.finish();
+      this.draw();
+      return;
+    }
+    this.setState({ running: true });
+  }
+
+  timerText() {
+    if (this.gateT !== null) return this.gateT.toFixed(2);
+    if (this.timing) return Math.max(0, this.simT - this.tStart).toFixed(2);
+    return '0.00';
+  }
+
+  draw() {
+    const c = this.canvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 310;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#100D0A';
+    ctx.fillRect(0, 0, W, H);
+
+    const sep = this.state.sep;
+    const gB = GATE_A + sep;
+    const xm = (m) => X0 + m * PX_PER_M;
+
+    // runway
+    ctx.fillStyle = '#3E3730';
+    rr(ctx, X0 - 62, BASE, RUN_END * PX_PER_M + 96, 15, 7);
+    ctx.fill();
+    // ramp — its drawn height follows the ramp setting
+    const rh = { low: 44, med: 84, high: 128 }[this.state.ramp] || 84;
+    const rx0 = X0 - 62 - (rh - 44) * 0.55;
+    ctx.beginPath();
+    ctx.moveTo(rx0, BASE);
+    ctx.lineTo(rx0, BASE - rh);
+    ctx.lineTo(X0 + 4, BASE);
+    ctx.closePath();
+    ctx.fillStyle = '#2C2620';
+    ctx.fill();
+    ctx.strokeStyle = '#5C5249';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    // the slope itself, drawn brighter so the change is unmissable
+    ctx.strokeStyle = '#8A7A62';
+    ctx.lineWidth = 6;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(rx0, BASE - rh);
+    ctx.lineTo(X0 + 4, BASE);
+    ctx.stroke();
+    // height bracket up the back of the ramp
+    ctx.strokeStyle = '#6E655D';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(rx0 - 16, BASE);
+    ctx.lineTo(rx0 - 16, BASE - rh);
+    ctx.moveTo(rx0 - 22, BASE);
+    ctx.lineTo(rx0 - 10, BASE);
+    ctx.moveTo(rx0 - 22, BASE - rh);
+    ctx.lineTo(rx0 - 10, BASE - rh);
+    ctx.stroke();
+    ctx.save();
+    ctx.translate(rx0 - 28, BASE - rh / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = '#C6B9A7';
+    ctx.font = '500 13px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(this.rampDef().label.toUpperCase(), 0, 0);
+    ctx.restore();
+
+    // metre scale
+    ctx.strokeStyle = '#5C5249';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(X0, BASE + 38);
+    ctx.lineTo(xm(RUN_END), BASE + 38);
+    ctx.stroke();
+    ctx.fillStyle = '#C6B9A7';
+    ctx.font = '500 13px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'center';
+    for (let m = 0; m <= RUN_END + 0.01; m += 0.5) {
+      const x = xm(m);
+      ctx.beginPath();
+      ctx.moveTo(x, BASE + 32);
+      ctx.lineTo(x, BASE + 44);
+      ctx.stroke();
+      ctx.fillText(m.toFixed(1), x, BASE + 62);
+    }
+    ctx.fillText('metres along the runway', xm(RUN_END / 2), BASE + 84);
+
+    // gates
+    [[GATE_A, 'A'], [gB, 'B']].forEach((g, i) => {
+      const x = xm(g[0]);
+      const broken = i === 0 ? (this.pos >= GATE_A && this.pos < gB) : (this.pos >= gB);
+      ctx.fillStyle = '#5C5249';
+      rr(ctx, x - 5, BASE - 116, 10, 116, 4);
+      ctx.fill();
+      ctx.fillStyle = broken ? '#FFC53D' : '#8FB7FF';
+      rr(ctx, x - 16, BASE - 132, 32, 20, 6);
+      ctx.fill();
+      ctx.setLineDash([7, 7]);
+      ctx.strokeStyle = broken ? '#FFC53D' : '#6E655D';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(x, BASE - 108);
+      ctx.lineTo(x, BASE - 6);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#100D0A';
+      ctx.font = '800 14px "Bricolage Grotesque", system-ui, sans-serif';
+      ctx.fillText(g[1], x, BASE - 117);
+    });
+
+    // separation bracket
+    const xa = xm(GATE_A), xb = xm(gB), ybr = BASE - 158;
+    ctx.strokeStyle = '#8FB7FF';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(xa, ybr - 9);
+    ctx.lineTo(xa, ybr + 9);
+    ctx.moveTo(xb, ybr - 9);
+    ctx.lineTo(xb, ybr + 9);
+    ctx.moveTo(xa, ybr);
+    ctx.lineTo(xb, ybr);
+    ctx.stroke();
+    ctx.fillStyle = '#100D0A';
+    const lbl = 'd = ' + sep.toFixed(2) + ' m';
+    ctx.font = '500 16px "DM Mono", ui-monospace, monospace';
+    const lw = ctx.measureText(lbl).width + 18;
+    rr(ctx, (xa + xb) / 2 - lw / 2, ybr - 14, lw, 28, 8);
+    ctx.fillStyle = '#100D0A';
+    ctx.fill();
+    ctx.strokeStyle = '#8FB7FF';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = '#8FB7FF';
+    ctx.fillText(lbl, (xa + xb) / 2, ybr + 6);
+
+    // trolley
+    const tx = xm(this.pos);
+    ctx.save();
+    ctx.translate(tx, BASE - 9);
+    ctx.fillStyle = '#F4E9D8';
+    rr(ctx, -28, -26, 56, 26, 6);
+    ctx.fill();
+    ctx.strokeStyle = '#100D0A';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = '#5C5249';
+    [-15, 15].forEach((wx) => {
+      ctx.beginPath();
+      ctx.arc(wx, 2, 7, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.restore();
+
+    // timer face
+    const tw = 250, th = 78, txp = W - tw - 26, typ = 20;
+    ctx.fillStyle = '#221E1B';
+    rr(ctx, txp, typ, tw, th, 14);
+    ctx.fill();
+    ctx.strokeStyle = this.timing ? '#FFC53D' : '#5C5249';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#C6B9A7';
+    ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+    ctx.fillText('GATE TIMER', txp + 18, typ + 24);
+    ctx.fillStyle = this.timing || this.gateT !== null ? '#FFC53D' : '#6E655D';
+    ctx.font = '500 40px "DM Mono", ui-monospace, monospace';
+    ctx.fillText(this.timerText(), txp + 18, typ + 64);
+    ctx.fillStyle = '#C6B9A7';
+    ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+    ctx.fillText('s', txp + 150, typ + 64);
+    ctx.textAlign = 'center';
+  }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:17px;font-weight:700;padding:11px 17px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';' + (dis ? 'opacity:.5;' : '');
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis ? 'opacity:.5;' : '');
+  }
+
+  renderVals() {
+    const s = this.state;
+    const run = s.runs.length ? s.runs[0] : { d: 1.60, t: 1.05, ramp: 'Medium' };
+    const own = s.runs.length > 0;
+    const expect = run.d / run.t;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    const meanNote = (function (runs) {
+      if (runs.length < 2) return '';
+      const sameD = runs.every((r) => Math.abs(r.d - runs[0].d) < 0.001);
+      if (!sameD) return ' Your runs used different distances, so each one needs its own division.';
+      const mt = runs.reduce((a, b) => a + b.t, 0) / runs.length;
+      return ' Across your ' + runs.length + ' runs the mean time was ' + mt.toFixed(2) + ' s, which gives ' +
+        (runs[0].d / mt).toFixed(2) + ' m/s — that is the number a physicist would report.';
+    })(s.runs);
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'Which one crossed your view fastest' },
+        { letter: 'B', text: 'How far each one travelled, and how long it took' },
+        { letter: 'C', text: 'Which one is bigger' },
+        { letter: 'D', text: 'How far away each one is from you' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'A bigger number — it is going faster' },
+        { letter: 'B', text: 'A smaller number' },
+        { letter: 'C', text: 'No change — the gates have not moved' },
+        { letter: 'D', text: 'It depends how far apart the gates are' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      benchOpen: s.gate !== null,
+      running: s.running,
+      runProgress: s.runs.length + ' of 3 runs timed',
+      rampTabs: RAMPS.map((r) => ({
+        label: r.label, pressed: r.id === s.ramp, disabled: s.running,
+        style: this.seg(r.id === s.ramp, true, s.running),
+        onClick: () => { if (!this.state.running) this.setState({ ramp: r.id }); }
+      })),
+      slowOn: s.slow,
+      slowLabel: s.slow ? 'Slow motion' : 'Real time',
+      slowStyle: this.seg(s.slow, true, false),
+      onSlow: () => this.setState({ slow: !this.state.slow }),
+      sepValue: s.sep,
+      sepLabel: s.sep.toFixed(2) + ' m',
+      onSep: (e) => {
+        if (this.state.running) return;
+        this.setState({ sep: Number(e.target.value) });
+        this.pos = 0; this.gateT = null; this.timing = false;
+      },
+      benchRef: (el) => { this.canvas = el; if (el) this.draw(); },
+      onRelease: () => this.release(),
+      releaseLabel: s.running ? 'Rolling…' : 'Release the trolley',
+      releaseStyle: 'font:inherit;font-size:18px;font-weight:700;padding:13px 22px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:var(--ks3-alert);color:var(--ks3-ink);cursor:' +
+        (s.running ? 'default' : 'pointer') + ';' + (s.running ? 'opacity:.55;' : ''),
+      benchStatus: s.running
+        ? 'The clock runs only while the trolley is between the two gates.'
+        : (s.runs.length ? 'Timed. Change the ramp or the gap and roll it again.' : 'Nothing is timed until the trolley breaks the first beam.'),
+      lastTimeLabel: s.runs.length ? s.runs[s.runs.length - 1].t.toFixed(2) + ' s' : '—',
+      benchAlt: 'A trolley released from a ramp rolls along a runway and breaks two light beams ' + s.sep.toFixed(2) +
+        ' metres apart. The timer runs only while the trolley is between the beams and reads ' +
+        (s.runs.length ? s.runs[s.runs.length - 1].t.toFixed(2) : '0.00') + ' seconds.',
+      runRows: (s.runs.length ? s.runs : []).map((r, i) => ({
+        n: String(i + 1), d: r.d.toFixed(2), t: r.t.toFixed(2), ramp: r.ramp,
+        numStyle: 'margin:0;font-family:var(--ks3-font-mono);font-size:17px;font-weight:500;color:var(--ks3-ink-muted);',
+        valStyle: 'margin:0;font-family:var(--ks3-font-mono);font-size:19px;font-weight:500;color:var(--ks3-ink);',
+        rampStyle: 'margin:0;font-size:17px;color:var(--ks3-ink-body);'
+      })),
+      runsNote: s.runs.length === 0
+        ? 'Empty until you roll it. The table holds what the equipment gives you: a distance and a time.'
+        : (s.runs.length < 3
+          ? 'Two columns of measurements, no speeds. Roll it ' + (3 - s.runs.length) + ' more time' + (s.runs.length === 2 ? '' : 's') + ' and keep the gap the same, so the times can be compared.'
+          : 'Same distance, slightly different times. That scatter is real and it is what a mean time is for.'),
+
+      coverTop: s.cover === 'd',
+      coverLeft: s.cover === 's',
+      coverRight: s.cover === 't',
+      coverTabs: [
+        { id: 's', label: 'Cover s' },
+        { id: 'd', label: 'Cover d' },
+        { id: 't', label: 'Cover t' }
+      ].map((c) => ({
+        label: c.label, pressed: s.cover === c.id,
+        style: 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 18px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+          (s.cover === c.id ? 'var(--ks3-ink)' : 'var(--ks3-card)') + ';color:' + (s.cover === c.id ? 'var(--ks3-on-dark)' : 'var(--ks3-ink)') + ';',
+        onClick: () => this.setState({ cover: c.id })
+      })),
+      coverResult: COVERS[s.cover].result,
+
+      cfifaExamples: CFIFA_EX,
+      onCfifaOpen: () => this.setState({ buildOpen: true }),
+      cfifaQuestions: [
+        {
+          tab: 'Question 1', id: 'p31q1',
+          head: own
+            ? 'Run 1 from your table: ' + run.d.toFixed(2) + ' m in ' + run.t.toFixed(2) + ' s.'
+            : 'A run of ' + run.d.toFixed(2) + ' m in ' + run.t.toFixed(2) + ' s.',
+          steps: [
+            { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+              line: run.d.toFixed(2) + ' m stays ' + run.d.toFixed(2) + ' m · ' + run.t.toFixed(2) + ' s stays ' + run.t.toFixed(2) + ' s',
+              note: 'Both measurements already came off the equipment in the units the formula wants.' },
+            { letter: 'F', label: 'Formula', placeholder: '',
+              line: 's = d ÷ t',
+              note: 'Speed is what you want, so cover s.' },
+            { letter: 'I', label: 'Insert', placeholder: '',
+              line: 's = ' + run.d.toFixed(2) + ' m ÷ ' + run.t.toFixed(2) + ' s',
+              note: 'Distance on top. The unit of each measurement travels with it.' },
+            { letter: 'F', label: 'Fine-tune', placeholder: '',
+              line: run.d.toFixed(2) + ' ÷ ' + run.t.toFixed(2) + ' = ' + (run.d / run.t).toFixed(4) + '…',
+              note: 'Metres divided by seconds. Round at the end, not before.' },
+            { letter: 'A', label: 'Answer', placeholder: 'remember the unit',
+              line: 's = ' + expect.toFixed(2) + ' m/s',
+              note: 'Two decimal places, and the unit.' }
+          ],
+          close: 'The five lines give ' + expect.toFixed(2) + ' m/s.' + meanNote
+        },
+        {
+          tab: 'Question 2', id: 'p31q2',
+          head: 'A cyclist covers 750 m in 2.5 minutes.',
+          steps: [
+            { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+              line: '2.5 min × 60 = 150 s',
+              note: 'The formula wants seconds, and there are 60 in a minute, so multiply by 60.' },
+            { letter: 'F', label: 'Formula', placeholder: '',
+              line: 's = d ÷ t',
+              note: 'Speed is what you want, so cover s.' },
+            { letter: 'I', label: 'Insert', placeholder: '',
+              line: 's = 750 m ÷ 150 s',
+              note: 'The converted time goes in. The 2.5 never does.' },
+            { letter: 'F', label: 'Fine-tune', placeholder: '',
+              line: '750 ÷ 150 = 5',
+              note: 'Metres divided by seconds leaves metres per second.' },
+            { letter: 'A', label: 'Answer', placeholder: 'remember the unit',
+              line: 's = 5.00 m/s',
+              note: 'Divide by 2.5 instead of 150 and the answer comes out 60 times too big.' }
+          ],
+          close: 'The five lines give 5.00 m/s. The whole question turned on the first one.'
+        }
+      ],
+
+      cards: CARDS.map((c, i) => ({
+        term: c.term, def: c.def, note: c.note,
+        open: !!s.cardOpen[i], closed: !s.cardOpen[i],
+        className: 'ks3-card-btn' + (s.cardOpen[i] ? ' is-flipped' : ''),
+        onClick: () => this.setState((st) => ({ cardOpen: Object.assign({}, st.cardOpen, { [i]: !st.cardOpen[i] }) }))
+      })),
+
+      pairProgress: Object.keys(s.pairPick).length + ' of 3 decided',
+      pairs: PAIRS.map((p) => {
+        const pick = s.pairPick[p.id];
+        const open = pick !== undefined;
+        return {
+          label: p.label, a: p.a, b: p.b, sums: p.sums, why: p.why, open: open,
+          style: 'padding:22px 24px;border-radius:var(--ks3-r-panel);background:' + (open ? 'var(--ks3-inset)' : 'var(--ks3-card)') +
+            ';border:2px solid ' + (open ? 'var(--ks3-ink)' : 'var(--ks3-option-border)') + ';',
+          choices: [
+            { id: 'a', label: 'The first' },
+            { id: 'b', label: 'The second' },
+            { id: 'same', label: 'Same speed' }
+          ].map((ch) => ({
+            label: ch.label, pressed: pick === ch.id, disabled: open,
+            style: this.seg(pick === ch.id, false, open) + 'font-size:16px;padding:10px 15px;',
+            onClick: () => this.setState((st) => {
+              if (st.pairPick[p.id] !== undefined) return null;
+              return { pairPick: Object.assign({}, st.pairPick, { [p.id]: ch.id }) };
+            })
+          }))
+        };
+      }),
+
+      avgOptions: [
+        { letter: 'A', text: '3 m/s' },
+        { letter: 'B', text: '1.67 m/s' },
+        { letter: 'C', text: '2.5 m/s' },
+        { letter: 'D', text: 'You cannot work it out from this' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.avgChoice === i,
+        onClick: () => this.setState({ avgChoice: i })
+      })),
+      avgOpen: s.avgChoice !== null,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

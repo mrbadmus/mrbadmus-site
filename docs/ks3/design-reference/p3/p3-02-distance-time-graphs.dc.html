@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Distance–time graphs · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  [data-plotgrid] { position: absolute; left: 9.5%; top: 2.1%; width: 87%; height: 90%; display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(7, 1fr); }
+  [data-plotcell] { background: transparent; border: 0; margin: 0; padding: 0; cursor: crosshair; border-radius: 8px; }
+  [data-plotcell]:hover { background: rgba(228, 87, 46, .12); }
+  [data-readings] { display: grid; grid-template-columns: repeat(auto-fit, minmax(78px, 1fr)); gap: 8px; }
+  [data-segs] { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr)); gap: 14px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Describing motion</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Distance–time graphs</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Describing motion · Investigation</p>
+        <h1>Distance–time graphs</h1>
+        <p class="ks3-bigq">A graph of a journey is not a picture of the route. So what is it a picture of?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>The line climbs. The corridor is flat.</h2>
+        <p class="ks3-hook-prompt">Someone walks 6 m down a level corridor, waits at a door, then runs the last 12 m. Drawn as a graph, that journey rises, goes flat, then rises much more steeply. The floor never changed height.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">So what is the height of the line telling you?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">The upright axis is distance from the start. It only comes down if you come back. Speed is not plotted anywhere on this graph — it is hiding in the steepness, and that is the only place it lives.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Each point is one reading: at this time, that far from the start. Join the readings and the whole journey is in one picture, including the parts where nothing happened.</p>
+      </section>
+
+      <section id="s-plot" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">Your turn · seven readings</p>
+            <h2 style="margin: 6px 0 0;">Plot the sensor's readings yourself</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ plotProgress }}</p>
+        </div>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">A motion sensor at the start of the corridor recorded the distance every two seconds. Put each reading on the grid, in order. The one you are looking for is named under the graph.</p>
+
+        <div style="margin-top: 20px; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+          <p style="margin: 0 0 12px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">The sensor's table</p>
+          <div data-readings="1">
+            <sc-for list="{{ readings }}" as="r" hint-placeholder-count="7">
+              <div style="{{ r.style }}">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; color: var(--ks3-ink-muted);">{{ r.t }}</p>
+                <p style="margin: 2px 0 0; font-family: var(--ks3-font-mono); font-size: 19px; font-weight: 500; color: var(--ks3-ink);">{{ r.d }}</p>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="position: relative; margin-top: 20px;">
+          <canvas width="1400" height="840" ref="{{ plotRef }}" role="img" aria-label="{{ plotAlt }}" style="display: block; width: 100%; height: auto; border-radius: var(--ks3-r-panel); border: 2px solid var(--ks3-ink); background: var(--ks3-card);"></canvas>
+          <sc-if value="{{ gridLive }}" hint-placeholder-val="{{ true }}">
+            <div data-plotgrid="1" role="group" aria-label="Plotting grid — choose a time and distance">
+              <sc-for list="{{ cells }}" as="c" hint-placeholder-count="49">
+                <button type="button" data-plotcell="1" onClick="{{ c.onClick }}" aria-label="{{ c.label }}"></button>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">{{ plotNote }}</p>
+
+        <sc-if value="{{ joinOffered }}">
+          <div data-arrive="1" style="margin-top: 18px;">
+            <button type="button" class="ks3-reveal-btn" onClick="{{ onJoin }}">Join the points</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ joined }}">
+          <div data-arrive="1" style="margin-top: 26px; padding-top: 24px; border-top: 3px solid var(--ks3-ink);">
+            <p class="ks3-eyebrow">Read your own graph</p>
+            <div style="display: flex; flex-direction: column; gap: 18px; margin-top: 14px;">
+              <sc-for list="{{ reads }}" as="q" hint-placeholder-count="3">
+                <div style="{{ q.style }}">
+                  <p style="margin: 0; font-size: 19px; font-weight: 600; line-height: 1.45;">{{ q.question }}</p>
+                  <div style="margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap;">
+                    <sc-for list="{{ q.options }}" as="o" hint-placeholder-count="3">
+                      <button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button>
+                    </sc-for>
+                  </div>
+                  <sc-if value="{{ q.open }}">
+                    <p data-arrive="1" style="margin: 13px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body);">{{ q.why }}</p>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">On a distance–time graph, the steepness of the line is the speed. A flat line is not slow. It is stopped.</p>
+      </div>
+
+      <section id="s-match" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · walk the graph</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Build the journey that draws this line</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ matchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">The dashed line is the target. Choose what happens in each three-second block, then send the walker down the corridor and watch the line draw itself.</p>
+
+        <div data-segs="1" style="margin-top: 22px;">
+          <sc-for list="{{ segments }}" as="seg" hint-placeholder-count="4">
+            <div style="padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+              <p style="margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">{{ seg.label }}</p>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <sc-for list="{{ seg.modes }}" as="m" hint-placeholder-count="4">
+                  <button type="button" onClick="{{ m.onClick }}" aria-pressed="{{ m.pressed }}" disabled="{{ m.disabled }}" style="{{ m.style }}">{{ m.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 20px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-on-dark-muted); overflow: hidden;">
+          <canvas width="1400" height="960" ref="{{ matchRef }}" role="img" aria-label="{{ matchAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+          <div style="padding: 15px 18px 17px; border-top: 2px solid var(--ks3-on-dark-muted); background: var(--ks3-dark-panel); display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+            <button type="button" onClick="{{ onPlay }}" disabled="{{ playLocked }}" style="{{ playStyle }}">{{ playLabel }}</button>
+            <button type="button" onClick="{{ onClear }}" disabled="{{ playing }}" style="{{ clearStyle }}">Clear the line</button>
+            <p style="margin: 0; font-size: 18px; font-weight: 700; color: var(--ks3-on-dark);">{{ matchStatus }}</p>
+          </div>
+        </div>
+
+        <sc-if value="{{ played }}">
+          <div data-arrive="1" style="margin-top: 18px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500;">{{ matchSums }}</p>
+            <p style="margin: 10px 0 0; font-size: 19px; line-height: 1.6;">{{ matchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“The line goes up, so she is cycling uphill — and where it comes back down she is freewheeling down the other side.”</p>
+        <p style="max-width: 54ch;">A cyclist rides 400 m to the postbox, posts a letter, and rides home. Her distance–time graph rises, goes flat, then falls back to zero. The road is flat the whole way. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">The falling section is the ride <strong>home</strong>. Her distance from the start is getting smaller, which is the only thing that axis can mean. When the line reaches zero she is back where she began.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">There is no room for a hill on this graph. It holds two quantities and no others: how long, and how far from the start. The road could be flat, uphill, or a spiral staircase, and the graph would be identical.</p>
+          </div>
+        </sc-if>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;A curved line means the object is going round a bend.&rdquo;</p>
+          <p>A distance–time graph knows nothing about direction in space — the only thing the axes carry is how far along the journey and how long it has taken. A curve means the gradient is changing, and the gradient is the speed, so a curve means speeding up or slowing down. An object going round a perfect bend at a steady speed draws a straight line here.</p>
+        </div>
+      </section>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">On a distance–time graph the gradient is the speed. A horizontal line means stationary, a steeper line means faster, and a line coming back down means returning towards the start.</p>
+        </div>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>A distance–time graph plots distance from the start against time. Steeper means faster, flat means stopped, and a line coming back down means returning towards the start. It records a journey; it never draws the route.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Plot <em>total distance travelled</em> instead of <em>distance from the start</em> and the same journey gives a different line — one that can never come down, because a distance you have already travelled cannot be un-travelled. The cyclist's ride home now climbs to 800 m instead of falling to zero. Two graphs, one journey, and only one of them can tell you that she got home.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p3-01-speed.html">Speed<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p3-03-relative-motion.html">Relative motion<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p4-04-what-forces-do-to-motion.html">What forces do to motion<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Gradients of curved graphs, velocity–time graphs, and the area underneath them.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Not sure what a flat line means?</p>
+          <a class="ks3-tutor-cta" href="#s-plot">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The graphs are a teaching model. The plotted journey uses whole-number readings taken every two seconds, and the line is drawn straight between them — a real walker changes speed gradually, so the corners would be rounded and the flat section would not begin and end exactly on a reading. Speeds in the matching game are held perfectly constant within each segment, which no person does. Distance is measured from the start throughout, so a line coming down means returning towards it rather than travelling downhill.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;reportTaps&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Plotting&quot;},&quot;matchTarget&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;walk-still-jog-back&quot;,&quot;jog-still-back-walk&quot;],&quot;default&quot;:&quot;walk-still-jog-back&quot;,&quot;tsType&quot;:&quot;'walk-still-jog-back' | 'jog-still-back-walk'&quot;,&quot;section&quot;:&quot;Walk the graph&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'What the height means', short: 'HOOK' },
+  { id: 's-plot', label: 'Plot seven readings', short: 'PLOT' },
+  { id: 's-match', label: 'Walk the graph', short: 'MATCH' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+// The sensor's readings. Every value sits on the plotting grid.
+const DATA = [
+  { t: 0, d: 0 }, { t: 2, d: 3 }, { t: 4, d: 6 }, { t: 6, d: 6 },
+  { t: 8, d: 6 }, { t: 10, d: 12 }, { t: 12, d: 18 }
+];
+
+const TIMES = [0, 2, 4, 6, 8, 10, 12];
+const DISTS = [0, 3, 6, 9, 12, 15, 18];
+
+const READS = [
+  { id: 'q1', question: 'Between 4 s and 8 s, what was the walker doing?',
+    options: ['Walking slowly', 'Standing still', 'Walking back to the start'],
+    why: 'The line is flat there. The distance from the start stays at 6 m for four seconds, so the walker is not moving at all — a flat line is stopped, not slow.' },
+  { id: 'q2', question: 'Which part of the journey was fastest?',
+    options: ['0 to 4 s', '4 to 8 s', '8 to 12 s'],
+    why: 'The last part is the steepest: 12 m in 4 s. The first part covers 6 m in 4 s. Steeper line, bigger speed.' },
+  { id: 'q3', question: 'What was the speed over the last four seconds?',
+    options: ['1.5 m/s', '3 m/s', '4.5 m/s'],
+    why: 'From 6 m at 8 s to 18 m at 12 s is 12 m in 4 s. 12 ÷ 4 = 3 m/s — the same division as the trolley on the light gates.' }
+];
+
+const MODES = [
+  { id: 'still', label: 'Stand still', v: 0 },
+  { id: 'walk', label: 'Walk · 1 m/s', v: 1 },
+  { id: 'jog', label: 'Jog · 3 m/s', v: 3 },
+  { id: 'back', label: 'Walk back · 2 m/s', v: -2 }
+];
+
+const TARGETS = {
+  'walk-still-jog-back': ['walk', 'still', 'jog', 'back'],
+  'jog-still-back-walk': ['jog', 'still', 'back', 'walk']
+};
+
+const SEG_SECONDS = 3;
+
+function journeyPoints(modes) {
+  const pts = [{ t: 0, d: 0 }];
+  let d = 0;
+  modes.forEach((id, i) => {
+    const m = MODES.find((x) => x.id === id) || MODES[0];
+    d = Math.max(0, d + m.v * SEG_SECONDS);
+    pts.push({ t: (i + 1) * SEG_SECONDS, d: d });
+  });
+  return pts;
+}
+
+function distAt(pts, t) {
+  for (let i = 1; i < pts.length; i++) {
+    if (t <= pts[i].t) {
+      const a = pts[i - 1], b = pts[i];
+      const f = (t - a.t) / (b.t - a.t);
+      return a.d + (b.d - a.d) * f;
+    }
+  }
+  return pts[pts.length - 1].d;
+}
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Read it',
+    question: 'A distance–time graph is horizontal between 20 s and 35 s. What was happening in those fifteen seconds?',
+    options: [
+      { text: 'The object was stopped', correct: true },
+      { text: 'It was moving at a steady speed', correction: 'A steady speed gives a straight line that still climbs. Flat means the distance from the start is not changing at all.' },
+      { text: 'It was slowing down', correction: 'Slowing down makes the line get gradually less steep. Flat is not slowing — it has already stopped.' },
+      { text: 'It was going back to the start', correction: 'Going back makes the line fall towards zero. Horizontal means it stayed where it was.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'Two journeys are drawn on the same axes. Line A is steeper than line B. Which statement must be true?',
+    options: [
+      { text: 'A is travelling faster than B', correct: true },
+      { text: 'A travelled further than B', correction: 'Not necessarily. A steep line drawn for two seconds can cover less ground than a gentle line drawn for a minute.' },
+      { text: 'A took longer than B', correction: 'Time is read along the bottom, not from the steepness. A steeper line usually takes less time, not more.' },
+      { text: 'A was going uphill and B was on the flat', correction: 'Nothing on this graph is a hill. Steepness on a distance–time graph is speed.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A graph rises steeply, then flattens, then rises gently. Describe that journey in words and say how you know each part — without using the words "up" or "down".',
+    fieldLabel: 'Your description',
+    placeholder: 'At the start the line is steep, which means…',
+    criteria: [
+      'Says the steep part is the fastest section, and that steepness means speed.',
+      'Says the flat part is stopped, and gives the reason: the distance from the start is not changing.',
+      'Says the gentle part is slower than the first part, not stopped.',
+      'Talks about distance from the start rather than height or hills.',
+      'Reads at least one time or distance off the axes to pin a section down.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A lift rises 30 m in 20 s, waits 10 s, then returns to the ground floor in 15 s. Describe the graph of its distance from the ground floor against time, giving the speed of each moving part with units. Then say how the graph would differ if you plotted total distance travelled instead.',
+    fieldLabel: 'Your answer',
+    placeholder: 'From 0 to 20 s the line…',
+    criteria: [
+      'First section climbs from 0 to 30 m over 20 s, and gives 30 ÷ 20 = 1.5 m/s.',
+      'Middle section is flat for 10 s, at 30 m, because the lift is stopped.',
+      'Last section falls from 30 m back to 0 over 15 s, and gives 30 ÷ 15 = 2 m/s.',
+      'Says the last part is faster than the first, and uses the steeper line as the reason.',
+      'Says a total-distance-travelled graph never falls: it would flatten and then climb to 60 m.'
+    ] }
+];
+
+const GX = 130, GY = 40, GW = 500, GH = 320, TMAX = 12, DMAX = 18;
+
+function rr(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    plotted: 0,
+    lastTap: null,
+    joined: false,
+    reads: {},
+    segs: ['still', 'still', 'still', 'still'],
+    playing: false,
+    played: false,
+    thinkChoice: null,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.playT = 0;
+    this.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+    this.draw();
+    this.tick();
+  }
+
+  componentDidUpdate() { this.draw(); }
+  componentWillUnmount() {
+    if (this.io) this.io.disconnect();
+    if (this.raf) cancelAnimationFrame(this.raf);
+  }
+
+  tick() {
+    this.raf = requestAnimationFrame((now) => {
+      if (this.state.playing) {
+        const prev = this.lastFrame || now;
+        const dt = Math.min(0.05, (now - prev) / 1000);
+        this.lastFrame = now;
+        this.playT += dt;
+        if (this.playT >= SEG_SECONDS * 4) {
+          this.playT = SEG_SECONDS * 4;
+          this.setState({ playing: false, played: true });
+        }
+        this.drawMatch();
+      } else {
+        this.lastFrame = now;
+      }
+      this.tick();
+    });
+  }
+
+  target() { return TARGETS[this.props.matchTarget] || TARGETS['walk-still-jog-back']; }
+
+  draw() { this.drawPlot(); this.drawMatch(); }
+
+  axes(ctx, W, H, opts) {
+    const xt = (t) => GX + (t / TMAX) * GW;
+    const yd = (d) => GY + GH - (d / DMAX) * GH;
+    ctx.fillStyle = opts.paper;
+    ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = opts.grid;
+    ctx.lineWidth = 1.5;
+    TIMES.forEach((t) => {
+      ctx.beginPath();
+      ctx.moveTo(xt(t), GY);
+      ctx.lineTo(xt(t), GY + GH);
+      ctx.stroke();
+    });
+    DISTS.forEach((d) => {
+      ctx.beginPath();
+      ctx.moveTo(GX, yd(d));
+      ctx.lineTo(GX + GW, yd(d));
+      ctx.stroke();
+    });
+    ctx.strokeStyle = opts.ink;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(GX, GY);
+    ctx.lineTo(GX, GY + GH);
+    ctx.lineTo(GX + GW, GY + GH);
+    ctx.stroke();
+    ctx.fillStyle = opts.label;
+    ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'center';
+    TIMES.forEach((t) => ctx.fillText(String(t), xt(t), GY + GH + 26));
+    ctx.textAlign = 'right';
+    DISTS.forEach((d) => ctx.fillText(String(d), GX - 14, yd(d) + 6));
+    ctx.textAlign = 'center';
+    ctx.fillStyle = opts.axis;
+    ctx.font = '500 16px "DM Mono", ui-monospace, monospace';
+    ctx.fillText('time / s', GX + GW / 2, GY + GH + 56);
+    ctx.save();
+    ctx.translate(GX - 66, GY + GH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('distance from the start / m', 0, 0);
+    ctx.restore();
+    return { xt: xt, yd: yd };
+  }
+
+  drawPlot() {
+    const c = this.plotCanvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 700, H = 420;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    const m = this.axes(ctx, W, H, {
+      paper: '#FFFCF5', grid: '#E0D2B9', ink: '#221E1B', label: '#5F564F', axis: '#3B342E'
+    });
+    const n = this.state.plotted;
+    if (this.state.joined && n === DATA.length) {
+      ctx.strokeStyle = '#2F5CE0';
+      ctx.lineWidth = 4;
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      DATA.forEach((p, i) => {
+        const x = m.xt(p.t), y = m.yd(p.d);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+    }
+    DATA.slice(0, n).forEach((p) => {
+      ctx.beginPath();
+      ctx.arc(m.xt(p.t), m.yd(p.d), 8, 0, Math.PI * 2);
+      ctx.fillStyle = '#221E1B';
+      ctx.fill();
+    });
+    const lt = this.state.lastTap;
+    if (lt && !lt.hit) {
+      ctx.beginPath();
+      ctx.arc(m.xt(lt.t), m.yd(lt.d), 9, 0, Math.PI * 2);
+      ctx.strokeStyle = '#A93411';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([5, 4]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    if (n < DATA.length) {
+      const next = DATA[n];
+      ctx.fillStyle = '#A93411';
+      ctx.font = '500 16px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('looking for: ' + next.t + ' s, ' + next.d + ' m', GX + 8, GY - 14);
+      ctx.textAlign = 'center';
+    }
+  }
+
+  drawMatch() {
+    const c = this.matchCanvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 700, H = 480;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#100D0A';
+    ctx.fillRect(0, 0, W, H);
+
+    // the corridor, distance along it
+    const cx0 = GX, cw = GW, cy = 46;
+    ctx.fillStyle = '#C6B9A7';
+    ctx.font = '500 13px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('THE CORRIDOR', cx0, cy - 20);
+    ctx.fillStyle = '#3E3730';
+    rr(ctx, cx0, cy, cw, 26, 8);
+    ctx.fill();
+    const pts = journeyPoints(this.state.segs);
+    const tNow = this.state.playing || this.state.played ? this.playT : 0;
+    const dNow = distAt(pts, tNow);
+    const wx = cx0 + (Math.min(DMAX, Math.max(0, dNow)) / DMAX) * cw;
+    ctx.beginPath();
+    ctx.arc(wx, cy + 13, 11, 0, Math.PI * 2);
+    ctx.fillStyle = '#FFC53D';
+    ctx.fill();
+    ctx.strokeStyle = '#100D0A';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = '#C6B9A7';
+    ctx.textAlign = 'right';
+    ctx.fillText(dNow.toFixed(1) + ' m from the start', cx0 + cw, cy - 20);
+
+    // the graph
+    ctx.save();
+    ctx.translate(0, 44);
+    const m = this.axes(ctx, W, H, {
+      paper: 'rgba(0,0,0,0)', grid: '#3E3730', ink: '#C6B9A7', label: '#C6B9A7', axis: '#C6B9A7'
+    });
+    const tgt = journeyPoints(this.target());
+    ctx.setLineDash([9, 7]);
+    ctx.strokeStyle = '#8FB7FF';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    tgt.forEach((p, i) => {
+      const x = m.xt(p.t), y = m.yd(p.d);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+    ctx.setLineDash([]);
+    if (tNow > 0) {
+      ctx.strokeStyle = '#FFC53D';
+      ctx.lineWidth = 4.5;
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      for (let t = 0; t <= tNow + 0.001; t += 0.05) {
+        const x = m.xt(Math.min(t, tNow)), y = m.yd(distAt(pts, Math.min(t, tNow)));
+        if (t === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(m.xt(tNow), m.yd(dNow), 7, 0, Math.PI * 2);
+      ctx.fillStyle = '#FFC53D';
+      ctx.fill();
+    }
+    ctx.fillStyle = '#8FB7FF';
+    ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText('dashed = target', GX + GW, GY + 20);
+    ctx.restore();
+  }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:10px 15px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';' + (dis ? 'opacity:.5;' : '');
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis ? 'opacity:.5;' : '');
+  }
+
+  play() {
+    if (this.state.playing) return;
+    this.playT = 0;
+    if (this.reduced) {
+      this.playT = SEG_SECONDS * 4;
+      this.setState({ played: true });
+      this.drawMatch();
+      return;
+    }
+    this.setState({ playing: true, played: false });
+  }
+
+  renderVals() {
+    const s = this.state;
+    const nextRow = s.plotted < DATA.length ? DATA[s.plotted] : null;
+    const pts = journeyPoints(s.segs);
+    const tgt = journeyPoints(this.target());
+    const mine = pts[pts.length - 1].d;
+    const theirs = tgt[tgt.length - 1].d;
+    const helpOn = this.props.reportTaps !== false;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    const cells = [];
+    DISTS.slice().reverse().forEach((d) => {
+      TIMES.forEach((t) => {
+        cells.push({
+          label: t + ' seconds, ' + d + ' metres',
+          onClick: () => this.setState((st) => {
+            if (st.plotted >= DATA.length) return { lastTap: { t: t, d: d, hit: false } };
+            const want = DATA[st.plotted];
+            if (want.t === t && want.d === d) return { plotted: st.plotted + 1, lastTap: { t: t, d: d, hit: true } };
+            return { lastTap: { t: t, d: d, hit: false } };
+          })
+        });
+      });
+    });
+
+    let plotNote;
+    if (s.plotted >= DATA.length) {
+      plotNote = s.joined
+        ? 'Seven readings, one journey. Two of the sections are straight lines with different steepness, and one is not a line going anywhere at all.'
+        : 'All seven are on. Now join them, in order, with straight lines.';
+    } else if (s.lastTap && !s.lastTap.hit) {
+      plotNote = helpOn
+        ? 'That point is ' + s.lastTap.t + ' s, ' + s.lastTap.d + ' m. You are looking for ' + nextRow.t + ' s, ' + nextRow.d + ' m — read the time along the bottom and the distance up the side.'
+        : 'Not that one. Read the time along the bottom and the distance up the side.';
+    } else {
+      plotNote = 'Next reading: ' + nextRow.t + ' s, ' + nextRow.d + ' m.';
+    }
+
+    const segLabels = ['0 to 3 s', '3 to 6 s', '6 to 9 s', '9 to 12 s'];
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-plot') return s.joined && Object.keys(s.reads).length >= 3;
+          if (id === 's-match') return s.played;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'How high above the ground the walker is' },
+        { letter: 'B', text: 'How far the walker is from the start' },
+        { letter: 'C', text: 'How fast the walker is going' },
+        { letter: 'D', text: 'How long the walker has been walking' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      readings: DATA.map((p, i) => ({
+        t: p.t + ' s', d: p.d + ' m',
+        style: 'padding:10px 12px;border-radius:12px;background:' + (i < s.plotted ? 'var(--ks3-band)' : 'var(--ks3-card)') +
+          ';border:2px solid ' + (i === s.plotted ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+      })),
+      plotRef: (el) => { this.plotCanvas = el; if (el) this.drawPlot(); },
+      plotProgress: s.plotted + ' of 7 points plotted',
+      plotAlt: 'A distance–time grid, time 0 to 12 seconds along the bottom and distance from the start 0 to 18 metres up the side, with ' +
+        s.plotted + ' of 7 sensor readings plotted' + (s.joined ? ' and joined by straight lines: a climb to 6 metres, four seconds flat, then a steeper climb to 18 metres.' : '.'),
+      gridLive: s.plotted < DATA.length,
+      cells: cells,
+      plotNote: plotNote,
+      joinOffered: s.plotted >= DATA.length && !s.joined,
+      onJoin: () => this.setState({ joined: true }),
+      joined: s.joined,
+      reads: READS.map((q) => {
+        const pick = s.reads[q.id];
+        const open = pick !== undefined;
+        return {
+          question: q.question, why: q.why, open: open,
+          style: 'padding:20px 22px;border-radius:var(--ks3-r-panel);background:' + (open ? 'var(--ks3-inset)' : 'var(--ks3-card)') +
+            ';border:2px solid ' + (open ? 'var(--ks3-ink)' : 'var(--ks3-option-border)') + ';',
+          options: q.options.map((lab, i) => ({
+            label: lab, pressed: pick === i, disabled: open,
+            style: this.seg(pick === i, false, open),
+            onClick: () => this.setState((st) => {
+              if (st.reads[q.id] !== undefined) return null;
+              return { reads: Object.assign({}, st.reads, { [q.id]: i }) };
+            })
+          }))
+        };
+      }),
+
+      matchRef: (el) => { this.matchCanvas = el; if (el) this.drawMatch(); },
+      matchProgress: s.played ? 'Line drawn' : 'Not run yet',
+      segments: segLabels.map((lab, i) => ({
+        label: lab,
+        modes: MODES.map((m) => ({
+          label: m.label, pressed: s.segs[i] === m.id, disabled: s.playing,
+          style: this.seg(s.segs[i] === m.id, true, s.playing),
+          onClick: () => this.setState((st) => {
+            if (st.playing) return null;
+            const next = st.segs.slice();
+            next[i] = m.id;
+            return { segs: next, played: false };
+          })
+        }))
+      })),
+      playing: s.playing,
+      playLocked: s.playing,
+      playLabel: s.playing ? 'Walking…' : 'Send the walker',
+      playStyle: 'font:inherit;font-size:18px;font-weight:700;padding:13px 22px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:var(--ks3-alert);color:var(--ks3-ink);cursor:' +
+        (s.playing ? 'default' : 'pointer') + ';' + (s.playing ? 'opacity:.55;' : ''),
+      onPlay: () => this.play(),
+      onClear: () => { this.playT = 0; this.setState({ played: false }); this.drawMatch(); },
+      clearStyle: this.seg(false, true, s.playing),
+      matchStatus: s.playing
+        ? 'The line is being drawn as the walker moves — one point for every moment.'
+        : 'Each block lasts three seconds. The walker cannot pass the start going backwards.',
+      matchAlt: 'A corridor with a walker, above a distance–time graph. A dashed target line is drawn from 0 to 12 seconds, and the walker\u2019s own line is drawn in as it moves. The walker is ' +
+        distAt(pts, s.played || s.playing ? this.playT : 0).toFixed(1) + ' metres from the start.',
+      matchSums: 'Your line ends at ' + mine.toFixed(0) + ' m · the target ends at ' + theirs.toFixed(0) + ' m',
+      matchNote: Math.abs(mine - theirs) < 0.01
+        ? 'Same finish. Now look at the shape: the two lines only sit on top of each other if every block was the right one, because a graph records when things happened as well as how far.'
+        : 'Different finish, so at least one block is wrong. Look for where your line first leaves the dashed one — that is the block to change.',
+
+      thinkOptions: [
+        { letter: 'A', text: 'She is freewheeling downhill' },
+        { letter: 'B', text: 'She is riding back towards the start' },
+        { letter: 'C', text: 'She is slowing down' },
+        { letter: 'D', text: 'She has stopped' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.thinkChoice === i,
+        onClick: () => this.setState({ thinkChoice: i })
+      })),
+      thinkOpen: s.thinkChoice !== null,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

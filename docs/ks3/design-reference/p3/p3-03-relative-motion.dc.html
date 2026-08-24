@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relative motion · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  [data-twoup] { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 18px; }
+  input[type="range"].p3-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 18rem; height: 40px; background: transparent; }
+  input[type="range"].p3-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].p3-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].p3-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].p3-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Describing motion</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Relative motion</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Describing motion · Model</p>
+        <h1>Relative motion</h1>
+        <p class="ks3-bigq">The train beside yours is doing 100 km/h and looks completely still. Which of you is moving?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>For a few seconds, the other train is parked.</h2>
+        <p class="ks3-hook-prompt">Your train is doing 100 km/h. A second train pulls alongside, also doing 100 km/h. Through the window it hangs there, motionless, close enough to read a book over someone's shoulder. Then it edges ahead and slides away.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">How fast is that train going?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Both answers are right, and neither is complete. 100 km/h measured from the platform. 0 km/h measured from your seat. The question was missing the only word that would let it have one answer: <strong>relative to what?</strong></p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Every speed in the last two lessons was secretly measured against the ground — the corridor, the runway, the road. Nobody said so, because nobody needed to. As soon as the thing you measure from is itself moving, you do.</p>
+      </section>
+
+      <section id="s-frames" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">The model · change who is watching</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Same road, same two cars, three different answers</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ frameProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Nothing about the cars changes when you switch viewpoint. Only the numbers do — and one of the three viewpoints always makes something look stationary.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 22px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. Two cars both travel at 25 m/s in the same direction, side by side. What is the speed of one measured by the driver of the other?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ frameOpen }}">
+          <div data-arrive="1" style="margin-top: 24px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 250px; min-width: 230px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <label for="p3va" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Car A · cream</label>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light);">{{ vaLabel }}</p>
+                </div>
+                <input class="p3-slider" type="range" id="p3va" min="0" max="30" step="5" value="{{ vaValue }}" onChange="{{ onVa }}" onInput="{{ onVa }}">
+              </div>
+              <div style="flex: 1 1 250px; min-width: 230px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <label for="p3vb" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Car B · amber</label>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-alert);">{{ vbLabel }}</p>
+                </div>
+                <input class="p3-slider" type="range" id="p3vb" min="0" max="30" step="5" value="{{ vbValue }}" onChange="{{ onVb }}" onInput="{{ onVb }}">
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div>
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Car B travels</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ dirTabs }}" as="t" hint-placeholder-count="2">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Watch from</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ obsTabs }}" as="t" hint-placeholder-count="3">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Movement</p>
+                <button type="button" onClick="{{ onMotion }}" aria-pressed="{{ motionOn }}" style="{{ motionStyle }}">{{ motionLabel }}</button>
+              </div>
+            </div>
+
+            <div style="margin-top: 20px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-on-dark-muted); overflow: hidden;">
+              <canvas width="1800" height="700" ref="{{ sceneRef }}" role="img" aria-label="{{ sceneAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+            </div>
+
+            <div style="margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+              <sc-for list="{{ readouts }}" as="r" hint-placeholder-count="4">
+                <div style="{{ r.style }}">
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">{{ r.label }}</p>
+                  <p style="{{ r.valueStyle }}">{{ r.value }}</p>
+                  <p style="margin: 3px 0 0; font-size: 17px; color: var(--ks3-on-dark-body);">{{ r.dir }}</p>
+                </div>
+              </sc-for>
+            </div>
+
+            <p style="margin: 18px 0 0; padding: 17px 19px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink); font-size: 19px; line-height: 1.6;"><strong style="font-family: var(--ks3-font-display);">What this viewpoint sees:</strong> {{ frameSentence }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <div data-twoup="1" style="margin: 28px 0 0;">
+        <div style="padding: 26px 28px; border-radius: var(--ks3-r-block); background: var(--ks3-ink); color: var(--ks3-on-dark);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-alert);">Same direction</p>
+          <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 30px; line-height: 1.15; letter-spacing: -.025em;">Subtract</p>
+          <p style="margin: 12px 0 0; font-family: var(--ks3-font-mono); font-size: 20px; font-weight: 500; color: var(--ks3-alert);">25 − 20 = 5 m/s</p>
+          <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-on-dark-body);">A car at 25 m/s overtaking a lorry at 20 m/s passes it at walking pace. This is why overtaking takes so long, and why it feels so slow from inside the car.</p>
+        </div>
+        <div style="padding: 26px 28px; border-radius: var(--ks3-r-block); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-blue);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-blue-text);">Opposite directions</p>
+          <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 30px; line-height: 1.15; letter-spacing: -.025em;">Add</p>
+          <p style="margin: 12px 0 0; font-family: var(--ks3-font-mono); font-size: 20px; font-weight: 500; color: var(--ks3-blue-text);">25 + 20 = 45 m/s</p>
+          <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body);">The same two vehicles meeting head-on close the gap at 45 m/s. Neither one is going any faster than it was a moment ago.</p>
+        </div>
+      </div>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">Every speed is measured relative to something. Say what it is, or the number does not mean anything.</p>
+      </div>
+
+      <section id="s-pass" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">Your turn · four passes</p>
+            <h2 style="margin: 6px 0 0;">How fast does one pass the other?</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ passProgress }}</p>
+        </div>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Decide whether the two are going the same way or opposite ways before you touch the numbers.</p>
+
+        <div style="margin-top: 22px; display: flex; flex-direction: column; gap: 16px;">
+          <sc-for list="{{ passes }}" as="p" hint-placeholder-count="4">
+            <div style="{{ p.style }}">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ p.label }}</p>
+              <p style="margin: 8px 0 0; font-size: 19px; line-height: 1.5; font-weight: 600; max-width: 60ch;">{{ p.question }}</p>
+              <div style="margin-top: 14px; display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ p.options }}" as="o" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ p.open }}">
+                <div data-arrive="1" style="margin-top: 14px; padding-top: 14px; border-top: 2px solid var(--ks3-rule);">
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; color: var(--ks3-ink);">{{ p.sum }}</p>
+                  <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body);">{{ p.why }}</p>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“The other train was doing 100 km/h and mine was doing 100 km/h the other way, so it went past me at 100 km/h.”</p>
+        <p style="max-width: 54ch;">Two trains, 100 km/h each, head-on on parallel tracks. Commit to the passing speed before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 30rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;"><strong>200 km/h.</strong> In one hour your train covers 100 km one way and the other covers 100 km the other way, so the gap between them closes by 200 km. From your seat, that train is doing 200 km/h.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">You have felt the difference. A train overtaking yours on the same line takes ten seconds to slide past because the two speeds nearly cancel. A train coming the other way is a bang and a blur, and it is gone — same trains, same speeds, and 200 km/h between them instead of 5.</p>
+          </div>
+        </sc-if>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;Sitting still in a train seat, you are not moving.&rdquo;</p>
+          <p>Relative to the seat, correct. Relative to the platform you are doing 200 km/h, relative to the Sun the whole train is doing about 30 km every second, and none of those answers is more true than the others. The question is only complete once a frame of reference is named — which is why every speed in physics quietly carries the words "relative to the ground" unless it says otherwise.</p>
+        </div>
+      </section>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Every speed is measured relative to something, and the something is usually the ground without anyone saying so. Two objects moving the same way have a relative speed equal to the difference; moving towards each other, it is the sum.</p>
+        </div>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Every speed is relative to something, and for ordinary questions that something is the ground. Two objects going the same way: subtract. Two objects going opposite ways: add. Changing who measures changes the number, never the object.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Sitting still, you are travelling about 30 km every second around the Sun, and you cannot feel any of it. That is not a trick of the senses: no experiment done inside a smoothly moving room can tell you how fast the room is going, or whether it is moving at all. Physicists spent two hundred years hunting for the one truly stationary thing to measure everything else against. There isn't one.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p3-02-distance-time-graphs.html">Distance–time graphs<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next unit</h2>
+          <ul>
+            <li><a href="p4-01-what-a-force-is.html">What a force is<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p3-01-speed.html">Speed<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p4-04-what-forces-do-to-motion.html">What forces do to motion<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Vectors and resultant velocity, and — much later — the reason light refuses to play by these rules.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Not sure when to add and when to subtract?</p>
+          <a class="ks3-tutor-cta" href="#s-pass">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. Both trains are treated as travelling at a perfectly constant speed on straight parallel tracks, and relative speed is taken as the difference when they travel the same way and the sum when they travel towards each other. That simple addition holds at everyday speeds and begins to fail as either speed approaches the speed of light, where the correct treatment is relativistic. The animation is drawn to a fixed scale of pixels per metre and the trains are not to scale against the distances shown.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startA&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0,&quot;max&quot;:30,&quot;step&quot;:5,&quot;default&quot;:25,&quot;unit&quot;:&quot; m/s&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;The model&quot;},&quot;startB&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0,&quot;max&quot;:30,&quot;step&quot;:5,&quot;default&quot;:20,&quot;unit&quot;:&quot; m/s&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;The model&quot;},&quot;startOpposite&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;The model&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Relative to what', short: 'HOOK' },
+  { id: 's-frames', label: 'Change who watches', short: 'FRAMES' },
+  { id: 's-pass', label: 'Four passes', short: 'PASSES' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const PASSES = [
+  { id: 'c1', label: 'Pass 1',
+    question: 'Two trains both travel at 30 m/s in the same direction on parallel tracks, side by side. How fast does one pass the other?',
+    options: ['0 m/s', '30 m/s', '60 m/s'],
+    sum: '30 − 30 = 0 m/s',
+    why: 'They never pass. Each one sits in the other\u2019s window, apparently parked, for as long as both hold that speed.' },
+  { id: 'c2', label: 'Pass 2',
+    question: 'The same two trains, still 30 m/s each, now travelling towards each other. How fast does one pass the other?',
+    options: ['0 m/s', '30 m/s', '60 m/s'],
+    sum: '30 + 30 = 60 m/s',
+    why: 'Opposite directions add. Nothing has changed about either train\u2019s own speed — the gap between them is closing twice as fast.' },
+  { id: 'c3', label: 'Pass 3',
+    question: 'A car at 25 m/s overtakes a lorry doing 20 m/s. How fast does the car pass the lorry?',
+    options: ['5 m/s', '20 m/s', '45 m/s'],
+    sum: '25 − 20 = 5 m/s',
+    why: 'Walking pace. A 15 m overtake therefore takes about three seconds, which is why it feels like nothing is happening.' },
+  { id: 'c4', label: 'Pass 4',
+    question: 'You walk at 1.5 m/s towards the front of a train that is doing 30 m/s. How fast are you moving relative to the ground?',
+    options: ['28.5 m/s', '30 m/s', '31.5 m/s'],
+    sum: '30 + 1.5 = 31.5 m/s',
+    why: 'Your speed relative to the train is 1.5 m/s, and the train\u2019s speed relative to the ground is 30. Walk towards the back instead and it is 28.5.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Calculate',
+    question: 'A cyclist rides at 6 m/s. A bus going the same way overtakes at 14 m/s. What is the bus\u2019s speed relative to the cyclist?',
+    options: [
+      { text: '8 m/s', correct: true },
+      { text: '20 m/s', correction: 'That is 14 + 6. Adding is for objects going opposite ways; these two are going the same way.' },
+      { text: '14 m/s', correction: 'That is the bus relative to the ground. The question asks what the cyclist sees, and the cyclist is moving too.' },
+      { text: '6 m/s', correction: 'That is the cyclist relative to the ground, which is not what was asked.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A passenger sits still in her seat on a train travelling at 30 m/s. Which statement is true?',
+    options: [
+      { text: 'She is doing 30 m/s relative to the ground and 0 m/s relative to the train — both at once', correct: true },
+      { text: 'She is not really moving. Only the train is moving', correction: 'Relative to the ground she covers 30 m every second, seat and all. "Really" is doing no work in that sentence.' },
+      { text: 'She is doing 30 m/s, full stop. The train\u2019s viewpoint is just an illusion', correction: 'The train\u2019s viewpoint is as good as the ground\u2019s. In it she is stationary — which is why she can read a book.' },
+      { text: 'She is doing 30 m/s relative to the train', correction: 'Relative to the train she is not moving at all. 30 m/s is her speed relative to the ground.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain both',
+    question: 'Two trains passing in opposite directions are gone in a second, but a train overtaking yours on the next track seems to take forever. Explain both, using relative speed and numbers of your own choosing.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Say the two trains each travel at…',
+    criteria: [
+      'Gives a ground speed for each train, and keeps them similar.',
+      'Adds the two speeds for the head-on case and gives the number.',
+      'Subtracts the two speeds for the overtaking case and gives the number.',
+      'Says the time it takes to pass depends on the relative speed, not on either ground speed.',
+      'Says neither train\u2019s own speed changed between the two situations.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A plane flies at 250 m/s relative to the air. It flies 900 km east with a 50 m/s wind behind it, then straight back west against the same wind. Work out its speed relative to the ground on each leg, and explain why the round trip takes longer than it would with no wind at all.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Going east, relative to the ground…',
+    criteria: [
+      'Gives 250 + 50 = 300 m/s for the leg with the wind.',
+      'Gives 250 − 50 = 200 m/s for the leg against it.',
+      'Says the speed is now being measured relative to the air first, and then relative to the ground.',
+      'Says the slow leg takes more extra time than the fast leg saves, because the slow leg lasts longer.',
+      'Uses total distance ÷ total time for the round trip rather than averaging 300 and 200.'
+    ] }
+];
+
+function rr(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function mod(a, n) { return ((a % n) + n) % n; }
+
+const PX_PER_M = 6;   // 900 logical px of scene = 150 m of road
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    va: Number(this.props.startA) >= 0 ? Number(this.props.startA) : 25,
+    vb: Number(this.props.startB) >= 0 ? Number(this.props.startB) : 20,
+    sameDir: this.props.startOpposite !== true,
+    obs: 'ground',
+    motion: true,
+    seen: {},
+    passPick: {},
+    thinkChoice: null,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.t = 0;
+    this.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+    this.draw();
+    this.tick();
+  }
+
+  componentDidUpdate() { this.draw(); }
+  componentWillUnmount() {
+    if (this.io) this.io.disconnect();
+    if (this.raf) cancelAnimationFrame(this.raf);
+  }
+
+  moving() { return this.state.motion && !this.reduced; }
+
+  tick() {
+    this.raf = requestAnimationFrame((now) => {
+      const prev = this.lastFrame || now;
+      const dt = Math.min(0.05, (now - prev) / 1000);
+      this.lastFrame = now;
+      if (this.moving() && this.canvas) { this.t += dt; this.draw(); }
+      this.tick();
+    });
+  }
+
+  vaGround() { return this.state.va; }
+  vbGround() { return this.state.sameDir ? this.state.vb : -this.state.vb; }
+  vObs() {
+    if (this.state.obs === 'a') return this.vaGround();
+    if (this.state.obs === 'b') return this.vbGround();
+    return 0;
+  }
+
+  car(ctx, x, y, w, colour, facingLeft) {
+    ctx.save();
+    ctx.translate(x, y);
+    if (facingLeft) ctx.scale(-1, 1);
+    const h = w * 0.30;
+    ctx.fillStyle = colour;
+    rr(ctx, -w / 2, -h, w, h, 7);
+    ctx.fill();
+    ctx.strokeStyle = '#100D0A';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+    ctx.fillStyle = '#100D0A';
+    rr(ctx, -w * 0.18, -h - h * 0.55, w * 0.46, h * 0.6, 5);
+    ctx.fill();
+    ctx.fillStyle = '#8FB7FF';
+    rr(ctx, -w * 0.13, -h - h * 0.46, w * 0.36, h * 0.4, 3);
+    ctx.fill();
+    ctx.fillStyle = '#2C2620';
+    [-w * 0.28, w * 0.28].forEach((wx) => {
+      ctx.beginPath();
+      ctx.arc(wx, 0, h * 0.34, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#5C5249';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+
+  draw() {
+    const c = this.canvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 350;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#100D0A';
+    ctx.fillRect(0, 0, W, H);
+
+    const t = this.moving() ? this.t : 0;
+    const vO = this.vObs();
+    const vA = this.vaGround(), vB = this.vbGround();
+    const roadY = 200;
+
+    // roadside posts — they move with the ground, so in a car's frame they slide
+    const spacing = 150;
+    const shift = mod(-vO * PX_PER_M * t, spacing);
+    ctx.strokeStyle = '#4A4038';
+    ctx.lineWidth = 2;
+    for (let i = -1; i <= Math.ceil(W / spacing) + 1; i++) {
+      const x = i * spacing + shift;
+      ctx.fillStyle = '#3E3730';
+      rr(ctx, x - 4, roadY - 74, 8, 62, 3);
+      ctx.fill();
+      ctx.fillStyle = '#5C5249';
+      ctx.beginPath();
+      ctx.arc(x, roadY - 80, 13, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // road
+    ctx.fillStyle = '#2C2620';
+    ctx.fillRect(0, roadY, W, 120);
+    ctx.fillStyle = '#3E3730';
+    ctx.fillRect(0, roadY, W, 4);
+    // centre line, painted on the ground
+    const dashLen = 60, gap = 46;
+    const dshift = mod(-vO * PX_PER_M * t, dashLen + gap);
+    ctx.fillStyle = '#6E655D';
+    for (let i = -1; i <= Math.ceil(W / (dashLen + gap)) + 1; i++) {
+      ctx.fillRect(i * (dashLen + gap) + dshift, roadY + 58, dashLen, 5);
+    }
+
+    // cars: position from relative velocity, orientation from ground velocity
+    const xA = mod(200 + (vA - vO) * PX_PER_M * t, W + 240) - 120;
+    const xB = mod(560 + (vB - vO) * PX_PER_M * t, W + 240) - 120;
+    this.car(ctx, xB, roadY + 38, 116, '#FFC53D', vB < 0);
+    this.car(ctx, xA, roadY + 102, 116, '#F4E9D8', vA < 0);
+
+    // labels above each car
+    ctx.font = '800 15px "Bricolage Grotesque", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#F4E9D8';
+    ctx.fillText('A', xA, roadY + 102 - 72);
+    ctx.fillStyle = '#FFC53D';
+    ctx.fillText('B', xB, roadY + 38 - 72);
+
+    // viewpoint chip
+    const who = this.state.obs === 'ground' ? 'THE ROADSIDE' : (this.state.obs === 'a' ? 'CAR A' : 'CAR B');
+    ctx.font = '500 14px "DM Mono", ui-monospace, monospace';
+    const label = 'SEEN FROM: ' + who;
+    const w = ctx.measureText(label).width + 30;
+    ctx.fillStyle = '#221E1B';
+    rr(ctx, 24, 24, w, 38, 12);
+    ctx.fill();
+    ctx.strokeStyle = '#8FB7FF';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = '#8FB7FF';
+    ctx.textAlign = 'left';
+    ctx.fillText(label, 39, 48);
+
+    // what is stationary here
+    let still = 'nothing on this screen';
+    if (this.state.obs === 'ground') still = 'the road and the posts';
+    else if (this.state.obs === 'a') still = 'car A';
+    else still = 'car B';
+    ctx.fillStyle = '#C6B9A7';
+    ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+    ctx.fillText('stationary here: ' + still, 24, 92);
+    ctx.textAlign = 'center';
+  }
+
+  seg(on, dark) {
+    const base = 'cursor:pointer;font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const vA = this.vaGround(), vB = this.vbGround();
+    const bRelA = vB - vA, aRelB = vA - vB;
+    const word = (v) => v === 0 ? 'not moving' : (v > 0 ? 'forwards' : 'backwards');
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    const readout = (label, v, live) => ({
+      label: label,
+      value: Math.abs(v).toFixed(0) + ' m/s',
+      dir: word(v),
+      style: 'padding:15px 17px;border-radius:var(--ks3-r-panel);background:var(--ks3-dark-panel);' +
+        (live ? 'outline:3px solid var(--ks3-alert);outline-offset:-3px;' : ''),
+      valueStyle: 'margin:5px 0 0;font-family:var(--ks3-font-mono);font-size:27px;font-weight:500;color:' +
+        (live ? 'var(--ks3-alert)' : 'var(--ks3-on-dark)') + ';'
+    });
+
+    let sentence;
+    if (s.obs === 'ground') {
+      sentence = 'The road stays put. Car A moves ' + word(vA) + ' at ' + Math.abs(vA) + ' m/s and car B moves ' + word(vB) + ' at ' + Math.abs(vB) + ' m/s. This is the viewpoint every speed in the last two lessons quietly used.';
+    } else if (s.obs === 'a') {
+      sentence = 'Car A is drawn standing still and the road slides ' + word(-vA) + ' underneath it at ' + Math.abs(vA) + ' m/s. Car B moves ' + word(bRelA) + ' at ' + Math.abs(bRelA) + ' m/s. Car A has not slowed down; you are just measuring from inside it.';
+    } else {
+      sentence = 'Car B is drawn standing still and the road slides ' + word(-vB) + ' at ' + Math.abs(vB) + ' m/s. Car A moves ' + word(aRelB) + ' at ' + Math.abs(aRelB) + ' m/s.';
+    }
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-frames') return Object.keys(s.seen).length >= 3;
+          if (id === 's-pass') return Object.keys(s.passPick).length >= 4;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: '100 km/h — that is what the driver was told' },
+        { letter: 'B', text: '0 km/h — it is not moving, you can see that' },
+        { letter: 'C', text: '200 km/h' },
+        { letter: 'D', text: 'The question cannot be answered as it stands' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: '25 m/s' },
+        { letter: 'B', text: '50 m/s' },
+        { letter: 'C', text: '0 m/s' },
+        { letter: 'D', text: 'It depends how far apart they are' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      frameOpen: s.gate !== null,
+      frameProgress: Object.keys(s.seen).length + ' of 3 viewpoints tried',
+      vaValue: s.va,
+      vaLabel: s.va + ' m/s',
+      onVa: (e) => this.setState({ va: Number(e.target.value) }),
+      vbValue: s.vb,
+      vbLabel: s.vb + ' m/s',
+      onVb: (e) => this.setState({ vb: Number(e.target.value) }),
+      dirTabs: [
+        { id: true, label: 'The same way as A' },
+        { id: false, label: 'The opposite way' }
+      ].map((d) => ({
+        label: d.label, pressed: s.sameDir === d.id, style: this.seg(s.sameDir === d.id, true),
+        onClick: () => this.setState({ sameDir: d.id })
+      })),
+      obsTabs: [
+        { id: 'ground', label: 'The roadside' },
+        { id: 'a', label: 'Car A' },
+        { id: 'b', label: 'Car B' }
+      ].map((o) => ({
+        label: o.label, pressed: s.obs === o.id, style: this.seg(s.obs === o.id, true),
+        onClick: () => this.setState((st) => ({ obs: o.id, seen: Object.assign({}, st.seen, { [o.id]: true }) }))
+      })),
+      motionOn: s.motion,
+      motionLabel: s.motion ? 'Running' : 'Frozen',
+      motionStyle: this.seg(s.motion, true),
+      onMotion: () => this.setState({ motion: !this.state.motion }),
+      sceneRef: (el) => { this.canvas = el; if (el) this.draw(); },
+      sceneAlt: 'A road with two cars, drawn from the viewpoint of ' +
+        (s.obs === 'ground' ? 'the roadside, where the road is still and both cars move' :
+          (s.obs === 'a' ? 'car A, where car A is held still and the road slides underneath it' :
+            'car B, where car B is held still and the road slides underneath it')) +
+        '. Car A travels at ' + s.va + ' metres per second and car B at ' + s.vb + ' metres per second ' +
+        (s.sameDir ? 'the same way' : 'the opposite way') + '.',
+      readouts: [
+        readout('Car A, from the roadside', vA, s.obs === 'ground'),
+        readout('Car B, from the roadside', vB, s.obs === 'ground'),
+        readout('Car B, from car A', bRelA, s.obs === 'a'),
+        readout('Car A, from car B', aRelB, s.obs === 'b')
+      ],
+      frameSentence: sentence,
+
+      passProgress: Object.keys(s.passPick).length + ' of 4 decided',
+      passes: PASSES.map((p) => {
+        const pick = s.passPick[p.id];
+        const open = pick !== undefined;
+        return {
+          label: p.label, question: p.question, sum: p.sum, why: p.why, open: open,
+          style: 'padding:22px 24px;border-radius:var(--ks3-r-panel);background:' + (open ? 'var(--ks3-inset)' : 'var(--ks3-card)') +
+            ';border:2px solid ' + (open ? 'var(--ks3-ink)' : 'var(--ks3-option-border)') + ';',
+          options: p.options.map((lab, i) => ({
+            label: lab, pressed: pick === i, disabled: open,
+            style: this.seg(pick === i, false) + 'font-family:var(--ks3-font-mono);font-weight:500;' + (open && pick !== i ? 'opacity:.5;' : ''),
+            onClick: () => this.setState((st) => {
+              if (st.passPick[p.id] !== undefined) return null;
+              return { passPick: Object.assign({}, st.passPick, { [p.id]: i }) };
+            })
+          }))
+        };
+      }),
+
+      thinkOptions: [
+        { letter: 'A', text: '100 km/h' },
+        { letter: 'B', text: '200 km/h' },
+        { letter: 'C', text: '50 km/h' },
+        { letter: 'D', text: '0 km/h' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.thinkChoice === i,
+        onClick: () => this.setState({ thinkChoice: i })
+      })),
+      thinkOpen: s.thinkChoice !== null,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>
