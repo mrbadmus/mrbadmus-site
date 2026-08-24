@@ -1717,15 +1717,18 @@ def _prove_picker(page, url):
 #     to (donor node 76, `data-port-action="recall-round"`)
 #   · the round WALKS — pick, Check, verdict, Next question, Skip, the last
 #     question's `Finish the round`, the round-done card, `Another round`
-#   · `min(6, pool)` is stated by the page, at THREE pool sizes
+#   · `min(5, pool)` is stated by the page, at THREE pool sizes
+#     — ⊕ QUICKFIX-2026-08-24: revised from Design's 6 to the ruled 5
+#       (RECALL_MAX in student_rulings.py), and every literal 6 below that
+#       named the round's own cap moved with it.
 #   · no question repeats inside a round, at each of those sizes
 #   · ⚠️ THE `.rprog` BAR READS THE RIGHT FRACTION AT A SHORT POOL, which is
 #     the defect this unit was told about and could not otherwise prove: the
-#     fixture's bank is Design's EIGHT questions, so `min(6, 8)` is six and the
+#     fixture's bank is Design's EIGHT questions, so `min(5, 8)` is five and the
 #     scaling is the identity on it. The bank is truncated IN THE PAGE — it is
 #     read through `MRB_DATA` on every render, so this is the product's own
 #     seam and not a hook added for a test — and the bar is re-read at every
-#     step of a round of 6, of 4 and of 2.
+#     step of a round of 5, of 4 and of 2.
 #   · every word inside the round clears AA against the ground it is painted
 #     on, on all six themes and on the attribute's absence.
 #
@@ -1904,7 +1907,7 @@ def _advance(page, skip=False):
     first version counted. That version stalled at question five of six and
     reported the round as broken, because Design's own label changes on the
     LAST question — `Next question` becomes `Finish the round` — and a walk
-    that assumes where the last question is cannot survive `min(6, pool)`
+    that assumes where the last question is cannot survive `min(5, pool)`
     moving it. The round is asked what it is showing.
     """
     import json
@@ -1991,7 +1994,12 @@ def _walk_round(page, url):
     # (d) ⚠️ THE SHORT POOL. Three sizes, and the middle one is 8r/Sc1's real
     # bank today: `the-gas-exchange-system` and `particle-model`, two ladder
     # rungs each. Every screen of every round is read, bar included.
-    for n in (6, 4, 2):
+    #
+    # ⊕ QUICKFIX-2026-08-24: the first size is RECALL_MAX itself (the
+    # identity case, where min(RECALL_MAX, pool) == pool), and it moved from
+    # 6 to 5 with the ruling. 4 and 2 stay — they test the round SHORTENING
+    # a pool smaller than the cap, which the cap's own value doesn't change.
+    for n in (5, 4, 2):
         out["pools"][n] = None
         if page.eval(_TRUNCATE_BANK % json.dumps(n)) == "no bank":
             continue
@@ -2288,17 +2296,23 @@ def check_round(rd):
         rows.append((disp, "a fresh round does not open broken", "PASS",
                      "round two says nothing about a streak"))
 
-    # ── min(6, pool), and the bar that assumes six ────────────────────────
+    # ── min(5, pool), and the bar that assumes five ────────────────────────
+    # ⊕ QUICKFIX-2026-08-24: RECALL_MAX moved from 6 to 5 (student_rulings.py,
+    # ruling P2); this cap is duplicated here the same way the old 6 was, for
+    # the same reason — the LOGIC lives as embedded JS text, not an
+    # importable Python constant, so there is no single source to read it
+    # from.
+    RECALL_MAX = 5
     for n, steps in sorted(rd["pools"].items()):
-        size = min(6, n)
+        size = min(RECALL_MAX, n)
         if not steps:
             rows.append((disp, "a pool of %d was driven" % n, "FAIL",
                          "the bank could not be shortened"))
             problems.append(
-                "the recall bank could not be shortened to %d, so `min(6, "
+                "the recall bank could not be shortened to %d, so `min(%d, "
                 "pool)` was never measured at a short pool — which is the one "
                 "thing the fixture's own eight-question bank cannot show."
-                % n)
+                % (n, RECALL_MAX))
             continue
         head = steps[0]["text"]
         want = "QUESTION 01 / %02d" % size
@@ -2306,9 +2320,9 @@ def check_round(rd):
             rows.append((disp, "a pool of %d shows %d and says so" % (n, size),
                          "FAIL", "no %r in %r" % (want, head[:70])))
             problems.append(
-                "with a bank of %d the round must be min(6, %d) = %d long and "
-                "must SAY that size — ruling P2. The band reads %r."
-                % (n, n, size, head[:90]))
+                "with a bank of %d the round must be min(%d, %d) = %d long "
+                "and must SAY that size — ruling P2. The band reads %r."
+                % (n, RECALL_MAX, n, size, head[:90]))
         else:
             rows.append((disp, "a pool of %d shows %d and says so" % (n, size),
                          "PASS", want))
@@ -2320,16 +2334,16 @@ def check_round(rd):
                          "FAIL", "%d question screen(s)" % len(qs)))
             problems.append(
                 "a bank of %d produced a round of %d question screens, and "
-                "min(6, %d) is %d." % (n, len(qs), n, size))
+                "min(%d, %d) is %d." % (n, len(qs), RECALL_MAX, n, size))
         elif len(set(qs)) != len(qs):
             rows.append((disp, "a pool of %d repeats nothing" % n, "FAIL",
                          "%d screen(s), %d distinct" % (len(qs), len(set(qs)))))
             problems.append(
                 "a round of %d showed the same question twice. A round is "
                 "`size` CONSECUTIVE items of the bank and `size` is "
-                "min(6, length), so the modulo cannot come back round — if "
+                "min(%d, length), so the modulo cannot come back round — if "
                 "this is red, one of those two facts has stopped being true."
-                % size)
+                % (size, RECALL_MAX))
         else:
             rows.append((disp, "a pool of %d runs %d, repeating nothing"
                          % (n, size), "PASS",
@@ -2983,7 +2997,7 @@ def main():
     print("        And the RECALL ROUND, which no other gate can open: "
           "`Practise recall` opens it, a wrong answer is marked and "
           "explained, the round runs to its end and offers another, and the "
-          "round renumbers. At pools of 6, 4 and 2 it shows min(6, pool), "
+          "round renumbers. At pools of 5, 4 and 2 it shows min(5, pool), "
           "SAYS that size, repeats nothing inside a round, and fills Design's "
           "seven-bucket progress bar to the fraction actually done. Every "
           "word in it clears AA %.1f on all seven cases." % AA)
