@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keeping energy in: insulation · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p1-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p1-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  [data-results] { width: 100%; border-collapse: collapse; font-size: 17px; }
+  [data-results] th, [data-results] td { border: 2px solid var(--ks3-ink); padding: 10px 12px; text-align: left; }
+  [data-results] th { font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; background: var(--ks3-band); }
+  [data-results] td { font-family: var(--ks3-font-mono); font-size: 16px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Energy transfers</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Keeping energy in: insulation</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Energy transfers · Investigation</p>
+        <h1>Keeping energy in: insulation</h1>
+        <p class="ks3-bigq">Wrap an ice cube in a thick woollen blanket and leave it on the bench. Does it melt faster or slower?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>An ice cube in a blanket.</h2>
+        <p class="ks3-hook-prompt">Two identical ice cubes on the same bench in the same room. One sits in the open air. The other is wrapped in a thick woollen blanket — the sort you would call warm.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Commit before the trial runs.</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">The wrapped one lasts far longer. If a blanket were a source of warmth, wrapping ice in it would be the fastest way to melt it — and it is the slowest. A blanket does not make warmth. It slows a flow. That is the whole lesson, and the trial below lets you prove it with numbers.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>You now know three routes energy can take: conduction, convection and radiation. Insulation is nothing more than blocking those routes. There is no fourth idea in this lesson — there is a set of measurements you take to find out which blockings work best, and one very stubborn misconception that the measurements destroy.</p>
+      </section>
+
+      <section id="s-plan" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Plan the trial · what you change and what you must not</p>
+        <h2 style="margin: 6px 0 14px;">One variable at a time</h2>
+        <p style="margin: 0 0 18px; max-width: 54ch;">Before running anything, decide which of these you are allowed to vary between the beakers. Get this wrong and the results mean nothing.</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
+          <sc-for list="{{ planCards }}" as="c" hint-placeholder-count="5">
+            <div style="{{ c.wrapStyle }}">
+              <p style="margin: 0 0 12px; font-size: 17px; line-height: 1.45; font-weight: 600;">{{ c.text }}</p>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button type="button" onClick="{{ c.onVary }}" aria-pressed="{{ c.varyOn }}" style="{{ c.varyStyle }}">Change it</button>
+                <button type="button" onClick="{{ c.onKeep }}" aria-pressed="{{ c.keepOn }}" style="{{ c.keepStyle }}">Keep it the same</button>
+              </div>
+              <sc-if value="{{ c.answered }}">
+                <p style="{{ c.noteStyle }}">{{ c.note }}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-trial" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">The insulation trial · run it and record</p>
+            <h2 style="margin: 6px 0 0;">Cooling curves, side by side.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ trialProgress }}</p>
+        </div>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Four beakers, each with 200 ml of water at 80 °C, in a 20 °C room. Different wrappings. Run the clock and watch them separate.</p>
+
+        <div style="margin-top: 22px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-ink); overflow: hidden; background: var(--ks3-card);">
+          <canvas width="1800" height="680" ref="{{ trialRef }}" role="img" aria-label="{{ trialAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+          <div style="padding: 18px; border-top: 2px solid var(--ks3-ink); background: var(--ks3-inset);">
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+              <button type="button" onClick="{{ onRun }}" aria-pressed="{{ running }}" style="{{ runStyle }}">{{ runLabel }}</button>
+              <button type="button" onClick="{{ onReset }}" style="{{ resetStyle }}">Reset to 80 °C</button>
+              <button type="button" onClick="{{ onSkip }}" style="{{ skipStyle }}">Jump to 30 minutes</button>
+            </div>
+            <p style="margin: 16px 0 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">Elapsed: {{ clockLabel }}</p>
+          </div>
+        </div>
+
+        <div style="margin-top: 18px; overflow-x: auto; border-radius: var(--ks3-r-panel); border: 2px solid var(--ks3-ink);">
+          <table data-results="1">
+            <thead>
+              <tr>
+                <th scope="col">Wrapping</th>
+                <th scope="col">Now</th>
+                <th scope="col">Dropped by</th>
+                <th scope="col">Routes it blocks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ resultRows }}" as="row" hint-placeholder-count="4">
+                <tr style="{{ row.style }}">
+                  <th scope="row" style="{{ row.headStyle }}">{{ row.label }}</th>
+                  <td>{{ row.now }}</td>
+                  <td>{{ row.drop }}</td>
+                  <td style="font-family: var(--ks3-font-body); font-size: 17px;">{{ row.blocks }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin: 18px 0 0; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink); font-size: 19px; line-height: 1.6;">{{ trialNote }}</p>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">Insulation does not add warmth or make cold. It slows the transfer of energy — in both directions equally.</p>
+      </div>
+
+      <section id="s-ice" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">The decisive trial · run it the other way round</p>
+        <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Now insulate something cold</h2>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Everything so far kept hot water hot, which is consistent with a blanket being a source of warmth. This trial is not. Same wrappings, ice instead of hot water.</p>
+
+        <sc-if value="{{ iceOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-on-dark-muted); overflow: hidden;">
+            <canvas width="1800" height="480" ref="{{ iceRef }}" role="img" aria-label="{{ iceAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+            <div style="padding: 16px 18px 18px; border-top: 2px solid var(--ks3-on-dark-muted); background: var(--ks3-dark-panel);">
+              <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button type="button" onClick="{{ onIceRun }}" aria-pressed="{{ iceRunning }}" style="{{ iceRunStyle }}">{{ iceRunLabel }}</button>
+                <button type="button" onClick="{{ onIceReset }}" style="{{ iceResetStyle }}">Fresh cubes</button>
+              </div>
+            </div>
+          </div>
+          <p style="margin: 16px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-on-dark-body);">{{ iceNote }}</p>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“A woolly hat warms your head.”</p>
+        <p style="max-width: 54ch;">Commit to the correction, then read why the wording matters more than it looks.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">A hat has no energy supply. It cannot warm anything. What warms your head is your own body, running at about 100 W from your chemical store, and the hat simply slows the rate at which that energy escapes. Take the hat off a dead thermos flask and nothing happens — because there was never any warmth in the hat to begin with.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">The ice trial is the proof, and it is worth being precise about why. If insulation warmed things, wrapped ice would melt faster. It melts slower. The only description that fits both trials is that insulation slows the flow, whichever way the flow happens to be going — hot water stays hot longer <em>and</em> ice stays frozen longer, from the same property. That is why the same foam box carries chips home and carries a transplant organ to hospital.</p>
+          </div>
+        </sc-if>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;Thicker insulation makes a house warmer.&rdquo;</p>
+          <p>It makes it slower to cool, which is not the same claim. Insulation adds no energy to anything — an unheated house wrapped in a metre of loft wool still settles at the outside temperature, it just takes much longer to get there. What thicker insulation buys is a smaller rate of loss, so a smaller heating bill for the same temperature inside.</p>
+        </div>
+      </section>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">An insulator slows the rate at which energy is transferred; it never stops it. Trapped air does most of the work, which is why a duvet, loft insulation, a wetsuit and a bird fluffing its feathers are all the same trick.</p>
+        </div>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Insulation blocks conduction, convection and radiation. Trapped air does most of the work. It slows flow in both directions, which is why the same box keeps chips hot and ice frozen — and why "the hat warms me" is the wrong way round.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>A vacuum flask is the only object most people own that defeats all three routes at once, and it is worth taking apart. Two glass walls with the air pumped out between them: no particles, so no conduction and no convection across the gap. Both facing surfaces silvered: radiation is reflected straight back rather than absorbed. The inner vessel supported on a few tiny points rather than resting on the outer: the remaining conduction path is made as thin as possible. James Dewar built the first one in 1892 and never patented it. It is not a warm object and not a cold one — it is an object that is extremely bad at letting energy past, which is why the same flask holds tea at 80 °C and liquid nitrogen at −196 °C.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p1-06-radiation.html">Radiation<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p1-08-simple-machines.html">Simple machines: force for distance<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p1-01-energy-stores.html">Energy stores<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p1-03-conservation-of-energy.html">Conservation of energy<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p2-01-energy-in-food.html">Energy in food<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Rates of cooling, U-values, and the required practical on thermal insulators.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still sounds like the blanket must add warmth?</p>
+          <a class="ks3-tutor-cta" href="#s-ice">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The trial is a teaching model. Each wrapping is given a fixed cooling factor against the bare control, so that repeat runs give the same answer; a real trial gives a spread of results and needs repeats before any wrapping can be ranked. The beakers are treated as identical in volume, starting temperature and surface area, which is exactly the control the planning cards ask you to impose and exactly what is hardest to achieve on a bench. Room temperature is held constant throughout.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startMinutes&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0,&quot;max&quot;:60,&quot;step&quot;:1,&quot;default&quot;:0,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Insulation trial&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Ice in a blanket', short: 'HOOK' },
+  { id: 's-plan', label: 'Plan the trial', short: 'PLAN' },
+  { id: 's-trial', label: 'Cooling curves', short: 'TRIAL' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const BEAKERS = [
+  { id: 'bare', label: 'Nothing (control)', k: 1.0, colour: '#1A1714',
+    blocks: 'None — this is the comparison' },
+  { id: 'foil', label: 'Shiny foil', k: 0.74, colour: '#8E6C3F',
+    blocks: 'Radiation, reflected back' },
+  { id: 'wool', label: 'Wool, 1 layer', k: 0.5, colour: '#D98A4A',
+    blocks: 'Conduction and convection — trapped air' },
+  { id: 'wool3', label: 'Wool, 3 layers + lid', k: 0.26, colour: '#E4572E',
+    blocks: 'All three — more trapped air, lid stops convection' }
+];
+
+const PLAN_CARDS = [
+  { id: 'v1', text: 'The wrapping around the beaker', vary: true,
+    right: 'Change it \u2014 this is the independent variable, the one thing the trial is about.',
+    wrong: 'This is the whole point of the trial. If every beaker has the same wrapping you learn nothing.' },
+  { id: 'v2', text: 'The volume of water in each beaker', vary: false,
+    right: 'Keep it the same. More water cools more slowly whatever the wrapping, so this would confound the result.',
+    wrong: 'Vary this and you cannot tell whether a slow cooler was well insulated or just fuller.' },
+  { id: 'v3', text: 'The starting temperature', vary: false,
+    right: 'Keep it the same. A hotter start means a faster initial drop, which would look like poor insulation.',
+    wrong: 'Different starting temperatures give different cooling rates on their own. That difference would swamp the one you are looking for.' },
+  { id: 'v4', text: 'The room the beakers stand in', vary: false,
+    right: 'Keep it the same. Cooling depends on the difference between the water and the room.',
+    wrong: 'Put one beaker by a window and one by a radiator and the wrapping becomes irrelevant.' },
+  { id: 'v5', text: 'The times at which you read each thermometer', vary: false,
+    right: 'Keep it the same. Readings have to be simultaneous to be comparable.',
+    wrong: 'Reading one beaker at 5 minutes and another at 12 gives you two unrelated numbers, not a comparison.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'What makes wool a good insulator?',
+    options: [
+      { text: 'It traps pockets of air, and air conducts very badly', correct: true },
+      { text: 'Wool produces warmth of its own', correction: 'No material produces warmth without an energy supply. Wool has none.' },
+      { text: 'Wool is a good conductor, so it spreads the heat evenly', correction: 'A good conductor would be a bad insulator \u2014 that is the opposite of what is wanted.' },
+      { text: 'It reflects radiation like a mirror', correction: 'Shiny foil does that. Wool works by trapping air.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'An ice cube wrapped in a thick blanket is compared with an identical one left in the open. What happens?',
+    options: [
+      { text: 'The wrapped one melts more slowly', correct: true },
+      { text: 'The wrapped one melts faster, because blankets are warm', correction: 'This is exactly the misconception. A blanket has no warmth of its own to give.' },
+      { text: 'They melt at the same rate — insulation only works on hot things', correction: 'Insulation slows flow in either direction. Nothing about it prefers hot to cold.' },
+      { text: 'The wrapped one never melts at all', correction: 'It is slowed, not stopped. Given long enough it reaches room temperature like everything else.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A vacuum flask keeps tea hot for hours. Explain how it blocks all three methods of energy transfer.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The gap between the walls has no air…',
+    criteria: [
+      'Says the gap between the two walls is a vacuum with no particles.',
+      'Says this stops conduction across the gap, because there is nothing to pass energy along.',
+      'Says this stops convection, because there is no fluid that could move.',
+      'Says the silvered surfaces reflect radiation back instead of absorbing it.',
+      'Says the stopper or lid blocks the convection route out of the top.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A takeaway uses the same foam boxes for hot chips and for ice cream, and a customer says one of those must be a mistake. Explain why both work, using your ice trial as evidence.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Insulation slows the transfer of energy…',
+    criteria: [
+      'Says insulation slows the transfer of energy rather than adding or removing it.',
+      'Says with hot chips the flow is outwards, and the box slows it.',
+      'Says with ice cream the flow is inwards, from the warmer room, and the box slows that too.',
+      'Says the same property does both jobs \u2014 nothing about the box has to change.',
+      'Uses the ice trial as the evidence: wrapped ice lasted longer, which rules out the box being a source of warmth.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    plans: {},
+    running: false,
+    t: Number.isFinite(Number(this.props.startMinutes)) ? Math.min(60, Math.max(0, Number(this.props.startMinutes))) : 0,
+    iceRunning: false,
+    iceT: 0,
+    iceSeen: false,
+    thinkChoice: null,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+    this.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.frames = 0;
+    this.loop();
+  }
+
+  componentWillUnmount() {
+    if (this.io) this.io.disconnect();
+    if (this.raf) cancelAnimationFrame(this.raf);
+  }
+
+  loop() {
+    this.raf = requestAnimationFrame(() => this.loop());
+    this.frames += 1;
+    const speed = this.reduced ? 0.06 : 0.14;
+    let changed = false;
+    let next = {};
+    if (this.state.running) {
+      next.t = Math.min(60, this.state.t + speed);
+      changed = true;
+    }
+    if (this.state.iceRunning) {
+      next.iceT = Math.min(60, this.state.iceT + speed);
+      if (next.iceT > 8) next.iceSeen = true;
+      changed = true;
+    }
+    if (changed && this.frames % 3 === 0) this.setState(next);
+    this.drawTrial();
+    this.drawIce();
+  }
+
+  temp(k, mins) {
+    return 20 + 60 * Math.exp(-k * mins / 26);
+  }
+
+  drawTrial() {
+    const c = this.trialCanvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 340;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#FFFDF8';
+    ctx.fillRect(0, 0, W, H);
+
+    const gx = 66, gy = 34, gw = 470, gh = H - 104;
+    const px = (m) => gx + (m / 60) * gw;
+    const py = (t) => gy + gh - ((t - 15) / 70) * gh;
+
+    ctx.strokeStyle = '#E4DACA';
+    ctx.lineWidth = 1.5;
+    [20, 40, 60, 80].forEach((t) => {
+      ctx.beginPath();
+      ctx.moveTo(gx, py(t));
+      ctx.lineTo(gx + gw, py(t));
+      ctx.stroke();
+    });
+
+    ctx.strokeStyle = '#1A1714';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(gx, gy);
+    ctx.lineTo(gx, gy + gh);
+    ctx.lineTo(gx + gw, gy + gh);
+    ctx.stroke();
+
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'right';
+    [20, 40, 60, 80].forEach((t) => { ctx.fillText(String(t), gx - 8, py(t) + 4); });
+    ctx.textAlign = 'left';
+    ctx.fillText('TEMPERATURE / \u00B0C', gx - 4, gy - 14);
+    ctx.textAlign = 'right';
+    ctx.fillText('MINUTES', gx + gw, gy + gh + 24);
+
+    // room temperature line
+    ctx.strokeStyle = '#B9AE9C';
+    ctx.setLineDash([6, 5]);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(gx, py(20));
+    ctx.lineTo(gx + gw, py(20));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#A79A88';
+    ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('ROOM, 20 \u00B0C \u2014 EVERY CURVE ENDS HERE', gx + 6, py(20) - 8);
+
+    BEAKERS.forEach((b) => {
+      ctx.strokeStyle = b.colour;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      for (let m = 0; m <= this.state.t; m += 0.4) {
+        const X = px(m), Y = py(this.temp(b.k, m));
+        m === 0 ? ctx.moveTo(X, Y) : ctx.lineTo(X, Y);
+      }
+      ctx.stroke();
+      if (this.state.t > 0) {
+        const X = px(this.state.t), Y = py(this.temp(b.k, this.state.t));
+        ctx.beginPath();
+        ctx.arc(X, Y, 5.5, 0, Math.PI * 2);
+        ctx.fillStyle = b.colour;
+        ctx.fill();
+      }
+    });
+
+    // beakers on the right
+    const bx0 = 580;
+    BEAKERS.forEach((b, i) => {
+      const bx = bx0 + (i % 2) * 150;
+      const by = 54 + Math.floor(i / 2) * 130;
+      const T = this.temp(b.k, this.state.t);
+      const warm = (T - 20) / 60;
+      ctx.fillStyle = 'rgb(' + Math.round(200 + warm * 35) + ',' + Math.round(220 - warm * 100) + ',' + Math.round(230 - warm * 180) + ')';
+      ctx.fillRect(bx, by, 82, 66);
+      ctx.strokeStyle = b.colour;
+      ctx.lineWidth = i === 0 ? 2 : 4;
+      ctx.strokeRect(bx, by, 82, 66);
+      ctx.fillStyle = '#1A1714';
+      ctx.font = '700 17px "Bricolage Grotesque", system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(T.toFixed(1) + '\u00B0', bx + 41, by + 40);
+      ctx.fillStyle = '#6B6055';
+      ctx.font = '500 10px "DM Mono", ui-monospace, monospace';
+      ctx.fillText(b.label.toUpperCase().slice(0, 18), bx + 41, by + 82);
+    });
+  }
+
+  drawIce() {
+    const c = this.iceCanvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 240;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#100D0A';
+    ctx.fillRect(0, 0, W, H);
+
+    const t = this.state.iceT;
+    // bare melts in ~14 min, wrapped in ~54
+    const pairs = [
+      { label: 'NO WRAPPING', life: 14, x: 190 },
+      { label: 'WRAPPED IN WOOL', life: 54, x: 610 }
+    ];
+
+    pairs.forEach((p) => {
+      const frac = Math.max(0, 1 - t / p.life);
+      const size = 74 * Math.cbrt(frac);
+      const cy = 128;
+      // puddle
+      const pw = 90 * (1 - frac);
+      ctx.beginPath();
+      ctx.ellipse(p.x, cy + 44, pw, 9 * (1 - frac) + 2, 0, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(120,160,190,0.55)';
+      ctx.fill();
+      if (size > 2) {
+        ctx.fillStyle = 'rgba(206,231,242,0.94)';
+        ctx.fillRect(p.x - size / 2, cy + 40 - size, size, size);
+        ctx.strokeStyle = '#8FB6CC';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(p.x - size / 2, cy + 40 - size, size, size);
+      }
+      if (p.life > 20) {
+        ctx.strokeStyle = '#D98A4A';
+        ctx.lineWidth = 9;
+        ctx.beginPath();
+        ctx.arc(p.x, cy + 6, 78, Math.PI * 0.15, Math.PI * 0.85, false);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(p.x, cy + 6, 78, Math.PI * 1.15, Math.PI * 1.85, false);
+        ctx.stroke();
+      }
+      ctx.fillStyle = '#FFC53D';
+      ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(p.label, p.x, 40);
+      ctx.fillStyle = frac <= 0 ? '#FF8A5B' : '#FFFDF8';
+      ctx.font = '700 20px "Bricolage Grotesque", system-ui, sans-serif';
+      ctx.fillText(frac <= 0 ? 'ALL MELTED' : Math.round(frac * 100) + '% LEFT', p.x, H - 32);
+    });
+
+    ctx.fillStyle = '#C6B9A7';
+    ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('ELAPSED: ' + t.toFixed(0) + ' MIN \u00b7 SAME 20 \u00B0C ROOM \u00b7 SAME SIZE CUBES', 40, 24);
+  }
+
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);';
+  }
+
+  segDark(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;border:2px solid ' +
+      (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const plansAnswered = Object.keys(s.plans).length;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((y) => y.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    let trialNote;
+    if (s.t === 0) trialNote = 'All four at 80 \u00B0C, indistinguishable. The trial only becomes informative once time has passed \u2014 which is why a single reading proves nothing about insulation.';
+    else if (s.t < 8) trialNote = 'They have barely separated yet. Early readings are the least useful ones, and a trial stopped here would have you concluding that wrapping makes no difference.';
+    else if (s.t >= 28) trialNote = 'Thirty minutes in and the spread is unmistakable: the triple-wrapped beaker with a lid is over twenty degrees above the control. Notice the foil beats bare glass without touching conduction at all \u2014 it is blocking a different route.';
+    else trialNote = 'The curves are pulling apart. Every one of them is heading for 20 \u00B0C \u2014 insulation changes how long the journey takes, never the destination.';
+
+    let iceNote;
+    if (!s.iceSeen) iceNote = 'Two identical cubes, one wrapped. If the wool were a source of warmth, the wrapped one would be gone first. Run it.';
+    else if (s.iceT >= 54) iceNote = 'Both melted \u2014 but the unwrapped cube was gone in about fourteen minutes and the wrapped one took nearly four times as long. Wrapping ice in a "warm" blanket keeps it frozen. There is no version of "insulation adds heat" that survives this result.';
+    else if (s.iceT >= 14) iceNote = 'The unwrapped cube has gone and the wrapped one is still mostly ice. This is the observation that decides it.';
+    else iceNote = 'Watch which one shrinks faster. The blanket is doing the opposite of what its name suggests.';
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-plan') return plansAnswered >= PLAN_CARDS.length;
+          if (id === 's-trial') return s.t >= 28;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'Faster — the blanket is warm, so it heats the ice' },
+        { letter: 'B', text: 'Slower — the blanket slows the flow of energy into the ice' },
+        { letter: 'C', text: 'At the same rate — insulation only works on hot things' },
+        { letter: 'D', text: 'It will not melt at all while wrapped' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      planCards: PLAN_CARDS.map((c) => {
+        const pick = s.plans[c.id];
+        const answered = pick !== undefined;
+        const right = pick === c.vary;
+        return {
+          text: c.text, answered: answered,
+          varyOn: pick === true, keepOn: pick === false,
+          varyStyle: this.seg(pick === true),
+          keepStyle: this.seg(pick === false),
+          wrapStyle: 'padding:18px;border-radius:var(--ks3-r-panel);background:var(--ks3-card);border:2px solid ' +
+            (answered ? (right ? 'var(--ks3-accent)' : 'var(--ks3-ink)') : 'var(--ks3-option-border)') + ';',
+          note: right ? c.right : c.wrong,
+          noteStyle: 'margin:12px 0 0;font-size:16px;line-height:1.5;color:' + (right ? 'var(--ks3-ink)' : 'var(--ks3-accent-text)') + ';',
+          onVary: () => this.setState((p) => ({ plans: Object.assign({}, p.plans, { [c.id]: true }) })),
+          onKeep: () => this.setState((p) => ({ plans: Object.assign({}, p.plans, { [c.id]: false }) }))
+        };
+      }),
+
+      trialProgress: s.t >= 28 ? 'trial complete' : s.t > 0 ? s.t.toFixed(0) + ' min elapsed' : 'not started',
+      trialRef: (el) => { this.trialCanvas = el; },
+      trialAlt: 'Four cooling curves from 80 degrees towards room temperature, at ' + s.t.toFixed(0) +
+        ' minutes, with the triple-wrapped beaker highest and the unwrapped control lowest.',
+      running: s.running,
+      runLabel: s.running ? 'Pause the clock' : (s.t > 0 ? 'Continue' : 'Start the clock'),
+      runStyle: this.seg(s.running),
+      onRun: () => this.setState((p) => ({ running: !p.running })),
+      resetStyle: this.seg(false),
+      onReset: () => this.setState({ t: 0, running: false }),
+      skipStyle: this.seg(false),
+      onSkip: () => this.setState({ t: 30, running: false }),
+      clockLabel: s.t.toFixed(0) + ' min',
+      resultRows: BEAKERS.map((b) => {
+        const T = this.temp(b.k, s.t);
+        const best = b.id === 'wool3';
+        return {
+          label: b.label,
+          now: T.toFixed(1) + ' \u00B0C',
+          drop: (80 - T).toFixed(1) + ' \u00B0C',
+          blocks: b.blocks,
+          style: 'background:' + (best && s.t > 8 ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';',
+          headStyle: 'font-family:var(--ks3-font-mono);font-size:12px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;background:' +
+            (best && s.t > 8 ? 'var(--ks3-accent-tint)' : 'var(--ks3-band)') + ';'
+        };
+      }),
+      trialNote: trialNote,
+
+      iceOpen: plansAnswered > 0 || s.t > 0,
+      iceRef: (el) => { this.iceCanvas = el; },
+      iceAlt: 'Two ice cubes at ' + s.iceT.toFixed(0) + ' minutes, one unwrapped and one wrapped in wool. The wrapped cube is visibly larger.',
+      iceRunning: s.iceRunning,
+      iceRunLabel: s.iceRunning ? 'Pause' : (s.iceT > 0 ? 'Continue' : 'Start the ice trial'),
+      iceRunStyle: this.segDark(s.iceRunning),
+      onIceRun: () => this.setState((p) => ({ iceRunning: !p.iceRunning })),
+      iceResetStyle: this.segDark(false),
+      onIceReset: () => this.setState({ iceT: 0, iceRunning: false }),
+      iceNote: iceNote,
+
+      thinkOptions: [
+        { letter: 'A', text: 'Nothing — a woolly hat warms your head' },
+        { letter: 'B', text: 'Your body warms your head; the hat slows the energy escaping' },
+        { letter: 'C', text: 'The hat reflects cold away from your head' },
+        { letter: 'D', text: 'The hat generates warmth from friction with your hair' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.thinkChoice === i,
+        onClick: () => this.setState({ thinkChoice: i })
+      })),
+      thinkOpen: s.thinkChoice !== null,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((y) => y.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((prev) => {
+                if (prev.answers[r.id] !== null && prev.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, prev.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((prev) => ({ text: Object.assign({}, prev.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((prev) => ({ checked: Object.assign({}, prev.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((prev) => {
+              const next = (prev.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, prev.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

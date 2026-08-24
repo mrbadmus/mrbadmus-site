@@ -35,7 +35,6 @@ import sys
 MANIFEST = os.path.join("docs", "ks3", "rail-manifest.md")
 HEADING = "## 1. Drawn rails"
 
-
 # ⊕ MRB-272 / C6 — WHERE THE SKELETON AND THE DELIVERY DISAGREE ON A SLUG.
 #
 # `_slug` derives the built filename by stripping Design's `c6-02-` prefix,
@@ -102,6 +101,28 @@ def drawn_rails(repo_root="."):
     out = {}
     for path in sources:
         stem = os.path.basename(path)[:-len(".dc.html")]
+
+        # ── ⊕ MRB-223 · A SHARED COMPONENT IS NOT A PAGE ─────────────────
+        #
+        # From the 23 Aug 2026 physics repackaging, a unit folder can carry
+        # a shared child Design Component beside its lessons: `Cfifa.dc.html`
+        # in P1–P7, P11 and P12, and `Bench.dc.html` in P11 and P12. They are
+        # mounted by a lesson with `<dc-import>`; they are not lessons, they
+        # have no rail, and they have no slug in `structure.py`.
+        #
+        # Left unfiltered, each one takes a manifest row of its own —
+        # `| `Cfifa` | `Cfifa` | — | — |` — which reads exactly like the row
+        # for a delivered lesson whose rail could not be read. That is the
+        # one confusion the undrawn-marker note below is at pains to avoid,
+        # so it is worth a rule rather than a special case.
+        #
+        # Design's own naming carries the distinction: a lesson stem is
+        # lowercase and numbered (`p1-01-…`, `c10-03-…`, `b1-02-…`), and the
+        # non-lesson stems she ships that DO earn a row are lowercase too
+        # (`00-index`, `fig-11-b4-guard-cells`). A component is the only
+        # thing she names with a leading capital. Skip on that.
+        if stem[:1].isupper():
+            continue
         with open(path, encoding="utf-8") as fh:
             page = fh.read()
         rail = re.search(r"const RAIL\s*=\s*(\[.*?\]);", page, re.S)
@@ -145,6 +166,42 @@ def drawn_rails(repo_root="."):
                 % (slug, prev[0], prev[1], prev[2], stem, ids, mirrors))
         if prev is None or prev[1] is None:
             out[slug] = (stem, ids, mirrors)
+
+    # ── ⊕ MRB-223, 24 Aug 2026 · THE `UNDRAWN` FALLBACK IS REMOVED ──────
+    #
+    # A fallback used to sit here. It walked every authored lesson in
+    # `ks3_data.build_units()` and gave any lesson with no delivered page a
+    # row of its own:
+    #
+    #     out.setdefault(lesson["slug"], (UNDRAWN, None, {}))
+    #
+    # ⚠️ IT WAS A SOFTENED GATE, AND IT IS WORTH RECORDING WHY RATHER THAN
+    # DELETING IT QUIETLY. `check_rail_matches_design`'s third assertion is
+    # "a rail-bearing page with NO row in the manifest fails". After that
+    # fallback, no page could ever have no row, so assertion 3 could never
+    # fire again — and a dash row parses to `ids is None`, which ALSO skips
+    # assertions 1 and 2 for that slug. The loop ran over every unit, so the
+    # effect was key-stage-wide, not confined to the unit it was written for.
+    #
+    # It was written during an earlier MRB-223 run to make that run's own
+    # build pass. The premise was that Design had drawn no physics at all —
+    # reached from a single `docs/ks3/design-reference/*/*.dc.html` glob that
+    # returned nothing. She had drawn all SEVENTY physics lessons; they were
+    # untracked in the MAIN worktree under `KS3 P<n> lessons/`, and a
+    # worktree shares a `.git` but NOT a working directory, so nothing
+    # untracked in the main checkout is reachable from a lane by relative
+    # path. The gate had reported the truth and the run argued with it.
+    #
+    # ⚖️ NOTHING REPLACES IT, DELIBERATELY. If a unit is ever authored ahead
+    # of its drawing, assertion 3 SHOULD fail, loudly, exactly as it did
+    # here — that failure is the signal that a delivery is missing or has
+    # not been found yet, and the correct response is to go and look for it
+    # by ABSOLUTE path, including untracked files and every sibling
+    # worktree, not to teach the manifest to excuse it.
+    #
+    # Measured before removal: 137 rows in `docs/ks3/rail-manifest.md`, of
+    # which 0 carried a bare dash in the design-page column. The fallback
+    # was already dormant, so removing it changes no row.
     return out
 
 
@@ -176,10 +233,13 @@ def manifest_rails(repo_root="."):
 
 def _rows(rails):
     lines = []
-    for slug, (stem, ids, mirrors) in sorted(rails.items(), key=lambda kv: kv[1][0]):
+    def key(kv):
+        return (0, kv[1][0])
+    for slug, (stem, ids, mirrors) in sorted(rails.items(), key=key):
         shown = " ".join(ids) if ids else "—"
         mir = " ".join("%s=%s" % kv for kv in sorted(mirrors.items())) or "—"
-        lines.append("| `%s` | `%s` | %s | %s |" % (slug, stem, shown, mir))
+        cell = "`%s`" % stem
+        lines.append("| `%s` | %s | %s | %s |" % (slug, cell, shown, mir))
     return "\n".join(lines) + "\n"
 
 

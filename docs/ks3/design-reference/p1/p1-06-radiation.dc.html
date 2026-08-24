@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radiation · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p1-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p1-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  [data-routes] { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  @media (max-width: 700px) { [data-routes] { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Energy transfers</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Radiation</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Energy transfers · Process</p>
+        <h1>Radiation</h1>
+        <p class="ks3-bigq">There is nothing at all between the Sun and the Earth for 150 million kilometres. No air, no particles, nothing to pass anything along. So how does the Sun's energy get here?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Conduction and convection both fail here.</h2>
+        <p class="ks3-hook-prompt">Conduction needs particles touching. Convection needs a fluid that can move. Between here and the Sun there is neither — space is empty. And yet you can feel sunlight on your face, and it arrives eight minutes after it leaves.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Commit to how it crosses.</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">By radiation — a wave that needs no material at all and travels perfectly well through nothing. It is the same family of thing as visible light, just at a wavelength your eyes cannot see, and it is the only one of the three routes that works across a vacuum. Everything in the room you are sitting in is emitting it right now, including you.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Two things about radiation cause almost all the trouble. It is the only route that does not need matter, which makes it feel exotic — and it shares a name with something dangerous, which makes it feel frightening. Neither impression is right, and both are worth dismantling in that order.</p>
+      </section>
+
+      <section id="s-routes" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">The three routes · break each one in turn</p>
+            <h2 style="margin: 6px 0 0;">Which routes survive?</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ routesProgress }}</p>
+        </div>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">A hot object and a cold detector. Change the situation and watch which of the three routes keeps working.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+            <p class="ks3-commit" style="margin: 0 0 12px; color: var(--ks3-accent-text);">Commit first. You hold your hand out to the side of a campfire, not above it. Can you still feel the heat?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ routesOpen }}">
+          <div data-arrive="1" style="margin-top: 22px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-ink); overflow: hidden; background: var(--ks3-card);">
+            <div style="padding: 16px 18px; border-bottom: 2px solid var(--ks3-ink); display: flex; gap: 8px; flex-wrap: wrap;">
+              <sc-for list="{{ scenarioButtons }}" as="b" hint-placeholder-count="4">
+                <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.on }}" style="{{ b.style }}">{{ b.label }}</button>
+              </sc-for>
+            </div>
+            <canvas width="1800" height="600" ref="{{ routesRef }}" role="img" aria-label="{{ routesAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+            <div style="padding: 18px; border-top: 2px solid var(--ks3-ink); background: var(--ks3-inset);">
+              <div data-routes="1">
+                <sc-for list="{{ routeCards }}" as="r" hint-placeholder-count="3">
+                  <div style="{{ r.wrapStyle }}">
+                    <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: {{ r.labelColor }};">{{ r.name }}</p>
+                    <p style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.15; color: var(--ks3-ink);">{{ r.verdict }}</p>
+                    <p style="margin: 8px 0 0; font-size: 16px; line-height: 1.45; color: var(--ks3-ink-muted);">{{ r.why }}</p>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+          <p style="margin: 18px 0 0; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink); font-size: 19px; line-height: 1.6;">{{ routesNote }}</p>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">Radiation is energy carried by infrared waves. It needs no material at all, travels in straight lines in every direction, and every object emits it.</p>
+      </div>
+
+      <section id="s-word" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">The word "radiation" · one word, several meanings</p>
+        <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Sort these: dangerous, or not?</h2>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Every one of these is correctly called radiation. Decide which ones you should worry about.</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 20px;">
+          <sc-for list="{{ wordCards }}" as="c" hint-placeholder-count="6">
+            <div style="{{ c.wrapStyle }}">
+              <p style="margin: 0 0 12px; font-size: 17px; line-height: 1.45; font-weight: 700; color: var(--ks3-on-dark);">{{ c.name }}</p>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button type="button" onClick="{{ c.onSafe }}" aria-pressed="{{ c.safeOn }}" style="{{ c.safeStyle }}">Harmless</button>
+                <button type="button" onClick="{{ c.onRisk }}" aria-pressed="{{ c.riskOn }}" style="{{ c.riskStyle }}">Risky</button>
+              </div>
+              <sc-if value="{{ c.answered }}">
+                <p style="{{ c.noteStyle }}">{{ c.note }}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ wordDone }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6; color: var(--ks3-on-dark-body);">"Radiation" just means energy spreading out from a source. Sunlight is radiation. Radio is radiation. The warmth from a fire is radiation. What makes a few kinds dangerous is not the word — it is having enough energy per wave to break molecules apart, which only the far end of the family can do.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-on-dark-body);">The kind in this lesson is infrared, and it sits just past red at the harmless end. It cannot break anything. When a newspaper writes "radiation" and means the dangerous sort, it is using a broad word narrowly — and that is why a perfectly safe process ends up sounding alarming.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Heat rises, so heating always travels upwards.”</p>
+        <p style="max-width: 54ch;">Half of this is true and the conclusion does not follow. Commit.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">What rises is warm <em>air</em>, because it is less dense than the cold air around it and floats on it. That is convection, and it genuinely does go upwards. But it is one route out of three, and the other two ignore gravity entirely.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">Radiation travels in straight lines in every direction at once — up, down, sideways. Stand beside a bonfire and one side of you is warm; lie under a patio heater and the warmth comes down. Conduction is equally indifferent: hold a metal rod pointing downwards into a flame and the far end still gets hot.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">"Heat rises" is a fact about air, stated as if it were a law about energy. Say "warm air rises" and the confusion disappears.</p>
+          </div>
+        </sc-if>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;Only hot things give out infrared radiation.&rdquo;</p>
+          <p>Everything above absolute zero emits it, including you, this page and a block of ice. What changes with temperature is how much: a hotter surface emits far more, and at shorter wavelengths. A thermal camera pointed at a snowy field still sees a picture, because the snow is radiating too — it is simply radiating less than everything around it.</p>
+        </div>
+      </section>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Infrared radiation is an electromagnetic wave. It needs no particles at all, crosses a vacuum, and is emitted by every object — more from hotter surfaces, and more from matt black ones than from shiny silver ones.</p>
+        </div>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Radiation needs no material, goes in all directions, and every object emits it. Warm air rises — energy does not. Infrared is at the harmless end of the radiation family and shares only a name with the dangerous kinds.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>In 1800 William Herschel split sunlight with a prism and put a thermometer in each colour to see which was warmest. The reading rose as he moved from violet to red — and then, on a whim, he moved the thermometer past red, into the dark space where no colour fell at all. It rose higher still. He had found something arriving from the Sun that no eye can see, and he called it invisible rays. Everything in this lesson descends from a thermometer left in an apparently empty patch of a table. Infrared cameras, thermal imaging, remote controls, the discovery that the universe is full of faint microwave glow from its own beginning — all of it starts there.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p1-05-conduction.html">Conduction<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p1-07-insulation.html">Keeping energy in: insulation<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p1-01-energy-stores.html">Energy stores<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p1-03-conservation-of-energy.html">Conservation of energy<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p2-01-energy-in-food.html">Energy in food<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>The electromagnetic spectrum, absorption and emission, and the greenhouse effect.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Not sure why space is cold but sunlight is hot?</p>
+          <a class="ks3-tutor-cta" href="#s-routes">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. Each scenario switches whole routes on and off cleanly, which no real apparatus does — a vacuum flask still conducts a little through its seal, and no arrangement blocks convection completely without also changing the conduction. The detector is treated as reading only the route left open. Infrared is drawn as straight rays for clarity; it is emitted in every direction from every part of a warm surface at once.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startScenario&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Detector above, in air&quot;,&quot;Detector beside, in air&quot;,&quot;Detector beside, in a vacuum&quot;,&quot;Touching, in a vacuum&quot;],&quot;default&quot;:&quot;Detector above, in air&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Three routes&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Across empty space', short: 'HOOK' },
+  { id: 's-routes', label: 'Three routes', short: 'ROUTES' },
+  { id: 's-word', label: 'The word radiation', short: 'WORD' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const SCENARIOS = [
+  { id: 'sc1', label: 'Detector above, in air', cond: false, conv: true, rad: true, vac: false, above: true,
+    note: 'All the routes that can work are working. Warm air rises straight into the detector, and radiation arrives as well \u2014 which is why this is the situation that convinces people heat only goes up.' },
+  { id: 'sc2', label: 'Detector beside, in air', cond: false, conv: false, rad: true, vac: false, above: false,
+    note: 'Convection has gone \u2014 the warm air is going up, not sideways. The detector still registers, and the only route left is radiation. This is your hand at the side of a campfire.' },
+  { id: 'sc3', label: 'Detector beside, in a vacuum', cond: false, conv: false, rad: true, vac: true, above: false,
+    note: 'No particles at all, so conduction and convection are both impossible. The detector still registers, at full strength. Radiation does not need matter \u2014 this is the Sun and the Earth, in a box.' },
+  { id: 'sc4', label: 'Touching, in a vacuum', cond: true, conv: false, rad: true, vac: true, above: false,
+    note: 'Now they touch, so conduction works again even in a vacuum \u2014 conduction needs particles in contact, not air. Two routes running, and convection still has nothing to move.' }
+];
+
+const WORD_CARDS = [
+  { id: 'w1', name: 'Infrared from a radiator', risk: false,
+    right: 'Harmless. This is the radiation in this lesson \u2014 it warms things and cannot break a molecule.',
+    wrong: 'Harmless, in fact. It is the same kind of wave as visible light, just longer, and it has nowhere near the energy needed to damage anything.' },
+  { id: 'w2', name: 'Visible light from a lamp', risk: false,
+    right: 'Harmless. Light is radiation \u2014 you are being irradiated by your lamp as you read this.',
+    wrong: 'This is radiation and it is harmless. If light were dangerous, reading would be a hazard.' },
+  { id: 'w3', name: 'Radio waves from a phone mast', risk: false,
+    right: 'Harmless. Longer wavelength than infrared, so even less energy per wave.',
+    wrong: 'Radio waves sit at the very lowest-energy end of the family \u2014 below infrared, which is itself below visible light.' },
+  { id: 'w4', name: 'Ultraviolet from the Sun', risk: true,
+    right: 'Risky. Just past violet, and now there is enough energy per wave to damage skin cells. This is the boundary.',
+    wrong: 'This one genuinely is risky \u2014 UV carries enough energy to damage DNA, which is why sunburn and skin cancer exist.' },
+  { id: 'w5', name: 'X-rays in a hospital', risk: true,
+    right: 'Risky, which is why doses are controlled and the radiographer leaves the room.',
+    wrong: 'X-rays carry far more energy per wave than light and can ionise atoms. Useful, and used carefully for that reason.' },
+  { id: 'w6', name: 'Gamma rays from a nuclear source', risk: true,
+    right: 'Risky \u2014 the highest energy of the family, and the meaning most people have in mind when they hear the word.',
+    wrong: 'This is the dangerous end, and it is the one that gives the whole word its frightening reputation.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'Which method of energy transfer does not need any material to travel through?',
+    options: [
+      { text: 'Radiation', correct: true },
+      { text: 'Conduction', correction: 'Conduction needs particles in contact to pass the vibration along.' },
+      { text: 'Convection', correction: 'Convection needs a fluid \u2014 a liquid or gas \u2014 that can physically move.' },
+      { text: 'All three work in a vacuum', correction: 'Only one does, and the vacuum setting on the bench shows which.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'You stand to the side of a bonfire, level with the flames, and feel warmth on your face. Which transfer is reaching you?',
+    options: [
+      { text: 'Radiation', correct: true },
+      { text: 'Convection', correction: 'The warm air is going straight up, not sideways to your face.' },
+      { text: 'Conduction', correction: 'Air is a poor conductor and you are not touching the fire.' },
+      { text: 'None — you would feel nothing standing to the side', correction: 'Anyone who has stood near a bonfire knows otherwise. Something is arriving.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Explain how energy from the Sun reaches the Earth, and why the other two methods of transfer cannot be responsible.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The space between the Sun and the Earth is…',
+    criteria: [
+      'Says the space between is a vacuum with no particles.',
+      'Says conduction cannot work because it needs particles in contact.',
+      'Says convection cannot work because it needs a fluid that can move.',
+      'Says radiation travels as a wave and needs no material.',
+      'Says the radiation travels in straight lines and includes infrared as well as visible light.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A news report describes a new patio heater as "using radiation to warm your garden" and a reader complains it sounds unsafe. Write a reply that is accurate about both the physics and the risk.',
+    fieldLabel: 'Your reply',
+    placeholder: 'Radiation means energy spreading out from a source…',
+    criteria: [
+      'Says radiation means energy spreading out from a source, and covers many kinds of wave.',
+      'Says the heater emits infrared, at the low-energy end of the family.',
+      'Says visible light and radio are also radiation and are harmless.',
+      'Explains that danger comes from having enough energy per wave to damage molecules \u2014 UV and above.',
+      'Concludes the heater is safe, and notes the word is being used narrowly in everyday speech.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    scenario: SCENARIOS.findIndex((x) => x.label === this.props.startScenario) >= 0
+      ? SCENARIOS.findIndex((x) => x.label === this.props.startScenario) : 0,
+    visited: {},
+    words: {},
+    thinkChoice: null,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+    this.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.tick = 0;
+    this.loop();
+  }
+
+  componentWillUnmount() {
+    if (this.io) this.io.disconnect();
+    if (this.raf) cancelAnimationFrame(this.raf);
+  }
+
+  loop() {
+    this.raf = requestAnimationFrame(() => this.loop());
+    this.tick += this.reduced ? 0.4 : 1;
+    this.draw();
+  }
+
+  draw() {
+    const c = this.routesCanvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 300;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+
+    const sc = SCENARIOS[this.state.scenario];
+
+    ctx.fillStyle = sc.vac ? '#100D0A' : '#FFFDF8';
+    ctx.fillRect(0, 0, W, H);
+
+    // chamber
+    const cx0 = 60, cy0 = 34, cw = W - 120, ch = H - 96;
+    if (sc.vac) {
+      ctx.strokeStyle = '#5C5249';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(cx0, cy0, cw, ch);
+      ctx.fillStyle = '#FFC53D';
+      ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('SEALED CHAMBER \u00b7 ALL AIR PUMPED OUT \u00b7 NO PARTICLES', cx0, cy0 - 12);
+    } else {
+      // air particles
+      ctx.fillStyle = '#F6EEE0';
+      ctx.fillRect(cx0, cy0, cw, ch);
+      for (let i = 0; i < 46; i++) {
+        const px = cx0 + ((i * 137) % (cw - 20)) + 10;
+        const py = cy0 + ((i * 71) % (ch - 20)) + 10 + Math.sin(this.tick * 0.03 + i) * 3;
+        ctx.beginPath();
+        ctx.arc(px, py, 3.4, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(185,174,156,0.9)';
+        ctx.fill();
+      }
+      ctx.strokeStyle = '#1A1714';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(cx0, cy0, cw, ch);
+      ctx.fillStyle = '#6B6055';
+      ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('CHAMBER FULL OF AIR', cx0, cy0 - 12);
+    }
+
+    // hot source
+    const hx = sc.cond ? 300 : 240, hy = cy0 + ch - 76;
+    ctx.beginPath();
+    ctx.arc(hx, hy, 34, 0, Math.PI * 2);
+    ctx.fillStyle = '#E4572E';
+    ctx.fill();
+    ctx.strokeStyle = sc.vac ? '#FFC53D' : '#1A1714';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+    ctx.fillStyle = '#FFFDF8';
+    ctx.font = '700 15px "Bricolage Grotesque", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('HOT', hx, hy + 5);
+
+    // detector
+    const dx = sc.above ? hx : (sc.cond ? hx + 74 : 620);
+    const dy = sc.above ? cy0 + 58 : hy;
+    ctx.fillStyle = sc.vac ? '#2C261F' : '#E4DACA';
+    ctx.fillRect(dx - 34, dy - 30, 68, 60);
+    ctx.strokeStyle = sc.vac ? '#FFC53D' : '#1A1714';
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(dx - 34, dy - 30, 68, 60);
+    ctx.fillStyle = sc.vac ? '#FFC53D' : '#1A1714';
+    ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('DETECTOR', dx, dy + 46);
+
+    // radiation: always, straight lines every direction
+    const pulse = (this.tick * 1.4) % 90;
+    for (let k = 0; k < 3; k++) {
+      const r = 40 + ((pulse + k * 30) % 90) * 2.4;
+      ctx.beginPath();
+      ctx.arc(hx, hy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(228,87,46,' + (0.5 * (1 - r / 260)).toFixed(3) + ')';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+    }
+    // a straight ray towards the detector
+    ctx.strokeStyle = sc.vac ? '#FF8A5B' : '#E4572E';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([9, 6]);
+    ctx.lineDashOffset = -this.tick * 1.6;
+    ctx.beginPath();
+    ctx.moveTo(hx, hy);
+    ctx.lineTo(dx, dy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.lineDashOffset = 0;
+
+    // convection, only when air and detector above
+    if (sc.conv) {
+      for (let i = 0; i < 5; i++) {
+        const t = ((this.tick * 1.2 + i * 40) % 200) / 200;
+        const py = hy - 34 - t * (hy - cy0 - 70);
+        const px = hx + Math.sin(t * 5 + i) * 16;
+        ctx.beginPath();
+        ctx.arc(px, py, 8 - t * 3, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(217,138,74,' + (0.8 * (1 - t)).toFixed(2) + ')';
+        ctx.fill();
+      }
+      ctx.fillStyle = '#8E6C3F';
+      ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('WARM AIR RISING \u2014 CONVECTION', hx + 44, hy - 60);
+    }
+
+    // conduction, only when touching
+    if (sc.cond) {
+      ctx.strokeStyle = '#8E6C3F';
+      ctx.lineWidth = 12;
+      ctx.beginPath();
+      ctx.moveTo(hx + 30, hy);
+      ctx.lineTo(dx - 34, hy);
+      ctx.stroke();
+      for (let i = 0; i < 4; i++) {
+        const px = hx + 36 + i * 9 + Math.sin(this.tick * 0.2 + i) * 3;
+        ctx.beginPath();
+        ctx.arc(px, hy, 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#F2E4CB';
+        ctx.fill();
+      }
+      ctx.fillStyle = '#8E6C3F';
+      ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('IN CONTACT \u2014 CONDUCTION', (hx + dx) / 2, hy + 34);
+    }
+
+    ctx.fillStyle = sc.vac ? '#C6B9A7' : '#6B6055';
+    ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('ORANGE RINGS: RADIATION LEAVING IN EVERY DIRECTION, ALWAYS', cx0, H - 22);
+  }
+
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);';
+  }
+
+  segDark(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;border:2px solid ' +
+      (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const sc = SCENARIOS[s.scenario];
+    const visitedCount = Object.keys(s.visited).length;
+    const wordsAnswered = Object.keys(s.words).length;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((y) => y.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    const ROUTES = [
+      { name: 'Conduction', on: sc.cond,
+        onWhy: 'The two are touching, so particles can pass the vibration along.',
+        offWhy: sc.vac ? 'Nothing is touching, and there are no particles in between either.' : 'They are not touching, and air conducts very badly.' },
+      { name: 'Convection', on: sc.conv,
+        onWhy: 'Air is present and the detector is above, so rising warm air reaches it.',
+        offWhy: sc.vac ? 'No fluid at all \u2014 there is nothing that could move.' : 'The warm air rises, and the detector is not above the source.' },
+      { name: 'Radiation', on: sc.rad,
+        onWhy: 'Always works. No material needed, and it goes in every direction.',
+        offWhy: '' }
+    ];
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-routes') return visitedCount >= 3;
+          if (id === 's-word') return wordsAnswered >= WORD_CARDS.length;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'Space is not really empty — thin gas conducts it' },
+        { letter: 'B', text: 'As a wave that needs no material at all' },
+        { letter: 'C', text: 'Convection currents in the solar wind' },
+        { letter: 'D', text: 'The Sun heats the atmosphere, which heats the ground' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      routesProgress: visitedCount >= 4 ? 'all four situations tried' : visitedCount + ' of 4 situations tried',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'No — the heat all goes straight up' },
+        { letter: 'B', text: 'Yes, by radiation, which travels in every direction' },
+        { letter: 'C', text: 'Yes, by conduction through the air' },
+        { letter: 'D', text: 'Only if there is a breeze blowing towards you' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState((p) => ({ gate: i, visited: Object.assign({}, p.visited, { sc1: true }) }))
+      })),
+      routesOpen: s.gate !== null,
+      routesRef: (el) => { this.routesCanvas = el; },
+      routesAlt: 'A hot source and a detector ' + (sc.vac ? 'in a vacuum chamber' : 'in a chamber full of air') +
+        ', detector ' + (sc.above ? 'above' : sc.cond ? 'touching' : 'to the side') +
+        '. Radiation rings spread in every direction' + (sc.conv ? ', warm air rises' : '') + (sc.cond ? ', and conduction runs along the contact' : '') + '.',
+      scenarioButtons: SCENARIOS.map((x, i) => ({
+        label: x.label, on: s.scenario === i, style: this.seg(s.scenario === i),
+        onClick: () => this.setState((p) => ({ scenario: i, visited: Object.assign({}, p.visited, { [x.id]: true }) }))
+      })),
+      routeCards: ROUTES.map((r) => ({
+        name: r.name,
+        verdict: r.on ? 'Working' : 'Cannot work',
+        why: r.on ? r.onWhy : r.offWhy,
+        labelColor: r.on ? 'var(--ks3-accent-text)' : 'var(--ks3-ink-muted)',
+        wrapStyle: 'padding:16px 18px;border-radius:var(--ks3-r-panel);background:' + (r.on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') +
+          ';border:2px solid ' + (r.on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';'
+      })),
+      routesNote: sc.note,
+
+      wordCards: WORD_CARDS.map((c) => {
+        const pick = s.words[c.id];
+        const answered = pick !== undefined;
+        const right = pick === c.risk;
+        return {
+          name: c.name, answered: answered,
+          safeOn: pick === false, riskOn: pick === true,
+          safeStyle: this.segDark(pick === false),
+          riskStyle: this.segDark(pick === true),
+          wrapStyle: 'padding:18px;border-radius:var(--ks3-r-panel);background:var(--ks3-dark-panel);border:2px solid ' +
+            (answered ? (right ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') : 'var(--ks3-on-dark-muted)') + ';',
+          note: right ? c.right : c.wrong,
+          noteStyle: 'margin:12px 0 0;font-size:16px;line-height:1.5;color:' + (right ? 'var(--ks3-on-dark-body)' : 'var(--ks3-alert)') + ';',
+          onSafe: () => this.setState((p) => ({ words: Object.assign({}, p.words, { [c.id]: false }) })),
+          onRisk: () => this.setState((p) => ({ words: Object.assign({}, p.words, { [c.id]: true }) }))
+        };
+      }),
+      wordDone: wordsAnswered >= WORD_CARDS.length,
+
+      thinkOptions: [
+        { letter: 'A', text: 'Nothing — heat always goes upwards' },
+        { letter: 'B', text: 'Warm air rises; radiation and conduction go in any direction' },
+        { letter: 'C', text: 'Heat sinks, and it is cold that rises' },
+        { letter: 'D', text: 'Heat rises only outdoors' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.thinkChoice === i,
+        onClick: () => this.setState({ thinkChoice: i })
+      })),
+      thinkOpen: s.thinkChoice !== null,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((y) => y.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((prev) => {
+                if (prev.answers[r.id] !== null && prev.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, prev.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((prev) => ({ text: Object.assign({}, prev.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((prev) => ({ checked: Object.assign({}, prev.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((prev) => {
+              const next = (prev.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, prev.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

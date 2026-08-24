@@ -3877,9 +3877,27 @@ def r_layer(lesson, blocks, cls, eyebrow):
             % (cls, e(eyebrow), render_blocks(lesson, blocks)))
 
 
-LEGAL_LINE = ('<p class="ks3-legal">Lesson content © MrBadmusAI. Written by a '
-              'qualified science teacher; every scientific claim is checked '
-              'before a lesson leaves draft.</p>')
+# ⊕ MRB-223, 24 Aug 2026 — THE WORD `draft` IS OUT OF THIS LINE.
+#
+# It used to read "...every scientific claim is checked before a lesson
+# leaves draft", and that sentence is on ALL 297 KS3 pages, in the footer,
+# where a student reads it. MRB-221 revoked the per-lesson review marker
+# and the browse-list Draft badge, and made `verify_ks3.py` assert the
+# marker's ABSENCE — and this line survived all of it, because it is
+# emitted by the engine rather than by a lesson record and nothing was
+# looking at its wording. `verify_ks3.py`'s sweep for the revoked marker
+# is keyed to the marker, not to the word, so it passed throughout.
+#
+# A built lesson ships looking finished. The provenance claim is kept in
+# full — it is the useful half — and the process state is dropped, because
+# a student-facing page carries teaching and not commentary about the
+# platform's own workflow (§8.10).
+#
+# ⚠️ SHARED FILE. One string literal in `build_ks3.py`, and it moves every
+# KS3 page's bytes. Announced in the MRB-223 report under
+# `docs/ks3/worktrees.md` §2.
+LEGAL_LINE = ('<p class="ks3-legal">Lesson content © MrBadmusAI. Written '
+              'and checked by a qualified science teacher.</p>')
 
 
 def r_endmatter(cards, tutor=None):

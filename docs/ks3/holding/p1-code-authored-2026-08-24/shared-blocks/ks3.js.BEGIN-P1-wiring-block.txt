@@ -1,0 +1,575 @@
+/* ═══ BEGIN P1 wiring ═══════════════════════════════════════════════════
+   P1's instrument families — *Energy transfers*, the first physics unit.
+   Added as ONE marked block so that a lane merging into this file resolves
+   mechanically: nothing above this marker moves.
+
+   Twelve families. Seven of them open behind a `[data-benchgate]`, so each
+   of those calls `wireBenchGate(sec)` on the way in.
+
+   ⚖️ NOTHING IS COMPUTED IN THIS BLOCK. Not one number, not one sentence
+   and not one VERDICT. The machine bench's eighteen products, the
+   equilibrium bench's thirty-six states and the lagging bench's eight
+   derived margins are all already in the document (EMIT-BOTH-SHOW-ONE),
+   composed once in `ks3_art/p1.py` where they are asserted. These handlers
+   choose which node is `hidden` and count how many have been seen. They
+   never decide what a reading is.
+
+   ⚖️ NOTHING GREEN AND NOTHING RED REACHES A CONTROL. Only the ladder
+   marks, and `ks3_art/p1.py` refuses a payload carrying a `correct` key.
+
+   ⚖️ NOTHING ANIMATES AND NOTHING COUNTS DOWN. Every control is a real
+   `<button>` or a real `<input type="range">`, there is no `onclick=`
+   attribute anywhere in the markup, and there is no rAF loop in the unit —
+   so `prefers-reduced-motion` has nothing to degrade and the reduced-motion
+   experience is the complete one.
+
+   ⚠️ THE NO-OP PRESS, everywhere. Pressing the control that already claims
+   to be pressed returns early, on all twelve. On the four benches with TWO
+   pickers — the radiation cube, the lagging bench, the machine bench and
+   the before-and-after bench — it matters more than usual: without it a
+   re-press would re-fire `focusReveal` and drag the page back to a readout
+   the student is in the middle of reading.
+   ═══ */
+
+  /* Shared inside P1. A radio group over one attribute: press the pressed
+     one and nothing happens; press another and exactly one is pressed. */
+  function p1Radio(btns, btn, attr) {
+    if (btn.getAttribute("aria-pressed") === "true") { return false; }
+    each(btns, function (b) {
+      b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+    });
+    return true;
+  }
+
+  /* Shared inside P1. Show exactly the node whose `attr` matches `key`. */
+  function p1Show(nodes, attr, key) {
+    var shown = null;
+    each(nodes, function (n) {
+      var on = n.getAttribute(attr) === key;
+      setHidden(n, !on);
+      if (on) { shown = n; }
+    });
+    return shown;
+  }
+
+  /* Shared inside P1. Count one more thing seen, tick the head counter, and
+     open the close panel and the rail stop when everything has been. */
+  function p1Seen(sec, state, key, closer) {
+    if (!state.seen[key]) { state.seen[key] = 1; state.n += 1; }
+    setCount(sec, state.n);
+    if (state.n >= state.total) {
+      setHidden(closer, false);
+      markStage(sec, true);
+    }
+    return state.n;
+  }
+
+  function p1State(wrap, fallback) {
+    return { seen: {}, n: 0,
+             total: parseInt(wrap.getAttribute("data-total"), 10) || fallback };
+  }
+
+  /* ── store-audit (p1-01 #s-stores) ───────────────────────────────────
+     Five cards, one open at a time. A REFERENCE instrument: nothing is
+     committed to and nothing is judged, so the stage ticks on having read
+     all five, which is exactly what the block asks for. */
+  function wireStoreAudit(sec) {
+    var wrap = sec.querySelector("[data-saud]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-saud-tab]"));
+    var panels = toArray(wrap.querySelectorAll("[data-saud-panel]"));
+    var rest = wrap.querySelector("[data-saud-rest]");
+    var closer = wrap.querySelector("[data-saud-close]");
+    if (!tabs.length || !panels.length) { return; }
+    var st = p1State(wrap, panels.length);
+
+    each(tabs, function (btn) {
+      btn.addEventListener("click", function () {
+        if (!p1Radio(tabs, btn, "data-saud-tab")) { return; }
+        var key = btn.getAttribute("data-saud-tab");
+        setHidden(rest, true);
+        var shown = p1Show(panels, "data-saud-panel", key);
+        p1Seen(sec, st, key, closer);
+        if (shown) { focusReveal(shown); }
+      });
+    });
+    setCount(sec, 0);
+  }
+
+  /* ── store-or-pathway (p1-01 #s-sort) ────────────────────────────────
+     ⚖️ THE REASONS OPEN FOR ALL EIGHT AT ONCE, when the last row is
+     sorted — never per row. Revealing per row would put a verdict beside a
+     choice, which is a mark in everything but colour, and it would make the
+     eighth chip a formality. MRB-196 R10's self-check then asks the student
+     how many of their OWN judgements matched, which is the only person who
+     knows. */
+  function wireStoreOrPathway(sec) {
+    var wrap = sec.querySelector("[data-spath]");
+    if (!wrap) { return; }
+    var rows = toArray(wrap.querySelectorAll("[data-spath-row]"));
+    var whys = toArray(wrap.querySelectorAll("[data-spath-why]"));
+    var progress = wrap.querySelector("[data-spath-progress]");
+    var closer = wrap.querySelector("[data-spath-close]");
+    var selfcheck = sec.querySelector("[data-selfcheck]");
+    if (!rows.length) { return; }
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || rows.length;
+
+    function sorted() {
+      var n = 0;
+      each(rows, function (row) {
+        var on = !!row.querySelector('.ks3-spath-chip[aria-pressed="true"]');
+        row.setAttribute("data-sorted", on ? "1" : "0");
+        if (on) { n += 1; }
+      });
+      return n;
+    }
+
+    each(rows, function (row) {
+      var chips = toArray(row.querySelectorAll(".ks3-spath-chip"));
+      each(chips, function (chip) {
+        chip.addEventListener("click", function () {
+          if (!p1Radio(chips, chip, "data-spath-chip")) { return; }
+          var n = sorted();
+          /* The block head owns the COUNT. This line only announces the
+             thing the count cannot: that the reasons have opened. */
+          if (progress && n >= total) {
+            progress.textContent =
+              "All " + total + " sorted — the reasons are below.";
+          }
+          setCount(sec, n);
+          if (n >= total) {
+            each(whys, function (w) { setHidden(w, false); });
+            setHidden(selfcheck, false);
+            setHidden(closer, false);
+            markStage(sec, true);
+          }
+        });
+      });
+    });
+    setCount(sec, 0);
+  }
+
+  /* ── before-after-bench (p1-02 #s-ba) ────────────────────────────────
+     Six changes, one commitment each. The account is a third panel that
+     opens on the commitment; the two halves above it are on screen from the
+     moment the change is picked, because reading them IS how the student
+     decides. */
+  function wireBeforeAfterBench(sec) {
+    wireBenchGate(sec);
+    var wrap = sec.querySelector("[data-baben]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-baben-tab]"));
+    var panels = toArray(wrap.querySelectorAll("[data-baben-panel]"));
+    var outs = toArray(wrap.querySelectorAll("[data-baben-out]"));
+    var rest = wrap.querySelector("[data-baben-rest]");
+    var closer = wrap.querySelector("[data-baben-close]");
+    if (!tabs.length || !panels.length) { return; }
+    var st = p1State(wrap, panels.length);
+
+    each(tabs, function (btn) {
+      btn.addEventListener("click", function () {
+        if (!p1Radio(tabs, btn, "data-baben-tab")) { return; }
+        var key = btn.getAttribute("data-baben-tab");
+        setHidden(rest, true);
+        var shown = p1Show(panels, "data-baben-panel", key);
+        /* The previous change's account goes with it: an account is about
+           the change above it and must never outlive it on screen. */
+        each(outs, function (o) { setHidden(o, true); });
+        if (shown) { focusReveal(shown); }
+      });
+    });
+
+    each(toArray(wrap.querySelectorAll("[data-baben-opt]")), function (btn) {
+      btn.addEventListener("click", function () {
+        var panel = btn.closest(".ks3-baben-panel");
+        var chips = panel
+          ? toArray(panel.querySelectorAll("[data-baben-opt]")) : [btn];
+        if (!p1Radio(chips, btn, "data-baben-opt")) { return; }
+        var key = btn.getAttribute("data-change");
+        var shown = p1Show(outs, "data-baben-out", key);
+        p1Seen(sec, st, key, closer);
+        if (shown) { focusReveal(shown); }
+      });
+    });
+    setCount(sec, 0);
+  }
+
+  /* ── energy-audit (p1-03 #s-count) ───────────────────────────────────
+     Five machines, one hundred joules each. The guess row appears with the
+     machine and the readout appears with the guess, so nobody reads the
+     split before committing to one. */
+  function wireEnergyAudit(sec) {
+    wireBenchGate(sec);
+    var wrap = sec.querySelector("[data-eaud]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-eaud-tab]"));
+    var guessrow = wrap.querySelector("[data-eaud-guessrow]");
+    var guesses = toArray(wrap.querySelectorAll("[data-eaud-guess]"));
+    var outs = toArray(wrap.querySelectorAll("[data-eaud-out]"));
+    var rest = wrap.querySelector("[data-eaud-rest]");
+    var closer = wrap.querySelector("[data-eaud-close]");
+    if (!tabs.length || !outs.length) { return; }
+    var st = p1State(wrap, outs.length);
+    var current = null;
+
+    each(tabs, function (btn) {
+      btn.addEventListener("click", function () {
+        if (!p1Radio(tabs, btn, "data-eaud-tab")) { return; }
+        current = btn.getAttribute("data-eaud-tab");
+        each(outs, function (o) { setHidden(o, true); });
+        each(guesses, function (g) { g.setAttribute("aria-pressed", "false"); });
+        setHidden(guessrow, false);
+        focusReveal(guessrow);
+      });
+    });
+
+    each(guesses, function (btn) {
+      btn.addEventListener("click", function () {
+        if (!current) { return; }
+        if (!p1Radio(guesses, btn, "data-eaud-guess")) { return; }
+        setHidden(rest, true);
+        var shown = p1Show(outs, "data-eaud-out", current);
+        p1Seen(sec, st, current, closer);
+        if (shown) { focusReveal(shown); }
+      });
+    });
+    setCount(sec, 0);
+  }
+
+  /* ── mechanism-or-energy (p1-03 #s-why) ──────────────────────────────
+     Five questions, two true answers each. NOTHING marks: the note argues
+     for one of them and concedes in its first clause that both are true,
+     and the button the student pressed keeps the ordinary chosen
+     treatment either way. */
+  function wireMechanismOrEnergy(sec) {
+    var wrap = sec.querySelector("[data-mech]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-mech-tab]"));
+    var panels = toArray(wrap.querySelectorAll("[data-mech-panel]"));
+    var outs = toArray(wrap.querySelectorAll("[data-mech-out]"));
+    var rest = wrap.querySelector("[data-mech-rest]");
+    var closer = wrap.querySelector("[data-mech-close]");
+    if (!tabs.length || !panels.length) { return; }
+    var st = p1State(wrap, panels.length);
+
+    each(tabs, function (btn) {
+      btn.addEventListener("click", function () {
+        if (!p1Radio(tabs, btn, "data-mech-tab")) { return; }
+        var key = btn.getAttribute("data-mech-tab");
+        setHidden(rest, true);
+        var shown = p1Show(panels, "data-mech-panel", key);
+        each(outs, function (o) { setHidden(o, true); });
+        if (shown) { focusReveal(shown); }
+      });
+    });
+
+    each(toArray(wrap.querySelectorAll("[data-mech-opt]")), function (btn) {
+      btn.addEventListener("click", function () {
+        var panel = btn.closest(".ks3-mech-panel");
+        var opts = panel
+          ? toArray(panel.querySelectorAll("[data-mech-opt]")) : [btn];
+        if (!p1Radio(opts, btn, "data-mech-opt")) { return; }
+        var key = btn.getAttribute("data-case");
+        var shown = p1Show(outs, "data-mech-out", key);
+        p1Seen(sec, st, key, closer);
+        if (shown) { focusReveal(shown); }
+      });
+    });
+    setCount(sec, 0);
+  }
+
+  /* ── equilibrium-bench (p1-04 #s-equil) ──────────────────────────────
+     Four pairs, eight steps, thirty-six states in the document. The slider
+     is DISABLED until a pair is picked, because a time control with no
+     blocks on the bench has nothing to advance.
+
+     ⚖️ A PAIR COUNTS AS SETTLED WHEN THE SLIDER REACHES THE END, not when
+     it is picked. The lesson is that the gap closes and then stops, and a
+     student who never ran the clock has not seen it — including on the
+     fourth pair, where running it is how you find out that nothing
+     happens. */
+  function wireEquilibriumBench(sec) {
+    wireBenchGate(sec);
+    var wrap = sec.querySelector("[data-equil]");
+    if (!wrap) { return; }
+    var pairs = toArray(wrap.querySelectorAll("[data-equil-pair]"));
+    var states = toArray(wrap.querySelectorAll("[data-equil-state]"));
+    var notes = toArray(wrap.querySelectorAll("[data-equil-note]"));
+    var slider = wrap.querySelector("[data-equil-time]");
+    var clock = wrap.querySelector("[data-equil-clock]");
+    var closer = wrap.querySelector("[data-equil-close]");
+    if (!pairs.length || !states.length || !slider) { return; }
+    var st = p1State(wrap, pairs.length);
+    var steps = parseInt(wrap.getAttribute("data-steps"), 10) || 8;
+    var unit = clock ? (clock.textContent || "").replace(/^\s*\d+\s*/, "") : "";
+    var current = null;
+
+    function paint() {
+      if (!current) { return; }
+      var k = parseInt(slider.value, 10) || 0;
+      p1Show(states, "data-equil-state", current + ":" + k);
+      if (clock) { clock.textContent = k + " " + unit; }
+      if (k >= steps) { p1Seen(sec, st, current, closer); }
+    }
+
+    each(pairs, function (btn) {
+      btn.addEventListener("click", function () {
+        if (!p1Radio(pairs, btn, "data-equil-pair")) { return; }
+        current = btn.getAttribute("data-equil-pair");
+        slider.disabled = false;
+        slider.value = "0";
+        p1Show(notes, "data-equil-note", current);
+        paint();
+      });
+    });
+    slider.addEventListener("input", paint);
+    setCount(sec, 0);
+  }
+
+  /* ── conduction-race (p1-05 #s-race) ─────────────────────────────────
+     Five rods, one run each. The Run button is disabled until a rod is on
+     the bench and re-arms when a different rod is picked, so a reading can
+     never appear under a rod that did not produce it. */
+  function wireConductionRace(sec) {
+    wireBenchGate(sec);
+    var wrap = sec.querySelector("[data-crace]");
+    if (!wrap) { return; }
+    var rods = toArray(wrap.querySelectorAll("[data-crace-rod]"));
+    var outs = toArray(wrap.querySelectorAll("[data-crace-out]"));
+    var run = wrap.querySelector("[data-crace-run]");
+    var rest = wrap.querySelector("[data-crace-rest]");
+    var closer = wrap.querySelector("[data-crace-close]");
+    if (!rods.length || !outs.length || !run) { return; }
+    var st = p1State(wrap, outs.length);
+    var idle = run.getAttribute("data-idle") || "Run";
+    var done = run.getAttribute("data-done") || "Run finished";
+    var current = null;
+
+    each(rods, function (btn) {
+      btn.addEventListener("click", function () {
+        if (!p1Radio(rods, btn, "data-crace-rod")) { return; }
+        current = btn.getAttribute("data-crace-rod");
+        each(outs, function (o) { setHidden(o, true); });
+        run.disabled = false;
+        run.textContent = idle;
+      });
+    });
+
+    run.addEventListener("click", function () {
+      if (!current || run.disabled) { return; }
+      setHidden(rest, true);
+      var shown = p1Show(outs, "data-crace-out", current);
+      run.textContent = done;
+      run.disabled = true;
+      p1Seen(sec, st, current, closer);
+      if (shown) { focusReveal(shown); }
+    });
+    setCount(sec, 0);
+  }
+
+  /* ── particle-relay (p1-05 #s-model) ─────────────────────────────────
+     Four stages, one way. There is no collapse: unshowing a step teaches
+     nothing and gives a student a way to lose their place. */
+  function wireParticleRelay(sec) {
+    var wrap = sec.querySelector("[data-prel]");
+    if (!wrap) { return; }
+    var stages = toArray(wrap.querySelectorAll("[data-prel-stage]"));
+    var btn = wrap.querySelector("[data-prel-next]");
+    var closer = wrap.querySelector("[data-prel-close]");
+    if (!stages.length || !btn) { return; }
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || stages.length;
+    var next = btn.getAttribute("data-next") || "Show the next step";
+    var done = btn.getAttribute("data-done") || "All shown";
+    var i = -1;
+
+    btn.addEventListener("click", function () {
+      if (i >= total - 1) { return; }
+      i += 1;
+      var shown = p1Show(stages, "data-prel-stage", String(i));
+      setCount(sec, i + 1);
+      btn.textContent = i >= total - 1 ? done : next;
+      if (i >= total - 1) {
+        btn.disabled = true;
+        setHidden(closer, false);
+        markStage(sec, true);
+      }
+      if (shown) { focusReveal(shown); }
+    });
+    setCount(sec, 0);
+  }
+
+  /* ── radiation-cube (p1-06 #s-surface) ───────────────────────────────
+     Four faces, two modes, eight readouts in the document. A face counts as
+     read once, however many modes it is read in — the head counter says
+     "faces read" and it has to mean that. Switching mode with a face on the
+     bench re-shows the same face's other reading, which is the comparison
+     the block is for. */
+  function wireRadiationCube(sec) {
+    wireBenchGate(sec);
+    var wrap = sec.querySelector("[data-rcube]");
+    if (!wrap) { return; }
+    var modes = toArray(wrap.querySelectorAll("[data-rcube-mode]"));
+    var caps = toArray(wrap.querySelectorAll("[data-rcube-caption]"));
+    var faces = toArray(wrap.querySelectorAll("[data-rcube-face]"));
+    var outs = toArray(wrap.querySelectorAll("[data-rcube-out]"));
+    var rest = wrap.querySelector("[data-rcube-rest]");
+    var closer = wrap.querySelector("[data-rcube-close]");
+    if (!modes.length || !faces.length || !outs.length) { return; }
+    var st = p1State(wrap, faces.length);
+    var mode = null, face = null;
+    each(modes, function (m) {
+      if (m.getAttribute("aria-pressed") === "true") {
+        mode = m.getAttribute("data-rcube-mode");
+      }
+    });
+
+    function paint() {
+      if (!face || !mode) { return; }
+      setHidden(rest, true);
+      var shown = p1Show(outs, "data-rcube-out", face + ":" + mode);
+      p1Seen(sec, st, face, closer);
+      if (shown) { focusReveal(shown); }
+    }
+
+    each(modes, function (btn) {
+      btn.addEventListener("click", function () {
+        if (!p1Radio(modes, btn, "data-rcube-mode")) { return; }
+        mode = btn.getAttribute("data-rcube-mode");
+        p1Show(caps, "data-rcube-caption", mode);
+        paint();
+      });
+    });
+    each(faces, function (btn) {
+      btn.addEventListener("click", function () {
+        if (!p1Radio(faces, btn, "data-rcube-face")) { return; }
+        face = btn.getAttribute("data-rcube-face");
+        paint();
+      });
+    });
+    setCount(sec, 0);
+  }
+
+  /* ── across-the-gap (p1-06 #s-gap) ───────────────────────────────────
+     Six cells, one readout. The cells stay on screen while the readout is
+     open, because reading a row ACROSS is the whole block and a matrix you
+     cannot see is not one. */
+  function wireAcrossTheGap(sec) {
+    var wrap = sec.querySelector("[data-agap]");
+    if (!wrap) { return; }
+    var cells = toArray(wrap.querySelectorAll("[data-agap-cell]"));
+    var outs = toArray(wrap.querySelectorAll("[data-agap-out]"));
+    var rest = wrap.querySelector("[data-agap-rest]");
+    var closer = wrap.querySelector("[data-agap-close]");
+    if (!cells.length || !outs.length) { return; }
+    var st = p1State(wrap, cells.length);
+
+    each(cells, function (btn) {
+      btn.addEventListener("click", function () {
+        if (!p1Radio(cells, btn, "data-agap-cell")) { return; }
+        var key = btn.getAttribute("data-agap-cell");
+        setHidden(rest, true);
+        var shown = p1Show(outs, "data-agap-out", key);
+        p1Seen(sec, st, key, closer);
+        if (shown) { focusReveal(shown); }
+      });
+    });
+    setCount(sec, 0);
+  }
+
+  /* ── lagging-bench (p1-07 #s-lag) ────────────────────────────────────
+     TWO DIALS, and the Run button waits for both. That is the fair test in
+     the interaction as well as in the prose: you cannot get a reading
+     without having said what the material AND the thickness are. */
+  function wireLaggingBench(sec) {
+    wireBenchGate(sec);
+    var wrap = sec.querySelector("[data-lagb]");
+    if (!wrap) { return; }
+    var mats = toArray(wrap.querySelectorAll("[data-lagb-mat]"));
+    var thicks = toArray(wrap.querySelectorAll("[data-lagb-thick]"));
+    var outs = toArray(wrap.querySelectorAll("[data-lagb-out]"));
+    var run = wrap.querySelector("[data-lagb-run]");
+    var rest = wrap.querySelector("[data-lagb-rest]");
+    var closer = wrap.querySelector("[data-lagb-close]");
+    if (!mats.length || !thicks.length || !outs.length || !run) { return; }
+    var st = p1State(wrap, outs.length);
+    var idle = run.getAttribute("data-idle") || "Run";
+    var done = run.getAttribute("data-done") || "Run finished";
+    var mat = null, thick = null;
+
+    function arm() {
+      each(outs, function (o) { setHidden(o, true); });
+      if (mat && thick) { run.disabled = false; run.textContent = idle; }
+    }
+    each(mats, function (btn) {
+      btn.addEventListener("click", function () {
+        if (!p1Radio(mats, btn, "data-lagb-mat")) { return; }
+        mat = btn.getAttribute("data-lagb-mat");
+        arm();
+      });
+    });
+    each(thicks, function (btn) {
+      btn.addEventListener("click", function () {
+        if (!p1Radio(thicks, btn, "data-lagb-thick")) { return; }
+        thick = btn.getAttribute("data-lagb-thick");
+        arm();
+      });
+    });
+
+    run.addEventListener("click", function () {
+      if (!mat || !thick || run.disabled) { return; }
+      var key = mat + ":" + thick;
+      setHidden(rest, true);
+      var shown = p1Show(outs, "data-lagb-out", key);
+      run.textContent = done;
+      run.disabled = true;
+      p1Seen(sec, st, key, closer);
+      if (shown) { focusReveal(shown); }
+    });
+    setCount(sec, 0);
+  }
+
+  /* ── machine-bench (p1-08 #s-machine) ────────────────────────────────
+     Three machines, nine set-ups. Picking a machine swaps the setting row
+     under it and clears the readout: a setting belongs to one machine and
+     a lever's readout must never be on screen under a pulley. */
+  function wireMachineBench(sec) {
+    wireBenchGate(sec);
+    var wrap = sec.querySelector("[data-mbench]");
+    if (!wrap) { return; }
+    var machines = toArray(wrap.querySelectorAll("[data-mbench-machine]"));
+    var hows = toArray(wrap.querySelectorAll("[data-mbench-how]"));
+    var setrows = toArray(wrap.querySelectorAll("[data-mbench-setrow]"));
+    var settings = toArray(wrap.querySelectorAll("[data-mbench-setting]"));
+    var outs = toArray(wrap.querySelectorAll("[data-mbench-out]"));
+    var rest = wrap.querySelector("[data-mbench-rest]");
+    var closer = wrap.querySelector("[data-mbench-close]");
+    if (!machines.length || !settings.length || !outs.length) { return; }
+    var st = p1State(wrap, settings.length);
+
+    each(machines, function (btn) {
+      btn.addEventListener("click", function () {
+        if (!p1Radio(machines, btn, "data-mbench-machine")) { return; }
+        var key = btn.getAttribute("data-mbench-machine");
+        p1Show(hows, "data-mbench-how", key);
+        var row = p1Show(setrows, "data-mbench-setrow", key);
+        each(settings, function (s) {
+          s.setAttribute("aria-pressed", "false");
+        });
+        each(outs, function (o) { setHidden(o, true); });
+        if (row) { focusReveal(row); }
+      });
+    });
+
+    each(settings, function (btn) {
+      btn.addEventListener("click", function () {
+        if (!p1Radio(settings, btn, "data-mbench-setting")) { return; }
+        var key = btn.getAttribute("data-mbench-setting");
+        setHidden(rest, true);
+        var shown = p1Show(outs, "data-mbench-out", key);
+        p1Seen(sec, st, key, closer);
+        if (shown) { focusReveal(shown); }
+      });
+    });
+    setCount(sec, 0);
+  }
+/* ═══ END P1 wiring ═══ */

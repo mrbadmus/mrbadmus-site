@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simple machines: force for distance · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p1-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p1-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  [data-readout] { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  @media (max-width: 760px) { [data-readout] { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  [data-runs] { width: 100%; border-collapse: collapse; font-family: var(--ks3-font-mono); font-size: 16px; }
+  [data-runs] th, [data-runs] td { border: 2px solid var(--ks3-ink); padding: 9px 12px; text-align: left; }
+  [data-runs] th { font-size: 12px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; background: var(--ks3-band); }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Energy transfers</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Simple machines</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="6">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Energy transfers · Quantitative</p>
+        <h1>Simple machines: force for distance</h1>
+        <p class="ks3-bigq">A crowbar lets you lift 600 N with a push of 100 N. Six times the force, out of nowhere. What did you pay for it?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Six times the force. No extra effort.</h2>
+        <p class="ks3-hook-prompt">A paving slab weighing 600 N will not budge when you pull on it. Slide a crowbar underneath, and a push of 100 N lifts it easily. The bar has no motor, no battery and no moving parts.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Commit. Where did the extra 500 N come from?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Nowhere. Force is not conserved and there is nothing strange about multiplying it — you get six times the force and you move your end six times as far. Multiply force by distance on each side and the two products match. The energy is what cannot be multiplied, and that is what the bench below measures.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>A simple machine is any device that trades force against distance: levers, ramps, pulleys, gears, screws. None of them creates energy, none of them reduces the energy needed for a job, and every one of them makes a job possible that your muscles could not do directly. This lesson measures the trade rather than asserting it.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">The lever bench · move the fulcrum and measure</p>
+            <h2 style="margin: 6px 0 0;">Read both ends, then multiply.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">A 600 N load on a 2.4 m bar. Slide the fulcrum, lift the load by 5 cm, and record what the force meter and the two rulers say.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+            <p class="ks3-commit" style="margin: 0 0 12px; color: var(--ks3-accent-text);">Commit first. A lever lets you lift a load with a quarter of the force. What happens to the energy you have to supply?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-ink); overflow: hidden; background: var(--ks3-card);">
+            <canvas width="1800" height="660" ref="{{ benchRef }}" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+            <div style="padding: 18px; border-top: 2px solid var(--ks3-ink); background: var(--ks3-inset);">
+              <label for="fulcrum" style="display: block; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Where the fulcrum sits · {{ fulcrumLabel }} from the load</label>
+              <input id="fulcrum" type="range" min="20" max="120" step="1" value="{{ fulcrum }}" onChange="{{ onFulcrum }}" aria-valuetext="{{ fulcrumLabel }} from the load" style="width: 100%; height: 44px; accent-color: var(--ks3-accent); cursor: pointer;">
+              <div data-readout="1" style="margin-top: 6px;">
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Force you apply</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 26px; line-height: 1.1; color: var(--ks3-accent-text);">{{ effortLabel }}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Your end moves</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 26px; line-height: 1.1; color: var(--ks3-ink);">{{ effortDistLabel }}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Load</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 26px; line-height: 1.1; color: var(--ks3-ink);">600 N</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Load moves</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 26px; line-height: 1.1; color: var(--ks3-ink);">5.0 cm</p>
+                </div>
+              </div>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px;">
+                <button type="button" onClick="{{ onLift }}" style="{{ liftStyle }}">Lift it and record</button>
+                <button type="button" onClick="{{ onClear }}" disabled="{{ noRuns }}" style="{{ clearStyle }}">Clear the table</button>
+              </div>
+            </div>
+          </div>
+
+          <sc-if value="{{ hasRuns }}">
+            <div data-arrive="1" style="margin-top: 18px; overflow-x: auto; border-radius: var(--ks3-r-panel); border: 2px solid var(--ks3-ink);">
+              <table data-runs="1">
+                <thead>
+                  <tr>
+                    <th scope="col">Run</th>
+                    <th scope="col">Your force</th>
+                    <th scope="col">Your distance</th>
+                    <th scope="col">Force × distance, your end</th>
+                    <th scope="col">Force × distance, load end</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <sc-for list="{{ runRows }}" as="row" hint-placeholder-count="3">
+                    <tr style="background: var(--ks3-card);">
+                      <th scope="row" style="font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; background: var(--ks3-band);">{{ row.n }}</th>
+                      <td>{{ row.f }}</td>
+                      <td>{{ row.d }}</td>
+                      <td style="color: var(--ks3-accent-text); font-weight: 500;">{{ row.workIn }}</td>
+                      <td style="font-weight: 500;">{{ row.workOut }}</td>
+                    </tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+          </sc-if>
+          <p style="margin: 18px 0 0; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink); font-size: 19px; line-height: 1.6;">{{ benchNote }}</p>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">A simple machine multiplies force and divides distance by the same amount. Force × distance at your end equals force × distance at the load — a machine never reduces the energy the job needs.</p>
+      </div>
+
+      <section id="s-balance" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Writing it down · the shape of this relationship</p>
+        <h2 style="margin: 6px 0 14px;">Two products, balanced</h2>
+        <p style="margin: 0 0 18px; max-width: 56ch;">Each side is a multiplication, so each pan carries a triangle. The equals sign between them is a balance, which no triangle can show.</p>
+
+        <div style="border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-ink); overflow: hidden; background: var(--ks3-card);">
+          <canvas width="1800" height="560" ref="{{ balanceRef }}" role="img" aria-label="{{ balanceAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+          <div style="padding: 18px; border-top: 2px solid var(--ks3-ink); background: var(--ks3-inset);">
+            <p style="margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Which quantity are you solving for?</p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <sc-for list="{{ coverButtons }}" as="b" hint-placeholder-count="4">
+                <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.on }}" style="{{ b.style }}">{{ b.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <p style="margin: 20px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(30px, 3.8vw, 40px); line-height: 1.14; letter-spacing: -.02em;">{{ coverResult }}</p>
+        <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body);">Two things side by side means multiply. One thing over another means divide.</p>
+        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 9px;">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">E</span>
+            <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">energy transferred</span>
+            <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">J</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">F</span>
+            <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">force</span>
+            <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">N</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">d</span>
+            <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">distance moved</span>
+            <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">m</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-worked" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">Five lines, every time · CFIFA</p>
+            <h2 style="margin: 6px 0 0;">Set it out on your own numbers</h2>
+          </div>
+        </div>
+        <dc-import name="Cfifa" examples="{{ cfifaExamples }}" questions="{{ cfifaQuestions }}" on-open="{{ onCfifaOpen }}" hint-size="100%,980px"></dc-import>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“A machine that multiplies force gives you energy for free.”</p>
+        <p style="max-width: 54ch;">Commit, then check it against your own table.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">Force and energy are different quantities, and only one of them is conserved. Nothing forbids multiplying a force — a lever does it, a ramp does it, your own forearm does it in reverse every time you lift something. What is forbidden is getting more energy out than you put in, and no arrangement of levers has ever managed it.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">Your own runs are the argument. Every row of the table has the same number in the last two columns, whatever you did with the fulcrum. Six times the force, one sixth of the distance, identical product. A machine changes the <em>shape</em> of a job so your muscles can do it; it never changes the size of the job.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">And in reality the last column is always slightly the larger of the two, because friction at the fulcrum takes its cut into a thermal store. Real machines need a little more energy in than the job strictly requires — never less.</p>
+          </div>
+        </sc-if>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;A longer lever gets the job done with less energy.&rdquo;</p>
+          <p>It gets it done with less force, and you pay for that in distance. Double the length of your side and you halve the force needed, but your end has to travel twice as far — and force × distance, which is the energy, comes out the same. Every simple machine trades one for the other along a line of fixed energy, and friction means the trade is always slightly in the machine’s favour, never in yours.</p>
+        </div>
+      </section>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">A machine can multiply force or multiply distance, but never both, and never energy. The energy you put in at your end is always at least the energy that comes out at the load end — the rest goes to friction.</p>
+        </div>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Force × distance in equals force × distance out. Multiply the force, divide the distance by the same factor. No machine reduces the energy a job needs, and friction means real ones need slightly more.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The patent offices of Europe and America spent the nineteenth century buried in perpetual motion machines, almost all of them built from levers, gears and cleverly weighted wheels — arrangements designed so that the force multiplication would somehow come round to feed itself. Not one worked, and by 1911 the US Patent Office simply refused to consider such applications without a working model, which nobody has ever produced. What makes the whole class impossible is not a flaw in any particular design; it is the sum you have been checking all lesson. If force × distance in must equal force × distance out, there is nothing left over to run the machine with, no matter how the linkages are arranged. Conservation of energy does not need to inspect your invention to know it will not work.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p1-07-insulation.html">Keeping energy in: insulation<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next unit</h2>
+          <ul>
+            <li><a href="p2-01-energy-in-food.html">Energy in food<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p1-03-conservation-of-energy.html">Conservation of energy<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p1-01-energy-stores.html">Energy stores<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Work done, moments, and efficiency as a calculated percentage.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still feels like the crowbar gives something for nothing?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The lever bench is a teaching model. The load is fixed at 600 N and is raised 0.05 m on a 2.4 m bar, and the machine is treated as having no friction at the fulcrum and no weight of its own, so the energy in at your end equals the energy out at the load end exactly. A real lever loses a few per cent to friction and needs a little extra to lift the bar itself, so the effort is always slightly more than the ideal figure. Forces and distances are rounded for display.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startFulcrum&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:20,&quot;max&quot;:120,&quot;step&quot;:1,&quot;default&quot;:40,&quot;unit&quot;:&quot;cm&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Lever bench&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The crowbar', short: 'HOOK' },
+  { id: 's-bench', label: 'Lever bench', short: 'LEVER' },
+  { id: 's-worked', label: 'CFIFA', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const LOAD = 600;        // N
+const LOAD_RISE = 0.05;  // m
+const BAR = 2.4;         // m
+
+// Solving for one factor inside one side is a legitimate triangle.
+const COVERS = {
+  fin: { result: 'F = E \u00f7 d', sentence: 'Force sits underneath with energy above it. Cover F and you are left with E over d \u2014 divide.' },
+  din: { result: 'd = E \u00f7 F', sentence: 'Distance sits underneath with energy above it. Cover d and you are left with E over F \u2014 divide.' },
+  e: { result: 'E = F \u00d7 d', sentence: 'Energy is alone at the top. Cover it and the other two sit side by side \u2014 multiply.' },
+  bal: { result: 'F\u2081 \u00d7 d\u2081 = F\u2082 \u00d7 d\u2082', sentence: 'This is the whole relationship, and no triangle can hold it \u2014 there are four quantities and an equals sign, not three quantities and a bar. Read it off the beam instead: whatever you do to one pan, the other must match.' }
+};
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Calculate',
+    question: 'You push down with 150 N and your end of the lever moves 40 cm. How much energy did you transfer?',
+    options: [
+      { text: '60 J', correct: true },
+      { text: '6000 J', correction: 'Watch the units \u2014 40 cm is 0.40 m, not 40 m. 150 \u00d7 0.40 = 60.' },
+      { text: '375 J', correction: 'That is 150 \u00f7 0.40. Energy is force multiplied by distance, not divided.' },
+      { text: '190 J', correction: 'That is 150 + 40. The two quantities are multiplied, and they are not even in the same units.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A ramp lets you push a 900 N barrel up to a platform using only 300 N. What must be true?',
+    options: [
+      { text: 'You push it three times as far along the ramp as the platform is high', correct: true },
+      { text: 'You transfer a third of the energy you would lifting it straight up', correction: 'The energy is the same \u2014 that is the point. Only the force is a third.' },
+      { text: 'The ramp supplies the other 600 N from somewhere', correction: 'A ramp has no energy supply. It changes the direction and the distance, nothing else.' },
+      { text: 'The barrel weighs less on the ramp', correction: 'Its weight has not changed. What changed is how much of that weight you have to work against at once.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A pulley system lets a builder raise a 400 N load by pulling with 100 N. Explain what the builder must give up in exchange, and show with numbers that no energy has been created.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The force is a quarter, so…',
+    criteria: [
+      'Says the force is one quarter of the load.',
+      'Says the builder must pull four times as far as the load rises.',
+      'Calculates the energy at the load end \u2014 e.g. 400 N \u00d7 1 m = 400 J.',
+      'Calculates the energy at the builder\u2019s end \u2014 100 N \u00d7 4 m = 400 J.',
+      'States that the two are equal, so nothing has been created, and notes friction makes the real input slightly larger.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'Someone claims their gear arrangement multiplies force by 50 and so could drive a generator that powers the motor turning it, running forever. Say what measurement would settle it, and what conservation of energy predicts you would find.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Multiplying force by 50 is not the problem…',
+    criteria: [
+      'Says multiplying force by 50 is entirely possible and not the flaw.',
+      'Says the distance moved is divided by 50, so the energy is unchanged.',
+      'Says the machine would need to output more energy than it takes in, which conservation forbids.',
+      'Names a measurement \u2014 compare energy in and energy out over a fixed time, or simply time how long it runs unpowered.',
+      'Predicts it will run down, and says friction guarantees the output is less than the input.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    fulcrum: Number.isFinite(Number(this.props.startFulcrum)) ? Math.min(120, Math.max(20, Number(this.props.startFulcrum))) : 40,
+    runs: [],
+    cover: 'bal',
+    thinkChoice: null,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+    this.draw();
+    this.drawBalance();
+  }
+
+  componentDidUpdate() { this.draw(); this.drawBalance(); }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  // fulcrum in cm from the load end
+  geom() {
+    const a = this.state.fulcrum / 100;      // load arm, m
+    const b = BAR - a;                        // effort arm, m
+    const ratio = b / a;
+    return { a: a, b: b, ratio: ratio, effort: LOAD / ratio, dist: LOAD_RISE * ratio };
+  }
+
+  draw() {
+    const c = this.benchCanvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 330;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#FFFDF8';
+    ctx.fillRect(0, 0, W, H);
+
+    const g = this.geom();
+    const x0 = 90, x1 = W - 90;
+    const pxPerM = (x1 - x0) / BAR;
+    const fx = x0 + g.a * pxPerM;
+    const beamY = 150;
+
+    // ground
+    ctx.strokeStyle = '#D9CDBA';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(40, beamY + 78);
+    ctx.lineTo(W - 40, beamY + 78);
+    ctx.stroke();
+
+    // fulcrum
+    ctx.fillStyle = '#1A1714';
+    ctx.beginPath();
+    ctx.moveTo(fx, beamY + 8);
+    ctx.lineTo(fx - 24, beamY + 78);
+    ctx.lineTo(fx + 24, beamY + 78);
+    ctx.closePath();
+    ctx.fill();
+
+    // bar, tilted a little so the trade is visible
+    const tilt = 0.075;
+    ctx.save();
+    ctx.translate(fx, beamY);
+    ctx.rotate(tilt);
+    ctx.fillStyle = '#8E6C3F';
+    ctx.fillRect(-(fx - x0), -7, (x1 - x0), 14);
+    ctx.strokeStyle = '#1A1714';
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(-(fx - x0), -7, (x1 - x0), 14);
+    ctx.restore();
+
+    const lyEnd = beamY - Math.sin(tilt) * (fx - x0);
+    const eyEnd = beamY + Math.sin(tilt) * (x1 - fx);
+
+    // load
+    ctx.fillStyle = '#5C5249';
+    ctx.fillRect(x0 - 26, lyEnd - 62, 56, 46);
+    ctx.strokeStyle = '#1A1714';
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(x0 - 26, lyEnd - 62, 56, 46);
+    ctx.fillStyle = '#FFFDF8';
+    ctx.font = '700 15px "Bricolage Grotesque", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('600 N', x0 + 2, lyEnd - 34);
+
+    // load rise arrow, drawn
+    const arrow = (ax, ay, len, up, col, lab) => {
+      ctx.strokeStyle = col;
+      ctx.lineWidth = 3.5;
+      ctx.beginPath();
+      ctx.moveTo(ax, ay);
+      ctx.lineTo(ax, ay + (up ? -len : len));
+      ctx.stroke();
+      const ty = ay + (up ? -len : len);
+      ctx.beginPath();
+      ctx.moveTo(ax, ty + (up ? -8 : 8));
+      ctx.lineTo(ax - 8, ty);
+      ctx.lineTo(ax + 8, ty);
+      ctx.closePath();
+      ctx.fillStyle = col;
+      ctx.fill();
+      ctx.fillStyle = col;
+      ctx.font = '500 13px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(lab, ax + 14, ay + (up ? -len / 2 : len / 2) + 4);
+    };
+
+    // fixed 5 cm for the load; effort distance scales
+    const loadPx = 34;
+    const effPx = Math.min(120, loadPx * g.ratio);
+    arrow(x0 - 46, lyEnd - 62, loadPx, true, '#1A1714', '5.0 cm');
+    arrow(x1 + 30, eyEnd, effPx, false, '#E4572E', (g.dist * 100).toFixed(1) + ' cm');
+
+    // effort force
+    ctx.fillStyle = '#E4572E';
+    ctx.beginPath();
+    ctx.arc(x1, eyEnd, 15, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#1A1714';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+    ctx.fillStyle = '#A93411';
+    ctx.font = '700 17px "Bricolage Grotesque", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(g.effort.toFixed(0) + ' N', x1, eyEnd - 28);
+
+    // arms
+    ctx.strokeStyle = '#8FB7FF';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(x0, beamY + 96);
+    ctx.lineTo(fx, beamY + 96);
+    ctx.moveTo(fx, beamY + 116);
+    ctx.lineTo(x1, beamY + 116);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('LOAD ARM ' + g.a.toFixed(2) + ' m', (x0 + fx) / 2, beamY + 92);
+    ctx.fillText('EFFORT ARM ' + g.b.toFixed(2) + ' m', (fx + x1) / 2, beamY + 132);
+
+    ctx.fillStyle = '#A93411';
+    ctx.font = '500 13px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('FORCE MULTIPLIED \u00d7' + g.ratio.toFixed(2) + '  \u00b7  DISTANCE DIVIDED \u00f7' + g.ratio.toFixed(2), 60, 32);
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+    ctx.fillText('FORCE METER READINGS SCATTER BY ABOUT \u00b12% \u2014 REAL PIVOTS HAVE FRICTION', 60, H - 16);
+  }
+
+  drawBalance() {
+    const c = this.balanceCanvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 280;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#FFFDF8';
+    ctx.fillRect(0, 0, W, H);
+
+    const g = this.geom();
+    const cx = W / 2, beamY = 110;
+
+    ctx.fillStyle = '#1A1714';
+    ctx.beginPath();
+    ctx.moveTo(cx, beamY + 10);
+    ctx.lineTo(cx - 26, beamY + 78);
+    ctx.lineTo(cx + 26, beamY + 78);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = '#1A1714';
+    ctx.lineWidth = 7;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(cx - 330, beamY);
+    ctx.lineTo(cx + 330, beamY);
+    ctx.stroke();
+
+    const cover = this.state.cover;
+
+    const pan = (x, label, f, d, isIn) => {
+      ctx.strokeStyle = '#1A1714';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x, beamY);
+      ctx.lineTo(x, beamY - 22);
+      ctx.stroke();
+
+      // triangle on the pan: E over F d
+      const tw = 150, th = 96, ty = beamY - 22 - th;
+      const litE = cover === 'e';
+      const litF = isIn ? cover === 'fin' : false;
+      const litD = isIn ? cover === 'din' : false;
+
+      ctx.fillStyle = 'var';
+      ctx.beginPath();
+      ctx.moveTo(x, ty);
+      ctx.lineTo(x - tw / 2, ty + th);
+      ctx.lineTo(x + tw / 2, ty + th);
+      ctx.closePath();
+      ctx.fillStyle = '#F6EEE0';
+      ctx.fill();
+      ctx.strokeStyle = '#1A1714';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x - tw / 2 + 14, ty + th * 0.52);
+      ctx.lineTo(x + tw / 2 - 14, ty + th * 0.52);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x, ty + th * 0.52);
+      ctx.lineTo(x, ty + th);
+      ctx.stroke();
+
+      const cell = (cxp, cyp, txt, lit) => {
+        if (lit) {
+          ctx.fillStyle = '#E4572E';
+          ctx.beginPath();
+          ctx.arc(cxp, cyp - 5, 19, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.fillStyle = lit ? '#FFFDF8' : '#1A1714';
+        ctx.font = '700 20px "Bricolage Grotesque", system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(txt, cxp, cyp);
+      };
+      cell(x, ty + th * 0.36, 'E', litE);
+      cell(x - tw / 4, ty + th * 0.84, 'F', litF);
+      cell(x + tw / 4, ty + th * 0.84, 'd', litD);
+
+      ctx.fillStyle = '#6B6055';
+      ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x, beamY + 26);
+      ctx.fillStyle = isIn ? '#A93411' : '#1A1714';
+      ctx.font = '500 14px "DM Mono", ui-monospace, monospace';
+      ctx.fillText(f.toFixed(0) + ' N \u00d7 ' + d.toFixed(3) + ' m', x, beamY + 48);
+      ctx.fillStyle = '#1A1714';
+      ctx.font = '700 20px "Bricolage Grotesque", system-ui, sans-serif';
+      ctx.fillText('= ' + (f * d).toFixed(1) + ' J', x, beamY + 74);
+    };
+
+    pan(cx - 200, 'YOUR END', g.effort, g.dist, true);
+    pan(cx + 200, 'LOAD END', LOAD, LOAD_RISE, false);
+
+    // equals, drawn
+    ctx.strokeStyle = cover === 'bal' ? '#E4572E' : '#B9AE9C';
+    ctx.lineWidth = cover === 'bal' ? 5 : 3;
+    ctx.beginPath();
+    ctx.moveTo(cx - 20, beamY - 58);
+    ctx.lineTo(cx + 20, beamY - 58);
+    ctx.moveTo(cx - 20, beamY - 44);
+    ctx.lineTo(cx + 20, beamY - 44);
+    ctx.stroke();
+
+    ctx.fillStyle = '#A93411';
+    ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('A BALANCE OF TWO PRODUCTS \u2014 THE TRIANGLE WORKS INSIDE ONE PAN, NOT ACROSS THE BEAM', cx, H - 18);
+  }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis ? 'opacity:.45;' : '');
+  }
+
+  renderVals() {
+    const s = this.state;
+    const g = this.geom();
+    const last = s.runs.length ? s.runs[0] : null;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((y) => y.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    let benchNote;
+    if (!s.runs.length) {
+      benchNote = 'Slide the fulcrum and watch the two numbers move in opposite directions. Then lift it and record \u2014 the table is where the point of this lesson shows up.';
+    } else if (s.runs.length === 1) {
+      benchNote = 'One run. The last two columns already agree to within the friction on the pivot. Move the fulcrum somewhere completely different and record again \u2014 the interesting thing is what stays the same.';
+    } else {
+      const spread = s.runs.map((r) => r.f).sort((a, b) => a - b);
+      benchNote = 'Your forces range from ' + spread[0].toFixed(0) + ' N to ' + spread[spread.length - 1].toFixed(0) +
+        ' N across ' + s.runs.length + ' runs \u2014 a factor of ' + (spread[spread.length - 1] / spread[0]).toFixed(1) +
+        '. And the last two columns match every time. That is the finding: the force is yours to choose, the energy is not.';
+    }
+
+    const wSrc = last
+      ? 'Using your own run: you pushed with ' + last.f.toFixed(0) + ' N and your end moved ' + (last.d * 100).toFixed(1) + ' cm.'
+      : 'Using a worked example \u2014 record a run on the bench and these four lines will use your own numbers instead.';
+
+    const wf = last ? last.f : 250;
+    const wd = last ? last.d : 0.12;
+    const raw = wf * wd;
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-bench') return s.runs.length >= 2;
+          if (id === 's-worked') return s.runs.length >= 1;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'The bar stores energy and releases it' },
+        { letter: 'B', text: 'Nowhere — you move your end much further, so the energy matches' },
+        { letter: 'C', text: 'The ground pushes up with the extra force' },
+        { letter: 'D', text: 'The slab weighs less once it is on the bar' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      benchProgress: s.runs.length ? s.runs.length + ' run' + (s.runs.length === 1 ? '' : 's') + ' recorded' : 'no runs yet',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'You supply a quarter of the energy' },
+        { letter: 'B', text: 'You supply the same energy, moving four times as far' },
+        { letter: 'C', text: 'You supply four times the energy' },
+        { letter: 'D', text: 'The lever supplies the difference' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      benchOpen: s.gate !== null,
+      benchRef: (el) => { this.benchCanvas = el; if (el) this.draw(); },
+      benchAlt: 'A lever with a 600 newton load, fulcrum ' + g.a.toFixed(2) + ' metres from the load. Effort ' +
+        g.effort.toFixed(0) + ' newtons over ' + (g.dist * 100).toFixed(1) + ' centimetres; load rises 5 centimetres.',
+      fulcrum: s.fulcrum,
+      fulcrumLabel: (s.fulcrum / 100).toFixed(2) + ' m',
+      onFulcrum: (e) => this.setState({ fulcrum: Number(e.target.value) }),
+      effortLabel: g.effort.toFixed(0) + ' N',
+      effortDistLabel: (g.dist * 100).toFixed(1) + ' cm',
+      liftStyle: this.seg(false, false),
+      onLift: () => this.setState((p) => {
+        const gg = this.geom();
+        // real force meters scatter, and friction costs a little
+        const f = gg.effort * (1.005 + Math.random() * 0.03);
+        return { runs: [{ f: f, d: gg.dist, a: gg.a }].concat(p.runs).slice(0, 6) };
+      }),
+      clearStyle: this.seg(false, s.runs.length === 0),
+      noRuns: s.runs.length === 0,
+      hasRuns: s.runs.length > 0,
+      onClear: () => this.setState({ runs: [] }),
+      runRows: s.runs.map((r, i) => ({
+        n: String(s.runs.length - i),
+        f: r.f.toFixed(0) + ' N',
+        d: (r.d * 100).toFixed(1) + ' cm',
+        workIn: (r.f * r.d).toFixed(1) + ' J',
+        workOut: (LOAD * LOAD_RISE).toFixed(1) + ' J'
+      })),
+      benchNote: benchNote,
+
+      balanceRef: (el) => { this.balanceCanvas = el; if (el) this.drawBalance(); },
+      balanceAlt: 'A level balance beam with a formula triangle on each pan. Left pan: your force times your distance. Right pan: the load times its rise. Both products are equal.',
+      coverButtons: [
+        { id: 'bal', label: 'The whole relationship' },
+        { id: 'e', label: 'Cover E' },
+        { id: 'fin', label: 'Cover F' },
+        { id: 'din', label: 'Cover d' }
+      ].map((b) => ({
+        label: b.label, on: s.cover === b.id, style: this.seg(s.cover === b.id, false),
+        onClick: () => this.setState({ cover: b.id })
+      })),
+      coverResult: COVERS[s.cover].result,
+
+      cfifaExamples: [
+        { tab: 'Nothing to convert', head: 'You push a lever with 250 N and your end moves 0.12 m. How much energy do you transfer?',
+          steps: [
+            { letter: 'C', label: 'Convert', line: '250 N stays 250 N · 0.12 m stays 0.12 m',
+              note: 'The force is already in newtons and the distance already in metres, so there is nothing to convert.' },
+            { letter: 'F', label: 'Formula', line: 'E = F × d',
+              note: 'Cover E on the triangle: F sits beside d, so you multiply.' },
+            { letter: 'I', label: 'Insert', line: 'E = 250 N × 0.12 m',
+              note: 'The distance is how far your end moved, not how far the load rose.' },
+            { letter: 'F', label: 'Fine-tune', line: '250 × 0.12 = 30',
+              note: 'Newtons times metres gives joules.' },
+            { letter: 'A', label: 'Answer', line: 'E = 30 J',
+              note: 'Thirty joules in at your end — and the load end can never get more than that.' }
+          ] },
+        { tab: 'Convert first', head: 'You push a crate up a ramp with 80 N and it moves 250 cm along the slope.',
+          steps: [
+            { letter: 'C', label: 'Convert', line: '250 cm ÷ 100 = 2.50 m',
+              note: 'A joule is a newton times a metre, and a centimetre is a hundredth of one, so divide by 100.' },
+            { letter: 'F', label: 'Formula', line: 'E = F × d',
+              note: 'Cover E on the triangle: F sits beside d, so you multiply.' },
+            { letter: 'I', label: 'Insert', line: 'E = 80 N × 2.50 m',
+              note: 'The converted distance goes in. The 250 never does.' },
+            { letter: 'F', label: 'Fine-tune', line: '80 × 2.50 = 200',
+              note: 'Newtons times metres gives joules.' },
+            { letter: 'A', label: 'Answer', line: 'E = 200 J',
+              note: 'Insert 250 instead of 2.50 and the answer comes out 20 000 J — a hundred times too big.' }
+          ] }
+      ],
+      onCfifaOpen: () => this.setState({ cfifaOpen: true }),
+      cfifaQuestions: [
+        {
+          tab: 'Question 1', id: 'p108q1',
+          head: last
+            ? 'Your run: you pushed with ' + wf.toFixed(0) + ' N and your end moved ' + wd.toFixed(3) + ' m.'
+            : 'No run recorded yet, so use these: a push of ' + wf.toFixed(0) + ' N over ' + wd.toFixed(3) + ' m.',
+          steps: [
+            { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+              line: wf.toFixed(0) + ' N stays ' + wf.toFixed(0) + ' N · ' + wd.toFixed(3) + ' m stays ' + wd.toFixed(3) + ' m',
+              note: 'The bench reads in newtons and metres, which is what a joule needs, so there is nothing to convert.' },
+            { letter: 'F', label: 'Formula', line: 'E = F × d',
+              note: 'Cover E on the triangle in your pan. What is left is F beside d — multiply.' },
+            { letter: 'I', label: 'Insert', line: 'E = ' + wf.toFixed(0) + ' N × ' + wd.toFixed(3) + ' m',
+              note: 'Force in newtons, distance in metres.' },
+            { letter: 'F', label: 'Fine-tune', line: wf.toFixed(0) + ' × ' + wd.toFixed(3) + ' = ' + raw.toFixed(4).replace(/0+$/, '') + '…',
+              note: 'Newtons times metres gives joules. Keep the extra digits until the last line.' },
+            { letter: 'A', label: 'Answer', line: 'E = ' + raw.toFixed(1) + ' J',
+              note: 'One decimal place, and the unit.' }
+          ],
+          close: 'The five lines give ' + raw.toFixed(1) + ' J at your end. The load end takes ' + (LOAD * LOAD_RISE).toFixed(1) + ' J out.'
+        },
+        {
+          tab: 'Question 2', id: 'p108q2',
+          head: 'You haul on a rope with 45 N and pull 160 cm of it in.',
+          steps: [
+            { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+              line: '160 cm ÷ 100 = 1.60 m',
+              note: 'A joule is a newton times a metre, so the centimetres have to become metres first.' },
+            { letter: 'F', label: 'Formula', line: 'E = F × d',
+              note: 'Cover E on the triangle: F sits beside d, so you multiply.' },
+            { letter: 'I', label: 'Insert', line: 'E = 45 N × 1.60 m',
+              note: 'The converted distance goes in. The 160 never does.' },
+            { letter: 'F', label: 'Fine-tune', line: '45 × 1.60 = 72',
+              note: 'Newtons times metres gives joules.' },
+            { letter: 'A', label: 'Answer', line: 'E = 72 J',
+              note: 'Insert 160 instead of 1.60 and the answer comes out 7200 J.' }
+          ],
+          close: 'The five lines give 72 J. The whole question turned on the first one.'
+        }
+      ]
+
+      thinkOptions: [
+        { letter: 'A', text: 'True — that is what a machine is for' },
+        { letter: 'B', text: 'Force can be multiplied freely; energy cannot' },
+        { letter: 'C', text: 'False — force cannot be multiplied either' },
+        { letter: 'D', text: 'Only electrical machines can create energy' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.thinkChoice === i,
+        onClick: () => this.setState({ thinkChoice: i })
+      })),
+      thinkOpen: s.thinkChoice !== null,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((y) => y.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((prev) => {
+                if (prev.answers[r.id] !== null && prev.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, prev.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((prev) => ({ text: Object.assign({}, prev.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((prev) => ({ checked: Object.assign({}, prev.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((prev) => {
+              const next = (prev.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, prev.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>
