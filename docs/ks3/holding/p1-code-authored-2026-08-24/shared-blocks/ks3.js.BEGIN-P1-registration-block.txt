@@ -1,0 +1,14 @@
+    // ═══ BEGIN P1 wiring ═══
+    each(root.querySelectorAll("[data-sauditblock]"), wireStoreAudit);
+    each(root.querySelectorAll("[data-spathblock]"), wireStoreOrPathway);
+    each(root.querySelectorAll("[data-babenblock]"), wireBeforeAfterBench);
+    each(root.querySelectorAll("[data-eauditblock]"), wireEnergyAudit);
+    each(root.querySelectorAll("[data-mechblock]"), wireMechanismOrEnergy);
+    each(root.querySelectorAll("[data-equilblock]"), wireEquilibriumBench);
+    each(root.querySelectorAll("[data-craceblock]"), wireConductionRace);
+    each(root.querySelectorAll("[data-prelayblock]"), wireParticleRelay);
+    each(root.querySelectorAll("[data-rcubeblock]"), wireRadiationCube);
+    each(root.querySelectorAll("[data-agapblock]"), wireAcrossTheGap);
+    each(root.querySelectorAll("[data-lagbblock]"), wireLaggingBench);
+    each(root.querySelectorAll("[data-mbenchblock]"), wireMachineBench);
+    // ═══ END P1 wiring ═══

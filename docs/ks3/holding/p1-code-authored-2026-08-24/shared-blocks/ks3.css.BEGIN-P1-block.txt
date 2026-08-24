@@ -1,0 +1,800 @@
+/* ═══ BEGIN P1 ═══════════════════════════════════════════════════════════
+   P1's instrument styling — *Energy transfers*, the first physics unit. A
+   PURE APPEND at EOF — every byte above this marker is unchanged, which is
+   the one conflict shape that resolves mechanically when another lane
+   merges (docs/ks3/worktrees.md §3).
+
+   TWELVE FAMILIES, AND THEY ARE SPLIT ACROSS THE TWO GROUNDS. Seven sit on
+   the ink-dark `practical` block and five on the light `check` block, and
+   the split is not decorative: `practical` is for a bench a student RUNS and
+   `check` is for a discrimination they MAKE. Get one wrong and every text
+   token inside it resolves against the other ground — the block still
+   renders, still interacts, still passes smoke, and is unreadable.
+
+       ON INK   before-after-bench · energy-audit · equilibrium-bench ·
+                conduction-race · radiation-cube · lagging-bench ·
+                machine-bench
+       ON CARD  store-audit · store-or-pathway · mechanism-or-energy ·
+                particle-relay · across-the-gap
+
+   ⚠️ EVERY TEXT RULE IS SELF-SCOPED AT (0,2,0) — `.ks3-eaud .ks3-eaud-note`,
+   never a bare `.ks3-eaud-note`. A bare component class is (0,1,0) and loses
+   to `.ks3-dark p` at (0,1,1) the day anything moves one of these onto ink,
+   and it loses SILENTLY.
+
+   ⚠️ THE BUTTONS ARE `.ks3-seg-btn` AND TAKE NOTHING FROM HERE. Drift 4:
+   one segmented control for the key stage, and it already carries both its
+   light and its ink-dark branch. P1 adds a class to each for layout only.
+
+   ⚠️ NOTHING HERE MARKS. No green, no red, no `--ks3-ok` as a text colour
+   and no `--ks3-ok` fill on anything a student chose. The one place a fill
+   could have read as a mark — the energy audit's useful/wasted bar — uses
+   `--ks3-accent` and a translucent track instead, and both segments are
+   named in the tiles above them, so colour is never the only channel.
+
+   ⚠️ `--ks3-data` IS SPENT EXACTLY ONCE, on ink, and that is the only ground
+   it is licensed for (the C3 ruling). It paints the equilibrium bench's
+   settled marker, which is a category state and not a warning — amber is
+   reserved for a wrong idea being confronted and is not spent anywhere in
+   this unit.
+
+   ⚠️ CONTAINMENT, NOT CLIPPING. `.ks3-agap-scroll` is the unit's one
+   horizontal scroller and carries `position: relative`, so nothing
+   positioned inside it can widen the document on a phone. Every other row
+   here wraps rather than scrolls.
+   ═══ */
+
+.ks3-saudit-block,
+.ks3-spath-block,
+.ks3-baben-block,
+.ks3-eaudit-block,
+.ks3-mech-block,
+.ks3-equil-block,
+.ks3-crace-block,
+.ks3-prelay-block,
+.ks3-rcube-block,
+.ks3-agap-block,
+.ks3-lagb-block,
+.ks3-mbench-block { --p1-gap: 12px; }
+
+/* Shared inside P1: the payoff panel, on each ground. Two rules, because the
+   two grounds want different paper — an inset panel on a card and a lifted
+   panel on ink — and one rule with a `.ks3-dark` override would put the
+   light values in the cascade on every ink page. */
+.ks3-saud .ks3-saud-close,
+.ks3-spath .ks3-spath-close,
+.ks3-mech .ks3-mech-close,
+.ks3-prel .ks3-prel-close,
+.ks3-agap .ks3-agap-close {
+  margin-top: 22px; padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-saud .ks3-saud-close p,
+.ks3-spath .ks3-spath-close p,
+.ks3-mech .ks3-mech-close p,
+.ks3-prel .ks3-prel-close p,
+.ks3-agap .ks3-agap-close p {
+  margin: 0 0 10px; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+.ks3-saud .ks3-saud-close p:last-child,
+.ks3-spath .ks3-spath-close p:last-child,
+.ks3-mech .ks3-mech-close p:last-child,
+.ks3-prel .ks3-prel-close p:last-child,
+.ks3-agap .ks3-agap-close p:last-child { margin-bottom: 0; }
+
+.ks3-baben .ks3-baben-close,
+.ks3-eaud .ks3-eaud-close,
+.ks3-equil .ks3-equil-close,
+.ks3-crace .ks3-crace-close,
+.ks3-rcube .ks3-rcube-close,
+.ks3-lagb .ks3-lagb-close,
+.ks3-mbench .ks3-mbench-close {
+  margin-top: 24px; padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+}
+.ks3-baben .ks3-baben-close p,
+.ks3-eaud .ks3-eaud-close p,
+.ks3-equil .ks3-equil-close p,
+.ks3-crace .ks3-crace-close p,
+.ks3-rcube .ks3-rcube-close p,
+.ks3-lagb .ks3-lagb-close p,
+.ks3-mbench .ks3-mbench-close p {
+  margin: 0 0 10px; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+.ks3-baben .ks3-baben-close p:last-child,
+.ks3-eaud .ks3-eaud-close p:last-child,
+.ks3-equil .ks3-equil-close p:last-child,
+.ks3-crace .ks3-crace-close p:last-child,
+.ks3-rcube .ks3-rcube-close p:last-child,
+.ks3-lagb .ks3-lagb-close p:last-child,
+.ks3-mbench .ks3-mbench-close p:last-child { margin-bottom: 0; }
+
+/* The resting line, both grounds. */
+.ks3-saud .ks3-saud-rest,
+.ks3-spath .ks3-spath-progress,
+.ks3-mech .ks3-mech-rest,
+.ks3-agap .ks3-agap-rest {
+  margin: 0; font-size: 17px; color: var(--ks3-ink-muted);
+}
+.ks3-baben .ks3-baben-rest,
+.ks3-eaud .ks3-eaud-rest,
+.ks3-crace .ks3-crace-rest,
+.ks3-rcube .ks3-rcube-rest,
+.ks3-lagb .ks3-lagb-rest,
+.ks3-mbench .ks3-mbench-rest {
+  margin: 0; font-size: 17px; color: var(--ks3-on-dark-muted);
+}
+
+/* A row of controls. Wraps rather than scrolls, on every one of them, so
+   there is exactly one horizontal scroller in the unit to reason about. */
+.ks3-saud .ks3-saud-tabs,
+.ks3-baben .ks3-baben-tabs,
+.ks3-eaud .ks3-eaud-tabs,
+.ks3-mech .ks3-mech-tabs,
+.ks3-equil .ks3-equil-pairs,
+.ks3-crace .ks3-crace-rods,
+.ks3-rcube .ks3-rcube-modes,
+.ks3-rcube .ks3-rcube-faces,
+.ks3-lagb .ks3-lagb-dbtns,
+.ks3-mbench .ks3-mbench-machines,
+.ks3-mbench .ks3-mbench-setrow {
+  display: flex; flex-wrap: wrap; gap: 9px; margin-top: 4px;
+}
+
+/* ── p1-01 · store-audit (ON CARD) ─────────────────────────────────────── */
+.ks3-saud .ks3-saud-body {
+  margin-top: 18px; padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-saud .ks3-saud-name {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 24px; line-height: 1.2; color: var(--ks3-ink);
+}
+.ks3-saud .ks3-saud-sub {
+  display: block; margin-top: 3px; font-family: var(--ks3-font-mono);
+  font-size: 12px; font-weight: 500; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--ks3-ink-muted);
+}
+.ks3-saud .ks3-saud-lines { margin: 16px 0 0; }
+.ks3-saud .ks3-saud-line {
+  display: flex; flex-wrap: wrap; gap: 4px 14px; padding: 9px 0;
+  border-top: 1px solid var(--ks3-rule);
+}
+.ks3-saud .ks3-saud-line dt {
+  flex: 0 0 8.5rem; font-family: var(--ks3-font-mono); font-size: 12px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-ink-muted); padding-top: 3px;
+}
+.ks3-saud .ks3-saud-line dd {
+  flex: 1 1 14rem; min-width: 0; margin: 0; font-size: 17px;
+  line-height: 1.5; color: var(--ks3-ink-body);
+}
+.ks3-saud .ks3-saud-example {
+  margin: 16px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+/* The trap line. An ink left rule and no colour: it is a caution about a
+   misreading, not a warning state, so it does not spend amber. */
+.ks3-saud .ks3-saud-watch {
+  margin: 14px 0 0; padding-left: 14px; font-size: 16px; line-height: 1.5;
+  border-left: 3px solid var(--ks3-ink); color: var(--ks3-ink-body);
+}
+
+/* ── p1-01 · store-or-pathway (ON CARD) ────────────────────────────────── */
+.ks3-spath .ks3-spath-heads {
+  display: flex; gap: 9px; margin-top: 6px; padding: 0 2px;
+}
+.ks3-spath .ks3-spath-heads .ks3-spath-item { flex: 1 1 12rem; }
+.ks3-spath .ks3-spath-binhead {
+  flex: 0 0 10.5rem; font-family: var(--ks3-font-mono); font-size: 12px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-spath .ks3-spath-gloss {
+  display: block; margin-top: 2px; font-size: 11px; letter-spacing: 0;
+  text-transform: none; color: var(--ks3-ink-ghost);
+}
+.ks3-spath .ks3-spath-rows {
+  list-style: none; margin: 10px 0 0; padding: 0;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.ks3-spath .ks3-spath-row {
+  padding: 12px 14px; border-radius: var(--ks3-r-option);
+  background: var(--ks3-card); border: 2px solid var(--ks3-option-border);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+}
+/* R2 — a sorted row carries an ink border AND its chip carries a word.
+   Nothing here says whether the student was right. */
+.ks3-spath .ks3-spath-row[data-sorted="1"] { border-color: var(--ks3-ink); }
+.ks3-spath .ks3-spath-item {
+  flex: 1 1 12rem; min-width: 0; font-size: 17px; font-weight: 600;
+  color: var(--ks3-ink);
+}
+.ks3-spath .ks3-spath-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.ks3-spath .ks3-spath-chip {
+  cursor: pointer; font: inherit; font-size: 14px; font-weight: 700;
+  padding: 9px 13px; min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-pill); border: 2px solid var(--ks3-rule-strong);
+  background: transparent; color: var(--ks3-ink-body);
+}
+.ks3-spath .ks3-spath-chip[aria-pressed="true"] {
+  background: var(--ks3-accent-tint); border-color: var(--ks3-accent);
+  color: var(--ks3-accent-text);
+}
+.ks3-spath .ks3-spath-why {
+  flex: 1 1 100%; margin: 4px 0 0; padding-top: 10px; font-size: 16px;
+  line-height: 1.55; border-top: 1px solid var(--ks3-rule);
+  color: var(--ks3-ink-body);
+}
+.ks3-spath .ks3-spath-progress { margin-top: 14px; }
+
+/* ── p1-02 · before-after-bench (ON INK) ───────────────────────────────── */
+.ks3-baben .ks3-baben-body {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+}
+.ks3-baben .ks3-baben-scene {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 21px; line-height: 1.3; color: var(--ks3-on-dark);
+}
+.ks3-baben .ks3-baben-two {
+  margin-top: 18px; display: flex; flex-wrap: wrap; gap: 14px;
+}
+.ks3-baben .ks3-baben-half {
+  flex: 1 1 14rem; min-width: 0; padding: 14px 16px;
+  border-radius: var(--ks3-r-option);
+  background: rgba(0, 0, 0, .22);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
+}
+.ks3-baben .ks3-baben-tag {
+  margin: 0 0 6px; font-family: var(--ks3-font-mono); font-size: 12px;
+  font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-baben .ks3-baben-half p + p {
+  margin: 0; font-size: 16px; line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+.ks3-baben .ks3-baben-commit {
+  margin: 20px 0 10px; font-size: 17px; font-weight: 700;
+  color: var(--ks3-on-dark);
+}
+.ks3-baben .ks3-baben-chips {
+  display: flex; flex-wrap: wrap; gap: 9px;
+}
+.ks3-baben .ks3-baben-out {
+  margin-top: 20px; padding-top: 18px;
+  border-top: 2px solid var(--ks3-dark-rule);
+}
+.ks3-baben .ks3-baben-acct { margin: 0; }
+.ks3-baben .ks3-baben-acctrow {
+  display: flex; flex-wrap: wrap; gap: 4px 14px; padding: 8px 0;
+}
+.ks3-baben .ks3-baben-acctrow dt {
+  flex: 0 0 12rem; font-family: var(--ks3-font-mono); font-size: 12px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted); padding-top: 4px;
+}
+.ks3-baben .ks3-baben-acctrow dd {
+  flex: 1 1 10rem; min-width: 0; margin: 0;
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;
+  color: var(--ks3-on-dark);
+}
+.ks3-baben .ks3-baben-note {
+  margin: 14px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+
+/* ── p1-03 · energy-audit (ON INK) ─────────────────────────────────────── */
+.ks3-eaud .ks3-eaud-guesses {
+  margin-top: 18px; padding: 16px 18px; border-radius: var(--ks3-r-option);
+  background: rgba(0, 0, 0, .22);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
+}
+.ks3-eaud .ks3-eaud-commit {
+  margin: 0 0 10px; font-size: 17px; font-weight: 700;
+  color: var(--ks3-on-dark);
+}
+.ks3-eaud .ks3-eaud-picks { display: flex; flex-wrap: wrap; gap: 9px; }
+.ks3-eaud .ks3-eaud-body {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+}
+.ks3-eaud .ks3-eaud-name {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; line-height: 1.25; color: var(--ks3-on-dark);
+}
+.ks3-eaud .ks3-eaud-tiles,
+.ks3-lagb .ks3-lagb-tiles,
+.ks3-mbench .ks3-mbench-tiles {
+  margin: 18px 0 0; display: flex; gap: 14px 24px; flex-wrap: wrap;
+}
+.ks3-eaud .ks3-eaud-tile,
+.ks3-lagb .ks3-lagb-tile,
+.ks3-mbench .ks3-mbench-tile { flex: 1 1 9.5rem; min-width: 0; }
+.ks3-eaud .ks3-eaud-tile dt,
+.ks3-lagb .ks3-lagb-tile dt,
+.ks3-mbench .ks3-mbench-tile dt {
+  font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500;
+  letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-eaud .ks3-eaud-tile dd,
+.ks3-lagb .ks3-lagb-tile dd,
+.ks3-mbench .ks3-mbench-tile dd {
+  margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 27px; line-height: 1.15; color: var(--ks3-on-dark);
+}
+/* CONTAINMENT, NOT CLIPPING: the segments are children of the bar and the
+   bar owns the radius, so a full-width segment cannot spill a square corner.
+   ⚠️ NEITHER SEGMENT IS GREEN OR RED. The useful part takes the accent and
+   the wasted part a translucent track, and BOTH are named in the tiles
+   above — nothing here marks and colour is never the only channel. */
+.ks3-eaud .ks3-eaud-bar {
+  margin-top: 22px; display: flex; height: 22px; border-radius: 99px;
+  overflow: hidden; background: rgba(0, 0, 0, .25);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
+}
+.ks3-eaud .ks3-eaud-seg { display: block; height: 100%; }
+.ks3-eaud .ks3-eaud-useful { background: var(--ks3-accent); }
+.ks3-eaud .ks3-eaud-waste { background: rgba(255, 255, 255, .22); }
+.ks3-eaud .ks3-eaud-split {
+  margin: 12px 0 0; font-family: var(--ks3-font-mono); font-size: 14px;
+  font-weight: 500; line-height: 1.5; color: var(--ks3-on-dark);
+}
+.ks3-eaud .ks3-eaud-note {
+  margin: 14px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+
+/* ── p1-03 · mechanism-or-energy (ON CARD) ─────────────────────────────── */
+.ks3-mech .ks3-mech-body {
+  margin-top: 18px; padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-mech .ks3-mech-q {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 21px; line-height: 1.3; color: var(--ks3-ink);
+}
+.ks3-mech .ks3-mech-opts {
+  margin-top: 16px; display: flex; flex-direction: column; gap: 10px;
+}
+.ks3-mech .ks3-mech-opt {
+  cursor: pointer; font: inherit; text-align: left; padding: 14px 16px;
+  border-radius: var(--ks3-r-option); background: var(--ks3-card);
+  border: 2px solid var(--ks3-option-border);
+}
+.ks3-mech .ks3-mech-opt[aria-pressed="true"] {
+  border-color: var(--ks3-accent); background: var(--ks3-accent-tint);
+}
+.ks3-mech .ks3-mech-tool {
+  display: block; font-family: var(--ks3-font-mono); font-size: 12px;
+  font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-mech .ks3-mech-claim {
+  display: block; margin-top: 6px; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+.ks3-mech .ks3-mech-out {
+  margin-top: 18px; padding-top: 16px;
+  border-top: 2px solid var(--ks3-rule-strong);
+}
+.ks3-mech .ks3-mech-out p {
+  margin: 0; font-size: 17px; line-height: 1.55; color: var(--ks3-ink-body);
+}
+
+/* ── p1-04 · equilibrium-bench (ON INK) ────────────────────────────────── */
+.ks3-equil .ks3-equil-stage {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+}
+.ks3-equil .ks3-equil-blocks {
+  display: flex; align-items: center; justify-content: center;
+  gap: 18px; flex-wrap: wrap;
+}
+.ks3-equil .ks3-equil-block {
+  flex: 0 1 11rem; min-width: 0; padding: 18px 16px; text-align: center;
+  border-radius: var(--ks3-r-option);
+  background: rgba(0, 0, 0, .22);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
+}
+.ks3-equil .ks3-equil-bname {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 12px;
+  font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-equil .ks3-equil-temp {
+  margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 34px; line-height: 1.05; color: var(--ks3-on-dark);
+}
+.ks3-equil .ks3-equil-temp span { font-size: 18px; }
+/* The direction mark. Drawn with borders, aria-hidden, and it carries no
+   information the derived sentence underneath does not also state in words.
+   ⚠️ `--ks3-data` is the ONE spend in this unit and it is on ink, which is
+   the only ground the token is licensed for: settled is a CATEGORY state,
+   not a warning, so it must not take amber. */
+.ks3-equil .ks3-equil-arrow {
+  flex: 0 0 42px; height: 42px; position: relative;
+}
+.ks3-equil .ks3-equil-arrow::before {
+  content: ""; position: absolute; top: 50%; left: 50%;
+  width: 0; height: 0; transform: translate(-50%, -50%);
+  border-top: 11px solid transparent; border-bottom: 11px solid transparent;
+}
+.ks3-equil .ks3-equil-arrow[data-dir="lr"]::before {
+  border-left: 18px solid var(--ks3-accent);
+}
+.ks3-equil .ks3-equil-arrow[data-dir="rl"]::before {
+  border-right: 18px solid var(--ks3-accent);
+}
+.ks3-equil .ks3-equil-arrow[data-dir="none"]::before {
+  border: none; width: 26px; height: 6px; border-radius: 3px;
+  background: var(--ks3-data);
+}
+.ks3-equil .ks3-equil-gap {
+  margin: 20px 0 0; text-align: center; font-family: var(--ks3-font-mono);
+  font-size: 14px; font-weight: 500; letter-spacing: .04em;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-equil .ks3-equil-gap strong {
+  font-family: var(--ks3-font-display); font-size: 20px; font-weight: 800;
+  letter-spacing: 0; color: var(--ks3-on-dark);
+}
+.ks3-equil .ks3-equil-says {
+  margin: 14px 0 0; text-align: center; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+.ks3-equil .ks3-equil-timerow {
+  margin-top: 20px; display: flex; align-items: center; gap: 14px;
+  flex-wrap: wrap;
+}
+.ks3-equil .ks3-equil-timelabel {
+  flex: 0 0 auto; font-family: var(--ks3-font-mono); font-size: 12px;
+  font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-equil .ks3-equil-time {
+  flex: 1 1 12rem; min-width: 0; accent-color: var(--ks3-accent);
+}
+.ks3-equil .ks3-equil-time:disabled { opacity: .45; }
+.ks3-equil .ks3-equil-clock {
+  flex: 0 0 4.5rem; text-align: right; font-family: var(--ks3-font-mono);
+  font-size: 15px; font-weight: 500; color: var(--ks3-on-dark);
+}
+.ks3-equil .ks3-equil-note {
+  margin: 18px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+
+/* ── p1-05 · conduction-race (ON INK) ──────────────────────────────────── */
+.ks3-crace .ks3-crace-runrow,
+.ks3-lagb .ks3-lagb-runrow { margin-top: 16px; }
+.ks3-crace .ks3-crace-run,
+.ks3-lagb .ks3-lagb-run {
+  cursor: pointer; font: inherit; font-size: 17px; font-weight: 700;
+  padding: 13px 20px; min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control); border: 2px solid var(--ks3-accent);
+  background: var(--ks3-accent); color: var(--ks3-ink);
+}
+.ks3-crace .ks3-crace-run:disabled,
+.ks3-lagb .ks3-lagb-run:disabled {
+  cursor: default; background: transparent;
+  border-color: var(--ks3-dark-rule); color: var(--ks3-on-dark-muted);
+}
+.ks3-crace .ks3-crace-body,
+.ks3-rcube .ks3-rcube-body,
+.ks3-lagb .ks3-lagb-body,
+.ks3-mbench .ks3-mbench-body {
+  margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+}
+.ks3-crace .ks3-crace-name,
+.ks3-rcube .ks3-rcube-name,
+.ks3-lagb .ks3-lagb-name,
+.ks3-mbench .ks3-mbench-name {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 22px; line-height: 1.25; color: var(--ks3-on-dark);
+}
+.ks3-crace .ks3-crace-count {
+  margin: 8px 0 0; font-family: var(--ks3-font-mono); font-size: 14px;
+  font-weight: 500; letter-spacing: .04em; color: var(--ks3-on-dark-muted);
+}
+.ks3-crace .ks3-crace-count strong {
+  font-family: var(--ks3-font-display); font-size: 20px; font-weight: 800;
+  letter-spacing: 0; color: var(--ks3-on-dark);
+}
+.ks3-crace .ks3-crace-blobs {
+  list-style: none; margin: 18px 0 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 10px;
+}
+.ks3-crace .ks3-crace-blob {
+  flex: 1 1 7rem; min-width: 0; padding: 12px 14px;
+  border-radius: var(--ks3-r-option);
+  background: rgba(0, 0, 0, .22);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
+}
+/* A blob that fell is filled; one that did not keeps the flat tile AND says
+   "still there" in words. Never colour alone. */
+.ks3-crace .ks3-crace-blob[data-fell="1"] {
+  box-shadow: inset 0 0 0 2px var(--ks3-accent);
+}
+.ks3-crace .ks3-crace-at {
+  display: block; font-family: var(--ks3-font-mono); font-size: 12px;
+  font-weight: 500; letter-spacing: .07em;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-crace .ks3-crace-time {
+  display: block; margin-top: 5px; font-family: var(--ks3-font-display);
+  font-weight: 800; font-size: 19px; color: var(--ks3-on-dark);
+}
+.ks3-crace .ks3-crace-note,
+.ks3-rcube .ks3-rcube-note,
+.ks3-lagb .ks3-lagb-note {
+  margin: 16px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+
+/* ── p1-05 · particle-relay (ON CARD) ──────────────────────────────────── */
+.ks3-prel .ks3-prel-caption {
+  margin: 0 0 14px; font-size: 16px; line-height: 1.5;
+  color: var(--ks3-ink-muted);
+}
+.ks3-prel .ks3-prel-stage {
+  padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-prel .ks3-prel-title {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 21px; line-height: 1.25; color: var(--ks3-ink);
+}
+/* A DRAWN FIGURE DECLARES ITS OWN READABLE WIDTH (MRB-254). The strip is
+   drawn at 640 units and the labels inside it are sized for that; a floor
+   from the stylesheet alone would scale them below the legible bar while
+   every font-size in the file stayed correct. */
+.ks3-prel .ks3-prel-svg {
+  display: block; width: 100%; min-width: 20rem; height: auto;
+  margin: 16px 0 0;
+}
+.ks3-prel .ks3-prel-rod {
+  fill: var(--ks3-card); stroke: var(--ks3-ink); stroke-width: 2;
+}
+.ks3-prel .ks3-prel-flame {
+  stroke: var(--ks3-accent); stroke-width: 7; stroke-linecap: round;
+}
+/* ⚖️ THE DOTS ARE AT THE SAME x IN EVERY STAGE. A particle that has been set
+   going is drawn LARGER and gets a pair of amplitude ticks; it is never
+   drawn further along, because in conduction the particles do not travel and
+   the drawing is the claim. */
+.ks3-prel .ks3-prel-dot {
+  fill: var(--ks3-card); stroke: var(--ks3-ink); stroke-width: 2;
+}
+.ks3-prel .ks3-prel-dot[data-hot="1"] { fill: var(--ks3-accent); }
+.ks3-prel .ks3-prel-amp {
+  stroke: var(--ks3-ink); stroke-width: 2; stroke-linecap: round;
+}
+.ks3-prel .ks3-prel-el { fill: var(--ks3-ink); }
+.ks3-prel .ks3-prel-elpath {
+  stroke: var(--ks3-ink); stroke-width: 2; stroke-dasharray: 5 4;
+}
+.ks3-prel .ks3-prel-text {
+  margin: 16px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+.ks3-prel .ks3-prel-foot { margin-top: 16px; }
+
+/* ── p1-06 · radiation-cube (ON INK) ───────────────────────────────────── */
+.ks3-rcube .ks3-rcube-caption {
+  margin: 12px 0 0; font-size: 16px; line-height: 1.5;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-rcube .ks3-rcube-faces { margin-top: 16px; }
+.ks3-rcube .ks3-rcube-read {
+  margin: 14px 0 0; display: flex; align-items: baseline; flex-wrap: wrap;
+  gap: 6px 12px;
+}
+.ks3-rcube .ks3-rcube-what {
+  flex: 0 0 auto; font-family: var(--ks3-font-mono); font-size: 12px;
+  font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-rcube .ks3-rcube-val {
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 34px;
+  line-height: 1.05; color: var(--ks3-on-dark);
+}
+.ks3-rcube .ks3-rcube-unit {
+  font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500;
+  color: var(--ks3-on-dark-muted);
+}
+
+/* ── p1-06 · across-the-gap (ON CARD) ──────────────────────────────────── */
+/* CONTAINMENT, NOT CLIPPING. The unit's ONE horizontal scroller, and it is
+   `position: relative` so that nothing positioned inside it can widen the
+   document instead of the scroller — a failure that only appears on a
+   phone. */
+.ks3-agap .ks3-agap-scroll {
+  position: relative; overflow-x: auto; padding-bottom: 4px;
+}
+.ks3-agap .ks3-agap-table {
+  border-collapse: separate; border-spacing: 6px; min-width: 30rem;
+}
+.ks3-agap .ks3-agap-table th {
+  font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500;
+  letter-spacing: .05em; color: var(--ks3-ink-muted);
+  padding: 6px 8px; text-align: left;
+}
+.ks3-agap .ks3-agap-cell {
+  cursor: pointer; font: inherit; width: 100%; text-align: left;
+  min-width: 6.5rem; min-height: var(--ks3-tap); padding: 10px 12px;
+  border-radius: 12px; background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-agap .ks3-agap-cell[aria-pressed="true"] {
+  background: var(--ks3-accent-tint); border-color: var(--ks3-accent);
+  box-shadow: 0 0 0 4px var(--ks3-accent-tint);
+}
+.ks3-agap .ks3-agap-word {
+  display: block; font-size: 15px; font-weight: 700; color: var(--ks3-ink);
+}
+/* ⚖️ THE PIPS ARE THE SECOND CHANNEL AND THE WORD IS THE FIRST. Three pips,
+   filled from the left by the cell's own level, so a reader can compare a
+   whole row without opening every cell. No hue anywhere: the distinction is
+   carried by fill and by the word above it. */
+.ks3-agap .ks3-agap-pips {
+  display: flex; gap: 4px; margin-top: 7px;
+}
+.ks3-agap .ks3-agap-pips i {
+  width: 14px; height: 6px; border-radius: 3px;
+  border: 1.5px solid var(--ks3-ink);
+}
+.ks3-agap .ks3-agap-pips i[data-on="1"] { background: var(--ks3-ink); }
+.ks3-agap .ks3-agap-readout {
+  margin-top: 18px; padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
+}
+.ks3-agap .ks3-agap-head {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 12px;
+  font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-agap .ks3-agap-verdict {
+  margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 26px; line-height: 1.15; color: var(--ks3-ink);
+}
+.ks3-agap .ks3-agap-obs {
+  margin: 10px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+
+/* ── p1-07 · lagging-bench (ON INK) ────────────────────────────────────── */
+/* THE CONTROL IS ON SCREEN AT ALL TIMES, not behind a tab. Without it every
+   reading is a number with nothing to be better than. */
+.ks3-lagb .ks3-lagb-control {
+  margin-top: 18px; padding: 16px 18px; border-radius: var(--ks3-r-option);
+  background: rgba(0, 0, 0, .22);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 16px;
+}
+.ks3-lagb .ks3-lagb-clabel {
+  margin: 0; flex: 0 0 auto; font-family: var(--ks3-font-mono);
+  font-size: 12px; font-weight: 500; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--ks3-on-dark-muted);
+}
+.ks3-lagb .ks3-lagb-cval {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 26px; line-height: 1.15; color: var(--ks3-on-dark);
+}
+.ks3-lagb .ks3-lagb-cdrop {
+  margin: 0; font-size: 15px; color: var(--ks3-on-dark-muted);
+}
+.ks3-lagb .ks3-lagb-dials {
+  margin-top: 18px; display: flex; flex-wrap: wrap; gap: 18px 26px;
+}
+.ks3-lagb .ks3-lagb-dial { flex: 1 1 16rem; min-width: 0; }
+.ks3-lagb .ks3-lagb-dlabel,
+.ks3-mbench .ks3-mbench-dlabel {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 12px;
+  font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-lagb .ks3-lagb-margin {
+  margin: 16px 0 0; font-family: var(--ks3-font-mono); font-size: 14px;
+  font-weight: 500; line-height: 1.5; color: var(--ks3-on-dark);
+}
+
+/* ── p1-08 · machine-bench (ON INK) ────────────────────────────────────── */
+.ks3-mbench .ks3-mbench-machines { margin-top: 18px; }
+.ks3-mbench .ks3-mbench-how {
+  margin: 14px 0 0; font-size: 16px; line-height: 1.5;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-mbench .ks3-mbench-settings { margin-top: 18px; }
+.ks3-mbench .ks3-mbench-detail {
+  margin: 8px 0 0; font-size: 16px; line-height: 1.5;
+  color: var(--ks3-on-dark-muted);
+}
+/* ⚖️ THE TWO PRODUCTS, SIDE BY SIDE WITH AN EQUALS SIGN BETWEEN THEM. They
+   are computed from one multiplier and asserted equal before this renders,
+   so the drawn equals sign is a statement the build has already checked. */
+.ks3-mbench .ks3-mbench-work {
+  margin-top: 22px; padding: 18px 20px; border-radius: var(--ks3-r-option);
+  background: rgba(0, 0, 0, .22);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
+  display: flex; align-items: center; justify-content: center;
+  gap: 14px 20px; flex-wrap: wrap;
+}
+.ks3-mbench .ks3-mbench-wtile {
+  margin: 0; flex: 0 1 11rem; min-width: 0; text-align: center;
+}
+.ks3-mbench .ks3-mbench-wtile span {
+  display: block; font-family: var(--ks3-font-mono); font-size: 12px;
+  font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-mbench .ks3-mbench-wtile strong {
+  display: block; margin-top: 5px; font-family: var(--ks3-font-display);
+  font-weight: 800; font-size: 30px; line-height: 1.1;
+  color: var(--ks3-on-dark);
+}
+.ks3-mbench .ks3-mbench-eq {
+  margin: 0; flex: 0 0 auto; font-family: var(--ks3-font-display);
+  font-weight: 800; font-size: 30px; color: var(--ks3-accent);
+}
+.ks3-mbench .ks3-mbench-says {
+  margin: 16px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+
+/* ── narrow ────────────────────────────────────────────────────────────── */
+/* Every one of these is a two-or-more-column row that has to become a stack
+   below the phone breakpoint. Measured with the harness device-metrics
+   override, never by shrinking a container — a narrowed container does not
+   fire a `max-width` query and passes silently over a broken layout. */
+@media (max-width: 640px) {
+  .ks3-saud .ks3-saud-line dt,
+  .ks3-baben .ks3-baben-acctrow dt { flex: 1 1 100%; }
+  .ks3-spath .ks3-spath-heads { display: none; }
+  .ks3-spath .ks3-spath-item { flex: 1 1 100%; }
+  .ks3-equil .ks3-equil-block { flex: 1 1 100%; }
+  .ks3-equil .ks3-equil-arrow { transform: rotate(90deg); }
+  .ks3-mbench .ks3-mbench-eq { transform: rotate(90deg); }
+}
+
+/* ── ⊕ MRB-242 · TWO ELEMENTS THAT SHIPPED `hidden` AND WERE NOT ───────── */
+/*
+   Both were found by MRB-242's gate, which asks the CASCADE rather than the
+   painted page: an element carrying `hidden` whose stylesheet gives it a
+   `display` is OPEN before JS runs, and with JS off it never closes. A
+   screenshot cannot see this and neither can computed style.
+
+   ⚠️ `.ks3-mbench-setrow` IS P1's OWN, and it is P1's own shared row rule
+   that broke it: `display: flex` at (0,2,0) beats the UA's `[hidden]` rule at
+   (0,1,0), so the two settings rows the student has not chosen were laid out
+   under the one they had. Scoped back here rather than by dropping the row
+   from the flex group, because the group is what makes all eleven control
+   rows wrap identically.
+
+   ⚑ `.ks3-bar-cover` IS NOT P1's. It is C2's part-whole bar (`r_cover_bar`,
+   `build_ks3.py`), and the defect has been live since MRB-220 landed it: the
+   three cover plates are emitted `hidden`, and `<g>` computes `display:
+   inline` from the UA stylesheet, so `wireCoverBar`'s inline `display:none`
+   is the ONLY thing closing them. Before JS runs, all three plates are drawn
+   over the bar at once and the model is unreadable.
+
+   ⚑ IT WAS NEVER SEEN BECAUSE NOTHING WAS LOOKING. `c2-06` is the only other
+   page in the key stage that renders a cover bar and it has no row in
+   `ks3_parity.COMPONENTS` — and MRB-242's sweep runs over `_registered_
+   pages()`, which is exactly the pages COMPONENTS and CONTRAST name. P1 is
+   the first unit to register a parity row on a page that draws this
+   component, and registering it is what turned the light on.
+
+   Corrected rather than reproduced, on the build contract's R4: a defect on
+   an approved page that a ruling already covers is corrected. The rule is one
+   line, it is scoped to the component, and it fixes `c2-06` in the same
+   breath. Reported.
+*/
+.ks3-mbench .ks3-mbench-setrow[hidden] { display: none; }
+.ks3-bar .ks3-bar-cover[hidden] { display: none; }
+/* ═══ END P1 ═══ */
