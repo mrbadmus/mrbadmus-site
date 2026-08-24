@@ -7702,6 +7702,615 @@
 
 /* ═══ END P2 wiring ═══ */
 
+/* ═══ BEGIN P3 wiring ═══════════════════════════════════════════════════
+   P3's instrument families — *Describing motion*. Behaviour measured off
+   Claude Design's delivered pages in `docs/ks3/design-reference/p3/`.
+
+   One marked block per unit, so a future lane can sequence behind this one.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+  /* p3-01 `#s-track` — two light gates. The timer runs BETWEEN the beams.
+
+     ⚖️ THE INSTRUMENT NEVER DIVIDES. The speed tile keeps the words the
+     renderer put in it and is never written to. That is the QUANTITATIVE
+     family pattern (NOTES-P3 §1 step 2): an instrument that hands over the
+     answer has removed the lesson.
+
+     ⚖️ THE SCATTER IS SYMMETRIC and is re-rolled per RELEASE, so three
+     runs at one setting genuinely differ — which is what rung 3's mean
+     is for. It is derived from the run count rather than Math.random so a
+     reload does not rewrite a table the student has already filled. */
+  function wireLightGates(sec) {
+    var wrap = sec.querySelector("[data-lgate]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-lgate-gate]");
+    var bench = wrap.querySelector("[data-lgate-bench]");
+    var gopts = toArray(wrap.querySelectorAll("[data-lgate-gopt]"));
+    var ramps = toArray(wrap.querySelectorAll("[data-lgate-ramp]"));
+    var slider = wrap.querySelector("[data-lgate-gap]");
+    var gapLabel = wrap.querySelector("[data-lgate-gaplabel]");
+    var releaseBtn = wrap.querySelector("[data-lgate-release]");
+    var recordBtn = wrap.querySelector("[data-lgate-record]");
+    var body = wrap.querySelector("[data-lgate-rows]");
+    var close = wrap.querySelector("[data-lgate-close]");
+    var trolley = wrap.querySelector("[data-lgate-trolley]");
+    var beamB = wrap.querySelector("[data-lgate-beamb]");
+    if (!slider || !ramps.length) { return; }
+
+    var SCAT = parseFloat(wrap.getAttribute("data-scatter")) || 3;
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || 3;
+    var ramp = 0, runs = 0, released = 0, lastT = null, timer = null;
+
+    each(ramps, function (b, i) {
+      if (b.getAttribute("aria-pressed") === "true") { ramp = i; }
+    });
+
+    function gap() { return parseFloat(slider.value) || 1.2; }
+    function v() {
+      return parseFloat(ramps[ramp].getAttribute("data-v")) || 1;
+    }
+
+    /* Symmetric, deterministic per release. */
+    function scatter() {
+      var n = (released * 733 + ramp * 191 + Math.round(gap() * 10) * 37) % 201;
+      return 1 + ((n / 200) * 2 - 1) * (SCAT / 100);
+    }
+
+    function out(id) {
+      return wrap.querySelector('[data-lgate-out="' + id + '"]');
+    }
+
+    function paint() {
+      var el = out("gap");
+      if (el) { el.textContent = gap().toFixed(2) + " m"; }
+      el = out("time");
+      if (el) {
+        el.textContent = lastT === null ? "—" : lastT.toFixed(2) + " s";
+      }
+      /* ⚠️ out("speed") is NEVER written to. See the note above. */
+      if (gapLabel) { gapLabel.textContent = gap().toFixed(2) + " m"; }
+      if (beamB) { beamB.style.left = (18 + gap() * 34) + "%"; }
+      if (recordBtn) { recordBtn.disabled = lastT === null; }
+      if (close) { setHidden(close, runs < TARGET); }
+      setCount(sec, runs);
+      markStage(sec, runs >= TARGET);      /* three_runs_recorded */
+    }
+
+    each(gopts, function (btn) {
+      btn.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === btn ? "true" : "false");
+        });
+        setHidden(gate, true);
+        setHidden(bench, false);
+        paint();
+      });
+    });
+
+    each(ramps, function (btn, i) {
+      btn.addEventListener("click", function () {
+        ramp = i;
+        each(ramps, function (o) {
+          o.setAttribute("aria-pressed", o === btn ? "true" : "false");
+        });
+        lastT = null;
+        paint();
+      });
+    });
+
+    slider.addEventListener("input", function () { lastT = null; paint(); });
+    slider.addEventListener("change", function () { lastT = null; paint(); });
+
+    if (releaseBtn) {
+      releaseBtn.addEventListener("click", function () {
+        if (timer) { clearTimeout(timer); timer = null; }
+        released += 1;
+        lastT = gap() / (v() * scatter());
+        if (trolley) {
+          trolley.setAttribute("data-rolling", "1");
+          /* Reduced motion resolves instantly; the timer and the table
+             carry the whole result, so nothing is lost. */
+          var ms = REDUCED ? 0 : Math.min(1400, lastT * 700);
+          timer = setTimeout(function () {
+            trolley.setAttribute("data-rolling", "0");
+            timer = null;
+          }, ms);
+        }
+        paint();
+      });
+    }
+
+    if (recordBtn) {
+      recordBtn.addEventListener("click", function () {
+        if (lastT === null) { return; }
+        var tr = document.createElement("tr");
+        tr.innerHTML =
+          "<th scope=\"row\">" + (runs + 1) + "</th>" +
+          "<td>" + ramps[ramp].textContent + "</td>" +
+          "<td>" + gap().toFixed(2) + " m</td>" +
+          "<td>" + lastT.toFixed(2) + " s</td>";
+        if (body) { body.appendChild(tr); }
+        runs += 1;
+        paint();
+      });
+    }
+
+    paint();
+  }
+
+  /* p3-01 `#s-compare` — three pairs, one dead heat.
+
+     ⚖️ THE ARITHMETIC APPEARS BEFORE THE REASON, so a student reads two
+     numbers rather than a verdict. Both panels stay once revealed and the
+     buttons stay enabled (R3). */
+  function wireComparePairs(sec) {
+    var wrap = sec.querySelector("[data-spair]");
+    if (!wrap) { return; }
+    var rows = toArray(wrap.querySelectorAll("[data-spair-row]"));
+    var close = wrap.querySelector("[data-spair-close]");
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || rows.length;
+    if (!rows.length) { return; }
+    var done = {};
+
+    function paint() {
+      var n = 0, k;
+      for (k in done) { if (done[k]) { n += 1; } }
+      if (close) { setHidden(close, n < TARGET); }
+      setCount(sec, n);
+      markStage(sec, n >= TARGET);      /* all_three_pairs_run */
+    }
+
+    each(rows, function (li) {
+      var id = li.getAttribute("data-spair-row");
+      var sums = li.querySelector("[data-spair-sums]");
+      var why = li.querySelector("[data-spair-why]");
+      var btns = toArray(li.querySelectorAll("[data-spair-pick]"));
+      each(btns, function (b) {
+        b.addEventListener("click", function () {
+          each(btns, function (o) {
+            o.setAttribute("aria-pressed", o === b ? "true" : "false");
+          });
+          if (sums) {
+            sums.textContent = li.getAttribute("data-sums");
+            setHidden(sums, false);
+          }
+          if (why) {
+            why.textContent = li.getAttribute("data-why");
+            setHidden(why, false);
+          }
+          done[id] = true;
+          paint();
+        });
+      });
+    });
+
+    paint();
+  }
+
+  /* p3-02 `#s-plot` — a grid of REAL BUTTONS.
+
+     ⚖️ A WRONG TAP GETS A LOCATION, NOT A MARK (R3). The message names
+     the coordinates the student actually chose, in the graph's own units,
+     and leaves the verdict to them.
+
+     ⚠️ Nothing here hit-tests a canvas. Every intersection is a button
+     with its own accessible name, which is what keeps the task reachable
+     by keyboard — a failure that would never show up in a screenshot. */
+  function wireGraphPlot(sec) {
+    var wrap = sec.querySelector("[data-gplot]");
+    if (!wrap) { return; }
+    var cells = toArray(wrap.querySelectorAll("[data-gplot-cell]"));
+    var seek = wrap.querySelector("[data-gplot-seek]");
+    var joinBtn = wrap.querySelector("[data-gplot-join]");
+    var line = wrap.querySelector("[data-gplot-line]");
+    var reads = toArray(wrap.querySelectorAll("[data-gplot-read]"));
+    var close = wrap.querySelector("[data-gplot-close]");
+    if (!cells.length) { return; }
+
+    var ORDER = (wrap.getAttribute("data-order") || "").split("|");
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || ORDER.length;
+    var next = 0, joined = false, answered = {};
+
+    function paint() {
+      if (seek) {
+        seek.textContent = next < ORDER.length
+          ? (ORDER[next].split(",")[0] + " s, "
+             + ORDER[next].split(",")[1] + " m")
+          : "all seven plotted";
+      }
+      if (joinBtn) { joinBtn.disabled = next < ORDER.length || joined; }
+      var n = 0, k;
+      for (k in answered) { if (answered[k]) { n += 1; } }
+      var ok = next >= TARGET;
+      if (close) { setHidden(close, !ok); }
+      setCount(sec, next);
+      markStage(sec, ok);              /* all_seven_plotted */
+    }
+
+    each(cells, function (btn) {
+      btn.addEventListener("click", function () {
+        var here = btn.getAttribute("data-gplot-cell");
+        if (next >= ORDER.length) { return; }
+        if (here === ORDER[next]) {
+          btn.setAttribute("data-plotted", "1");
+          next += 1;
+        } else if (seek) {
+          /* A location statement, not a mark. */
+          var p = here.split(",");
+          seek.textContent = "you chose " + p[0] + " s, " + p[1]
+            + " m · still looking for "
+            + ORDER[next].split(",")[0] + " s, "
+            + ORDER[next].split(",")[1] + " m";
+          return;
+        }
+        paint();
+      });
+    });
+
+    if (joinBtn) {
+      joinBtn.addEventListener("click", function () {
+        if (next < ORDER.length) { return; }
+        joined = true;
+        if (line) {
+          var tmax = 0, dmax = 0;
+          each(ORDER, function (o) {
+            tmax = Math.max(tmax, parseFloat(o.split(",")[0]));
+            dmax = Math.max(dmax, parseFloat(o.split(",")[1]));
+          });
+          var pts = [];
+          each(ORDER, function (o) {
+            var p = o.split(",");
+            pts.push((parseFloat(p[0]) / (tmax || 1) * 100).toFixed(2) + ","
+                     + (100 - parseFloat(p[1]) / (dmax || 1) * 100).toFixed(2));
+          });
+          line.innerHTML = '<polyline points="' + pts.join(" ")
+            + '" fill="none" stroke="currentColor" stroke-width="2"'
+            + ' vector-effect="non-scaling-stroke"></polyline>';
+        }
+        paint();
+      });
+    }
+
+    each(reads, function (li) {
+      var id = li.getAttribute("data-gplot-read");
+      var why = li.querySelector("[data-gplot-why]");
+      var opts = toArray(li.querySelectorAll("[data-gplot-opt]"));
+      each(opts, function (b) {
+        b.addEventListener("click", function () {
+          each(opts, function (o) {
+            o.setAttribute("aria-pressed", o === b ? "true" : "false");
+          });
+          if (why) {
+            why.textContent = li.getAttribute("data-why");
+            setHidden(why, false);
+          }
+          answered[id] = true;
+          paint();
+        });
+      });
+    });
+
+    paint();
+  }
+
+  /* p3-02 `#s-match` — build the journey, watch the line draw itself.
+
+     ⚖️ THE LINE IS DRAWN AS THE WALKER MOVES (Law 9), never swapped in at
+     the end. Reduced motion draws the finished line at once and puts the
+     walker at its final position — a complete experience, not a lesser
+     one.
+
+     ⚖️ THE COMPARISON IS FACTUAL (R3): two end points as two numbers, and
+     no verdict attached to either. */
+  function wireJourneyWalk(sec) {
+    var wrap = sec.querySelector("[data-jwalk]");
+    if (!wrap) { return; }
+    var segs = toArray(wrap.querySelectorAll("[data-jwalk-seg]"));
+    var sendBtn = wrap.querySelector("[data-jwalk-send]");
+    var clearBtn = wrap.querySelector("[data-jwalk-clear]");
+    var walker = wrap.querySelector("[data-jwalk-walker]");
+    var read = wrap.querySelector("[data-jwalk-read]");
+    var line = wrap.querySelector("[data-jwalk-line]");
+    var tline = wrap.querySelector("[data-jwalk-targetline]");
+    var verdict = wrap.querySelector("[data-jwalk-verdict]");
+    var close = wrap.querySelector("[data-jwalk-close]");
+    if (!segs.length || !sendBtn) { return; }
+
+    var SECS = parseInt(wrap.getAttribute("data-secs"), 10) || 3;
+    var TARGET = (wrap.getAttribute("data-target") || "").split("|");
+    var N = parseInt(wrap.getAttribute("data-n"), 10) || TARGET.length;
+    var chosen = [];
+    var speeds = {};
+    var timer = null, sent = false;
+
+    each(segs, function (seg) {
+      each(toArray(seg.querySelectorAll("[data-jwalk-mode]")), function (b) {
+        speeds[b.getAttribute("data-jwalk-mode")] =
+          parseFloat(b.getAttribute("data-v")) || 0;
+      });
+    });
+
+    function points(list) {
+      var d = 0, pts = [[0, 0]];
+      each(list, function (id, i) {
+        d = Math.max(0, d + (speeds[id] || 0) * SECS);
+        pts.push([(i + 1) * SECS, d]);
+      });
+      return pts;
+    }
+
+    function draw(el, pts, upto) {
+      if (!el) { return; }
+      var tmax = N * SECS, dmax = 1;
+      each(points(TARGET), function (p) { dmax = Math.max(dmax, p[1]); });
+      each(pts, function (p) { dmax = Math.max(dmax, p[1]); });
+      var out = [];
+      each(pts, function (p, i) {
+        if (upto !== undefined && i > upto) { return; }
+        out.push((p[0] / tmax * 300).toFixed(1) + ","
+                 + (160 - p[1] / dmax * 150).toFixed(1));
+      });
+      el.setAttribute("points", out.join(" "));
+    }
+
+    function paint() {
+      draw(tline, points(TARGET));
+      if (close) { setHidden(close, !sent); }
+      setCount(sec, sent ? 1 : 0);
+      markStage(sec, sent);            /* target_matched */
+    }
+
+    each(segs, function (seg, i) {
+      var btns = toArray(seg.querySelectorAll("[data-jwalk-mode]"));
+      each(btns, function (b) {
+        b.addEventListener("click", function () {
+          each(btns, function (o) {
+            o.setAttribute("aria-pressed", o === b ? "true" : "false");
+          });
+          chosen[i] = b.getAttribute("data-jwalk-mode");
+        });
+      });
+    });
+
+    sendBtn.addEventListener("click", function () {
+      var list = [];
+      var ok = true;
+      for (var i = 0; i < N; i++) {
+        if (!chosen[i]) { ok = false; break; }
+        list.push(chosen[i]);
+      }
+      if (!ok) {
+        if (read) { read.textContent = "Choose one mode for every block."; }
+        return;
+      }
+      if (timer) { clearInterval(timer); timer = null; }
+      var pts = points(list);
+      var step = 0;
+      function frame() {
+        draw(line, pts, step);
+        if (walker) {
+          var dmax = 1;
+          each(pts, function (p) { dmax = Math.max(dmax, p[1]); });
+          walker.style.left = (pts[step][1] / dmax * 88) + "%";
+        }
+        if (read) {
+          read.textContent = pts[step][1].toFixed(1) + " m from the start";
+        }
+        if (step >= pts.length - 1) {
+          if (timer) { clearInterval(timer); timer = null; }
+          sent = true;
+          if (verdict) {
+            var mine = pts[pts.length - 1][1];
+            var theirs = points(TARGET)[N][1];
+            verdict.textContent = "Your line ends at " + mine.toFixed(1)
+              + " m. The target ends at " + theirs.toFixed(1) + " m.";
+            setHidden(verdict, false);
+          }
+          paint();
+          return;
+        }
+        step += 1;
+      }
+      if (REDUCED) {
+        step = pts.length - 1;
+        frame();
+        return;
+      }
+      frame();
+      timer = setInterval(frame, 320);
+    });
+
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        if (timer) { clearInterval(timer); timer = null; }
+        if (line) { line.setAttribute("points", ""); }
+        if (verdict) { setHidden(verdict, true); }
+        if (read) { read.textContent = ""; }
+        if (walker) { walker.style.left = "0%"; }
+      });
+    }
+
+    paint();
+  }
+
+  /* p3-03 `#s-frames` — two cars, three viewpoints.
+
+     ⚖️ EVERY READING IS COMPUTED, as v − v_observer. One of the four is
+     always zero: the one belonging to the seat you are sitting in.
+
+     ⚠️ A CAR DOES NOT TURN ROUND WHEN THE VIEWPOINT CHANGES. Its drawn
+     ORIENTATION follows its GROUND velocity; its MOTION follows its
+     relative velocity. From car B's seat, car A can face right and drift
+     left. That is correct and deliberate (Design's flag 11) — do not
+     "fix" it. */
+  function wireRelativeFrames(sec) {
+    var wrap = sec.querySelector("[data-rframe]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-rframe-gate]");
+    var bench = wrap.querySelector("[data-rframe-bench]");
+    var gopts = toArray(wrap.querySelectorAll("[data-rframe-gopt]"));
+    var picks = toArray(wrap.querySelectorAll("[data-rframe-obs]"));
+    var va = wrap.querySelector("[data-rframe-va]");
+    var vb = wrap.querySelector("[data-rframe-vb]");
+    var dirBtn = wrap.querySelector("[data-rframe-dir]");
+    var road = wrap.querySelector("[data-rframe-road]");
+    var still = wrap.querySelector("[data-rframe-still]");
+    var sent = wrap.querySelector("[data-rframe-sent]");
+    var close = wrap.querySelector("[data-rframe-close]");
+    var carA = wrap.querySelector('[data-rframe-car="a"]');
+    var carB = wrap.querySelector('[data-rframe-car="b"]');
+    if (!va || !vb) { return; }
+
+    var obs = "ground", same = dirBtn
+      && dirBtn.getAttribute("aria-pressed") === "true";
+    var seen = {};
+
+    function out(id) {
+      return wrap.querySelector('[data-rframe-out="' + id + '"]');
+    }
+
+    function paint() {
+      var a = parseFloat(va.value) || 0;
+      var b = (parseFloat(vb.value) || 0) * (same ? 1 : -1);
+      var vo = obs === "a" ? a : (obs === "b" ? b : 0);
+      var el;
+      function put(id, val) {
+        el = out(id);
+        if (el) { el.textContent = Math.abs(val).toFixed(1) + " m/s"; }
+        var w = wrap.querySelector('[data-rframe-outwrap="' + id + '"]');
+        if (w) {
+          w.setAttribute("data-live",
+            (obs === "ground" && (id === "a_ground" || id === "b_ground"))
+            || (obs === "a" && id === "b_from_a")
+            || (obs === "b" && id === "a_from_b") ? "1" : "0");
+        }
+      }
+      put("a_ground", a - 0);
+      put("b_ground", b - 0);
+      put("b_from_a", b - a);
+      put("a_from_b", a - b);
+
+      var lab = wrap.querySelector("[data-rframe-valabel]");
+      if (lab) { lab.textContent = a.toFixed(0) + " m/s"; }
+      lab = wrap.querySelector("[data-rframe-vblabel]");
+      if (lab) { lab.textContent = Math.abs(b).toFixed(0) + " m/s"; }
+      if (dirBtn) {
+        dirBtn.setAttribute("aria-pressed", same ? "true" : "false");
+        /* Design's own words for both states, off the markup — the
+           renderer put them there so neither is hard-coded here. */
+        dirBtn.textContent = same
+          ? (dirBtn.getAttribute("data-same") || "Same way")
+          : (dirBtn.getAttribute("data-opp") || "Opposite ways");
+      }
+      /* The road belongs to the GROUND, so it slides in a car's frame. */
+      if (road) { road.setAttribute("data-slide", vo ? "1" : "0"); }
+      /* Orientation follows the GROUND velocity. Motion follows the
+         relative one. See the note above — this is deliberate. */
+      if (carA) { carA.setAttribute("data-facing", a >= 0 ? "r" : "l"); }
+      if (carB) { carB.setAttribute("data-facing", b >= 0 ? "r" : "l"); }
+      if (still) {
+        still.textContent = obs === "ground"
+          ? "stationary here: the road"
+          : "stationary here: car " + obs.toUpperCase();
+      }
+      if (sent) {
+        sent.textContent = obs === "ground"
+          ? "From the roadside both cars are moving."
+          : ("From car " + obs.toUpperCase() + ", car "
+             + (obs === "a" ? "A" : "B") + " is parked and the road is "
+             + "sliding underneath it.");
+      }
+      seen[obs] = true;
+      var n = 0, k;
+      for (k in seen) { if (seen[k]) { n += 1; } }
+      if (close) { setHidden(close, n < picks.length); }
+      setCount(sec, n);
+      markStage(sec, n >= picks.length);   /* all_three_observers */
+    }
+
+    each(gopts, function (btn) {
+      btn.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === btn ? "true" : "false");
+        });
+        setHidden(gate, true);
+        setHidden(bench, false);
+        paint();
+      });
+    });
+
+    each(picks, function (btn) {
+      btn.addEventListener("click", function () {
+        obs = btn.getAttribute("data-rframe-obs");
+        each(picks, function (o) {
+          o.setAttribute("aria-pressed", o === btn ? "true" : "false");
+        });
+        paint();
+      });
+    });
+
+    va.addEventListener("input", paint);
+    va.addEventListener("change", paint);
+    vb.addEventListener("input", paint);
+    vb.addEventListener("change", paint);
+    if (dirBtn) {
+      dirBtn.addEventListener("click", function () { same = !same; paint(); });
+    }
+
+    paint();
+  }
+
+  /* p3-03 `#s-pass` — four passes, add or subtract.
+
+     ⚖️ THE SUM COMES BEFORE THE REASON, so the student reads arithmetic
+     rather than a verdict. */
+  function wirePassingSpeeds(sec) {
+    var wrap = sec.querySelector("[data-pass]");
+    if (!wrap) { return; }
+    var rows = toArray(wrap.querySelectorAll("[data-pass-row]"));
+    var close = wrap.querySelector("[data-pass-close]");
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || rows.length;
+    if (!rows.length) { return; }
+    var done = {};
+
+    function paint() {
+      var n = 0, k;
+      for (k in done) { if (done[k]) { n += 1; } }
+      if (close) { setHidden(close, n < TARGET); }
+      setCount(sec, n);
+      markStage(sec, n >= TARGET);      /* all_four_answered */
+    }
+
+    each(rows, function (li) {
+      var id = li.getAttribute("data-pass-row");
+      var sumEl = li.querySelector("[data-pass-sum]");
+      var whyEl = li.querySelector("[data-pass-why]");
+      var opts = toArray(li.querySelectorAll("[data-pass-opt]"));
+      each(opts, function (b) {
+        b.addEventListener("click", function () {
+          each(opts, function (o) {
+            o.setAttribute("aria-pressed", o === b ? "true" : "false");
+          });
+          if (sumEl) {
+            sumEl.textContent = li.getAttribute("data-sum");
+            setHidden(sumEl, false);
+          }
+          if (whyEl) {
+            whyEl.textContent = li.getAttribute("data-why");
+            setHidden(whyEl, false);
+          }
+          done[id] = true;
+          paint();
+        });
+      });
+    });
+
+    paint();
+  }
+/* ═══ END P3 wiring ═══ */
+
+
+
 
 
   function setCount(sec, n, extra) {
@@ -25565,6 +26174,14 @@
     each(root.querySelectorAll("[data-rsortblock]"), wireRenewableSort);
     each(root.querySelectorAll("[data-grid2block]"), wireTwoAxisGrid);
     // ═══ END P2 wiring ═══
+    // ═══ BEGIN P3 wiring ═══
+    each(root.querySelectorAll("[data-lgateblock]"), wireLightGates);
+    each(root.querySelectorAll("[data-spairblock]"), wireComparePairs);
+    each(root.querySelectorAll("[data-gplotblock]"), wireGraphPlot);
+    each(root.querySelectorAll("[data-jwalkblock]"), wireJourneyWalk);
+    each(root.querySelectorAll("[data-rframeblock]"), wireRelativeFrames);
+    each(root.querySelectorAll("[data-passblock]"), wirePassingSpeeds);
+    // ═══ END P3 wiring ═══
     // ═══ END C10 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);

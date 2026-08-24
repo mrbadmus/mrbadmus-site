@@ -44,6 +44,21 @@ correct and stays.
 
 ---
 
+## ENGINE POLICY, APPLIED — not departures
+
+These changed Design's WORDS, so they are recorded here in the open rather
+than buried. Neither is a claim that her science was wrong; both are
+key-stage-wide gates that were RED on her option sets, and a red gate is not
+something this run may override.
+
+| What | Why it is policy rather than a departure |
+|---|---|
+| **The `ks3-review-flag` "Draft — not yet science-reviewed" line is not shipped.** It is on all five of her pages by default. | MRB-221 revoked the review marker. Standing engine policy for every unit, identical for B1–C10, and it takes no register row. Swept by CONCEPT — "draft", "review", "not yet checked", "provisional" — not by class name, because that language once survived on 297 pages by hiding in `LEGAL_LINE`. Built P2 pages: **zero hits.** |
+| **Three option sets had their weights evened out.** `p2-03`'s two marked rungs (correct 3w against a longest distractor of 2w, and 13w against 7w) and `p2-04`'s bill-builder gate (6w against 4w). | MRB-177: no option set may give its answer away by length — a student can score those without reading them. Her CLAIMS are unchanged and in her order in all three; only the weights move. ⚠️ Worth naming the defect honestly: it is an ASSESSMENT defect, not a science one, and it does not clear the science bar Mide set. It is here because the gate was red and this run does not override gates. |
+| **Ladder answers spread across all four positions.** All ten of the unit's marked rungs put the correct option at index 0. | MRB-278: no index may hold more than half a corpus. Now 3/3/2/2. Her four claims and four feedback lines are unchanged in every rung — only the order. ⚠️ The feedback map is keyed by option INDEX, so the rotation was done structurally and asserted: reordering options without rewriting those keys attaches every explanation to the wrong distractor, and the page still renders. |
+
+---
+
 ## CONSIDERED, NOT CHANGED
 
 These were weighed and HER VERSION STANDS. Recorded so Mide can see what was

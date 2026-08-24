@@ -122,10 +122,25 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `REACT` | Chemical reactions — what counts as one, what happens to the atoms, and how one is written down | 2026-08-20, by C4 |
 | `ACID` | Acids, alkalis and the pH scale — what the words mean, what the scale measures, and what a catalyst does | 2026-08-21, by C6 |
 | `ENER` | Energy in a change: which way it travels, where it is stored, and what a thermometer is and is not measuring | 2026-08-21, by C7 |
+| `FORCE` | Forces and motion — what a speed is, what it is measured against, and what a distance–time graph does and does not record | 2026-08-24, by P3 |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
-— **not yet opened, listed so numbering starts consistently**: `FORCE` (forces and motion)
+— **not yet opened, listed so numbering starts consistently**: ~~`FORCE` (forces and motion)~~
 and `CIRC` (current and circuits).
+
+⊕ **`FORCE` IS OPEN AS OF 24 Aug 2026, BY P3.** The strikethrough is kept rather than the line
+deleted, because the sentence is what a later lane would read to decide whether to mint a new
+family — and the answer is now no.
+
+Design's `NOTES-P3.md` §4 asks for a ruling in as many words: *"open `FORCE` as below, or mint a
+separate `MOT` family for describing-motion and leave `FORCE` for P4?"* **`FORCE` opens, and no
+`MOT` family is minted**, for the reason the table above already gives: the family is declared as
+*forces AND MOTION*, so motion is inside it as reserved. That is the same ruling this register
+already made for `ENER` against `ENERGY` — the reservation is discharged into the family that
+exists rather than left standing beside it — and applying it consistently is the point. A lane
+that minted `MOT` here would leave the next lane with two plausible families and no rule.
+
+P4 continues from `FORCE-12`.
 
 ⊕ **`ENERGY` IS GONE FROM THAT LIST, AND THE FAMILY IT RESERVED IS OPEN UNDER A SHORTER
 NAME.** The reserved prefix was `ENERGY` (energy and temperature); Design's C7 delivery
@@ -1387,6 +1402,49 @@ belief meeting arithmetic instead of a bench, and `r_appliance_bench` asserts
 that the inversion stays reachable — if a later edit to a wattage made
 every appliance rank in the same order as its rating, the bench would quietly
 agree with the belief `p2-02` spent a lesson killing.
+
+### `FORCE` — forces and motion
+
+Opened 24 Aug 2026 by P3 *Describing motion*. Every row below was checked against Design's
+DELIVERED page rather than taken from her proposed table: her `NOTES-P3.md` §4 predates her own
+23 Aug audit, which added a second misconception quote to all sixteen P1–P3 lessons.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `FORCE-01` | Whichever one gets there first is going faster. | `compare-pairs` | `compare-pairs` | `speed` |
+| `FORCE-02` | How fast something looks is how fast it is going. | `s-hook` | `compare-pairs` | `speed` |
+| `FORCE-03` | The average speed for a journey is the average of the speeds you travelled at. | `s-think` | `s-think` | `speed` |
+| `FORCE-04` | Speed is worked out by dividing the two numbers in the order you were given them. | `s-ladder` | `s-ladder` | `speed` |
+| `FORCE-05` | A speed camera tells you how fast you were going on the journey. | `s-think` | `s-think` | `speed` |
+| `FORCE-06` | A distance–time graph is a picture of the route: the line going up means going uphill. | `s-think` | `s-think` | `distance-time-graphs` |
+| `FORCE-07` | A flat line on a distance–time graph means moving at a steady speed. | `graph-plot` | `graph-plot` | `distance-time-graphs` |
+| `FORCE-08` | A curved line on a distance–time graph means the object is going round a bend. | `s-think` | `s-think` | `distance-time-graphs` |
+| `FORCE-09` | An object has one true speed; a speed measured from a moving train is an illusion. | `s-hook` | `relative-frames` | `relative-motion` |
+| `FORCE-10` | Two things moving towards each other pass at the speed of one of them. | `s-think` | `s-think` | `relative-motion` |
+| `FORCE-11` | Sitting still in a train seat, you are not moving. | `s-think` | `s-think` | `relative-motion` |
+
+⊖ **ONE OF DESIGN'S PROPOSED ROWS MINTS NOTHING.** Her table names *"a steeper line means it went
+further"* as a row of its own, attached to `p3-02`'s rung 2. The belief IS on the page — it is
+that rung's first distractor — but it is `FORCE-07` read from the other side: both are reading a
+gradient as something other than a speed. It takes no row, following `p1-08`'s precedent for a
+second quote that re-dresses an existing belief. `FORCE-08` takes the number instead.
+
+⚠️ **`FORCE-04` IS THE ONE TO WATCH, AND DESIGN SAID SO FIRST.** Her notes: *"it is arguably the
+same wrong idea as `PART-05`-style 'the numbers do what they are told', i.e. a mathematics
+misconception wearing a science costume. It is the one on this list I would most expect to be
+re-homed."* It is minted here because the belief is genuinely confronted on the page — `p3-01`
+rung 1's second distractor is `0.60 ÷ 1.5`, with feedback naming the swap — and because ids
+are permanent, so leaving it unminted while the page confronts it is the worse of the two errors.
+If a mathematics-facing family is ever opened, this is the first row that should move to it.
+
+⚠️ **`FORCE-03` CLOSES ITS OWN LOOP IN `p3-03`.** Rung 4 there asks for the round trip to be found
+from total distance ÷ total time rather than by averaging 300 and 200 m/s — which is
+`FORCE-03` met again in a different situation. It is re-confronted and mints nothing.
+
+⚠️ **EXPECTED TO RESURFACE.** `FORCE-06`/`FORCE-07` in P6 (waves on a graph) and in ANY graph
+lesson in biology or chemistry — `B10 variation` plots something completely different and the
+same reading error arrives with it. `FORCE-09` in P4 (`what-forces-do-to-motion`) and P12
+(`gravity-earth-moon-and-sun`).
 
 ⚠️ **`ENER-12` WAS ANTICIPATED BY THIS REGISTER BEFORE IT EXISTED.** The `PART-05` lock below names `ENER-12` as `p1-03`'s id while no such row was in the table — it was reserved in prose by the run that minted `ENER-09`/`ENER-10`, and `p1-03` has now filled it. The lock stands unchanged: `c1-03` and `p1-03` confront one underlying belief by two different instruments, a balance for mass and a thermometer for energy, and NEITHER may drop its confrontation on the grounds that the other covers it.
 

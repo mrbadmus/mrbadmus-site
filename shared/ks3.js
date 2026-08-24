@@ -8196,7 +8196,11 @@
       if (lab) { lab.textContent = Math.abs(b).toFixed(0) + " m/s"; }
       if (dirBtn) {
         dirBtn.setAttribute("aria-pressed", same ? "true" : "false");
-        dirBtn.textContent = same ? "Same way" : "Opposite ways";
+        /* Design's own words for both states, off the markup — the
+           renderer put them there so neither is hard-coded here. */
+        dirBtn.textContent = same
+          ? (dirBtn.getAttribute("data-same") || "Same way")
+          : (dirBtn.getAttribute("data-opp") || "Opposite ways");
       }
       /* The road belongs to the GROUND, so it slides in a car's frame. */
       if (road) { road.setAttribute("data-slide", vo ? "1" : "0"); }

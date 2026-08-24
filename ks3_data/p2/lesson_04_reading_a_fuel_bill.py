@@ -209,11 +209,16 @@ LESSON = {
              "prompt": "Commit first. In a typical UK home, which of these "
                        "is usually the largest single item on the "
                        "electricity bill?",
+             # ⚠️ MRB-177 — Design's correct option is six words against a
+             # longest distractor of four, which is a length tell by the
+             # ruled measure. Her four CLAIMS are unchanged and in her
+             # order; the weights are evened so the set is decided by
+             # reading. Engine policy, not a science departure.
              "options": [
-                 "Lighting",
-                 "Phone and laptop chargers",
-                 "Heating water — showers, kettle, oven",
-                 "The television",
+                 "Lighting, throughout the whole house",
+                 "Phone and laptop chargers, left plugged in",
+                 "Heating water — the shower, kettle and oven",
+                 "The television, on most of the evening",
              ],
              "answer": 2,
          },
