@@ -174,8 +174,12 @@ LESSON = {
          # Flag 8: friction-off is physically impossible and is labelled as
          # idealised rather than presented as a real pendulum.
          "controls": [
-             {"id": "run",      "label": "Release it",
-              "alt": "Pause", "alt2": "Continue"},
+             # ⚠️ NO `alt2`. It was authored here as "Continue" and read by
+             # nothing — `wireRunningTotal` derives that third label from
+             # state (`everRan`) rather than from the payload. ks3_key_audit
+             # caught it: "a key with no read site is content that never
+             # reaches a student."
+             {"id": "run",      "label": "Release it", "alt": "Pause"},
              {"id": "reset",    "label": "Pull it back and release"},
              {"id": "friction", "label": "Switch friction off",
               "alt": "Switch friction on"},

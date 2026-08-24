@@ -386,9 +386,9 @@ LESSON = {
                  "long as the boring continued — and a substance that never "
                  "runs out is not a substance. Energy was being transferred "
                  "by the mechanical work of the drill, not poured out of a "
-                 "reservoir. This is the same lesson `c1-06` teaches about "
-                 "models: caloric was not stupid, it was a model that "
-                 "worked until someone found its edge."},
+                 "reservoir. That is the same lesson <em>Testing the "
+                 "model</em> teaches: caloric was not stupid, it was a "
+                 "model that worked until someone found its edge."},
     ],
 
     "support": [],

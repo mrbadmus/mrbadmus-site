@@ -256,6 +256,40 @@ EXCLUDED = {
         "scheme_of_work rewrite is parked by Mide, and giving this a "
         "--check-only would turn a parked disagreement into a red gate.",
 
+    # ── MRB-223 · P1's port harnesses ───────────────────────────────────
+    #
+    # ⚠️ THESE ASSERT, AND THEY ARE STILL EXCLUDED. The registry's rule is
+    # "a gate if it asserts something, EXCLUDED with a reason if not", and
+    # the honest answer here is a third thing: they assert, they pass, and
+    # they are scoped to ONE unit and need a headless browser. Registering
+    # them would run a P1-only Chrome sweep on every push from every lane
+    # for the rest of the repo's life, which is a cost the whole team pays
+    # for one unit's port.
+    #
+    # ⊕ WORTH GENERALISING, THOUGH, AND THAT IS A RECOMMENDATION RATHER THAN
+    # A CHANGE. `p1_complete.py` caught something all seventeen registered
+    # gates missed: eight instruments that called `setCount` and never
+    # `markStage`, so every control worked and no rail stop could ever tick.
+    # MRB-208's R2 gate passed them because it reads the BYTES — the page
+    # DECLARES a `done_when` and ships `data-stage-done="0"`, and nothing
+    # static is wrong with a page whose JS never fires. A key-stage-wide
+    # version of "drive each instrument and assert its stop actually ticks"
+    # would close that, and it is Mide's call whether the runtime is worth
+    # it.
+    "p1_drive.py":
+        "P1's control sweep — presses every control on all eight pages and "
+        "asserts each changes its own section. Run 1's design, re-pointed. "
+        "Unit-scoped and needs Chrome; see the note above.",
+    "p1_complete.py":
+        "P1's completion drive — drives each instrument as a student would "
+        "and asserts its rail stop ticks AND was not ticked beforehand. "
+        "Unit-scoped and needs Chrome; see the note above.",
+    "phase3_audit.py":
+        "MRB-223's Phase 3 second pass — twelve checks of the BUILT P1 "
+        "pages against Design's delivered `.dc.html`. Unit-scoped: it names "
+        "eight slugs and one design-reference folder, so it asserts nothing "
+        "about the other twenty units.",
+
     # ── libraries · imported, never the thing you run ───────────────────
     # gate_registry.py is NOT here: it is the `gate_coverage` gate above, and
     # a script cannot be both — coverage() reports that as a contradiction.

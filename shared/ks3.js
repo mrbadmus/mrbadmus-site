@@ -5973,6 +5973,10 @@
         d.setAttribute("aria-pressed", on ? "true" : "false");
       });
       setCount(sec, Object.keys(seen).length);
+      /* three_devices_tallied — Design's own DONE is seenCount >= 3 of 4:
+         the fourth is the sprinter and requiring it would make the stop a
+         completion badge rather than a record of the idea landing. */
+      markStage(sec, Object.keys(seen).length >= 3);
     }
 
     each(gopts, function (btn) {
@@ -6044,6 +6048,7 @@
         answered[id] = true;
         var n = Object.keys(answered).length;
         setCount(sec, n);
+        markStage(sec, n >= total);   /* all_four_judged */
         if (settle && n >= total) {
           setHidden(settle, false);
           settle.setAttribute("role", "status");
@@ -6161,6 +6166,7 @@
 
       /* Design's DONE: stopped OR the thermal store has been hidden. */
       setCount(sec, (st.stopped || st.hide) ? 1 : 0);
+      markStage(sec, st.stopped || st.hide);   /* run_to_rest_or_hidden */
     }
 
     function tick() {
@@ -6279,8 +6285,9 @@
       });
       /* Design's DONE for this stop: the student has moved off the first
          configuration, i.e. has seen the beam hold in more than one. */
-      setCount(sec, current === picks[0].getAttribute("data-cbeam-split")
-                    ? 0 : 1);
+      var moved = current !== picks[0].getAttribute("data-cbeam-split");
+      setCount(sec, moved ? 1 : 0);
+      markStage(sec, moved);   /* split_moved */
     }
 
     each(picks, function (btn) {
@@ -6354,6 +6361,7 @@
          one readout respond is not the observation the lesson wants. */
       if (close) { setHidden(close, !(movedAmt && movedSpd)); }
       setCount(sec, (movedAmt && movedSpd) ? 1 : 0);
+      markStage(sec, movedAmt && movedSpd);   /* both_axes_moved */
     }
 
     each(amts, function (b) {
@@ -6438,6 +6446,9 @@
         setHidden(nn, nn.getAttribute("data-oflow-note") !== current);
       });
       setCount(sec, Object.keys(ran).length);
+      /* all_three_pairs_run — the EQUAL pair counts, because watching
+         nothing happen is the observation. */
+      markStage(sec, Object.keys(ran).length >= picks.length);
     }
 
     function tick() {
@@ -6561,6 +6572,7 @@
       }
       if (elecNote) { setHidden(elecNote, !(elecOn && !isMetal())); }
       setCount(sec, Object.keys(ran).length);
+      markStage(sec, Object.keys(ran).length >= 3);   /* three_materials_run */
     }
 
     function tick() {
@@ -6641,6 +6653,10 @@
         setHidden(n, n.getAttribute("data-troute-note") !== current);
       });
       setCount(sec, Object.keys(seen).length);
+      /* vacuum_scenario_run — every scenario, because the vacuum pair is
+         the whole argument and a stop that ticks before it is reached
+         would let a student skip it. */
+      markStage(sec, Object.keys(seen).length >= picks.length);
     }
 
     each(picks, function (btn) {
@@ -6699,6 +6715,7 @@
          what the curves cannot rule out, which is why #s-ice exists. */
       if (close) { setHidden(close, t < DONE); }
       setCount(sec, t >= DONE ? 1 : 0);
+      markStage(sec, t >= DONE);   /* run_to_28_minutes */
     }
 
     function stop() {
@@ -6778,6 +6795,7 @@
         setHidden(n, n.getAttribute("data-itrial2-note") !== key);
       });
       setCount(sec, t >= BARE ? 1 : 0);
+      markStage(sec, t >= BARE);   /* the unwrapped cube has gone */
     }
 
     function stop() {
@@ -6868,6 +6886,7 @@
       if (el) { el.textContent = g.eout.toFixed(1) + " J"; }
       if (close) { setHidden(close, runs < TARGET); }
       setCount(sec, runs);
+      markStage(sec, runs >= TARGET);   /* three_runs_recorded */
     }
 
     each(gopts, function (btn) {

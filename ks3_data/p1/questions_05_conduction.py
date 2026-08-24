@@ -333,7 +333,8 @@ QUESTIONS = [
             {"text": "Neither — being at the same temperature means holding "
                      "the same amount of energy",
              "correct": False,
-             "why": "That is the `p1-04` error. Amount depends on how many "
+             "why": "That is the temperature-is-energy error again. Amount "
+                    "depends on how many "
                     "particles there are as well."},
         ],
         "figure": None,
