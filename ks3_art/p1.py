@@ -666,6 +666,969 @@ def r_waste_sort(a, act_id):
             % (len(items), want, cards, settle))
 
 
+# ═══ p1-03 · running-total ═══════════════════════════════════════════════
+
+def r_running_total(a, act_id):
+    """⊕ p1-03 `#s-bench` — a pendulum, four readouts, one total that holds.
+
+    Design's bench. A student commits to which store is largest at the bottom
+    of the swing, then releases the pendulum and watches three stores trade
+    while the total never moves. Two switches make the point the other way
+    round: friction off, and — the important one — the thermal store HIDDEN.
+
+    ⚖️ **THE HIDE-THERMAL CONTROL DELIBERATELY MAKES THE LAW LOOK FALSE**
+    (Design's science flag 7). With the thermal store hidden the bar stops
+    reaching the total line, and conservation appears to fail. That IS the
+    confrontation of `ENER-12` — the belief that a quantity which stops being
+    visible has stopped existing — and it must not be removed as a
+    "confusing" control. It is the whole argument of the lesson in one
+    button.
+
+    ⚖️ **FRICTION-OFF IS PHYSICALLY IMPOSSIBLE AND SAYS SO** (her flag 8).
+    Its note names it as idealised rather than presenting a real pendulum
+    that never stops.
+
+    ⚠️ **THE TOTAL IS DERIVED, NEVER STORED.** `grav + kin + therm` is summed
+    on every paint and compared against `total`; if the three ever fail to
+    make the whole, the bench is asserting the opposite of what the lesson
+    claims. The renderer refuses a payload whose notes are missing, because
+    a bench that shows the law without ever saying what you are looking at
+    teaches nothing to the student who did not already know.
+
+    HOOKS: `data-rtotal` (wrapper, `data-total`) · `data-rtotal-gate` ·
+    `data-rtotal-gopt` · `data-rtotal-bench` · `data-rtotal-ctl` (valued with
+    the control id) · `data-rtotal-out` (valued with the readout id) ·
+    `data-rtotal-bar` (valued with the store id) · `data-rtotal-note`.
+    """
+    gate = a.get("gate") or {}
+    controls = a.get("controls") or []
+    readouts = a.get("readouts") or []
+    notes = a.get("notes") or {}
+    total = int(a.get("total") or 0)
+
+    if total <= 0:
+        raise ValueError(
+            "running-total %r keeps score on a total of %r. The bench exists "
+            "to show a fixed number holding, and it needs one."
+            % (act_id, a.get("total")))
+
+    if not gate.get("prompt") or len(gate.get("options") or []) < 3:
+        raise ValueError(
+            "running-total %r has no commit gate, or fewer than three "
+            "options. A bench read before a commitment confirms whatever the "
+            "student already believed." % act_id)
+
+    want_ctl = {"run", "reset", "friction", "hide"}
+    have = {c.get("id") for c in controls}
+    if want_ctl - have:
+        raise ValueError(
+            "running-total %r is missing the %s control(s). `hide` in "
+            "particular is not optional — it is the confrontation of the "
+            "lesson's misconception, and a bench without it only ever shows "
+            "the law working." % (act_id, sorted(want_ctl - have)))
+
+    want_out = {"grav", "kin", "therm", "total"}
+    if want_out - {r.get("id") for r in readouts}:
+        raise ValueError(
+            "running-total %r is missing the %s readout(s). The total is one "
+            "of them: without it on screen the student is asked to add three "
+            "moving numbers in their head."
+            % (act_id, sorted(want_out - {r.get("id") for r in readouts})))
+
+    for key in ("rest", "running", "stopped", "no_friction", "hidden"):
+        if not notes.get(key):
+            raise ValueError(
+                "running-total %r has no %r note. Each names what the bench "
+                "is showing in that state, and the `hidden` one carries the "
+                "argument." % (act_id, key))
+
+    _unique_ids(controls, act_id, "running-total", "control")
+    _unique_ids(readouts, act_id, "running-total", "readout")
+    _no_correct_flags(controls, act_id, "running-total")
+
+    # ⚠️ THE COUNT WORD IN THE HEADING MUST MATCH THE BARS DRAWN.
+    # Design's heading read "Four stores. One total that never moves." above a
+    # bench that draws THREE (`GRAV`, `KIN`, `THERMAL`) plus a Total readout.
+    # That is the second count-word/instrument disagreement in P1 — the first
+    # is `p1-01`'s "two of them are not stores at all" over a sort with three
+    # non-stores. Both were caught by counting rather than reading, so the
+    # third one is caught here instead. `total` is a SUM and is excluded from
+    # the count on purpose: it is not one of the stores.
+    _count_word_agrees(a.get("heading"),
+                       len([r for r in readouts if r["id"] != "total"]),
+                       act_id, "running-total", "heading")
+
+    opts = "".join(
+        '<button type="button" class="ks3-option" data-rtotal-gopt="%d" '
+        'aria-pressed="false"><span class="ks3-opt-mark" aria-hidden="true">'
+        '%s</span><span class="ks3-opt-label">%s</span></button>'
+        % (i, chr(65 + i), t(o)) for i, o in enumerate(gate["options"]))
+
+    ctls = "".join(
+        '<button type="button" class="ks3-seg-btn ks3-rtotal-ctl" '
+        'data-rtotal-ctl="%s"%s aria-pressed="false">%s</button>'
+        % (e(c["id"]),
+           (' data-rtotal-alt="%s"' % e(c["alt"])) if c.get("alt") else "",
+           t(c["label"]))
+        for c in controls)
+
+    outs = "".join(
+        '<div class="ks3-rtotal-out%s"><p class="ks3-rtotal-outlabel">%s</p>'
+        '<p class="ks3-rtotal-outval" data-rtotal-out="%s"></p></div>'
+        % (" is-accent" if r.get("accent") else "", t(r["label"]), e(r["id"]))
+        for r in readouts)
+
+    bars = "".join(
+        '<span class="ks3-rtotal-bar is-%s" data-rtotal-bar="%s"></span>'
+        % (e(r["id"]), e(r["id"]))
+        for r in readouts if r["id"] != "total")
+
+    notemarks = "".join(
+        '<p class="ks3-rtotal-note" data-rtotal-note="%s"%s>%s</p>'
+        % (e(k), "" if k == "rest" else " hidden", rich(v))
+        for k, v in (("rest", notes["rest"]), ("running", notes["running"]),
+                     ("stopped", notes["stopped"]),
+                     ("no_friction", notes["no_friction"]),
+                     ("hidden", notes["hidden"])))
+
+    return ('<div class="ks3-rtotal" data-rtotal data-total="%d">'
+            '<div class="ks3-rtotal-gate" data-rtotal-gate>'
+            '<p class="ks3-commit">%s</p>'
+            '<ul class="ks3-options">%s</ul></div>'
+            '<div class="ks3-rtotal-bench" data-rtotal-bench hidden>'
+            '<div class="ks3-rtotal-stack">'
+            '<span class="ks3-rtotal-line" aria-hidden="true"></span>%s</div>'
+            '<div class="ks3-rtotal-outs">%s</div>'
+            '<div class="ks3-rtotal-ctls">%s</div>%s</div></div>'
+            % (total, t(gate["prompt"]), opts, bars, outs, ctls, notemarks))
+
+
+# ═══ p1-03 · conservation-beam ═══════════════════════════════════════════
+
+def r_conservation_beam(a, act_id):
+    """⊕ p1-03 `#s-balance` — the unit's first formula block, and a BEAM.
+
+    ⚖️ **MRB-204 · BEAM, NOT TRIANGLE, AND DESIGN ARGUES IT ON THE PAGE.**
+    Her heading is literally *"Conservation is a balance, not a triangle"*.
+    A triangle encodes `A = B × C`; conservation is a SUM on each side of an
+    equals sign, and a triangle over it teaches a relationship that does not
+    exist. This is the `c2-06` precedent (NOTES-C2 §8 flag 14) applied to
+    energy.
+
+    ⚠️ **THE SPLITS ARE CHECKED AGAINST THE TOTAL, EVERY ONE.** A beam whose
+    pans do not balance is a beam that lies, and this block's entire claim is
+    that they always do. Design's four are 120=120+0+0, 120=62+55+3,
+    120=0+114+6 and 120=0+0+120.
+
+    ⊖ **WHY THIS IS AN INSTRUMENT AND NOT THE ENGINE'S `formula` BLOCK.**
+    `build_ks3`'s `{"type": "formula"}` supports `figure.shape = "balance"`
+    and is the right home for a STATIC rule — it is what `c2-06` uses. Design's
+    block here is not static: it carries four configuration buttons and a
+    different note under each, and the teaching is watching the beam stay
+    level ACROSS them. The static figure cannot express that, so the shape
+    she drew is rendered as an instrument. The shape itself is unchanged, and
+    it is still a beam over a sum.
+
+    HOOKS: `data-cbeam` (wrapper, `data-total`) · `data-cbeam-split` (valued
+    with the split id) · `data-cbeam-pan` (valued `left` / `right`) ·
+    `data-cbeam-seg` (valued with the store key) · `data-cbeam-note`.
+    """
+    splits = a.get("splits") or []
+    total = int(a.get("total") or 0)
+
+    if len(splits) < 3:
+        raise ValueError(
+            "conservation-beam %r offers %d configuration(s). The claim is "
+            "that the beam is level in EVERY one, and that needs more than a "
+            "before and an after." % (act_id, len(splits)))
+    if total <= 0:
+        raise ValueError(
+            "conservation-beam %r has no total to balance against."
+            % act_id)
+
+    _unique_ids(splits, act_id, "conservation-beam", "split")
+    _no_correct_flags(splits, act_id, "conservation-beam")
+
+    keys = ("grav", "kin", "therm")
+    for s in splits:
+        if not s.get("label") or not s.get("note"):
+            raise ValueError(
+                "conservation-beam %r split %r has no label or no note. The "
+                "note is the only place each configuration is explained."
+                % (act_id, s.get("id")))
+        got = sum(int(s.get(k) or 0) for k in keys)
+        if got != total:
+            raise ValueError(
+                "conservation-beam %r split %r sums to %d and the beam is "
+                "drawn against %d. The one thing this block asserts is that "
+                "the pans match, so a split that does not add up is the "
+                "block contradicting itself."
+                % (act_id, s["id"], got, total))
+
+    picks = "".join(
+        _p1_seg("ks3-cbeam-split", s["label"], i == 0, data_cbeam_split=s["id"])
+        for i, s in enumerate(splits))
+
+    data = "".join(
+        "".join(' data-cbeam-%s-%s="%d"' % (e(k), e(s["id"]), int(s.get(k) or 0))
+                for k in keys)
+        for s in splits)
+
+    segs = "".join(
+        '<span class="ks3-cbeam-seg is-%s" data-cbeam-seg="%s"></span>'
+        % (e(k), e(k)) for k in keys)
+
+    notes = "".join(
+        '<p class="ks3-cbeam-note" data-cbeam-note="%s"%s>%s</p>'
+        % (e(s["id"]), "" if i == 0 else " hidden", rich(s["note"]))
+        for i, s in enumerate(splits))
+
+    return ('<div class="ks3-cbeam" data-cbeam data-total="%d"%s>'
+            '<div class="ks3-cbeam-picks">%s</div>'
+            '<div class="ks3-cbeam-rig" role="img" aria-label="%s">'
+            '<span class="ks3-cbeam-beam" aria-hidden="true"></span>'
+            '<div class="ks3-cbeam-pans">'
+            '<div class="ks3-cbeam-pan" data-cbeam-pan="left">'
+            '<span class="ks3-cbeam-seg is-whole"></span>'
+            '<p class="ks3-cbeam-panlabel">%s J, before</p></div>'
+            '<div class="ks3-cbeam-pan" data-cbeam-pan="right">%s'
+            '<p class="ks3-cbeam-panlabel">the same %s J, shared out</p>'
+            '</div></div>'
+            '<p class="ks3-cbeam-caption">always level</p></div>'
+            '<p class="ks3-cbeam-ctl">%s</p>%s</div>'
+            % (total, data, picks, t(a.get("alt") or ""),
+               total, segs, total,
+               t(a.get("control_label") or ""), notes))
+
+
+# ═══ p1-04 · two-quantities ══════════════════════════════════════════════
+
+def r_two_quantities(a, act_id):
+    """⊕ p1-04 `#s-two` — two axes, moved one at a time.
+
+    Design's bench. A student sets HOW MUCH there is (a spark, a mug, a bath)
+    and HOW FAST its particles move, and watches two readouts respond
+    differently: temperature answers only to speed, the thermal store answers
+    to both. That asymmetry is the whole lesson and it is why the bench has
+    two independent controls rather than one.
+
+    ⚖️ **THE THERMAL BAR IS LOGARITHMIC AND SAYS SO** (Design's science flag
+    10). The spark-to-bath range is about 10^9 — a linear bar leaves the
+    spark at zero pixels and teaches that a spark has no energy at all, which
+    is the opposite of the point. The scale note is not decoration and the
+    renderer refuses a payload without it: a log axis a student has not been
+    told about is a lie told in a picture.
+
+    ⚠️ **BOTH AXES MUST OFFER AT LEAST THREE SETTINGS.** With two, "moved it
+    and the other readout did not follow" is a coincidence a student can
+    dismiss; with three it is a pattern.
+
+    HOOKS: `data-twoq` (wrapper) · `data-twoq-amt` (amount button, valued
+    with the amount id) · `data-twoq-spd` (speed button, valued with the
+    speed id) · `data-twoq-out` (valued `temp` / `store`) ·
+    `data-twoq-bar` · `data-twoq-scale` · `data-twoq-close`.
+    """
+    amounts = a.get("amounts") or []
+    speeds = a.get("speeds") or []
+    readouts = a.get("readouts") or []
+
+    if len(amounts) < 3 or len(speeds) < 3:
+        raise ValueError(
+            "two-quantities %r offers %d amount(s) and %d speed(s). The "
+            "claim is that one axis moves a readout the other does not, and "
+            "two settings make that a coincidence rather than a pattern."
+            % (act_id, len(amounts), len(speeds)))
+
+    if not a.get("scale_note"):
+        raise ValueError(
+            "two-quantities %r has no `scale_note`. The thermal bar is "
+            "logarithmic — the spark-to-bath range is about 10^9 — and a log "
+            "axis the student has not been told about is a lie told in a "
+            "picture." % act_id)
+
+    _unique_ids(amounts, act_id, "two-quantities", "amount")
+    _unique_ids(speeds, act_id, "two-quantities", "speed")
+    _no_correct_flags(amounts, act_id, "two-quantities")
+    _no_correct_flags(speeds, act_id, "two-quantities")
+
+    for x in amounts:
+        for key in ("label", "n", "tag"):
+            if x.get(key) in (None, "", []):
+                raise ValueError(
+                    "two-quantities %r amount %r has no %r. The tag is what "
+                    "makes the amount concrete — “300 g” rather "
+                    "than a bar of unknown size."
+                    % (act_id, x.get("id"), key))
+    for x in speeds:
+        if not x.get("label") or x.get("t") in (None, ""):
+            raise ValueError(
+                "two-quantities %r speed %r has no label or no temperature."
+                % (act_id, x.get("id")))
+
+    want = {"temp", "store"}
+    if want - {r.get("id") for r in readouts}:
+        raise ValueError(
+            "two-quantities %r is missing the %s readout(s). Both are the "
+            "instrument: one of them is what the student thinks the other "
+            "one means."
+            % (act_id, sorted(want - {r.get("id") for r in readouts})))
+
+    amts = "".join(
+        _p1_seg("ks3-twoq-amt", "%s · %s" % (x["label"], x["tag"]), i == 0,
+                data_twoq_amt=x["id"])
+        for i, x in enumerate(amounts))
+    spds = "".join(
+        _p1_seg("ks3-twoq-spd", x["label"], i == 1 if len(speeds) > 1 else i == 0,
+                data_twoq_spd=x["id"])
+        for i, x in enumerate(speeds))
+
+    data = "".join(' data-twoq-n-%s="%d"' % (e(x["id"]), int(x["n"]))
+                   for x in amounts)
+    data += "".join(' data-twoq-t-%s="%d"' % (e(x["id"]), int(x["t"]))
+                    for x in speeds)
+
+    outs = "".join(
+        '<div class="ks3-twoq-out%s"><p class="ks3-twoq-outlabel">%s</p>'
+        '<p class="ks3-twoq-outval" data-twoq-out="%s"></p></div>'
+        % (" is-accent" if r.get("accent") else "", t(r["label"]), e(r["id"]))
+        for r in readouts)
+
+    close = ""
+    if a.get("close"):
+        close = ('<p class="ks3-twoq-close" data-twoq-close>%s</p>'
+                 % rich(a["close"]))
+
+    return ('<div class="ks3-twoq" data-twoq%s>'
+            '<div class="ks3-twoq-axis"><p class="ks3-twoq-axislabel">'
+            'How much there is</p><div class="ks3-twoq-btns">%s</div></div>'
+            '<div class="ks3-twoq-axis"><p class="ks3-twoq-axislabel">'
+            'How fast the particles move</p>'
+            '<div class="ks3-twoq-btns">%s</div></div>'
+            '<div class="ks3-twoq-outs">%s</div>'
+            '<span class="ks3-twoq-bar" data-twoq-bar></span>'
+            '<p class="ks3-twoq-scale" data-twoq-scale>%s</p>%s</div>'
+            % (data, amts, spds, outs, t(a["scale_note"]), close))
+
+
+# ═══ p1-04 · one-way-flow ════════════════════════════════════════════════
+
+def r_one_way_flow(a, act_id):
+    """⊕ p1-04 `#s-flow` — three pairs, one arrow, and one arrow that isn't.
+
+    Design's bench. Each pair is two objects at stated temperatures; running
+    it shows energy crossing from the hotter to the colder until they match.
+
+    ⚖️ **THE ARROW THAT DOES NOT EXIST IS DRAWN, AND LABELLED AS NOT
+    EXISTING** (Design's science flag 11). A dashed ghost arrow points the
+    wrong way with the caption *no cold travels this way*. Drawing the thing
+    that does not happen IS the confrontation of `ENER-14` — a student who
+    believes cold flows needs to see that belief on the screen and struck
+    out, not merely omitted. It must not be tidied away as a contradictory
+    label, and the renderer requires the caption.
+
+    ⚠️ **ONE PAIR MUST START EQUAL.** Thermal equilibrium is not "what
+    happens at the end" — it is a state, and the only way to show it is a
+    state rather than an ending is to offer a pair that is already in it and
+    watch nothing happen. Design's third pair is two blocks at 30 °C and the
+    renderer refuses a set without an equal pair, because a bench where every
+    run ends in equilibrium teaches equilibrium as an outcome.
+
+    HOOKS: `data-oflow` (wrapper) · `data-oflow-pair` (valued with the pair
+    id) · `data-oflow-run` · `data-oflow-arrow` · `data-oflow-ghost` ·
+    `data-oflow-temp` (valued `hot` / `cold`) · `data-oflow-note`.
+    """
+    pairs = a.get("pairs") or []
+
+    if len(pairs) < 3:
+        raise ValueError(
+            "one-way-flow %r offers %d pair(s). Three is the fewest that can "
+            "show a big difference, a small one and none at all."
+            % (act_id, len(pairs)))
+    if not a.get("ghost_label"):
+        raise ValueError(
+            "one-way-flow %r has no `ghost_label`. The arrow that does not "
+            "exist is drawn and captioned on purpose — it is the "
+            "confrontation of the lesson's misconception, and without the "
+            "caption it is simply a second arrow pointing the wrong way."
+            % act_id)
+
+    _unique_ids(pairs, act_id, "one-way-flow", "pair")
+    _no_correct_flags(pairs, act_id, "one-way-flow")
+
+    for p in pairs:
+        for key in ("label", "hot_name", "cold_name", "note"):
+            if not p.get(key):
+                raise ValueError(
+                    "one-way-flow %r pair %r has no %r."
+                    % (act_id, p.get("id"), key))
+        if p.get("hot") is None or p.get("cold") is None:
+            raise ValueError(
+                "one-way-flow %r pair %r has no temperatures. The direction "
+                "of the arrow is derived from them, never authored, so that "
+                "a pair cannot be drawn flowing the wrong way."
+                % (act_id, p["id"]))
+        if int(p["hot"]) < int(p["cold"]):
+            raise ValueError(
+                "one-way-flow %r pair %r names its colder object as `hot`. "
+                "The keys are roles, not labels, and swapping them would "
+                "draw the arrow backwards."
+                % (act_id, p["id"]))
+
+    if not any(int(p["hot"]) == int(p["cold"]) for p in pairs):
+        raise ValueError(
+            "one-way-flow %r has no pair that starts EQUAL. Equilibrium is a "
+            "state, not an ending, and the only way to show that is a pair "
+            "already in it where nothing happens. Without one the bench "
+            "teaches equilibrium as the outcome of every run."
+            % act_id)
+
+    picks = "".join(
+        _p1_seg("ks3-oflow-pair", p["label"], i == 0, data_oflow_pair=p["id"])
+        for i, p in enumerate(pairs))
+
+    data = "".join(
+        ' data-oflow-hot-%s="%d" data-oflow-cold-%s="%d" '
+        'data-oflow-hotname-%s="%s" data-oflow-coldname-%s="%s"'
+        % (e(p["id"]), int(p["hot"]), e(p["id"]), int(p["cold"]),
+           e(p["id"]), e(p["hot_name"]), e(p["id"]), e(p["cold_name"]))
+        for p in pairs)
+
+    notes = "".join(
+        '<p class="ks3-oflow-note" data-oflow-note="%s"%s>%s</p>'
+        % (e(p["id"]), "" if i == 0 else " hidden", rich(p["note"]))
+        for i, p in enumerate(pairs))
+
+    return ('<div class="ks3-oflow" data-oflow%s>'
+            '<div class="ks3-oflow-picks">%s</div>'
+            '<div class="ks3-oflow-rig">'
+            '<div class="ks3-oflow-body is-hot">'
+            '<p class="ks3-oflow-name" data-oflow-name="hot"></p>'
+            '<p class="ks3-oflow-temp" data-oflow-temp="hot"></p></div>'
+            '<div class="ks3-oflow-arrows">'
+            '<span class="ks3-oflow-arrow" data-oflow-arrow aria-hidden="true">'
+            '</span>'
+            '<span class="ks3-oflow-ghost" data-oflow-ghost aria-hidden="true">'
+            '</span>'
+            '<p class="ks3-oflow-ghostlabel">%s</p></div>'
+            '<div class="ks3-oflow-body is-cold">'
+            '<p class="ks3-oflow-name" data-oflow-name="cold"></p>'
+            '<p class="ks3-oflow-temp" data-oflow-temp="cold"></p></div>'
+            '</div>'
+            '<button type="button" class="ks3-seg-btn ks3-oflow-run" '
+            'data-oflow-run>Run it</button>%s</div>'
+            % (data, picks, t(a["ghost_label"]), notes))
+
+
+# ═══ p1-05 · conduction-bench ════════════════════════════════════════════
+
+def r_conduction_bench(a, act_id):
+    """⊕ p1-05 `#s-bar` — four rods, one flame, four very different times.
+
+    Design's bench. A student picks a material, lights the flame and watches
+    a wax blob at the far end. The times differ by more than an order of
+    magnitude and wood never gets there at all.
+
+    ⚖️ **THE TIMES ARE ILLUSTRATIVE AND THE BENCH SAYS SO** (Design's science
+    flag 15). Her own note: *"ratios are right; absolute values need review
+    before any claim of realism"*. `model_note` is required rather than
+    optional — a bench that quotes seconds without saying what they are worth
+    is making a measurement claim nobody has checked.
+
+    ⚖️ **THE HOME-POSITION RINGS ARE REQUIRED** (her flag 13). Grey rings mark
+    where each particle started, and every particle stays on its own. Rung 3
+    criterion 3 is *"says the particles themselves do not travel along the
+    spoon"* — the rings are the evidence for it and are not decoration.
+
+    ⚖️ **FREE ELECTRONS ARE SHOWN ONLY FOR METALS, AND THE CONTROL SAYS SO**
+    (her flag 14). Pressing it on a non-metal must produce a SENTENCE, not
+    nothing — a control that silently does nothing reads as broken and
+    teaches that the page is unreliable rather than that non-metals lack
+    free electrons.
+
+    ⚠️ **`wax: None` IS "NEVER", NOT "MISSING".** Wood's far end never
+    reaches the wax, and that is the result rather than an absent value. A
+    renderer that treated it as 0 would show wood as the fastest.
+
+    HOOKS: `data-cbench` · `data-cbench-mat` · `data-cbench-run` ·
+    `data-cbench-elec` · `data-cbench-rod` · `data-cbench-wax` ·
+    `data-cbench-clock` · `data-cbench-note` · `data-cbench-elecnote`.
+    """
+    materials = a.get("materials") or []
+    elec = a.get("electrons") or {}
+
+    if len(materials) < 3:
+        raise ValueError(
+            "conduction-bench %r races %d material(s). The point is an ORDER "
+            "across a wide range, and two rods cannot show one."
+            % (act_id, len(materials)))
+    if not a.get("model_note"):
+        raise ValueError(
+            "conduction-bench %r has no `model_note`. Its times are "
+            "illustrative rather than measured (Design's flag 15), and a "
+            "bench that quotes seconds without saying so is making a "
+            "measurement claim nobody has checked." % act_id)
+    if not a.get("home_ring_note"):
+        raise ValueError(
+            "conduction-bench %r has no `home_ring_note`. The grey rings are "
+            "the evidence for Rung 3's third criterion — that the particles "
+            "do not travel — and an unexplained ring teaches nothing."
+            % act_id)
+    for key in ("label", "alt", "non_metal_note"):
+        if not elec.get(key):
+            raise ValueError(
+                "conduction-bench %r's `electrons` control has no %r. On a "
+                "non-metal the control must SAY there is nothing to show; a "
+                "button that silently does nothing reads as broken."
+                % (act_id, key))
+
+    _unique_ids(materials, act_id, "conduction-bench", "material")
+    _no_correct_flags(materials, act_id, "conduction-bench")
+
+    if not any(m.get("metal") for m in materials):
+        raise ValueError(
+            "conduction-bench %r has no metal in it. The whole lesson is that "
+            "metals have a SECOND route, and a bench with nothing to compare "
+            "cannot show one." % act_id)
+    if not any(not m.get("metal") for m in materials):
+        raise ValueError(
+            "conduction-bench %r has no non-metal in it, so the free-electron "
+            "control can never say what it is for." % act_id)
+
+    for m in materials:
+        if not m.get("label") or not m.get("note"):
+            raise ValueError(
+                "conduction-bench %r material %r has no label or note."
+                % (act_id, m.get("id")))
+        w = m.get("wax", "missing")
+        if w != "missing" and w is not None and int(w) <= 0:
+            raise ValueError(
+                "conduction-bench %r material %r melts the wax in %r "
+                "seconds. Use None for “never”; a zero or negative "
+                "time would draw it as the FASTEST rod on the bench."
+                % (act_id, m["id"], w))
+
+    _count_word_agrees(a.get("heading"), len(materials), act_id,
+                       "conduction-bench", "heading")
+
+    picks = "".join(
+        _p1_seg("ks3-cbench-mat", m["label"], i == 0, data_cbench_mat=m["id"])
+        for i, m in enumerate(materials))
+
+    data = "".join(
+        ' data-cbench-wax-%s="%s" data-cbench-metal-%s="%s"'
+        % (e(m["id"]), "never" if m.get("wax") is None else int(m["wax"]),
+           e(m["id"]), "1" if m.get("metal") else "0")
+        for m in materials)
+
+    notes = "".join(
+        '<p class="ks3-cbench-note" data-cbench-note="%s"%s>%s</p>'
+        % (e(m["id"]), "" if i == 0 else " hidden", rich(m["note"]))
+        for i, m in enumerate(materials))
+
+    return ('<div class="ks3-cbench" data-cbench%s>'
+            '<div class="ks3-cbench-picks">%s</div>'
+            '<div class="ks3-cbench-rig">'
+            '<div class="ks3-cbench-rod" data-cbench-rod>'
+            '<span class="ks3-cbench-flame" aria-hidden="true"></span>'
+            '<span class="ks3-cbench-wax" data-cbench-wax></span></div>'
+            '<p class="ks3-cbench-rings">%s</p></div>'
+            '<div class="ks3-cbench-ctls">'
+            '<button type="button" class="ks3-seg-btn ks3-cbench-run" '
+            'data-cbench-run>Light the flame</button>'
+            '<button type="button" class="ks3-seg-btn ks3-cbench-elec" '
+            'data-cbench-elec data-alt="%s" aria-pressed="false">%s</button>'
+            '<p class="ks3-cbench-clock" data-cbench-clock></p></div>'
+            '<p class="ks3-cbench-elecnote" data-cbench-elecnote hidden>%s</p>'
+            '%s<p class="ks3-cbench-model">%s</p></div>'
+            % (data, picks, t(a["home_ring_note"]),
+               e(elec["alt"]), t(elec["label"]), t(elec["non_metal_note"]),
+               notes, t(a["model_note"])))
+
+
+# ═══ p1-06 · three-routes ════════════════════════════════════════════════
+
+def r_three_routes(a, act_id):
+    """⊕ p1-06 `#s-routes` — take the routes away one at a time.
+
+    Design's bench. Four scenarios move the detector and remove the air; the
+    student watches which of conduction, convection and radiation can still
+    deliver anything. Radiation is the only one that survives every setting,
+    and the vacuum scenario is the one that proves it.
+
+    ⚖️ **THE FIRST SCENARIO IS THE ONE THAT MISLEADS, AND IT IS FIRST ON
+    PURPOSE.** Detector above, in air: convection and radiation both working.
+    That is the everyday situation which convinces people heating only goes
+    up, and the bench starts there so the student's existing belief is the
+    thing being taken apart rather than a strawman.
+
+    ⚠️ **A SCENARIO WITH NO ROUTE AT ALL IS REFUSED.** Every setting must
+    leave at least one route delivering, because the claim is about which
+    ones survive rather than about switching the bench off.
+
+    ⚠️ **CONVECTION MUST DIE IN A VACUUM.** A payload that leaves `conv` true
+    with `vac` set is asserting that a fluid moves where there is no fluid,
+    and the bench would teach the opposite of the lesson.
+
+    HOOKS: `data-troute` · `data-troute-sc` · `data-troute-lamp` (valued with
+    the route id) · `data-troute-note`.
+    """
+    scenarios = a.get("scenarios") or []
+    routes = a.get("routes") or []
+
+    if len(scenarios) < 3:
+        raise ValueError(
+            "three-routes %r offers %d scenario(s). Removing one thing at a "
+            "time needs at least a baseline, a removal and the vacuum."
+            % (act_id, len(scenarios)))
+    if {r.get("id") for r in routes} != {"cond", "conv", "rad"}:
+        raise ValueError(
+            "three-routes %r declares routes %r. The lesson is about exactly "
+            "three and each has to be individually visible."
+            % (act_id, [r.get("id") for r in routes]))
+
+    _unique_ids(scenarios, act_id, "three-routes", "scenario")
+    _unique_ids(routes, act_id, "three-routes", "route")
+    _no_correct_flags(scenarios, act_id, "three-routes")
+
+    for sc in scenarios:
+        if not sc.get("label") or not sc.get("note"):
+            raise ValueError(
+                "three-routes %r scenario %r has no label or note."
+                % (act_id, sc.get("id")))
+        if not (sc.get("cond") or sc.get("conv") or sc.get("rad")):
+            raise ValueError(
+                "three-routes %r scenario %r has every route off. The bench "
+                "shows which routes SURVIVE a change, and a setting that "
+                "delivers nothing is the bench switched off rather than a "
+                "result." % (act_id, sc["id"]))
+        if "vacuum" in (sc.get("label") or "").lower() and sc.get("conv"):
+            raise ValueError(
+                "three-routes %r scenario %r runs convection in a vacuum. "
+                "Convection needs a fluid to move and there is none, so this "
+                "would teach the reverse of the lesson."
+                % (act_id, sc["id"]))
+
+    if not any(sc.get("rad") for sc in scenarios):
+        raise ValueError(
+            "three-routes %r never has radiation delivering. It is the route "
+            "the lesson exists to establish." % act_id)
+
+    picks = "".join(
+        _p1_seg("ks3-troute-sc", sc["label"], i == 0, data_troute_sc=sc["id"])
+        for i, sc in enumerate(scenarios))
+
+    data = "".join(
+        "".join(' data-troute-%s-%s="%s"'
+                % (e(k), e(sc["id"]), "1" if sc.get(k) else "0")
+                for k in ("cond", "conv", "rad"))
+        for sc in scenarios)
+
+    lamps = "".join(
+        '<div class="ks3-troute-lamp" data-troute-lamp="%s">'
+        '<span class="ks3-troute-dot" aria-hidden="true"></span>'
+        '<p class="ks3-troute-lamplabel">%s</p>'
+        '<p class="ks3-troute-lampstate" data-troute-state="%s"></p></div>'
+        % (e(r["id"]), t(r["label"]), e(r["id"])) for r in routes)
+
+    notes = "".join(
+        '<p class="ks3-troute-note" data-troute-note="%s"%s>%s</p>'
+        % (e(sc["id"]), "" if i == 0 else " hidden", rich(sc["note"]))
+        for i, sc in enumerate(scenarios))
+
+    return ('<div class="ks3-troute" data-troute%s>'
+            '<div class="ks3-troute-picks">%s</div>'
+            '<div class="ks3-troute-lamps">%s</div>%s</div>'
+            % (data, picks, lamps, notes))
+
+
+# ═══ p1-07 · insulation-trial ════════════════════════════════════════════
+
+def r_insulation_trial(a, act_id):
+    """⊕ p1-07 `#s-trial` — four beakers, one clock, four cooling curves.
+
+    Design's bench. 200 ml at 80 °C in a 20 °C room, four wrappings, a clock
+    that can be run or jumped to thirty minutes, and a results table.
+
+    ⚠️ **THE CURVES DO NOT DECIDE ANYTHING, AND THE CLOSING NOTE SAYS SO.**
+    Every wrapped beaker stays hotter than the control — which is EXACTLY
+    what you would see if the wool were adding warmth. Both accounts fit
+    every number in the table. The renderer requires `close` for that reason:
+    a trial that quietly implies it has proved something it has not is worse
+    than no trial, and `#s-ice` is the section that actually settles it.
+
+    ⚠️ **`k` IS A RATE MULTIPLIER, NOT A TEMPERATURE.** Every beaker starts
+    at `start_temp` and decays toward `room_temp`; `k` scales how fast. A
+    payload whose `k` for the control is not the largest would draw an
+    insulated beaker cooling faster than a bare one.
+
+    HOOKS: `data-itrial` (wrapper, `data-start`, `data-room`) ·
+    `data-itrial-run` · `data-itrial-reset` · `data-itrial-jump` ·
+    `data-itrial-clock` · `data-itrial-row` (valued with the beaker id) ·
+    `data-itrial-now` · `data-itrial-drop` · `data-itrial-close`.
+    """
+    beakers = a.get("beakers") or []
+    start = a.get("start_temp")
+    room = a.get("room_temp")
+
+    if len(beakers) < 3:
+        raise ValueError(
+            "insulation-trial %r runs %d beaker(s). A trial needs a control "
+            "and at least two wrappings to compare against it."
+            % (act_id, len(beakers)))
+    if start is None or room is None or int(start) <= int(room):
+        raise ValueError(
+            "insulation-trial %r starts at %r in a room at %r. The water has "
+            "to be hotter than the room or nothing cools."
+            % (act_id, start, room))
+    if not a.get("close"):
+        raise ValueError(
+            "insulation-trial %r has no `close`. Its curves are equally "
+            "consistent with insulation ADDING warmth, and a trial that does "
+            "not say so implies it has proved something it has not."
+            % act_id)
+
+    _unique_ids(beakers, act_id, "insulation-trial", "beaker")
+    _no_correct_flags(beakers, act_id, "insulation-trial")
+
+    ks = []
+    for b in beakers:
+        for key in ("label", "k", "blocks"):
+            if b.get(key) in (None, ""):
+                raise ValueError(
+                    "insulation-trial %r beaker %r has no %r. `blocks` names "
+                    "which of the three routes the wrapping stops, which is "
+                    "the only reason the row teaches anything."
+                    % (act_id, b.get("id"), key))
+        ks.append(float(b["k"]))
+    if ks[0] != max(ks):
+        raise ValueError(
+            "insulation-trial %r does not lead with its control. The first "
+            "beaker carries k=%r and the fastest cooler is k=%r — a bench "
+            "whose control is not the fastest draws insulation making things "
+            "cool quicker." % (act_id, ks[0], max(ks)))
+
+    _count_word_agrees(a.get("heading"), len(beakers), act_id,
+                       "insulation-trial", "heading")
+
+    data = "".join(' data-itrial-k-%s="%s"' % (e(b["id"]), float(b["k"]))
+                   for b in beakers)
+
+    rows = "".join(
+        '<tr data-itrial-row="%s"><th scope="row">%s</th>'
+        '<td data-itrial-now="%s"></td><td data-itrial-drop="%s"></td>'
+        '<td>%s</td></tr>'
+        % (e(b["id"]), t(b["label"]), e(b["id"]), e(b["id"]), t(b["blocks"]))
+        for b in beakers)
+
+    return ('<div class="ks3-itrial" data-itrial data-start="%d" '
+            'data-room="%d" data-jump="%d" data-done="%d"%s>'
+            '<div class="ks3-itrial-ctls">'
+            '<button type="button" class="ks3-seg-btn ks3-itrial-run" '
+            'data-itrial-run>Run the clock</button>'
+            '<button type="button" class="ks3-seg-btn" data-itrial-reset>'
+            'Reset to %d °C</button>'
+            '<button type="button" class="ks3-seg-btn" data-itrial-jump>'
+            'Jump to %d minutes</button>'
+            '<p class="ks3-itrial-clock" data-itrial-clock></p></div>'
+            '<div class="ks3-itrial-tablewrap">'
+            '<table class="ks3-itrial-table"><thead><tr>'
+            '<th scope="col">Wrapping</th><th scope="col">Now</th>'
+            '<th scope="col">Dropped by</th>'
+            '<th scope="col">What it blocks</th></tr></thead>'
+            '<tbody>%s</tbody></table></div>'
+            '<p class="ks3-itrial-close" data-itrial-close hidden>%s</p>'
+            '</div>'
+            % (int(start), int(room), int(a.get("jump_to") or 30),
+               int(a.get("done_at") or 28), data,
+               int(start), int(a.get("jump_to") or 30), rows,
+               rich(a["close"])))
+
+
+# ═══ p1-07 · ice-trial ═══════════════════════════════════════════════════
+
+def r_ice_trial(a, act_id):
+    """⊕ p1-07 `#s-ice` — the one trial that can tell the two accounts apart.
+
+    ⚖️ **THIS IS THE DECISIVE EVIDENCE AND IT IS NOT CUT** (Design's science
+    flag 18, which is written as an instruction). The hot-water curves in
+    `#s-trial` are consistent with insulation adding warmth. Wrapped ice is
+    not: if wool warmed things, wrapped ice would melt FASTER, and it lasts
+    about four times as long.
+
+    ⚠️ **THE WRAPPED CUBE MUST OUTLAST THE BARE ONE BY A LARGE MARGIN.** The
+    renderer refuses a payload where it does not, because the entire
+    argument of the lesson is the direction and the size of that difference.
+    A margin small enough to look like scatter proves nothing.
+
+    HOOKS: `data-itrial2` (wrapper, `data-bare`, `data-wrapped`) ·
+    `data-itrial2-run` · `data-itrial2-reset` · `data-itrial2-clock` ·
+    `data-itrial2-cube` (valued `bare` / `wrapped`) · `data-itrial2-note`.
+    """
+    bare = a.get("bare_minutes")
+    wrapped = a.get("wrapped_minutes")
+    notes = a.get("notes") or {}
+
+    if bare is None or wrapped is None:
+        raise ValueError(
+            "ice-trial %r has no melt times. Both are the result."
+            % act_id)
+    if int(wrapped) < int(bare) * 2:
+        raise ValueError(
+            "ice-trial %r has the wrapped cube lasting %r minutes against "
+            "the bare cube's %r. This trial exists to rule out "
+            "“insulation adds warmth”, and a margin that small "
+            "reads as scatter rather than as a result."
+            % (act_id, wrapped, bare))
+
+    for key in ("rest", "early", "decided", "done"):
+        if not notes.get(key):
+            raise ValueError(
+                "ice-trial %r has no %r note. `done` in particular carries "
+                "the conclusion, and without it the trial runs and says "
+                "nothing." % (act_id, key))
+
+    notemarks = "".join(
+        '<p class="ks3-itrial2-note" data-itrial2-note="%s"%s>%s</p>'
+        % (e(k), "" if k == "rest" else " hidden", rich(notes[k]))
+        for k in ("rest", "early", "decided", "done"))
+
+    return ('<div class="ks3-itrial2" data-itrial2 data-bare="%d" '
+            'data-wrapped="%d">'
+            '<div class="ks3-itrial2-cubes">'
+            '<div class="ks3-itrial2-col">'
+            '<span class="ks3-itrial2-cube" data-itrial2-cube="bare"></span>'
+            '<p class="ks3-itrial2-label">In the open air</p></div>'
+            '<div class="ks3-itrial2-col">'
+            '<span class="ks3-itrial2-cube is-wrapped" '
+            'data-itrial2-cube="wrapped"></span>'
+            '<p class="ks3-itrial2-label">Wrapped in wool</p></div></div>'
+            '<div class="ks3-itrial2-ctls">'
+            '<button type="button" class="ks3-seg-btn ks3-itrial2-run" '
+            'data-itrial2-run>Start the ice trial</button>'
+            '<button type="button" class="ks3-seg-btn" data-itrial2-reset>'
+            'Fresh cubes</button>'
+            '<p class="ks3-itrial2-clock" data-itrial2-clock></p></div>%s'
+            '</div>'
+            % (int(bare), int(wrapped), notemarks))
+
+
+# ═══ p1-08 · lever-bench ═════════════════════════════════════════════════
+
+def r_lever_bench(a, act_id):
+    """⊕ p1-08 `#s-bench` — move the fulcrum, read both ends, multiply.
+
+    Design's bench. A 600 N load on a 2.4 m bar; sliding the fulcrum trades
+    the student's force against the distance their end must travel, and the
+    table records the two products side by side.
+
+    ⚖️ **THE MEASURED INPUT SCATTERS UPWARD ONLY** (Design's science flag
+    20, ~+0.5% to +3.5%). Friction at the fulcrum costs energy, so the energy
+    a student puts in always EXCEEDS the ideal — never falls below it. A
+    symmetric scatter would show a machine handing out free energy several
+    times a session, which is the exact belief the lesson exists to kill, and
+    Rung 3's fifth criterion depends on the asymmetry. The renderer refuses a
+    bias that can go negative.
+
+    ⚠️ **THE TWO PRODUCTS ARE COMPUTED, NEVER AUTHORED.** `effort × effort
+    distance` and `load × load rise` are both derived from the fulcrum
+    position at run time. Authoring either would allow a row where the
+    lesson's central claim silently fails to hold.
+
+    HOOKS: `data-lever` (wrapper, `data-load`, `data-rise`, `data-bar`) ·
+    `data-lever-gate` · `data-lever-gopt` · `data-lever-bench` ·
+    `data-lever-fulcrum` (the slider) · `data-lever-record` ·
+    `data-lever-clear` · `data-lever-out` (valued with the column id) ·
+    `data-lever-rows` · `data-lever-close`.
+    """
+    gate = a.get("gate") or {}
+    cols = a.get("columns") or []
+    bias = a.get("input_bias") or {}
+    load = a.get("load")
+    rise = a.get("load_rise")
+    bar = a.get("bar")
+
+    for name, v in (("load", load), ("load_rise", rise), ("bar", bar)):
+        if not v or float(v) <= 0:
+            raise ValueError(
+                "lever-bench %r has no positive %s. All three are needed to "
+                "compute either product." % (act_id, name))
+    if float(rise) >= float(bar):
+        raise ValueError(
+            "lever-bench %r lifts the load %r m on a %r m bar. The rise has "
+            "to be small against the bar or the geometry is nonsense."
+            % (act_id, rise, bar))
+
+    if not gate.get("prompt") or len(gate.get("options") or []) < 3:
+        raise ValueError(
+            "lever-bench %r has no commit gate. A bench read before a "
+            "commitment confirms whatever the student already believed."
+            % act_id)
+
+    want = {"effort", "edist", "ein", "eout"}
+    if want - {c.get("id") for c in cols}:
+        raise ValueError(
+            "lever-bench %r is missing the %s column(s). Both products have "
+            "to be on screen together or the student cannot see that they "
+            "match." % (act_id, sorted(want - {c.get("id") for c in cols})))
+
+    lo = float(bias.get("min_pct", -1))
+    hi = float(bias.get("max_pct", -1))
+    if lo <= 0 or hi <= lo:
+        raise ValueError(
+            "lever-bench %r declares an input bias of %r..%r percent. It must "
+            "be strictly POSITIVE: friction costs energy, so a measured input "
+            "is always larger than the ideal and never smaller. A bias that "
+            "can go negative shows a machine giving energy away for free, "
+            "which is the belief this bench exists to kill."
+            % (act_id, bias.get("min_pct"), bias.get("max_pct")))
+
+    _unique_ids(cols, act_id, "lever-bench", "column")
+    _no_correct_flags(cols, act_id, "lever-bench")
+
+    opts = "".join(
+        '<button type="button" class="ks3-option" data-lever-gopt="%d" '
+        'aria-pressed="false"><span class="ks3-opt-mark" aria-hidden="true">'
+        '%s</span><span class="ks3-opt-label">%s</span></button>'
+        % (i, chr(65 + i), t(o)) for i, o in enumerate(gate["options"]))
+
+    heads = "".join("<th scope=\"col\">%s</th>" % t(c["label"]) for c in cols)
+    outs = "".join(
+        '<div class="ks3-lever-out"><p class="ks3-lever-outlabel">%s</p>'
+        '<p class="ks3-lever-outval" data-lever-out="%s"></p></div>'
+        % (t(c["label"]), e(c["id"])) for c in cols)
+
+    return ('<div class="ks3-lever" data-lever data-load="%s" data-rise="%s" '
+            'data-bar="%s" data-biaslo="%s" data-biashi="%s" '
+            'data-target="%d">'
+            '<div class="ks3-lever-gate" data-lever-gate>'
+            '<p class="ks3-commit">%s</p>'
+            '<ul class="ks3-options">%s</ul></div>'
+            '<div class="ks3-lever-bench" data-lever-bench hidden>'
+            '<div class="ks3-lever-rig">'
+            '<span class="ks3-lever-bar" aria-hidden="true"></span>'
+            '<span class="ks3-lever-pivot" data-lever-pivot '
+            'aria-hidden="true"></span></div>'
+            '<label class="ks3-lever-sliderlabel" for="%s-f">'
+            'Where the fulcrum sits · drag to set</label>'
+            '<input class="ks3-lever-slider" id="%s-f" type="range" '
+            'min="10" max="90" step="1" value="50" data-lever-fulcrum>'
+            '<div class="ks3-lever-outs">%s</div>'
+            '<div class="ks3-lever-acts">'
+            '<button type="button" class="ks3-seg-btn" data-lever-record>'
+            'Lift it and record</button>'
+            '<button type="button" class="ks3-seg-btn" data-lever-clear>'
+            'Clear the table</button></div>'
+            '<div class="ks3-lever-tablewrap">'
+            '<table class="ks3-lever-table"><thead><tr>%s</tr></thead>'
+            '<tbody data-lever-rows></tbody></table></div>'
+            '<p class="ks3-lever-close" data-lever-close hidden>%s</p>'
+            '</div></div>'
+            % (float(load), float(rise), float(bar), lo, hi,
+               int(a.get("runs_to_record") or 3),
+               t(gate["prompt"]), opts, e(act_id), e(act_id), outs, heads,
+               rich(a.get("close") or "")))
+
+
 # ═══ registration ════════════════════════════════════════════════════════
 #
 # ONE ROW PER RENDERER. `ks3_art.check_placements` gate 2 fails a family
@@ -685,10 +1648,58 @@ KIND_SHELL = {
     'waste-sort':        ("ks3-wsort-block",
                           ' data-instrument data-wsortblock '
                           'data-stage-done="0"'),
+    'running-total': ("ks3-rtotal-block",
+                          ' data-instrument data-rtotalblock '
+                          'data-stage-done="0"'),
+    'conservation-beam': ("ks3-cbeam-block",
+                          ' data-instrument data-cbeamblock '
+                          'data-stage-done="0"'),
+    'two-quantities': ("ks3-twoq-block",
+                          ' data-instrument data-twoqblock '
+                          'data-stage-done="0"'),
+    'one-way-flow': ("ks3-oflow-block",
+                          ' data-instrument data-oflowblock '
+                          'data-stage-done="0"'),
+    'conduction-bench': ("ks3-cbench-block",
+                          ' data-instrument data-cbenchblock '
+                          'data-stage-done="0"'),
+    'touch-test':        ("ks3-touch-block",
+                          ' data-instrument data-touchblock '
+                          'data-stage-done="0"'),
+    'three-routes': ("ks3-troute-block",
+                          ' data-instrument data-trouteblock '
+                          'data-stage-done="0"'),
+    'radiation-word-sort': ("ks3-rword-block",
+                          ' data-instrument data-rwordblock '
+                          'data-stage-done="0"'),
+    'insulation-trial': ("ks3-itrial-block",
+                          ' data-instrument data-itrialblock '
+                          'data-stage-done="0"'),
+    'ice-trial': ("ks3-itrial2-block",
+                          ' data-instrument data-itrial2block '
+                          'data-stage-done="0"'),
+    'plan-the-trial':    ("ks3-plan-block",
+                          ' data-instrument data-planblock '
+                          'data-stage-done="0"'),
+    'lever-bench':       ("ks3-plever-block",
+                          ' data-instrument data-pleverblock '
+                          'data-stage-done="0"'),
 }
 
 KIND_FN = {
     'store-audit': r_store_audit,
+    'lever-bench': r_lever_bench,
+    'plan-the-trial': r_waste_sort,
+    'ice-trial': r_ice_trial,
+    'insulation-trial': r_insulation_trial,
+    'radiation-word-sort': r_waste_sort,
+    'three-routes': r_three_routes,
+    'touch-test': r_waste_sort,
+    'conduction-bench': r_conduction_bench,
+    'one-way-flow': r_one_way_flow,
+    'two-quantities': r_two_quantities,
+    'conservation-beam': r_conservation_beam,
+    'running-total': r_running_total,
     'store-pathway-sort': r_store_pathway_sort,
     'before-after-tally': r_before_after_tally,
     'waste-sort': r_waste_sort,

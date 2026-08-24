@@ -23,7 +23,7 @@ against.
 | **Lesson** | `p1-01 energy-stores`, the store/pathway sort prompt |
 | **She wrote** | "Every word of that is in common use and **two** of them are not stores at all. Sort each one before you read on." |
 | **We wrote** | "Every word of that is in common use and **three** of them are not stores at all. Sort each one before you read on." |
-| **The defect** | **Her page contradicts itself.** The sort on that same page carries six cards, and three of them are marked `store: false` in her own data — `Light`, `Sound` and `Electrical`. Her sentence says two. A student who counts the cards finds three and a student who reads the sentence expects two, and the sentence concedes store status to one of the three — most likely `Electrical`, which is the one her own lesson calls the one almost everyone gets wrong. |
+| **The defect** | **Her page contradicts itself.** The sort on that same page carries six cards, and three of them are marked `store: false` in her own data — `Light`, `Sound` and `Electrical`. Her sentence says two. A student who counts the cards finds three and a student who reads the sentence expects two. Worse than the mismatch: a sentence saying TWO of those three are not stores concedes that one of them IS — and that is `ENER-10` verbatim, the misconception this very lesson exists to kill. (Which one it concedes is not stated and is not guessed at here.) |
 | **Measured** | Her `SORT` array: `Kinetic store:true · Light store:false · Chemical store:true · Sound store:false · Elastic store:true · Electrical store:false`. Three false. |
 | **Raised by** | content-phys (run 2), against its own work. Re-measured independently here before being kept. |
 
@@ -97,6 +97,42 @@ kept: it is the confrontation of `ENER-12`, and a bench that only ever shows
 conservation working cannot confront the belief that energy goes missing.
 Recorded here so that a future reviewer meeting a control that appears to teach
 the wrong thing finds the reason before deleting it.
+
+### E · `p1-05` and `p1-08` — three more marginal `apply` rungs, left alone
+
+`p1-04 r2` runs 13w against 12w (gap 1, ratio 1.08), `p1-05 r1` runs 6w
+against 5w (gap 1, ratio 1.20) and `p1-08 r2` runs 15w against 13w (gap 2,
+ratio 1.15). All three are inside both limbs of the MRB-177 gate and all three
+ship exactly as she wrote them.
+
+Recorded because the temptation was real: having re-cut two rungs that DID
+fail, it would have been easy to "tidy" three more that pass. A marginal pass
+is not a defect. Only the two that actually tripped the gate — `p1-01 apply`
+and `p1-03 apply` — were touched.
+
+---
+
+## Connective text — new student-visible words, and why they are not rows
+
+Recorded here in full rather than buried, because it is the one category
+where words a student reads were written by this port rather than by Design.
+
+The engine's `check` shell requires a `prompt` on an instrument block. Her
+pages express the same instruction differently — inside the bench panel, as a
+control label, or as a line under the canvas — so where a `prompt` had no
+direct counterpart in her markup, one was written to say what her page says
+in the place the engine puts it. The same applies to a handful of `close`
+panels on instruments where her closing note sits in a canvas caption.
+
+This is **not** treated as a departure and takes no row, because it changes no
+claim and contradicts nothing she wrote — it is the same instruction relocated
+to the slot the renderer reads. It is listed here so that a reviewer comparing
+her page with the built one and finding a sentence that is not hers knows
+where it came from and can rule on it.
+
+Where her wording DID have a counterpart, hers is used verbatim.
+
+---
 
 ---
 

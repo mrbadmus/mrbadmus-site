@@ -1318,6 +1318,14 @@ turn the MRB-244 gate red rather than quietly breaking the pointer.
 | `ENER-09` | Energy gets used up. When something stops, the energy it had has been spent and is gone. | `s-hook` | `store-audit-ledger` | `energy-stores` |
 | `ENER-10` | Light, sound and electricity are kinds of energy that things store. | `store-pathway-sort` | `store-pathway-sort` | `energy-stores` |
 | `ENER-11` | There is energy inside the battery, and using the phone lets it leak out until there is none left. | `s-hook` | `before-after-tally` | `energy-transfers-before-and-after` |
+| `ENER-12` | The car has stopped, so it has run out of energy — a quantity that stops being visible has stopped existing. | `s-hook` | `running-total` | `conservation-of-energy` |
+| `ENER-13` | Temperature and energy are the same thing — if something is hotter it must hold more energy. | `s-hook` | `two-quantities` | `heating-and-thermal-equilibrium` |
+| `ENER-14` | Cold is a substance that travels — put ice in a drink and the cold moves out of the ice into the drink. | `think-cold-travels` | `one-way-flow` | `heating-and-thermal-equilibrium` |
+| `ENER-15` | Metal is a colder material than wood — some materials are inherently colder than others. | `s-hook` | `touch-test` | `conduction` |
+| `ENER-16` | Heat rises, so heating always travels upwards. | `three-routes` | `think-heat-rises` | `radiation` |
+| `ENER-17` | Radiation means the dangerous kind — anything called radiation can harm you. | `radiation-word-sort` | `radiation-word-sort` | `radiation` |
+| `ENER-18` | A blanket, a woolly hat or a coat is a source of warmth — insulation adds heat to what it wraps. | `s-hook` | `ice-trial` | `insulation` |
+| `ENER-19` | A machine that multiplies force gives you energy for free. | `s-hook` | `lever-bench` | `simple-machines` |
 
 ⊕ **`ENER-09` ONWARD ARE PHYSICS, IN THE SAME FAMILY.** The prefix table's ruling is
 explicit — *"A physics lane meeting an energy misconception adds to `ENER`; it does not
@@ -1332,6 +1340,12 @@ continues. Her §1 announces fourteen ids, `ENERGY-01`..`ENERGY-14`, but her §2
 coverage table names only ELEVEN distinct beliefs across the eight lessons — so
 the block was never fourteen entries wide, and P1 mints eleven, `ENER-09`
 through `ENER-19`, one per belief her table actually confronts.
+
+⊕ **`ENER-12`..`ENER-19` ADDED 24 Aug 2026 BY `p1-03`..`p1-08`.** Design's `NOTES-P1.md` §2 calls them `ENERGY-04`..`ENERGY-11`; the prefix is `ENER` and the numbering continues, for the reason above.
+
+⚠️ **`ENER-12` WAS ANTICIPATED BY THIS REGISTER BEFORE IT EXISTED.** The `PART-05` lock below names `ENER-12` as `p1-03`'s id while no such row was in the table — it was reserved in prose by the run that minted `ENER-09`/`ENER-10`, and `p1-03` has now filled it. The lock stands unchanged: `c1-03` and `p1-03` confront one underlying belief by two different instruments, a balance for mass and a thermometer for energy, and NEITHER may drop its confrontation on the grounds that the other covers it.
+
+⊖ **`PART-03` IS RE-CONFRONTED BY `p1-04` AND MINTS NOTHING.** The closing paragraph of her `#s-think` is C1's fixed-size reference particle doing work in a new situation — heating changes how fast particles move and nothing else — rather than a new belief.
 
 ⚠️ **`ENER-12` (`p1-03`) AND `PART-05` WILL BE THE SAME UNDERLYING BELIEF** — that a
 quantity stops existing when it stops being visible. Design's notes lock them together and

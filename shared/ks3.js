@@ -6054,6 +6054,868 @@
     setCount(sec, 0);
   }
 
+  /* p1-03 `#s-bench` — the running total, and the store you can hide.
+
+     ⚖️ HIDING THE THERMAL STORE IS THE ARGUMENT, NOT A BUG. With it hidden
+     the bars stop reaching the total line and conservation looks false. That
+     is Design's science flag 7 and the confrontation of ENER-12: a student
+     who believes energy goes missing needs to see the missing-energy picture
+     drawn and then explained, not merely denied.
+
+     ⚠️ THE TOTAL IS DERIVED ON EVERY PAINT. grav + kin + therm is summed
+     rather than stored, so the readout cannot drift from the bars above it.
+     The swing is a cosine; friction bleeds a fixed fraction per frame into
+     the thermal store and the three always sum to TOTAL. */
+  function wireRunningTotal(sec) {
+    var wrap = sec.querySelector("[data-rtotal]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-rtotal-gate]");
+    var bench = wrap.querySelector("[data-rtotal-bench]");
+    var gopts = toArray(wrap.querySelectorAll("[data-rtotal-gopt]"));
+    var ctls = toArray(wrap.querySelectorAll("[data-rtotal-ctl]"));
+    var notes = toArray(wrap.querySelectorAll("[data-rtotal-note]"));
+    if (!ctls.length) { return; }
+
+    var TOTAL = parseInt(wrap.getAttribute("data-total"), 10) || 120;
+    var st = {
+      running: false, friction: true, hide: false,
+      everRan: false, stopped: false, phase: 0, amp: 1, therm: 0
+    };
+    var timer = null;
+
+    function ctl(id) {
+      return wrap.querySelector('[data-rtotal-ctl="' + id + '"]');
+    }
+    function bar(id) {
+      return wrap.querySelector('[data-rtotal-bar="' + id + '"]');
+    }
+    function out(id) {
+      return wrap.querySelector('[data-rtotal-out="' + id + '"]');
+    }
+
+    function values() {
+      /* Energy in the swing after friction has taken `therm`. */
+      var swing = TOTAL - st.therm;
+      /* Cosine phase: all gravitational at the ends, all kinetic at the
+         bottom. Squared so the two trade twice per swing. */
+      var c = Math.cos(st.phase);
+      var grav = swing * c * c;
+      return { grav: grav, kin: swing - grav, therm: st.therm };
+    }
+
+    function noteKey() {
+      if (st.hide) { return "hidden"; }
+      if (!st.friction) { return "no_friction"; }
+      if (st.stopped) { return "stopped"; }
+      if (st.everRan) { return "running"; }
+      return "rest";
+    }
+
+    function paint() {
+      var v = values();
+      var shown = st.hide ? (v.grav + v.kin) : TOTAL;
+      var el;
+
+      el = bar("grav");
+      if (el) { el.style.height = (v.grav / TOTAL) * 100 + "%"; }
+      el = bar("kin");
+      if (el) { el.style.height = (v.kin / TOTAL) * 100 + "%"; }
+      el = bar("therm");
+      if (el) {
+        setHidden(el, st.hide);
+        el.style.height = (v.therm / TOTAL) * 100 + "%";
+      }
+
+      el = out("grav");  if (el) { el.textContent = Math.round(v.grav) + " J"; }
+      el = out("kin");   if (el) { el.textContent = Math.round(v.kin) + " J"; }
+      el = out("therm"); if (el) {
+        el.textContent = st.hide ? "hidden" : Math.round(v.therm) + " J";
+      }
+      /* ⚠️ With the thermal store hidden the total READS SHORT on purpose —
+         that is the whole point of the control. It is not a rounding bug. */
+      el = out("total"); if (el) { el.textContent = Math.round(shown) + " J"; }
+
+      el = ctl("run");
+      if (el) {
+        el.textContent = st.running ? "Pause"
+          : (st.everRan ? "Continue" : "Release it");
+        el.setAttribute("aria-pressed", st.running ? "true" : "false");
+      }
+      el = ctl("friction");
+      if (el) {
+        el.textContent = st.friction ? "Switch friction off"
+                                     : "Switch friction on";
+        el.setAttribute("aria-pressed", st.friction ? "false" : "true");
+      }
+      el = ctl("hide");
+      if (el) {
+        el.textContent = st.hide ? "Show the thermal store"
+                                 : "Hide the thermal store";
+        el.setAttribute("aria-pressed", st.hide ? "true" : "false");
+      }
+
+      var key = noteKey();
+      each(notes, function (n) {
+        setHidden(n, n.getAttribute("data-rtotal-note") !== key);
+      });
+
+      /* Design's DONE: stopped OR the thermal store has been hidden. */
+      setCount(sec, (st.stopped || st.hide) ? 1 : 0);
+    }
+
+    function tick() {
+      st.phase += 0.09;
+      if (st.friction) {
+        var swing = TOTAL - st.therm;
+        st.therm += swing * 0.004;
+        if (TOTAL - st.therm < TOTAL * 0.01) {
+          st.therm = TOTAL;
+          st.running = false;
+          st.stopped = true;
+          stop();
+        }
+      }
+      paint();
+    }
+
+    function stop() {
+      if (timer) { window.clearInterval(timer); timer = null; }
+    }
+    function start() {
+      stop();
+      /* prefers-reduced-motion: still runs, just without the animation —
+         the student gets the end state rather than no state. */
+      if (window.matchMedia &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        for (var i = 0; i < 400 && !st.stopped; i++) { tick(); }
+        return;
+      }
+      timer = window.setInterval(tick, 40);
+    }
+
+    function reset() {
+      stop();
+      st.running = false; st.stopped = false; st.phase = 0; st.therm = 0;
+      paint();
+    }
+
+    each(gopts, function (btn) {
+      btn.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === btn ? "true" : "false");
+        });
+        setHidden(gate, true);
+        setHidden(bench, false);
+        paint();
+      });
+    });
+
+    each(ctls, function (btn) {
+      btn.addEventListener("click", function () {
+        var id = btn.getAttribute("data-rtotal-ctl");
+        if (id === "run") {
+          if (st.stopped) { reset(); }
+          st.running = !st.running;
+          st.everRan = true;
+          if (st.running) { start(); } else { stop(); }
+        } else if (id === "reset") {
+          reset();
+        } else if (id === "friction") {
+          st.friction = !st.friction;
+          reset();
+        } else if (id === "hide") {
+          st.hide = !st.hide;
+        }
+        paint();
+      });
+    });
+
+    paint();
+  }
+
+  /* p1-03 `#s-balance` — a BEAM over a sum, never a triangle.
+
+     ⚖️ MRB-204. Design's own heading argues it: conservation is a sum on each
+     side of an equals sign, and a triangle encodes A = B x C. The pans are
+     driven from the authored splits, and every split is checked at build
+     time to total the whole — a beam whose pans do not match is a beam that
+     contradicts the thing it is drawn to teach. */
+  function wireConservationBeam(sec) {
+    var wrap = sec.querySelector("[data-cbeam]");
+    if (!wrap) { return; }
+    var picks = toArray(wrap.querySelectorAll("[data-cbeam-split]"));
+    var notes = toArray(wrap.querySelectorAll("[data-cbeam-note]"));
+    if (!picks.length) { return; }
+
+    var TOTAL = parseInt(wrap.getAttribute("data-total"), 10) || 0;
+    var current = picks[0].getAttribute("data-cbeam-split");
+
+    function seg(key) {
+      return wrap.querySelector('[data-cbeam-seg="' + key + '"]');
+    }
+    function val(key) {
+      return parseInt(
+        wrap.getAttribute("data-cbeam-" + key + "-" + current), 10) || 0;
+    }
+
+    function paint() {
+      var keys = ["grav", "kin", "therm"];
+      each(keys, function (k) {
+        var el = seg(k);
+        if (el) {
+          var v = val(k);
+          el.style.height = (TOTAL ? (v / TOTAL) * 100 : 0) + "%";
+          /* A zero-height segment must not keep its border, or an empty
+             store draws as a hairline that looks like a small amount. */
+          setHidden(el, v === 0);
+        }
+      });
+      each(picks, function (p) {
+        var on = p.getAttribute("data-cbeam-split") === current;
+        p.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      each(notes, function (n) {
+        setHidden(n, n.getAttribute("data-cbeam-note") !== current);
+      });
+      /* Design's DONE for this stop: the student has moved off the first
+         configuration, i.e. has seen the beam hold in more than one. */
+      setCount(sec, current === picks[0].getAttribute("data-cbeam-split")
+                    ? 0 : 1);
+    }
+
+    each(picks, function (btn) {
+      btn.addEventListener("click", function () {
+        current = btn.getAttribute("data-cbeam-split");
+        paint();
+      });
+    });
+
+    paint();
+  }
+
+  /* p1-04 `#s-two` — two axes, and only one of them moves the temperature.
+
+     ⚖️ THE THERMAL BAR IS LOGARITHMIC (Design's science flag 10). The
+     spark-to-bath range is about 10^9, so a linear bar leaves the spark at
+     zero pixels and teaches that a spark holds no energy — the opposite of
+     the lesson. log10 is taken of the store and mapped onto the bar; the
+     scale note under it says so, and the renderer refuses a payload without
+     that note. */
+  function wireTwoQuantities(sec) {
+    var wrap = sec.querySelector("[data-twoq]");
+    if (!wrap) { return; }
+    var amts = toArray(wrap.querySelectorAll("[data-twoq-amt]"));
+    var spds = toArray(wrap.querySelectorAll("[data-twoq-spd]"));
+    var close = wrap.querySelector("[data-twoq-close]");
+    if (!amts.length || !spds.length) { return; }
+
+    var amt = amts[0].getAttribute("data-twoq-amt");
+    var spd = (spds[1] || spds[0]).getAttribute("data-twoq-spd");
+    var movedAmt = false, movedSpd = false;
+
+    function n() {
+      return parseInt(wrap.getAttribute("data-twoq-n-" + amt), 10) || 1;
+    }
+    function temp() {
+      return parseInt(wrap.getAttribute("data-twoq-t-" + spd), 10) || 0;
+    }
+
+    function paint() {
+      /* The store scales with BOTH how many particles and how fast they
+         move. n is Design's particle-count index, t her temperature. */
+      var store = n() * temp();
+      var el;
+
+      el = wrap.querySelector('[data-twoq-out="temp"]');
+      if (el) { el.textContent = temp() + " °C"; }
+      el = wrap.querySelector('[data-twoq-out="store"]');
+      if (el) {
+        el.textContent = store >= 1000
+          ? Math.round(store / 1000) + " kJ (about)"
+          : Math.round(store) + " J (about)";
+      }
+      el = wrap.querySelector("[data-twoq-bar]");
+      if (el) {
+        /* log10, floored at 0 so an empty bar is empty rather than negative. */
+        var pct = Math.max(0, Math.min(100, (Math.log(store + 1) / Math.LN10) * 22));
+        el.style.width = pct + "%";
+      }
+
+      each(amts, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-twoq-amt") === amt ? "true" : "false");
+      });
+      each(spds, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-twoq-spd") === spd ? "true" : "false");
+      });
+
+      /* Design's DONE: BOTH axes have been moved. Moving one and watching
+         one readout respond is not the observation the lesson wants. */
+      if (close) { setHidden(close, !(movedAmt && movedSpd)); }
+      setCount(sec, (movedAmt && movedSpd) ? 1 : 0);
+    }
+
+    each(amts, function (b) {
+      b.addEventListener("click", function () {
+        amt = b.getAttribute("data-twoq-amt");
+        movedAmt = true;
+        paint();
+      });
+    });
+    each(spds, function (b) {
+      b.addEventListener("click", function () {
+        spd = b.getAttribute("data-twoq-spd");
+        movedSpd = true;
+        paint();
+      });
+    });
+
+    paint();
+  }
+
+  /* p1-04 `#s-flow` — one arrow, and one arrow that does not exist.
+
+     ⚖️ THE GHOST ARROW IS DRAWN AND LABELLED AS NOT EXISTING (Design's
+     science flag 11). A student who believes cold flows needs to see that
+     belief on the screen and struck through, not merely left out. It must
+     not be tidied away as a contradictory label.
+
+     ⚠️ THE EQUAL PAIR MUST SHOW NOTHING HAPPENING. Design's third pair is
+     two blocks both at 30 degrees: no net flow, no arrow, no movement. That
+     is thermal equilibrium shown as a STATE rather than as an ending, and
+     the renderer refuses a payload with no equal pair. */
+  function wireOneWayFlow(sec) {
+    var wrap = sec.querySelector("[data-oflow]");
+    if (!wrap) { return; }
+    var picks = toArray(wrap.querySelectorAll("[data-oflow-pair]"));
+    var runBtn = wrap.querySelector("[data-oflow-run]");
+    var notes = toArray(wrap.querySelectorAll("[data-oflow-note]"));
+    if (!picks.length) { return; }
+
+    var current = picks[0].getAttribute("data-oflow-pair");
+    var ran = {};
+    var timer = null;
+
+    function attr(key) {
+      return parseInt(
+        wrap.getAttribute("data-oflow-" + key + "-" + current), 10) || 0;
+    }
+    function name(key) {
+      return wrap.getAttribute("data-oflow-" + key + "name-" + current) || "";
+    }
+
+    var hot = 0, cold = 0;
+
+    function reset() {
+      if (timer) { window.clearInterval(timer); timer = null; }
+      hot = attr("hot");
+      cold = attr("cold");
+    }
+
+    function paint() {
+      var el;
+      el = wrap.querySelector('[data-oflow-name="hot"]');
+      if (el) { el.textContent = name("hot"); }
+      el = wrap.querySelector('[data-oflow-name="cold"]');
+      if (el) { el.textContent = name("cold"); }
+      el = wrap.querySelector('[data-oflow-temp="hot"]');
+      if (el) { el.textContent = Math.round(hot) + " °C"; }
+      el = wrap.querySelector('[data-oflow-temp="cold"]');
+      if (el) { el.textContent = Math.round(cold) + " °C"; }
+
+      /* No temperature difference means no net flow and NO arrow — the
+         equal pair must look like nothing happening, because it is. */
+      var flowing = Math.abs(hot - cold) > 0.4;
+      el = wrap.querySelector("[data-oflow-arrow]");
+      if (el) { setHidden(el, !flowing); }
+
+      each(picks, function (p) {
+        p.setAttribute("aria-pressed",
+          p.getAttribute("data-oflow-pair") === current ? "true" : "false");
+      });
+      each(notes, function (nn) {
+        setHidden(nn, nn.getAttribute("data-oflow-note") !== current);
+      });
+      setCount(sec, Object.keys(ran).length);
+    }
+
+    function tick() {
+      var gap = hot - cold;
+      if (Math.abs(gap) <= 0.4) {
+        hot = cold = (hot + cold) / 2;
+        if (timer) { window.clearInterval(timer); timer = null; }
+        paint();
+        return;
+      }
+      /* Both move toward each other; the smaller body moves faster, which
+         is why Design's hot spoon loses temperature while the water barely
+         warms. Approximated by a fixed fraction of the gap each way. */
+      hot -= gap * 0.06;
+      cold += gap * 0.03;
+      paint();
+    }
+
+    each(picks, function (btn) {
+      btn.addEventListener("click", function () {
+        current = btn.getAttribute("data-oflow-pair");
+        reset();
+        paint();
+      });
+    });
+
+    if (runBtn) {
+      runBtn.addEventListener("click", function () {
+        ran[current] = true;
+        reset();
+        if (window.matchMedia &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          for (var i = 0; i < 300 && Math.abs(hot - cold) > 0.4; i++) { tick(); }
+          paint();
+          return;
+        }
+        timer = window.setInterval(tick, 60);
+      });
+    }
+
+    reset();
+    paint();
+  }
+
+  /* p1-05 `#s-bar` — four rods, one flame.
+
+     ⚠️ "never" IS A RESULT, NOT A MISSING VALUE. Wood's far end does not get
+     there; the clock says so rather than running forever or reading zero.
+
+     ⚖️ THE FREE-ELECTRON CONTROL MUST SPEAK ON A NON-METAL (Design's flag
+     14). Pressing it on glass or wood shows a sentence saying there are none
+     to show — a control that silently does nothing reads as broken. */
+  function wireConductionBench(sec) {
+    var wrap = sec.querySelector("[data-cbench]");
+    if (!wrap) { return; }
+    var picks = toArray(wrap.querySelectorAll("[data-cbench-mat]"));
+    var runBtn = wrap.querySelector("[data-cbench-run]");
+    var elecBtn = wrap.querySelector("[data-cbench-elec]");
+    var elecNote = wrap.querySelector("[data-cbench-elecnote]");
+    var clock = wrap.querySelector("[data-cbench-clock]");
+    var wax = wrap.querySelector("[data-cbench-wax]");
+    var rod = wrap.querySelector("[data-cbench-rod]");
+    var notes = toArray(wrap.querySelectorAll("[data-cbench-note]"));
+    if (!picks.length) { return; }
+
+    var current = picks[0].getAttribute("data-cbench-mat");
+    var elecOn = false;
+    var ran = {};
+    var timer = null;
+    var t = 0;
+
+    function waxTime() {
+      var v = wrap.getAttribute("data-cbench-wax-" + current);
+      return v === "never" ? null : (parseInt(v, 10) || 0);
+    }
+    function isMetal() {
+      return wrap.getAttribute("data-cbench-metal-" + current) === "1";
+    }
+
+    function stop() {
+      if (timer) { window.clearInterval(timer); timer = null; }
+    }
+
+    function paint() {
+      var target = waxTime();
+      if (clock) {
+        if (target === null) {
+          clock.textContent = t > 0
+            ? t.toFixed(0) + " s — and the far end is still cold"
+            : "Wood: the wax never goes";
+        } else if (t >= target) {
+          clock.textContent = target + " s — the wax drops";
+        } else {
+          clock.textContent = t.toFixed(0) + " s";
+        }
+      }
+      if (wax) {
+        var gone = target !== null && t >= target;
+        wax.className = "ks3-cbench-wax" + (gone ? " is-gone" : "");
+      }
+      if (rod) {
+        /* How far the warm front has travelled, as a fraction of the rod. */
+        var frac = target === null
+          ? Math.min(0.35, t / 400)
+          : Math.min(1, t / target);
+        rod.style.setProperty("--cbench-front", (frac * 100) + "%");
+        rod.className = "ks3-cbench-rod" + (elecOn && isMetal()
+          ? " is-electrons" : "");
+      }
+      each(picks, function (p) {
+        p.setAttribute("aria-pressed",
+          p.getAttribute("data-cbench-mat") === current ? "true" : "false");
+      });
+      each(notes, function (n) {
+        setHidden(n, n.getAttribute("data-cbench-note") !== current);
+      });
+      if (elecBtn) {
+        elecBtn.setAttribute("aria-pressed", elecOn ? "true" : "false");
+        var alt = elecBtn.getAttribute("data-alt");
+        if (elecOn && alt) { elecBtn.textContent = alt; }
+      }
+      if (elecNote) { setHidden(elecNote, !(elecOn && !isMetal())); }
+      setCount(sec, Object.keys(ran).length);
+    }
+
+    function tick() {
+      t += 1;
+      var target = waxTime();
+      if (target !== null && t >= target) { stop(); }
+      if (target === null && t >= 200) { stop(); }
+      paint();
+    }
+
+    each(picks, function (btn) {
+      btn.addEventListener("click", function () {
+        stop();
+        current = btn.getAttribute("data-cbench-mat");
+        t = 0;
+        paint();
+      });
+    });
+
+    if (runBtn) {
+      runBtn.addEventListener("click", function () {
+        stop();
+        ran[current] = true;
+        t = 0;
+        if (window.matchMedia &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          var target = waxTime();
+          t = target === null ? 200 : target;
+          paint();
+          return;
+        }
+        /* 40ms a second, so copper's nine seconds reads in about a third of
+           a second and glass's 150 in six. Wood stops itself at 200. */
+        timer = window.setInterval(tick, 40);
+      });
+    }
+
+    if (elecBtn) {
+      elecBtn.addEventListener("click", function () {
+        elecOn = !elecOn;
+        paint();
+      });
+    }
+
+    paint();
+  }
+
+  /* p1-06 `#s-routes` — which routes survive?
+
+     The first scenario is the misleading one and it is first deliberately:
+     detector above in air, convection and radiation both delivering. That is
+     the everyday case that convinces people heating only goes up, so the
+     bench begins with the student's own belief rather than a strawman. */
+  function wireThreeRoutes(sec) {
+    var wrap = sec.querySelector("[data-troute]");
+    if (!wrap) { return; }
+    var picks = toArray(wrap.querySelectorAll("[data-troute-sc]"));
+    var lamps = toArray(wrap.querySelectorAll("[data-troute-lamp]"));
+    var notes = toArray(wrap.querySelectorAll("[data-troute-note]"));
+    if (!picks.length) { return; }
+
+    var current = picks[0].getAttribute("data-troute-sc");
+    var seen = {};
+
+    function paint() {
+      each(lamps, function (l) {
+        var id = l.getAttribute("data-troute-lamp");
+        var on = wrap.getAttribute("data-troute-" + id + "-" + current) === "1";
+        l.className = "ks3-troute-lamp" + (on ? " is-on" : " is-off");
+        var st = l.querySelector('[data-troute-state="' + id + '"]');
+        if (st) { st.textContent = on ? "delivering" : "cannot work here"; }
+      });
+      each(picks, function (p) {
+        p.setAttribute("aria-pressed",
+          p.getAttribute("data-troute-sc") === current ? "true" : "false");
+      });
+      each(notes, function (n) {
+        setHidden(n, n.getAttribute("data-troute-note") !== current);
+      });
+      setCount(sec, Object.keys(seen).length);
+    }
+
+    each(picks, function (btn) {
+      btn.addEventListener("click", function () {
+        current = btn.getAttribute("data-troute-sc");
+        seen[current] = true;
+        paint();
+      });
+    });
+
+    seen[current] = true;
+    paint();
+  }
+
+  /* p1-07 `#s-trial` — four beakers cooling side by side.
+
+     Newton's law of cooling: the gap to the room shrinks exponentially, and
+     `k` scales how fast for each wrapping. Every beaker starts at the same
+     temperature, so any difference at the end is the wrapping and nothing
+     else — which is what `#s-plan` has just made the student promise. */
+  function wireInsulationTrial(sec) {
+    var wrap = sec.querySelector("[data-itrial]");
+    if (!wrap) { return; }
+    var runBtn = wrap.querySelector("[data-itrial-run]");
+    var resetBtn = wrap.querySelector("[data-itrial-reset]");
+    var jumpBtn = wrap.querySelector("[data-itrial-jump]");
+    var clock = wrap.querySelector("[data-itrial-clock]");
+    var close = wrap.querySelector("[data-itrial-close]");
+    var rows = toArray(wrap.querySelectorAll("[data-itrial-row]"));
+    if (!rows.length) { return; }
+
+    var START = parseFloat(wrap.getAttribute("data-start")) || 80;
+    var ROOM = parseFloat(wrap.getAttribute("data-room")) || 20;
+    var JUMP = parseFloat(wrap.getAttribute("data-jump")) || 30;
+    var DONE = parseFloat(wrap.getAttribute("data-done")) || 28;
+    var t = 0, running = false, timer = null;
+
+    function tempOf(id) {
+      var k = parseFloat(wrap.getAttribute("data-itrial-k-" + id)) || 1;
+      /* 0.055 sets the control's half-life at about 12 minutes, which puts
+         a visible spread across the four by ten and a clear one by thirty. */
+      return ROOM + (START - ROOM) * Math.exp(-0.055 * k * t);
+    }
+
+    function paint() {
+      if (clock) { clock.textContent = "Elapsed: " + t.toFixed(0) + " min"; }
+      each(rows, function (r) {
+        var id = r.getAttribute("data-itrial-row");
+        var T = tempOf(id);
+        var now = r.querySelector('[data-itrial-now="' + id + '"]');
+        var drop = r.querySelector('[data-itrial-drop="' + id + '"]');
+        if (now) { now.textContent = T.toFixed(1) + " °C"; }
+        if (drop) { drop.textContent = (START - T).toFixed(1) + " °C"; }
+      });
+      /* ⚠️ The close does NOT say the trial proved insulation works. It says
+         what the curves cannot rule out, which is why #s-ice exists. */
+      if (close) { setHidden(close, t < DONE); }
+      setCount(sec, t >= DONE ? 1 : 0);
+    }
+
+    function stop() {
+      running = false;
+      if (timer) { window.clearInterval(timer); timer = null; }
+      if (runBtn) { runBtn.textContent = t > 0 ? "Continue" : "Run the clock"; }
+    }
+
+    function tick() {
+      t += 1;
+      if (t >= 60) { t = 60; stop(); }
+      paint();
+    }
+
+    if (runBtn) {
+      runBtn.addEventListener("click", function () {
+        if (running) { stop(); paint(); return; }
+        running = true;
+        runBtn.textContent = "Pause";
+        if (window.matchMedia &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          t = JUMP; stop(); paint(); return;
+        }
+        timer = window.setInterval(tick, 90);
+      });
+    }
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        stop(); t = 0; paint();
+      });
+    }
+    if (jumpBtn) {
+      jumpBtn.addEventListener("click", function () {
+        stop(); t = JUMP; paint();
+      });
+    }
+
+    paint();
+  }
+
+  /* p1-07 `#s-ice` — the trial that decides it.
+
+     ⚖️ THIS IS THE ONLY DECISIVE EVIDENCE IN THE LESSON (Design's flag 18).
+     The hot-water curves are equally consistent with the wool ADDING
+     warmth. Wrapped ice is not: a warmth-adding blanket would melt it
+     faster, and it lasts about four times as long. */
+  function wireIceTrial(sec) {
+    var wrap = sec.querySelector("[data-itrial2]");
+    if (!wrap) { return; }
+    var runBtn = wrap.querySelector("[data-itrial2-run]");
+    var resetBtn = wrap.querySelector("[data-itrial2-reset]");
+    var clock = wrap.querySelector("[data-itrial2-clock]");
+    var notes = toArray(wrap.querySelectorAll("[data-itrial2-note]"));
+    if (!runBtn) { return; }
+
+    var BARE = parseFloat(wrap.getAttribute("data-bare")) || 14;
+    var WRAPPED = parseFloat(wrap.getAttribute("data-wrapped")) || 54;
+    var t = 0, running = false, timer = null, seen = false;
+
+    function cube(which) {
+      return wrap.querySelector('[data-itrial2-cube="' + which + '"]');
+    }
+
+    function paint() {
+      var bareLeft = Math.max(0, 1 - t / BARE);
+      var wrapLeft = Math.max(0, 1 - t / WRAPPED);
+      var el;
+      el = cube("bare");
+      if (el) { el.style.transform = "scale(" + (0.25 + 0.75 * bareLeft) + ")"; }
+      el = cube("wrapped");
+      if (el) { el.style.transform = "scale(" + (0.25 + 0.75 * wrapLeft) + ")"; }
+      if (clock) { clock.textContent = t.toFixed(0) + " min"; }
+
+      var key = !seen ? "rest"
+              : (t >= WRAPPED ? "done" : (t >= BARE ? "decided" : "early"));
+      each(notes, function (n) {
+        setHidden(n, n.getAttribute("data-itrial2-note") !== key);
+      });
+      setCount(sec, t >= BARE ? 1 : 0);
+    }
+
+    function stop() {
+      running = false;
+      if (timer) { window.clearInterval(timer); timer = null; }
+      runBtn.textContent = t > 0 ? "Continue" : "Start the ice trial";
+    }
+
+    function tick() {
+      t += 1;
+      if (t >= WRAPPED) { t = WRAPPED; stop(); }
+      paint();
+    }
+
+    runBtn.addEventListener("click", function () {
+      seen = true;
+      if (running) { stop(); paint(); return; }
+      running = true;
+      runBtn.textContent = "Pause";
+      if (window.matchMedia &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        t = WRAPPED; stop(); paint(); return;
+      }
+      timer = window.setInterval(tick, 70);
+    });
+
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        stop(); t = 0; seen = false; paint();
+      });
+    }
+
+    paint();
+  }
+
+  /* p1-08 `#s-bench` — the lever, and the two products that always match.
+
+     ⚖️ THE MEASURED INPUT SCATTERS UPWARD ONLY (Design's flag 20). Friction
+     costs energy, so a real run needs a little MORE in than comes out and
+     never less. The bias is read off the payload and is guaranteed positive
+     at build time, so no run can ever show a machine giving energy away. */
+  function wireLeverBench(sec) {
+    var wrap = sec.querySelector("[data-lever]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-lever-gate]");
+    var bench = wrap.querySelector("[data-lever-bench]");
+    var gopts = toArray(wrap.querySelectorAll("[data-lever-gopt]"));
+    var slider = wrap.querySelector("[data-lever-fulcrum]");
+    var pivot = wrap.querySelector("[data-lever-pivot]");
+    var recordBtn = wrap.querySelector("[data-lever-record]");
+    var clearBtn = wrap.querySelector("[data-lever-clear]");
+    var body = wrap.querySelector("[data-lever-rows]");
+    var close = wrap.querySelector("[data-lever-close]");
+    if (!slider) { return; }
+
+    var LOAD = parseFloat(wrap.getAttribute("data-load")) || 600;
+    var RISE = parseFloat(wrap.getAttribute("data-rise")) || 0.05;
+    var LO = parseFloat(wrap.getAttribute("data-biaslo")) || 0.5;
+    var HI = parseFloat(wrap.getAttribute("data-biashi")) || 3.5;
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || 3;
+    var runs = 0;
+
+    function geom() {
+      /* Slider is the fulcrum position as a percentage along the bar. The
+         load sits at one end and the student pushes at the other, so the
+         two arms are the two sides of that split. */
+      var pct = parseFloat(slider.value) || 50;
+      var loadArm = pct / 100;
+      var effortArm = 1 - loadArm;
+      var ratio = loadArm / effortArm;
+      var effort = LOAD * ratio;
+      var edist = RISE / ratio;
+      return { pct: pct, effort: effort, edist: edist,
+               eout: LOAD * RISE, ein: LOAD * RISE };
+    }
+
+    function paint() {
+      var g = geom();
+      var el;
+      if (pivot) { pivot.style.left = g.pct + "%"; }
+      el = wrap.querySelector('[data-lever-out="effort"]');
+      if (el) { el.textContent = g.effort.toFixed(0) + " N"; }
+      el = wrap.querySelector('[data-lever-out="edist"]');
+      if (el) { el.textContent = g.edist.toFixed(3) + " m"; }
+      el = wrap.querySelector('[data-lever-out="ein"]');
+      if (el) { el.textContent = g.ein.toFixed(1) + " J"; }
+      el = wrap.querySelector('[data-lever-out="eout"]');
+      if (el) { el.textContent = g.eout.toFixed(1) + " J"; }
+      if (close) { setHidden(close, runs < TARGET); }
+      setCount(sec, runs);
+    }
+
+    each(gopts, function (btn) {
+      btn.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === btn ? "true" : "false");
+        });
+        setHidden(gate, true);
+        setHidden(bench, false);
+        paint();
+      });
+    });
+
+    slider.addEventListener("input", paint);
+    slider.addEventListener("change", paint);
+
+    if (recordBtn) {
+      recordBtn.addEventListener("click", function () {
+        var g = geom();
+        /* ⚠️ ONE-SIDED. `LO + (HI-LO)*fraction` is always positive, so the
+           measured input always exceeds the ideal. Varying it by the
+           fulcrum position rather than at random keeps the table stable on
+           a re-read and still gives a different figure per row. */
+        var frac = ((g.pct * 37) % 100) / 100;
+        var bias = 1 + (LO + (HI - LO) * frac) / 100;
+        var measured = g.ein * bias;
+        var tr = document.createElement("tr");
+        tr.innerHTML =
+          "<td>" + g.effort.toFixed(0) + " N</td>" +
+          "<td>" + g.edist.toFixed(3) + " m</td>" +
+          "<td>" + measured.toFixed(1) + " J</td>" +
+          "<td>" + g.eout.toFixed(1) + " J</td>";
+        if (body) { body.appendChild(tr); }
+        runs += 1;
+        paint();
+      });
+    }
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        if (body) { body.innerHTML = ""; }
+        runs = 0;
+        paint();
+      });
+    }
+
+    paint();
+  }
+
 /* ═══ END P1 wiring ═══ */
 
   function setCount(sec, n, extra) {
@@ -23894,6 +24756,18 @@
     each(root.querySelectorAll("[data-spathblock]"), wireStorePathwaySort);
     each(root.querySelectorAll("[data-btallyblock]"), wireBeforeAfterTally);
     each(root.querySelectorAll("[data-wsortblock]"), wireWasteSort);
+    each(root.querySelectorAll("[data-rtotalblock]"), wireRunningTotal);
+    each(root.querySelectorAll("[data-cbeamblock]"), wireConservationBeam);
+    each(root.querySelectorAll("[data-twoqblock]"), wireTwoQuantities);
+    each(root.querySelectorAll("[data-oflowblock]"), wireOneWayFlow);
+    each(root.querySelectorAll("[data-cbenchblock]"), wireConductionBench);
+    each(root.querySelectorAll("[data-trouteblock]"), wireThreeRoutes);
+    each(root.querySelectorAll("[data-itrialblock]"), wireInsulationTrial);
+    each(root.querySelectorAll("[data-itrial2block]"), wireIceTrial);
+    each(root.querySelectorAll("[data-pleverblock]"), wireLeverBench);
+    each(root.querySelectorAll("[data-touchblock]"), wireWasteSort);
+    each(root.querySelectorAll("[data-rwordblock]"), wireWasteSort);
+    each(root.querySelectorAll("[data-planblock]"), wireWasteSort);
     // ═══ END P1 wiring ═══
     // ═══ END C10 wiring ═══
     wireCoverBar(root);

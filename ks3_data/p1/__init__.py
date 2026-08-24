@@ -109,6 +109,18 @@ _INSTRUMENT_SEGMENTS = {
     #   `#s-waste` is `ks3-block ks3-dark ks3-practical`     → practical
     "before-after-tally":  "check",
     "waste-sort":          "practical",
+    "running-total":         "check",
+    "conservation-beam":     "check",
+    "two-quantities":        "check",
+    "one-way-flow":          "practical",
+    "conduction-bench":      "check",
+    "touch-test":            "practical",
+    "three-routes":          "check",
+    "radiation-word-sort":   "practical",
+    "insulation-trial":      "check",
+    "ice-trial":             "practical",
+    "plan-the-trial":        "check",
+    "lever-bench":           "check",
 }
 
 # Keys that stay on the BLOCK when an instrument is lifted, because they
