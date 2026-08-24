@@ -35,12 +35,6 @@ import sys
 MANIFEST = os.path.join("docs", "ks3", "rail-manifest.md")
 HEADING = "## 1. Drawn rails"
 
-# The design-page cell for a lesson Design never drew. See the note in
-# `drawn_rails` — this marker is the whole difference between "there is
-# no drawn rail" and "there is one and we could not read it".
-UNDRAWN = "—"
-
-
 # ⊕ MRB-272 / C6 — WHERE THE SKELETON AND THE DELIVERY DISAGREE ON A SLUG.
 #
 # `_slug` derives the built filename by stripping Design's `c6-02-` prefix,
@@ -173,58 +167,41 @@ def drawn_rails(repo_root="."):
         if prev is None or prev[1] is None:
             out[slug] = (stem, ids, mirrors)
 
-    # ── ⊕ MRB-223, 24 Aug 2026 · A LESSON DESIGN GENUINELY NEVER DREW ────
+    # ── ⊕ MRB-223, 24 Aug 2026 · THE `UNDRAWN` FALLBACK IS REMOVED ──────
     #
-    # ⚠️ THE ORIGINAL VERSION OF THIS NOTE WAS FALSE, AND IT IS WORTH SAYING
-    # SO HERE RATHER THAN QUIETLY DELETING IT. It read: "P1 is the first
-    # authored unit in the key stage with NO Design delivery. There is no
-    # `physics/` folder under `docs/ks3/design-reference/` and there never
-    # was." The first sentence was wrong and the second was true only of the
-    # one folder it names. Design had drawn all SEVENTY physics lessons,
-    # P1–P12; they were sitting untracked in the main worktree, in twelve
-    # folders named `KS3 P<n> lessons/`, and a glob of
-    # `docs/ks3/design-reference/*/*.dc.html` could not see them — both
-    # because they were somewhere else, and because a worktree shares a
-    # `.git` but NOT a working directory, so nothing untracked in the main
-    # checkout is reachable from a lane by relative path.
+    # A fallback used to sit here. It walked every authored lesson in
+    # `ks3_data.build_units()` and gave any lesson with no delivered page a
+    # row of its own:
     #
-    # Absence found in one location is not absence. P1's delivery now sits
-    # at `docs/ks3/design-reference/p1/` like every other unit's, the loop
-    # above reads its `RAIL` const, and the fallback below no longer fires
-    # for a single physics lesson.
+    #     out.setdefault(lesson["slug"], (UNDRAWN, None, {}))
     #
-    # ⚖️ THE MECHANISM STAYS, because the case it was built for is real: a
-    # unit authored ahead of its drawing needs a row, or
-    # `check_rail_matches_design`'s third assertion fails a rail-bearing page
-    # for having no row at all — which is correct, and is exactly what it did.
-    # Recording "Design drew nothing here" answers that assertion honestly:
-    # the lesson IS written down, and what is written down is that there is
-    # nothing to compare against. Assertions 1 and 2 keep their full force on
-    # every delivered unit, skipped here by the SAME `ids is None` branch the
-    # manifest has always used for a delivered page with no `RAIL` const.
+    # ⚠️ IT WAS A SOFTENED GATE, AND IT IS WORTH RECORDING WHY RATHER THAN
+    # DELETING IT QUIETLY. `check_rail_matches_design`'s third assertion is
+    # "a rail-bearing page with NO row in the manifest fails". After that
+    # fallback, no page could ever have no row, so assertion 3 could never
+    # fire again — and a dash row parses to `ids is None`, which ALSO skips
+    # assertions 1 and 2 for that slug. The loop ran over every unit, so the
+    # effect was key-stage-wide, not confined to the unit it was written for.
     #
-    # ⚠️ IT MUST NEVER BE WRITTEN FOR A DRAWN LESSON. A bare-dash row on a
-    # unit Design HAS drawn is not a record, it is a claim that she did not —
-    # and it silences the two assertions that would otherwise compare the
-    # built rail against her stops. Before this fallback is allowed to stand
-    # for any unit, search the tree by ABSOLUTE path, including untracked
-    # files and every sibling worktree, and satisfy yourself the delivery is
-    # genuinely absent.
+    # It was written during an earlier MRB-223 run to make that run's own
+    # build pass. The premise was that Design had drawn no physics at all —
+    # reached from a single `docs/ks3/design-reference/*/*.dc.html` glob that
+    # returned nothing. She had drawn all SEVENTY physics lessons; they were
+    # untracked in the MAIN worktree under `KS3 P<n> lessons/`, and a
+    # worktree shares a `.git` but NOT a working directory, so nothing
+    # untracked in the main checkout is reachable from a lane by relative
+    # path. The gate had reported the truth and the run argued with it.
     #
-    # ⚠️ THE MARKER IS THE DESIGN-PAGE COLUMN, and it must stay unmistakable.
-    # A row reading `| `energy-stores` | — | — | — |` says Design drew
-    # nothing. It must never be confused with a delivered page whose rail we
-    # failed to read — a real stem with `—` stops, a different and much worse
-    # thing, and what B1's `00-index` row legitimately is.
-    try:
-        import ks3_data
-    except ImportError:                                   # pragma: no cover
-        return out
-    for unit in ks3_data.build_units():
-        for lesson in unit.get("lessons", []):
-            if not lesson.get("authored"):
-                continue
-            out.setdefault(lesson["slug"], (UNDRAWN, None, {}))
+    # ⚖️ NOTHING REPLACES IT, DELIBERATELY. If a unit is ever authored ahead
+    # of its drawing, assertion 3 SHOULD fail, loudly, exactly as it did
+    # here — that failure is the signal that a delivery is missing or has
+    # not been found yet, and the correct response is to go and look for it
+    # by ABSOLUTE path, including untracked files and every sibling
+    # worktree, not to teach the manifest to excuse it.
+    #
+    # Measured before removal: 137 rows in `docs/ks3/rail-manifest.md`, of
+    # which 0 carried a bare dash in the design-page column. The fallback
+    # was already dormant, so removing it changes no row.
     return out
 
 
@@ -256,17 +233,12 @@ def manifest_rails(repo_root="."):
 
 def _rows(rails):
     lines = []
-    # Undrawn rows sort last, together, so a reader sees the delivered record
-    # first and the "Design drew nothing here" block as one group rather than
-    # scattered through it.
     def key(kv):
-        stem = kv[1][0]
-        return (1, kv[0]) if stem == UNDRAWN else (0, stem)
+        return (0, kv[1][0])
     for slug, (stem, ids, mirrors) in sorted(rails.items(), key=key):
         shown = " ".join(ids) if ids else "—"
         mir = " ".join("%s=%s" % kv for kv in sorted(mirrors.items())) or "—"
-        # A bare dash, never `` `—` ``: the backticks say "this is a filename".
-        cell = UNDRAWN if stem == UNDRAWN else "`%s`" % stem
+        cell = "`%s`" % stem
         lines.append("| `%s` | %s | %s | %s |" % (slug, cell, shown, mir))
     return "\n".join(lines) + "\n"
 
