@@ -2808,7 +2808,7 @@ GRAFT = {
         # exactly five things, and NOT ONE of them can ship:
         #
         #   ANSWERED       Design's `answered`, a THIS WEEK count. Nothing
-        #                  anywhere records a recall round — `/api/class/recall`
+        #                  anywhere records a practice round — `/api/class/practice`
         #                  only reads, and no table carries a class, a teaching
         #                  week and a rung together. `student-live.js` has
         #                  emitted `practiceAnswered: ""` since the day the figure

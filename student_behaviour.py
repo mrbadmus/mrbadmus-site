@@ -1442,7 +1442,7 @@ AMENDED_OMISSIONS = {
              region="recall-round", state="the recall round",
              pat=r"THIS WEEK ANSWERED \d+ BEST STREAK \d+ ROUNDS \d+ ",
              why="RULED — nothing anywhere records a recall round. "
-                 "`/api/class/recall` only reads, and no table carries a "
+                 "`/api/class/practice` only reads, and no table carries a "
                  "class, a teaching week and a rung together, so ANSWERED and "
                  "ROUNDS are unrecorded; student-live.js has emitted "
                  "`practiceAnswered` and `recallRounds` as empty since the day "

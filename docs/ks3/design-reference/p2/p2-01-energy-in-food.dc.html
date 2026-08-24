@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Energy in food · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p2-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p2-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  [data-readout] { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  @media (max-width: 620px) { [data-readout] { grid-template-columns: minmax(0, 1fr); } }
+  [data-runs] { width: 100%; border-collapse: collapse; font-family: var(--ks3-font-mono); font-size: 16px; }
+  [data-runs] th, [data-runs] td { border: 2px solid var(--ks3-ink); padding: 9px 12px; text-align: left; }
+  [data-runs] th { font-size: 12px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; background: var(--ks3-band); }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Energy at home</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Energy in food</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="6">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Energy at home · Quantitative</p>
+        <h1>Energy in food</h1>
+        <p class="ks3-bigq">A packet says "229 kcal" and also "958 kJ". Two completely different numbers for the same crisps. Is one of them wrong?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Two numbers, one packet.</h2>
+        <p class="ks3-hook-prompt">Every food label in the country carries both. A 50 g bag of crisps: 229 kcal, 958 kJ. Neither number is a mistake and neither is a rounding of the other.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Commit to why there are two.</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">They are the same amount of energy in two different units, like 6 feet and 1.83 metres. One kilocalorie is 4.18 kilojoules, and 229 × 4.18 gives 957 — which rounds to the 958 on the packet. The joule is the scientific unit; the calorie survives on labels because people are used to it. Nothing about the crisps changes.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Food is a chemical store, and like any store it holds a measurable number of joules. This lesson measures it — with an instrument that gets an answer close to the label and not identical to it, which is the honest result and worth understanding.</p>
+      </section>
+
+      <section id="s-burn" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">The calorimeter · burn it and watch the water</p>
+            <h2 style="margin: 6px 0 0;">Measure the store, do not look it up.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ burnProgress }}</p>
+        </div>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">A weighed sample of food burned under a boiling tube holding 20 g of water. The energy released warms the water, and the temperature rise tells you how much.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+            <p class="ks3-commit" style="margin: 0 0 12px; color: var(--ks3-accent-text);">Commit first. Which of these do you expect to hold the most energy per gram?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ burnOpen }}">
+          <div data-arrive="1" style="margin-top: 22px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-ink); overflow: hidden; background: var(--ks3-card);">
+            <div style="padding: 16px 18px; border-bottom: 2px solid var(--ks3-ink); display: flex; gap: 8px; flex-wrap: wrap;">
+              <sc-for list="{{ foodButtons }}" as="b" hint-placeholder-count="4">
+                <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.on }}" style="{{ b.style }}">{{ b.label }}</button>
+              </sc-for>
+            </div>
+            <canvas width="1800" height="620" ref="{{ burnRef }}" role="img" aria-label="{{ burnAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+            <div style="padding: 18px; border-top: 2px solid var(--ks3-ink); background: var(--ks3-inset);">
+              <label for="mass" style="display: block; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Mass of sample · {{ massLabel }}</label>
+              <input id="mass" type="range" min="5" max="30" step="1" value="{{ mass }}" onChange="{{ onMass }}" aria-valuetext="{{ massLabel }}" style="width: 100%; height: 44px; accent-color: var(--ks3-accent); cursor: pointer;">
+              <div data-readout="1" style="margin-top: 6px;">
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Water temperature</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 30px; line-height: 1.1; color: var(--ks3-ink);">{{ tempLabel }}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Rise</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 30px; line-height: 1.1; color: var(--ks3-accent-text);">{{ riseLabel }}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Sample left</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 30px; line-height: 1.1; color: var(--ks3-ink);">{{ leftLabel }}</p>
+                </div>
+              </div>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px;">
+                <button type="button" onClick="{{ onBurn }}" aria-pressed="{{ burning }}" disabled="{{ spent }}" style="{{ burnStyle }}">{{ burnLabel }}</button>
+                <button type="button" onClick="{{ onFresh }}" style="{{ freshStyle }}">Fresh sample</button>
+                <button type="button" onClick="{{ onRecord }}" disabled="{{ cannotRecord }}" style="{{ recordStyle }}">Record this run</button>
+              </div>
+            </div>
+          </div>
+
+          <sc-if value="{{ hasRuns }}">
+            <div data-arrive="1" style="margin-top: 18px; overflow-x: auto; border-radius: var(--ks3-r-panel); border: 2px solid var(--ks3-ink);">
+              <table data-runs="1">
+                <thead>
+                  <tr>
+                    <th scope="col">Run</th>
+                    <th scope="col">Food</th>
+                    <th scope="col">Mass</th>
+                    <th scope="col">Rise</th>
+                    <th scope="col">Energy per gram</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <sc-for list="{{ runRows }}" as="row" hint-placeholder-count="3">
+                    <tr style="background: var(--ks3-card);">
+                      <th scope="row" style="font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; background: var(--ks3-band);">{{ row.n }}</th>
+                      <td>{{ row.food }}</td>
+                      <td>{{ row.mass }}</td>
+                      <td>{{ row.rise }}</td>
+                      <td style="color: var(--ks3-accent-text); font-weight: 500;">{{ row.perGram }}</td>
+                    </tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+          </sc-if>
+          <p style="margin: 18px 0 0; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink); font-size: 19px; line-height: 1.6;">{{ burnNote }}</p>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">Food holds a chemical store, measured in joules. Energy in a portion = energy per gram × mass. One kilocalorie is 4.18 kilojoules — the same energy, a different unit.</p>
+      </div>
+
+      <section id="s-worked" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">Five lines, every time · CFIFA</p>
+            <h2 style="margin: 6px 0 0;">A portion, from an energy density</h2>
+          </div>
+        </div>
+        <div style="padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(24px, 3.2vw, 36px); line-height: 1.14; letter-spacing: -.03em; text-align: center;">Energy in a portion = energy per gram × mass</p>
+        </div>
+        <p class="ks3-eyebrow" style="margin: 24px 0 0; color: var(--ks3-accent-text);">The triangle</p>
+        <h2 style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 32px; line-height: 1.1; letter-spacing: -.03em;">Cover the one you want</h2>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 30px 48px; margin-top: 22px;">
+          <svg viewBox="0 0 300 214" role="img" aria-label="A formula triangle. Total energy E sits above a dividing line; energy per gram e and mass m sit below it, multiplied together. Covering one letter leaves the way to work it out." style="width: 260px; height: auto; flex: 0 0 auto;">
+            <path d="M150 8L290 200H10Z" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 5; stroke-linejoin: round;"></path>
+            <line x1="66" y1="120" x2="234" y2="120" style="stroke: var(--ks3-ink); stroke-width: 5; stroke-linecap: round;"></line>
+            <text x="150" y="100" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 62px; fill: var(--ks3-ink);">E</text>
+            <text x="106" y="182" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 58px; fill: var(--ks3-ink);">e</text>
+            <text x="150" y="178" text-anchor="middle" style="font-family: var(--ks3-font-body); font-weight: 600; font-size: 26px; fill: var(--ks3-ink-muted);">×</text>
+            <text x="196" y="182" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 58px; fill: var(--ks3-ink);">m</text>
+            <sc-if value="{{ coverTop }}">
+              <rect x="84" y="50" width="132" height="60" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="150" y="94" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">E</text>
+            </sc-if>
+            <sc-if value="{{ coverLeft }}">
+              <rect x="60" y="132" width="94" height="58" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="107" y="176" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">e</text>
+            </sc-if>
+            <sc-if value="{{ coverRight }}">
+              <rect x="150" y="132" width="94" height="58" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="197" y="176" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">m</text>
+            </sc-if>
+          </svg>
+          <div style="flex: 1 1 340px; min-width: 280px;">
+            <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+              <sc-for list="{{ coverButtons }}" as="t" hint-placeholder-count="3">
+                <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.on }}" style="{{ t.style }}">{{ t.label }}</button>
+              </sc-for>
+            </div>
+            <p style="margin: 20px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(30px, 3.8vw, 40px); line-height: 1.14; letter-spacing: -.02em;">{{ coverResult }}</p>
+            <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body);">Two things side by side means multiply. One thing over another means divide.</p>
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 9px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">E</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">energy in the portion</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">kJ</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">e</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">energy per gram</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">kJ/g</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">m</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">mass of the portion</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">g</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <dc-import name="Cfifa" examples="{{ cfifaExamples }}" questions="{{ cfifaQuestions }}" on-open="{{ onCfifaOpen }}" hint-size="100%,980px"></dc-import>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“You burn off the calories at the gym, and then they are gone.”</p>
+        <p style="max-width: 54ch;">This is the "energy gets used up" idea again, wearing a tracksuit. Commit.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">Nothing is destroyed at the gym. The chemical store in the food empties, a small part of it fills a kinetic store while you are actually moving, and almost all of it ends up as a thermal store in you and the room — which is why a gym is warm and why you sweat. Weigh the room's air and you would find the energy has not left the building.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">You met this belief when a rolling ball stopped, and again when a car braked, and again when a battery went flat. Every time, the temptation is to say the energy was consumed, and every time the honest answer is a thermal store somewhere unglamorous. "Burned off" is a fair everyday phrase for "moved out of my body's store" and a bad description of what happened to the joules.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">One more thing the calorimeter cannot tell you: burning food in air and respiring it are not the same process, even though the energy released is nearly identical. Your body does it in dozens of small controlled steps at 37 °C, not in one flame — and it cannot get at all of it, which is part of why your measured value and the label disagree.</p>
+          </div>
+        </sc-if>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;A calorie on a food label is the same calorie physicists use.&rdquo;</p>
+          <p>It is a thousand of them. The physicist’s calorie warms one gram of water by one degree; the label’s Calorie — properly a kilocalorie — warms a kilogram. A chocolate bar at 250 kcal is 250 000 of the small ones, or about 1050 kJ. The kilojoule figure beside it on the label exists precisely so that nobody has to know which calorie is meant.</p>
+        </div>
+      </section>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Energy in food is measured in kilojoules; the kcal a label prints is 4.18 kJ. A portion holds energy per gram × mass, and that chemical store is filled by eating and emptied by everything the body does, awake or asleep.</p>
+        </div>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Food is a chemical store measured in joules. Fat holds about twice as much per gram as protein or carbohydrate. 1 kcal = 4.18 kJ, same energy. And nothing is destroyed by exercise — it moves into a thermal store.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Your school calorimeter will read low — usually 20 to 60 per cent below the label — and every source of that error is worth naming, because they are all in the same direction. Energy escapes from the flame into the room instead of the water. The glass of the tube absorbs some. The sample often stops burning before it is fully consumed. None of these could ever make the reading too high. That one-sidedness is what tells you it is systematic error rather than random scatter, and it is why the professional version is a sealed steel bomb calorimeter, pressurised with pure oxygen and immersed in a weighed water bath — the same idea with every escape route closed. Repeating a measurement helps with scatter. It does nothing at all about a leak.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p1-08-simple-machines.html">Simple machines: force for distance<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p2-02-power-ratings-in-watts.html">Power ratings in watts<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p1-01-energy-stores.html">Energy stores<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p2-03-calculating-energy-transferred.html">Calculating energy transferred<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p2-05-fuels-and-energy-resources.html">Fuels and energy resources<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Also used by</h2>
+          <p>Biology B3, <em>A balanced diet</em> — this is the lesson that supplies the energy figures.</p>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Specific heat capacity and the energy transferred when a fuel or food is burned, calorimetry as a required practical, and the difference between the energy a food contains and the energy a body can actually get out of it.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Not sure why your value is lower than the packet?</p>
+          <a class="ks3-tutor-cta" href="#s-burn">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. Energy densities are typical label values for each food in kilojoules per gram, and the burning experiment is given a fixed capture fraction — the share of the food’s energy that actually reaches the water rather than the air, the clamp and the tube. In a real school calorimeter that fraction is small and varies from run to run, which is why measured values come out well below the label. Water is taken as 20 g with a specific heat capacity of 4.18 J/g°C, and kilocalories are converted at 4.18 kJ each.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startFood&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Crisps&quot;,&quot;Peanut&quot;,&quot;Dry pasta&quot;,&quot;Cheese&quot;],&quot;default&quot;:&quot;Peanut&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Calorimeter&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Two numbers', short: 'HOOK' },
+  { id: 's-burn', label: 'Calorimeter', short: 'BURN' },
+  { id: 's-worked', label: 'CFIFA', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const WATER_G = 20;
+const SHC = 4.18;   // J per g per degree
+
+const FOODS = [
+  { id: 'crisp', label: 'Crisps', kJperG: 22.0, capture: 0.42,
+    note: 'Crisps are largely fat, and fat is the densest store in food \u2014 about 37 kJ per gram on its own.' },
+  { id: 'peanut', label: 'Peanut', kJperG: 24.5, capture: 0.46,
+    note: 'The highest of the four, and it burns steadily enough to be the classic school sample.' },
+  { id: 'pasta', label: 'Dry pasta', kJperG: 15.0, capture: 0.34,
+    note: 'Mostly carbohydrate, at roughly 17 kJ per gram \u2014 well under half of fat.' },
+  { id: 'cheese', label: 'Cheese', kJperG: 17.0, capture: 0.30,
+    note: 'Fatty, but wet \u2014 and the water in it soaks up energy without ever reaching your thermometer.' }
+];
+
+const COVERS = {
+  e: { result: 'E = e \u00d7 m', sentence: 'Energy sits alone at the top. Cover it and the other two are side by side \u2014 multiply.' },
+  e_per: { result: 'e = E \u00f7 m', sentence: 'Energy per gram sits underneath with total energy above. Cover it and you get E over m \u2014 divide.' },
+  m: { result: 'm = E \u00f7 e', sentence: 'Mass sits underneath with total energy above. Cover it and you get E over e \u2014 divide.' }
+};
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Calculate',
+    question: 'Cheddar holds 17 kJ per gram. How much energy is in a 30 g portion?',
+    options: [
+      { text: '510 kJ', correct: true },
+      { text: '0.57 kJ', correction: 'That is 17 \u00f7 30. More cheese means more energy, so this has to be a multiplication.' },
+      { text: '47 kJ', correction: 'That is 17 + 30, and you cannot add a per-gram figure to a mass.' },
+      { text: '1.76 kJ', correction: 'That is 30 \u00f7 17. Check which quantity belongs on top of the triangle.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A label reads 229 kcal and 958 kJ for the same bag. Which statement is correct?',
+    options: [
+      { text: 'They are the same energy in different units — 1 kcal is about 4.18 kJ', correct: true },
+      { text: 'The kJ figure includes energy your body cannot use', correction: 'Both figures describe the same available energy. The difference is purely the unit.' },
+      { text: 'Calories measure fat and joules measure everything', correction: 'Neither unit is tied to a food group. Both are units of energy.' },
+      { text: 'The kcal figure is per bag and the kJ figure is per 100 g', correction: 'Labels give both units for the same stated quantity, side by side.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Your calorimeter gives 9 kJ per gram for a peanut. The packet says 24 kJ per gram. Explain three reasons your value is lower, and say whether repeating the measurement would fix it.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Not all the energy released reached the water…',
+    criteria: [
+      'Says energy escaped from the flame into the surrounding air instead of the water.',
+      'Says some energy warmed the glass tube and the apparatus rather than the water.',
+      'Says the sample may not have burned completely.',
+      'Notes that every one of these errors makes the reading too low, never too high.',
+      'Says repeating would not fix it, because this is systematic error rather than random scatter.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'Two 100 g snacks have the same energy figure, but one is mostly fat and the other mostly carbohydrate. Explain how that is possible, and say what the energy figure alone does not tell you about a food.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Fat holds about twice the energy per gram…',
+    criteria: [
+      'Says fat holds roughly twice the energy per gram as carbohydrate or protein.',
+      'Says the fatty snack must therefore contain less actual fat than the other contains carbohydrate, plus more water or fibre.',
+      'Says the total energy is a product of density and mass, so different combinations can give the same total.',
+      'Says the energy figure says nothing about vitamins, minerals, protein or fibre.',
+      'Says two foods with equal energy can differ greatly in how useful they are to the body.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    food: FOODS.findIndex((x) => x.label === this.props.startFood) >= 0
+      ? FOODS.findIndex((x) => x.label === this.props.startFood) : 1,
+    mass: 12,
+    burning: false,
+    consumed: 0,
+    rise: 0,
+    runs: [],
+    cover: 'e',
+    thinkChoice: null,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+    this.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.frames = 0;
+    this.scatter = 0.9 + Math.random() * 0.2;
+    this.loop();
+  }
+
+  componentDidUpdate() { this.drawTri(); }
+  componentWillUnmount() {
+    if (this.io) this.io.disconnect();
+    if (this.raf) cancelAnimationFrame(this.raf);
+  }
+
+  loop() {
+    this.raf = requestAnimationFrame(() => this.loop());
+    this.frames += 1;
+    if (this.state.burning) {
+      const f = FOODS[this.state.food];
+      const step = (this.reduced ? 0.06 : 0.14);
+      const next = Math.min(this.state.mass, this.state.consumed + step);
+      // energy captured by the water, with this run's random scatter
+      const kJ = next * f.kJperG * f.capture * this.scatter;
+      const rise = (kJ * 1000) / (WATER_G * SHC);
+      const done = next >= this.state.mass;
+      if (this.frames % 3 === 0 || done) {
+        this.setState({ consumed: next, rise: rise, burning: !done });
+      }
+    }
+    this.drawBurn();
+  }
+
+  drawBurn() {
+    const c = this.burnCanvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 310;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#FFFDF8';
+    ctx.fillRect(0, 0, W, H);
+
+    const f = FOODS[this.state.food];
+    const T = 20 + this.state.rise;
+
+    // boiling tube
+    const tx = 250, ty = 40, tw = 74, th = 150;
+    const warm = Math.min(1, this.state.rise / 60);
+    ctx.fillStyle = 'rgb(' + Math.round(205 + warm * 30) + ',' + Math.round(228 - warm * 110) + ',' + Math.round(238 - warm * 190) + ')';
+    ctx.fillRect(tx, ty + 40, tw, th - 40);
+    ctx.strokeStyle = '#1A1714';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(tx, ty);
+    ctx.lineTo(tx, ty + th);
+    ctx.lineTo(tx + tw, ty + th);
+    ctx.lineTo(tx + tw, ty);
+    ctx.stroke();
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('20 g WATER', tx + tw / 2, ty + th + 20);
+
+    // thermometer
+    ctx.strokeStyle = '#5C5249';
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(tx + tw / 2, ty - 16);
+    ctx.lineTo(tx + tw / 2, ty + th - 26);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(tx + tw / 2, ty + th - 22, 8, 0, Math.PI * 2);
+    ctx.fillStyle = '#E4572E';
+    ctx.fill();
+    ctx.fillStyle = '#1A1714';
+    ctx.font = '700 26px "Bricolage Grotesque", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(T.toFixed(1) + ' \u00B0C', tx + tw + 22, ty + 34);
+    ctx.fillStyle = '#A93411';
+    ctx.font = '500 13px "DM Mono", ui-monospace, monospace';
+    ctx.fillText('RISE ' + this.state.rise.toFixed(1) + ' \u00B0C', tx + tw + 22, ty + 56);
+
+    // sample on a mounted needle
+    const left = Math.max(0, this.state.mass - this.state.consumed);
+    const frac = this.state.mass > 0 ? left / this.state.mass : 0;
+    const sy = ty + th + 78;
+    ctx.strokeStyle = '#5C5249';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(tx + tw / 2, sy + 42);
+    ctx.lineTo(tx + tw / 2, sy + 6);
+    ctx.stroke();
+    if (frac > 0.02) {
+      const r = 8 + 13 * Math.cbrt(frac);
+      ctx.beginPath();
+      ctx.arc(tx + tw / 2, sy - 4, r, 0, Math.PI * 2);
+      ctx.fillStyle = '#B07A3C';
+      ctx.fill();
+      ctx.strokeStyle = '#5A3212';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    // flame
+    if (this.state.burning) {
+      const fl = 22 + Math.sin(this.frames * 0.3) * 7;
+      ctx.beginPath();
+      ctx.moveTo(tx + tw / 2, sy - 18);
+      ctx.quadraticCurveTo(tx + tw / 2 - 16, sy - 18 - fl * 0.6, tx + tw / 2, sy - 18 - fl);
+      ctx.quadraticCurveTo(tx + tw / 2 + 16, sy - 18 - fl * 0.6, tx + tw / 2, sy - 18);
+      ctx.fillStyle = '#E4572E';
+      ctx.fill();
+      // escaping energy, the systematic error, drawn
+      for (let i = 0; i < 5; i++) {
+        const a = -Math.PI / 2 + (i - 2) * 0.55;
+        const t2 = ((this.frames * 1.5 + i * 24) % 60) / 60;
+        const rr = 30 + t2 * 46;
+        ctx.beginPath();
+        ctx.arc(tx + tw / 2 + Math.cos(a) * rr, sy - 18 + Math.sin(a) * rr, 3.4 * (1 - t2) + 1, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(228,87,46,' + (0.6 * (1 - t2)).toFixed(2) + ')';
+        ctx.fill();
+      }
+      ctx.fillStyle = '#A93411';
+      ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('ENERGY ESCAPING TO THE ROOM \u2014 NEVER REACHES THE WATER', tx + tw + 22, sy - 10);
+    }
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(f.label.toUpperCase() + ' \u00b7 ' + left.toFixed(1) + ' g LEFT', tx + tw / 2, sy + 62);
+
+    // per-gram comparison
+    const bx = 620, by = 60;
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('LABEL VALUE, kJ PER GRAM', bx, by - 12);
+    FOODS.forEach((x, i) => {
+      const y = by + i * 34;
+      ctx.fillStyle = '#E4DACA';
+      ctx.fillRect(bx, y, 200, 18);
+      ctx.fillStyle = i === this.state.food ? '#E4572E' : '#B9AE9C';
+      ctx.fillRect(bx, y, 200 * (x.kJperG / 26), 18);
+      ctx.strokeStyle = '#1A1714';
+      ctx.lineWidth = 1.6;
+      ctx.strokeRect(bx, y, 200, 18);
+      ctx.fillStyle = i === this.state.food ? '#A93411' : '#6B6055';
+      ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+      ctx.fillText(x.label.toUpperCase() + '  ' + x.kJperG.toFixed(1), bx + 208, y + 13);
+    });
+
+    // your measured value
+    const measured = this.state.consumed > 0
+      ? (this.state.rise * WATER_G * SHC / 1000) / this.state.consumed : 0;
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+    ctx.fillText('YOUR MEASURED VALUE', bx, by + 172);
+    ctx.fillStyle = '#1A1714';
+    ctx.font = '700 30px "Bricolage Grotesque", system-ui, sans-serif';
+    ctx.fillText(measured > 0 ? measured.toFixed(1) + ' kJ/g' : '\u2014', bx, by + 206);
+  }
+
+  drawTri() {
+    const c = this.triCanvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 210;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#FFFDF8';
+    ctx.fillRect(0, 0, W, H);
+
+    const cx = W / 2, tw = 250, th = 150, ty = 28;
+    ctx.beginPath();
+    ctx.moveTo(cx, ty);
+    ctx.lineTo(cx - tw / 2, ty + th);
+    ctx.lineTo(cx + tw / 2, ty + th);
+    ctx.closePath();
+    ctx.fillStyle = '#F6EEE0';
+    ctx.fill();
+    ctx.strokeStyle = '#1A1714';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx - tw / 2 + 24, ty + th * 0.52);
+    ctx.lineTo(cx + tw / 2 - 24, ty + th * 0.52);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx, ty + th * 0.52);
+    ctx.lineTo(cx, ty + th);
+    ctx.stroke();
+
+    const cover = this.state.cover;
+    const cell = (cxp, cyp, txt, sub, lit) => {
+      if (lit) {
+        ctx.fillStyle = '#E4572E';
+        ctx.beginPath();
+        ctx.arc(cxp, cyp - 7, 27, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.fillStyle = lit ? '#FFFDF8' : '#1A1714';
+      ctx.font = '700 28px "Bricolage Grotesque", system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(txt, cxp, cyp);
+      ctx.fillStyle = lit ? '#FFFDF8' : '#6B6055';
+      ctx.font = '500 10px "DM Mono", ui-monospace, monospace';
+      ctx.fillText(sub, cxp, cyp + 16);
+    };
+    cell(cx, ty + th * 0.34, 'E', 'kJ', cover === 'e');
+    cell(cx - tw / 4, ty + th * 0.84, 'e', 'kJ/g', cover === 'e_per');
+    cell(cx + tw / 4, ty + th * 0.84, 'm', 'g', cover === 'm');
+
+    ctx.fillStyle = '#A93411';
+    ctx.font = '500 14px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(COVERS[cover].result, cx, ty + th + 34);
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+    ctx.fillText('A GENUINE PRODUCT \u2014 THE TRIANGLE IS A FAIR TOOL HERE', cx, H - 14);
+  }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis ? 'opacity:.45;' : '');
+  }
+
+  renderVals() {
+    const s = this.state;
+    const f = FOODS[s.food];
+    const left = Math.max(0, s.mass - s.consumed);
+    const spent = left <= 0.01;
+    const measured = s.consumed > 0 ? (s.rise * WATER_G * SHC / 1000) / s.consumed : 0;
+    const last = s.runs.length ? s.runs[0] : null;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((y) => y.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    let burnNote;
+    if (s.runs.length >= 2) {
+      const vals = s.runs.map((r) => r.perGram);
+      const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+      burnNote = 'Across ' + s.runs.length + ' runs your mean is ' + mean.toFixed(1) +
+        ' kJ per gram. Every value sits below the label figure and none sits above it \u2014 that one-sidedness is the signature of a leak, not of bad luck.';
+    } else if (spent && s.consumed > 0) {
+      burnNote = 'Sample gone. You measured ' + measured.toFixed(1) + ' kJ per gram against a label figure of ' +
+        f.kJperG.toFixed(1) + '. ' + f.note + ' Record it and run another \u2014 the pattern in the errors is the point.';
+    } else if (s.burning) {
+      burnNote = 'Watch the orange specks leaving the flame sideways. Every one of those is energy going into the room instead of the water, and it is why your answer will come out low.';
+    } else {
+      burnNote = 'Set a mass and light it. Do not look up the answer first \u2014 the gap between what you measure and what the packet says is the most useful part of this experiment.';
+    }
+
+    const wf = last ? last.perGram : (f.kJperG);
+    const wm = last ? last.mass : 30;
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-burn') return s.runs.length >= 2;
+          if (id === 's-worked') return s.cover !== 'e';
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'Calories are what your body uses; joules are the total in the food' },
+        { letter: 'B', text: 'They are the same energy in two different units' },
+        { letter: 'C', text: 'One is for fat and one is for carbohydrate' },
+        { letter: 'D', text: 'The kJ figure includes the packaging' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      burnProgress: s.runs.length ? s.runs.length + ' run' + (s.runs.length === 1 ? '' : 's') + ' recorded' : 'no runs yet',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'Dry pasta — it is pure carbohydrate' },
+        { letter: 'B', text: 'A peanut — it is mostly fat' },
+        { letter: 'C', text: 'Cheese — it is the heaviest' },
+        { letter: 'D', text: 'They are all about the same per gram' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      burnOpen: s.gate !== null,
+      burnRef: (el) => { this.burnCanvas = el; },
+      burnAlt: 'A calorimeter: a ' + f.label.toLowerCase() + ' sample of ' + s.mass +
+        ' grams burning under a boiling tube of 20 grams of water, thermometer reading ' + (20 + s.rise).toFixed(1) + ' degrees.',
+      foodButtons: FOODS.map((x, i) => ({
+        label: x.label, on: s.food === i, style: this.seg(s.food === i, false),
+        onClick: () => { this.scatter = 0.9 + Math.random() * 0.2; this.setState({ food: i, consumed: 0, rise: 0, burning: false }); }
+      })),
+      mass: s.mass,
+      massLabel: s.mass + ' g',
+      onMass: (e) => this.setState({ mass: Number(e.target.value), consumed: 0, rise: 0, burning: false }),
+      tempLabel: (20 + s.rise).toFixed(1) + ' \u00B0C',
+      riseLabel: s.rise.toFixed(1) + ' \u00B0C',
+      leftLabel: left.toFixed(1) + ' g',
+      burning: s.burning,
+      spent: spent,
+      burnLabel: s.burning ? 'Pause the burn' : (s.consumed > 0 ? 'Keep burning' : 'Light the sample'),
+      burnStyle: this.seg(s.burning, spent),
+      onBurn: () => this.setState((p) => ({ burning: !p.burning })),
+      freshStyle: this.seg(false, false),
+      onFresh: () => { this.scatter = 0.9 + Math.random() * 0.2; this.setState({ consumed: 0, rise: 0, burning: false }); },
+      cannotRecord: s.consumed <= 0,
+      recordStyle: this.seg(false, s.consumed <= 0),
+      onRecord: () => this.setState((p) => ({
+        runs: [{ food: FOODS[p.food].label, mass: p.consumed, rise: p.rise, perGram: measured }].concat(p.runs).slice(0, 6),
+        burning: false
+      })),
+      hasRuns: s.runs.length > 0,
+      runRows: s.runs.map((r, i) => ({
+        n: String(s.runs.length - i),
+        food: r.food,
+        mass: r.mass.toFixed(1) + ' g',
+        rise: r.rise.toFixed(1) + ' \u00B0C',
+        perGram: r.perGram.toFixed(1) + ' kJ/g'
+      })),
+      burnNote: burnNote,
+
+      triRef: (el) => { this.triCanvas = el; if (el) this.drawTri(); },
+      triAlt: 'A formula triangle with total energy E on top and energy per gram e beside mass m underneath. ' +
+        COVERS[s.cover].result + ' is highlighted.',
+      coverButtons: [
+        { id: 'e', label: 'Cover E' },
+        { id: 'e_per', label: 'Cover e' },
+        { id: 'm', label: 'Cover m' }
+      ].map((b) => ({
+        label: b.label, on: s.cover === b.id, style: this.seg(s.cover === b.id, false),
+        onClick: () => this.setState({ cover: b.id })
+      })),
+      coverResult: COVERS[s.cover].result,
+      coverTop: s.cover === 'e',
+      coverLeft: s.cover === 'e_per',
+      coverRight: s.cover === 'm',
+      cfifaExamples: [
+        { tab: 'Nothing to convert', head: 'A crisp releases 22.0 kJ for every gram. What does a 30 g portion hold?',
+          steps: [
+            { letter: 'C', label: 'Convert', line: '22.0 kJ/g stays 22.0 kJ/g · 30 g stays 30 g',
+              note: 'The energy density is per gram and the portion is in grams, so there is nothing to convert.' },
+            { letter: 'F', label: 'Formula', line: 'E = e × m',
+              note: 'Cover E on the triangle: e sits beside m, so you multiply.' },
+            { letter: 'I', label: 'Insert', line: 'E = 22.0 kJ/g × 30 g',
+              note: 'The grams on the bottom of kJ/g cancel the grams of the portion.' },
+            { letter: 'F', label: 'Fine-tune', line: '22.0 × 30 = 660',
+              note: 'Kilojoules per gram times grams gives kilojoules.' },
+            { letter: 'A', label: 'Answer', line: 'E = 660 kJ',
+              note: 'Six hundred and sixty kilojoules, about 158 kcal on a food label.' }
+          ] },
+        { tab: 'Convert first', head: 'A cereal releases 15.0 kJ for every gram. What does a 0.045 kg portion hold?',
+          steps: [
+            { letter: 'C', label: 'Convert', line: '0.045 kg × 1000 = 45 g',
+              note: 'The energy density is per gram, so the mass has to be in grams before it can multiply.' },
+            { letter: 'F', label: 'Formula', line: 'E = e × m',
+              note: 'Cover E on the triangle: e sits beside m, so you multiply.' },
+            { letter: 'I', label: 'Insert', line: 'E = 15.0 kJ/g × 45 g',
+              note: 'The converted mass goes in. The 0.045 never does.' },
+            { letter: 'F', label: 'Fine-tune', line: '15.0 × 45 = 675',
+              note: 'Kilojoules per gram times grams gives kilojoules.' },
+            { letter: 'A', label: 'Answer', line: 'E = 675 kJ',
+              note: 'Insert 0.045 instead of 45 and the answer comes out 0.675 kJ — a thousand times too small.' }
+          ] }
+      ],
+      onCfifaOpen: () => this.setState({ cfifaOpen: true }),
+      cfifaQuestions: [
+        {
+          tab: 'Question 1', id: 'p201q1',
+          head: last
+            ? 'Your sample: ' + wf.toFixed(1) + ' kJ/g measured, over ' + wm.toFixed(0) + ' g.'
+            : 'The label figure for ' + f.label.toLowerCase() + ': ' + wf.toFixed(1) + ' kJ/g, over a ' + wm.toFixed(0) + ' g portion.',
+          steps: [
+            { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+              line: wf.toFixed(1) + ' kJ/g stays ' + wf.toFixed(1) + ' kJ/g · ' + wm.toFixed(0) + ' g stays ' + wm.toFixed(0) + ' g',
+              note: 'The energy density is per gram and the portion is already in grams, so there is nothing to convert.' },
+            { letter: 'F', label: 'Formula', line: 'E = e × m',
+              note: 'Cover E on the triangle. What is left is e beside m — multiply.' },
+            { letter: 'I', label: 'Insert', line: 'E = ' + wf.toFixed(1) + ' kJ/g × ' + wm.toFixed(0) + ' g',
+              note: last ? 'Using your own measured value and your own sample mass.' : 'Using the label figure and a ' + wm.toFixed(0) + ' g portion.' },
+            { letter: 'F', label: 'Fine-tune', line: wf.toFixed(1) + ' × ' + wm.toFixed(0) + ' = ' + (wf * wm).toFixed(2) + '…',
+              note: 'Kilojoules per gram times grams gives kilojoules. The grams cancel.' },
+            { letter: 'A', label: 'Answer', line: 'E = ' + (wf * wm).toFixed(0) + ' kJ  (' + ((wf * wm) / 4.18).toFixed(0) + ' kcal)',
+              note: 'Whole kilojoules, with the unit — divide by 4.18 for the kcal a food label prints.' }
+          ],
+          close: 'The five lines give ' + (wf * wm).toFixed(0) + ' kJ for that portion.'
+        },
+        {
+          tab: 'Question 2', id: 'p201q2',
+          head: 'A biscuit releases 20.0 kJ for every gram. What does a 0.025 kg biscuit hold?',
+          steps: [
+            { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+              line: '0.025 kg × 1000 = 25 g',
+              note: 'The energy density is per gram, so the mass has to be in grams first.' },
+            { letter: 'F', label: 'Formula', line: 'E = e × m',
+              note: 'Cover E on the triangle: e sits beside m, so you multiply.' },
+            { letter: 'I', label: 'Insert', line: 'E = 20.0 kJ/g × 25 g',
+              note: 'The converted mass goes in. The 0.025 never does.' },
+            { letter: 'F', label: 'Fine-tune', line: '20.0 × 25 = 500',
+              note: 'Kilojoules per gram times grams gives kilojoules.' },
+            { letter: 'A', label: 'Answer', line: 'E = 500 kJ',
+              note: 'Insert 0.025 instead of 25 and the biscuit comes out holding half a kilojoule.' }
+          ],
+          close: 'The five lines give 500 kJ — about 120 kcal. The whole question turned on the first one.'
+        }
+      ]
+
+      thinkOptions: [
+        { letter: 'A', text: 'Nothing — exercise destroys the calories' },
+        { letter: 'B', text: 'Nothing is destroyed; the store empties into a thermal store' },
+        { letter: 'C', text: 'The calories are sweated out of the body' },
+        { letter: 'D', text: 'The calories turn into muscle' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.thinkChoice === i,
+        onClick: () => this.setState({ thinkChoice: i })
+      })),
+      thinkOpen: s.thinkChoice !== null,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((y) => y.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((prev) => {
+                if (prev.answers[r.id] !== null && prev.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, prev.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((prev) => ({ text: Object.assign({}, prev.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((prev) => ({ checked: Object.assign({}, prev.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((prev) => {
+              const next = (prev.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, prev.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>
