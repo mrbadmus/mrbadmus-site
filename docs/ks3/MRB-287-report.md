@@ -1,6 +1,6 @@
 # MRB-287 — Teacher dashboard redesign, ported
 
-24 August 2026. Seven commits on `main`, **not pushed**. See §8 for why.
+24 August 2026. Nine commits on `main`, **not pushed**. See §8 for why.
 
 ---
 
@@ -297,10 +297,33 @@ Six defects, all found by **looking**, none caught by a passing gate.
   None of those children exist, so this is not safeguarding — but to a parent
   or a school a public page reading "Amara Okonkwo 61%" is indistinguishable
   from real pupil data leaking, and `teacher_tells` exists to keep exactly
-  that off a live page. Fixing it took two goes: withholding them in
-  `build_teacher_port` held only until the next generator run, because
-  `generate_site_v5` copytrees the whole `teacher/` directory and runs first.
-  The exclusion now lives at the copy. **Verified after a full build: zero.**
+  that off a live page.
+
+  **It took three goes, and the second was worse than the first — worth
+  recording, because I caused it.** Withholding them in `build_teacher_port`
+  held only until the next generator run, since `generate_site_v5` copytrees
+  the whole `teacher/` directory and runs first. So I added
+  `ignore_patterns("*fixture*")` to that copytree — and that generator
+  ROUND-TRIPS, rmtree-ing `./<dir>` and copying the output back over it, so
+  the next run **deleted all twelve fixtures from source** and left the
+  behaviour gate with nothing to drive.
+
+  There is a safety net ten lines below that copytree whose message is
+  literally *"The round-trip would delete these from source"*. It did not
+  fire, because the same change of mine had told it to skip anything matching
+  "fixture" — I silenced the guard so it would stop reporting the files I was
+  deliberately withholding, and it then could not report the files I was
+  accidentally destroying. **Silencing a guard to make a change look clean is
+  how the change gets to be wrong quietly**, and it is the same shape as the
+  defects this ticket's gates exist to catch.
+
+  `generate_site_v5.py` is reverted byte-identical; the net is intact. The
+  fixtures now live in `teacher_fixtures/`, a directory the generator has
+  never heard of — neither published nor round-tripped, so nothing has to be
+  excluded, ignored or silenced for the property to hold. **Verified after a
+  full `build_all`, which is what defeated both earlier attempts: twelve
+  fixtures present in source, zero in the served tree, zero invented
+  identities anywhere under `mrbadmus_site/`.**
 
 Also ruled during the run: the adapter had excluded departed students from
 column means, diverging from MRB-38's locked rule. Restored — the "31/29" it
@@ -314,9 +337,12 @@ The retired original is also 500. Design matches the live page.
 
 ## 8. Commits, and why nothing is pushed
 
-Seven commits on `main`, tree clean, every runnable gate green with a receipt:
+Nine commits on `main`, tree clean, every runnable gate green with a receipt:
 
 ```
+1495d3a15  the fixtures leave the published tree entirely, and the
+           safety net I silenced is restored
+47880ce4c  the run's report
 51e28f43f  withhold the teacher fixtures at the COPY, not after it
 3b0a5107f  the behaviour gate was measuring almost nothing, and the
            fixtures were on the public site
@@ -366,11 +392,14 @@ with whatever you decide.
   vendored byte-for-byte into `docs/ks3/design-reference/teacher/`, so the root
   copy is redundant — but it is a folder you put there and removing someone's
   delivery is not mine to do silently.
-- **The two student fixtures are still publicly served**, by the copytree
-  directly beneath the teacher one. Same exposure, smaller.
+- **The two student fixtures are still publicly served.** Same exposure,
+  smaller, and pre-existing. The teacher fix does not transfer for free:
   `student_themes` is registered against
-  `mrbadmus_site/student/class-fixture.html` and drives that copy, so
-  withholding them changes a live student surface and its gate.
+  `mrbadmus_site/student/class-fixture.html` and drives *that* copy, so moving
+  them out of the published tree means moving the gate too. The pattern to
+  copy is `teacher_fixtures/` — a directory outside the three the generator
+  publishes — and explicitly **not** an ignore rule on the copytree, for the
+  reason in §7.
 
 ### Known remaining gaps, in severity order
 
