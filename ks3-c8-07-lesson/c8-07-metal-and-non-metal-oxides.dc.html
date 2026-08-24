@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metal and non-metal oxides · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">The periodic table</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Metal and non-metal oxides</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">The periodic table · Contrast</p>
+        <h1>Metal and non-metal oxides</h1>
+        <p class="ks3-bigq">Burn a metal and burn a non-metal, drop each product into water, and the two solutions go opposite ways on the pH scale. The side of the table the element came from decides which way.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>A ribbon of magnesium and a spoonful of sulfur, burned in the same flame.</h2>
+        <p class="ks3-hook-prompt">Both catch. Both leave a product behind, and both products go into water and give a colourless solution you could not tell apart by looking. Then the universal indicator goes in: one beaker turns purple, the other turns red.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What decided which way each one went?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Magnesium is a metal, and its oxide takes the water above 7. Sulfur is a non-metal, and its oxide takes the water below 7. Swap the flame for a hotter one, burn ten times as much, use twice the water — the direction does not move. What sets it is which side of the periodic table the element started on.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Burn almost any element in air and it joins with oxygen. What is left behind is an <strong>oxide</strong>.</p>
+        <div style="margin: 18px 0 0; display: flex; flex-direction: column; gap: 12px;">
+          <p style="margin: 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-family: var(--ks3-font-display); font-weight: 700; font-size: 21px; line-height: 1.3; color: var(--ks3-ink);">
+            <span>magnesium + oxygen</span>
+            <svg viewBox="0 0 36 16" role="img" aria-label="gives" style="width: 36px; height: 16px; flex: 0 0 36px;"><path d="M2 8H25" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path><path d="M23 2.6L33.5 8L23 13.4Z" fill="currentColor" stroke="none"></path></svg>
+            <span>magnesium oxide, MgO</span>
+          </p>
+          <p style="margin: 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-family: var(--ks3-font-display); font-weight: 700; font-size: 21px; line-height: 1.3; color: var(--ks3-ink);">
+            <span>sulfur + oxygen</span>
+            <svg viewBox="0 0 36 16" role="img" aria-label="gives" style="width: 36px; height: 16px; flex: 0 0 36px;"><path d="M2 8H25" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path><path d="M23 2.6L33.5 8L23 13.4Z" fill="currentColor" stroke="none"></path></svg>
+            <span>sulfur dioxide, SO<sub>2</sub></span>
+          </p>
+        </div>
+        <p>Both of those are oxides and neither looks anything like the element that made it. Put each one in water and test the solution, and the two results sit at opposite ends of the pH scale.</p>
+      </section>
+
+      <section id="s-rule" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Reference · keep this one open</p>
+        <h2 style="margin: 6px 0 0;">The two kinds of oxide</h2>
+
+        <div style="margin-top: 20px; overflow-x: auto;">
+          <table style="border-collapse: collapse; width: 100%; min-width: 36rem;">
+            <thead>
+              <tr>
+                <th scope="col" style="padding: 12px 14px; text-align: left; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);"></th>
+                <th scope="col" style="padding: 12px 14px; text-align: left; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-accent-text);">Metal oxides</th>
+                <th scope="col" style="padding: 12px 14px; text-align: left; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Non-metal oxides</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ contrast }}" as="row" hint-placeholder-count="5">
+                <tr>
+                  <th scope="row" style="padding: 12px 14px; text-align: left; font-size: 17px; font-weight: 700; border-top: 2px solid var(--ks3-rule); vertical-align: top;">{{ row.prop }}</th>
+                  <td style="padding: 12px 14px; font-size: 17px; line-height: 1.5; border-top: 2px solid var(--ks3-rule); background: var(--ks3-accent-tint); vertical-align: top;">{{ row.metal }}</td>
+                  <td style="padding: 12px 14px; font-size: 17px; line-height: 1.5; border-top: 2px solid var(--ks3-rule); background: var(--ks3-band); vertical-align: top;">{{ row.non }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top: 20px; display: flex; gap: 14px; flex-wrap: wrap;">
+          <div style="flex: 1 1 270px; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-rule-strong);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Base</p>
+            <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 20px; line-height: 1.3;">Reacts with an acid to make a salt and water.</p>
+            <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.5; color: var(--ks3-ink-body);">It does not have to dissolve to be one.</p>
+          </div>
+          <div style="flex: 1 1 270px; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-rule-strong);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Alkali</p>
+            <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 20px; line-height: 1.3;">A base that has dissolved in water.</p>
+            <p style="margin: 8px 0 0; font-size: 17px; line-height: 1.5; color: var(--ks3-ink-body);">Only a dissolved base can move a pH reading.</p>
+          </div>
+        </div>
+
+        <p style="margin: 16px 0 0; font-size: 18px; line-height: 1.6; max-width: 56ch; color: var(--ks3-ink-body);">The second row of the table is the one to read twice. A metal oxide only shows up as an alkaline solution if it dissolves, and not all of them do.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Your turn · six oxides, two beakers</p>
+        <h2 style="margin: 6px 0 0;">Two beakers of the same water.</h2>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Every one of these six is an oxide — an element joined with oxygen. Nothing else about them is the same.</p>
+
+        <div style="margin-top: 18px; display: flex; gap: 9px; flex-wrap: wrap;">
+          <sc-for list="{{ tray }}" as="t" hint-placeholder-count="6">
+            <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" disabled="{{ t.disabled }}" style="{{ t.style }}">
+              <span>{{ t.name }}</span>
+              <span style="{{ t.formulaStyle }}">{{ t.formula }}</span>
+            </button>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 20px; display: flex; gap: 16px; flex-wrap: wrap;">
+          <sc-for list="{{ beakers }}" as="bk" hint-placeholder-count="2">
+            <div style="{{ bk.cardStyle }}">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap;">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ bk.slot }}</p>
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ bk.kindLabel }}</p>
+              </div>
+              <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25;">{{ bk.title }}</p>
+
+              <div style="margin-top: 16px; display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap;">
+                <div role="img" aria-label="{{ bk.beakerAlt }}" style="position: relative; flex: 0 0 100px; width: 100px; height: 128px; border: 3px solid var(--ks3-ink); border-top-width: 0; border-radius: 4px 4px 20px 20px; background: var(--ks3-ground); overflow: hidden;">
+                  <span aria-hidden="true" style="{{ bk.waterStyle }}"></span>
+                  <span aria-hidden="true" style="{{ bk.residueStyle }}"></span>
+                </div>
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--ks3-ink-muted);">pH of the solution</p>
+                  <p style="margin: 2px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 48px; line-height: 1; letter-spacing: -.03em; color: var(--ks3-data, var(--ks3-accent-text));">{{ bk.ph }}</p>
+                  <p style="margin: 10px 0 0; font-size: 17px; line-height: 1.4; color: var(--ks3-ink-body);">{{ bk.uiLine }}</p>
+                </div>
+              </div>
+
+              <p style="margin: 14px 0 0; font-size: 17px; line-height: 1.55; font-weight: 600;">{{ bk.residueLine }}</p>
+              <sc-if value="{{ bk.hasNote }}">
+                <p data-arrive="1" style="margin: 8px 0 0; font-size: 17px; line-height: 1.55; color: var(--ks3-ink-body);">{{ bk.note }}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ cmpOpen }}">
+          <div data-arrive="1" style="margin-top: 18px; padding: 20px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-data, var(--ks3-blue-light));">Side by side</p>
+            <p style="margin: 8px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-on-dark-body);">{{ cmpLine }}</p>
+          </div>
+        </sc-if>
+
+        <div style="margin-top: 16px; display: flex; gap: 14px; flex-wrap: wrap; align-items: center;">
+          <button type="button" onClick="{{ onClear }}" disabled="{{ clearDisabled }}" style="{{ clearStyle }}">Empty both beakers</button>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; color: var(--ks3-ink-muted);">{{ untestedLine }}</p>
+        </div>
+
+        <sc-if value="{{ patternOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25;">Two went above 7. Two went below. Two did not move at all.</p>
+            <p style="margin: 10px 0 0; font-size: 19px; line-height: 1.6;">Calcium oxide and magnesium oxide are oxides of metals, and both took the water above 7. Carbon dioxide and sulfur dioxide are oxides of non-metals, and both took it below. Then there is copper oxide, a metal oxide that left the reading at 7 because it would not dissolve — and water, a non-metal oxide that left the reading at 7 because it is neutral. Same number, two different reasons, and neither of them is a hole in the pattern.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">An oxide is an element joined with oxygen. Metal oxides are bases; non-metal oxides are acidic. A base that dissolves is an alkali and takes the pH above 7 — a base that will not dissolve is still a base.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“The copper oxide left the pH at 7, so it cannot be a base.”</p>
+        <p style="max-width: 54ch;">It is the reading everyone trusts. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">Pour warm dilute sulfuric acid onto that black powder and it disappears. The liquid turns blue, and what has formed is copper sulfate.</p>
+            <p style="margin: 14px 0 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-family: var(--ks3-font-display); font-weight: 700; font-size: 20px; line-height: 1.3; color: var(--ks3-ink);">
+              <span>copper oxide + sulfuric acid</span>
+              <svg viewBox="0 0 36 16" role="img" aria-label="gives" style="width: 36px; height: 16px; flex: 0 0 36px;"><path d="M2 8H25" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path><path d="M23 2.6L33.5 8L23 13.4Z" fill="currentColor" stroke="none"></path></svg>
+              <span>copper sulfate + water</span>
+            </p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">A salt and water, out of an acid. That is what a base does, and the copper oxide has just done it.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">The pH test was never asking the right question. It reads what is dissolved, and almost no copper oxide dissolves. <strong>Basic</strong> is what a substance does to an acid. <strong>Alkaline</strong> is a description of a solution. Copper oxide is the first and never the second.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}" disabled="{{ rung.checkDisabled }}">Check my answer</button>
+              <sc-if value="{{ rung.showGate }}">
+                <p style="margin: 10px 0 0; font-size: 17px; line-height: 1.5; color: var(--ks3-ink-muted);">{{ rung.gateNote }}</p>
+              </sc-if>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>An oxide is an element joined with oxygen. Metal oxides are bases: they react with acids to give a salt and water, and the ones that dissolve give alkaline solutions above pH 7. Non-metal oxides are acidic: dissolved in water they give solutions below pH 7. Two cases show why the words have to be exact. Copper oxide is a base that barely dissolves, so its reading stays at 7 and the acid test is the only one that finds it. Water is itself a non-metal oxide, and it is neutral.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Coal and oil contain sulfur, so burning them sends sulfur dioxide up the chimney, and an engine running hot enough will make nitrogen and oxygen from the air combine into nitrogen oxides. Both are non-metal oxides and both dissolve in rain. Clean rain is already slightly acidic at about pH 6, because carbon dioxide from the air dissolves in it; rain measured downwind of heavy industry has come in nearer pH 4. Limestone is calcium carbonate and reacts with acid, which is why carved stone weathers faster in it, and why powdered limestone is the thing tipped into an acidified lake.</p>
+          <p>The staircase of elements that will not commit to being metals or non-metals has oxides to match. Aluminium oxide reacts with acids the way a metal oxide should, and with alkalis the way a non-metal oxide should. An element in between gives an oxide in between — which is a useful reminder that the rule in this lesson is a summary of behaviour rather than a law that behaviour obeys.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c8-01-metals-and-non-metals.html">Metals and non-metals<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="../acids-and-alkalis/c6-02-indicators-and-the-ph-scale.html">Indicators and the pH scale<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Amphoteric oxides, the trend in oxide acidity across a period, and neutralisation written as an ionic equation.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still unsure how copper oxide can be a base at pH 7?</p>
+          <a class="ks3-tutor-cta" href="#s-think">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Two flames', short: 'HOOK' },
+  { id: 's-rule', label: 'The two kinds', short: 'KINDS' },
+  { id: 's-bench', label: 'The oxide bench', short: 'BENCH' },
+  { id: 's-think', label: 'Basic, not alkaline', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+/* pH 0-14, one colour each — the same scale students met in c6-02. */
+const PH_COLOURS = ['#C1272D', '#D2382B', '#E04A22', '#EA6A1E', '#EE8C1B', '#EFB120', '#D7CA2A', '#4FA352', '#3E9C86', '#2F8DA8', '#2A6FA8', '#2E4E96', '#453C8E', '#553191', '#5E2483'];
+
+/* Formulae are PLAIN DIGITS here: payload strings render through holes, where
+   markup is not available. <sub> is used in the template instead. */
+const OXIDES = [
+  { id: 'cao', name: 'calcium oxide', formula: 'CaO', kind: 'metal', ph: 12, residue: 'clear',
+    benchTitle: 'Calcium oxide, stirred in',
+    residueLine: 'All of it dissolved. Nothing left on the bottom.',
+    note: 'Calcium is a metal, so calcium oxide is a base. This one dissolves freely, so there is plenty of it in solution and the reading goes a long way up the scale.' },
+  { id: 'mgo', name: 'magnesium oxide', formula: 'MgO', kind: 'metal', ph: 10, residue: 'thin',
+    benchTitle: 'Magnesium oxide, stirred in',
+    residueLine: 'A little dissolved. Most of the white powder is still on the bottom.',
+    note: 'Magnesium is a metal, so magnesium oxide is a base. Only a little of it dissolves, so the solution is alkaline but the reading does not climb to the top of the scale.' },
+  { id: 'cuo', name: 'copper oxide', formula: 'CuO', kind: 'metal', ph: 7, residue: 'heap', insoluble: true,
+    benchTitle: 'Copper oxide, stirred in',
+    residueLine: 'None of it dissolved. The black powder is sitting on the bottom exactly as it went in.',
+    note: 'Copper is a metal, so copper oxide is a base — and this reading cannot show that. Almost nothing went into solution, so there is nothing in the water for the indicator to report.' },
+  { id: 'h2o', name: 'water', formula: 'H2O', kind: 'non-metal', ph: 7, residue: 'self',
+    benchTitle: 'Water — the oxide is the water',
+    residueLine: 'Nothing to dissolve. This oxide is the water.',
+    note: 'Hydrogen is a non-metal, so water is a non-metal oxide: hydrogen oxide. It is also the liquid already in the beaker. Not every non-metal oxide is acidic — this one is the definition of neutral.' },
+  { id: 'co2', name: 'carbon dioxide', formula: 'CO2', kind: 'non-metal', ph: 5, residue: 'gas',
+    benchTitle: 'Carbon dioxide, bubbled through',
+    residueLine: 'Bubbled in. The gas dissolves as it goes.',
+    note: 'Carbon is a non-metal, so carbon dioxide is acidic. Dissolved in water it makes carbonic acid, which is why rain is slightly acidic before it has touched anything at all.' },
+  { id: 'so2', name: 'sulfur dioxide', formula: 'SO2', kind: 'non-metal', ph: 3, residue: 'gas',
+    benchTitle: 'Sulfur dioxide, bubbled through',
+    residueLine: 'Bubbled in. The gas dissolves as it goes.',
+    note: 'Sulfur is a non-metal, so sulfur dioxide is acidic. It dissolves readily, and the reading drops well down the scale.' }
+];
+
+const CONTRAST = [
+  { prop: 'What it is', metal: 'A base — it reacts with an acid to make a salt and water', non: 'Acidic — it reacts with an alkali to make a salt and water' },
+  { prop: 'Shaken with water', metal: 'Above pH 7, if it dissolves at all', non: 'Below pH 7' },
+  { prop: 'Universal indicator', metal: 'Blue, or purple', non: 'Orange, or red' },
+  { prop: 'Where its element sits', metal: 'Left and middle of the periodic table', non: 'Top right of the periodic table' },
+  { prop: 'On the bench below', metal: 'calcium oxide, magnesium oxide, copper oxide', non: 'carbon dioxide, sulfur dioxide, water' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'Sulfur is burned in air and the product is shaken with water. What will that solution do to universal indicator?',
+    options: [
+      { text: 'Turn it purple, because the oxide of a non-metal is alkaline', correction: 'That is the metal oxide result. Non-metal oxides go the other way.' },
+      { text: 'Leave it green, because burning an element gives a neutral oxide', correction: 'Burning sulfur gives sulfur dioxide, and its solution is acidic, not neutral.' },
+      { text: 'Turn it red, because the oxide of a non-metal is acidic', correct: true },
+      { text: 'Turn it blue, because every oxide raises the pH of water', correction: 'Only metal oxides raise it. Sulfur is a non-metal.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'Copper oxide is stirred into water. The black powder sits on the bottom and the pH reads 7. What does that tell you?',
+    options: [
+      { text: 'It is neutral, because adding it did not move the pH at all', correction: 'A pH reading only reports what dissolved. Almost none of this did.' },
+      { text: 'It is an acidic oxide that is far too weak for water to show', correction: 'Copper is a metal, and metal oxides are bases, not acidic.' },
+      { text: 'It is not a base, because every base pushes the pH above 7', correction: 'Only a base that dissolves can do that. A base does not have to dissolve.' },
+      { text: 'Nothing yet — it barely dissolves, so water cannot show it', correct: true }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Copper oxide and magnesium oxide are both metal oxides. Stirred into water, magnesium oxide takes the pH to 10 while copper oxide leaves it at 7. Explain how both can still be bases.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Both of them are bases because…',
+    criteria: [
+      'Says a base is a substance that reacts with an acid to make a salt and water.',
+      'Says magnesium oxide dissolves, so its solution is alkaline and reads above 7.',
+      'Says almost no copper oxide dissolves.',
+      'Says a pH reading can only report what has dissolved.',
+      'Says adding an acid to copper oxide would show it is a base.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A grower finds the soil in one field is too acidic for the crop. Using the oxides on the bench above, say what could be spread on that field and why. Then explain why burning a heap of sulfur at the edge of the field would make the problem worse.',
+    fieldLabel: 'Your answer',
+    placeholder: 'I would spread…',
+    criteria: [
+      'Chooses a metal oxide — calcium oxide or magnesium oxide.',
+      'Says a metal oxide is a base, so it reacts with the acid in the soil.',
+      'Says burning sulfur makes sulfur dioxide, which is a non-metal oxide.',
+      'Says that oxide dissolves in water to give an acidic solution.',
+      'Says adding more acid to soil that is already too acidic makes it worse.'
+    ] }
+];
+
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+function uiWord(ph) {
+  if (ph <= 4) return 'red';
+  if (ph <= 6) return 'orange';
+  if (ph === 7) return 'green';
+  if (ph <= 9) return 'blue-green';
+  if (ph <= 11) return 'blue';
+  return 'purple';
+}
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-rule') return s.hookChoice !== null;
+  if (id === 's-bench') return OXIDES.every((o) => !!s.tested[o.id]);
+  if (id === 's-think') return s.thinkChoice !== null;
+  if (id === 's-ladder') return RUNGS.every((r) => s.answers[r.id] !== undefined) && SELF_RUNGS.every((r) => !!s.checked[r.id]);
+  return false;
+}
+
+class Component extends DCLogic {
+  state = {
+    active: 0, answers: {}, text: {}, checked: {}, ticks: {},
+    hookChoice: null, thinkChoice: null,
+    slots: [null, null], tested: {}
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  /* Picking is the whole control surface: a chip that is out goes into the
+     first free beaker, a chip that is in comes out and the other slides left,
+     so "beaker 2 filled while beaker 1 is empty" is unreachable. */
+  pick(id) {
+    this.setState((st) => {
+      const slots = st.slots.slice();
+      const at = slots.indexOf(id);
+      if (at >= 0) {
+        slots.splice(at, 1);
+        slots.push(null);
+        return { slots: slots };
+      }
+      const free = slots.indexOf(null);
+      if (free < 0) return null;
+      slots[free] = id;
+      return { slots: slots, tested: Object.assign({}, st.tested, { [id]: true }) };
+    });
+  }
+
+  /* Every comparative is built here, from the two readings that are actually
+     on the bench. Equal readings never produce "more acidic than". */
+  cmpLine(a, b) {
+    const hi = a.ph >= b.ph ? a : b;
+    const lo = a.ph >= b.ph ? b : a;
+    let head;
+    if (a.ph === b.ph) {
+      head = cap(a.name) + ' and ' + b.name + ' both read pH ' + a.ph + '.';
+    } else if (lo.ph < 7 && hi.ph > 7) {
+      head = cap(lo.name) + ' read pH ' + lo.ph + ', which is acidic. ' + cap(hi.name) + ' read pH ' + hi.ph + ', which is alkaline.';
+    } else if (lo.ph < 7 && hi.ph === 7) {
+      head = cap(lo.name) + ' took the reading down to ' + lo.ph + '. ' + cap(hi.name) + ' left it at 7.';
+    } else if (lo.ph === 7 && hi.ph > 7) {
+      head = cap(hi.name) + ' took the reading up to ' + hi.ph + '. ' + cap(lo.name) + ' left it at 7.';
+    } else if (lo.ph > 7) {
+      head = 'Both readings are above 7. ' + cap(hi.name) + ' at pH ' + hi.ph + ' is the more alkaline of the two.';
+    } else {
+      head = 'Both readings are below 7. ' + cap(lo.name) + ' at pH ' + lo.ph + ' is the more acidic of the two.';
+    }
+    const kinds = a.kind === b.kind
+      ? ' Both are ' + a.kind + ' oxides.'
+      : ' One of them is a metal oxide and one is not.';
+    let tail = '';
+    if (a.insoluble || b.insoluble) {
+      tail = ' The 7 beside ' + (a.insoluble ? a : b).name + ' is not a verdict on it: almost none of it dissolved, so the water had nothing to report.';
+    } else if (a.ph === b.ph) {
+      tail = ' Nothing on this test separates them.';
+    }
+    return head + kinds + tail;
+  }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;display:inline-flex;align-items:center;gap:9px;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.45;' : '');
+  }
+
+  benchVals(s) {
+    const held = s.slots.map((id) => (id ? OXIDES.filter((o) => o.id === id)[0] : null));
+    const untested = OXIDES.filter((o) => !s.tested[o.id]).map((o) => o.name);
+    const both = held[0] && held[1];
+
+    return {
+      tray: OXIDES.map((o) => {
+        const on = s.slots.indexOf(o.id) >= 0;
+        const full = s.slots.indexOf(null) < 0;
+        return {
+          name: o.name, formula: o.formula,
+          pressed: on, disabled: !on && full,
+          style: this.seg(on, !on && full),
+          formulaStyle: 'font-family:var(--ks3-font-mono);font-size:14px;font-weight:500;color:' + (on ? 'var(--ks3-accent-text)' : 'var(--ks3-ink-muted)') + ';',
+          onClick: () => this.pick(o.id)
+        };
+      }),
+
+      beakers: held.map((o, i) => {
+        const ph = o ? o.ph : 7;
+        const rh = o ? ({ thin: 11, heap: 28 }[o.residue] || 0) : 0;
+        const rc = o && o.residue === 'heap' ? '#1A1714' : '#EFE7D6';
+        return {
+          slot: 'Beaker ' + (i + 1),
+          kindLabel: o ? o.kind + ' oxide' : 'water only',
+          title: o ? o.benchTitle : 'Water, nothing added',
+          cardStyle: 'flex:1 1 300px;padding:20px 22px;border-radius:var(--ks3-r-panel);border:2px solid var(--ks3-ink);background:' +
+            (o ? 'var(--ks3-card)' : 'var(--ks3-inset)') + ';',
+          waterStyle: 'display:block;position:absolute;left:0;right:0;bottom:0;height:76%;background:' + PH_COLOURS[ph] + ';',
+          residueStyle: 'display:block;position:absolute;left:5px;right:5px;bottom:0;height:' + rh + 'px;border-radius:9px 9px 15px 15px;background:' + rc + ';',
+          beakerAlt: o
+            ? 'A beaker of water with the indicator ' + uiWord(ph) + ', and ' + (rh ? 'undissolved solid on the bottom' : 'nothing on the bottom') + '.'
+            : 'A beaker of water with the indicator green and nothing on the bottom.',
+          ph: String(ph),
+          uiLine: 'Universal indicator: ' + uiWord(ph) + '.',
+          residueLine: o ? o.residueLine : 'The baseline. Both beakers start here.',
+          hasNote: !!o, note: o ? o.note : ''
+        };
+      }),
+
+      cmpOpen: !!both,
+      cmpLine: both ? this.cmpLine(held[0], held[1]) : '',
+
+      clearDisabled: !held[0] && !held[1],
+      clearStyle: 'font:inherit;font-size:16px;font-weight:700;padding:12px 20px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+        (!held[0] && !held[1] ? 'var(--ks3-row-dim)' : 'var(--ks3-band)') + ';color:var(--ks3-ink);cursor:' +
+        (!held[0] && !held[1] ? 'default' : 'pointer') + ';' + (!held[0] && !held[1] ? 'opacity:.45;' : ''),
+      onClear: () => this.setState({ slots: [null, null] }),
+
+      untestedLine: untested.length ? 'Not yet in a beaker: ' + untested.join(', ') + '.' : 'All six have been in a beaker.',
+      patternOpen: untested.length === 0
+    };
+  }
+
+  lessonVals(s) {
+    return Object.assign({
+      hookOptions: [
+        { letter: 'A', text: 'How hot the flame was' },
+        { letter: 'B', text: 'Which side of the periodic table the element came from' },
+        { letter: 'C', text: 'How much of the element was burned' },
+        { letter: 'D', text: 'Whether the oxide came out as a solid or a gas' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      contrast: CONTRAST.map((r) => ({ prop: r.prop, metal: r.metal, non: r.non })),
+
+      thinkOptions: [
+        { letter: 'A', text: 'Right — a base always takes the pH above 7' },
+        { letter: 'B', text: 'Wrong — it hardly dissolved, so nothing was in the water to read' },
+        { letter: 'C', text: 'Right — copper oxide is neutral, the same as water is' },
+        { letter: 'D', text: 'Wrong — copper oxide is really an acidic oxide' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.thinkChoice === i, onClick: () => this.setState({ thinkChoice: i }) })),
+      thinkOpen: s.thinkChoice !== null
+    }, this.benchVals(s));
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        const written = (s.text[r.id] || '').trim().length;
+        const open = written >= 60;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          checkDisabled: !open, showGate: !open,
+          gateNote: 'Write a fuller answer, then mark it against the criteria.',
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => (((st.text[r.id] || '').trim().length < 60) ? null
+            : { checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals(s)
+    );
+  }
+}
+
+</script>
+</body>
+</html>
