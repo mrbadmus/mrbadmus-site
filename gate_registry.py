@@ -161,7 +161,13 @@ GATES = [
     dict(name="teacher_behaviour",
          cmd=["python3", "teacher_behaviour.py"],
          speed="slow",
-         needs="teacher/classes-fixture.html",
+         # ⚠️ `teacher_fixtures/`, NOT `teacher/`. The fixtures moved out of
+         # the published directory (they render Design's invented school and
+         # /teacher/* has no edge auth). This row kept the old path for one
+         # commit and the gate SKIPPED — by name, which is how it was caught,
+         # and exactly the "a gate stopped watching" failure this file exists
+         # to prevent. A `needs` path is part of the move.
+         needs="teacher_fixtures/classes-fixture.html",
          why="the ported teacher pages, DRIVEN — the teacher-side twin of "
              "ks3_instrument_liveness, and the only teacher gate that presses "
              "the buttons. teacher_tells reads the built bytes and would pass "
