@@ -62,7 +62,7 @@
     slow:       "We waited for your class and it did not arrive. Try again in a minute or two.",
     pastYear:   "That class finished at the end of last year.",
     notMine:    "That class is not one of yours.",
-    noRecall:   "There is nothing to look back over yet. Check again after your next lesson.",
+    noPractice: "There is nothing to look back over yet. Check again after your next lesson.",
     noWork:     "No work has been set for this week yet.",
     workNotSet: "This week’s work is not ready yet. Check again later today."
   };
@@ -1900,7 +1900,7 @@
 
            if (!questions.length) {
              var e = new Error("no recall questions");
-             e.mrbSay = SAY.noRecall;   // "There is nothing to look back over
+             e.mrbSay = SAY.noPractice;   // "There is nothing to look back over
              throw e;                   //  yet. Check again after your next
            }                            //  lesson."
 
@@ -2363,7 +2363,7 @@
          refuses to open an empty overlay (see `openCards` in
          student_rulings.py), so a student is never taken to a surface with a
          counter reading 00 / 00 on it. */
-      cardsEmpty: SAY.noRecall,
+      cardsEmpty: SAY.noPractice,
 
       /* ── ⊕ 23 Aug 2026 — PHASE 3. THE ROUND'S THREE KEYS ───────────────
 
@@ -2391,7 +2391,7 @@
          have shipped one real class's name at the top of every student's
          round. Composed here from the class name this function already holds;
          the separator is Design's typography and is carried verbatim. */
-      recallTitle: name + " \u00a0\u00b7\u00a0 RECALL",
+      practiceBar: name + " \u00a0\u00b7\u00a0 PRACTICE",
 
       /* ⛔ THE BENCH BUTTON GOES WHEN THERE IS NOTHING TO PRACTISE. Design's
          `Practise recall` is a real control, and a class whose covered lessons
@@ -2404,6 +2404,15 @@
          the page explaining itself, and a greyed-out control a student cannot
          act on is a worse answer than a bench that simply offers what it has. */
       practiceLabel: practiceBank.length ? "Practice" : "",
+      /* ⊕ MRB-288 — the component's ruled name, everywhere Design drew the
+         old one: the round's heading (a bound text node), the readings
+         tile's label and the crumb's second half (two logic lifts). The
+         fixture carries Design's own `Recall` for all three, so the fixture
+         gates render Design's drawing unchanged; these are what a real
+         student sees. The tile and crumb are CSS-uppercased on the page. */
+      practiceTitle: "Practice",
+      practiceTileLabel: "Practice",
+      practiceCrumb: "Practice",
 
       /* Design typed `FLASHCARDS \u00a0·\u00a0 8r/Sc1` into the overlay's
          header as ONE text node with NON-BREAKING spaces, which is why it
@@ -2673,8 +2682,8 @@
          fraction they got right are both genuinely unrecorded. Design's '46'
          and '77%' were a drawing. Empty until the round has somewhere to
          write; see the handover. */
-      recallAnswered: "",
-      recallPct: "",
+      practiceAnswered: "",
+      practicePct: "",
       recallRounds: "",
 
       /* ⛔ THE FLOOR OF NINE. Design wrote `pad(Math.max(9, st.streak))`, so a
@@ -2745,7 +2754,7 @@
           + capitalise(numWord(questions.length))
           + (questions.length === 1 ? " question a round" : " a round")
           + ", unlimited rounds."
-        : SAY.noRecall,
+        : SAY.noPractice,
       recallEyebrow: questions.length
         ? (numWord(questions.length).toUpperCase() + " QUESTION"
            + (questions.length === 1 ? "" : "S") + " \u00B7 UNLIMITED ROUNDS")
@@ -2754,8 +2763,8 @@
       /* ⊕ RULED 22 Aug 2026. The count is the length of the list it counts. */
       lessonCount: pad2(lessonDefs.length),
 
-      recallCrumb: questions.length
-        ? (numWord(questions.length).toUpperCase() + " A ROUND") : "RECALL",
+      practiceRoundCrumb: questions.length
+        ? (numWord(questions.length).toUpperCase() + " A ROUND") : "PRACTICE",
       topicTitle: current && current.assignment
         ? (current.assignment.topic || current.assignment.title || "")
         : ""

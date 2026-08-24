@@ -1445,7 +1445,7 @@ AMENDED_OMISSIONS = {
                  "`/api/class/recall` only reads, and no table carries a "
                  "class, a teaching week and a rung together, so ANSWERED and "
                  "ROUNDS are unrecorded; student-live.js has emitted "
-                 "`recallAnswered` and `recallRounds` as empty since the day "
+                 "`practiceAnswered` and `recallRounds` as empty since the day "
                  "Design's 46 was found to be a drawing. BEST STREAK is real "
                  "inside one sitting and false the next morning, when a "
                  "student who answered thirty yesterday is shown 00 under a "

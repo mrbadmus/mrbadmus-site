@@ -137,6 +137,7 @@ window.__MRB_DATA__ = {
   "dueWordShort": "DUE THU",
   "handedCaption": "OF HANDED IN",
   "handedLabel": "Handed in",
+  "practiceAnswered": "46",
   "practiceBank": [
       { topic: 'BREATHING AND GAS EXCHANGE', q: 'A plant in a dark cupboard is releasing carbon dioxide. Which of the three processes is it carrying out?', options: ['Breathing', 'Respiration', 'Gas exchange only', 'All three'], answer: 1, note: 'Plants respire day and night; they do not breathe.' },
       { topic: 'PRESSURE', q: 'A fixed amount of gas is squeezed into half the space. What happens to its pressure?', options: ['It halves', 'It doubles', 'It stays the same', 'It drops to zero'], answer: 1, note: 'Same particles, smaller space, more collisions.' },
@@ -147,9 +148,10 @@ window.__MRB_DATA__ = {
       { topic: 'GAS EXCHANGE', q: 'Where in the lungs does gas exchange happen?', options: ['The trachea', 'The bronchi', 'The alveoli', 'The diaphragm'], answer: 2, note: 'Millions of tiny air sacs, each with a thin wall.' },
       { topic: 'CHEMICAL REACTIONS', q: 'What is always conserved in a chemical reaction?', options: ['Mass', 'Colour', 'Volume', 'Temperature'], answer: 0, note: 'No atoms are made or lost, only rearranged.' },
     ],
-  "recallAnswered": "46",
-  "recallCrumb": "SIX A ROUND",
-  "recallPct": "77%",
+  "practiceCrumb": "Recall",
+  "practicePct": "77%",
+  "practiceRoundCrumb": "SIX A ROUND",
+  "practiceTileLabel": "Recall",
   "shoutouts": [
         { who: 'MB', text: 'Best score in the class on digestion this week.', meta: 'MR BADMUS \u00B7 2 DAYS AGO' },
         { who: 'MB', text: 'Third week running you handed in first. Keep it.', meta: 'MR BADMUS \u00B7 1 WEEK AGO' }
@@ -180,8 +182,9 @@ window.__MRB_DATA__ = {
   "envBadge": "PROD",
   "flashcardsTitle": "FLASHCARDS \u00a0\u00b7\u00a0 8r/Sc1",
   "lessonCount": "04",
+  "practiceBar": "8r/Sc1 \u00a0\u00b7\u00a0 RECALL",
   "practiceLabel": "Practise recall",
-  "recallTitle": "8r/Sc1 \u00a0\u00b7\u00a0 RECALL",
+  "practiceTitle": "Recall",
   "studentFirstName": "AY",
   "studentInitials": "AY",
   "subjectLabel": "Biology",

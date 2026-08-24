@@ -470,7 +470,7 @@ BINDINGS = {
         # from `min(6, pool)` in one place in `recallVals`. There is no wording
         # left on the page that CAN be wrong about it.
         #
-        # `student-live.js` still computes both keys, and `recallCrumb` with
+        # `student-live.js` still computes both keys, and `practiceRoundCrumb` with
         # them, exactly as it still computes `recallBlurb` — a correct
         # computation costs nothing and is cheaper than deleting it and
         # rediscovering it.
@@ -490,7 +490,7 @@ BINDINGS = {
         # (The `8r/Sc1` on the round's own back button — donor 373 — is its own
         # text node and binds to `className` for free, which is exactly why the
         # binding table is keyed on the literal rather than on an index.)
-        ("8r/Sc1 \u00a0\u00b7\u00a0 RECALL", "recallTitle"),
+        ("8r/Sc1 \u00a0\u00b7\u00a0 RECALL", "practiceBar"),
         # ⛔ AND THE BENCH BUTTON GOES WHEN THERE IS NOTHING TO PRACTISE.
         #
         # `Practise recall` is live node 77, the bench's route into the round,
@@ -516,6 +516,14 @@ BINDINGS = {
         # nothing can reach, and a `drop` on a node that never draws is a
         # registration that can never be checked.
         ("Practise recall", "practiceLabel", "drop"),
+        # ── ⊕ MRB-288, 24 Aug 2026 — THE ROUND'S HEADING ──────────────────
+        # The one place `Recall` is a TEXT NODE: the grafted round's heading.
+        # Bound so the live page can call the component by its ruled name —
+        # "Practice" — while the fixture keeps Design's own word and every
+        # fixture gate renders exactly what Design drew. The tile label and
+        # the crumb word are computed in logic and travel through the LOGIC
+        # lifts (`practiceTileLabel`, `practiceCrumb`) instead.
+        ("Recall", "practiceTitle"),
         # ── ⊕ RULED 22 Aug 2026 — P4. THE BENCH'S PRIMARY BUTTON ──────────
         # In the OPEN state it opens the assignment. In the DONE state the
         # assignment is finished, and the two actions the ruling asks for are
@@ -911,20 +919,20 @@ REWRITES = {
                  r"'(?P<termLabel>[A-Z][A-Z ]*) \\u00B7 WEEK "
                  r"(?P<weekNumber>\d+) / (?P<weekTotal>\d+)' : "
                  r"'WK (?P=weekNumber) / (?P=weekTotal)'\) : "
-                 r"'(?P<recallCrumb>SIX A ROUND)'",
+                 r"'(?P<practiceRoundCrumb>SIX A ROUND)'",
              new="crumbRight: onClass ? (wide ? MRB_DATA('termLabel')"
                  " + ' \\u00B7 WEEK ' + MRB_DATA('weekNumber')"
                  " + ' / ' + MRB_DATA('weekTotal') : "
                  "'WK ' + MRB_DATA('weekNumber')"
                  " + ' / ' + MRB_DATA('weekTotal')) : "
-                 "MRB_DATA('recallCrumb')",
+                 "MRB_DATA('practiceRoundCrumb')",
              # ⊕ RULED 22 Aug 2026 — P2. `SIX A ROUND` is the RECALL view's
              # own crumb, and the previous seam deliberately left it alone as
              # "the recall view's own label and not data". That was right when
              # a round was six. It is data now, for the same reason the header
              # eyebrow is.
              keys=dict(weekNumber="str", weekTotal="str",
-                       recallCrumb="str")),
+                       practiceRoundCrumb="str")),
         # The leaderboard's scope note. `'WHOLE AUTUMN TERM'` embeds the term
         # name; `wk === 4` embeds which week is the current one — a NUMBER,
         # compared with `===`, so it is carried as a number and not as the
@@ -1062,23 +1070,43 @@ REWRITES = {
         # not the logic these run on.
         dict(name="readings — recall answered",
              pat=r"\{ label: 'Recall', value: fresh \? '0' : "
-                 r"'(?P<recallAnswered>\d+)'",
+                 r"'(?P<practiceAnswered>\d+)'",
              new="{ label: 'Recall', value: fresh ? '0' : "
-                 "MRB_DATA('recallAnswered')",
-             keys=dict(recallAnswered="str")),
+                 "MRB_DATA('practiceAnswered')",
+             keys=dict(practiceAnswered="str")),
         dict(name="readings — recall percentage",
-             pat=r"pct: fresh \? '0%' : '(?P<recallPct>\d+%)' \}",
-             new="pct: fresh ? '0%' : MRB_DATA('recallPct') }",
-             keys=dict(recallPct="str")),
+             pat=r"pct: fresh \? '0%' : '(?P<practicePct>\d+%)' \}",
+             new="pct: fresh ? '0%' : MRB_DATA('practicePct') }",
+             keys=dict(practicePct="str")),
         # The same 46, spliced a second time 280 lines further down as the
         # retrieval room's own count. ONE KEY, TWO USES — deliberately: if the
         # strip and the room ever disagreed about how many questions a student
         # has answered, one of them would be lying, and `rewrite_seams`
         # refuses a key captured as two different values.
         dict(name="retrievalCount",
-             pat=r"retrievalCount: fresh \? '0' : '(?P<recallAnswered>\d+)'",
-             new="retrievalCount: fresh ? '0' : MRB_DATA('recallAnswered')",
-             keys=dict(recallAnswered="str")),
+             pat=r"retrievalCount: fresh \? '0' : '(?P<practiceAnswered>\d+)'",
+             new="retrievalCount: fresh ? '0' : MRB_DATA('practiceAnswered')",
+             keys=dict(practiceAnswered="str")),
+        # ── ⊕ MRB-288, 24 Aug 2026 — THE COMPONENT'S NAME IS DATA NOW ────
+        # Mide's ruling kills the naming collision: "recall" names a ladder
+        # rung and nothing else; the dashboard round is PRACTICE. Design's
+        # drawing says `Recall` in three places — the readings tile's label,
+        # the crumb's second half, and the round's heading (that one is a
+        # TEXT NODE and travels through BINDINGS, not here). Same seam as
+        # `handedLabel` directly above: the fixture carries Design's own
+        # word, so Design's render is unchanged and nothing is registered as
+        # a divergence; the live source supplies "Practice".
+        # ⚠️ ORDER: after the `recall answered` figure lift, whose pattern
+        # anchors on `label: 'Recall'` — rewriting the label first would
+        # strand that lift with nothing to match, and the build would stop.
+        dict(name="readings — the practice tile's label (MRB-288)",
+             pat=r"\{ label: '(?P<practiceTileLabel>Recall)', value: fresh",
+             new="{ label: MRB_DATA('practiceTileLabel'), value: fresh",
+             keys=dict(practiceTileLabel="str")),
+        dict(name="crumb — the round's crumb word (MRB-288)",
+             pat=r"crumbLast: onClass \? 'Overview' : '(?P<practiceCrumb>Recall)'",
+             new="crumbLast: onClass ? 'Overview' : MRB_DATA('practiceCrumb')",
+             keys=dict(practiceCrumb="str")),
 
         # The docket — this week's assignment, four facts about it. ⚠️ ONLY
         # THE `value:` IS TAKEN. `font:` on three of these four reads

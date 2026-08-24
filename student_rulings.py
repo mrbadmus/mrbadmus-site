@@ -1352,7 +1352,7 @@ LOGIC = {
             "         node is omitted on the way in; see the graft.\n"
             "\n"
             "         `recallStats` goes with them for the reason student-live.js\n"
-            "         already records against `recallAnswered` / `recallPct` /\n"
+            "         already records against `practiceAnswered` / `practicePct` /\n"
             "         `recallRounds`: BEST STREAK 09 and ROUNDS 08 were a drawing.\n"
             "         Nothing anywhere records a recall round. */\n",
         ),
@@ -2811,7 +2811,7 @@ GRAFT = {
         #                  anywhere records a recall round — `/api/class/recall`
         #                  only reads, and no table carries a class, a teaching
         #                  week and a rung together. `student-live.js` has
-        #                  emitted `recallAnswered: ""` since the day the figure
+        #                  emitted `practiceAnswered: ""` since the day the figure
         #                  was found to be a drawing, and it still does.
         #   BEST STREAK    a SESSION value under a WEEK heading. The number is
         #                  real inside one sitting and false the next morning,
