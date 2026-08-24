@@ -249,11 +249,43 @@
 
   function pad2(n) { return n < 10 ? "0" + n : String(n); }
 
+  /* ⊕ QUICKFIX-2026-08-24 — ONE month spelling for the whole page, and every
+     date read against London rather than whatever clock the device carries.
+
+     Two real bugs lived in the three formatters below, not one imagined
+     one. `en-GB`'s own Intl name for September's SHORT month is "Sept" —
+     four letters, the only month that is not three, confirmed against
+     Node's real ICU data rather than assumed — so asking Intl to spell the
+     month, as this function used to, was one September away from printing
+     it. `fmtSet` and (below) `fmtStamp` each carried their own hand-rolled
+     array so as not to inherit that, and the two arrays could disagree with
+     each other, and with this one, the day only one of three copies got
+     touched.
+
+     So there is one array, and Intl is asked for the NUMBERS only — which
+     day, which month, which hour, in London — never for a spelling. Getting
+     that arithmetic right (leap years, DST, months of differing lengths) is
+     the reason to use Intl at all. `Number(p.day)` un-pads what
+     `formatToParts` zero-pads once `month` is also requested numeric —
+     checked against the un-padded day every caller already expects, not
+     assumed. */
+  var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  function londonPart(iso, opts) {
+    var d = new Date(iso);
+    var parts = new Intl.DateTimeFormat("en-GB",
+      Object.assign({ timeZone: LONDON }, opts)).formatToParts(d);
+    var out = {};
+    parts.forEach(function (p) { out[p.type] = p.value; });
+    return out;
+  }
+
   function fmtDay(iso) {            // 'THU 18 SEP'
     if (!iso) { return ""; }
-    return new Intl.DateTimeFormat("en-GB", {
-      timeZone: LONDON, weekday: "short", day: "numeric", month: "short"
-    }).format(new Date(iso)).replace(/,/g, "").toUpperCase();
+    var p = londonPart(iso, { weekday: "short", day: "numeric", month: "numeric" });
+    return (p.weekday + " " + Number(p.day) + " " +
+            MONTHS[Number(p.month) - 1]).toUpperCase();
   }
 
   function fmtTime(iso) {           // '18:00'
@@ -263,16 +295,14 @@
     }).format(new Date(iso));
   }
 
-  /* 'Mon 15 Sep' and 'Thu 18 Sep, 18:00' — the docket's own two shapes, mixed
-     case, which is why they cannot reuse fmtDay's upper-cased one. */
+  /* 'Mon 15 Sep' — the docket's mixed-case shape, which is why it cannot
+     reuse fmtDay's upper-cased one; the month spelling itself now comes
+     from the same MONTHS array either way. */
   function fmtSet(iso) {
     if (!iso) { return ""; }
-    var d = new Date(iso);
-    if (isNaN(d.getTime())) { return ""; }
-    var D = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    var M = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    return D[d.getDay()] + " " + d.getDate() + " " + M[d.getMonth()];
+    if (isNaN(new Date(iso).getTime())) { return ""; }
+    var p = londonPart(iso, { weekday: "short", day: "numeric", month: "numeric" });
+    return p.weekday + " " + Number(p.day) + " " + MONTHS[Number(p.month) - 1];
   }
 
   /* 'Thursday' — the day a deadline falls on, spelled out, for the bench
@@ -829,6 +859,33 @@
     }
   }
 
+  /* ⊕ QUICKFIX-2026-08-24 — the same treatment `withDeadline` gives a
+     backend fetch, for a direct database read. `sb.from(...)` builders have
+     no ceiling of their own — a stalled connection blocks whichever `await`
+     or `Promise.all` is waiting on it forever, which is worse here than on
+     one fetch: several of these sit inside one `Promise.all` alongside
+     already-bounded `api()` calls, so a single hanging read holds the whole
+     page open behind it.
+
+     A race rather than an abort. The query builder takes no signal this
+     file can pass it without depending on a client version this file does
+     not control, so the request itself is not cancelled — only the wait for
+     it. Nothing wrapped here is a write, so a query that finishes late,
+     after its own timeout has already rejected, does no harm: it is simply
+     not waited for. */
+  function withDbDeadline(ms, q) {
+    return Promise.race([
+      q,
+      new Promise(function (_, reject) {
+        setTimeout(function () {
+          var e = new Error("no answer within " + Math.round(ms / 1000) + "s");
+          e.code = "db_timeout";
+          reject(e);
+        }, ms);
+      })
+    ]);
+  }
+
   async function api(path, token) {
     var cfg = window.MrBadmusConfig || {};
     var base = cfg.BACKEND_URL || "https://mrbadmus-backend.onrender.com";
@@ -969,16 +1026,20 @@
 
   var LETTERS = "ABCD";
 
-  /* '17 SEP, 20:41' — Design's own shape, from the SERVER's timestamp. The
-     device clock chooses nothing here but how to print what the server said. */
+  /* '17 SEP, 20:41' — Design's own shape, from the SERVER's timestamp.
+     ⊕ QUICKFIX-2026-08-24 — the claim below used to be false: `d.getDate()` /
+     `d.getHours()` read the DEVICE's clock, not London's, unlike every other
+     date this page prints. A phone carried home from a family trip abroad
+     would stamp a completion on the wrong day. It now reads London through
+     the same `londonPart()` every other formatter above uses, and spells the
+     month from the same `MONTHS` array — see the note there for why neither
+     was safe to leave as its own copy. */
   function fmtStamp(iso) {
     if (!iso) { return ""; }
-    var d = new Date(iso);
-    if (isNaN(d.getTime())) { return ""; }
-    var M = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN",
-             "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-    return d.getDate() + " " + M[d.getMonth()] + ", " +
-           pad2(d.getHours()) + ":" + pad2(d.getMinutes());
+    if (isNaN(new Date(iso).getTime())) { return ""; }
+    var p = londonPart(iso, { day: "numeric", month: "numeric" });
+    return Number(p.day) + " " + MONTHS[Number(p.month) - 1].toUpperCase() +
+           ", " + fmtTime(iso);
   }
 
   /* "2 days late" — the real number of days, or nothing. Design welded a
@@ -1522,11 +1583,11 @@
          the fall back derives it from `due_at` against the academic year's
          start_date, which is the same arithmetic the producer used to set
          that due_at. */
-      sb.from("assignments")
+      withDbDeadline(WARM_MS, sb.from("assignments")
         .select("id, academic_week").eq("class_id", klass.id)
-        .is("deleted_at", null),
-      sb.from("academic_years")
-        .select("id, name, start_date, end_date").is("deleted_at", null)
+        .is("deleted_at", null)),
+      withDbDeadline(WARM_MS, sb.from("academic_years")
+        .select("id, name, start_date, end_date").is("deleted_at", null))
     ]);
     var detail = opening[0];
     var recall = opening[1];
@@ -1570,9 +1631,9 @@
     try {
       var ids = assignmentIds;
       if (ids.length) {
-        var aq = await sb.from("assignment_questions")
+        var aq = await withDbDeadline(WARM_MS, sb.from("assignment_questions")
           .select("assignment_id, position, source_ref")
-          .in("assignment_id", ids).order("position");
+          .in("assignment_id", ids).order("position"));
 
         var refs = [];
         (aq.data || []).forEach(function (r) {
@@ -1588,9 +1649,10 @@
              second, exactly as it was, so if that ever stopped being true the
              precedence is the precedence it has always had. */
           var pair = await Promise.all([
-            sb.from("ks3_bank_questions").select("id, lesson_slug").in("id", refs),
-            sb.from("ks3_ladder_questions")
-              .select("question_ref, lesson_slug").in("question_ref", refs)
+            withDbDeadline(WARM_MS, sb.from("ks3_bank_questions")
+              .select("id, lesson_slug").in("id", refs)),
+            withDbDeadline(WARM_MS, sb.from("ks3_ladder_questions")
+              .select("question_ref, lesson_slug").in("question_ref", refs))
           ]);
           (pair[0].data || []).forEach(function (r) { bySlug[r.id] = r.lesson_slug; });
           (pair[1].data || []).forEach(function (r) {
@@ -1935,20 +1997,20 @@
       return builder.then(function (r) { return r; },
                           function (err) { return { data: null, error: err }; });
     }
-    var cardsQ = deckSlugs.length ? _started(
+    var cardsQ = deckSlugs.length ? _started(withDbDeadline(WARM_MS,
       sb.from("ks3_cards")
         .select("id, lesson_slug, kind, card_position, topic, front, back, "
                 + "equation_left, equation_arrow, equation_right, "
                 + "equation_condition")
         .in("lesson_slug", deckSlugs)
-        .order("lesson_slug").order("card_position")) : null;
-    var bankQ = deckSlugs.length ? _started(
+        .order("lesson_slug").order("card_position"))) : null;
+    var bankQ = deckSlugs.length ? _started(withDbDeadline(WARM_MS,
       sb.from("ks3_ladder_questions")
         .select("question_ref, lesson_slug, unit_code, rung, text, "
                 + "answer_letter, options")
         .in("lesson_slug", deckSlugs)
         .in("rung", ["recall", "apply"])
-        .order("lesson_slug").order("rung")) : null;
+        .order("lesson_slug").order("rung"))) : null;
 
     /* ── WHICH LESSONS DID THIS STUDENT GET SOMETHING WRONG IN? ───────────
 
@@ -1969,15 +2031,15 @@
     var wrongLessons = {};
     try {
       if (assignmentIds.length) {
-        var mySubs = await sb.from("assignment_submissions")
+        var mySubs = await withDbDeadline(WARM_MS, sb.from("assignment_submissions")
           .select("id").eq("student_id", user.id)
-          .in("assignment_id", assignmentIds);
+          .in("assignment_id", assignmentIds));
         if (mySubs.error) { throw mySubs.error; }
         var subIds = (mySubs.data || []).map(function (r) { return r.id; });
         if (subIds.length) {
-          var att = await sb.from("assignment_question_attempts")
+          var att = await withDbDeadline(WARM_MS, sb.from("assignment_question_attempts")
             .select("question_ref, is_correct")
-            .in("submission_id", subIds).eq("is_correct", false);
+            .in("submission_id", subIds).eq("is_correct", false));
           if (att.error) { throw att.error; }
           (att.data || []).forEach(function (r) {
             var slug = bySlug[r.question_ref] || slugFromRef(r.question_ref);
@@ -2780,8 +2842,29 @@
     var name = klass.name || "";
     pendingSink = makeSink(a, questions, progress, token, userId);
 
+    /* ⊕ QUICKFIX-2026-08-24 — MRB-286's sibling. The end screen's "Open
+       lesson" button (student_rulings.py SET_ON, node 348) named a fixed
+       position — "02" — in Design's sample. A real assignment's questions
+       carry a `lesson_slug` each, same as the class page's work rows and
+       lesson cards, and this is the SAME "first lesson this assignment
+       drew on" answer those already give: the first question's lesson,
+       resolved through the SAME `lessonHref()` this file already uses.
+       Empty when no question names a lesson this build has a page for —
+       `WRAP` then takes the button off the page rather than leave it
+       pointing nowhere. */
+    var assignmentLessonSlug = null;
+    for (var qi = 0; qi < questions.length; qi += 1) {
+      var srcSlug = questions[qi].__src && questions[qi].__src.lesson_slug;
+      if (srcSlug) { assignmentLessonSlug = srcSlug; break; }
+    }
+
     return {
       questions: questions,
+
+      assignmentLessonHref: lessonHref(assignmentLessonSlug),
+      /* Design's word was "Open lesson 02" — a position, not a fact about
+         any real lesson. See BINDINGS in build_student_port.py. */
+      assignmentLessonLabel: "Open lesson",
 
       /* Empty on purpose. `wrongPlan` seeds Design's demo scenarios with a
          student's wrong answers; there are none to seed, and inventing three

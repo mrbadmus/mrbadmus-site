@@ -281,6 +281,11 @@ SET_ON = {
     # menu rather than the one inside `<if wide>`.
     "class view": {30: "openAccount", 31: "signOut", 231: "l.open",
                    10113: "goLessons", 10134: "readFeedback"},
+    # ⊕ QUICKFIX-2026-08-24 — 348 is the end screen's "Open lesson", the same
+    # `<a href="#top">`-with-no-handler shape as 231 and the done bench pair
+    # above. `openLesson` preventDefaults and reads `assignmentLessonHref`,
+    # exactly as `l.open` and `goLessons` do for their own destinations.
+    "assignment": {348: "openLesson"},
 }
 
 
@@ -1425,13 +1430,20 @@ LOGIC = {
             "     the port alone, needs no oracle, and is the one gate that CAN\n"
             "     open the round. */\n"
             "\n"
-            "  /* THE ROUND IS min(6, POOL) — ruling P2 — and the number is\n"
-            "     computed in ONE place so nothing can state a size it will not\n"
-            "     show. `recallBank` arrives from student-live.js already ranked\n"
-            "     by `rankForPractice`; this file neither sorts it nor chooses\n"
-            "     from it, which is what keeps one definition of 'what should this\n"
-            "     student practise next' in one file. */\n"
-            "  RECALL_MAX = 6;\n"
+            "  /* THE ROUND IS min(5, POOL) — ruling P2, revised QUICKFIX-2026-08-24\n"
+            "     from Design's 6 to the ruled 5 — and the number is computed in ONE\n"
+            "     place so nothing can state a size it will not show. `recallBank`\n"
+            "     arrives from student-live.js already ranked by `rankForPractice`;\n"
+            "     this file neither sorts it nor chooses from it, which is what keeps\n"
+            "     one definition of 'what should this student practise next' in one\n"
+            "     file.\n"
+            "\n"
+            "     ⚠️ THE PROGRESS BAR'S SIX BUCKETS ARE UNCHANGED, AND STILL CORRECT.\n"
+            "     `qStep` below already scales `step / size` onto Design's six CSS\n"
+            "     buckets for any real size — built for the pool of four on 8r/Sc1,\n"
+            "     proved at 4, 6, 12 and 15 — so a round of five needs no further\n"
+            "     change there; it is the same generalisation doing the same job. */\n"
+            "  RECALL_MAX = 5;\n"
             "\n"
             "  recallBank() {\n"
             "    var b = MRB_DATA('recallBank');\n"
@@ -1849,6 +1861,21 @@ LOGIC = {
             "  /* ⊕ RULED 22 Aug 2026 — W3. THIS BUTTON MARKS THE WORK FINISHED.\n     IT DOES NOT SAVE IT. Saving already happened, one answer at a time.\n\n     ⛔ WHAT THIS REPLACES, because it is the worst defect the page had and the\n     reason the swap was refused twice:\n\n         const stamp = this.state.late ? '20 SEP, 19:07' : '17 SEP, 20:41';\n\n     A HARDCODED DATE, posted to NO ENDPOINT. A student pressing it was told\n     they handed in on 17 September, whatever today was, and their work never\n     reached their teacher. A false confirmation is worse than a visible\n     failure, because the student stops worrying about it.\n\n     Now the stamp comes back from the server or it does not appear at all.\n     `is_late` comes back with it — lateness is a fact about the clock decided\n     once, at the database, and never a guess made on the device. Nothing here\n     checks the due date, because nothing is locked by it (ruling 5).\n\n     Idempotent at both ends: this returns early if a completion is already in\n     flight or done, and the route returns the first press's row if it is not. */\n  handIn = () => {\n    if (this.state.handedAt || this.state.handing) return;\n    this.setState({ handing: true, sheet: false, zoom: false }, () => this.saveLive());\n    clearTimeout(this.handT);\n    const settle = (r) => {\n      this.setState((p) => ({\n        handing: false, view: 'done',\n        handedAt: (r && r.stamp) || '',\n        late: r && r.late != null ? !!r.late : p.late\n      }), () => this.saveLive());\n    };\n    const out = _sinkCall('complete', this.state.elapsed);\n    if (out && typeof out.then === 'function') {\n      /* The catch settles rather than rethrowing: a student who has finished\n         must reach the end screen even if the confirmation does not arrive.\n         Their answers are already saved, and the completion is retried by the\n         next visit, which reads its state from the server. */\n      out.then(settle, function () { settle(null); });\n      return;\n    }\n    this.handT = setTimeout(() => settle(out), 1350);\n  };",
         ),
         (
+            "    this.handT = setTimeout(() => settle(out), 1350);\n  };",
+            "    this.handT = setTimeout(() => settle(out), 1350);\n  };\n"
+            "  /* ⊕ QUICKFIX-2026-08-24 — the end screen's \"Open lesson\", MRB-286's\n"
+            "     sibling. Design left this an unhandled `<a href=\"#top\">`; the same\n"
+            "     preventDefault-then-navigate shape as `l.open` (class view) and\n"
+            "     `goLessons`. The refusal when there is nowhere to send the click is\n"
+            "     a second lock, not the only one — `WRAP` gates the button on the\n"
+            "     same key and takes it off the page first. */\n"
+            "  openLesson = (e) => {\n"
+            "    if (e && e.preventDefault) { e.preventDefault(); }\n"
+            "    const href = MRB_DATA('assignmentLessonHref');\n"
+            "    if (href) { window.location.href = href; }\n"
+            "  };",
+        ),
+        (
             "  loadLive() {\n    const empty = { answers: {}, sels: {}, held: {}, idx: 0, elapsed: 0, view: 'q', handedAt: null, resumed: false, late: false, sheet: false, zoom: false, handing: false, net: null };\n    try {",
             "  loadLive() {\n    const empty = { answers: {}, sels: {}, held: {}, idx: 0, elapsed: 0, view: 'q', handedAt: null, resumed: false, late: false, sheet: false, zoom: false, handing: false, net: null };\n    /* ⊕ RULED 22 Aug 2026 — W2. THE SERVER IS THE TRUTH; THE BROWSER IS A CACHE.\n       A student on the school computer on Monday and their phone on Thursday\n       must see the same state, and localStorage cannot do that — it is per\n       device and it is per browser profile. So when there is a sink, its\n       resume state wins outright and the local copy is not even consulted.\n       Without one (the fixture, and only the fixture) Design's localStorage\n       behaviour is exactly what it was. */\n    const fromServer = _sinkCall('resume', null);\n    if (fromServer) { return Object.assign(empty, fromServer); }\n    try {",
         ),
@@ -2100,6 +2127,29 @@ LOGIC = {
             "      /* ⊕ RULED 23 Aug 2026 — the brand's own destination; see\n"
             "         RETARGET_ON in student_rulings.py. Node 15 only. */\n"
             "      goKS3: () => { window.location.href = '/ks3/index.html'; }\n",
+        ),
+        (
+            "      goKS3: () => { window.location.href = '/ks3/index.html'; }\n",
+            "      goKS3: () => { window.location.href = '/ks3/index.html'; },\n"
+            "      /* ⊕ QUICKFIX-2026-08-24 — TWO NAMES, NOT ONE, HAD TO LAND HERE.\n"
+            "         `student-runtime.js`'s `build()` resolves BOTH an `<if>`'s\n"
+            "         expression AND an `on` handler with the identical call —\n"
+            "         `lookup(node.e / node.on, scope, ctx.miss)` — reading THIS\n"
+            "         render scope, never `MRB_DATA` and never `this.<method>`\n"
+            "         directly. Every other WRAP key (`benchOpen`,\n"
+            "         `benchDoneLessons`, …) and every other SET_ON name\n"
+            "         (`goLessons`, `readFeedback`, `goClass` two lines up) is a key\n"
+            "         in its page's own equivalent object for exactly this reason.\n"
+            "         Node 348 was wired (SET_ON) and gated (WRAP) but this file\n"
+            "         named neither key here — the WRAP lookup found nothing and\n"
+            "         `<if>` read that as false (button never rendered); once the\n"
+            "         `<if>` was fed, the SAME missing lookup left `on=\"openLesson\"`\n"
+            "         resolving to nothing, so Design's dead `href=\"#top\"` was all\n"
+            "         that fired on click. Both found by driving the real page and\n"
+            "         reading what actually rendered, not by reading the diff —\n"
+            "         which is exactly the gap this note is for. */\n"
+            "      assignmentLessonHref: MRB_DATA('assignmentLessonHref'),\n"
+            "      openLesson: this.openLesson\n",
         ),
     ],
 }
@@ -2924,6 +2974,14 @@ GRAFT = {
 #           With no lesson page behind this week's work the string is empty,
 #           the link is off the page, and the bench shows `Practise recall`
 #           alone — rather than offering a revisit with nowhere to go.
+#   348   (assignment page) "Open lesson", gated on `assignmentLessonHref`.
+#         ⊕ QUICKFIX-2026-08-24. Design's `<a href="#top">` — the same unhandled-
+#         anchor shape as node 231's lesson card and the done bench's pair
+#         above, and MRB-286's sibling rather than MRB-286 itself: this is the
+#         END SCREEN's button, not the class page's marked-row one. With no
+#         question on the assignment naming a lesson this build has a page
+#         for, the string is empty and the button comes off the page rather
+#         than sit there pointing nowhere — same reasoning as `benchDoneLessons`.
 WRAP = {
     "class view": {
         57: "benchOpen",
@@ -2932,5 +2990,5 @@ WRAP = {
         10128: "benchDoneMarked",
         10134: "benchDoneFeedback",
     },
-    "assignment": {},
+    "assignment": {348: "assignmentLessonHref"},
 }

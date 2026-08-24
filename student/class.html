@@ -424,13 +424,20 @@ class Component extends DCLogic {
      the port alone, needs no oracle, and is the one gate that CAN
      open the round. */
 
-  /* THE ROUND IS min(6, POOL) — ruling P2 — and the number is
-     computed in ONE place so nothing can state a size it will not
-     show. `recallBank` arrives from student-live.js already ranked
-     by `rankForPractice`; this file neither sorts it nor chooses
-     from it, which is what keeps one definition of 'what should this
-     student practise next' in one file. */
-  RECALL_MAX = 6;
+  /* THE ROUND IS min(5, POOL) — ruling P2, revised QUICKFIX-2026-08-24
+     from Design's 6 to the ruled 5 — and the number is computed in ONE
+     place so nothing can state a size it will not show. `recallBank`
+     arrives from student-live.js already ranked by `rankForPractice`;
+     this file neither sorts it nor chooses from it, which is what keeps
+     one definition of 'what should this student practise next' in one
+     file.
+
+     ⚠️ THE PROGRESS BAR'S SIX BUCKETS ARE UNCHANGED, AND STILL CORRECT.
+     `qStep` below already scales `step / size` onto Design's six CSS
+     buckets for any real size — built for the pool of four on 8r/Sc1,
+     proved at 4, 6, 12 and 15 — so a round of five needs no further
+     change there; it is the same generalisation doing the same job. */
+  RECALL_MAX = 5;
 
   recallBank() {
     var b = MRB_DATA('recallBank');
@@ -1197,6 +1204,6 @@ window.__MRB_MOUNT__ = function () {
 };
 </script>
 <script>window.__MRB_ASSET_V__={"class-entry.js":"8be18391","config.js":"06f24811","ks3-lesson-urls.js":"98cd0930","student-data.js":"58068e2b","student-guard.js":"b685be4a"};</script>
-<script src="/shared/student-live.js?v=5a093863"></script>
+<script src="/shared/student-live.js?v=fb721e69"></script>
 </body>
 </html>

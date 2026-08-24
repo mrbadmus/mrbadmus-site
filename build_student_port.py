@@ -283,7 +283,20 @@ PAGES = [
          # ⚠️ This is the one place in the build a value is typed rather than
          # extracted, and it is deliberately small and deliberately named. If
          # it ever grows past a handful, the seam has stopped being a seam.
-         constants=dict(weekLabel="'WEEK 04'", lateText="'2 days late'")),
+         #
+         # ⊕ QUICKFIX-2026-08-24 — a third value, same reason. Design's file
+         # never had an `assignmentLessonHref`; the ruling that reads it
+         # (node 348's `<if>`, see WRAP in student_rulings.py) is new, and
+         # `MRB_DATA` throws on a key the fixture was never given — found by
+         # `student_behaviour.py` refusing to mount at all, not by reading
+         # the diff. A real-shaped lesson URL, not a placeholder string, so
+         # the fixture keeps exercising a PRESSABLE "Open lesson" — matching
+         # Design's own always-visible button — rather than silently gating
+         # it off on every gate run.
+         constants=dict(weekLabel="'WEEK 04'", lateText="'2 days late'",
+                        assignmentLessonHref=
+                        "'/ks3/biology/breathing-and-gas-exchange/"
+                        "the-gas-exchange-system.html'")),
 ]
 
 # ── the identity strings, which are NOT in the logic ──────────────────────
@@ -662,6 +675,13 @@ BINDINGS = {
         ("Hand it in\n          ", "completeLabel"),
         ("HANDED IN\n          ", "completeChip"),
         ("Handed in", "completeHeading"),
+        # ── QUICKFIX-2026-08-24 — "Open lesson 02" NAMED A LESSON THAT IS NOT
+        # A NUMBER. Design's sample happened to draw its second lesson; a real
+        # assignment's lesson has a slug, never a position, and the digits were
+        # never true of anything a student could see. The destination is fixed
+        # by SET_ON (node 348, `openLesson`, WRAP-gated on `assignmentLessonHref`
+        # — see student_rulings.py); this is only the word.
+        ("Open lesson 02", "assignmentLessonLabel"),
     ],
 }
 
