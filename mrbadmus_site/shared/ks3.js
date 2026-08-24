@@ -5694,6 +5694,219 @@
      ("3 of 6 decided"), a two-state label ("Meter fitted") and a count with
      a bespoke zero ("All three claims on" → "2 switched off") — one element
      and one updater, so a fourth cannot arrive as a fourth copy. */
+
+/* ═══ BEGIN P1 wiring ═══════════════════════════════════════════════════
+   P1's instrument families — *Energy transfers*, the first physics unit.
+   Behaviour measured off Claude Design's delivered pages in
+   `docs/ks3/design-reference/p1/`, whose state logic is a `renderVals()` on
+   a `DCLogic` component. What that component recomputes on every keystroke,
+   these wire as events on markup the build already emitted.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+  /* p1-01 `#s-audit` — five scenarios, one ledger, eight stores a side.
+
+     ⚖️ THE LEDGER BALANCES ONLY ON AN EXACT MATCH. Design compares sorted
+     id lists, so a student who ticks the right store AND a spare one has not
+     balanced it. That is the teaching point rather than strictness: the
+     claim being made is that the count does not go up.
+
+     ⚠️ CHECKING IS NOT STICKY. Touching any chip after a check clears the
+     verdict, because marks shown against a ledger the student has since
+     edited are marks for a state that no longer exists. */
+  function wireStoreAudit(sec) {
+    var wrap = sec.querySelector("[data-saudit]");
+    if (!wrap) { return; }
+    var target = parseInt(wrap.getAttribute("data-target"), 10) || 0;
+    var picks = toArray(wrap.querySelectorAll("[data-saudit-sc]"));
+    var chips = toArray(wrap.querySelectorAll("[data-saudit-chip]"));
+    var texts = toArray(wrap.querySelectorAll("[data-saudit-text]"));
+    var vtexts = toArray(wrap.querySelectorAll("[data-saudit-vtext]"));
+    var verdict = wrap.querySelector("[data-saudit-verdict]");
+    var vlabel = wrap.querySelector("[data-saudit-vlabel]");
+    var checkBtn = wrap.querySelector("[data-saudit-check]");
+    var clearBtn = wrap.querySelector("[data-saudit-clear]");
+    if (!picks.length || !chips.length) { return; }
+
+    var current = picks[0].getAttribute("data-saudit-sc");
+    var solved = {};
+
+    /* The answer for a scenario is read out of the markup rather than held
+       in a table here, so the payload stays the single source. */
+    function wanted(scId, side) {
+      var out = [];
+      each(chips, function (c) {
+        var parts = (c.getAttribute("data-saudit-chip") || "").split(":");
+        if (parts[0] !== side) { return; }
+        var want = c.getAttribute("data-saudit-want-" + scId) === side;
+        if (want) { out.push(parts[1]); }
+      });
+      return out.sort().join(",");
+    }
+    function picked(side) {
+      var out = [];
+      each(chips, function (c) {
+        var parts = (c.getAttribute("data-saudit-chip") || "").split(":");
+        if (parts[0] === side) {
+          if (c.getAttribute("aria-pressed") === "true") { out.push(parts[1]); }
+        }
+      });
+      return out.sort().join(",");
+    }
+
+    function clearMarks() {
+      each(chips, function (c) { c.removeAttribute("data-state");
+        var m = c.querySelector("[data-saudit-mark]");
+        if (m) { m.textContent = ""; } });
+      if (verdict) { setHidden(verdict, true); }
+    }
+    function clearTicks() {
+      each(chips, function (c) { c.setAttribute("aria-pressed", "false"); });
+      clearMarks();
+    }
+
+    function showScenario(id) {
+      current = id;
+      each(picks, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-saudit-sc") === id ? "true" : "false");
+      });
+      each(texts, function (t) {
+        setHidden(t, t.getAttribute("data-saudit-text") !== id);
+      });
+      clearTicks();
+    }
+
+    function count() {
+      var n = 0, k;
+      for (k in solved) { if (solved[k]) { n += 1; } }
+      return n;
+    }
+
+    each(picks, function (b) {
+      b.addEventListener("click", function () {
+        showScenario(b.getAttribute("data-saudit-sc"));
+      });
+    });
+
+    each(chips, function (c) {
+      c.addEventListener("click", function () {
+        var on = c.getAttribute("aria-pressed") === "true";
+        c.setAttribute("aria-pressed", on ? "false" : "true");
+        clearMarks();
+      });
+    });
+
+    if (checkBtn) {
+      checkBtn.addEventListener("click", function () {
+        var okB = picked("before") === wanted(current, "before");
+        var okA = picked("after") === wanted(current, "after");
+        var ok = okB && okA;
+
+        each(chips, function (c) {
+          var parts = (c.getAttribute("data-saudit-chip") || "").split(":");
+          var side = parts[0];
+          var should = c.getAttribute("data-saudit-want-" + current) === side;
+          var isOn = c.getAttribute("aria-pressed") === "true";
+          var m = c.querySelector("[data-saudit-mark]");
+          var state = "", word = "";
+          if (isOn && should) { state = "right"; word = "correct"; }
+          else if (isOn && !should) { state = "wrong"; word = "not this one"; }
+          else if (!isOn && should) { state = "missed"; word = "you missed this"; }
+          if (state) { c.setAttribute("data-state", state); }
+          else { c.removeAttribute("data-state"); }
+          if (m) { m.textContent = word; }
+        });
+
+        if (ok) { solved[current] = true; }
+        if (vlabel) {
+          vlabel.textContent = ok ? "Ledger balanced" : "Not balanced yet";
+        }
+        each(vtexts, function (v) {
+          setHidden(v, v.getAttribute("data-saudit-vtext") !== current);
+        });
+        if (verdict) {
+          setHidden(verdict, false);
+          verdict.setAttribute("role", "status");
+        }
+        setCount(sec, count());
+        markStage(sec, count() >= target);
+      });
+    }
+
+    if (clearBtn) {
+      clearBtn.addEventListener("click", clearTicks);
+    }
+
+    showScenario(current);
+    setCount(sec, 0);
+  }
+
+  /* p1-01 `#s-think` — six words, each a store or a pathway.
+
+     ⚠️ THIS ONE MARKS, AND IT IS NOT AN R3 BREACH. Every other activity is
+     chosen-never-correct; Design marks here because the sort IS the
+     confrontation — a student who files `Electrical` under "store" and is
+     told nothing has simply recorded the belief the block exists to
+     overturn. What she does not do is SCORE it: no tally, no "4 of 6", and
+     the note under each card is an explanation rather than a verdict.
+
+     ⚠️ A CARD CAN BE RE-ANSWERED. Design keeps both buttons live after a
+     choice, so a student who changes their mind reads the other note. The
+     rail stop counts cards ANSWERED, not cards answered correctly. */
+  function wireStorePathwaySort(sec) {
+    var wrap = sec.querySelector("[data-spath]");
+    if (!wrap) { return; }
+    var items = toArray(wrap.querySelectorAll("[data-spath-item]"));
+    var settle = wrap.querySelector("[data-spath-settle]");
+    if (!items.length) { return; }
+    var answered = {};
+
+    each(items, function (item) {
+      var id = item.getAttribute("data-spath-item");
+      var flag = item.querySelector("[data-spath-is]");
+      var isStore = !!flag && flag.getAttribute("data-spath-is") === "store";
+      var note = item.querySelector("[data-spath-note]");
+      var srcRight = item.querySelector("[data-spath-right]");
+      var srcWrong = item.querySelector("[data-spath-wrong]");
+      var btns = toArray(item.querySelectorAll("[data-spath-pick]"));
+
+      each(btns, function (b) {
+        b.addEventListener("click", function () {
+          var choice = (b.getAttribute("data-spath-pick") || "").split(":")[1];
+          var right = (choice === "store") === isStore;
+
+          each(btns, function (o) { o.setAttribute("aria-pressed", "false"); });
+          b.setAttribute("aria-pressed", "true");
+
+          item.setAttribute("data-answered", right ? "right" : "wrong");
+          if (note) {
+            var src = right ? srcRight : srcWrong;
+            note.innerHTML = src ? src.innerHTML : "";
+            setHidden(note, false);
+            note.setAttribute("role", "status");
+          }
+
+          answered[id] = true;
+          var n = 0, k;
+          for (k in answered) { if (answered[k]) { n += 1; } }
+          var all = n >= items.length;
+          setCount(sec, n);
+          markStage(sec, all);
+          /* The settling paragraphs name what every card has just shown, so
+             they have nothing to say until every card has shown it. */
+          if (all && settle) {
+            setHidden(settle, false);
+            settle.setAttribute("role", "status");
+          }
+        });
+      });
+    });
+
+    setCount(sec, 0);
+  }
+
+/* ═══ END P1 wiring ═══ */
+
   function setCount(sec, n, extra) {
     var el = sec && sec.querySelector("[data-count]");
     if (!el) { return; }
@@ -23527,6 +23740,10 @@
     each(root.querySelectorAll("[data-ahistblock]"), wireAtmosHistory);
     each(root.querySelectorAll("[data-ghouseblock]"), wireGreenhouseSteps);
     each(root.querySelectorAll("[data-cevblock]"), wireClimateEvidence);
+    // ═══ BEGIN P1 wiring ═══
+    each(root.querySelectorAll("[data-sauditblock]"), wireStoreAudit);
+    each(root.querySelectorAll("[data-spathblock]"), wireStorePathwaySort);
+    // ═══ END P1 wiring ═══
     // ═══ END C10 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);

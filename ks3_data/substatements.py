@@ -595,6 +595,40 @@ SUBSTATEMENTS = {
               "temperature change: what to record, what to keep the same, and "
               "what heat loss does to the number you end up with.", "C7"),
     ],
+    # Minted for P1 (2026-08-24). The bullet reads:
+    #   "comparing the starting with the final conditions of a system and
+    #    describing increases and decreases in the amounts of energy
+    #    associated with movements, temperatures, changes in positions in a
+    #    field, in elastic distortions and in chemical compositions"
+    # Two separable teaching ideas, and Design draws them as two lessons: the
+    # LIST of places energy can sit, then the COMPARISON of one moment with
+    # another. `p1-01` cannot teach the comparison, because the word transfer
+    # is not defined until `p1-02`.
+    "KS3.P.CIS.02": [
+        ("a", "The set of energy stores: movement, temperature, position in "
+              "a field, elastic distortion and chemical composition — "
+              "what a store is, and which situations fill which.", "P1"),
+        ("b", "Comparing the starting with the final conditions of a system, "
+              "and describing which stores increased and which decreased.",
+         "P1"),
+    ],
+    # Minted for P1 (2026-08-24). The bullet reads:
+    #   "heating and thermal equilibrium: temperature difference between 2
+    #    objects leading to energy transfer from the hotter to the cooler
+    #    one, through contact (conduction) or radiation; such transfers
+    #    tending to reduce the temperature difference; use of insulators"
+    # This is the compound bullet named in this file's own opening paragraph
+    # as the example of the problem — four genuinely separable ideas, taught
+    # as four lessons by every scheme of work and by Design's delivery.
+    "KS3.P.ECT.02": [
+        ("a", "Heating and thermal equilibrium: a temperature difference "
+              "drives energy from the hotter object to the cooler one, and "
+              "the transfer tends to reduce the difference until it "
+              "stops.", "P1"),
+        ("b", "Transfer through contact — conduction.", "P1"),
+        ("c", "Transfer by radiation, including across a vacuum.", "P1"),
+        ("d", "The use of insulators to slow a transfer down.", "P1"),
+    ],
 }
 
 

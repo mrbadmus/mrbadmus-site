@@ -23636,3 +23636,213 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    this line is independent of that authoring, and it fixes a live page.
 */
 .ks3-bar .ks3-bar-cover[hidden] { display: none; }
+
+/* ═══ BEGIN P1 ═══════════════════════════════════════════════════════════
+   P1's instrument styling — *Energy transfers*, the first physics unit.
+
+   Values measured off Claude Design's delivered pages in
+   `docs/ks3/design-reference/p1/`, where every one of them is an inline
+   style string built by her `seg()` and `chip()` helpers. Only what her
+   drawing actually sets is written here; anything the page inherits from the
+   shared tokens is left to inherit.
+
+   ⚠️ THE SEGMENTED BUTTONS ARE NOT REDECLARED. `.ks3-seg-btn` already carries
+   Design's control geometry and its `aria-pressed="true"` branch, in both the
+   light and the ink-dark forms. P1's scenario picks and sort picks use that
+   class and add nothing, because a second copy of a control's values is
+   exactly the drift the ruling above `.ks3-seg-btn` exists to stop.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── p1-01 · store audit ─────────────────────────────────────────────── */
+
+.ks3-saudit-picks {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.ks3-saudit-panel {
+  margin-top: 18px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-saudit-text {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.55;
+  font-weight: 600;
+}
+/* Design mounts every scenario's sentence and keeps one visible, so a student
+   with JS off reads the physics rather than an empty panel. */
+.ks3-saudit-text[hidden],
+.ks3-saudit-vtext[hidden] { display: none; }
+
+/* Two columns on a wide screen, one on a phone — Design's `[data-ba]` grid,
+   at her own breakpoint. */
+.ks3-saudit-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+@media (max-width: 720px) {
+  .ks3-saudit-cols { grid-template-columns: minmax(0, 1fr); }
+}
+.ks3-saudit-coltitle {
+  margin: 0 0 10px;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-saudit-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ks3-saudit-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px 14px;
+  min-height: var(--ks3-tap);
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-saudit-chip-label { flex: 1; text-align: left; }
+
+/* R2 — a marked chip carries a WORD in `.ks3-saudit-chip-mark` as well as a
+   border, never colour alone. The three states are genuinely three: ticked
+   and right, ticked and wrong, and MISSED — left untitcked when it should
+   have been. Collapsing the last two into one "wrong" would throw away the
+   diagnosis, because they mean opposite things about what a student
+   believes. */
+.ks3-saudit-chip[aria-pressed="true"] {
+  border-color: var(--ks3-accent);
+  background: var(--ks3-accent-tint);
+}
+.ks3-saudit-chip[data-state="right"] {
+  border-color: var(--ks3-accent);
+  background: var(--ks3-accent-tint);
+}
+.ks3-saudit-chip[data-state="wrong"] {
+  border-color: var(--ks3-ink);
+  background: var(--ks3-ground);
+}
+.ks3-saudit-chip[data-state="missed"] {
+  border-color: var(--ks3-ink);
+  background: var(--ks3-band);
+}
+.ks3-saudit-chip-mark {
+  font-family: var(--ks3-font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-saudit-chip[data-state="right"] .ks3-saudit-chip-mark {
+  color: var(--ks3-accent-text);
+}
+
+.ks3-saudit-acts {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.ks3-saudit-verdict {
+  margin-top: 18px;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border-left: 6px solid var(--ks3-accent);
+}
+.ks3-saudit-verdict[hidden] { display: none; }
+.ks3-saudit-vlabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+.ks3-saudit-vtext {
+  margin: 8px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+}
+
+/* ── p1-01 · store / pathway sort ────────────────────────────────────── */
+
+.ks3-spath-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+.ks3-spath-item {
+  padding: 18px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-option-border);
+}
+/* Answered-and-right takes the accent border; answered-and-wrong takes ink.
+   Both carry their reason in `.ks3-spath-note`, so the border is never the
+   only thing saying which happened. */
+.ks3-spath-item[data-answered="right"] { border-color: var(--ks3-accent); }
+.ks3-spath-item[data-answered="wrong"] { border-color: var(--ks3-ink); }
+.ks3-spath-name {
+  margin: 0 0 12px;
+  font-size: 18px;
+  line-height: 1.4;
+  font-weight: 700;
+}
+.ks3-spath-picks {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.ks3-spath-note {
+  margin: 12px 0 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ks3-ink);
+}
+.ks3-spath-item[data-answered="wrong"] .ks3-spath-note {
+  color: var(--ks3-accent-text);
+}
+.ks3-spath-note[hidden] { display: none; }
+/* The two source notes are carried in the markup and swapped into the live
+   note by `wireStorePathwaySort`. They are never shown themselves. */
+.ks3-spath-src { display: none; }
+
+.ks3-spath-settle {
+  margin-top: 20px;
+  padding: 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-spath-settle[hidden] { display: none; }
+.ks3-spath-settle p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+}
+.ks3-spath-settle p + p { margin-top: 14px; }
+
+/* ═══ END P1 ═══ */

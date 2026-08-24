@@ -1315,6 +1315,21 @@ turn the MRB-244 gate red rather than quietly breaking the pointer.
 | `ENER-06` | Melting and freezing both take energy in, because both involve ice. | `sort-eight` | `sort-close` | `endothermic-reactions` |
 | `ENER-07` | Repeating an experiment and averaging makes the result accurate. | `think-commit-average` | `think-commit-average` | `measuring-a-temperature-change` |
 | `ENER-08` | Results that agree closely with each other must be correct. | `rig-build` | `rig-close` | `measuring-a-temperature-change` |
+| `ENER-09` | Energy gets used up. When something stops, the energy it had has been spent and is gone. | `s-hook` | `store-audit-ledger` | `energy-stores` |
+| `ENER-10` | Light, sound and electricity are kinds of energy that things store. | `store-pathway-sort` | `store-pathway-sort` | `energy-stores` |
+
+⊕ **`ENER-09` ONWARD ARE PHYSICS, IN THE SAME FAMILY.** The prefix table's ruling is
+explicit — *"A physics lane meeting an energy misconception adds to `ENER`; it does not
+open `ENERGY`"* — and P1 is the first lane to act on it. Design's `NOTES-P1.md` §1 calls
+these `ENERGY-01` and `ENERGY-02` and says they were added to this register on 15 Aug 2026;
+no such id was ever added, and the ruling above forbids the prefix. They are minted here as
+`ENER-09` and `ENER-10`, continuing C7's numbering.
+
+⚠️ **`ENER-12` (`p1-03`) AND `PART-05` WILL BE THE SAME UNDERLYING BELIEF** — that a
+quantity stops existing when it stops being visible. Design's notes lock them together and
+the lock stands: separate IDs because the confrontations genuinely differ (a balance for
+mass, a thermometer for energy), but neither `c1-03` nor `p1-03` may drop its confrontation
+on the grounds that the other covers it. Same shape as the `CELL-08` lock.
 
 **`ENER-05` is the unit's load-bearing entry, and it is the one that reaches furthest.** "Cold is
 not a substance" is not a chemistry fact — it is the sentence that makes a fridge, a cold pack, a
