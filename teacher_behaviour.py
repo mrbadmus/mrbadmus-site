@@ -90,6 +90,30 @@ EMPTY_SHAPE = {
 }
 
 
+# ── controls whose effect is real and is NOT in the DOM ──────────────────
+#
+# Two of Design's controls do something a DOM diff cannot see. They are
+# exempt from the dead-control check and from NOTHING else — each is asserted
+# to still be PRESENT on the page, so an exemption can never quietly become a
+# deletion.
+#
+# ⚠️ EXEMPTED BY WHAT THEY DO, NOT BY WHERE THEY ARE. A node-number allowlist
+# would excuse the same index on a future page where it meant something else.
+EXEMPT_OFFDOM = {
+    "signOut": "leaves the session. `MrBadmusTeacherGuard.signOut()` clears "
+               "the Supabase session and redirects; on a fixture there is no "
+               "session to clear, so it returns having changed no markup. It "
+               "does NOT throw — the guard is loaded — which is why it lands "
+               "in the dead list rather than the error list.",
+    "doPrint": "opens the browser's print dialog via `window.print()`. There "
+               "is no DOM consequence by design, and headless Chrome has no "
+               "dialog to open.",
+}
+
+# The label each exempt handler renders, so the assertion can find it.
+EXEMPT_LABELS = {"signOut": "Sign out", "doPrint": "Print"}
+
+
 def fixtures():
     out = []
     for s in SCREENS:
@@ -112,6 +136,7 @@ def fixtures():
 # moves NEITHER is dead.
 _DRIVE_JS = r"""
 (async function () {
+  var EXEMPT = __EXEMPT__;
   var host = document.querySelector('#mrb-teacher');
   if (!host) { return JSON.stringify({error: 'no #mrb-teacher host'}); }
 
@@ -152,27 +177,89 @@ _DRIVE_JS = r"""
 
   var first = snap();
 
-  var all = host.querySelectorAll('[data-dc-tpl]');
-  var controls = [];
-  for (var i = 0; i < all.length; i++) {
-    var el = all[i];
-    var tag = el.tagName.toLowerCase();
-    var clickable = tag === 'button' || tag === 'a' || tag === 'select' ||
-                    tag === 'input' || tag === 'textarea' ||
-                    el.getAttribute('role') === 'button' ||
-                    (el.style && el.style.cursor === 'pointer');
-    if (clickable) { controls.push(el); }
+  /* ⚑ RE-QUERIED EVERY ITERATION, AND THIS IS THE WHOLE POINT.
+     The runtime's `draw()` does `host.textContent = ""` and rebuilds, so
+     EVERY element handle taken before a press is detached the moment that
+     press causes a re-render. The first version of this loop collected all
+     the controls once and then skipped any that `host.contains()` no longer
+     held — which, after the very first state change, was all of them.
+
+     Measured on the classes screen: 27 controls found, **2 pressed**. The
+     gate reported PASS on twelve fixtures while pressing almost nothing, and
+     its own summary line said "every control moved something". That is the
+     overstated-scope defect `gate_registry.py` exists to stop, sitting inside
+     the gate meant to catch dead controls.
+
+     So the list is rebuilt from the live DOM on every pass and the press is
+     addressed by ORDINAL. The page may legitimately grow or shrink under the
+     sweep (an overlay opens, a filter empties a grid), so the bound is a
+     generous cap rather than a fixed count, and what was actually pressed is
+     REPORTED rather than assumed. */
+  /* A control that PRESENTS AS DISABLED is not a dead control, and telling
+     the two apart is the whole job of this gate.
+
+     The week rail's forward arrow is the case that taught it. At the newest
+     week Design sets `cursor: default` and drops the colour to
+     `--st-rule-strong`, and the handler is guarded by `if (!fwdOff)`. Pressing
+     it changes nothing — correctly. It was reported as dead only because the
+     first version treated every `<button>` as pressable regardless of how it
+     was painted.
+
+     The ticket's rule is "nothing that LOOKS pressable but is not". A dimmed
+     button with a default cursor does not look pressable, so it is excluded
+     from the sweep by that appearance rather than by an allowlist of node
+     numbers — an allowlist would drift, and would also excuse the arrow at
+     the middle of the rail where it should work. */
+  function disabledLooking(el) {
+    if (el.disabled) { return true; }
+    if (el.getAttribute('aria-disabled') === 'true') { return true; }
+    var cur = (el.style && el.style.cursor) || '';
+    if (cur === 'default' || cur === 'not-allowed') { return true; }
+    return false;
   }
 
-  var dead = [], pressed = 0, errors = [];
-  for (var j = 0; j < controls.length; j++) {
-    var c = controls[j];
-    if (!host.contains(c)) { continue; }  // an earlier press rebuilt it away
+  function clickable() {
+    var all = host.querySelectorAll('[data-dc-tpl]'), out = [];
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i], tag = el.tagName.toLowerCase();
+      var press = tag === 'button' || tag === 'a' || tag === 'select' ||
+                  tag === 'input' || tag === 'textarea' ||
+                  el.getAttribute('role') === 'button' ||
+                  (el.style && el.style.cursor === 'pointer');
+      if (press && !disabledLooking(el)) { out.push(el); }
+    }
+    return out;
+  }
+
+  var dead = [], blanked = [], pressed = 0, errors = [], seen = {};
+  var present = [];
+  var found = clickable().length;
+  var CAP = 400;
+
+  for (var j = 0; j < CAP; j++) {
+    var list = clickable();
+    if (j >= list.length) { break; }
+    var c = list[j];
 
     var label = (c.innerText || c.getAttribute('aria-label') ||
                  c.getAttribute('placeholder') || c.tagName)
                 .slice(0, 40).replace(/\s+/g, ' ').trim();
     var idx = c.getAttribute('data-dc-tpl');
+    var key = idx + '|' + label;
+    if (seen[key]) { continue; }   // already pressed this exact control
+    seen[key] = 1;
+
+    /* NOT PRESSED, AND PRESENCE RECORDED INSTEAD.
+       Two controls must not be swept. `Sign out` ends the session — on a live
+       page that would tear the sweep down halfway and on a fixture it throws,
+       because the guard arrives with `teacher-live.js` and a fixture loads
+       only the runtime. `Print` opens a browser dialog. Neither has a DOM
+       consequence to measure, and pressing them is actively wrong rather than
+       merely uninformative.
+       Their EXISTENCE is what this gate can honestly check, so that is what
+       it checks. */
+    if (EXEMPT.indexOf(label) !== -1) { present.push(label); continue; }
+
     var before = snap();
     var navsBefore = navs.length;
     try {
@@ -202,6 +289,20 @@ _DRIVE_JS = r"""
     if (!moved) {
       dead.push({i: idx, label: label, tag: c.tagName.toLowerCase()});
     }
+
+    /* ⚑ AND DID IT LEAVE A PAGE BEHIND? "Changed" is not the same as
+       "worked". Node 78 — the "Import" link on an empty class card — ran
+       Design's `setState({screen: 'import'})`; on `classes.html` the screen
+       is pinned and Design's import screen is pruned, so every screen `<if>`
+       went false and the page rendered NOTHING. A blank page is a very large
+       change in text, nodes and renders, so the liveness test above passes
+       it, and the press that emptied the dashboard is recorded as healthy. */
+    if ((after.text || '').trim().length < 40 &&
+        (before.text || '').trim().length >= 40) {
+      blanked.push({i: idx, label: label,
+                    tag: c.tagName.toLowerCase(),
+                    left: (after.text || '').trim().length});
+    }
   }
 
   window.MRB_GO = realGo;
@@ -211,10 +312,12 @@ _DRIVE_JS = r"""
     error: '',
     first: first,
     last: snap(),
-    controls: controls.length,
+    controls: found,
     pressed: pressed,
     navs: navs.length,
     dead: dead,
+    blanked: blanked,
+    present: present,
     errors: errors
   });
 })()
@@ -233,9 +336,41 @@ RENDER_TELLS = ["null%", "NaN", "undefined", "-Infinity", "Infinity",
                 "[object Object]", "null/", "/null", "null students"]
 
 
+def _wired_handlers(path):
+    """Every handler name an un-pruned node in this page's template calls."""
+    body = open(path, encoding="utf-8").read()
+    m = re.search(r"window\.__MRB_TPL__=(\{.*?\});", body, re.S)
+    if not m:
+        raise SystemExit("teacher_behaviour.py: %s has no __MRB_TPL__" % path)
+    tree = json.loads(m.group(1))
+    out = set()
+
+    def walk(n):
+        if isinstance(n, dict):
+            if n.get("on"):
+                out.add(n["on"])
+            if n.get("onch"):
+                out.add(n["onch"])
+            for c in n.get("c") or []:
+                walk(c)
+
+    for r in tree.get("roots") or []:
+        walk(r)
+    return out
+
+
 def drive(page, path, is_empty, cdp, port, shots=None):
     """Problems, as strings, for one fixture. Driven twice — load and reload."""
     problems = []
+    tally = {"found": 0, "pressed": 0}
+    # ⚠️ THE TEMPLATE, NOT THE SOURCE. Every page ships the WHOLE logic
+    # class — all six screens' `renderVals` — and prunes only the MARKUP. So
+    # `doPrint` is a string in all six files while the Print BUTTON exists on
+    # two, and asking "is the handler named in this file" said Print should be
+    # on the assignment screen, where its node was pruned. The exact question
+    # is whether a node that survived pruning is WIRED to the handler, and the
+    # shipped template tree is the only thing that answers it.
+    src = _wired_handlers(os.path.join(PAGE_DIR, path))
     with cdp.Browser() as b:
         pg = b.attach()
         pg.set_viewport(1460, 1200)
@@ -261,10 +396,14 @@ def drive(page, path, is_empty, cdp, port, shots=None):
                                    % (page, "-empty" if is_empty else ""))
                 pg.screenshot(out, full_page=True)
 
-            got = json.loads(pg.eval(_DRIVE_JS))
+            got = json.loads(pg.eval(_DRIVE_JS.replace("__EXEMPT__", json.dumps(sorted(EXEMPT_LABELS.values())))))
             if got.get("error"):
                 problems.append("%s: %s" % (what, got["error"]))
                 continue
+
+            if pass_n == 1:
+                tally["found"] += got.get("controls", 0)
+                tally["pressed"] += got.get("pressed", 0)
 
             first, last = got["first"], got["last"]
 
@@ -302,7 +441,29 @@ def drive(page, path, is_empty, cdp, port, shots=None):
                         "the screen, not a written one — the branch that "
                         "produces it has no guard." % (what, tell))
 
-            # 5. No dead controls.
+            # 5. No dead controls — minus the two whose effect is not in
+            #    the DOM, each of which must still be PRESENT to be excused.
+            # ⚠️ EXPECTED PER PAGE, AND DERIVED RATHER THAN LISTED.
+            # `Sign out` is in the top bar on all six screens; `Print` is on
+            # the digest and the charts only. A hand-written table of which
+            # control belongs on which page is the drifting artefact this
+            # repo keeps learning about, so the expectation is read from the
+            # page's OWN source: if the built file wires the handler, the
+            # control has to be on the rendered page. If it does not, there
+            # is nothing being exempted there and nothing to hide.
+            saw = set(got.get("present") or [])
+            for handler, label in EXEMPT_LABELS.items():
+                if label in saw:
+                    continue
+                if handler not in src:
+                    continue          # not wired on this screen at all
+                problems.append(
+                    "%s: this page wires %s, so %r should be on it — and the "
+                    "sweep never saw it. %r is exempt from being PRESSED (%s); "
+                    "an exemption that also excused it being GONE would hide a "
+                    "deletion." % (what, handler, label, label,
+                                   EXEMPT_OFFDOM[handler]))
+
             for d in got["dead"]:
                 problems.append(
                     "%s: control %s (%s %r) changed nothing — no text, no "
@@ -310,11 +471,22 @@ def drive(page, path, is_empty, cdp, port, shots=None):
                     "may do nothing."
                     % (what, d["i"], d["tag"], d["label"]))
 
-            # 6. Nothing threw while being pressed.
+            # 6. And no press emptied the page. See the probe's note on
+            #    node 78 — the control that navigated a pinned-screen page
+            #    into a screen it had pruned, and blanked it.
+            for d in got.get("blanked", []):
+                problems.append(
+                    "%s: control %s (%s %r) BLANKED the page — %d character(s) "
+                    "of text left. A press that empties the dashboard is not a "
+                    "working control, and it passes the liveness check above "
+                    "because a blank page is a very large change."
+                    % (what, d["i"], d["tag"], d["label"], d["left"]))
+
+            # 7. Nothing threw while being pressed.
             for e in got["errors"]:
                 problems.append("%s: pressing %s threw" % (what, e))
 
-            # 7. And the console stayed quiet. A page can render correctly and
+            # 8. And the console stayed quiet. A page can render correctly and
             #    still be throwing on every state change — the throw happens
             #    after the draw, which is the shape of bug that survives a
             #    screenshot.
@@ -323,7 +495,7 @@ def drive(page, path, is_empty, cdp, port, shots=None):
                     continue
                 problems.append("%s: console error — %s" % (what, line[:200]))
 
-    return problems
+    return problems, tally
 
 
 def main(argv):
@@ -356,9 +528,12 @@ def main(argv):
 
     server, port = cdp.serve(REPO)
     failed = 0
+    total = {"found": 0, "pressed": 0}
     try:
         for page, path, is_empty in todo:
-            problems = drive(page, path, is_empty, cdp, port, shots)
+            problems, tally = drive(page, path, is_empty, cdp, port, shots)
+            total["found"] += tally["found"]
+            total["pressed"] += tally["pressed"]
             tag = "empty" if is_empty else "full "
             if problems:
                 failed += 1
@@ -371,7 +546,8 @@ def main(argv):
                 if len(problems) > 10:
                     print("        · … and %d more" % (len(problems) - 10))
             else:
-                print("     %-16s %s ✅" % (page, tag))
+                print("     %-16s %s ✅  %d/%d control(s) pressed"
+                      % (page, tag, tally["pressed"], tally["found"]))
     finally:
         server.shutdown()
 
@@ -379,10 +555,21 @@ def main(argv):
     if failed:
         print("  FAIL  %d of %d fixture(s).\n" % (failed, len(todo)))
         return 1
-    print("  PASS  %d fixture(s) mounted, every binding resolved, every "
-          "control moved\n        something, no computed value reached the "
-          "copy, and the console stayed\n        quiet — on load and again "
-          "after a reload.\n" % len(todo))
+    # ⚠️ THE RATIO IS PRINTED, NOT ROUNDED UP TO "every control".
+    # This gate's summary used to say "every control moved something" while
+    # its sweep was pressing two of twenty-seven — the handles it held were
+    # detached by the first re-render and the loop skipped the rest in
+    # silence. A gate that overstates what it measured is worse than one that
+    # measures less, so the count it actually achieved is on the line.
+    #
+    # pressed < found is normal and not a failure: a press legitimately
+    # removes other controls from the page (an overlay closes, a filter
+    # empties a grid), and a control that is gone cannot be pressed.
+    print("  PASS  %d fixture(s), %d of %d control(s) pressed. Every fixture "
+          "mounted, every\n        binding resolved, nothing pressed left the "
+          "page blank, no computed value\n        reached the copy, and the "
+          "console stayed quiet — on load and again after\n        a reload.\n"
+          % (len(todo), total["pressed"], total["found"]))
     return 0
 
 

@@ -226,11 +226,21 @@ function MRB_SEND_SHOUTOUTS(classId, ids, templateKey, message){
    the cache, for exactly this - so `load()` returns the new row and the rest
    of the page costs nothing. Resolves false where there is no live data
    source, which is every fixture. */
+/* WARNING: ON A DEADLINE, AND IT ALWAYS SETTLES. The write has already
+   happened by the time this runs, and the only thing waiting on it is the
+   form being cleared. `teacher-live.load` has no timeout of its own — only
+   its `run()` boot does — so a Supabase call that never answers would leave a
+   composer full of text the teacher has already successfully sent. Eight
+   seconds, then the form clears anyway with a stale feed, because a stale
+   feed is a refresh away and a stuck form is not. */
 function MRB_REFRESH_FEED(classId){
   var L=window.MrBadmusTeacherLive, D=window.__MRB_DATA__;
   if(!L||!L.load||!classId||!D){return Promise.resolve(false);}
-  return L.load('class', {classId:classId}).then(function(d){
-    D.FEED = d.FEED; return true;}, function(){return false;});}
+  return Promise.race([
+    L.load('class', {classId:classId}).then(function(d){
+      D.FEED = d.FEED; return true;}, function(){return false;}),
+    new Promise(function(r){setTimeout(function(){r(false);}, 8000);})
+  ]);}
 var DCLogic = window.MrBadmusStudentRuntime.MrbLogic;
 var StreamableLogic = DCLogic;
 class Component extends DCLogic {

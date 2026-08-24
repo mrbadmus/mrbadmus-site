@@ -1814,11 +1814,21 @@ function MRB_SEND_SHOUTOUTS(classId, ids, templateKey, message){
    the cache, for exactly this - so `load()` returns the new row and the rest
    of the page costs nothing. Resolves false where there is no live data
    source, which is every fixture. */
+/* WARNING: ON A DEADLINE, AND IT ALWAYS SETTLES. The write has already
+   happened by the time this runs, and the only thing waiting on it is the
+   form being cleared. `teacher-live.load` has no timeout of its own — only
+   its `run()` boot does — so a Supabase call that never answers would leave a
+   composer full of text the teacher has already successfully sent. Eight
+   seconds, then the form clears anyway with a stale feed, because a stale
+   feed is a refresh away and a stuck form is not. */
 function MRB_REFRESH_FEED(classId){
   var L=window.MrBadmusTeacherLive, D=window.__MRB_DATA__;
   if(!L||!L.load||!classId||!D){return Promise.resolve(false);}
-  return L.load('class', {classId:classId}).then(function(d){
-    D.FEED = d.FEED; return true;}, function(){return false;});}
+  return Promise.race([
+    L.load('class', {classId:classId}).then(function(d){
+      D.FEED = d.FEED; return true;}, function(){return false;}),
+    new Promise(function(r){setTimeout(function(){r(false);}, 8000);})
+  ]);}
 """
 
 
@@ -1943,9 +1953,26 @@ def _verify_stamps(stamped):
     only way to know a stamp is honest is to hash the file that will actually
     be deployed, AFTER everything that writes it has run.
     """
+    # ⚠️ THE INVARIANT IS PER TREE: every asset a page names must exist
+    # WHERE THAT PAGE IS SERVED FROM. The fixture data is deliberately not
+    # published (see the note on unpublishing, above) — it lives in `shared/`
+    # and is read by `teacher_behaviour.py`, which serves the repo root. So a
+    # fixture asset absent from `mrbadmus_site/shared/` is the intended state,
+    # not a broken stamp, and checking it there reported twelve failures for
+    # twelve files that are correctly missing.
+    #
+    # The check is NOT weakened: each fixture asset is still hashed and still
+    # compared, in the one tree its page is served from. A fixture asset that
+    # went missing from `shared/` would still stop the build.
+    fixture_assets = set()
+    for spec in PAGES:
+        fixture_assets.add(spec["fixture_js"])
+        fixture_assets.add(spec["empty_js"])
+
     bad = []
     for name, want in sorted(stamped.items()):
-        for tree in (SHARED_OUT, "shared"):
+        trees = ("shared",) if name in fixture_assets else (SHARED_OUT, "shared")
+        for tree in trees:
             path = os.path.join(tree, name)
             if not os.path.exists(path):
                 if tree == SHARED_OUT and name in STAMPED_DEPS:
@@ -2196,13 +2223,21 @@ def build():
         empty_js = _fixture_js(shaper(dict(mine)), empty=True)
         empty_report[spec["empty_out"]] = note
 
-        for out_dir in (SHARED_OUT, "shared"):
-            with open(os.path.join(out_dir, spec["fixture_js"]), "w",
-                      encoding="utf-8") as fh:
-                fh.write(js)
-            with open(os.path.join(out_dir, spec["empty_js"]), "w",
-                      encoding="utf-8") as fh:
-                fh.write(empty_js)
+        # The fixture DATA follows the fixture PAGES out of the published
+        # tree. Unpublishing the HTML alone would have left twelve JS files
+        # on mrbadmus.com still carrying the fifty-four invented children and
+        # every mark — not renderable as a dashboard, but fetchable, and the
+        # thing that actually holds the content.
+        for stale in (spec["fixture_js"], spec["empty_js"]):
+            gone = os.path.join(SHARED_OUT, stale)
+            if os.path.exists(gone):
+                os.remove(gone)
+        with open(os.path.join("shared", spec["fixture_js"]), "w",
+                  encoding="utf-8") as fh:
+            fh.write(js)
+        with open(os.path.join("shared", spec["empty_js"]), "w",
+                  encoding="utf-8") as fh:
+            fh.write(empty_js)
         page_versions = dict(versions)
         page_versions[spec["fixture_js"]] = asset_hash(js)
         page_versions[spec["empty_js"]] = asset_hash(empty_js)
@@ -2214,10 +2249,44 @@ def build():
                         spec["fixture_js"], page_versions, regions)
         mt = page_html(spec, shipped, table, page_logic, tpl["imports"],
                        spec["empty_js"], page_versions, regions)
-        for out_dir in (SITE_OUT, MIRROR_OUT):
-            write(os.path.join(out_dir, spec["out"]), body)
-            write(os.path.join(out_dir, spec["fixture_out"]), fix)
-            write(os.path.join(out_dir, spec["empty_out"]), mt)
+        # ⚠️ THE LIVE PAGE IS PUBLISHED; THE FIXTURES ARE NOT.
+        #
+        # `mrbadmus_site/` is what Cloudflare serves, and `/teacher/*` has no
+        # edge auth — the guard runs in the page, after the bytes have already
+        # been handed over. Publishing the fixtures therefore put twelve URLs
+        # on mrbadmus.com, each rendering Design's invented school: twelve
+        # classes, fifty-four children's names and a mark for every one of
+        # them, with no sign-in and no `noindex`.
+        #
+        # None of those children exist, so this is not a safeguarding matter.
+        # It is worse-looking than it is: a page at
+        # `mrbadmus.com/teacher/classes-fixture.html` showing "Amara Okonkwo
+        # 61%" is indistinguishable, to a parent or a school, from real pupil
+        # data leaking. `teacher_tells.py` exists to keep exactly that content
+        # off a live page and would have been satisfied one directory away.
+        #
+        # The fixtures are only ever DRIVEN, by `teacher_behaviour.py`, which
+        # serves the repo root and reads `teacher/<page>` — the mirror, not
+        # the published tree. So nothing needs them in `mrbadmus_site/` and
+        # they are written to the mirror alone.
+        #
+        # ⊕ The two STUDENT fixtures are still published, because
+        # `student_themes` is registered against
+        # `mrbadmus_site/student/class-fixture.html` and drives that copy.
+        # Same exposure, smaller, pre-existing, and not this ticket's to
+        # change — recorded in the MRB-287 report rather than fixed here.
+        # A fixture written by an EARLIER build is still served until
+        # something removes it. Unpublishing has to delete, not just stop
+        # writing — otherwise the change is invisible until the next full
+        # `generate_site_v5` wipe, and reads as done when it is not.
+        for stale in (spec["fixture_out"], spec["empty_out"]):
+            gone = os.path.join(SITE_OUT, stale)
+            if os.path.exists(gone):
+                os.remove(gone)
+        write(os.path.join(SITE_OUT, spec["out"]), body)
+        write(os.path.join(MIRROR_OUT, spec["out"]), body)
+        write(os.path.join(MIRROR_OUT, spec["fixture_out"]), fix)
+        write(os.path.join(MIRROR_OUT, spec["empty_out"]), mt)
 
         # ⚑ ASSERTED, NOT ASSUMED. No bound literal may survive in the
         # template the PRODUCTION page ships — otherwise the binding is
