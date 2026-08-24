@@ -152,11 +152,11 @@ SCREENS = [
     dict(name="class · the flashcards overlay, revealed", url=CLASS,
          setup=["~FLASHCARDS", "~Reveal"]),
     dict(name="class · the recall round", url=CLASS,
-         setup=["~Practise recall"]),
+         setup=["~Practice"]),
     dict(name="class · the recall round, an option picked", url=CLASS,
-         setup=["~Practise recall", "__opt0__"]),
+         setup=["~Practice", "__opt0__"]),
     dict(name="class · the recall round, checked", url=CLASS,
-         setup=["~Practise recall", "__opt0__", "~Check"]),
+         setup=["~Practice", "__opt0__", "~Check"]),
     dict(name="assignment · first question", url=ASSIGN, setup=[]),
 ]
 

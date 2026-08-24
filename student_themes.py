@@ -1775,22 +1775,22 @@ _PRESS_OPT = """(function(n){
 })(%s)"""
 
 # ⚠️ THE BANK IS SHORTENED THROUGH THE PRODUCT'S OWN SEAM, and that is what
-# makes this a measurement rather than a simulation. `recallBank()` calls
-# `MRB_DATA('recallBank')` on every render and `MRB_DATA` reads
+# makes this a measurement rather than a simulation. `practiceBank()` calls
+# `MRB_DATA('practiceBank')` on every render and `MRB_DATA` reads
 # `window.__MRB_DATA__` at call time, so a shorter array is exactly what a
 # class with fewer covered lessons looks like to this page. No method is
 # replaced and no state is written; the surface has no way to know.
 _TRUNCATE_BANK = """(function(n){
   var d = window.__MRB_DATA__;
-  if (!d || !d.recallBank) return 'no bank';
-  if (!window.__MRB_FULL_BANK__) { window.__MRB_FULL_BANK__ = d.recallBank; }
-  d.recallBank = window.__MRB_FULL_BANK__.slice(0, n);
-  return String(d.recallBank.length);
+  if (!d || !d.practiceBank) return 'no bank';
+  if (!window.__MRB_FULL_BANK__) { window.__MRB_FULL_BANK__ = d.practiceBank; }
+  d.practiceBank = window.__MRB_FULL_BANK__.slice(0, n);
+  return String(d.practiceBank.length);
 })(%s)"""
 
 _RESTORE_BANK = """(function(){
   var d = window.__MRB_DATA__;
-  if (d && window.__MRB_FULL_BANK__) { d.recallBank = window.__MRB_FULL_BANK__; }
+  if (d && window.__MRB_FULL_BANK__) { d.practiceBank = window.__MRB_FULL_BANK__; }
   return 'ok';
 })()"""
 

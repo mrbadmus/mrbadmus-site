@@ -179,8 +179,8 @@ def main():
     check(status4 == 401, "no bearer token returns 401", "got %s" % status4)
 
     # ── 4. the recall round ──────────────────────────────────────────
-    print("\n  4. GET /api/class/recall")
-    status5, body5 = get(API + "/api/class/recall?class_id=" + CLASS_8R_SC1, auth)
+    print("\n  4. GET /api/class/practice")
+    status5, body5 = get(API + "/api/class/practice?class_id=" + CLASS_8R_SC1, auth)
     rq = body5.get("questions") or []
     check(status5 == 200, "recall returns 200", "got %s" % status5)
     check(len(rq) > 0, "recall has questions", "%d" % len(rq))

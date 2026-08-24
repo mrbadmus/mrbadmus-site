@@ -137,7 +137,7 @@ FIXTURE_TELLS = [
     "KEY FACT",
     # ⊕ 23 Aug 2026 — PHASE 3. DESIGN'S SAMPLE RECALL BANK.
     #
-    # The grafted recall round renders `MRB_DATA('recallBank')`. On the fixture
+    # The grafted practice round renders `MRB_DATA('practiceBank')`. On the fixture
     # that is Design's own `bank()`, lifted out of the amended delivery by
     # `DONOR_LIFTS`; on a real page it is every recall and apply rung of every
     # lesson the class has covered, read from `ks3_ladder_questions`. If one of

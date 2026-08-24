@@ -382,7 +382,7 @@ BINDINGS = {
         # — and the mechanism P6 built for it needed one word here.
         #
         # ⚠️ Safe against the stale-path hazard the `drop` note below records:
-        # the other two drops (`envBadge`, `recallLabel`) are in different
+        # the other two drops (`envBadge`, `practiceLabel`) are in different
         # parents, so no two drops share a parent's child list.
         #
         # The FIXTURE is unmoved — Design supplies "28 students" there, the
@@ -515,7 +515,7 @@ BINDINGS = {
         # node 88 never renders there at all. Binding it would have added a key
         # nothing can reach, and a `drop` on a node that never draws is a
         # registration that can never be checked.
-        ("Practise recall", "recallLabel", "drop"),
+        ("Practise recall", "practiceLabel", "drop"),
         # ── ⊕ RULED 22 Aug 2026 — P4. THE BENCH'S PRIMARY BUTTON ──────────
         # In the OPEN state it opens the assignment. In the DONE state the
         # assignment is finished, and the two actions the ruling asks for are
@@ -563,7 +563,7 @@ BINDINGS = {
         # ⚠️ `Practise recall` (donor 116) IS NOT BOUND, and that is not an
         # oversight. It is the same literal as live node 77's own button, it
         # says the same thing in both places, and it has no data behind it in
-        # either. `recallLabel` above already claims that literal, and binding
+        # either. `practiceLabel` above already claims that literal, and binding
         # a second node to it would be correct but pointless; leaving it is
         # what Design drew. `THE WEEK'S WORK`, `OPENED · ANSWERED ·
         # COMPLETED`, `THIS WEEK'S ASSIGNMENT`, `SCORE`, `RIGHT`, `COMPLETED`,
@@ -845,7 +845,7 @@ DONOR_LIFTS = {
         # fallen back to Design's sample and a student is revising one
         # drawing's science. The live bank is every recall and apply rung of
         # every lesson the class has covered, read from `ks3_ladder_questions`.
-        dict(key="recallBank",
+        dict(key="practiceBank",
              anchor="  bank() {\n    return ",
              why="Design's eight sample recall questions, so "
                  "`class-fixture.html` renders the grafted round exactly as "
