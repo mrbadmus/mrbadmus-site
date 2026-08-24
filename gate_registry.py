@@ -185,6 +185,29 @@ GATES = [
              "everything between the data arriving and the pixels, and "
              "nothing about whether the seam returned the right rows."),
 
+    # ── ⊕ MRB-288 · one bank per surface ────────────────────────────────
+
+    dict(name="pool_ownership",
+         cmd=["python3", "pool_ownership.py"],
+         speed="fast",
+         needs="/Users/midebadmus/Documents/GitHub/mrbadmus---backend/server.js",
+         why="Mide's 24 Aug 2026 ruling: three question pools, one per "
+             "surface, and no surface SERVES from a pool it does not own. "
+             "Composition fed assignments from BOTH the ladder and the bank "
+             "before this existed — verified in the production rows, not "
+             "inferred. Asserts composition reads ks3_assignment_bank and "
+             "nothing else, the lesson ladder stays baked from ks3_data, the "
+             "flashcard deck serves from ks3_cards alone, the composed row "
+             "shape is {band, rung: null}, and the ONE frozen exception (the "
+             "practice round serving recall+apply from ks3_ladder_questions, "
+             "awaiting Mide's ruling) stays bounded to exactly one serving "
+             "read per layer. Distinguishes SERVING from ref→lesson "
+             "resolution and from reading attempt history — the FROM YOUR "
+             "WORK targeting is pedagogy, not a cross-feed. `needs` the "
+             "backend checkout because composition lives there; on a machine "
+             "without it the gate SKIPS BY NAME rather than asserting half "
+             "the contract."),
+
     # ── ⊕ MRB-282 · THE FOUR THAT WERE OUTSIDE THE REGISTRY ────────────
 
     dict(name="gate_coverage",

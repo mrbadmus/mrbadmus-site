@@ -376,6 +376,33 @@ To check the isolation still holds: `python3 3d_isolation_check.py`.
 
 ---
 
+## Question pool ownership — a named contract (MRB-288, ruled by Mide 24 Aug 2026)
+
+Three KS3 question pools. **One per surface. No surface SERVES questions from a
+pool it does not own. Ever.** The `pool_ownership` gate fails the build on a
+violation; the `one_pool_per_assignment` CHECK (migration `20260824214711`)
+refuses the seam at the database.
+
+| Surface | Owner pool | Where the serving read lives |
+|---|---|---|
+| Lesson-page ladder (recall/apply/explain/produce) | the authored ladder in `ks3_data` — baked into the page by `build_ks3.py`; `ks3_ladder_questions` is its DB mirror | no runtime pool read at all |
+| Weekly assignment | **`ks3_assignment_bank`** (renamed from `ks3_bank_questions`, 24 Aug 2026 — the generic name invited the mixing) | backend composition only: `server.js` `bankFor()` → `/api/class/current-assignment` |
+| Dashboard flashcards | `ks3_cards` | `shared/student-live.js`, one serving read |
+
+**FROZEN EXCEPTION (awaiting Mide's ruling):** the class page's **practice
+round** (renamed from "recall" — MRB-288 kills that collision; "recall" now
+only ever names a ladder rung) serves scored MCQs, and the only pool holding
+scored MCQs is the ladder mirror. Its ruled owner pool (`ks3_cards`) holds
+front/back flashcards and cannot supply a round. Frozen exactly as it reads:
+one serving read of `ks3_ladder_questions` in `shared/student-live.js` plus
+`/api/class/practice` on the backend, both named and bounded in the gate.
+
+**Serving ≠ resolving ≠ weighting.** Resolving an `assignment_questions.source_ref`
+to a lesson slug, and reading attempt history (`question_ref` + `is_correct`)
+to weight practice toward weaknesses (FROM YOUR WORK), are both intended and
+both survive — the contract governs where questions are SERVED from, nothing
+else.
+
 ## How the AI Chat Backend Works
 
 Every topic page embeds a chat panel powered by `shared/mrbadmus.v2.js`. When a student sends a message:
