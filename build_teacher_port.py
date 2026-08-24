@@ -108,6 +108,28 @@ DS = os.path.join(REF, "source", "_ds",
 
 SITE_OUT = os.path.join("mrbadmus_site", "teacher")
 MIRROR_OUT = "teacher"
+
+# ⚑ THE FIXTURES LIVE OUTSIDE `teacher/`, AND THIS IS LOAD-BEARING.
+#
+# They render Design's invented school — twelve classes, fifty-four children's
+# names, a mark for every one — and `/teacher/*` has no edge auth, so anything
+# inside `teacher/` reaches mrbadmus.com. Twelve of them did.
+#
+# ⚠️ TWO EARLIER ATTEMPTS AT THIS WERE WRONG, and the second was worse than
+# the first. Deleting them from the output after the fact held only until the
+# next generator run. Adding `ignore_patterns("*fixture*")` to
+# generate_site_v5's teacher copytree then DELETED THEM FROM SOURCE, because
+# that generator round-trips `mrbadmus_site/<dir>` back over `./<dir>` — and
+# the safety net that exists to catch exactly that ("the round-trip would
+# delete these from source") had been silenced by the same change, by me, to
+# stop it reporting the withheld files. Silencing a guard to make a change
+# look clean is how the change gets to be wrong quietly.
+#
+# So the fixtures are not in a published directory at all. `generate_site_v5`
+# copies `shared/`, `teacher/` and `student/`; a directory it has never heard
+# of is neither published nor round-tripped, and nothing has to be excluded,
+# ignored or silenced for that to be true.
+FIXTURE_OUT = "teacher_fixtures"
 SHARED_OUT = os.path.join("mrbadmus_site", "shared")
 RETIRED = os.path.join("docs", "ks3", "retired")
 
@@ -1852,8 +1874,13 @@ def _fixture_js(payload, empty=False):
 
 def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
     """`fixture` is the fixture JS filename, or None for the live page."""
+    # ⚠️ RELATIVE, AND NOT `/shared/`. The fixture data sits beside the
+    # fixture page in `teacher_fixtures/` — out of every directory
+    # generate_site_v5 publishes and round-trips. An absolute `/shared/` src
+    # would put it back in a published one, which is the whole thing being
+    # avoided; the gate serves the repo root, so same-directory resolves.
     tail = (
-        "<script src=\"/shared/%s\"></script>\n"
+        "<script src=\"%s\"></script>\n"
         "<script>window.__MRB_MOUNT__();</script>\n" % fixture
     ) if fixture else (
         "<script src=\"%s\"></script>\n" % LIVE_JS_URL
@@ -1971,7 +1998,7 @@ def _verify_stamps(stamped):
 
     bad = []
     for name, want in sorted(stamped.items()):
-        trees = ("shared",) if name in fixture_assets else (SHARED_OUT, "shared")
+        trees = (FIXTURE_OUT,) if name in fixture_assets else (SHARED_OUT, "shared")
         for tree in trees:
             path = os.path.join(tree, name)
             if not os.path.exists(path):
@@ -2228,14 +2255,20 @@ def build():
         # on mrbadmus.com still carrying the fifty-four invented children and
         # every mark — not renderable as a dashboard, but fetchable, and the
         # thing that actually holds the content.
+        # Beside the pages that read them, in the unpublished directory.
+        # Earlier versions wrote these to `shared/`, which is published AND
+        # round-tripped — so the invented data reached the public site and
+        # the correction then risked deleting it from source.
+        os.makedirs(FIXTURE_OUT, exist_ok=True)
         for stale in (spec["fixture_js"], spec["empty_js"]):
-            gone = os.path.join(SHARED_OUT, stale)
-            if os.path.exists(gone):
-                os.remove(gone)
-        with open(os.path.join("shared", spec["fixture_js"]), "w",
+            for tree in (SHARED_OUT, "shared"):
+                gone = os.path.join(tree, stale)
+                if os.path.exists(gone):
+                    os.remove(gone)
+        with open(os.path.join(FIXTURE_OUT, spec["fixture_js"]), "w",
                   encoding="utf-8") as fh:
             fh.write(js)
-        with open(os.path.join("shared", spec["empty_js"]), "w",
+        with open(os.path.join(FIXTURE_OUT, spec["empty_js"]), "w",
                   encoding="utf-8") as fh:
             fh.write(empty_js)
         page_versions = dict(versions)
@@ -2285,8 +2318,8 @@ def build():
                 os.remove(gone)
         write(os.path.join(SITE_OUT, spec["out"]), body)
         write(os.path.join(MIRROR_OUT, spec["out"]), body)
-        write(os.path.join(MIRROR_OUT, spec["fixture_out"]), fix)
-        write(os.path.join(MIRROR_OUT, spec["empty_out"]), mt)
+        write(os.path.join(FIXTURE_OUT, spec["fixture_out"]), fix)
+        write(os.path.join(FIXTURE_OUT, spec["empty_out"]), mt)
 
         # ⚑ ASSERTED, NOT ASSUMED. No bound literal may survive in the
         # template the PRODUCTION page ships — otherwise the binding is

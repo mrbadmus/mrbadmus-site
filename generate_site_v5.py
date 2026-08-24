@@ -5247,29 +5247,8 @@ def build_site(output_dir="mrbadmus_site"):
     if _os.path.exists(_teacher_src):
         if _os.path.exists(_teacher_dst):
             _shutil.rmtree(_teacher_dst)
-        # ⚠️ THE FIXTURES DO NOT GO TO THE PUBLIC SITE (MRB-287).
-        #
-        # `teacher/` holds the six live pages AND twelve `*-fixture.html`
-        # rendering Design's invented school — twelve classes, fifty-four
-        # children's names, a mark for every one. `/teacher/*` has no edge
-        # auth (the guard runs in the page, after the bytes are served), so
-        # copying the directory wholesale put all twelve on mrbadmus.com with
-        # no sign-in and no noindex.
-        #
-        # None of those children exist, so this is not safeguarding. It is
-        # worse-looking than it is: a public page reading "Amara Okonkwo 61%"
-        # is indistinguishable, to a parent or a school, from real pupil data
-        # leaking.
-        #
-        # ⚑ AND THE SKIP HAS TO BE HERE. `build_teacher_port.py` deletes them
-        # from the output, but THIS runs first and re-copies them, so the
-        # delete only held until the next generator run — measured: they were
-        # back in the served tree after one `verify_ks3`. The copy is the one
-        # place that decides what gets published, so it is the only place the
-        # exclusion is true from.
-        _shutil.copytree(_teacher_src, _teacher_dst,
-                         ignore=_shutil.ignore_patterns("*fixture*"))
-        print(f"  ✅ teacher/ (directory tree, fixtures withheld)")
+        _shutil.copytree(_teacher_src, _teacher_dst)
+        print(f"  ✅ teacher/ (directory tree)")
     else:
         print(f"  ⚠️  teacher/ directory not found — skipping")
 
@@ -5515,11 +5494,7 @@ def build_site(output_dir="mrbadmus_site"):
     for _dir in ["shared", "teacher", "student"]:
         if not os.path.isdir(_dir):
             continue
-        # The fixtures are withheld from the published tree on purpose (see
-        # the teacher/ copytree above), so this reconciliation must not report
-        # them as "silently deleted" and must not copy them back in.
-        _source_files = set(f for f in os.listdir(_dir)
-                            if "fixture" not in f)
+        _source_files = set(os.listdir(_dir))
         _deploy_dir = os.path.join(output_dir, _dir)
         _deploy_files = set(os.listdir(_deploy_dir)) if os.path.isdir(_deploy_dir) else set()
         _missing = _source_files - _deploy_files

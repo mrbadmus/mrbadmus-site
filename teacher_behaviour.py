@@ -68,7 +68,12 @@ import re
 import sys
 
 REPO = os.path.dirname(os.path.abspath(__file__))
-PAGE_DIR = "teacher"
+# The fixtures are NOT in `teacher/`. That directory is published to
+# mrbadmus.com and round-tripped back over itself by generate_site_v5, and
+# these pages render Design's invented school — see the note in
+# build_teacher_port.py, which records the two wrong ways of fixing that
+# before this one.
+PAGE_DIR = "teacher_fixtures"
 
 # ⛔ NO `import`: it is not ported, so there is no `import-fixture.html` to
 # drive. `teacher/import.html` is the hand-written wizard again — see
