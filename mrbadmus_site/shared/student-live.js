@@ -665,7 +665,7 @@
      SEEN when it is answered. Two different events, two different corpora, two
      different blobs — and one growing without bound because the other is busy
      is a bug nobody would ever look for. */
-  var QSEEN_PREFIX = "mrbadmusai.recallseen.v1.";
+  var QSEEN_PREFIX = "mrbadmusai.practiceseen.v1.";
 
   /* ── the bench theme, mirrored so a second page can wear it ───────────
      ⊕ RULED 23 Aug 2026. The end-of-assignment scorecard is painted in the
@@ -1576,7 +1576,7 @@
        not moved; only when the requests leave has. */
     var opening = await Promise.all([
       D.loadStudentClass(klass.id, user.id),
-      api("/api/class/recall?class_id=" + klass.id, token),
+      api("/api/class/practice?class_id=" + klass.id, token),
       api("/api/class/current-assignment?class_id=" + klass.id, token),
       /* The teaching week each piece of work belongs to. `assignments`
          records it (`academic_week`), so read it rather than recomputing it;
@@ -1590,7 +1590,7 @@
         .select("id, name, start_date, end_date").is("deleted_at", null))
     ]);
     var detail = opening[0];
-    var recall = opening[1];
+    var practice = opening[1];
     var current = opening[2];
     var aw = opening[3];
     var yrs = opening[4];
@@ -1649,7 +1649,7 @@
              second, exactly as it was, so if that ever stopped being true the
              precedence is the precedence it has always had. */
           var pair = await Promise.all([
-            withDbDeadline(WARM_MS, sb.from("ks3_bank_questions")
+            withDbDeadline(WARM_MS, sb.from("ks3_assignment_bank")
               .select("id, lesson_slug").in("id", refs)),
             withDbDeadline(WARM_MS, sb.from("ks3_ladder_questions")
               .select("question_ref, lesson_slug").in("question_ref", refs))
@@ -1881,7 +1881,7 @@
        has been taught, nearest lesson first. The page's round is six long, so
        six is what it is given. */
     var questions = [];
-    (recall && recall.questions ? recall.questions : []).forEach(function (q) {
+    (practice && practice.questions ? practice.questions : []).forEach(function (q) {
       if (questions.length >= 6) { return; }
       var n = normalise(q.options, q.answer_letter);
       if (!n) { return; }
@@ -1915,7 +1915,7 @@
        renderVals block is retired with its markup, see student_rulings.py. So
        a class with no ladder rungs behind its lessons now gets its CLASS PAGE:
        its work, its lessons, its leaderboard, its flashcards. What it does not
-       get is a recall button, because `recallLabel` is empty and the binding
+       get is a practice button, because `practiceLabel` is empty and the binding
        is marked `drop`.
 
        That is the whole trade, stated plainly: a student whose class has no
@@ -1938,11 +1938,11 @@
        different directions:
 
          a  every `assignment_questions.source_ref` behind every assignment the
-            class has ever been set, resolved through `ks3_bank_questions` /
+            class has ever been set, resolved through `ks3_assignment_bank` /
             `ks3_ladder_questions` to a lesson slug. That is `coveredSlugs`
             above — the SAME walk the work rows' "Open the lesson" button uses,
             read a second time rather than repeated.
-         b  the lessons behind `/api/class/recall`, which is the endpoint whose
+         b  the lessons behind `/api/class/practice`, which is the endpoint whose
             own blurb on this page says "questions from the lessons this class
             has covered". The backend computes it from the class's scheme.
 
@@ -1966,7 +1966,7 @@
 
        Same rule as `lessonsFor` above and the shout-outs below: the work is
        the page, and a card is a card. */
-    (recall && recall.questions ? recall.questions : []).forEach(function (q) {
+    (practice && practice.questions ? practice.questions : []).forEach(function (q) {
       if (q.lesson_slug) { coveredSlugs[q.lesson_slug] = true; }
     });
     var deckSlugs = Object.keys(coveredSlugs);
@@ -2140,7 +2140,7 @@
        lesson the class has covered". Two sources could answer that, and both
        were measured on 8r/Sc1 before one was chosen:
 
-         a  `/api/class/recall`, already called at the top of this function.
+         a  `/api/class/practice`, already called at the top of this function.
             It returns the rungs of the lessons the class's SCHEME says have
             been taught — for 8r/Sc1, `the-gas-exchange-system` alone, so TWO
             questions.
@@ -2164,7 +2164,7 @@
        this class covered".
 
        ⚠️ THE TABLE HAS NO `topic` COLUMN — checked against the schema, not
-       assumed. `/api/class/recall` composes one; a direct read has to derive
+       assumed. `/api/class/practice` composes one; a direct read has to derive
        it, and `deslug(lesson_slug)` is what this file already falls back to
        for exactly that value, so the two routes agree.
 
@@ -2172,7 +2172,7 @@
        anywhere in the round: no submission row, no attempt row, no score. The
        only thing a round writes is a per-device seen count, in localStorage,
        for the ordering — see `QSEEN_PREFIX`. */
-    var recallBank = [];
+    var practiceBank = [];
     try {
       if (bankQ) {
         var lq = await bankQ;       // started the moment deckSlugs existed
@@ -2183,7 +2183,7 @@
         (lq.data || []).forEach(function (r) {
           var n = normalise(r.options, r.answer_letter);
           if (!n) { return; }
-          recallBank.push({
+          practiceBank.push({
             /* ⚠️ THE ID IS `question_ref`, AND IT IS THE ONLY id this corpus
                has. `rankForPractice` keys `opts.seen` on `it.id` and
                `opts.wrong` on `it.lesson`, so this is what a seen count is
@@ -2212,7 +2212,7 @@
       }
     } catch (bankErr) {
       console.error("[student-live] could not build the recall bank", bankErr);
-      recallBank = [];
+      practiceBank = [];
     }
 
     /* ── THE SAME ORDER, FROM THE SAME FUNCTION ───────────────────────────
@@ -2226,10 +2226,10 @@
        jitter for the same lesson and end up correlated — the deck and the
        round should not agree about which lesson to lead with just because
        they happen to hash the same slug. */
-    var recallSeen = seenStore(user.id, klass.id, QSEEN_PREFIX);
-    recallBank = rankForPractice(recallBank, {
+    var practiceSeen = seenStore(user.id, klass.id, QSEEN_PREFIX);
+    practiceBank = rankForPractice(practiceBank, {
       wrong: wrongLessons,
-      seen: recallSeen.all(),
+      seen: practiceSeen.all(),
       seed: klass.id + "|recall|" + londonYmd(serverNow)
     });
 
@@ -2268,7 +2268,7 @@
        numerator counts against. */
     var weekNo = (current && current.week != null)
       ? current.week
-      : (recall && recall.week != null ? recall.week : null);
+      : (practice && practice.week != null ? practice.week : null);
 
     var v = detail.viewer || {};
 
@@ -2325,7 +2325,7 @@
          is CHECKED. Reaches no network, writes no row — the round hands
          nothing in, and this is the only thing it records anywhere. */
       questionSeen: function (questionRef) {
-        return recallSeen.bump(questionRef);
+        return practiceSeen.bump(questionRef);
       }
     };
 
@@ -2367,7 +2367,7 @@
 
       /* ── ⊕ 23 Aug 2026 — PHASE 3. THE ROUND'S THREE KEYS ───────────────
 
-         `recallBank` is every recall and apply rung behind every lesson this
+         `practiceBank` is every recall and apply rung behind every lesson this
          class has covered, already in practice order. The page does not sort
          it, cap it or choose from it: `recallVals` in student_rulings.py takes
          the first `min(6, length)` of it, which is ruling P2's round size, and
@@ -2375,7 +2375,7 @@
 
          Design's `bank()` on the fixture is eight authored samples; this is
          the real one, and on 8r/Sc1 today it is FOUR. */
-      recallBank: recallBank,
+      practiceBank: practiceBank,
 
       /* ⊕ RULED 22 Aug 2026 — P2, HONOURED BY THE NEW SURFACE. "The round is
          min(6, pool), and the page has to say the size it is actually going to
@@ -2403,7 +2403,7 @@
          Not a disabled button and not an explanatory sentence: §8.10 forbids
          the page explaining itself, and a greyed-out control a student cannot
          act on is a worse answer than a bench that simply offers what it has. */
-      recallLabel: recallBank.length ? "Practise recall" : "",
+      practiceLabel: practiceBank.length ? "Practice" : "",
 
       /* Design typed `FLASHCARDS \u00a0·\u00a0 8r/Sc1` into the overlay's
          header as ONE text node with NON-BREAKING spaces, which is why it
@@ -2667,7 +2667,7 @@
       docketElapsed: current && current.progress
         ? current.progress.percent + "%" : "",
 
-      /* COULD NOT SOURCE — the recall round writes nowhere. `/api/class/recall`
+      /* COULD NOT SOURCE — the practice round writes nowhere. `/api/class/practice`
          only reads, and no table carries a class, a teaching week and a rung
          together, so how many a student has answered this week and what
          fraction they got right are both genuinely unrecorded. Design's '46'
