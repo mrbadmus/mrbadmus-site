@@ -689,6 +689,97 @@ _LEGEND_KEY = ("display:flex;align-items:center;gap:6px;"
                "font:400 12px/1.2 var(--st-mono);letter-spacing:.12em;"
                "text-transform:uppercase;color:var(--st-caption)")
 
+
+# ── ⊕ RULED, MRB-287 · A THIRD CATEGORY: MARKUP MIDE ASKED FOR ───────────
+#
+# The two entries above FINISH a control Design drew. The shoutout delete
+# control does not — Design's feed card (nodes 215–221) has no delete
+# affordance of any kind, and her delivery is not incomplete in drawing none.
+#
+# ⚑ MIDE'S INSTRUCTION, 24 Aug 2026: *"The shoutout is already part of
+# Design's build. The delete control may not be in her delivery; Mide's
+# instruction is to add it. A teacher who can post a shoutout can remove one.
+# Treat it as an AMENDED_ADDITION against her delivery, not a departure."*
+#
+# So it is registered as one — see `AMENDED_ADDITIONS` below, which the build
+# asserts against the emitted bytes. This file has never before added a
+# control that Design did not draw, and a category that is not written down is
+# a category the next reader has to infer from two entries that do not fit it.
+#
+# ⚠️ EVERY STYLE BELOW IS COPIED OFF A NODE DESIGN DID DRAW, verbatim, which
+# is the rule the two entries above already keep:
+#
+#   the "Remove" button   Design's own low-emphasis text button — the
+#                         "Back to <class>" control on the student screen:
+#                         `font:600 14.5px/1.2 var(--st-ui);color:
+#                         var(--st-muted);background:none;border:none;
+#                         padding:0;cursor:pointer` with `style-hover`
+#                         `color:var(--st-ink)`. It rests in the same
+#                         register as the timestamp beside it (node 219) and
+#                         the CONFIRM carries the weight.
+#   the confirm sheet     Design's bulk-shoutout sheet (nodes 513–537): the
+#                         scrim, the panel, the header row, the close X and
+#                         its 12x12 path, the body pad, the footer bar and
+#                         the primary button, all at her measurements. This
+#                         port has ONE dialog idiom and this is it; a second
+#                         one invented here is how a page starts disagreeing
+#                         with itself about what a dialog looks like.
+#
+# ⚠️ AND IT IS A SHEET AND NOT A `window.confirm`. Two reasons, and the
+# second is not the aesthetic one. Design drew three overlays and the page has
+# a dialog idiom, so a browser dialog would be the odd surface out — and
+# `teacher_behaviour.py` PRESSES every control on the fixtures in headless
+# Chrome, where a `window.confirm` blocks the sweep on a dialog nothing
+# answers. The gate would hang rather than fail, which is the worse of the
+# two.
+#
+# ⚠️ `data-mrb-added` IS NOT DECORATION. `teacher_behaviour.clickable()`
+# collects `[data-dc-tpl]`, and `data-dc-tpl` is written from a node's `i` —
+# which INSERT_AT deliberately does not give an inserted node, so that
+# Design's numbering cannot move. The consequence, found on this run and
+# stated rather than left implied: **markup inserted by INSERT_AT was
+# invisible to the drive gate.** Neither existing insertion holds a control,
+# so nothing was going unpressed; this one is four controls, and a delete
+# button no gate can press is exactly the dead control this whole port is
+# trying not to ship. The attribute is a STRING, so it can never collide with
+# Design's integer indices, and `teacher_behaviour` now sweeps it too.
+_DEL_TEXT_BTN = ("flex:none;font:600 14.5px/1.2 var(--st-ui);"
+                 "color:var(--st-muted);background:none;border:none;"
+                 "padding:0;cursor:pointer")
+
+# Design's own sheet, node for node: 514 scrim, 515 panel, 516 header bar,
+# 518 kicker, 519 title, 520 close, 523 body pad, 535 footer bar, 536 footer
+# caption, 537 primary button.
+_DEL_SCRIM = ("position:fixed;inset:0;z-index:60;background:rgba(26,23,20,.45);"
+              "display:flex;align-items:center;justify-content:center;"
+              "padding:40px 20px")
+_DEL_PANEL = ("width:720px;max-width:100%;max-height:86vh;overflow:auto;"
+              "background:var(--st-paper);border:1px solid var(--st-edge);"
+              "border-radius:14px;box-shadow:var(--st-shadow-frame)")
+_DEL_HEAD = ("display:flex;align-items:center;justify-content:space-between;"
+             "gap:12px;padding:20px 24px;"
+             "border-bottom:1px solid var(--st-rule-soft)")
+_DEL_KICKER = ("font:500 12px/1.2 var(--st-mono);letter-spacing:.18em;"
+               "text-transform:uppercase;color:var(--st-caption)")
+_DEL_TITLE = ("margin-top:9px;font:600 27px/1 var(--st-display);"
+              "letter-spacing:-0.03em;color:var(--st-ink)")
+_DEL_CLOSE = ("flex:none;width:32px;height:32px;display:flex;"
+              "align-items:center;justify-content:center;"
+              "background:transparent;border:1px solid var(--st-btn-border);"
+              "border-radius:9px;cursor:pointer;color:var(--st-muted)")
+_DEL_BODY = "padding:22px 24px"
+_DEL_PROSE = "font:400 15.5px/1.55 var(--st-ui);color:var(--st-body)"
+_DEL_FOOT = ("display:flex;align-items:center;justify-content:space-between;"
+             "gap:14px;padding:16px 24px;"
+             "border-top:1px solid var(--st-rule-soft);"
+             "background:var(--st-crumb-bg)")
+_DEL_FOOT_NOTE = ("font:400 12.5px/1.4 var(--st-mono);letter-spacing:.1em;"
+                  "text-transform:uppercase;color:var(--st-caption)")
+_DEL_PRIMARY = ("flex:none;height:38px;padding:0 18px;"
+                "font:600 15px/1.2 var(--st-ui);color:var(--st-paper);"
+                "background:var(--st-accent-text);border:none;"
+                "border-radius:9px;cursor:pointer")
+
 INSERT_AT = {
     # ── the fourth glyph gets a name ────────────────────────────────────
     #
@@ -752,7 +843,187 @@ INSERT_AT = {
         "panel (node 189) supplies the dashed border, the note ground and "
         "the 20px display line; the action button is dropped because there "
         "is nothing to do but change the filter that is already on screen."),
+
+    # ── ⊕ AMENDED ADDITION · the shoutout a teacher wrote, removable ────
+    #
+    # ⛔ ONLY ON A SHOUTOUT THIS TEACHER WROTE. The RLS UPDATE policy on
+    # `class_shoutouts` is `author_id = auth.uid() AND
+    # auth_user_teaches_class(class_id)`, so a control offered on anybody
+    # else's shoutout would look pressable, be pressed, and be refused by the
+    # database. `f.canDelete` compares the row's `author_id` — which
+    # `buildFeed` in teacher-live.js already carries on every entry — against
+    # `MRB_ME()`, the signed-in teacher's own id, which now travels through
+    # the seam like everything else on this page.
+    #
+    # ⚠️ THE WORD IS "REMOVE", NOT "DELETE", and it is not a euphemism. The
+    # write is a soft delete (`deleted_at`), and the read RPC
+    # `class_shoutouts_for_viewer` filters `deleted_at IS NULL` — so the row
+    # leaves the feed for EVERYONE, the author included. What a teacher sees
+    # is a real removal, which is what the word says; "delete" would promise
+    # something about the database that the database does not do.
+    216: (219, {
+        "t": "if", "e": "f.canDelete",
+        "c": [{
+            "t": "button",
+            "a": {"type": "button",
+                  "data-mrb-added": "shoutout-delete",
+                  "aria-label": "Remove this shoutout",
+                  "style": _DEL_TEXT_BTN},
+            "hov": "color:var(--st-ink)",
+            "on": "f.del",
+            "c": [{"t": "#", "v": "Remove"}],
+        }]},
+        "the delete control on a shoutout the signed-in teacher wrote. "
+        "Design drew no delete affordance anywhere in the feed; this is "
+        "Mide's instruction of 24 Aug 2026, registered in "
+        "AMENDED_ADDITIONS. The treatment is Design's own low-emphasis "
+        "text button, copied verbatim off the \"Back to <class>\" control."),
+
+    # ── ⊕ AMENDED ADDITION · the confirm step ──────────────────────────
+    #
+    # ⚑ THE CONFIRM IS THE CONTROL. A one-press delete on a card in a feed,
+    # eight pixels from a child's name, is the shape of an accident — and the
+    # thing being destroyed is a teacher's own sentence about a child, which
+    # nothing on this platform can give back.
+    #
+    # ⚠️ IT SAYS WHAT REMOVAL ACTUALLY DOES. "It disappears from the feed for
+    # everyone, including you" is the read RPC's own behaviour stated
+    # plainly, and "This cannot be undone" is true: there is no UPDATE path
+    # that clears `deleted_at` anywhere in this codebase.
+    #
+    # ⚠️ APPENDED TO THE CLASS SCREEN'S ROOT (node 88) AND NOT TO NODE 9,
+    # where Design's own four overlays live. Node 9 is on all six pages;
+    # node 88 is pruned everywhere but class-detail, which is the only page
+    # with a feed. An inert overlay on five pages that can never open it is
+    # markup a teacher can never reach, which is what LIVE_REGIONS just had
+    # one of removed for.
+    88: (None, {
+        "t": "if", "e": "delOpen",
+        "c": [{
+            "t": "div", "a": {"style": _DEL_SCRIM}, "on": "cancelDelete",
+            "c": [{
+                "t": "div", "a": {"style": _DEL_PANEL}, "on": "stop",
+                "c": [
+                    {"t": "div", "a": {"style": _DEL_HEAD}, "c": [
+                        {"t": "div", "c": [
+                            {"t": "div", "a": {"style": _DEL_KICKER}, "c": [
+                                {"t": "#", "v": {"parts": [
+                                    {"e": "klass.code"}, " \u00b7 Shoutouts"]}}]},
+                            {"t": "div", "a": {"style": _DEL_TITLE}, "c": [
+                                {"t": "#", "v": "Remove this shoutout?"}]},
+                        ]},
+                        {"t": "button",
+                         "a": {"type": "button",
+                               "data-mrb-added": "shoutout-delete-close",
+                               "aria-label": "Keep the shoutout",
+                               "style": _DEL_CLOSE},
+                         "on": "cancelDelete",
+                         "c": [{"t": "svg",
+                                "a": {"width": "12", "height": "12",
+                                      "viewBox": "0 0 12 12", "fill": "none",
+                                      "aria-hidden": "true"},
+                                "c": [{"t": "path",
+                                       "a": {"d": "M2.5 2.5l7 7M9.5 2.5l-7 7",
+                                             "stroke": "currentColor",
+                                             "stroke-width": "1.6",
+                                             "stroke-linecap": "round"}}]}]},
+                    ]},
+                    {"t": "div", "a": {"style": _DEL_BODY}, "c": [
+                        {"t": "div", "a": {"style": _DEL_PROSE}, "c": [
+                            {"t": "#", "v": {"parts": [
+                                "This removes the shoutout to ",
+                                {"e": "delName"},
+                                ". It disappears from the feed for everyone, "
+                                "including you."]}}]},
+                    ]},
+                    {"t": "div", "a": {"style": _DEL_FOOT}, "c": [
+                        {"t": "div", "a": {"style": _DEL_FOOT_NOTE}, "c": [
+                            {"t": "#", "v": "This cannot be undone"}]},
+                        {"t": "div",
+                         "a": {"style": "display:flex;align-items:center;"
+                                        "gap:12px"},
+                         "c": [
+                            {"t": "button",
+                             "a": {"type": "button",
+                                   "data-mrb-added": "shoutout-delete-cancel",
+                                   "style": _DEL_TEXT_BTN},
+                             "hov": "color:var(--st-ink)",
+                             "on": "cancelDelete",
+                             "c": [{"t": "#", "v": "Keep it"}]},
+                            {"t": "button",
+                             "a": {"type": "button",
+                                   "data-mrb-added": "shoutout-delete-confirm",
+                                   "style": _DEL_PRIMARY},
+                             "hov": "background:var(--st-accent-hover)",
+                             "on": "confirmDelete",
+                             "c": [{"t": "#", "v": "Remove shoutout"}]},
+                         ]},
+                    ]},
+                ]}]}]},
+        "the confirm step in front of the shoutout delete. Design's bulk "
+        "sheet (nodes 513-537) supplies the scrim, the panel, the header, "
+        "the close X, the body pad, the footer bar and the primary button, "
+        "at her own measurements. Registered in AMENDED_ADDITIONS."),
 }
+
+
+# ── ⊕ RULED, MRB-287 · what this port ADDED to Design's delivery ─────────
+#
+# ⚑ THE REGISTER THAT MAKES AN ADDITION VISIBLE. `student_behaviour.py` has
+# an `AMENDED_ADDITIONS` of the same name and it does a different job — it
+# tolerates text the port renders that Design's own file does not, for a gate
+# that diffs the two. `teacher_behaviour.py` diffs nothing against Design's
+# file, so a copy of that mechanism here would be a register with no gate
+# behind it.
+#
+# What this one does instead: it NAMES every control this port put on a
+# teacher's screen that Design did not draw, says which page it is on and
+# which of her nodes it hangs off, and `build_teacher_port.build()` asserts
+# each marker is in the EMITTED bytes of that page and in no other. So the
+# register cannot drift from the pages, and an addition cannot be made
+# without appearing here.
+#
+# ⚠️ THE MARKERS ARE ALSO WHAT `teacher_behaviour.py` SWEEPS. Inserted
+# markup carries no `i`, so it carries no `data-dc-tpl`, so the drive gate
+# could not see it. Both facts are one attribute now.
+#
+# ⚠️ `needs_data` IS NOT A GET-OUT, IT IS THE SHAPE OF THE CONTROL. All four
+# of these live on the shoutout feed, and the EMPTY class-detail fixture is a
+# class with no roster and therefore no shoutouts — `FEED[cid]` is `[]`. There
+# is nothing to remove, so there is correctly nothing to press, and a gate
+# demanding the control on that fixture would be demanding a delete button on
+# an empty feed. `teacher_behaviour` skips them there and says so; on the
+# POPULATED fixture every one of them is pressed by name and must move
+# something. ⛔ A future addition that is pure chrome must NOT carry this flag
+# — chrome is on screen in every state, and claiming otherwise would excuse it
+# from the only gate that presses it.
+AMENDED_ADDITIONS = (
+    dict(marker="shoutout-delete", page="class-detail.html", node=216,
+         label="Remove", needs_data=True,
+         why="Mide, 24 Aug 2026: \"A teacher who can post a shoutout can "
+             "remove one.\" Design's feed card has no delete affordance. "
+             "Shown only where `f.canDelete` — the row's `author_id` is the "
+             "signed-in teacher's — because the RLS UPDATE policy is "
+             "author-only and a control that fails RLS is a control that "
+             "lied."),
+    dict(marker="shoutout-delete-close", page="class-detail.html", node=88,
+         label="Keep the shoutout", needs_data=True,
+         why="the confirm sheet's close X, off Design's node 520."),
+    dict(marker="shoutout-delete-cancel", page="class-detail.html", node=88,
+         label="Keep it", needs_data=True,
+         why="the confirm sheet's decline. The wording is the SAFE choice "
+             "stated as an action, so the two footer buttons read as a "
+             "choice rather than as one button and an escape hatch."),
+    dict(marker="shoutout-delete-confirm", page="class-detail.html", node=88,
+         label="Remove shoutout", needs_data=True,
+         why="the press that actually writes. `confirmDelete` calls "
+             "`MRB_DELETE_SHOUTOUT`, which is "
+             "`MrBadmusTeacherData.softDeleteClassShoutout` — the function "
+             "that has existed since MRB-46 — and then re-reads the feed "
+             "through `MRB_REFRESH_FEED`. On failure it writes "
+             "`#compose-error` and toasts, which is the composer's own "
+             "failure idiom and not a second one."),
+)
 
 
 # ── class fields that are pure invention ─────────────────────────────────
@@ -1495,7 +1766,16 @@ LOGIC = (
           body: 'Went from 38% to 74% after one reteach of the lowest-scoring question.'
         }
       ].map(f => ({ ...f, initials: this.initials(f.name), hue: this.hueFor(f.name) })),""",
-     "      feed: (MRB_DATA('FEED')[k && k.id] || []),",
+     "      feed: (MRB_DATA('FEED')[k && k.id] || []).map((f) => ({\n"
+     "        ...f,\n"
+     "        /* ⊕ MRB-287 — THE DELETE AFFORDANCE, AUTHOR-ONLY. The RLS\n"
+     "           UPDATE policy is `author_id = auth.uid() AND\n"
+     "           auth_user_teaches_class(class_id)`, so this asks the same\n"
+     "           question the database will ask, BEFORE the control is drawn\n"
+     "           rather than after it is pressed. */\n"
+     "        canDelete: !!(f.id && f.author_id && f.author_id === MRB_ME()),\n"
+     "        del: () => this.setState({ delId: f.id, delName: f.name }),\n"
+     "      })),",
      "⚑ TWO COMPLETE FABRICATED SHOUTOUTS, and they are NOT in the template "
      "so no literal sweep finds them: a real child's name off the roster, a "
      "relative time, a template label and a written body — \"Went from 38% to "
@@ -1508,7 +1788,15 @@ LOGIC = (
      "        `FEED` is keyed by class and is populated only on the class and "
      "student screens — the seam's own scoping — so this reads through the "
      "map rather than `MRB_PICK`, which would throw on the five screens that "
-     "have no feed to show."),
+     "have no feed to show.\n"
+     "\n"
+     "        ⊕ AND THE `.map` IS BACK, FOR A DIFFERENT REASON — 24 Aug 2026. "
+     "Design's map computed `initials` and `hue`; that half stays deleted, "
+     "and neither is recomputed here. What this map adds is the DELETE "
+     "AFFORDANCE Mide asked for: a per-row `canDelete` and a per-row `del`, "
+     "which is Design's own idiom for a control inside a list (`t.pick` on "
+     "the template buttons, `s.toggle` on the bulk chips). See "
+     "AMENDED_ADDITIONS."),
 
     ("""    const pool = [];
     this.POOL_CLASSES.forEach(id => {
@@ -1549,6 +1837,65 @@ LOGIC = (
      "second implementation in the data layer would be a second answer. The "
      "empty arrays render Design's tables with no rows until the live "
      "wizard fills them through `data-import-slot`."),
+
+    # ══ ⊕ 24 Aug 2026 · A CAP SIZED TO A FIFTEEN-NAME SAMPLE ═══════════
+    #
+    # ⛔ THE THIRD SILENT CAP, AND THE ONE THAT SURVIVED. This port has
+    # already taken two out of Design's delivery for the same reason — the
+    # marking grid's `.slice(0, 10)`, which hid two thirds of a class on the
+    # screen a teacher opens to find who is struggling, and the fifteen-name
+    # search POOL, which meant a teacher typing a real child's surname found
+    # nothing. This one is `.slice(0, 12)` on the search RESULTS, and it is
+    # on all six pages.
+    #
+    # Design's cap was sized to her own sample: fifteen invented names, so
+    # twelve was almost all of them and the cap almost never bit. The pool
+    # behind it is now REAL — every student on every class the teacher holds
+    # this year — and at a secondary school a common letter matches far more
+    # than twelve. A teacher types "s", sees twelve, and has no way to know
+    # there are thirty-one.
+    #
+    # ⚑ THE FIX IS A COUNT, NOT PAGINATION, and that is a judgement about
+    # what the control IS. A search dropdown is refined by TYPING; a "load
+    # more" inside it would be a second way to do the thing the box already
+    # does, and the shoutout feed's `shoutouts-loadmore` region exists
+    # because a FEED is the opposite case. So the cap stays and the
+    # truncation is DECLARED.
+    #
+    # ⊕ AND IT IS DESIGN'S OWN CAPTION, CORRECTED — NOT A NEW ONE. Node 553
+    # already sits directly under the results list, in the mono/caption/
+    # uppercase register, bound to `searchFoot`, on every page that keeps the
+    # overlay. What it SAID was `results.length + ' of ' + pool.length +
+    # ' students'`, which is wrong twice over on a real pool: `results.length`
+    # is the POST-CAP number, so it reads "12" no matter how many matched,
+    # and `pool.length` is every student the teacher has rather than every
+    # student who matched. On a query matching thirty-one of sixty it read
+    # "12 OF 60 STUDENTS" — a sentence in which neither number is the one a
+    # teacher wants and nothing says anything was withheld.
+    #
+    # ⚠️ SO THERE IS NO `INSERT_AT` ENTRY FOR THIS, deliberately. Inserting a
+    # second caption under the first would put two sentences about one
+    # condition on one strip, which is the failure `INSERT_AT[31]`'s own note
+    # rules against — and `INSERT_AT` is documented here as the LAST RESORT,
+    # for states Design drew no counterpart for. She drew this one.
+    ("""    const results = pool.filter(p => !q || p.name.toLowerCase().indexOf(q) > -1).slice(0, 12).map(p => ({""",
+     "    /* ⊕ MRB-287 — MATCHED, BEFORE THE CAP. The count a teacher needs "
+     "is\n"
+     "       how many matched, not how many exist and not how many fit. */\n"
+     "    const matched = pool.filter(p => !q || "
+     "p.name.toLowerCase().indexOf(q) > -1);\n"
+     "    const results = matched.slice(0, 12).map(p => ({",
+     "the search results, so the number withheld by the cap can be known. "
+     "The cap itself is unchanged: twelve rows is a dropdown, and the answer "
+     "to more than twelve matches is to keep typing."),
+
+    ("      searchFoot: results.length + ' of ' + pool.length + ' students "
+     "· type to narrow',",
+     "      searchFoot: MRB_SEARCH_FOOT(matched.length, results.length,\n"
+     "                                  pool.length, q),",
+     "Design's own footer caption, saying what it is under. It named the "
+     "post-cap row count and the whole roster and never the match total, so "
+     "a truncated search was indistinguishable from a complete one."),
 
     # ══ the two keys the rulings introduce ══════════════════════════════
     ("      searchResults: results,",
@@ -1831,6 +2178,58 @@ LOGIC = (
      "\"On time\" for every submission whose timing is not recorded, which is "
      "every submission older than 22 Aug 2026."),
 
+    # ══ ⊕ 24 Aug 2026 · THE SHOUTOUT DELETE, CONFIRMED AND WIRED ═══════
+    #
+    # Mide's instruction: a teacher who can post a shoutout can remove one.
+    # Design drew no delete affordance at all, so these four keys and the
+    # sheet in `INSERT_AT[88]` are an AMENDED ADDITION against her delivery
+    # rather than a correction of it — see `AMENDED_ADDITIONS`.
+    #
+    # ⚠️ THE CONFIRM HOLDS AN ID, NOT A BOOLEAN. `delId` is the shoutout the
+    # sheet is asking about, so the press that confirms cannot act on a
+    # different row from the press that opened it — `renderVals` runs again
+    # on every `setState` and the feed is re-read each time.
+    #
+    # ⚠️ IT DOES NOT REUSE DESIGN'S `modal`. `closeModal` sets `modal: null`
+    # and nothing else, and the bulk sheet's close depends on that; a fourth
+    # value in the same slot would mean one handler closing two different
+    # things by luck of what happened to be open.
+    #
+    # ⚠️ NOTHING HERE REJECTS, for the reason `MRB_SEND_SHOUTOUTS` gives:
+    # these are Design's SYNCHRONOUS `renderVals` closures, and a rejection
+    # escaping one is a console error a teacher never sees, in front of a
+    # feed that still shows the shoutout they believe they removed.
+    #
+    # ⚠️ NO SUCCESS TOAST, the same ruling as the composer's. The proof that
+    # a shoutout was removed is that it is GONE from the feed, which
+    # `MRB_REFRESH_FEED` re-reads. The failure path is the composer's own and
+    # not a second one: `#compose-error` for the live region, and the toast
+    # for the surface a teacher actually looks at.
+    ("      closeModal: () => this.setState({ modal: null }),",
+     "      closeModal: () => this.setState({ modal: null }),\n"
+     "      delOpen: !!s.delId,\n"
+     "      delName: s.delName || '',\n"
+     "      cancelDelete: () => this.setState({ delId: '', delName: '' }),\n"
+     "      confirmDelete: () => {\n"
+     "        const sid = s.delId, cid = k && k.id;\n"
+     "        this.setState({ delId: '', delName: '' });\n"
+     "        if (!sid) { return; }\n"
+     "        this.ping('Removing…');\n"
+     "        MRB_DELETE_SHOUTOUT(sid).then((r) => {\n"
+     "          if (!r.ok) {\n"
+     "            const why = MRB_DELETE_WHY(r.error);\n"
+     "            MRB_COMPOSE_ERROR(why);\n"
+     "            return this.ping(why);\n"
+     "          }\n"
+     "          MRB_COMPOSE_ERROR('');\n"
+     "          MRB_REFRESH_FEED(cid).then(() => {\n"
+     "            this.setState({ toast: '' });\n"
+     "          });\n"
+     "        });\n"
+     "      },",
+     "the shoutout delete's state and its two handlers. Design has no "
+     "counterpart at all: her feed card cannot be acted on."),
+
     ("""    const stOnTime = stMarked.filter(h => !h.late).length;
     const stLate = stMarked.filter(h => h.late).length;
     const stMissing = stHistory.filter(h => h.missing).length;
@@ -2026,10 +2425,27 @@ LIVE_REGIONS = {
                                  "Design has no concept of a class you may "
                                  "not see."),
         ("state-error", "the load failed."),
-        ("leaderboard-section", "the class leaderboard. Design drew NO "
-                                "counterpart anywhere in the delivery — this "
-                                "is a deletion Design may not have intended, "
-                                "and it is in the report."),
+        # ── ⊕ RULED, MRB-287 · THE LEADERBOARD IS A STUDENT FEATURE ──
+        #
+        # `leaderboard-section` WAS AN ENTRY HERE, and it was removed on
+        # 24 Aug 2026. It read: "the class leaderboard. Design drew NO
+        # counterpart anywhere in the delivery — this is a deletion Design
+        # may not have intended, and it is in the report." It went in the
+        # report, Mide read it, and ruled the other way: the Stars
+        # leaderboard is a STUDENT feature and is never a teacher one.
+        # Design's delivery was right to draw no counterpart.
+        #
+        # ⚠️ WHAT GOES IS AN ORPHANED HIDDEN ELEMENT, NOT A WORKING
+        # CONTROL. The section was carried into the port and then never
+        # filled: `shared/teacher-live.js` does not contain the word
+        # "leaderboard" once, so nothing has ever rendered into it. No
+        # teacher could reach it. The rule this whole block exists to
+        # protect — "the port DELETES NOTHING a teacher can currently
+        # reach" — is therefore not weakened by removing it.
+        #
+        # The STUDENT leaderboard is untouched and stays exactly where it
+        # is: the `class_stars_leaderboard_for_member` RPC, read by
+        # `shared/student-data.js`. Nothing student-side changed.
         ("compose-error", "the shoutout composer's validation message. "
                           "Design's composer cannot fail to send."),
         ("shoutouts-loadmore", "pagination on the shoutout feed. Design's "

@@ -241,6 +241,94 @@ function MRB_REFRESH_FEED(classId){
       D.FEED = d.FEED; return true;}, function(){return false;}),
     new Promise(function(r){setTimeout(function(){r(false);}, 8000);})
   ]);}
+
+/* "N matches, showing 12". ⚠️ AND IT IS ONLY SAID WHEN IT IS TRUE.
+
+   Design's search caps its results at twelve and said nothing about it — see
+   teacher_rulings, the third silent cap this port has had to take a view on.
+   The cap stays (a dropdown is refined by typing, not paged); what changes is
+   that the number withheld is DECLARED.
+
+   ⚠️ THE "SHOWING" CLAUSE APPEARS ONLY WHERE THE CAP ACTUALLY BIT. "Showing
+   12 of 12" is noise on every ordinary search, and noise is how a teacher
+   learns to stop reading the one line that will later matter.
+
+   ⚠️ BLANKS OVER INVENTED NUMBERS, here as everywhere: a count this cannot
+   be sure of renders NOTHING rather than a guess. An empty caption strip is
+   a missing sentence; a wrong count is a false one.
+
+   ⚠️ AND ZERO IS A STATE. Design's line would read "0 OF 60 STUDENTS" for a
+   search that found nobody — a number beside a number, with no sentence. */
+function MRB_SEARCH_FOOT(matched, shown, pool, q){
+  if(matched==null||shown==null||pool==null){return '';}
+  if(!pool){return 'No students in your classes yet';}
+  if(!matched){return 'No students match';}
+  var head = q ? (matched===1 ? '1 match' : matched + ' matches')
+               : (matched + (matched===1 ? ' student' : ' students'));
+  if(shown < matched){ head += ' · showing ' + shown; }
+  if(matched > 1){ head += ' · type to narrow'; }
+  return head;}
+
+/* == THE SHOUTOUT DELETE ================================================
+
+   ⊕ MRB-287, 24 Aug 2026. Mide's instruction: a teacher who can post a
+   shoutout can remove one. Design drew no delete affordance, so the markup
+   is an AMENDED ADDITION (teacher_rulings.AMENDED_ADDITIONS) and these three
+   helpers are what stands behind it.
+
+   WARNING: NOTHING HERE REJECTS EITHER, for the same reason the six above do
+   not. */
+
+/* WHO IS LOOKING, synchronously. The delete control is drawn per feed row
+   inside Design's `renderVals`, which is not async, so the author check
+   cannot wait on `sb.auth.getUser()` the way `MRB_AUTHOR_ID` does. The
+   signed-in teacher's id therefore travels through the SEAM like every other
+   fact on this page — `teacher-live.js` puts `ME` in the payload from the
+   `ctx.user` the guard already validated, and a fixture supplies its own.
+   ⚠️ It is NOT a permission. RLS decides; this only decides whether to offer
+   a control that RLS would then allow. */
+function MRB_ME(){return MRB_DATA('ME') || '';}
+
+/* Why a removal failed, in a sentence a teacher can act on — the companion
+   to MRB_SHOUTOUT_WHY and separate from it because the verb is different and
+   because `no_rows_affected` has no equivalent on the write path.
+   ⚠️ `no_rows_affected` IS THE SILENT ONE. `softDeleteClassShoutout` forces
+   RETURNING with `.select('id')` precisely so an UPDATE that RLS matched
+   nothing for cannot come back as `{data:null, error:null}` and be read as
+   success. It is a real refusal and it gets a real sentence. */
+function MRB_DELETE_WHY(e){
+  var m=(e&&e.message)||'', c=(e&&e.code)||'';
+  if(c==='no_rows_affected')
+    return "Couldn't remove it — it may already be gone, or you may no " +
+           "longer teach this class.";
+  if(/row-level security/i.test(m))
+    return "Couldn't remove it — only the teacher who wrote a shoutout can " +
+           "remove it.";
+  if(/no data layer|not signed in/i.test(m))
+    return "Couldn't remove it — this page is not signed in. Reload and try " +
+           "again.";
+  return "Couldn't remove the shoutout. Try again.";}
+
+/* The removal itself. `MrBadmusTeacherData.softDeleteClassShoutout` has
+   existed since MRB-46 and is used rather than re-implemented: it sets
+   `deleted_at`, forces RETURNING, and throws `no_rows_affected` where RLS
+   refused silently.
+   ⚠️ SOFT IN THE DATABASE, REAL TO EVERY READER. There is no DELETE policy on
+   `class_shoutouts` — a hard delete is denied by default — and the read RPC
+   `class_shoutouts_for_viewer` filters `deleted_at IS NULL`, so the row
+   leaves the feed for everyone including its author. The control may
+   therefore promise a removal, because that is what a teacher gets.
+   Resolves `{ok, error}`; never rejects. */
+function MRB_DELETE_SHOUTOUT(shoutoutId){
+  var no=function(e){return Promise.resolve({ok:false,error:e});};
+  if(!shoutoutId){return no(new Error('teacher page: no shoutout'));}
+  var TD=window.MrBadmusTeacherData;
+  if(!TD||!TD.softDeleteClassShoutout){
+    return no(new Error('teacher page: no data layer'));}
+  try{
+    return TD.softDeleteClassShoutout(shoutoutId).then(
+      function(){return {ok:true,error:null};}, no);
+  }catch(e){return no(e);}}
 var DCLogic = window.MrBadmusStudentRuntime.MrbLogic;
 var StreamableLogic = DCLogic;
 class Component extends DCLogic {
@@ -790,7 +878,10 @@ class Component extends DCLogic {
 
     const pool = MRB_DATA('searchPool');
     const q = String(s.search || '').toLowerCase();
-    const results = pool.filter(p => !q || p.name.toLowerCase().indexOf(q) > -1).slice(0, 12).map(p => ({
+    /* ⊕ MRB-287 — MATCHED, BEFORE THE CAP. The count a teacher needs is
+       how many matched, not how many exist and not how many fit. */
+    const matched = pool.filter(p => !q || p.name.toLowerCase().indexOf(q) > -1);
+    const results = matched.slice(0, 12).map(p => ({
       name: p.name, klass: p.klass, avg: p.avg,
       initials: this.initials(p.name), hue: this.hueFor(p.name),
       open: () => MRB_GO('student', { student: p.id, 'class': p.classId })
@@ -924,7 +1015,16 @@ class Component extends DCLogic {
         bc: s.boTpl === t.id ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
         pick: () => this.setState({ boTpl: t.id })
       })),
-      feed: (MRB_DATA('FEED')[k && k.id] || []),
+      feed: (MRB_DATA('FEED')[k && k.id] || []).map((f) => ({
+        ...f,
+        /* ⊕ MRB-287 — THE DELETE AFFORDANCE, AUTHOR-ONLY. The RLS
+           UPDATE policy is `author_id = auth.uid() AND
+           auth_user_teaches_class(class_id)`, so this asks the same
+           question the database will ask, BEFORE the control is drawn
+           rather than after it is pressed. */
+        canDelete: !!(f.id && f.author_id && f.author_id === MRB_ME()),
+        del: () => this.setState({ delId: f.id, delName: f.name }),
+      })),
       noteCount: (s.note || '').length + ' / 500',
       backToClass: 'Back to ' + k.code,
       student: {
@@ -1071,7 +1171,8 @@ class Component extends DCLogic {
       },
       searchPlaceholder: MRB_DATA('searchPlaceholder'),
       searchResults: results,
-      searchFoot: results.length + ' of ' + pool.length + ' students · type to narrow',
+      searchFoot: MRB_SEARCH_FOOT(matched.length, results.length,
+                                  pool.length, q),
       setSearch: (e) => this.setState({ search: e.target.value }),
       pickRecipient: (e) => this.setState({ recipient: e.target.value }),
       setNote: (e) => this.setState({ note: e.target.value }),
@@ -1116,6 +1217,26 @@ class Component extends DCLogic {
       openSearch: () => this.setState({ modal: 'search', search: '' }),
       openBulk: () => this.setState({ modal: 'bulk' }),
       closeModal: () => this.setState({ modal: null }),
+      delOpen: !!s.delId,
+      delName: s.delName || '',
+      cancelDelete: () => this.setState({ delId: '', delName: '' }),
+      confirmDelete: () => {
+        const sid = s.delId, cid = k && k.id;
+        this.setState({ delId: '', delName: '' });
+        if (!sid) { return; }
+        this.ping('Removing…');
+        MRB_DELETE_SHOUTOUT(sid).then((r) => {
+          if (!r.ok) {
+            const why = MRB_DELETE_WHY(r.error);
+            MRB_COMPOSE_ERROR(why);
+            return this.ping(why);
+          }
+          MRB_COMPOSE_ERROR('');
+          MRB_REFRESH_FEED(cid).then(() => {
+            this.setState({ toast: '' });
+          });
+        });
+      },
       stop: (e) => e.stopPropagation(),
       impNext: () => this.setState({ importStep: Math.min(3, s.importStep + 1) }),
       impBack: () => this.setState({ importStep: Math.max(1, s.importStep - 1) }),
@@ -1148,7 +1269,7 @@ window.__MRB_MOUNT__ = function () {
   });
 };
 </script>
-<script>window.__MRB_ASSET_V__={"class-entry.js":"8be18391","config.js":"06f24811","shoutouts.js":"23393220","teacher-data.js":"a9398f6d","teacher-guard.js":"bbc08e89","teacher-live.js":"5fb3ea3a"};</script>
+<script>window.__MRB_ASSET_V__={"class-entry.js":"8be18391","config.js":"06f24811","shoutouts.js":"23393220","teacher-data.js":"cff2f131","teacher-guard.js":"bbc08e89","teacher-live.js":"6f4e160d"};</script>
 <script src="teacher-fixture-insights.js"></script>
 <script>window.__MRB_MOUNT__();</script>
 </body>

@@ -1205,13 +1205,22 @@ __IDS__.forEach(function (id) {
   const pick = function (n) {
     return roster.length ? roster[Math.min(n, roster.length - 1)].name : '—';
   };
+  /* ⊕ MRB-287, 24 Aug 2026 — `id` and `author_id`, which Design's sample has
+     no concept of. `teacher-live.buildFeed` carries both on every real row,
+     and the delete control is drawn only where `author_id` is the signed-in
+     teacher's. ⚑ THE FIRST IS MINE AND THE SECOND IS NOT, deliberately: a
+     fixture where every row is deletable proves the control renders and
+     proves nothing about the author check, and one where none is leaves
+     `teacher_behaviour` with no button to press. */
   out.FEED[id] = [
-    { name: pick(9), when: '2 days ago',
+    { id: id + ':shout-1', author_id: '__MRB_FIXTURE_ME__',
+      name: pick(9), when: '2 days ago',
       template: 'Top of the class this week',
       body: 'Highest mean in ' + k.code + ' on the last set — and showed ' +
             'working on every question.',
       initials: c.initials(pick(9)), hue: c.hueFor(pick(9)) },
-    { name: pick(12), when: '1 week ago',
+    { id: id + ':shout-2', author_id: '__MRB_FIXTURE_OTHER__',
+      name: pick(12), when: '1 week ago',
       template: 'Bounced back strong',
       body: 'Went from 38% to 74% after one reteach of the lowest-scoring ' +
             'question.',
@@ -1276,7 +1285,9 @@ def design_data(logic, class_id, scratch):
     # what it did.
     ids = json.dumps([class_id])
     src = (_FIXTURE_RUNNER.replace("/*__DESIGN_LOGIC__*/", logic)
-                          .replace("__IDS__", ids))
+                          .replace("__IDS__", ids)
+                          .replace("__MRB_FIXTURE_ME__", FIXTURE_ME)
+                          .replace("__MRB_FIXTURE_OTHER__", FIXTURE_OTHER))
     path = os.path.join(scratch, "_teacher_fixture_runner.js")
     with open(path, "w", encoding="utf-8") as fh:
         fh.write(src)
@@ -1308,8 +1319,23 @@ def design_data(logic, class_id, scratch):
 # `build_student_port.py` makes the same trade for three values and gives the
 # same warning: if this grows past a handful, the seam has stopped being a
 # seam.
+# ── the fixture's signed-in teacher ──────────────────────────────────────
+#
+# ⛔ NOT A UUID, ON PURPOSE. `auth.users.id` is a uuid and these two are not
+# shaped like one, so neither can be mistaken for an account or pasted into a
+# query that would then match a real row. They exist so the populated fixture
+# has ONE shoutout the viewer wrote and ONE they did not — which is what makes
+# `teacher_behaviour`'s press of the delete control mean something, and what
+# proves the author check is a check rather than a constant.
+FIXTURE_ME = "fixture-signed-in-teacher"
+FIXTURE_OTHER = "fixture-other-teacher"
+
 DESIGN_SCALARS = dict(
     teacherName="Ayomide",
+    # The signed-in teacher's own auth id. On a live page `teacher-live.js`
+    # supplies it from the session the guard already validated; `MRB_ME()`
+    # reads it through the seam like everything else.
+    ME=FIXTURE_ME,
     envBadge="PROD",
     termLabel="Autumn term · 2026–27",
     termSeason="Autumn",
@@ -1851,6 +1877,94 @@ function MRB_REFRESH_FEED(classId){
       D.FEED = d.FEED; return true;}, function(){return false;}),
     new Promise(function(r){setTimeout(function(){r(false);}, 8000);})
   ]);}
+
+/* "N matches, showing 12". ⚠️ AND IT IS ONLY SAID WHEN IT IS TRUE.
+
+   Design's search caps its results at twelve and said nothing about it — see
+   teacher_rulings, the third silent cap this port has had to take a view on.
+   The cap stays (a dropdown is refined by typing, not paged); what changes is
+   that the number withheld is DECLARED.
+
+   ⚠️ THE "SHOWING" CLAUSE APPEARS ONLY WHERE THE CAP ACTUALLY BIT. "Showing
+   12 of 12" is noise on every ordinary search, and noise is how a teacher
+   learns to stop reading the one line that will later matter.
+
+   ⚠️ BLANKS OVER INVENTED NUMBERS, here as everywhere: a count this cannot
+   be sure of renders NOTHING rather than a guess. An empty caption strip is
+   a missing sentence; a wrong count is a false one.
+
+   ⚠️ AND ZERO IS A STATE. Design's line would read "0 OF 60 STUDENTS" for a
+   search that found nobody — a number beside a number, with no sentence. */
+function MRB_SEARCH_FOOT(matched, shown, pool, q){
+  if(matched==null||shown==null||pool==null){return '';}
+  if(!pool){return 'No students in your classes yet';}
+  if(!matched){return 'No students match';}
+  var head = q ? (matched===1 ? '1 match' : matched + ' matches')
+               : (matched + (matched===1 ? ' student' : ' students'));
+  if(shown < matched){ head += ' · showing ' + shown; }
+  if(matched > 1){ head += ' · type to narrow'; }
+  return head;}
+
+/* == THE SHOUTOUT DELETE ================================================
+
+   ⊕ MRB-287, 24 Aug 2026. Mide's instruction: a teacher who can post a
+   shoutout can remove one. Design drew no delete affordance, so the markup
+   is an AMENDED ADDITION (teacher_rulings.AMENDED_ADDITIONS) and these three
+   helpers are what stands behind it.
+
+   WARNING: NOTHING HERE REJECTS EITHER, for the same reason the six above do
+   not. */
+
+/* WHO IS LOOKING, synchronously. The delete control is drawn per feed row
+   inside Design's `renderVals`, which is not async, so the author check
+   cannot wait on `sb.auth.getUser()` the way `MRB_AUTHOR_ID` does. The
+   signed-in teacher's id therefore travels through the SEAM like every other
+   fact on this page — `teacher-live.js` puts `ME` in the payload from the
+   `ctx.user` the guard already validated, and a fixture supplies its own.
+   ⚠️ It is NOT a permission. RLS decides; this only decides whether to offer
+   a control that RLS would then allow. */
+function MRB_ME(){return MRB_DATA('ME') || '';}
+
+/* Why a removal failed, in a sentence a teacher can act on — the companion
+   to MRB_SHOUTOUT_WHY and separate from it because the verb is different and
+   because `no_rows_affected` has no equivalent on the write path.
+   ⚠️ `no_rows_affected` IS THE SILENT ONE. `softDeleteClassShoutout` forces
+   RETURNING with `.select('id')` precisely so an UPDATE that RLS matched
+   nothing for cannot come back as `{data:null, error:null}` and be read as
+   success. It is a real refusal and it gets a real sentence. */
+function MRB_DELETE_WHY(e){
+  var m=(e&&e.message)||'', c=(e&&e.code)||'';
+  if(c==='no_rows_affected')
+    return "Couldn't remove it — it may already be gone, or you may no " +
+           "longer teach this class.";
+  if(/row-level security/i.test(m))
+    return "Couldn't remove it — only the teacher who wrote a shoutout can " +
+           "remove it.";
+  if(/no data layer|not signed in/i.test(m))
+    return "Couldn't remove it — this page is not signed in. Reload and try " +
+           "again.";
+  return "Couldn't remove the shoutout. Try again.";}
+
+/* The removal itself. `MrBadmusTeacherData.softDeleteClassShoutout` has
+   existed since MRB-46 and is used rather than re-implemented: it sets
+   `deleted_at`, forces RETURNING, and throws `no_rows_affected` where RLS
+   refused silently.
+   ⚠️ SOFT IN THE DATABASE, REAL TO EVERY READER. There is no DELETE policy on
+   `class_shoutouts` — a hard delete is denied by default — and the read RPC
+   `class_shoutouts_for_viewer` filters `deleted_at IS NULL`, so the row
+   leaves the feed for everyone including its author. The control may
+   therefore promise a removal, because that is what a teacher gets.
+   Resolves `{ok, error}`; never rejects. */
+function MRB_DELETE_SHOUTOUT(shoutoutId){
+  var no=function(e){return Promise.resolve({ok:false,error:e});};
+  if(!shoutoutId){return no(new Error('teacher page: no shoutout'));}
+  var TD=window.MrBadmusTeacherData;
+  if(!TD||!TD.softDeleteClassShoutout){
+    return no(new Error('teacher page: no data layer'));}
+  try{
+    return TD.softDeleteClassShoutout(shoutoutId).then(
+      function(){return {ok:true,error:null};}, no);
+  }catch(e){return no(e);}}
 """
 
 
@@ -2320,6 +2434,49 @@ def build():
         write(os.path.join(MIRROR_OUT, spec["out"]), body)
         write(os.path.join(FIXTURE_OUT, spec["fixture_out"]), fix)
         write(os.path.join(FIXTURE_OUT, spec["empty_out"]), mt)
+
+        # ── ⊕ MRB-287 · the additions, asserted against the BYTES ──────
+        #
+        # ⚑ "I INSERTED IT" AND "IT IS IN THE PAGE" ARE DIFFERENT CLAIMS.
+        # An INSERT_AT entry whose parent node is not on this page is skipped
+        # SILENTLY — that is deliberate, because two of the four insertions
+        # belong to other screens — so the register in teacher_rulings could
+        # name a control that is nowhere in the emitted file and nothing
+        # would say so. This reads the finished HTML.
+        #
+        # Both directions: on its own page every marker must be PRESENT, and
+        # on every other page it must be ABSENT. The second half is what
+        # catches an addition that has drifted onto a screen it was never
+        # ruled onto — an inert confirm sheet on five pages that cannot open
+        # it, which is the orphaned hidden element MRB-287 has just removed
+        # one of.
+        # ⚠️ THE JSON FORM, NOT THE HTML FORM. These pages ship Design's
+        # template as `window.__MRB_TPL__` and the runtime draws it in the
+        # browser, so there is no `data-mrb-added="…"` in the file — there is
+        # `"data-mrb-added":"…"` inside the serialised roots. Looking for the
+        # HTML spelling finds nothing on a page that carries the control
+        # perfectly well, which is what the first version of this check did.
+        for add in R.AMENDED_ADDITIONS:
+            tag = '"data-mrb-added":"%s"' % add["marker"]
+            if add["page"] == spec["out"]:
+                if tag not in body:
+                    raise SystemExit(
+                        "build_teacher_port.py: %s — teacher_rulings."
+                        "AMENDED_ADDITIONS names %r (%s), inserted at "
+                        "Design's node %s, and it is NOT in the emitted "
+                        "page.\n  The insertion was skipped or the node was "
+                        "pruned. A registered addition that is not on the "
+                        "page is a control nobody can press and a register "
+                        "nobody can trust. (%s)"
+                        % (spec["out"], add["label"], add["marker"],
+                           add["node"], add["why"].split(".")[0]))
+            elif tag in body:
+                raise SystemExit(
+                    "build_teacher_port.py: %s — the addition %r is ruled "
+                    "onto %s and it is in THIS page too. An addition on a "
+                    "screen it was not ruled onto is markup a teacher can "
+                    "reach by accident, or cannot reach at all."
+                    % (spec["out"], add["marker"], add["page"]))
 
         # ⚑ ASSERTED, NOT ASSUMED. No bound literal may survive in the
         # template the PRODUCTION page ships — otherwise the binding is

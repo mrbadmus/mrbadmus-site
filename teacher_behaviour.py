@@ -67,6 +67,8 @@ import os
 import re
 import sys
 
+import teacher_rulings as R
+
 REPO = os.path.dirname(os.path.abspath(__file__))
 # The fixtures are NOT in `teacher/`. That directory is published to
 # mrbadmus.com and round-tripped back over itself by generate_site_v5, and
@@ -142,6 +144,7 @@ def fixtures():
 _DRIVE_JS = r"""
 (async function () {
   var EXEMPT = __EXEMPT__;
+  var ADDED = __ADDED__;
   var host = document.querySelector('#mrb-teacher');
   if (!host) { return JSON.stringify({error: 'no #mrb-teacher host'}); }
 
@@ -223,8 +226,19 @@ _DRIVE_JS = r"""
     return false;
   }
 
+  /* ⊕ MRB-287, 24 Aug 2026 — `[data-mrb-added]` AS WELL, AND THIS WAS A HOLE.
+     Every element the runtime draws from one of Design's nodes carries
+     `data-dc-tpl`, written from that node's `i`. Markup this port INSERTS
+     carries no `i` on purpose — `teacher_rulings.INSERT_AT` says so, because
+     Design's numbering is what every other ruling is anchored on and it must
+     not move — so an inserted element has no `data-dc-tpl` and this sweep
+     could not see it. Nothing was going unpressed while both insertions were
+     empty states with no control in them. The shoutout delete is four
+     controls, and a delete button no gate can press is precisely the dead
+     control this file exists to catch. */
   function clickable() {
-    var all = host.querySelectorAll('[data-dc-tpl]'), out = [];
+    var all = host.querySelectorAll('[data-dc-tpl],[data-mrb-added]'),
+        out = [];
     for (var i = 0; i < all.length; i++) {
       var el = all[i], tag = el.tagName.toLowerCase();
       var press = tag === 'button' || tag === 'a' || tag === 'select' ||
@@ -249,7 +263,8 @@ _DRIVE_JS = r"""
     var label = (c.innerText || c.getAttribute('aria-label') ||
                  c.getAttribute('placeholder') || c.tagName)
                 .slice(0, 40).replace(/\s+/g, ' ').trim();
-    var idx = c.getAttribute('data-dc-tpl');
+    var idx = c.getAttribute('data-dc-tpl') ||
+              c.getAttribute('data-mrb-added');
     var key = idx + '|' + label;
     if (seen[key]) { continue; }   // already pressed this exact control
     seen[key] = 1;
@@ -310,6 +325,63 @@ _DRIVE_JS = r"""
     }
   }
 
+  /* ══ ⊕ MRB-287 · THE ADDITIONS, PRESSED ON PURPOSE ══════════════════
+
+     The sweep above walks controls BY ORDINAL, and that is right for
+     Design's own dashboard: it presses whatever is on screen, in order,
+     without a list of what should be there. What it cannot promise is that
+     any PARTICULAR control was reached — a control that lives inside a sheet
+     another control opens is reachable only while that sheet is open, and the
+     ordinal walk closes sheets as readily as it opens them. Measured on
+     class-detail: the sweep pressed the shoutout "Remove" button and the
+     confirm sheet's close X, and then never came back for "Remove shoutout" —
+     the press that actually writes.
+
+     For Design's controls that is a coverage limit and has always been one.
+     For markup THIS PORT ADDED it is not acceptable: an addition is the one
+     thing on the page nobody drew, nobody reviewed against a delivery, and
+     nobody can find by comparing two files. So every entry in
+     `teacher_rulings.AMENDED_ADDITIONS` ruled onto this page is pressed HERE,
+     by name, and must move something.
+
+     ⚠️ IT RE-OPENS RATHER THAN GIVING UP. An addition that is not on screen
+     is not absent — it may be behind an earlier one. Each earlier addition is
+     pressed in turn until the wanted control appears; if none of them reveals
+     it, THAT is the failure, and it is reported as unreachable rather than as
+     dead. `build_teacher_port` has already proved the markup is in the file,
+     so "in the file and unreachable" is a real and separate defect. */
+  var added = [], addedDead = [], addedGone = [];
+  for (var t = 0; t < ADDED.length; t++) {
+    var want = ADDED[t];
+    var sel = '[data-mrb-added="' + want + '"]';
+    var el = host.querySelector(sel);
+    for (var u = 0; u < t && !el; u++) {
+      var opener = host.querySelector('[data-mrb-added="' + ADDED[u] + '"]');
+      if (!opener) { continue; }
+      opener.click();
+      await frame();
+      el = host.querySelector(sel);
+    }
+    if (!el) { addedGone.push(want); continue; }
+    var aLabel = (el.innerText || el.getAttribute('aria-label') || el.tagName)
+                 .slice(0, 40).replace(/\s+/g, ' ').trim();
+    var aBefore = snap(), aNavs = navs.length;
+    try {
+      el.click();
+      added.push(want + '|' + aLabel);
+    } catch (e) {
+      errors.push(want + ' ' + aLabel + ': ' + e.message);
+      continue;
+    }
+    await frame();
+    var aAfter = snap();
+    if (aAfter.text === aBefore.text && aAfter.renders === aBefore.renders &&
+        aAfter.nodes === aBefore.nodes && navs.length === aNavs) {
+      addedDead.push({i: want, label: aLabel,
+                      tag: el.tagName.toLowerCase()});
+    }
+  }
+
   window.MRB_GO = realGo;
   window.MRB_BACK = realBack;
 
@@ -323,6 +395,9 @@ _DRIVE_JS = r"""
     dead: dead,
     blanked: blanked,
     present: present,
+    added: added,
+    addedDead: addedDead,
+    addedGone: addedGone,
     errors: errors
   });
 })()
@@ -364,10 +439,193 @@ def _wired_handlers(path):
     return out
 
 
+# ── ⊕ MRB-287 · the three nodes the search-truncation probe needs ────────
+#
+# ⚑ DERIVED FROM THE SHIPPED TEMPLATE, NOT TYPED. Design's search overlay is
+# kept on four of the six pages and pruned on the other two, and the node
+# numbers are hers — a table of them here would be a fifth place they are
+# written down and the first one to go stale. The probe asks the page which
+# element opens the search, which one takes the typing, and which one carries
+# the caption, and skips the page entirely if any is absent.
+def _search_nodes(path):
+    body = open(path, encoding="utf-8").read()
+    m = re.search(r"window\.__MRB_TPL__=(\{.*?\});", body, re.S)
+    tree = json.loads(m.group(1))
+    out = {"opener": None, "input": None, "foot": None, "row": None}
+
+    def walk(n):
+        if not isinstance(n, dict):
+            return
+        if n.get("on") == "openSearch":
+            out["opener"] = n.get("i")
+        if n.get("onch") == "setSearch":
+            out["input"] = n.get("i")
+        # The result ROW, so the probe can count what is actually on screen
+        # rather than trust the cap. Design's `<for list="{{ searchResults }}">`
+        # has exactly one child and that child is the row.
+        if n.get("t") == "for" and n.get("e") == "searchResults":
+            kids = [c for c in (n.get("c") or []) if isinstance(c, dict)]
+            out["row"] = kids[0].get("i") if len(kids) == 1 else None
+        for c in n.get("c") or []:
+            if (isinstance(c, dict) and c.get("t") == "#"
+                    and isinstance(c.get("v"), dict)):
+                for part in c["v"].get("parts") or []:
+                    if isinstance(part, dict) and part.get("e") == "searchFoot":
+                        out["foot"] = n.get("i")
+            walk(c)
+
+    for r in tree.get("roots") or []:
+        walk(r)
+    return out
+
+
+# ── ⊕ MRB-287 · the search cap, declared or not ──────────────────────────
+#
+# ⛔ THE DEFECT THIS EXISTS FOR: `.slice(0, 12)` on the search results, with
+# nothing on screen saying so. Design sized it to a fifteen-name sample; the
+# pool behind it is now every student the teacher teaches. A cap that is
+# silent is indistinguishable from a complete answer, and no gate that
+# measures a page at rest can see the difference — the page looks identical
+# whether twelve matched or two hundred did.
+#
+# ⚠️ THE EXPECTATION IS DERIVED, NOT PATTERN-MATCHED ON THE WORDING. Asserting
+# the caption's exact sentence would make this a copy test that goes red when
+# the words are improved. What it asserts is a PROPERTY of the numbers in it:
+#
+#     truncating  (matched > rows)  → the caption's integers must include the
+#                                     match total AND the row count. A caption
+#                                     that never names the total is the silent
+#                                     cap, whatever it says.
+#     not         (matched == rows) → every integer in the caption must equal
+#                                     that count. This is what forbids
+#                                     "showing 12 of 12" and any other second
+#                                     number invented where nothing was
+#                                     withheld.
+#     nothing matched               → the caption must still SAY something.
+#                                     Design's line rendered "0 OF 60
+#                                     STUDENTS": two numbers and no sentence.
+_SEARCH_JS = r"""
+(async function () {
+  var N = __NODES__;
+  function frame(){return new Promise(function(r){
+    requestAnimationFrame(function(){requestAnimationFrame(r);});});}
+  var host = document.querySelector('#mrb-teacher');
+  var pool = (window.__MRB_DATA__ && window.__MRB_DATA__.searchPool) || [];
+  var opener = host.querySelector('[data-dc-tpl="' + N.opener + '"]');
+  if (!opener) { return JSON.stringify({skip: 'no search opener on screen'}); }
+  opener.click();
+  await frame();
+
+  /* The three queries are taken from the POOL rather than written here, so
+     they cannot stop matching when the fixture changes: everything, one whole
+     name (exactly one row unless two children share it), and a string no name
+     contains. */
+  function hits(q) {
+    var n = 0;
+    for (var z = 0; z < pool.length; z++) {
+      if (!q || String(pool[z].name || '').toLowerCase().indexOf(q) > -1) {
+        n++; }
+    }
+    return n;
+  }
+  var whole = pool.length ? String(pool[0].name || '').toLowerCase() : 'zz';
+  /* ⚑ THE FOURTH CASE IS THE ONE THAT FORBIDS "SHOWING 12 OF 12": SEVERAL
+     matches, none withheld. Found by trying single letters rather than
+     written down, so it cannot stop being that case when the fixture data
+     changes. Reported as skipped if no letter lands in the range. */
+  var several = '';
+  var abc = 'abcdefghijklmnopqrstuvwxyz';
+  for (var L = 0; L < abc.length && !several; L++) {
+    var h = hits(abc[L]);
+    if (h > 1 && h < 12) { several = abc[L]; }
+  }
+  var cases = [{q: '', why: 'no query — the whole pool'},
+               {q: whole, why: 'one whole name'},
+               {q: 'qzqzqz', why: 'a string nothing contains'}];
+  if (several) {
+    cases.splice(1, 0, {q: several,
+                        why: 'several matches, none withheld'}); }
+  var out = [];
+  for (var i = 0; i < cases.length; i++) {
+    var el = host.querySelector('[data-dc-tpl="' + N.input + '"]');
+    if (!el) { return JSON.stringify({skip: 'search input not on screen'}); }
+    el.focus();
+    el.value = cases[i].q;
+    el.dispatchEvent(new Event('input', {bubbles: true}));
+    await frame();
+    var foot = host.querySelector('[data-dc-tpl="' + N.foot + '"]');
+    var rows = host.querySelectorAll('[data-dc-tpl="' + N.row + '"]').length;
+    var q = cases[i].q;
+    var matched = 0;
+    for (var j = 0; j < pool.length; j++) {
+      var nm = String(pool[j].name || '').toLowerCase();
+      if (!q || nm.indexOf(q) > -1) { matched++; }
+    }
+    var text = foot ? (foot.innerText || '').trim() : null;
+    out.push({q: q, why: cases[i].why, rows: rows, matched: matched,
+              pool: pool.length, text: text,
+              nums: text ? (text.match(/\d+/g) || []).map(Number) : []});
+  }
+  return JSON.stringify({skip: '', pool: pool.length, cases: out,
+                         several: several || null});
+})()
+"""
+
+
+def _search_problems(what, c):
+    """One search state, judged on the NUMBERS in its caption."""
+    out = []
+    where = "%s: search %s (%s)" % (what, ("with %r" % c["q"]) if c["q"]
+                                    else "with no query", c["why"])
+    if c["text"] is None:
+        return ["%s — the caption node is not on screen at all. Design draws "
+                "it under every search; a search with no footer is a search "
+                "that cannot tell you it was cut short." % where]
+    if not c["text"]:
+        # Blank is legal ONLY where the helper deliberately renders nothing,
+        # which is a count it could not be sure of — and a fixture always has
+        # its pool, so a blank here is a real miss.
+        return ["%s — the caption is EMPTY. Blanks over invented numbers is "
+                "the rule for an unknown count, and this count is known "
+                "(%d matched of a pool of %d)."
+                % (where, c["matched"], c["pool"])]
+    nums = c["nums"]
+    if c["matched"] == 0:
+        return out            # a sentence, no numbers: that is the state
+    # ⚠️ THE COUNT OF NUMBERS MATTERS, NOT JUST WHICH ONES. The first
+    # version of this asked only whether the wrong numbers were present, and
+    # a falsification run walked straight through it: with the truncation
+    # clause emitted unconditionally the caption read "3 MATCHES · SHOWING 3",
+    # whose integers are {3} — exactly the set a correct caption has. A
+    # redundant clause is invisible to a set. So the whole multiset is
+    # pinned: a caption may carry the numbers the state has and no others,
+    # once each.
+    if c["matched"] > c["rows"]:
+        want = sorted([c["matched"], c["rows"]])
+        if sorted(nums) != want:
+            out.append(
+                "%s — %d matched and %d are on screen, so the caption should "
+                "carry exactly those two numbers. %r carries %s. A caption "
+                "that never names the match total is the silent cap: a "
+                "teacher reads twelve rows as the whole answer."
+                % (where, c["matched"], c["rows"], c["text"], nums or "none"))
+    else:
+        if nums != [c["matched"]]:
+            out.append(
+                "%s — nothing was withheld (%d matched, %d shown), so the "
+                "caption should carry that one number once. %r carries %s. A "
+                "\"showing N of N\" clause where nothing is hidden is noise, "
+                "and noise is how a teacher learns to stop reading the line "
+                "that will later matter."
+                % (where, c["matched"], c["rows"], c["text"], nums or "none"))
+    return out
+
+
 def drive(page, path, is_empty, cdp, port, shots=None):
     """Problems, as strings, for one fixture. Driven twice — load and reload."""
     problems = []
-    tally = {"found": 0, "pressed": 0}
+    tally = {"found": 0, "pressed": 0, "added": 0, "search": 0,
+             "nosev": 0}
     # ⚠️ THE TEMPLATE, NOT THE SOURCE. Every page ships the WHOLE logic
     # class — all six screens' `renderVals` — and prunes only the MARKUP. So
     # `doPrint` is a string in all six files while the Print BUTTON exists on
@@ -376,6 +634,22 @@ def drive(page, path, is_empty, cdp, port, shots=None):
     # is whether a node that survived pruning is WIRED to the handler, and the
     # shipped template tree is the only thing that answers it.
     src = _wired_handlers(os.path.join(PAGE_DIR, path))
+    # ⊕ MRB-287 — the controls THIS PORT added to Design's delivery, on this
+    # page, in the order they are registered. Read from the register rather
+    # than listed here, so an addition cannot be made without this gate
+    # pressing it. `page` is the screen name; the register names the page.
+    # ⚠️ AND `needs_data` ADDITIONS ARE NOT EXPECTED ON THE EMPTY FIXTURE.
+    # The four shoutout-delete controls hang off a feed row; the empty
+    # class-detail shape is a class with no roster and `FEED[cid] == []`, so
+    # there is nothing to remove and correctly nothing to press. Demanding
+    # them there would be demanding a delete button on an empty feed. They
+    # are still pressed, by name, on the populated fixture.
+    added_here = [a["marker"] for a in R.AMENDED_ADDITIONS
+                  if a["page"] == page + ".html"
+                  and not (is_empty and a.get("needs_data"))]
+    added_why = {a["marker"]: a for a in R.AMENDED_ADDITIONS}
+    # ⊕ MRB-287 — the search overlay's three nodes, if this page keeps it.
+    search_nodes = _search_nodes(os.path.join(PAGE_DIR, path))
     with cdp.Browser() as b:
         pg = b.attach()
         pg.set_viewport(1460, 1200)
@@ -401,7 +675,11 @@ def drive(page, path, is_empty, cdp, port, shots=None):
                                    % (page, "-empty" if is_empty else ""))
                 pg.screenshot(out, full_page=True)
 
-            got = json.loads(pg.eval(_DRIVE_JS.replace("__EXEMPT__", json.dumps(sorted(EXEMPT_LABELS.values())))))
+            probe = (_DRIVE_JS
+                     .replace("__EXEMPT__",
+                              json.dumps(sorted(EXEMPT_LABELS.values())))
+                     .replace("__ADDED__", json.dumps(added_here)))
+            got = json.loads(pg.eval(probe))
             if got.get("error"):
                 problems.append("%s: %s" % (what, got["error"]))
                 continue
@@ -409,6 +687,7 @@ def drive(page, path, is_empty, cdp, port, shots=None):
             if pass_n == 1:
                 tally["found"] += got.get("controls", 0)
                 tally["pressed"] += got.get("pressed", 0)
+                tally["added"] += len(got.get("added") or [])
 
             first, last = got["first"], got["last"]
 
@@ -476,6 +755,28 @@ def drive(page, path, is_empty, cdp, port, shots=None):
                     "may do nothing."
                     % (what, d["i"], d["tag"], d["label"]))
 
+            # 5b. ⊕ MRB-287 — and every ADDITION was reachable and live.
+            #     These are the controls this port put on a teacher's screen
+            #     that Design did not draw. `build_teacher_port` proves each
+            #     is in the emitted bytes; this proves a teacher can get to
+            #     it and that it does something when they do.
+            for m in got.get("addedGone", []):
+                a = added_why.get(m, {})
+                problems.append(
+                    "%s: the addition %r (%s) is registered on this page and "
+                    "the build proved it is IN the file — and nothing on "
+                    "screen reveals it. Markup in the file that no press can "
+                    "reach is a control that does not exist. (%s)"
+                    % (what, a.get("label", m), m,
+                       a.get("why", "").split(".")[0]))
+            for d in got.get("addedDead", []):
+                problems.append(
+                    "%s: the addition %r (%s %r) changed nothing when "
+                    "pressed. Design did not draw this control — it is here "
+                    "because it was asked for, which makes a dead one worse "
+                    "than a missing one."
+                    % (what, d["i"], d["tag"], d["label"]))
+
             # 6. And no press emptied the page. See the probe's note on
             #    node 78 — the control that navigated a pinned-screen page
             #    into a screen it had pruned, and blanked it.
@@ -490,6 +791,51 @@ def drive(page, path, is_empty, cdp, port, shots=None):
             # 7. Nothing threw while being pressed.
             for e in got["errors"]:
                 problems.append("%s: pressing %s threw" % (what, e))
+
+            # 7b. ⊕ MRB-287 — the search cap is DECLARED, in every state.
+            #     Driven here rather than by the sweep above: the sweep types
+            #     a fixed `zz` into every text field, which is the ONE case
+            #     that can never truncate. A cap only lies when it bites.
+            # ⚠️ A SKIP IS RECORDED, NEVER SWALLOWED. Two of the six pages
+            #    prune the search overlay (`searchOpen` is not in their
+            #    `overlays`), so "not here" is legitimate — but a probe that
+            #    quietly does nothing on a page that DOES have the overlay is
+            #    exactly the overstated coverage this file keeps catching. The
+            #    tally below is printed, and a skip on a page whose template
+            #    still wires `openSearch` is a problem.
+            have = all(search_nodes.get(k) is not None
+                       for k in ("opener", "input", "foot", "row"))
+            if not have:
+                # The legitimate absence is the WHOLE overlay being pruned —
+                # `searchOpen` is not in digest's or insights' `overlays`, so
+                # only the top-bar opener survives there. The absence that is
+                # NOT legitimate is the overlay being present with its caption
+                # or its result row missing: the probe would then run on
+                # nothing and this fixture would report a clean sweep.
+                if search_nodes.get("input") is not None:
+                    problems.append(
+                        "%s: this page keeps the search overlay (the input is "
+                        "in its template) and %s is not, so the cap check "
+                        "measured nothing."
+                        % (what, " and ".join(
+                            k for k in ("foot", "row")
+                            if search_nodes.get(k) is None) or "its opener"))
+            else:
+                got_s = json.loads(pg.eval(
+                    _SEARCH_JS.replace("__NODES__",
+                                       json.dumps(search_nodes))))
+                if got_s.get("skip"):
+                    problems.append(
+                        "%s: the search cap check could not run — %s. The "
+                        "overlay is in this page's template, so it should "
+                        "have opened." % (what, got_s["skip"]))
+                else:
+                    for c in got_s["cases"]:
+                        problems.extend(_search_problems(what, c))
+                    if pass_n == 1:
+                        tally["search"] += len(got_s["cases"])
+                        if not got_s.get("several"):
+                            tally["nosev"] += 1
 
             # 8. And the console stayed quiet. A page can render correctly and
             #    still be throwing on every state change — the throw happens
@@ -533,12 +879,16 @@ def main(argv):
 
     server, port = cdp.serve(REPO)
     failed = 0
-    total = {"found": 0, "pressed": 0}
+    total = {"found": 0, "pressed": 0, "added": 0, "search": 0,
+             "nosev": 0}
     try:
         for page, path, is_empty in todo:
             problems, tally = drive(page, path, is_empty, cdp, port, shots)
             total["found"] += tally["found"]
             total["pressed"] += tally["pressed"]
+            total["added"] += tally["added"]
+            total["search"] += tally["search"]
+            total["nosev"] += tally["nosev"]
             tag = "empty" if is_empty else "full "
             if problems:
                 failed += 1
@@ -551,8 +901,12 @@ def main(argv):
                 if len(problems) > 10:
                     print("        · … and %d more" % (len(problems) - 10))
             else:
-                print("     %-16s %s ✅  %d/%d control(s) pressed"
-                      % (page, tag, tally["pressed"], tally["found"]))
+                print("     %-16s %s ✅  %d/%d control(s) pressed%s%s"
+                      % (page, tag, tally["pressed"], tally["found"],
+                         (" · %d addition(s) pressed by name"
+                          % tally["added"]) if tally["added"] else "",
+                         (" · %d search state(s)"
+                          % tally["search"]) if tally["search"] else ""))
     finally:
         server.shutdown()
 
@@ -570,6 +924,28 @@ def main(argv):
     # pressed < found is normal and not a failure: a press legitimately
     # removes other controls from the page (an overlay closes, a filter
     # empties a grid), and a control that is gone cannot be pressed.
+    if total["search"]:
+        # ⚑ SAID OUT LOUD, for the same reason the additions are. This is the
+        # only check in the file that types a query and reads a sentence back,
+        # and a silent cap is invisible to every other one.
+        print("     %d search state(s) driven — the whole pool, several "
+              "matches, one match and none — and the caption's numbers "
+              "checked against what was on screen" % total["search"])
+        if total["nosev"]:
+            print("     ⚠️  %d fixture(s) had no single letter matching "
+                  "between 2 and 11 names, so the several-matches state went "
+                  "undriven there" % total["nosev"])
+        print()
+    if total["added"]:
+        # ⚑ SAID OUT LOUD, because a coverage claim nobody can see is the
+        # defect this gate's own summary line was written to stop. These are
+        # the controls Design did not draw, pressed BY NAME out of
+        # teacher_rulings.AMENDED_ADDITIONS rather than by ordinal.
+        print("     %d addition(s) pressed by name: %s"
+              % (total["added"],
+                 ", ".join("%s (%s)" % (a["label"], a["marker"])
+                           for a in R.AMENDED_ADDITIONS)))
+        print()
     print("  PASS  %d fixture(s), %d of %d control(s) pressed. Every fixture "
           "mounted, every\n        binding resolved, nothing pressed left the "
           "page blank, no computed value\n        reached the copy, and the "

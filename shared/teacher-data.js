@@ -24,7 +24,7 @@
  *
  * Also exports loadClassDetail(classId) — the data layer for the MRB-38
  * class-detail page. Shape, error codes, and the locked design decisions
- * (first-attempt scoring, Logic A eligibility, departed-member handling,
+ * (first-attempt scoring, departed-member handling,
  * window calculation in browser TZ) are documented in the JSDoc directly
  * above that function.
  *
@@ -410,9 +410,10 @@ window.MrBadmusTeacherData = (function () {
     // ── This-week loop (Phase 4b.5) ────────────────────────────────
     // Submissions outside the current week window (submitted_at <
     // week.start_at) are uncategorised — neither on-time nor late.
-    // Matches calcLeaderboard semantics. In practice this case is
-    // rare (assignments don't open before they're set), but the
-    // rule is here for production data correctness.
+    // In practice this case is rare (assignments don't open before
+    // they're set), but the rule is here for production data
+    // correctness. (It used to read "matches calcLeaderboard
+    // semantics"; that function went under MRB-287.)
     let week_on_time_count = 0;
     let week_late_count = 0;
     const week_total_count = weekAssignments.length;
@@ -523,110 +524,16 @@ window.MrBadmusTeacherData = (function () {
     return m ? parseInt(m[1], 10) : Number.MAX_SAFE_INTEGER;
   }
 
-  // Compute the weekly Stars leaderboard. WEEKLY — resets each week
-  // against the current window. ACTIVE members only; departed students
-  // are excluded from the eligibility pool entirely.
+  // ⊕ `calcLeaderboard` WAS HERE, AND WAS REMOVED — 24 Aug 2026, MRB-287.
+  // Mide ruled that the Stars leaderboard is a STUDENT feature and is never
+  // a teacher one. This function computed weekly Stars eligibility and rank
+  // a SECOND time, in JavaScript, onto a payload key nothing ever read.
   //
-  // Stars locked model (Mide, 16 May 2026 — supersedes prior
-  // "Logic A" naming). A student is eligible iff ALL of:
-  //   1. Every this-week assignment submitted on time. On-time means
-  //      submitted_at IS NOT NULL, submitted_at >= window.start_at,
-  //      AND submitted_at <= assignment.due_at. Enforced via
-  //      week_on_time_count === week_total_count.
-  //   2. Overall this-week score_pct >= 75. Score is summed across
-  //      this week's on-time first-attempt graded submissions
-  //      (sum(score) / sum(max_score), rounded).
-  //
-  // Rank among eligible:
-  //   1. score_pct DESC      (NULLs treated as -1 — defensive only;
-  //                           the 75% gate guarantees a number)
-  //   2. total_time_sec ASC  (NULLs treated as +∞ → sort last)
-  //   3. first_name ASC
-  //
-  // INTERIM — assignment grain (Phase 4d, 16 May 2026): completion is
-  // counted per assignment, not per question. The locked model targets
-  // question grain (all 15 KS3 / 45 KS4 Combined / 15 KS4 Triple
-  // questions) but assignment_question_attempts is empty and there's
-  // no question_count column on assignments. Deferred to MRB-56 / Stage 4
-  // (MRB-8). This is a decided, ticketed interim — see MRB-56 comment
-  // (16 May 2026) — not an oversight.
-  //
-  // Returns the FULL ranked list of eligibles. Caller does .slice(0, 3)
-  // for the top-3 podium — keeps the data layer dumb and lets the UI
-  // re-rank or paginate without another query. Entry shape unchanged
-  // from prior versions (on_time_count and total_this_week remain as
-  // informational fields; the UI may ignore them).
-  function calcLeaderboard(weekAssignments, students, week, firstAttemptByKey) {
-    if (weekAssignments.length === 0) {
-      return { eligible: [], is_empty: true, empty_reason: 'no_assignments_this_week' };
-    }
-
-    // Two-gate eligibility (Phase 4d locked model):
-    //   (1) week_on_time_count === week_total_count — cheap upfront,
-    //       short-circuits non-completers before the score walk.
-    //   (2) score_pct >= 75 — applied after walking weekAssignments
-    //       to accumulate this week's graded sum/max.
-    // Score + total_time aggregates aren't on the roster output and
-    // aren't needed elsewhere, so they stay local to this function.
-    const eligible = [];
-    students.forEach(function (s) {
-      if (s.week_on_time_count !== s.week_total_count) return;
-
-      let total_score = 0;
-      let total_max = 0;
-      let total_time_sec = 0;
-      let any_time_present = false;
-
-      weekAssignments.forEach(function (a) {
-        const sub = firstAttemptByKey.get(a.id + ':' + s.id);
-        if (!sub || !sub.submitted_at) return;
-        if (sub.submitted_at < week.start_at) return;   // before window
-        if (sub.submitted_at > a.due_at)      return;   // late — not on-time
-        if (sub.score != null && sub.max_score != null && sub.max_score > 0) {
-          total_score += sub.score;
-          total_max += sub.max_score;
-        }
-        if (sub.total_time_seconds != null) {
-          total_time_sec += sub.total_time_seconds;
-          any_time_present = true;
-        }
-      });
-
-      // Score gate (Stars locked model, Phase 4d). Compute once and reuse
-      // in the entry below so the gate and the stored score_pct can never
-      // disagree due to rounding.
-      if (total_max === 0) return;                       // no graded subs
-      const score_pct = Math.round((total_score / total_max) * 100);
-      if (score_pct < 75) return;                        // 75% entry gate
-
-      eligible.push({
-        student_id: s.id,
-        first_name: s.first_name,
-        last_name: s.last_name,
-        avatar_url: s.avatar_url,
-        on_time_count: s.week_on_time_count,
-        total_this_week: s.week_total_count,
-        score_pct: score_pct,
-        total_time_sec: any_time_present ? total_time_sec : null,
-      });
-    });
-
-    if (eligible.length === 0) {
-      return { eligible: [], is_empty: true, empty_reason: 'no_eligibles_yet' };
-    }
-
-    eligible.sort(function (a, b) {
-      const aPct = a.score_pct == null ? -1 : a.score_pct;
-      const bPct = b.score_pct == null ? -1 : b.score_pct;
-      if (aPct !== bPct) return bPct - aPct;
-      const aTime = a.total_time_sec == null ? Number.MAX_SAFE_INTEGER : a.total_time_sec;
-      const bTime = b.total_time_sec == null ? Number.MAX_SAFE_INTEGER : b.total_time_sec;
-      if (aTime !== bTime) return aTime - bTime;
-      return (a.first_name || '').localeCompare(b.first_name || '');
-    });
-
-    return { eligible: eligible, is_empty: false, empty_reason: null };
-  }
+  // The Stars rule now has exactly ONE implementation: the Supabase RPC
+  // `class_stars_leaderboard_for_member`, read by `shared/student-data.js`.
+  // So this deletes a DUPLICATED rule rather than creating a gap — there was
+  // no part of the rule held here that the RPC does not also hold, and two
+  // copies of an eligibility rule is precisely how the two drift apart.
 
   async function loadTeacherClasses(academicYearId) {
     const guard = window.MrBadmusTeacherGuard;
@@ -750,7 +657,8 @@ window.MrBadmusTeacherData = (function () {
    *         average_score_pct,                            // ALL-TIME; null if 0 graded subs
    *         last_active_at,                               // ALL-TIME; null if no submissions
    *         // THIS-WEEK (added Phase 4b.5, 12 May 2026) — drives the
-   *         // "This Week" roster column AND leaderboard eligibility.
+   *         // "This Week" roster column. (It also fed leaderboard
+   *         // eligibility until MRB-287 removed calcLeaderboard.)
    *         // Early subs (submitted_at < week.start_at) are uncategorised:
    *         // neither on-time nor late.
    *         week_on_time_count, week_late_count,
@@ -758,19 +666,6 @@ window.MrBadmusTeacherData = (function () {
    *         week_completion_pct                           // ((on_time+late)/total)*100 rounded; null if total===0
    *       }
    *     ],
-   *     leaderboard: {
-   *       eligible: [                                     // FULL ranked list
-   *         {
-   *           student_id, first_name, last_name, avatar_url,
-   *           on_time_count, total_this_week,
-   *           score_pct,                                  // null if 0 graded subs
-   *           total_time_sec                              // null if all subs are time-null
-   *         }
-   *       ],
-   *       is_empty: boolean,
-   *       empty_reason:                                   // null when populated
-   *         'no_assignments_this_week' | 'no_eligibles_yet' | null
-   *     },
    *     assignments: [                                    // sort applied: due_at DESC NULLS LAST
    *       {
    *         id, title,
@@ -786,7 +681,6 @@ window.MrBadmusTeacherData = (function () {
    * Locked decisions (Mide, 9 May 2026 — see in-code comments at the
    * relevant helpers for full rationale):
    *   - First-attempt scoring: ignore retakes throughout (pickFirstAttempts)
-   *   - Logic A eligibility: must complete ALL this-week assignments on-time
    *   - Departed students: count toward assignment stats, NOT roster
    *   - Window: browser local TZ (UK-only platform, v1 simplification)
    *
@@ -920,10 +814,10 @@ window.MrBadmusTeacherData = (function () {
     const firstAttemptByKey = pickFirstAttempts(submissions);
     const pill = derivePill(klass, teacherRows);
     const week = computeWeekWindow(klass.assignment_day_of_week);
-    // Filter once, share between calcStudentStats (per-student week
-    // tally for the roster) and calcLeaderboard (eligibility + score
-    // aggregates). due_at must be non-null AND within the half-open
-    // window [start_at, end_at).
+    // The per-student week tally for the roster (calcStudentStats).
+    // due_at must be non-null AND within the half-open window
+    // [start_at, end_at). This filter used to be shared with
+    // calcLeaderboard; that function went under MRB-287.
     const weekAssignments = assignments.filter(function (a) {
       return a.due_at && a.due_at >= week.start_at && a.due_at < week.end_at;
     });
@@ -962,8 +856,6 @@ window.MrBadmusTeacherData = (function () {
       return (a.title || '').localeCompare(b.title || '');
     });
 
-    const leaderboard = calcLeaderboard(weekAssignments, students, week, firstAttemptByKey);
-
     // MRB-261 — is this class history? Same definition as loadAcademicYears'
     // is_past: its year ends before the working year does. A school with only
     // one year has that year as the working one, so nothing is ever falsely
@@ -999,7 +891,6 @@ window.MrBadmusTeacherData = (function () {
       },
       week: week,
       students: students,
-      leaderboard: leaderboard,
       // Every assignment for the class, none withheld, each stamped with a
       // `due_group` of overdue | this_week | upcoming | past (MRB-238).
       assignments: assignmentStats,
@@ -1040,8 +931,8 @@ window.MrBadmusTeacherData = (function () {
    * is not a client-side gate.
    *
    * ⚠️ AND IT RETURNS null ON EVERY FAILURE PATH, DELIBERATELY — no throw, no
-   * error code, unlike every other function here. The roster, the assignments
-   * table and the leaderboard all render from Supabase and all worked before
+   * error code, unlike every other function here. The roster and the
+   * assignments table both render from Supabase and both worked before
    * this route existed; a cold Render dyno, an expired token or a 500 must
    * cost the teacher one extra line of detail, never the page. The console
    * carries the reason for whoever is debugging it.

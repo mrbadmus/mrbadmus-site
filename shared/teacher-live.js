@@ -571,8 +571,8 @@
        claim, it is unsupportable, and it is invisible.
 
        So where the stamp is absent we fall back to the platform's OTHER
-       definition of on-time, the one `calcStudentStats` and `calcLeaderboard`
-       have always used: `submitted_at > due_at`. That is not a third rule —
+       definition of on-time, the one `calcStudentStats` has always used:
+       `submitted_at > due_at`. That is not a third rule —
        it is the first rule backfilled with the second, applied exactly where
        the stamp is missing and nowhere else.
 
@@ -1146,6 +1146,20 @@
   var profile = null;      // survives reset(): a re-read of rows is not a
                            // re-authentication, and the guard hands the
                            // profile over exactly once.
+  /* ⊕ MRB-287, 24 Aug 2026 — the signed-in teacher's own auth id.
+
+     Held for the same reason and on the same terms as `profile`: the guard
+     validates the session once and hands `ctx.user` over once, so asking
+     Supabase again would be a second answer to a question already answered.
+
+     ⚠️ IT IS AN IDENTITY, NOT A PERMISSION. Nothing on the page may gate a
+     WRITE on it — RLS does that, in the database, and `class_shoutouts`'s
+     UPDATE policy is `author_id = auth.uid() AND
+     auth_user_teaches_class(class_id)`. What it gates is whether a control
+     is OFFERED: the shoutout delete appears only on a shoutout this teacher
+     wrote, so that nothing on the page looks pressable and then fails RLS.
+     Null when unknown, which offers nothing — the safe direction. */
+  var viewerId = null;
 
   function reset() { cache = null; }
 
@@ -1466,6 +1480,12 @@
       GRID: c.GRID,
       FEED: FEED,
 
+      /* Who is looking. Design's delivery has no concept of a viewer at all;
+         the ported page needs one synchronously, inside `renderVals`, to
+         decide whether to draw the shoutout delete control — so it travels
+         through this payload rather than being fetched again per render. */
+      ME: viewerId,
+
       /* The six shoutout templates, from the locked enum that mirrors the DB
          CHECK constraint — `id` is the template KEY, not an ordinal, because
          the key is what an insert stores. Design's numeric ids and its
@@ -1545,6 +1565,9 @@
             // set BEFORE the rows are asked for so a screen that renders
             // early cannot render nameless.
             profile = ctx.profile || null;
+            // ⊕ MRB-287 — and the id, from the same handover. The guard has
+            // already validated this session; `ctx.user.id` IS `auth.uid()`.
+            viewerId = (ctx.user && ctx.user.id) || null;
             var c = await base();
             if (!c.CLASSES.length) {
               var e = new Error("[teacher-live] no classes this year");
@@ -1587,6 +1610,7 @@
     grids: grids,
     reload: function () { reset(); return base(); },
     setProfile: function (p) { profile = p || null; },
+    setViewer: function (id) { viewerId = id || null; },
     run: run,
     // Exposed for the porter's rulings, which need the same answers rather
     // than their own copies of them.
